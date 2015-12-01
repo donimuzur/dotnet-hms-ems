@@ -99,5 +99,8 @@ namespace Sampoerna.EMS.Contract
        CK5MaterialOutput ValidateCk5WasteMaterial(CK5MaterialInput input);
 
        List<CK5MaterialOutput> Ck5WasteMaterialProcess(List<CK5MaterialInput> inputs);
+       
+        void AddAttachmentDocument(CK5WorkflowDocumentInput input);
+
    }
 }

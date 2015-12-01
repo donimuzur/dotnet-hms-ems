@@ -1353,15 +1353,21 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.CurrentUserGroup = CurrentUser.USER_GROUP_ID;
                 input.DocumentNumber = model.SubmissionNumber;
                 input.NppbkcId = model.SourceNppbkcId;
+                input.PlantId = ck5Details.Ck5Dto.SOURCE_PLANT_ID;
+
                 if (model.Ck5Type == Enums.CK5Type.PortToImporter)
                 {
                     input.NppbkcId = model.DestNppbkcId;
                     model.IsCk5PortToImporter = true;
+
+                    input.PlantId = ck5Details.Ck5Dto.DEST_PLANT_ID;
                 }
                 else if (model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
                 {
-                    input.NppbkcId = model.DestNppbkcId;
+                    input.NppbkcId = ck5Details.Ck5Dto.DEST_PLANT_ID;
                     model.IsDomesticAlcohol = true;
+
+                    input.PlantId = model.DestPlantId;
                 }
                 else if (model.Ck5Type == Enums.CK5Type.Waste)
                 {
@@ -1371,6 +1377,7 @@ namespace Sampoerna.EMS.Website.Controllers
                          model.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
                 {
                     input.NppbkcId = model.DestNppbkcId;
+                    input.PlantId = ck5Details.Ck5Dto.DEST_PLANT_ID;
                 }
 
                 if (model.Ck5Type == Enums.CK5Type.ImporterToPlant)
@@ -1481,9 +1488,19 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.IsCompleted)
                 {
-
                     model.AllowAttachmentCompleted = _workflowBll.AllowAttachmentCompleted(input);
 
+                }
+                else
+                {
+                    //only show if no allow granted for all possible
+                    //if not it will cause double button show up in view
+                    if (!model.AllowGiCreated && !model.AllowGrCreated && !model.AllowGoodIssue
+                        && !model.AllowGoodReceive && !model.AllowTfPostedPortToImporter
+                        && !model.AllowPurchaseOrder)
+                    {
+                        model.AllowAttachment = _workflowBll.AllowAttachment(input);
+                    }
                 }
 
                 if (model.AllowGovApproveAndReject)
@@ -1501,9 +1518,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 else if (model.AllowAttachmentCompleted)
                     model.ActionType = "CK5CompletedAttachment";
                 else if (model.AllowPurchaseOrder)
-                {
                     model.ActionType = "POCreated";
-                }
+                else if (model.AllowAttachment)
+                     model.ActionType = "CK5AllowAttachment";
                 else if (model.AllowWasteDisposal)
                     model.ActionType = "CK5WasteDisposal";
                 else if (model.AllowWasteApproval)
@@ -2042,13 +2059,40 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
         }
 
+        private List<CK5_FILE_UPLOADDto> GetFileUpload(CK5FormViewModel model)
+        {
+            model.Ck5FileUploadModelList = new List<CK5FileUploadViewModel>();
+
+            foreach (var item in model.Ck5FileUploadFileList)
+            {
+                if (item != null)
+                {
+                    var filenameCk5Check = item.FileName;
+                    if (filenameCk5Check.Contains("\\"))
+                        filenameCk5Check = filenameCk5Check.Split('\\')[filenameCk5Check.Split('\\').Length - 1];
+
+                    var ck5UploadFile = new CK5FileUploadViewModel
+                    {
+                        FILE_NAME = filenameCk5Check,
+                        FILE_PATH = SaveUploadedFile(item, model.Ck5Id),
+                        CREATED_DATE = DateTime.Now,
+                        CREATED_BY = CurrentUser.USER_ID
+                    };
+                    model.Ck5FileUploadModelList.Add(ck5UploadFile);
+                }
+
+            }
+
+            return Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList);
+
+        }
+
         [HttpPost]
         public ActionResult CK5GICreated(CK5FormViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 AddMessageInfo("Model Not Valid", Enums.MessageInfoType.Success);
-                // return View("Details", model);
                 return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
             }
 
@@ -2083,6 +2127,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.SealingDate = model.SealingNotifDate;
                 input.GIDate = model.GiDate;
 
+                input.AdditionalDocumentData = new CK5WorkflowDocumentData();
+                input.AdditionalDocumentData.Ck5FileUploadList = GetFileUpload(model);
 
                 _ck5Bll.CK5Workflow(input);
 
@@ -2128,6 +2174,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.DnNumber = model.DnNumber;
 
 
+                input.AdditionalDocumentData = new CK5WorkflowDocumentData();
+                input.AdditionalDocumentData.Ck5FileUploadList = GetFileUpload(model);
 
                 _ck5Bll.CK5Workflow(input);
 
@@ -2186,6 +2234,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 input.GRDate = model.GrDate;
 
+                input.AdditionalDocumentData = new CK5WorkflowDocumentData();
+                input.AdditionalDocumentData.Ck5FileUploadList = GetFileUpload(model);
+
                 _ck5Bll.CK5Workflow(input);
 
                 AddMessageInfo("Success update Sealing/Unsealing Number and Date", Enums.MessageInfoType.Success);
@@ -2208,12 +2259,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.DocumentId = model.Ck5Id;
                 input.UserId = CurrentUser.USER_ID;
                 input.UserRole = CurrentUser.UserRole;
-
+                input.Ck5Type = model.Ck5Type;
                 input.ActionType = Enums.ActionType.GoodIssue;
 
                 input.GiDate = model.GiDate;
                 input.SealingNumber = model.SealingNotifNumber;
                 input.SealingDate = model.SealingNotifDate;
+
+                input.AdditionalDocumentData = new CK5WorkflowDocumentData();
+                input.AdditionalDocumentData.Ck5FileUploadList = GetFileUpload(model);
+
 
                 _ck5Bll.CK5Workflow(input);
 
@@ -2237,12 +2292,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.DocumentId = model.Ck5Id;
                 input.UserId = CurrentUser.USER_ID;
                 input.UserRole = CurrentUser.UserRole;
-
+                input.Ck5Type = model.Ck5Type;
                 input.ActionType = Enums.ActionType.GoodReceive;
 
                 input.GrDate = model.GrDate;
                 input.UnSealingNumber = model.UnSealingNotifNumber;
                 input.UnSealingDate = model.UnsealingNotifDate;
+
+                input.AdditionalDocumentData = new CK5WorkflowDocumentData();
+                input.AdditionalDocumentData.Ck5FileUploadList = GetFileUpload(model);
 
                 _ck5Bll.CK5Workflow(input);
 
@@ -2365,9 +2423,36 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.UnSealingNumber = model.UnSealingNotifNumber;
                 input.UnSealingDate = model.UnsealingNotifDate;
 
+                input.AdditionalDocumentData = new CK5WorkflowDocumentData();
+                input.AdditionalDocumentData.Ck5FileUploadList = GetFileUpload(model);
+
                 _ck5Bll.CK5Workflow(input);
 
                 AddMessageInfo("Success update Sealing/Unsealing Number and Date", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+        }
+
+        [HttpPost]
+        public ActionResult CK5AllowAttachment(CK5FormViewModel model)
+        {
+            try
+            {
+                var input = new CK5WorkflowDocumentInput();
+                input.DocumentId = model.Ck5Id;
+                input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
+                
+                input.AdditionalDocumentData = new CK5WorkflowDocumentData();
+                input.AdditionalDocumentData.Ck5FileUploadList = GetFileUpload(model);
+
+                _ck5Bll.AddAttachmentDocument(input);
+
+                AddMessageInfo("Success update Attachment Document", Enums.MessageInfoType.Success);
             }
             catch (Exception ex)
             {
@@ -3261,6 +3346,36 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, data.LoadingPortName);
                     iColumn = iColumn + 1;
                 }
+                if (modelExport.StoNumberSender)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.StoNumberSender);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.StoNumberReciever)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.StoNumberReciever);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.StoBNumber)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.StoBNumber);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.DnNumber)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.DnNumber);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.GrDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.GrDate);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.GiDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.GiDate);
+                    iColumn = iColumn + 1;
+                }
                 if (modelExport.Status)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Status);
@@ -3485,6 +3600,36 @@ namespace Sampoerna.EMS.Website.Controllers
             if (modelExport.LoadingPortName)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Loading Port Name");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.StoNumberSender)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "STO Sender Number ");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.StoNumberReciever)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "STO Reciever Number");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.StoBNumber)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "STOB Number");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.DnNumber)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "DN Number");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.GrDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "GR  Date");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.GiDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "GI Date");
                 iColumn = iColumn + 1;
             }
             if (modelExport.Status)

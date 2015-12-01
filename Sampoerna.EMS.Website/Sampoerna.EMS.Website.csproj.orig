@@ -297,6 +297,7 @@
     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4cDashboardModel.cs" />
     <Compile Include="Models\CK4C\Ck4cDecreeDocModel.cs" />
+    <Compile Include="Models\CK4C\Ck4cExportItem.cs" />
     <Compile Include="Models\CK4C\Ck4CIndexDocumentListViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CSummaryReportsViewModel.cs" />
     <Compile Include="Models\CK5\CK5ExternalSupplierModel.cs" />
@@ -1265,17 +1266,23 @@
     <Content Include="Views\CK5\_CK5InformationEditMarketReturn.cshtml" />
     <Content Include="Views\CK5\_CK5InformationDetailsMarketReturn.cshtml" />
     <Content Include="Views\PBCK4\Detail.cshtml" />
-<<<<<<< HEAD
     <Content Include="Views\WasteRole\Index.cshtml" />
     <Content Include="Views\WasteRole\Create.cshtml" />
     <Content Include="Views\WasteRole\Edit.cshtml" />
-    <Content Include="Views\WasteRole\Detail.cshtml" />
-    <Content Include="Views\WasteStock\Index.cshtml" />
-    <Content Include="Views\WasteStock\Create.cshtml" />
-=======
     <Content Include="Views\LACK2\Details.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Details.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\DetailsPbck3.cshtml" />
+    <Content Include="Views\WasteRole\Detail.cshtml" />
+    <Content Include="Views\WasteStock\Index.cshtml" />
+    <Content Include="Views\WasteStock\Create.cshtml" />
+    <Content Include="Views\WasteStock\Edit.cshtml" />
+    <Content Include="Views\WasteStock\Detail.cshtml" />
+<<<<<<< HEAD
+    <Content Include="Views\CK5\CK5TriggerSto.cshtml" />
+    <Content Include="Views\CK5\CK5Waste.cshtml" />
+=======
+    <Content Include="Views\CK5\_CK5UploadDocumentFileButton.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadDocumentFileList.cshtml" />
 >>>>>>> dev
   </ItemGroup>
   <ItemGroup>

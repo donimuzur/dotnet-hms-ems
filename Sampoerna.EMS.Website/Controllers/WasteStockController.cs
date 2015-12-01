@@ -44,6 +44,13 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             model.ListWasteStocks = Mapper.Map<List<WasteStockFormViewModel>>(_wasteStockBll.GetAllDataOrderByUserAndGroupRole());
 
+            foreach (var wasteStockFormViewModel in model.ListWasteStocks)
+            {
+                wasteStockFormViewModel.StockRemainingDisplay =
+                    _wasteStockBll.GetRemainingQuota(wasteStockFormViewModel.Stock, wasteStockFormViewModel.PlantId,
+                        wasteStockFormViewModel.MaterialNumber);
+            }
+
             return View("Index", model);
         }
 
@@ -83,25 +90,25 @@ namespace Sampoerna.EMS.Website.Controllers
            
         }
 
-        public ActionResult Edit(int id)
-        {
-            var model = new WasteStockFormViewModel();
+        //public ActionResult Edit(int id)
+        //{
+        //    var model = new WasteStockFormViewModel();
 
-            try
-            {
-                model = Mapper.Map<WasteStockFormViewModel>(_wasteStockBll.GetById(id, true));
-                model = SetListModel(model);
-                model.MaterialNumberList = GetMaterialList(model.PlantId);
-            }
-            catch (Exception ex)
-            {
-                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
-                model = SetListModel(model);
-                model.MaterialNumberList = GetMaterialList(model.PlantId);
-            }
+        //    try
+        //    {
+        //        model = Mapper.Map<WasteStockFormViewModel>(_wasteStockBll.GetById(id, true));
+        //        model = SetListModel(model);
+        //        model.MaterialNumberList = GetMaterialList(model.PlantId);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+        //        model = SetListModel(model);
+        //        model.MaterialNumberList = GetMaterialList(model.PlantId);
+        //    }
 
-            return View("Edit", model);
-        }
+        //    return View("Edit", model);
+        //}
 
         public ActionResult Detail(int id)
         {
@@ -119,6 +126,8 @@ namespace Sampoerna.EMS.Website.Controllers
                         _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.WasteStock, id.ToString()));
 
 
+                model.StockRemainingDisplay = _wasteStockBll.GetRemainingQuota(model.Stock, model.PlantId,
+                    model.MaterialNumber);
             }
             catch (Exception ex)
             {
@@ -170,28 +179,28 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Create", model);
         }
 
-        [ValidateAntiForgeryToken]
-        [HttpPost]
-        public ActionResult Edit(WasteStockFormViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    SaveWasteStockToDatabase(model);
-                    AddMessageInfo("Success update Waste Stock", Enums.MessageInfoType.Success);
-                    return RedirectToAction("Index");
+        //[ValidateAntiForgeryToken]
+        //[HttpPost]
+        //public ActionResult Edit(WasteStockFormViewModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            SaveWasteStockToDatabase(model);
+        //            AddMessageInfo("Success update Waste Stock", Enums.MessageInfoType.Success);
+        //            return RedirectToAction("Index");
 
-                }
-                catch (Exception ex)
-                {
-                    AddMessageInfo("Update Failed : " + ex.Message, Enums.MessageInfoType.Error);
-                }
-            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            AddMessageInfo("Update Failed : " + ex.Message, Enums.MessageInfoType.Error);
+        //        }
+        //    }
 
-            model = SetListModel(model);
-            return View("Edit", model);
-        }
+        //    model = SetListModel(model);
+        //    return View("Edit", model);
+        //}
 
         private WasteStockDto SaveWasteStockToDatabase(WasteStockFormViewModel model)
         {

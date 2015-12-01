@@ -4,11 +4,11 @@
     {
         public const string MasterDataHeaderFooterFolder = "~/files_upload/";
         public const string UploadPath = "~/files_upload/";
-        public const string Pbck1DecreeDocFolderPath = "~/Content/upload/pbck1decreedoc/";
-        public const string Lack1UploadFolderPath = "~/Content/upload/Lack1/";
-        public const string Lack2FolderPaht = "~/Content/upload/Lack2/";
-        public const string CK5FolderPath = "~/Content/upload/CK5/";
-        public const string Ck4cDecreeDocFolderPath = "~/Content/upload/ck4cdecreedoc/";
+        public const string Pbck1DecreeDocFolderPath = UploadPath + "pbck1decreedoc/";
+        public const string Lack1UploadFolderPath = UploadPath + "Lack1/";
+        public const string Lack2FolderPaht = UploadPath + "Lack2/";
+        public const string CK5FolderPath = UploadPath + "CK5/";
+        public const string Ck4cDecreeDocFolderPath = UploadPath + "ck4cdecreedoc/";
 
         public const string InList = "In List";
         public static readonly string MenuActiveDashboard = "Dashboard";
@@ -16,9 +16,9 @@
         public const string PI = "PI";
 
 
-        public const string WasteSapon = "W_SAPON";
-        public const string WasteGagang = "W_GAGANG";
-        public const string WasteStem = "W_STEM";
+        public const string WasteFloor = "W.FLOOR";
+        public const string WasteDust = "W.DUST";
+        public const string WasteStem = "W.STEM";
 
         /// <summary>
         /// list of SessionKey constanta

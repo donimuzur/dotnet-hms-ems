@@ -196,6 +196,7 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.IsCompleted, opt => opt.MapFrom(src => src.STATUS_ID == Enums.DocumentStatus.Completed ? true:false))
             .ForMember(dest => dest.IsReducePbck1Ck5Trial, opt => opt.MapFrom(src => src.REDUCE_TRIAL.HasValue ? src.REDUCE_TRIAL : false))
             .ForMember(dest => dest.IsCk5Manual, opt => opt.MapFrom(src => src.CK5_TYPE == Enums.CK5Type.Manual))
+            .ForMember(dest => dest.IsTriggerSto, opt => opt.MapFrom(src => src.CK5_TYPE == Enums.CK5Type.TriggerSto))
             ;
 
             Mapper.CreateMap<CK5_FILE_UPLOADDto, CK5FileUploadViewModel>().IgnoreAllNonExisting();
@@ -274,6 +275,12 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.DestCompanyName, opt => opt.MapFrom(src => src.DEST_PLANT_NAME))
                 .ForMember(dest => dest.LoadingPort, opt => opt.MapFrom(src => src.LOADING_PORT))
                 .ForMember(dest => dest.LoadingPortName, opt => opt.MapFrom(src => src.LOADING_PORT_NAME))
+                .ForMember(dest => dest.StoNumberSender, opt => opt.MapFrom(src => src.STO_SENDER_NUMBER))
+                .ForMember(dest => dest.StoNumberReciever, opt => opt.MapFrom(src => src.STO_RECEIVER_NUMBER))
+                .ForMember(dest => dest.StoBNumber, opt => opt.MapFrom(src => src.STOB_NUMBER))
+                .ForMember(dest => dest.DnNumber, opt => opt.MapFrom(src => src.DN_NUMBER))
+                .ForMember(dest => dest.GiDate, opt => opt.MapFrom(src => src.GI_DATE))
+                .ForMember(dest => dest.GrDate, opt => opt.MapFrom(src => src.GR_DATE))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS_ID)))
                 ;
 

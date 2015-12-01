@@ -9,6 +9,8 @@ function generateTable(data) {
     console.log(data);
     var rc = '<table border="0" class="table table-bordered">' + generateHeaderTable();
     rc = rc + '<tbody><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>';
+    var docNote = data.DocumentNoted ? data.DocumentNoted : '';
+    var note = data.Noted ? data.Noted : '';
     
     if (data.IncomeList != null && data.IncomeList.length > 0)
     {
@@ -27,7 +29,7 @@ function generateTable(data) {
         '<td rowspan="' + rowCount + '">' + generateJenisHasilProduksi(data.ProductionSummaryByProdTypeList) + '</td>' +
         '<td rowspan="' + rowCount + '">' + generateJumlahHasilProduksi(data.ProductionSummaryByProdTypeList) + '</td>' +
         '<td rowspan="' + rowCount + '">' + (data.EndingBalance < 0 ? '-' : '') + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
-        '<td rowspan="' + rowCount + '">' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';
+        '<td rowspan="' + rowCount + '">' + (note + docNote) + '</td></tr>';
         /*loop record*/
         for (var i = 1; i < data.IncomeList.length; i++) {
             rowIndex = rowIndex + 1;
@@ -50,7 +52,7 @@ function generateTable(data) {
         '<td>' + generateJenisHasilProduksi(data.ProductionSummaryByProdTypeList) + '</td>' +
         '<td>' + generateJumlahHasilProduksi(data.ProductionSummaryByProdTypeList) + '</td>' +
         '<td>' + (data.EndingBalance < 0 ? '-' : '') + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
-        '<td>' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';
+        '<td>' + (note + docNote) + '</td></tr>';
         $('#IncomeListCount').val(0);
     }
     }
