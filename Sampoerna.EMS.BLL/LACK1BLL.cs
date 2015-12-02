@@ -2121,7 +2121,7 @@ namespace Sampoerna.EMS.BLL
                     Data = rc
                 };
             }
-
+            
             var uomData = _uomBll.GetAll();
             var joinedWithUomData = (from j in pbck1ProdConverter
                                      join u in uomData on j.CONVERTER_UOM_ID equals u.UOM_ID
@@ -2142,7 +2142,7 @@ namespace Sampoerna.EMS.BLL
                 ProdCode = item.PROD_CODE,
                 ProductType = item.PRODUCT_TYPE,
                 ProductAlias = item.PRODUCT_ALIAS,
-                Amount = item.CONVERTER_OUTPUT.HasValue ? item.CONVERTER_OUTPUT.Value : 0,
+                Amount = item.CONVERTER_OUTPUT.HasValue ? ((rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0) * item.CONVERTER_OUTPUT.Value) : 0,
                 UomId = item.CONVERTER_UOM_ID,
                 UomDesc = item.UOM_DESC
             }).ToList();
