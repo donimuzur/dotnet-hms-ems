@@ -2110,16 +2110,16 @@ namespace Sampoerna.EMS.BLL
                 });
 
             //just for testing, bypass this validation
-            //if (pbck1ProdConverter == null || pbck1ProdConverter.Count == 0)
-            //{
-            //    return new Lack1GeneratedOutput()
-            //    {
-            //        Success = false,
-            //        ErrorCode = ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter.ToString(),
-            //        ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter),
-            //        Data = rc
-            //    };
-            //}
+            if (pbck1ProdConverter == null || pbck1ProdConverter.Count == 0)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter),
+                    Data = rc
+                };
+            }
 
             var uomData = _uomBll.GetAll();
             var joinedWithUomData = (from j in pbck1ProdConverter
