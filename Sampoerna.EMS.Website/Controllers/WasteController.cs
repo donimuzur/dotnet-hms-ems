@@ -476,20 +476,20 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
 
                     var item = new WasteUploadItems();
-                   
+                    var brand = _brandRegistrationBll.GetByFaCode(dataRow[1], dataRow[2]);
 
                     item.CompanyCode = dataRow[0];
                     item.PlantWerks = dataRow[1];
                     item.FaCode = dataRow[2];
-                    item.BrandDescription = dataRow[3];
-                    item.MarkerRejectStickQty = dataRow[4];
-                    item.PackerRejectStickQty = dataRow[5];
-                    item.DustWasteGramQty = dataRow[6];
-                    item.FloorWasteGramQty = dataRow[7];
+                    item.BrandDescription = brand == null ? string.Empty : brand.BRAND_CE;
+                    item.MarkerRejectStickQty = dataRow[3];
+                    item.PackerRejectStickQty = dataRow[4];
+                    item.DustWasteGramQty = dataRow[5];
+                    item.FloorWasteGramQty = dataRow[6];
                     //item.DustWasteStickQty = dataRow[8];
                     //item.FloorWasteStickQty = dataRow[9];
-                    item.StampWasteQty = dataRow[8];
-                    item.WasteProductionDate = dataRow[9]; 
+                    item.StampWasteQty = dataRow[7];
+                    item.WasteProductionDate = dataRow[8]; 
                    
                     {
                         model.Add(item);

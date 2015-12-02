@@ -44,6 +44,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public List<Lack1GeneratedProductionSummaryByProdTypeDataDto> ProductionSummaryByProdTypeList { get; set; }
         public List<Lack1GeneratedSummaryProductionDataDto> SummaryProductionList { get; set; }
         public string Noted { get; set; }
+        public string DocumentNoted { get; set; }
         public string Lack1UomId { get; set; }
 
         public List<Lack1GeneratedTrackingDto> InvMovementAllList { get; set; }

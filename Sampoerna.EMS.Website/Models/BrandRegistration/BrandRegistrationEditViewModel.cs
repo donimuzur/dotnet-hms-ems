@@ -22,7 +22,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         [StringLength(18)]
         public string FaCode { get; set; }
 
-        [Required]
+        //[Required]
         public string PersonalizationCode { get; set; }
         public SelectList PersonalizationCodeList { get; set; }
         public string PersonalizationCodeDescription { get; set; }

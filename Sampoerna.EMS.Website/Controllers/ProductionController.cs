@@ -480,16 +480,16 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
                     var item = new ProductionUploadItems();
-
+                    var brand = _brandRegistrationBll.GetByFaCode(dataRow[1], dataRow[2]);
 
                     item.CompanyCode = dataRow[0];
                     item.PlantWerks = dataRow[1];
                     item.FaCode = dataRow[2];
-                    item.BrandDescription = dataRow[3];
-                    item.QtyPacked = dataRow[4];
-                    item.Qty = dataRow[5];
-                    item.Uom = dataRow[6];
-                    item.ProductionDate = dataRow[7];
+                    item.BrandDescription = brand == null ? string.Empty : brand.BRAND_CE;
+                    item.QtyPacked = dataRow[3];
+                    item.Qty = dataRow[4];
+                    item.Uom = dataRow[5];
+                    item.ProductionDate = dataRow[6];
 
                     model.Add(item);
 

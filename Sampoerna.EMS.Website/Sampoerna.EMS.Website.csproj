@@ -297,6 +297,7 @@
     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4cDashboardModel.cs" />
     <Compile Include="Models\CK4C\Ck4cDecreeDocModel.cs" />
+    <Compile Include="Models\CK4C\Ck4cExportItem.cs" />
     <Compile Include="Models\CK4C\Ck4CIndexDocumentListViewModel.cs" />
     <Compile Include="Models\CK4C\Ck4CSummaryReportsViewModel.cs" />
     <Compile Include="Models\CK5\CK5ExternalSupplierModel.cs" />
@@ -1276,6 +1277,8 @@
     <Content Include="Views\WasteStock\Create.cshtml" />
     <Content Include="Views\WasteStock\Edit.cshtml" />
     <Content Include="Views\WasteStock\Detail.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadDocumentFileButton.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadDocumentFileList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

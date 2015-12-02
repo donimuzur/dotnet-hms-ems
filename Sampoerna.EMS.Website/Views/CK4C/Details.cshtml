@@ -214,6 +214,10 @@
                     $('#DetailForm').submit();
                 }
             });
+
+            $('#btnExportCk4cItem').click(function (e) {
+                location.href = '@Url.Action("ExportXlsCk4cItem", "CK4C", new { id = @Model.Details.Ck4CId })';
+            });
         });
 
         function SetStatusGov() {
@@ -235,11 +239,11 @@
 
             if (poa == '')
             {
-                ajaxSelectNppbck({ nppbkcid: nppbkc }, url);
-
-                if(nppbkc == '')
-                {
+                if (plant != '') {
                     ajaxSelectNppbck({ plantId: plant }, urlPlant);
+                }
+                else {
+                    ajaxSelectNppbck({ nppbkcid: nppbkc }, url);
                 }
             }
         }
