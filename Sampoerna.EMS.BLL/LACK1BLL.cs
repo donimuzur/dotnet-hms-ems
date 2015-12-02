@@ -343,7 +343,7 @@ namespace Sampoerna.EMS.BLL
                 destination.Status = input.Detail.Status;
                 destination.GovStatus = input.Detail.GovStatus;
                 destination.DecreeDate = input.Detail.DecreeDate;
-                destination.DocumentNoted = input.Detail.DocumentNoted;
+                destination.DocumentNoted = generatedData.Data.DocumentNoted;
                 destination.Noted = input.Detail.Noted;
                 isModified = SetChangesHistory(origin, destination, input.UserId);
 
@@ -1270,6 +1270,7 @@ namespace Sampoerna.EMS.BLL
                 { "BEGINING_BALANCE", origin.BeginingBalance == data.BeginingBalance },
                 { "TOTAL_INCOME", origin.TotalIncome == data.TotalIncome },
                 { "USAGE", origin.Usage == data.Usage },
+                { "USAGE_TIS_TO_TIS", origin.UsageTisToTis == data.UsageTisToTis },
                 { "NOTED", origin.Noted == data.Noted },
                 { "DOCUMENT_NOTED", origin.DocumentNoted == data.DocumentNoted },
                 { "SUPPLIER_COMPANY_NAME", origin.SupplierCompanyName == data.SupplierCompanyName },
@@ -1361,6 +1362,12 @@ namespace Sampoerna.EMS.BLL
                         case "USAGE":
                             changes.OLD_VALUE = origin.Usage.ToString("N2");
                             changes.NEW_VALUE = data.Usage.ToString("N2");
+                            break;
+                        case "USAGE_TIS_TO_TIS":
+                            changes.OLD_VALUE = origin.UsageTisToTis.HasValue ? origin.UsageTisToTis.Value.ToString("N2") : "NULL";
+                            changes.NEW_VALUE = data.UsageTisToTis.HasValue
+                                ? data.UsageTisToTis.Value.ToString("N2")
+                                : "NULL";
                             break;
                         case "NOTED":
                             changes.OLD_VALUE = origin.Noted;
@@ -2074,16 +2081,16 @@ namespace Sampoerna.EMS.BLL
                 });
 
             //just for testing, bypass this validation
-            if (pbck1ProdConverter == null || pbck1ProdConverter.Count == 0)
-            {
-                return new Lack1GeneratedOutput()
-                {
-                    Success = false,
-                    ErrorCode = ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter.ToString(),
-                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter),
-                    Data = rc
-                };
-            }
+            //if (pbck1ProdConverter == null || pbck1ProdConverter.Count == 0)
+            //{
+            //    return new Lack1GeneratedOutput()
+            //    {
+            //        Success = false,
+            //        ErrorCode = ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter.ToString(),
+            //        ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter),
+            //        Data = rc
+            //    };
+            //}
 
             var uomData = _uomBll.GetAll();
             var joinedWithUomData = (from j in pbck1ProdConverter
