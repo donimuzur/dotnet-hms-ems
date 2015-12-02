@@ -420,6 +420,12 @@ namespace Sampoerna.EMS.Website.Controllers
             return new SelectList(dataSource, "WERKS", "DROPDOWNTEXTFIELD");
         }
 
+        private SelectList GetWasteAndReturnUomList()
+        {
+            var data = _uomBll.GetAll().Where(x => x.IS_DELETED != true && x.IS_EMS == true && (x.UOM_ID.ToLower() == "g" || x.UOM_DESC.ToLower() == "gram"));
+            return new SelectList(data, "UOM_ID", "UOM_DESC");
+        }
+
         private Lack1CreateViewModel InitialModel(Lack1CreateViewModel model)
         {
             model.MainMenu = _mainMenu;
@@ -432,8 +438,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ReceivePlantList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.NppbkcId);
             model.ExGoodTypeList = GetExciseGoodsTypeList(model.NppbkcId);
             model.SupplierList = GetSupplierPlantListByParam(model.NppbkcId, model.ExGoodsTypeId);
-            model.WasteUomList = GlobalFunctions.GetUomList(_uomBll);
-            model.ReturnUomList = GlobalFunctions.GetUomList(_uomBll);
+            model.WasteUomList = GetWasteAndReturnUomList();
+            model.ReturnUomList = GetWasteAndReturnUomList();
 
             model.MenuPlantAddClassCss = model.Lack1Level == Enums.Lack1Level.Plant ? "active" : "";
             model.MenuNppbkcAddClassCss = model.Lack1Level == Enums.Lack1Level.Nppbkc ? "active" : "";
@@ -920,8 +926,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ReceivePlantList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.NppbkcId);
             model.ExGoodTypeList = GetExciseGoodsTypeList(model.NppbkcId);
             model.SupplierList = GetSupplierPlantListByParam(model.NppbkcId, model.ExGoodsTypeId);
-            model.WasteUomList = GlobalFunctions.GetUomList(_uomBll);
-            model.ReturnUomList = GlobalFunctions.GetUomList(_uomBll);
+            model.WasteUomList = GetWasteAndReturnUomList();
+            model.ReturnUomList = GetWasteAndReturnUomList();
 
             return model;
 
