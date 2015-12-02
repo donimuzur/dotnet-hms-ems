@@ -629,19 +629,48 @@ namespace Sampoerna.EMS.Website.Controllers
             var summaryProductionList = ProcessSummaryProductionDetails(prodList);
             var totalSummaryProductionList = string.Join(Environment.NewLine,
                 summaryProductionList.Select(d => d.Amount.ToString("N2") + " " + d.UomDesc).ToList());
-            //for each Excisable Goods Type
+
+            //for each Excisable Goods Type per tis to tis and tis to fa
+            //process tis to fa first
+            var prodTisToFa = data.InventoryProductionTisToFa.ProductionData;
             var summaryProductionJenis = string.Join(Environment.NewLine,
-                prodList.Select(d => d.ProductAlias).ToList());
+                prodTisToFa.ProductionSummaryByProdTypeList.Select(d => d.ProductAlias).ToList());
             var summaryProductionAmount = string.Join(Environment.NewLine,
-                prodList.Select(d => d.TotalAmount.ToString("N2") + " " + d.UomDesc).ToList());
+                prodTisToFa.ProductionSummaryByProdTypeList.Select(d => d.TotalAmount.ToString("N2") + " " + d.UomDesc).ToList());
+
+            int loopCountForUsage = prodTisToFa.ProductionSummaryByProdTypeList.Count;
+            var usage = data.Usage.ToString("N2");
+
+            if (data.IsTisToTis)
+            {
+                //with tis to tis
+                //process tis to tis
+                var prodTisToTis = data.InventoryProductionTisToTis.ProductionData;
+                var summaryProductionJenisTisToTis = string.Join(Environment.NewLine,
+                    prodTisToTis.ProductionSummaryByProdTypeList.Select(d => d.ProductAlias).ToList());
+                var summaryProductionAmountTisToTis = string.Join(Environment.NewLine,
+                    prodTisToTis.ProductionSummaryByProdTypeList.Select(d => d.TotalAmount.ToString("N2") + " " + d.UomDesc).ToList());
+
+                summaryProductionJenis = summaryProductionJenis + Environment.NewLine + (!string.IsNullOrEmpty(summaryProductionJenisTisToTis) ? summaryProductionJenisTisToTis : "-");
+                summaryProductionAmount = summaryProductionAmount + Environment.NewLine + (!string.IsNullOrEmpty(summaryProductionAmountTisToTis) ? summaryProductionAmountTisToTis : "-");
+
+                for (var i = 0; i < loopCountForUsage; i++)
+                {
+                    usage = usage + Environment.NewLine;
+                }
+
+                usage = usage + (data.UsageTisToTis.HasValue ? data.UsageTisToTis.Value.ToString("N2") : "-");
+
+            }
 
             //set detail item
             if (data.Lack1IncomeDetail.Count <= 0) return dsReport;
 
             var totalAmount = data.Lack1IncomeDetail.Sum(d => d.AMOUNT);
-            var endingBalance = (data.BeginingBalance - data.Usage + data.TotalIncome);
+            var endingBalance = (data.BeginingBalance - (data.Usage + (data.UsageTisToTis.HasValue ? data.UsageTisToTis.Value  : 0)) + data.TotalIncome - data.ReturnQty);
             var noted = !string.IsNullOrEmpty(data.Noted) ? data.Noted.Replace("<br />", Environment.NewLine) : string.Empty;
             var docNoted = !string.IsNullOrEmpty(data.DocumentNoted) ? data.DocumentNoted.Replace("<br />", Environment.NewLine) : string.Empty;
+            
             foreach (var item in data.Lack1IncomeDetail)
             {
                 var detailRow = dsReport.Lack1Items.NewLack1ItemsRow();
@@ -649,11 +678,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 detailRow.Ck5RegNumber = item.REGISTRATION_NUMBER;
                 detailRow.Ck5RegDate = item.REGISTRATION_DATE.HasValue ? item.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy") : string.Empty;
                 detailRow.Ck5Amount = item.AMOUNT.ToString("N2");
-                detailRow.Usage = data.Usage.ToString("N2");
+                detailRow.Usage = usage;
                 detailRow.ListJenisBKC = summaryProductionJenis;
                 detailRow.ListJumlahBKC = summaryProductionAmount;
                 detailRow.EndingBalance = endingBalance.ToString("N2");
-                detailRow.Noted = noted + docNoted;
+                detailRow.Noted = noted + " " + docNoted;
                 detailRow.Ck5TotalAmount = totalAmount.ToString("N2");
                 detailRow.ListTotalJumlahBKC = totalSummaryProductionList;
 

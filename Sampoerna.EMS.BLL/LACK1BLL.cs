@@ -1149,6 +1149,35 @@ namespace Sampoerna.EMS.BLL
             dtToReturn.FusionSummaryProductionByProdTypeList =
                 GetProductionDetailSummaryByProdType(dtToReturn.Lack1ProductionDetail);
 
+            //process separate between tis to tis and tis to fa from production detail
+            if (dtToReturn.Lack1ProductionDetail != null && dtToReturn.Lack1ProductionDetail.Count > 0)
+            {
+                var tisToTisData =
+                    dtToReturn.Lack1ProductionDetail.Where(c => c.IS_TISTOTIS_DATA.HasValue && c.IS_TISTOTIS_DATA.Value)
+                        .ToList();
+
+                var tisToFaData =
+                    dtToReturn.Lack1ProductionDetail.Where(c => !c.IS_TISTOTIS_DATA.HasValue || !c.IS_TISTOTIS_DATA.Value)
+                        .ToList();
+
+                dtToReturn.InventoryProductionTisToFa = new Lack1InventoryAndProductionDto()
+                {
+                    ProductionData = new Lack1ProductionDto()
+                    {
+                        ProductionList = tisToFaData,
+                        ProductionSummaryByProdTypeList = GetProductionDetailSummaryByProdType(tisToFaData)
+                    }
+                };
+                dtToReturn.InventoryProductionTisToTis = new Lack1InventoryAndProductionDto()
+                {
+                    ProductionData = new Lack1ProductionDto()
+                    {
+                        ProductionSummaryByProdTypeList = GetProductionDetailSummaryByProdType(tisToTisData),
+                        ProductionList = tisToTisData
+                    }
+                };
+            }
+
             if (dtToReturn.Lack1Pbck1Mapping.Count > 0)
             {
                 var monthList = _monthBll.GetAll();

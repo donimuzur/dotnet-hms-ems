@@ -309,6 +309,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Lack1ProductionDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailDto>>(src.LACK1_PRODUCTION_DETAIL)))
                 .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => src.NOTED))
                 .ForMember(dest => dest.DocumentNoted, opt => opt.MapFrom(src => src.DOCUMENT_NOTED))
+                .ForMember(dest => dest.IsTisToTis, opt => opt.MapFrom(src => src.IS_TIS_TO_TIS))
                 ;
 
             Mapper.CreateMap<INVENTORY_MOVEMENT, Lack1GeneratedTrackingDto>().IgnoreAllNonExisting()
