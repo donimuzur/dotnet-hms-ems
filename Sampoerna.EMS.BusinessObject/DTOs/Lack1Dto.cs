@@ -45,6 +45,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal BeginingBalance { get; set; }
         public decimal TotalIncome { get; set; }
         public decimal Usage { get; set; }
+        public decimal? UsageTisToTis { get; set; }
         public decimal TotalProduction { get; set; }
 
         public string Lack1UomId { get; set; }
@@ -62,8 +63,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
             Lack1IncomeDetail = new List<Lack1IncomeDetailDto>();
             Lack1Pbck1Mapping = new List<Lack1Pbck1MappingDto>();
             Lack1Plant = new List<Lack1PlantDto>();
-            Lack1ProductionDetail = new List<Lack1ProductionDetailDto>();
-            Lack1ProductionDetailSummaryByProdType = new List<Lack1ProductionSummaryByProdTypeDto>();
+            InventoryProductionTisToFa = new Lack1InventoryAndProductionDto();
+            InventoryProductionTisToTis = new Lack1InventoryAndProductionDto();
         }
         public int Lack1Id { get; set; }
         public string Lack1Number { get; set; }
@@ -100,6 +101,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal BeginingBalance { get; set; }
         public decimal TotalIncome { get; set; }
         public decimal Usage { get; set; }
+        public decimal? UsageTisToTis { get; set; }
         public decimal EndingBalance { get; set; }
         public string Lack1UomId { get; set; }
         public string Lack1UomName { get; set; }
@@ -115,9 +117,12 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public List<Lack1Pbck1MappingDto> Lack1Pbck1Mapping { get; set; }
         public List<Lack1PlantDto> Lack1Plant { get; set; }
         public List<Lack1ProductionDetailDto> Lack1ProductionDetail { get; set; }
-        public List<Lack1ProductionSummaryByProdTypeDto> Lack1ProductionDetailSummaryByProdType { get; set; }
+        public Lack1InventoryAndProductionDto InventoryProductionTisToFa { get; set; }
+        public Lack1InventoryAndProductionDto InventoryProductionTisToTis { get; set; }
+        public List<Lack1ProductionSummaryByProdTypeDto> FusionSummaryProductionByProdTypeList { get; set; }
         public string Noted { get; set; }
         public string DocumentNoted { get; set; }
+        public bool IsTisToTis { get; set; }
     }
 
 }

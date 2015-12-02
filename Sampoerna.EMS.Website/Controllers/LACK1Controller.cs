@@ -420,6 +420,12 @@ namespace Sampoerna.EMS.Website.Controllers
             return new SelectList(dataSource, "WERKS", "DROPDOWNTEXTFIELD");
         }
 
+        private SelectList GetWasteAndReturnUomList()
+        {
+            var data = _uomBll.GetAll().Where(x => x.IS_DELETED != true && x.IS_EMS == true && (x.UOM_ID.ToLower() == "g" || x.UOM_DESC.ToLower() == "gram"));
+            return new SelectList(data, "UOM_ID", "UOM_DESC");
+        }
+
         private Lack1CreateViewModel InitialModel(Lack1CreateViewModel model)
         {
             model.MainMenu = _mainMenu;
@@ -432,8 +438,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ReceivePlantList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.NppbkcId);
             model.ExGoodTypeList = GetExciseGoodsTypeList(model.NppbkcId);
             model.SupplierList = GetSupplierPlantListByParam(model.NppbkcId, model.ExGoodsTypeId);
-            model.WasteUomList = GlobalFunctions.GetUomList(_uomBll);
-            model.ReturnUomList = GlobalFunctions.GetUomList(_uomBll);
+            model.WasteUomList = GetWasteAndReturnUomList();
+            model.ReturnUomList = GetWasteAndReturnUomList();
 
             model.MenuPlantAddClassCss = model.Lack1Level == Enums.Lack1Level.Plant ? "active" : "";
             model.MenuNppbkcAddClassCss = model.Lack1Level == Enums.Lack1Level.Nppbkc ? "active" : "";
@@ -625,23 +631,52 @@ namespace Sampoerna.EMS.Website.Controllers
             dsReport.Lack1.AddLack1Row(dMasterRow);
             
             //for total
-            var prodList = Mapper.Map<List<Lack1ProductionDetailItemSummaryByProdTypeModel>>(data.Lack1ProductionDetailSummaryByProdType);
+            var prodList = Mapper.Map<List<Lack1ProductionDetailItemSummaryByProdTypeModel>>(data.FusionSummaryProductionByProdTypeList);
             var summaryProductionList = ProcessSummaryProductionDetails(prodList);
             var totalSummaryProductionList = string.Join(Environment.NewLine,
                 summaryProductionList.Select(d => d.Amount.ToString("N2") + " " + d.UomDesc).ToList());
-            //for each Excisable Goods Type
+
+            //for each Excisable Goods Type per tis to tis and tis to fa
+            //process tis to fa first
+            var prodTisToFa = data.InventoryProductionTisToFa.ProductionData;
             var summaryProductionJenis = string.Join(Environment.NewLine,
-                prodList.Select(d => d.ProductAlias).ToList());
+                prodTisToFa.ProductionSummaryByProdTypeList.Select(d => d.ProductAlias).ToList());
             var summaryProductionAmount = string.Join(Environment.NewLine,
-                prodList.Select(d => d.TotalAmount.ToString("N2") + " " + d.UomDesc).ToList());
+                prodTisToFa.ProductionSummaryByProdTypeList.Select(d => d.TotalAmount.ToString("N2") + " " + d.UomDesc).ToList());
+
+            int loopCountForUsage = prodTisToFa.ProductionSummaryByProdTypeList.Count;
+            var usage = data.Usage.ToString("N2");
+
+            if (data.IsTisToTis)
+            {
+                //with tis to tis
+                //process tis to tis
+                var prodTisToTis = data.InventoryProductionTisToTis.ProductionData;
+                var summaryProductionJenisTisToTis = string.Join(Environment.NewLine,
+                    prodTisToTis.ProductionSummaryByProdTypeList.Select(d => d.ProductAlias).ToList());
+                var summaryProductionAmountTisToTis = string.Join(Environment.NewLine,
+                    prodTisToTis.ProductionSummaryByProdTypeList.Select(d => d.TotalAmount.ToString("N2") + " " + d.UomDesc).ToList());
+
+                summaryProductionJenis = summaryProductionJenis + Environment.NewLine + (!string.IsNullOrEmpty(summaryProductionJenisTisToTis) ? summaryProductionJenisTisToTis : "-");
+                summaryProductionAmount = summaryProductionAmount + Environment.NewLine + (!string.IsNullOrEmpty(summaryProductionAmountTisToTis) ? summaryProductionAmountTisToTis : "-");
+
+                for (var i = 0; i < loopCountForUsage; i++)
+                {
+                    usage = usage + Environment.NewLine;
+                }
+
+                usage = usage + (data.UsageTisToTis.HasValue ? data.UsageTisToTis.Value.ToString("N2") : "-");
+
+            }
 
             //set detail item
             if (data.Lack1IncomeDetail.Count <= 0) return dsReport;
 
             var totalAmount = data.Lack1IncomeDetail.Sum(d => d.AMOUNT);
-            var endingBalance = (data.BeginingBalance - data.Usage + data.TotalIncome);
+            var endingBalance = (data.BeginingBalance - (data.Usage + (data.UsageTisToTis.HasValue ? data.UsageTisToTis.Value  : 0)) + data.TotalIncome - data.ReturnQty);
             var noted = !string.IsNullOrEmpty(data.Noted) ? data.Noted.Replace("<br />", Environment.NewLine) : string.Empty;
             var docNoted = !string.IsNullOrEmpty(data.DocumentNoted) ? data.DocumentNoted.Replace("<br />", Environment.NewLine) : string.Empty;
+            
             foreach (var item in data.Lack1IncomeDetail)
             {
                 var detailRow = dsReport.Lack1Items.NewLack1ItemsRow();
@@ -649,11 +684,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 detailRow.Ck5RegNumber = item.REGISTRATION_NUMBER;
                 detailRow.Ck5RegDate = item.REGISTRATION_DATE.HasValue ? item.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy") : string.Empty;
                 detailRow.Ck5Amount = item.AMOUNT.ToString("N2");
-                detailRow.Usage = data.Usage.ToString("N2");
+                detailRow.Usage = usage;
                 detailRow.ListJenisBKC = summaryProductionJenis;
                 detailRow.ListJumlahBKC = summaryProductionAmount;
                 detailRow.EndingBalance = endingBalance.ToString("N2");
-                detailRow.Noted = noted + docNoted;
+                detailRow.Noted = noted + " " + docNoted;
                 detailRow.Ck5TotalAmount = totalAmount.ToString("N2");
                 detailRow.ListTotalJumlahBKC = totalSummaryProductionList;
 
@@ -815,7 +850,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     UserId = CurrentUser.USER_ID,
                     WorkflowActionType = Enums.ActionType.Modified,
-                    Detail = lack1Data
+                    Detail = lack1Data,
+                    IsTisToTis = model.IsTisToTisReport
                 };
 
                 var saveResult = _lack1Bll.SaveEdit(input);
@@ -833,6 +869,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 AddMessageInfo(saveResult.ErrorMessage, Enums.MessageInfoType.Error);
             }
+            //catch (Exception ex)//just for debugging, uncomment this line
             catch (Exception)
             {
                 model = InitEditList(model);
@@ -841,6 +878,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.CurrentMenu = PageInfo;
                 model = SetEditActiveMenu(model, model.Lack1Type);
                 AddMessageInfo("Save edit failed.", Enums.MessageInfoType.Error);
+                //AddMessageInfo("Save edit failed : " + ex.Message, Enums.MessageInfoType.Error);//just for debugging
                 return View(model);
             }
             model = InitEditList(model);
@@ -888,8 +926,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ReceivePlantList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.NppbkcId);
             model.ExGoodTypeList = GetExciseGoodsTypeList(model.NppbkcId);
             model.SupplierList = GetSupplierPlantListByParam(model.NppbkcId, model.ExGoodsTypeId);
-            model.WasteUomList = GlobalFunctions.GetUomList(_uomBll);
-            model.ReturnUomList = GlobalFunctions.GetUomList(_uomBll);
+            model.WasteUomList = GetWasteAndReturnUomList();
+            model.ReturnUomList = GetWasteAndReturnUomList();
 
             return model;
 
@@ -931,7 +969,8 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             model.Lack1Type = lack1Type;
-            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionSummaryByProdTypeList);
+
+            model.FusionSummaryProductionList = ProcessSummaryProductionDetails(model.FusionSummaryProductionByProdTypeList);
 
             SetEditActiveMenu(model, lack1Type);
 
@@ -1009,7 +1048,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             model.Lack1Type = lack1Type;
-            model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionSummaryByProdTypeList);
+            //model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionSummaryByProdTypeList);
 
             SetActiveMenu(model, lack1Type);
 

@@ -174,12 +174,39 @@ namespace Sampoerna.EMS.BLL
             data.RETURN_UOM = input.ReturnAmountUom;
 
             //set LACK1_TRACKING
-            var allTrackingList = generatedData.Data.InvMovementAllList;
-            allTrackingList.AddRange(generatedData.Data.InvMovementReceivingList);
-            data.LACK1_TRACKING = Mapper.Map<List<LACK1_TRACKING>>(allTrackingList);
+            var allTrackingList = new List<Lack1GeneratedTrackingDto>();  
+            if (generatedData.Data.InventoryProductionTisToFa.InvetoryMovementData != null)
+            {
+                //tis_to_fa
+                var toAddRange = generatedData.Data.InventoryProductionTisToFa.InvetoryMovementData.InvMovementAllList;
+                toAddRange.AddRange(generatedData.Data.InventoryProductionTisToFa.InvetoryMovementData.InvMovementReceivingList);
 
+                for (var i = 0; i < toAddRange.Count; i++)
+                {
+                    toAddRange[i].IsTisToTisData = false;
+                }
+                
+                allTrackingList = toAddRange;
+            }
+            if (input.IsTisToTis)
+            {
+                //Tis To Tis
+                if (generatedData.Data.InventoryProductionTisToTis.InvetoryMovementData != null)
+                {
+                    var toAddRange = generatedData.Data.InventoryProductionTisToTis.InvetoryMovementData.InvMovementAllList;
+                    toAddRange.AddRange(generatedData.Data.InventoryProductionTisToTis.InvetoryMovementData.InvMovementReceivingList);
+
+                    for (var i = 0; i < toAddRange.Count; i++)
+                    {
+                        toAddRange[i].IsTisToTisData = true;
+                    }
+
+                    allTrackingList.AddRange(toAddRange);
+                }
+            }
             
-
+            data.LACK1_TRACKING = Mapper.Map<List<LACK1_TRACKING>>(allTrackingList.Distinct().ToList());
+            
             data.LACK1_PLANT = null;
 
             //set LACK1_PLANT table
@@ -193,6 +220,38 @@ namespace Sampoerna.EMS.BLL
                 var plantFromMaster = _t001WServices.GetById(input.ReceivedPlantId);
                 data.LACK1_PLANT = new List<LACK1_PLANT>() { Mapper.Map<LACK1_PLANT>(plantFromMaster) };
             }
+
+            //set LACK1_PRODUCTION_DETAIL
+            data.LACK1_PRODUCTION_DETAIL = null;
+            var productionDetail = new List<Lack1GeneratedProductionDataDto>();
+
+            //tis to fa
+            if (generatedData.Data.InventoryProductionTisToFa.ProductionData != null)
+            {
+                var toAddRange = generatedData.Data.InventoryProductionTisToFa.ProductionData.ProductionList;
+                for (var i = 0; i < toAddRange.Count; i++)
+                {
+                    toAddRange[i].IsTisToTisData = false;
+                }
+                productionDetail.AddRange(toAddRange);
+            }
+
+            if (input.IsTisToTis)
+            {
+                //tis to tis
+                if (generatedData.Data.InventoryProductionTisToTis.ProductionData != null)
+                {
+                    var toAddRange = generatedData.Data.InventoryProductionTisToTis.ProductionData.ProductionList;
+                    for (var i = 0; i < toAddRange.Count; i++)
+                    {
+                        toAddRange[i].IsTisToTisData = false;
+                    }
+                    productionDetail.AddRange(toAddRange);
+                }
+            }
+
+            data.LACK1_PRODUCTION_DETAIL =
+                Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(productionDetail.Distinct().ToList());
 
             //generate new Document Number get from Sequence Number BLL
             var generateNumberInput = new GenerateDocNumberInput()
@@ -284,7 +343,7 @@ namespace Sampoerna.EMS.BLL
                 destination.Status = input.Detail.Status;
                 destination.GovStatus = input.Detail.GovStatus;
                 destination.DecreeDate = input.Detail.DecreeDate;
-                destination.DocumentNoted = input.Detail.DocumentNoted;
+                destination.DocumentNoted = generatedData.Data.DocumentNoted;
                 destination.Noted = input.Detail.Noted;
                 isModified = SetChangesHistory(origin, destination, input.UserId);
 
@@ -308,13 +367,71 @@ namespace Sampoerna.EMS.BLL
                 //set from input
                 dbData.LACK1_INCOME_DETAIL = Mapper.Map<List<LACK1_INCOME_DETAIL>>(generatedData.Data.IncomeList);
                 dbData.LACK1_PBCK1_MAPPING = Mapper.Map<List<LACK1_PBCK1_MAPPING>>(generatedData.Data.Pbck1List);
+                
+                //set LACK1_PRODUCTION_DETAIL
+                var productionDetail = new List<Lack1GeneratedProductionDataDto>();
+
+                //tis to fa
+                if (generatedData.Data.InventoryProductionTisToFa.ProductionData != null)
+                {
+                    var toAddRange = generatedData.Data.InventoryProductionTisToFa.ProductionData.ProductionList;
+                    for (var i = 0; i < toAddRange.Count; i++)
+                    {
+                        toAddRange[i].IsTisToTisData = false;
+                    }
+                    productionDetail.AddRange(toAddRange);
+                }
+
+                if (input.IsTisToTis)
+                {
+                    //tis to tis
+                    if (generatedData.Data.InventoryProductionTisToTis.ProductionData != null)
+                    {
+                        var toAddRange = generatedData.Data.InventoryProductionTisToTis.ProductionData.ProductionList;
+                        for (var i = 0; i < toAddRange.Count; i++)
+                        {
+                            toAddRange[i].IsTisToTisData = false;
+                        }
+                        productionDetail.AddRange(toAddRange);
+                    }
+                }
+
                 dbData.LACK1_PRODUCTION_DETAIL =
-                    Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(generatedData.Data.ProductionList);
+                    Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(productionDetail.Distinct().ToList());
 
                 //set LACK1_TRACKING
-                var allTrackingList = generatedData.Data.InvMovementAllList;
-                allTrackingList.AddRange(generatedData.Data.InvMovementReceivingList);
-                dbData.LACK1_TRACKING = Mapper.Map<List<LACK1_TRACKING>>(allTrackingList);
+                var allTrackingList = new List<Lack1GeneratedTrackingDto>();
+                if (generatedData.Data.InventoryProductionTisToFa.InvetoryMovementData != null)
+                {
+                    //tis_to_fa
+                    var toAddRange = generatedData.Data.InventoryProductionTisToFa.InvetoryMovementData.InvMovementAllList;
+                    toAddRange.AddRange(generatedData.Data.InventoryProductionTisToFa.InvetoryMovementData.InvMovementReceivingList);
+
+                    for (var i = 0; i < toAddRange.Count; i++)
+                    {
+                        toAddRange[i].IsTisToTisData = false;
+                    }
+
+                    allTrackingList = toAddRange;
+                }
+                if (input.IsTisToTis)
+                {
+                    //Tis To Tis
+                    if (generatedData.Data.InventoryProductionTisToTis.InvetoryMovementData != null)
+                    {
+                        var toAddRange = generatedData.Data.InventoryProductionTisToTis.InvetoryMovementData.InvMovementAllList;
+                        toAddRange.AddRange(generatedData.Data.InventoryProductionTisToTis.InvetoryMovementData.InvMovementReceivingList);
+
+                        for (var i = 0; i < toAddRange.Count; i++)
+                        {
+                            toAddRange[i].IsTisToTisData = true;
+                        }
+
+                        allTrackingList.AddRange(toAddRange);
+                    }
+                }
+
+                dbData.LACK1_TRACKING = Mapper.Map<List<LACK1_TRACKING>>(allTrackingList.Distinct().ToList());
 
                 //set LACK1_PLANT table
                 if (input.Detail.Lack1Level == Enums.Lack1Level.Nppbkc)
@@ -354,7 +471,7 @@ namespace Sampoerna.EMS.BLL
                 dbData.STATUS = Enums.DocumentStatus.Draft;
             }
 
-            if (dbData.GOV_STATUS.HasValue && dbData.GOV_STATUS.Value == Enums.DocumentStatusGovType2.Rejected)
+            if (dbData.GOV_STATUS != null && dbData.GOV_STATUS.Value == Enums.DocumentStatusGovType2.Rejected)
             {
                 //add history for changes status from rejected to draft
                 WorkflowStatusGovAddChanges(new Lack1WorkflowDocumentInput() { DocumentId = dbData.LACK1_ID, UserId = input.UserId }, dbData.GOV_STATUS, null);
@@ -392,7 +509,37 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData = _lack1Service.GetDetailsById(id);
             var rc = Mapper.Map<Lack1DetailsDto>(dbData);
-            rc.Lack1ProductionDetailSummaryByProdType = GetProductionDetailSummaryByProdType(rc.Lack1ProductionDetail);
+            rc.FusionSummaryProductionByProdTypeList = GetProductionDetailSummaryByProdType(rc.Lack1ProductionDetail);
+
+            //process separate between tis to tis and tis to fa from production detail
+            if (rc.Lack1ProductionDetail != null && rc.Lack1ProductionDetail.Count > 0)
+            {
+                var tisToTisData =
+                    rc.Lack1ProductionDetail.Where(c => c.IS_TISTOTIS_DATA.HasValue && c.IS_TISTOTIS_DATA.Value)
+                        .ToList();
+
+                var tisToFaData =
+                    rc.Lack1ProductionDetail.Where(c => !c.IS_TISTOTIS_DATA.HasValue || !c.IS_TISTOTIS_DATA.Value)
+                        .ToList();
+
+                rc.InventoryProductionTisToFa = new Lack1InventoryAndProductionDto()
+                {
+                    ProductionData = new Lack1ProductionDto()
+                    {
+                        ProductionList = tisToFaData,
+                        ProductionSummaryByProdTypeList = GetProductionDetailSummaryByProdType(tisToFaData)
+                    }
+                };
+                rc.InventoryProductionTisToTis = new Lack1InventoryAndProductionDto()
+                {
+                    ProductionData = new Lack1ProductionDto()
+                    {
+                        ProductionSummaryByProdTypeList = GetProductionDetailSummaryByProdType(tisToTisData),
+                        ProductionList = tisToTisData
+                    }
+                };
+            }
+
             return rc;
         }
 
@@ -999,8 +1146,37 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData = _lack1Service.GetDetailsById(id);
             var dtToReturn = Mapper.Map<Lack1PrintOutDto>(dbData);
-            dtToReturn.Lack1ProductionDetailSummaryByProdType =
+            dtToReturn.FusionSummaryProductionByProdTypeList =
                 GetProductionDetailSummaryByProdType(dtToReturn.Lack1ProductionDetail);
+
+            //process separate between tis to tis and tis to fa from production detail
+            if (dtToReturn.Lack1ProductionDetail != null && dtToReturn.Lack1ProductionDetail.Count > 0)
+            {
+                var tisToTisData =
+                    dtToReturn.Lack1ProductionDetail.Where(c => c.IS_TISTOTIS_DATA.HasValue && c.IS_TISTOTIS_DATA.Value)
+                        .ToList();
+
+                var tisToFaData =
+                    dtToReturn.Lack1ProductionDetail.Where(c => !c.IS_TISTOTIS_DATA.HasValue || !c.IS_TISTOTIS_DATA.Value)
+                        .ToList();
+
+                dtToReturn.InventoryProductionTisToFa = new Lack1InventoryAndProductionDto()
+                {
+                    ProductionData = new Lack1ProductionDto()
+                    {
+                        ProductionList = tisToFaData,
+                        ProductionSummaryByProdTypeList = GetProductionDetailSummaryByProdType(tisToFaData)
+                    }
+                };
+                dtToReturn.InventoryProductionTisToTis = new Lack1InventoryAndProductionDto()
+                {
+                    ProductionData = new Lack1ProductionDto()
+                    {
+                        ProductionSummaryByProdTypeList = GetProductionDetailSummaryByProdType(tisToTisData),
+                        ProductionList = tisToTisData
+                    }
+                };
+            }
 
             if (dtToReturn.Lack1Pbck1Mapping.Count > 0)
             {
@@ -1123,6 +1299,7 @@ namespace Sampoerna.EMS.BLL
                 { "BEGINING_BALANCE", origin.BeginingBalance == data.BeginingBalance },
                 { "TOTAL_INCOME", origin.TotalIncome == data.TotalIncome },
                 { "USAGE", origin.Usage == data.Usage },
+                { "USAGE_TIS_TO_TIS", origin.UsageTisToTis == data.UsageTisToTis },
                 { "NOTED", origin.Noted == data.Noted },
                 { "DOCUMENT_NOTED", origin.DocumentNoted == data.DocumentNoted },
                 { "SUPPLIER_COMPANY_NAME", origin.SupplierCompanyName == data.SupplierCompanyName },
@@ -1214,6 +1391,12 @@ namespace Sampoerna.EMS.BLL
                         case "USAGE":
                             changes.OLD_VALUE = origin.Usage.ToString("N2");
                             changes.NEW_VALUE = data.Usage.ToString("N2");
+                            break;
+                        case "USAGE_TIS_TO_TIS":
+                            changes.OLD_VALUE = origin.UsageTisToTis.HasValue ? origin.UsageTisToTis.Value.ToString("N2") : "NULL";
+                            changes.NEW_VALUE = data.UsageTisToTis.HasValue
+                                ? data.UsageTisToTis.Value.ToString("N2")
+                                : "NULL";
                             break;
                         case "NOTED":
                             changes.OLD_VALUE = origin.Noted;
@@ -1340,6 +1523,7 @@ namespace Sampoerna.EMS.BLL
 
         private Lack1GeneratedOutput GenerateLack1Data(Lack1GenerateDataParamInput input)
         {
+            var isWithTisToTisReport = input.IsTisToTis;
 
             var outValidation = ValidationOnGenerateLack1Data(ref input);
 
@@ -1349,7 +1533,8 @@ namespace Sampoerna.EMS.BLL
             {
                 Success = true,
                 ErrorCode = string.Empty,
-                ErrorMessage = string.Empty
+                ErrorMessage = string.Empty,
+                IsWithTisToTisReport = isWithTisToTisReport
             };
 
             var rc = new Lack1GeneratedDto
@@ -1360,6 +1545,7 @@ namespace Sampoerna.EMS.BLL
                 ExcisableGoodsType = input.ExcisableGoodsType,
                 ExcisableGoodsTypeDesc = input.ExcisableGoodsTypeDesc,
                 SupplierPlantId = input.SupplierPlantId,
+                FusionSummaryProductionList = new List<Lack1GeneratedSummaryProductionDataDto>(),
                 BeginingBalance = 0 //set default
             };
             
@@ -1413,44 +1599,57 @@ namespace Sampoerna.EMS.BLL
                 plantIdList = new List<string>() { input.ReceivedPlantId };
             }
 
-            //var invPlantListInput = new List<string> {input.SupplierPlantId};
+            //instantiate
+            rc.InventoryProductionTisToFa = new Lack1GeneratedInventoryAndProductionDto();
+            rc.InventoryProductionTisToTis = new Lack1GeneratedInventoryAndProductionDto();
+            
+            //Get InventoryMovement for Tis To Fa
+            InvMovementGetForLack1UsageMovementByParamOutput invMovementTisToFaOutput;
+            var outGenerateLack1InventoryMovementTisToFa = SetGenerateLack1InventoryMovement(rc, input, plantIdList, false, out invMovementTisToFaOutput);
+            if (!outGenerateLack1InventoryMovementTisToFa.Success) return outGenerateLack1InventoryMovementTisToFa;
 
-            //set InventoryMovement
-            InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput;
-            var outGenerateLack1InventoryMovement = SetGenerateLack1InventoryMovement(rc, input, plantIdList, out invMovementOutput);
-            if (!outGenerateLack1InventoryMovement.Success) return outGenerateLack1InventoryMovement;
+            //normal report, normal logic
+            if (invMovementTisToFaOutput.IncludeInCk5List.Count == 0)
+            {
+                //no usage receiving
+                var prodDataOutTisToFa = SetProductionListWithoutUsageReceiving(rc, input, plantIdList);
+                if (!prodDataOutTisToFa.Success) return prodDataOutTisToFa;
 
-            rc = outGenerateLack1InventoryMovement.Data;
+                rc = prodDataOutTisToFa.Data;
+            }
+            else
+            {
+                var prodDataOutTisToFa = SetProductionList(rc, input, plantIdList, invMovementTisToFaOutput);
+                if (!prodDataOutTisToFa.Success) return prodDataOutTisToFa;
 
-            //Set Production List
+                rc = prodDataOutTisToFa.Data;
+            }
+
+            rc.FusionSummaryProductionList.AddRange(rc.InventoryProductionTisToFa.ProductionData.SummaryProductionList);
+
             if (input.IsTisToTis)
             {
+
+                //Get InventoryMovement for Tis To Tis
+                InvMovementGetForLack1UsageMovementByParamOutput invMovementTisToTisOutput;
+                var outGenerateLack1InventoryMovementTisToTis = SetGenerateLack1InventoryMovement(rc, input, plantIdList, true, out invMovementTisToTisOutput);
+                if (!outGenerateLack1InventoryMovementTisToTis.Success) return outGenerateLack1InventoryMovementTisToTis;
+
+                //set Production tis to tis
                 //tis to tis, get from PBCK-1 PROD CONVERTER
                 var prodDataOut = SetProductionListForTisToTis(rc, input);
                 if (!prodDataOut.Success) return prodDataOut;
 
                 rc = prodDataOut.Data;
 
+                if (rc.InventoryProductionTisToTis.ProductionData != null)
+                    rc.FusionSummaryProductionList.AddRange(rc.InventoryProductionTisToTis.ProductionData.SummaryProductionList);
             }
-            else
+
+            //process FusionSummaryProductionList
+            if (rc.FusionSummaryProductionList != null && rc.FusionSummaryProductionList.Count > 0)
             {
-                //normal report, normal logic
-                if (invMovementOutput.IncludeInCk5List.Count == 0)
-                {
-                    //no usage receiving
-                    var prodDataOut = SetProductionListWithoutUsageReceiving(rc, input, plantIdList);
-                    if (!prodDataOut.Success) return prodDataOut;
-
-                    rc = prodDataOut.Data;
-                }
-                else
-                {
-                    var prodDataOut = SetProductionList(rc, input, plantIdList, invMovementOutput);
-                    if (!prodDataOut.Success) return prodDataOut;
-
-                    rc = prodDataOut.Data;
-                }
-                
+                rc.FusionSummaryProductionList = GetFusionSummaryGroupedProductionList(rc.FusionSummaryProductionList);
             }
             
             rc.PeriodMonthId = input.PeriodMonth;
@@ -1481,13 +1680,29 @@ namespace Sampoerna.EMS.BLL
 
             rc.DocumentNoted = string.Join(Environment.NewLine, noteTemp).Replace(Environment.NewLine, "<br />");
             rc.Noted = input.Noted;
-
-
-            rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - rc.TotalUsage - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
+            
+            rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - (rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0) ) - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
 
             oReturn.Data = rc;
 
             return oReturn;
+        }
+
+        private List<Lack1GeneratedSummaryProductionDataDto> GetFusionSummaryGroupedProductionList(List<Lack1GeneratedSummaryProductionDataDto> list)
+        {
+            if (list.Count <= 0) return new List<Lack1GeneratedSummaryProductionDataDto>();
+            var groupedData = list.GroupBy(p => new
+            {
+                p.UomId,
+                p.UomDesc
+            }).Select(g => new Lack1GeneratedSummaryProductionDataDto()
+            {
+                UomId = g.Key.UomId,
+                UomDesc = g.Key.UomDesc,
+                Amount = g.Sum(p => p.Amount)
+            });
+
+            return groupedData.ToList();
         }
 
         private string GeneratedNoteFormat(string prefix, decimal? nominal, string uomId)
@@ -1496,7 +1711,14 @@ namespace Sampoerna.EMS.BLL
                 return prefix + " : " + nominal.Value.ToString("N2") + " " + uomId;
             return "";
         }
-
+        /// <summary>
+        /// for normal LACK-1 Production Data
+        /// </summary>
+        /// <param name="rc"></param>
+        /// <param name="input"></param>
+        /// <param name="plantIdList"></param>
+        /// <param name="invMovementOutput"></param>
+        /// <returns></returns>
         private Lack1GeneratedOutput SetProductionList(Lack1GeneratedDto rc, Lack1GenerateDataParamInput input, List<string> plantIdList,
             InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput)
         {
@@ -1666,11 +1888,15 @@ namespace Sampoerna.EMS.BLL
                 productionList.Add(itemToInsert);
             }
 
-            rc.ProductionList = productionList;
-            rc.ProductionSummaryByProdTypeList = GetProductionGroupedByProdTypeList(productionList);
+            //set to Normal Data
+            rc.InventoryProductionTisToFa.ProductionData = new Lack1GeneratedProductionDto
+            {
+                ProductionList = productionList,
+                ProductionSummaryByProdTypeList = GetProductionGroupedByProdTypeList(productionList),
+                SummaryProductionList = GetSummaryGroupedProductionList(productionList)
+            };
 
             //calculate summary by UOM ID
-            rc.SummaryProductionList = GetSummaryGroupedProductionList(productionList);
 
             return new Lack1GeneratedOutput()
             {
@@ -1681,6 +1907,13 @@ namespace Sampoerna.EMS.BLL
             };
         }
 
+        /// <summary>
+        /// for Tis To Fa Data
+        /// </summary>
+        /// <param name="rc"></param>
+        /// <param name="input"></param>
+        /// <param name="plantIdList"></param>
+        /// <returns></returns>
         private Lack1GeneratedOutput SetProductionListWithoutUsageReceiving(Lack1GeneratedDto rc, Lack1GenerateDataParamInput input, List<string> plantIdList)
         {
             //get Ck4CItem
@@ -1839,13 +2072,14 @@ namespace Sampoerna.EMS.BLL
 
                 productionList.Add(itemToInsert);
             }
-
-            rc.ProductionList = productionList;
-            rc.ProductionSummaryByProdTypeList = GetProductionGroupedByProdTypeList(productionList);
-
-            //calculate summary by UOM ID
-            rc.SummaryProductionList = GetSummaryGroupedProductionList(productionList);
-
+            //set to Tis To Fa data
+            rc.InventoryProductionTisToFa.ProductionData = new Lack1GeneratedProductionDto
+            {
+                ProductionList = productionList,
+                ProductionSummaryByProdTypeList = GetProductionGroupedByProdTypeList(productionList),
+                SummaryProductionList = GetSummaryGroupedProductionList(productionList)//calculate summary by UOM ID
+            };
+            
             return new Lack1GeneratedOutput()
             {
                 Success = true,
@@ -1854,7 +2088,13 @@ namespace Sampoerna.EMS.BLL
                 Data = rc
             };
         }
-
+        
+        /// <summary>
+        /// For Tis To Tis Data
+        /// </summary>
+        /// <param name="rc"></param>
+        /// <param name="input"></param>
+        /// <returns></returns>
         private Lack1GeneratedOutput SetProductionListForTisToTis(Lack1GeneratedDto rc, Lack1GenerateDataParamInput input)
         {
 
@@ -1869,11 +2109,12 @@ namespace Sampoerna.EMS.BLL
                     PeriodYear = input.PeriodYear
                 });
 
+            //just for testing, bypass this validation
             if (pbck1ProdConverter == null || pbck1ProdConverter.Count == 0)
             {
                 return new Lack1GeneratedOutput()
                 {
-                    Success = true,
+                    Success = false,
                     ErrorCode = ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter.ToString(),
                     ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter),
                     Data = rc
@@ -1905,11 +2146,12 @@ namespace Sampoerna.EMS.BLL
                 UomDesc = item.UOM_DESC
             }).ToList();
 
-            rc.ProductionList = productionList;
-            rc.ProductionSummaryByProdTypeList = GetProductionGroupedByProdTypeList(productionList);
-
-            //calculate summary by UOM ID
-            rc.SummaryProductionList = GetSummaryGroupedProductionList(productionList);
+            rc.InventoryProductionTisToTis.ProductionData = new Lack1GeneratedProductionDto
+            {
+                ProductionList = productionList,
+                ProductionSummaryByProdTypeList = GetProductionGroupedByProdTypeList(productionList),
+                SummaryProductionList = GetSummaryGroupedProductionList(productionList)//calculate summary by UOM ID
+            };
 
             return new Lack1GeneratedOutput()
             {
@@ -2098,7 +2340,7 @@ namespace Sampoerna.EMS.BLL
         }
 
         private Lack1GeneratedOutput SetGenerateLack1InventoryMovement(Lack1GeneratedDto rc,
-            Lack1GenerateDataParamInput input, List<string> plantIdList, out InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput)
+            Lack1GenerateDataParamInput input, List<string> plantIdList, bool isForTisToTis, out InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput)
         {
             invMovementOutput = new InvMovementGetForLack1UsageMovementByParamOutput();
             var oRet = new Lack1GeneratedOutput()
@@ -2116,8 +2358,8 @@ namespace Sampoerna.EMS.BLL
                 NppbkcId = input.NppbkcId,
                 PeriodMonth = input.PeriodMonth,
                 PeriodYear = input.PeriodYear,
-                PlantIdList = plantIdList, 
-                IsTisToTis = input.IsTisToTis
+                PlantIdList = plantIdList,
+                IsTisToTis = isForTisToTis
             }, stoReceiverNumberList);
 
             if (getInventoryMovementByParamOutput.AllUsageList.Count <= 0)
@@ -2130,21 +2372,44 @@ namespace Sampoerna.EMS.BLL
                     Data = null
                 };
             }
-
+            decimal totalUsage;
             if (getInventoryMovementByParamOutput.IncludeInCk5List.Count == 0)
             {
-                rc.TotalUsage = 0;
+                totalUsage = 0;
             }
             else
             {
                 var totalUsageIncludeCk5 = (-1) * getInventoryMovementByParamOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
-                rc.TotalUsage = totalUsageIncludeCk5;
+                totalUsage = totalUsageIncludeCk5;
             }
-
-            rc.InvMovementReceivingCk5List = Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.IncludeInCk5List);
-            rc.InvMovementReceivingList = Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.ReceivingList);
-            rc.InvMovementAllList =
-                Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.AllUsageList);
+            if (isForTisToTis)
+            {
+                //set to tis to tis
+                rc.InventoryProductionTisToTis.InvetoryMovementData = new Lack1GeneratedInventoryMovementDto
+                {
+                    InvMovementReceivingCk5List =
+                        Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.IncludeInCk5List),
+                    InvMovementReceivingList =
+                        Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.ReceivingList),
+                    InvMovementAllList =
+                        Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.AllUsageList)
+                };
+                rc.TotalUsageTisToTis = totalUsage;
+            }
+            else
+            {
+                //set to tis to fa
+                rc.InventoryProductionTisToFa.InvetoryMovementData = new Lack1GeneratedInventoryMovementDto
+                {
+                    InvMovementReceivingCk5List =
+                        Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.IncludeInCk5List),
+                    InvMovementReceivingList =
+                        Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.ReceivingList),
+                    InvMovementAllList =
+                        Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.AllUsageList)
+                };
+                rc.TotalUsage = totalUsage;
+            }
             
             invMovementOutput = getInventoryMovementByParamOutput;
 
