@@ -2073,11 +2073,12 @@ namespace Sampoerna.EMS.BLL
                     PeriodYear = input.PeriodYear
                 });
 
+            //just for testing, bypass this validation
             if (pbck1ProdConverter == null || pbck1ProdConverter.Count == 0)
             {
                 return new Lack1GeneratedOutput()
                 {
-                    Success = true,
+                    Success = false,
                     ErrorCode = ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter.ToString(),
                     ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter),
                     Data = rc

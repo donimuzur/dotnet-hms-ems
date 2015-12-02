@@ -834,6 +834,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 AddMessageInfo(saveResult.ErrorMessage, Enums.MessageInfoType.Error);
             }
+            //catch (Exception ex)//just for debugging, uncomment this line
             catch (Exception)
             {
                 model = InitEditList(model);
@@ -842,6 +843,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.CurrentMenu = PageInfo;
                 model = SetEditActiveMenu(model, model.Lack1Type);
                 AddMessageInfo("Save edit failed.", Enums.MessageInfoType.Error);
+                //AddMessageInfo("Save edit failed : " + ex.Message, Enums.MessageInfoType.Error);//just for debugging
                 return View(model);
             }
             model = InitEditList(model);

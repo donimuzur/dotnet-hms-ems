@@ -353,6 +353,26 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Lack1Id, opt => opt.MapFrom(src => src.Detail.Lack1Id))
                 ;
 
+            Mapper.CreateMap<Lack1GeneratedInventoryAndProductionDto, Lack1InventoryAndProductionDto>()
+                .IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack1GeneratedProductionDto, Lack1ProductionDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack1GeneratedProductionSummaryByProdTypeDataDto, Lack1ProductionSummaryByProdTypeDto>()
+                .IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack1GeneratedProductionDataDto, Lack1ProductionDetailDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.AMOUNT, opt => opt.MapFrom(src => src.Amount))
+                .ForMember(dest => dest.PROD_CODE, opt => opt.MapFrom(src => src.ProdCode))
+                .ForMember(dest => dest.PRODUCT_TYPE, opt => opt.MapFrom(src => src.ProductType))
+                .ForMember(dest => dest.PRODUCT_ALIAS, opt => opt.MapFrom(src => src.ProductAlias))
+                .ForMember(dest => dest.UOM_ID, opt => opt.MapFrom(src => src.UomId))
+                .ForMember(dest => dest.FA_CODE, opt => opt.MapFrom(src => src.FaCode))
+                .ForMember(dest => dest.ORDR, opt => opt.MapFrom(src => src.Ordr))
+                .ForMember(dest => dest.IS_TISTOTIS_DATA, opt => opt.MapFrom(src => src.IsTisToTisData))
+                .ForMember(dest => dest.UOM_DESC, opt => opt.MapFrom(src => src.UomDesc))
+                ;
+
             Mapper.CreateMap<Lack1GeneratedDto, Lack1DetailsDto>().IgnoreAllNonExisting()
                .ForMember(dest => dest.Bukrs, opt => opt.MapFrom(src => src.CompanyCode))
                .ForMember(dest => dest.Butxt, opt => opt.MapFrom(src => src.CompanyName))
