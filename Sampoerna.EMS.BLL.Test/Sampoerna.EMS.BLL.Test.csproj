@@ -110,6 +110,7 @@
     <Compile Include="FakeStuffs.cs" />
     <Compile Include="GlobalFunctionTest.cs" />
     <Compile Include="HeaderFooterBLLTest.cs" />
+    <Compile Include="ProductionBLLTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Lack2BLLTests.cs" />
     <Compile Include="UserBLLTest.cs" />

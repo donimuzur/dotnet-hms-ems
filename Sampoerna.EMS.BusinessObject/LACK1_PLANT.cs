@@ -15,7 +15,7 @@ namespace Sampoerna.EMS.BusinessObject
     public partial class LACK1_PLANT
     {
         public long LACK1_PLANT_ID { get; set; }
-        public int LACK1_ID { get; set; }
+        public Nullable<int> LACK1_ID { get; set; }
         public string PLANT_ID { get; set; }
         public string PLANT_NAME { get; set; }
         public string PLANT_ADDRESS { get; set; }

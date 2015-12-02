@@ -1,0 +1,140 @@
+﻿@model Sampoerna.EMS.Website.Models.WasteStock.WasteStockFormViewModel
+@using Sampoerna.EMS.Website.Helpers
+
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Waste Stock</h3>
+            <div class="action-button">
+                <input type="button" value="Back" class="btn btn-grey" id="btnBack" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div role="tabpanel">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                    <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="information">
+                        <div class="tab-wrapper">
+
+                            <div class="white-wrapper">
+
+                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingOne">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                    Detail Waste Stock
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                            <div class="panel-body">
+                                                <form class="form-excise" role="form">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Plant</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBoxFor(model => model.PlantDescription, new { @class = "form-control", @disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Material</label>
+                                                                <div class="col-md-8">
+                                                                 @Html.TextBoxFor(model => model.MaterialNumber, new { @class = "form-control", @disabled = "disabled" })
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">UOM</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBoxFor(model => model.UomDescription, new { @class = "form-control", @disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Stock</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBoxFor(model => model.StockDisplay, new { @class = "form-control", @disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
+
+                                                    </div>
+
+
+                                                </form>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane" id="changes">
+                        <div class="table-container">
+                            @Html.Partial("_ChangesHistoryTable")
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+
+
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            $('#MenuWasteStock').addClass('active');
+
+            $('#btnBack').click(function (e) {
+                location.href = '@Url.Action("Index", "WasteStock")';
+            });
+
+
+        });
+
+
+
+
+
+    </script>
+}

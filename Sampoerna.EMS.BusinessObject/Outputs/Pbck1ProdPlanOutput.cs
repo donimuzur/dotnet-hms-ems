@@ -1,4 +1,6 @@
-﻿namespace Sampoerna.EMS.BusinessObject.Outputs
+﻿using System.Collections.Generic;
+
+namespace Sampoerna.EMS.BusinessObject.Outputs
 {
     public class Pbck1ProdPlanOutput
     {
@@ -15,5 +17,10 @@
         public string MonthName { get; set; }
         public string Message { get; set; }
         public bool IsValid { get; set; }
+    }
+
+    public class ValidatePbck1ProdPlanUploadOutput : BLLBaseOutput
+    {
+        public List<Pbck1ProdPlanOutput> Data { get; set; }
     }
 }

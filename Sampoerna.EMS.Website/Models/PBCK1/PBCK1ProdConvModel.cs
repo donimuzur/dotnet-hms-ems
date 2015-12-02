@@ -10,6 +10,7 @@
         public string ConverterOutput { get; set; }
         public string ConverterUomId { get; set; }
         public string ConverterUom { get; set; }
+        public string BrandCE { get; set; }
         public string Message { get; set; }
         public bool IsValid { get; set; }
     }

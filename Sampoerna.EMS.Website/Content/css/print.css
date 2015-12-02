@@ -104,6 +104,9 @@
 		display: block; 
 		page-break-before: always; 
 	}
+	.button-print{
+		display: none;
+	}
 	@page {
         size: landscape;   /* auto is the current printer page size */
         margin: 0mm;  /* this affects the margin in the printer settings */

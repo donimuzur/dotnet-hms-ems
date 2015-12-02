@@ -171,7 +171,7 @@
                      }
                  });
 
-            $('#ck5TableIntercompany .filters th').each(function () {
+            $('#ck5TableIntercompany .filters2 th').each(function () {
                 var idx = $(this).index();
                 if (idx != 0) {
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
@@ -179,7 +179,7 @@
             });
 
             table.columns().eq(0).each(function (colIdx) {
-                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                $('input', $('.filters2 th')[colIdx]).on('keyup change', function () {
                     table
                         .column(colIdx)
                         .search(this.value)

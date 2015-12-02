@@ -29,7 +29,7 @@ namespace Sampoerna.EMS.BLL
 
         public bool AllowEditDocument(WorkflowAllowEditAndSubmitInput input)
         {
-            if (input.DocumentStatus != Enums.DocumentStatus.Draft)
+            if (input.DocumentStatus != Enums.DocumentStatus.Draft && input.DocumentStatus != Enums.DocumentStatus.Rejected)
                 return false;
 
             if (input.CreatedUser != input.CurrentUser)
@@ -38,19 +38,18 @@ namespace Sampoerna.EMS.BLL
             return true;
         }
 
+
         public bool AllowEditDocumentPbck1(WorkflowAllowEditAndSubmitInput input)
         {
             bool isEditable = false;
 
-            if (input.DocumentStatus == Enums.DocumentStatus.Draft || input.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval)
+            if ((input.DocumentStatus == Enums.DocumentStatus.Rejected || input.DocumentStatus == Enums.DocumentStatus.Draft  
+                || input.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval || input.DocumentStatus == Enums.DocumentStatus.GovRejected) && input.CreatedUser == input.CurrentUser)
                 isEditable = true;
             else
                 isEditable = false;
 
-            if (input.CreatedUser == input.CurrentUser)
-                isEditable = true;
-            else
-                isEditable = false;
+            
 
             return isEditable;
         }
@@ -69,11 +68,15 @@ namespace Sampoerna.EMS.BLL
             var data = poaApprovalUserData.Where(c => c.NPPBKC_ID == nppbkcId).ToList();
 
             return data.Count > 0;
+        }
 
-            //var poaCreatedUserData = _poaMapBll.GetByUserLogin(createdUser);
-            //var poaApprovalUserData = _poaMapBll.GetByUserLogin(approvalUser);
-            //return poaCreatedUserData != null && poaApprovalUserData != null &&
-            //       poaApprovalUserData.NPPBKC_ID == poaCreatedUserData.NPPBKC_ID;
+        private bool IsOnePlant(string plantId, string approvalUser)
+        {
+            var listApprovalUser = _poabll.GetPoaActiveByPlantId(plantId);
+
+            var data = listApprovalUser.FirstOrDefault(c => c.POA_ID == approvalUser);
+
+            return data != null;
         }
 
         /// <summary>
@@ -85,8 +88,7 @@ namespace Sampoerna.EMS.BLL
         {
             if (input.CreatedUser == input.CurrentUser)
                 return false;
-
-
+            
             //need approve by POA only
             if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApproval)
             {
@@ -105,6 +107,24 @@ namespace Sampoerna.EMS.BLL
                         return false;
                 }
 
+                if (input.FormType == Enums.FormType.PBCK3)
+                {
+                    var rejectedSourcePoa = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(input.DocumentNumberSource);
+                    if (rejectedSourcePoa != "")
+                    {
+                        if (input.CurrentUser != rejectedSourcePoa)
+                            return false;
+                    }
+                }
+
+                //poa must be active
+                var poa = _poabll.GetActivePoaById(input.CurrentUser);
+                if (poa == null)
+                    return false;
+
+                if (input.PlantId != null)
+                    return IsOnePlant(input.PlantId, input.CurrentUser);
+                
                 return IsOneNppbkc(input.NppbkcId, input.CurrentUser);
             }
             
@@ -134,11 +154,15 @@ namespace Sampoerna.EMS.BLL
         {
             //if (input.CreatedUser == input.CurrentUser)
             //    return false;
+            var completedEdit = false;
+            if(input.FormType == Enums.FormType.PBCK1 && input.DocumentStatus == Enums.DocumentStatus.Completed){
+                completedEdit = true;
+            }
 
-            if (input.DocumentStatus != Enums.DocumentStatus.WaitingGovApproval)
+            if (input.DocumentStatus != Enums.DocumentStatus.WaitingGovApproval && !completedEdit)
                 return false;
 
-            if (input.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval)
+            if (input.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval || completedEdit)
             {
                 if (input.UserRole == Enums.UserRole.Manager)
                     return false;
@@ -182,7 +206,7 @@ namespace Sampoerna.EMS.BLL
         {
             if (input.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval)
             {
-                if (input.UserRole == Enums.UserRole.Manager)
+                if (input.UserRole == Enums.UserRole.Manager && input.ManagerApprove == input.CurrentUser)
                     return true;
             }
 
@@ -195,16 +219,26 @@ namespace Sampoerna.EMS.BLL
                 return false;
 
             return input.DocumentStatus == Enums.DocumentStatus.GICreated ||
-                   input.DocumentStatus == Enums.DocumentStatus.GICompleted;
+                   input.DocumentStatus == Enums.DocumentStatus.GICompleted ||
+                    input.DocumentStatus == Enums.DocumentStatus.WaitingForSealing;
         }
 
         public bool AllowGrCreated(WorkflowAllowApproveAndRejectInput input)
         {
             if (input.CreatedUser != input.CurrentUser)
                 return false;
-
+            
             return input.DocumentStatus == Enums.DocumentStatus.GRCreated ||
-                    input.DocumentStatus == Enums.DocumentStatus.GRCompleted;
+                    input.DocumentStatus == Enums.DocumentStatus.GRCompleted ||
+                    input.DocumentStatus == Enums.DocumentStatus.WaitingForUnSealing;
+        }
+
+        public bool AllowTfPostedPortToImporter(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.TFPosted;
         }
 
         public bool AllowCancelSAP(WorkflowAllowApproveAndRejectInput input)
@@ -220,5 +254,88 @@ namespace Sampoerna.EMS.BLL
             return true;
         }
 
+        public bool AllowAttachmentCompleted(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.DocumentStatus != Enums.DocumentStatus.Completed) return false;
+            if (input.CreatedUser == input.CurrentUser) return true;
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                return input.CurrentUser == input.PoaApprove;
+            }
+            return false;
+        }
+
+        public bool AllowAttachment(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.DocumentStatus <= Enums.DocumentStatus.WaitingGovApproval) return false;
+            if (input.CreatedUser == input.CurrentUser) return true;
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                return input.CurrentUser == input.PoaApprove;
+            }
+            return false;
+        }
+
+        public bool AllowStoGiCompleted(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.StoRecGICompleted;
+        }
+
+        public bool AllowStoGrCreated(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.StoRecGRCompleted;
+        }
+
+        public bool AllowGoodIssue(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            if (input.Ck5ManualType != Enums.Ck5ManualType.Trial)
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.GoodIssue;
+        }
+
+        public bool AllowDomesticAlcoholPurchaseOrder(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.PurchaseOrder;
+        }
+
+        public bool AllowDomesticAlcoholGoodIssue(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.GoodIssue;
+        }
+
+        public bool AllowDomesticAlcoholGoodReceive(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.GoodReceive;
+        }
+
+        public bool AllowGoodReceive(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser != input.CurrentUser)
+                return false;
+
+            if (input.Ck5ManualType != Enums.Ck5ManualType.Trial)
+                return false;
+
+            return input.DocumentStatus == Enums.DocumentStatus.GoodReceive;
+        }
     }
 }

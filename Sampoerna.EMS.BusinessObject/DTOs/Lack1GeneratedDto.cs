@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
@@ -11,6 +12,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
             Pbck1List = new List<Lack1GeneratedPbck1DataDto>();
             IncomeList = new List<Lack1GeneratedIncomeDataDto>();
             ProductionList = new List<Lack1GeneratedProductionDataDto>();
+            SummaryProductionList = new List<Lack1GeneratedSummaryProductionDataDto>();
         }
 
         public string CompanyCode { get; set; }
@@ -25,6 +27,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string SupplierCompanyName { get; set; }
         public string SupplierCompanyCode { get; set; }
+        public string SupplierPlantId { get; set; }
+        public string SupplierPlantName { get; set; }
         public string SupplierPlantAddress { get; set; }
         public int PeriodMonthId { get; set; }
         public string PeriodMonthName { get; set; }
@@ -37,8 +41,33 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal TotalProduction { get; set; }
         public decimal EndingBalance { get; set; }
         public List<Lack1GeneratedProductionDataDto> ProductionList { get; set; }
-        public List<Lack1GeneratedProductionDataDto> SummaryProductionList { get; set; }
+        public List<Lack1GeneratedProductionSummaryByProdTypeDataDto> ProductionSummaryByProdTypeList { get; set; }
+        public List<Lack1GeneratedSummaryProductionDataDto> SummaryProductionList { get; set; }
         public string Noted { get; set; }
+        public string DocumentNoted { get; set; }
+        public string Lack1UomId { get; set; }
+
+        public List<Lack1GeneratedTrackingDto> InvMovementAllList { get; set; }
+        public List<Lack1GeneratedTrackingDto> InvMovementReceivingCk5List { get; set; }
+        public List<Lack1GeneratedTrackingDto> InvMovementReceivingList { get; set; }
+        
+    }
+
+    public class Lack1GeneratedSummaryProductionDataDto
+    {
+        public decimal Amount { get; set; }
+        public string UomId { get; set; }
+        public string UomDesc { get; set; }
+    }
+
+    public class Lack1GeneratedProductionSummaryByProdTypeDataDto
+    {
+        public string ProdCode { get; set; }
+        public string ProductType { get; set; }
+        public string ProductAlias { get; set; }
+        public decimal TotalAmount { get; set; }
+        public string UomId { get; set; }
+        public string UomDesc { get; set; }
     }
 
     public class Lack1GeneratedPlantDto
@@ -57,12 +86,18 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     {
         public long Ck5Id { get; set; }
         public decimal Amount { get; set; }
+        public string StoReceiverNumber { get; set; }
+        public string StoSenderNumber { get; set; }
+        public Enums.CK5Type Ck5Type { get; set; }
         public string RegistrationNumber { get; set; }
         public DateTime? RegistrationDate { get; set; }
+        public string StringRegistrationDate { get; set; }
     }
 
     public class Lack1GeneratedProductionDataDto
     {
+        public string FaCode { get; set; }
+        public string Ordr { get; set; }
         public string ProdCode { get; set; }
         public string ProductType { get; set; }
         public string ProductAlias { get; set; }
@@ -71,4 +106,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string UomDesc { get; set; }
     }
 
+    public class Lack1GeneratedTrackingDto
+    {
+        public long INVENTORY_MOVEMENT_ID { get; set; }
+    }
+    
 }

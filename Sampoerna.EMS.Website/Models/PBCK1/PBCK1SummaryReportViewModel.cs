@@ -23,12 +23,14 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public int Pbck1Id { get; set; }
         public string Pbck1Number { get; set; }
         public long? Pbck1Reference { get; set; }
+        public string Pbck1ReferenceNumber { get; set; }
         public Enums.PBCK1Type Pbck1Type { get; set; }
         public DateTime PeriodFrom { get; set; }
         public DateTime? PeriodTo { get; set; }
         public DateTime? ReportedOn { get; set; }
         public string NppbkcId { get; set; }
         public string NppbkcKppbcId { get; set; }
+        public string NppbkcKppbcName { get; set; }
         public string NppbkcCompanyCode { get; set; }
         public string NppbkcCompanyName { get; set; }
         public string GoodType { get; set; }
@@ -40,6 +42,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string SupplierPhone { get; set; }
         public string SupplierNppbkcId { get; set; }
         public string SupplierKppbcId { get; set; }
+        //=== Fixing Bug PBCK1 No. 168 ===
+        public string SupplierKppbcName { get; set; }
+        //================================
         public string SupplierPlantWerks { get; set; }
         public DateTime? PlanProdFrom { get; set; }
         public DateTime? PlanProdTo { get; set; }
@@ -69,6 +74,11 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string LatestSaldoUomId { get; set; }
         public string LatestSaldoUomName { get; set; }
         public List<T001WModel> NppbkcPlants { get; set; }
+        public List<string> PoaList { get; set; }
+        public bool IsNppbkcImport { get; set; }
+        public bool IsExternalSupplier { get { return this.SupplierPlantWerks == null; } }
+        public string SupplierCompany { get; set; }
+        public List<Sampoerna.EMS.Website.Models.CK5.CK5Item> CK5List { get; set; }
     }
 
     public class Pbck1ExportSummaryReportsViewModel
@@ -88,6 +98,38 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public int? YearFrom { get; set; }
         public int? YearTo { get; set; }
         public string NppbkcId { get; set; }
+
+        public bool Pbck1Type { get; set; }
+        public bool PoaList { get; set; }
+        public bool SupplierPortName { get; set; }
+        public bool SupplierPlant { get; set; }
+        public bool GoodTypeDesc { get; set; }
+        public bool PlanProdFrom { get; set; }
+        public bool PlanProdTo { get; set; }
+        public bool SupplierPhone { get; set; }
+        public bool Reference { get; set; }
+        public bool LACKFrom { get; set; }
+        public bool LACKTo { get; set; }
+        public bool LatestSaldo { get; set; }
+        public bool PeriodFrom { get; set; }
+        public bool PeriodTo { get; set; }
+        public bool ReportedOn { get; set; }
+        public bool RequestQty { get; set; }
+        public bool StatusGov { get; set; }
+        public bool QtyApproved { get; set; }
+        public bool DecreeDate { get; set; }
+        public bool IsNppbkcImport { get; set; }
+        public bool IsExternalSupplier { get; set; }
+        public bool SupplierCompany { get; set; }
+        public bool ApprovedByPoaId { get; set; }
+        public bool ApprovedByManagerId { get; set; }
+        public bool LatestSaldoUomName { get; set; }
+        public bool RequestQtyUomName { get; set; }
+        public bool DocNumberCk5 { get; set; }
+        public bool StatusDoc { get; set; }
+        public bool GrandTotalExciseable { get; set; }
+
+        public string pbck1NumberCode { get; set; }
     }
 
     public class Pbck1FilterSummaryReportViewModel
@@ -104,6 +146,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public string NppbkcId { get; set; }
         public SelectList NppbkcIdList { get; set; }
+
+        public string pbck1Number { get; set; }
+        public SelectList pbck1NumberList { get; set; }
     }
 
     public class ExportSummaryDataModel
@@ -118,6 +163,34 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string OriginalAddress { get; set; }
         public string ExcGoodsAmount { get; set; }
         public string Status { get; set; }
+        public string Pbck1Type { get; set; }
+        public string SupplierPortName { get; set; }
+        public string SupplierPlant { get; set; }
+        public string GoodTypeDesc { get; set; }
+        public string PlanProdFrom { get; set; }
+        public string PlanProdTo { get; set; }
+        public string SupplierPhone { get; set; }
+        public string Reference { get; set; }
+        public string LACKFrom { get; set; }
+        public string LACKTo { get; set; }
+        public string LatestSaldo { get; set; }
+        public string PeriodFrom { get; set; }
+        public string PeriodTo { get; set; }
+        public string ReportedOn { get; set; }
+        public string RequestQty { get; set; }
+        public string StatusGov { get; set; }
+        public string QtyApproved { get; set; }
+        public string DecreeDate { get; set; }
+        public string PoaList { get; set; }
+        public string IsNppbkcImport { get; set; }
+        public string SupplierCompany { get; set; }
+        public string ApprovedByPoaId { get; set; }
+        public string ApprovedByManagerId { get; set; }
+        public string LatestSaldoUomName { get; set; }
+        public string RequestQtyUomName { get; set; }
+        public string DocNumberCk5 { get; set; }
+        public string StatusDocCk5 { get; set; }
+        public string GrandTotalExcisableCk5 { get; set; }
     }
 
 }

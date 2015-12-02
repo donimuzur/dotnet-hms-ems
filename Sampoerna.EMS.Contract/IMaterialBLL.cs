@@ -1,6 +1,7 @@
 ﻿using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Outputs;
+using Sampoerna.EMS.Core;
 using System.Collections.Generic;
 
 namespace Sampoerna.EMS.Contract
@@ -26,5 +27,14 @@ namespace Sampoerna.EMS.Contract
 
         ZAIDM_EX_MATERIAL GetByPlantIdAndStickerCode(string plantId, string stickerCode);
 
+        List<MaterialDto> GetMaterialByPlantId(string plantId);
+
+        List<MaterialDto> GetMaterialByPlantIdAndGoodTypeNotNull(string plantId);
+
+        MaterialDto GetMaterialByPlantIdAndMaterialNumber(string plantId, string materialNumber);
+
+        List<MaterialDto> GetMaterialByPlantIdAndGoodType(string plantId, int goodTypeGroup);
+
+        List<MATERIAL_UOM> GetMaterialUomByPlant(string plant);
     }
 }

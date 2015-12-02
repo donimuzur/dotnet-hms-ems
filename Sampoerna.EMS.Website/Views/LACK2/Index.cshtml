@@ -1,27 +1,30 @@
 ﻿@model Sampoerna.EMS.Website.Models.LACK2.Lack2IndexViewModel
 
 @{
-    ViewBag.Title = "LACK2";
+    ViewBag.Title = "LACK-2";
 }
 
 <div class="container-wrap title-page">
-        <div class="row">
-            <div class="col-sm-12">
-                <h3>@ViewBag.Title</h3>
-                <div class="action-button new">
-                    <a href="@Url.Action("Create","LACK2")">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>@ViewBag.Title</h3>
+            <div class="action-button new">
+                <a href="@Url.Action("Create","LACK2")">
+                    @if (Model.IsShowNewButton)
+                    {
                         <input type="button" class="btn btn-blue" value="NEW" />
-                    </a>
-                </div>
+                    }
+                </a>
             </div>
         </div>
     </div>
+</div>
 
 <div class="container-wrap">
     <div class="row">
         <div class="col-sm-12">
             <div class="white-wrapper">
-                @using (Ajax.BeginForm("FilterListByNppbkc", "LACK2",
+                @using (Ajax.BeginForm(Model.FilterActionController, "LACK2",
                         new AjaxOptions
                         {
                             HttpMethod = "POST",
@@ -42,14 +45,22 @@
 
                         <div class="col-md-4">
                             <div class="row">
-                                <label class="col-md-4">Reported On</label>
+                                <label class="col-md-4">Submission Date</label>
                                 <div class="col-md-8">
                                     <div class="input-group date">
-                                        <input type="text" class="form-control" name="SubmissionDate">
+                                        @Html.TextBoxFor(m => m.ReportedOn, new { @class = "form-control" })
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">POA</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.Poa, Model.PoaList, "All", new { @class = "form-control" })
                                 </div>
                             </div>
                         </div>
@@ -58,11 +69,9 @@
                         <div class="last-form">
                             <div class="col-md-4">
                                 <div class="row">
-                                    <label class="col-md-4">POA</label>
-                                    <div id="divPoaList" class="col-md-8 ui-widget">
-                                        <select id="SearchInput_POA" name="Poa" class="form-control selectreset">
-                                            <option value="">All</option>
-                                        </select>
+                                    <label class="col-md-4">Sender Plant </label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.PlantId, Model.PlantIdList, "All", new { @class = "form-control" })
                                     </div>
                                 </div>
                             </div>
@@ -70,7 +79,7 @@
                                 <div class="row">
                                     <label class="col-md-4">Creator</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(model => model.Creator, Model.CreatorList, "All", new { @class = "form-control selectreset" })
+                                        @Html.DropDownListFor(model => model.Creator, Model.CreatorList, "All", new { @class = "form-control" })
                                     </div>
                                 </div>
                             </div>
@@ -90,120 +99,77 @@
             </div>
 
             <div id="contenttable" class="table-container">
-                @Html.Partial("_Lack2Table")
+                @Html.Partial("_Lack2OpenDoc")
             </div>
 
         </div>
     </div>
 </div>
 
-    @section Scripts
+@section Scripts
 {
-        <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-        <script type="text/javascript">
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript">
+        
+        $('#MenuLack2OpenDocument').addClass('@Model.MenuLack2OpenDocument');
+        $('#MenuLack2CompletedDocument').addClass('@Model.MenuLack2CompletedDocument');
+        
+        $(document).ready(function () {
+            setupDataTables();
+        });
 
-            function setupDataTables() {
-                $('#btn-reset-filter').click(function () {
-                    $(".selectreset").val($(".selectreset option:first").val());
-                });
-                // DataTable
-                var table = null;
-                if ($.fn.dataTable.isDataTable('#lack1Table')) {
-                    table = $('#lack1Table').DataTable();
-                    table.destroy();
-                }
+        function setupDataTables() {
 
-                table = $('#lack1Table').DataTable(
-                    {
-                        "sDom": "Rlfrtip",
-                        "language": {
-                            "zeroRecords": "No records found",
-                            "infoFiltered": "(filtered from _MAX_ total records)"
-                        }
-                    });
+            $('#btn-reset-filter').click(function () {
+                $(".selectreset").val($(".selectreset option:first").val());
+                $('#ReportedOn').val('');
+            });
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#lack1Table')) {
+                table = $('#lack1Table').DataTable();
+                table.destroy();
+            }
 
-                // Setup - add a text input to each footer cell
-                $('#lack1Table .filters th').each(function () {
-                    var idx = $(this).index();
-                    if (idx != 0) {
-                        $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+            table = $('#lack1Table').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
                     }
                 });
 
-                // Apply the search
-                table.columns().eq(0).each(function (colIdx) {
-                    $('input', $('.filters th')[colIdx]).on('keyup change', function () {
-                        table
-                            .column(colIdx)
-                            .search(this.value)
-                            .draw();
-                    });
-                });
-
-                $('#Menulack1ListByNppbkc').addClass('active');
-            }
-
-            $("#NppbkcId").change(function () {
-                if ($("#NppbkcId").length) {
-                    var nbck = $(this).find("option:selected").text();
-                    $('#SearchInput_POA option').remove();
-                    $('#SearchInput_PlantId option').remove();
-                    console.log(nbck);
-                    if (nbck == '' || $(this).find("option:selected").val() == '') {
-                        $('#SearchInput_POA').append('<option value="">All</option>');
-                        $('#SearchInput_PlantId').append('<option value="">All</option>');
-                    } else {
-                        ajaxSelectNppbck('@Url.Action("PoaAndPlantListPartial", "LACK1")', { nppbkcId: nbck });
-                    }
+            // Setup - add a text input to each footer cell
+            $('#lack1Table .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
                 }
-
-
             });
 
-            $(document).ready(function () {
-                setupDataTables();
-            });
-
-            function ajaxSelectNppbck(url, formData) {
-                if (formData.nppbkcId) {
-                    $.ajax({
-                        type: 'POST',
-                        url: url,
-                        data: formData,
-                        success: function (data) {
-                            var list = data.PoaList;
-                            var listPlant = data.PlantIdList;
-                            $('#SearchInput_POA').append('<option value="">All</option>');
-                            $('#SearchInput_PlantId').append('<option value="">All</option>');
-                            if (list.length > 0) {
-                                for (var i = 0; i < list.length; i++) {
-                                    $('#SearchInput_POA').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
-
-                                }
-                            }
-
-                            if (listPlant.length > 0) {
-                                for (var i = 0; i < listPlant.length; i++) {
-                                    $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
-
-                                }
-                            }
-
-                        }
-                    });
-                }
-            }
-
-            function ReloadDataTables() {
-                $('.toggle-row').click(function () {
-
-                    var filter = $(".filters");
-                    filter.slideToggle(100).promise().done(function () {
-
-                    });
+            // Apply the search
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
                 });
-                setupDataTables();
-            }
-        </script>
-    }
+            });
+        }
+        
+        function ReloadDataTables() {
+            $('.toggle-row').click(function () {
+
+                var filter = $(".filters");
+                filter.slideToggle(100).promise().done(function () {
+
+                });
+            });
+            setupDataTables();
+        }
+
+    </script>
+}
 

@@ -18,6 +18,7 @@ namespace Sampoerna.EMS.BusinessObject
         {
             this.POA_MAP = new HashSet<POA_MAP>();
             this.T001W = new HashSet<T001W>();
+            this.USER_PLANT_MAP = new HashSet<USER_PLANT_MAP>();
         }
     
         public string NPPBKC_ID { get; set; }
@@ -38,6 +39,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
         public string MODIFIED_BY { get; set; }
         public Nullable<bool> IS_DELETED { get; set; }
+        public Nullable<bool> FLAG_FOR_LACK1 { get; set; }
     
         public virtual LFA1 LFA1 { get; set; }
         public virtual ICollection<POA_MAP> POA_MAP { get; set; }
@@ -45,5 +47,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual T001 T0011 { get; set; }
         public virtual ICollection<T001W> T001W { get; set; }
         public virtual ZAIDM_EX_KPPBC ZAIDM_EX_KPPBC { get; set; }
+        public virtual ICollection<USER_PLANT_MAP> USER_PLANT_MAP { get; set; }
     }
 }

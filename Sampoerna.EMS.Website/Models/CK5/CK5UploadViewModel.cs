@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models.CK5
 {
@@ -23,5 +24,11 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string Total { get; set; }
 
         public string MaterialDesc { get; set; }
+        
+        public decimal ExciseQty { get; set; }
+        public string ExciseUom { get; set; }
+
+        public Enums.ExGoodsType ExGoodsType { get; set; }
+        public long? CK5_MATERIAL_ID { get; set; }
     }
 }

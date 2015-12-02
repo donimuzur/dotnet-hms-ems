@@ -1,0 +1,5 @@
+DECLARE @SettingPageId int
+
+SELECT @SettingPageId = PAGE_ID FROM PAGE WHERE PAGE_NAME ='Setting'
+
+UPDATE PAGE SET PARENT_PAGE_ID = @SettingPageId WHERE PAGE_ID IN (28,32)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
@@ -42,6 +43,7 @@ namespace Sampoerna.EMS.XMLReader
                             item.NPPBKC_ID = exisitingPlant.NPPBKC_ID;
                             item.PHONE = exisitingPlant.PHONE;
                             item.SKEPTIS = exisitingPlant.SKEPTIS;
+                            item.NPPBKC_IMPORT_ID = exisitingPlant.NPPBKC_IMPORT_ID;
                             item.IS_MAIN_PLANT = exisitingPlant.IS_MAIN_PLANT;
                             item.CREATED_BY = exisitingPlant.CREATED_BY;
                             item.CREATED_DATE = exisitingPlant.CREATED_DATE;
@@ -69,8 +71,8 @@ namespace Sampoerna.EMS.XMLReader
              
         }
 
-      
-        public string InsertToDatabase()
+
+        public MovedFileOutput InsertToDatabase()
         {
           return _xmlMapper.InsertToDatabase<T001W>(Items);
         }

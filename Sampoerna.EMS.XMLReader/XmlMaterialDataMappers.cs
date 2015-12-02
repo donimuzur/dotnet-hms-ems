@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
@@ -74,7 +75,16 @@ namespace Sampoerna.EMS.XMLReader
                                 var exGoodType = plant.Element("Z1A_ZAIDM_EX_GOODTYP");
                                 if (exGoodType != null)
                                 {
-                                    item.EXC_GOOD_TYP = _xmlMapper.GetElementValue(exGoodType.Element("EXC_GOOD_TYP"));
+                                    var excGoodTypeTemp = _xmlMapper.GetElementValue(exGoodType.Element("EXC_GOOD_TYP"));
+                                    if (excGoodTypeTemp == null)
+                                    {
+                                        item.PLANT_DELETION = true;
+                                    }
+                                    else
+                                    {
+                                        item.EXC_GOOD_TYP = _xmlMapper.GetElementValue(exGoodType.Element("EXC_GOOD_TYP"));    
+                                    }
+                                    
 
                                 }
 
@@ -85,10 +95,9 @@ namespace Sampoerna.EMS.XMLReader
                                     var matUom = new MATERIAL_UOM();
                                     matUom.STICKER_CODE = stickerCode;
                                     matUom.WERKS = item.WERKS;
-                                    matUom.UMREZ =
-                                        Convert.ToDecimal(_xmlMapper.GetElementValue(element.Element("UMREZ")));
-                                    matUom.UMREN =
-                                        Convert.ToDecimal(_xmlMapper.GetElementValue(element.Element("UMREN")));
+                                    var umrez = Convert.ToDecimal(_xmlMapper.GetElementValue(element.Element("UMREZ")));
+                                    var umren = Convert.ToDecimal(_xmlMapper.GetElementValue(element.Element("UMREN")));
+                                    matUom.UMREN = umrez/umren;
                                     matUom.MEINH = _xmlMapper.GetElementValue(element.Element("MEINH"));
 
                                     item.MATERIAL_UOM.Add(matUom);
@@ -157,7 +166,7 @@ namespace Sampoerna.EMS.XMLReader
         }
 
 
-        public string InsertToDatabase()
+        public MovedFileOutput InsertToDatabase()
         {
           
             return _xmlMapper.InsertToDatabase<ZAIDM_EX_MATERIAL>(Items);

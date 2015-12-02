@@ -15,8 +15,8 @@ namespace Sampoerna.EMS.BusinessObject
     public partial class LACK1_INCOME_DETAIL
     {
         public long LACK1_INCOME_ID { get; set; }
-        public int LACK1_ID { get; set; }
-        public long CK5_ID { get; set; }
+        public Nullable<int> LACK1_ID { get; set; }
+        public Nullable<long> CK5_ID { get; set; }
         public decimal AMOUNT { get; set; }
         public string REGISTRATION_NUMBER { get; set; }
         public Nullable<System.DateTime> REGISTRATION_DATE { get; set; }

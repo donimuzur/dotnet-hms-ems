@@ -19,11 +19,15 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         /// optional if want to sorting from query
         /// </summary>
         public string SortOrderColumn { get; set; }
+
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
     }
 
     public class Pbck1GetOpenDocumentByParamInput : Pbck1GetByParamInput
     {
-        
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
     }
 
     public class Pbck1GetCompletedDocumentByParamInput : Pbck1GetByParamInput
@@ -40,6 +44,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         /// optional if want to sorting from query
         /// </summary>
         public string SortOrderColumn { get; set; }
+
+        public string pbck1Number { get; set; }
     }
 
     public class Pbck1GetMonitoringUsageByParamInput
@@ -69,7 +75,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string Comment { get; set; }
         public Enums.ActionType ActionType { get; set; }
         public string DocumentNumber { get; set; }
-
+        public Enums.DocumentStatus DocumentStatus { get; set; }
         public Pbck1WorkflowDocumentData AdditionalDocumentData { get; set; }
         
     }
@@ -77,7 +83,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     public class Pbck1WorkflowDocumentData
     {
         public decimal QtyApproved { get; set; }
-        public DateTime DecreeDate { get; set; }
+        public DateTime? DecreeDate { get; set; }
         public List<Pbck1DecreeDocDto> Pbck1DecreeDoc { get; set; }
     }
 
@@ -93,12 +99,34 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string NppbkcId { get; set; }
         public string ExcisableGoodsTypeId { get; set; }
         public string SupplierPlantId { get; set; }
+        public int PeriodMonth { get; set; }
+        public int PeriodYear { get; set; }
     }
 
     public class Pbck1GetSupplierPlantByParamInput
     {
         public string NppbkcId { get; set; }
         public string ExciseableGoodsTypeId { get; set; }
+    }
+
+    public class Pbck1ReferenceSearchInput {
+        public string NppbkcId { get; set; }
+        public DateTime PeriodFrom { get; set; }
+        public DateTime PeriodTo { get; set; }
+        public string SupllierNppbkcId { get; set; }
+        public string SupplierPlantWerks { get; set; }
+        public string SupplierPlant { get; set; }
+        public string GoodTypeId { get; set; }
+    }
+
+    public class Pbck1GetMonitoringMutasiByParamInput
+    {
+        /// <summary>
+        /// optional if want to sorting from query
+        /// </summary>
+        public string SortOrderColumn { get; set; }
+
+        public string pbck1Number { get; set; }
     }
 
 }

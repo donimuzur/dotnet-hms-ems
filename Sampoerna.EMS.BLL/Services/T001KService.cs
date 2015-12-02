@@ -26,5 +26,6 @@ namespace Sampoerna.EMS.BLL.Services
         {
             return _repository.Get(c => c.BWKEY == input, null, includeTables).FirstOrDefault();
         }
+
     }
 }

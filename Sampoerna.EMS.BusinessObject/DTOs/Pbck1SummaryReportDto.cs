@@ -19,6 +19,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? ReportedOn { get; set; }
         public string NppbkcId { get; set; }
         public string NppbkcKppbcId { get; set; }
+        public string NppbkcKppbcName { get; set; }
         public string NppbkcCompanyCode { get; set; }
         public string NppbkcCompanyName { get; set; }
         public string GoodType { get; set; }
@@ -59,6 +60,11 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string LatestSaldoUomId { get; set; }
         public string LatestSaldoUomName { get; set; }
         public List<T001WDto> NppbkcPlants { get; set; }
+        public bool IsNppbkcImport { get; set; }
+        public List<string> PoaList { get; set; }
 
+        public List<Pbck1SummaryReportDto> Pbck1Childs { get; set; }
+        public Pbck1SummaryReportDto Pbck1Parent { get; set; }
+        public List<CK5Dto> CK5List { get; set; }
     }
 }

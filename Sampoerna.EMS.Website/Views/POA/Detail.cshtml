@@ -5,7 +5,7 @@
     <script src="~/Scripts/js/scripts.min.js"></script>
     <script type="text/javascript">
         $('#MenuPOA').addClass('active');
-        var poaDelete = function () {
+        @*var poaDelete = function () {
                window.location = "@Url.Action("Delete", "POA", new {id = @Model.Detail.PoaId})";
            
 
@@ -13,7 +13,7 @@
         };
         var confirmDeletePOA = function () {
             $('#btn-delete-poa').click();
-        };
+        };*@
 
       
     </script>
@@ -29,10 +29,10 @@
                 <a href="@Url.Action("Index", "POA")">
                     <button class="btn btn-grey">Back</button>
                 </a>
-                @{
+                @*@{
                     var isActive = Model.Detail.Is_Active == "Yes" ? true : false;
                 }
-                    <a href="javascript:void(0);" onclick="confirmDeletePOA() " class="btn btn-danger">@(isActive == true ? "DEACTIVE": "ACTIVE")</a>
+                    <a href="javascript:void(0);" onclick="confirmDeletePOA() " class="btn btn-danger">@(isActive == true ? "DEACTIVE": "ACTIVE")</a>*@
                 
             </div>
         </div>
@@ -197,6 +197,7 @@
     </div>
 </div>
 <!--delete-->
+<!--
 <input id="btn-delete-poa" style="display: none" type="submit" class="btn btn-grey" data-toggle="modal" data-target=".delete-modal.poa" value="delete">
 <div class="modal ems-modal fade delete-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog modal-sm">
@@ -223,6 +224,6 @@
         </div>
     </div>
 </div>
-
+-->
 
 

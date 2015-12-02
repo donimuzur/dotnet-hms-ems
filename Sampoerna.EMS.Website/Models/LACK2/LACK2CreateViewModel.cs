@@ -1,11 +1,6 @@
-﻿using Sampoerna.EMS.Core;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using Sampoerna.EMS.Website.Models.WorkflowHistory;
 
 namespace Sampoerna.EMS.Website.Models.LACK2
 {
@@ -13,8 +8,25 @@ namespace Sampoerna.EMS.Website.Models.LACK2
     {
         public LACK2CreateViewModel()
         {
-            this.Lack2Model = new LACK2Model();
+            SubmissionDate = DateTime.Now;
         }
+        #region Field
+        public string Lack2Number { get; set; }
+        public int? PeriodMonth { get; set; }
+        public int? PeriodYear { get; set; }
+        public string SourcePlantId { get; set; }
+        public string ExcisableGoodsType { get; set; }
+        public string CompanyCode { get; set; }
+        public string NppbkcId { get; set; }
+        public string UserId { get; set; }
+        [Required]
+        public DateTime? SubmissionDate { get; set; }
+        public bool IsCreateNew { get; set; }
+        
+        #endregion
+
+        #region View Purpose
+
         public SelectList CompanyCodesDDL { get; set; }
        
         public SelectList NPPBKCDDL { get; set; }
@@ -29,19 +41,10 @@ namespace Sampoerna.EMS.Website.Models.LACK2
 
         public SelectList YearList { get; set; }
 
-        //public SelectList StatusDDL { get; set; }
+        public string PoaList { get; set; }
+        public string PoaListHidden { get; set; }
 
-        public Enums.UserRole UsrRole { get; set; }
+        #endregion
 
-        public LACK2Model Lack2Model { get; set; }
-
-        public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
-
-        public string FormStatus { get; set; }
-
-        public bool AllowApproveAndReject { get; set; }
-        public bool AllowGovApproveAndReject { get; set; }
-
-        public bool AllowManagerReject { get; set; }
     }
 }

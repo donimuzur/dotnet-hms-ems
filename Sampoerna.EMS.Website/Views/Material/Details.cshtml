@@ -2,23 +2,23 @@
 @{
     ViewBag.Title = "Detail";
 }
-    @Html.AntiForgeryToken()
-    <div class="container-wrap title-page">
-        <div class="row">
-            <div class="col-sm-12">
-                <h3> Material Master </h3>
-                <div class="action-button">
-                    <a href="@Url.Action("Index", "Material")" class="btn btn-grey">Back</a>
-                    @*@if (Model.IsAllowDelete)
+@Html.AntiForgeryToken()
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3> Material Master </h3>
+            <div class="action-button">
+                <a href="@Url.Action("Index", "Material")" class="btn btn-grey">Back</a>
+                @*@if (Model.IsAllowDelete)
                     {
                         <a href="javascript:void(0);" onclick="confirmDeleteData()" class="btn btn-danger">Delete</a>
                     }*@
-                </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="container-wrap">
+<div class="container-wrap">
     <div class="row">
         <div class="col-sm-12">
             <div role="tabpanel">
@@ -80,7 +80,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">Purchasing Group</label>
                                                             <div class="col-md-8">
-                                                                @Html.TextBox("purchasing-group",Model.PurchasingGroup, new { @class = "form-control", @disabled = "disabled" })
+                                                                @Html.TextBox("purchasing-group", Model.PurchasingGroup, new { @class = "form-control", @disabled = "disabled" })
 
                                                             </div>
                                                         </div>
@@ -89,8 +89,8 @@
                                                         <div class="row">
                                                             <label class="col-md-4">Plant</label>
                                                             <div class="col-md-8">
-                                                                @Html.TextBox("plant",Model.PlantName, new { @class = "form-control", @disabled = "disabled" })
-                                                               
+                                                                @Html.TextBox("plant", Model.PlantName, new { @class = "form-control", @disabled = "disabled" })
+
 
                                                             </div>
                                                         </div>
@@ -100,7 +100,7 @@
                                                             <label class="col-md-4">Base UOM(SAP)</label>
                                                             <div class="col-md-8">
                                                                 @Html.TextBox("base-uom", Model.UomName, new { @class = "form-control", @disabled = "disabled" })
-                                                                
+
 
                                                             </div>
                                                         </div>
@@ -111,7 +111,7 @@
                                                             <div class="col-md-8">
 
                                                                 @Html.TextBox("goodtyp", Model.GoodTypeName, new { @class = "form-control", @disabled = "disabled" })
-                                                               
+
 
 
                                                             </div>
@@ -134,7 +134,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">Tariff</label>
                                                             <div class="col-md-8">
-                                                                @Html.TextBoxFor(model => model.Tariff, new { @class = "form-control", @disabled = "disabled" })
+                                                                @Html.TextBoxFor(model => model.TariffStr, new { @class = "form-control", @disabled = "disabled" })
 
                                                             </div>
                                                         </div>
@@ -143,7 +143,7 @@
                                                         <div class="row">
                                                             <label class="col-md-4">HJE</label>
                                                             <div class="col-md-8">
-                                                                @Html.TextBoxFor(model => model.Hje, new { @class = "form-control", @disabled = "disabled" })
+                                                                @Html.TextBoxFor(model => model.HjeStr, new { @class = "form-control", @disabled = "disabled" })
 
                                                             </div>
                                                         </div>
@@ -198,20 +198,20 @@
                                                                 </tr>
 
                                                             </thead>
-                                                           
+
 
                                                             <tbody>
                                                                 @foreach (var item in Model.MaterialUom)
                                                                 {
                                                                     <tr>
-                                                                        
+
 
                                                                         <td>
                                                                             <span id="field1">@Html.DisplayFor(modelItem => item.Meinh)</span>
 
                                                                         </td>
-                                                                        <td>
-                                                                            <span id="field2">@Html.DisplayFor(modelItem => item.Umren)</span>
+                                                                        <td >
+                                                                            <span id="field2">@string.Format("{0:N4}", item.Umren)</span>
                                                                         </td>
                                                                     </tr>
                                                                 }
@@ -249,14 +249,14 @@
                                                             <div class="col-md-8">
                                                                 @if (Model.IsPlantDelete)
                                                                 {
-                                                                    @Html.CheckBox("cb-plant-del", new {@checked = "checked", disabled = "disabled"})
+                                                                    @Html.CheckBox("cb-plant-del", new { @checked = "checked", disabled = "disabled" })
 
                                                                 }
                                                                 else
                                                                 {
                                                                     @Html.CheckBox("cb-plant-del", new { disabled = "disabled" })
                                                                 }
-                                                              
+
 
                                                             </div>
                                                         </div>
@@ -301,7 +301,7 @@
         </div>
     </div>
 </div>
-    
+
 <!--delete-->
 <input id="btn-delete-material" style="display: none" type="submit" class="btn btn-grey" data-toggle="modal" data-target=".delete-modal.poa" value="delete">
 <div class="modal ems-modal fade delete-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
@@ -320,15 +320,16 @@
             </div>
         </div>
     </div>
-</div>    
+</div>
 
 
 @section scripts {
+    <script src="~/Scripts/thousand-separator.js"></script>
     <script type="text/javascript" language="javascript">
-        
-       
 
-        
+        $('#HjeStr').val(ThausandSeperator($('#HjeStr').val(), 2));
+        $('#TariffStr').val(ThausandSeperator($('#TariffStr').val(), 2));
+     
         var confirmDeleteData = function () {
             $('#btn-delete-material').click();
 

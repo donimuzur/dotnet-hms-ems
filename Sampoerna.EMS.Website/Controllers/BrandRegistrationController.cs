@@ -8,6 +8,7 @@ using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.BrandRegistration;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
+using System.Web;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -52,33 +53,29 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Index", model);
         }
 
-        public ActionResult Details(string plant, string facode)
+        public ActionResult Details(string plant, string facode,string stickercode)
         {
             var model = new BrandRegistrationDetailsViewModel();
-            
 
-            var dbBrand = _brandRegistrationBll.GetByIdIncludeChild(plant, facode);
+
+            var dbBrand = _brandRegistrationBll.GetById(plant, facode, stickercode);
             model = Mapper.Map<BrandRegistrationDetailsViewModel>(dbBrand);
             model.TariffValueStr = model.Tariff == null ? string.Empty : model.Tariff.ToString();
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
-            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.BrandRegistration, plant+facode));
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.BrandRegistration, plant+facode+stickercode));
+            model.PersonalizationCodeDescription = _masterBll.GetPersonalizationDescById(model.PersonalizationCode);
 
-            if (model.BoolIsDeleted.HasValue && model.BoolIsDeleted.Value)
+            
+            if (model.IsFromSap.HasValue && model.IsFromSap.Value)
             {
                 model.IsAllowDelete = false;
             }
             else
             {
-                if (model.IsFromSap.HasValue && model.IsFromSap.Value)
-                {
-                    model.IsAllowDelete = false;
-                }
-                else
-                {
-                    model.IsAllowDelete = true;
-                }
+                model.IsAllowDelete = true;
             }
+            
 
             return View(model);
         }
@@ -155,23 +152,26 @@ namespace Sampoerna.EMS.Website.Controllers
                 var dbBrand = new ZAIDM_EX_BRAND();
 
                 dbBrand = Mapper.Map<ZAIDM_EX_BRAND>(model);
-
                 if (dbBrand.STICKER_CODE.Length > 18)
                     dbBrand.STICKER_CODE = dbBrand.STICKER_CODE.Substring(0, 17);
                 dbBrand.CREATED_DATE = DateTime.Now;
+                dbBrand.CREATED_BY = CurrentUser.USER_ID;
                 dbBrand.IS_FROM_SAP = false;
                 dbBrand.HJE_IDR = model.HjeValueStr == null ? 0 : Convert.ToDecimal(model.HjeValueStr);
                 dbBrand.TARIFF = model.TariffValueStr == null ? 0 : Convert.ToDecimal(model.TariffValueStr);
                 dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
                 dbBrand.PRINTING_PRICE = model.PrintingPrice == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
+                dbBrand.STATUS = model.IsActive;
                 if (!string.IsNullOrEmpty(dbBrand.PER_CODE_DESC))
-                    dbBrand.PER_CODE_DESC = dbBrand.PER_CODE_DESC.Split('-')[1];
+                    dbBrand.PER_CODE_DESC = model.PersonalizationCodeDescription.Split('-')[1];
 
                 try
                 {
+                     AddHistoryCreate(dbBrand.WERKS, dbBrand.FA_CODE, dbBrand.STICKER_CODE); 
                     _brandRegistrationBll.Save(dbBrand);
-                    AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
-                       );
+                    
+
+                    AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
                     return RedirectToAction("Index");
                 }
                 catch
@@ -204,23 +204,26 @@ namespace Sampoerna.EMS.Website.Controllers
             return model;
         }
 
-        public ActionResult Edit(string plant, string facode)
+        public ActionResult Edit(string plant, string facode,string stickercode)
         {
            
             var model = new BrandRegistrationEditViewModel();
 
 
-            var dbBrand = _brandRegistrationBll.GetByIdIncludeChild(plant, facode);
+            var dbBrand = _brandRegistrationBll.GetById(plant, facode,stickercode);
           
             if (dbBrand.IS_DELETED.HasValue && dbBrand.IS_DELETED.Value)
-                return RedirectToAction("Details", "BrandRegistration", new { plant = dbBrand.WERKS, facode= dbBrand.FA_CODE });
+                return RedirectToAction("Details", "BrandRegistration", new { plant = dbBrand.WERKS, facode= dbBrand.FA_CODE, stickercode=dbBrand.STICKER_CODE });
 
             model = Mapper.Map<BrandRegistrationEditViewModel>(dbBrand);
             model.HjeValueStr = model.HjeValue == null ? string.Empty : model.HjeValue.ToString();
             model.TariffValueStr = model.Tariff == null ? string.Empty : model.Tariff.ToString();
             model.ConversionValueStr = model.Conversion == null ? string.Empty : model.Conversion.ToString();
             model.PrintingPriceValueStr = model.PrintingPrice == null ? string.Empty : model.PrintingPrice.ToString();
+            model.PersonalizationCodeDescription = _masterBll.GetPersonalizationDescById(model.PersonalizationCode);
             model = InitEdit(model);
+
+            model.IsAllowDelete = !model.IsFromSAP;
 
             return View(model);
         }
@@ -228,7 +231,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult Edit(BrandRegistrationEditViewModel model)
         {
-            var dbBrand = _brandRegistrationBll.GetById(model.PlantId, model.FaCode);
+            var dbBrand = _brandRegistrationBll.GetById(model.PlantId, model.FaCode,model.StickerCode);
             if (dbBrand == null)
             {
                 ModelState.AddModelError("BrandName", "Data Not Found");
@@ -244,6 +247,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbBrand.PRINTING_PRICE = model.PrintingPrice;
                 dbBrand.CONVERSION = model.Conversion;
                 dbBrand.CUT_FILLER_CODE = model.CutFillerCode;
+                dbBrand.STATUS = model.IsActive;
             }
             else
                 Mapper.Map(model, dbBrand);
@@ -251,9 +255,9 @@ namespace Sampoerna.EMS.Website.Controllers
             dbBrand.TARIFF = model.TariffValueStr == null ? 0 : Convert.ToDecimal(model.TariffValueStr);
             dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
             dbBrand.PRINTING_PRICE = model.PrintingPriceValueStr == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
-            dbBrand.CREATED_BY = CurrentUser.USER_ID;
-            if (!string.IsNullOrEmpty(dbBrand.PER_CODE_DESC))
-                dbBrand.PER_CODE_DESC = dbBrand.PER_CODE_DESC.Split('-')[1];
+            //dbBrand.CREATED_BY = CurrentUser.USER_ID;
+            if (!string.IsNullOrEmpty(model.PersonalizationCodeDescription))
+                dbBrand.PER_CODE_DESC = model.PersonalizationCodeDescription;
             try
             {
                 _brandRegistrationBll.Save(dbBrand);
@@ -317,7 +321,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (listChange.Value) continue;
                 var changes = new CHANGES_HISTORY();
                 changes.FORM_TYPE_ID = Enums.MenuList.BrandRegistration;
-                changes.FORM_ID = origin.WERKS + origin.FA_CODE;
+                changes.FORM_ID = origin.WERKS + origin.FA_CODE + origin.STICKER_CODE;
                 changes.FIELD_NAME = listChange.Key;
                 changes.MODIFIED_BY = CurrentUser.USER_ID;
                 changes.MODIFIED_DATE = DateTime.Now;
@@ -425,20 +429,25 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         } 
 
-        public ActionResult Delete(string plant, string facode)
+        public ActionResult Delete(string plant, string facode,string stickercode)
         {
-            AddHistoryDelete(plant, facode);
-            _brandRegistrationBll.Delete(plant, facode);
-
-            TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Deleted;
+            var decodeFacode = HttpUtility.UrlDecode(facode);
+            AddHistoryDelete(plant, decodeFacode, stickercode);
+            var isDeleted = _brandRegistrationBll.Delete(plant, decodeFacode, stickercode);
+            
+            if(isDeleted)
+                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Deleted;
+            else
+                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Updated;
+            
             return RedirectToAction("Index");
         }
 
-        private void AddHistoryDelete(string plant, string facode)
+        private void AddHistoryDelete(string plant, string facode, string stickercode)
         {
             var history = new CHANGES_HISTORY();
             history.FORM_TYPE_ID = Enums.MenuList.BrandRegistration;
-            history.FORM_ID = plant + facode;
+            history.FORM_ID = plant + facode + stickercode;
             history.FIELD_NAME = "IS_DELETED";
             history.OLD_VALUE = "false";
             history.NEW_VALUE = "true";
@@ -447,6 +456,20 @@ namespace Sampoerna.EMS.Website.Controllers
 
             _changesHistoryBll.AddHistory(history);
         }
+        private void AddHistoryCreate(string plant, string facode, string stickercode)
+        {
+            var history = new CHANGES_HISTORY();
+            history.FORM_TYPE_ID = Enums.MenuList.BrandRegistration;
+            history.FORM_ID = plant + facode + stickercode;
+            history.FIELD_NAME = "NEW_DATA";
+            history.OLD_VALUE = "";
+            history.NEW_VALUE = "";
+            history.MODIFIED_DATE = DateTime.Now;
+            history.MODIFIED_BY = CurrentUser.USER_ID;
+
+            _changesHistoryBll.AddHistory(history);
+        }
+
         [HttpPost]
         public JsonResult GetPlantByStickerCode(string mn)
         {

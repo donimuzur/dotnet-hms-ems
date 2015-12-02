@@ -44,8 +44,15 @@
             <th>Last Storage Location's CE Office</th>
             <th>Loading Port</th>
             <th>Loading Port Name</th>
+            <th>STO Sender Number </th>
+            <th>STO Reciever</th>
+            <th>STOB Number</th>
+            <th>DN Number</th>
+            <th>GR Date</th>
+            <th>GI Date</th>
+            <th>Status</th>
             
-        </tr>
+           </tr>
     </thead>
    
     <tbody>
@@ -85,10 +92,10 @@
                     <td>@Html.DisplayFor(model => item.OriginCompanyNppbkc)</td>
                     <td>@Html.DisplayFor(model => item.OriginCompanyAddress)</td>
                     <td>@Html.DisplayFor(model => item.DestinationCountry)</td>
-                    <td>@Html.DisplayFor(model => item.NumberBox)</td>
-                    <td>@Html.DisplayFor(model => item.ContainPerBox)</td>
+                    <td class="number">@Html.DisplayFor(model => item.NumberBox)</td>
+                    <td class="number">@Html.DisplayFor(model => item.ContainPerBox)</td>
 
-                    <td>@Html.DisplayFor(model => item.TotalOfExcisableGoods)</td>
+                    <td class="number">@Html.DisplayFor(model => item.TotalOfExcisableGoods)</td>
                     <td>@Html.DisplayFor(model => item.BanderolPrice)</td>
                     <td>@Html.DisplayFor(model => item.ExciseTariff)</td>
                     <td>@Html.DisplayFor(model => item.ExciseValue)</td>
@@ -97,7 +104,14 @@
                     <td>@Html.DisplayFor(model => item.DestCompanyNppbkc)</td>
                     <td>@Html.DisplayFor(model => item.DestCompanyName)</td>
                     <td>@Html.DisplayFor(model => item.LoadingPort)</td>
-                    <td class="last">@Html.DisplayFor(model => item.LoadingPortName)</td>
+                    <td>@Html.DisplayFor(model => item.LoadingPortName)</td>
+                    <td>@Html.DisplayFor(model => item.StoNumberSender)</td>
+                    <td>@Html.DisplayFor(model => item.StoNumberReciever)</td>
+                    <td>@Html.DisplayFor(model => item.StoBNumber)</td>
+                    <td>@Html.DisplayFor(model => item.DnNumber)</td>
+                    <td>@Html.DisplayFor(model => item.GrDate)</td>
+                    <td>@Html.DisplayFor(model => item.GiDate)</td>
+                    <td>@Html.DisplayFor(model => item.Status)</td>
                 </tr>
                 row = row + 1;
             }

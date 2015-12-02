@@ -95,5 +95,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public decimal Hje { get; set; }
         public decimal Tariff { get; set; }
         public decimal ExciseValue { get; set; }
+        public DateTime? SUBMISSION_DATE { get; set; }
+        public Enums.Ck5ManualType? CK5_MANUAL_TYPE { get; set; }
     }
 }

@@ -11,6 +11,18 @@
                 <h3>Brand Registration</h3>
                 <div class="action-button">
                     <button class="btn btn-blue">Save</button>
+                    @if (Model.IsAllowDelete)
+                    {
+                        if (Model.BoolIsDeleted.HasValue && Model.BoolIsDeleted.Value)
+                        {
+                            <a href="javascript:void(0);" onclick="confirmDeleteBrand('@Url.Encode(Model.FaCode)') " class="btn btn-danger">Un-Delete</a>
+                        }
+                        else
+                        {
+                            <a href="javascript:void(0);" onclick="confirmDeleteBrand('@Url.Encode(Model.FaCode)') " class="btn btn-danger">Delete</a>
+                        }
+
+                    }
                     <input type="button" value="Cancel" class="btn btn-grey" id="btnCancel" />
 
                 </div>
@@ -81,7 +93,14 @@
                                                             @if (Model.IsFromSAP)
                                                             {
                                                                 @Html.HiddenFor(model => model.PersonalizationCode)
-                                                                @Html.TextBox("percode", Model.PersonalizationCode + "-" + Model.PersonalizationCodeDescription, new { @class = "form-control", disabled = "disabled" })
+                                                                if (!String.IsNullOrEmpty(Model.PersonalizationCode) && !String.IsNullOrEmpty(Model.PersonalizationCodeDescription))
+                                                                 {
+                                                                     @Html.TextBox("percode", Model.PersonalizationCode + "-" + Model.PersonalizationCodeDescription, new {@class = "form-control", disabled = "disabled"})
+                                                                 }
+                                                                 else
+                                                                 {
+                                                                    @Html.TextBox("percode", "", new { @class = "form-control", disabled = "disabled" })
+                                                                 }
                                                             }
                                                             else
                                                             {
@@ -98,7 +117,14 @@
                                                             @if (Model.IsFromSAP)
                                                             {
                                                                 @Html.HiddenFor(model => model.ProductCode)
-                                                                @Html.TextBox("prodcode", Model.ProductCode + "-" + Model.ProductType + " [" + Model.ProductAlias + "]", new { @class = "form-control", disabled = "disabled" })
+                                                                if (!String.IsNullOrEmpty(Model.ProductCode) && !String.IsNullOrEmpty(Model.ProductType) && !String.IsNullOrEmpty(Model.ProductAlias))
+                                                                {
+                                                                    @Html.TextBox("prodcode", Model.ProductCode + "-" + Model.ProductType + " [" + Model.ProductAlias + "]", new {@class = "form-control", disabled = "disabled"})
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Html.TextBox("prodcode", "", new { @class = "form-control", disabled = "disabled" })
+                                                                }
                                                             }
                                                             else
                                                             {
@@ -179,8 +205,8 @@
                                                         <div class="col-md-8">
                                                             @if (Model.IsFromSAP)
                                                             {
-                                                                @Html.HiddenFor(model => model.SeriesCode)
-                                                                @Html.TextBox("seriescode", Model.SeriesCode + "-" + Model.SeriesValue, new { @class = "form-control", disabled = "disabled" })
+                                                                @Html.HiddenFor(model => model.SeriesId)
+                                                                @Html.TextBox("seriescode", Model.SeriesId + "-" + Model.SeriesValue, new { @class = "form-control", disabled = "disabled" })
                                                             }
                                                             else
                                                             {
@@ -404,7 +430,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Convertion</label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.ConversionValueStr, new { @class = "decimal form-control" })
+                                                            @Html.TextBoxFor(model => model.ConversionValueStr, new { @class = "decimalMaxFour form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -448,6 +474,25 @@
         </div>
     </div>
 
+    <!--delete-->
+    <input id="btn-delete-brand" style="display: none" type="submit" class="btn btn-grey" data-toggle="modal" data-target=".delete-modal.brand" value="delete">
+    <div class="modal ems-modal fade delete-modal brand" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Delete</h4>
+                </div>
+                <div class="modal-body">
+                    Are you sure?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="window.location.href = '@Url.Action("Delete", "BrandRegistration", new { plant = @Model.PlantId, facode = @Url.Encode(Model.FaCode), stickercode = @Url.Encode(Model.StickerCode) })'">Delete</button>
+                    <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 @section scripts {
     <script src="~/Scripts/thousand-separator.js"></script>
@@ -473,6 +518,9 @@
             });
         });
         
+        var confirmDeleteBrand = function () {
+            $('#btn-delete-brand').click();
+        };
 
         function PersonalizationCodeOnChange() {
             if ($("#PersonalizationCode").length) {

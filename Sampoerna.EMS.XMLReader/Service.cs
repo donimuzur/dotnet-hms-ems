@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 
 namespace Sampoerna.EMS.XMLReader
@@ -16,18 +17,28 @@ namespace Sampoerna.EMS.XMLReader
         private IXmlDataReader reader = null;
         private readonly string inboundPath = ConfigurationManager.AppSettings["XmlInboundPath"];
         private string[] xmlfiles = null;
-        public List<string> filesMoved;
+        public List<MovedFileOutput> filesMoved;
         public Service()
         {
             
             xmlfiles = Directory.GetFiles(inboundPath).OrderBy(x => x).ToArray();
-            filesMoved = new List<string>();
+            filesMoved = new List<MovedFileOutput>();
         }
 
         private IXmlDataReader XmlReaderFactoryDaily(string xmlfile)
         {
+            if (xmlfile.Contains("POA"))
+            {
+                if (xmlfile.Contains("POAMAP"))
+                {
+                    return new XmlPoaMapDataMapper(xmlfile);
+                }
+                
+                return new XmlPoaDataMapper(xmlfile);
+                
 
-            if (xmlfile.Contains("BRANDREG"))
+            }
+            else if (xmlfile.Contains("BRANDREG"))
             {
                 return new XmlBrandDataMapper(xmlfile);
             }
@@ -43,15 +54,27 @@ namespace Sampoerna.EMS.XMLReader
             {
                 return new XmlBOMDataMapper(xmlfile);
             }
+            else if (xmlfile.Contains("BLOCKSTOCK"))
+            {
+                return new XmlBlockStockDataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("PRDOUTPUT"))
+            {
+                return new XmlProdOutputDataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("CK1"))
+            {
+                return new XmlCK1DataMapper(xmlfile);
+            }
+            else if (xmlfile.Contains("PAYMENT"))
+            {
+                return new XmlPaymentDataMapper(xmlfile);
+            }
             return null;
         }
         private IXmlDataReader XmlReaderFactoryMonthly(string xmlfile)
         {
-            if (xmlfile.Contains("POA"))
-            {
-                return new XmlPoaDataMapper(xmlfile);
-            }
-            else if (xmlfile.Contains("COY"))
+            if (xmlfile.Contains("COY"))
             {
                 return new XmlCompanyDataMapper(xmlfile);
             }
@@ -230,7 +253,7 @@ namespace Sampoerna.EMS.XMLReader
                         if (reader != null)
                         {
                             var fileIsMoved = reader.InsertToDatabase();
-                            if (!string.IsNullOrEmpty(fileIsMoved))
+                            if (!string.IsNullOrEmpty(fileIsMoved.FileName) && fileIsMoved.IsError)
                             {
                                 filesMoved.Add(fileIsMoved);
                             }

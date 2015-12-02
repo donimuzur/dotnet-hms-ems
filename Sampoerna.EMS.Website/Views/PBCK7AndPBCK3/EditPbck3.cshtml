@@ -1,0 +1,129 @@
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck3ViewModel
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+@using (@Html.BeginForm("EditPbck3", "PBCK7AndPBCK3", FormMethod.Post, new { @id = "formPbck3Edit", @class = "form-excise", role = "form"}))
+{
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+               
+                <h3>PBCK-3</h3>
+                <label class="status">@Model.Pbck3StatusDescription</label>
+                @if (Model.FromPbck7)
+                {
+                    <h3>PBCK-7</h3>
+                    <label class="status">@Model.Pbck7StatusDescription</label>
+                }
+                else
+                {
+                    <h3>CK-5 MARKET RETURN</h3>
+                    <label class="status">@Model.Ck5FormViewModel.DocumentStatusDescription</label>
+                }
+                <div class="action-button">
+                    <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
+                    <input type="button" id="btnSave" class="btn btn-blue" value="Save" />
+                    <input type="button" class="btn btn-grey" value="Print Preview PBCK-3" onclick="printPreview('@Url.EncryptedAction("PrintPreviewPbck7", "Pbck7AndPbck3", new { id = @Model.Pbck3Id })')" />
+                    <input type="button" id="btnSubmitDocument" class="btn btn-blue" value="Submit" />
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+                    @Html.HiddenFor(x => x.CREATED_BY)
+                  @Html.HiddenFor(x => x.IsSaveSubmit)
+                    @Html.HiddenFor(x => x.FromPbck7)
+                    @Html.HiddenFor(x => x.Pbck3Id)
+                    @Html.HiddenFor(x => x.Pbck3Status)
+                    <!-- Nav tabs -->
+                    @Html.AntiForgeryToken()
+                    <ul role="tablist" class="nav nav-tabs">
+                        <li role="presentation" id="home-tab" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                      
+                            @Html.Partial("_HomeEditPbck3Pbck7")
+                        
+                        
+                        @Html.Partial("_Pbck3ChangeLog")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div id="pbck3Modal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3>Submit PBCK3</h3>
+            </div>
+            <div class="modal-body">
+                Submit Documents  ?
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="btnSubmitConfirm" class="btn btn-blue" value="Yes" />
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/Pbck3Script.js"></script>
+    <script type="text/javascript">
+        $('#MenuPBCK3Index').addClass('active');
+        
+        $('#btnBack').click(function (e) {
+            location.href = '@Url.Action("ListPbck3Index", "PBCK7AndPBCK3")';
+        });
+
+        $('#btn-changelog-export-xls').click(function () {
+            location.href = '@Url.Action("ExportXlsPbck3", "PBCK7AndPBCK3", new { pbckId = Model.Pbck3Id })';
+        });
+        
+        $("#btnSave").click(function () {
+            if (ValidatePbck3Form()) {
+                $('#formPbck3Edit').submit();
+            }
+           
+        });
+
+        $("#btnSubmitDocument").click(function() {
+
+            $('#pbck3Modal').modal('show');
+
+        });
+        
+        $("#btnSubmitConfirm").click(function () {
+            //if (ValidatePbck7Form()) {
+            $('#IsSaveSubmit').val('true');
+            $('#formPbck3Edit').submit();
+            //}
+        });
+        
+        function printPreview(url) {
+
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+        }
+
+    </script>
+}

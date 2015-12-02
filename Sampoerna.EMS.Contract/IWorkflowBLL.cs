@@ -23,6 +23,25 @@ namespace Sampoerna.EMS.Contract
 
         bool AllowGrCreated(WorkflowAllowApproveAndRejectInput input);
 
+        bool AllowTfPostedPortToImporter(WorkflowAllowApproveAndRejectInput input);
+
         bool AllowCancelSAP(WorkflowAllowApproveAndRejectInput input);
+
+        bool AllowAttachmentCompleted(WorkflowAllowApproveAndRejectInput input);
+
+        bool AllowStoGiCompleted(WorkflowAllowApproveAndRejectInput input);
+
+        bool AllowStoGrCreated(WorkflowAllowApproveAndRejectInput input);
+
+        bool AllowGoodIssue(WorkflowAllowApproveAndRejectInput input);
+
+        bool AllowGoodReceive(WorkflowAllowApproveAndRejectInput input);
+
+        bool AllowDomesticAlcoholGoodIssue(WorkflowAllowApproveAndRejectInput input);
+        bool AllowDomesticAlcoholGoodReceive(WorkflowAllowApproveAndRejectInput input);
+
+        bool AllowDomesticAlcoholPurchaseOrder(WorkflowAllowApproveAndRejectInput input);
+
+        bool AllowAttachment(WorkflowAllowApproveAndRejectInput input);
     }
 }

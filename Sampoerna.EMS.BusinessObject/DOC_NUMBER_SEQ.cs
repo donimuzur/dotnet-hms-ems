@@ -18,6 +18,7 @@ namespace Sampoerna.EMS.BusinessObject
         public long DOC_NUMBER_SEQ_LAST { get; set; }
         public Nullable<int> MONTH { get; set; }
         public Nullable<int> YEAR { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.FormType> FORM_TYPE_ID { get; set; }
     
         public virtual MONTH MONTH1 { get; set; }
     }

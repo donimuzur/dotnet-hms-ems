@@ -86,11 +86,18 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                     {
                         foreach (var file in _svc.filesMoved)
                         {
-                            string info = "<p>file move to archieve : " + file + "</p>";
-                            body += info;
+                            string info = String.Format("<p>XML file {0} : {1}</p>"
+                                ,file.IsError? "Error" : "Archieved"
+                                ,file.FileName);
+                            if (file.IsError)
+                            {
+                                body += info;
+                            }
+                                
                             logger.Info(info);
                         }
-                        logger.Error(EmailUtility.Email(body, null));
+                        if(!String.IsNullOrEmpty(body))
+                            logger.Error(EmailUtility.Email(body, null));
                     }
 
 

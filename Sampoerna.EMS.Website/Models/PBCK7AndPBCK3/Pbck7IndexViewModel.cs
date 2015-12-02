@@ -15,8 +15,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public string NppbkcId { get; set; }
         public string PlantId { get; set; }
 
-        [DisplayFormat(DataFormatString = "{dd MMM yyyy}")]
-        public DateTime ReportedOn { get; set; }
+       
+        public string ReportedOn { get; set; }
         public string Poa { get; set; }
         public string Creator { get; set; }
 
@@ -28,7 +28,10 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         //Enums
         public Enums.Pbck7Type Pbck7Type { get; set; }
+
+        public bool IsCompletedDoc { get; set; }
     }
+    
     
     public class DataListIndexPbck7
     {
@@ -37,7 +40,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public string NppbkcId { get; set; }
         public string PlantId { get; set; }
         public string Poa { get; set; }
-        public int Status { get; set; }
+        public string Status { get; set; }
+
+        public int Id { get; set; }
     }
 
   

@@ -80,6 +80,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string FinalPortId { get; set; }
 
         public string MonthYear { get; set; }
+        public string CK5Type { get; set; }
     }
 
     public class CK5ReportMaterialDto
@@ -102,5 +103,11 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string MaterialDescription { get; set; }
 
+    }
+
+    public class CK5ReportMaterialGroupUomDto
+    {
+        public string Uom { get; set; }
+        public decimal SumUom { get; set; }
     }
 }

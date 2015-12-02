@@ -64,10 +64,18 @@ namespace Sampoerna.EMS.Website.Models.Material
         }
 
         [Display(Name = "HJE")]
-        public decimal? Hje { get; set; }
+        public string HjeStr { get; set; }
+        public decimal? Hje 
+        {
+            get; set;
+        }
 
         [Display(Name = "Tariff")]
-        public decimal? Tariff { get; set; }
+        public string TariffStr { get; set; }
+        public decimal? Tariff
+        {
+            get; set;
+        }
 
         [Display(Name = "Tariff Currency")]
         public string Tariff_Curr { get; set; }

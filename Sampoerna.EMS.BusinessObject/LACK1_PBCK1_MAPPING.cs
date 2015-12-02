@@ -15,8 +15,8 @@ namespace Sampoerna.EMS.BusinessObject
     public partial class LACK1_PBCK1_MAPPING
     {
         public long LACK1_PBCK1_MAPPING_ID { get; set; }
-        public int LACK1_ID { get; set; }
-        public int PBCK1_ID { get; set; }
+        public Nullable<int> LACK1_ID { get; set; }
+        public Nullable<int> PBCK1_ID { get; set; }
     
         public virtual LACK1 LACK1 { get; set; }
         public virtual PBCK1 PBCK1 { get; set; }

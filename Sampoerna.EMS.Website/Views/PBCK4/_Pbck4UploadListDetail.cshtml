@@ -1,0 +1,75 @@
+﻿@model IEnumerable<Sampoerna.EMS.Website.Models.PBCK4.Pbck4UploadViewModel>
+
+    <table id="Ck5UploadTable" class="table table-bordered table-striped js-options-table">
+        <thead>
+            <tr>
+                <th>Action</th>
+                <th style="display: none"></th>
+                <th>FA Code</th>
+                <th>Sticker Code</th>
+                <th>CK-1 No</th>
+                <th>CK-1 Date</th>
+                <th>Series Code</th>
+                <th>Brand Name</th>
+                <th>Product Alias</th>
+                <th>Content</th>
+                <th>HJE</th>
+                <th>Tariff</th>
+                <th>Colour</th>
+                <th>Requested Qty</th>
+                <th>Total HJE</th>
+                <th>Total Stamps</th>
+                <th>No Pengawas</th>
+                <th>BACK-1 Qty</th>
+                <th>Remark</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int counter = 1;
+
+                if (Model != null)
+                {
+                    foreach (var row in Model)
+                    {
+                        <tr>
+                            <td class="action">
+                                <a href="#" onclick=" EditRow($(this)); " data-toggle=" tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                            </td>
+                            <td style="display: none">@counter</td>
+                            <td>@row.FaCode</td>
+                            <td>@row.StickerCode</td>
+                            <td>@row.Ck1No</td>
+                            <td>@row.Ck1Date</td>
+                            <td>@row.SeriesCode</td>
+                            <td>@row.BrandName</td>
+                            <td>@row.ProductAlias</td>
+                            <td>@row.Content</td>
+                            <td>@row.Hje</td>
+                            <td>@row.Tariff</td>
+                            <td>@row.Colour</td>
+
+                            <td>@row.ReqQty</td>
+                            <td>@row.TotalHje</td>
+                            <td>@row.TotalStamps</td>
+                            <td>@row.NoPengawas</td>
+                            <td>@row.ApprovedQty</td>
+                            <td>@row.Remark</td>
+
+                            <td>@row.Message</td>
+                            <td style="display: none">@row.CK1_ID</td>
+                            <td style="display: none">@row.BlockedStockRemaining</td>
+                            <td style="display: none">@row.PBCK4_ITEM_ID</td>
+                            <td style="display: none">@row.IsUpdated</td>
+                        </tr>
+
+                        counter = counter + 1;
+                    }
+                }
+            }
+        </tbody>
+    </table>
+
+
+

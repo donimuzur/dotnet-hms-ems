@@ -22,7 +22,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         [StringLength(18)]
         public string FaCode { get; set; }
 
-        [Required]
+        //[Required]
         public string PersonalizationCode { get; set; }
         public SelectList PersonalizationCodeList { get; set; }
         public string PersonalizationCodeDescription { get; set; }
@@ -133,5 +133,13 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public bool IsFromSAP { get; set; }
 
         public SelectList CutFillerCodeList { get; set; }
+
+        public bool IsAllowDelete { get; set; }
+
+        public string PlantName { get; set; }
+
+        public bool? BoolIsDeleted { get; set; }
+
+        public string IsDeleted { get; set; }
     }
 }

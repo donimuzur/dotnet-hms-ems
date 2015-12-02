@@ -17,14 +17,14 @@ namespace Sampoerna.EMS.Contract
         Pbck1Dto GetById(long id);
 
         SavePbck1Output Save(Pbck1SaveInput pbck1);
-
+        SavePbck1Output Save(Pbck1WorkflowDocumentInput input);
         void Delete(long id);
 
         string GetPbckNumberById(long id);
 
-        List<Pbck1ProdConverterOutput> ValidatePbck1ProdConverterUpload(List<Pbck1ProdConverterInput> inputs);
+        List<Pbck1ProdConverterOutput> ValidatePbck1ProdConverterUpload(List<Pbck1ProdConverterInput> inputs, string nppbkc, bool isCheckedPbck1Import);
 
-        List<Pbck1ProdPlanOutput> ValidatePbck1ProdPlanUpload(IEnumerable<Pbck1ProdPlanInput> inputs);
+        ValidatePbck1ProdPlanUploadOutput ValidatePbck1ProdPlanUpload(ValidatePbck1ProdPlanUploadParamInput input);
 
         void Pbck1Workflow(Pbck1WorkflowDocumentInput input);
 
@@ -43,11 +43,23 @@ namespace Sampoerna.EMS.Contract
 
         List<Pbck1Dto> GetPbck1CompletedDocumentByPlant(string plant);
 
-        List<Pbck1Dto> GetPbck1CompletedDocumentByPlantAndSubmissionDate(string plantId, DateTime? submissionDate, string destPlantId,List<string> goodtypes);
+        List<Pbck1Dto> GetPbck1CompletedDocumentByPlantAndSubmissionDate(string plantId, string plantNppbkcId, DateTime? submissionDate, string destPlantNppbkcId, List<string> goodtypes);
 
         List<ZAIDM_EX_GOODTYPCompositeDto> GetGoodsTypeByNppbkcId(string nppbkcId);
 
         List<T001WCompositeDto> GetSupplierPlantByParam(Pbck1GetSupplierPlantByParamInput input);
+
+        string checkUniquePBCK1(Pbck1SaveInput pbck1);
+        Pbck1Dto GetPBCK1Reference(Pbck1ReferenceSearchInput input);
+
+        List<CK5ExternalSupplierDto> GetExternalSupplierList(List<string> goodTypeList = null);
+
+        List<Pbck1Dto> GetPbck1CompletedDocumentByExternalAndSubmissionDate(string exSupplierId, string exSupplierNppbkcId,
+            DateTime? submissionDate, string destPlantNppbkcId, List<string> goodtypes);
+
+        List<Pbck1Dto> GetByRef(int pbckId);
+
+        List<Pbck1MonitoringMutasiDto> GetMonitoringMutasiByParam(Pbck1GetMonitoringMutasiByParamInput input);
 
     }
 }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sampoerna.EMS.BusinessObject.DTOs
+﻿namespace Sampoerna.EMS.BusinessObject.DTOs
 {
     public class UserPlantMapDto
     {
@@ -16,5 +10,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string UserName { get; set; }
 
         public string PlantName { get; set; }
+        public string NppbkcId { get; set; }
+
+        public string IsActive { get; set; }
     }
 }

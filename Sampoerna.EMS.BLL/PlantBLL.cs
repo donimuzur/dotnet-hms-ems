@@ -249,7 +249,8 @@ namespace Sampoerna.EMS.BLL
             Expression<Func<T001W, bool>> queryFilter = PredicateHelper.True<T001W>();
             if (!string.IsNullOrEmpty(nppbkcId))
             {
-                queryFilter = queryFilter.And(c => !string.IsNullOrEmpty(c.NPPBKC_ID) && c.NPPBKC_ID.Contains(nppbkcId));
+                
+                queryFilter = queryFilter.And(c => !string.IsNullOrEmpty(c.NPPBKC_ID) && (c.NPPBKC_ID.Contains(nppbkcId) || c.NPPBKC_IMPORT_ID.Contains(nppbkcId)));
             }
 
             var dbData = _repository.Get(queryFilter, null, includeTables);
@@ -257,16 +258,39 @@ namespace Sampoerna.EMS.BLL
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
-            return Mapper.Map<List<Plant>>(dbData);
+
+            var toReturn = Mapper.Map<List<Plant>>(dbData);
+            for (var i = 0; i < toReturn.Count; i++)
+            {
+                toReturn[i].IS_IMPORT_ID = toReturn[i].NPPBKC_IMPORT_ID == nppbkcId;
+            }
+
+            return toReturn;
         }
         
-        public T001WDto GetT001ById(string id)
+        public T001WDto GetT001WById(string id)
         {
             var dbData = _repository.Get(c => c.WERKS == id, null, includeTables).FirstOrDefault();
 
             return Mapper.Map<T001WDto>(dbData);
         }
-        
+
+        public T001WDto GetT001WByIdImport(string id)
+        {
+            var dbData = _repository.Get(c => c.WERKS == id && c.NPPBKC_IMPORT_ID != null, null, includeTables).FirstOrDefault();
+            T001WDto tempDto = Mapper.Map<T001WDto>(dbData);
+
+            tempDto.NPPBKC_ID = tempDto.NPPBKC_IMPORT_ID;
+            var nppbkcData = _nppbkcbll.GetById(tempDto.NPPBKC_ID);
+            if (nppbkcData != null)
+            {
+                tempDto.KppbcCity = nppbkcData.CITY;
+                tempDto.KppbcNo = nppbkcData.KPPBC_ID;    
+            }
+            
+            return tempDto;
+        }
+
         List<T001W> IPlantBLL.Get(string nppbkcId)
         {
             return _repository.Get(c => c.NPPBKC_ID == nppbkcId).ToList();
@@ -274,9 +298,9 @@ namespace Sampoerna.EMS.BLL
 
         public T001WDto GetMainPlantByNppbkcId(string nppbkcId)
         {
-            includeTables = "T001K, T001K.T001";
+            includeTables = "T001K, T001K.T001, ZAIDM_EX_NPPBKC";
             Expression<Func<T001W, bool>> queryFilter =
-                c => c.NPPBKC_ID == nppbkcId && c.IS_MAIN_PLANT.HasValue && c.IS_MAIN_PLANT.Value;
+                c => (c.NPPBKC_ID == nppbkcId || c.NPPBKC_IMPORT_ID == nppbkcId) && c.IS_MAIN_PLANT.HasValue && c.IS_MAIN_PLANT.Value;
             var dbData = _repository.Get(queryFilter, null, includeTables).FirstOrDefault();
             return Mapper.Map<T001WDto>(dbData);
 
@@ -291,7 +315,7 @@ namespace Sampoerna.EMS.BLL
                 
             //}
 
-            queryFilter = queryFilter.And(c => !string.IsNullOrEmpty(c.NPPBKC_ID) && c.NPPBKC_ID.Contains(nppbkcId));
+            queryFilter = queryFilter.And(c => !string.IsNullOrEmpty(c.NPPBKC_ID) && (c.NPPBKC_ID.Contains(nppbkcId) || c.NPPBKC_IMPORT_ID.Contains(nppbkcId)));
 
             var dbData = _repository.Get(queryFilter, null, includeTables);
             if (dbData == null)

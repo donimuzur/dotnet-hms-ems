@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Configuration;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Voxteneo.WebComponents.Logger;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.DAL;
@@ -21,7 +22,9 @@ namespace Sampoerna.EMS.XMLReader
         public string _xmlName = null;
         public ILogger logger;
         public IUnitOfWork uow;
-        public List<String> Errors; 
+        public List<String> Errors;
+        private int _errorCount;
+    
         public XmlDataMapper(string xmlName)
         {
             
@@ -30,18 +33,26 @@ namespace Sampoerna.EMS.XMLReader
             logger = new NLogLogger();
             uow = new SqlUnitOfWork(logger);
             Errors = new List<string>();
+            logger.Info(String.Format("Processing file {0}", _xmlName));
         }
 
+        public void AddError(int error)
+        {
+            this._errorCount += error;
+        }
 
         private XElement ReadXMLFile()
         {
-
+            
             if (_xmlName == null)
                 return null;
             if (!File.Exists(_xmlName))
                 return null;
+            
             return XElement.Load(_xmlName);
         }
+
+
 
         public XElement GetElement(string elementName)
         {
@@ -64,62 +75,104 @@ namespace Sampoerna.EMS.XMLReader
            
         }
 
-        public string InsertToDatabase<T>(List<T> items) where T : class
+        public MovedFileOutput InsertToDatabase<T>(List<T> items) where T : class
         {
             var repo = uow.GetGenericRepository<T>();
             var errorCount = 0;
             var itemToInsert = 0;
             var fileName = string.Empty;
+            var needMoved = true;
             try
             {
                 var existingData = repo.Get();
                 foreach (var item in existingData)
                 {
+                    if (item is PRODUCTION || item is INVENTORY_MOVEMENT)
+                        needMoved = false;
                     if (item is LFA1)
-                    {
                         continue;
-                    }
+
+                    //if (item is USER)
+                    //{
+                    //    var is_active = item.GetType().GetProperty("IS_ACTIVE");
+                    //    if (is_active != null)
+                    //    {
+                    //        item.GetType().GetProperty("IS_ACTIVE").SetValue(item, 0);
+                    //        repo.Update(item);
+                    //    }
+                    //}
+
+                    var isFromSap = item.GetType().GetProperty("IS_FROM_SAP") != null && (bool)item.GetType().GetProperty("IS_FROM_SAP").GetValue(item);
+                    if (!isFromSap)
+                        continue;
+
+
                     var is_deleted = item.GetType().GetProperty("IS_DELETED");
                     if (is_deleted != null)
                     {
                         item.GetType().GetProperty("IS_DELETED").SetValue(item, true);
                         repo.Update(item);
-                        uow.SaveChanges();
+                        //uow.SaveChanges();
                     }
 
-                   
+                    
+                    
+
                 }
+
                 foreach (var item in items)
                 {
                     itemToInsert++;
                     repo.InsertOrUpdate(item);
                     
-                    uow.SaveChanges();
+                    
                 }
+
+                if (Errors.Count == 0)
+                {
+                    uow.SaveChanges();    
+                }
+                
               
             }
-            
             catch (Exception ex)
             {
                 errorCount++;
-                logger.Error(ex.ToString());
+                logger.Error(ex.Message);
                 this.Errors.Add(ex.Message);
-                uow.RevertChanges();
+                //uow.RevertChanges();
             }
-            if (errorCount == 0 && itemToInsert > 0)
+            //if (errorCount == 0 && itemToInsert > 0)
+            //{
+            //    fileName = MoveFile();
+            //    return fileName;
+            //}
+            if (errorCount == 0 && itemToInsert > 0 && Errors.Count == 0)
             {
                 fileName = MoveFile();
-                return fileName;
+                return new MovedFileOutput(fileName);
             }
-            return null;
+            fileName = MoveFile(true,needMoved);
+            return new MovedFileOutput(fileName, true);
+
+            
 
         }
         public void InsertOrUpdate<T>(T entity) where T: class 
         {
             var repo = uow.GetGenericRepository<T>();
-
-            repo.InsertOrUpdate(entity);
-            uow.SaveChanges();
+            try
+            {
+                repo.InsertOrUpdate(entity);
+                uow.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex.ToString());
+                uow.RevertChanges();
+                
+            }
+            
 
 
         }
@@ -145,19 +198,27 @@ namespace Sampoerna.EMS.XMLReader
             MoveFile();
         }
         
-        public string MoveFile()
+        public string MoveFile(bool isError=false,bool isNeedMoving = true)
         {
             var filenameMoved = string.Empty;
             try
             {
                 string sourcePath = _xmlName;
-                string archievePath = ConfigurationManager.AppSettings["XmlArchievePath"];
+                string archievePath;
+                if (!isError)
+                {
+                    archievePath = ConfigurationManager.AppSettings["XmlArchievePath"];
+                }
+                else
+                {
+                    archievePath = ConfigurationManager.AppSettings["XmlErrorPath"];
+                }
                 var sourcefileName = Path.GetFileName(sourcePath);
                 var destPath = Path.Combine(archievePath, sourcefileName);
                 if (File.Exists(destPath))
                     return null;
-
-                File.Move(sourcePath, destPath);
+                if(isNeedMoving)
+                    File.Move(sourcePath, destPath);
                 return sourcefileName;
             }
             catch (Exception ex)
@@ -192,8 +253,10 @@ namespace Sampoerna.EMS.XMLReader
         }
         public string GetElementValue(XElement element)
         {
+            
             if (element == null)
                 return null;
+            logger.Debug(String.Format("processing field : {0} value = {1}", element.Name.LocalName, element.Value));
             if (element.Value == "/")
                 return null;
             return element.Value;
@@ -259,4 +322,6 @@ namespace Sampoerna.EMS.XMLReader
         }
 
     }
+
+    
 }

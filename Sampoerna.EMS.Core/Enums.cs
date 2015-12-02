@@ -36,7 +36,9 @@ namespace Sampoerna.EMS.Core
             POAMap = 29,
             Vendor = 30,
             KPPBC = 31,
-            UserPlantMap = 32
+            UserPlantMap = 32,
+            WasteRole = 33,
+            WasteStock = 34
         }
         public enum PBCK1Type
         {
@@ -56,23 +58,26 @@ namespace Sampoerna.EMS.Core
             PortToImporter = 2,
             [Description("Import")]
             ImporterToPlant = 3,
-           [Description("Export")]
+            [Description("Export")]
             Export = 4,
             [Description("Manual")]
             Manual = 5,
             [Description("Domestic Alcohol")]
             DomesticAlcohol = 6,
             [Description("Completed")]
-            Completed = 7
+            Completed = 7,
+            [Description("Market Return")]
+            MarketReturn = 8
         }
 
-       
+
 
         public enum CK5XmlStatus
         {
 
             StoCreated = 10,
             StoFailed = 11,
+            StoCancel = 12,
             StobGIPartial = 30,
             StobGICompleted = 31,
             StobGRPartial = 35,
@@ -82,6 +87,10 @@ namespace Sampoerna.EMS.Core
             StoRecGICompleted = 42,
             StoRecGRPartial = 45,
             StoRecGRCompleted = 46,
+            TFPosted = 50,
+            TFReversed = 51,
+            TFPartial = 52,
+
 
             GIPartial = 15,
 
@@ -91,16 +100,17 @@ namespace Sampoerna.EMS.Core
 
             GRCompleted = 21,
 
-            StoCancel = 03,
+            StoCancelSAP = 03,
 
             GRReversal = 22,
             GIReversal = 17,
+
             STOBGIReversal = 32,
             STOBGRReversal = 37,
 
             None = 00
 
-         
+
 
         }
 
@@ -126,6 +136,14 @@ namespace Sampoerna.EMS.Core
             Rejected = 20,
             [Description("Waiting for Government Approval")]
             WaitingGovApproval = 25,
+            [Description("Waiting for Sealing")]
+            WaitingForSealing = 26,
+            [Description("Waiting for UnSealing")]
+            WaitingForUnSealing = 27,
+            [Description("Good Issue")]
+            GoodIssue = 28,
+            [Description("Good Receive")]
+            GoodReceive = 29,
             [Description("Government Approved")]
             GovApproved = 30,
             [Description("Government Rejected")]
@@ -158,7 +176,7 @@ namespace Sampoerna.EMS.Core
             GIReversal = 95,
             [Description("Cancelled")]
             Cancelled = 100,
-            
+
             [Description("Completed")]
             Completed = 105,
 
@@ -185,7 +203,7 @@ namespace Sampoerna.EMS.Core
             [Description("Rec STO GR Completed")]
             StoRecGRCompleted = 230,
 
-           
+
             [Description("STOB Good Issue Reversal")]
             STOBGIReversal = 235,
 
@@ -194,11 +212,26 @@ namespace Sampoerna.EMS.Core
 
             [Description("STOB Good Issue Partial")]
             STOBGIPartial = 245,
-            
+
             [Description("STOB Good Receive Partial")]
-            STOBGRPartial = 250
+            STOBGRPartial = 250,
+
+            [Description("TF Posted")]
+            TFPosted = 300,
+
+            [Description("TF Reversal")]
+            TFReversed = 310,
+
+            [Description("TF Partial")]
+            TFPartial = 315,
+
+            [Description("TF Posting")]
+            TFPosting = 320,
+
+            [Description("Waiting for Purchase Order")]
+            PurchaseOrder = 321
         }
-        
+
 
         public enum DocumentStatusGov
         {
@@ -223,7 +256,13 @@ namespace Sampoerna.EMS.Core
             [Description("LACK-1")]
             LACK1 = 5,
             [Description("LACK-2")]
-            LACK2 = 6
+            LACK2 = 6,
+            [Description("CK-4C")]
+            CK4C = 7,
+            [Description("PBCK-7")]
+            PBCK7 = 8,
+            [Description("CK-5 Market Return")]
+            CK5MarketReturn = 9,
         }
 
         public enum ActionType
@@ -232,9 +271,9 @@ namespace Sampoerna.EMS.Core
             Created = 1,
             [Description("Cancel")]
             Cancel = 2,
-            [Description("CancelSAP")]
+            [Description("CK5 Cancel")]
             CancelSAP = 3,
-            [Description("CancelSTOCreated")]
+            [Description("CK5 Cancel")]
             CancelSTOCreated = 4,
             [Description("Modified")]
             Modified = 5,
@@ -246,6 +285,14 @@ namespace Sampoerna.EMS.Core
             Approve = 15,
             [Description("Reject")]
             Reject = 20,
+            [Description("Sealed")]
+            Sealed = 21,
+            [Description("UnSealed")]
+            UnSealed = 22,
+            [Description("Good Issue")]
+            GoodIssue = 23,
+            [Description("Good Receive")]
+            GoodReceive = 24,
             [Description("Gov Approve")]
             GovApprove = 25,
             [Description("Gov Partial Approve")]
@@ -278,7 +325,7 @@ namespace Sampoerna.EMS.Core
             GICompleted = 90,
             [Description("Good Issue Reversal")]
             GIReversal = 95,
-            [Description("STO Cancelled")]
+            [Description("Cancelled")]
             Cancelled = 100,
             [Description("STOB Good Issue Completed")]
             StobGICompleted = 105,
@@ -312,9 +359,26 @@ namespace Sampoerna.EMS.Core
 
             [Description("STOB Good Issue Partial")]
             STOBGIPartial = 245,
-            
+
             [Description("STOB Good Receive Partial")]
-            STOBGRPartial = 250
+            STOBGRPartial = 250,
+            [Description("TF Posted")]
+            TFPosted = 300,
+
+            [Description("TF Reversal")]
+            TFReversed = 310,
+
+            [Description("TF Partial")]
+            TFPartial = 315,
+
+            [Description("STO Cancelled")]
+            STOCancelled = 320,
+
+            [Description("Back to Gov Approval")]
+            BackToGovApprovalAfterCompleted,
+
+            [Description("Purchase Order Created")]
+            POCreated = 325
         }
 
         /// <summary>
@@ -333,7 +397,11 @@ namespace Sampoerna.EMS.Core
             User = 1,
             POA = 2,
             Manager = 3,
-            System = 10
+            Viewer = 4,
+            System = 10,
+            Administrator = 15,
+            SuperAdmin = 16
+            
         }
 
         public enum FormViewType
@@ -459,18 +527,18 @@ namespace Sampoerna.EMS.Core
         public enum Pbck7Type
         {
             [Description("PBCK7")]
-            Pbck7List =1,
+            Pbck7List = 1,
             [Description("PBCK3")]
-            Pbck3List  =2
+            Pbck3List = 2
         }
 
         public enum DocumentTypePbck7AndPbck3
         {
             [Description("Pemusnahan")]
-            Pemusnahan=1,
+            Pemusnahan = 1,
             [Description("Pengolahan")]
-            Pengolahaan=2,
-            
+            Pengolahaan = 2,
+
         }
 
         public enum CK4CType
@@ -480,8 +548,92 @@ namespace Sampoerna.EMS.Core
             [Description("WasteProduction")]
             WasteProduction = 2,
             [Description("CK4CDocument")]
-            Ck4CDocument = 3
-
+            Ck4CDocument = 3,
+            [Description("CompletedDocument")]
+            CompletedDocument = 4
         }
+
+        public enum MovementTypeCode
+        {
+            [Description("261")]
+            Usage261 = 261,
+            [Description("262")]
+            Usage262 = 262,
+            [Description("201")]
+            Usage201 = 201,
+            [Description("202")]
+            Usage202 = 202,
+            [Description("901")]
+            Usage901 = 901,
+            [Description("902")]
+            Usage902 = 902,
+            [Description("Z01")]
+            UsageZ01 = 701,
+            [Description("Z02")]
+            UsageZ02 = 702,
+            [Description("101")]
+            Receiving101 = 101,
+            [Description("102")]
+            Receiving102 = 102
+        }
+
+        public enum StatusGovCk4c
+        {
+            [Description("Approved")]
+            Approved = 1,
+            [Description("Rejected")]
+            Rejected = 2
+        }
+
+        public enum Ck5ManualType
+        {
+            [Description("Trial")]
+            Trial = 1,
+            [Description("Non Plant (Plant to Exhibition)")]
+            NonPlantPlantToEx = 2,
+            [Description("Non Plant (Exhibition to Plant)")]
+            NonPlantExToPlant = 3,
+            [Description("Market Return")]
+            MarketReturn = 4
+        }
+
+        public enum Ck5ManualFreeText
+        {
+            [Description("Source Free Text")]
+            SourceFreeText = 1,
+            [Description("Dest Free Text")]
+            DestFreeText = 2
+        }
+
+        public enum DocumentStatusGovType2
+        {
+            [Description("Approved")]
+            Approved = 1,
+            [Description("Rejected")]
+            Rejected = 3
+        }
+
+        public enum DocumentStatusGovType3
+        {
+            [Description("Approved")]
+            Approved = 1,
+            [Description("Rejected")]
+            Rejected = 2,
+            [Description("Cancelled")]
+            Cancelled = 3
+        }
+
+        public enum WasteGroup
+        {
+            [Description("Factory Logistic")]
+            FactoryLogistic = 1,
+            [Description("Disposal Team")]
+            DisposalTeam = 2,
+            [Description("Transportation")]
+            Transportation = 3,
+            [Description("Waste Approver")]
+            WasteApprover = 4
+        }
+
     }
 }

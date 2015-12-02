@@ -1,0 +1,28 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK1.PBCK1ListCK5Model
+
+<table id="ck5Table" class="table table-bordered table-striped js-options-table" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row">No</th>
+            <th>Doc Number CK-5</th>
+            <th>Status Doc</th>
+            <th>Grand Total Exciseable</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int row = 1; 
+            foreach (var item in Model.CK5List)
+            {
+                <tr>
+                    <td>@row</td>
+                    <td>@item.DocumentNumber</td>
+                    <td>@item.Status</td>
+                    <td>@item.Qty @item.UOM</td>
+                </tr>
+            
+                row = row + 1;
+            }
+        }
+    </tbody>
+</table>

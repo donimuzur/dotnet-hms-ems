@@ -52,7 +52,10 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public string DEST_PLANT_NAME { get; set; }
 
         public Nullable<int> PBCK1_DECREE_ID { get; set; }
+        public DateTime? PBCK1_DECREE_DATE { get; set; }
         public Enums.CarriageMethod? CARRIAGE_METHOD_ID { get; set; }
+
+        public DateTime? SUBMISSION_DATE { get; set; }
 
         //export type
         public string LOADING_PORT { get; set; }

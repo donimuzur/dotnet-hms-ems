@@ -18,9 +18,19 @@ namespace Sampoerna.EMS.BusinessObject
         public string WERKS { get; set; }
         public string FA_CODE { get; set; }
         public string BRAND_DESC { get; set; }
-        public Nullable<decimal> WASTE_QTY_STICK { get; set; }
-        public Nullable<decimal> WASTE_QTY_GRAM { get; set; }
-        public Nullable<decimal> REJECT_QTY_STICK { get; set; }
+        public Nullable<decimal> MARKER_REJECT_STICK_QTY { get; set; }
+        public Nullable<decimal> PACKER_REJECT_STICK_QTY { get; set; }
         public System.DateTime WASTE_PROD_DATE { get; set; }
+        public string COMPANY_NAME { get; set; }
+        public string PLANT_NAME { get; set; }
+        public Nullable<decimal> DUST_WASTE_GRAM_QTY { get; set; }
+        public Nullable<decimal> FLOOR_WASTE_GRAM_QTY { get; set; }
+        public Nullable<decimal> DUST_WASTE_STICK_QTY { get; set; }
+        public Nullable<decimal> FLOOR_WASTE_STICK_QTY { get; set; }
+        public System.DateTime CREATED_DATE { get; set; }
+        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
+        public string CREATED_BY { get; set; }
+        public string MODIFIED_BY { get; set; }
+        public Nullable<decimal> STAMP_WASTE_QTY { get; set; }
     }
 }

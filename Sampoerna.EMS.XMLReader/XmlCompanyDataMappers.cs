@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
@@ -34,8 +35,8 @@ namespace Sampoerna.EMS.XMLReader
                         var bukrs = xElement.Element("BUKRS").Value;
                         item.BUTXT = _xmlMapper.GetElementValue(xElement.Element("BUTXT"));
                         item.ORT01 = _xmlMapper.GetElementValue(xElement.Element("ORT01"));
-                        item.SPRAS = _xmlMapper.GetElementValue(xElement.Element("SPRAS"));
-                        item.NPWP = _xmlMapper.GetElementValue(xElement.Element("STCEG"));
+                        //item.SPRAS = _xmlMapper.GetElementValue(xElement.Element("SPRAS"));
+                       // item.NPWP = _xmlMapper.GetElementValue(xElement.Element("STCEG"));
                         item.CREATED_BY = Constans.PI;
                         var exisitingCompany = _xmlMapper.uow.GetGenericRepository<T001>()
                             .GetByID(bukrs);
@@ -47,6 +48,8 @@ namespace Sampoerna.EMS.XMLReader
                             item.MODIFIED_DATE = DateTime.Now;
                             item.MODIFIED_BY = Constans.PI;
                             item.BUTXT_ALIAS = exisitingCompany.BUTXT_ALIAS;
+                            item.NPWP = exisitingCompany.NPWP;
+                            item.SPRAS = exisitingCompany.SPRAS;
                             items.Add(item);
 
                         }
@@ -71,8 +74,8 @@ namespace Sampoerna.EMS.XMLReader
              
         }
 
-      
-        public string InsertToDatabase()
+
+        public MovedFileOutput InsertToDatabase()
         {
            return _xmlMapper.InsertToDatabase<T001>(Items);
         }

@@ -1,9 +1,6 @@
 ﻿using Sampoerna.EMS.Core;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
@@ -20,11 +17,13 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string LevelPlantId { get; set; }
         public string LevelPlantName { get; set; }
         public string LevelPlantCity { get; set; }
-        public DateTime SubmissionDate { get; set; }
+        public DateTime? SubmissionDate { get; set; }
         public string ExGoodTyp { get; set; }
         public string ExTypDesc { get; set; }
-        public Enums.DocumentStatus GovStatus { get; set; }
+        public Enums.DocumentStatusGovType2? GovStatus { get; set; }
         public Enums.DocumentStatus Status { get; set; }
+
+        public string StatusName { get; set; }
         public DateTime? DecreeDate { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
@@ -32,11 +31,27 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? ModifiedDate { get; set; }
         public string ApprovedBy { get; set; }
         public DateTime? ApprovedDate { get; set; }
+
+        public string ApprovedByManager { get; set; }
+        public DateTime? ApprovedDateManager { get; set; }
+
+        public string RejectedBy { get; set; }
+        public DateTime? RejectedDate { get; set; }
+       
         public string NppbkcId { get; set; }
 
-        public List<Lack2ItemDto> Items { get; set; } 
+        public string Comment { get; set; }
 
-        
+        public bool IsRejected { get; set; }
+
+        public string UserId { get; set; }
+
+    }
+
+    public class Lack2DetailsDto : Lack2Dto
+    {
+        public List<Lack2ItemDto> Items { get; set; }
+        public List<Lack2DocumentDto> Documents { get; set; }
     }
 
     public class Lack2ItemDto
@@ -55,4 +70,14 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string CompanyAddress { get; set; }
     }
+
+    public class Lack2DocumentDto
+    {
+        public long LACK2_DOCUMENT_ID { get; set; }
+        public int LACK2_ID { get; set; }
+        public string FILE_NAME { get; set; }
+        public string FILE_PATH { get; set; }
+    
+    }
+
 }

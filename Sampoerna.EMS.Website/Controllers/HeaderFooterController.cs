@@ -191,6 +191,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CompanyList = GetCompanyList();
             model.CurrentMenu = PageInfo;
             model.MainMenu = _mainMenu;
+            model.Detail.HeaderFooterMapList = InitialEditHeaderFooterMapList(model.Detail.HeaderFooterMapList);
             return View("Edit", model);
         }
 
@@ -320,30 +321,24 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (System.IO.File.Exists(Server.MapPath(imagePath)))
                 {
                     fs = new FileStream(Server.MapPath(imagePath), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+
+                    // initialise the binary reader from file streamobject 
+                    br = new BinaryReader(fs);
+                    // define the byte array of filelength 
+                    byte[] imgbyte = new byte[fs.Length + 1];
+                    // read the bytes from the binary reader 
+                    imgbyte = br.ReadBytes(Convert.ToInt32((fs.Length)));
+                    dt.Columns.Add("image", Type.GetType("System.Byte[]"));
+
+                    dt.Rows[0]["image"] = imgbyte;
+
+
+                    br.Close();
+                    // close the binary reader 
+                    fs.Close();
+                    // close the file stream 
+
                 }
-                else
-                {
-                    // if photo does not exist show the nophoto.jpg file 
-                    fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                }
-                // initialise the binary reader from file streamobject 
-                br = new BinaryReader(fs);
-                // define the byte array of filelength 
-                byte[] imgbyte = new byte[fs.Length + 1];
-                // read the bytes from the binary reader 
-                imgbyte = br.ReadBytes(Convert.ToInt32((fs.Length)));
-                dt.Columns.Add("image", System.Type.GetType("System.Byte[]"));
-
-                dt.Rows[0]["image"] = imgbyte;
-
-
-                br.Close();
-                // close the binary reader 
-                fs.Close();
-                // close the file stream 
-
-
-
 
             }
             catch (Exception ex)
@@ -354,6 +349,24 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+
+        private List<HeaderFooterMapItem> InitialEditHeaderFooterMapList(List<HeaderFooterMapItem> existingData)
+        {
+            var formTypeList = existingData.Select(d => d.FORM_TYPE_ID).ToList();
+            var enumValues = EnumHelper.GetValues<Enums.FormType>().Where(c => !formTypeList.Contains(c));
+            
+            var rc = enumValues.Select(enumValue => new HeaderFooterMapItem()
+            {
+                HEADER_FOOTER_FORM_MAP_ID = 0,
+                FORM_TYPE_ID = enumValue,
+                FORM_TYPE_DESC = EnumHelper.GetDescription(enumValue),
+                IS_HEADER_SET = false,
+                IS_FOOTER_SET = false,
+                HEADER_FOOTER_ID = 0
+            }).ToList();
+            existingData.AddRange(rc);
+            return existingData;
+        }
         
     }
 }

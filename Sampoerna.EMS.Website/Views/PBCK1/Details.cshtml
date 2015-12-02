@@ -16,15 +16,22 @@
 
                     @if (Model.AllowApproveAndReject)
                     {
-                        <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
+                        if (@ViewBag.IsCurrManager != null && !@ViewBag.IsCurrManager)
+                        {
+                            <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
 
-                        <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
+                            <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
+                        }
+
                     }
                     else
                     {
                         if (Model.AllowManagerReject)
                         {
-                            <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
+                            if (@ViewBag.IsCurrManager != null && !@ViewBag.IsCurrManager)
+                            {
+                                <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
+                            }
                         }
                     }
 
@@ -149,9 +156,16 @@
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/UploadExcel.js"></script>
     <script src="~/Scripts/pbck1script.js"></script>
+    <script src="~/Scripts/thousand-separator.js"></script>
     <script type="text/javascript">
-        $('#MenuPBCK1OpenListDocument').addClass('active');
+        
         $(document).ready(function () {
+            if ($('#btn-back-completed-doc').length) {
+                $('#MenuPBCK1CompletedListDocument').addClass('active');
+            }
+            else {
+                $('#MenuPBCK1OpenListDocument').addClass('active');
+            }
             
             $('#btn-back-open-doc').click(function (e) {
                 location.href = '@Url.Action("Index", "Pbck1")';
@@ -162,8 +176,6 @@
             $('#btn-changelog-export-xls').click(function () {
                 location.href = '@Url.Action("ExportClientsListToExcel", "PBCK1", new { id = Model.Detail.Pbck1Id })';
             });
-
-            $('#MenuPBCK1OpenListDocument').addClass('active');
 
             $('#btn-changelog-export-xls').click(function () {
                 alert('export on progress');
@@ -263,6 +275,13 @@
 
             setSupplierName();
 
+            changeToDecimal("input[name='Detail.LatestSaldo']:text", "val");
+            changeToDecimal("input[name='Detail.RequestQty']:text", "val");
+            changeToDecimal("input[name='Detail.QtyApproved']", "val");
+            changeToDecimal("#Detail_Pbck1ProdConverter .decimal", "html");
+            changeToDecimal("#Detail_Pbck1ProdPlan .decimal", "html"); 
+
+
         });
 
         function ajaxLoadPoa(formData) {
@@ -353,7 +372,7 @@
                 isExternal = false;
             }
 
-            $("#externalSupPort").prop('checked', isExternal);
+            $("#Detail_IsExternalSupplier").prop('checked', isExternal);
         }
         
     </script>

@@ -15,12 +15,14 @@ namespace Sampoerna.EMS.BusinessObject
     public partial class LACK1_PRODUCTION_DETAIL
     {
         public long LACK1_PRODUCTION_ID { get; set; }
-        public int LACK1_ID { get; set; }
+        public Nullable<int> LACK1_ID { get; set; }
         public decimal AMOUNT { get; set; }
         public string PROD_CODE { get; set; }
         public string PRODUCT_TYPE { get; set; }
         public string PRODUCT_ALIAS { get; set; }
         public string UOM_ID { get; set; }
+        public string FA_CODE { get; set; }
+        public string ORDR { get; set; }
     
         public virtual LACK1 LACK1 { get; set; }
         public virtual UOM UOM { get; set; }

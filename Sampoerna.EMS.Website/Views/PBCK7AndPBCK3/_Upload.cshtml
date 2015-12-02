@@ -1,6 +1,6 @@
 ﻿@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck7Pbck3CreateViewModel
 
-<div id="upload" class="tab-pane active" role="tabpanel">
+<div id="upload" class="tab-pane" role="tabpanel">
     <div aria-multiselectable="true" role="tablist" id="accordion" class="panel-group">
         <div class="panel panel-default">
             <div id="headingOne" role="tab" class="panel-heading">
@@ -13,22 +13,28 @@
             <div aria-labelledby="headingOne" role="tabpanel" class="panel-collapse collapse in" id="collapseOne">
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="input-group">
-                                <input type="text" class="form-control">
-                                <span class=" input-group-addon file-input btn btn-primary btn-file">
-                                    Browse <input type="file" multiple="">
-                                </span>
-                            </div>
+                        
+                        <div class="col-md-12">
+
+                            <input type="file" class="file-inputs" data-filename-placement="inside" name="itemExcelFile" id="itemExcelFile">
+                            <input type="button" id="btn-generate-upload" class="btn btn-grey" value="Generate" />
+                            <input type="button" class="btn btn-blue" id="btn-save-upload" value="Save" disabled />
+
                         </div>
-                        <div class="col-md-6">
-                            <button class="btn btn-grey generate">Generate</button>
-                        </div>
+
+                     
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    @if (!Model.AllowGovApproveAndReject)
+    {
+      
+       <input type="button" class="btn btn-blue" id="btnAddRow" value="New Input" />
+
+    }
+
     <div class="table-container" id="UploadLIst">
         @Html.Partial("_UploadList")
     </div>

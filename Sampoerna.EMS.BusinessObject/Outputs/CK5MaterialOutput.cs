@@ -25,5 +25,8 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public bool IsValid { get; set; }
 
         public string MaterialDesc { get; set; }
+
+        public decimal ExciseQty { get; set; }
+        public string ExciseUom { get; set; }
     }
 }

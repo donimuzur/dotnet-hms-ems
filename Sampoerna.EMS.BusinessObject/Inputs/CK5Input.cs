@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Security.Permissions;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Core;
 
@@ -21,6 +22,10 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string SortOrderColumn { get; set; }
 
         public Enums.CK5Type Ck5Type { get; set; }
+
+        public string UserId { get; set; }
+
+        public Enums.UserRole UserRole { get; set; }
     }
 
     public class CK5SaveInput
@@ -51,17 +56,29 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public string SealingNumber { get; set; }
         public DateTime? SealingDate { get; set; }
+        public DateTime? GIDate { get; set; }
 
         public string UnSealingNumber { get; set; }
         public DateTime? UnSealingDate { get; set; }
+        public DateTime? GRDate { get; set; }
 
+        public Enums.CK5Type Ck5Type { get; set; }
+
+        public bool IsModified { get; set; }
+
+        public DateTime? GiDate { get; set; }
+        public DateTime? GrDate { get; set; }
+        public string DnNumber { get; set; }
     }
 
     public class CK5WorkflowDocumentData
     {
         public string RegistrationNumber { get; set; }
         public DateTime RegistrationDate { get; set; }
-        public List<CK5_FILE_UPLOADDto> Ck5FileUploadList { get; set; } 
+        public List<CK5_FILE_UPLOADDto> Ck5FileUploadList { get; set; }
+
+        public string Back1Number { get; set; }
+        public DateTime? Back1Date { get; set; }
     }
 
     public class CK5WorkflowHistoryInput
@@ -72,6 +89,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Enums.UserRole UserRole { get; set; }
         public Enums.ActionType ActionType { get; set; }
         public string Comment { get; set; }
+        public bool IsModified { get; set; }
     }
 
     public class CK5GetSummaryReportByParamInput
@@ -101,8 +119,30 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string NppbkcId { get; set; }
         public string ReceivedPlantId { get; set; }
         public Enums.Lack1Level Lack1Level { get; set; }
-        public string ExcisableGoodsType { get; set; }
+        public int ExGroupTypeId { get; set; }
         public string SupplierPlantId { get; set; }
+        public int PeriodMonth { get; set; }
+        public int PeriodYear { get; set; }
+
+        public bool IsExcludeSameNppbkcId { get; set; }
+
+        public List<string> StoNumberList { get; set; }
+
     }
 
+    public class Ck5GetForLack2ByParamInput
+    {
+        public int PeriodMonth { get; set; }
+        public int PeriodYear { get; set; }
+        public string SourcePlantId { get; set; }
+        public int ExGroupTypeId { get; set; }
+        public string CompanyCode { get; set; }
+        public string NppbkcId { get; set; }
+    }
+
+    public class Back1DataOutput
+    {
+        public string Back1Number { get; set; }
+        public DateTime? Back1Date { get; set; }
+   }
 }

@@ -50,10 +50,12 @@ namespace Sampoerna.EMS.Website.Models.CK5
         [UIHint("DateTime")]
         public DateTime? SubmissionDate { get; set; }
 
-        [RequiredIf("DocumentStatus", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "RegistrationNumber")]
+        //[RequiredIf("DocumentStatus", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "RegistrationNumber")]
+        [Display(Name = "RegistrationNumber")]
         public string RegistrationNumber { get; set; }
 
-        [RequiredIf("DocumentStatus", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "RegistrationDate")]
+       // [RequiredIf("DocumentStatus", Enums.DocumentStatus.WaitingGovApproval), Display(Name = "RegistrationDate")]
+        [Display(Name = "RegistrationDate")]
         [UIHint("DateTime")]
         public DateTime? RegistrationDate { get; set; }
 
@@ -80,7 +82,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string RequestTypeDesc { get; set; }
 
         //ORIGIN PLANT
-        [Required(ErrorMessage = "Origin Plant field is required")]
+        //[Required(ErrorMessage = "Origin Plant field is required")]
         public string SourcePlantId { get; set; }
         public SelectList SourcePlantList { get; set; }
         public string SourcePlantName { get; set; }
@@ -151,6 +153,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         [Display(Name = "Grand Total Exciseable")]
         public decimal GrandTotalEx { get; set; }
+        public string GrandTotalExDisplay { get; set; }
 
         //public int? PackageUomId { get; set; }
         public SelectList PackageUomList { get; set; }
@@ -235,9 +238,73 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public bool AllowGrCreated { get; set; }
 
+        public bool AllowTfPostedPortToImporter { get; set; }
+
         public string ActionType { get; set; }
 
         public bool AllowCancelSAP { get; set; }
+
+        public decimal MaterialQty { get; set; }
+
+        public SelectList PackageConvertedUomList { get; set; }
+
+        public Enums.Ck5ManualType Ck5ManualTypeList { get; set; }
+        public Enums.Ck5ManualType Ck5ManualType { get; set; }
+
+        public string Ck5ManualTypeString { get; set; }
+
+        public long Ck5RefId { get; set; }
+
+        public string Ck5RefNumber { get; set; }
+        public SelectList Ck5RefList { get; set; }
+        public bool IsCk5ImporterToPlant { get; set; }
+        public bool IsMarketReturn { get; set; }
+        public bool IsCompleted { get; set; }
+
+        [Display(Name = "BACK-1 Number")]
+        public string Back1Number { get; set; }
+
+        [Display(Name = "BACK-1 Date")]
+        [UIHint("DateTime")]
+        public DateTime? Back1Date { get; set; }
+
+        public bool AllowAttachmentCompleted { get; set; }
+        public bool IsDomesticAlcohol { get; set; }
+        public bool IsReducePbck1Ck5Trial { get; set; }
+        public bool IsFreeTextSource { get; set; }
+        public bool IsFreeTextDestination { get; set; }
+        public bool AllowAttachment { get; set; }
+
+        //ORIGIN PLANT MANUAL
         
+        public string SourcePlantNameManual { get; set; }
+        public string SourceNpwpManual { get; set; }
+        public string SourceNppbkcIdManual { get; set; }
+        public string SourceCompanyCodeManual { get; set; }
+        public string SourceCompanyNameManual { get; set; }
+        public string SourceAddressManual { get; set; }
+        public string SourceKppbcNameManual { get; set; }
+
+        //DESTINATION PLANT MANUAL
+
+        public string DestPlantNameManual { get; set; }
+        public string DestNpwpManual { get; set; }
+        public string DestNppbkcIdManual { get; set; }
+        public string DestCompanyCodeManual { get; set; }
+        public string DestCompanyNameManual { get; set; }
+        public string DestAddressManual { get; set; }
+        public string DestKppbcNameManual { get; set; }
+
+        public Enums.Ck5ManualFreeText? MANUAL_FREE_TEXT { get; set; }
+
+        public bool AllowSealing { get; set; }
+
+        public bool AllowUnSealing { get; set; }
+
+        public bool AllowGoodIssue { get; set; }
+
+        public bool AllowGoodReceive { get; set; }
+
+        public bool AllowPurchaseOrder { get; set; }
     }
 }

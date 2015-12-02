@@ -3,12 +3,25 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Sampoerna.EMS.Utils
 {
     public static class ConvertHelper
     {
+
+        public static decimal ConvertToDecimalOrZero(string value)
+        {
+            try
+            {
+                return GetDecimal(value);
+               }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
 
         public static bool IsNumeric(string value)
         {
@@ -63,6 +76,66 @@ namespace Sampoerna.EMS.Utils
             if (typeof(T).IsEnumDefined(enumsValue))
                 return true;
             return false;
+        }
+
+        public static string ConvertDecimalToString(decimal? value, string formatDecimalValue = "f2")
+        {
+            return value.HasValue ? value.Value.ToString(formatDecimalValue) : string.Empty;
+        }
+
+        public static string ConvertDateToString(DateTime? value, string formatDate)
+        {
+            return value.HasValue ? value.Value.ToString(formatDate) : string.Empty;
+        }
+
+        public static string ConvertDateToStringddMMMyyyy(DateTime? value)
+        {
+            return value.HasValue ? value.Value.ToString("dd MMM yyyy") : string.Empty;
+        }
+
+        public static string ConvertDecimalToStringMoneyFormat(decimal? value)
+        {
+            return value.HasValue ? value.Value.ToString("#,##0.#0") : string.Empty;
+        }
+
+        public static string ConvertDateToStringHHmm(DateTime? value)
+        {
+            return value.HasValue ? value.Value.ToString("HH:mm") : string.Empty;
+        }
+
+        public static string ToTitleCase(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return input;
+
+            return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(input.ToLower());
+        }
+
+        public static int? ConvertToInt32OrNull(string value)
+        {
+            try
+            {
+                return Convert.ToInt32(value);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static string ConvertInt32ToString(int? value)
+        {
+            try
+            {
+                if (value.HasValue)
+                    return value.ToString();
+
+                return "";
+            }
+            catch (Exception ex)
+            {
+                return "";
+            }
         }
     }
 }

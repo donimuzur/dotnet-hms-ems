@@ -10,10 +10,10 @@
             <h3>Header Footer </h3>
             <div class="action-button">
                 <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
-                @if (!Model.Detail.IS_DELETED)
+                @*@if (!Model.Detail.IS_DELETED)
                 {
                      <a href="javascript:void(0);" onclick="confirmDeleteHeaderfooter() " class="btn btn-danger">Delete</a>
-                }
+                }*@
             </div>
         </div>
     </div>
@@ -141,6 +141,7 @@
     </div>
 </div>
 <!--delete-->
+<!--
 <input id="btn-delete-headerfooter" style="display: none" type="submit" class="btn btn-grey" data-toggle="modal" data-target=".delete-modal.headerfooter" value="delete">
 <div class="modal ems-modal fade delete-modal headerfooter" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog modal-sm">
@@ -159,7 +160,7 @@
         </div>
     </div>
 </div>
-
+-->
 
 @section scripts{
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
@@ -191,12 +192,12 @@
 
         }
 
-       var headerfooterDelete = function () {
+       @*var headerfooterDelete = function () {
                window.location = "@Url.Action("Delete", "HeaderFooter", new {id = @Model.Detail.HEADER_FOOTER_ID})";
        };
         var confirmDeleteHeaderfooter = function () {
             $('#btn-delete-headerfooter').click();
-        };
+        };*@
 
     </script>
 }

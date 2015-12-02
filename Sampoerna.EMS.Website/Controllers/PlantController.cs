@@ -51,7 +51,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             
             var plant = _plantBll.GetId(id);
-            
+            //NPPBKC Import for the dropdown dikosongkan default value
+            plant.NPPBKC_IMPORT_ID = "";
             if (plant == null)
             {
                 return HttpNotFound();
@@ -62,7 +63,6 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new PlantFormModel
             {
               
-                Nppbkc = new SelectList(_nppbkcBll.GetAll().Where(x => x.IS_DELETED != true).ToList(), "NPPBKC_ID", "NPPBKC_ID", plant.NPPBKC_ID),
                 Detail = detail
                 
             };
@@ -72,9 +72,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult InitialEdit(PlantFormModel model)
         {
+            var dataNppbkc = _nppbkcBll.GetAll().Where(x => x.IS_DELETED != true).ToList();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.Nppbkc = new SelectList(_nppbkcBll.GetAll().Where(x => x.IS_DELETED != true).ToList(), "NPPBKC_ID", "NPPBKC_ID", model.Detail.NPPBKC_ID);
+            model.Nppbkc = new SelectList(dataNppbkc, "NPPBKC_ID", "NPPBKC_ID", model.Detail.NPPBKC_ID);
+            model.NppbkcImport = new SelectList(dataNppbkc, "NPPBKC_ID", "NPPBKC_ID", model.Detail.NPPBKC_IMPORT_ID);
             model.IsMainPlantExist = IsMainPlantAlreadyExist(model.Detail.NPPBKC_ID, model.Detail.IsMainPlant,
                 model.Detail.Werks);
             model.Detail.ReceiveMaterials = GetPlantReceiveMaterial(model.Detail);
@@ -95,6 +97,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (!ModelState.IsValid)
             {
+                var errors = ModelState.Values.SelectMany(x => x.Errors);
+                var errorMessage = errors.Aggregate("", (current, error) => current + (error.ErrorMessage + "\n"));
+                AddMessageInfo(errorMessage, Enums.MessageInfoType.Error);
+                      
                 return InitialEdit(model);
             }
             var isAlreadyExistMainPlant = IsMainPlantAlreadyExist(model.Detail.NPPBKC_ID, model.Detail.IsMainPlant,
@@ -126,15 +132,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 
                 _plantBll.save(t1001w, CurrentUser.USER_ID);
-                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
-                      );
+                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
                 return RedirectToAction("Index");
             }
             catch(Exception ex)
             {
 
-                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
-                                       );
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
               
                 return InitialEdit(model);
             }
@@ -155,6 +159,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Nppbkc = new SelectList(_nppbkcBll.GetAll(), "NPPBKC_ID", "NPPBKC_ID", plant.NPPBKC_ID),
+                NppbkcImport = new SelectList(_nppbkcBll.GetAll(), "NPPBKC_ID", "NPPBKC_ID", plant.NPPBKC_IMPORT_ID),
                 Detail = detail
             };
 

@@ -11,6 +11,11 @@
                 <h3 class="desc">POA <span>(Power of Attorney)</span></h3>
                 <div class="action-button">
                     <input type="submit" class="btn btn-blue" value="Save" />
+                    @{
+    var isActive = Model.Detail.Is_Active == "Yes" ? true : false;
+                    }
+                    <a href="javascript:void(0);" onclick="confirmDeletePOA() " class="btn btn-danger">@(isActive == true ? "DEACTIVE" : "ACTIVE")</a>
+
                     <a href="@Url.Action("Index", "POA")" class="btn btn-grey">Cancel</a>
                 </div>
             </div>
@@ -167,7 +172,33 @@
         </div>
     </div>
     @Html.Partial("_FileUpload", Model)
-   
+   <!--delete-->
+    <input id="btn-delete-poa" style="display: none" type="submit" class="btn btn-grey" data-toggle="modal" data-target=".delete-modal.poa" value="delete">
+    <div class="modal ems-modal fade delete-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    @if (Model.Detail.Is_Active == "Yes")
+                    {
+                        <h4 class="modal-title">Deactive</h4>
+                    }
+                    else
+                    {
+                        <h4 class="modal-title">Active</h4>
+                    }
+
+                </div>
+                <div class="modal-body">
+                    Are you sure?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="poaDelete();">Yes</button>
+                    <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 
 @section scripts {
@@ -188,6 +219,12 @@
             }
         });
     }
+    var poaDelete = function () {
+        window.location = "@Url.Action("Delete", "POA", new {id = @Model.Detail.PoaId})";
+    };
+    var confirmDeletePOA = function () {
+        $('#btn-delete-poa').click();
+    };
 </script>
 }
  

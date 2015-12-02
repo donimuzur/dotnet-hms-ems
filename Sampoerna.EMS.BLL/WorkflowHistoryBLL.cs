@@ -89,7 +89,7 @@ namespace Sampoerna.EMS.BLL
         public List<WorkflowHistoryDto> GetByFormNumber(GetByFormNumberInput input)
         {
             var dbData =
-                _repository.Get(c => c.FORM_NUMBER == input.FormNumber, null, includeTables)
+                _repository.Get(c => c.FORM_NUMBER == input.FormNumber, null, includeTables).OrderBy(c => c.ACTION_DATE)
                     .ToList();
             var result = Mapper.Map<List<WorkflowHistoryDto>>(dbData);
 
@@ -103,6 +103,24 @@ namespace Sampoerna.EMS.BLL
                     //was rejected
                     input.IsRejected = true;
                     input.RejectedBy = rejected.ACTION_BY;
+                }
+                else
+                {
+                    if (input.FormType == Enums.FormType.PBCK3)
+                    {
+                        //get from pbck7 or ck5 market return form number
+                        //find from source FormNumberSource
+                        var dbDataSource =
+                            _repository.Get(c => c.FORM_NUMBER == input.FormNumberSource, null, includeTables).OrderBy(c => c.ACTION_DATE).ToList();
+                        var rejectedSource = dbDataSource.FirstOrDefault(c => c.ACTION == Enums.ActionType.Reject ||c.ACTION == Enums.ActionType.Approve 
+                                                                              && c.ROLE == Enums.UserRole.POA);
+                        if (rejectedSource != null)
+                        {
+                            //was rejected
+                            input.IsRejected = true;
+                            input.RejectedBy = rejectedSource.ACTION_BY;
+                        }
+                    }
                 }
 
                  result.Add(CreateWaitingApprovalRecord(input));
@@ -132,8 +150,16 @@ namespace Sampoerna.EMS.BLL
             {
                 if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApproval)
                 {
-                    var listPoa = _poaMapBll.GetPOAByNPPBKCID(input.NPPBKC_Id);
-                    displayUserId = listPoa.Aggregate("", (current, poaMapDto) => current + (poaMapDto.POA_ID + ","));
+                    if(input.FormType == Enums.FormType.PBCK1){
+                        var listPoa = _poaBll.GetPoaByNppbkcIdAndMainPlant(input.NppbkcId);
+                        displayUserId = listPoa.Aggregate("", (current, poaDto) => current + (poaDto.POA_ID + ","));
+                    }else{
+                        List<POADto> listPoa;
+                        listPoa = input.PlantId != null ? _poaBll.GetPoaActiveByPlantId(input.PlantId) 
+                            : _poaBll.GetPoaActiveByNppbkcId(input.NppbkcId);
+                        
+                        displayUserId = listPoa.Aggregate("", (current, poaMapDto) => current + (poaMapDto.POA_ID + ","));
+                    }
                     if (displayUserId.Length > 0)
                         displayUserId = displayUserId.Substring(0, displayUserId.Length - 1);
 
@@ -144,30 +170,7 @@ namespace Sampoerna.EMS.BLL
                     //get action by poa
                     var poaId = GetPoaByDocumentNumber(input.FormNumber);
                     displayUserId = _poaBll.GetManagerIdByPoaId(poaId);
-                    //var historyWorkflow =
-                    //    _repository.Get(
-                    //        c =>
-                    //            c.FORM_NUMBER == input.FormNumber && c.ACTION == Enums.ActionType.Approve &&
-                    //            c.ROLE == Enums.UserRole.POA).FirstOrDefault();
-
-                    //if (historyWorkflow != null)
-                    //{
-                    //    displayUserId = _poaBll.GetManagerIdByPoaId(historyWorkflow.ACTION_BY);
-                    //}
-                    //else
-                    //{
-                    //    historyWorkflow =
-                    //        _repository.Get(
-                    //            c =>
-                    //                c.FORM_NUMBER == input.FormNumber && c.ACTION == Enums.ActionType.Submit &&
-                    //                c.ROLE == Enums.UserRole.POA).FirstOrDefault();
-
-                    //    if (historyWorkflow != null)
-                    //    {
-                    //        displayUserId = _poaBll.GetManagerIdByPoaId(historyWorkflow.ACTION_BY);
-                    //    }
-
-                    //}
+                   
                     newRecord.ROLE = Enums.UserRole.Manager;
                 }
             }
@@ -219,6 +222,17 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        public List<string> GetDocumentByListPOAId(List<string> poaId)
+        {
+            var dtData =
+                _repository.Get(
+                    c =>
+                        poaId.Contains(c.ACTION_BY) && (c.ACTION == Enums.ActionType.Submit || c.ACTION == Enums.ActionType.Approve) &&
+                        c.ROLE == Enums.UserRole.POA).Distinct().ToList();
+
+            return dtData.Select(s => s.FORM_NUMBER).ToList();
+        }
+
         public void Delete(long id)
         {
             var dbData = _repository.GetByID(id);
@@ -235,10 +249,11 @@ namespace Sampoerna.EMS.BLL
                 _repository.Get(c => c.ACTION == input.ActionType && c.FORM_NUMBER == input.FormNumber, null,
                     includeTables).FirstOrDefault();
 
-            if (dbData == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            if (dbData != null)
+                _repository.Delete(dbData);
+            
 
-            _repository.Delete(dbData);
+            
 
         }
 
@@ -272,5 +287,70 @@ namespace Sampoerna.EMS.BLL
 
             return output;
         }
+
+        public List<WorkflowHistoryDto> GetByFormId(GetByFormNumberInput input)
+        {
+            var dbData =
+                _repository.Get(c => c.FORM_ID == input.FormId && c.FORM_TYPE_ID == input.FormType, null, includeTables)
+                    .ToList();
+            var result = Mapper.Map<List<WorkflowHistoryDto>>(dbData);
+
+            if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApproval)
+            {
+                //find history that approve or rejected by POA
+                var rejected = dbData.FirstOrDefault(c => c.ACTION == Enums.ActionType.Reject || c.ACTION == Enums.ActionType.Approve && c.ROLE == Enums.UserRole.POA);
+
+                if (rejected != null)
+                {
+                    //was rejected
+                    input.IsRejected = true;
+                    input.RejectedBy = rejected.ACTION_BY;
+                }
+
+                result.Add(CreateWaitingApprovalRecord(input));
+            }
+            else if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApprovalManager)
+            {
+                result.Add(CreateWaitingApprovalRecord(input));
+            }
+
+            return result;
+        }
+
+        public WorkflowHistoryDto RejectedStatusByDocumentNumber(GetByFormTypeAndFormIdInput input) {
+            var dbData =
+                _repository.Get(c => c.ACTION == Enums.ActionType.Reject && c.FORM_ID == input.FormId && c.FORM_TYPE_ID == input.FormType).OrderByDescending(o => o.ACTION_DATE).FirstOrDefault();
+
+            return Mapper.Map<WorkflowHistoryDto>(dbData);
+        }
+
+        public WorkflowHistoryDto GetApprovedOrRejectedPOAStatusByDocumentNumber(GetByFormTypeAndFormIdInput input)
+        {
+            var dbData =
+                _repository.Get(c => (c.ACTION == Enums.ActionType.Reject || c.ACTION == Enums.ActionType.Approve) && c.FORM_ID == input.FormId && c.FORM_TYPE_ID == input.FormType && c.ROLE == Enums.UserRole.POA).OrderByDescending(o => o.ACTION_DATE).FirstOrDefault();
+
+            return Mapper.Map<WorkflowHistoryDto>(dbData);
+        }
+
+
+        public void UpdateHistoryModifiedForSubmit(WorkflowHistoryDto history)
+        {
+            //var dbData = Mapper.Map<WORKFLOW_HISTORY>(history);
+            var dbData =
+                _repository.Get(c => c.ACTION == Enums.ActionType.Modified && c.FORM_NUMBER == history.FORM_NUMBER,
+                    o => o.OrderByDescending(d => d.ACTION_DATE)).FirstOrDefault();
+
+            if (dbData == null)
+                _repository.Insert(Mapper.Map<WORKFLOW_HISTORY>(history));
+            else
+            {
+                dbData.ACTION  = Enums.ActionType.Submit;
+                dbData.ACTION_DATE = DateTime.Now;
+                _repository.Update(dbData);
+            }
+        }
+
+        
+
     }
 }

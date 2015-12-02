@@ -38,4 +38,17 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public int? Pbck1Id { get; set; }
         public string PbckUom { get; set; }
     }
+
+    public class GetListMaterialMarketReturnOutput
+    {
+        public string MaterialNumber { get; set; }
+    }
+
+    public class GetBrandByPlantAndMaterialNumberOutput
+    {
+        public decimal Hje { get; set; }
+        public decimal Tariff { get; set; }
+        public string Uom { get; set; }
+        public string MaterialDesc { get; set; }
+    }
 }

@@ -2,19 +2,21 @@
     ViewBag.Title = "Create";
 }
 
-@using (Html.BeginForm("Create", "PBCK7AndPBCK3"))
+@using (Html.BeginForm("Create", "PBCK7AndPBCK3", FormMethod.Post, new { @id = "SavePbck7Forms" }))
 {
+ 
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3>PBCK-3</h3>
-                <label class="status">Draft</label>
+                @*<h3>PBCK-3</h3>
+                <label class="status">Draft</label>*@
                 <h3>PBCK-7</h3>
                 <label class="status">Draft</label>
                 <div class="action-button">
-                    <button class="btn btn-blue">Save</button>
-                    <button class="btn btn-grey">Cancel</button>
+                    <input type="button" id="btnSave" class="btn btn-blue" value="Save" />
+                    <input type="button" value="Back" class="btn btn-grey" id="btnBack" />
                 </div>
+             
             </div>
         </div>
     </div>
@@ -27,16 +29,15 @@
                     <!-- Nav tabs -->
                     @Html.AntiForgeryToken()
                     <ul role="tablist" class="nav nav-tabs">
-                        <li class="active" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
-                        <li role="presentation" class=""><a data-toggle="tab" role="tab" aria-controls="printout" href="#printout">Print Out</a></li>
-                        <li role="presentation" class=""><a data-toggle="tab" role="tab" aria-controls="upload" href="#upload">Upload</a></li>
-                        @*<li role="presentation"><a data-toggle="tab" role="tab" aria-controls="changes" href="#changes">Changes Log</a></li>*@
+                       
+                        <li role="presentation" id="home-tab" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                        <li role="presentation" id="upload-tab"><a href="#upload" aria-controls="upload" role="tab" data-toggle="tab">Upload</a></li>
+
                     </ul>
 
                     <!-- Tab panes -->
                     <div class="tab-content">
                         @Html.Partial("_HomeCreate")
-                        @Html.Partial("_PrintOut")
                         @Html.Partial("_Upload")
                     </div>
                 </div>
@@ -45,3 +46,157 @@
     </div>
 }
 
+<div id="ModalPbck7Items" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span id="modalBodyMessage">PBCK-7 Items</span>
+                </p>
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.Partial("_Pbck7InputManual")
+
+@section Scripts{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/UploadExcel.js"></script>
+    <script src="~/Scripts/Pbck7Script.js"></script>
+    <script src="~/Scripts/Pbck7InputManual.js"></script>
+
+    <script type="text/javascript">
+       
+        $('#MenuPBCK7Index').addClass('active');
+        
+        $('#btn-generate-upload').click(function () {
+            uploadXmlFile('@Url.Action("UploadFile", "PBCK7AndPBCK3")');
+        });
+
+
+        $('#btnBack').click(function (e) {
+            location.href = '@Url.Action("Index", "PBCK7AndPBCK3")';
+        });
+        
+        $("#btnSave").click(function () {
+
+            if (ValidatePbck7Form()) {
+                $('#SavePbck7Forms').submit();
+            }
+        });
+        
+        $('#NppbkcId').change(function() {
+
+            if ($(this).length) {
+                var nppbkc = $(this).find("option:selected").val();
+
+                $('#PlantId').html('');
+                if (nppbkc != '') {
+                    ajaxGetPlantByNppbkc(nppbkc, '@Url.Action("GetPlantByNppbkcId", "PBCK7AndPBCK3")');
+                    ajaxGetPoaByNppbkc(nppbkc, '@Url.Action("GetPoaByNppbkcId", "PBCK7AndPBCK3")');
+                }
+            }
+
+        });
+        
+        $("#btnAddRow").click(function () {
+            var sourcePlant = $("#PlantId").find("option:selected").val();
+           
+            $("#uploadPlant").val(sourcePlant);
+
+            ajaxGetListFaCode('@Url.Action("GetListFaCode", "PBCK7AndPBCK3")', { plantId: sourcePlant },'');
+            
+            $('#btnSaveMaterial').show();
+            $('#btnUpdateMaterial').hide();
+
+            ClearInputForm();
+            ClearValidation();
+            $("#lblTitleInputManual").text('New Input');
+
+            $('#Pbck7UploadModal').modal('show');
+        });
+        
+        $("#uploadFaCode").change(function () {
+            if ($("#uploadFaCode").length) {
+                var faCode = $(this).find("option:selected").val();
+
+
+                if (faCode == '') {
+                    $("#uploadProductTypeAlias").val('');
+                    $("#uploadBrand").val('');
+                    $("#uploadContent").val('');
+                    $("#uploadSeriesValue").val('');
+                    $("#uploadHje").val('');
+                    $("#uploadTariff").val('');
+                } else {
+                    
+                    var plant = $("#uploadPlant").val();
+                    ajaxGetBrandItems('@Url.Action("GetBrandItems", "PBCK7AndPBCK3")', { plantId: plant, faCode: faCode });
+                }
+            }
+        });
+        
+
+        function EditRow(o) {
+
+            var nRow = o.parents('tr');
+
+            $('#btnSaveMaterial').hide();
+            $('#btnUpdateMaterial').show();
+
+            var sourcePlant = $("#PlantId").find("option:selected").val();
+         
+            var faCode = nRow.find("td").eq(2).html();
+            $("#uploadPlant").val(sourcePlant);
+
+            ajaxGetListFaCode('@Url.Action("GetListFaCode", "PBCK7AndPBCK3")', { plantId: sourcePlant }, faCode);
+            
+            //set value
+            $('#uploadMaterialRow').val(nRow.find("td").eq(1).html());
+
+            ClearInputForm();
+            ClearValidation();
+
+            $("#uploadProductTypeAlias").val('');
+            $("#uploadBrand").val('');
+
+            $("#uploadContent").val('');
+            $("#uploadPbck7Qty").val('0');
+            $("#uploadBack1Qty").val('');
+            $("#uploadSeriesValue").val('');
+
+            $("#uploadHje").val('');
+            $("#uploadTariff").val('');
+            $("#uploadFiscalYear").val('');
+            $("#uploadExciseValue").val('');
+            
+            $('#uploadProductTypeAlias').val(nRow.find("td").eq(3).html());
+            $('#uploadBrand').val(nRow.find("td").eq(4).html());
+            $('#uploadContent').val(nRow.find("td").eq(5).html());
+            $('#uploadPbck7Qty').val(nRow.find("td").eq(6).html());
+            //7 back1 qty
+            $('#uploadSeriesValue').val(nRow.find("td").eq(8).html());
+            $('#uploadHje').val(nRow.find("td").eq(9).html());
+            $('#uploadTariff').val(nRow.find("td").eq(10).html());
+            
+            $('#uploadFiscalYear').val(nRow.find("td").eq(11).html());
+            $('#uploadExciseValue').val(nRow.find("td").eq(12).html());
+           
+
+            $("#lblTitleInputManual").text('Edit Input');
+
+            $('#Pbck7UploadModal').modal('show');
+
+
+        }
+    </script>
+}

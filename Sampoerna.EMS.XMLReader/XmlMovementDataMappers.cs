@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
@@ -36,33 +37,29 @@ namespace Sampoerna.EMS.XMLReader
                     try
                     {
                         var item = new INVENTORY_MOVEMENT();
-                        item.MAT_DOC = xElement.Element("MatDoc").Value;
-                        item.MVT = xElement.Element("MvT").Value;
+                        item.MAT_DOC = _xmlMapper.GetElementValue(xElement.Element("MatDoc"));
+                        var existingData = GetMovement(item.MAT_DOC);
+
+                        if (existingData != null)
+                        {
+                            item = existingData;
+                            
+                        }
+                        
+
+                        
+                        item.MVT = _xmlMapper.GetElementValue(xElement.Element("MvT"));
                         item.MATERIAL_ID = _xmlMapper.GetElementValue(xElement.Element("Material"));
                         item.PLANT_ID = _xmlMapper.GetElementValue(xElement.Element("Plnt"));
                         item.QTY = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("Quantity")));
                         item.VENDOR = _xmlMapper.GetElementValue(xElement.Element("Vendor"));
+                        item.BATCH = _xmlMapper.GetElementValue(xElement.Element("Batch"));
                         item.BUN = _xmlMapper.GetElementValue(xElement.Element("BUn"));
                         item.PURCH_DOC = _xmlMapper.GetElementValue(xElement.Element("PurchDoc"));
                         item.POSTING_DATE = _xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("PstngDate")));
                         item.ENTRY_DATE = _xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("EntryDate")));
                         item.CREATED_USER = _xmlMapper.GetElementValue(xElement.Element("Username"));
-                        
-                        //var exisitingMarket = GetMarket(item.MARKET_ID);
-                        //if (exisitingMarket != null)
-                        //{
-                        //    item.CREATED_BY = exisitingMarket.CREATED_BY;
-                        //    item.CREATED_DATE = exisitingMarket.CREATED_DATE;
-                        //    item.MODIFIED_DATE = DateTime.Now;
-                        //    item.MODIFIED_BY = Constans.PI;
-                        //    items.Add(item);
-
-                        //}
-                        //else
-                        //{
-                        //    item.CREATED_DATE = DateTime.Now;
-                        //    items.Add(item);
-                        //}
+                        item.ORDR = _xmlMapper.GetElementValue(xElement.Element("Order"));
                         items.Add(item);
                     }
                     catch (Exception ex)
@@ -80,7 +77,7 @@ namespace Sampoerna.EMS.XMLReader
         }
 
 
-        public string InsertToDatabase()
+        public MovedFileOutput InsertToDatabase()
         {
             
             
@@ -99,7 +96,13 @@ namespace Sampoerna.EMS.XMLReader
         //    return exisitingPlant;
         //}
 
+        public INVENTORY_MOVEMENT GetMovement(string matdoc)
+        {
+            var existingMvmt = _xmlMapper.uow.GetGenericRepository<INVENTORY_MOVEMENT>()
+                .Get(x => x.MAT_DOC == matdoc, null, "").FirstOrDefault();
 
+            return existingMvmt;
+        }
 
 
     }

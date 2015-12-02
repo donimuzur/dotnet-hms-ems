@@ -1,0 +1,1479 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{035828A7-BD0E-44B8-92D9-71371EB4AD93}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Sampoerna.EMS.Website</RootNamespace>
+    <AssemblyName>Sampoerna.EMS.Website</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <IncludeIisSettings>false</IncludeIisSettings>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper">
+      <HintPath>..\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper.Net4">
+      <HintPath>..\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Shared, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>references\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.6.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.6\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.xmlworker, Version=5.5.6.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\itextsharp.xmlworker.5.5.6\lib\itextsharp.xmlworker.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.ReportViewer.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\ReportViewerCommon.11.0.0.0\lib\Microsoft.ReportViewer.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WebForms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\MicosoftReportViewerWebForms_v11.1.0.1\lib\Microsoft.ReportViewer.WebForms.DLL</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.2.1.0\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector, Version=2.6.1.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SimpleInjector.2.6.1\lib\net45\SimpleInjector.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector.Diagnostics, Version=2.6.1.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SimpleInjector.2.6.1\lib\net45\SimpleInjector.Diagnostics.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector.Integration.Web, Version=2.6.1.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SimpleInjector.Integration.Web.2.6.1\lib\net40\SimpleInjector.Integration.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector.Integration.Web.Mvc, Version=2.6.1.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SimpleInjector.Integration.Web.Mvc.2.6.1\lib\net40\SimpleInjector.Integration.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="SpreadsheetLight">
+      <HintPath>..\packages\SpreadsheetLight.3.4.4\lib\SpreadsheetLight.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="Voxteneo.WebCompoments.NLogLogger">
+      <HintPath>..\packages\NLogLogger.1.3.0\lib\Voxteneo.WebCompoments.NLogLogger.dll</HintPath>
+    </Reference>
+    <Reference Include="Voxteneo.WebComponents.Logger, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ILogger.1.3.0\lib\Voxteneo.WebComponents.Logger.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease">
+      <Private>True</Private>
+      <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime">
+      <Private>True</Private>
+      <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.1.0\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.1.0\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.1.0\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin">
+      <HintPath>..\packages\Microsoft.Owin.3.0.0\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security">
+      <HintPath>..\packages\Microsoft.Owin.Security.3.0.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Facebook">
+      <HintPath>..\packages\Microsoft.Owin.Security.Facebook.3.0.0\lib\net45\Microsoft.Owin.Security.Facebook.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.3.0.0\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.3.0.0\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Google">
+      <HintPath>..\packages\Microsoft.Owin.Security.Google.3.0.0\lib\net45\Microsoft.Owin.Security.Google.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Twitter">
+      <HintPath>..\packages\Microsoft.Owin.Security.Twitter.3.0.0\lib\net45\Microsoft.Owin.Security.Twitter.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.MicrosoftAccount">
+      <HintPath>..\packages\Microsoft.Owin.Security.MicrosoftAccount.3.0.0\lib\net45\Microsoft.Owin.Security.MicrosoftAccount.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\IdentityConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="AspnetWebForms\GenericReportViewer.aspx.cs">
+      <DependentUpon>GenericReportViewer.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AspnetWebForms\GenericReportViewer.aspx.designer.cs">
+      <DependentUpon>GenericReportViewer.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\PBCK4Controller.cs" />
+    <Compile Include="Controllers\ProductionController.cs" />
+    <Compile Include="Code\PdfResult.cs" />
+    <Compile Include="Controllers\WasteController.cs" />
+    <Compile Include="Controllers\WasteRoleController.cs" />
+    <Compile Include="Controllers\WasteStockController.cs" />
+    <Compile Include="EMSWebsiteMapperCK4C.cs" />
+    <Compile Include="Code\FormsAuthenticationService.cs" />
+    <Compile Include="Code\GlobalFunctions.cs" />
+    <Compile Include="Code\IFormsAuthenticationService.cs" />
+    <Compile Include="Code\MessageInfo.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AspxReportViewerController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\BrandRegistrationController.cs" />
+    <Compile Include="Controllers\CK4CController.cs" />
+    <Compile Include="Controllers\CK5Controller.cs" />
+    <Compile Include="Controllers\CompanyController.cs" />
+    <Compile Include="Controllers\DocumenSequenceController.cs" />
+    <Compile Include="Controllers\EmailTemplateController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\GlobalSettingsController.cs" />
+    <Compile Include="Controllers\GoodsTypeGroupController.cs" />
+    <Compile Include="Controllers\HeaderFooterController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LACK2Controller.cs" />
+    <Compile Include="Controllers\PBCK7AndPBCK3Controller.cs" />
+    <Compile Include="Controllers\UserPlantMapController.cs" />
+    <Compile Include="Controllers\LACK1Controller.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\MaterialController.cs" />
+    <Compile Include="Controllers\NPPBKCController.cs" />
+    <Compile Include="Controllers\PBCK1Controller.cs" />
+    <Compile Include="Controllers\PlantController.cs" />
+    <Compile Include="Controllers\POAController.cs" />
+    <Compile Include="Controllers\KPPBCController.cs" />
+    <Compile Include="Controllers\POAMapController.cs" />
+    <Compile Include="Controllers\UomController.cs" />
+    <Compile Include="Controllers\UserAuthorizationController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\VendorController.cs" />
+    <Compile Include="Controllers\VirtualMappingPlantController.cs" />
+    <Compile Include="Controllers\WorkflowSettingsController.cs" />
+    <Compile Include="EMSWebsiteMapper.cs" />
+    <Compile Include="EMSWebsiteMapperCK5.cs" />
+    <Compile Include="EMSWebsiteMapperLack1.cs" />
+    <Compile Include="EMSWebsiteMapperLack2.cs" />
+    <Compile Include="EMSWebsiteMapperPBCK1.cs" />
+    <Compile Include="EMSWebsiteMapperPBCK4.cs" />
+    <Compile Include="EMSWebsiteMapperPBCK7AndPBCK3.cs" />
+    <Compile Include="Filters\EncryptedParameterAttribute.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\AuthorizeADAttribute.cs" />
+    <Compile Include="Helpers\HtmlHelperExtention.cs" />
+    <Compile Include="Helpers\LDAPHelper.cs" />
+    <Compile Include="Helpers\UrlHelperExtensions.cs" />
+    <Compile Include="Helpers\ValidateAttributes.cs" />
+    <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\BaseModel.cs" />
+    <Compile Include="Models\BrandRegistration\BrandRegistrationCreateViewModel.cs" />
+    <Compile Include="Models\BrandRegistration\BrandRegistrationDetailsViewModel.cs" />
+    <Compile Include="Models\BrandRegistration\BrandRegistrationEditViewModel.cs" />
+    <Compile Include="Models\BrandRegistration\BrandRegistrationIndexViewModel.cs" />
+    <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
+    <Compile Include="Models\CK4C\Ck4cDashboardModel.cs" />
+    <Compile Include="Models\CK4C\Ck4cDecreeDocModel.cs" />
+    <Compile Include="Models\CK4C\Ck4CIndexDocumentListViewModel.cs" />
+    <Compile Include="Models\CK4C\Ck4CSummaryReportsViewModel.cs" />
+    <Compile Include="Models\CK5\CK5ExternalSupplierModel.cs" />
+    <Compile Include="Models\CK5\CK5FileDocumentsViewModel.cs" />
+    <Compile Include="Models\CK5\CK5FileUploadViewModel.cs" />
+    <Compile Include="Models\CK5\CK5FormViewModel.cs" />
+    <Compile Include="Models\CK5\CK5CreateViewModel.cs" />
+    <Compile Include="Models\CK5\CK5DetailsViewModel.cs" />
+    <Compile Include="Models\CK5\CK5EditViewModel.cs" />
+    <Compile Include="Models\CK5\CK5InputManualViewModel.cs" />
+    <Compile Include="Models\CK5\CK5PlantModel.cs" />
+    <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
+    <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
+    <Compile Include="Models\CK5\CK5SummaryReportsViewModel.cs" />
+    <Compile Include="Models\CK5\CK5UploadViewModel.cs" />
+    <Compile Include="Models\CompanyViewModel.cs" />
+    <Compile Include="Models\Dashboard\DashboardDetilModel.cs" />
+    <Compile Include="Models\EmailTemplate\EmailTemplateModel.cs" />
+    <Compile Include="Models\GOODSTYPE\GoodsTypeGroupCreateViewModel.cs" />
+    <Compile Include="Models\GOODSTYPE\GoodsTypeGroupDetailsViewModel.cs" />
+    <Compile Include="Models\GOODSTYPE\GoodsTypeGroupEditViewModel.cs" />
+    <Compile Include="Models\GOODSTYPE\GoodsTypeGroupViewModel.cs" />
+    <Compile Include="Models\HeaderFooter\HeaderFooterMapViewModel.cs" />
+    <Compile Include="Models\HeaderFooter\HeaderFooterViewModel.cs" />
+    <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\KPPBC\KppbcDetailViewModel.cs" />
+    <Compile Include="Models\KPPBC\KppbcIndexViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1BaseItemModel.cs" />
+    <Compile Include="Models\LACK1\Lack1CompletedDocumentData.cs" />
+    <Compile Include="Models\LACK1\Lack1CreateViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1DashboardViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1DetailReportViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1EditViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1GeneratedItemModel.cs" />
+    <Compile Include="Models\LACK1\Lack1GenerateInputModel.cs" />
+    <Compile Include="Models\LACK1\Lack1IndexCompletedDocumentViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1IndexPlantViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1IndexViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1Input.cs" />
+    <Compile Include="Models\LACK1\Lack1ItemViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1NppbkcData.cs" />
+    <Compile Include="Models\LACK1\Lack1PlantData.cs" />
+    <Compile Include="Models\LACK1\Lack1PrintOutModel.cs" />
+    <Compile Include="Models\LACK1\Lack1SummaryReportViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2BaseItemModel.cs" />
+    <Compile Include="Models\LACK2\LACK2CreateViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2DashboardViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2DetailReportsViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2DetailViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2EditViewModel.cs" />
+    <Compile Include="Models\LACK2\LACK2FilterViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2GenerateInputModel.cs" />
+    <Compile Include="Models\LACK2\Lack2IndexPlantViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2IndexViewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2Input.cs" />
+    <Compile Include="Models\LACK2\Lack2ItemModel.cs" />
+    <Compile Include="Models\LACK2\LACK2Model.cs" />
+    <Compile Include="Models\LACK2\LACK2NppbkcData.cs" />
+    <Compile Include="Models\LACK2\LACK2PlantData.cs" />
+    <Compile Include="Models\LACK2\Lack2PreviewModel.cs" />
+    <Compile Include="Models\LACK2\Lack2SummaryReportModel.cs" />
+    <Compile Include="Models\LACK2\Lack2SummaryReportsViewModel.cs" />
+    <Compile Include="Models\LoginModel.cs" />
+    <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\Material\MaterialCreatelViewModel.cs" />
+    <Compile Include="Models\Material\MaterialDetailViewModel.cs" />
+    <Compile Include="Models\Material\MaterialEditViewModel.cs" />
+    <Compile Include="Models\Material\MaterialListViewModel.cs" />
+    <Compile Include="Models\NPPBKC\NPPBKCIViewModels.cs" />
+    <Compile Include="Models\PBCK1\Pbck1DashboardModel.cs" />
+    <Compile Include="Models\PBCK1\Pbck1DecreeDocModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1FilterViewModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1ListCK5Model.cs" />
+    <Compile Include="Models\PBCK1\Pbck1MonitoringMutasiViewModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1SupInfo.cs" />
+    <Compile Include="Models\PBCK1\PBCK1Item.cs" />
+    <Compile Include="Models\PBCK1\PBCK1ItemViewModel.cs" />
+    <Compile Include="Models\PBCK1\Pbck1MonitoringUsageViewModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1ProdConvModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1ProdPlanModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1SummaryReportViewModel.cs" />
+    <Compile Include="Models\PBCK1\PBCK1ViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4DashBoardViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4FileUploadViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4FormViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4IndexViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4PlantModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4SearchViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4SummaryReportsViewModel.cs" />
+    <Compile Include="Models\PBCK4\Pbck4UploadViewModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck3IndexViewModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck3ViewModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck7Pbck3DashboardViewModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck7SummaryReportModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck3SummaryReportModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck7IndexViewModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck7Pbck3CreateViewModel.cs" />
+    <Compile Include="Models\PBCK7AndPBCK3\Pbck7UploadViewModel.cs" />
+    <Compile Include="Models\PlantReceiveMaterial\PlantReceiveMaterialViewModel.cs" />
+    <Compile Include="Models\PLANT\PlantViewModel.cs" />
+    <Compile Include="Models\PLANT\T001WModel.cs" />
+    <Compile Include="Models\POAMap\PoaMapIndexViewModel.cs" />
+    <Compile Include="Models\POAMap\PoaMapDetailViewModel.cs" />
+    <Compile Include="Models\POA\POAViewModel.cs" />
+    <Compile Include="Models\PrintHistory\PrintHistoryViewModel.cs" />
+    <Compile Include="Models\PRODUCTION\ProductionUploadViewModel.cs" />
+    <Compile Include="Models\PRODUCTION\ProductionViewModel.cs" />
+    <Compile Include="Models\SelectItemModel.cs" />
+    <Compile Include="Models\Settings\DocumentSequenceModel.cs" />
+    <Compile Include="Models\Settings\GlobalSettingModel.cs" />
+    <Compile Include="Models\UOM\UomDetailViewModel.cs" />
+    <Compile Include="Models\UOM\UomIndexViewModel.cs" />
+    <Compile Include="Models\UserAuthorization\CreateUserAuthorizationViewModel.cs" />
+    <Compile Include="Models\UserAuthorization\IndexUserAuthorizationViewModel.cs" />
+    <Compile Include="Models\UserPlantMap\UserPlantMapIndexViewModel.cs" />
+    <Compile Include="Models\UserPlantMap\UserPlantMapDetailViewModel.cs" />
+    <Compile Include="Models\UserViewModel.cs" />
+    <Compile Include="Models\Vendor\VendorDetailViewModel.cs" />
+    <Compile Include="Models\Vendor\VendorIndexViewModel.cs" />
+    <Compile Include="Models\VirtualMappingPlantViewModel.cs" />
+    <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantCreateViewModel.cs" />
+    <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantDetailsViewModel.cs" />
+    <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantEditViewModel.cs" />
+    <Compile Include="Models\VirtualMappingPlant\VirtualMappingPlantIndexViewModel.cs" />
+    <Compile Include="Models\VirtualMappingPlant\WorkflowHistoryViewModel.cs" />
+    <Compile Include="Models\WasteRole\WasteRoleFormViewModel.cs" />
+    <Compile Include="Models\WasteRole\WasteRoleIndexViewModel.cs" />
+    <Compile Include="Models\WasteStock\WasteStockFormViewModel.cs" />
+    <Compile Include="Models\WasteStock\WasteStockIndexViewModel.cs" />
+    <Compile Include="Models\Waste\WasteUploadViewModel.cs" />
+    <Compile Include="Models\Waste\WasteViewModel.cs" />
+    <Compile Include="Models\WorkflowSettingListModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reports\CK4C\Preview.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Preview.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\CK5\CK5Materials.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CK5Materials.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\CK5\CK5MaterialsExtend.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CK5MaterialsExtend.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\CK5\CK5PrintOut.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CK5PrintOut.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\CK5\CK5PrintOutFooter.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CK5PrintOutFooter.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\CK5\CK5PrintOutMaterial.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CK5PrintOutMaterial.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\HeaderFooter\HeaderFooterDs.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HeaderFooterDs.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Reports\HeaderFooter\HeaderFooterPreview1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HeaderFooterPreview.rpt</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\LACK1\Lack1Items.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Lack1Items.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\LACK1\Lack1PrintOut.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Lack1PrintOut.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\LACK2\Lack2ItemsReport.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Lack2ItemsReport.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\LACK2\Preview.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Preview.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\PBCK1\PBCK1PrintOut.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PBCK1PrintOut.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\PBCK1\Pbck1RealisasiP3BKC.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Pbck1RealisasiP3BKC.rpt</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PBCK1\Pbck1RealisasiP3BKCTable.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Pbck1RealisasiP3BKCTable.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PBCK1\Pbck1RencanaProduksi.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Pbck1RencanaProduksi.rpt</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PBCK7\Pbck7ItemsReport.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Pbck7ItemsReport.rpt</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\PBCK7\Pbck7Report.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Pbck7Report.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\PBCK4\Pbck4PrintOut.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Pbck4PrintOut.rpt</DependentUpon>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Startup.cs" />
+    <Compile Include="Utility\ExcelData.cs" />
+    <Compile Include="Utility\ExcelReader.cs" />
+    <Compile Include="Utility\ExcelWriter.cs" />
+    <Compile Include="Validations\RequiredIfAttribute.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AspnetWebForms\GenericReportViewer.aspx" />
+    <Content Include="Content\assets\fonts\bootstrap\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\assets\fonts\FontAwesome\fontawesome-webfont.svg" />
+    <Content Include="Content\assets\fonts\montserrat-bold-webfont.svg" />
+    <Content Include="Content\assets\fonts\montserrat-regular-webfont.svg" />
+    <Content Include="Content\assets\images\chart.png" />
+    <Content Include="Content\assets\images\favicon.png" />
+    <Content Include="Content\assets\images\icon-claimable-white.png" />
+    <Content Include="Content\assets\images\icon-claimable.png" />
+    <Content Include="Content\assets\images\icon-master-white.png" />
+    <Content Include="Content\assets\images\icon-master.png" />
+    <Content Include="Content\assets\images\icon-movement-white.png" />
+    <Content Include="Content\assets\images\icon-movement.png" />
+    <Content Include="Content\assets\images\icon-setting-white.png" />
+    <Content Include="Content\assets\images\icon-setting.png" />
+    <Content Include="Content\assets\images\icon-user.png" />
+    <Content Include="Content\assets\images\loading.gif" />
+    <Content Include="Content\assets\images\logo-large.png" />
+    <Content Include="Content\assets\images\logo.png" />
+    <Content Include="Content\assets\images\sort_asc.png" />
+    <Content Include="Content\assets\images\sort_asc_disabled.png" />
+    <Content Include="Content\assets\images\sort_both.png" />
+    <Content Include="Content\assets\images\sort_desc.png" />
+    <Content Include="Content\assets\images\sort_desc_disabled.png" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\chosen-sprite.png" />
+    <Content Include="Content\chosen.min.css" />
+    <Content Include="Content\css\lack1preview.css" />
+    <Content Include="Content\css\main.min.css" />
+    <Content Include="Content\css\print.css" />
+    <Content Include="Content\css\vendors\font-awesome.min.css" />
+    <Content Include="Content\css\vendors\yamm.css" />
+    <Content Include="Content\css\loading.css" />
+    <Content Include="Content\themes\base\accordion.css" />
+    <Content Include="Content\themes\base\all.css" />
+    <Content Include="Content\themes\base\autocomplete.css" />
+    <Content Include="Content\themes\base\base.css" />
+    <Content Include="Content\themes\base\button.css" />
+    <Content Include="Content\themes\base\core.css" />
+    <Content Include="Content\themes\base\datepicker.css" />
+    <Content Include="Content\themes\base\dialog.css" />
+    <Content Include="Content\themes\base\draggable.css" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\menu.css" />
+    <Content Include="Content\themes\base\progressbar.css" />
+    <Content Include="Content\themes\base\resizable.css" />
+    <Content Include="Content\themes\base\selectable.css" />
+    <Content Include="Content\themes\base\selectmenu.css" />
+    <Content Include="Content\themes\base\slider.css" />
+    <Content Include="Content\themes\base\sortable.css" />
+    <Content Include="Content\themes\base\spinner.css" />
+    <Content Include="Content\themes\base\tabs.css" />
+    <Content Include="Content\themes\base\theme.css" />
+    <Content Include="Content\themes\base\tooltip.css" />
+    <Content Include="Content\upload\header\header_sampoerna.jpg" />
+    <Content Include="Content\upload\header\sample_header.png" />
+    <Content Include="Content\upload\Lack2\header_sampoerna.jpg" />
+    <Content Include="ExtLib\itextsharp.dll" />
+    <Content Include="ExtLib\itextsharp.pdfa.dll" />
+    <Content Include="ExtLib\iTextSharp.xml" />
+    <Content Include="ExtLib\itextsharp.xtra.dll" />
+    <Content Include="favicon.ico" />
+    <Content Include="Global.asax" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Content\assets\fonts\bootstrap\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\assets\fonts\bootstrap\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\assets\fonts\bootstrap\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\assets\fonts\FontAwesome\fontawesome-webfont.eot" />
+    <Content Include="Content\assets\fonts\FontAwesome\fontawesome-webfont.ttf" />
+    <Content Include="Content\assets\fonts\FontAwesome\fontawesome-webfont.woff" />
+    <Content Include="Content\assets\fonts\FontAwesome\fontawesome-webfont.woff2" />
+    <Content Include="Content\assets\fonts\FontAwesome\FontAwesome.otf" />
+    <Content Include="Content\assets\fonts\montserrat-bold-webfont.eot" />
+    <Content Include="Content\assets\fonts\montserrat-bold-webfont.ttf" />
+    <Content Include="Content\assets\fonts\montserrat-bold-webfont.woff" />
+    <Content Include="Content\assets\fonts\montserrat-bold-webfont.woff2" />
+    <Content Include="Content\assets\fonts\montserrat-regular-webfont.eot" />
+    <Content Include="Content\assets\fonts\montserrat-regular-webfont.ttf" />
+    <Content Include="Content\assets\fonts\montserrat-regular-webfont.woff" />
+    <Content Include="Content\assets\fonts\montserrat-regular-webfont.woff2" />
+    <Content Include="Content\assets\fonts\opensans-regular-webfont.eot" />
+    <Content Include="Content\assets\fonts\opensans-regular-webfont.ttf" />
+    <Content Include="Content\assets\fonts\opensans-regular-webfont.woff" />
+    <Content Include="Content\assets\fonts\opensans-regular-webfont.woff2" />
+    <Content Include="Content\assets\fonts\opensans-semibold-webfont.eot" />
+    <Content Include="Content\assets\fonts\opensans-semibold-webfont.ttf" />
+    <Content Include="Content\assets\fonts\opensans-semibold-webfont.woff" />
+    <Content Include="Content\assets\fonts\opensans-semibold-webfont.woff2" />
+    <Content Include="Content\css\main.min.css.map" />
+    <None Include="Properties\PublishProfiles\publish-to-iis.pubxml" />
+    <None Include="Properties\PublishProfiles\publish-web.pubxml" />
+    <Content Include="Scripts\Chart.js" />
+    <Content Include="Scripts\chosen.jquery.min.js" />
+    <Content Include="Scripts\ck4cscript.js" />
+    <Content Include="Scripts\ck4c\doccompleted.js" />
+    <Content Include="Scripts\ck4c\docupload.js" />
+    <Content Include="Scripts\CK5InputManual.js" />
+    <Content Include="Scripts\CK5Scripts.js" />
+    <Content Include="Scripts\CK5ScriptUploadGovFile.js" />
+    <Content Include="Scripts\colReorderWithResize.js" />
+    <Content Include="Scripts\Dashboard.js" />
+    <Content Include="Scripts\DataTables-1.10.7\Contributing.md" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\Readme.md" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\Readme.md" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedColumns\Readme.md" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\css\dataTables.responsive.scss" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\Readme.md" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Scroller\examples\data\ssp.php" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\images\psd\collection.psd" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\images\psd\copy document.psd" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\images\psd\file_types.psd" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\images\psd\printer.psd" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\Readme.md" />
+    <Content Include="Scripts\DataTables-1.10.7\media\images\Sorting icons.psd" />
+    <Content Include="Scripts\DataTables-1.10.7\media\js\input.js" />
+    <Content Include="Scripts\DataTables-1.10.7\Readme.md" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\AutoFill\css\dataTables.autoFill.css" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\AutoFill\css\dataTables.autoFill.min.css" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\AutoFill\examples\columns.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\AutoFill\examples\complete-callback.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\AutoFill\examples\fill-both.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\AutoFill\examples\fill-horizontal.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\AutoFill\examples\index.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\AutoFill\examples\scrolling.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\AutoFill\examples\simple.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\AutoFill\examples\step-callback.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\AutoFill\images\filler.png" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\AutoFill\js\dataTables.autoFill.js" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\AutoFill\js\dataTables.autoFill.min.js" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\AutoFill\Readme.txt" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\css\dataTables.colReorder.css" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\css\dataTables.colReorder.min.css" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\examples\alt_insert.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\examples\colvis.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\examples\col_filter.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\examples\fixedcolumns.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\examples\fixedheader.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\examples\index.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\examples\jqueryui.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\examples\new_init.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\examples\predefined.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\examples\realtime.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\examples\reset.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\examples\scrolling.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\examples\server_side.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\examples\simple.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\examples\state_save.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\images\insert.png" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\js\dataTables.colReorder.js" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\js\dataTables.colReorder.min.js" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColReorder\License.txt" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\css\dataTables.colVis.css" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\css\dataTables.colvis.jqueryui.css" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\css\dataTables.colVis.min.css" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\examples\button_order.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\examples\exclude_columns.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\examples\group_columns.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\examples\index.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\examples\jqueryui.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\examples\mouseover.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\examples\new_init.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\examples\restore.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\examples\simple.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\examples\text.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\examples\title_callback.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\examples\two_tables.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\examples\two_tables_identical.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\js\dataTables.colVis.js" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\js\dataTables.colVis.min.js" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\ColVis\License.txt" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedColumns\css\dataTables.fixedColumns.css" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedColumns\css\dataTables.fixedColumns.min.css" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedColumns\examples\bootstrap.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedColumns\examples\colvis.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedColumns\examples\col_filter.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedColumns\examples\css_size.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedColumns\examples\index.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedColumns\examples\index_column.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedColumns\examples\left_right_columns.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedColumns\examples\right_column.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedColumns\examples\rowspan.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedColumns\examples\server-side-processing.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedColumns\examples\simple.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedColumns\examples\size_fixed.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedColumns\examples\size_fluid.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedColumns\examples\two_columns.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedColumns\js\dataTables.fixedColumns.js" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedColumns\js\dataTables.fixedColumns.min.js" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedColumns\License.txt" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedHeader\css\dataTables.fixedHeader.css" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedHeader\css\dataTables.fixedHeader.min.css" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedHeader\examples\header_footer.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedHeader\examples\index.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedHeader\examples\simple.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedHeader\examples\top_left_right.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedHeader\examples\two_tables.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedHeader\examples\zIndexes.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedHeader\js\dataTables.fixedHeader.js" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedHeader\js\dataTables.fixedHeader.min.js" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\FixedHeader\Readme.txt" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\KeyTable\css\dataTables.keyTable.css" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\KeyTable\css\dataTables.keyTable.min.css" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\KeyTable\examples\events.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\KeyTable\examples\html.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\KeyTable\examples\index.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\KeyTable\examples\scrolling.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\KeyTable\examples\simple.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\KeyTable\js\dataTables.keyTable.js" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\KeyTable\js\dataTables.keyTable.min.js" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\KeyTable\Readme.txt" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\css\dataTables.responsive.css" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\child-rows\column-control.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\child-rows\custom-renderer.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\child-rows\disable-child-rows.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\child-rows\index.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\child-rows\right-column.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\child-rows\whole-row-control.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\display-control\auto.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\display-control\classes.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\display-control\complexHeader.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\display-control\fixedHeader.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\display-control\index.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\display-control\init-classes.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\index.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\initialisation\ajax.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\initialisation\className.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\initialisation\default.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\initialisation\index.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\initialisation\new.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\initialisation\option.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\styling\bootstrap.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\styling\compact.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\styling\foundation.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\styling\index.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\examples\styling\scrolling.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\js\dataTables.responsive.js" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\js\dataTables.responsive.min.js" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Responsive\License.txt" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Scroller\css\dataTables.scroller.css" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Scroller\css\dataTables.scroller.min.css" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Scroller\examples\api_scrolling.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Scroller\examples\data\2500.txt" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Scroller\examples\index.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Scroller\examples\large_js_source.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Scroller\examples\server-side_processing.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Scroller\examples\simple.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Scroller\examples\state_saving.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Scroller\images\loading-background.png" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Scroller\js\dataTables.scroller.js" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Scroller\js\dataTables.scroller.min.js" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\Scroller\Readme.txt" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\css\dataTables.tableTools.css" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\css\dataTables.tableTools.min.css" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\examples\ajax.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\examples\alter_buttons.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\examples\bootstrap.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\examples\button_text.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\examples\collection.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\examples\defaults.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\examples\index.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\examples\jqueryui.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\examples\multiple_tables.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\examples\multi_instance.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\examples\new_init.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\examples\pdf_message.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\examples\plug-in.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\examples\select_column.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\examples\select_multi.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\examples\select_os.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\examples\select_single.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\examples\simple.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\examples\swf_path.html" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\images\collection.png" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\images\collection_hover.png" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\images\copy.png" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\images\copy_hover.png" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\images\csv.png" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\images\csv_hover.png" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\images\pdf.png" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\images\pdf_hover.png" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\images\print.png" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\images\print_hover.png" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\images\xls.png" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\images\xls_hover.png" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\js\dataTables.tableTools.js" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\js\dataTables.tableTools.min.js" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\swf\copy_csv_xls.swf" />
+    <Content Include="Scripts\DataTables-1.10.7\extensions\TableTools\swf\copy_csv_xls_pdf.swf" />
+    <Content Include="Scripts\DataTables-1.10.7\license.txt" />
+    <Content Include="Scripts\DataTables-1.10.7\media\css\jquery.dataTables.css" />
+    <Content Include="Scripts\DataTables-1.10.7\media\css\jquery.dataTables.min.css" />
+    <Content Include="Scripts\DataTables-1.10.7\media\css\jquery.dataTables_themeroller.css" />
+    <Content Include="Scripts\DataTables-1.10.7\media\images\favicon.ico" />
+    <Content Include="Scripts\DataTables-1.10.7\media\images\sort_asc.png" />
+    <Content Include="Scripts\DataTables-1.10.7\media\images\sort_asc_disabled.png" />
+    <Content Include="Scripts\DataTables-1.10.7\media\images\sort_both.png" />
+    <Content Include="Scripts\DataTables-1.10.7\media\images\sort_desc.png" />
+    <Content Include="Scripts\DataTables-1.10.7\media\images\sort_desc_disabled.png" />
+    <Content Include="Scripts\DataTables-1.10.7\media\js\jquery.dataTables.js" />
+    <Content Include="Scripts\DataTables-1.10.7\media\js\jquery.dataTables.min.js" />
+    <Content Include="Scripts\DataTables-1.10.7\media\js\jquery.js" />
+    <Content Include="Reports\HeaderFooter\HeaderFooterDs.xsc">
+      <DependentUpon>HeaderFooterDs.xsd</DependentUpon>
+    </Content>
+    <None Include="Reports\HeaderFooter\HeaderFooterDs.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>HeaderFooterDs.Designer.cs</LastGenOutput>
+    </None>
+    <Content Include="Reports\HeaderFooter\HeaderFooterDs.xss">
+      <DependentUpon>HeaderFooterDs.xsd</DependentUpon>
+    </Content>
+    <None Include="Scripts\jquery-2.1.4.intellisense.js" />
+    <Content Include="Scripts\jquery-2.1.4.js" />
+    <Content Include="Scripts\jquery-2.1.4.min.js" />
+    <Content Include="Scripts\jquery-2.1.4.min.map" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery-1.11.3.min.js" />
+    <Content Include="Scripts\jquery.form.min.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Scripts\jquery-ui-1.11.4.js" />
+    <Content Include="Scripts\jquery-ui-1.11.4.min.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\js\custom.js" />
+    <Content Include="Scripts\js\scripts.min.js" />
+    <Content Include="Scripts\js\vendors\bootstrap-datepicker.min.js" />
+    <Content Include="Scripts\js\vendors\bootstrap-select-custom.js" />
+    <Content Include="Scripts\js\vendors\bootstrap-select.min.js" />
+    <Content Include="Scripts\js\vendors\datatablesResponsive.js" />
+    <Content Include="Scripts\js\vendors\jquery.dataTables.min.js" />
+    <Content Include="Scripts\js\vendors\jquery.fixedheadertable.min.js" />
+    <Content Include="Scripts\js\vendors\jquery.table2excel.js" />
+    <Content Include="Scripts\lack1\Lack1GenerateTable.js" />
+    <Content Include="Scripts\lack1\Lack1Upload.js" />
+    <Content Include="Scripts\lack2\form.js" />
+    <Content Include="Scripts\lack1\Lack1Scripts.js" />
+    <Content Include="Scripts\modernizr.min.js" />
+    <Content Include="Scripts\js\_scripts.js" />
+    <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\pbck1script.js" />
+    <Content Include="Scripts\pbck1\docupload.js" />
+    <Content Include="Scripts\Pbck3Script.js" />
+    <Content Include="Scripts\Pbck3ScriptDocUpload.js" />
+    <Content Include="Scripts\Pbck4InputManual.js" />
+    <Content Include="Scripts\Pbck4Script.js" />
+    <Content Include="Scripts\Pbck4ScriptDocUpload.js" />
+    <Content Include="Scripts\Pbck7InputManual.js" />
+    <Content Include="Scripts\Pbck7Script.js" />
+    <Content Include="Scripts\Pbck7ScriptDocUpload.js" />
+    <Content Include="Scripts\pbck7\form.js" />
+    <Content Include="Scripts\poa\form.js" />
+    <Content Include="Scripts\respond.js" />
+    <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\thousand-separator.js" />
+    <Content Include="Scripts\UploadExcel.js" />
+    <Content Include="Scripts\_references.js" />
+    <Content Include="Views\CK5\_CK5ListSummaryReport.cshtml" />
+    <Content Include="Views\LACK1\PrintDocument.cshtml" />
+    <Content Include="Views\PBCK1\_HomeDetails.cshtml" />
+    <Content Include="Views\PBCK1\_HomeEdit.cshtml" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
+    <Content Include="Views\Account\ConfirmEmail.cshtml" />
+    <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
+    <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
+    <Content Include="Views\Account\ForgotPassword.cshtml" />
+    <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Account\ResetPassword.cshtml" />
+    <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
+    <Content Include="Views\Account\SendCode.cshtml" />
+    <Content Include="Views\Account\VerifyCode.cshtml" />
+    <Content Include="Views\Manage\AddPhoneNumber.cshtml" />
+    <Content Include="Views\Manage\ChangePassword.cshtml" />
+    <Content Include="Views\Manage\Index.cshtml" />
+    <Content Include="Views\Manage\ManageLogins.cshtml" />
+    <Content Include="Views\Manage\SetPassword.cshtml" />
+    <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
+    <Content Include="Views\Shared\Lockout.cshtml" />
+    <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\User\Detail.cshtml" />
+    <Content Include="Views\Company\Index.cshtml" />
+    <Content Include="Views\PBCK1\Index.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Currency.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\FormatDecimal.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\FormatDateTime.cshtml" />
+    <Content Include="Views\PBCK1\Create.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\FormatQty.cshtml" />
+    <Content Include="Views\VirtualMappingPlant\Index.cshtml" />
+    <Content Include="Views\POA\Index.cshtml" />
+    <Content Include="Views\NPPBKC\Index.cshtml" />
+    <Content Include="Views\GoodsTypeGroup\Index.cshtml" />
+    <Content Include="Views\Plant\Index.cshtml" />
+    <Content Include="Views\BrandRegistration\Index.cshtml" />
+    <Content Include="Views\CK5\Index.cshtml" />
+    <Content Include="Views\PBCK1\_ProdConvList.cshtml" />
+    <Content Include="Views\PBCK1\_ProdConvUpload.cshtml" />
+    <Content Include="Views\CK5\_CK5TablePartial.cshtml" />
+    <Content Include="Views\CK5\_CK5IntercompanyTablePartial.cshtml" />
+    <Content Include="Views\CK5\CK5Manual.cshtml" />
+    <Content Include="Views\CK5\_CK5Search.cshtml" />
+    <Content Include="Views\PBCK1\Edit.cshtml" />
+    <Content Include="Views\PBCK1\Details.cshtml" />
+    <Content Include="Views\PBCK1\_ProdPlanUpload.cshtml" />
+    <Content Include="Views\PBCK1\_ProdPlanList.cshtml" />
+    <Content Include="Views\CK5\CK5Export.cshtml" />
+    <Content Include="Views\CK5\CK5Completed.cshtml" />
+    <Content Include="Views\CK5\CK5Import.cshtml" />
+    <Content Include="Views\PBCK1\_Pbck1Table.cshtml" />
+    <Content Include="Views\PBCK1\_HomeCreate.cshtml" />
+    <Content Include="Views\PBCK1\_PrintOut.cshtml" />
+    <Content Include="Views\PBCK1\_ChangeLog.cshtml" />
+    <Content Include="Views\POA\Create.cshtml" />
+    <Content Include="Views\POA\Edit.cshtml" />
+    <Content Include="Views\POA\Detail.cshtml" />
+    <Content Include="Views\HeaderFooter\Index.cshtml" />
+    <Content Include="Views\HeaderFooter\Create.cshtml" />
+    <Content Include="Views\HeaderFooter\Edit.cshtml" />
+    <Content Include="Views\HeaderFooter\Details.cshtml" />
+    <Content Include="Views\Plant\Edit.cshtml" />
+    <Content Include="Views\Plant\Detail.cshtml" />
+    <Content Include="Views\GoodsTypeGroup\Create.cshtml" />
+    <Content Include="Views\GoodsTypeGroup\Details.cshtml" />
+    <Content Include="Views\GoodsTypeGroup\Edit.cshtml" />
+    <Content Include="Views\Login\Index.cshtml" />
+    <Content Include="Views\VirtualMappingPlant\Create.cshtml" />
+    <Content Include="Views\VirtualMappingPlant\Details.cshtml" />
+    <Content Include="Views\VirtualMappingPlant\Edit.cshtml" />
+    <Content Include="Views\Material\Index.cshtml" />
+    <Content Include="Views\Material\Details.cshtml" />
+    <Content Include="Views\Material\Create.cshtml" />
+    <Content Include="Views\Material\Edit.cshtml" />
+    <Content Include="Views\BrandRegistration\Details.cshtml" />
+    <Content Include="Views\BrandRegistration\Create.cshtml" />
+    <Content Include="Views\BrandRegistration\Edit.cshtml" />
+    <Content Include="Views\BrandRegistration\_EditSAP.cshtml" />
+    <Content Include="Views\Shared\_ChangesHistoryTable.cshtml" />
+    <Content Include="Views\NPPBKC\Edit.cshtml" />
+    <Content Include="Views\NPPBKC\Detail.cshtml" />
+    <Content Include="Views\POA\_FileUpload.cshtml" />
+    <Content Include="Views\Uom\Create.cshtml" />
+    <Content Include="Views\Uom\Details.cshtml" />
+    <Content Include="Views\Uom\Edit.cshtml" />
+    <Content Include="Views\Shared\_WorkflowHistoryTable.cshtml" />
+    <Content Include="Views\Shared\_MessageInfo.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadListOriginal.cshtml" />
+    <Content Include="Views\CK5\_CK5DomesticAlcoholTablePartial.cshtml" />
+    <Content Include="Views\EmailTemplate\Create.cshtml" />
+    <Content Include="Views\EmailTemplate\Edit.cshtml" />
+    <Content Include="Views\GlobalSettings\Index.cshtml" />
+    <Content Include="Views\Material\_EditConvertionList.cshtml" />
+    <Content Include="Views\EmailTemplate\Index.cshtml" />
+    <Content Include="Views\EmailTemplate\Details.cshtml" />
+    <Content Include="Views\CK5\_CK5ChangeLog.cshtml" />
+    <Content Include="Views\CK5\_CK5InformationCreate.cshtml" />
+    <Content Include="Views\CK5\_CK5InformationDetails.cshtml" />
+    <Content Include="Views\CK5\_CK5InformationEdit.cshtml" />
+    <Content Include="Views\CK5\_CK5Printout.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadCreate.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadEdit.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadList.cshtml" />
+    <Content Include="Views\CK5\Create.cshtml" />
+    <Content Include="Views\CK5\Details.cshtml" />
+    <Content Include="Views\CK5\Edit.cshtml" />
+    <Content Include="Views\PBCK1\CompletedDocument.cshtml" />
+    <Content Include="Views\PBCK1\_Pbck1CompletedDocumentTable.cshtml" />
+    <Content Include="Views\EmailTemplate\Edit.cshtml" />
+    <Content Include="Views\DocumentSequence\Index.cshtml" />
+    <Content Include="Views\WorkflowSettings\Index.cshtml" />
+    <Content Include="Views\WorkflowSettings\Edit.cshtml" />
+    <Content Include="Views\WorkflowSettings\Details.cshtml" />
+    <Content Include="Views\WorkflowSettings\GetMapping.cshtml" />
+    <Content Include="Views\WorkflowSettings\GetMappingPartial.cshtml" />
+    <Content Include="Views\PBCK1\_DecreeDocUpload.cshtml" />
+    <Content Include="Views\LACK1\Index.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\DateTime.cshtml" />
+    <Content Include="Views\CK5\_CK5GovApproval.cshtml" />
+    <Content Include="Views\PBCK1\_HomeGovApproval.cshtml" />
+    <Content Include="Views\CK5\CK5SummaryReport.cshtml" />
+    <Content Include="Views\PBCK1\MonitoringUsage.cshtml" />
+    <Content Include="Views\PBCK1\_Pbck1MonitoringUsageTable.cshtml" />
+    <Content Include="Views\LACK1\_Lack1Table.cshtml" />
+    <Content Include="Views\LACK1\ListByPlant.cshtml" />
+    <Content Include="Views\LACK1\_Lack1ListByPlantTable.cshtml" />
+    <Content Include="Views\LACK1\Create.cshtml" />
+    <Content Include="Views\LACK1\_HomeCreate.cshtml" />
+    <Content Include="Views\Shared\_PrintHistoryTable.cshtml" />
+    <Content Include="Views\UserAuthorization\Index.cshtml" />
+    <Content Include="Views\UserAuthorization\Detail.cshtml" />
+    <Content Include="Views\PBCK1\SummaryReports.cshtml" />
+    <Content Include="Views\PBCK1\_Pbck1SummaryReportTable.cshtml" />
+    <Content Include="Views\UserAuthorization\Edit.cshtml" />
+    <Content Include="Views\LACK1\_PrintOut.cshtml" />
+    <Content Include="Views\POAMap\Create.cshtml" />
+    <Content Include="Views\Uom\Index.cshtml" />
+    <Content Include="Views\POAMap\Index.cshtml" />
+    <Content Include="Views\POAMap\Detail.cshtml" />
+    <Content Include="Views\Vendor\Details.cshtml" />
+    <Content Include="Views\Vendor\Index.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\FormatDate.cshtml" />
+    <Content Include="Views\POAMap\Edit.cshtml" />
+    <Content Include="Views\CK5\CK5UploadFileDocument.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadFileDocumentsList.cshtml" />
+    <Content Include="Views\POAMap\Edit.cshtml" />
+    <Content Include="Views\KPPBC\Index.cshtml" />
+    <Content Include="Views\KPPBC\Edit.cshtml" />
+    <Content Include="Views\KPPBC\Detail.cshtml" />
+    <Content Include="Views\UserPlantMap\Create.cshtml" />
+    <Content Include="Views\UserPlantMap\Index.cshtml" />
+    <Content Include="Views\UserPlantMap\Edit.cshtml" />
+    <Content Include="Views\UserPlantMap\Detail.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Index.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck7TableIndex.cshtml" />
+    <Content Include="Views\LACK2\Create.cshtml" />
+    <Content Include="Views\LACK2\CreateDocument.cshtml" />
+    <Content Include="Views\LACK2\Index.cshtml" />
+    <Content Include="Views\LACK2\_Lack2PlantTable .cshtml" />
+    <Content Include="Views\LACK2\_Lack2OpenDoc.cshtml" />
+    <Content Include="Views\LACK1\ListCompletedDocument.cshtml" />
+    <Content Include="Views\LACK1\_Lack1CompletedDocumentTable.cshtml" />
+    <Content Include="Views\Error\Unauthorized.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\ListPbck3Index.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck3TableIndex.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Create.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_HomeCreate.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_PrintOutPbck7.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Upload.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_UploadList.cshtml" />
+    <Content Include="Views\CK5\CK5InputMaterial.cshtml" />
+    <Content Include="Views\CK5\_CK5SealingInput.cshtml" />
+    <Content Include="Views\LACK2\Edit.cshtml" />
+    <Content Include="Views\LACK2\Detail.cshtml" />
+    <Content Include="Views\CK4C\DocumentList.cshtml" />
+    <Content Include="Views\CK4C\_CK4CTableDocumentList.cshtml" />
+    <Content Include="Views\CK4C\Ck4CCreateDocumentList.cshtml" />
+    <Content Include="Views\CK4C\_HomeCreate.cshtml" />
+    <Content Include="Views\LACK1\Details.cshtml" />
+    <Content Include="Views\LACK1\_HomeDetails.cshtml" />
+    <Content Include="Views\LACK1\_ChangeLog.cshtml" />
+    <Content Include="Views\LACK2\_PrintOut.cshtml" />
+    <Content Include="Views\LACK2\_ChangesLog.cshtml" />
+    <Content Include="Views\Production\Index.cshtml" />
+    <Content Include="Views\Production\_ProductionTableIndex.cshtml" />
+    <Content Include="Views\Production\Create.cshtml" />
+    <Content Include="Views\Production\Edit.cshtml" />
+    <Content Include="Views\Production\Detail.cshtml" />
+    <Content Include="Views\CK4C\Details.cshtml" />
+    <Content Include="Views\CK4C\_HomeDetails.cshtml" />
+    <Content Include="Views\CK4C\Edit.cshtml" />
+    <Content Include="Views\CK4C\_HomeEdit.cshtml" />
+    <Content Include="Views\CK4C\_ChangeLog.cshtml" />
+    <Content Include="Views\CK4C\_PrintOut.cshtml" />
+    <Content Include="Views\LACK1\Edit.cshtml" />
+    <Content Include="Views\LACK1\_HomeEdit.cshtml" />
+    <Content Include="Views\LACK1\_FileUpload.cshtml" />
+    <Content Include="Views\PBCK4\Index.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4Search.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4OpenListDocuments.cshtml" />
+    <Content Include="Views\PBCK4\Create.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4InformationCreate.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4Printout.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4UploadCreate.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4UploadList.cshtml" />
+    <Content Include="Views\PBCK4\Details.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4ChangeLog.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4InformationDetails.cshtml" />
+    <Content Include="Views\PBCK4\Edit.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4InformationEdit.cshtml" />
+    <Content Include="Views\Waste\Index.cshtml" />
+    <Content Include="Views\Waste\_WasteTableIndex.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_WorkflowHistoryPbck7.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Back.cshtml" />
+    <Content Include="Views\Waste\Create.cshtml" />
+    <Content Include="Views\Waste\Edit.cshtml" />
+    <Content Include="Views\CK4C\_HomeGovApproval.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4GovApproval.cshtml" />
+    <Content Include="Views\CK4C\_DecreeDocUpload.cshtml" />
+    <Content Include="Views\CK4C\CompletedDocument.cshtml" />
+    <Content Include="Views\CK4C\_CK4CTableCompletedDocument.cshtml" />
+    <Content Include="Views\Waste\Detail.cshtml" />
+    <Content Include="Views\Production\_HomeCreate.cshtml" />
+    <Content Include="Views\Production\_Upload.cshtml" />
+    <Content Include="Views\Production\_UploadList.cshtml" />
+    <Content Include="Views\PBCK4\Pbck4CompletedDocuments.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_HomeEdit.cshtml" />
+    <Content Include="Views\Waste\_HomeCreate.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Edit.cshtml" />
+    <Content Include="Views\Production\UploadManualProduction.cshtml" />
+    <Content Include="Views\LACK1\_HomeGovApproval.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_HomeDetail.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Detail.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Back1.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_WorkflowHistoryPbck3.cshtml" />
+    <Content Include="Views\PBCK4\Pbck4SummaryReport.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_FileUploadBack1.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4ListSummaryReport.cshtml" />
+    <Content Include="Views\Waste\UploadManualWaste.cshtml" />
+    <Content Include="Views\LACK1\_Lack1SummaryReport.cshtml" />
+    <Content Include="Views\LACK1\SummaryReport.cshtml" />
+    <Content Include="Views\Waste\_Upload.cshtml" />
+    <Content Include="Views\Waste\_UploadList.cshtml" />
+    <Content Include="Views\LACK1\DetailReport.cshtml" />
+    <Content Include="Views\LACK1\_Lack1DetailReport.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_FileUploadBack3.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_FileUploadCk2.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_PrintOutPbck3.cshtml" />
+    <Content Include="Views\CK4C\Ck4CSummaryReport.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_PrintHistoryTablePbck3.cshtml" />
+    <Content Include="Views\CK4C\_Ck4CListSummaryReport.cshtml" />
+    <Content Include="Views\LACK2\Lack2SummaryReport.cshtml" />
+    <Content Include="Views\LACK2\_Lack2ListSummaryReport.cshtml" />
+    <Content Include="Views\LACK2\Lack2DetailReport.cshtml" />
+    <Content Include="Views\LACK2\_Lack2ListDetailReport.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Pbck7SummaryReport.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck7SummaryIndex.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Pbck3SummaryReport.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck3SummaryIndex.cshtml" />
+    <Content Include="Views\CK5\CK5MarketReturn.cshtml" />
+    <Content Include="Views\CK4C\_HomeCompleted.cshtml" />
+    <Content Include="Views\CK5\_CK5GovApprovalMarketReturn.cshtml" />
+    <Content Include="Views\CK5\CK5MarketReturnCompleted.cshtml" />
+    <Content Include="Views\CK4C\_DecreeDocCompleted.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4UploadListDetail.cshtml" />
+    <Content Include="Views\CK4C\Detail.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck7ChangeLog.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\EditPbck3.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_HomeEditPbck3Pbck7.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck3ChangeLog.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\DetailPbck3.cshtml" />
+    <Content Include="Views\LACK2\_HomeGovApproval.cshtml" />
+    <Content Include="Views\LACK2\_HomeEdit.cshtml" />
+    <Content Include="Views\LACK2\_HomeDetail.cshtml" />
+    <Content Include="Views\PBCK1\CK5Details.cshtml" />
+    <Content Include="Views\PBCK1\_CK5Table.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_HomePbck3GovApproval.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck3Pbck7Info.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck3Ck5Info.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck7InputManual.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4GovApprovalInfo.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4GovApprovalCompleted.cshtml" />
+    <Content Include="Views\CK5\DetailsView.cshtml" />
+    <Content Include="Views\CK5\_CK5ManualPlantSource.cshtml" />
+    <Content Include="Views\CK5\_CK5OriginalPlantSource.cshtml" />
+    <Content Include="Views\PBCK1\MonitoringMutasi.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4UploadAdd.cshtml" />
+    <Content Include="Views\CK5\_CK5ManualPlantDestination.cshtml" />
+    <Content Include="Views\PBCK1\_MutasiList.cshtml" />
+    <Content Include="Views\CK5\_CK5OriginalPlantDestination.cshtml" />
+    <Content Include="Views\CK5\_CK5GoodIssue.cshtml" />
+    <Content Include="Views\CK5\_CK5GoodReceive.cshtml" />
+    <Content Include="Views\CK5\CreateMarketReturn.cshtml" />
+    <Content Include="Views\CK5\EditMarketReturn.cshtml" />
+    <Content Include="Views\CK4C\Dashboard.cshtml" />
+    <Content Include="Views\Shared\_ChartStatus.cshtml" />
+    <Content Include="Views\CK5\_CK5POReceive.cshtml" />
+    <Content Include="Views\LACK2\Dashboard.cshtml" />
+    <Content Include="Views\PBCK1\Dashboard.cshtml" />
+    <Content Include="Views\LACK1\Dashboard.cshtml" />
+    <Content Include="Views\PBCK4\Dashboard.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Dashboard.cshtml" />
+    <Content Include="Views\Error\ErrorHandler.cshtml" />
+    <Content Include="Views\CK5\_CK5InformationCreateMarketReturn.cshtml" />
+    <Content Include="Views\CK5\_CK5InformationEditMarketReturn.cshtml" />
+    <Content Include="Views\CK5\_CK5InformationDetailsMarketReturn.cshtml" />
+    <Content Include="Views\PBCK4\Detail.cshtml" />
+<<<<<<< HEAD
+    <Content Include="Views\WasteRole\Index.cshtml" />
+    <Content Include="Views\WasteRole\Create.cshtml" />
+    <Content Include="Views\WasteRole\Edit.cshtml" />
+    <Content Include="Views\WasteRole\Detail.cshtml" />
+    <Content Include="Views\WasteStock\Index.cshtml" />
+    <Content Include="Views\WasteStock\Create.cshtml" />
+=======
+    <Content Include="Views\LACK2\Details.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\Details.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\DetailsPbck3.cshtml" />
+>>>>>>> dev
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Content\upload\Lack1\" />
+    <Folder Include="Models\WorkflowHistory\" />
+    <Folder Include="Views\AspxReportViewer\" />
+    <Folder Include="Views\SettingsGlobal\" />
+    <Folder Include="Views\Settings\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+    <None Include="Project_Readme.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sampoerna.EMS.AutoMapperExtensions\Sampoerna.EMS.AutoMapperExtensions.csproj">
+      <Project>{3cddfd06-1254-4bd5-82ed-283f26c38eea}</Project>
+      <Name>Sampoerna.EMS.AutoMapperExtensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.BLL\Sampoerna.EMS.BLL.csproj">
+      <Project>{810db88f-fbfd-4af7-89bc-4612f101d5b9}</Project>
+      <Name>Sampoerna.EMS.BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.BusinessObject\Sampoerna.EMS.BusinessObject.csproj">
+      <Project>{3c89fdd1-a506-4047-89e3-40708cf6b2c5}</Project>
+      <Name>Sampoerna.EMS.BusinessObject</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.Contract\Sampoerna.EMS.Contract.csproj">
+      <Project>{7f4a15c1-8f58-49ea-ba04-0d7ea572954b}</Project>
+      <Name>Sampoerna.EMS.Contract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.Core\Sampoerna.EMS.Core.csproj">
+      <Project>{b4021a69-2836-401b-8e06-92e8a6008219}</Project>
+      <Name>Sampoerna.EMS.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.DAL\Sampoerna.EMS.DAL.csproj">
+      <Project>{996a65f8-f098-4578-8405-affdef80e51f}</Project>
+      <Name>Sampoerna.EMS.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.ReportingData\Sampoerna.EMS.ReportingData.csproj">
+      <Project>{8708b0f2-5e32-43ea-a2f1-f18aab51dc47}</Project>
+      <Name>Sampoerna.EMS.ReportingData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.Utils\Sampoerna.EMS.Utils.csproj">
+      <Project>{506150a8-fd10-433e-8184-5a5ff03d53fe}</Project>
+      <Name>Sampoerna.EMS.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sampoerna.EMS.XMLReader\Sampoerna.EMS.XMLReader.csproj">
+      <Project>{5370f240-5512-461a-9956-351009512c94}</Project>
+      <Name>Sampoerna.EMS.XMLReader</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Reports\EmployeeData.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Reports\HeaderFooterPreview.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Reports\CK5\CK5Materials.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CK5Materials.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\CK5\CK5MaterialsExtend.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CK5MaterialsExtend.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\CK5\CK5PrintOut.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CK5PrintOut.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\CK5\CK5PrintOutFooter.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CK5PrintOutFooter.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\CK5\CK5PrintOutMaterial.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CK5PrintOutMaterial.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\PBCK1\PBCK1PrintOut.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>PBCK1PrintOut.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\PBCK1\Pbck1RealisasiP3BKC.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Pbck1RealisasiP3BKC.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\PBCK1\Pbck1RencanaProduksi.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Pbck1RencanaProduksi.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Reports\LACK2\Preview.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Preview.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\CK4C\Preview.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Preview.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\LACK1\Lack1Items.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Lack1Items.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\LACK1\Lack1PrintOut.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Lack1PrintOut.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\LACK2\Lack2ItemsReport.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Lack2ItemsReport.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\HeaderFooter\HeaderFooterPreview.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>HeaderFooterPreview1.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <EmbeddedResource Include="Reports\PBCK1\Pbck1RealisasiP3BKCTable.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Pbck1RealisasiP3BKCTable.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Content Include="Reports\PBCK4\Pbck4PrintOut.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Pbck4PrintOut.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\PBCK7\Pbck7Report.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Pbck7Report.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\PBCK7\Pbck7ItemsReport.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Pbck7ItemsReport.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>57497</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://wwx.hms-ems-dev.voxteneo.com</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <Import Project="..\packages\AutoMapper.3.2.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.2.1\tools\AutoMapper.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

@@ -12,6 +12,7 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models;
 
 namespace Sampoerna.EMS.Website.Code
@@ -38,8 +39,13 @@ namespace Sampoerna.EMS.Website.Code
 
         public static SelectList GetCreatorList(object selectedValue = null)
         {
+            //IPOABLL poaBll = MvcApplication.GetInstance<POABLL>();
             IUserBLL userBll = MvcApplication.GetInstance<UserBLL>();
-            var users = userBll.GetUsers(new UserInput());
+            var users = userBll.GetUsers();
+            //    new UserInput
+            //{
+            //    ListPoas = poaBll.GetAll()
+            //});
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(users);
             return new SelectList(selectItemSource, "ValueField", "TextField", selectedValue);
         }
@@ -47,7 +53,7 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetNppbkcAll(IZaidmExNPPBKCBLL nppbkcBll)
         {
             IZaidmExNPPBKCBLL nppbkcbll = nppbkcBll;
-            var nppbkcList = nppbkcbll.GetAll().Where(x => x.IS_DELETED != true);
+            var nppbkcList = nppbkcbll.GetAll().Where(x => x.IS_DELETED != true).OrderBy(x=> x.NPPBKC_ID);
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(nppbkcList);
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
@@ -102,6 +108,12 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetUomList(IUnitOfMeasurementBLL uomBll)
         {
             var data = uomBll.GetAll().Where(x => x.IS_DELETED != true && x.IS_EMS == true);
+            return new SelectList(data, "UOM_ID", "UOM_DESC");
+        }
+
+        public static SelectList GetCk5AllowedUomList(IUnitOfMeasurementBLL uomBll)
+        {
+            var data = uomBll.GetCK5ConvertedUoms();
             return new SelectList(data, "UOM_ID", "UOM_DESC");
         }
 
@@ -267,6 +279,24 @@ namespace Sampoerna.EMS.Website.Code
             var data = pbck1.GetCompletedDocumentByParam(input);
             return new SelectList(data, "Pbck1Id", "Pbck1Number");
         }
+
+        public static SelectList GetPlantImportList()
+        {
+            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
+            IZaidmExNPPBKCBLL nppbkcBLL = MvcApplication.GetInstance<ZaidmExNPPBKCBLL>();
+
+            var nppbkcList = nppbkcBLL.GetAll().Where(x=> x.IS_DELETED != true).Select(x=> x.NPPBKC_ID).ToList();
+            List<T001W> plantIdList;
+            plantIdList = plantBll.GetAllPlant();
+            plantIdList =
+                plantIdList.Where(
+                    x => x.IS_DELETED != true && x.NPPBKC_IMPORT_ID != null && nppbkcList.Contains(x.NPPBKC_IMPORT_ID))
+                    .OrderBy(x => x.WERKS)
+                    .ToList();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantIdList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+
         public static SelectList GetPlantAll()
         {
             IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
@@ -355,10 +385,11 @@ namespace Sampoerna.EMS.Website.Code
 
 
         }
-
         public static SelectList GetYearList()
         {
             var selectItemSource = new List<SelectItemModel>();
+
+
             for (int i = 3; i > 0; i--)
             {
                 var item = new SelectItemModel();
@@ -367,7 +398,7 @@ namespace Sampoerna.EMS.Website.Code
                 item.ValueField = (DateTime.Now.Year - i).ToString();
                 selectItemSource.Add(item);
             }
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 5; i++)
             {
                 var item = new SelectItemModel();
 
@@ -378,7 +409,7 @@ namespace Sampoerna.EMS.Website.Code
 
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
-
+        
         public static SelectList GetPbck1CompletedListByPlant(string plantId)
         {
             IPBCK1BLL pbck1 = MvcApplication.GetInstance<PBCK1BLL>();
@@ -387,14 +418,29 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(data, "Pbck1Id", "Pbck1Number");
         }
 
-        public static SelectList GetPlantByCompany(string companyId)
+        public static SelectList GetPlantByCompany(string companyId,bool isReverse = false)
         {
             IT001KBLL t001Kbll = MvcApplication.GetInstance<T001KBLL>();
-            var plantList = t001Kbll.GetPlantByCompany(companyId);
+            var plantList = t001Kbll.GetPlantByCompany(companyId,isReverse);
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantList);
             return new SelectList(selectItemSource, "ValueField", "TextField");
-
         }
+
+        public static SelectList GetPlantByCompanyId(string companyId)
+        {
+            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
+            List<T001W> plantIdList;
+            plantIdList = plantBll.GetAllPlant();
+            plantIdList =
+                plantIdList.Where(
+                    x => x.IS_DELETED != true && x.ZAIDM_EX_NPPBKC != null && x.ZAIDM_EX_NPPBKC.IS_DELETED != true
+                    && x.T001K != null).Where(x => x.T001K.BUKRS == companyId)
+                    .OrderBy(x => x.WERKS)
+                    .ToList();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantIdList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+
 
         public static SelectList GetCompanyListFilter(ICompanyBLL companyBll)
         {
@@ -402,6 +448,81 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(data, "BUTXT", "BUTXT");
         }
 
+        public static SelectList GetPlantByNppbkcImport(bool isNppbkcImport)
+        {
+            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
+            List<T001W> plantIdList;
+            plantIdList = plantBll.GetAllPlant();
+            plantIdList =
+                plantIdList.Where(
+                    x => x.IS_DELETED != true && x.ZAIDM_EX_NPPBKC != null && x.ZAIDM_EX_NPPBKC.IS_DELETED != true)
+                    .OrderBy(x => x.WERKS)
+                    .ToList();
+
+            if(isNppbkcImport)
+                plantIdList =
+                    plantIdList.Where(
+                        x => x.IS_DELETED != true && x.ZAIDM_EX_NPPBKC != null && x.ZAIDM_EX_NPPBKC.IS_DELETED != true && x.NPPBKC_IMPORT_ID != null)
+                        .OrderBy(x => x.WERKS)
+                        .ToList();
+
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantIdList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+
+        }
+
+        public static SelectList GetFaCodeByPlant(string plantId)
+        {
+            IBrandRegistrationBLL brandBll = MvcApplication.GetInstance<BrandRegistrationBLL>();
+            var brandCe = brandBll.GetBrandCeBylant(plantId);
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(brandCe);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+
+        }
+
+        public static SelectList GetUomStickGram(IUnitOfMeasurementBLL uomBll)
+        {
+            var data = uomBll.GetAll().Where(x => x.IS_DELETED != true && x.IS_EMS == true && (x.UOM_ID == "G" || x.UOM_ID == "Btg"));
+            return new SelectList(data, "UOM_ID", "UOM_DESC");
+        }
+
+
+        public static SelectList GetCk5RefPortToImporter(ICK5BLL ck5Bll, long ck5Ref)
+        {
+            var data = ck5Bll.GetAllCompletedPortToImporter(ck5Ref);
+            return  new SelectList(data,"CK5_ID","SUBMISSION_NUMBER");
+        }
+
+        public static SelectList GetCountryListCodeAndName()
+        {
+            IMasterDataBLL masterBll = MvcApplication.GetInstance<MasterDataBLL>();
+            var data = masterBll.GetAllDataCountry();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+            //return new SelectList(data, "COUNTRY_CODE", "COUNTRY_CODE");
+        }
+
+
+        public static SelectList GetExternalSupplierList(Enums.CK5Type ck5Type)
+        {
+            ICK5BLL ck5Bll = MvcApplication.GetInstance<CK5BLL>();
+
+            var data = ck5Bll.GetExternalSupplierList(ck5Type);
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(data);
+
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+
+        public static SelectList GetUserNotPoa(string poaId)
+        {
+            IUserBLL userBll = MvcApplication.GetInstance<UserBLL>();
+          
+            var users = userBll.GetUsers();
+          
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(users);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+
+        }
     }
 
 }

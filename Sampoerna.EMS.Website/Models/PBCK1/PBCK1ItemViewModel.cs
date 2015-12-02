@@ -55,5 +55,15 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public bool AllowManagerReject { get; set; }
 
         public Pbck1SupInfo SupInfo { get; set; }
+        
+        public List<long> Pbck1OldDecreeFilesID { get; set; }
+
+        public ProdPlanUploadResult ProdPlanUploadValidateResult { get; set; } 
+    }
+
+    public class ProdPlanUploadResult
+    {
+        public bool IsSuccess { get; set; }
+        public string ErrorMessage { get; set; }
     }
 }

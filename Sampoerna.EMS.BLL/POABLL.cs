@@ -16,6 +16,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<POA> _repository;
         private IGenericRepository<POA_MAP> _poaMapRepository;
+        private IGenericRepository<BROLE_MAP> _broleMapRepository;
         private string includeTables = "POA_MAP, USER, USER1, POA_SK";
         private IChangesHistoryBLL _changesHistoryBll;
         public POABLL(IUnitOfWork uow, ILogger logger)
@@ -24,6 +25,7 @@ namespace Sampoerna.EMS.BLL
             _uow = uow;
             _repository = _uow.GetGenericRepository<POA>();
             _poaMapRepository = _uow.GetGenericRepository<POA_MAP>();
+            _broleMapRepository = _uow.GetGenericRepository<BROLE_MAP>();
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
         }
 
@@ -98,15 +100,25 @@ namespace Sampoerna.EMS.BLL
 
         public Core.Enums.UserRole GetUserRole(string userId)
         {
-            var poa = GetAll();
+            var role = _broleMapRepository.Get(x => x.MSACCT.ToUpper() == userId).Select(x => x.ROLEID).FirstOrDefault();
 
-            if (poa.Any(zaidmExPoa => zaidmExPoa.MANAGER_ID == userId))
-                return Core.Enums.UserRole.Manager;
+            if (role.HasValue)
+            {
+                return role.Value;
+            }
+            else
+            {
+                var poa = GetAll();
+                var manager = _broleMapRepository.Get(x => x.USER_BROLE.BROLE_DESC.Contains("POA_MANAGER")).Select(x => x.MSACCT.ToUpper()).ToList();
+                if (manager.Contains(userId.ToUpper()))
+                    return Core.Enums.UserRole.Manager;
 
-            if (poa.Any(zaidmExPoa => zaidmExPoa.LOGIN_AS == userId))
-                return Core.Enums.UserRole.POA;
+                if (poa.Any(zaidmExPoa => zaidmExPoa.LOGIN_AS == userId))
+                    return Core.Enums.UserRole.POA;
 
-            return Core.Enums.UserRole.User;
+
+                return Core.Enums.UserRole.User;
+            }
         }
 
         public string GetManagerIdByPoaId(string poaId)
@@ -119,12 +131,11 @@ namespace Sampoerna.EMS.BLL
             return result;
         }
 
-        public List<POADto> GetPoaByNppbkcId(string nppbkcId)
+        public List<string> GetPOAIdByManagerId(string managerId)
         {
-            Expression<Func<POA_MAP, bool>> queryFilter = c => c.NPPBKC_ID == nppbkcId;
-            var dbData = _poaMapRepository.Get(queryFilter, null, "POA");
-            var poaList = dbData.ToList().Select(d => d.POA);
-            return Mapper.Map<List<POADto>>(poaList.ToList());
+            var dtData = _repository.Get(c => c.MANAGER_ID == managerId).Select(s => s.POA_ID).ToList();
+
+            return dtData;
         }
 
         public List<POADto> GetPoaByNppbkcIdAndMainPlant(string nppbkcId)
@@ -138,5 +149,28 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<POADto>>(poaList.ToList());
         }
 
+
+
+        public POA GetActivePoaById(string id)
+        {
+            return _repository.Get(p => p.POA_ID == id && p.IS_ACTIVE == true, null, includeTables).FirstOrDefault();
+        }
+
+        public List<POADto> GetPoaActiveByNppbkcId(string nppbkcId)
+        {
+            Expression<Func<POA_MAP, bool>> queryFilter = c => c.NPPBKC_ID == nppbkcId && c.POA.IS_ACTIVE.Value;
+            var dbData = _poaMapRepository.Get(queryFilter, null, "POA");
+            var poaList = dbData.ToList().Select(d => d.POA);
+            return Mapper.Map<List<POADto>>(poaList.ToList());
+        }
+
+
+        public List<POADto> GetPoaActiveByPlantId(string plantId)
+        {
+            Expression<Func<POA_MAP, bool>> queryFilter = c => c.WERKS == plantId && c.POA.IS_ACTIVE.Value;
+            var dbData = _poaMapRepository.Get(queryFilter, null, "POA");
+            var poaList = dbData.ToList().Select(d => d.POA);
+            return Mapper.Map<List<POADto>>(poaList.ToList());
+        }
     }
 }

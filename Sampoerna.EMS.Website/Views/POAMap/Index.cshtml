@@ -19,7 +19,9 @@
             });
 
             // DataTable
-            var table = $('#poamaptable').DataTable();
+            var table = $('#poamaptable').DataTable({
+                "order": [[1, "asc"]]
+            });
 
             // Apply the search
             table.columns().eq(0).each(function (colIdx) {

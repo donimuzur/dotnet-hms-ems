@@ -13,7 +13,7 @@
             <div class="col-sm-12">
                 <h3>POA Map</h3>
                 <div class="action-button">
-                    <a href="javascript:void(0);" onclick="confirmDeleteData()" class="btn btn-danger">Delete</a>
+                    @*<a href="javascript:void(0);" onclick="confirmDeleteData()" class="btn btn-danger">Delete</a>*@
                     <input type="button" value="Cancel" class="btn btn-grey" id="btnCancel" />
                 </div>
             </div>
@@ -78,7 +78,8 @@
             </div>
         </div>
     </div>
-    <!--delete-->
+<!--delete-->
+<!--
     <input id="btn-delete-poa-map" style="display: none" type="submit" class="btn btn-grey" data-toggle="modal" data-target=".delete-modal.poamap" value="delete">
     <div class="modal ems-modal fade delete-modal poamap" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
         <div class="modal-dialog modal-sm">
@@ -96,7 +97,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>-->
 
 @section scripts {
     <script type="text/javascript" language="javascript">
@@ -108,10 +109,10 @@
             });
 
         });
-        var confirmDeleteData = function() {
-            $('#btn-delete-poa-map').click();
+        //var confirmDeleteData = function() {
+        //    $('#btn-delete-poa-map').click();
 
-        };
+        //};
        
     </script>
 }
