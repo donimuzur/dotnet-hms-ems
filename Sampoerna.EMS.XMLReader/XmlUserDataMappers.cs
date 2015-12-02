@@ -232,6 +232,7 @@ namespace Sampoerna.EMS.XMLReader
             }
             else
             {
+                poa.IS_ACTIVE = true;
                 poa.PRINTED_NAME = userdata.FIRST_NAME + " " + userdata.LAST_NAME;
                 poa.POA_EMAIL = userdata.EMAIL;
                 poa.MODIFIED_BY = "PI";
