@@ -14,7 +14,7 @@ DECLARE @uom_id varchar(10), @umren decimal(18,4)
 set @uom_id = 'G';
 set @umren = 0.0010;
 set @formtypematerialmaster = 24;
-set @modifieduser = 'PI';
+set @modifieduser = 'SCRIPTED';
 
 DECLARE material_cursor CURSOR FOR
 select WERKS,STICKER_CODE from ZAIDM_EX_MATERIAL group by WERKS,STICKER_CODE;
