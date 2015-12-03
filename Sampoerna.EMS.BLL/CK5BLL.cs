@@ -3449,13 +3449,7 @@ namespace Sampoerna.EMS.BLL
                         messageList.Add("Ck5 Type not valid");
                 }
 
-                //kppbc city
-
-                //var dbNppbkc = _nppbkcBll.GetDetailsByCityName(ck5UploadFileDocuments.KppBcCityName);
-                //if (dbNppbkc == null)
-                //    messageList.Add("City Not Exist");
-                //else
-                //    output.CE_OFFICE_CODE = dbNppbkc.ZAIDM_EX_KPPBC.KPPBC_ID;
+                
                 
                 //excise goods type
                 if (!ConvertHelper.IsNumeric(ck5UploadFileDocuments.ExGoodType))
@@ -3537,7 +3531,7 @@ namespace Sampoerna.EMS.BLL
                         output.SOURCE_PLANT_NPPBKC_ID = sourcePlant.NPPBKC_ID;
                         output.SOURCE_PLANT_COMPANY_CODE = sourcePlant.CompanyCode;
                         output.SOURCE_PLANT_COMPANY_NAME = sourcePlant.CompanyName;
-                        output.SOURCE_PLANT_ADDRESS = sourcePlant.CompanyAddress;
+                        output.SOURCE_PLANT_ADDRESS = sourcePlant.ADDRESS;
                         output.SOURCE_PLANT_KPPBC_NAME_OFFICE = sourcePlant.KppbcCity + "-" + sourcePlant.KppbcNo;
                         output.KppBcCityName = sourcePlant.KppbcCity;
                         output.SOURCE_PLANT_NAME = sourcePlant.NAME1;
@@ -3578,11 +3572,20 @@ namespace Sampoerna.EMS.BLL
                             output.DEST_PLANT_NPPBKC_ID = destPlant.NPPBKC_ID;
                             output.DEST_PLANT_COMPANY_CODE = destPlant.CompanyCode;
                             output.DEST_PLANT_COMPANY_NAME = destPlant.CompanyName;
-                            output.DEST_PLANT_ADDRESS = destPlant.CompanyAddress;
+                            output.DEST_PLANT_ADDRESS = destPlant.ADDRESS;
                             output.DEST_PLANT_KPPBC_NAME_OFFICE = destPlant.KppbcCity + "-" + destPlant.KppbcNo;
                             output.DEST_PLANT_NAME = destPlant.NAME1;
                         }
                     }
+
+
+                    //kppbc city
+
+                    var dbNppbkc = _nppbkcBll.GetDetailsById(output.SOURCE_PLANT_NPPBKC_ID); // GetDetailsByCityName(output.KppBcCityName);
+                    if (dbNppbkc == null)
+                        messageList.Add("Source plant nppbkc not found");
+                    else
+                        output.CE_OFFICE_CODE = dbNppbkc.ZAIDM_EX_KPPBC.KPPBC_ID;
                     
                 }
                 

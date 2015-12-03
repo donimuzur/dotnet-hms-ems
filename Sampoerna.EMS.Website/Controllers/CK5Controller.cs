@@ -3799,7 +3799,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     detailRow.Uom = materialDto.Uom;
                     detailRow.Convertion = materialDto.Convertion;
                     detailRow.ConvertedQty = materialDto.ConvertedQty;
-                    detailRow.ConvertedUom = _uomBll.GetUomNameById(materialDto.ConvertedUom);
+                    detailRow.ConvertedUom = materialDto.ConvertedUom;
                     
                     detailRow.Hje = materialDto.Hje;
                     detailRow.Tariff = materialDto.Tariff;
