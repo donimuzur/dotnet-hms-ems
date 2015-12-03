@@ -1049,6 +1049,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.Lack1Type = lack1Type;
             //model.SummaryProductionList = ProcessSummaryProductionDetails(model.ProductionSummaryByProdTypeList);
+            model.FusionSummaryProductionList = ProcessSummaryProductionDetails(model.FusionSummaryProductionByProdTypeList);
 
             SetActiveMenu(model, lack1Type);
 
