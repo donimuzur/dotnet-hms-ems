@@ -3800,7 +3800,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     detailRow.Convertion = materialDto.Convertion;
                     detailRow.ConvertedQty = materialDto.ConvertedQty;
                     detailRow.ConvertedUom = materialDto.ConvertedUom;
-
+                    
                     detailRow.Hje = materialDto.Hje;
                     detailRow.Tariff = materialDto.Tariff;
                     detailRow.ExciseValue = materialDto.ExciseValue;
