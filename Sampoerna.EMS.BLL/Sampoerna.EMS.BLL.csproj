@@ -79,6 +79,7 @@
     <Compile Include="BrandRegistrationBLL.cs" />
     <Compile Include="CountryBLL.cs" />
     <Compile Include="LFA1BLL.cs" />
+    <Compile Include="NlogBLL.cs" />
     <Compile Include="PBCK4BLL.cs" />
     <Compile Include="PBCK7AndPBCK3BLL.cs" />
     <Compile Include="ProductionBLL.cs" />

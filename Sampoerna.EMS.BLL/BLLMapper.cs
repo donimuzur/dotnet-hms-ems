@@ -464,6 +464,12 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<WasteStockDto, WASTE_STOCK>().IgnoreAllNonExisting();
 
             #endregion
+
+            #region Nlog
+
+            Mapper.CreateMap<NlogLogs, NlogDto>().IgnoreAllNonExisting();
+            
+            #endregion
         }
     }
 }

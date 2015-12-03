@@ -94,6 +94,7 @@ namespace Sampoerna.EMS.Website
             container.Register<IBlockStockBLL, BlockStockBLL>();
             container.Register<IWasteRoleBLL, WasteRoleBLL>();
             container.Register<IWasteStockBLL, WasteStockBLL>();
+            container.Register<INlogBLL, NlogBLL>();
 
             // 3. Optionally verify the container's configuration.
             container.Verify();
