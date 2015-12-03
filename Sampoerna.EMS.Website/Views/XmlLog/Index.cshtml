@@ -67,12 +67,12 @@
                 <h4 class="modal-title">Backup</h4>
             </div>
             @*<div class="modal-body">
-                Backup data?
-            </div>
-            <div class="modal-footer">
-                <input type="button" id="btnConfirmBackup" class="btn btn-blue" value="Yes" />
-                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
-            </div>*@
+                    Backup data?
+                </div>
+                <div class="modal-footer">
+                    <input type="button" id="btnConfirmBackup" class="btn btn-blue" value="Yes" />
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+                </div>*@
             @using (Html.BeginForm("BackupXml", "XmlLog", FormMethod.Post, new { @id = "XmlLogBackupForms" }))
             {
                 <div class="modal-body">
@@ -83,7 +83,7 @@
 
                 </div>
                 <div class="modal-footer">
-                   
+
                     <input type="button" class="btn btn-blue" value="Yes" id="btnConfirmBackup" />
                     <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
                 </div>
@@ -101,17 +101,17 @@
             $('#MenuXmlLog').addClass('active');
 
             setupDataTables();
-            
+
             $("#btnBackup").click(function () {
                 $('#xmlLogModal').modal('show');
 
             });
-            
+
             $("#btnConfirmBackup").click(function () {
-               
+
                 $("input[name='FileName']").val($('#FileName').find("option:selected").val());
                 $("input[name='Month']").val($('#Month').find("option:selected").val());
-                
+
                 $('#XmlLogBackupForms').submit();
             });
 
@@ -135,6 +135,20 @@
                       "language": {
                           "zeroRecords": "No records found",
                           "infoFiltered": "(filtered from _MAX_ total records)"
+                      },
+                      "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                          switch (aData[2]) {
+                              case 'Error':
+                              case 'Fatal':
+                                  $(nRow).css('color', 'red');
+                                  break;
+                              case 'Info':
+                                  $(nRow).css('color', 'green');
+                                  break;
+                              case 'Warn':
+                                  $(nRow).css('color', 'yellow');
+                                  break;
+                          }
                       }
                   });
 
@@ -170,13 +184,13 @@
                 $("#btnBackup").prop('disabled', true);
             });
         }
-        
+
         function OnChangeMonth() {
             $("#Month").change(function () {
                 $("#btnBackup").prop('disabled', true);
             });
         }
-        
+
         function OnReset() {
             $(".selectreset").val($(".selectreset option:first").val());
         }
