@@ -117,5 +117,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<WASTE> WASTE { get; set; }
         public virtual DbSet<LACK1_TRACKING_ALCOHOL> LACK1_TRACKING_ALCOHOL { get; set; }
         public virtual DbSet<GOOD_PROD_TYPE> GOOD_PROD_TYPE { get; set; }
+        public virtual DbSet<NlogLogs> NlogLogs { get; set; }
     }
 }

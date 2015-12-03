@@ -3221,7 +3221,11 @@ namespace Sampoerna.EMS.BLL
             
             var result = Mapper.Map<CK5ReportDto>(dtData);
 
-
+            foreach (var material in result.ListMaterials)
+            {
+                material.ConvertedUom = _uomBll.GetUomNameById(material.ConvertedUom);
+            }
+            
             result.ReportDetails.Total = GetMaterialUomGroupBy(dtData.CK5_MATERIAL);
             result.ReportDetails.Uom = "";
 
@@ -3447,11 +3451,11 @@ namespace Sampoerna.EMS.BLL
 
                 //kppbc city
 
-                var dbNppbkc = _nppbkcBll.GetDetailsByCityName(ck5UploadFileDocuments.KppBcCityName);
-                if (dbNppbkc == null)
-                    messageList.Add("City Not Exist");
-                else
-                    output.CE_OFFICE_CODE = dbNppbkc.ZAIDM_EX_KPPBC.KPPBC_ID;
+                //var dbNppbkc = _nppbkcBll.GetDetailsByCityName(ck5UploadFileDocuments.KppBcCityName);
+                //if (dbNppbkc == null)
+                //    messageList.Add("City Not Exist");
+                //else
+                //    output.CE_OFFICE_CODE = dbNppbkc.ZAIDM_EX_KPPBC.KPPBC_ID;
                 
                 //excise goods type
                 if (!ConvertHelper.IsNumeric(ck5UploadFileDocuments.ExGoodType))
@@ -3535,6 +3539,7 @@ namespace Sampoerna.EMS.BLL
                         output.SOURCE_PLANT_COMPANY_NAME = sourcePlant.CompanyName;
                         output.SOURCE_PLANT_ADDRESS = sourcePlant.CompanyAddress;
                         output.SOURCE_PLANT_KPPBC_NAME_OFFICE = sourcePlant.KppbcCity + "-" + sourcePlant.KppbcNo;
+                        output.KppBcCityName = sourcePlant.KppbcCity;
                         output.SOURCE_PLANT_NAME = sourcePlant.NAME1;
                     }
 
@@ -3904,13 +3909,13 @@ namespace Sampoerna.EMS.BLL
                             dbData.PACKAGE_UOM_ID = "L";
                     }
                 }
-                //if(ck5Material.CONVERTED_QTY.HasValue)
-                //    tempTotal += ck5Material.CONVERTED_QTY.Value;
+                if (ck5Material.CONVERTED_QTY.HasValue)
+                    tempTotal += ck5Material.CONVERTED_QTY.Value;
                 
                 dbData.CK5_MATERIAL.Add(ck5Material);
             }
             input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumberByFormType(Enums.FormType.CK5);
-            //dbData.GRAND_TOTAL_EX = tempTotal;
+            dbData.GRAND_TOTAL_EX = tempTotal;
             dbData.SUBMISSION_NUMBER = input.Ck5Dto.SUBMISSION_NUMBER;
             _repository.Insert(dbData);
             

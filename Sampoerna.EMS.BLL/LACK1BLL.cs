@@ -2097,7 +2097,8 @@ namespace Sampoerna.EMS.BLL
         /// <returns></returns>
         private Lack1GeneratedOutput SetProductionListForTisToTis(Lack1GeneratedDto rc, Lack1GenerateDataParamInput input)
         {
-
+            var t001WSupplierInfo = _t001WServices.GetById(input.SupplierPlantId);
+            if (t001WSupplierInfo != null) input.SupplierPlantNppbkcId = t001WSupplierInfo.NPPBKC_ID;
             var pbck1ProdConverter =
                 _pbck1ProdConverterService.GetProductionLack1TisToTis(new Pbck1GetProductionLack1TisToTisParamInput()
                 {
@@ -2120,7 +2121,7 @@ namespace Sampoerna.EMS.BLL
                     Data = rc
                 };
             }
-
+            
             var uomData = _uomBll.GetAll();
             var joinedWithUomData = (from j in pbck1ProdConverter
                                      join u in uomData on j.CONVERTER_UOM_ID equals u.UOM_ID
@@ -2141,7 +2142,7 @@ namespace Sampoerna.EMS.BLL
                 ProdCode = item.PROD_CODE,
                 ProductType = item.PRODUCT_TYPE,
                 ProductAlias = item.PRODUCT_ALIAS,
-                Amount = item.CONVERTER_OUTPUT.HasValue ? item.CONVERTER_OUTPUT.Value : 0,
+                Amount = item.CONVERTER_OUTPUT.HasValue ? ((rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0) * item.CONVERTER_OUTPUT.Value) : 0,
                 UomId = item.CONVERTER_UOM_ID,
                 UomDesc = item.UOM_DESC
             }).ToList();

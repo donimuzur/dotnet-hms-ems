@@ -493,7 +493,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.START_DATE))
                 .ForMember(dest => dest.Is_Deleted,opt => opt.MapFrom(src => src.IS_DELETED.HasValue && src.IS_DELETED.Value ? "Yes" : "No"))
                 .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.END_DATE))
-                .ForMember(dest => dest.FlagForLack1, opt => opt.MapFrom(src => src.FLAG_FOR_LACK1.HasValue));
+                .ForMember(dest => dest.FlagForLack1, opt => opt.MapFrom(src => src.FLAG_FOR_LACK1.HasValue && src.FLAG_FOR_LACK1.Value));
 
             Mapper.CreateMap<VirtualNppbckDetails, ZAIDM_EX_NPPBKC>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.VirtualNppbckId))
