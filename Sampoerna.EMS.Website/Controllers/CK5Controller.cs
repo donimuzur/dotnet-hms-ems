@@ -3799,8 +3799,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     detailRow.Uom = materialDto.Uom;
                     detailRow.Convertion = materialDto.Convertion;
                     detailRow.ConvertedQty = materialDto.ConvertedQty;
-                    detailRow.ConvertedUom = materialDto.ConvertedUom;
-
+                    detailRow.ConvertedUom = _uomBll.GetUomNameById(materialDto.ConvertedUom);
+                    
                     detailRow.Hje = materialDto.Hje;
                     detailRow.Tariff = materialDto.Tariff;
                     detailRow.ExciseValue = materialDto.ExciseValue;
