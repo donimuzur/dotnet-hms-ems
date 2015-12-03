@@ -1,10 +1,10 @@
-﻿@model Sampoerna.EMS.Website.Models.WasteStock.WasteStockIndexViewModel
+﻿@model Sampoerna.EMS.Website.Models.XmlLog.XmlLogIndexViewModel
 
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
             <h3 id="lblTitle">XML Log List</h3>
-           
+
         </div>
     </div>
 </div>
@@ -13,51 +13,43 @@
 <div class="container-wrap">
     <div class="row">
         <div class="col-sm-12">
+            @using (Ajax.BeginForm("Filter", "XmlLog",
+                                new AjaxOptions
+                                {
+                                    HttpMethod = "POST",
+                                    InsertionMode = InsertionMode.Replace,
+                                    UpdateTargetId = "contenttable",
+                                    OnComplete = "ReloadDataTables"
+
+                                }))
+            {
+                @Html.Partial("_XmlLogSearch")
+            }
+
+            <div class="white-wrapper">
+                <div class="form-excise" role="form">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-6">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input class="btn btn-blue" id="btnBackup" type="button" value="Backup" />
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div id="contenttable" class="table-container">
-                <table id="wasteStockTable" class="display" cellspacing="0" width="100%">
-                    <thead>
-                        <tr>
-                            <th class="toggle-row"> Filter </th>
-                            <th>Date Time</th>
-                            <th>Level</th>
-                            <th>Type</th>
-                            <th>Logger</th>
-                            <th>Message</th>
-                            <th>File Name</th>
-                        </tr>
-                    </thead>
-                    <thead class="filters">
-                        <tr>
-                            <th> Action</th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                        @foreach (var item in Model.ListWasteStocks)
-                        {
-                            <tr>
-                                <td class="action">
-                                    <a href="@Url.Action("Detail", "WasteStock", new { id = item.WasteStockId })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
-
-                                    @*<a href="@Url.Action("Edit", "WasteStock", new { id = item.WasteStockId })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>*@
-
-                                </td>
-                                <td>@Html.DisplayFor(model => item.PlantDescription)</td>
-                                <td>@Html.DisplayFor(model => item.MaterialNumber)</td>
-                                <td>@Html.DisplayFor(model => item.UomDescription)</td>
-                                <td class="number">@string.Format("{0:N2}", item.Stock)</td>
-                                <td class="number">@Html.DisplayFor(model => item.StockRemainingDisplay)</td>
-                            </tr>
-
-                        }
-                    </tbody>
-                </table>
+                @Html.Partial("_XmlLogViewIndex")
             </div>
 
 
@@ -67,15 +59,64 @@
 </div>
 
 
+<div id="xmlLogModal" class="modal ems-modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Backup</h4>
+            </div>
+            @*<div class="modal-body">
+                Backup data?
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="btnConfirmBackup" class="btn btn-blue" value="Yes" />
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+            </div>*@
+            @using (Html.BeginForm("BackupXml", "XmlLog", FormMethod.Post, new { @id = "XmlLogBackupForms" }))
+            {
+                <div class="modal-body">
+                    @Html.HiddenFor(model => model.FileName)
+                    @Html.HiddenFor(model => model.Month)
+
+                    Backup data?
+
+                </div>
+                <div class="modal-footer">
+                   
+                    <input type="button" class="btn btn-blue" value="Yes" id="btnConfirmBackup" />
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
 
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script type="text/javascript" language="javascript">
 
         $(document).ready(function () {
-            $('#MenuWasteStock').addClass('active');
+            $('#MenuXmlLog').addClass('active');
 
             setupDataTables();
+            
+            $("#btnBackup").click(function () {
+                $('#xmlLogModal').modal('show');
+
+            });
+            
+            $("#btnConfirmBackup").click(function () {
+               
+                $("input[name='FileName']").val($('#FileName').find("option:selected").val());
+                $("input[name='Month']").val($('#Month').find("option:selected").val());
+                
+                $('#XmlLogBackupForms').submit();
+            });
+
+            OnChangeFileName();
+            OnChangeMonth();
         });
 
 
@@ -83,12 +124,12 @@
 
             // DataTable
             var table = null;
-            if ($.fn.dataTable.isDataTable('#wasteStockTable')) {
-                table = $('#wasteStockTable').DataTable();
+            if ($.fn.dataTable.isDataTable('#xmlLogTable')) {
+                table = $('#xmlLogTable').DataTable();
                 table.destroy();
             }
 
-            table = $('#wasteStockTable').DataTable(
+            table = $('#xmlLogTable').DataTable(
                   {
                       "sDom": "Rlfrtip",
                       "language": {
@@ -98,7 +139,7 @@
                   });
 
 
-            $('#wasteStockTable .filters th').each(function () {
+            $('#xmlLogTable .filters th').each(function () {
                 var idx = $(this).index();
                 if (idx != 0) {
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
@@ -119,10 +160,26 @@
         }
 
         function ReloadDataTables() {
+            $("#btnBackup").prop('disabled', false);
             setupDataTables();
         }
 
 
+        function OnChangeFileName() {
+            $("#FileName").change(function () {
+                $("#btnBackup").prop('disabled', true);
+            });
+        }
+        
+        function OnChangeMonth() {
+            $("#Month").change(function () {
+                $("#btnBackup").prop('disabled', true);
+            });
+        }
+        
+        function OnReset() {
+            $(".selectreset").val($(".selectreset option:first").val());
+        }
 
     </script>
 }

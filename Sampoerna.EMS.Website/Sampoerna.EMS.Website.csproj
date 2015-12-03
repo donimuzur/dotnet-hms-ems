@@ -432,6 +432,7 @@
     <Compile Include="Models\Waste\WasteViewModel.cs" />
     <Compile Include="Models\WorkflowSettingListModel.cs" />
     <Compile Include="Models\XmlLog\XmlLogFormViewModel.cs" />
+    <Compile Include="Models\XmlLog\XmlLogIndexViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\CK4C\Preview.cs">
       <AutoGen>True</AutoGen>
@@ -1284,6 +1285,9 @@
     <Content Include="Views\CK5\_CK5UploadDocumentFileButton.cshtml" />
     <Content Include="Views\CK5\_CK5UploadDocumentFileList.cshtml" />
     <Content Include="Views\XmlLog\Index.cshtml" />
+    <Content Include="Views\XmlLog\_XmlLogSearch.cshtml" />
+    <Content Include="Views\XmlLog\Detail.cshtml" />
+    <Content Include="Views\XmlLog\_XmlLogViewIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

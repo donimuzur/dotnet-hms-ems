@@ -1,0 +1,185 @@
+﻿@model Sampoerna.EMS.Website.Models.XmlLog.XmlLogFormViewModel
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>XML Log</h3>
+            <div class="action-button">
+                <input type="button" value="Back" class="btn btn-grey" id="btnBack" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div class="white-wrapper">
+
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Detail XML Log
+                                    <i class="fa fa-caret-down"></i>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <form class="form-excise" role="form">
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-4">Time Stamp</label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.TimeStampDisplay, new { @class = "form-control", @disabled = "disabled" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-4">File Name</label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.FileName, new { @class = "form-control", @disabled = "disabled" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                      
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-4">Level</label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.Level, new { @class = "form-control", @disabled = "disabled" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-4">Type</label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.Type, new { @class = "form-control", @disabled = "disabled" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                     
+                                    </div>
+                                  
+                                    <div class="row">
+                                        
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-4">Logger</label>
+                                                <div class="col-md-8">
+                                                    @Html.TextAreaFor(model => model.Logger, new { @class = "form-control", @disabled = "disabled", @rows = "5" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-4">Message</label>
+                                                <div class="col-md-8">
+                                                    @Html.TextAreaFor(model => model.Message, new { @class = "form-control", @disabled = "disabled", @rows="5" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                      
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-4">Stack Trace</label>
+                                                <div class="col-md-8">
+                                                    @Html.TextAreaFor(model => model.Stacktrace, new { @class = "form-control", @disabled = "disabled", @rows = "5" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-4">Source</label>
+                                                <div class="col-md-8">
+                                                    @Html.TextAreaFor(model => model.Source, new { @class = "form-control", @disabled = "disabled", @rows = "5" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                      
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-4">Data</label>
+                                                <div class="col-md-8">
+                                                    @Html.TextAreaFor(model => model.Data, new { @class = "form-control", @disabled = "disabled", @rows = "5" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                               
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+</div>
+
+
+@section scripts {
+
+
+    
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            $('#MenuXmlLog').addClass('active');
+
+            $('#btnBack').click(function (e) {
+                location.href = '@Url.Action("Index", "XmlLog")';
+            });
+
+
+        });
+
+
+
+
+
+    </script>
+}

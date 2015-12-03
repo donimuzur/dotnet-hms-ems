@@ -1,15 +1,11 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 
-namespace Sampoerna.EMS.Website.Models.XmlLog
+namespace Sampoerna.EMS.BusinessObject.DTOs
 {
-    public class XmlLogFormViewModel : BaseModel
+    public class NlogDto
     {
-        public long XmlLogId { get; set; }
-
-         [UIHint("DateTime")]
-        public DateTime? TimeStamp { get; set; }
-         public string TimeStampDisplay { get; set; }
+        public long Nlog_Id { get; set; }
+        public DateTime? Timestamp { get; set; }
         public string Level { get; set; }
         public string Type { get; set; }
         public string Logger { get; set; }

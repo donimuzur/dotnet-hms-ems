@@ -162,6 +162,7 @@
     <Compile Include="DTOs\LFA1Dto.cs" />
     <Compile Include="DTOs\Lack1DocumentDto.cs" />
     <Compile Include="DTOs\MaterialDto.cs" />
+    <Compile Include="DTOs\NlogDto.cs" />
     <Compile Include="DTOs\NppbkcPlantDto.cs" />
     <Compile Include="DTOs\Pbck1DecreeDocDto.cs" />
     <Compile Include="DTOs\Lack1Dto.cs" />
@@ -248,6 +249,7 @@
     <Compile Include="Inputs\LFAInputs.cs" />
     <Compile Include="Inputs\Lack2GetByParamInput.cs" />
     <Compile Include="Inputs\MaterialInput.cs" />
+    <Compile Include="Inputs\NlogInput.cs" />
     <Compile Include="Inputs\PBCK1Input.cs" />
     <Compile Include="Inputs\Pbck1ProdConverterInput.cs" />
     <Compile Include="Inputs\Pbck1ProdPlanInput.cs" />
