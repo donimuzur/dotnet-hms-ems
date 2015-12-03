@@ -635,6 +635,21 @@
           <Property Name="MONTH_NAME_IND" Type="nvarchar" MaxLength="15" />
           <Property Name="MONTH_NAME_ENG" Type="nvarchar" MaxLength="15" />
         </EntityType>
+        <EntityType Name="NlogLogs">
+          <Key>
+            <PropertyRef Name="Nlog_Id" />
+          </Key>
+          <Property Name="Nlog_Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Timestamp" Type="datetime" />
+          <Property Name="Level" Type="varchar" MaxLength="50" />
+          <Property Name="Type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Logger" Type="nvarchar" MaxLength="100" />
+          <Property Name="Message" Type="varchar(max)" />
+          <Property Name="Stacktrace" Type="varchar(max)" />
+          <Property Name="Source" Type="nvarchar" MaxLength="500" />
+          <Property Name="Data" Type="nvarchar(max)" />
+          <Property Name="FileName" Type="nvarchar" MaxLength="100" />
+        </EntityType>
         <EntityType Name="PAGE">
           <Key>
             <PropertyRef Name="PAGE_ID" />
@@ -1509,7 +1524,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_CHANGES_HISTORY_USER">
+        <Association Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="CHANGES_HISTORY" Type="Self.CHANGES_HISTORY" Multiplicity="*" />
           <ReferentialConstraint>
@@ -3324,6 +3339,7 @@
           <EntitySet Name="MATERIAL_UOM" EntityType="Self.MATERIAL_UOM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MENGETAHUI" EntityType="Self.MENGETAHUI" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MONTH" EntityType="Self.MONTH" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NlogLogs" EntityType="Self.NlogLogs" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PAGE" EntityType="Self.PAGE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PAGE_MAP" EntityType="Self.PAGE_MAP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PARAMATER" EntityType="Self.PARAMATER" Schema="dbo" store:Type="Tables" />
@@ -3399,7 +3415,7 @@
             <End Role="USER_BROLE" EntitySet="USER_BROLE" />
             <End Role="BROLE_MAP" EntitySet="BROLE_MAP" />
           </AssociationSet>
-          <AssociationSet Name="FK_CHANGES_HISTORY_USER" Association="Self.FK_CHANGES_HISTORY_USER">
+          <AssociationSet Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER" Association="Self.FK_CHANGES_HISTORY_MODIFIED_BY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
           </AssociationSet>
@@ -4724,6 +4740,7 @@
             <End Role="LACK1_TRACKING_ALCOHOL" EntitySet="LACK1_TRACKING_ALCOHOL" />
           </AssociationSet>
           <EntitySet Name="GOOD_PROD_TYPE" EntityType="EMSModel.GOOD_PROD_TYPE" />
+          <EntitySet Name="NlogLogs" EntityType="EMSModel.NlogLogs" />
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -8414,6 +8431,21 @@
           <Property Name="PROD_CODE" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="EXC_GOOD_TYP" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="NlogLogs">
+          <Key>
+            <PropertyRef Name="Nlog_Id" />
+          </Key>
+          <Property Name="Nlog_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Timestamp" Type="DateTime" Precision="3" />
+          <Property Name="Level" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Logger" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Stacktrace" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Source" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FileName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -9919,6 +9951,22 @@
               <MappingFragment StoreEntitySet="GOOD_PROD_TYPE">
                 <ScalarProperty Name="EXC_GOOD_TYP" ColumnName="EXC_GOOD_TYP" />
                 <ScalarProperty Name="PROD_CODE" ColumnName="PROD_CODE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NlogLogs">
+            <EntityTypeMapping TypeName="EMSModel.NlogLogs">
+              <MappingFragment StoreEntitySet="NlogLogs">
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="Data" ColumnName="Data" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="Stacktrace" ColumnName="Stacktrace" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="Logger" ColumnName="Logger" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Level" ColumnName="Level" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+                <ScalarProperty Name="Nlog_Id" ColumnName="Nlog_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
