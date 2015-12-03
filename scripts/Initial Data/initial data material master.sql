@@ -1,8 +1,8 @@
-USE [EMS_TRN] -- change this with database name which this script to be executed on
+USE [EMS_QAS] -- change this with database name which this script to be executed on
 GO
 
 
-SET NOCOUNT ON;
+SET NOCOUNT OFF;
 
 DECLARE @uom_id varchar(10), @umren decimal(18,4)
 ,@werks varchar(4), @sticker_code nvarchar(18)
