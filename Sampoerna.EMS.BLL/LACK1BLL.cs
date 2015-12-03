@@ -244,7 +244,7 @@ namespace Sampoerna.EMS.BLL
                     var toAddRange = generatedData.Data.InventoryProductionTisToTis.ProductionData.ProductionList;
                     for (var i = 0; i < toAddRange.Count; i++)
                     {
-                        toAddRange[i].IsTisToTisData = false;
+                        toAddRange[i].IsTisToTisData = true;
                     }
                     productionDetail.AddRange(toAddRange);
                 }
@@ -390,7 +390,7 @@ namespace Sampoerna.EMS.BLL
                         var toAddRange = generatedData.Data.InventoryProductionTisToTis.ProductionData.ProductionList;
                         for (var i = 0; i < toAddRange.Count; i++)
                         {
-                            toAddRange[i].IsTisToTisData = false;
+                            toAddRange[i].IsTisToTisData = true;
                         }
                         productionDetail.AddRange(toAddRange);
                     }
