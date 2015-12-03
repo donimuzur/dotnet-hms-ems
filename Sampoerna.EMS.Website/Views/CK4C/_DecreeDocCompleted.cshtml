@@ -23,7 +23,7 @@
                                 <div class="row">
                                     <div class="col-sm-9">
                                         <i class="fa fa-file"></i>
-                                        <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                        <a onclick="openAttachment('@Url.Content(file.FILE_PATH)')">@file.FILE_NAME</a>
                                     </div>
                                     <div class="col-sm-3">
                                         <button class="btn btn-danger full" type="button" onclick="removeUploadButton(@count, $(this).closest('.row'))">Remove</button>
