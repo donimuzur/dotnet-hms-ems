@@ -2365,8 +2365,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 XmlCK5DataWriter rt = new XmlCK5DataWriter();
 
                 //ck5XmlDto.SUBMISSION_NUMBER = Convert.ToInt32(model.SubmissionNumber.Split('/')[0]).ToString("0000000000");
-                rt.CreateCK5Xml(ck5XmlDto);
+                
                 _ck5Bll.CK5Workflow(input);
+                rt.CreateCK5Xml(ck5XmlDto);
                 return true;
             }
             catch (Exception ex)
