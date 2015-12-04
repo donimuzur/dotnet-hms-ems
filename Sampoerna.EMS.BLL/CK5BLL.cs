@@ -3920,6 +3920,12 @@ namespace Sampoerna.EMS.BLL
             input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumberByFormType(Enums.FormType.CK5);
             dbData.GRAND_TOTAL_EX = tempTotal;
             dbData.SUBMISSION_NUMBER = input.Ck5Dto.SUBMISSION_NUMBER;
+
+            if (string.IsNullOrEmpty(dbData.EX_GOODS_TYPE_DESC))
+            {
+                dbData.EX_GOODS_TYPE_DESC = EnumHelper.GetDescription(dbData.EX_GOODS_TYPE);
+            }
+
             _repository.Insert(dbData);
             
             inputWorkflowHistory.DocumentId = dbData.CK5_ID;
