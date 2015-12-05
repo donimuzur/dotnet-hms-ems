@@ -93,7 +93,23 @@ namespace Sampoerna.EMS.XMLReader
             
         }
 
-    
+
+        public void MoveTempToOutbound(string oldPath, string newPath)
+        {
+            try
+            {
+                File.Move(oldPath, newPath);
+            }
+            catch (Exception ex)
+            {
+                Exception ex1 = new Exception(String.Format("Failed to move xml file to outbound folder. Cause : {0}",ex.Message));
+                
+                throw ex1;
+            }
+            
+
+        }
+
         public void CreateCK5Xml(CK5XmlDto ck5XmlDto, string status=null)
         {
             using (XmlWriter writer = XmlWriter.Create(ck5XmlDto.Ck5PathXml))
