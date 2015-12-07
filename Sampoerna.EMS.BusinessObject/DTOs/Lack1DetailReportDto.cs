@@ -51,8 +51,21 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public int RecordCount { get; set; }
     }
 
-    public class Lack1Ck5MaterialDetailReportDto
+    public class Lack1UsageReceivingTrackingDetailDto
     {
+        public long InventoryUsageId { get; set; }
+        public string PurchaseDoc { get; set; }
+        public string MaterialCode { get; set; }
+        public decimal? UsageQty { get; set; }
+        public string Batch { get; set; }
+        public DateTime? PostingDate { get; set; }
+        public string OriginalUom { get; set; }
+        public string ConvertedUom { get; set; }
+    }
+
+    public class Lack1ReceivingDetailReportDto
+    {
+        //from Ck5 Table
         public long Ck5Id { get; set; }
         public string Ck5Number { get; set; }
         public string Ck5RegistrationNumber { get; set; }
@@ -60,11 +73,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? Ck5GrDate { get; set; }
         public decimal Qty { get; set; }
         public string UomId { get; set; }
+        //sto_sender or sto_receiver regarding Ck5_type
         public string StoNumber { get; set; }
-        public DateTime? GiDate { get; set; }
-        public string MaterialId { get; set; }
-        public decimal ConvertedQty { get; set; }
-        public string ConvertedUomId { get; set; }
     }
 
     public class Lack1DetailReportTempDto

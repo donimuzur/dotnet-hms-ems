@@ -1741,7 +1741,7 @@ namespace Sampoerna.EMS.Website.Controllers
             
             int iRow = 3; //starting row data
 
-            var needToMerge = new List<DetailReportNeedToMerge>();
+            //var needToMerge = new List<DetailReportNeedToMerge>();
             
             foreach (var item in dataDetailReport)
             {
@@ -1782,7 +1782,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].Qty.ToString("N2"));
                     iColumn++;
 
-                    slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].GiDate);
+                    slDocument.SetCellValue(iRow, iColumn, (item.TrackingConsolidations[0].GiDate.HasValue ?  item.TrackingConsolidations[0].GiDate.Value.ToString("dd-MM-yyyy HHmmss") : string.Empty));
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].MaterialCode);
@@ -1804,10 +1804,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         iRow++;
                         iColumn = 3;
-
-                        var curMaterialCode = item.TrackingConsolidations[i].MaterialCode;
-                        var curBatch = item.TrackingConsolidations[i].Batch;
-
+                        
                         slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].Ck5Number);
                         iColumn++;
 
@@ -1823,7 +1820,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].Qty.ToString("N2"));
                         iColumn++;
 
-                        slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].GiDate);
+                        slDocument.SetCellValue(iRow, iColumn, (item.TrackingConsolidations[i].GiDate.HasValue ? item.TrackingConsolidations[i].GiDate.Value.ToString("dd-MM-yyyy HHmmss") : string.Empty));
                         iColumn++;
 
                         slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].MaterialCode);
@@ -1836,39 +1833,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         iColumn++;
 
                         slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].ConvertedUomId);
-
-                        if (lastMaterialCode == curMaterialCode && lastBatch == curBatch)
-                        {
-                            iEndRow = iRow;
-                            if (i == item.TrackingConsolidations.Count - 1)
-                            {
-                                if (iStartRow != iEndRow)
-                                {
-                                    //need to merge
-                                    needToMerge.Add(new DetailReportNeedToMerge()
-                                    {
-                                        StartRowIndex = iStartRow,
-                                        EndRowIndex = iEndRow
-                                    });
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (iStartRow != iEndRow)
-                            {
-                                //need to merge
-                                needToMerge.Add(new DetailReportNeedToMerge()
-                                {
-                                    StartRowIndex = iStartRow,
-                                    EndRowIndex = iEndRow
-                                });
-                            }
-                            iStartRow = iRow;
-                            iEndRow = iStartRow;
-                        }
-                        lastMaterialCode = curMaterialCode;
-                        lastBatch = curBatch;
+                        
                     }
                     
                 }
@@ -1892,8 +1857,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 iRow++;
             }
-
-            slDocument = DetailReportDoingMerge(slDocument, needToMerge);
 
             return CreateXlsFileDetailReports(slDocument, endColumnIndex,  iRow - 1);
 
@@ -1997,37 +1960,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return path;
         }
-
-        private SLDocument DetailReportDoingMerge(SLDocument slDocument, List<DetailReportNeedToMerge> items)
-        {
-            if (items.Count <= 0) return slDocument;
-
-            foreach (var item in items)
-            {
-                //need set to empty cell first before doing merge
-                for (int i = item.StartRowIndex + 1; i < item.EndRowIndex; i++)
-                {
-                    slDocument.SetCellValue(i, 9, string.Empty);
-                    slDocument.SetCellValue(i, 10, string.Empty);
-                }
-
-                //Material Code
-                slDocument.MergeWorksheetCells(item.StartRowIndex, 9, item.EndRowIndex, 9);
-
-                //Usage Qty
-                slDocument.MergeWorksheetCells(item.StartRowIndex, 10, item.EndRowIndex, 10);
-                
-            }
-
-            return slDocument;
-        }
-
-        private class DetailReportNeedToMerge
-        {
-            public int StartRowIndex { get; set; }
-            public int EndRowIndex { get; set; }
-        }
-
+        
         #endregion
 
         #region ----------------- Dashboard Page -------------
