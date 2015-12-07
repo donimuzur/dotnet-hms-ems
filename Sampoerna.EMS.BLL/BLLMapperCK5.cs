@@ -132,8 +132,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ExciseSettlement, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.EX_SETTLEMENT_ID)))
                 .ForMember(dest => dest.ExciseStatus, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.EX_STATUS_ID)))
                 .ForMember(dest => dest.RequestType, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.REQUEST_TYPE_ID)))
-                .ForMember(dest => dest.SourcePlant, opt => opt.MapFrom(src => src.SOURCE_PLANT_ID))
-                .ForMember(dest => dest.DestinationPlant, opt => opt.MapFrom(src => src.DEST_PLANT_ID))
+                .ForMember(dest => dest.SourcePlant, opt => opt.MapFrom(src => src.SOURCE_PLANT_ID + "-" + src.SOURCE_PLANT_NAME))
+                .ForMember(dest => dest.DestinationPlant, opt => opt.MapFrom(src => src.DEST_PLANT_ID + "-" + src.DEST_PLANT_NAME))
 
                 .ForMember(dest => dest.UnpaidExciseFacilityNumber, opt => opt.MapFrom(src => src.PBCK1 != null ? src.PBCK1.NUMBER : string.Empty))
                 .ForMember(dest => dest.UnpaidExciseFacilityDate, opt => opt.MapFrom(src => src.PBCK1 != null && src.PBCK1.DECREE_DATE.HasValue ? src.PBCK1.DECREE_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
