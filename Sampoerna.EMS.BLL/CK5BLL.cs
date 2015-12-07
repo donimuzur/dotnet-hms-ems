@@ -2740,6 +2740,16 @@ namespace Sampoerna.EMS.BLL
             result.ReportDetails.Total = GetMaterialUomGroupBy(dtData.CK5_MATERIAL);
             result.ReportDetails.Uom = "";
 
+            //get office name
+            result.ReportDetails.OfficeName = "";
+            var vendorInfo = _lfa1Bll.GetById(dtData.CE_OFFICE_CODE);
+
+            if (vendorInfo != null)
+            {
+                result.ReportDetails.OfficeName = vendorInfo.NAME2;
+            }
+
+
             result.ReportDetails.OfficeCode = dtData.SOURCE_PLANT_NPPBKC_ID;
 
             if (string.IsNullOrEmpty(dtData.SOURCE_PLANT_NPPBKC_ID))
