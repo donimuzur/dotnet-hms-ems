@@ -129,7 +129,10 @@ namespace Sampoerna.EMS.Core.Exceptions
             Lack1MissingPbckProdConverter,
 
             [Description("Please  Register Code W Sapon, W Gagang, and W Stem in material master")]
-            PlantInWasteNotHaveStickerCode
+            PlantInWasteNotHaveStickerCode,
+
+            [Description("Missing UOM Data")]
+            MissingUomData
         }
 
         /// <summary>

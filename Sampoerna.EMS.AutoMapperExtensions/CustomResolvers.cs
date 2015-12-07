@@ -388,4 +388,24 @@ namespace Sampoerna.EMS.AutoMapperExtensions
             return resultValue;
         }
     }
+
+    public class ConcatStringResolver : ValueResolver<string, string>
+    {
+        protected override string ResolveCore(string value)
+        {
+            try
+            {
+                if (value.Length > 30)
+                    return value.Substring(0, 30) + "...";
+
+                return value;
+            }
+            catch (Exception ex)
+            {
+
+                return value;
+            }
+
+        }
+    }
 }

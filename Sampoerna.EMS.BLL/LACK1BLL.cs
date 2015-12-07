@@ -2123,6 +2123,33 @@ namespace Sampoerna.EMS.BLL
             }
             
             var uomData = _uomBll.GetAll();
+
+            if (uomData.Count <= 0)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.MissingUomData.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingUomData),
+                    Data = rc
+                };
+            }
+
+            var gramUomData = uomData.Count > 0
+                ? uomData.FirstOrDefault(c => c.UOM_ID.ToLower() == "g" || c.UOM_DESC.ToLower() == "gram")
+                : null;
+
+            if (gramUomData == null)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.MissingUomData.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingUomData),
+                    Data = rc
+                };
+            }
+
             var joinedWithUomData = (from j in pbck1ProdConverter
                                      join u in uomData on j.CONVERTER_UOM_ID equals u.UOM_ID
                                      select new
@@ -2132,7 +2159,8 @@ namespace Sampoerna.EMS.BLL
                                          j.PRODUCT_ALIAS,
                                          j.CONVERTER_OUTPUT,
                                          j.CONVERTER_UOM_ID,
-                                         u.UOM_DESC
+                                         u.UOM_DESC,
+                                         Convertion = (decimal)(j.CONVERTER_UOM_ID.ToLower() == "kg" ? 0.001 : 1)
                                      }).Distinct().ToList();
 
             var productionList = joinedWithUomData.Select(item => new Lack1GeneratedProductionDataDto()
@@ -2142,9 +2170,9 @@ namespace Sampoerna.EMS.BLL
                 ProdCode = item.PROD_CODE,
                 ProductType = item.PRODUCT_TYPE,
                 ProductAlias = item.PRODUCT_ALIAS,
-                Amount = item.CONVERTER_OUTPUT.HasValue ? ((rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0) * item.CONVERTER_OUTPUT.Value) : 0,
-                UomId = item.CONVERTER_UOM_ID,
-                UomDesc = item.UOM_DESC
+                Amount = item.CONVERTER_OUTPUT.HasValue ? ((rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0) * item.CONVERTER_OUTPUT.Value * item.Convertion) : 0,
+                UomId = item.CONVERTER_UOM_ID.ToLower() == "kg" ? gramUomData.UOM_ID : item.CONVERTER_UOM_ID,
+                UomDesc = item.CONVERTER_UOM_ID.ToLower() == "kg" ? gramUomData.UOM_DESC : item.UOM_DESC
             }).ToList();
 
             rc.InventoryProductionTisToTis.ProductionData = new Lack1GeneratedProductionDto

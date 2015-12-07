@@ -35,6 +35,7 @@ using Sampoerna.EMS.Website.Models.EmailTemplate;
 using Sampoerna.EMS.Website.Models.LACK2;
 using Sampoerna.EMS.Website.Models.WasteRole;
 using Sampoerna.EMS.Website.Models.WasteStock;
+using Sampoerna.EMS.Website.Models.XmlLog;
 
 namespace Sampoerna.EMS.Website
 {
@@ -990,6 +991,18 @@ namespace Sampoerna.EMS.Website
                 ;
 
             #endregion
+
+            #region Nlog
+
+            Mapper.CreateMap<NlogDto, XmlLogFormViewModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.XmlLogId, opt => opt.MapFrom(src => src.Nlog_Id))
+                .ForMember(dest => dest.TimeStampDisplay, opt => opt.MapFrom(src => src.Timestamp.HasValue ? src.Timestamp.Value.ToString("dd MMM yyyy hh:mm:ss tt"): string.Empty))
+                //.ForMember(dest => dest.Logger, opt => opt.ResolveUsing<ConcatStringResolver>().FromMember(src => src.Logger))
+                //.ForMember(dest => dest.Message, opt => opt.ResolveUsing<ConcatStringResolver>().FromMember(src => src.Message))
+                ;
+
+            #endregion
+
         }
     }
 
