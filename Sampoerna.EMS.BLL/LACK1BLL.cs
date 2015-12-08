@@ -2634,6 +2634,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             var rc = new List<Lack1DetailReportDto>();
+            var uomData = _uomBll.GetAll();
 
             foreach (var data in tempData)
             {
@@ -2647,15 +2648,24 @@ namespace Sampoerna.EMS.BLL
                     TrackingConsolidations = new List<Lack1TrackingConsolidationDetailReportDto>()
                 };
 
-                var incomeList = data.LACK1_INCOME_DETAIL.Select(incomeDetail => new Lack1ReceivingDetailReportDto()
-                {
-                    Ck5Id = incomeDetail.CK5.CK5_ID, Ck5Number = incomeDetail.CK5.SUBMISSION_NUMBER, 
-                    Ck5RegistrationNumber = incomeDetail.CK5.REGISTRATION_NUMBER, 
-                    Ck5RegistrationDate = incomeDetail.CK5.REGISTRATION_DATE, 
-                    Ck5GrDate = incomeDetail.CK5.GR_DATE, 
-                    StoNumber = incomeDetail.CK5.CK5_TYPE == Enums.CK5Type.Intercompany ? incomeDetail.CK5.STO_RECEIVER_NUMBER : incomeDetail.CK5.STO_SENDER_NUMBER, 
-                    Qty = incomeDetail.AMOUNT, UomId = incomeDetail.CK5.PACKAGE_UOM_ID
-                }).Distinct().ToList();
+                var incomeList = (from inc in data.LACK1_INCOME_DETAIL
+                    join uom in uomData on inc.CK5.PACKAGE_UOM_ID equals uom.UOM_ID into gj
+                    from subUom in gj.DefaultIfEmpty()
+                    select new Lack1ReceivingDetailReportDto()
+                    {
+                        Ck5Id = inc.CK5.CK5_ID,
+                        Ck5Number = inc.CK5.SUBMISSION_NUMBER,
+                        Ck5RegistrationNumber = inc.CK5.REGISTRATION_NUMBER,
+                        Ck5RegistrationDate = inc.CK5.REGISTRATION_DATE,
+                        Ck5GrDate = inc.CK5.GR_DATE,
+                        StoNumber =
+                            inc.CK5.CK5_TYPE == Enums.CK5Type.Intercompany
+                                ? inc.CK5.STO_RECEIVER_NUMBER
+                                : inc.CK5.STO_SENDER_NUMBER,
+                        Qty = inc.AMOUNT,
+                        UomId = inc.CK5.PACKAGE_UOM_ID,
+                        UomDesc = subUom != null ? subUom.UOM_DESC : string.Empty
+                    }).ToList();
 
                 var usageConsolidationData = new List<Lack1TrackingConsolidationDetailReportDto>();
 
@@ -2700,12 +2710,10 @@ namespace Sampoerna.EMS.BLL
                             UsageQty = u.QTY,
                             Batch = rec.BATCH,
                             PostingDate = u.POSTING_DATE,
-                            OriginalUom = u.BUN, //todo: ask where to get
-                            ConvertedUom = u.BUN //todo: ask where to get
+                            OriginalUom = string.Empty, //get from PACKAGE_UOM on CK5 table
+                            ConvertedUom = u.BUN
                         }).DistinctBy(c => c.InventoryUsageId).ToList();
 
-                    var distinctedUsageReceiving = usageReceiving.Distinct().ToList();
-                    
                     foreach (var income in incomeList)
                     {
                         if (!string.IsNullOrEmpty(income.StoNumber))
@@ -2713,6 +2721,8 @@ namespace Sampoerna.EMS.BLL
                             //there is sto number value, let's get usage receiving by sto number for Purch_Doc
                             var income1 = income;
                             var uConsolidationItem = (from x in usageReceiving
+                                                      join uom in uomData on x.ConvertedUom equals uom.UOM_ID into gj
+                                                          from subUom in gj.DefaultIfEmpty()
                                 where x.PurchaseDoc == income1.StoNumber
                                 select new Lack1TrackingConsolidationDetailReportDto()
                                 {
@@ -2726,8 +2736,10 @@ namespace Sampoerna.EMS.BLL
                                     PurchaseDoc = x.PurchaseDoc,
                                     MaterialCode = x.MaterialCode,
                                     UsageQty = x.UsageQty,
-                                    OriginalUomId = x.OriginalUom,
-                                    ConvertedUomId = x.ConvertedUom,
+                                    OriginalUomId = income1.UomId, //get from Package_UomId on CK5 table
+                                    OriginalUomDesc = income1.UomDesc,
+                                    ConvertedUomId = x.ConvertedUom, //get from BUN on INVENTORY_MOVEMENT table
+                                    ConvertedUomDesc = subUom != null ? subUom.UOM_DESC : string.Empty,
                                     Batch = x.Batch,
                                     MaterialCodeUsageRecCount = 1
                                 }).ToList();
@@ -2748,7 +2760,9 @@ namespace Sampoerna.EMS.BLL
                                 MaterialCode = string.Empty,
                                 UsageQty = null,
                                 OriginalUomId = string.Empty,
+                                OriginalUomDesc = string.Empty,
                                 ConvertedUomId = string.Empty,
+                                ConvertedUomDesc = string.Empty,
                                 Batch = string.Empty,
                                 MaterialCodeUsageRecCount = 1
                             });
@@ -2770,7 +2784,9 @@ namespace Sampoerna.EMS.BLL
                                 MaterialCode = string.Empty,
                                 UsageQty = null,
                                 OriginalUomId = string.Empty,
+                                OriginalUomDesc = string.Empty,
                                 ConvertedUomId = string.Empty,
+                                ConvertedUomDesc = string.Empty,
                                 Batch = string.Empty,
                                 MaterialCodeUsageRecCount = 1
                             }));
