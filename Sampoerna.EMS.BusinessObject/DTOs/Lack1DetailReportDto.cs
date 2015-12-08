@@ -36,7 +36,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string MaterialCode { get; set; }
         public decimal? UsageQty { get; set; }
         public string OriginalUomId { get; set; }
+        public string OriginalUomDesc { get; set; }
         public string ConvertedUomId { get; set; }
+        public string ConvertedUomDesc { get; set; }
         public string Batch { get; set; }
         #endregion 
         public int MaterialCodeUsageRecCount { get; set; }
@@ -73,6 +75,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? Ck5GrDate { get; set; }
         public decimal Qty { get; set; }
         public string UomId { get; set; }
+        public string UomDesc { get; set; }
         //sto_sender or sto_receiver regarding Ck5_type
         public string StoNumber { get; set; }
     }

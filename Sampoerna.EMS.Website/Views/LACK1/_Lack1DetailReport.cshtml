@@ -46,8 +46,8 @@
                     {
                         <td></td>
                     }
-                    <td>@item.TrackingConsolidations[0].OriginalUomId</td>
-                    <td>@item.TrackingConsolidations[0].ConvertedUomId</td>
+                    <td>@item.TrackingConsolidations[0].OriginalUomDesc</td>
+                    <td>@item.TrackingConsolidations[0].ConvertedUomDesc</td>
                     <td rowspan="@trackingConsolidationCount">@item.EndingBalance.ToString("N2")</td>
                 </tr>
                 for (int i = 1; i < item.TrackingConsolidations.Count; i++)
@@ -68,8 +68,8 @@
                         {
                             <td></td>
                         }
-                        <td>@item.TrackingConsolidations[i].OriginalUomId</td>
-                        <td>@item.TrackingConsolidations[i].ConvertedUomId</td>
+                        <td>@item.TrackingConsolidations[i].OriginalUomDesc</td>
+                        <td>@item.TrackingConsolidations[i].ConvertedUomDesc</td>
                     </tr>
                 }
             }
