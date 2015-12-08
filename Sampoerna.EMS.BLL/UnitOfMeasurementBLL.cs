@@ -126,7 +126,7 @@ namespace Sampoerna.EMS.BLL
         public List<UOM> GetCK5ConvertedUoms()
         {
             Expression<Func<UOM, bool>> queryFilter = PredicateHelper.True<UOM>();
-            var allowedConvertedUoms =  new List<string>(new[] { "KG", "G", "L" });
+            var allowedConvertedUoms =  new List<string>(new[] { "KG", "G", "L", "Btg" });
             queryFilter = queryFilter.And(c => allowedConvertedUoms.Contains(c.UOM_ID));
             return _repository.Get(queryFilter, null, "").ToList();
         }
