@@ -22,22 +22,19 @@
 </head>
 <body class="main-page">
     <div class="excise-site main-menu">
-        <div class="main-header">
+        <div class="main-header authorize">
             <div class="main-logo">
-                <img src="~/Content/assets/images/logo-large.png" />
+                <img src="~/Content/assets/images/logo-large.png" alt="">
             </div>
-            <h3>Excise Management System</h3>
-        </div>
-        <div class="main-menu-content">
-            <div >
-                 <div class="row">
-                     <center>
-                         <h3 style="color:red">You don’t have access to this application</h3>
-                         <h4>Please contact your administrator !</h4>
-                         <button class="btn btn-default" onclick="window.location.href = '@Url.Action("Index", "Home")'">Back To Home</button>
-                     </center> 
-                    </div>
-                
+            <div class="error-page">
+                <h2>
+                    You don't have access to this application
+                </h2>
+                <h3>
+                    Please contact to your EMS Administrator.
+                </h3>
+                @*<br/>
+                <button class="btn btn-default" onclick="window.location.href = '@Url.Action("Index", "Home")'">Back To Home</button>*@
             </div>
         </div>
     </div>
