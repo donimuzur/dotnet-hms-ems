@@ -21,7 +21,7 @@ namespace Sampoerna.EMS.BLL.Services
 
         public EX_GROUP_TYPE_DETAILS GetGroupTypeDetailByGoodsType(string input)
         {
-            return _groupTypeRepository.Get(c => c.GOODTYPE_ID == input, null, "").FirstOrDefault();
+            return _groupTypeRepository.Get(c => c.GOODTYPE_ID == input, null, "ZAIDM_EX_GOODTYP").FirstOrDefault();
         }
     }
 }

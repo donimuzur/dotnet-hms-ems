@@ -51,6 +51,8 @@ namespace Sampoerna.EMS.BLL.Services
 
             queryFilter = queryFilter.And(c => usageMvtType.Contains(c.MVT));
 
+            if (input.IsEtilAlcohol) return _repository.Get(queryFilter).ToList();
+
             var allOrderInZaapShiftRpt = _zaapShiftRptRepository.Get().Select(d => d.ORDR).Distinct().ToList();
 
             queryFilter = input.IsTisToTis ? queryFilter.And(c => !allOrderInZaapShiftRpt.Contains(c.ORDR)) : queryFilter.And(c => allOrderInZaapShiftRpt.Contains(c.ORDR));

@@ -209,6 +209,24 @@ namespace Sampoerna.EMS.BLL
             }
             
             data.LACK1_TRACKING = Mapper.Map<List<LACK1_TRACKING>>(allTrackingList.Distinct().ToList());
+
+            if (!string.IsNullOrEmpty(generatedData.Data.ExcisableGoodsTypeDesc) && (generatedData.Data.ExcisableGoodsTypeDesc.ToLower().Contains("alkohol") ||
+                                              generatedData.Data.ExcisableGoodsTypeDesc.ToLower().Contains("alcohol")))
+            {
+                //etil alcohol 100%
+                data.LACK1_TRACKING_ALCOHOL = null;
+                data.LACK1_TRACKING_ALCOHOL =
+                    Mapper.Map<List<LACK1_TRACKING_ALCOHOL>>(generatedData.Data.AlcoholTrackingList);
+            }
+
+            if (!string.IsNullOrEmpty(generatedData.Data.ExcisableGoodsTypeDesc) && (generatedData.Data.ExcisableGoodsTypeDesc.ToLower().Contains("alkohol") ||
+                                              generatedData.Data.ExcisableGoodsTypeDesc.ToLower().Contains("alcohol")))
+            {
+                //etil alcohol 100%
+                data.LACK1_TRACKING_ALCOHOL = null;
+                data.LACK1_TRACKING_ALCOHOL =
+                    Mapper.Map<List<LACK1_TRACKING_ALCOHOL>>(generatedData.Data.AlcoholTrackingList);
+            }
             
             data.LACK1_PLANT = null;
 
@@ -1458,8 +1476,17 @@ namespace Sampoerna.EMS.BLL
                 };
             }
 
-            if (checkExcisableGroupType.EX_GROUP_TYPE_ID != null)
-                input.ExGroupTypeId = checkExcisableGroupType.EX_GROUP_TYPE_ID.Value;
+            if (checkExcisableGroupType.EX_GROUP_TYPE_ID == null)
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.ExcisabeGroupTypeNotFound.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.ExcisabeGroupTypeNotFound),
+                    Data = null
+                };
+
+            input.ExGroupTypeId = checkExcisableGroupType.EX_GROUP_TYPE_ID.Value;
+            input.ExcisableGoodsTypeDesc = checkExcisableGroupType.ZAIDM_EX_GOODTYP.EXT_TYP_DESC;
 
             #endregion
 
@@ -1658,7 +1685,8 @@ namespace Sampoerna.EMS.BLL
             //add logic here for LACK-1 Etil Alcohol
             //set InventoryMovement
             InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput;
-            var outGenerateLack1InventoryMovement = SetGenerateLack1InventoryMovement(rc, input, plantIdList, false, out invMovementOutput);
+            rc.InventoryProductionTisToFa = new Lack1GeneratedInventoryAndProductionDto();
+            var outGenerateLack1InventoryMovement = SetGenerateLack1InventoryMovementForEtilAlcohol(rc, input, plantIdList, out invMovementOutput);
             if (!outGenerateLack1InventoryMovement.Success) return outGenerateLack1InventoryMovement;
 
             rc = outGenerateLack1InventoryMovement.Data;
@@ -1670,7 +1698,8 @@ namespace Sampoerna.EMS.BLL
                 PeriodMonth = input.PeriodMonth,
                 PeriodYear = input.PeriodYear,
                 NppbkcId = input.NppbkcId,
-                IsTisToTis = input.IsTisToTis
+                IsTisToTis = input.IsTisToTis,
+                IsEtilAlcohol = true
             };
 
             if (input.PeriodMonth == 1)
@@ -1685,8 +1714,7 @@ namespace Sampoerna.EMS.BLL
                 prevInventoryMovementByParamInput.PeriodMonth = input.PeriodMonth - 1;
             }
 
-            var stoReceiverNumberList = rc.IncomeList.Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber :
-                d.Ck5Type == Enums.CK5Type.DomesticAlcohol ? d.DnNumber : d.StoSenderNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
+            var stoReceiverNumberList = rc.IncomeList.Select(d => d.DnNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
 
             var prevInventoryMovementByParam = GetInventoryMovementByParam(prevInventoryMovementByParamInput,
                 stoReceiverNumberList);
@@ -2616,6 +2644,69 @@ namespace Sampoerna.EMS.BLL
             return groupedData.ToList();
         }
 
+        private Lack1GeneratedOutput SetGenerateLack1InventoryMovementForEtilAlcohol(Lack1GeneratedDto rc,
+            Lack1GenerateDataParamInput input, List<string> plantIdList, out InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput)
+        {
+            invMovementOutput = new InvMovementGetForLack1UsageMovementByParamOutput();
+            var oRet = new Lack1GeneratedOutput()
+            {
+                Success = true,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty,
+                Data = rc
+            };
+
+            var stoReceiverNumberList = rc.IncomeList.Select(d => d.DnNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
+
+            var getInventoryMovementByParamOutput = GetInventoryMovementByParam(new InvMovementGetUsageByParamInput()
+            {
+                NppbkcId = input.NppbkcId,
+                PeriodMonth = input.PeriodMonth,
+                PeriodYear = input.PeriodYear,
+                PlantIdList = plantIdList,
+                IsTisToTis = false,
+                IsEtilAlcohol = true
+            }, stoReceiverNumberList);
+
+            if (getInventoryMovementByParamOutput.AllUsageList.Count <= 0)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Success = false,
+                    ErrorCode = ExceptionCodes.BLLExceptions.TotalUsageLessThanEqualTpZero.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.TotalUsageLessThanEqualTpZero),
+                    Data = null
+                };
+            }
+            decimal totalUsage;
+            if (getInventoryMovementByParamOutput.IncludeInCk5List.Count == 0)
+            {
+                totalUsage = 0;
+            }
+            else
+            {
+                var totalUsageIncludeCk5 = (-1) * getInventoryMovementByParamOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
+                totalUsage = totalUsageIncludeCk5;
+            }
+            
+            //nebeng in tis to fa field
+            //set to tis to fa
+            rc.InventoryProductionTisToFa.InvetoryMovementData = new Lack1GeneratedInventoryMovementDto
+            {
+                InvMovementReceivingCk5List =
+                    Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.IncludeInCk5List),
+                InvMovementReceivingList =
+                    Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.ReceivingList),
+                InvMovementAllList =
+                    Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.AllUsageList)
+            };
+            rc.TotalUsage = totalUsage;
+
+            invMovementOutput = getInventoryMovementByParamOutput;
+
+            return oRet;
+        }
+
         private Lack1GeneratedOutput SetGenerateLack1InventoryMovement(Lack1GeneratedDto rc,
             Lack1GenerateDataParamInput input, List<string> plantIdList, bool isForTisToTis, out InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput)
         {
@@ -2636,7 +2727,8 @@ namespace Sampoerna.EMS.BLL
                 PeriodMonth = input.PeriodMonth,
                 PeriodYear = input.PeriodYear,
                 PlantIdList = plantIdList,
-                IsTisToTis = isForTisToTis
+                IsTisToTis = isForTisToTis,
+                IsEtilAlcohol = false
             }, stoReceiverNumberList);
 
             if (getInventoryMovementByParamOutput.AllUsageList.Count <= 0)
@@ -2703,7 +2795,8 @@ namespace Sampoerna.EMS.BLL
                 PeriodMonth = input.PeriodMonth,
                 PeriodYear = input.PeriodYear,
                 PlantIdList = input.PlantIdList,
-                IsTisToTis = input.IsTisToTis
+                IsTisToTis = input.IsTisToTis,
+                IsEtilAlcohol = input.IsEtilAlcohol
             };
 
             var receivingParamInput = new InvMovementGetReceivingByParamInput()
@@ -2712,14 +2805,16 @@ namespace Sampoerna.EMS.BLL
                 PeriodMonth = input.PeriodMonth,
                 PeriodYear = input.PeriodYear,
                 PlantIdList = input.PlantIdList,
-                IsTisToTis = input.IsTisToTis
+                IsTisToTis = input.IsTisToTis,
+                IsEtilAlcohol = input.IsEtilAlcohol
             };
 
             var prevReceivingParamInput = new InvMovementGetReceivingByParamInput()
             {
                 NppbkcId = input.NppbkcId,
                 PlantIdList = input.PlantIdList,
-                IsTisToTis = input.IsTisToTis
+                IsTisToTis = input.IsTisToTis,
+                IsEtilAlcohol = input.IsEtilAlcohol
             };
 
             if (input.PeriodMonth == 1)
