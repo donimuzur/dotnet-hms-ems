@@ -1791,10 +1791,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, !item.TrackingConsolidations[0].UsageQty.HasValue ? "-" : ( (-1) * item.TrackingConsolidations[0].UsageQty.Value).ToString("N3"));
                     iColumn++;
 
-                    slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].OriginalUomId);
+                    slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].OriginalUomDesc);
                     iColumn++;
 
-                    slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].ConvertedUomId);
+                    slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].ConvertedUomDesc);
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.EndingBalance.ToString("N2"));
@@ -1829,10 +1829,10 @@ namespace Sampoerna.EMS.Website.Controllers
                         slDocument.SetCellValue(iRow, iColumn, !item.TrackingConsolidations[i].UsageQty.HasValue ? "-" :((-1) * item.TrackingConsolidations[i].UsageQty.Value).ToString("N3"));
                         iColumn++;
 
-                        slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].OriginalUomId);
+                        slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].OriginalUomDesc);
                         iColumn++;
 
-                        slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].ConvertedUomId);
+                        slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].ConvertedUomDesc);
                         
                     }
                     
