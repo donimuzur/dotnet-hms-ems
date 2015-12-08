@@ -49,6 +49,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Lack1GeneratedInventoryAndProductionDto InventoryProductionTisToFa { get; set; }
         public Lack1GeneratedInventoryAndProductionDto InventoryProductionTisToTis { get; set; }
         public List<Lack1GeneratedSummaryProductionDataDto> FusionSummaryProductionList { get; set; }
+
+        public List<Lack1GeneratedInvMovementProductionStepTracingItem> AlcoholTrackingList { get; set; }
+
     }
 
     public class Lack1GeneratedInventoryAndProductionDto
@@ -106,6 +109,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal Amount { get; set; }
         public string StoReceiverNumber { get; set; }
         public string StoSenderNumber { get; set; }
+        public string DnNumber { get; set; }
         public Enums.CK5Type Ck5Type { get; set; }
         public string RegistrationNumber { get; set; }
         public DateTime? RegistrationDate { get; set; }
@@ -130,5 +134,21 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public long INVENTORY_MOVEMENT_ID { get; set; }
         public bool IsTisToTisData { get; set; }
     }
-    
+
+    public class Lack1GeneratedProductionDomesticAlcoholDto
+    {
+        public INVENTORY_MOVEMENT InvMovementUsage { get; set; }
+        public List<Lack1GeneratedInvMovementProductionStepTracingItem> InvMovementProductionStepTracing { get; set; }
+    }
+
+    public class Lack1GeneratedInvMovementProductionStepTracingItem : INVENTORY_MOVEMENT
+    {
+        public string ParentProcessOrder { get; set; }
+        public bool IsFinalGoodsType { get; set; }
+        public bool IsFirstLevel { get; set; }
+        public string ExGoodsTypeId { get; set; }
+        public string UomId { get; set; }
+        public string UomDesc { get; set; }
+    }
+
 }

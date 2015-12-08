@@ -80,5 +80,21 @@ namespace Sampoerna.EMS.BLL.Services
             return _repository.Get(queryFilter).ToList();
         }
 
+        public INVENTORY_MOVEMENT GetReceivingByProcessOrderAndPlantId(string processOrder, string plantId)
+        {
+            var mvtReceiving = EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving101);
+            return _repository.Get(c => c.ORDR == processOrder && c.PLANT_ID == plantId && c.MVT == mvtReceiving).FirstOrDefault();
+        }
+
+        public INVENTORY_MOVEMENT GetById(long id)
+        {
+            return _repository.GetByID(id);
+        }
+
+        public INVENTORY_MOVEMENT GetUsageByBatchAndPlantId(string batch, string plantId)
+        {
+            return _repository.Get(c => c.BATCH == batch && c.PLANT_ID == plantId && c.MVT == EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage261)).FirstOrDefault();
+        }
+
     }
 }

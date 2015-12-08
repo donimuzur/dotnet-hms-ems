@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
 using System.Text;
@@ -56,6 +55,8 @@ namespace Sampoerna.EMS.BLL
         private IZaidmExNppbkcService _nppbkcService;
         private IZaapShiftRptService _zaapShiftRptService;
         private IPbck1ProdConverterService _pbck1ProdConverterService;
+        private IZaidmExMaterialService _materialService;
+        private IGoodProdTypeService _goodProdTypeService;
 
         public LACK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -90,6 +91,8 @@ namespace Sampoerna.EMS.BLL
             _nppbkcService = new ZaidmExNppbkcService(_uow, _logger);
             _zaapShiftRptService = new ZaapShiftRptService(_uow, _logger);
             _pbck1ProdConverterService = new Pbck1ProdConverterService(_uow, _logger);
+            _materialService = new ZaidmExMaterialService(_uow, _logger);
+            _goodProdTypeService = new GoodProdTypeService(_uow, _logger);
         }
 
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
@@ -1598,11 +1601,281 @@ namespace Sampoerna.EMS.BLL
             {
                 plantIdList = new List<string>() { input.ReceivedPlantId };
             }
+            
+            var outProcess = !string.IsNullOrEmpty(input.ExcisableGoodsTypeDesc) && (input.ExcisableGoodsTypeDesc.ToLower().Contains("alkohol") ||
+                                              input.ExcisableGoodsTypeDesc.ToLower().Contains("alcohol"))
+                ? ProcessGenerateLack1DomesticAlcohol(rc, input, plantIdList)
+                : ProcessGenerateLack1NormalExcisableGoods(rc, input, plantIdList);
 
+            if (!outProcess.Success) return outProcess;
+            rc = outProcess.Data;
+
+            rc.PeriodMonthId = input.PeriodMonth;
+
+            var monthData = _monthBll.GetMonth(rc.PeriodMonthId);
+            if (monthData != null)
+            {
+                rc.PeriodMonthName = monthData.MONTH_NAME_IND;
+            }
+
+            rc.PeriodYear = input.PeriodYear;
+            //format for noted
+            var noteTemp = new List<string>();
+            //format for noted
+            if (!string.IsNullOrEmpty(input.WasteAmountUom))
+            {
+                var uomWasteAmountDescription = _uomBll.GetById(input.WasteAmountUom);
+                input.WasteAmountUom = uomWasteAmountDescription.UOM_ID;
+                noteTemp.Add(GeneratedNoteFormat("Jumlah Waste", input.WasteAmount, uomWasteAmountDescription.UOM_DESC));
+            }
+
+            if (!string.IsNullOrEmpty(input.ReturnAmountUom))
+            {
+                var uomReturnDescription = _uomBll.GetById(input.ReturnAmountUom);
+                input.ReturnAmountUom = uomReturnDescription.UOM_ID;
+                noteTemp.Add(GeneratedNoteFormat("Jumlah Pengembalian", input.ReturnAmount, uomReturnDescription.UOM_DESC));
+            }
+
+            rc.DocumentNoted = string.Join(Environment.NewLine, noteTemp).Replace(Environment.NewLine, "<br />");
+            rc.Noted = input.Noted;
+            
+            rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - (rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0) ) - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
+
+            oReturn.Data = rc;
+
+            return oReturn;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rc"></param>
+        /// <param name="input"></param>
+        /// <param name="plantIdList"></param>
+        /// <returns></returns>
+        private Lack1GeneratedOutput ProcessGenerateLack1DomesticAlcohol(Lack1GeneratedDto rc, Lack1GenerateDataParamInput input, List<string> plantIdList)
+        {
+            //add logic here for LACK-1 Etil Alcohol
+            //set InventoryMovement
+            InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput;
+            var outGenerateLack1InventoryMovement = SetGenerateLack1InventoryMovement(rc, input, plantIdList, false, out invMovementOutput);
+            if (!outGenerateLack1InventoryMovement.Success) return outGenerateLack1InventoryMovement;
+
+            rc = outGenerateLack1InventoryMovement.Data;
+
+            //Get Prev Inventory Movement
+            var prevInventoryMovementByParamInput = new InvMovementGetUsageByParamInput()
+            {
+                PlantIdList = plantIdList,
+                PeriodMonth = input.PeriodMonth,
+                PeriodYear = input.PeriodYear,
+                NppbkcId = input.NppbkcId,
+                IsTisToTis = input.IsTisToTis
+            };
+
+            if (input.PeriodMonth == 1)
+            {
+                //Year - 1, Month = 12
+                prevInventoryMovementByParamInput.PeriodMonth = 12;
+                prevInventoryMovementByParamInput.PeriodYear = prevInventoryMovementByParamInput.PeriodYear - 1;
+            }
+            else
+            {
+                //Same Year, Month - 1
+                prevInventoryMovementByParamInput.PeriodMonth = input.PeriodMonth - 1;
+            }
+
+            var stoReceiverNumberList = rc.IncomeList.Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber :
+                d.Ck5Type == Enums.CK5Type.DomesticAlcohol ? d.DnNumber : d.StoSenderNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
+
+            var prevInventoryMovementByParam = GetInventoryMovementByParam(prevInventoryMovementByParamInput,
+                stoReceiverNumberList);
+
+            //set production List
+            var productionTraceList = new List<Lack1GeneratedProductionDomesticAlcoholDto>();
+
+            var allTrackingList = new List<Lack1GeneratedInvMovementProductionStepTracingItem>();
+
+            foreach (var item in rc.InventoryProductionTisToFa.InvetoryMovementData.InvMovementReceivingCk5List)
+            {
+                //get tracing data
+                var itemToInsert = new Lack1GeneratedProductionDomesticAlcoholDto()
+                {
+                    InvMovementUsage = _inventoryMovementService.GetById(item.INVENTORY_MOVEMENT_ID),
+                    InvMovementProductionStepTracing = new List<Lack1GeneratedInvMovementProductionStepTracingItem>()
+                };
+
+                bool isEnough = false;
+                var processOrder = itemToInsert.InvMovementUsage.ORDR;
+                var plantId = itemToInsert.InvMovementUsage.PLANT_ID;
+
+                while (!isEnough)
+                {
+                    //let's get 101
+                    var rec = _inventoryMovementService.GetReceivingByProcessOrderAndPlantId(processOrder, plantId);
+
+                    if (rec != null)
+                    {
+
+                        if (CheckIsEnoughForCurrentReceivingDomesticAlcoholProductionList(rec, itemToInsert,
+                            prevInventoryMovementByParam))
+                        {
+                            break;
+                        }
+
+                        //check to material
+                        var chkMaterial = _materialService.GetByMaterialAndPlantId(
+                            rec.MATERIAL_ID, rec.PLANT_ID);
+
+                        if (chkMaterial != null)
+                        {
+                            //final goods
+                            var traceItem = Mapper.Map<Lack1GeneratedInvMovementProductionStepTracingItem>(rec);
+                            traceItem.IsFinalGoodsType = true;
+                            traceItem.ParentProcessOrder = itemToInsert.InvMovementUsage.ORDR;
+                            traceItem.ExGoodsTypeId = chkMaterial.EXC_GOOD_TYP;
+                            traceItem.IsFirstLevel = traceItem.ORDR == itemToInsert.InvMovementUsage.ORDR;
+                            traceItem.UomId = chkMaterial.BASE_UOM_ID;
+                            traceItem.UomDesc = chkMaterial.UOM != null ? chkMaterial.UOM.UOM_DESC : string.Empty;
+                            itemToInsert.InvMovementProductionStepTracing.Add(traceItem);
+                            isEnough = true;
+                        }
+                        else
+                        {
+                            var traceItem = Mapper.Map<Lack1GeneratedInvMovementProductionStepTracingItem>(rec);
+                            traceItem.IsFinalGoodsType = false;
+                            traceItem.ParentProcessOrder = itemToInsert.InvMovementUsage.ORDR;
+                            traceItem.IsFirstLevel = traceItem.ORDR == itemToInsert.InvMovementUsage.ORDR;
+                            itemToInsert.InvMovementProductionStepTracing.Add(traceItem);
+                            processOrder = traceItem.ORDR;
+                            plantId = traceItem.PLANT_ID;
+
+                            //get 261 for same plant and batch
+                            var checkUsageForCurrentBatch =
+                                _inventoryMovementService.GetUsageByBatchAndPlantId(traceItem.BATCH, traceItem.PLANT_ID);
+
+                            if (checkUsageForCurrentBatch != null)
+                            {
+                                traceItem = Mapper.Map<Lack1GeneratedInvMovementProductionStepTracingItem>(checkUsageForCurrentBatch);
+                                traceItem.IsFinalGoodsType = false;
+                                traceItem.ParentProcessOrder = itemToInsert.InvMovementUsage.ORDR;
+                                traceItem.IsFirstLevel = traceItem.ORDR == itemToInsert.InvMovementUsage.ORDR;
+                                itemToInsert.InvMovementProductionStepTracing.Add(traceItem);
+                                processOrder = traceItem.ORDR;
+                                plantId = traceItem.PLANT_ID;
+                            }
+                            else
+                            {
+                                isEnough = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        isEnough = true;
+                    }
+                }
+
+                productionTraceList.Add(itemToInsert);
+                allTrackingList.AddRange(itemToInsert.InvMovementProductionStepTracing);
+
+            }
+
+            //process the production list got from previous process
+            var finalGoodsList = allTrackingList.Where(c => c.IsFinalGoodsType).ToList();
+
+            var productionList = new List<Lack1GeneratedProductionDataDto>();
+
+            //todo: group by prod_typ, but how ?
+            foreach (var item in finalGoodsList)
+            {
+                var itemToInsert = new Lack1GeneratedProductionDataDto()
+                {
+                    FaCode = item.MATERIAL_ID,
+                    Ordr = item.ORDR,
+                    ProdCode = "", //from ?
+                    ProductType = "",//from ?
+                    ProductAlias = "",//from?
+                    Amount = item.QTY.HasValue ? item.QTY.Value : 0,
+                    UomId = item.UomId,
+                    UomDesc = item.UomDesc
+                };
+
+                //Get product type info
+                var prodType = _goodProdTypeService.GetProdCodeByGoodTypeId(item.ExGoodsTypeId);
+                if (prodType != null)
+                {
+                    itemToInsert.ProdCode = prodType.PROD_CODE;
+                    itemToInsert.ProductAlias = prodType.PRODUCT_ALIAS;
+                    itemToInsert.ProductType = prodType.PRODUCT_TYPE;
+                }
+                else
+                {
+                    return new Lack1GeneratedOutput()
+                    {
+                        Data = null,
+                        ErrorCode = ExceptionCodes.BLLExceptions.GoodsProdTypeMappingNotFound.ToString(),
+                        ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.GoodsProdTypeMappingNotFound),
+                        Success = false
+                    };
+                }
+
+                var rec = invMovementOutput.UsageProportionalList.FirstOrDefault(c =>
+                    c.Order == item.ParentProcessOrder);
+                if (rec != null)
+                {
+                    //calculate proporsional
+                    itemToInsert.Amount =
+                        Math.Round(
+                            ((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount), 3);
+                }
+
+                productionList.Add(itemToInsert);
+
+            }
+
+            rc.AlcoholTrackingList = allTrackingList;
+            //set to tis to fa
+            rc.InventoryProductionTisToFa.ProductionData = new Lack1GeneratedProductionDto
+            {
+                ProductionList = productionList,
+                ProductionSummaryByProdTypeList = GetProductionGroupedByProdTypeList(productionList),
+                SummaryProductionList = GetSummaryGroupedProductionList(productionList)
+            };
+            
+            return new Lack1GeneratedOutput()
+            {
+                Data = rc,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty,
+                Success = true
+            };
+        }
+
+        private bool CheckIsEnoughForCurrentReceivingDomesticAlcoholProductionList(INVENTORY_MOVEMENT rec, Lack1GeneratedProductionDomesticAlcoholDto itemToInsert,
+            InvMovementGetForLack1UsageMovementByParamOutput prevInventoryMovementByParam)
+        {
+            if (!rec.POSTING_DATE.HasValue || !itemToInsert.InvMovementUsage.POSTING_DATE.HasValue)
+            {
+                //stop looping, doesn't exists
+                return true;
+            }
+            if (rec.POSTING_DATE.Value.Month == itemToInsert.InvMovementUsage.POSTING_DATE.Value.Month &&
+                rec.POSTING_DATE.Value.Year == itemToInsert.InvMovementUsage.POSTING_DATE.Value.Year) return false;
+            if (prevInventoryMovementByParam.IncludeInCk5List.Count <= 0) return true;
+            var chkToPrev =
+                prevInventoryMovementByParam.IncludeInCk5List.FirstOrDefault(
+                    c => c.ORDR == rec.ORDR && c.PLANT_ID == rec.PLANT_ID);
+            return chkToPrev == null;
+        }
+
+        private Lack1GeneratedOutput ProcessGenerateLack1NormalExcisableGoods(Lack1GeneratedDto rc,
+            Lack1GenerateDataParamInput input, List<string> plantIdList)
+        {
             //instantiate
             rc.InventoryProductionTisToFa = new Lack1GeneratedInventoryAndProductionDto();
             rc.InventoryProductionTisToTis = new Lack1GeneratedInventoryAndProductionDto();
-            
+
             //Get InventoryMovement for Tis To Fa
             InvMovementGetForLack1UsageMovementByParamOutput invMovementTisToFaOutput;
             var outGenerateLack1InventoryMovementTisToFa = SetGenerateLack1InventoryMovement(rc, input, plantIdList, false, out invMovementTisToFaOutput);
@@ -1651,43 +1924,17 @@ namespace Sampoerna.EMS.BLL
             {
                 rc.FusionSummaryProductionList = GetFusionSummaryGroupedProductionList(rc.FusionSummaryProductionList);
             }
-            
-            rc.PeriodMonthId = input.PeriodMonth;
 
-            var monthData = _monthBll.GetMonth(rc.PeriodMonthId);
-            if (monthData != null)
+            return new Lack1GeneratedOutput()
             {
-                rc.PeriodMonthName = monthData.MONTH_NAME_IND;
-            }
+                Success = true,
+                ErrorCode = string.Empty,
+                ErrorMessage = string.Empty,
+                Data = rc
+            };
 
-            rc.PeriodYear = input.PeriodYear;
-            //format for noted
-            var noteTemp = new List<string>();
-            //format for noted
-            if (!string.IsNullOrEmpty(input.WasteAmountUom))
-            {
-                var uomWasteAmountDescription = _uomBll.GetById(input.WasteAmountUom);
-                input.WasteAmountUom = uomWasteAmountDescription.UOM_ID;
-                noteTemp.Add(GeneratedNoteFormat("Jumlah Waste", input.WasteAmount, uomWasteAmountDescription.UOM_DESC));
-            }
-
-            if (!string.IsNullOrEmpty(input.ReturnAmountUom))
-            {
-                var uomReturnDescription = _uomBll.GetById(input.ReturnAmountUom);
-                input.ReturnAmountUom = uomReturnDescription.UOM_ID;
-                noteTemp.Add(GeneratedNoteFormat("Jumlah Pengembalian", input.ReturnAmount, uomReturnDescription.UOM_DESC));
-            }
-
-            rc.DocumentNoted = string.Join(Environment.NewLine, noteTemp).Replace(Environment.NewLine, "<br />");
-            rc.Noted = input.Noted;
-            
-            rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - (rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0) ) - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
-
-            oReturn.Data = rc;
-
-            return oReturn;
         }
-
+        
         private List<Lack1GeneratedSummaryProductionDataDto> GetFusionSummaryGroupedProductionList(List<Lack1GeneratedSummaryProductionDataDto> list)
         {
             if (list.Count <= 0) return new List<Lack1GeneratedSummaryProductionDataDto>();
@@ -1711,6 +1958,7 @@ namespace Sampoerna.EMS.BLL
                 return prefix + " : " + nominal.Value.ToString("N2") + " " + uomId;
             return "";
         }
+
         /// <summary>
         /// for normal LACK-1 Production Data
         /// </summary>
