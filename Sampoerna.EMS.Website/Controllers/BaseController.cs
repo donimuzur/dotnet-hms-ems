@@ -127,8 +127,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (CurrentUser == null )
             {
                 filterContext.Result = new RedirectToRouteResult(
-                            new RouteValueDictionary { { "controller", "Home" }, { "action", "Index" } });
- 
+                                new RouteValueDictionary { { "controller", "Error" }, { "action", "Unauthorized" } });
              
                 
             }
