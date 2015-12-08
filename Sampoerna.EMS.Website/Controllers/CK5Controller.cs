@@ -2563,17 +2563,19 @@ namespace Sampoerna.EMS.Website.Controllers
                 //create xml file
                 var ck5XmlDto = _ck5Bll.GetCk5ForXmlById(model.Ck5Id);
 
-                var fileName = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5APP_" +
+                var fileName = ConfigurationManager.AppSettings["PathXmlTemp"] + "CK5APP_" +
                                model.SubmissionNumber + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
-
+                var outboundFilePath = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5APP_" +
+                               model.SubmissionNumber + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
                 ck5XmlDto.Ck5PathXml = fileName;
 
                 XmlCK5DataWriter rt = new XmlCK5DataWriter();
 
                 //ck5XmlDto.SUBMISSION_NUMBER = Convert.ToInt32(model.SubmissionNumber.Split('/')[0]).ToString("0000000000");
-                
-                _ck5Bll.CK5Workflow(input);
+
                 rt.CreateCK5Xml(ck5XmlDto);
+                _ck5Bll.CK5Workflow(input);
+                rt.MoveTempToOutbound(fileName,outboundFilePath);
                 return true;
             }
             catch (Exception ex)

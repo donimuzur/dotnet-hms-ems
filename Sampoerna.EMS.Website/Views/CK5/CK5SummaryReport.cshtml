@@ -41,7 +41,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="row">
-                                    <label class="col-md-4">Company Origin</label>
+                                    <label class="col-md-4">Company Destination</label>
                                     <div class="col-md-8">
                                         @(Model.SearchView.CompanyCodeDestList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
                                               : Html.DropDownListFor(model => model.SearchView.CompanyCodeDest, Model.SearchView.CompanyCodeDestList, "All", new { @class = "form-control selectreset" }))
@@ -64,7 +64,7 @@
                             
                             <div class="col-md-6">
                                 <div class="row">
-                                    <label class="col-md-4">NPPBKC ID Origin</label>
+                                    <label class="col-md-4">NPPBKC ID Destination</label>
                                     <div class="col-md-8">
                                        
                                         @(Model.SearchView.NppbkcIdDestList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
@@ -88,7 +88,7 @@
                             
                             <div class="col-md-6">
                                 <div class="row">
-                                    <label class="col-md-4">Plant Origin</label>
+                                    <label class="col-md-4">Plant Destination</label>
                                     <div class="col-md-8 year-from">
                                        
                                         @(Model.SearchView.PlantDestList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
