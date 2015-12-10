@@ -145,16 +145,24 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //list table
             //todo refactor
-            model.DetailsList = GetCk5Items(ck5Type);
-            if (ck5Type == Enums.CK5Type.Domestic)
+            //model.DetailsList = GetCk5Items(ck5Type);
+            switch (ck5Type)
             {
-                model.DetailList2 = GetCk5Items(Enums.CK5Type.Intercompany);
-                model.DetailList3 = GetCk5Items(Enums.CK5Type.DomesticAlcohol);
-                //model.DetailList2 = model.DetailsList.Where(a=>a.Ck5Type == Enums.CK5Type.Intercompany).ToList();
-                //model.DetailList3 = model.DetailsList.Where(a => a.Ck5Type == Enums.CK5Type.DomesticAlcohol).ToList();
+                case Enums.CK5Type.DomesticAlcohol:
+                case Enums.CK5Type.Intercompany:
+                case Enums.CK5Type.Domestic:
+                    model.DetailsList = GetCk5Items(Enums.CK5Type.Domestic);
+                    model.DetailList2 = GetCk5Items(Enums.CK5Type.Intercompany);
+                    model.DetailList3 = GetCk5Items(Enums.CK5Type.DomesticAlcohol);
+                    break;
+                case Enums.CK5Type.PortToImporter:
+                    model.DetailsList = GetCk5Items(Enums.CK5Type.PortToImporter);
+                    model.DetailList2 = GetCk5Items(Enums.CK5Type.ImporterToPlant);
+                    break;
+                default:
+                    model.DetailsList = GetCk5Items(ck5Type);
+                    break;
             }
-            else if (ck5Type == Enums.CK5Type.PortToImporter)
-                model.DetailList2 = GetCk5Items(Enums.CK5Type.ImporterToPlant);
 
             return model;
         }
@@ -179,6 +187,45 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return View(model);
         }
+
+
+        public ActionResult IndexIntercompany()
+        {
+
+            CK5IndexViewModel model;
+            try
+            {
+                model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Intercompany);
+                model.Ck5Type = Enums.CK5Type.Intercompany;
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model = new CK5IndexViewModel();
+            }
+
+         
+            return View("Index",model);
+        }
+        
+        public ActionResult IndexDomesticAlcohol()
+        {
+
+            CK5IndexViewModel model;
+            try
+            {
+                model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.DomesticAlcohol);
+                model.Ck5Type = Enums.CK5Type.DomesticAlcohol;
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model = new CK5IndexViewModel();
+            }
+
+            return View("Index", model);
+        }
+
 
         [HttpPost]
         public PartialViewResult Intercompany(CK5IndexViewModel model)
@@ -240,6 +287,15 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult CK5Import()
         {
             var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.PortToImporter);
+            model.Ck5Type = Enums.CK5Type.PortToImporter;
+            return View("CK5Import", model);
+        }
+
+        public ActionResult CK5ImportPlant()
+        {
+            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.PortToImporter);
+            model.Ck5Type = Enums.CK5Type.ImporterToPlant;
+
             return View("CK5Import", model);
         }
 
