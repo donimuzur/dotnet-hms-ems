@@ -370,11 +370,13 @@ namespace Sampoerna.EMS.XMLReader
                                }
                                 if (statusCk5 != Enums.CK5XmlStatus.None)
                                 {
-                                    var emailCreator = GetEmail(item.CREATED_BY);
-                                    var emailPoa = GetEmail(item.APPROVED_BY_POA);
-                                    var emailManager = GetEmail(item.APPROVED_BY_MANAGER);
-                                    var emailBody = string.Format("Status : {0}", item.STATUS_ID.ToString());
-                                    AddWorkflowHistory(workflowHistory, emailCreator, emailPoa, emailManager, emailBody);
+                                    //var emailCreator = GetEmail(item.CREATED_BY);
+                                    //var emailPoa = GetEmail(item.APPROVED_BY_POA);
+                                    //var emailManager = GetEmail(item.APPROVED_BY_MANAGER);
+                                    //var emailBody = string.Format("Status : {0}", item.STATUS_ID.ToString());
+                                    //AddWorkflowHistory(workflowHistory, emailCreator, emailPoa, emailManager, emailBody);
+
+                                    AddWorkflowHistory(workflowHistory, null, null, null, null);
                                 }
                             }
                             items.Add(item);
