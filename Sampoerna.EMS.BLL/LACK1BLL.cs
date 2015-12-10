@@ -1728,8 +1728,15 @@ namespace Sampoerna.EMS.BLL
                     //as level 0 for 101
                     int tracingLevel = 0;
                     var inventoryReceiving = _inventoryMovementService.GetById(item.INVENTORY_MOVEMENT_ID);
+
+                    
+                    //as level 0 for 261
+                    var inventoryUsage = _inventoryMovementService.GetUsageByBatchAndPlantId(inventoryReceiving.BATCH,
+                        inventoryReceiving.PLANT_ID);
+                    var parentProcessOrder = inventoryUsage.ORDR;
+
                     var traceItem = Mapper.Map<Lack1GeneratedInvMovementProductionStepTracingItem>(inventoryReceiving);
-                    traceItem.ParentProcessOrder = inventoryReceiving.ORDR;
+                    traceItem.ParentProcessOrder = parentProcessOrder;
                     traceItem.Level = tracingLevel;
                     var itemToInsert = new Lack1GeneratedProductionDomesticAlcoholDto()
                     {
@@ -1737,14 +1744,11 @@ namespace Sampoerna.EMS.BLL
                         InvMovementProductionStepTracing = new List<Lack1GeneratedInvMovementProductionStepTracingItem>()
                     {
                         traceItem
-                    }
-                    };
-
-                    //as level 0 for 261
-                    var inventoryUsage = _inventoryMovementService.GetUsageByBatchAndPlantId(inventoryReceiving.BATCH,
-                        inventoryReceiving.PLANT_ID);
+                    }};
+                    
                     traceItem = Mapper.Map<Lack1GeneratedInvMovementProductionStepTracingItem>(inventoryUsage);
                     traceItem.Level = tracingLevel;
+                    traceItem.ParentProcessOrder = parentProcessOrder;
                     itemToInsert.InvMovementProductionStepTracing.Add(traceItem);
 
                     bool isEnough = false;
@@ -1773,7 +1777,7 @@ namespace Sampoerna.EMS.BLL
                                 traceItem = Mapper.Map<Lack1GeneratedInvMovementProductionStepTracingItem>(rec);
                                 traceItem.Level = tracingLevel;
                                 traceItem.IsFinalGoodsType = true;
-                                traceItem.ParentProcessOrder = itemToInsert.InvMovementUsage.ORDR;
+                                traceItem.ParentProcessOrder = parentProcessOrder;
                                 traceItem.ExGoodsTypeId = chkMaterial.EXC_GOOD_TYP;
                                 traceItem.IsFirstLevel = traceItem.ORDR == itemToInsert.InvMovementUsage.ORDR;
                                 traceItem.UomId = chkMaterial.BASE_UOM_ID;
@@ -1787,7 +1791,7 @@ namespace Sampoerna.EMS.BLL
                                 traceItem = Mapper.Map<Lack1GeneratedInvMovementProductionStepTracingItem>(rec);
                                 traceItem.Level = tracingLevel;
                                 traceItem.IsFinalGoodsType = false;
-                                traceItem.ParentProcessOrder = itemToInsert.InvMovementUsage.ORDR;
+                                traceItem.ParentProcessOrder = parentProcessOrder;
                                 traceItem.IsFirstLevel = traceItem.ORDR == itemToInsert.InvMovementUsage.ORDR;
                                 itemToInsert.InvMovementProductionStepTracing.Add(traceItem);
                                 processOrder = traceItem.ORDR;
@@ -1802,7 +1806,7 @@ namespace Sampoerna.EMS.BLL
                                     traceItem = Mapper.Map<Lack1GeneratedInvMovementProductionStepTracingItem>(checkUsageForCurrentBatch);
                                     traceItem.Level = tracingLevel;
                                     traceItem.IsFinalGoodsType = false;
-                                    traceItem.ParentProcessOrder = itemToInsert.InvMovementUsage.ORDR;
+                                    traceItem.ParentProcessOrder = parentProcessOrder;
                                     traceItem.IsFirstLevel = traceItem.ORDR == itemToInsert.InvMovementUsage.ORDR;
                                     itemToInsert.InvMovementProductionStepTracing.Add(traceItem);
                                     processOrder = traceItem.ORDR;
