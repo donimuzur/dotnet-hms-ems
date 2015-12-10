@@ -60,5 +60,9 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public decimal GRAND_TOTAL_EX { get; set; }
 
         public string PACKAGE_UOM_ID { get; set; }
+
+        public string StoNumber { get; set; }
+
+        public string InvoiceNumber { get; set; }
     }
 }
