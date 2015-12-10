@@ -441,6 +441,18 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PeriodDate,
                     opt => opt.MapFrom(src => new DateTime(src.PERIOD_YEAR.Value, src.PERIOD_MONTH.Value, 1)));
 
+            Mapper.CreateMap<Lack1GeneratedInvMovementProductionStepTracingItem, LACK1_TRACKING_ALCOHOL>()
+                .IgnoreAllNonExisting()
+                .ForMember(dest => dest.INVENTORY_MOVEMENT_ID, opt => opt.MapFrom(src => src.INVENTORY_MOVEMENT_ID))
+                .ForMember(dest => dest.IS_FINAL_GOODS, opt => opt.MapFrom(src => src.IsFinalGoodsType))
+                .ForMember(dest => dest.IS_FIRST_LEVEL, opt => opt.MapFrom(src => src.IsFirstLevel))
+                .ForMember(dest => dest.TrackLevel, opt => opt.MapFrom(src => src.Level))
+                .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => DateTime.Now))
+                ;
+
+            Mapper.CreateMap<INVENTORY_MOVEMENT, Lack1GeneratedInvMovementProductionStepTracingItem>()
+                .IgnoreAllNonExisting();
+
         }
 
     }

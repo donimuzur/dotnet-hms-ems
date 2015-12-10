@@ -95,7 +95,14 @@ namespace Sampoerna.EMS.BLL.Services
 
         public INVENTORY_MOVEMENT GetUsageByBatchAndPlantId(string batch, string plantId)
         {
-            return _repository.Get(c => c.BATCH == batch && c.PLANT_ID == plantId && c.MVT == EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage261)).FirstOrDefault();
+            var mvtUsage = EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage261);
+            var data =
+                _repository.Get(
+                    c =>
+                        c.BATCH == batch && c.PLANT_ID == plantId &&
+                        c.MVT == mvtUsage)
+                    .OrderByDescending(o => o.POSTING_DATE);
+            return data.FirstOrDefault();
         }
 
     }

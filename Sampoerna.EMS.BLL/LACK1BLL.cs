@@ -219,15 +219,6 @@ namespace Sampoerna.EMS.BLL
                     Mapper.Map<List<LACK1_TRACKING_ALCOHOL>>(generatedData.Data.AlcoholTrackingList);
             }
 
-            if (!string.IsNullOrEmpty(generatedData.Data.ExcisableGoodsTypeDesc) && (generatedData.Data.ExcisableGoodsTypeDesc.ToLower().Contains("alkohol") ||
-                                              generatedData.Data.ExcisableGoodsTypeDesc.ToLower().Contains("alcohol")))
-            {
-                //etil alcohol 100%
-                data.LACK1_TRACKING_ALCOHOL = null;
-                data.LACK1_TRACKING_ALCOHOL =
-                    Mapper.Map<List<LACK1_TRACKING_ALCOHOL>>(generatedData.Data.AlcoholTrackingList);
-            }
-            
             data.LACK1_PLANT = null;
 
             //set LACK1_PLANT table
@@ -1729,84 +1720,71 @@ namespace Sampoerna.EMS.BLL
             //(3)if not exists, get 261 lvl 1 base on BATCH and PLANT_ID on lvl 1, 101
             //(4)get 101 (level 2) base on ORDR and PLANT_ID on lvl 1, 261 and check  material_id on zaidm_ex_material, if exists that's the finish goods and save it as production result
             //continue as point (3), stop if finish goods found
-            foreach (var item in rc.InventoryProductionTisToFa.InvetoryMovementData.InvMovementReceivingCk5List)
+            try
             {
-                //get tracing data
-                //as level 0 for 101
-                int tracingLevel = 0;
-                var inventoryReceiving = _inventoryMovementService.GetById(item.INVENTORY_MOVEMENT_ID);
-                var traceItem = Mapper.Map<Lack1GeneratedInvMovementProductionStepTracingItem>(inventoryReceiving);
-                traceItem.ParentProcessOrder = inventoryReceiving.ORDR;
-                traceItem.Level = tracingLevel;
-                var itemToInsert = new Lack1GeneratedProductionDomesticAlcoholDto()
+                foreach (var item in rc.InventoryProductionTisToFa.InvetoryMovementData.InvMovementReceivingList)
                 {
-                    InvMovementUsage = inventoryReceiving,
-                    InvMovementProductionStepTracing = new List<Lack1GeneratedInvMovementProductionStepTracingItem>()
+                    //get tracing data
+                    //as level 0 for 101
+                    int tracingLevel = 0;
+                    var inventoryReceiving = _inventoryMovementService.GetById(item.INVENTORY_MOVEMENT_ID);
+                    var traceItem = Mapper.Map<Lack1GeneratedInvMovementProductionStepTracingItem>(inventoryReceiving);
+                    traceItem.ParentProcessOrder = inventoryReceiving.ORDR;
+                    traceItem.Level = tracingLevel;
+                    var itemToInsert = new Lack1GeneratedProductionDomesticAlcoholDto()
+                    {
+                        InvMovementUsage = inventoryReceiving,
+                        InvMovementProductionStepTracing = new List<Lack1GeneratedInvMovementProductionStepTracingItem>()
                     {
                         traceItem
                     }
-                };
-                
-                //as level 0 for 261
-                var inventoryUsage = _inventoryMovementService.GetUsageByBatchAndPlantId(inventoryReceiving.BATCH,
-                    inventoryReceiving.PLANT_ID);
-                traceItem = Mapper.Map<Lack1GeneratedInvMovementProductionStepTracingItem>(inventoryUsage);
-                traceItem.Level = tracingLevel;
-                itemToInsert.InvMovementProductionStepTracing.Add(traceItem);
+                    };
 
-                bool isEnough = false;
-                var processOrder = inventoryUsage.ORDR;
-                var plantId = inventoryUsage.PLANT_ID;
+                    //as level 0 for 261
+                    var inventoryUsage = _inventoryMovementService.GetUsageByBatchAndPlantId(inventoryReceiving.BATCH,
+                        inventoryReceiving.PLANT_ID);
+                    traceItem = Mapper.Map<Lack1GeneratedInvMovementProductionStepTracingItem>(inventoryUsage);
+                    traceItem.Level = tracingLevel;
+                    itemToInsert.InvMovementProductionStepTracing.Add(traceItem);
 
-                while (!isEnough)
-                {
-                    //let's get 101 for next level
-                    tracingLevel = tracingLevel + 1;
-                    var rec = _inventoryMovementService.GetReceivingByProcessOrderAndPlantId(processOrder, plantId);
-                    if (rec != null)
+                    bool isEnough = false;
+                    var processOrder = inventoryUsage.ORDR;
+                    var plantId = inventoryUsage.PLANT_ID;
+
+                    while (!isEnough)
                     {
-                        if (CheckIsEnoughForCurrentReceivingDomesticAlcoholProductionList(rec, itemToInsert,
-                            prevInventoryMovementByParam))
+                        //let's get 101 for next level
+                        tracingLevel = tracingLevel + 1;
+                        var rec = _inventoryMovementService.GetReceivingByProcessOrderAndPlantId(processOrder, plantId);
+                        if (rec != null)
                         {
-                            break;
-                        }
-
-                        //check to material
-                        var chkMaterial = _materialService.GetByMaterialAndPlantId(
-                            rec.MATERIAL_ID, rec.PLANT_ID);
-                        if (chkMaterial != null)
-                        {
-                            //exists in zaidm_ex_material = final goods
-                            traceItem = Mapper.Map<Lack1GeneratedInvMovementProductionStepTracingItem>(rec);
-                            traceItem.Level = tracingLevel;
-                            traceItem.IsFinalGoodsType = true;
-                            traceItem.ParentProcessOrder = itemToInsert.InvMovementUsage.ORDR;
-                            traceItem.ExGoodsTypeId = chkMaterial.EXC_GOOD_TYP;
-                            traceItem.IsFirstLevel = traceItem.ORDR == itemToInsert.InvMovementUsage.ORDR;
-                            traceItem.UomId = chkMaterial.BASE_UOM_ID;
-                            traceItem.UomDesc = chkMaterial.UOM != null ? chkMaterial.UOM.UOM_DESC : string.Empty;
-                            itemToInsert.InvMovementProductionStepTracing.Add(traceItem);
-                            isEnough = true;
-                        }
-                        else
-                        {
-                            //not exists in zaidm_ex_material = continue get 261
-                            traceItem = Mapper.Map<Lack1GeneratedInvMovementProductionStepTracingItem>(rec);
-                            traceItem.Level = tracingLevel;
-                            traceItem.IsFinalGoodsType = false;
-                            traceItem.ParentProcessOrder = itemToInsert.InvMovementUsage.ORDR;
-                            traceItem.IsFirstLevel = traceItem.ORDR == itemToInsert.InvMovementUsage.ORDR;
-                            itemToInsert.InvMovementProductionStepTracing.Add(traceItem);
-                            processOrder = traceItem.ORDR;
-                            plantId = traceItem.PLANT_ID;
-
-                            //get 261 on same tracing level
-                            var checkUsageForCurrentBatch =
-                                _inventoryMovementService.GetUsageByBatchAndPlantId(traceItem.BATCH, traceItem.PLANT_ID);
-
-                            if (checkUsageForCurrentBatch != null)
+                            if (CheckIsEnoughForCurrentReceivingDomesticAlcoholProductionList(rec, itemToInsert,
+                                prevInventoryMovementByParam))
                             {
-                                traceItem = Mapper.Map<Lack1GeneratedInvMovementProductionStepTracingItem>(checkUsageForCurrentBatch);
+                                break;
+                            }
+
+                            //check to material
+                            var chkMaterial = _materialService.GetByMaterialAndPlantId(
+                                rec.MATERIAL_ID, rec.PLANT_ID);
+                            if (chkMaterial != null)
+                            {
+                                //exists in zaidm_ex_material = final goods
+                                traceItem = Mapper.Map<Lack1GeneratedInvMovementProductionStepTracingItem>(rec);
+                                traceItem.Level = tracingLevel;
+                                traceItem.IsFinalGoodsType = true;
+                                traceItem.ParentProcessOrder = itemToInsert.InvMovementUsage.ORDR;
+                                traceItem.ExGoodsTypeId = chkMaterial.EXC_GOOD_TYP;
+                                traceItem.IsFirstLevel = traceItem.ORDR == itemToInsert.InvMovementUsage.ORDR;
+                                traceItem.UomId = chkMaterial.BASE_UOM_ID;
+                                traceItem.UomDesc = chkMaterial.UOM != null ? chkMaterial.UOM.UOM_DESC : string.Empty;
+                                itemToInsert.InvMovementProductionStepTracing.Add(traceItem);
+                                isEnough = true;
+                            }
+                            else
+                            {
+                                //not exists in zaidm_ex_material = continue get 261
+                                traceItem = Mapper.Map<Lack1GeneratedInvMovementProductionStepTracingItem>(rec);
                                 traceItem.Level = tracingLevel;
                                 traceItem.IsFinalGoodsType = false;
                                 traceItem.ParentProcessOrder = itemToInsert.InvMovementUsage.ORDR;
@@ -1814,23 +1792,50 @@ namespace Sampoerna.EMS.BLL
                                 itemToInsert.InvMovementProductionStepTracing.Add(traceItem);
                                 processOrder = traceItem.ORDR;
                                 plantId = traceItem.PLANT_ID;
-                            }
-                            else
-                            {
-                                isEnough = true;
+
+                                //get 261 on same tracing level
+                                var checkUsageForCurrentBatch =
+                                    _inventoryMovementService.GetUsageByBatchAndPlantId(traceItem.BATCH, traceItem.PLANT_ID);
+
+                                if (checkUsageForCurrentBatch != null)
+                                {
+                                    traceItem = Mapper.Map<Lack1GeneratedInvMovementProductionStepTracingItem>(checkUsageForCurrentBatch);
+                                    traceItem.Level = tracingLevel;
+                                    traceItem.IsFinalGoodsType = false;
+                                    traceItem.ParentProcessOrder = itemToInsert.InvMovementUsage.ORDR;
+                                    traceItem.IsFirstLevel = traceItem.ORDR == itemToInsert.InvMovementUsage.ORDR;
+                                    itemToInsert.InvMovementProductionStepTracing.Add(traceItem);
+                                    processOrder = traceItem.ORDR;
+                                    plantId = traceItem.PLANT_ID;
+                                }
+                                else
+                                {
+                                    isEnough = true;
+                                }
                             }
                         }
+                        else
+                        {
+                            isEnough = true;
+                        }
                     }
-                    else
-                    {
-                        isEnough = true;
-                    }
-                }
-                
-                productionTraceList.Add(itemToInsert);
-                allTrackingList.AddRange(itemToInsert.InvMovementProductionStepTracing);
 
+                    productionTraceList.Add(itemToInsert);
+                    allTrackingList.AddRange(itemToInsert.InvMovementProductionStepTracing);
+
+                }
             }
+            catch (Exception ex)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Data = rc,
+                    ErrorCode = string.Empty,
+                    ErrorMessage = ex.Message,
+                    Success = false
+                };
+            }
+            
 
             //process the production list got from previous process
             var finalGoodsList = allTrackingList.Where(c => c.IsFinalGoodsType).ToList();
@@ -1893,6 +1898,7 @@ namespace Sampoerna.EMS.BLL
                 ProductionSummaryByProdTypeList = GetProductionGroupedByProdTypeList(productionList),
                 SummaryProductionList = GetSummaryGroupedProductionList(productionList)
             };
+            rc.FusionSummaryProductionList = rc.InventoryProductionTisToFa.ProductionData.SummaryProductionList;
             
             return new Lack1GeneratedOutput()
             {
