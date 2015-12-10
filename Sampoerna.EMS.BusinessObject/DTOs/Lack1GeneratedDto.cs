@@ -143,6 +143,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
     public class Lack1GeneratedInvMovementProductionStepTracingItem : INVENTORY_MOVEMENT
     {
+        public int Level { get; set; }
         public string ParentProcessOrder { get; set; }
         public bool IsFinalGoodsType { get; set; }
         public bool IsFirstLevel { get; set; }
