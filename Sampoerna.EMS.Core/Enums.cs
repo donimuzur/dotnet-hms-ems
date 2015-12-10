@@ -131,9 +131,9 @@ namespace Sampoerna.EMS.Core
             Draft = 1,
             [Description("Revised")]
             Revised = 5,
-            [Description("Waiting for Approval")]
+            [Description("Waiting for POA Approval")]
             WaitingForApproval = 10,
-            [Description("Waiting for Approval")]
+            [Description("Waiting for Manager Approval")]
             WaitingForApprovalManager = 11,
             [Description("Approved")]
             Approved = 15,
