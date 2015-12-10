@@ -1,0 +1,2 @@
+ALTER TABLE LACK1_TRACKING_ALCOHOL
+ADD TrackLevel int not null

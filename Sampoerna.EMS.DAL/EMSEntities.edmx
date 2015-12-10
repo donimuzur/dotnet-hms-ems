@@ -544,6 +544,7 @@
           <Property Name="IS_FIRST_LEVEL" Type="bit" Nullable="false" />
           <Property Name="IS_FINAL_GOODS" Type="bit" Nullable="false" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="TrackLevel" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="LACK2">
           <Key>
@@ -1524,7 +1525,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER">
+        <Association Name="FK_CHANGES_HISTORY_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="CHANGES_HISTORY" Type="Self.CHANGES_HISTORY" Multiplicity="*" />
           <ReferentialConstraint>
@@ -3415,7 +3416,7 @@
             <End Role="USER_BROLE" EntitySet="USER_BROLE" />
             <End Role="BROLE_MAP" EntitySet="BROLE_MAP" />
           </AssociationSet>
-          <AssociationSet Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER" Association="Self.FK_CHANGES_HISTORY_MODIFIED_BY_USER">
+          <AssociationSet Name="FK_CHANGES_HISTORY_USER" Association="Self.FK_CHANGES_HISTORY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
           </AssociationSet>
@@ -8399,6 +8400,7 @@
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="INVENTORY_MOVEMENT" Relationship="EMSModel.FK_LACK1_TRACKING_ALCOHOL_INVENTORY_MOVEMENT" FromRole="LACK1_TRACKING_ALCOHOL" ToRole="INVENTORY_MOVEMENT" />
           <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_TRACKING_ALCOHOL_LACK1" FromRole="LACK1_TRACKING_ALCOHOL" ToRole="LACK1" />
+          <Property Name="TrackLevel" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="FK_LACK1_TRACKING_ALCOHOL_INVENTORY_MOVEMENT">
           <End Type="EMSModel.INVENTORY_MOVEMENT" Role="INVENTORY_MOVEMENT" Multiplicity="1" />
@@ -9937,6 +9939,7 @@
           <EntitySetMapping Name="LACK1_TRACKING_ALCOHOL">
             <EntityTypeMapping TypeName="EMSModel.LACK1_TRACKING_ALCOHOL">
               <MappingFragment StoreEntitySet="LACK1_TRACKING_ALCOHOL">
+                <ScalarProperty Name="TrackLevel" ColumnName="TrackLevel" />
                 <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="IS_FINAL_GOODS" ColumnName="IS_FINAL_GOODS" />
                 <ScalarProperty Name="IS_FIRST_LEVEL" ColumnName="IS_FIRST_LEVEL" />
