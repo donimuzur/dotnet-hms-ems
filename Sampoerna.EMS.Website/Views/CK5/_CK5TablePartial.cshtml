@@ -6,6 +6,11 @@
         <tr>
             <th class="toggle-row"> Filter </th>
             <th>Document</th>
+            <th>STO Number</th>
+            @if (Model.Ck5Type == Enums.CK5Type.Export)
+            {
+                <th>Invoice Number</th>
+            }
             <th>Qty - Type of Packaging</th>
             <th>POA</th>
             <th>Source Plant</th>
@@ -17,6 +22,11 @@
         <tr>
             <th> Action</th>
             <th></th>
+            <th></th>
+            @if (Model.Ck5Type == Enums.CK5Type.Export)
+            {
+                <th></th>
+            }
             <th></th>
             <th></th>
             <th></th>
@@ -43,6 +53,11 @@
                     }
                 </td>
                 <td>@Html.DisplayFor(model => item.DocumentNumber)</td>
+                <td>@Html.DisplayFor(model => item.StoNumber)</td>
+                @if (Model.Ck5Type == Enums.CK5Type.Export)
+                {
+                    <td>@Html.DisplayFor(model => item.InvoiceNumber)</td>
+                }
                 <td class="number">@Html.DisplayFor(model => item.QtyPackaging)</td>
                 <td>
                     @Html.DisplayFor(model => item.POA)
