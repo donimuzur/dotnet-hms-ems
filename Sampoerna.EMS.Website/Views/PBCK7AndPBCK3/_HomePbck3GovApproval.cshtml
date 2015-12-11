@@ -1,0 +1,790 @@
+﻿@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck3ViewModel
+@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@{
+
+}
+
+<div id="information" class="tab-pane active" role="tabpanel">
+    <div class="tab-wrapper">
+
+        @if (Model.FromPbck7)
+        {
+            @Html.Partial("_Pbck3Pbck7Info")
+        }
+        else
+        {
+            @Html.Partial("_Pbck3Ck5Info")
+        }
+
+
+        <div class="panel-group" id="accordionFour" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingFour">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordionFour" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                            BACK-1
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                    <div class="panel-body">
+                        <div class="form-excise" role="form">
+
+
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">BACK-1 No</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.Back1Number, new { @disabled = "disabled", @class = "form-control" })
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">BACK-1 Date</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.Back1Date, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4"></label>
+                                        <div class="col-md-8">
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="row">
+
+                                        <label class="col-md-4"></label>
+                                        <div class="col-md-8">
+
+                                            @if (Model.Back1Documents != null)
+                                            {
+                                                foreach (var file in Model.Back1Documents)
+                                                {
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <i class="fa fa-file"></i>
+                                                            <a onclick="openAttachment('@Url.Content(file.FILE_PATH)')">@file.FILE_NAME</a>
+                                                        </div>
+
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div aria-multiselectable="true" role="tablist" id="accordionSix" class="panel-group">
+            <div class="panel panel-default">
+                <div id="headingSix" role="tab" class="panel-heading">
+                    <h4 class="panel-title">
+                        <a aria-controls="collapseSix" aria-expanded="true" href="#collapseSix" data-parent="#accordion" data-toggle="collapse" class="">
+                            PBCK-3 Detail
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div aria-labelledby="headingSix" role="tabpanel" class="panel-collapse collapse in" id="collapseSix" style="">
+                    <div class="panel-body">
+                        <div role="form" class="form-excise">
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK-3 No</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.Pbck3Number, new { @class = "form-control", @disabled = "disabled" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK-3 Date</label>
+                                        <div class="col-md-8">
+                                            @if (Model.Pbck3Status == Enums.DocumentStatus.Draft || Model.Pbck3Status == Enums.DocumentStatus.Rejected)
+                                            {
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(model => model.PBCK3_DATE, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                            }
+                                            else
+                                            {
+                                            @Html.TextBoxFor(model => model.PBCK3_DATE, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK-3 Exec From</label>
+                                        <div class="col-md-8">
+                                            @if (Model.Pbck3Status == Enums.DocumentStatus.Draft || Model.Pbck3Status == Enums.DocumentStatus.Rejected)
+                                            {
+                                                <div class="input-group date">
+                                                    @Html.TextBoxFor(model => model.EXEC_DATE_FROM, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                @Html.TextBoxFor(model => model.EXEC_DATE_FROM, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">PBCK-3 Exec To</label>
+                                        <div class="col-md-8">
+                                            @if (Model.Pbck3Status == Enums.DocumentStatus.Draft || Model.Pbck3Status == Enums.DocumentStatus.Rejected)
+                                            {
+                                                <div class="input-group date">
+                                                    @Html.TextBoxFor(model => model.EXEC_DATE_TO, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                @Html.TextBoxFor(model => model.EXEC_DATE_TO, "{0:dd MMM yyyy}", new { @disabled = "disabled", @class = "form-control" })
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            @if (Model.Pbck3Status == Enums.DocumentStatus.Completed)
+                            {
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">PBCK3 Gov Status</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(x => x.Pbck3GovStatusDescription, new { @class = "form-control", @disabled = "disabled" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+
+                                        <div class="row">
+                                            <label class="col-md-4">Comment</label>
+                                            <div class="col-md-8">
+                                                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "form-control", @disabled = "disabled" })
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">PBCK3 Gov Status<span class="red">*</span></label>
+                                            <div class="col-md-8">
+                                                @Html.EnumDropDownListFor(x => x.Pbck3GovStatus, Model.Pbck3GovStatusList, "select", new { @class = "form-control" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div id="divComment">
+                                            <div class="row">
+                                                <label class="col-md-4">Add Comment<span class="red">*</span></label>
+                                                <div class="col-md-8">
+                                                    @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9 GovReject" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+     
+        <div aria-multiselectable="true" role="tablist" id="accordionFive" class="panel-group">
+            <div class="panel panel-default">
+                <div id="headingFive" role="tab" class="panel-heading">
+                    <h4 class="panel-title">
+                        <a aria-controls="collapseFive" aria-expanded="true" href="#collapseFive" data-parent="#accordionFive" data-toggle="collapse" class="collapsed">
+                            BACK-3 CK-2
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div aria-labelledby="headingFive" role="tabpanel" class="panel-collapse collapse in" id="collapseFive">
+                    <div class="panel-body">
+                        <div role="form" class="form-excise">
+                            @if (Model.Pbck3Status == Enums.DocumentStatus.Completed)
+                            {
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">BACK-3 No</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Back3Number, new { @class = "form-control", @disabled = "disabled" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">CK-2 No</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Ck2Number, new { @class = "form-control", @disabled = "disabled" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">BACK-3 Date</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Back3Date, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">CK-2 Date</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Ck2Date, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">CK-2 Value</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Ck2Value, new { @class = "form-control", @disabled = "disabled" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">BACK-3 No</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Back3Number, new { @class = "form-control", @maxlength = "35" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">CK-2 No</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Ck2Number, new { @class = "form-control", @maxlength = "35" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">BACK-3 Date</label>
+                                            <div class="col-md-8">
+                                                <div class="input-group date">
+                                                    @Html.TextBoxFor(model => model.Back3Date, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">CK-2 Date</label>
+                                            <div class="col-md-8">
+                                                <div class="input-group date">
+                                                    @Html.TextBoxFor(model => model.Ck2Date, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">CK-2 Value</label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Ck2Value, new { @class = "form-control", @maxlength = "10" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">BACK-3 Doc</label>
+                                        <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.Back3Id)
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="file-upload" id="poa-files">
+                                                        @if (Model.Back3Documents != null)
+                                                        {
+                                                            for (int i = 0; i < Model.Back3Documents.Count(); i++)
+                                                            {
+
+                                                                @Html.HiddenFor(model => model.Back3Documents[i].BACK3_DOC_ID)
+                                                                @Html.HiddenFor(model => model.Back3Documents[i].IsDeleted)
+
+                                                                <div class="row">
+                                                                    <div class="col-sm-10">
+                                                                        <a onclick="openAttachment('@Url.Content(Model.Back3Documents[i].FILE_PATH)')">@Model.Back3Documents[i].FILE_NAME</a>
+
+                                                                    </div>
+                                                                    <div class="col-sm-2">
+                                                                        <button class="btn btn-danger full" type="button" onclick='removeUploadDocPbck3(this,"Back3Documents_", "@i") '><i class="fa fa-times"></i></button>
+                                                                    </div>
+                                                                </div>
+
+                                                            }
+                                                        }
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <button type="button" class="btn btn-primary full" data-toggle="modal" data-target=".back-3">Add File</button>
+                                                </div>
+
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">CK-2 Doc</label>
+                                        <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.Ck2Id)
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="file-upload" id="poa-files2">
+                                                        @if (Model.Ck2Documents != null)
+                                                        {
+                                                            for (int i = 0; i < Model.Ck2Documents.Count(); i++)
+                                                            {
+
+                                                                @Html.HiddenFor(model => model.Ck2Documents[i].CK2_DOC_ID)
+                                                                @Html.HiddenFor(model => model.Ck2Documents[i].IsDeleted)
+
+                                                                <div class="row">
+                                                                    <div class="col-sm-10">
+                                                                        <a onclick="openAttachment ('@Url.Content(Model.Ck2Documents[i].FILE_PATH)')">@Model.Ck2Documents[i].FILE_NAME</a>
+
+                                                                    </div>
+                                                                    <div class="col-sm-2">
+                                                                        <button class="btn btn-danger full" type="button" onclick='removeUploadDocPbck3(this,"Ck2Documents_", "@i") '><i class="fa fa-times"></i></button>
+                                                                    </div>
+                                                                </div>
+
+                                                            }
+                                                        }
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <button type="button" class="btn btn-primary full" data-toggle="modal" data-target=".ck-2" id="btnAddCk2Doc">Add File</button>
+                                                </div>
+
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @if (Model.FromPbck7)
+        {
+            <div class="panel-group not-upload" id="accordion-8" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="heading7">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion-8" href="#collapse8" aria-expanded="true" aria-controls="collapse8">
+                                Workflow History PBCK7
+                                <i class="fa fa-caret-down"></i>
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse8" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading8">
+                        <div class="panel-body">
+                            <div class="table-container">
+                                <table class="table table-bordered table-striped js-options-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Account Name</th>
+                                            <th>Role</th>
+                                            <th>Action</th>
+                                            <th>Date</th>
+                                            <th>Comment</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.WorkflowHistoryPbck7 != null)
+                                        {
+                                            foreach (var history in Model.WorkflowHistoryPbck7)
+                                            {
+                                                <tr>
+                                                    <td>@history.USERNAME</td>
+                                                    <td>@history.Role </td>
+                                                    <td>@history.ACTION </td>
+                                                    <td>@history.ACTION_DATE</td>
+                                                    <td>@history.COMMENT</td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                            </tr>
+
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        }
+        else
+        {
+            <div class="panel-group not-upload" id="accordion-8" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="heading7">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion-8" href="#collapse8" aria-expanded="true" aria-controls="collapse8">
+                                Workflow History CK-5
+                                <i class="fa fa-caret-down"></i>
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse8" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading8">
+                        <div class="panel-body">
+                            <div class="table-container">
+                                <table class="table table-bordered table-striped js-options-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Account Name</th>
+                                            <th>Role</th>
+                                            <th>Action</th>
+                                            <th>Date</th>
+                                            <th>Comment</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.WorkflowHistoryPbck7 != null)
+                                        {
+                                            foreach (var history in Model.Ck5FormViewModel.WorkflowHistory)
+                                            {
+                                                <tr>
+                                                    <td>@history.USERNAME</td>
+                                                    <td>@history.Role </td>
+                                                    <td>@history.ACTION </td>
+                                                    <td>@history.ACTION_DATE</td>
+                                                    <td>@history.COMMENT</td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                            </tr>
+
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        }
+
+        <div class="panel-group not-upload" id="accordion-9" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="heading7">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion-9" href="#collapse9" aria-expanded="true" aria-controls="collapse9">
+                            Workflow History PBCK3
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapse9" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading8">
+                    <div class="panel-body">
+                        <div class="table-container">
+                            <table class="table table-bordered table-striped js-options-table">
+                                <thead>
+                                    <tr>
+                                        <th>Account Name</th>
+                                        <th>Role</th>
+                                        <th>Action</th>
+                                        <th>Date</th>
+                                        <th>Comment</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.WorkflowHistoryPbck3 != null)
+                                    {
+                                        foreach (var history in Model.WorkflowHistoryPbck3)
+                                        {
+                                            <tr>
+                                                <td>@history.USERNAME</td>
+                                                <td>@history.Role </td>
+                                                <td>@history.ACTION </td>
+                                                <td>@history.ACTION_DATE</td>
+                                                <td>@history.COMMENT</td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                        </tr>
+
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@* Modal upload dialog *@
+
+<div class="modal fade in upload-file ems-modal back-3" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">BACK-3 Doc Attachment</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div id="file-sk-container" class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-primary full add-files">Add Files</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <input type="file" class="form-control" data-filename-placement="inside" id="Pbck3Back3FileUploadFileList_0_" name="Pbck3Back3FileUploadFileList[0]">
+                            </div>
+                            <div class="col-sm-3">
+                                <button type="button" class="btn btn-danger full" onclick="removeUploadButton(0);">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-grey" id="upload-file-sk" data-dismiss="modal">Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* end Modal upload dialog *@
+
+<div class="modal fade in upload-file ems-modal ck-2" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">CK-2 Doc Attachment</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div id="file-sk-container2" class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <button type="button" class="btn btn-primary full add-files">Add Files</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <input type="file" class="form-control" data-filename-placement="inside" id="Pbck3Ck2FileUploadFileList_0_" name="Pbck3Ck2FileUploadFileList[0]">
+                            </div>
+                            <div class="col-sm-3">
+                                <button type="button" class="btn btn-danger full" onclick="removeUploadButton(0);">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-grey" id="upload-file-sk2" data-dismiss="modal">Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+

@@ -1,0 +1,397 @@
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.PBCK4.Pbck4FormViewModel
+
+@using (Html.BeginForm(Model.ActionType, "PBCK4", FormMethod.Post, new { @id = "GovApproveForm", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>PBCK-4 Form</h3>
+                <label class="status">@Model.DocumentStatusDescription</label>
+                <div class="action-button">
+                    <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "PBCK4", new { id = @Model.Pbck4Id })')" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" id="home-tab" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                        <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.HiddenFor(model => model.CompanyName)
+                        @Html.HiddenFor(model => model.CompanyId)
+                        @Html.HiddenFor(model => model.PlantDesc)
+                        @Html.HiddenFor(model => model.NppbkcId)
+                        @Html.HiddenFor(model => model.NppbkcDesc)
+
+                        @Html.Partial("_Pbck4InformationDetails")
+                        @Html.Partial("_Pbck4Printout")
+                        @Html.Partial("_Pbck4ChangeLog")
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+<div id="ModalPbck4ValidateGov" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span id="modalBodyMessage">Missing attach files</span>
+                </p>
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="Pbck4UploadModal" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><span id="lblTitleInputManual">Add Row</span></h4>
+            </div>
+            <div class="modal-body form-excise">
+                <p></p>
+                <input id="uploadMaterialRow" type="hidden" value="">
+                <input id="uploadCk1Id" type="hidden" value="">
+                <input id="uploadMode" type="hidden" value="">
+                <input id="uploadPlantOri" type="hidden" value="">
+                <input id="uploadFaCodeOri" type="hidden" value="">
+                <input id="uploadPbck4ItemId" type="hidden" value="">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Plant</label>
+                        <input class="form-control" id="uploadPlant" type="text" value="" disabled>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>FA Code</label>
+                        @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadFaCode", @disabled = "disabled" })
+
+                    </div>
+                    <div class="col-md-4">
+                        <label>CK-1 No</label>
+                        @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadCk1No", @disabled = "disabled" })
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <label>Sticker Code</label>
+                        @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadStickerCode", @disabled = "disabled" })
+
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Series Code</label>
+                        @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadSeriesCode", @disabled = "disabled" })
+
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>CK-1 Date</label>
+                        @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadCk1Date", @disabled = "disabled" })
+
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <label>Brand Name</label>
+                        @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadBrandName", @disabled = "disabled" })
+
+                    </div>
+                    <div class="col-md-4">
+                        <label>Product Alias</label>
+                        @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadProductAlias", @disabled = "disabled" })
+
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Content</label>
+                        @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadContent", @disabled = "disabled" })
+
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>HJE</label>
+                        @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadHje", @disabled = "disabled" })
+
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Tariff</label>
+                        @Html.TextBoxFor(model => model.Ck1Date, new { @class = "form-control", @id = "uploadTariff", @disabled = "disabled" })
+
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Colour</label>
+                        <textarea class="form-control" id="uploadColour" cols="20" rows="3" disabled></textarea>
+
+                    </div>
+                </div>
+
+                <div class="row">
+
+
+                    <div class="col-md-4">
+                        <label>Requested Qty</label>
+                        @Html.TextBoxFor(model => model.RequestedQty, new { @class = "form-control", @id = "uploadReqQty", @disabled = "disabled" })
+
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>BACK-1 Qty<span class="red">*</span></label>
+                        @Html.TextBoxFor(model => model.ApprovedQty, new { @class = "form-control", @id = "uploadApprovedQty" })
+
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>No Pengawas</label>
+                        @Html.TextBoxFor(model => model.NoPengawas, new { @class = "form-control", @id = "uploadNoPengawas", @disabled = "disabled" })
+                    </div>
+
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Remarks</label>
+                        <textarea class="form-control" id="uploadRemarks" cols="20" rows="5" disabled=""></textarea>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Blocked Stock</label>
+                        @Html.TextBoxFor(model => model.ApprovedQty, new { @class = "form-control", @id = "uploadBlockedStocked", @disabled = "disabled" })
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                <input type="button" class="btn btn-blue" value="Save" id="btnSaveMaterial" />
+                <input type="button" class="btn btn-blue" value="Update" id="btnUpdateMaterial" />
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/Pbck4Script.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()'
+                || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()'
+                || '@Model.DocumentStatus' == '@Enums.DocumentStatus.GovRejected.ToString()') {
+                $('#liPbck4OpenDocument').removeClass('active');
+                $('#liPbck4Completed').addClass('active');
+            } else {
+                $('#liPbck4OpenDocument').addClass('active');
+                $('#liPbck4Completed').removeClass('active');
+            }
+
+
+            $('#btnBack').click(function (e) {
+                if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()'
+                    || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()'
+                || '@Model.DocumentStatus' == '@Enums.DocumentStatus.GovRejected.ToString()') {
+                    location.href = '@Url.Action("Pbck4Completed", "PBCK4")';
+                }
+                else
+                    location.href = '@Url.Action("Index", "PBCK4")';
+            });
+
+            $('#btn-changelog-export-xls').click(function () {
+                location.href = '@Url.Action("ExportXls", "PBCK4", new {pbckId = Model.Pbck4Id})';
+            });
+        });
+
+        $('#divComment').hide();
+
+        function PrintOutClick(reportUrl, addHistoryUrl, id) {
+
+            window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+            $.ajax({
+                type: 'POST',
+                url: addHistoryUrl,
+                data: { id: id },
+                success: function (response) {
+                    $('#PrintOutHistoryTable').html("");
+                    $('#PrintOutHistoryTable').html(response);
+                    ResetPrintHistoryDataTable();
+                }
+            });
+        }
+
+        function ResetPrintHistoryDataTable() {
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
+                table = $('#printHistoryTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#printHistoryTable').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+
+        }
+
+        function EditRow(o) {
+
+            var nRow = o.parents('tr');
+
+
+            $('#btnSaveMaterial').hide();
+            $('#btnUpdateMaterial').show();
+
+            //set value
+            $('#uploadMaterialRow').val(nRow.find("td").eq(1).html());
+
+            ClearInputForm();
+            ClearValidation();
+
+            $("#uploadPlant").val($('#PlantId').val());
+            $('#uploadFaCode').val(nRow.find("td").eq(2).html());
+            $('#uploadStickerCode').val(nRow.find("td").eq(3).html());
+            $('#uploadCk1No').val(nRow.find("td").eq(4).html());
+            $('#uploadCk1Date').val(nRow.find("td").eq(5).html());
+            $('#uploadSeriesCode').val(nRow.find("td").eq(6).html());
+            $('#uploadBrandName').val(nRow.find("td").eq(7).html());
+            $('#uploadProductAlias').val(nRow.find("td").eq(8).html());
+            $('#uploadContent').val(nRow.find("td").eq(9).html());
+            $('#uploadHje').val(nRow.find("td").eq(10).html());
+            $('#uploadTariff').val(nRow.find("td").eq(11).html());
+            $('#uploadColour').val(nRow.find("td").eq(12).html());
+            $('#uploadReqQty').val(nRow.find("td").eq(13).html());
+            $('#uploadApprovedQty').val(nRow.find("td").eq(17).html());
+            $('#uploadNoPengawas').val(nRow.find("td").eq(16).html());
+            $('#uploadRemarks').val(nRow.find("td").eq(18).html());
+
+            $("#uploadCk1Id").val(nRow.find("td").eq(20).html());
+
+            $('#uploadBlockedStocked').val(nRow.find("td").eq(21).html());
+            $('#uploadPbck4ItemId').val(nRow.find("td").eq(22).html());
+
+            $("#lblTitleInputManual").text('Edit Input');
+
+            $('#Pbck4UploadModal').modal('show');
+
+
+        }
+
+        $("#btnUpdateMaterial").click(function () {
+
+            UpdateRowPbck4Detail();
+        });
+
+        $('#Pbck4UploadSave').click(function () {
+            var datarows = GetTableData($('#Ck5UploadTable'));
+            var columnLength = $('#pbck4TableItem').find("thead tr:first th").length;
+            $('#pbck4TableItem tbody').html('');
+
+            var data = "";
+            for (var i = 0; i < datarows.length; i++) {
+                data += '<tr>';
+                if (columnLength > 0) {
+                    data += '<td> <input name="UploadItemModels[' + i + '].FaCode" type="hidden" value = "' + datarows[i][2] + '">' + datarows[i][2] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].StickerCode" type="hidden" value = "' + datarows[i][3] + '">' + datarows[i][3] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Ck1No" type="hidden" value = "' + datarows[i][4] + '">' + datarows[i][4] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Ck1Date" type="hidden" value = "' + datarows[i][5] + '">' + datarows[i][5] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].SeriesCode" type="hidden" value = "' + datarows[i][6] + '">' + datarows[i][6] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].BrandName" type="hidden" value = "' + datarows[i][7] + '">' + datarows[i][7] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].ProductAlias" type="hidden" value = "' + datarows[i][8] + '">' + datarows[i][8] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Content" type="hidden" value = "' + datarows[i][9] + '">' + datarows[i][9] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Hje" type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Tariff" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Colour" type="hidden" value = "' + datarows[i][12] + '">' + datarows[i][12] + '</td>';
+
+                    data += '<td> <input name="UploadItemModels[' + i + '].ReqQty" type="hidden" value = "' + datarows[i][13] + '">' + datarows[i][13] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].TotalHje" type="hidden" value = "' + datarows[i][14] + '">' + datarows[i][14] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].TotalStamps" type="hidden" value = "' + datarows[i][15] + '">' + datarows[i][15] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].NoPengawas" type="hidden" value = "' + datarows[i][16] + '">' + datarows[i][16] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].ApprovedQty" type="hidden" value = "' + datarows[i][17] + '">' + datarows[i][17] + '</td>';
+                    data += '<td> <input name="UploadItemModels[' + i + '].Remark" type="hidden" value = "' + datarows[i][18] + '">' + datarows[i][18] + '</td>';
+                    //data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][19] + '">' + datarows[i][19] + '</td>';
+                    data += '<input name="UploadItemModels[' + i + '].CK1_ID" type="hidden" value = "' + datarows[i][20] + '">';
+
+                    data += '<input name="UploadItemModels[' + i + '].PBCK4_ITEM_ID" type="hidden" value = "' + datarows[i][22] + '">';
+                    data += '<input name="UploadItemModels[' + i + '].IsUpdated" type="hidden" value = "' + datarows[i][23] + '">';
+
+
+                }
+                data += '</tr>';
+
+            }
+
+
+            $('#upload-tab').removeClass('active');
+            $('#home-tab').addClass('active');
+
+            $('#information').addClass('active');
+            $('#upload').removeClass('active');
+
+            $('#pbck4TableItem tbody').append(data);
+
+            $('#collapseThree').removeClass('collapse');
+            $('#collapseThree').addClass('in');
+            $("#collapseThree").css({ height: "auto" });
+
+        });
+
+        $('#btnUploadInfo').click(function () {
+
+            $('#home-tab').removeClass('active');
+            $('#upload-tab').addClass('active');
+
+            $('#information').removeClass('active');
+            $('#upload').addClass('active');
+
+        });
+    </script>
+}

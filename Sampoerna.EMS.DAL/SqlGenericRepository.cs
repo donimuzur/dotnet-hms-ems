@@ -1,4 +1,5 @@
-﻿using Sampoerna.EMS.BusinessObject;
+﻿using System.Data.Entity.Migrations;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace Sampoerna.EMS.DAL
         public SqlGenericRepository(EMSEntities context, ILogger logger)
         {
            _context = context;
+            _logger = logger;
            _dbSet = context.Set<TEntity>();
         }
 
@@ -67,6 +69,7 @@ namespace Sampoerna.EMS.DAL
         public virtual TEntity GetByID(object id)
         {
             return _dbSet.Find(id);
+            
         }
 
         /// <summary>
@@ -103,15 +106,25 @@ namespace Sampoerna.EMS.DAL
 
         public virtual void Update(TEntity entity)
         {
-            var entry = _context.Entry<TEntity>(entity);
+            
+            
+            
             _context.Entry(entity).State = EntityState.Modified;
+         
+
 
 
         }
 
+        public void Detach(TEntity entity)
+        {
+            
+            _context.Entry(entity).State = EntityState.Detached;
+        }
+
         public void InsertOrUpdate(TEntity entity)
         {
-
+            
             if (!Exists(entity))
                 Insert(entity);
             else
@@ -131,13 +144,14 @@ namespace Sampoerna.EMS.DAL
 
             Object foundEntity;
             var exists = objContext.TryGetObjectByKey(entityKey, out foundEntity);
-            //// TryGetObjectByKey attaches a found entity
-            //// Detach it here to prevent side-effects
-            //if (exists)
-            //{
-            //    objContext.Detach(foundEntity);
-            //}
+            // TryGetObjectByKey attaches a found entity
+            // Detach it here to prevent side-effects
+            if (exists)
+            {
+                objContext.Detach(foundEntity);
 
+            }
+           ;
             return (exists);
         }
 
@@ -153,5 +167,6 @@ namespace Sampoerna.EMS.DAL
 
         }
     }
+    
 
 }

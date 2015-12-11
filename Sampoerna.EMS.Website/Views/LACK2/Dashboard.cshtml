@@ -1,0 +1,177 @@
+﻿@model Sampoerna.EMS.Website.Models.LACK2.Lack2DashboardViewModel
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                <div class="panel-group filter-dashboard" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    FILTER
+                                    <i class="fa fa-caret-down"></i>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                @using (Ajax.BeginForm("FilterDashboardPage", "Lack2",
+                                    new AjaxOptions
+                                    {
+                                        HttpMethod = "POST",
+                                        InsertionMode = InsertionMode.Replace,
+                                        UpdateTargetId = "contenttable",
+                                        OnComplete = "setupDataTables",
+                                    }, new { @class = "form-excise", role = "form" }))
+                                {
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">Date</label>
+                                                <div class="col-md-9">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            @Html.DropDownListFor(model => model.SearchViewModel.PeriodMonth, Model.SearchViewModel.MonthList, "All", new { @class = " form-control selectreset" })
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            @Html.DropDownListFor(model => model.SearchViewModel.PeriodYear, Model.SearchViewModel.YearList, "All", new { @class = "form-control selectreset" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">Creator</label>
+                                                <div class="col-md-9">
+                                                    @Html.DropDownListFor(model => model.SearchViewModel.Creator, Model.SearchViewModel.UserList, "All", new { @class = "form-control selectreset" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-3">POA</label>
+                                                <div class="col-md-9">
+                                                    @Html.DropDownListFor(model => model.SearchViewModel.Poa, Model.SearchViewModel.PoaList, "All", new { @class = "form-control selectreset" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <input type="submit" class="btn btn-blue full" value="FILTER" id="btn-filter" />
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <button class="btn btn-blue full" id="btn-reset-filter" type="button">RESET</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="contenttable" class="container-wrap chart">
+    @Html.Partial("_ChartStatus", Model.Detail)
+</div>
+@section scripts
+{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/Chart.js"></script>
+    <script src="~/Scripts/thousand-separator.js"></script>
+    <script src="~/Scripts/Dashboard.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            setupDataTables();
+
+            ChangeNumberStatus();
+
+            ChangeSeparatorTooltip();
+        });
+
+        $('#btn-reset-filter').click(function () {
+            $(".selectreset").val($(".selectreset option:first").val());
+            $("#btn-filter").click();
+        });
+
+        function setupDataTables() {
+            $('#divDraft,#divWaitA,#divWaitG').click(function (e) {
+                location.href = '@Url.Action("Index", "LACK2")';
+            });
+
+            $('#divComp').click(function (e) {
+                location.href = '@Url.Action("ListCompletedDoc", "LACK2")';
+            });
+
+            var draft = $('#draftId').text();
+            var waitP = $('#waitPId').text();
+            var waitM = $('#waitMId').text();
+            var waitG = $('#waitGId').text();
+            var comp = $('#completedId').text();
+
+            var draftInt = parseInt(draft);
+            var waitPInt = parseInt(waitP);
+            var waitMInt = parseInt(waitM);
+            var waitGInt = parseInt(waitG);
+            var compInt = parseInt(comp);
+
+            var options = {
+                tooltipTemplate: "<%=label%>: <%= Math.round(circumference / 6.283 * 100) %>%"
+            }
+
+            var pieData = [
+                {
+                    value: draftInt,
+                    color: "#00A3E0",
+                    label: "Draft"
+                },
+                {
+                    value: waitPInt,
+                    color: "#F49D00",
+                    label: "Waiting for Approval POA"
+                },
+                {
+                    value: waitMInt,
+                    color: "#B80718",
+                    label: "Waiting for Approval Manager"
+                },
+                {
+                    value: waitGInt,
+                    color: "#003DA5",
+                    label: "Waiting for Gov Approval"
+                },
+                {
+                    value: compInt,
+                    color: "#538928",
+                    label: "Completed"
+                }
+
+            ];
+
+            if (draftInt == 0 && waitPInt == 0 && waitMInt == 0 && waitGInt == 0 && compInt == 0) {
+                pieData =
+                [
+                    {
+                        value: 1,
+                        color: "#707173",
+                        label: "No Result"
+                    }
+                ];
+
+                options = {
+                    showTooltips: false
+                }
+            }
+
+            var myPieChart = new Chart(document.getElementById("canvas").getContext("2d")).Pie(pieData, options);
+
+            document.getElementById('js-legend').innerHTML = myPieChart.generateLegend();
+        }
+    </script>
+}

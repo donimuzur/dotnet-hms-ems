@@ -1,0 +1,5 @@
+
+ALTER TABLE dbo.CK1 ADD
+	CK1_SAP_NUMBER varchar(35) NULL
+GO
+

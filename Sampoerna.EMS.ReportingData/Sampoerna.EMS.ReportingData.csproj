@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8708B0F2-5E32-43EA-A2F1-F18AAB51DC47}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Sampoerna.EMS.ReportingData</RootNamespace>
+    <AssemblyName>Sampoerna.EMS.ReportingData</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="dsCk4c.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>dsCk4c.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="dsCK5Print.cs">
+      <DependentUpon>dsCK5Print.xsd</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="dsCK5Print.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>dsCK5Print.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="dsHeaderFooter.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>dsHeaderFooter.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="dsLack1.cs">
+      <DependentUpon>dsLack1.xsd</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="dsLack1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>dsLack1.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="dsLack2.cs">
+      <DependentUpon>dsLack2.xsd</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="dsLack2.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>dsLack2.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="dsPbck1.cs">
+      <DependentUpon>dsPbck1.xsd</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="dsPbck1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>dsPbck1.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="dsPbck4.cs">
+      <DependentUpon>dsPbck4.xsd</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="dsPbck4.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>dsPbck4.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="dsPbck7.cs">
+      <DependentUpon>dsPbck7.xsd</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="dsPbck7.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>dsPbck7.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dsCk4c.xsc">
+      <DependentUpon>dsCk4c.xsd</DependentUpon>
+    </None>
+    <None Include="dsCk4c.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dsCk4c.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="dsCk4c.xss">
+      <DependentUpon>dsCk4c.xsd</DependentUpon>
+    </None>
+    <None Include="dsCK5Print.xsc">
+      <DependentUpon>dsCK5Print.xsd</DependentUpon>
+    </None>
+    <None Include="dsCK5Print.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dsCK5Print.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="dsCK5Print.xss">
+      <DependentUpon>dsCK5Print.xsd</DependentUpon>
+    </None>
+    <None Include="dsHeaderFooter.xsc">
+      <DependentUpon>dsHeaderFooter.xsd</DependentUpon>
+    </None>
+    <None Include="dsHeaderFooter.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dsHeaderFooter.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="dsHeaderFooter.xss">
+      <DependentUpon>dsHeaderFooter.xsd</DependentUpon>
+    </None>
+    <None Include="dsLack1.xsc">
+      <DependentUpon>dsLack1.xsd</DependentUpon>
+    </None>
+    <None Include="dsLack1.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dsLack1.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="dsLack1.xss">
+      <DependentUpon>dsLack1.xsd</DependentUpon>
+    </None>
+    <None Include="dsLack2.xsc">
+      <DependentUpon>dsLack2.xsd</DependentUpon>
+    </None>
+    <None Include="dsLack2.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dsLack2.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="dsLack2.xss">
+      <DependentUpon>dsLack2.xsd</DependentUpon>
+    </None>
+    <None Include="dsPbck1.xsc">
+      <DependentUpon>dsPbck1.xsd</DependentUpon>
+    </None>
+    <None Include="dsPbck1.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dsPbck1.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="dsPbck1.xss">
+      <DependentUpon>dsPbck1.xsd</DependentUpon>
+    </None>
+    <None Include="dsPbck4.xsc">
+      <DependentUpon>dsPbck4.xsd</DependentUpon>
+    </None>
+    <None Include="dsPbck4.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dsPbck4.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="dsPbck4.xss">
+      <DependentUpon>dsPbck4.xsd</DependentUpon>
+    </None>
+    <None Include="dsPbck7.xsc">
+      <DependentUpon>dsPbck7.xsd</DependentUpon>
+    </None>
+    <None Include="dsPbck7.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dsPbck7.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="dsPbck7.xss">
+      <DependentUpon>dsPbck7.xsd</DependentUpon>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

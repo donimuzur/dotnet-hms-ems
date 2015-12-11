@@ -1,0 +1,168 @@
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck7Pbck3CreateViewModel
+
+@{
+    ViewBag.Title = "Detail";
+}
+
+@using (Html.BeginForm(Model.ActionType, "PBCK7AndPBCK3", FormMethod.Post, new { @id = "form-pbck7-detail", @class = "form-excise", role = "form", enctype = "multipart/form-data" }))
+{
+
+
+
+
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                @*<h3>PBCK-3</h3>
+                    <label class="status">@Model.Pbck3StatusName</label>*@
+                <h3>PBCK-7</h3>
+                <label class="status">@Model.Pbck7StatusName</label>
+                <div class="action-button">
+                    <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
+                    <input type="button" class="btn btn-grey" value="Print Preview PBCK-7" onclick="printPreview('@Url.EncryptedAction("PrintPreviewPbck7", "Pbck7AndPbck3", new { id = @Model.Id })')" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+
+                    <!-- Nav tabs -->
+                    @Html.AntiForgeryToken()
+                    <ul role="tablist" class="nav nav-tabs">
+                        <li class="active" id="tab-information" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
+                        <li role="presentation"><a data-toggle="tab" role="tab" aria-controls="printoutpbck7" href="#printoutpbck7">Print Out PBCK-7</a></li>
+                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+
+                    </ul>
+                    @Html.HiddenFor(x => x.ActionType)
+                    @Html.HiddenFor(x => x.IsSaveSubmit)
+                    @Html.HiddenFor(x => x.Id)
+                    @Html.HiddenFor(x => x.Pbck7Number)
+                    @Html.HiddenFor(x => x.CreatedBy)
+                    @Html.HiddenFor(x => x.CreatedDate)
+                    @Html.HiddenFor(x => x.Pbck7Status)
+                    @Html.HiddenFor(x => x.Pbck7StatusName)
+
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.Partial("_HomeDetail")
+                        @Html.Partial("_PrintOutPbck7")
+                        @Html.Partial("_Pbck7ChangeLog")
+
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/UploadExcel.js"></script>
+    <script src="~/Scripts/Pbck7Script.js"></script>
+    <script src="~/Scripts/Pbck7ScriptDocUpload.js"></script>
+
+    <script type="text/javascript">
+
+        var isCompleteView = '@Model.Pbck7Status';
+        if ('@Model.Pbck7Status' == '@Enums.DocumentStatus.Completed.ToString()') {
+            $('#MenuPBCK7CompleteIndex').addClass('active');
+        } else {
+            $('#MenuPBCK7Index').addClass('active');
+        }
+
+        $('#btnBack').click(function(e) {
+            if ('@Model.Pbck7Status' == '@Enums.DocumentStatus.Completed.ToString()')
+                location.href = '@Url.Action("Pbck7Completed", "PBCK7AndPBCK3")';
+            else
+                location.href = '@Url.Action("Index", "PBCK7AndPBCK3")';
+        });
+
+
+        $('#btn-changelog-export-xls').click(function() {
+            location.href = '@Url.Action("ExportXls", "PBCK7AndPBCK3", new {pbckId = Model.Id})';
+        });
+
+        $("#btnSaveGovStatus").click(function() {
+            if ('@Model.Pbck7Status' == '@Enums.DocumentStatus.Completed.ToString()') {
+                $('#form-pbck7-detail').submit();
+            } else {
+                if (ValidateGovInput()) {
+                    $('#form-pbck7-detail').submit();
+                }
+            }
+        });
+
+        $('#divComment').hide();
+
+        $('#Pbck7GovStatus').on('change', function(e) {
+            var valueSelected = this.value;
+
+            $('#divComment').hide();
+
+
+            if (valueSelected == 'Rejected') {
+                $('#divComment').show();
+
+            }
+
+        });
+        $('#btn-generate-upload').click(function() {
+            uploadXmlFile();
+        });
+
+
+        function printPreview(url) {
+
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+        }
+
+        function PrintOutClick(reportUrl, addHistoryUrl, id) {
+
+            window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+            $.ajax({
+                type: 'POST',
+                url: addHistoryUrl,
+                data: { id: id },
+                success: function(response) {
+                    $('#PrintOutHistoryTable').html("");
+                    $('#PrintOutHistoryTable').html(response);
+                    ResetPrintHistoryDataTable();
+                }
+            });
+        }
+
+        function ResetPrintHistoryDataTable() {
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
+                table = $('#printHistoryTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#printHistoryTable').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+
+        }
+    </script>
+}

@@ -1,0 +1,3 @@
+﻿Generated model file: EMSEntities.edmx.
+Loading metadata from the database took 00:00:01.8823460.
+Generating the model took 00:00:02.5300919.

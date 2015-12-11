@@ -1,0 +1,19 @@
+﻿@model Sampoerna.EMS.Website.Models.CK5.CK5FormViewModel
+
+<label class="col-md-4">Attachment</label>
+<div class="col-md-8">
+    @if (Model.Ck5FileUploadModelList != null)
+    {
+        foreach (var file in Model.Ck5FileUploadModelList)
+        {
+            <div class="row">
+                <div class="col-sm-12">
+                    <i class="fa fa-file"></i>
+                    <a onclick="openAttachment('@Url.Content(file.FILE_PATH)')">@file.FILE_NAME</a>
+                </div>
+
+            </div>
+        }
+    }
+</div>
+

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.Web.Routing;
 
 namespace Sampoerna.EMS.Website
@@ -16,8 +12,18 @@ namespace Sampoerna.EMS.Website
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "Login", action = "Index", id = UrlParameter.Optional }
             );
+
+            routes.MapRoute("GetPOAByNppbkcId",
+                            "poa/getpoabynppbkcid/",
+                            new { controller = "Address", action = "GetPOAByNppbkcId" },
+                            new[] { "Sampoerna.EMS.Website.Controllers" });
+
+            routes.MapRoute("GetMapping",
+                            "WorkflowSettings/GetMapping/{formid}/{stateid}",
+                            new { controller = "WorkflowSettings", action = "GetMapping", formid = "", stateid = "" },
+                            new[] { "Sampoerna.EMS.Website.Controllers" });
         }
     }
 }

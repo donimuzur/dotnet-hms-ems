@@ -1,0 +1,110 @@
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.KPPBC.KppbcIndexViewModel
+@{
+    ViewBag.Title = "POA Map";
+}
+
+@section scripts {
+    <script src="~/Scripts/js/custom.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+        $('#MenuKppbc').addClass('active');
+        $(document).ready(function () {
+
+            // Setup - add a text input to each footer cell
+            $('#kppbctable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width: 100%" />');
+                }
+            });
+
+            // DataTable
+            var table = $('#kppbctable').DataTable();
+
+            // Apply the search
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+
+          
+           
+        });
+    </script>
+}
+
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="desc">KPPBC</h3>
+           
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="contenttable" class="table-container">
+                <table id="kppbctable" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th class="toggle-row">Filter</th>
+                            <th>KPPBC ID</th>
+                            <th>KPPBC TYPE</th>
+                            <th>MENGETAHUI</th>
+                        </tr>
+
+                    </thead>
+                    <thead class="filters">
+                        <tr>
+                            <th>Action</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in Model.Kppbcs)
+                        {
+                            <tr>
+                                <td class="action">
+                                    <a href="@Url.Action("Detail", "KPPBC", new { id = item.KPPBC_ID })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    <a href="@Url.Action("Edit", "KPPBC", new { id = item.KPPBC_ID })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                                </td>
+                                <td>@item.KPPBC_ID</td>
+                                <td>@item.KPPBC_TYPE</td>
+                                <td>@item.MENGETAHUI</td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!--modal-->
+<input id="btn-uom-modal" style="display: none" class="btn btn-blue" data-toggle="modal" data-target=".bs-example-modal-sm" value="Save">
+
+<div class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Success</h4>
+            </div>
+            <div class="modal-body" id="modal-uom-message">
+
+            </div>
+        </div>
+    </div>
+</div>
+
