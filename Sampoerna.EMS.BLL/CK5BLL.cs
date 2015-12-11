@@ -62,7 +62,7 @@ namespace Sampoerna.EMS.BLL
         private IBrandRegistrationService _brandRegistration;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
-        private List<string> _allowedCk5Uom =  new List<string>(new string[] { "KG", "G", "L" });
+        private List<string> _allowedCk5Uom =  new List<string>(new string[] { "KG", "G", "L", "Btg" });
 
         private List<string> _allowedCk5MarketReturnProdCode= new List<string>(new string[] { "01", "02", "03","04","05","06" });
 

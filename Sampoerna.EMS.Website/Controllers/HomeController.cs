@@ -2,8 +2,8 @@
 using System.Web.Mvc;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
-
 //using Sampoerna.EMS.Reporting;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -12,8 +12,9 @@ namespace Sampoerna.EMS.Website.Controllers
     {
         private ICompanyBLL _companyBll;
         private IWorkflowBLL _workflowBll;
-        
+
         public HomeController(ICompanyBLL companyBll, IWorkflowBLL workflowBll)
+           
         {
             _companyBll = companyBll;
             _workflowBll = workflowBll;
