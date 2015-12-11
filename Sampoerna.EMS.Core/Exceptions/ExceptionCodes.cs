@@ -136,6 +136,9 @@ namespace Sampoerna.EMS.Core.Exceptions
 
             [Description("Disposal Team Email Not Found")]
             DisposalTeamEmailNotFound,
+            
+            [Description("Can't found Goods Type mapping with Production Type")]
+            GoodsProdTypeMappingNotFound,
 
             [Description("Waste Approval Email Not Found")]
             WasteApprovalEmailNotFound

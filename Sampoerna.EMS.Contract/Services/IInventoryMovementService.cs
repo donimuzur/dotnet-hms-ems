@@ -11,5 +11,11 @@ namespace Sampoerna.EMS.Contract.Services
 
         List<INVENTORY_MOVEMENT> GetReceivingByParam(InvMovementGetReceivingByParamInput input);
 
+        INVENTORY_MOVEMENT GetReceivingByProcessOrderAndPlantId(string processOrder, string plantId);
+
+        INVENTORY_MOVEMENT GetById(long id);
+
+        INVENTORY_MOVEMENT GetUsageByBatchAndPlantId(string batch, string plantId);
+
     }
 }
