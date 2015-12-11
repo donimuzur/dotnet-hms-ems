@@ -51,6 +51,8 @@ namespace Sampoerna.EMS.BLL.Services
 
             queryFilter = queryFilter.And(c => usageMvtType.Contains(c.MVT));
 
+            if (input.IsEtilAlcohol) return _repository.Get(queryFilter).ToList();
+
             var allOrderInZaapShiftRpt = _zaapShiftRptRepository.Get().Select(d => d.ORDR).Distinct().ToList();
 
             queryFilter = input.IsTisToTis ? queryFilter.And(c => !allOrderInZaapShiftRpt.Contains(c.ORDR)) : queryFilter.And(c => allOrderInZaapShiftRpt.Contains(c.ORDR));
@@ -78,6 +80,29 @@ namespace Sampoerna.EMS.BLL.Services
             queryFilter = queryFilter.And(c => receivingMvtType.Contains(c.MVT));
 
             return _repository.Get(queryFilter).ToList();
+        }
+
+        public INVENTORY_MOVEMENT GetReceivingByProcessOrderAndPlantId(string processOrder, string plantId)
+        {
+            var mvtReceiving = EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving101);
+            return _repository.Get(c => c.ORDR == processOrder && c.PLANT_ID == plantId && c.MVT == mvtReceiving).FirstOrDefault();
+        }
+
+        public INVENTORY_MOVEMENT GetById(long id)
+        {
+            return _repository.GetByID(id);
+        }
+
+        public INVENTORY_MOVEMENT GetUsageByBatchAndPlantId(string batch, string plantId)
+        {
+            var mvtUsage = EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage261);
+            var data =
+                _repository.Get(
+                    c =>
+                        c.BATCH == batch && c.PLANT_ID == plantId &&
+                        c.MVT == mvtUsage)
+                    .OrderByDescending(o => o.POSTING_DATE);
+            return data.FirstOrDefault();
         }
 
     }

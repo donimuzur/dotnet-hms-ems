@@ -132,7 +132,10 @@ namespace Sampoerna.EMS.Core.Exceptions
             PlantInWasteNotHaveStickerCode,
 
             [Description("Missing UOM Data")]
-            MissingUomData
+            MissingUomData,
+
+            [Description("Can't found Goods Type mapping with Production Type")]
+            GoodsProdTypeMappingNotFound
         }
 
         /// <summary>

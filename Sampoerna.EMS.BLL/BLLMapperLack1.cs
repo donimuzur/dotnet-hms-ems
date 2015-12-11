@@ -124,6 +124,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX))
                 .ForMember(dest => dest.StoReceiverNumber, opt => opt.MapFrom(src => src.STO_RECEIVER_NUMBER))
                 .ForMember(dest => dest.StoSenderNumber, opt => opt.MapFrom(src => src.STO_SENDER_NUMBER))
+                .ForMember(dest => dest.DnNumber, opt => opt.MapFrom(src => src.DN_NUMBER))
                 .ForMember(dest => dest.Ck5Type, opt => opt.MapFrom(src => src.CK5_TYPE))
                 .ForMember(dest => dest.RegistrationNumber, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
                 .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE))
@@ -439,6 +440,18 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<LACK1, Lack1DetailReportTempDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PeriodDate,
                     opt => opt.MapFrom(src => new DateTime(src.PERIOD_YEAR.Value, src.PERIOD_MONTH.Value, 1)));
+
+            Mapper.CreateMap<Lack1GeneratedInvMovementProductionStepTracingItem, LACK1_TRACKING_ALCOHOL>()
+                .IgnoreAllNonExisting()
+                .ForMember(dest => dest.INVENTORY_MOVEMENT_ID, opt => opt.MapFrom(src => src.INVENTORY_MOVEMENT_ID))
+                .ForMember(dest => dest.IS_FINAL_GOODS, opt => opt.MapFrom(src => src.IsFinalGoodsType))
+                .ForMember(dest => dest.IS_FIRST_LEVEL, opt => opt.MapFrom(src => src.IsFirstLevel))
+                .ForMember(dest => dest.TrackLevel, opt => opt.MapFrom(src => src.Level))
+                .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => DateTime.Now))
+                ;
+
+            Mapper.CreateMap<INVENTORY_MOVEMENT, Lack1GeneratedInvMovementProductionStepTracingItem>()
+                .IgnoreAllNonExisting();
 
         }
 
