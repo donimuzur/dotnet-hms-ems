@@ -33,7 +33,7 @@ namespace Sampoerna.HMS.Scheduler.Jobs
             result += "<p>There are error of these files below :</p>";
             foreach (var error in errorList)
             {
-                if (error.Contains("String was not recognized as a valid DateTime"))
+                if (error.ToLower().Contains("string was not recognized as a valid datetime"))
                 {
                     result += "<p>" + error + ", valid format datetime is yyyy-MM-dd</p>";
                     continue;
@@ -59,6 +59,10 @@ namespace Sampoerna.HMS.Scheduler.Jobs
 
                     logger.Info("Reading XML Daily start on " + DateTime.Now);
                     errorList.AddRange(_svc.Run(true));
+                    foreach (var error in errorList)
+                    {
+                        logger.Warn(error);
+                    }
                     logger.Info("Reading XML Daily ended On " + DateTime.Now);
 
                 }
