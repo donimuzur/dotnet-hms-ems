@@ -31,7 +31,10 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.POA, opt => opt.ResolveUsing<CK5ListIndexPOAResolver>().FromMember(src => src))
                 .ForMember(dest => dest.SourcePlant, opt => opt.MapFrom(src => src.SOURCE_PLANT_ID + " - " + src.SOURCE_PLANT_NAME))
                 .ForMember(dest => dest.DestinationPlant, opt => opt.ResolveUsing<CK5ListIndexDestinationPlantResolver>().FromMember(src => src))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS_ID)));
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS_ID)))
+                .ForMember(dest => dest.StoNumber, opt => opt.MapFrom(src => src.STOB_NUMBER))
+                .ForMember(dest => dest.InvoiceNumber, opt => opt.MapFrom(src => src.INVOICE_NUMBER))
+                ;
 
             Mapper.CreateMap<CK5SearchViewModel, CK5GetByParamInput>().IgnoreAllNonExisting();
 
