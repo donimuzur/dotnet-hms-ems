@@ -130,7 +130,15 @@ namespace Sampoerna.EMS.XMLReader
 
                 if (Errors.Count == 0)
                 {
-                    uow.SaveChanges();    
+                    uow.SaveChanges();
+                }
+                else
+                {
+                    foreach (var error in Errors)
+                    {
+                        logger.Error(error);
+                    }
+                    
                 }
                 
               
@@ -168,7 +176,7 @@ namespace Sampoerna.EMS.XMLReader
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
+                logger.Error(ex.Message);
                 uow.RevertChanges();
                 
             }
@@ -191,7 +199,7 @@ namespace Sampoerna.EMS.XMLReader
 
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
+                logger.Error(ex.Message);
                 uow.RevertChanges();
             }
 
