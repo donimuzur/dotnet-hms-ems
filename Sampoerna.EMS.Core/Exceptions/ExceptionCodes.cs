@@ -134,8 +134,14 @@ namespace Sampoerna.EMS.Core.Exceptions
             [Description("Missing UOM Data")]
             MissingUomData,
 
+            [Description("Disposal Team Email Not Found")]
+            DisposalTeamEmailNotFound,
+            
             [Description("Can't found Goods Type mapping with Production Type")]
-            GoodsProdTypeMappingNotFound
+            GoodsProdTypeMappingNotFound,
+
+            [Description("Waste Approval Email Not Found")]
+            WasteApprovalEmailNotFound
         }
 
         /// <summary>

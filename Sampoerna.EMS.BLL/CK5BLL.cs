@@ -1718,6 +1718,11 @@ namespace Sampoerna.EMS.BLL
                         ck5Dto.DEST_PLANT_ID);
             }
 
+            var userCreatorInfo = _userBll.GetUserById(ck5Dto.CREATED_BY);
+            var userPoaApprovalInfo = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
+
+            List<POADto> poaDestList;
+
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
             rc.Subject = "CK-5 " + ck5Dto.SUBMISSION_NUMBER + " is " + EnumHelper.GetDescription(ck5Dto.STATUS_ID);
@@ -1786,8 +1791,9 @@ namespace Sampoerna.EMS.BLL
                             
                         }
 
-                        var userData = _userBll.GetUserById(ck5Dto.CREATED_BY);
-                        rc.CC.Add(userData.EMAIL);
+                        //var userData = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                        //rc.CC.Add(userData.EMAIL);
+                        rc.CC.Add(userCreatorInfo.EMAIL);
 
                     }
                     else if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
@@ -1812,12 +1818,12 @@ namespace Sampoerna.EMS.BLL
                     if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
                         rc.To.Add(GetManagerEmail(ck5Dto.APPROVED_BY_POA));
-                        var poaData = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
-                        var creatorData = _userBll.GetUserById(ck5Dto.CREATED_BY);
-                        if(poaData != null)
-                            rc.CC.Add(poaData.EMAIL);
-                        if(creatorData != null)
-                            rc.CC.Add(creatorData.EMAIL);
+                        //var poaData = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
+                        //var creatorData = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                        if(userPoaApprovalInfo != null)
+                            rc.CC.Add(userPoaApprovalInfo.EMAIL);
+                        if(userCreatorInfo != null)
+                            rc.CC.Add(userCreatorInfo.EMAIL);
                     }
                     else if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingGovApproval)
                     {
@@ -1830,12 +1836,12 @@ namespace Sampoerna.EMS.BLL
                         else
                         {
                             //creator is excise executive
-                            var userData = _userBll.GetUserById(ck5Dto.CREATED_BY);
-                            var poaUserData = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
+                            //var userData = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                            //var poaUserData = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
                             
-                            rc.To.Add(userData.EMAIL);
-                            if (poaUserData != null)
-                                rc.CC.Add(poaUserData.EMAIL);
+                            rc.To.Add(userCreatorInfo.EMAIL);
+                            if (userPoaApprovalInfo != null)
+                                rc.CC.Add(userPoaApprovalInfo.EMAIL);
                         }
                     }
 
@@ -1852,8 +1858,8 @@ namespace Sampoerna.EMS.BLL
                     break;
                 case Enums.ActionType.Reject:
                     //send notification to creator
-                    var userDetail = _userBll.GetUserById(ck5Dto.CREATED_BY);
-                    rc.To.Add(userDetail.EMAIL);
+                    //var userDetail = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                    rc.To.Add(userCreatorInfo.EMAIL);
 
                     //Transportation and FactoryLogistic
                     if (listEmailTransportAndFacLogistic.Count > 0)
@@ -1867,27 +1873,45 @@ namespace Sampoerna.EMS.BLL
 
                     break;
                 case Enums.ActionType.GovApprove:
-                    
-                    var creatorDetail = _userBll.GetUserById(ck5Dto.CREATED_BY);
-                    var poaSender = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
 
-                    if(poaSender != null)
-                        rc.CC.Add(poaSender.EMAIL);
+                  
 
-                    rc.CC.Add(creatorDetail.EMAIL);
-
-                    if (ck5Dto.CK5_TYPE != Enums.CK5Type.Manual ||
-                        (ck5Dto.MANUAL_FREE_TEXT != Enums.Ck5ManualFreeText.SourceFreeText &&
-                         ck5Dto.MANUAL_FREE_TEXT != Enums.Ck5ManualFreeText.DestFreeText))
+                    if (ck5Dto.CK5_TYPE == Enums.CK5Type.Waste)
                     {
-                        //var poaReceiverList = _poaBll.GetPoaActiveByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID).Distinct();
-                        var poaReceiverList = _poaBll.GetPoaActiveByPlantId(ck5Dto.DEST_PLANT_ID).Distinct();
-                        foreach (var poaDto in poaReceiverList)
+                        
+                        rc.To.Add(userCreatorInfo.EMAIL);
+
+                        //cc to poa destination
+                        poaDestList = _poaBll.GetPoaActiveByPlantId(ck5Dto.DEST_PLANT_ID).Distinct().ToList();
+
+                        foreach (var poaDto in poaDestList)
                         {
-                            rc.To.Add(poaDto.POA_EMAIL);
+                            rc.CC.Add(poaDto.POA_EMAIL);
+                        }
+
+                    }
+                    else
+                    {
+                        if (userPoaApprovalInfo != null)
+                            rc.CC.Add(userPoaApprovalInfo.EMAIL);
+
+                        rc.CC.Add(userCreatorInfo.EMAIL);
+
+
+                        if (ck5Dto.CK5_TYPE != Enums.CK5Type.Manual ||
+                            (ck5Dto.MANUAL_FREE_TEXT != Enums.Ck5ManualFreeText.SourceFreeText &&
+                             ck5Dto.MANUAL_FREE_TEXT != Enums.Ck5ManualFreeText.DestFreeText))
+                        {
+                            //var poaReceiverList = _poaBll.GetPoaActiveByPlantId(ck5Dto.DEST_PLANT_ID).Distinct();
+                            poaDestList = _poaBll.GetPoaActiveByPlantId(ck5Dto.DEST_PLANT_ID).Distinct().ToList();
+
+                            foreach (var poaDto in poaDestList)
+                            {
+                                rc.To.Add(poaDto.POA_EMAIL);
+                            }
                         }
                     }
-
+                   
                     if (listEmailTransportAndFacLogistic.Count > 0)
                     {
                         foreach (var emailUser in listEmailTransportAndFacLogistic)
@@ -1901,8 +1925,16 @@ namespace Sampoerna.EMS.BLL
                     break;
                 case Enums.ActionType.GoodIssue: 
                     //send notification to creator
-                    var userWasteCreator = _userBll.GetUserById(ck5Dto.CREATED_BY);
-                    rc.To.Add(userWasteCreator.EMAIL);
+                    //rc.To.Add(userCreatorInfo.EMAIL);
+                   //to poa destination
+                    poaDestList = _poaBll.GetPoaActiveByPlantId(ck5Dto.DEST_PLANT_ID).Distinct().ToList();
+                    foreach (var poaDto in poaDestList)
+                    {
+                        rc.To.Add(poaDto.POA_EMAIL);
+                    }
+
+                    //cc creator
+                    rc.CC.Add(userCreatorInfo.EMAIL);
 
                     if (listEmailTransportAndFacLogistic.Count > 0)
                     {
@@ -1914,53 +1946,65 @@ namespace Sampoerna.EMS.BLL
                     }
 
                     break;
-                case Enums.ActionType.GoodReceive: // status doc = disposal ck5waste
-                    //send notification to creator
-                    var userWaste = _userBll.GetUserById(ck5Dto.CREATED_BY);
-                    rc.To.Add(userWaste.EMAIL);
+                case Enums.ActionType.GoodReceive:
+                    
+                    //to disposal team
+                    var listEmail = _wasteRoleServices.GetListEmailDisposalTeamByPlant(ck5Dto.DEST_PLANT_ID);
+                    if (listEmail.Count == 0)
+                        throw new BLLException(ExceptionCodes.BLLExceptions.DisposalTeamEmailNotFound);
+
+                    foreach (var emailUser in listEmail)
+                    {
+                        rc.To.Add(emailUser);
+                    }
 
                     //cc to disposal group use plant destination
-                    var listEmail = _wasteRoleServices.GetListEmailDisposalTeamByPlant(ck5Dto.DEST_PLANT_ID);
+                    //cc creator
+                    rc.To.Add(userCreatorInfo.EMAIL);
 
-                    //Transportation and FactoryLogistic
                     if (listEmailTransportAndFacLogistic.Count > 0)
                     {
-                        listEmail.AddRange(listEmailTransportAndFacLogistic);
-                    }
+                        foreach (var emailUser in listEmailTransportAndFacLogistic)
+                        {
+                            rc.CC.Add(emailUser);
+                        }
 
-
-                    foreach (var userEmail in listEmail)
-                    {
-                        rc.CC.Add(userEmail);
                     }
 
                     break;
 
-                case Enums.ActionType.WasteDisposalUploaded: // status doc = waste approval ck5waste
-                    //send notification to creator
-                    var userWasteDisposal = _userBll.GetUserById(ck5Dto.CREATED_BY);
-                    rc.To.Add(userWasteDisposal.EMAIL);
-
-                    //cc to Waste approval use plant destination
+                case Enums.ActionType.WasteDisposalUploaded:
+                    //rc.To.Add(userCreatorInfo.EMAIL);
+                    //to waste approval
                     var listEmailApproval = _wasteRoleServices.GetListEmailWasteApprovalByPlant(ck5Dto.DEST_PLANT_ID);
+                    if (listEmailApproval.Count == 0)
+                        throw new BLLException(ExceptionCodes.BLLExceptions.WasteApprovalEmailNotFound);
 
+                    foreach (var emailUser in listEmailApproval)
+                    {
+                        rc.To.Add(emailUser);
+                    }
+
+                  
+                    //cc disposal team,
+                    var listEmailDisposalTeam = _wasteRoleServices.GetListEmailDisposalTeamByPlant(ck5Dto.DEST_PLANT_ID);
+                    
                     //Transportation and FactoryLogistic
                     if (listEmailTransportAndFacLogistic.Count > 0)
                     {
-                        listEmailApproval.AddRange(listEmailTransportAndFacLogistic);
+                        listEmailDisposalTeam.AddRange(listEmailTransportAndFacLogistic);
                     }
 
-
-                    foreach (var userEmail in listEmailApproval)
+                    foreach (var userEmail in listEmailDisposalTeam)
                     {
                         rc.CC.Add(userEmail);
                     }
                     break;
 
-                case Enums.ActionType.WasteDisposalRejected: // status doc = waste approval ck5waste
+                case Enums.ActionType.WasteDisposalRejected: 
                     //send notification to creator
-                    var userWasteDisposalReject = _userBll.GetUserById(ck5Dto.CREATED_BY);
-                    rc.To.Add(userWasteDisposalReject.EMAIL);
+                    //var userWasteDisposalReject = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                    rc.To.Add(userCreatorInfo.EMAIL);
 
                     //cc to Disposal team use plant destination
                     var listEmailWasteRejected = _wasteRoleServices.GetListEmailDisposalTeamByPlant(ck5Dto.DEST_PLANT_ID);
@@ -1978,10 +2022,10 @@ namespace Sampoerna.EMS.BLL
                     }
                     break;
 
-                case Enums.ActionType.WasteApproved: // status doc = waste approval ck5waste
+                case Enums.ActionType.WasteApproved: 
                     //send notification to creator
-                    var userWasteApproval = _userBll.GetUserById(ck5Dto.CREATED_BY);
-                    rc.To.Add(userWasteApproval.EMAIL);
+                    //var userWasteApproval = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                    rc.To.Add(userCreatorInfo.EMAIL);
 
                    
                     //Transportation and FactoryLogistic
