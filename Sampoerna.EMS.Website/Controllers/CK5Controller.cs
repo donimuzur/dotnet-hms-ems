@@ -1539,8 +1539,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
               
 
-
-                model.AllowCancelSAP = _workflowBll.AllowCancelSAP(input);
+                if (model.Ck5Type != Enums.CK5Type.Waste)
+                    model.AllowCancelSAP = _workflowBll.AllowCancelSAP(input);
 
                 if (model.IsCompleted)
                 {
@@ -1553,7 +1553,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     //if not it will cause double button show up in view
                     if (!model.AllowGiCreated && !model.AllowGrCreated && !model.AllowGoodIssue
                         && !model.AllowGoodReceive && !model.AllowTfPostedPortToImporter
-                        && !model.AllowPurchaseOrder)
+                        && !model.AllowPurchaseOrder && !model.AllowWasteDisposal
+                        && !model.AllowWasteApproval)
                     {
                         model.AllowAttachment = _workflowBll.AllowAttachment(input);
                     }

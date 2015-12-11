@@ -132,7 +132,13 @@ namespace Sampoerna.EMS.Core.Exceptions
             PlantInWasteNotHaveStickerCode,
 
             [Description("Missing UOM Data")]
-            MissingUomData
+            MissingUomData,
+
+            [Description("Disposal Team Email Not Found")]
+            DisposalTeamEmailNotFound,
+
+            [Description("Waste Approval Email Not Found")]
+            WasteApprovalEmailNotFound
         }
 
         /// <summary>
