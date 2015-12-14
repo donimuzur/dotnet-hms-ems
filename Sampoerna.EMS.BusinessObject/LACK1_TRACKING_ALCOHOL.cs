@@ -28,6 +28,7 @@ namespace Sampoerna.EMS.BusinessObject
         public bool IS_FINAL_GOODS { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
         public int TrackLevel { get; set; }
+        public string PARENT_ORDR { get; set; }
     
         public virtual LACK1 LACK1 { get; set; }
     }
