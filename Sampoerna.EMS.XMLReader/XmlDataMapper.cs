@@ -136,7 +136,7 @@ namespace Sampoerna.EMS.XMLReader
                 {
                     foreach (var error in Errors)
                     {
-                        logger.Error(error);
+                        logger.Warn(error);
                     }
                     
                 }
@@ -146,7 +146,7 @@ namespace Sampoerna.EMS.XMLReader
             catch (Exception ex)
             {
                 errorCount++;
-                logger.Error(ex.Message);
+                logger.Warn(ex.Message);
                 this.Errors.Add(ex.Message);
                 //uow.RevertChanges();
             }
@@ -161,7 +161,7 @@ namespace Sampoerna.EMS.XMLReader
                 return new MovedFileOutput(fileName);
             }
             fileName = MoveFile(true,needMoved);
-            return new MovedFileOutput(fileName, true);
+            return new MovedFileOutput(fileName, true,Errors);
 
             
 

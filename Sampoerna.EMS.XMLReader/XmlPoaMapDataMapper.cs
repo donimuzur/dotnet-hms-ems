@@ -30,27 +30,29 @@ namespace Sampoerna.EMS.XMLReader
                 var items = new List<POA_MAP>();
                 foreach (var xElement in xmlItems)
                 {
-                    try
-                    {
-                        var item = new POA_MAP();
-                        item.POA_ID = xElement.Element("POA_ID").Value;
-                        item.NPPBKC_ID = xElement.Element("NPPBKC_ID").Value;
-                        item.WERKS = xElement.Element("PLANT").Value;
+                    continue;
+                    
+                    //try
+                    //{
+                    //    var item = new POA_MAP();
+                    //    item.POA_ID = xElement.Element("POA_ID").Value;
+                    //    item.NPPBKC_ID = xElement.Element("NPPBKC_ID").Value;
+                    //    item.WERKS = xElement.Element("PLANT").Value;
 
-                        var existingData = GetPoaMap(item.NPPBKC_ID, item.WERKS, item.POA_ID);
-                        if (existingData == null)
-                        {
-                            item.CREATED_BY = "PI";
-                            item.CREATED_DATE = DateTime.Now;
-                            items.Add(item);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _xmlMapper.Errors.Add(ex.Message);
-                        continue;
+                    //    var existingData = GetPoaMap(item.NPPBKC_ID, item.WERKS, item.POA_ID);
+                    //    if (existingData == null)
+                    //    {
+                    //        item.CREATED_BY = "PI";
+                    //        item.CREATED_DATE = DateTime.Now;
+                    //        items.Add(item);
+                    //    }
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    _xmlMapper.Errors.Add(ex.Message);
+                    //    continue;
 
-                    }
+                    //}
                     
                 }
                 return items;
@@ -60,12 +62,15 @@ namespace Sampoerna.EMS.XMLReader
 
         public MovedFileOutput InsertToDatabase()
         {
-            return _xmlMapper.InsertToDatabase<POA_MAP>(Items);
+            MovedFileOutput result = new MovedFileOutput(_xmlMapper._xmlName, true);
+            _xmlMapper.Errors.Add("XML POA currently not read by this build");
+            return result;
+            //return _xmlMapper.InsertToDatabase<POA_MAP>(Items);
         }
 
         public List<string> GetErrorList()
         {
-            throw new NotImplementedException();
+            return _xmlMapper.Errors;
         }
 
 
