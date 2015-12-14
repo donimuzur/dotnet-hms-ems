@@ -2865,26 +2865,26 @@ namespace Sampoerna.EMS.BLL
             var receiving = _inventoryMovementService.GetReceivingByParam(receivingParamInput);
             //get prev receiving for CASE 2 : prev Receiving, Current Receiving, Current Usage
             var prevReceiving = _inventoryMovementService.GetReceivingByParam(prevReceivingParamInput);
-
+            
             //there is records on receiving Data
             //normal case
             var receivingList = (from rec in receiving
-                                 join a in movementUsageAll on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
+                                 join a in movementUsageAll.DistinctBy(d => new { d.MAT_DOC, d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR }) on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
                                  where stoReceiverNumberList.Contains(rec.PURCH_DOC) && input.PlantIdList.Contains(rec.PLANT_ID)
                                  select rec).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
-            var usageReceivingList = (from rec in receiving
+            var usageReceivingList = (from rec in receiving.DistinctBy(d => new { d.MAT_DOC, d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR })
                                       join a in movementUsageAll on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
                                       where stoReceiverNumberList.Contains(rec.PURCH_DOC) && input.PlantIdList.Contains(rec.PLANT_ID)
                                       select a).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
             //get prev receiving for CASE 2 : prev Receiving, Current Receiving, Current Usage
             var prevReceivingList = (from rec in prevReceiving
-                                     join a in movementUsageAll on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
+                                     join a in movementUsageAll.DistinctBy(d => new { d.MAT_DOC, d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR }) on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
                                      where stoReceiverNumberList.Contains(rec.PURCH_DOC) && input.PlantIdList.Contains(rec.PLANT_ID)
                                      select rec).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
-            var usagePrevReceivingList = (from rec in prevReceiving
+            var usagePrevReceivingList = (from rec in prevReceiving.DistinctBy(d => new { d.MAT_DOC, d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR })
                                           join a in movementUsageAll on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
                                           where stoReceiverNumberList.Contains(rec.PURCH_DOC) && input.PlantIdList.Contains(rec.PLANT_ID)
                                           select a).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
@@ -2914,7 +2914,7 @@ namespace Sampoerna.EMS.BLL
 
             return rc;
         }
-
+        
         private List<InvMovementUsageProportional> CalculateInvMovementUsageProportional(
             IEnumerable<INVENTORY_MOVEMENT> usageReceivingAll, IEnumerable<INVENTORY_MOVEMENT> usageAll)
         {
