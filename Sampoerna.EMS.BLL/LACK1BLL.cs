@@ -2932,14 +2932,34 @@ namespace Sampoerna.EMS.BLL
                 TotalQty = g.Sum(p => p.QTY.HasValue ? p.QTY.Value : 0)
             }).ToList();
 
-            var rc = (from x in inventoryMovements
-                join y in listTotalPerMaterialId on x.MATERIAL_ID equals y.MaterialId
+            //grouped by MAT_DOC, MVT, MATERIAL_ID, PLANT_ID, BATCH and ORDR
+            var groupedInventoryMovements = inventoryMovements.GroupBy(p => new
+            {
+                p.MAT_DOC,
+                p.MVT,
+                p.MATERIAL_ID,
+                p.PLANT_ID,
+                p.BATCH,
+                p.ORDR
+            }).Select(g => new
+            {
+                MatDoc = g.Key.MAT_DOC,
+                Mvt = g.Key.MVT,
+                MaterialId = g.Key.MATERIAL_ID,
+                PlantId = g.Key.PLANT_ID,
+                Batch = g.Key.BATCH,
+                Ordr = g.Key.ORDR,
+                TotalQty = g.Sum(p => p.QTY.HasValue ? p.QTY.Value : 0)
+            }).ToList();
+
+            var rc = (from x in groupedInventoryMovements
+                join y in listTotalPerMaterialId on x.MaterialId equals y.MaterialId
                 select new InvMovementUsageProportional()
                 {
-                    MaterialId = x.MATERIAL_ID,
-                    Qty = x.QTY.HasValue ? x.QTY.Value : 0,
+                    MaterialId = x.MaterialId,
+                    Qty = x.TotalQty,
                     TotalQtyPerMaterialId = y.TotalQty,
-                    Order = x.ORDR
+                    Order = x.Ordr
                 }).ToList();
 
             return rc;
