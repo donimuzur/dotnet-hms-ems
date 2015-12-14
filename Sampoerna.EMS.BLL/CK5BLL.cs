@@ -1340,6 +1340,7 @@ namespace Sampoerna.EMS.BLL
 
         public void CK5Workflow(CK5WorkflowDocumentInput input)
         {
+
             var isNeedSendNotif = false;
 
             switch (input.ActionType)
