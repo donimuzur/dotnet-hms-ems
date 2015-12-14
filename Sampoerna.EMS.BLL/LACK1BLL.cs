@@ -2701,16 +2701,17 @@ namespace Sampoerna.EMS.BLL
                 IsEtilAlcohol = true
             }, stoReceiverNumberList);
 
-            if (getInventoryMovementByParamOutput.AllUsageList.Count <= 0)
-            {
-                return new Lack1GeneratedOutput()
-                {
-                    Success = false,
-                    ErrorCode = ExceptionCodes.BLLExceptions.TotalUsageLessThanEqualTpZero.ToString(),
-                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.TotalUsageLessThanEqualTpZero),
-                    Data = null
-                };
-            }
+            //bypass this error handling base on user story => http://192.168.62.216/TargetProcess/entity/1465
+            //if (getInventoryMovementByParamOutput.AllUsageList.Count <= 0)
+            //{
+            //    return new Lack1GeneratedOutput()
+            //    {
+            //        Success = false,
+            //        ErrorCode = ExceptionCodes.BLLExceptions.TotalUsageLessThanEqualTpZero.ToString(),
+            //        ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.TotalUsageLessThanEqualTpZero),
+            //        Data = null
+            //    };
+            //}
             decimal totalUsage;
             if (getInventoryMovementByParamOutput.IncludeInCk5List.Count == 0)
             {
@@ -2743,7 +2744,7 @@ namespace Sampoerna.EMS.BLL
         private Lack1GeneratedOutput SetGenerateLack1InventoryMovement(Lack1GeneratedDto rc,
             Lack1GenerateDataParamInput input, List<string> plantIdList, bool isForTisToTis, out InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput)
         {
-            invMovementOutput = new InvMovementGetForLack1UsageMovementByParamOutput();
+            //invMovementOutput = new InvMovementGetForLack1UsageMovementByParamOutput();
             var oRet = new Lack1GeneratedOutput()
             {
                 Success = true,
@@ -2764,16 +2765,17 @@ namespace Sampoerna.EMS.BLL
                 IsEtilAlcohol = false
             }, stoReceiverNumberList);
 
-            if (getInventoryMovementByParamOutput.AllUsageList.Count <= 0)
-            {
-                return new Lack1GeneratedOutput()
-                {
-                    Success = false,
-                    ErrorCode = ExceptionCodes.BLLExceptions.TotalUsageLessThanEqualTpZero.ToString(),
-                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.TotalUsageLessThanEqualTpZero),
-                    Data = null
-                };
-            }
+            //bypass this handling base on user story => http://192.168.62.216/TargetProcess/entity/1465
+            //if (getInventoryMovementByParamOutput.AllUsageList.Count <= 0)
+            //{
+            //    return new Lack1GeneratedOutput()
+            //    {
+            //        Success = false,
+            //        ErrorCode = ExceptionCodes.BLLExceptions.TotalUsageLessThanEqualTpZero.ToString(),
+            //        ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.TotalUsageLessThanEqualTpZero),
+            //        Data = null
+            //    };
+            //}
             decimal totalUsage;
             if (getInventoryMovementByParamOutput.IncludeInCk5List.Count == 0)
             {
