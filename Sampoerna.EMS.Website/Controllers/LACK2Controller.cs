@@ -157,7 +157,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Details = dbData;
             model.MenuLack2OpenDocument = "";
             model.MenuLack2CompletedDocument = "active";
-            model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            model.IsShowNewButton = false;
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
             return View("Index", model);
