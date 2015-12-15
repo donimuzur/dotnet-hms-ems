@@ -1744,11 +1744,10 @@ namespace Sampoerna.EMS.BLL
             }
             
             //process the production list got from previous process
-            var finalGoodsList = allTrackingList.Where(c => c.IsFinalGoodsType).ToList();
+            var finalGoodsList = allTrackingList.Where(c => c.IsFinalGoodsType && c.ProductionQty != 0).ToList();
 
             var productionList = new List<Lack1GeneratedProductionDataDto>();
 
-            //todo: group by prod_typ, but how ?
             foreach (var item in finalGoodsList)
             {
                 var itemToInsert = new Lack1GeneratedProductionDataDto()
@@ -1758,7 +1757,7 @@ namespace Sampoerna.EMS.BLL
                     ProdCode = "", //from ?
                     ProductType = "",//from ?
                     ProductAlias = "",//from?
-                    Amount = item.Qty,
+                    Amount = item.ProductionQty,
                     UomId = item.UomId,
                     UomDesc = item.UomDesc
                 };
@@ -1789,7 +1788,22 @@ namespace Sampoerna.EMS.BLL
                     //calculate proporsional
                     itemToInsert.Amount =
                         Math.Round(
-                            ((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount), 3);
+                            ((rec.Qty/rec.TotalQtyPerMaterialId)*itemToInsert.Amount), 5);
+                }
+                else
+                {
+                    //check in prev data inventory_movement
+                    rec =
+                        prevInventoryMovementByParam.UsageProportionalList.FirstOrDefault(
+                            c => c.Order == item.ParentOrdr);
+
+                    if (rec != null)
+                    {
+                        //calculate proporsional from prev inventory movement
+                        itemToInsert.Amount =
+                            Math.Round(
+                                ((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount), 5);
+                    }
                 }
 
                 productionList.Add(itemToInsert);
@@ -1804,6 +1818,7 @@ namespace Sampoerna.EMS.BLL
                 ProductionSummaryByProdTypeList = GetProductionGroupedByProdTypeList(productionList),
                 SummaryProductionList = GetSummaryGroupedProductionList(productionList)
             };
+
             rc.FusionSummaryProductionList = rc.InventoryProductionTisToFa.ProductionData.SummaryProductionList;
 
             return new Lack1GeneratedOutput()
@@ -1836,7 +1851,7 @@ namespace Sampoerna.EMS.BLL
                 item.TrackLevel = trackLevel;
                 item.IsFinalGoodsType = false;
                 item.ParentOrdr = parentOrdr;
-                traceItems.Add(item);
+                item.ProductionQty = item.Qty;
 
                 var receivingList = GetReceivingEtilAlcoholProdTrace(parentOrdr, (trackLevel + 1), item.Ordr, plantId,
                     periodMonth, periodYear).ToList();
@@ -1846,9 +1861,13 @@ namespace Sampoerna.EMS.BLL
                     //tidak ada next 101 nya, jadi harusnya hasil produksi nya adalah 101 sebelumnya
                     //bagaimana caranya ?
                     //sebenarnya cuma nge-set isFinalGoods nya aja sih ya ? atau dari max level nya ? bisa bisa :-)
+                    item.IsFinalGoodsType = true;
+                    item.ProductionQty = 0;
+                    traceItems.Add(item);
                 }
                 else
                 {
+                    traceItems.Add(item);
                     traceItems.AddRange(receivingList);    
                 }
 
@@ -1880,6 +1899,7 @@ namespace Sampoerna.EMS.BLL
                     item.MaterialId, item.PlantId);
                 item.TrackLevel = trackLevel;
                 item.ParentOrdr = parentOrdr;
+                item.ProductionQty = item.Qty;
 
                 if (chkMaterial != null)
                 {
@@ -1894,9 +1914,21 @@ namespace Sampoerna.EMS.BLL
                 {
                     //not exists in zaidm_ex_material = continue get 261
                     item.IsFinalGoodsType = false;
-                    traceItems.Add(item);
-                    var usageList = GetUsageEtilAlcoholProdTrace(parentOrdr, trackLevel, item.Batch, plantId, periodMonth, periodYear);
-                    traceItems.AddRange(usageList);
+                    var usageList = GetUsageEtilAlcoholProdTrace(parentOrdr, trackLevel, item.Batch, plantId, periodMonth, periodYear).ToList();
+                    if (usageList.Count <= 0)
+                    {
+                        //set prodution qty to zero cause of no more usage at next level
+                        //and set this item as final goods
+                        item.IsFinalGoodsType = true;
+                        item.ProductionQty = 0;
+                        traceItems.Add(item);
+                    }
+                    else
+                    {
+                        traceItems.Add(item);
+                        traceItems.AddRange(usageList);
+                    }
+                    
                 }
             }
             

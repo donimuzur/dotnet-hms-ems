@@ -147,6 +147,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string MaterialId { get; set; }
         public string PlantId { get; set; }
         public decimal Qty { get; set; }
+        public decimal ProductionQty { get; set; }
         public string Bun { get; set; }
         public string PurchDoc { get; set; }
         public string MatDoc { get; set; }
