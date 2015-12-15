@@ -553,6 +553,7 @@
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="TrackLevel" Type="int" Nullable="false" />
           <Property Name="PARENT_ORDR" Type="nvarchar" MaxLength="10" />
+          <Property Name="PROD_QTY" Type="decimal" Precision="18" Scale="5" Nullable="false" />
         </EntityType>
         <EntityType Name="LACK2">
           <Key>
@@ -8417,6 +8418,7 @@
           <Property Name="TrackLevel" Type="Int32" Nullable="false" />
           <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_TRACKING_ALCOHOL_LACK1" FromRole="LACK1_TRACKING_ALCOHOL" ToRole="LACK1" />
           <Property Name="PARENT_ORDR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="PROD_QTY" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
         </EntityType>
         <Association Name="FK_LACK1_TRACKING_ALCOHOL_LACK1">
           <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="1" />
@@ -9945,6 +9947,7 @@
           <EntitySetMapping Name="LACK1_TRACKING_ALCOHOL">
             <EntityTypeMapping TypeName="EMSModel.LACK1_TRACKING_ALCOHOL">
               <MappingFragment StoreEntitySet="LACK1_TRACKING_ALCOHOL">
+                <ScalarProperty Name="PROD_QTY" ColumnName="PROD_QTY" />
                 <ScalarProperty Name="PARENT_ORDR" ColumnName="PARENT_ORDR" />
                 <ScalarProperty Name="TrackLevel" ColumnName="TrackLevel" />
                 <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
