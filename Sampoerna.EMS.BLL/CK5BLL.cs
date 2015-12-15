@@ -1340,6 +1340,7 @@ namespace Sampoerna.EMS.BLL
 
         public void CK5Workflow(CK5WorkflowDocumentInput input)
         {
+
             var isNeedSendNotif = false;
 
             switch (input.ActionType)
@@ -3577,6 +3578,15 @@ namespace Sampoerna.EMS.BLL
 
                     throw new Exception(String.Format("Material {0} in {1} is not found in material master", ck5MaterialDto.BRAND, dataXmlDto.SOURCE_PLANT_ID));
                 }
+
+                material = _materialBll.getByID(ck5MaterialDto.BRAND, dataXmlDto.DEST_PLANT_ID);
+
+                if (material == null)
+                {
+
+                    throw new Exception(String.Format("Material {0} in {1} is not found in material master", ck5MaterialDto.BRAND, dataXmlDto.DEST_PLANT_ID));
+                }
+
                 if (ck5MaterialDto.CONVERTED_UOM == material.BASE_UOM_ID)
                     continue;
 
