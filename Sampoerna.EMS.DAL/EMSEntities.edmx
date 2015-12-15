@@ -1274,7 +1274,7 @@
           <Property Name="BATCH" Type="nvarchar" MaxLength="35" />
           <Property Name="QTY" Type="decimal" Precision="15" Scale="2" />
           <Property Name="BUNDLE" Type="int" />
-          <Property Name="MARKET" Type="nvarchar" MaxLength="2" />
+          <Property Name="MARKET" Type="nvarchar" MaxLength="30" />
           <Property Name="DOCGMVTER" Type="nvarchar" MaxLength="35" />
           <Property Name="MATDOC" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="ORDR" Type="nvarchar" MaxLength="10" />
@@ -8177,7 +8177,7 @@
           <Property Name="BATCH" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="QTY" Type="Decimal" Precision="15" Scale="2" />
           <Property Name="BUNDLE" Type="Int32" />
-          <Property Name="MARKET" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="MARKET" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="DOCGMVTER" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="MATDOC" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="ORDR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
