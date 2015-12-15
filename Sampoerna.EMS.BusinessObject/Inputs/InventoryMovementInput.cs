@@ -33,4 +33,20 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     {
     }
 
+    public class GetUsageByBatchAndPlantIdInPeriodParamInput
+    {
+        public string Batch { get; set; }
+        public string PlantId { get; set; }
+        public int PeriodMonth { get; set; }
+        public int PeriodYear { get; set; }
+    }
+
+    public class GetReceivingByOrderAndPlantIdInPeriodParamInput
+    {
+        public string Ordr { get; set; }
+        public string PlantId { get; set; }
+        public int PeriodMonth { get; set; }
+        public int PeriodYear { get; set; }
+    }
+
 }

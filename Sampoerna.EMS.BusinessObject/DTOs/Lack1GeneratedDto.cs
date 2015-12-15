@@ -129,27 +129,37 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public bool IsTisToTisData { get; set; }
     }
 
-    public class Lack1GeneratedTrackingDto
+    public class Lack1GeneratedTrackingDto : INVENTORY_MOVEMENT
     {
-        public long INVENTORY_MOVEMENT_ID { get; set; }
+        //public long INVENTORY_MOVEMENT_ID { get; set; }
         public bool IsTisToTisData { get; set; }
     }
 
     public class Lack1GeneratedProductionDomesticAlcoholDto
     {
-        public INVENTORY_MOVEMENT InvMovementUsage { get; set; }
+        public Lack1GeneratedInvMovementProductionStepTracingItem InvMovementUsage { get; set; }
         public List<Lack1GeneratedInvMovementProductionStepTracingItem> InvMovementProductionStepTracing { get; set; }
     }
 
-    public class Lack1GeneratedInvMovementProductionStepTracingItem : INVENTORY_MOVEMENT
+    public class Lack1GeneratedInvMovementProductionStepTracingItem
     {
-        public int Level { get; set; }
-        public string ParentProcessOrder { get; set; }
+        public string Mvt { get; set; }
+        public string MaterialId { get; set; }
+        public string PlantId { get; set; }
+        public decimal Qty { get; set; }
+        public decimal ProductionQty { get; set; }
+        public string Bun { get; set; }
+        public string PurchDoc { get; set; }
+        public string MatDoc { get; set; }
+        public string Batch { get; set; }
+        public string Ordr { get; set; }
         public bool IsFinalGoodsType { get; set; }
-        public bool IsFirstLevel { get; set; }
+        public int TrackLevel { get; set; }
+        public string ParentOrdr { get; set; }
         public string ExGoodsTypeId { get; set; }
         public string UomId { get; set; }
         public string UomDesc { get; set; }
+        public DateTime? PostingDate { get; set; }
     }
 
 }

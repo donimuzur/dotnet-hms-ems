@@ -314,7 +314,7 @@ namespace Sampoerna.EMS.BLL
                 ;
 
             Mapper.CreateMap<INVENTORY_MOVEMENT, Lack1GeneratedTrackingDto>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.INVENTORY_MOVEMENT_ID, opt => opt.MapFrom(src => src.INVENTORY_MOVEMENT_ID))
+                //.ForMember(dest => dest.INVENTORY_MOVEMENT_ID, opt => opt.MapFrom(src => src.INVENTORY_MOVEMENT_ID))
                 ;
 
             Mapper.CreateMap<Lack1GeneratedTrackingDto, LACK1_TRACKING>().IgnoreAllNonExisting()
@@ -443,14 +443,33 @@ namespace Sampoerna.EMS.BLL
 
             Mapper.CreateMap<Lack1GeneratedInvMovementProductionStepTracingItem, LACK1_TRACKING_ALCOHOL>()
                 .IgnoreAllNonExisting()
-                //.ForMember(dest => dest.INVENTORY_MOVEMENT_ID, opt => opt.MapFrom(src => src.INVENTORY_MOVEMENT_ID))
+                .ForMember(dest => dest.MVT, opt => opt.MapFrom(src => src.Mvt))
+                .ForMember(dest => dest.MATERIAL_ID, opt => opt.MapFrom(src => src.MaterialId))
+                .ForMember(dest => dest.PLANT_ID, opt => opt.MapFrom(src => src.PlantId))
+                .ForMember(dest => dest.QTY, opt => opt.MapFrom(src => src.Qty))
+                .ForMember(dest => dest.BUN, opt => opt.MapFrom(src => src.Bun))
+                .ForMember(dest => dest.PURCH_DOC, opt => opt.MapFrom(src => src.PurchDoc))
+                .ForMember(dest => dest.MAT_DOC, opt => opt.MapFrom(src => src.MatDoc))
+                .ForMember(dest => dest.BATCH, opt => opt.MapFrom(src => src.Batch))
+                .ForMember(dest => dest.ORDR, opt => opt.MapFrom(src => src.Ordr))
+                .ForMember(dest => dest.PROD_QTY, opt => opt.MapFrom(src => src.ProductionQty))
                 .ForMember(dest => dest.IS_FINAL_GOODS, opt => opt.MapFrom(src => src.IsFinalGoodsType))
-                //.ForMember(dest => dest.IS_FIRST_LEVEL, opt => opt.MapFrom(src => src.IsFirstLevel))
-                .ForMember(dest => dest.TrackLevel, opt => opt.MapFrom(src => src.Level))
+                .ForMember(dest => dest.TrackLevel, opt => opt.MapFrom(src => src.TrackLevel))
                 .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => DateTime.Now))
+                .ForMember(dest => dest.PARENT_ORDR, opt => opt.MapFrom(src => src.ParentOrdr))
                 ;
 
             Mapper.CreateMap<INVENTORY_MOVEMENT, Lack1GeneratedInvMovementProductionStepTracingItem>()
+                .ForMember(dest => dest.Mvt, opt => opt.MapFrom(src => src.MVT))
+                .ForMember(dest => dest.MaterialId, opt => opt.MapFrom(src => src.MATERIAL_ID))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
+                .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.QTY.HasValue ? src.QTY.Value : 0))
+                .ForMember(dest => dest.Bun, opt => opt.MapFrom(src => src.BUN))
+                .ForMember(dest => dest.PurchDoc, opt => opt.MapFrom(src => src.PURCH_DOC))
+                .ForMember(dest => dest.PostingDate, opt => opt.MapFrom(src => src.POSTING_DATE))
+                .ForMember(dest => dest.MatDoc, opt => opt.MapFrom(src => src.MAT_DOC))
+                .ForMember(dest => dest.Batch, opt => opt.MapFrom(src => src.BATCH))
+                .ForMember(dest => dest.Ordr, opt => opt.MapFrom(src => src.ORDR))
                 .IgnoreAllNonExisting();
 
         }
