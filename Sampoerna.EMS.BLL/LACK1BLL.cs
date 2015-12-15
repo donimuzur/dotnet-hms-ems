@@ -217,7 +217,7 @@ namespace Sampoerna.EMS.BLL
                 //etil alcohol 100%
                 data.LACK1_TRACKING_ALCOHOL = null;
                 data.LACK1_TRACKING_ALCOHOL =
-                    Mapper.Map<List<LACK1_TRACKING_ALCOHOL>>(generatedData.Data.AlcoholTrackingList);
+                    Mapper.Map<List<LACK1_TRACKING_ALCOHOL>>(generatedData.Data.AlcoholTrackingList.Distinct().ToList());
             }
 
             data.LACK1_PLANT = null;
@@ -445,6 +445,15 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 dbData.LACK1_TRACKING = Mapper.Map<List<LACK1_TRACKING>>(allTrackingList.Distinct().ToList());
+
+                if (!string.IsNullOrEmpty(generatedData.Data.ExcisableGoodsTypeDesc) && (generatedData.Data.ExcisableGoodsTypeDesc.ToLower().Contains("alkohol") ||
+                                              generatedData.Data.ExcisableGoodsTypeDesc.ToLower().Contains("alcohol")))
+                {
+                    //etil alcohol 100%
+                    dbData.LACK1_TRACKING_ALCOHOL = null;
+                    dbData.LACK1_TRACKING_ALCOHOL =
+                        Mapper.Map<List<LACK1_TRACKING_ALCOHOL>>(generatedData.Data.AlcoholTrackingList.Distinct().ToList());
+                }
 
                 //set LACK1_PLANT table
                 if (input.Detail.Lack1Level == Enums.Lack1Level.Nppbkc)
@@ -1729,16 +1738,34 @@ namespace Sampoerna.EMS.BLL
 
             foreach (var item in invMovementReceivingListGrouped)
             {
+                //set for level 0
+                item.TrackLevel = 0;
+                item.ParentOrdr = item.Ordr;
+                item.ProductionQty = item.Qty;
+                item.IsFinalGoodsType = false;
+                
                 //get tracing data
                 var itemToInsert = new Lack1GeneratedProductionDomesticAlcoholDto()
                 {
-                    InvMovementUsage = item
+                    InvMovementUsage = item,
+                    InvMovementProductionStepTracing = new List<Lack1GeneratedInvMovementProductionStepTracingItem>()
                 };
 
-                var traceItems = GetReceivingEtilAlcoholProdTrace(item.Ordr, 0, item.Ordr, item.PlantId,
+                var traceItems = GetUsageEtilAlcoholProdTrace(item.ParentOrdr, 0, item.Batch, item.PlantId,
                     input.PeriodMonth, input.PeriodYear).ToList();
 
-                itemToInsert.InvMovementProductionStepTracing = traceItems;
+                if (traceItems.Count > 0)
+                {
+                    item.ParentOrdr = traceItems.First().ParentOrdr;
+                    itemToInsert.InvMovementProductionStepTracing.Add(item);
+                    itemToInsert.InvMovementProductionStepTracing.AddRange(traceItems);
+                }else
+                {
+                    item.ProductionQty = 0;
+                    item.IsFinalGoodsType = true;
+                    itemToInsert.InvMovementProductionStepTracing.Add(item);
+                }
+                
                 productionTraceList.Add(itemToInsert);
                 allTrackingList.AddRange(itemToInsert.InvMovementProductionStepTracing);
             }
@@ -1844,8 +1871,10 @@ namespace Sampoerna.EMS.BLL
                         PeriodMonth = periodMonth
                     });
 
-            var groupedUsageList = InvMovementGroupedForProductionStepTracingItem(usageList);
-            
+            var groupedUsageList = InvMovementGroupedForProductionStepTracingItem(usageList).ToList();
+
+            parentOrdr = trackLevel == 0 && groupedUsageList.Count > 0 ? groupedUsageList.First().Ordr : parentOrdr;
+
             foreach (var item in groupedUsageList)
             {
                 item.TrackLevel = trackLevel;
@@ -1955,6 +1984,7 @@ namespace Sampoerna.EMS.BLL
                 Batch = g.Key.BATCH,
                 Ordr = g.Key.ORDR,
                 Bun = g.First().BUN,
+                MatDoc = g.Key.MAT_DOC,
                 PurchDoc = g.First().PURCH_DOC,
                 PostingDate = g.First().POSTING_DATE,
                 Qty = g.Sum(p => p.QTY.HasValue ? p.QTY.Value : 0)
@@ -1976,6 +2006,7 @@ namespace Sampoerna.EMS.BLL
             {
                 Mvt = g.Key.MVT,
                 MaterialId = g.Key.MATERIAL_ID,
+                MatDoc = g.Key.MAT_DOC,
                 PlantId = g.Key.PLANT_ID,
                 Batch = g.Key.BATCH,
                 Ordr = g.Key.ORDR,
