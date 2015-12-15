@@ -78,7 +78,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Index()
         {
             var currUser = CurrentUser;
-
+            
             var input = new Lack2GetByParamInput()
             {
                 UserId = currUser.USER_ID,
@@ -189,8 +189,18 @@ namespace Sampoerna.EMS.Website.Controllers
                 IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer,
                 IsCreateNew = true
             };
-
-            return View("Create", CreateInitialViewModel(model));
+            try
+            {
+                //check if there is user plant map setting
+                _userPlantMapBll.GetByUserId(CurrentUser.USER_ID);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+            model = CreateInitialViewModel(model);
+            return View("Create", model);
 
         }
 
@@ -294,6 +304,16 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var model = InitEditModel(lack2Data);
+            try
+            {
+                _userPlantMapBll.GetByUserId(CurrentUser.USER_ID);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
             model = InitEditList(model);
             model.IsCreateNew = false;
 
