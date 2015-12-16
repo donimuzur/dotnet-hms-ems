@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Website.Filters;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.Dashboard;
@@ -189,16 +190,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer,
                 IsCreateNew = true
             };
-            try
+            //check if there is user plant map setting
+            var checkUserPlantMapSetting = _userPlantMapBll.GetByUserId(CurrentUser.USER_ID);
+            if (checkUserPlantMapSetting.Count <= 0)
             {
-                //check if there is user plant map setting
-                _userPlantMapBll.GetByUserId(CurrentUser.USER_ID);
-            }
-            catch (Exception ex)
-            {
-                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                AddMessageInfo(EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound), Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
             }
+            
             model = CreateInitialViewModel(model);
             return View("Create", model);
 
@@ -304,16 +303,15 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var model = InitEditModel(lack2Data);
-            try
+
+            //check if there is user plant map setting
+            var checkUserPlantMapSetting = _userPlantMapBll.GetByUserId(CurrentUser.USER_ID);
+            if (checkUserPlantMapSetting.Count <= 0)
             {
-                _userPlantMapBll.GetByUserId(CurrentUser.USER_ID);
-            }
-            catch (Exception ex)
-            {
-                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                AddMessageInfo(EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound), Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
             }
-
+            
             model = InitEditList(model);
             model.IsCreateNew = false;
 

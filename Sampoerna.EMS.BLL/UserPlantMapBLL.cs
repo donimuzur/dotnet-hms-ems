@@ -65,11 +65,11 @@ namespace Sampoerna.EMS.BLL
         {
             //return _repository.Get(p => p.USER_ID == id, null, _includeTables).ToList();
             var data = _userPlantService.GetByUserId(id);
-            if (data.Count <= 0)
-            {
-                //there is no user plant map setting
-                throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
-            }
+            //if (data.Count <= 0)
+            //{
+            //    //there is no user plant map setting
+            //    throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
+            //}
             return data;
         }
 
