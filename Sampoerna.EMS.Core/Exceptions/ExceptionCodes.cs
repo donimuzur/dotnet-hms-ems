@@ -123,7 +123,10 @@ namespace Sampoerna.EMS.Core.Exceptions
             UserHavePlantExist,
 
             [Description("Server is busy, please try again later.")]
-            ServerIsBusy
+            ServerIsBusy,
+
+            [Description("User plant map setting not found, please setting first.")]
+            UserPlantMapSettingNotFound
         }
 
         /// <summary>
