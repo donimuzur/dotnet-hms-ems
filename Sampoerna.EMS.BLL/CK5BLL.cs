@@ -2703,7 +2703,8 @@ namespace Sampoerna.EMS.BLL
 
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
-            dbData.STATUS_ID = Enums.DocumentStatus.WasteApproval;
+            //dbData.STATUS_ID = Enums.DocumentStatus.WasteApproval;
+            dbData.STATUS_ID = Enums.DocumentStatus.Completed;
 
             //add to workflow
             AddWorkflowHistory(input);
