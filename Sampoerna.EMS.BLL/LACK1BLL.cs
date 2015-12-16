@@ -2976,12 +2976,14 @@ namespace Sampoerna.EMS.BLL
             //get prev receiving for CASE 2 : prev Receiving, Current Receiving, Current Usage
             var prevReceivingList = (from rec in prevReceiving
                                      join a in movementUsageAll.DistinctBy(d => new { d.MAT_DOC, d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR }) on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
-                                     where stoReceiverNumberList.Contains(rec.PURCH_DOC) && input.PlantIdList.Contains(rec.PLANT_ID)
+                                     /* LOGS POINT 5 : 2015-12-16, no need checking sto_number on previous */
+                                     //where stoReceiverNumberList.Contains(rec.PURCH_DOC) && input.PlantIdList.Contains(rec.PLANT_ID) 
                                      select rec).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
             var usagePrevReceivingList = (from rec in prevReceiving.DistinctBy(d => new { d.MAT_DOC, d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR })
                                           join a in movementUsageAll on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
-                                          where stoReceiverNumberList.Contains(rec.PURCH_DOC) && input.PlantIdList.Contains(rec.PLANT_ID)
+                                          /* LOGS POINT 5 : 2015-12-16, no need checking sto_number on previous */
+                                          //where stoReceiverNumberList.Contains(rec.PURCH_DOC) && input.PlantIdList.Contains(rec.PLANT_ID)
                                           select a).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
             var allReceivingList = receivingList;
@@ -2989,6 +2991,7 @@ namespace Sampoerna.EMS.BLL
 
             var allUsageReceivingList = usageReceivingList;
             allUsageReceivingList.AddRange(usagePrevReceivingList);
+            allUsageReceivingList = allUsageReceivingList.Distinct().ToList();
 
             //get exclude in receiving data
             var movementExclueInCk5List = (movementUsageAll.Where(
@@ -3158,22 +3161,69 @@ namespace Sampoerna.EMS.BLL
                                       UomDesc = subUom != null ? subUom.UOM_DESC : string.Empty
                                   }).ToList();
 
-                var usageConsolidationData = new List<Lack1TrackingConsolidationDetailReportDto>();
+                var usageConsolidationData = ProcessUsageConsolidationDetailReport(data, incomeList, uomData);
 
-                if (data.LACK1_TRACKING != null && data.LACK1_TRACKING.Count > 0)
+                //not in data
+                if (usageConsolidationData.Count > 0)
                 {
-                    var receivingMvtType = new List<string>()
+                    var notInData =
+                    incomeList.Where(
+                        c => !usageConsolidationData.Select(d => d.Ck5Number).Distinct().ToList().Contains(c.Ck5Number))
+                        .ToList();
+
+                    if (notInData.Count > 0)
+                    {
+                        //add record with empty
+                        usageConsolidationData.AddRange(notInData.Select(d => new Lack1TrackingConsolidationDetailReportDto()
+                        {
+                            Ck5Id = d.Ck5Id,
+                            Ck5Number = d.Ck5Number,
+                            Ck5RegistrationNumber = d.Ck5RegistrationNumber,
+                            Ck5RegistrationDate = d.Ck5RegistrationDate,
+                            Ck5GrDate = d.Ck5GrDate,
+                            Qty = d.Qty,
+                            GiDate = null,
+                            PurchaseDoc = string.Empty,
+                            MaterialCode = string.Empty,
+                            UsageQty = null,
+                            OriginalUomId = string.Empty,
+                            OriginalUomDesc = string.Empty,
+                            ConvertedUomId = string.Empty,
+                            ConvertedUomDesc = string.Empty,
+                            Batch = string.Empty,
+                            MaterialCodeUsageRecCount = 1
+                        }));
+                    }
+                }
+                
+                item.TrackingConsolidations.AddRange(usageConsolidationData.Distinct().ToList());
+
+                item.TrackingConsolidations = item.TrackingConsolidations.OrderBy(o => o.MaterialCode).ThenBy(o => o.Batch).ToList();
+                rc.Add(item);
+
+            }
+            return rc.OrderBy(o => o.Lack1Id).ToList();
+        }
+
+        private List<Lack1TrackingConsolidationDetailReportDto> ProcessUsageConsolidationDetailReport(Lack1DetailReportTempDto data,
+            List<Lack1ReceivingDetailReportDto> incomeList, List<UOM> uomData)
+        {
+            var usageConsolidationData = new List<Lack1TrackingConsolidationDetailReportDto>();
+
+            if (data.LACK1_TRACKING != null && data.LACK1_TRACKING.Count > 0)
+            {
+                var receivingMvtType = new List<string>()
                     {
                         EnumHelper.GetDescription(Enums.MovementTypeCode.Receiving101),
                         EnumHelper.GetDescription(Enums.MovementTypeCode.Receiving102)
                     };
 
-                    var receiving =
-                        data.LACK1_TRACKING.Where(
-                            c => receivingMvtType.Contains(c.INVENTORY_MOVEMENT.MVT)).Select(d => d.INVENTORY_MOVEMENT)
-                            .ToList();
+                var receiving =
+                    data.LACK1_TRACKING.Where(
+                        c => receivingMvtType.Contains(c.INVENTORY_MOVEMENT.MVT)).Select(d => d.INVENTORY_MOVEMENT)
+                        .ToList();
 
-                    var mvtTypeForUsage = new List<string>
+                var mvtTypeForUsage = new List<string>
                     {
                         EnumHelper.GetDescription(Enums.MovementTypeCode.Usage261),
                         EnumHelper.GetDescription(Enums.MovementTypeCode.Usage261),
@@ -3185,111 +3235,105 @@ namespace Sampoerna.EMS.BLL
                         EnumHelper.GetDescription(Enums.MovementTypeCode.UsageZ02)
                     };
 
-                    var usage =
-                        data.LACK1_TRACKING.Where(c => mvtTypeForUsage.Contains(c.INVENTORY_MOVEMENT.MVT))
-                            .Select(d => d.INVENTORY_MOVEMENT).Distinct()
-                            .ToList();
+                var usage =
+                    data.LACK1_TRACKING.Where(c => mvtTypeForUsage.Contains(c.INVENTORY_MOVEMENT.MVT))
+                        .Select(d => d.INVENTORY_MOVEMENT).Distinct()
+                        .ToList();
 
-                    var usageReceiving = (from u in usage
-                                          join rec in receiving on new { u.BATCH, u.MATERIAL_ID } equals
-                                            new { rec.BATCH, rec.MATERIAL_ID }
-                                          select new Lack1UsageReceivingTrackingDetailDto()
-                                          {
-                                              InventoryUsageId = u.INVENTORY_MOVEMENT_ID,
-                                              PurchaseDoc = rec.PURCH_DOC,
-                                              MaterialCode = u.MATERIAL_ID,
-                                              UsageQty = u.QTY,
-                                              Batch = rec.BATCH,
-                                              PostingDate = u.POSTING_DATE,
-                                              OriginalUom = string.Empty, //get from PACKAGE_UOM on CK5 table
-                                              ConvertedUom = u.BUN
-                                          }).DistinctBy(c => c.InventoryUsageId).ToList();
+                var usageReceiving = (from u in usage
+                                      join rec in receiving on new { u.BATCH, u.MATERIAL_ID } equals
+                                        new { rec.BATCH, rec.MATERIAL_ID }
+                                      select new Lack1UsageReceivingTrackingDetailDto()
+                                      {
+                                          InventoryUsageId = u.INVENTORY_MOVEMENT_ID,
+                                          PurchaseDoc = rec.PURCH_DOC,
+                                          MaterialCode = u.MATERIAL_ID,
+                                          UsageQty = u.QTY,
+                                          Batch = rec.BATCH,
+                                          PostingDate = u.POSTING_DATE,
+                                          OriginalUom = string.Empty, //get from PACKAGE_UOM on CK5 table
+                                          ConvertedUom = u.BUN
+                                      }).DistinctBy(c => c.InventoryUsageId).ToList();
 
-                    foreach (var income in incomeList)
+                foreach (var income in incomeList)
+                {
+                    if (!string.IsNullOrEmpty(income.StoNumber))
                     {
-                        if (!string.IsNullOrEmpty(income.StoNumber))
+                        //there is sto number value, let's get usage receiving by sto number for Purch_Doc
+                        var income1 = income;
+                        var uConsolidationItem = (from x in usageReceiving
+                                                  join uom in uomData on x.ConvertedUom equals uom.UOM_ID into gj
+                                                  from subUom in gj.DefaultIfEmpty()
+                                                  where x.PurchaseDoc == income1.StoNumber
+                                                  select new Lack1TrackingConsolidationDetailReportDto()
+                                                  {
+                                                      Ck5Id = income1.Ck5Id,
+                                                      Ck5Number = income1.Ck5Number,
+                                                      Ck5RegistrationNumber = income1.Ck5RegistrationNumber,
+                                                      Ck5RegistrationDate = income1.Ck5RegistrationDate,
+                                                      Ck5GrDate = income1.Ck5GrDate,
+                                                      Qty = income1.Qty,
+                                                      GiDate = x.PostingDate,
+                                                      PurchaseDoc = x.PurchaseDoc,
+                                                      MaterialCode = x.MaterialCode,
+                                                      UsageQty = x.UsageQty,
+                                                      OriginalUomId = income1.UomId, //get from Package_UomId on CK5 table
+                                                      OriginalUomDesc = income1.UomDesc,
+                                                      ConvertedUomId = x.ConvertedUom, //get from BUN on INVENTORY_MOVEMENT table
+                                                      ConvertedUomDesc = subUom != null ? subUom.UOM_DESC : string.Empty,
+                                                      Batch = x.Batch,
+                                                      MaterialCodeUsageRecCount = 1
+                                                  }).ToList();
+
+                        usageConsolidationData.AddRange(uConsolidationItem);
+                    }
+                    else
+                    {
+                        usageConsolidationData.Add(new Lack1TrackingConsolidationDetailReportDto()
                         {
-                            //there is sto number value, let's get usage receiving by sto number for Purch_Doc
-                            var income1 = income;
-                            var uConsolidationItem = (from x in usageReceiving
-                                                      join uom in uomData on x.ConvertedUom equals uom.UOM_ID into gj
-                                                      from subUom in gj.DefaultIfEmpty()
-                                                      where x.PurchaseDoc == income1.StoNumber
-                                                      select new Lack1TrackingConsolidationDetailReportDto()
-                                                      {
-                                                          Ck5Id = income1.Ck5Id,
-                                                          Ck5Number = income1.Ck5Number,
-                                                          Ck5RegistrationNumber = income1.Ck5RegistrationNumber,
-                                                          Ck5RegistrationDate = income1.Ck5RegistrationDate,
-                                                          Ck5GrDate = income1.Ck5GrDate,
-                                                          Qty = income1.Qty,
-                                                          GiDate = x.PostingDate,
-                                                          PurchaseDoc = x.PurchaseDoc,
-                                                          MaterialCode = x.MaterialCode,
-                                                          UsageQty = x.UsageQty,
-                                                          OriginalUomId = income1.UomId, //get from Package_UomId on CK5 table
-                                                          OriginalUomDesc = income1.UomDesc,
-                                                          ConvertedUomId = x.ConvertedUom, //get from BUN on INVENTORY_MOVEMENT table
-                                                          ConvertedUomDesc = subUom != null ? subUom.UOM_DESC : string.Empty,
-                                                          Batch = x.Batch,
-                                                          MaterialCodeUsageRecCount = 1
-                                                      }).ToList();
-                            usageConsolidationData.AddRange(uConsolidationItem);
-                        }
-                        else
-                        {
-                            usageConsolidationData.Add(new Lack1TrackingConsolidationDetailReportDto()
-                            {
-                                Ck5Id = income.Ck5Id,
-                                Ck5Number = income.Ck5Number,
-                                Ck5RegistrationNumber = income.Ck5RegistrationNumber,
-                                Ck5RegistrationDate = income.Ck5RegistrationDate,
-                                Ck5GrDate = income.Ck5GrDate,
-                                Qty = income.Qty,
-                                GiDate = null,
-                                PurchaseDoc = string.Empty,
-                                MaterialCode = string.Empty,
-                                UsageQty = null,
-                                OriginalUomId = string.Empty,
-                                OriginalUomDesc = string.Empty,
-                                ConvertedUomId = string.Empty,
-                                ConvertedUomDesc = string.Empty,
-                                Batch = string.Empty,
-                                MaterialCodeUsageRecCount = 1
-                            });
-                        }
+                            Ck5Id = income.Ck5Id,
+                            Ck5Number = income.Ck5Number,
+                            Ck5RegistrationNumber = income.Ck5RegistrationNumber,
+                            Ck5RegistrationDate = income.Ck5RegistrationDate,
+                            Ck5GrDate = income.Ck5GrDate,
+                            Qty = income.Qty,
+                            GiDate = null,
+                            PurchaseDoc = string.Empty,
+                            MaterialCode = string.Empty,
+                            UsageQty = null,
+                            OriginalUomId = string.Empty,
+                            OriginalUomDesc = string.Empty,
+                            ConvertedUomId = string.Empty,
+                            ConvertedUomDesc = string.Empty,
+                            Batch = string.Empty,
+                            MaterialCodeUsageRecCount = 1
+                        });
                     }
                 }
-                else
-                {
-                    usageConsolidationData.AddRange(incomeList.Select(d => new Lack1TrackingConsolidationDetailReportDto()
-                    {
-                        Ck5Id = d.Ck5Id,
-                        Ck5Number = d.Ck5Number,
-                        Ck5RegistrationNumber = d.Ck5RegistrationNumber,
-                        Ck5RegistrationDate = d.Ck5RegistrationDate,
-                        Ck5GrDate = d.Ck5GrDate,
-                        Qty = d.Qty,
-                        GiDate = null,
-                        PurchaseDoc = string.Empty,
-                        MaterialCode = string.Empty,
-                        UsageQty = null,
-                        OriginalUomId = string.Empty,
-                        OriginalUomDesc = string.Empty,
-                        ConvertedUomId = string.Empty,
-                        ConvertedUomDesc = string.Empty,
-                        Batch = string.Empty,
-                        MaterialCodeUsageRecCount = 1
-                    }));
-                }
-
-                item.TrackingConsolidations.AddRange(usageConsolidationData.Distinct().ToList());
-
-                item.TrackingConsolidations = item.TrackingConsolidations.OrderBy(o => o.MaterialCode).ThenBy(o => o.Batch).ToList();
-                rc.Add(item);
-
             }
-            return rc.OrderBy(o => o.Lack1Id).ToList();
+            else
+            {
+                usageConsolidationData.AddRange(incomeList.Select(d => new Lack1TrackingConsolidationDetailReportDto()
+                {
+                    Ck5Id = d.Ck5Id,
+                    Ck5Number = d.Ck5Number,
+                    Ck5RegistrationNumber = d.Ck5RegistrationNumber,
+                    Ck5RegistrationDate = d.Ck5RegistrationDate,
+                    Ck5GrDate = d.Ck5GrDate,
+                    Qty = d.Qty,
+                    GiDate = null,
+                    PurchaseDoc = string.Empty,
+                    MaterialCode = string.Empty,
+                    UsageQty = null,
+                    OriginalUomId = string.Empty,
+                    OriginalUomDesc = string.Empty,
+                    ConvertedUomId = string.Empty,
+                    ConvertedUomDesc = string.Empty,
+                    Batch = string.Empty,
+                    MaterialCodeUsageRecCount = 1
+                }));
+            }
+            return usageConsolidationData;
         }
 
         #endregion

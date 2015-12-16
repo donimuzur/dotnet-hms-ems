@@ -3,6 +3,7 @@
 <table id="lack1Table" border="0" class="table table-bordered">
     <thead>
         <tr>
+            <th rowspan="2">LACK-1 Number</th>
             <th rowspan="2">LACK-1 Level</th>
             <th rowspan="2">Begining Balance</th>
             <th colspan="5">Receiving</th>
@@ -29,6 +30,7 @@
             {
                 var trackingConsolidationCount = item.TrackingConsolidations.Count;
                 <tr>
+                    <td rowspan="@trackingConsolidationCount">@item.Lack1Number</td>
                     <td rowspan="@trackingConsolidationCount">@item.Lack1LevelName</td>
                     <td rowspan="@trackingConsolidationCount">@item.BeginingBalance.ToString("N2")</td>
                     <td>@item.TrackingConsolidations[0].Ck5Number</td>
@@ -76,6 +78,7 @@
             else
             {
                 <tr>
+                    <td>@item.Lack1Number</td>
                     <td>@item.Lack1LevelName</td>
                     <td>@item.BeginingBalance.ToString("N2")</td>
                     <td>-</td>
