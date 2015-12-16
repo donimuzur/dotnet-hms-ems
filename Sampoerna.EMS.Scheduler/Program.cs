@@ -17,10 +17,10 @@ namespace Sampoerna.HMS.Scheduler
                 new SchedulerService(),  
             };
             ServiceBase.Run(ServicesToRun);
-          //if (System.Diagnostics.Process.GetProcessesByName
-          //    (System.IO.Path.GetFileNameWithoutExtension
-          //    (System.Reflection.Assembly.GetEntryAssembly().Location)).Count() > 1) return;
-          //QuartzScheduler.StartJobs();
+            //if (System.Diagnostics.Process.GetProcessesByName
+            //    (System.IO.Path.GetFileNameWithoutExtension
+            //    (System.Reflection.Assembly.GetEntryAssembly().Location)).Count() > 1) return;
+            //QuartzScheduler.StartJobs();
          
            
         }

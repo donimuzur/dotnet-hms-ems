@@ -129,7 +129,7 @@ namespace Sampoerna.EMS.XMLReader
                             
                             zaapShftRptItem.BATCH = item.BATCH;
                             zaapShftRptItem.BUNDLE = item.BUNDLE;
-                            zaapShftRptItem.MARKET = _xmlMapper.GetElementValue(xElement.Element("Market"));
+                            //zaapShftRptItem.MARKET = _xmlMapper.GetElementValue(xElement.Element("Market"));
                             zaapShftRptItem.DOCGMVTER = _xmlMapper.GetElementValue(xElement.Element("DocGMvtEr"));
                             
                             zaapShftRptItem.ORDR = _xmlMapper.GetElementValue(xElement.Element("Order"));
