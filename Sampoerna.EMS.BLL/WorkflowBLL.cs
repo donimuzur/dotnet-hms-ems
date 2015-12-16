@@ -351,10 +351,14 @@ namespace Sampoerna.EMS.BLL
 
         public bool AllowWasteGoodReceive(WorkflowAllowApproveAndRejectInput input)
         {
-            if (input.CreatedUser != input.CurrentUser)
+            //if (input.CreatedUser != input.CurrentUser)
+            //    return false;
+
+            if (input.DocumentStatus != Enums.DocumentStatus.GoodReceive)
                 return false;
 
-            return input.DocumentStatus == Enums.DocumentStatus.GoodReceive;
+            return IsOnePlant(input.DestPlant, input.CurrentUser);
+
         }
 
         public bool AllowWasteDisposal(WorkflowAllowApproveAndRejectInput input)

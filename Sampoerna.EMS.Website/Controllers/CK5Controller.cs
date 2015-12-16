@@ -1521,14 +1521,17 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 else if (model.Ck5Type == Enums.CK5Type.Waste)
                 {
-                    model.AllowGoodIssue = _workflowBll.AllowWasteGoodIssue(input);
-                    model.AllowGoodReceive = _workflowBll.AllowWasteGoodReceive(input);
-
                     input.SourcePlant = ck5Details.Ck5Dto.SOURCE_PLANT_ID;
                     input.DestPlant = ck5Details.Ck5Dto.DEST_PLANT_ID;
 
+
+                    model.AllowGoodIssue = _workflowBll.AllowWasteGoodIssue(input);
+                    model.AllowGoodReceive = _workflowBll.AllowWasteGoodReceive(input);
+
+                 
                     model.AllowWasteDisposal = _workflowBll.AllowWasteDisposal(input);
-                    model.AllowWasteApproval = _workflowBll.AllowWasteApproval(input);
+                    //after disposal = completed
+                    //model.AllowWasteApproval = _workflowBll.AllowWasteApproval(input);
 
                 }
                 else
