@@ -84,10 +84,10 @@ namespace Sampoerna.EMS.XMLReader
 
         public MovedFileOutput InsertToDatabase()
         {
-            MovedFileOutput result = new MovedFileOutput(_xmlMapper._xmlName,true);
+            //MovedFileOutput result = new MovedFileOutput(_xmlMapper._xmlName,true);
             _xmlMapper.Errors.Add("XML POA currently not read by this build");
-            return result;
-            //return _xmlMapper.InsertToDatabase<POA>(Items);
+            //return result;
+            return _xmlMapper.InsertToDatabase<POA>(Items);
 
         }
 
