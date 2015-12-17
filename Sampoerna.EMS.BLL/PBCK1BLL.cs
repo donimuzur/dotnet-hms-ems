@@ -2048,8 +2048,9 @@ namespace Sampoerna.EMS.BLL
             }
 
             reportData.Detail.ProductConvertedOutputs = string.Join(Environment.NewLine,
-                totalAmount.Select(d => String.Format("{0:n}", reportData.Detail.ConvertedUomId.ToLower() == "g" ? d.TotalAmount / 1000 : d.TotalAmount)
-                        + " " + uomAmount + " " 
+                totalAmount.Select(
+                d => String.Format("{0:n}", (reportData.Detail.ConvertedUomId.ToLower() == "g" && d.ProdAlias.ToUpper() != "TIS") ? d.TotalAmount / 1000 : d.TotalAmount)
+                        + " " + (d.ProdAlias.ToUpper() == "TIS" ? "Gram" : uomAmount) + " " 
                         + d.ProdName + " (" + d.ProdAlias + ")").ToArray());
 
             reportData.SummaryProdPlantList = groupedData.ToList();
