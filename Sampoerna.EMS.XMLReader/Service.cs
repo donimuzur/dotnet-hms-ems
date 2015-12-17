@@ -220,9 +220,10 @@ namespace Sampoerna.EMS.XMLReader
             return orderedXmlFiles;
         }
 
-        public List<string> Run(bool isDaily)
+        public List<MovedFileOutput> Run(bool isDaily)
         {
             var errorList = new List<string>();
+            //var movedFileList = new List<MovedFileOutput>();
             var orderedFile = new List<string>();
             if (!isDaily)
             {
@@ -256,6 +257,7 @@ namespace Sampoerna.EMS.XMLReader
                             if (!string.IsNullOrEmpty(fileIsMoved.FileName) && fileIsMoved.IsError)
                             {
                                 filesMoved.Add(fileIsMoved);
+                                //movedFileList.Add();
                             }
                         }
                     }
@@ -272,7 +274,7 @@ namespace Sampoerna.EMS.XMLReader
             {
                 errorList.AddRange(reader.GetErrorList());
             }
-            return errorList;
+            return filesMoved;
         }
 
      

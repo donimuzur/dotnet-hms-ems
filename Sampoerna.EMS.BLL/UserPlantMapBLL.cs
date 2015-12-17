@@ -7,6 +7,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
+using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.LinqExtensions;
 using Voxteneo.WebComponents.Logger;
 
@@ -63,7 +64,13 @@ namespace Sampoerna.EMS.BLL
         public List<USER_PLANT_MAP> GetByUserId(string id)
         {
             //return _repository.Get(p => p.USER_ID == id, null, _includeTables).ToList();
-            return _userPlantService.GetByUserId(id);
+            var data = _userPlantService.GetByUserId(id);
+            //if (data.Count <= 0)
+            //{
+            //    //there is no user plant map setting
+            //    throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
+            //}
+            return data;
         }
 
         public USER_PLANT_MAP GetByUserIdAndPlant(string userid, string plantid)
@@ -85,12 +92,24 @@ namespace Sampoerna.EMS.BLL
 
         public List<ZAIDM_EX_NPPBKCCompositeDto> GetAuthorizedNppbkc(UserPlantMapGetAuthorizedNppbkc input)
         {
-            return Mapper.Map<List<ZAIDM_EX_NPPBKCCompositeDto>>(_userPlantService.GetAuthorizedNppbkc(input));
+            var data = _userPlantService.GetAuthorizedNppbkc(input);
+            //if (data.Count <= 0)
+            //{
+            //    //there is no user plant map setting
+            //    throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
+            //}
+            return Mapper.Map<List<ZAIDM_EX_NPPBKCCompositeDto>>(data);
         }
 
         public List<T001WCompositeDto> GetAuthorizdePlant(UserPlantMapGetAuthorizedPlant input)
         {
-            return Mapper.Map<List<T001WCompositeDto>>(_userPlantService.GetAuthorizdePlant(input));
+            var data = _userPlantService.GetAuthorizdePlant(input);
+            //if (data.Count <= 0)
+            //{
+            //    //there is no user plant map setting
+            //    throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
+            //}
+            return Mapper.Map<List<T001WCompositeDto>>(data);
         }
 
         public List<string> GetPlantByUserId(string id)
