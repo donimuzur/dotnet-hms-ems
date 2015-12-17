@@ -314,5 +314,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool AllowWasteDisposal { get; set; }
 
         public bool AllowWasteApproval { get; set; }
+
+        public bool FLAG_FOR_LACK1 { get; set; }
     }
 }

@@ -1435,6 +1435,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     input.NppbkcId = model.DestNppbkcId;
                     input.PlantId = ck5Details.Ck5Dto.DEST_PLANT_ID;
                 }
+                else if (model.Ck5Type == Enums.CK5Type.TriggerSto)
+                {
+                    model.IsTriggerSto = true;
+                }
 
                 if (model.Ck5Type == Enums.CK5Type.ImporterToPlant)
                 {
@@ -1623,6 +1627,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 else if (model.Ck5Type == Enums.CK5Type.Waste)
                 {
                     model.IsCk5Waste = true;
+                }
+                else if (model.Ck5Type == Enums.CK5Type.TriggerSto)
+                {
+                    model.IsTriggerSto = true;
                 }
 
                 if (model.Ck5Type == Enums.CK5Type.MarketReturn)
