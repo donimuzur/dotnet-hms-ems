@@ -123,6 +123,14 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Noted { get; set; }
         public string DocumentNoted { get; set; }
         public bool IsTisToTis { get; set; }
+        public Lack1RemarkDto Ck5RemarkData { get; set; }
+    }
+
+    public class Lack1RemarkDto
+    {
+        public List<Lack1IncomeDetailDto> Ck5WasteData { get; set; }
+        public List<Lack1IncomeDetailDto> Ck5ReturnData { get; set; }
+        public List<Lack1IncomeDetailDto> Ck5TrialData { get; set; }
     }
 
 }

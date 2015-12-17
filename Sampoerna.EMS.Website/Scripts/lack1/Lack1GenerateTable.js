@@ -26,7 +26,9 @@ function generateTable(data) {
             '<td rowspan="' + rowCount + '">' + generateJenisHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
             '<td rowspan="' + rowCount + '">' + generateJumlahHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
             '<td rowspan="' + rowCount + '">' + (data.EndingBalance < 0 ? '-' : '') + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
-            '<td rowspan="' + rowCount + '">' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';
+            '<td rowspan="' + rowCount + '">' + generateRemark(data) + '</td></tr>';
+            /*LOGS POINT 19 Google Doc*/
+            /*'<td rowspan="' + rowCount + '">' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';*/
             /*loop record*/
             for (var i = 1; i < data.IncomeList.length; i++) {
                 rowIndex = rowIndex + 1;
@@ -49,7 +51,8 @@ function generateTable(data) {
             '<td>' + generateJenisHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
             '<td>' + generateJumlahHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
             '<td>' + (data.EndingBalance < 0 ? '-' : '') + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
-            '<td>' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';
+             '<td>' + generateRemark(data) + '</td></tr>';
+            /*'<td>' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>'; *//*LOGS POINT 19 Feedback Google Docs*/
             
             $('#IncomeListCount').val(0);
         }
@@ -94,7 +97,9 @@ function generateTableWithTisToTis(data) {
             '<td>' + generateJenisHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
             '<td>' + generateJumlahHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
             '<td rowspan="2">' + (data.EndingBalance < 0 ? '-' : '') + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
-            '<td rowspan="2">' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';
+            '<td rowspan="2">' + generateRemark(data) + '</td></tr>';
+            /*LOGS POINT 19 - 2015-12-17*/
+            //'<td rowspan="2">' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';
             
             /*Second record*/
             rc = rc + '<tr><td style="border-bottom:none">' + (data.TotalUsageTisToTis < 0 ? '-' : ThausandSeperator(data.TotalUsageTisToTis, 2)) + '</td>' +
@@ -127,7 +132,9 @@ function generateContentTableLack1WithTisToTisOnlyOneIncomeList(data) {
     '<td style="border-bottom:none">' + generateJenisHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
     '<td style="border-bottom:none">' + generateJumlahHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
     '<td rowspan="2">' + (data.EndingBalance < 0 ? '-' : '') + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
-    '<td rowspan="2">' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';
+    '<td rowspan="2">' + generateRemark(data) + '</td></tr>';
+    /*LOGS POINT 19 - 2015-12-17*/
+    //'<td rowspan="2">' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';
     
     /*Second record*/
     rc = rc + '<tr><td style="border-bottom:none">' + (data.TotalUsageTisToTis < 0 ? '-' : ThausandSeperator(data.TotalUsageTisToTis, 2)) + '</td>' +
@@ -158,7 +165,8 @@ function generateContentTableLack1WithTisToTis(data) {
     '<td rowspan="' + rowSpan1 + '" style="border-bottom:none">' + generateJenisHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
     '<td rowspan="' + rowSpan1 + '" style="border-bottom:none">' + generateJumlahHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
     '<td rowspan="' + rowCount + '">' + (data.EndingBalance < 0 ? '-' : '') + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
-    '<td rowspan="' + rowCount + '">' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';
+    '<td rowspan="' + rowCount + '">' + generateRemark(data) + '</td></tr>';/*LOGS POINT 19 - 2015-12-17*/
+    //'<td rowspan="' + rowCount + '">' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';
 
     /*loop record first block*/
     for (var j = 1; j < rowSpan1; j++) {
@@ -306,5 +314,37 @@ function generateEmptyTable() {
     /*footer*/
     rc = rc + '<tr><td></td><td></td><td></td><td>Total : -</td><td></td><td></td><td>Total: -</td><td></td></tr>' +
         '</tbody></table>';
+    return rc;
+}
+
+function generateRemark(data) {
+    var rc = '';
+    if (data.Ck5RemarkData) {
+        rc = '<div id="lack1-generated-remark">';
+        var contentTable = generateRemarkContentTable(data.Ck5RemarkData.Ck5WasteData, "Waste");
+        contentTable += generateRemarkContentTable(data.Ck5RemarkData.Ck5ReturnData, "Return");
+        contentTable += generateRemarkContentTable(data.Ck5RemarkData.Ck5TrialData, "Trial");
+        if (contentTable.trim().length > 0) {
+            contentTable = '<table border="0">' + contentTable + '</table>';
+            rc += contentTable;
+            rc = rc + '</div>';
+        } else {
+            rc = '';
+        }
+        
+    }
+    return rc;
+}
+
+function generateRemarkContentTable(data, title) {
+    var rc = '';
+    if (data && data.length) {
+        rc = '<tr><td colspan="2">' + title + ' : </td></tr>';
+        for (var i = 0; i < data.length; i++) {
+            rc += '<tr><td>CK-5 ' + data[i].RegistrationNumber + ' - ' + data[i].StringRegistrationDate + '</td>'
+                            + '<td> : ' + ThausandSeperator(data[i].Amount, 2) + ' ' + data[i].PackageUomDesc + '</td>'
+                            + '</tr>';
+        }
+    }
     return rc;
 }

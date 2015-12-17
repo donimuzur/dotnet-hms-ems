@@ -56,7 +56,7 @@ namespace Sampoerna.EMS.BLL.Services
                         c => c.PBCK1_DECREE_ID.HasValue && input.Pbck1DecreeIdList.Contains(c.PBCK1_DECREE_ID.Value));
             }
 
-            return _repository.Get(queryFilterCk5).ToList();
+            return _repository.Get(queryFilterCk5, null, "UOM").ToList();
         }
 
         public List<CK5> GetForLack2ByParam(Ck5GetForLack2ByParamInput input)
