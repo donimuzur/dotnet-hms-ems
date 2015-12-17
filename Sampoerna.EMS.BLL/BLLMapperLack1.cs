@@ -72,6 +72,7 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<LACK1_INCOME_DETAIL, Lack1IncomeDetailDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PACKAGE_UOM_ID, opt => opt.MapFrom(src => src.CK5 != null ? src.CK5.PACKAGE_UOM_ID : string.Empty))
                 .ForMember(dest => dest.CK5_TYPE, opt => opt.MapFrom(src => src.CK5.CK5_TYPE))
+                .ForMember(dest => dest.FLAG_FOR_LACK1, opt => opt.MapFrom(src => src.CK5.FLAG_FOR_LACK1.HasValue && src.CK5.FLAG_FOR_LACK1.Value))
                 .ForMember(dest => dest.PACKAGE_UOM_DESC, opt => opt.MapFrom(src => src.CK5 != null && src.CK5.UOM != null ? src.CK5.UOM.UOM_DESC : string.Empty))
                 ;
 
@@ -134,6 +135,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PackageUomDesc, opt => opt.MapFrom(src => src.UOM != null ? src.UOM.UOM_DESC : string.Empty))
                 .ForMember(dest => dest.RegistrationNumber, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
                 .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE))
+                .ForMember(dest => dest.FlagForLack1, opt => opt.MapFrom(src => src.FLAG_FOR_LACK1.HasValue && src.FLAG_FOR_LACK1.Value))
                 .ForMember(dest => dest.StringRegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE.HasValue ? src.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy") : string.Empty))
                 ;
 

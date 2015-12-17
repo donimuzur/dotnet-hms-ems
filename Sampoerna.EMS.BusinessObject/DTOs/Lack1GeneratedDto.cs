@@ -125,6 +125,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string StringRegistrationDate { get; set; }
         public string PackageUomId { get; set; }
         public string PackageUomDesc { get; set; }
+        public bool FlagForLack1 { get; set; }
     }
 
     public class Lack1GeneratedProductionDataDto

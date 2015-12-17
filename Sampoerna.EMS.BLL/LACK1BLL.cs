@@ -1276,6 +1276,16 @@ namespace Sampoerna.EMS.BLL
                 }
             }
 
+            if (dtToReturn.Lack1IncomeDetail != null && dtToReturn.Lack1IncomeDetail.Count > 0)
+            {
+                dtToReturn.Ck5RemarkData = new Lack1RemarkDto()
+                {
+                    Ck5ReturnData = dtToReturn.Lack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.TriggerSto && c.FLAG_FOR_LACK1).ToList(),
+                    Ck5TrialData = dtToReturn.Lack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Manual).ToList(),
+                    Ck5WasteData = dtToReturn.Lack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Waste).ToList()
+                };
+            }
+
             return dtToReturn;
         }
 
@@ -2680,7 +2690,7 @@ namespace Sampoerna.EMS.BLL
 
             rc.Ck5RemarkData = new Lack1GeneratedRemarkDto()
             {
-                Ck5ReturnData = rc.IncomeList.Where(c => c.Ck5Type == Enums.CK5Type.TriggerSto).ToList(),
+                Ck5ReturnData = rc.IncomeList.Where(c => c.Ck5Type == Enums.CK5Type.TriggerSto && c.FlagForLack1).ToList(),
                 Ck5TrialData = rc.IncomeList.Where(c => c.Ck5Type == Enums.CK5Type.Manual).ToList(),
                 Ck5WasteData  = rc.IncomeList.Where(c => c.Ck5Type == Enums.CK5Type.Waste).ToList()
             };
