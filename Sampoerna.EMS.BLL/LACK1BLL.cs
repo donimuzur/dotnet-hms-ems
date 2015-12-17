@@ -567,7 +567,7 @@ namespace Sampoerna.EMS.BLL
                 //process for incomedetail remark
                 rc.Ck5RemarkData = new Lack1RemarkDto()
                 {
-                    Ck5ReturnData = rc.Lack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.TriggerSto).ToList(),
+                    Ck5ReturnData = rc.Lack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.TriggerSto && c.FLAG_FOR_LACK1).ToList(),
                     Ck5TrialData = rc.Lack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Manual).ToList(),
                     Ck5WasteData = rc.Lack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Waste).ToList()
                 };
@@ -3171,6 +3171,14 @@ namespace Sampoerna.EMS.BLL
                     TrackingConsolidations = new List<Lack1TrackingConsolidationDetailReportDto>()
                 };
 
+                if (data.LACK1_INCOME_DETAIL != null && data.LACK1_INCOME_DETAIL.Count > 0)
+                {
+                    var docNoted = GenerateRemarkContent(data.LACK1_INCOME_DETAIL.Where(c => c.CK5.CK5_TYPE == Enums.CK5Type.Waste).ToList(), "Waste");
+                    docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.LACK1_INCOME_DETAIL.Where(c => c.CK5.CK5_TYPE == Enums.CK5Type.TriggerSto && (c.CK5.FLAG_FOR_LACK1.HasValue && c.CK5.FLAG_FOR_LACK1.Value)).ToList(), "Return");
+                    docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.LACK1_INCOME_DETAIL.Where(c => c.CK5.CK5_TYPE == Enums.CK5Type.Manual).ToList(), "Trial");
+                    item.DocumentNoted = docNoted;
+                }
+
                 var incomeList = (from inc in data.LACK1_INCOME_DETAIL
                                   join uom in uomData on inc.CK5.PACKAGE_UOM_ID equals uom.UOM_ID into gj
                                   from subUom in gj.DefaultIfEmpty()
@@ -3232,6 +3240,26 @@ namespace Sampoerna.EMS.BLL
 
             }
             return rc.OrderBy(o => o.Lack1Id).ToList();
+        }
+
+        private string GenerateRemarkContent(List<LACK1_INCOME_DETAIL> data, string title)
+        {
+            var rc = string.Empty;
+            if (data.Count <= 0) return rc;
+            rc = title + Environment.NewLine;
+            //rc += string.Join(Environment.NewLine, data.Select(
+            //    d =>
+            //        "CK-5 " + d.REGISTRATION_NUMBER + " - " +
+            //        (d.REGISTRATION_DATE.HasValue
+            //            ? d.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy")
+            //            : string.Empty) + " : " + d.AMOUNT.ToString("N2") + " " + d.PACKAGE_UOM_DESC).ToList());
+
+            rc += string.Join(Environment.NewLine, data.Select(
+               d =>
+                   "CK-5 " + d.REGISTRATION_NUMBER + " - " + (d.REGISTRATION_DATE.HasValue
+                        ? d.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy")
+                        : string.Empty) + " : " + d.AMOUNT.ToString("N2") + " " + (d.CK5.UOM != null ? d.CK5.UOM.UOM_DESC : string.Empty)).ToList());
+            return rc;
         }
 
         private List<Lack1TrackingConsolidationDetailReportDto> ProcessUsageConsolidationDetailReport(Lack1DetailReportTempDto data,
