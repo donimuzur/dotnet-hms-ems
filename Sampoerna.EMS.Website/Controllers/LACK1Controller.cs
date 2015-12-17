@@ -675,7 +675,18 @@ namespace Sampoerna.EMS.Website.Controllers
             var totalAmount = data.Lack1IncomeDetail.Sum(d => d.AMOUNT);
             var endingBalance = (data.BeginingBalance - (data.Usage + (data.UsageTisToTis.HasValue ? data.UsageTisToTis.Value  : 0)) + data.TotalIncome - data.ReturnQty);
             var noted = !string.IsNullOrEmpty(data.Noted) ? data.Noted.Replace("<br />", Environment.NewLine) : string.Empty;
-            var docNoted = !string.IsNullOrEmpty(data.DocumentNoted) ? data.DocumentNoted.Replace("<br />", Environment.NewLine) : string.Empty;
+            //var docNoted = !string.IsNullOrEmpty(data.DocumentNoted) ? data.DocumentNoted.Replace("<br />", Environment.NewLine) : string.Empty;
+
+            var docNoted = string.Empty;
+            if (data.Ck5RemarkData != null)
+            {
+                docNoted = GenerateRemarkContent(data.Ck5RemarkData.Ck5WasteData, "Waste");
+                docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.Ck5RemarkData.Ck5ReturnData, "Return");
+                docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.Ck5RemarkData.Ck5TrialData, "Trial");
+            }
+
+            var docToDisplay = (noted.Trim() != string.Empty ? noted.Trim() + Environment.NewLine : string.Empty) +
+                               docNoted;
             
             foreach (var item in data.Lack1IncomeDetail)
             {
@@ -688,7 +699,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 detailRow.ListJenisBKC = summaryProductionJenis;
                 detailRow.ListJumlahBKC = summaryProductionAmount;
                 detailRow.EndingBalance = endingBalance.ToString("N2");
-                detailRow.Noted = noted + " " + docNoted;
+                detailRow.Noted = docToDisplay;
                 detailRow.Ck5TotalAmount = totalAmount.ToString("N2");
                 detailRow.ListTotalJumlahBKC = totalSummaryProductionList;
 
@@ -697,6 +708,25 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             return dsReport;
+        }
+
+        private string GenerateRemarkContent(List<Lack1IncomeDetailDto> data, string title)
+        {
+            var rc = string.Empty;
+            if (data.Count <= 0) return rc;
+            rc = title + Environment.NewLine;
+            //rc += string.Join(Environment.NewLine, data.Select(
+            //    d =>
+            //        "CK-5 " + d.REGISTRATION_NUMBER + " - " +
+            //        (d.REGISTRATION_DATE.HasValue
+            //            ? d.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy")
+            //            : string.Empty) + " : " + d.AMOUNT.ToString("N2") + " " + d.PACKAGE_UOM_DESC).ToList());
+
+            //LOGS SKYPE, REMOVE DATE
+            rc += string.Join(Environment.NewLine, data.Select(
+               d =>
+                   "CK-5 " + d.REGISTRATION_NUMBER + " : " + d.AMOUNT.ToString("N2") + " " + d.PACKAGE_UOM_DESC).ToList());
+            return rc;
         }
 
         private byte[] GetHeader(string imagePath)

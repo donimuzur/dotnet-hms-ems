@@ -562,6 +562,17 @@ namespace Sampoerna.EMS.BLL
                 };
             }
 
+            if (rc.Lack1IncomeDetail != null && rc.Lack1IncomeDetail.Count > 0)
+            {
+                //process for incomedetail remark
+                rc.Ck5RemarkData = new Lack1RemarkDto()
+                {
+                    Ck5ReturnData = rc.Lack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.TriggerSto).ToList(),
+                    Ck5TrialData = rc.Lack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Manual).ToList(),
+                    Ck5WasteData = rc.Lack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Waste).ToList()
+                };
+            }
+
             return rc;
         }
 
@@ -1265,6 +1276,16 @@ namespace Sampoerna.EMS.BLL
                 }
             }
 
+            if (dtToReturn.Lack1IncomeDetail != null && dtToReturn.Lack1IncomeDetail.Count > 0)
+            {
+                dtToReturn.Ck5RemarkData = new Lack1RemarkDto()
+                {
+                    Ck5ReturnData = dtToReturn.Lack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.TriggerSto && c.FLAG_FOR_LACK1).ToList(),
+                    Ck5TrialData = dtToReturn.Lack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Manual).ToList(),
+                    Ck5WasteData = dtToReturn.Lack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Waste).ToList()
+                };
+            }
+
             return dtToReturn;
         }
 
@@ -1648,23 +1669,24 @@ namespace Sampoerna.EMS.BLL
 
             rc.PeriodYear = input.PeriodYear;
             //format for noted
-            var noteTemp = new List<string>();
-            //format for noted
-            if (!string.IsNullOrEmpty(input.WasteAmountUom))
-            {
-                var uomWasteAmountDescription = _uomBll.GetById(input.WasteAmountUom);
-                input.WasteAmountUom = uomWasteAmountDescription.UOM_ID;
-                noteTemp.Add(GeneratedNoteFormat("Jumlah Waste", input.WasteAmount, uomWasteAmountDescription.UOM_DESC));
-            }
+            //LOGS POINT 19 : replace with new logic for remark
+            //var noteTemp = new List<string>();
+            ////format for noted
+            //if (!string.IsNullOrEmpty(input.WasteAmountUom))
+            //{
+            //    var uomWasteAmountDescription = _uomBll.GetById(input.WasteAmountUom);
+            //    input.WasteAmountUom = uomWasteAmountDescription.UOM_ID;
+            //    noteTemp.Add(GeneratedNoteFormat("Jumlah Waste", input.WasteAmount, uomWasteAmountDescription.UOM_DESC));
+            //}
 
-            if (!string.IsNullOrEmpty(input.ReturnAmountUom))
-            {
-                var uomReturnDescription = _uomBll.GetById(input.ReturnAmountUom);
-                input.ReturnAmountUom = uomReturnDescription.UOM_ID;
-                noteTemp.Add(GeneratedNoteFormat("Jumlah Pengembalian", input.ReturnAmount, uomReturnDescription.UOM_DESC));
-            }
+            //if (!string.IsNullOrEmpty(input.ReturnAmountUom))
+            //{
+            //    var uomReturnDescription = _uomBll.GetById(input.ReturnAmountUom);
+            //    input.ReturnAmountUom = uomReturnDescription.UOM_ID;
+            //    noteTemp.Add(GeneratedNoteFormat("Jumlah Pengembalian", input.ReturnAmount, uomReturnDescription.UOM_DESC));
+            //}
 
-            rc.DocumentNoted = string.Join(Environment.NewLine, noteTemp).Replace(Environment.NewLine, "<br />");
+            //rc.DocumentNoted = string.Join(Environment.NewLine, noteTemp).Replace(Environment.NewLine, "<br />");
             rc.Noted = input.Noted;
 
             rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - (rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0)) - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
@@ -2662,10 +2684,17 @@ namespace Sampoerna.EMS.BLL
 
             var ck5Data = _ck5Service.GetForLack1ByParam(ck5Input);
             rc.IncomeList = Mapper.Map<List<Lack1GeneratedIncomeDataDto>>(ck5Data);
-            if (ck5Data.Count > 0)
+            if (ck5Data.Count <= 0) return rc;
+
+            rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
+
+            rc.Ck5RemarkData = new Lack1GeneratedRemarkDto()
             {
-                rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
-            }
+                Ck5ReturnData = rc.IncomeList.Where(c => c.Ck5Type == Enums.CK5Type.TriggerSto && c.FlagForLack1).ToList(),
+                Ck5TrialData = rc.IncomeList.Where(c => c.Ck5Type == Enums.CK5Type.Manual).ToList(),
+                Ck5WasteData  = rc.IncomeList.Where(c => c.Ck5Type == Enums.CK5Type.Waste).ToList()
+            };
+
             return rc;
         }
 
