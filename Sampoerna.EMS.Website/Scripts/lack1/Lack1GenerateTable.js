@@ -339,10 +339,10 @@ function generateRemark(data) {
 function generateRemarkContentTable(data, title) {
     var rc = '';
     if (data && data.length) {
-        rc = '<tr><td colspan="2">' + title + ' : </td></tr>';
+        rc = '<tr><td colspan="3">' + title + ' : </td></tr>';
         for (var i = 0; i < data.length; i++) {
             rc += '<tr><td>CK-5 ' + data[i].RegistrationNumber + ' - ' + data[i].StringRegistrationDate + '</td>'
-                            + '<td> : ' + ThausandSeperator(data[i].Amount, 2) + ' ' + data[i].PackageUomDesc + '</td>'
+                            + '<td> : </td><td>' + ThausandSeperator(data[i].Amount, 2) + ' ' + data[i].PackageUomDesc + '</td>'
                             + '</tr>';
         }
     }
