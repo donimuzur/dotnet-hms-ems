@@ -16,6 +16,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal BeginingBalance { get; set; }
         public decimal EndingBalance { get; set; }
         public List<Lack1TrackingConsolidationDetailReportDto> TrackingConsolidations { get; set; }
+        public string DocumentNoted { get; set; }
     }
 
     public class Lack1TrackingConsolidationDetailReportDto
