@@ -70,7 +70,7 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                         foreach (var error in errorFile.ErrorList)
                         {
                             logger.Info(String.Format(error));
-                            body += error;
+                            body += String.Format("<p>{0}</p>", error);
                         }
 
                         logger.Error(EmailUtility.Email(body, null));
