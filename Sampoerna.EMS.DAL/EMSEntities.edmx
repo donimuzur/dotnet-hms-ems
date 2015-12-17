@@ -278,6 +278,7 @@
           <Property Name="CK5_REF_ID" Type="bigint" />
           <Property Name="REDUCE_TRIAL" Type="bit" />
           <Property Name="MANUAL_FREE_TEXT" Type="int" />
+          <Property Name="FLAG_FOR_LACK1" Type="bit" />
         </EntityType>
         <EntityType Name="CK5_FILE_UPLOAD">
           <Key>
@@ -5240,6 +5241,7 @@
           <NavigationProperty Name="PBCK3" Relationship="EMSModel.FK_PBCK3_CK5" FromRole="CK5" ToRole="PBCK3" />
           <Property Name="REDUCE_TRIAL" Type="Boolean" />
           <Property Name="MANUAL_FREE_TEXT" Type="EMSModel.Ck5ManualFreeText" />
+          <Property Name="FLAG_FOR_LACK1" Type="Boolean" />
         </EntityType>
         <Association Name="FK_CK5_MATERIAL_CK5">
           <End Type="EMSModel.CK5" Role="CK5" Multiplicity="0..1" />
@@ -8754,7 +8756,8 @@
     <EntitySetMapping Name="CK5">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.CK5)">
         <MappingFragment StoreEntitySet="CK5">
-          <ScalarProperty Name="MANUAL_FREE_TEXT" ColumnName="MANUAL_FREE_TEXT" />
+          <ScalarProperty Name="FLAG_FOR_LACK1" ColumnName="FLAG_FOR_LACK1" />
+                <ScalarProperty Name="MANUAL_FREE_TEXT" ColumnName="MANUAL_FREE_TEXT" />
                 <ScalarProperty Name="REDUCE_TRIAL" ColumnName="REDUCE_TRIAL" />
                 <ScalarProperty Name="CK5_REF_ID" ColumnName="CK5_REF_ID" />
                 <ScalarProperty Name="CK5_MANUAL_TYPE" ColumnName="CK5_MANUAL_TYPE" />
