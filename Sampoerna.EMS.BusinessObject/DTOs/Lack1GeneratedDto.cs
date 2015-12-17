@@ -52,6 +52,15 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public List<Lack1GeneratedInvMovementProductionStepTracingItem> AlcoholTrackingList { get; set; }
 
+        public Lack1GeneratedRemarkDto Ck5RemarkData { get; set; }
+
+    }
+
+    public class Lack1GeneratedRemarkDto
+    {
+        public List<Lack1GeneratedIncomeDataDto> Ck5WasteData { get; set; }
+        public List<Lack1GeneratedIncomeDataDto> Ck5ReturnData { get; set; }
+        public List<Lack1GeneratedIncomeDataDto> Ck5TrialData { get; set; }
     }
 
     public class Lack1GeneratedInventoryAndProductionDto
@@ -114,6 +123,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string RegistrationNumber { get; set; }
         public DateTime? RegistrationDate { get; set; }
         public string StringRegistrationDate { get; set; }
+        public string PackageUomId { get; set; }
+        public string PackageUomDesc { get; set; }
+        public bool FlagForLack1 { get; set; }
     }
 
     public class Lack1GeneratedProductionDataDto

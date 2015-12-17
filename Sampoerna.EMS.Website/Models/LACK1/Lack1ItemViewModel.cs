@@ -76,6 +76,8 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public List<Lack1SummaryProductionItemModel> FusionSummaryProductionList { get; set; }//set by controller
         public List<Lack1ProductionDetailItemSummaryByProdTypeModel> FusionSummaryProductionByProdTypeList { get; set; }
 
+        public Lack1RemarkModel Ck5RemarkData { get; set; }
+
         #endregion
 
         #region --------------- View Purpose --------------
@@ -115,6 +117,14 @@ namespace Sampoerna.EMS.Website.Models.LACK1
 
 
     #region ------------ Class Definition related with Lack1ItemViewModel -----------------
+
+    public class Lack1RemarkModel
+    {
+        public List<Lack1IncomeDetailItemModel> Ck5WasteData { get; set; }
+        public List<Lack1IncomeDetailItemModel> Ck5ReturnData { get; set; }
+        public List<Lack1IncomeDetailItemModel> Ck5TrialData { get; set; }
+    }
+
     public class Lack1SummaryProductionItemModel
     {
         public decimal Amount { get; set; }
@@ -173,7 +183,10 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public decimal Amount { get; set; }
         public string RegistrationNumber { get; set; }
         public DateTime? RegistrationDate { get; set; }
+        public Enums.CK5Type Ck5Type { get; set; }
         public string StringRegistrationDate { get; set; }
+        public string PackageUomId { get; set; }
+        public string PackageUomDesc { get; set; }
     }
 
     public class Lack1DocumentItemModel
