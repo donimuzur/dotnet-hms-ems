@@ -1661,14 +1661,14 @@ namespace Sampoerna.EMS.BLL
                     WasteDisposalDocument(input);
                     isNeedSendNotif = true;
                     break;
-                case Enums.ActionType.WasteApproved:
-                    WasteApprovalDocument(input);
-                    isNeedSendNotif = true;
-                    break;
-                case Enums.ActionType.WasteDisposalRejected:
-                    RejectDisposalDocument(input);
-                    isNeedSendNotif = true;
-                    break;
+                //case Enums.ActionType.WasteApproved:
+                //    WasteApprovalDocument(input);
+                //    isNeedSendNotif = true;
+                //    break;
+                //case Enums.ActionType.WasteDisposalRejected:
+                //    RejectDisposalDocument(input);
+                //    isNeedSendNotif = true;
+                //    break;
             }
 
             //todo sent mail
@@ -1723,6 +1723,7 @@ namespace Sampoerna.EMS.BLL
             var userPoaApprovalInfo = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
 
             List<POADto> poaDestList;
+            List<POADto> poaSourceList;
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
@@ -1975,72 +1976,80 @@ namespace Sampoerna.EMS.BLL
                     break;
 
                 case Enums.ActionType.WasteDisposalUploaded:
-                    //rc.To.Add(userCreatorInfo.EMAIL);
-                    //to waste approval
-                    var listEmailApproval = _wasteRoleServices.GetListEmailWasteApprovalByPlant(ck5Dto.DEST_PLANT_ID);
-                    if (listEmailApproval.Count == 0)
-                        throw new BLLException(ExceptionCodes.BLLExceptions.WasteApprovalEmailNotFound);
-
-                    foreach (var emailUser in listEmailApproval)
-                    {
-                        rc.To.Add(emailUser);
-                    }
-
-                  
-                    //cc disposal team,
-                    var listEmailDisposalTeam = _wasteRoleServices.GetListEmailDisposalTeamByPlant(ck5Dto.DEST_PLANT_ID);
-                    
-                    //Transportation and FactoryLogistic
-                    if (listEmailTransportAndFacLogistic.Count > 0)
-                    {
-                        listEmailDisposalTeam.AddRange(listEmailTransportAndFacLogistic);
-                    }
-
-                    foreach (var userEmail in listEmailDisposalTeam)
-                    {
-                        rc.CC.Add(userEmail);
-                    }
-                    break;
-
-                case Enums.ActionType.WasteDisposalRejected: 
-                    //send notification to creator
-                    //var userWasteDisposalReject = _userBll.GetUserById(ck5Dto.CREATED_BY);
                     rc.To.Add(userCreatorInfo.EMAIL);
 
-                    //cc to Disposal team use plant destination
-                    var listEmailWasteRejected = _wasteRoleServices.GetListEmailDisposalTeamByPlant(ck5Dto.DEST_PLANT_ID);
+                    poaSourceList = _poaBll.GetPoaActiveByPlantId(ck5Dto.SOURCE_PLANT_ID);
 
-                    //Transportation and FactoryLogistic
-                    if (listEmailTransportAndFacLogistic.Count > 0)
+                    foreach (var poaDto in poaSourceList)
                     {
-                        listEmailWasteRejected.AddRange(listEmailTransportAndFacLogistic);
+                        rc.CC.Add(poaDto.POA_EMAIL);
                     }
 
+                    ////to waste approval
+                    //var listEmailApproval = _wasteRoleServices.GetListEmailWasteApprovalByPlant(ck5Dto.DEST_PLANT_ID);
+                    //if (listEmailApproval.Count == 0)
+                    //    throw new BLLException(ExceptionCodes.BLLExceptions.WasteApprovalEmailNotFound);
 
-                    foreach (var userEmail in listEmailWasteRejected)
-                    {
-                        rc.CC.Add(userEmail);
-                    }
+                    //foreach (var emailUser in listEmailApproval)
+                    //{
+                    //    rc.To.Add(emailUser);
+                    //}
+
+
+                    ////cc disposal team,
+                    //var listEmailDisposalTeam = _wasteRoleServices.GetListEmailDisposalTeamByPlant(ck5Dto.DEST_PLANT_ID);
+
+                    ////Transportation and FactoryLogistic
+                    //if (listEmailTransportAndFacLogistic.Count > 0)
+                    //{
+                    //    listEmailDisposalTeam.AddRange(listEmailTransportAndFacLogistic);
+                    //}
+
+                    //foreach (var userEmail in listEmailDisposalTeam)
+                    //{
+                    //    rc.CC.Add(userEmail);
+                    //}
                     break;
 
-                case Enums.ActionType.WasteApproved: 
-                    //send notification to creator
-                    //var userWasteApproval = _userBll.GetUserById(ck5Dto.CREATED_BY);
-                    rc.To.Add(userCreatorInfo.EMAIL);
+                //case Enums.ActionType.WasteDisposalRejected: 
+                //    //send notification to creator
+                //    //var userWasteDisposalReject = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                //    rc.To.Add(userCreatorInfo.EMAIL);
 
-                   
-                    //Transportation and FactoryLogistic
-                    if (listEmailTransportAndFacLogistic.Count > 0)
-                    {
-                        foreach (var userEmail in listEmailTransportAndFacLogistic)
-                        {
-                            rc.CC.Add(userEmail);
-                        }
-                    }
+                //    //cc to Disposal team use plant destination
+                //    var listEmailWasteRejected = _wasteRoleServices.GetListEmailDisposalTeamByPlant(ck5Dto.DEST_PLANT_ID);
+
+                //    //Transportation and FactoryLogistic
+                //    if (listEmailTransportAndFacLogistic.Count > 0)
+                //    {
+                //        listEmailWasteRejected.AddRange(listEmailTransportAndFacLogistic);
+                //    }
 
 
-                  
-                    break;
+                //    foreach (var userEmail in listEmailWasteRejected)
+                //    {
+                //        rc.CC.Add(userEmail);
+                //    }
+                //    break;
+
+                //case Enums.ActionType.WasteApproved: 
+                //    //send notification to creator
+                //    //var userWasteApproval = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                //    rc.To.Add(userCreatorInfo.EMAIL);
+
+
+                //    //Transportation and FactoryLogistic
+                //    if (listEmailTransportAndFacLogistic.Count > 0)
+                //    {
+                //        foreach (var userEmail in listEmailTransportAndFacLogistic)
+                //        {
+                //            rc.CC.Add(userEmail);
+                //        }
+                //    }
+
+
+
+                //    break;
             }
             rc.Body = bodyMail.ToString();
             return rc;
