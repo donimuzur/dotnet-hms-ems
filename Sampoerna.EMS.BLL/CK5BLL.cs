@@ -44,6 +44,7 @@ namespace Sampoerna.EMS.BLL
         private IPrintHistoryBLL _printHistoryBll;
         private IMonthBLL _monthBll;
         private IPOABLL _poaBll;
+        private IZaidmExPOAMapBLL _poaMapBll;
 
         private IZaidmExNPPBKCBLL _nppbkcBll;
         private IPlantBLL _plantBll;
@@ -108,7 +109,7 @@ namespace Sampoerna.EMS.BLL
             _pbck3Services = new Pbck3Services(_uow,_logger);
             _lfa1Bll = new LFA1BLL(_uow, _logger);
             _workflowBll = new WorkflowBLL(_uow, _logger);
-
+            _poaMapBll = new ZaidmExPOAMapBLL(_uow, _logger);
             _lack1IncomeDetailService = new Lack1IncomeDetailService(_uow, _logger);
             _lack2ItemService = new Lack2ItemService(_uow, _logger);
             _brandRegistration = new BrandRegistrationService(_uow, _logger);
@@ -202,20 +203,36 @@ namespace Sampoerna.EMS.BLL
                 else if (input.Ck5Type == Enums.CK5Type.Manual || input.Ck5Type == Enums.CK5Type.MarketReturn)
                 {
                     queryFilter =
+                        queryFilter.And(
+                            c =>
+                                (c.CREATED_BY == input.UserId ||
+                                 (
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
+                                     ((c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
+                                       nppbkc.Contains(c.DEST_PLANT_NPPBKC_ID)
+                                         ) ||
+                                      nppbkc.Contains(c.SOURCE_PLANT_NPPBKC_ID)
+                                         )
+                                     )
+
+                                    )
+                            );
+                }
+                else if (input.Ck5Type == Enums.CK5Type.Waste)
+                {
+                    var plantDest = _poaMapBll.GetByPoaId(input.UserId).Select(d => d.WERKS).ToList();
+
+                    queryFilter =
                        queryFilter.And(
                            c =>
                                (c.CREATED_BY == input.UserId ||
-                                (
-                                (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
-                                 ((c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
-                                             nppbkc.Contains(c.DEST_PLANT_NPPBKC_ID)
-                                  ) ||
-                                            nppbkc.Contains(c.SOURCE_PLANT_NPPBKC_ID)
-                                            )
-                                            )
-
-                                )
-                                );
+                                (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                 nppbkc.Contains(c.SOURCE_PLANT_NPPBKC_ID))
+                                 ||
+                                 (c.STATUS_ID == Enums.DocumentStatus.GoodReceive &&
+                                  plantDest.Contains(c.DEST_PLANT_ID)
+                                  )
+                                 ));
                 }
                 else
                 {
