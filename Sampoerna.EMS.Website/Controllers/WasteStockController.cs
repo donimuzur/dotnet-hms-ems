@@ -25,10 +25,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public WasteStockController(IWasteStockBLL wasteStockBll, IPageBLL pageBLL,
             IUserBLL userBll, IChangesHistoryBLL changesHistoryBll)
-            : base(pageBLL, Enums.MenuList.WasteStock)
+            : base(pageBLL, Enums.MenuList.CK4C)
         {
             _wasteStockBll = wasteStockBll;
-            _mainMenu = Enums.MenuList.MasterData;
+            _mainMenu = Enums.MenuList.CK4C;
 
             _userBll = userBll;
             _changesHistoryBll = changesHistoryBll;

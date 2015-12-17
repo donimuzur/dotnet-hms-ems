@@ -128,6 +128,9 @@ namespace Sampoerna.EMS.Core.Exceptions
             [Description("Missing PBCK-1 Production Converter")]
             Lack1MissingPbckProdConverter,
 
+            [Description("User plant map setting not found, please setting first.")]
+            UserPlantMapSettingNotFound,
+
             [Description("Please  Register Code W Sapon, W Gagang, and W Stem in material master")]
             PlantInWasteNotHaveStickerCode,
 

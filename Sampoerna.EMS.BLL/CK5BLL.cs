@@ -1585,6 +1585,7 @@ namespace Sampoerna.EMS.BLL
 
         public void CK5Workflow(CK5WorkflowDocumentInput input)
         {
+
             var isNeedSendNotif = false;
 
             switch (input.ActionType)
@@ -1727,21 +1728,21 @@ namespace Sampoerna.EMS.BLL
 
             rc.Subject = "CK-5 " + ck5Dto.SUBMISSION_NUMBER + " is " + EnumHelper.GetDescription(ck5Dto.STATUS_ID);
             bodyMail.Append("Dear Team,<br />");
-            bodyMail.AppendLine();
+            //bodyMail.AppendLine();
             bodyMail.Append("Kindly be informed, " + rc.Subject + ". <br />");
-            bodyMail.AppendLine();
+            //bodyMail.AppendLine();
             bodyMail.Append("<table><tr><td>Company Code </td><td>: " + ck5Dto.SOURCE_PLANT_COMPANY_CODE + "</td></tr>");
-            bodyMail.AppendLine();
+            //bodyMail.AppendLine();
             bodyMail.Append("<tr><td>NPPBKC </td><td>: " + ck5Dto.SOURCE_PLANT_NPPBKC_ID + "</td></tr>");
-            bodyMail.AppendLine();
+            //bodyMail.AppendLine();
             bodyMail.Append("<tr><td>Document Number</td><td> : " + ck5Dto.SUBMISSION_NUMBER + "</td></tr>");
-            bodyMail.AppendLine();
+            //bodyMail.AppendLine();
             bodyMail.Append("<tr><td>Document Type</td><td> : CK-5</td></tr>");
-            bodyMail.AppendLine();
+            //bodyMail.AppendLine();
             bodyMail.Append("<tr><td>CK-5 Type</td><td> : " + EnumHelper.GetDescription(ck5Dto.CK5_TYPE) + "</td></tr>");
-            bodyMail.AppendLine();
+            //bodyMail.AppendLine();
             bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/CK5/Details/" + ck5Dto.CK5_ID + "'>link</a> to show detailed information</i></td></tr>");
-            bodyMail.AppendLine();
+            //bodyMail.AppendLine();
             bodyMail.Append("</table>");
             bodyMail.AppendLine();
             bodyMail.Append("<br />Regards,<br />");
@@ -2702,7 +2703,8 @@ namespace Sampoerna.EMS.BLL
 
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
-            dbData.STATUS_ID = Enums.DocumentStatus.WasteApproval;
+            //dbData.STATUS_ID = Enums.DocumentStatus.WasteApproval;
+            dbData.STATUS_ID = Enums.DocumentStatus.Completed;
 
             //add to workflow
             AddWorkflowHistory(input);
@@ -4121,6 +4123,15 @@ namespace Sampoerna.EMS.BLL
 
                     throw new Exception(String.Format("Material {0} in {1} is not found in material master", ck5MaterialDto.BRAND, dataXmlDto.SOURCE_PLANT_ID));
                 }
+
+                material = _materialBll.getByID(ck5MaterialDto.BRAND, dataXmlDto.DEST_PLANT_ID);
+
+                if (material == null)
+                {
+
+                    throw new Exception(String.Format("Material {0} in {1} is not found in material master", ck5MaterialDto.BRAND, dataXmlDto.DEST_PLANT_ID));
+                }
+
                 if (ck5MaterialDto.CONVERTED_UOM == material.BASE_UOM_ID)
                     continue;
 

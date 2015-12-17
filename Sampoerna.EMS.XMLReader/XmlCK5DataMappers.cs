@@ -144,8 +144,7 @@ namespace Sampoerna.EMS.XMLReader
                                     workflowHistory.ACTION = Enums.ActionType.STOCreated;
                                 }
 
-                                else
-                                    if (statusCk5 == Enums.CK5XmlStatus.GICompleted || statusCk5 == Enums.CK5XmlStatus.GIPartial)
+                                else if (statusCk5 == Enums.CK5XmlStatus.GICompleted || statusCk5 == Enums.CK5XmlStatus.GIPartial)
                                 {
                                     if (statusCk5 == Enums.CK5XmlStatus.GICompleted)
                                     {
@@ -159,20 +158,20 @@ namespace Sampoerna.EMS.XMLReader
                                     }
 
                                   
-                                        #region "Domestic"
+                                    #region "Domestic"
 
-                                        var giDate = _xmlMapper.GetElementValue(xElement.Element("GI_DATE"));
-                                        item.GI_DATE = _xmlMapper.GetDate(giDate);
+                                    var giDate = _xmlMapper.GetElementValue(xElement.Element("GI_DATE"));
+                                    item.GI_DATE = _xmlMapper.GetDate(giDate);
 
-                                        UpdateDNumber(item, existingCk5, xElement);
+                                    UpdateDNumber(item, existingCk5, xElement);
 
 
-                                        #endregion
+                                    #endregion
                                     
                                    
 
                                 }
-                                    else if (statusCk5 == Enums.CK5XmlStatus.GRCompleted || statusCk5 == Enums.CK5XmlStatus.GRPartial)
+                                else if (statusCk5 == Enums.CK5XmlStatus.GRCompleted || statusCk5 == Enums.CK5XmlStatus.GRPartial)
                                 {
                                     if (statusCk5 == Enums.CK5XmlStatus.GRCompleted)
                                     {

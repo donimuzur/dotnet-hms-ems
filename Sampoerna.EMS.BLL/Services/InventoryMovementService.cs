@@ -105,5 +105,34 @@ namespace Sampoerna.EMS.BLL.Services
             return data.FirstOrDefault();
         }
 
+        public List<INVENTORY_MOVEMENT> GetUsageByBatchAndPlantIdInPeriod(GetUsageByBatchAndPlantIdInPeriodParamInput input)
+        {
+
+            var mvtUsage = EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage261);
+            var data =
+                _repository.Get(
+                    c =>
+                        c.BATCH == input.Batch && c.PLANT_ID == input.PlantId &&
+                        c.MVT == mvtUsage && c.POSTING_DATE.HasValue &&
+                        c.POSTING_DATE.Value.Year == input.PeriodYear && c.POSTING_DATE.Value.Month == input.PeriodMonth);
+
+            return data.ToList();
+        }
+
+        public List<INVENTORY_MOVEMENT> GetReceivingByOrderAndPlantIdInPeriod(GetReceivingByOrderAndPlantIdInPeriodParamInput input)
+        {
+
+            var mvtReceiving = EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving101);
+
+            var data =
+                _repository.Get(
+                    c =>
+                        c.ORDR == input.Ordr && c.PLANT_ID == input.PlantId &&
+                        c.MVT == mvtReceiving && c.POSTING_DATE.HasValue &&
+                        c.POSTING_DATE.Value.Year == input.PeriodYear && c.POSTING_DATE.Value.Month == input.PeriodMonth);
+
+            return data.ToList();
+        }
+
     }
 }

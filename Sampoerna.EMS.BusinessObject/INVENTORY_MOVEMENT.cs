@@ -17,7 +17,6 @@ namespace Sampoerna.EMS.BusinessObject
         public INVENTORY_MOVEMENT()
         {
             this.LACK1_TRACKING = new HashSet<LACK1_TRACKING>();
-            this.LACK1_TRACKING_ALCOHOL = new HashSet<LACK1_TRACKING_ALCOHOL>();
         }
     
         public long INVENTORY_MOVEMENT_ID { get; set; }
@@ -38,6 +37,5 @@ namespace Sampoerna.EMS.BusinessObject
         public string ORDR { get; set; }
     
         public virtual ICollection<LACK1_TRACKING> LACK1_TRACKING { get; set; }
-        public virtual ICollection<LACK1_TRACKING_ALCOHOL> LACK1_TRACKING_ALCOHOL { get; set; }
     }
 }
