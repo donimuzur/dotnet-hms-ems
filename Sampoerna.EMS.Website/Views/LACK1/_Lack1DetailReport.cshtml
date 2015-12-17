@@ -9,6 +9,7 @@
             <th colspan="5">Receiving</th>
             <th colspan="5">Usage</th>
             <th rowspan="2">Ending Balance</th>
+            <th rowspan="2">Remark</th>
         </tr>
         <tr>
             <th>CK-5 Number</th>
@@ -51,6 +52,7 @@
                     <td>@item.TrackingConsolidations[0].OriginalUomDesc</td>
                     <td>@item.TrackingConsolidations[0].ConvertedUomDesc</td>
                     <td rowspan="@trackingConsolidationCount">@item.EndingBalance.ToString("N2")</td>
+                    <td rowspan="@trackingConsolidationCount">@Html.Raw(item.DocumentNoted)</td>
                 </tr>
                 for (int i = 1; i < item.TrackingConsolidations.Count; i++)
                 {
@@ -92,6 +94,7 @@
                     <td>-</td>
                     <td>-</td>
                     <td>@item.EndingBalance.ToString("N2")</td>
+                    <td>@Html.Raw(item.DocumentNoted)</td>
                 </tr>
             }
         }

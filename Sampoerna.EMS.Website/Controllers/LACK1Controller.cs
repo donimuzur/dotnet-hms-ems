@@ -1780,15 +1780,19 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (item.TrackingConsolidations.Count > 0)
                 {
 
-                    var iStartRow = iRow;
-                    var iEndRow = iStartRow;
+                    //var iStartRow = iRow;
+                    //var iEndRow = iStartRow;
 
-                    var lastMaterialCode = item.TrackingConsolidations[0].MaterialCode;
-                    var lastBatch = item.TrackingConsolidations[0].Batch;
+                    //var lastMaterialCode = item.TrackingConsolidations[0].MaterialCode;
+                    //var lastBatch = item.TrackingConsolidations[0].Batch;
 
                     int dataCount = item.TrackingConsolidations.Count - 1;
 
                     //first record
+                    slDocument.SetCellValue(iRow, iColumn, item.Lack1Number);
+                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
+                    iColumn++;
+
                     slDocument.SetCellValue(iRow, iColumn, item.Lack1LevelName);
                     slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
@@ -1829,11 +1833,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     slDocument.SetCellValue(iRow, iColumn, item.EndingBalance.ToString("N2"));
                     slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, !string.IsNullOrEmpty(item.DocumentNoted) ? item.DocumentNoted.Replace("<br />", Environment.NewLine) : string.Empty);
+                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     
                     for (int i = 1; i < item.TrackingConsolidations.Count; i++)
                     {
                         iRow++;
-                        iColumn = 3;
+                        iColumn = 4;
                         
                         slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].Ck5Number);
                         iColumn++;
@@ -1869,7 +1877,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 else
                 {
-                    
+
+                    slDocument.SetCellValue(iRow, iColumn, item.Lack1Number);
+                    iColumn++;
+
                     slDocument.SetCellValue(iRow, iColumn, item.Lack1LevelName);
                     iColumn++;
 
@@ -1883,6 +1894,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
 
                     slDocument.SetCellValue(iRow, iColumn, item.EndingBalance.ToString("N2"));
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, !string.IsNullOrEmpty(item.DocumentNoted) ? item.DocumentNoted.Replace("<br />", Environment.NewLine) : string.Empty);
                     
                 }
                 iRow++;
@@ -1897,6 +1911,10 @@ namespace Sampoerna.EMS.Website.Controllers
             int iColumn = 1;
 
             //first row
+            slDocument.SetCellValue(1, iColumn, "LACK-1 Number");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
             slDocument.SetCellValue(1, iColumn, "LACK-1 Level");
             slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
             iColumn = iColumn + 1;
@@ -1915,11 +1933,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
             slDocument.SetCellValue(1, iColumn, "Ending Balance");
             slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Remark");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan 2
 
             endColumnIndex = iColumn;
 
             //second row
-            iColumn = 3;
+            iColumn = 4;
             slDocument.SetCellValue(2, iColumn, "CK-5 Number");
             iColumn++;
             
@@ -1963,6 +1985,14 @@ namespace Sampoerna.EMS.Website.Controllers
             valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
             valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
             valueStyle.Alignment.Vertical = VerticalAlignmentValues.Center;
+
+            SLStyle remarkColumnStyle = slDocument.CreateStyle();
+            remarkColumnStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            remarkColumnStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            remarkColumnStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            remarkColumnStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            remarkColumnStyle.Alignment.Vertical = VerticalAlignmentValues.Center;
+            remarkColumnStyle.SetWrapText(true);
             
             //set header style
             SLStyle headerStyle = slDocument.CreateStyle();
@@ -1974,7 +2004,8 @@ namespace Sampoerna.EMS.Website.Controllers
             headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
 
             //set border to value cell
-            slDocument.SetCellStyle(3, 1, endRowIndex, endColumnIndex, valueStyle);
+            slDocument.SetCellStyle(3, 1, endRowIndex, endColumnIndex - 1, valueStyle);
+            slDocument.SetCellStyle(3, endColumnIndex, endRowIndex, endColumnIndex, remarkColumnStyle);
 
             //set header style
             slDocument.SetCellStyle(1, 1, 2, endColumnIndex, headerStyle);
