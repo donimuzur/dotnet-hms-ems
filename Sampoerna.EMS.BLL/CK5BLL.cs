@@ -2901,7 +2901,7 @@ namespace Sampoerna.EMS.BLL
                     CheckFileUploadChange(input);
             }
 
-            if (dbData.CK5_TYPE == Enums.CK5Type.Manual )
+            if (dbData.CK5_TYPE == Enums.CK5Type.Manual || dbData.CK5_TYPE == Enums.CK5Type.Return)
             {
                 if (!string.IsNullOrEmpty(dbData.SEALING_NOTIF_NUMBER)
                        && !string.IsNullOrEmpty(dbData.UNSEALING_NOTIF_NUMBER)
