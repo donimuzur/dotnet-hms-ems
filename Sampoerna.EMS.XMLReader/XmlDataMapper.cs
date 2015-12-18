@@ -334,6 +334,22 @@ namespace Sampoerna.EMS.XMLReader
 
         }
 
+        public string GetInnerException(Exception ex)
+        {
+            string result = "";
+
+            if (ex.InnerException != null)
+            {
+                result = GetInnerException(ex.InnerException);
+            }
+            else
+            {
+                result = ex.Message;
+            }
+
+            return result;
+        }
+
     }
 
     
