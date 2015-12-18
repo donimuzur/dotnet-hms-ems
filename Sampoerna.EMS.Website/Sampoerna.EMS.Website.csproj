@@ -234,6 +234,7 @@
     <Compile Include="Controllers\WasteController.cs" />
     <Compile Include="Controllers\WasteRoleController.cs" />
     <Compile Include="Controllers\WasteStockController.cs" />
+    <Compile Include="Controllers\XmlFileManagementController.cs" />
     <Compile Include="Controllers\XmlLogController.cs" />
     <Compile Include="EMSWebsiteMapperCK4C.cs" />
     <Compile Include="Code\FormsAuthenticationService.cs" />
@@ -1268,6 +1269,7 @@
     <Content Include="Views\XmlLog\Detail.cshtml" />
     <Content Include="Views\XmlLog\_XmlLogViewIndex.cshtml" />
     <Content Include="Views\Error\Unauthorized.cshtml" />
+    <Content Include="Views\XmlFileManagement\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
