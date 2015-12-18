@@ -8117,7 +8117,7 @@
           <Property Name="PROD_CODE" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="PRODUCT_TYPE" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="PRODUCT_ALIAS" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="CONVERTER_OUTPUT" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="CONVERTER_OUTPUT" Type="Decimal" Precision="18" Scale="5" />
           <Property Name="CONVERTER_UOM_ID" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="BRAND_CE" Type="String" MaxLength="65" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_PROD_CONVERTER_PBCK1" FromRole="PBCK1_PROD_CONVERTER" ToRole="PBCK1" />
