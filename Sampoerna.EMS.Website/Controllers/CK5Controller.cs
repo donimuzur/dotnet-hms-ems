@@ -1523,6 +1523,20 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.AllowPurchaseOrder = _workflowBll.AllowDomesticAlcoholPurchaseOrder(input);
                     
                 }
+                else if (model.Ck5Type == Enums.CK5Type.Return)
+                {
+                    if (model.SourceCompanyCode != model.DestCompanyCode)
+                    {
+                        model.AllowGiCreated = _workflowBll.AllowStoGiCompleted(input);
+                        model.AllowGrCreated = _workflowBll.AllowStoGrCreated(input);
+                    }
+                    else
+                    {
+                        model.AllowGiCreated = _workflowBll.AllowGiCreated(input);
+                        model.AllowGrCreated = _workflowBll.AllowGrCreated(input);
+                    }
+                    
+                }
                 else if (model.Ck5Type == Enums.CK5Type.Waste)
                 {
                     input.SourcePlant = ck5Details.Ck5Dto.SOURCE_PLANT_ID;
