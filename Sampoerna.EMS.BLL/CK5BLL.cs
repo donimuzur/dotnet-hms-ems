@@ -44,6 +44,7 @@ namespace Sampoerna.EMS.BLL
         private IPrintHistoryBLL _printHistoryBll;
         private IMonthBLL _monthBll;
         private IPOABLL _poaBll;
+        private IZaidmExPOAMapBLL _poaMapBll;
 
         private IZaidmExNPPBKCBLL _nppbkcBll;
         private IPlantBLL _plantBll;
@@ -108,7 +109,7 @@ namespace Sampoerna.EMS.BLL
             _pbck3Services = new Pbck3Services(_uow,_logger);
             _lfa1Bll = new LFA1BLL(_uow, _logger);
             _workflowBll = new WorkflowBLL(_uow, _logger);
-
+            _poaMapBll = new ZaidmExPOAMapBLL(_uow, _logger);
             _lack1IncomeDetailService = new Lack1IncomeDetailService(_uow, _logger);
             _lack2ItemService = new Lack2ItemService(_uow, _logger);
             _brandRegistration = new BrandRegistrationService(_uow, _logger);
@@ -202,20 +203,36 @@ namespace Sampoerna.EMS.BLL
                 else if (input.Ck5Type == Enums.CK5Type.Manual || input.Ck5Type == Enums.CK5Type.MarketReturn)
                 {
                     queryFilter =
+                        queryFilter.And(
+                            c =>
+                                (c.CREATED_BY == input.UserId ||
+                                 (
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
+                                     ((c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
+                                       nppbkc.Contains(c.DEST_PLANT_NPPBKC_ID)
+                                         ) ||
+                                      nppbkc.Contains(c.SOURCE_PLANT_NPPBKC_ID)
+                                         )
+                                     )
+
+                                    )
+                            );
+                }
+                else if (input.Ck5Type == Enums.CK5Type.Waste)
+                {
+                    var plantDest = _poaMapBll.GetByPoaId(input.UserId).Select(d => d.WERKS).ToList();
+
+                    queryFilter =
                        queryFilter.And(
                            c =>
                                (c.CREATED_BY == input.UserId ||
-                                (
-                                (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
-                                 ((c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
-                                             nppbkc.Contains(c.DEST_PLANT_NPPBKC_ID)
-                                  ) ||
-                                            nppbkc.Contains(c.SOURCE_PLANT_NPPBKC_ID)
-                                            )
-                                            )
-
-                                )
-                                );
+                                (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                 nppbkc.Contains(c.SOURCE_PLANT_NPPBKC_ID))
+                                 ||
+                                 (c.STATUS_ID == Enums.DocumentStatus.GoodReceive &&
+                                  plantDest.Contains(c.DEST_PLANT_ID)
+                                  )
+                                 ));
                 }
                 else
                 {
@@ -444,7 +461,7 @@ namespace Sampoerna.EMS.BLL
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Export ||
                 input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter ||
                 input.Ck5Dto.CK5_TYPE == Enums.CK5Type.MarketReturn ||
-                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.TriggerSto ||
+                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Return ||
                 input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Waste)
                 return;
             
@@ -4116,7 +4133,7 @@ namespace Sampoerna.EMS.BLL
                 dataXmlDto.SOURCE_PLANT_ID = plantMap.IMPORT_PLANT_ID;
                 dataXmlDto.DEST_PLANT_ID = plantMap.IMPORT_PLANT_ID;
             }
-            else if (dataXmlDto.CK5_TYPE == Enums.CK5Type.TriggerSto)
+            else if (dataXmlDto.CK5_TYPE == Enums.CK5Type.Return)
             {
                 dataXmlDto.CK5_TYPE = Enums.CK5Type.Intercompany;
 
@@ -4467,7 +4484,7 @@ namespace Sampoerna.EMS.BLL
                         continue;
                 }
                 else if (ck5.CK5_TYPE == Enums.CK5Type.Export || ck5.CK5_TYPE == Enums.CK5Type.MarketReturn
-                    || ck5.CK5_TYPE == Enums.CK5Type.TriggerSto
+                    || ck5.CK5_TYPE == Enums.CK5Type.Return
                     || ck5.CK5_TYPE == Enums.CK5Type.Waste)
                     continue;
                 else if (ck5.CK5_TYPE == Enums.CK5Type.Domestic && (ck5.SOURCE_PLANT_ID == ck5.DEST_PLANT_ID))

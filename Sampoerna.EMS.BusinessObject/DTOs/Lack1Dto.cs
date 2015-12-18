@@ -113,6 +113,14 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ApprovedByManager { get; set; }
         public DateTime? ApprovedManagerDate { get; set; }
         public List<Lack1DocumentDto> Lack1Document { get; set; }
+        /// <summary>
+        /// All data from table LACK1_INCOME_DETAIL
+        /// </summary>
+        public List<Lack1IncomeDetailDto> AllLack1IncomeDetail { get; set; }
+        /// <summary>
+        /// Exclude CK5 Return, Waste and Trial
+        /// for display only
+        /// </summary>
         public List<Lack1IncomeDetailDto> Lack1IncomeDetail { get; set; }
         public List<Lack1Pbck1MappingDto> Lack1Pbck1Mapping { get; set; }
         public List<Lack1PlantDto> Lack1Plant { get; set; }
