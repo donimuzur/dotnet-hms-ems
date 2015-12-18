@@ -35,7 +35,15 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string PeriodMonthName { get; set; }
         public int PeriodYear { get; set; }
         public decimal BeginingBalance { get; set; }
-
+        /// <summary>
+        /// all income list that got use current logic for saving to database
+        /// use this field for saving to database instead IncomeList 
+        /// </summary>
+        public List<Lack1GeneratedIncomeDataDto> AllIncomeList { get; set; }
+        /// <summary>
+        /// exclude ck5 type : waste, return and manual
+        /// for display only
+        /// </summary>
         public List<Lack1GeneratedIncomeDataDto> IncomeList { get; set; }
         public decimal TotalIncome { get; set; }
         public decimal TotalUsage { get; set; }
