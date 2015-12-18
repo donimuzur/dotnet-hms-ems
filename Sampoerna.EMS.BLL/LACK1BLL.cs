@@ -3006,51 +3006,31 @@ namespace Sampoerna.EMS.BLL
             var receiving = _inventoryMovementService.GetReceivingByParam(receivingParamInput);
             //get prev receiving for CASE 2 : prev Receiving, Current Receiving, Current Usage
             var prevReceiving = _inventoryMovementService.GetReceivingByParam(prevReceivingParamInput);
+            var receivingAll = receiving.Where(c => stoReceiverNumberList.Contains(c.PURCH_DOC)).ToList();
+            receivingAll.AddRange(prevReceiving);
 
             //there is records on receiving Data
             //normal case
-            var receivingList = (from rec in receiving
+            var receivingList = (from rec in receivingAll
                                  join a in movementUsageAll.DistinctBy(d => new { d.MAT_DOC, d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR }) on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
-                                 where stoReceiverNumberList.Contains(rec.PURCH_DOC) && input.PlantIdList.Contains(rec.PLANT_ID)
                                  select rec).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
-            var usageReceivingList = (from rec in receiving.DistinctBy(d => new { d.MAT_DOC, d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR })
+            var usageReceivingList = (from rec in receivingAll.DistinctBy(d => new { d.MAT_DOC, d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR })
                                       join a in movementUsageAll on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
-                                      where stoReceiverNumberList.Contains(rec.PURCH_DOC) && input.PlantIdList.Contains(rec.PLANT_ID)
                                       select a).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
-
-            //get prev receiving for CASE 2 : prev Receiving, Current Receiving, Current Usage
-            var prevReceivingList = (from rec in prevReceiving
-                                     join a in movementUsageAll.DistinctBy(d => new { d.MAT_DOC, d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR }) on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
-                                     /* LOGS POINT 5 : 2015-12-16, no need checking sto_number on previous */
-                                     //where stoReceiverNumberList.Contains(rec.PURCH_DOC) && input.PlantIdList.Contains(rec.PLANT_ID) 
-                                     select rec).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
-
-            var usagePrevReceivingList = (from rec in prevReceiving.DistinctBy(d => new { d.MAT_DOC, d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR })
-                                          join a in movementUsageAll on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
-                                          /* LOGS POINT 5 : 2015-12-16, no need checking sto_number on previous */
-                                          //where stoReceiverNumberList.Contains(rec.PURCH_DOC) && input.PlantIdList.Contains(rec.PLANT_ID)
-                                          select a).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
-
-            var allReceivingList = receivingList;
-            allReceivingList.AddRange(prevReceivingList);
-
-            var allUsageReceivingList = usageReceivingList;
-            allUsageReceivingList.AddRange(usagePrevReceivingList);
-            allUsageReceivingList = allUsageReceivingList.Distinct().ToList();
-
+            
             //get exclude in receiving data
             var movementExclueInCk5List = (movementUsageAll.Where(
-                all => !allUsageReceivingList.Select(d => d.INVENTORY_MOVEMENT_ID)
+                all => !usageReceivingList.Select(d => d.INVENTORY_MOVEMENT_ID)
                     .ToList()
                     .Contains(all.INVENTORY_MOVEMENT_ID))).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
-            var usageProportionalList = CalculateInvMovementUsageProportional(allUsageReceivingList, movementUsageAll);
+            var usageProportionalList = CalculateInvMovementUsageProportional(usageReceivingList, movementUsageAll);
 
             var rc = new InvMovementGetForLack1UsageMovementByParamOutput
             {
-                IncludeInCk5List = allUsageReceivingList,
-                ReceivingList = allReceivingList,
+                IncludeInCk5List = usageReceivingList,
+                ReceivingList = receivingList,
                 AllUsageList = movementUsageAll,
                 ExcludeFromCk5List = movementExclueInCk5List,
                 UsageProportionalList = usageProportionalList
