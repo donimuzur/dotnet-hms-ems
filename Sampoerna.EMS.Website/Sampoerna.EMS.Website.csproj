@@ -432,6 +432,8 @@
     <Compile Include="Models\Waste\WasteUploadViewModel.cs" />
     <Compile Include="Models\Waste\WasteViewModel.cs" />
     <Compile Include="Models\WorkflowSettingListModel.cs" />
+    <Compile Include="Models\XmlFileManagement\XmlFileManagementFormViewModel.cs" />
+    <Compile Include="Models\XmlFileManagement\XmlFileManagementIndexViewModel.cs" />
     <Compile Include="Models\XmlLog\XmlLogFormViewModel.cs" />
     <Compile Include="Models\XmlLog\XmlLogIndexViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -1270,6 +1272,8 @@
     <Content Include="Views\XmlLog\_XmlLogViewIndex.cshtml" />
     <Content Include="Views\Error\Unauthorized.cshtml" />
     <Content Include="Views\XmlFileManagement\Index.cshtml" />
+    <Content Include="Views\XmlFileManagement\_XmlFileSearch.cshtml" />
+    <Content Include="Views\XmlFileManagement\_XmlFileViewIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

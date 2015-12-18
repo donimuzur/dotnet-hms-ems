@@ -35,6 +35,7 @@ using Sampoerna.EMS.Website.Models.EmailTemplate;
 using Sampoerna.EMS.Website.Models.LACK2;
 using Sampoerna.EMS.Website.Models.WasteRole;
 using Sampoerna.EMS.Website.Models.WasteStock;
+using Sampoerna.EMS.Website.Models.XmlFileManagement;
 using Sampoerna.EMS.Website.Models.XmlLog;
 
 namespace Sampoerna.EMS.Website
@@ -999,6 +1000,19 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.TimeStampDisplay, opt => opt.MapFrom(src => src.Timestamp.HasValue ? src.Timestamp.Value.ToString("dd MMM yyyy hh:mm:ss tt"): string.Empty))
                 //.ForMember(dest => dest.Logger, opt => opt.ResolveUsing<ConcatStringResolver>().FromMember(src => src.Logger))
                 //.ForMember(dest => dest.Message, opt => opt.ResolveUsing<ConcatStringResolver>().FromMember(src => src.Message))
+                ;
+
+            #endregion
+
+            #region xml file log
+
+            Mapper.CreateMap<XML_LOGSDto, XmlFileManagementFormViewModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.XmlLogId, opt => opt.MapFrom(src => src.XML_LOGS_ID))
+                .ForMember(dest => dest.FileName, opt => opt.MapFrom(src => src.XML_FILENAME))
+                .ForMember(dest => dest.TimeStamp, opt => opt.MapFrom(src => src.LAST_ERROR_TIME))
+                .ForMember(dest => dest.TimeStampDisplay, opt => opt.MapFrom(src => src.LAST_ERROR_TIME.ToString("dd MMM yyyy hh:mm:ss tt") ))
+                .ForMember(dest => dest.XmlLogStatus, opt => opt.MapFrom(src => src.STATUS))
+                .ForMember(dest => dest.XmlLogStatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS)))
                 ;
 
             #endregion

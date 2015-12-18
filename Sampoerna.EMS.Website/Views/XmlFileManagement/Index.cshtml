@@ -1,17 +1,119 @@
-﻿
-@{
-    Layout = null;
-}
+﻿@model Sampoerna.EMS.Website.Models.XmlFileManagement.XmlFileManagementIndexViewModel
 
-<!DOCTYPE html>
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 id="lblTitle">XML Log List</h3>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
-</head>
-<body>
-    <div> 
+        </div>
     </div>
-</body>
-</html>
+</div>
+
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            @using (Ajax.BeginForm("Filter", "XmlLog",
+                                new AjaxOptions
+                                {
+                                    HttpMethod = "POST",
+                                    InsertionMode = InsertionMode.Replace,
+                                    UpdateTargetId = "contenttable",
+                                    OnComplete = "ReloadDataTables"
+
+                                }))
+            {
+                @Html.Partial("_XmlFileSearch")
+            }
+
+         
+            <div id="contenttable" class="table-container">
+                @Html.Partial("_XmlFileViewIndex")
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            $('#MenuXmlFile').addClass('active');
+
+            setupDataTables();
+         
+        });
+
+
+        function setupDataTables() {
+
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#xmlLogTable')) {
+                table = $('#xmlLogTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#xmlLogTable').DataTable(
+                  {
+                      "sDom": "Rlfrtip",
+                      "language": {
+                          "zeroRecords": "No records found",
+                          "infoFiltered": "(filtered from _MAX_ total records)"
+                      },
+                      "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                          switch (aData[3]) {
+                              case 'Error':
+                              case 'Fatal':
+                                  $(nRow).css('color', 'red');
+                                  break;
+                              case 'Re-Run':
+                                  $(nRow).css('color', 'green');
+                                  break;
+                             
+                          }
+                      }
+                  });
+
+
+            $('#xmlLogTable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+
+
+        }
+
+        function ReloadDataTables() {
+          
+            setupDataTables();
+        }
+
+
+     
+
+        function OnReset() {
+            $(".selectreset").val($(".selectreset option:first").val());
+        }
+
+    </script>
+}

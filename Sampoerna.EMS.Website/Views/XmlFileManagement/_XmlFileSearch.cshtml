@@ -1,0 +1,55 @@
+﻿@model Sampoerna.EMS.Website.Models.XmlFileManagement.XmlFileManagementIndexViewModel
+
+<div class="white-wrapper">
+    <div class="form-excise" role="form">
+        <div class="row">
+
+            <div class="col-md-6">
+                <div class="row">
+                    <label class="col-md-4">Date From </label>
+                    <div class="col-md-8 year-from">
+                        @(Model.DateFromList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                              : Html.DropDownListFor(model => model.DateFrom, Model.DateFromList, "All", new { @class = "form-control selectreset" }))
+
+
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="col-md-6">
+                <div class="row">
+                    <label class="col-md-4">Date To </label>
+                    <div class="col-md-8 year-from">
+                        @(Model.DateToList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                              : Html.DropDownListFor(model => model.DateTo, Model.DateToList, "All", new { @class = "form-control selectreset" }))
+
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-6">
+                        <button class="btn btn-blue full">SEARCH</button>
+                    </div>
+                    <div class="col-md-6">
+                        <input class="btn btn-blue full" type="button" value="RESET" onclick="OnReset();" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+       
+
+
+    </div>
+</div>
+
+
+
+

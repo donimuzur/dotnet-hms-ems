@@ -470,6 +470,12 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<NlogLogs, NlogDto>().IgnoreAllNonExisting();
             
             #endregion
+
+            #region Xml Log
+
+            Mapper.CreateMap<XML_LOGS, XML_LOGSDto>().IgnoreAllNonExisting();
+
+            #endregion
         }
     }
 }
