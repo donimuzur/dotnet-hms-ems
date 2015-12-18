@@ -261,7 +261,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ApprovedByPoa, opt => opt.MapFrom(src => src.APPROVED_BY_POA))
                 .ForMember(dest => dest.ApprovedPoaDate, opt => opt.MapFrom(src => src.APPROVED_DATE_POA))
                 .ForMember(dest => dest.Lack1Document, opt => opt.MapFrom(src => Mapper.Map<List<Lack1DocumentDto>>(src.LACK1_DOCUMENT)))
-                .ForMember(dest => dest.Lack1IncomeDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.LACK1_INCOME_DETAIL)))
+                //.ForMember(dest => dest.Lack1IncomeDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.LACK1_INCOME_DETAIL)))//todo: set from BLL, need to exlude some CK5 Type for display only
+                .ForMember(dest => dest.AllLack1IncomeDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.LACK1_INCOME_DETAIL)))
                 .ForMember(dest => dest.Lack1Pbck1Mapping, opt => opt.MapFrom(src => Mapper.Map<List<Lack1Pbck1MappingDto>>(src.LACK1_PBCK1_MAPPING)))
                 .ForMember(dest => dest.Lack1Plant, opt => opt.MapFrom(src => Mapper.Map<List<Lack1PlantDto>>(src.LACK1_PLANT)))
                 .ForMember(dest => dest.Lack1ProductionDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailDto>>(src.LACK1_PRODUCTION_DETAIL)))

@@ -562,16 +562,22 @@ namespace Sampoerna.EMS.BLL
                 };
             }
 
-            if (rc.Lack1IncomeDetail != null && rc.Lack1IncomeDetail.Count > 0)
+            if (rc.AllLack1IncomeDetail == null || rc.AllLack1IncomeDetail.Count <= 0) return rc;
+
+            //process for incomedetail remark
+            rc.Ck5RemarkData = new Lack1RemarkDto()
             {
-                //process for incomedetail remark
-                rc.Ck5RemarkData = new Lack1RemarkDto()
-                {
-                    Ck5ReturnData = rc.Lack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.TriggerSto && c.FLAG_FOR_LACK1).ToList(),
-                    Ck5TrialData = rc.Lack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Manual).ToList(),
-                    Ck5WasteData = rc.Lack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Waste).ToList()
-                };
-            }
+                Ck5ReturnData = rc.AllLack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.TriggerSto && c.FLAG_FOR_LACK1).ToList(),
+                Ck5TrialData = rc.AllLack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Manual).ToList(),
+                Ck5WasteData = rc.AllLack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Waste).ToList()
+            };
+
+            //set Lack1IncomeDetail
+            rc.Lack1IncomeDetail =
+                rc.AllLack1IncomeDetail.Where(
+                    c =>
+                        !((c.CK5_TYPE == Enums.CK5Type.TriggerSto && c.FLAG_FOR_LACK1) ||
+                        c.CK5_TYPE == Enums.CK5Type.Manual || c.CK5_TYPE == Enums.CK5Type.Waste)).ToList();
 
             return rc;
         }
