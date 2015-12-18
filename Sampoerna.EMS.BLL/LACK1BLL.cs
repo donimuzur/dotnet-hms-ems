@@ -567,7 +567,7 @@ namespace Sampoerna.EMS.BLL
             //process for incomedetail remark
             rc.Ck5RemarkData = new Lack1RemarkDto()
             {
-                Ck5ReturnData = rc.AllLack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.TriggerSto && c.FLAG_FOR_LACK1).ToList(),
+                Ck5ReturnData = rc.AllLack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Return && c.FLAG_FOR_LACK1).ToList(),
                 Ck5TrialData = rc.AllLack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Manual).ToList(),
                 Ck5WasteData = rc.AllLack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Waste).ToList()
             };
@@ -576,7 +576,7 @@ namespace Sampoerna.EMS.BLL
             rc.Lack1IncomeDetail =
                 rc.AllLack1IncomeDetail.Where(
                     c =>
-                        !((c.CK5_TYPE == Enums.CK5Type.TriggerSto && c.FLAG_FOR_LACK1) ||
+                        !((c.CK5_TYPE == Enums.CK5Type.Return && c.FLAG_FOR_LACK1) ||
                         c.CK5_TYPE == Enums.CK5Type.Manual || c.CK5_TYPE == Enums.CK5Type.Waste)).ToList();
 
             return rc;
@@ -1286,7 +1286,7 @@ namespace Sampoerna.EMS.BLL
             {
                 dtToReturn.Ck5RemarkData = new Lack1RemarkDto()
                 {
-                    Ck5ReturnData = dtToReturn.Lack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.TriggerSto && c.FLAG_FOR_LACK1).ToList(),
+                    Ck5ReturnData = dtToReturn.Lack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Return && c.FLAG_FOR_LACK1).ToList(),
                     Ck5TrialData = dtToReturn.Lack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Manual).ToList(),
                     Ck5WasteData = dtToReturn.Lack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Waste).ToList()
                 };
@@ -2696,7 +2696,7 @@ namespace Sampoerna.EMS.BLL
 
             rc.Ck5RemarkData = new Lack1GeneratedRemarkDto()
             {
-                Ck5ReturnData = rc.IncomeList.Where(c => c.Ck5Type == Enums.CK5Type.TriggerSto && c.FlagForLack1).ToList(),
+                Ck5ReturnData = rc.IncomeList.Where(c => c.Ck5Type == Enums.CK5Type.Return && c.FlagForLack1).ToList(),
                 Ck5TrialData = rc.IncomeList.Where(c => c.Ck5Type == Enums.CK5Type.Manual).ToList(),
                 Ck5WasteData  = rc.IncomeList.Where(c => c.Ck5Type == Enums.CK5Type.Waste).ToList()
             };
@@ -3180,7 +3180,7 @@ namespace Sampoerna.EMS.BLL
                 if (data.LACK1_INCOME_DETAIL != null && data.LACK1_INCOME_DETAIL.Count > 0)
                 {
                     var docNoted = GenerateRemarkContent(data.LACK1_INCOME_DETAIL.Where(c => c.CK5.CK5_TYPE == Enums.CK5Type.Waste).ToList(), "Waste");
-                    docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.LACK1_INCOME_DETAIL.Where(c => c.CK5.CK5_TYPE == Enums.CK5Type.TriggerSto && (c.CK5.FLAG_FOR_LACK1.HasValue && c.CK5.FLAG_FOR_LACK1.Value)).ToList(), "Return");
+                    docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.LACK1_INCOME_DETAIL.Where(c => c.CK5.CK5_TYPE == Enums.CK5Type.Return && (c.CK5.FLAG_FOR_LACK1.HasValue && c.CK5.FLAG_FOR_LACK1.Value)).ToList(), "Return");
                     docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.LACK1_INCOME_DETAIL.Where(c => c.CK5.CK5_TYPE == Enums.CK5Type.Manual).ToList(), "Trial");
                     item.DocumentNoted = docNoted;
                 }
