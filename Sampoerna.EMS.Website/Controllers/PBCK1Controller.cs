@@ -172,8 +172,8 @@ namespace Sampoerna.EMS.Website.Controllers
                         decimal value;
                         if (Decimal.TryParse(text, out value))
                         {
-                            //text = Math.Round(Convert.ToDecimal(text), 4).ToString();
-                            text = Convert.ToDecimal(text).ToString();
+                            text = Math.Round(Convert.ToDecimal(text), 5).ToString();
+                            //text = Convert.ToDecimal(text).ToString();
                         }
 
                         uploadItem.ProductCode = datarow[0];
