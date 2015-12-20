@@ -2918,7 +2918,7 @@ namespace Sampoerna.EMS.BLL
 
                     input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
-                    AddWorkflowHistory(input);
+                    if (dbData.CK5_TYPE != Enums.CK5Type.Return) AddWorkflowHistory(input);
                 }
 
             }
