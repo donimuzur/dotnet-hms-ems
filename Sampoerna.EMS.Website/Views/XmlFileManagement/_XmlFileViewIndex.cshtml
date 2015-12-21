@@ -1,0 +1,39 @@
+﻿@model Sampoerna.EMS.Website.Models.XmlFileManagement.XmlFileManagementIndexViewModel
+
+<table id="xmlLogTable" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> Filter </th>
+            <th>File Name</th>
+            <th>TimeStamp</th>
+            <th>Status</th>
+
+        </tr>
+    </thead>
+    <thead class="filters">
+        <tr>
+            <th> Action</th>
+            <th></th>
+            <th></th>
+            <th></th>
+
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model.ListXmlLogs)
+        {
+            <tr>
+                <td class="action">
+                    <a href="@Url.Action("Detail", "XmlFileManagement", new { id = item.XmlLogId })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
+                </td>
+                <td>@Html.DisplayFor(model => item.FileName)</td>
+                <td>@Html.DisplayFor(model => item.TimeStampDisplay)</td>
+                <td>@Html.DisplayFor(model => item.XmlLogStatusDescription)</td>
+
+            </tr>
+
+        }
+    </tbody>
+</table>
+

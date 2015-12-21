@@ -199,6 +199,8 @@
     <Compile Include="DTOs\WasteRoleDto.cs" />
     <Compile Include="DTOs\WasteStockDto.cs" />
     <Compile Include="DTOs\WorkflowHistoryDto.cs" />
+    <Compile Include="DTOs\XML_LOGSDto.cs" />
+    <Compile Include="DTOs\XML_LOGS_DETAILSDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_GOODTYPCompositeDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_KPPBCDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_NPPBKCCompositeDto.cs" />
@@ -270,6 +272,7 @@
     <Compile Include="Inputs\WasteUploadItemsInput.cs" />
     <Compile Include="Inputs\WorkflowHistoryInput.cs" />
     <Compile Include="Inputs\WorkflowInput.cs" />
+    <Compile Include="Inputs\XmlFileInput.cs" />
     <Compile Include="Inputs\ZaapShiftRptInputs.cs" />
     <Compile Include="Inputs\ZaidmExPOAInputs.cs" />
     <Compile Include="Inputs\ZaidmPOAMapInputs.cs" />
