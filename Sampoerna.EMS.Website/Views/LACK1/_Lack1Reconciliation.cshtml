@@ -1,0 +1,68 @@
+﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1ReconciliationModel
+
+<table id="lack1Table" border="0" class="table table-bordered">
+    <thead>
+        <tr>
+            <th rowspan="2">NPPBKC</th>
+            <th rowspan="2">Plant ID</th>
+            <th rowspan="2">Month</th>
+            <th rowspan="2">Date</th>
+            <th rowspan="2">Item Code</th>
+            <th rowspan="2">Finish Goods Code</th>
+            <th rowspan="2">Remaining (gr)</th>
+            <th rowspan="2">Beginning Stock (gr)</th>
+            <th rowspan="2">Received (gr)</th>
+            <th colspan="2">Usage (gr)</th>
+            <th colspan="2">Production Result</th>
+            <th rowspan="2">Ending Stock (gr)</th>
+            <th colspan="3">Remark</th>
+            <th rowspan="2">Stick Produced (sticks)</th>
+            <th rowspan="2">Pack Produced (sticks)</th>
+            <th rowspan="2">WIP (sticks)</th>
+            <th rowspan="2">Reject Maker (sticks)</th>
+            <th rowspan="2">Reject Packer (sticks)</th>
+            <th rowspan="2">Floor sweep (sticks)</th>
+            <th rowspan="2">Stem (sticks)</th>
+        </tr>
+        <tr>
+            <th>Supplied by other</th>
+            <th>Self Supplied</th>
+            <th>TIS (gr)</th>
+            <th>Stick (gr)</th>
+            <th>Descr</th>
+            <th>CK-5 no.</th>
+            <th>Qty (gr)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Detail)
+        {
+            <tr>
+                <td>@item.NppbkcId</td>
+                <td>@item.PlantId</td>
+                <td>@item.Month</td>
+                <td>@item.Date</td>
+                <td>@item.ItemCode</td>
+                <td>@item.FinishGoodCode</td>
+                <td>@item.Remaining</td>
+                <td>@item.BeginningStock</td>
+                <td>@item.Received</td>
+                <td>@item.UsageOther</td>
+                <td>@item.UsageSelf</td>
+                <td>@item.ResultTis</td>
+                <td>@item.ResultStick</td>
+                <td>@item.EndingStock</td>
+                <td>@item.RemarkDesc</td>
+                <td>@item.RemarkCk5No</td>
+                <td>@item.RemarkQty</td>
+                <td>@item.StickProd</td>
+                <td>@item.PackProd</td>
+                <td>@item.Wip</td>
+                <td>@item.RejectMaker</td>
+                <td>@item.RejectPacker</td>
+                <td>@item.FloorSweep</td>
+                <td>@item.Stem</td>
+            </tr>
+        }
+    </tbody>
+</table>

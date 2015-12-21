@@ -3348,5 +3348,42 @@ namespace Sampoerna.EMS.BLL
 
         #endregion
 
+        #region ------------- Reconciliation -----------
+
+        public List<Lack1ReconciliationDto> GetReconciliationByParam(Lack1GetReconciliationByParamInput input)
+        {
+            var dbData = from p in _lack1Service.GetReconciliationByParamInput(input)
+                         select new Lack1ReconciliationDto()
+                         {
+                             NppbkcId = p.NPPBKC_ID,
+                             PlantId = p.SUPPLIER_PLANT_WERKS,
+                             Month = p.MONTH.MONTH_NAME_ENG,
+                             //Date = p.SUBMISSION_DATE.Value.Day.ToString(),
+                             //ItemCode = p.NPPBKC_ID,
+                             //FinishGoodCode = p.NPPBKC_ID,
+                             //Remaining = p.LACK1_PBCK1_MAPPING.
+                             BeginningStock = p.BEGINING_BALANCE,
+                             Received = p.TOTAL_INCOME,
+                             //UsageOther = p.USAGE,
+                             //UsageSelf = p.USAGE,
+                             //ResultTis = p.USAGE_TISTOTIS.Value,
+                             //ResultStick = p.BEGINING_BALANCE,
+                             EndingStock = p.BEGINING_BALANCE + p.TOTAL_INCOME - p.USAGE - (p.RETURN_QTY.HasValue ? p.RETURN_QTY.Value : 0),
+                             RemarkDesc = p.DOCUMENT_NOTED != null ? p.DOCUMENT_NOTED.Replace("<br />", Environment.NewLine) : string.Empty,
+                             //RemarkCk5No = p.NPPBKC_ID,
+                             RemarkQty = (p.RETURN_QTY.HasValue ? p.RETURN_QTY.Value : 0) + (p.WASTE_QTY.HasValue ? p.WASTE_QTY.Value : 0),
+                             //StickProd = p.PERIOD_MONTH.Value,
+                             //PackProd = p.PERIOD_MONTH.Value,
+                             //Wip = p.PERIOD_MONTH.Value,
+                             //RejectMaker = p.PERIOD_MONTH.Value,
+                             //RejectPacker = p.PERIOD_MONTH.Value,
+                             //FloorSweep = p.BEGINING_BALANCE,
+                             //Stem = p.BEGINING_BALANCE
+                         };
+
+            return dbData.ToList();
+        }
+
+        #endregion
     }
 }

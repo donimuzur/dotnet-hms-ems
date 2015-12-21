@@ -432,5 +432,29 @@ namespace Sampoerna.EMS.BLL.Services
             return _repository.Get(queryFilter).ToList();
         }
 
+        public List<LACK1> GetReconciliationByParamInput(Lack1GetReconciliationByParamInput input)
+        {
+            const string incTables = "MONTH, LACK1_PLANT";
+
+            Expression<Func<LACK1, bool>> queryFilter = PredicateHelper.True<LACK1>();
+            if (!string.IsNullOrEmpty(input.NppbkcId))
+            {
+                queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbkcId);
+            }
+            if (!string.IsNullOrEmpty(input.PlantId))
+            {
+                queryFilter =
+                    queryFilter.And(c => c.LACK1_PLANT.Any(p => p.PLANT_ID == input.PlantId));
+            }
+            if (!string.IsNullOrEmpty(input.ExGoodType))
+            {
+                queryFilter = queryFilter.And(c => c.EX_GOODTYP == input.ExGoodType);
+            }
+
+            var data = _repository.Get(queryFilter, null, incTables).ToList();
+
+            return data;
+        }
+
     }
 }
