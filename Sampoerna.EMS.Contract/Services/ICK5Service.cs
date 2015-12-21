@@ -11,5 +11,8 @@ namespace Sampoerna.EMS.Contract.Services
         List<CK5> GetForLack2ByParam(Ck5GetForLack2ByParamInput input);
 
         WasteStockQuotaOutput GetWasteStockQuota(decimal wasteStock, string plantId, string materialNumber);
+
+        List<CK5> GetByStoNumberList(List<string> stoNumberList);
+
     }
 }

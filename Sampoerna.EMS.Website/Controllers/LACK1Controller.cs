@@ -1804,6 +1804,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].Ck5Number);
                     iColumn++;
 
+                    slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].Ck5TypeText);
+                    iColumn++;
+
                     slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].Ck5RegistrationNumber);
                     iColumn++;
 
@@ -1833,10 +1836,6 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     slDocument.SetCellValue(iRow, iColumn, item.EndingBalance.ToString("N2"));
                     slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, !string.IsNullOrEmpty(item.DocumentNoted) ? item.DocumentNoted.Replace("<br />", Environment.NewLine) : string.Empty);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     
                     for (int i = 1; i < item.TrackingConsolidations.Count; i++)
                     {
@@ -1844,6 +1843,9 @@ namespace Sampoerna.EMS.Website.Controllers
                         iColumn = 4;
                         
                         slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].Ck5Number);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].Ck5TypeText);
                         iColumn++;
 
                         slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].Ck5RegistrationNumber);
@@ -1887,7 +1889,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, item.BeginingBalance.ToString("N2"));
                     iColumn++;
 
-                    for (int i = 0; i < 10; i++)
+                    for (int i = 0; i < 11; i++)
                     {
                         slDocument.SetCellValue(iRow, iColumn, "-");
                         iColumn++;
@@ -1895,8 +1897,6 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     slDocument.SetCellValue(iRow, iColumn, item.EndingBalance.ToString("N2"));
                     iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, !string.IsNullOrEmpty(item.DocumentNoted) ? item.DocumentNoted.Replace("<br />", Environment.NewLine) : string.Empty);
                     
                 }
                 iRow++;
@@ -1943,6 +1943,9 @@ namespace Sampoerna.EMS.Website.Controllers
             //second row
             iColumn = 4;
             slDocument.SetCellValue(2, iColumn, "CK-5 Number");
+            iColumn++;
+
+            slDocument.SetCellValue(2, iColumn, "CK-5 Type");
             iColumn++;
             
             slDocument.SetCellValue(2, iColumn, "CK-5 Registration Number");

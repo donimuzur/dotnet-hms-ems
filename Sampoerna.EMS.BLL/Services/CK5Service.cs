@@ -112,6 +112,15 @@ namespace Sampoerna.EMS.BLL.Services
 
         }
 
+        public List<CK5> GetByStoNumberList(List<string> stoNumberList)
+        {
+            Expression<Func<CK5, bool>> queryFilter =
+                c => stoNumberList.Contains(c.STO_RECEIVER_NUMBER) || stoNumberList.Contains(c.STO_SENDER_NUMBER) ||
+                    stoNumberList.Contains(c.DN_NUMBER);
+
+            return _repository.Get(queryFilter, null, "UOM").ToList();
+        }
+
     }
 
 }

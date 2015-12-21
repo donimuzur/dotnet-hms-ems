@@ -289,7 +289,6 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Lack1LevelName, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Lack1Level)))
                 .ForMember(dest => dest.TrackingConsolidations, opt => opt.MapFrom(src
                     => Mapper.Map<List<Lack1TrackingConsolidationDetailReportItemModel>>(src.TrackingConsolidations)))
-                    .ForMember(dest => dest.DocumentNoted, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.DocumentNoted) ? src.DocumentNoted.Replace(Environment.NewLine, "<br />") : string.Empty))
                 ;
             
             #endregion
