@@ -256,8 +256,8 @@
         <EntityTypeShape EntityType="EMSModel.NlogLogs" Width="1.5" PointX="13.375" PointY="0.75" />
         <EntityTypeShape EntityType="EMSModel.LACK1_TRACKING_ALCOHOL" Width="1.5" PointX="15.75" PointY="16.125" />
         <AssociationConnector Association="EMSModel.FK_LACK1_TRACKING_ALCOHOL_LACK1" />
-        <EntityTypeShape EntityType="EMSModel.XML_LOGS" Width="1.5" PointX="13.375" PointY="5" />
-        <EntityTypeShape EntityType="EMSModel.XML_LOGS_DETAILS" Width="1.5" PointX="15.625" PointY="5.25" />
+        <EntityTypeShape EntityType="EMSModel.XML_LOGS_DETAILS" Width="1.5" PointX="15.625" PointY="5.375" />
+        <EntityTypeShape EntityType="EMSModel.XML_LOGS" Width="1.5" PointX="13.375" PointY="14" />
         <AssociationConnector Association="EMSModel.FK_XML_LOGS_DETAILS_XML_LOGS" />
         </Diagram>
     </edmx:Diagrams>

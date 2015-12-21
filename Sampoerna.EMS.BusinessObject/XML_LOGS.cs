@@ -25,7 +25,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
         public string MODIFIED_BY { get; set; }
-        public byte[] MODIFIED_DATE { get; set; }
+        public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
         public Sampoerna.EMS.Core.Enums.XmlLogStatus STATUS { get; set; }
     
         public virtual ICollection<XML_LOGS_DETAILS> XML_LOGS_DETAILS { get; set; }
