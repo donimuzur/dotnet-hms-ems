@@ -758,7 +758,7 @@
           <Property Name="PROD_CODE" Type="nvarchar" MaxLength="2" />
           <Property Name="PRODUCT_TYPE" Type="nvarchar" MaxLength="35" />
           <Property Name="PRODUCT_ALIAS" Type="nvarchar" MaxLength="35" />
-          <Property Name="CONVERTER_OUTPUT" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="CONVERTER_OUTPUT" Type="numeric" Precision="18" Scale="5" />
           <Property Name="CONVERTER_UOM_ID" Type="nvarchar" MaxLength="5" />
           <Property Name="BRAND_CE" Type="nvarchar" MaxLength="65" />
         </EntityType>
@@ -1282,7 +1282,6 @@
           </Key>
           <Property Name="XML_LOGS_DETAILS_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="XML_LOGS_ID" Type="bigint" Nullable="false" />
-          <Property Name="XML_FILENAME" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="LOGS" Type="varchar(max)" />
           <Property Name="ERROR_TIME" Type="datetime" />
         </EntityType>
@@ -8117,7 +8116,7 @@
           <Property Name="PROD_CODE" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="PRODUCT_TYPE" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="PRODUCT_ALIAS" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="CONVERTER_OUTPUT" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="CONVERTER_OUTPUT" Type="Decimal" Precision="18" Scale="5" />
           <Property Name="CONVERTER_UOM_ID" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="BRAND_CE" Type="String" MaxLength="65" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_PROD_CONVERTER_PBCK1" FromRole="PBCK1_PROD_CONVERTER" ToRole="PBCK1" />
@@ -8495,13 +8494,13 @@
           <Property Name="STATUS" Type="EMSModel.XmlLogStatus" Nullable="false" />
           <NavigationProperty Name="XML_LOGS_DETAILS" Relationship="EMSModel.FK_XML_LOGS_DETAILS_XML_LOGS" FromRole="XML_LOGS" ToRole="XML_LOGS_DETAILS" />
         </EntityType>
+        <EnumType Name="XmlLogStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.XmlLogStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EntityType Name="XML_LOGS_DETAILS">
           <Key>
             <PropertyRef Name="XML_LOGS_DETAILS_ID" />
           </Key>
           <Property Name="XML_LOGS_DETAILS_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="XML_LOGS_ID" Type="Int64" Nullable="false" />
-          <Property Name="XML_FILENAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="LOGS" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="ERROR_TIME" Type="DateTime" Precision="3" />
           <NavigationProperty Name="XML_LOGS" Relationship="EMSModel.FK_XML_LOGS_DETAILS_XML_LOGS" FromRole="XML_LOGS_DETAILS" ToRole="XML_LOGS" />
@@ -8518,7 +8517,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EnumType Name="XmlLogStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.XmlLogStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -10073,7 +10071,6 @@
               <MappingFragment StoreEntitySet="XML_LOGS_DETAILS">
                 <ScalarProperty Name="ERROR_TIME" ColumnName="ERROR_TIME" />
                 <ScalarProperty Name="LOGS" ColumnName="LOGS" />
-                <ScalarProperty Name="XML_FILENAME" ColumnName="XML_FILENAME" />
                 <ScalarProperty Name="XML_LOGS_ID" ColumnName="XML_LOGS_ID" />
                 <ScalarProperty Name="XML_LOGS_DETAILS_ID" ColumnName="XML_LOGS_DETAILS_ID" />
               </MappingFragment>
