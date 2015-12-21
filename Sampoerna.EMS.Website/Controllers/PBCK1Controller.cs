@@ -478,6 +478,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     isCurrManager = true;
                 }
 
+                foreach (var item in model.Detail.Pbck1ProdConverter)
+                {
+                    item.ConverterOutput = ConvertHelper.ConvertDecimalFiveToString(Convert.ToDecimal(item.ConverterOutput));
+                }
+
                 var changeHistory =
                 Mapper.Map<List<ChangesHistoryItemModel>>(
                     _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.Value.ToString()));
@@ -783,9 +788,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 ChangesHistoryList = changesHistory,
                 WorkflowHistory = workflowHistory,
                 PrintHistoryList = printHistory
-            };
 
+            };
+            foreach (var item in model.Detail.Pbck1ProdConverter)
+            {
+                item.ConverterOutput = ConvertHelper.ConvertDecimalFiveToString(Convert.ToDecimal(item.ConverterOutput));
+            }
             model.DocStatus = model.Detail.Status;
+
+
 
             //validate approve and reject
             var input = new WorkflowAllowApproveAndRejectInput
@@ -1502,7 +1513,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             foreach (var item in dataSummaryReport)
             {
-                
+
             }
 
             var grid = new System.Web.UI.WebControls.GridView
@@ -2180,7 +2191,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
                 var UomKG = "kg";
-                
+
                 var visibilityUomPemasukan = "l"; //code : l (liter), k (kg) regarding to converted uom id
                 var visibilityUomPenggunaan = "l"; //code : l (liter), k (kg) regarding to converted uom id
                 var visibilityUomBkc = "l"; //code : l (liter), k (kg), b (batang) //from Excisable Goods Type on Brand Registration by Prod_Code in Lack1 Production Data
@@ -2225,9 +2236,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 var latestUomId = string.Empty;
                 foreach (var item in data)
                 {
-                    if (month != item.Bulan) { 
-                        sumPemasukan += item.Pemasukan == null ? 0 : (conversion*item.Pemasukan.Value);
-                        sumPenggunaan += item.Penggunaan == null ? 0 : (conversion*item.Penggunaan.Value);
+                    if (month != item.Bulan)
+                    {
+                        sumPemasukan += item.Pemasukan == null ? 0 : (conversion * item.Pemasukan.Value);
+                        sumPenggunaan += item.Penggunaan == null ? 0 : (conversion * item.Penggunaan.Value);
                     }
                     month = item.Bulan;
                     if (item.ProductionList.Count > 0)
@@ -2296,8 +2308,8 @@ namespace Sampoerna.EMS.Website.Controllers
                             detailRow.VisibilityUomPenggunaan = visibilityUomPenggunaan;
                             detailRow.SummaryJenis = summaryJenis;
                             detailRow.SummaryJumlah = summaryTotal;
-                            detailRow.SumAllPemasukan = String.Format("{0:n}",sumPemasukan);
-                            detailRow.SumAllPenggunaan = String.Format("{0:n}",sumPenggunaan);
+                            detailRow.SumAllPemasukan = String.Format("{0:n}", sumPemasukan);
+                            detailRow.SumAllPenggunaan = String.Format("{0:n}", sumPenggunaan);
                             ds.RealisasiP3BKC.AddRealisasiP3BKCRow(detailRow);
                         }
                     }
@@ -2752,13 +2764,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult MonitoringMutasi()
         {
-            
+
             var model = InitMonitoringMutasi(new Pbck1MonitoringMutasiViewModel
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo
             });
-          
+
             return View(model);
         }
 
@@ -2766,7 +2778,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var monitoringDtos = _pbck1Bll.GetMonitoringMutasiByParam(new Pbck1GetMonitoringMutasiByParamInput());
             model.pbck1NumberList = new SelectList(monitoringDtos, "Pbck1Number", "Pbck1Number");
-            
+
             var input = Mapper.Map<Pbck1GetMonitoringMutasiByParamInput>(model);
 
             var dbData = _pbck1Bll.GetMonitoringMutasiByParam(input);
@@ -2780,11 +2792,11 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterMutasiIndex(Pbck1MonitoringMutasiViewModel model)
         {
             var input = Mapper.Map<Pbck1GetMonitoringMutasiByParamInput>(model);
-         
+
 
             var dbData = _pbck1Bll.GetMonitoringMutasiByParam(input);
             var result = Mapper.Map<List<Pbck1MonitoringMutasiItem>>(dbData);
-            var viewModel = new Pbck1MonitoringMutasiViewModel ();
+            var viewModel = new Pbck1MonitoringMutasiViewModel();
             viewModel.DetailsList = result;
             return PartialView("_MutasiList", viewModel);
         }
@@ -2805,7 +2817,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public void ExportMonitoringMutasiToExcel(Pbck1ExportMonitoringMutasiViewModel model)
         {
-           
+
             var dbResult = _pbck1Bll.GetMonitoringMutasiByParam(new Pbck1GetMonitoringMutasiByParamInput
             {
                 pbck1Number = model.FilterPbck1Number
@@ -2845,8 +2857,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     DataField = "QuotaRemaining",
                     HeaderText = "PBCK-1 Quota remaining"
                 });
-            
-           
+
+
             } if (model.Received)
             {
                 grid.Columns.Add(new BoundField()
@@ -2855,7 +2867,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     HeaderText = "Total CK-5 Used"
                 });
             }
-           
+
             if (model.DocNumberCk5)
             {
                 grid.Columns.Add(new BoundField()
@@ -2883,7 +2895,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     HtmlEncode = false
                 });
             }
-            
+
 
             if (dataToExport.Count == 0)
             {
