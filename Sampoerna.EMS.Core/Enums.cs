@@ -660,9 +660,11 @@ namespace Sampoerna.EMS.Core
         public enum XmlLogStatus
         {
             [Description("Error")]
-            Approved = 1,
+            Error = 1,
             [Description("Re-Run")]
-            ReRun = 2
+            ReRun = 2,
+            [Description("Re-run Success")]
+            Success = 3
         }
     }
 }
