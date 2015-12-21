@@ -39,28 +39,28 @@ namespace Sampoerna.EMS.Website.Controllers
             return Mapper.Map<List<XmlFileManagementFormViewModel>>(dbData);
         }
 
-        private SelectList GetDateListXmlLog(bool isFrom, List<XmlFileManagementFormViewModel> list)
-        {
+        //private SelectList GetDateListXmlLog(bool isFrom, List<XmlFileManagementFormViewModel> list)
+        //{
 
-            IEnumerable<SelectItemModel> query;
-            if (isFrom)
-                query = from x in list.Where(c => c.TimeStamp.HasValue).OrderBy(c => c.TimeStamp)
-                        select new Models.SelectItemModel()
-                        {
-                            ValueField = x.TimeStamp,
-                            TextField = x.TimeStamp.Value.ToString("dd MMM yyyy")
-                        };
-            else
-                query = from x in list.Where(c => c.TimeStamp.HasValue).OrderByDescending(c => c.TimeStamp)
-                        select new Models.SelectItemModel()
-                        {
-                            ValueField = x.TimeStamp,
-                            TextField = x.TimeStamp.Value.ToString("dd MMM yyyy")
-                        };
+        //    IEnumerable<SelectItemModel> query;
+        //    if (isFrom)
+        //        query = from x in list.Where(c => c.TimeStamp.HasValue).OrderBy(c => c.TimeStamp)
+        //                select new Models.SelectItemModel()
+        //                {
+        //                    ValueField = x.TimeStamp,
+        //                    TextField = x.TimeStamp.Value.ToString("dd MMM yyyy")
+        //                };
+        //    else
+        //        query = from x in list.Where(c => c.TimeStamp.HasValue).OrderByDescending(c => c.TimeStamp)
+        //                select new Models.SelectItemModel()
+        //                {
+        //                    ValueField = x.TimeStamp,
+        //                    TextField = x.TimeStamp.Value.ToString("dd MMM yyyy")
+        //                };
 
-            return new SelectList(query.DistinctBy(c => c.TextField), "ValueField", "TextField");
+        //    return new SelectList(query.DistinctBy(c => c.TextField), "ValueField", "TextField");
 
-        }
+        //}
 
         public ActionResult Index()
         {
@@ -70,11 +70,31 @@ namespace Sampoerna.EMS.Website.Controllers
             
             model.ListXmlLogs = GetData();
 
-            model.DateFromList = GetDateListXmlLog(true, model.ListXmlLogs);
-            model.DateToList = GetDateListXmlLog(false, model.ListXmlLogs);
+            //model.DateFromList = GetDateListXmlLog(true, model.ListXmlLogs);
+            //model.DateToList = GetDateListXmlLog(false, model.ListXmlLogs);
 
             return View(model);
         }
 
+        [HttpPost]
+        public PartialViewResult Filter(XmlFileManagementIndexViewModel model)
+        {
+
+            model.ListXmlLogs = GetData(model);
+          
+
+            return PartialView("_XmlFileViewIndex", model);
+        }
+
+        public ActionResult Detail(long id)
+        {
+          
+            var model = Mapper.Map<XmlFileManagementFormViewModel>(_xmlFileLogBll.GetByIdIncludeTables(id));
+
+            model.MainMenu = Enums.MenuList.Settings;
+            model.CurrentMenu = PageInfo;
+
+            return View(model);
+        }
 	}
 }

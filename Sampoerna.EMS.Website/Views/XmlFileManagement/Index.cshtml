@@ -13,7 +13,7 @@
 <div class="container-wrap">
     <div class="row">
         <div class="col-sm-12">
-            @using (Ajax.BeginForm("Filter", "XmlLog",
+            @using (Ajax.BeginForm("Filter", "XmlFileManagement",
                                 new AjaxOptions
                                 {
                                     HttpMethod = "POST",
@@ -112,7 +112,8 @@
      
 
         function OnReset() {
-            $(".selectreset").val($(".selectreset option:first").val());
+            //$(".selectreset").val($(".selectreset option:first").val());
+            $(".resetfield").val('');
         }
 
     </script>

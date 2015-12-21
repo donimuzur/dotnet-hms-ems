@@ -25,7 +25,7 @@
         {
             <tr>
                 <td class="action">
-                    <a href="@Url.Action("Detail", "XmlLog", new { id = item.XmlLogId })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
+                    <a href="@Url.Action("Detail", "XmlFileManagement", new { id = item.XmlLogId })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
                 </td>
                 <td>@Html.DisplayFor(model => item.FileName)</td>
                 <td>@Html.DisplayFor(model => item.TimeStampDisplay)</td>

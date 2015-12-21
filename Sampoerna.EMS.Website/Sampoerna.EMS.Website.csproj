@@ -1274,6 +1274,7 @@
     <Content Include="Views\XmlFileManagement\Index.cshtml" />
     <Content Include="Views\XmlFileManagement\_XmlFileSearch.cshtml" />
     <Content Include="Views\XmlFileManagement\_XmlFileViewIndex.cshtml" />
+    <Content Include="Views\XmlFileManagement\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -7,5 +7,7 @@ namespace Sampoerna.EMS.Contract
     public interface IXmlFileLogBLL
     {
         List<XML_LOGSDto> GetXmlLogByParam(GetXmlLogByParamInput input);
+
+        XML_LOGSDto GetByIdIncludeTables(long id);
     }
 }

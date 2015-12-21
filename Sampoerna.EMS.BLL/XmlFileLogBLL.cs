@@ -7,6 +7,7 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 
@@ -49,8 +50,17 @@ namespace Sampoerna.EMS.BLL
             var result = _repository.Get(queryFilter, orderByFilter, "").ToList();
 
             return Mapper.Map<List<XML_LOGSDto>>(result.ToList());
+            
+        }
+
+        public XML_LOGSDto GetByIdIncludeTables(long id)
+        {
+            var dbData = _repository.Get(c => c.XML_LOGS_ID == id, null, "XML_LOGS_DETAILS").FirstOrDefault();
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
 
+            return Mapper.Map<XML_LOGSDto>(dbData);
         }
 
     }

@@ -1010,9 +1010,15 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.XmlLogId, opt => opt.MapFrom(src => src.XML_LOGS_ID))
                 .ForMember(dest => dest.FileName, opt => opt.MapFrom(src => src.XML_FILENAME))
                 .ForMember(dest => dest.TimeStamp, opt => opt.MapFrom(src => src.LAST_ERROR_TIME))
-                .ForMember(dest => dest.TimeStampDisplay, opt => opt.MapFrom(src => src.LAST_ERROR_TIME.ToString("dd MMM yyyy hh:mm:ss tt") ))
+                .ForMember(dest => dest.TimeStampDisplay, opt => opt.MapFrom(src => src.LAST_ERROR_TIME.ToString("dd MMM yyyy HH:mm:ss") ))
                 .ForMember(dest => dest.XmlLogStatus, opt => opt.MapFrom(src => src.STATUS))
                 .ForMember(dest => dest.XmlLogStatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS)))
+                .ForMember(dest => dest.DetailListLogs, opt => opt.MapFrom(src => Mapper.Map<List<XmlFileManagementDetailsViewModel>>(src.DetailList)))
+                ;
+
+            Mapper.CreateMap<XML_LOGS_DETAILSDto, XmlFileManagementDetailsViewModel>().IgnoreAllNonExisting()
+                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.LOGS))
+                 .ForMember(dest => dest.TimeStampDisplay, opt => opt.MapFrom(src => src.ERROR_TIME.HasValue? src.ERROR_TIME.Value.ToString("dd MMM yyyy HH:mm:ss") : string.Empty))
                 ;
 
             #endregion

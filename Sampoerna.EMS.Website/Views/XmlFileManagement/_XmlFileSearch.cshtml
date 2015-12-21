@@ -7,12 +7,20 @@
             <div class="col-md-6">
                 <div class="row">
                     <label class="col-md-4">Date From </label>
-                    <div class="col-md-8 year-from">
+                    <div class="col-md-8">
+                        <div class="input-group date">
+                            @Html.TextBoxFor(model => model.DateFrom, "{0:dd MMM yyyy}", new { @class = "form-control resetfield" })
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                    @*<div class="col-md-8 year-from">
                         @(Model.DateFromList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
                                               : Html.DropDownListFor(model => model.DateFrom, Model.DateFromList, "All", new { @class = "form-control selectreset" }))
 
 
-                    </div>
+                    </div>*@
                 </div>
             </div>
 
@@ -21,12 +29,20 @@
             <div class="col-md-6">
                 <div class="row">
                     <label class="col-md-4">Date To </label>
-                    <div class="col-md-8 year-from">
+                    <div class="col-md-8">
+                        <div class="input-group date">
+                            @Html.TextBoxFor(model => model.DateTo, "{0:dd MMM yyyy}", new { @class = "form-control resetfield" })
+                            <span class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </span>
+                        </div>
+                    </div>
+                    @*<div class="col-md-8 year-from">
                         @(Model.DateToList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
                                               : Html.DropDownListFor(model => model.DateTo, Model.DateToList, "All", new { @class = "form-control selectreset" }))
 
 
-                    </div>
+                    </div>*@
                 </div>
             </div>
 
