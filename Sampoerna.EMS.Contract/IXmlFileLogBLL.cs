@@ -9,5 +9,7 @@ namespace Sampoerna.EMS.Contract
         List<XML_LOGSDto> GetXmlLogByParam(GetXmlLogByParamInput input);
 
         XML_LOGSDto GetByIdIncludeTables(long id);
+
+        void UpdateXmlFile(UpdateXmlFileInput input);
     }
 }

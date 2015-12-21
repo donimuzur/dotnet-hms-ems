@@ -96,5 +96,26 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return View(model);
         }
+
+        public ActionResult ReExecute(long id)
+        {
+            try
+            {
+                var input = new UpdateXmlFileInput();
+
+                input.XmlId = id;
+                input.SourcePath = @"C:\Deploy\InboundMsg\error\";
+                input.DestPath = @"C:\Deploy\InboundMsg\";
+
+                _xmlFileLogBll.UpdateXmlFile(input);
+
+                AddMessageInfo("Success Move File", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Index");
+        }
 	}
 }

@@ -10,6 +10,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -63,5 +64,26 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<XML_LOGSDto>(dbData);
         }
 
+
+        public void UpdateXmlFile(UpdateXmlFileInput input)
+        {
+            var dbData = _repository.GetByID(input.XmlId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            //update data
+            dbData.STATUS = Enums.XmlLogStatus.ReRun;
+            dbData.MODIFIED_BY = input.UserId;
+            dbData.MODIFIED_DATE = DateTime.Now;
+
+            //if file exist ..in dest path .. remove ??
+            if (System.IO.File.Exists(input.DestPath + dbData.XML_FILENAME))
+                System.IO.File.Delete(input.DestPath + dbData.XML_FILENAME);
+
+            System.IO.File.Move(input.SourcePath + dbData.XML_FILENAME , input.DestPath + dbData.XML_FILENAME);
+
+            _uow.SaveChanges();
+        }
     }
 }
