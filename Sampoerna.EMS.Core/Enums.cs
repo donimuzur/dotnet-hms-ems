@@ -657,5 +657,12 @@ namespace Sampoerna.EMS.Core
             WasteApprover = 4
         }
 
+        public enum XmlLogStatus
+        {
+            [Description("Error")]
+            Error = 1,
+            [Description("Re-Run")]
+            ReRun = 2
+        }
     }
 }

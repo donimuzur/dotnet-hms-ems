@@ -234,6 +234,7 @@
     <Compile Include="Controllers\WasteController.cs" />
     <Compile Include="Controllers\WasteRoleController.cs" />
     <Compile Include="Controllers\WasteStockController.cs" />
+    <Compile Include="Controllers\XmlFileManagementController.cs" />
     <Compile Include="Controllers\XmlLogController.cs" />
     <Compile Include="EMSWebsiteMapperCK4C.cs" />
     <Compile Include="Code\FormsAuthenticationService.cs" />
@@ -431,6 +432,8 @@
     <Compile Include="Models\Waste\WasteUploadViewModel.cs" />
     <Compile Include="Models\Waste\WasteViewModel.cs" />
     <Compile Include="Models\WorkflowSettingListModel.cs" />
+    <Compile Include="Models\XmlFileManagement\XmlFileManagementFormViewModel.cs" />
+    <Compile Include="Models\XmlFileManagement\XmlFileManagementIndexViewModel.cs" />
     <Compile Include="Models\XmlLog\XmlLogFormViewModel.cs" />
     <Compile Include="Models\XmlLog\XmlLogIndexViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -1268,6 +1271,10 @@
     <Content Include="Views\XmlLog\Detail.cshtml" />
     <Content Include="Views\XmlLog\_XmlLogViewIndex.cshtml" />
     <Content Include="Views\Error\Unauthorized.cshtml" />
+    <Content Include="Views\XmlFileManagement\Index.cshtml" />
+    <Content Include="Views\XmlFileManagement\_XmlFileSearch.cshtml" />
+    <Content Include="Views\XmlFileManagement\_XmlFileViewIndex.cshtml" />
+    <Content Include="Views\XmlFileManagement\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -153,6 +153,7 @@
     <Compile Include="WorkflowBLL.cs" />
     <Compile Include="WorkflowHistoryBLL.cs" />
     <Compile Include="WorkflowSettingBLL.cs" />
+    <Compile Include="XmlFileLogBLL.cs" />
     <Compile Include="ZaidmExGoodTypeBLL.cs" />
     <Compile Include="ZaidmExKPPBCBLL.cs" />
     <Compile Include="ZaidmExNPPBKCBLL.cs" />
