@@ -81,16 +81,15 @@
         var poa = '@Model.Details.ApprovedByPoa';
         var nppbkc = '@Model.Details.NppbkcId';
         var plant = '@Model.Details.PlantId';
-        var creator = '@Model.Details.CreatedBy';
         var url = '@Url.Action("PoaListPartial", "CK4C")';
         var urlPlant = '@Url.Action("GetPoaByPlantId", "CK4C")';
 
         if (poa == '') {
             if (plant != '') {
-                ajaxSelectNppbck({ plantId: plant, documentCreator: creator }, urlPlant);
+                ajaxSelectNppbck({ plantId: plant }, urlPlant);
             }
             else {
-                ajaxSelectNppbck({ nppbkcid: nppbkc, documentCreator: creator }, url);
+                ajaxSelectNppbck({ nppbkcid: nppbkc }, url);
             }
         }
     }
@@ -111,6 +110,10 @@
 
     function printPreview(url) {
         window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+    }
+    
+    function openAttachment(url) {
+        window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes');
     }
 
     function PrintOutClick(reportUrl, addHistoryUrl, id) {

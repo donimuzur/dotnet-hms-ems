@@ -182,9 +182,15 @@
             $('#generated-data-container').html('');
 
             var jsonData = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model)));
-            console.log(jsonData);
-            var generateTableD = generateTable(jsonData);
-            $('#generated-data-container').append(generateTableD);
+            //console.log(jsonData);
+            
+            if (jsonData.IsTisToTisReport) {
+                var generateTableE = generateTableWithTisToTis(jsonData);
+                $('#generated-data-container').append(generateTableE);
+            } else {
+                var generateTableD = generateTable(jsonData);
+                $('#generated-data-container').append(generateTableD);
+            }
 
             $('#Bukrs').on('change', function () {
                 BukrsOnChange();

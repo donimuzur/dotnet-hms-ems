@@ -526,7 +526,7 @@
                                                         <div class="col-sm-12">
                                                             <div class="file-upload">
                                                                 <i class="fa fa-file"></i>
-                                                                <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                                <a onclick="openAttachment('@Url.Content(file.FILE_PATH)')">@file.FILE_NAME</a>
                                                                 @*<div class="col-xs-4 col-sm-2 col-md-4 col-lg-2"><button type="button" class="btn btn-danger full" onclick='removeExistingDocument(this)'><i class="fa fa-times"></i></button>	</div>*@
                                                             </div>
                                                         </div>

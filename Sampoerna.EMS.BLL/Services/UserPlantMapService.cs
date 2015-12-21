@@ -74,8 +74,8 @@ namespace Sampoerna.EMS.BLL.Services
             Expression<Func<USER_PLANT_MAP, bool>> queryFilter = c => c.USER_ID == input.UserId && c.T001W.T001K.BUKRS == input.CompanyCode;
             var dataMap = _repository.Get(queryFilter, null, "T001W, ZAIDM_EX_NPPBKC, T001W.T001K").ToList();
             if (dataMap.Count == 0) return new List<ZAIDM_EX_NPPBKC>();
-            var nppbkcList = dataMap.Where(c => !c.ZAIDM_EX_NPPBKC.IS_DELETED.HasValue 
-                || !c.ZAIDM_EX_NPPBKC.IS_DELETED.Value).Select(d => d.ZAIDM_EX_NPPBKC).Distinct().ToList();
+            var nppbkcList = dataMap.Where(c => c.ZAIDM_EX_NPPBKC != null && (!c.ZAIDM_EX_NPPBKC.IS_DELETED.HasValue 
+                || !c.ZAIDM_EX_NPPBKC.IS_DELETED.Value)).Select(d => d.ZAIDM_EX_NPPBKC).Distinct().ToList();
             return nppbkcList;
         }
 
@@ -85,7 +85,7 @@ namespace Sampoerna.EMS.BLL.Services
                 && (c.T001W.NPPBKC_ID == input.NppbkcId || c.T001W.NPPBKC_IMPORT_ID == input.NppbkcId);
             var dataMap = _repository.Get(queryFilter, null, "T001W, T001W.T001K").ToList();
             if (dataMap.Count == 0) return new List<T001W>();
-            var plantList = dataMap.Where(c => !c.T001W.IS_DELETED.HasValue || !c.T001W.IS_DELETED.Value).Select(d => d.T001W).Distinct().ToList();
+            var plantList = dataMap.Where(c => c.T001W != null && (!c.T001W.IS_DELETED.HasValue || !c.T001W.IS_DELETED.Value)).Select(d => d.T001W).Distinct().ToList();
             return plantList;
         }
 

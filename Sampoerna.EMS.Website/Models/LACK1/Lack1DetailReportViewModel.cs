@@ -56,6 +56,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public decimal BeginingBalance { get; set; }
         public decimal EndingBalance { get; set; }
         public List<Lack1TrackingConsolidationDetailReportItemModel> TrackingConsolidations { get; set; }
+        public string DocumentNoted { get; set; }
     }
 
     public class Lack1TrackingConsolidationDetailReportItemModel
@@ -70,17 +71,18 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         #endregion
 
         #region ----------- Usage Table on FS Doc ---------
-        public string GiDate { get; set; }
+        public DateTime? GiDate { get; set; }
         public string PurchaseDoc { get; set; }
         public string MaterialCode { get; set; }
         public decimal? UsageQty { get; set; }
         public string OriginalUomId { get; set; }
+        public string OriginalUomDesc { get; set; }
         public string ConvertedUomId { get; set; }
+        public string ConvertedUomDesc { get; set; }
         public string Batch { get; set; }
-        #endregion 
-
         public int MaterialCodeUsageRecCount { get; set; }
-
+        #endregion 
+        
     }
 
 }

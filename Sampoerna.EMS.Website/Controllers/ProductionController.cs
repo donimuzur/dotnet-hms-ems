@@ -63,7 +63,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.DailyProduction,
                 ProductionDate = DateTime.Today.ToString("dd MMM yyyy"),
-                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
+                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
             });
 
             return View("Index", data);
@@ -109,7 +109,7 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /Production/Create
         public ActionResult Create()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
@@ -129,8 +129,8 @@ namespace Sampoerna.EMS.Website.Controllers
             var userPlantCompany = _userPlantMapBll.GetCompanyByUserId(CurrentUser.USER_ID);
             var poaMapCompany = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
             var distinctCompany = company.Where(x => userPlantCompany.Contains(x.Value) || poaMapCompany.Contains(x.Value));
-            var getCompany = new SelectList(distinctCompany, "Value", "Text");
-
+            var getCompany = new SelectList(distinctCompany,"Value", "Text");
+            
 
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
@@ -206,7 +206,7 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /Production/Edit
         public ActionResult Edit(string companyCode, string plantWerk, string faCode, DateTime productionDate)
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
             {
                 return RedirectToAction("Edit", "Production", new
                 {

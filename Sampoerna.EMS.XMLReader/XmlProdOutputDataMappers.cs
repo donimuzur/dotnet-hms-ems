@@ -125,13 +125,17 @@ namespace Sampoerna.EMS.XMLReader
                             }
                             item.BRAND_DESC = existingBrand.BRAND_CE;
 
+                                
+                            items.Add(item);
+
+
                             zaapShftRptItem.MATDOC = _xmlMapper.GetElementValue(xElement.Element("MatDoc"));
-                            
+
                             zaapShftRptItem.BATCH = item.BATCH;
                             zaapShftRptItem.BUNDLE = item.BUNDLE;
-                            zaapShftRptItem.MARKET = _xmlMapper.GetElementValue(xElement.Element("Market"));
+                            //zaapShftRptItem.MARKET = _xmlMapper.GetElementValue(xElement.Element("Market"));
                             zaapShftRptItem.DOCGMVTER = _xmlMapper.GetElementValue(xElement.Element("DocGMvtEr"));
-                            
+
                             zaapShftRptItem.ORDR = _xmlMapper.GetElementValue(xElement.Element("Order"));
                             zaapShftRptItem.SHIFT = _xmlMapper.GetElementValue(xElement.Element("Shift"));
                             zaapShftRptItem.COMPANY_CODE = item.COMPANY_CODE;
@@ -142,7 +146,7 @@ namespace Sampoerna.EMS.XMLReader
                             zaapShftRptItem.ORIGINAL_UOM = bun;
                             zaapShftRptItem.PRODUCTION_DATE = item.PRODUCTION_DATE;
                             zaapShftRptItem.WERKS = item.WERKS;
-                            
+
 
                             var existingZaap = GetExistingZaapShiftRpt(zaapShftRptItem.MATDOC);
                             if (existingZaap != null)
@@ -151,17 +155,15 @@ namespace Sampoerna.EMS.XMLReader
                                 zaapShftRptItem.MODIFIED_DATE = DateTime.Now;
                                 zaapShftRptItem.CREATED_DATE = existingZaap.CREATED_DATE;
                                 zaapShftRptItem.CREATED_BY = existingZaap.CREATED_BY;
-                                
+
                             }
                             else
                             {
                                 zaapShftRptItem.CREATED_BY = "PI";
                                 zaapShftRptItem.CREATED_DATE = DateTime.Now;
                             }
-                            
-                            _xmlMapper.InsertOrUpdate(zaapShftRptItem);    
-                            items.Add(item);
-                            
+
+                            _xmlMapper.InsertOrUpdate(zaapShftRptItem);
                         }
                         else
                         {
@@ -174,7 +176,8 @@ namespace Sampoerna.EMS.XMLReader
                     }
                     catch (Exception ex)
                     {
-                        _xmlMapper.Errors.Add(ex.Message);
+                        string errorMessage = _xmlMapper.GetInnerException(ex);
+                        _xmlMapper.Errors.Add(errorMessage);
                         
 
                     }

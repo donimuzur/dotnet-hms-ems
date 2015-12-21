@@ -319,6 +319,7 @@
                                         <th style="display: none">Converter Uom Id</th>
                                         <th>Product Type Alias</th>
                                         <th>Product Type</th>
+                                        <th>Brand</th>
                                         <th>Converted Output</th>
                                         <th>Converted Uom</th>
                                     </tr>
@@ -332,6 +333,7 @@
                                             <td style="display:none"><input name="Detail.Pbck1ProdPlan[@i].ConverterUom" type="hidden" value="@item.ConverterUom" />@item.ConverterUom</td>
                                             <td><input name="Detail.Pbck1ProdPlan[@i].ProdTypeAlias" type="hidden" value="@item.ProdTypeAlias" />@item.ProdTypeAlias</td>
                                             <td><input name="Detail.Pbck1ProdPlan[@i].ProdTypeName" type="hidden" value="@item.ProdTypeName" />@item.ProdTypeName</td>
+                                            <td><input name="Detail.Pbck1ProdConverter[@i].BrandCE" type="hidden" value="@item.BrandCE" />@item.BrandCE</td>
                                             <td><input name="Detail.Pbck1ProdPlan[@i].ConverterOutput" type="hidden" value="@item.ConverterOutput" />@item.ConverterOutput</td>
                                             <td><input name="Detail.Pbck1ProdPlan[@i].ConverterUomId" type="hidden" value="@item.ConverterUomId" />@item.ConverterUomId</td>
                                         </tr>
@@ -469,7 +471,7 @@
                                                     {
                                                         <div class="row">
                                                             <div class="col-sm-10">
-                                                                <input type="hidden" class="Pbck1OldDecreeFilesID" name="Pbck1OldDecreeFilesID[]" value="@file.PBCK1_DECREE_DOC_ID"><a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
+                                                                <input type="hidden" class="Pbck1OldDecreeFilesID" name="Pbck1OldDecreeFilesID[]" value="@file.PBCK1_DECREE_DOC_ID"><a onclick="openAttachment('@Url.Content(file.FILE_PATH)')">@file.FILE_NAME</a>
                                                             </div>
                                                             <div class="col-sm-2">
                                                                 <button class="btn btn-danger full" type="button" onclick="removeDecree(this)"><i class="fa fa-times"></i></button>

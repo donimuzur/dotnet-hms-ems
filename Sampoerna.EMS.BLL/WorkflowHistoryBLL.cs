@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -25,6 +26,8 @@ namespace Sampoerna.EMS.BLL
         private IPOABLL _poaBll;
         private string includeTables = "USER";
 
+        private IWasteRoleServices _wasteRoleServices;
+
         public WorkflowHistoryBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -32,6 +35,7 @@ namespace Sampoerna.EMS.BLL
             _repository = _uow.GetGenericRepository<WORKFLOW_HISTORY>();
             _poaMapBll = new ZaidmExPOAMapBLL(_uow,_logger);
             _poaBll = new POABLL(_uow,_logger);
+            _wasteRoleServices = new WasteRoleServices(_uow, _logger);
         }
 
         public WorkflowHistoryDto GetById(long id)
@@ -125,12 +129,18 @@ namespace Sampoerna.EMS.BLL
 
                  result.Add(CreateWaitingApprovalRecord(input));
             }
-            //first code when manager exists
-            //else if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApprovalManager)
-            //{
-            //    result.Add(CreateWaitingApprovalRecord(input));
-            //}
-
+            else if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApprovalManager)
+            {
+                result.Add(CreateWaitingApprovalRecord(input));
+            }
+            else if (input.DocumentStatus == Enums.DocumentStatus.WasteDisposal)
+            {
+                result.Add(CreateWaitingDisposalRecord(input));
+            }
+            else if (input.DocumentStatus == Enums.DocumentStatus.WasteApproval)
+            {
+                result.Add(CreateWaitingWasteApprovalRecord(input));
+            }
             return result;
         }
 
@@ -152,21 +162,12 @@ namespace Sampoerna.EMS.BLL
                 if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApproval)
                 {
                     if(input.FormType == Enums.FormType.PBCK1){
-                        var listPoa = _poaBll.GetPoaByNppbkcIdAndMainPlant(input.NppbkcId).Distinct().Where(x => x.POA_ID != input.DocumentCreator).ToList();
+                        var listPoa = _poaBll.GetPoaByNppbkcIdAndMainPlant(input.NppbkcId).Distinct().ToList();
                         displayUserId = listPoa.Aggregate("", (current, poaDto) => current + (poaDto.POA_ID + ","));
                     }else{
-                        var listPoa = new List<POADto>();
-                        var creatorPoa = _poaBll.GetById(input.DocumentCreator);
-
-                        if (creatorPoa != null)
-                        {
-                            listPoa = _poaBll.GetPoaActiveByNppbkcId(input.NppbkcId).Distinct().Where(x => x.POA_ID != input.DocumentCreator).ToList();
-                        }
-                        else
-                        {
-                            listPoa = input.PlantId != null ? _poaBll.GetPoaActiveByPlantId(input.PlantId).Distinct().ToList() 
-                                                                : _poaBll.GetPoaActiveByNppbkcId(input.NppbkcId).Distinct().ToList();
-                        }
+                        List<POADto> listPoa;
+                        listPoa = input.PlantId != null ? _poaBll.GetPoaActiveByPlantId(input.PlantId).Distinct().ToList() 
+                            : _poaBll.GetPoaActiveByNppbkcId(input.NppbkcId).Distinct().ToList();
                         
                         displayUserId = listPoa.Aggregate("", (current, poaMapDto) => current + (poaMapDto.POA_ID + ","));
                     }
@@ -175,38 +176,14 @@ namespace Sampoerna.EMS.BLL
 
                     newRecord.ROLE = Enums.UserRole.POA;
                 }
-                //first code when manager exists
-                //else if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApprovalManager)
-                //{
-                //    //get action by poa
-                //    var poaId = GetPoaByDocumentNumber(input.FormNumber);
-                //    displayUserId = _poaBll.GetManagerIdByPoaId(poaId);
-                //    //var historyWorkflow =
-                //    //    _repository.Get(
-                //    //        c =>
-                //    //            c.FORM_NUMBER == input.FormNumber && c.ACTION == Enums.ActionType.Approve &&
-                //    //            c.ROLE == Enums.UserRole.POA).FirstOrDefault();
-
-                //    //if (historyWorkflow != null)
-                //    //{
-                //    //    displayUserId = _poaBll.GetManagerIdByPoaId(historyWorkflow.ACTION_BY);
-                //    //}
-                //    //else
-                //    //{
-                //    //    historyWorkflow =
-                //    //        _repository.Get(
-                //    //            c =>
-                //    //                c.FORM_NUMBER == input.FormNumber && c.ACTION == Enums.ActionType.Submit &&
-                //    //                c.ROLE == Enums.UserRole.POA).FirstOrDefault();
-
-                //    //    if (historyWorkflow != null)
-                //    //    {
-                //    //        displayUserId = _poaBll.GetManagerIdByPoaId(historyWorkflow.ACTION_BY);
-                //    //    }
-
-                //    //}
-                //    newRecord.ROLE = Enums.UserRole.Manager;
-                //}
+                else if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApprovalManager)
+                {
+                    //get action by poa
+                    var poaId = GetPoaByDocumentNumber(input.FormNumber);
+                    displayUserId = _poaBll.GetManagerIdByPoaId(poaId);
+                  
+                    newRecord.ROLE = Enums.UserRole.Manager;
+                }
             }
             
 
@@ -214,6 +191,38 @@ namespace Sampoerna.EMS.BLL
             newRecord.UserId = displayUserId;
            
 
+            return newRecord;
+        }
+
+        private WorkflowHistoryDto CreateWaitingDisposalRecord(GetByFormNumberInput input)
+        {
+            var newRecord = new WorkflowHistoryDto();
+            newRecord.FORM_NUMBER = input.FormNumber;
+            newRecord.ACTION = Enums.ActionType.WaitingForWasteDisposal;
+            string displayUserId = "";
+
+            var listUserDisposal = _wasteRoleServices.GetUserDisposalTeamByPlant(input.PlantId);
+
+            displayUserId = String.Join(", ", listUserDisposal.ToArray());
+            newRecord.ROLE = Enums.UserRole.User;
+
+            newRecord.UserId = displayUserId;
+            return newRecord;
+        }
+
+        private WorkflowHistoryDto CreateWaitingWasteApprovalRecord(GetByFormNumberInput input)
+        {
+            var newRecord = new WorkflowHistoryDto();
+            newRecord.FORM_NUMBER = input.FormNumber;
+            newRecord.ACTION = Enums.ActionType.WaitingForWasteApproval;
+            string displayUserId = "";
+
+            var listUserDisposal = _wasteRoleServices.GetUserWasteApproverByPlant(input.PlantId);
+
+            displayUserId = String.Join(", ", listUserDisposal.ToArray());
+            newRecord.ROLE = Enums.UserRole.User;
+
+            newRecord.UserId = displayUserId;
             return newRecord;
         }
 

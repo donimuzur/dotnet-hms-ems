@@ -10,5 +10,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal AMOUNT { get; set; }
         public string REGISTRATION_NUMBER { get; set; }
         public DateTime? REGISTRATION_DATE { get; set; }
+        public Core.Enums.CK5Type CK5_TYPE { get; set; }
+        public string PACKAGE_UOM_ID { get; set; }
+        public string PACKAGE_UOM_DESC { get; set; }
+        public bool FLAG_FOR_LACK1 { get; set; }
     }
 }

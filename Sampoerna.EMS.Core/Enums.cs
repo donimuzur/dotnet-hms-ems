@@ -68,8 +68,10 @@ namespace Sampoerna.EMS.Core
             Completed = 7,
             [Description("Market Return")]
             MarketReturn = 8,
+            [Description("Return")]
+            Return = 9, //TriggerSTO
             [Description("Waste")]
-            Waste = 9
+            Waste = 10
 
         }
 
@@ -129,9 +131,9 @@ namespace Sampoerna.EMS.Core
             Draft = 1,
             [Description("Revised")]
             Revised = 5,
-            [Description("Waiting for Approval")]
+            [Description("Waiting for POA Approval")]
             WaitingForApproval = 10,
-            [Description("Waiting for Approval")]
+            [Description("Waiting for Manager Approval")]
             WaitingForApprovalManager = 11,
             [Description("Approved")]
             Approved = 15,
@@ -177,15 +179,16 @@ namespace Sampoerna.EMS.Core
             GICompleted = 90,
             [Description("Good Issue Reversal")]
             GIReversal = 95,
-            [Description("Disposal")]
+            [Description("Waiting for Disposal")]
             WasteDisposal = 96,
-            [Description("Waste Approval")]
+            [Description("Waiting for Waste Approval")]
             WasteApproval = 97,
             [Description("Disposal Rejected")]
             WasteDisposalRejected = 98,
+            [Description("Disposal Uploaded")]
+            WasteDisposalUploaded = 99,
             [Description("Cancelled")]
             Cancelled = 100,
-
             [Description("Completed")]
             Completed = 105,
 
@@ -334,14 +337,18 @@ namespace Sampoerna.EMS.Core
             GICompleted = 90,
             [Description("Good Issue Reversal")]
             GIReversal = 95,
-            [Description("Disposal")]
-            WasteDisposal = 96,
-            [Description("Waste Approval")]
-            WasteApproval = 97,
+            [Description("Waiting For Disposal")]
+            WaitingForWasteDisposal = 96,
+            [Description("Waiting For Waste Approval")]
+            WaitingForWasteApproval = 97,
             [Description("Disposal Rejected")]
             WasteDisposalRejected = 98,
+            [Description("Disposal Uploaded")]
+            WasteDisposalUploaded = 99,
             [Description("Cancelled")]
             Cancelled = 100,
+            [Description("Waste Approved")]
+            WasteApproved = 101,
             [Description("STOB Good Issue Completed")]
             StobGICompleted = 105,
             [Description("REC STO Created")]
@@ -650,5 +657,12 @@ namespace Sampoerna.EMS.Core
             WasteApprover = 4
         }
 
+        public enum XmlLogStatus
+        {
+            [Description("Error")]
+            Error = 1,
+            [Description("Re-Run")]
+            ReRun = 2
+        }
     }
 }

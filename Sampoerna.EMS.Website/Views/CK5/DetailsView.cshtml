@@ -7,7 +7,7 @@
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3>@Model.Ck5Type.ToString() &nbsp; #@Model.SubmissionNumber</h3>
+                <h3>@Model.Ck5TypeString &nbsp; #@Model.SubmissionNumber</h3>
                 <label class="status">@Model.DocumentStatusDescription</label>
                 <div class="action-button">
 
@@ -86,7 +86,7 @@
 
             $('#btnBack').click(function (e) {
 
-                if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()' || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()') {
+                @*if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()' || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()') {
                     if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()') {
                         location.href = '@Url.Action("CK5MarketReturnCompleted", "CK5")';
                     } else {
@@ -103,7 +103,34 @@
                 else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
                     location.href = '@Url.Action("CK5Manual", "CK5")';
                 else if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()')
+                    location.href = '@Url.Action("CK5MarketReturn", "CK5")';*@
+                
+                if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()' || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()')
+                    if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()') {
+                        location.href = '@Url.Action("CK5MarketReturnCompleted", "CK5")';
+                    } else {
+                        location.href = '@Url.Action("CK5Completed", "CK5")';
+                    }
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
+                    location.href = '@Url.Action("Index", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()')
+                    location.href = '@Url.Action("IndexIntercompany", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()')
+                    location.href = '@Url.Action("IndexDomesticAlcohol", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()')
+                    location.href = '@Url.Action("CK5Export", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()')
+                    location.href = '@Url.Action("CK5Import", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()')
+                    location.href = '@Url.Action("CK5ImportPlant", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
+                    location.href = '@Url.Action("CK5Manual", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()')
                     location.href = '@Url.Action("CK5MarketReturn", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Return.ToString()')
+                    location.href = '@Url.Action("CK5TriggerSto", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Waste.ToString()')
+                    location.href = '@Url.Action("CK5Waste", "CK5")';
 
             });
 

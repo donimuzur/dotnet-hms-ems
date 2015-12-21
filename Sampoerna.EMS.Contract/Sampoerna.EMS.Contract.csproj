@@ -60,6 +60,7 @@
     <Compile Include="ILACK2BLL.cs" />
     <Compile Include="IMessageService.cs" />
     <Compile Include="ILACK1BLL.cs" />
+    <Compile Include="INlogBLL.cs" />
     <Compile Include="IPbck1DecreeDocBLL.cs" />
     <Compile Include="IPbck1ProdConverterBLL.cs" />
     <Compile Include="IPbck1ProdPlanBLL.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="IWorkflowSettingBLL.cs" />
     <Compile Include="IXmlDataWriter.cs" />
     <Compile Include="IXmlDataReader.cs" />
+    <Compile Include="IXmlFileLogBLL.cs" />
     <Compile Include="IZaidmExGoodTypeBLL.cs" />
     <Compile Include="IZaidmExKPPBCBLL.cs" />
     <Compile Include="IZaidmExNPPBKCBLL.cs" />
@@ -117,6 +119,7 @@
     <Compile Include="Services\ICK5Service.cs" />
     <Compile Include="Services\IExcisableGoodsTypeService.cs" />
     <Compile Include="Services\IExGroupTypeService.cs" />
+    <Compile Include="Services\IGoodProdTypeService.cs" />
     <Compile Include="Services\IInventoryMovementService.cs" />
     <Compile Include="Services\ILack1IncomeDetailService.cs" />
     <Compile Include="Services\ILack1Pbck1MappingService.cs" />
@@ -134,6 +137,7 @@
     <Compile Include="Services\IT001WService.cs" />
     <Compile Include="Services\IUserPlantMapService.cs" />
     <Compile Include="Services\IZaapShiftRptService.cs" />
+    <Compile Include="Services\IZaidmExMaterialService.cs" />
     <Compile Include="Services\IZaidmExNppbkcService.cs" />
     <Compile Include="Services\IZaidmExProdTypeService.cs" />
   </ItemGroup>

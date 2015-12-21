@@ -2477,21 +2477,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 var uomBkc = "Kilogram";
                 var uomBkcId = "Kg";
                 decimal conversiBkc = 1m;
-                if (excisableGoodsType.ToLower().Contains("hasil tembakau"))
+                if (reportData.Detail.ConvertedUomId.ToLower() == "btg")
                 {
-                    visibilityUomAmount = "b"; //strikeout except "Batang" / "batang"
                     uomAmount = "Batang";
+                    visibilityUomAmount = "b";
                 }
-                else if (excisableGoodsType.ToLower().Contains("tembakau iris"))
-                {
-                    visibilityUomAmount = "k"; //strikeout except "Kilogram" / "kilogram"
-                    uomAmount = "kg";
-                }
-                else if (excisableGoodsType.ToLower().Contains("alkohol"))
+                else if (reportData.Detail.ConvertedUomId.ToLower() == "l")
                 {
                     uomAmount = "Liter";
                     visibilityUomAmount = "l";
                 }
+                else if (reportData.Detail.ConvertedUomId.ToLower() == "g" || reportData.Detail.ConvertedUomId.ToLower() == "kg")
+                {
+                    uomAmount = "Kg";
+                    visibilityUomAmount = "k";
+                }
+
                 var summaryUomBkc = string.Empty;
                 var firstDataBkc = prodPlan.FirstOrDefault(c => !string.IsNullOrEmpty(c.BkcRequiredUomId));
                 if (firstDataBkc != null)
@@ -2544,7 +2545,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 List<string> amountSummary = new List<string>();
                 foreach (var item in SummaryJenisAmount.Select(c => c.Value))
                 {
-                    amountSummary.Add(String.Format("{0:n}", item));
+                    var sumAmount = item;
+                    if (reportData.Detail.ConvertedUomId.ToLower() == "g") sumAmount = item / 1000;
+                    amountSummary.Add(String.Format("{0:n}", sumAmount));
                 }
                 var totalAmountNewLine = String.Join(Environment.NewLine, amountSummary);
 
@@ -2574,7 +2577,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     detailRow.AmountDecimal = 0;
                     if (item.Amount.HasValue)
                     {
-                        detailRow.AmountDecimal = item.Amount.Value;
+                        var amountPlan = item.Amount.Value;
+                        if (reportData.Detail.ConvertedUomId.ToLower() == "g") amountPlan = amountPlan / 1000;
+                        detailRow.AmountDecimal = amountPlan;
                     }
                     detailRow.BkcRequired = 0;
                     if (item.BkcRequired.HasValue)

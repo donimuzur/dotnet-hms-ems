@@ -1881,8 +1881,8 @@ namespace Sampoerna.EMS.BLL
                     g.Key.UOM_DESC,
                     Total = g.Sum(p => p.CONVERTER_OUTPUT)
                 });
-                rc.Detail.ProductConvertedOutputs = string.Join(Environment.NewLine,
-                    prodConverterGroup.Select(d => String.Format("{0:n}", d.Total.Value) + " " + d.UOM_DESC + " " + d.PRODUCT_TYPE + " (" + d.PRODUCT_ALIAS + ")").ToArray());
+                //rc.Detail.ProductConvertedOutputs = string.Join(Environment.NewLine,
+                //    prodConverterGroup.Select(d => String.Format("{0:n}", d.Total.Value) + " " + d.UOM_DESC + " " + d.PRODUCT_TYPE + " (" + d.PRODUCT_ALIAS + ")").ToArray());
             }
             if (dbData.PERIOD_FROM.HasValue)
             {
@@ -2034,6 +2034,37 @@ namespace Sampoerna.EMS.BLL
                 TotalAmount = g.Sum(p => p.Amount.HasValue ? p.Amount.Value : 0),
                 TotalBkc = g.Sum(p => p.BkcRequired.HasValue ? p.BkcRequired.Value : 0)
             });
+
+            var totalAmount = groupedData.GroupBy(p => new
+            {
+                p.ProdAlias
+            }).Select(g => new
+            {
+                ProdAlias = g.Key.ProdAlias,
+                ProdName = _prodTypeBll.GetByAlias(g.Key.ProdAlias).PRODUCT_TYPE,
+                TotalAmount = g.Sum(p => p.TotalAmount)
+            });
+
+            var uomAmount = "Kilogram";
+            if (reportData.Detail.ConvertedUomId.ToLower() == "btg")
+            {
+                uomAmount = "Batang";
+            }
+            else if (reportData.Detail.ConvertedUomId.ToLower() == "l")
+            {
+                uomAmount = "Liter";
+            }
+            else if (reportData.Detail.ConvertedUomId.ToLower() == "g" || reportData.Detail.ConvertedUomId.ToLower() == "kg")
+            {
+                uomAmount = "Kg";
+            }
+
+            reportData.Detail.ProductConvertedOutputs = string.Join(Environment.NewLine,
+                totalAmount.Select(
+                d => String.Format("{0:n}", (reportData.Detail.ConvertedUomId.ToLower() == "g" && d.ProdAlias.ToUpper() != "TIS") ? d.TotalAmount / 1000 : d.TotalAmount)
+                        + " " + (d.ProdAlias.ToUpper() == "TIS" ? "Gram" : uomAmount) + " " 
+                        + d.ProdName + " (" + d.ProdAlias + ")").ToArray());
+
             reportData.SummaryProdPlantList = groupedData.ToList();
             reportData.ProdPlanList = prodPlanList.OrderBy(o => o.MonthId).ToList();
             return reportData;

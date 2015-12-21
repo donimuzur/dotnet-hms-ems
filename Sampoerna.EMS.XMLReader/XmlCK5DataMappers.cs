@@ -144,8 +144,7 @@ namespace Sampoerna.EMS.XMLReader
                                     workflowHistory.ACTION = Enums.ActionType.STOCreated;
                                 }
 
-                                else
-                                    if (statusCk5 == Enums.CK5XmlStatus.GICompleted || statusCk5 == Enums.CK5XmlStatus.GIPartial)
+                                else if (statusCk5 == Enums.CK5XmlStatus.GICompleted || statusCk5 == Enums.CK5XmlStatus.GIPartial)
                                 {
                                     if (statusCk5 == Enums.CK5XmlStatus.GICompleted)
                                     {
@@ -159,20 +158,20 @@ namespace Sampoerna.EMS.XMLReader
                                     }
 
                                   
-                                        #region "Domestic"
+                                    #region "Domestic"
 
-                                        var giDate = _xmlMapper.GetElementValue(xElement.Element("GI_DATE"));
-                                        item.GI_DATE = _xmlMapper.GetDate(giDate);
+                                    var giDate = _xmlMapper.GetElementValue(xElement.Element("GI_DATE"));
+                                    item.GI_DATE = _xmlMapper.GetDate(giDate);
 
-                                        UpdateDNumber(item, existingCk5, xElement);
+                                    UpdateDNumber(item, existingCk5, xElement);
 
 
-                                        #endregion
+                                    #endregion
                                     
                                    
 
                                 }
-                                    else if (statusCk5 == Enums.CK5XmlStatus.GRCompleted || statusCk5 == Enums.CK5XmlStatus.GRPartial)
+                                else if (statusCk5 == Enums.CK5XmlStatus.GRCompleted || statusCk5 == Enums.CK5XmlStatus.GRPartial)
                                 {
                                     if (statusCk5 == Enums.CK5XmlStatus.GRCompleted)
                                     {
@@ -334,7 +333,8 @@ namespace Sampoerna.EMS.XMLReader
                                {
 
                                    workflowHistory.ACTION = Enums.ActionType.STOBGIReversal;
-                                   AddWorkflowHistory(workflowHistory, null, null, null, null);
+                                   //AddWorkflowHistory(workflowHistory, null, null, null, null);
+                                   AddWorkflowHistory(workflowHistory);
                                    workflowHistory = new WORKFLOW_HISTORY();
                                    workflowHistory.FORM_ID = existingCk5.CK5_ID;
                                    workflowHistory.ACTION_BY = Constans.PI;
@@ -370,11 +370,13 @@ namespace Sampoerna.EMS.XMLReader
                                }
                                 if (statusCk5 != Enums.CK5XmlStatus.None)
                                 {
-                                    var emailCreator = GetEmail(item.CREATED_BY);
-                                    var emailPoa = GetEmail(item.APPROVED_BY_POA);
-                                    var emailManager = GetEmail(item.APPROVED_BY_MANAGER);
-                                    var emailBody = string.Format("Status : {0}", item.STATUS_ID.ToString());
-                                    AddWorkflowHistory(workflowHistory, emailCreator, emailPoa, emailManager, emailBody);
+                                    //var emailCreator = GetEmail(item.CREATED_BY);
+                                    //var emailPoa = GetEmail(item.APPROVED_BY_POA);
+                                    //var emailManager = GetEmail(item.APPROVED_BY_MANAGER);
+                                    //var emailBody = string.Format("Status : {0}", item.STATUS_ID.ToString());
+                                    //AddWorkflowHistory(workflowHistory, emailCreator, emailPoa, emailManager, emailBody);
+
+                                    AddWorkflowHistory(workflowHistory);
                                 }
                             }
                             items.Add(item);
@@ -428,26 +430,31 @@ namespace Sampoerna.EMS.XMLReader
                 .Get(p => p.CK5_ID  == ck5Id).ToList();
             return existingData;
         }
-        public void AddWorkflowHistory(WORKFLOW_HISTORY workflowHistory, string EmailCreator, string EmailPOA, string EmailManager, string emailBody)
-        {
+        //public void AddWorkflowHistory(WORKFLOW_HISTORY workflowHistory, string EmailCreator, string EmailPOA, string EmailManager, string emailBody)
+        //{
            
+        //    _xmlMapper.InsertOrUpdate(workflowHistory);
+        //    ILogger logger= new NLogLogger();
+        //    IMessageService messageService = new MessageService(logger);
+        //    var subject = "CK5 Status No: " + workflowHistory.FORM_NUMBER;
+
+        //    var emailList = new List<string>();
+        //    if(!string.IsNullOrEmpty(EmailCreator))
+        //        emailList.Add(EmailCreator);
+        //    if(!string.IsNullOrEmpty(EmailPOA))
+        //        emailList.Add(EmailPOA);
+        //    if(!string.IsNullOrEmpty(EmailManager))
+        //        emailList.Add(EmailManager);
+        //    if (emailList.Count > 0)
+        //    {
+        //        messageService.SendEmailToList(emailList, subject, emailBody, false);
+        //    }
+
+        //}
+
+        private void AddWorkflowHistory(WORKFLOW_HISTORY workflowHistory)
+        {
             _xmlMapper.InsertOrUpdate(workflowHistory);
-            ILogger logger= new NLogLogger();
-            IMessageService messageService = new MessageService(logger);
-            var subject = "CK5 Status No: " + workflowHistory.FORM_NUMBER;
-
-            var emailList = new List<string>();
-            if(!string.IsNullOrEmpty(EmailCreator))
-                emailList.Add(EmailCreator);
-            if(!string.IsNullOrEmpty(EmailPOA))
-                emailList.Add(EmailPOA);
-            if(!string.IsNullOrEmpty(EmailManager))
-                emailList.Add(EmailManager);
-            if (emailList.Count > 0)
-            {
-                messageService.SendEmailToList(emailList, subject, emailBody, false);
-            }
-
         }
 
         private void CreateCk5XmlCancel(CK5 ck5)

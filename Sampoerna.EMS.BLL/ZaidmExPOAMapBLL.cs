@@ -51,6 +51,13 @@ namespace Sampoerna.EMS.BLL
             return AutoMapper.Mapper.Map<List<POA_MAPDto>>(rc);
         }
 
+        public List<POA_MAPDto> GetByPoaId(string poaId)
+        {
+            var rc =
+                _repository.Get(c => c.POA != null && c.POA_ID == poaId, null, includeTables).ToList();
+            return AutoMapper.Mapper.Map<List<POA_MAPDto>>(rc);
+        }
+
         //public List<POA_MAPDto> GetPoaIdByPlantAndNppbkc(string plantId, string nppbkcId)
         //{
         //    return

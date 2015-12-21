@@ -234,6 +234,8 @@
     <Compile Include="Controllers\WasteController.cs" />
     <Compile Include="Controllers\WasteRoleController.cs" />
     <Compile Include="Controllers\WasteStockController.cs" />
+    <Compile Include="Controllers\XmlFileManagementController.cs" />
+    <Compile Include="Controllers\XmlLogController.cs" />
     <Compile Include="EMSWebsiteMapperCK4C.cs" />
     <Compile Include="Code\FormsAuthenticationService.cs" />
     <Compile Include="Code\GlobalFunctions.cs" />
@@ -430,6 +432,10 @@
     <Compile Include="Models\Waste\WasteUploadViewModel.cs" />
     <Compile Include="Models\Waste\WasteViewModel.cs" />
     <Compile Include="Models\WorkflowSettingListModel.cs" />
+    <Compile Include="Models\XmlFileManagement\XmlFileManagementFormViewModel.cs" />
+    <Compile Include="Models\XmlFileManagement\XmlFileManagementIndexViewModel.cs" />
+    <Compile Include="Models\XmlLog\XmlLogFormViewModel.cs" />
+    <Compile Include="Models\XmlLog\XmlLogIndexViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\CK4C\Preview.cs">
       <AutoGen>True</AutoGen>
@@ -519,26 +525,6 @@
       <DependentUpon>PBCK1PrintOut.rpt</DependentUpon>
       <SubType>Component</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="Reports\PBCK1\Pbck1RealisasiP3BKC.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Pbck1RealisasiP3BKC.rpt</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Reports\PBCK1\Pbck1RealisasiP3BKCTable.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Pbck1RealisasiP3BKCTable.rpt</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Reports\PBCK1\Pbck1RencanaProduksi.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Pbck1RencanaProduksi.rpt</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reports\PBCK7\Pbck7ItemsReport.cs">
       <AutoGen>True</AutoGen>
@@ -1121,7 +1107,6 @@
     <Content Include="Views\LACK2\_Lack2OpenDoc.cshtml" />
     <Content Include="Views\LACK1\ListCompletedDocument.cshtml" />
     <Content Include="Views\LACK1\_Lack1CompletedDocumentTable.cshtml" />
-    <Content Include="Views\Error\Unauthorized.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\ListPbck3Index.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\_Pbck3TableIndex.cshtml" />
     <Content Include="Views\PBCK7AndPBCK3\Create.cshtml" />
@@ -1277,7 +1262,19 @@
     <Content Include="Views\WasteStock\Create.cshtml" />
     <Content Include="Views\WasteStock\Edit.cshtml" />
     <Content Include="Views\WasteStock\Detail.cshtml" />
+    <Content Include="Views\CK5\CK5TriggerSto.cshtml" />
     <Content Include="Views\CK5\CK5Waste.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadDocumentFileButton.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadDocumentFileList.cshtml" />
+    <Content Include="Views\XmlLog\Index.cshtml" />
+    <Content Include="Views\XmlLog\_XmlLogSearch.cshtml" />
+    <Content Include="Views\XmlLog\Detail.cshtml" />
+    <Content Include="Views\XmlLog\_XmlLogViewIndex.cshtml" />
+    <Content Include="Views\Error\Unauthorized.cshtml" />
+    <Content Include="Views\XmlFileManagement\Index.cshtml" />
+    <Content Include="Views\XmlFileManagement\_XmlFileSearch.cshtml" />
+    <Content Include="Views\XmlFileManagement\_XmlFileViewIndex.cshtml" />
+    <Content Include="Views\XmlFileManagement\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1370,16 +1367,6 @@
       <LastGenOutput>PBCK1PrintOut.cs</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Reports\PBCK1\Pbck1RealisasiP3BKC.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>Pbck1RealisasiP3BKC.cs</LastGenOutput>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Reports\PBCK1\Pbck1RencanaProduksi.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>Pbck1RencanaProduksi.cs</LastGenOutput>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
@@ -1415,10 +1402,6 @@
       <LastGenOutput>HeaderFooterPreview1.cs</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="Reports\PBCK1\Pbck1RealisasiP3BKCTable.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>Pbck1RealisasiP3BKCTable.cs</LastGenOutput>
-    </EmbeddedResource>
     <Content Include="Reports\PBCK4\Pbck4PrintOut.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Pbck4PrintOut.cs</LastGenOutput>

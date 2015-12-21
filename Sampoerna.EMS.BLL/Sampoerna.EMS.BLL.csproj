@@ -79,6 +79,7 @@
     <Compile Include="BrandRegistrationBLL.cs" />
     <Compile Include="CountryBLL.cs" />
     <Compile Include="LFA1BLL.cs" />
+    <Compile Include="NlogBLL.cs" />
     <Compile Include="PBCK4BLL.cs" />
     <Compile Include="PBCK7AndPBCK3BLL.cs" />
     <Compile Include="ProductionBLL.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Services\CK5Service.cs" />
     <Compile Include="Services\ExcisableGoodsTypeService.cs" />
     <Compile Include="Services\ExGroupTypeService.cs" />
+    <Compile Include="Services\GoodProdTypeService.cs" />
     <Compile Include="Services\InventoryMovementService.cs" />
     <Compile Include="Services\Lack1IncomeDetailService.cs" />
     <Compile Include="Services\Lack1Pbck1MappingService.cs" />
@@ -112,6 +114,7 @@
     <Compile Include="Services\WasteRoleServices.cs" />
     <Compile Include="Services\WasteStockServices.cs" />
     <Compile Include="Services\ZaapShiftRptService.cs" />
+    <Compile Include="Services\ZaidmExMaterialService.cs" />
     <Compile Include="Services\ZaidmExNppbkcService.cs" />
     <Compile Include="Services\ZaidmExProdTypeService.cs" />
     <Compile Include="UserPlantMapBLL.cs" />
@@ -150,6 +153,7 @@
     <Compile Include="WorkflowBLL.cs" />
     <Compile Include="WorkflowHistoryBLL.cs" />
     <Compile Include="WorkflowSettingBLL.cs" />
+    <Compile Include="XmlFileLogBLL.cs" />
     <Compile Include="ZaidmExGoodTypeBLL.cs" />
     <Compile Include="ZaidmExKPPBCBLL.cs" />
     <Compile Include="ZaidmExNPPBKCBLL.cs" />

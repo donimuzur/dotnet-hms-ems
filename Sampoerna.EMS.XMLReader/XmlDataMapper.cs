@@ -24,6 +24,7 @@ namespace Sampoerna.EMS.XMLReader
         public IUnitOfWork uow;
         public List<String> Errors;
         private int _errorCount;
+        public string lastField = null;
     
         public XmlDataMapper(string xmlName)
         {
@@ -130,7 +131,15 @@ namespace Sampoerna.EMS.XMLReader
 
                 if (Errors.Count == 0)
                 {
-                    uow.SaveChanges();    
+                    uow.SaveChanges();
+                }
+                else
+                {
+                    foreach (var error in Errors)
+                    {
+                        logger.Warn(error);
+                    }
+                    
                 }
                 
               
@@ -138,7 +147,7 @@ namespace Sampoerna.EMS.XMLReader
             catch (Exception ex)
             {
                 errorCount++;
-                logger.Error(ex.Message);
+                logger.Warn(ex.Message);
                 this.Errors.Add(ex.Message);
                 //uow.RevertChanges();
             }
@@ -153,7 +162,8 @@ namespace Sampoerna.EMS.XMLReader
                 return new MovedFileOutput(fileName);
             }
             fileName = MoveFile(true,needMoved);
-            return new MovedFileOutput(fileName, true);
+            Errors.Insert(0,String.Format("Last field read : {0}",lastField));
+            return new MovedFileOutput(fileName, true,Errors);
 
             
 
@@ -168,7 +178,7 @@ namespace Sampoerna.EMS.XMLReader
             }
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
+                logger.Error(ex.Message);
                 uow.RevertChanges();
                 
             }
@@ -191,7 +201,7 @@ namespace Sampoerna.EMS.XMLReader
 
             catch (Exception ex)
             {
-                logger.Error(ex.ToString());
+                logger.Error(ex.Message);
                 uow.RevertChanges();
             }
 
@@ -231,6 +241,7 @@ namespace Sampoerna.EMS.XMLReader
 
         public DateTime? GetDate(string valueStr)
         {
+            lastField = String.Format("input = {0}", valueStr);
             if (valueStr.Length == 8)
             {
                 var year = Convert.ToInt32(valueStr.Substring(0, 4));
@@ -242,6 +253,7 @@ namespace Sampoerna.EMS.XMLReader
         }
         public DateTime? GetDateDotSeparator(string valueStr)
         {
+            lastField = String.Format("input = {0}", valueStr);
             if (valueStr.Length == 10)
             {
                 var year = Convert.ToInt32(valueStr.Substring(6, 4));
@@ -256,7 +268,8 @@ namespace Sampoerna.EMS.XMLReader
             
             if (element == null)
                 return null;
-            logger.Debug(String.Format("processing field : {0} value = {1}", element.Name.LocalName, element.Value));
+            //logger.Debug(String.Format("processing field : {0} value = {1}", element.Name.LocalName, element.Value));
+            lastField = String.Format("{0} value = {1}", element.Name.LocalName, element.Value);
             if (element.Value == "/")
                 return null;
             return element.Value;
@@ -319,6 +332,22 @@ namespace Sampoerna.EMS.XMLReader
             return romanValue;
 
 
+        }
+
+        public string GetInnerException(Exception ex)
+        {
+            string result = "";
+
+            if (ex.InnerException != null)
+            {
+                result = GetInnerException(ex.InnerException);
+            }
+            else
+            {
+                result = ex.Message;
+            }
+
+            return result;
         }
 
     }

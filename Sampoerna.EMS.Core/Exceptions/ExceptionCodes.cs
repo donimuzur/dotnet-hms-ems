@@ -126,7 +126,25 @@ namespace Sampoerna.EMS.Core.Exceptions
             ServerIsBusy,
             
             [Description("Missing PBCK-1 Production Converter")]
-            Lack1MissingPbckProdConverter
+            Lack1MissingPbckProdConverter,
+
+            [Description("User plant map setting not found, please setting first.")]
+            UserPlantMapSettingNotFound,
+
+            [Description("Please  Register Code W Sapon, W Gagang, and W Stem in material master")]
+            PlantInWasteNotHaveStickerCode,
+
+            [Description("Missing UOM Data")]
+            MissingUomData,
+
+            [Description("Disposal Team Email Not Found")]
+            DisposalTeamEmailNotFound,
+            
+            [Description("Can't found Goods Type mapping with Production Type")]
+            GoodsProdTypeMappingNotFound,
+
+            [Description("Waste Approval Email Not Found")]
+            WasteApprovalEmailNotFound
         }
 
         /// <summary>

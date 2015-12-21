@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Quartz;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Core;
 using SimpleInjector;
 using Voxteneo.WebComponents.Logger;
@@ -33,7 +34,7 @@ namespace Sampoerna.HMS.Scheduler.Jobs
             result += "<p>There are error of these files below :</p>";
             foreach (var error in errorList)
             {
-                if (error.Contains("String was not recognized as a valid DateTime"))
+                if (error.ToLower().Contains("string was not recognized as a valid datetime"))
                 {
                     result += "<p>" + error + ", valid format datetime is yyyy-MM-dd</p>";
                     continue;
@@ -53,12 +54,27 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 var config = EmailConfiguration.GetConfig();
                 var loggerFactory = _container.GetInstance<ILoggerFactory>();
                 ILogger logger = loggerFactory.GetLogger("Scheduler");
-                var errorList = new List<string>();
+                var errorFileList = new List<MovedFileOutput>();
                 try
                 {
 
                     logger.Info("Reading XML Daily start on " + DateTime.Now);
-                    errorList.AddRange(_svc.Run(true));
+                    errorFileList.AddRange(_svc.Run(true));
+                    foreach (var errorFile in errorFileList)
+                    {
+                        logger.Warn(String.Format("Error on files : {0}", errorFile.FileName));
+                        var body = String.Format("Error on files : {0}", errorFile.FileName);
+                        
+                        
+                        
+                        foreach (var error in errorFile.ErrorList)
+                        {
+                            logger.Info(String.Format(error));
+                            body += String.Format("<p>{0}</p>", error);
+                        }
+
+                        logger.Error(EmailUtility.Email(body, null));
+                    }
                     logger.Info("Reading XML Daily ended On " + DateTime.Now);
 
                 }
@@ -67,19 +83,17 @@ namespace Sampoerna.HMS.Scheduler.Jobs
 
                     logger.Error("Reading XML crashed", ex);
                 }
-                if (errorList.Count > 0)
-                {
-                    foreach (var err in errorList)
-                    {
+                //if (errorList.Count > 0)
+                //{
+                //    foreach (var err in errorList)
+                //    {
+                        
+                //        logger.Info(err);
+                //    }
+                    
 
-                        logger.Info(err);
-                    }
-                    var body = StringErrorList(errorList);
-
-                    logger.Error(EmailUtility.Email(body, null));
-
-                }
-                else
+                //}
+                if (errorFileList.Count == 0)
                 {
                     var body = string.Empty;
                     if (_svc.filesMoved.Count > 0)

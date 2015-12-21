@@ -60,8 +60,8 @@ namespace Sampoerna.EMS.XMLReader
 
                         var user = new USER();
                         user.USER_ID = roleMap.MSACCT.ToUpper();
-                        user.FIRST_NAME = _xmlMapper.GetElementValue(xElement.Element("NACHN_EN")).Trim();
-                        user.LAST_NAME = _xmlMapper.GetElementValue(xElement.Element("VORNA_EN")).Trim();
+                        user.FIRST_NAME = _xmlMapper.GetElementValue(xElement.Element("VORNA_EN")).Trim();
+                        user.LAST_NAME = _xmlMapper.GetElementValue(xElement.Element("NACHN_EN")).Trim();
                         user.EMAIL = _xmlMapper.GetElementValue(xElement.Element("WKEMAIL")).Trim();
                         user.ACCT = _xmlMapper.GetElementValue(xElement.Element("ACCT")).Trim();
                         var status = int.Parse(_xmlMapper.GetElementValue(xElement.Element("ACCTSTA")).Trim());
@@ -232,7 +232,8 @@ namespace Sampoerna.EMS.XMLReader
             }
             else
             {
-                poa.PRINTED_NAME = userdata.FIRST_NAME + " " + userdata.LAST_NAME;
+                poa.IS_ACTIVE = true;
+                //poa.PRINTED_NAME = userdata.FIRST_NAME + " " + userdata.LAST_NAME;
                 poa.POA_EMAIL = userdata.EMAIL;
                 poa.MODIFIED_BY = "PI";
                 poa.MODIFIED_DATE = DateTime.Now;
