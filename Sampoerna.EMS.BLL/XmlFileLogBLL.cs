@@ -77,6 +77,10 @@ namespace Sampoerna.EMS.BLL
             dbData.MODIFIED_BY = input.UserId;
             dbData.MODIFIED_DATE = DateTime.Now;
 
+            //check if file is exist in source path
+            if (!System.IO.File.Exists(input.SourcePath + dbData.XML_FILENAME))
+                throw new Exception("File Not Found : " + input.SourcePath + dbData.XML_FILENAME);
+
             //if file exist ..in dest path .. remove ??
             if (System.IO.File.Exists(input.DestPath + dbData.XML_FILENAME))
                 System.IO.File.Delete(input.DestPath + dbData.XML_FILENAME);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -93,7 +94,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.MainMenu = Enums.MenuList.Settings;
             model.CurrentMenu = PageInfo;
-
+            if (model.XmlLogStatus == Enums.XmlLogStatus.Error)
+                model.IsError = true;
             return View(model);
         }
 
@@ -104,8 +106,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 var input = new UpdateXmlFileInput();
 
                 input.XmlId = id;
-                input.SourcePath = @"C:\Deploy\InboundMsg\error\";
-                input.DestPath = @"C:\Deploy\InboundMsg\";
+                input.SourcePath = ConfigurationManager.AppSettings["XmlErrorPath"];// @"C:\Deploy\InboundMsg\error\";
+                input.DestPath = ConfigurationManager.AppSettings["XmlInboundPath"];//@"C:\Deploy\InboundMsg\";
 
                 _xmlFileLogBll.UpdateXmlFile(input);
 

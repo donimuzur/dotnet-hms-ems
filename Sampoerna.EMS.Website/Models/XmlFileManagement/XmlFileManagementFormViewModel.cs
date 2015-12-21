@@ -22,8 +22,10 @@ namespace Sampoerna.EMS.Website.Models.XmlFileManagement
         public string TimeStampDisplay { get; set; }
         public Enums.XmlLogStatus XmlLogStatus { get; set; }
         public string XmlLogStatusDescription { get; set; }
+        public bool IsError { get; set; }
 
         public List<XmlFileManagementDetailsViewModel> DetailListLogs { get; set; }
+
     }
 
     public class XmlFileManagementDetailsViewModel

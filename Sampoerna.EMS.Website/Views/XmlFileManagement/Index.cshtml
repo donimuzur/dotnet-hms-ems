@@ -68,18 +68,18 @@
                           "zeroRecords": "No records found",
                           "infoFiltered": "(filtered from _MAX_ total records)"
                       },
-                      "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-                          switch (aData[3]) {
-                              case 'Error':
-                              case 'Fatal':
-                                  $(nRow).css('color', 'red');
-                                  break;
-                              case 'Re-Run':
-                                  $(nRow).css('color', 'green');
-                                  break;
+                      //"fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                      //    switch (aData[3]) {
+                      //        case 'Error':
+                      //        case 'Fatal':
+                      //            $(nRow).css('color', 'red');
+                      //            break;
+                      //        case 'Re-Run':
+                      //            $(nRow).css('color', 'green');
+                      //            break;
                              
-                          }
-                      }
+                      //    }
+                      //}
                   });
 
 

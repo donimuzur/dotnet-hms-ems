@@ -5,7 +5,11 @@
         <div class="col-sm-12">
             <h3>XML Error Details</h3>
             <div class="action-button">
-                <input type="button" value="Re-Execute" class="btn btn-blue" id="btnExecute" />
+                @if (Model.IsError)
+                {
+                    <input type="button" value="Re-Execute" class="btn btn-blue" id="btnExecute" />
+                }
+                
                 <input type="button" value="Back" class="btn btn-grey" id="btnBack" />
             </div>
         </div>
@@ -150,6 +154,10 @@
                 location.href = '@Url.Action("Index", "XmlFileManagement")';
             });
 
+            $('#btnExecute').click(function (e) {
+                var xmlId = '@Model.XmlLogId';
+                location.href = '@Url.Action("ReExecute", "XmlFileManagement", new { id = Model.XmlLogId })';
+            });
 
         });
 
