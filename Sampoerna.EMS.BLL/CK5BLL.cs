@@ -3687,7 +3687,9 @@ namespace Sampoerna.EMS.BLL
                 if ((output.CK5_TYPE == Enums.CK5Type.Domestic &&
                      output.SOURCE_PLANT_NPPBKC_ID == output.DEST_PLANT_NPPBKC_ID)
                     || output.CK5_TYPE == Enums.CK5Type.Manual
-                    || output.CK5_TYPE == Enums.CK5Type.Export)
+                    || output.CK5_TYPE == Enums.CK5Type.Export 
+                    || output.CK5_TYPE == Enums.CK5Type.Waste
+                    || output.CK5_TYPE == Enums.CK5Type.Return)
                 {
 
                 }
