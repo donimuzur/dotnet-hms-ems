@@ -802,11 +802,17 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RetDetails(lack1Data, true);
             }
 
-            if (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval ||
-                lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+            if (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval)
             {
                 return RetDetails(lack1Data, false);
             }
+
+            /* Old Code before CR-2 : 2015-12-22 Remove manager approve*/
+            //if (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval ||
+            //    lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+            //{
+            //    return RetDetails(lack1Data, false);
+            //}
 
             //first code when manager exists
             //if (CurrentUser.UserRole == Enums.UserRole.Manager)
@@ -816,11 +822,18 @@ namespace Sampoerna.EMS.Website.Controllers
             //}
 
             if (CurrentUser.USER_ID == lack1Data.CreateBy &&
-                (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval ||
-                 lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager))
+                lack1Data.Status == Enums.DocumentStatus.WaitingForApproval)
             {
                 return RetDetails(lack1Data, false);
             }
+
+            /* Old code before CR-2  : 2015-12-22 Remove manager approve */
+            //if (CurrentUser.USER_ID == lack1Data.CreateBy &&
+            //    (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval ||
+            //     lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager))
+            //{
+            //    return RetDetails(lack1Data, false);
+            //}
 
             var model = InitEditModel(lack1Data);
             model = InitEditList(model);
