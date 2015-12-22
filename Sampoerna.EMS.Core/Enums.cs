@@ -662,7 +662,9 @@ namespace Sampoerna.EMS.Core
             [Description("Error")]
             Error = 1,
             [Description("Re-Run")]
-            ReRun = 2
+            ReRun = 2,
+            [Description("Re-run Success")]
+            Success = 3
         }
     }
 }

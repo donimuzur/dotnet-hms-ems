@@ -74,8 +74,17 @@ namespace Sampoerna.EMS.BLL
                 n => n.OrderBy(z => z.WERKS).ThenBy(z => z.MATERIAL_NUMBER);
 
             var listData = _repository.Get(null, orderByFilter, _includeTables).ToList();
+            
+            var result = Mapper.Map<List<WasteStockDto>>(listData);
 
-            return Mapper.Map<List<WasteStockDto>>(listData);
+            //feedback user 22-12-2015
+            //uom showed at waste stock must be in G
+            foreach (var wasteStockDto in result)
+            {
+                wasteStockDto.Uom = "G";
+            }
+
+            return result;
         }
 
 
