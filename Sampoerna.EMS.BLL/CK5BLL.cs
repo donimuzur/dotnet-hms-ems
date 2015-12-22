@@ -2101,12 +2101,9 @@ namespace Sampoerna.EMS.BLL
             switch (input.UserRole)
             {
                 case Enums.UserRole.User:
+                case Enums.UserRole.POA:
                     dbData.STATUS_ID = Enums.DocumentStatus.WaitingForApproval;
                     newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApproval);
-                    break;
-                case Enums.UserRole.POA:
-                    dbData.STATUS_ID = Enums.DocumentStatus.WaitingForApprovalManager;
-                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
                     break;
                 default:
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
@@ -2117,12 +2114,7 @@ namespace Sampoerna.EMS.BLL
                 //set change history
                 SetChangeHistory(oldValue, newValue, "STATUS", input.UserId,dbData.CK5_ID.ToString());
             }
-            else
-            {
-                //remove modified workflow history    
-            }
-            
-
+           
         }
 
         private void ApproveDocument(CK5WorkflowDocumentInput input)
@@ -2132,30 +2124,26 @@ namespace Sampoerna.EMS.BLL
             if (dbData == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            //if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApproval &&
-            //    dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApprovalManager)
+            //string nppbkcId = dbData.SOURCE_PLANT_NPPBKC_ID;
+            //if (dbData.CK5_TYPE == Enums.CK5Type.PortToImporter || dbData.CK5_TYPE == Enums.CK5Type.DomesticAlcohol || dbData.CK5_TYPE == Enums.CK5Type.MarketReturn)
+            //    nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
+            //else if (dbData.CK5_TYPE == Enums.CK5Type.Manual && dbData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+            //    nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
+            //else if (dbData.CK5_TYPE == Enums.CK5Type.MarketReturn && dbData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+            //    nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
+
+            //var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
+            //{
+            //    CreatedUser = dbData.CREATED_BY,
+            //    CurrentUser = input.UserId,
+            //    DocumentStatus = dbData.STATUS_ID,
+            //    UserRole = input.UserRole,
+            //    NppbkcId = nppbkcId,
+            //    DocumentNumber = dbData.SUBMISSION_NUMBER
+            //});
+
+            //if (!isOperationAllow)
             //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
-            string nppbkcId = dbData.SOURCE_PLANT_NPPBKC_ID;
-            if (dbData.CK5_TYPE == Enums.CK5Type.PortToImporter || dbData.CK5_TYPE == Enums.CK5Type.DomesticAlcohol || dbData.CK5_TYPE == Enums.CK5Type.MarketReturn)
-                nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
-            else if (dbData.CK5_TYPE == Enums.CK5Type.Manual && dbData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
-                nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
-            else if (dbData.CK5_TYPE == Enums.CK5Type.MarketReturn && dbData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
-                nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
-
-            var isOperationAllow = _workflowBll.AllowApproveAndReject(new WorkflowAllowApproveAndRejectInput()
-            {
-                CreatedUser = dbData.CREATED_BY,
-                CurrentUser = input.UserId,
-                DocumentStatus = dbData.STATUS_ID,
-                UserRole = input.UserRole,
-                NppbkcId = nppbkcId,
-                DocumentNumber = dbData.SUBMISSION_NUMBER
-            });
-
-            if (!isOperationAllow)
-                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
 
             string oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
@@ -2165,26 +2153,29 @@ namespace Sampoerna.EMS.BLL
             {
                 if (dbData.STATUS_ID == Enums.DocumentStatus.WaitingForApproval)
                 {
-                    dbData.STATUS_ID = Enums.DocumentStatus.WaitingForApprovalManager;
+                    dbData.STATUS_ID = Enums.DocumentStatus.WaitingGovApproval;
                     dbData.APPROVED_BY_POA = input.UserId;
                     dbData.APPROVED_DATE_POA = DateTime.Now;
-                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingForApprovalManager);
-                }
-                else
-                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-            }
-            else if (input.UserRole == Enums.UserRole.Manager)
-            {
-                if (dbData.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
-                {
-                    dbData.STATUS_ID = Enums.DocumentStatus.WaitingGovApproval;
-                    dbData.APPROVED_BY_MANAGER = input.UserId;
-                    dbData.APPROVED_DATE_MANAGER = DateTime.Now;
                     newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
                 }
                 else
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
             }
+            else
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            //else if (input.UserRole == Enums.UserRole.Manager)
+            //{
+            //    if (dbData.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
+            //    {
+            //        dbData.STATUS_ID = Enums.DocumentStatus.WaitingGovApproval;
+            //        dbData.APPROVED_BY_MANAGER = input.UserId;
+            //        dbData.APPROVED_DATE_MANAGER = DateTime.Now;
+            //        newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WaitingGovApproval);
+            //    }
+            //    else
+            //        throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            //}
 
 
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
