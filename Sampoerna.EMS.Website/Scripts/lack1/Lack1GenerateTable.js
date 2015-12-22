@@ -102,7 +102,7 @@ function generateTableWithTisToTis(data) {
             //'<td rowspan="2">' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';
             
             /*Second record*/
-            rc = rc + '<tr><td style="border-bottom:none">' + (data.TotalUsageTisToTis < 0 ? '-' : ThausandSeperator(data.TotalUsageTisToTis, 2)) + '</td>' +
+            rc = rc + '<tr><td style="border-bottom:none">' + (data.TotalUsageTisToTis < 0 ? '-' : '') + ThausandSeperator(data.TotalUsageTisToTis, 2) + '</td>' +
                     '<td style="border-top:none">' + generateJenisHasilProduksi(data.InventoryProductionTisToTis.ProductionData) + '</td>' +
                     '<td style="border-top:none">' + generateJumlahHasilProduksi(data.InventoryProductionTisToTis.ProductionData) + '</td></tr>';
 
@@ -119,6 +119,7 @@ function generateTableWithTisToTis(data) {
 
 function generateContentTableLack1WithTisToTisOnlyOneIncomeList(data) {
     var rc = '';
+    var rowIndex = 1;
     
     /*First Record*/
     rc = rc +
@@ -137,7 +138,7 @@ function generateContentTableLack1WithTisToTisOnlyOneIncomeList(data) {
     //'<td rowspan="2">' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';
     
     /*Second record*/
-    rc = rc + '<tr><td style="border-bottom:none">' + (data.TotalUsageTisToTis < 0 ? '-' : ThausandSeperator(data.TotalUsageTisToTis, 2)) + '</td>' +
+    rc = rc + '<tr><td style="border-bottom:none">' + (data.TotalUsageTisToTis < 0 ? '-' : '') +ThausandSeperator(data.TotalUsageTisToTis, 2) + '</td>' +
         '<td style="border-top:none">' + generateJenisHasilProduksi(data.InventoryProductionTisToTis.ProductionData) + '</td>' +
         '<td style="border-top:none">' + generateJumlahHasilProduksi(data.InventoryProductionTisToTis.ProductionData) + '</td></tr>';
 
