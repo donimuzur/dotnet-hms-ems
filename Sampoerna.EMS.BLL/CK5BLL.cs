@@ -3781,6 +3781,7 @@ namespace Sampoerna.EMS.BLL
             foreach (var ck5UploadFileDocumentsInput in inputs)
             {
                 var inputCk5Material = new CK5MaterialInput();
+                inputCk5Material.Ck5Type = ck5UploadFileDocumentsInput.Ck5Type;
                 if (ck5UploadFileDocumentsInput.Ck5Type == Enums.CK5Type.DomesticAlcohol.ToString() ||
                     ck5UploadFileDocumentsInput.Ck5Type == Enums.CK5Type.PortToImporter.ToString())
                 {
@@ -3805,9 +3806,24 @@ namespace Sampoerna.EMS.BLL
 
             }
 
-            var outputListCk5Material = ValidateCk5Material(lisCk5Material);
+            List<CK5MaterialOutput> outputListCk5Material = new List<CK5MaterialOutput>();
+            foreach (var input in lisCk5Material)
+            {
+                if (input.Ck5Type == Enums.CK5Type.Waste.ToString())
+                {
+                    outputListCk5Material.Add(ValidateCk5WasteMaterial(input));
+                }
+                else
+                {
+                    var inputMaterial = new List<CK5MaterialInput> {input};
+                    outputListCk5Material.AddRange(ValidateCk5Material(inputMaterial));    
+                }
+                
+            }
+            
+            
 
-
+            //ValidateCk5WasteMaterial(lisCk5Material);
 
             var outputList = ValidateCk5UploadFileDocuments(inputs);
 
@@ -4730,7 +4746,8 @@ namespace Sampoerna.EMS.BLL
             return result;
 
         }
-                public void AddAttachmentDocument(CK5WorkflowDocumentInput input)
+        
+        public void AddAttachmentDocument(CK5WorkflowDocumentInput input)
         {
             var dbData = _repository.GetByID(input.DocumentId);
 
