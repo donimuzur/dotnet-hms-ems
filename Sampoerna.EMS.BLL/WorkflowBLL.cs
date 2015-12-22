@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.SqlServer.Server;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -125,10 +126,13 @@ namespace Sampoerna.EMS.BLL
                 if (poa == null)
                     return false;
 
-                if (input.PlantId != null)
-                    return IsOnePlant(input.PlantId, input.CurrentUser);
-                
-                return IsOneNppbkc(input.NppbkcId, input.CurrentUser);
+                var isPoaCreatedUser = _poabll.GetActivePoaById(input.CreatedUser);
+                if (isPoaCreatedUser != null)
+                {
+                    //created user is poa, let's check isOneNppbkc with current user or not
+                    return IsOneNppbkc(input.NppbkcId, input.CurrentUser);
+                }
+                return input.PlantId != null ? IsOnePlant(input.PlantId, input.CurrentUser) : IsOneNppbkc(input.NppbkcId, input.CurrentUser);
             }
             
             //if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApprovalManager)
