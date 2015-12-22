@@ -1478,19 +1478,23 @@ namespace Sampoerna.EMS.BLL
             input.FormNumber = dtData.SUBMISSION_NUMBER;
             input.DocumentStatus = dtData.STATUS_ID;
             input.PlantId = dtData.SOURCE_PLANT_ID;
+            input.NppbkcId = dtData.SOURCE_PLANT_NPPBKC_ID;
 
             if (dtData.CK5_TYPE == Enums.CK5Type.DomesticAlcohol || dtData.CK5_TYPE == Enums.CK5Type.PortToImporter)
             {
                 input.PlantId = dtData.DEST_PLANT_ID;
+                input.NppbkcId = dtData.DEST_PLANT_NPPBKC_ID;
             }
             else if (dtData.CK5_TYPE == Enums.CK5Type.Manual &&
                      dtData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
             {
                 input.PlantId = dtData.DEST_PLANT_ID;
+                input.NppbkcId = dtData.DEST_PLANT_NPPBKC_ID;
             }
             else if (dtData.CK5_TYPE == Enums.CK5Type.Waste)
             {
                 input.PlantId = dtData.DEST_PLANT_ID;
+                input.NppbkcId = dtData.DEST_PLANT_NPPBKC_ID;
             }
          
             output.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(input);
