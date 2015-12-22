@@ -434,7 +434,7 @@ namespace Sampoerna.EMS.BLL.Services
 
         public List<LACK1> GetReconciliationByParamInput(Lack1GetReconciliationByParamInput input)
         {
-            const string incTables = "MONTH, LACK1_PLANT";
+            const string incTables = "MONTH, LACK1_PLANT, LACK1_PRODUCTION_DETAIL, LACK1_PBCK1_MAPPING, LACK1_PBCK1_MAPPING.PBCK1, LACK1_INCOME_DETAIL, LACK1_INCOME_DETAIL.CK5";
 
             Expression<Func<LACK1, bool>> queryFilter = PredicateHelper.True<LACK1>();
             if (!string.IsNullOrEmpty(input.NppbkcId))
