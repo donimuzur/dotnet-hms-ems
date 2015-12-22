@@ -12,11 +12,10 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
         public NPPBKCIViewModels()
         {
             Details = new List<VirtualNppbckDetails>();
-            
+
         }
         public List<VirtualNppbckDetails> Details { get; set; }
         
-     
     }
     public class NppbkcFormModel : BaseModel
     {
@@ -29,7 +28,7 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
         public List<T001W> Plant { get; set; }
     }
 
-    public class VirtualNppbckDetails 
+    public class VirtualNppbckDetails
     {
         public string VirtualNppbckId { get; set; }
         public string Address1 { get; set; }
@@ -39,13 +38,13 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
         public string CityAlias { get; set; }
 
         [Required(ErrorMessage = "please fill this field")]
-        public string RegionOfficeOfDGCE{ get; set; }
+        public string RegionOfficeOfDGCE { get; set; }
         public string Region { get; set; }
         [Required(ErrorMessage = "please fill this field")]
         public string TextTo { get; set; }
 
         [Required(ErrorMessage = "Enter the Issued date.")]
-      
+
         public DateTime? CreateDate { get; set; }
 
         [DataType(DataType.Date)]
@@ -58,6 +57,7 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
         public string AcountNumber { get; set; }
         public LFA1 VENDOR { get; set; }
         public string Is_Deleted { get; set; }
+        public bool FlagForLack1 { get; set; }
     }
 
     public class NppbkcItemModel
@@ -79,6 +79,8 @@ namespace Sampoerna.EMS.Website.Models.NPPBKC
         public DateTime? MODIFIED_DATE { get; set; }
         public string MODIFIED_BY { get; set; }
         public bool? IS_DELETED { get; set; }
+        public bool? FLAG_FOR_LACK1 { get; set; }
+
 
         public T001Dto T001 { get; set; }
     }

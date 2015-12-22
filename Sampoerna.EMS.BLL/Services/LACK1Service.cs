@@ -267,13 +267,15 @@ namespace Sampoerna.EMS.BLL.Services
                     queryFilter.And(c => c.LACK1_PLANT.Any(p => p.PLANT_ID == input.ReceivingPlantId));
             }
 
+            //queryFilter = input.IsTisToTis ? queryFilter.And(c => c.IS_TIS_TO_TIS.HasValue && c.IS_TIS_TO_TIS.Value) : queryFilter.And(c => !c.IS_TIS_TO_TIS.HasValue || !c.IS_TIS_TO_TIS.Value);
+
             return _repository.Get(queryFilter).FirstOrDefault();
 
         }
 
         public LACK1 GetDetailsById(int id)
         {
-            var incTables = includeTables + ", LACK1_DOCUMENT, LACK1_INCOME_DETAIL, LACK1_PLANT, LACK1_PRODUCTION_DETAIL, LACK1_PRODUCTION_DETAIL.UOM, LACK1_PBCK1_MAPPING, LACK1_PBCK1_MAPPING.PBCK1, LACK1_TRACKING";
+            var incTables = includeTables + ", LACK1_DOCUMENT, LACK1_INCOME_DETAIL, LACK1_INCOME_DETAIL.CK5, LACK1_INCOME_DETAIL.CK5.UOM, LACK1_PLANT, LACK1_PRODUCTION_DETAIL, LACK1_PRODUCTION_DETAIL.UOM, LACK1_PBCK1_MAPPING, LACK1_PBCK1_MAPPING.PBCK1, LACK1_TRACKING";
             return _repository.Get(c => c.LACK1_ID == id, null, incTables).FirstOrDefault();
         }
 

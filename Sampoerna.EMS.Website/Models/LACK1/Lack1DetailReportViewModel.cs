@@ -67,20 +67,22 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string Ck5RegistrationDate { get; set; }
         public string Ck5GrDate { get; set; }
         public decimal Qty { get; set; }
+        public string Ck5TypeText { get; set; }
         #endregion
 
         #region ----------- Usage Table on FS Doc ---------
-        public string GiDate { get; set; }
+        public DateTime? GiDate { get; set; }
         public string PurchaseDoc { get; set; }
         public string MaterialCode { get; set; }
         public decimal? UsageQty { get; set; }
         public string OriginalUomId { get; set; }
+        public string OriginalUomDesc { get; set; }
         public string ConvertedUomId { get; set; }
+        public string ConvertedUomDesc { get; set; }
         public string Batch { get; set; }
-        #endregion 
-
         public int MaterialCodeUsageRecCount { get; set; }
-
+        #endregion 
+        
     }
 
 }

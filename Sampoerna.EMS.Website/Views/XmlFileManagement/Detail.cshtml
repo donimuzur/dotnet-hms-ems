@@ -1,0 +1,169 @@
+﻿@model Sampoerna.EMS.Website.Models.XmlFileManagement.XmlFileManagementFormViewModel
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>XML Error Details</h3>
+            <div class="action-button">
+                @if (Model.IsError)
+                {
+                    <input type="button" value="Re-Execute" class="btn btn-blue" id="btnExecute" />
+                }
+                
+                <input type="button" value="Back" class="btn btn-grey" id="btnBack" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div class="white-wrapper">
+
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Detail XML Log
+                                    <i class="fa fa-caret-down"></i>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <form class="form-excise" role="form">
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-4">XML File</label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.FileName, new { @class = "form-control", @disabled = "disabled" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-4">Status</label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.XmlLogStatusDescription, new { @class = "form-control", @disabled = "disabled" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-4">Last Error Time</label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.TimeStampDisplay, new { @class = "form-control", @disabled = "disabled" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="row">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="table-container" id="detailsListXml">
+
+                                                    <table id="DetailListTable" class="table table-bordered table-striped js-options-table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>No</th>
+                                                                <th>Error Logs</th>
+                                                                <th>Error Timestamp</th>
+
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+
+                                                            @for (int i = 0; i < Model.DetailListLogs.Count(); i++)
+                                                            {
+
+                                                            <tr>
+                                                                <td>@(i+1)</td>
+                                                                <td>@Html.DisplayFor(model => model.DetailListLogs[i].Description)</td>
+                                                                <td>@Html.DisplayFor(model => model.DetailListLogs[i].TimeStampDisplay)</td>
+
+                                                            </tr>
+                                                            }
+
+
+                                                        </tbody>
+                                                    </table>
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="row">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+</div>
+
+
+@section scripts {
+
+
+
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            $('#MenuXmlFile').addClass('active');
+
+            $('#btnBack').click(function (e) {
+                location.href = '@Url.Action("Index", "XmlFileManagement")';
+            });
+
+            $('#btnExecute').click(function (e) {
+                var xmlId = '@Model.XmlLogId';
+                location.href = '@Url.Action("ReExecute", "XmlFileManagement", new { id = Model.XmlLogId })';
+            });
+
+        });
+
+
+
+
+
+    </script>
+}

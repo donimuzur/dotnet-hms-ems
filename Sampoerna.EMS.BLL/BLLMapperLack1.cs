@@ -51,6 +51,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.BeginingBalance, opt => opt.MapFrom(src => src.BEGINING_BALANCE))
                 .ForMember(dest => dest.TotalIncome, opt => opt.MapFrom(src => src.TOTAL_INCOME))
                 .ForMember(dest => dest.Usage, opt => opt.MapFrom(src => src.USAGE))
+                .ForMember(dest => dest.UsageTisToTis, opt => opt.MapFrom(src => src.USAGE_TISTOTIS))
                 .ForMember(dest => dest.Lack1UomId, opt => opt.MapFrom(src => src.LACK1_UOM_ID))
                 .ForMember(dest => dest.Lack1UomName, opt => opt.MapFrom(src => src.UOM11 != null ? src.UOM11.UOM_DESC : string.Empty))
                 .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => src.NOTED))
@@ -68,7 +69,12 @@ namespace Sampoerna.EMS.BLL
 
             Mapper.CreateMap<LACK1_DOCUMENT, Lack1DocumentDto>().IgnoreAllNonExisting();
 
-            Mapper.CreateMap<LACK1_INCOME_DETAIL, Lack1IncomeDetailDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<LACK1_INCOME_DETAIL, Lack1IncomeDetailDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PACKAGE_UOM_ID, opt => opt.MapFrom(src => src.CK5 != null ? src.CK5.PACKAGE_UOM_ID : string.Empty))
+                .ForMember(dest => dest.CK5_TYPE, opt => opt.MapFrom(src => src.CK5.CK5_TYPE))
+                .ForMember(dest => dest.FLAG_FOR_LACK1, opt => opt.MapFrom(src => src.CK5.FLAG_FOR_LACK1.HasValue && src.CK5.FLAG_FOR_LACK1.Value))
+                .ForMember(dest => dest.PACKAGE_UOM_DESC, opt => opt.MapFrom(src => src.CK5 != null && src.CK5.UOM != null ? src.CK5.UOM.UOM_DESC : string.Empty))
+                ;
 
             Mapper.CreateMap<LACK1_PBCK1_MAPPING, Lack1Pbck1MappingDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PBCK1_NUMBER, opt => opt.MapFrom(src => src.PBCK1.NUMBER))
@@ -104,6 +110,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.UOM_ID, opt => opt.MapFrom(src => src.UomId))
                 .ForMember(dest => dest.FA_CODE, opt => opt.MapFrom(src => src.FaCode))
                 .ForMember(dest => dest.ORDR, opt => opt.MapFrom(src => src.Ordr))
+                .ForMember(dest => dest.IS_TISTOTIS_DATA, opt => opt.MapFrom(src => src.IsTisToTisData))
                 ;
 
             Mapper.CreateMap<Lack1GeneratedPbck1DataDto, LACK1_PBCK1_MAPPING>().IgnoreAllNonExisting()
@@ -122,9 +129,13 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX))
                 .ForMember(dest => dest.StoReceiverNumber, opt => opt.MapFrom(src => src.STO_RECEIVER_NUMBER))
                 .ForMember(dest => dest.StoSenderNumber, opt => opt.MapFrom(src => src.STO_SENDER_NUMBER))
+                .ForMember(dest => dest.DnNumber, opt => opt.MapFrom(src => src.DN_NUMBER))
                 .ForMember(dest => dest.Ck5Type, opt => opt.MapFrom(src => src.CK5_TYPE))
+                .ForMember(dest => dest.PackageUomId, opt => opt.MapFrom(src => src.PACKAGE_UOM_ID))
+                .ForMember(dest => dest.PackageUomDesc, opt => opt.MapFrom(src => src.UOM != null ? src.UOM.UOM_DESC : string.Empty))
                 .ForMember(dest => dest.RegistrationNumber, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
                 .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE))
+                .ForMember(dest => dest.FlagForLack1, opt => opt.MapFrom(src => src.FLAG_FOR_LACK1.HasValue && src.FLAG_FOR_LACK1.Value))
                 .ForMember(dest => dest.StringRegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE.HasValue ? src.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy") : string.Empty))
                 ;
 
@@ -144,12 +155,14 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.BEGINING_BALANCE, opt => opt.MapFrom(src => src.BeginingBalance))
                 .ForMember(dest => dest.TOTAL_INCOME, opt => opt.MapFrom(src => src.TotalIncome))
                 .ForMember(dest => dest.USAGE, opt => opt.MapFrom(src => src.TotalUsage))
+                .ForMember(dest => dest.USAGE_TISTOTIS, opt => opt.MapFrom(src => src.TotalUsageTisToTis))
                 .ForMember(dest => dest.LACK1_UOM_ID, opt => opt.MapFrom(src => src.Lack1UomId))
                 .ForMember(dest => dest.DOCUMENT_NOTED, opt => opt.MapFrom(src => src.DocumentNoted))
                 .ForMember(dest => dest.NOTED, opt => opt.MapFrom(src => src.Noted))
-                .ForMember(dest => dest.LACK1_INCOME_DETAIL, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_INCOME_DETAIL>>(src.IncomeList)))
+                //.ForMember(dest => dest.LACK1_INCOME_DETAIL, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_INCOME_DETAIL>>(src.IncomeList)))/*For display*/
+                .ForMember(dest => dest.LACK1_INCOME_DETAIL, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_INCOME_DETAIL>>(src.AllIncomeList)))/*For saving to database*/
                 //.ForMember(dest => dest.LACK1_PLANT, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PLANT>>(src.PlantList))) //todo: set from BLL
-                .ForMember(dest => dest.LACK1_PRODUCTION_DETAIL, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(src.ProductionList)))
+                //.ForMember(dest => dest.LACK1_PRODUCTION_DETAIL, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(src.ProductionList))) //todo: set from BLL
                 .ForMember(dest => dest.LACK1_PBCK1_MAPPING, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PBCK1_MAPPING>>(src.Pbck1List)))
                 ;
 
@@ -184,6 +197,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.BEGINING_BALANCE, opt => opt.MapFrom(src => src.BeginingBalance))
                 .ForMember(dest => dest.TOTAL_INCOME, opt => opt.MapFrom(src => src.TotalIncome))
                 .ForMember(dest => dest.USAGE, opt => opt.MapFrom(src => src.Usage))
+                .ForMember(dest => dest.USAGE_TISTOTIS, opt => opt.MapFrom(src => src.UsageTisToTis))
                 .ForMember(dest => dest.LACK1_LEVEL, opt => opt.MapFrom(src => src.Lack1Level))
                 .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreateBy))
                 .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreateDate))
@@ -239,6 +253,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.BeginingBalance, opt => opt.MapFrom(src => src.BEGINING_BALANCE))
                 .ForMember(dest => dest.TotalIncome, opt => opt.MapFrom(src => src.TOTAL_INCOME))
                 .ForMember(dest => dest.Usage, opt => opt.MapFrom(src => src.USAGE))
+                .ForMember(dest => dest.UsageTisToTis, opt => opt.MapFrom(src => src.USAGE_TISTOTIS))
+                .ForMember(dest => dest.EndingBalance, opt => opt.MapFrom(src => src.BEGINING_BALANCE + src.TOTAL_INCOME - (src.USAGE + (src.USAGE_TISTOTIS.HasValue ? src.USAGE_TISTOTIS.Value : 0)) - (src.RETURN_QTY.HasValue ? src.RETURN_QTY.Value : 0)))
                 .ForMember(dest => dest.Lack1UomId, opt => opt.MapFrom(src => src.LACK1_UOM_ID))
                 .ForMember(dest => dest.Lack1UomName, opt => opt.MapFrom(src => src.UOM11 != null ? src.UOM11.UOM_DESC : string.Empty))
                 .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => src.CREATED_DATE))
@@ -246,12 +262,14 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ApprovedByPoa, opt => opt.MapFrom(src => src.APPROVED_BY_POA))
                 .ForMember(dest => dest.ApprovedPoaDate, opt => opt.MapFrom(src => src.APPROVED_DATE_POA))
                 .ForMember(dest => dest.Lack1Document, opt => opt.MapFrom(src => Mapper.Map<List<Lack1DocumentDto>>(src.LACK1_DOCUMENT)))
-                .ForMember(dest => dest.Lack1IncomeDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.LACK1_INCOME_DETAIL)))
+                //.ForMember(dest => dest.Lack1IncomeDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.LACK1_INCOME_DETAIL)))//todo: set from BLL, need to exlude some CK5 Type for display only
+                .ForMember(dest => dest.AllLack1IncomeDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.LACK1_INCOME_DETAIL)))
                 .ForMember(dest => dest.Lack1Pbck1Mapping, opt => opt.MapFrom(src => Mapper.Map<List<Lack1Pbck1MappingDto>>(src.LACK1_PBCK1_MAPPING)))
                 .ForMember(dest => dest.Lack1Plant, opt => opt.MapFrom(src => Mapper.Map<List<Lack1PlantDto>>(src.LACK1_PLANT)))
                 .ForMember(dest => dest.Lack1ProductionDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailDto>>(src.LACK1_PRODUCTION_DETAIL)))
                 .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => src.NOTED))
                 .ForMember(dest => dest.DocumentNoted, opt => opt.MapFrom(src => src.DOCUMENT_NOTED))
+                .ForMember(dest => dest.IsTisToTis, opt => opt.MapFrom(src => src.IS_TIS_TO_TIS.HasValue && src.IS_TIS_TO_TIS.Value))
                 ;
 
             Mapper.CreateMap<LACK1, Lack1PrintOutDto>().IgnoreAllNonExisting()
@@ -288,6 +306,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.BeginingBalance, opt => opt.MapFrom(src => src.BEGINING_BALANCE))
                 .ForMember(dest => dest.TotalIncome, opt => opt.MapFrom(src => src.TOTAL_INCOME))
                 .ForMember(dest => dest.Usage, opt => opt.MapFrom(src => src.USAGE))
+                .ForMember(dest => dest.UsageTisToTis, opt => opt.MapFrom(src => src.USAGE_TISTOTIS))
                 .ForMember(dest => dest.Lack1UomId, opt => opt.MapFrom(src => src.LACK1_UOM_ID))
                 .ForMember(dest => dest.Lack1UomName, opt => opt.MapFrom(src => src.UOM11 != null ? src.UOM11.UOM_DESC : string.Empty))
                 .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => src.CREATED_DATE))
@@ -295,20 +314,23 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ApprovedByPoa, opt => opt.MapFrom(src => src.APPROVED_BY_POA))
                 .ForMember(dest => dest.ApprovedPoaDate, opt => opt.MapFrom(src => src.APPROVED_DATE_POA))
                 .ForMember(dest => dest.Lack1Document, opt => opt.MapFrom(src => Mapper.Map<List<Lack1DocumentDto>>(src.LACK1_DOCUMENT)))
-                .ForMember(dest => dest.Lack1IncomeDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.LACK1_INCOME_DETAIL)))
+                //.ForMember(dest => dest.Lack1IncomeDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.LACK1_INCOME_DETAIL)))//todo: set from BLL
+                .ForMember(dest => dest.AllLack1IncomeDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.LACK1_INCOME_DETAIL)))
                 .ForMember(dest => dest.Lack1Pbck1Mapping, opt => opt.MapFrom(src => Mapper.Map<List<Lack1Pbck1MappingDto>>(src.LACK1_PBCK1_MAPPING)))
                 .ForMember(dest => dest.Lack1Plant, opt => opt.MapFrom(src => Mapper.Map<List<Lack1PlantDto>>(src.LACK1_PLANT)))
                 .ForMember(dest => dest.Lack1ProductionDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailDto>>(src.LACK1_PRODUCTION_DETAIL)))
                 .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => src.NOTED))
                 .ForMember(dest => dest.DocumentNoted, opt => opt.MapFrom(src => src.DOCUMENT_NOTED))
+                .ForMember(dest => dest.IsTisToTis, opt => opt.MapFrom(src => src.IS_TIS_TO_TIS))
                 ;
 
             Mapper.CreateMap<INVENTORY_MOVEMENT, Lack1GeneratedTrackingDto>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.INVENTORY_MOVEMENT_ID, opt => opt.MapFrom(src => src.INVENTORY_MOVEMENT_ID))
+                //.ForMember(dest => dest.INVENTORY_MOVEMENT_ID, opt => opt.MapFrom(src => src.INVENTORY_MOVEMENT_ID))
                 ;
 
             Mapper.CreateMap<Lack1GeneratedTrackingDto, LACK1_TRACKING>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.INVENTORY_MOVEMENT_ID, opt => opt.MapFrom(src => src.INVENTORY_MOVEMENT_ID))
+                .ForMember(dest => dest.IS_TISTOTIS_DATA, opt => opt.MapFrom(src => src.IsTisToTisData))
                 .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => DateTime.Now))
                 ;
 
@@ -344,6 +366,26 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Lack1Id, opt => opt.MapFrom(src => src.Detail.Lack1Id))
                 ;
 
+            Mapper.CreateMap<Lack1GeneratedInventoryAndProductionDto, Lack1InventoryAndProductionDto>()
+                .IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack1GeneratedProductionDto, Lack1ProductionDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack1GeneratedProductionSummaryByProdTypeDataDto, Lack1ProductionSummaryByProdTypeDto>()
+                .IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack1GeneratedProductionDataDto, Lack1ProductionDetailDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.AMOUNT, opt => opt.MapFrom(src => src.Amount))
+                .ForMember(dest => dest.PROD_CODE, opt => opt.MapFrom(src => src.ProdCode))
+                .ForMember(dest => dest.PRODUCT_TYPE, opt => opt.MapFrom(src => src.ProductType))
+                .ForMember(dest => dest.PRODUCT_ALIAS, opt => opt.MapFrom(src => src.ProductAlias))
+                .ForMember(dest => dest.UOM_ID, opt => opt.MapFrom(src => src.UomId))
+                .ForMember(dest => dest.FA_CODE, opt => opt.MapFrom(src => src.FaCode))
+                .ForMember(dest => dest.ORDR, opt => opt.MapFrom(src => src.Ordr))
+                .ForMember(dest => dest.IS_TISTOTIS_DATA, opt => opt.MapFrom(src => src.IsTisToTisData))
+                .ForMember(dest => dest.UOM_DESC, opt => opt.MapFrom(src => src.UomDesc))
+                ;
+
             Mapper.CreateMap<Lack1GeneratedDto, Lack1DetailsDto>().IgnoreAllNonExisting()
                .ForMember(dest => dest.Bukrs, opt => opt.MapFrom(src => src.CompanyCode))
                .ForMember(dest => dest.Butxt, opt => opt.MapFrom(src => src.CompanyName))
@@ -360,6 +402,7 @@ namespace Sampoerna.EMS.BLL
                .ForMember(dest => dest.BeginingBalance, opt => opt.MapFrom(src => src.BeginingBalance))
                .ForMember(dest => dest.TotalIncome, opt => opt.MapFrom(src => src.TotalIncome))
                .ForMember(dest => dest.Usage, opt => opt.MapFrom(src => src.TotalUsage))
+               .ForMember(dest => dest.UsageTisToTis, opt => opt.MapFrom(src => src.TotalUsageTisToTis))
                .ForMember(dest => dest.Lack1UomId, opt => opt.MapFrom(src => src.Lack1UomId))
                .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => src.Noted))
                .ForMember(dest => dest.DocumentNoted, opt => opt.MapFrom(src => src.DocumentNoted))
@@ -400,6 +443,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.BeginingBalance, opt => opt.MapFrom(src => src.BEGINING_BALANCE))
                 .ForMember(dest => dest.TotalIncome, opt => opt.MapFrom(src => src.TOTAL_INCOME))
                 .ForMember(dest => dest.Usage, opt => opt.MapFrom(src => src.USAGE))
+                .ForMember(dest => dest.UsageTisToTis, opt => opt.MapFrom(src => src.USAGE_TISTOTIS))
                 .ForMember(dest => dest.Lack1UomId, opt => opt.MapFrom(src => src.LACK1_UOM_ID))
                 .ForMember(dest => dest.Lack1UomName, opt => opt.MapFrom(src => src.UOM11 != null ? src.UOM11.UOM_DESC : string.Empty))
                 ;
@@ -407,6 +451,55 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<LACK1, Lack1DetailReportTempDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PeriodDate,
                     opt => opt.MapFrom(src => new DateTime(src.PERIOD_YEAR.Value, src.PERIOD_MONTH.Value, 1)));
+
+            Mapper.CreateMap<Lack1GeneratedInvMovementProductionStepTracingItem, LACK1_TRACKING_ALCOHOL>()
+                .IgnoreAllNonExisting()
+                .ForMember(dest => dest.MVT, opt => opt.MapFrom(src => src.Mvt))
+                .ForMember(dest => dest.MATERIAL_ID, opt => opt.MapFrom(src => src.MaterialId))
+                .ForMember(dest => dest.PLANT_ID, opt => opt.MapFrom(src => src.PlantId))
+                .ForMember(dest => dest.QTY, opt => opt.MapFrom(src => src.Qty))
+                .ForMember(dest => dest.BUN, opt => opt.MapFrom(src => src.Bun))
+                .ForMember(dest => dest.PURCH_DOC, opt => opt.MapFrom(src => src.PurchDoc))
+                .ForMember(dest => dest.MAT_DOC, opt => opt.MapFrom(src => src.MatDoc))
+                .ForMember(dest => dest.BATCH, opt => opt.MapFrom(src => src.Batch))
+                .ForMember(dest => dest.ORDR, opt => opt.MapFrom(src => src.Ordr))
+                .ForMember(dest => dest.PROD_QTY, opt => opt.MapFrom(src => src.ProductionQty))
+                .ForMember(dest => dest.IS_FINAL_GOODS, opt => opt.MapFrom(src => src.IsFinalGoodsType))
+                .ForMember(dest => dest.TrackLevel, opt => opt.MapFrom(src => src.TrackLevel))
+                .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => DateTime.Now))
+                .ForMember(dest => dest.PARENT_ORDR, opt => opt.MapFrom(src => src.ParentOrdr))
+                ;
+
+            Mapper.CreateMap<INVENTORY_MOVEMENT, Lack1GeneratedInvMovementProductionStepTracingItem>()
+                .ForMember(dest => dest.Mvt, opt => opt.MapFrom(src => src.MVT))
+                .ForMember(dest => dest.MaterialId, opt => opt.MapFrom(src => src.MATERIAL_ID))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
+                .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.QTY.HasValue ? src.QTY.Value : 0))
+                .ForMember(dest => dest.Bun, opt => opt.MapFrom(src => src.BUN))
+                .ForMember(dest => dest.PurchDoc, opt => opt.MapFrom(src => src.PURCH_DOC))
+                .ForMember(dest => dest.PostingDate, opt => opt.MapFrom(src => src.POSTING_DATE))
+                .ForMember(dest => dest.MatDoc, opt => opt.MapFrom(src => src.MAT_DOC))
+                .ForMember(dest => dest.Batch, opt => opt.MapFrom(src => src.BATCH))
+                .ForMember(dest => dest.Ordr, opt => opt.MapFrom(src => src.ORDR))
+                .IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack1GeneratedRemarkDto, Lack1RemarkDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Ck5WasteData, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.Ck5WasteData)))
+                .ForMember(dest => dest.Ck5ReturnData, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.Ck5ReturnData)))
+                .ForMember(dest => dest.Ck5TrialData, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.Ck5TrialData)))
+                ;
+
+            Mapper.CreateMap<Lack1GeneratedIncomeDataDto, Lack1IncomeDetailDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.CK5_ID, opt => opt.MapFrom(src => src.Ck5Id))
+                .ForMember(dest => dest.AMOUNT, opt => opt.MapFrom(src => src.Amount))
+                .ForMember(dest => dest.CK5_TYPE, opt => opt.MapFrom(src => src.Ck5Type))
+                .ForMember(dest => dest.REGISTRATION_NUMBER, opt => opt.MapFrom(src => src.RegistrationNumber))
+                .ForMember(dest => dest.REGISTRATION_DATE, opt => opt.MapFrom(src => src.RegistrationDate))
+                .ForMember(dest => dest.PACKAGE_UOM_ID, opt => opt.MapFrom(src => src.PackageUomId))
+                .ForMember(dest => dest.PACKAGE_UOM_DESC, opt => opt.MapFrom(src => src.PackageUomDesc))
+                .ForMember(dest => dest.PACKAGE_UOM_DESC, opt => opt.MapFrom(src => src.PackageUomDesc))
+                .ForMember(dest => dest.FLAG_FOR_LACK1, opt => opt.MapFrom(src => src.FlagForLack1))
+                ;
 
         }
 

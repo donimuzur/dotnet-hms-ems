@@ -19,6 +19,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         //for modul pbck3
        public string DocumentNumberSource { get; set; }
        public string PlantId { get; set; }
+       public string SourcePlant { get; set; }
+       public string DestPlant { get; set; }
     }
 
     public class WorkflowAllowEditAndSubmitInput
@@ -27,4 +29,6 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string CreatedUser { get; set; }
         public string CurrentUser { get; set; }
     }
+
+  
 }

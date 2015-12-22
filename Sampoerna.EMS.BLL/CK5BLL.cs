@@ -44,6 +44,7 @@ namespace Sampoerna.EMS.BLL
         private IPrintHistoryBLL _printHistoryBll;
         private IMonthBLL _monthBll;
         private IPOABLL _poaBll;
+        private IZaidmExPOAMapBLL _poaMapBll;
 
         private IZaidmExNPPBKCBLL _nppbkcBll;
         private IPlantBLL _plantBll;
@@ -60,6 +61,10 @@ namespace Sampoerna.EMS.BLL
         private ILack1IncomeDetailService _lack1IncomeDetailService;
         private ILack2ItemService _lack2ItemService;
         private IBrandRegistrationService _brandRegistration;
+        private IWasteStockServices _wasteStockServices;
+        private IWasteRoleServices _wasteRoleServices;
+        private IUserPlantMapBLL _userPlantMapBll;
+        private ICK5Service _ck5Service;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
         private List<string> _allowedCk5Uom =  new List<string>(new string[] { "KG", "G", "L" });
@@ -104,10 +109,15 @@ namespace Sampoerna.EMS.BLL
             _pbck3Services = new Pbck3Services(_uow,_logger);
             _lfa1Bll = new LFA1BLL(_uow, _logger);
             _workflowBll = new WorkflowBLL(_uow, _logger);
-
+            _poaMapBll = new ZaidmExPOAMapBLL(_uow, _logger);
             _lack1IncomeDetailService = new Lack1IncomeDetailService(_uow, _logger);
             _lack2ItemService = new Lack2ItemService(_uow, _logger);
             _brandRegistration = new BrandRegistrationService(_uow, _logger);
+            _wasteStockServices = new WasteStockServices(_uow, _logger);
+            _wasteRoleServices = new WasteRoleServices(_uow, _logger);
+            _userPlantMapBll = new UserPlantMapBLL(_uow, _logger);
+
+            _ck5Service = new CK5Service(_uow, _logger);
         }
         
 
@@ -193,20 +203,36 @@ namespace Sampoerna.EMS.BLL
                 else if (input.Ck5Type == Enums.CK5Type.Manual || input.Ck5Type == Enums.CK5Type.MarketReturn)
                 {
                     queryFilter =
+                        queryFilter.And(
+                            c =>
+                                (c.CREATED_BY == input.UserId ||
+                                 (
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
+                                     ((c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
+                                       nppbkc.Contains(c.DEST_PLANT_NPPBKC_ID)
+                                         ) ||
+                                      nppbkc.Contains(c.SOURCE_PLANT_NPPBKC_ID)
+                                         )
+                                     )
+
+                                    )
+                            );
+                }
+                else if (input.Ck5Type == Enums.CK5Type.Waste)
+                {
+                    var plantDest = _poaMapBll.GetByPoaId(input.UserId).Select(d => d.WERKS).ToList();
+
+                    queryFilter =
                        queryFilter.And(
                            c =>
                                (c.CREATED_BY == input.UserId ||
-                                (
-                                (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
-                                 ((c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
-                                             nppbkc.Contains(c.DEST_PLANT_NPPBKC_ID)
-                                  ) ||
-                                            nppbkc.Contains(c.SOURCE_PLANT_NPPBKC_ID)
-                                            )
-                                            )
-
-                                )
-                                );
+                                (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                 nppbkc.Contains(c.SOURCE_PLANT_NPPBKC_ID))
+                                 ||
+                                 (c.STATUS_ID == Enums.DocumentStatus.GoodReceive &&
+                                  plantDest.Contains(c.DEST_PLANT_ID)
+                                  )
+                                 ));
                 }
                 else
                 {
@@ -281,12 +307,19 @@ namespace Sampoerna.EMS.BLL
             //Func<IQueryable<CK5>, IOrderedQueryable<CK5>> orderByFilter = n => n.OrderByDescending(z => z.STATUS_ID).ThenBy(z=>z.APPROVED_BY_MANAGER);
 
 
-            var rc = _repository.Get(queryFilter, orderByFilter, includeTables);
+            var rc = _repository.Get(queryFilter, orderByFilter, includeTables).ToList();
             if (rc == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
 
+            if (input.Ck5Type == Enums.CK5Type.Waste)
+            {
+                var listWaste = GetCk5Waste(input);
+                rc.AddRange(listWaste);
+               // rc = rc.DistinctBy(c => c.CK5_ID).ToList();
+                rc = rc.Distinct().ToList();
+            }
             var mapResult = Mapper.Map<List<CK5Dto>>(rc.ToList());
 
             return mapResult;
@@ -294,6 +327,81 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        private List<CK5> GetCk5Waste(CK5GetByParamInput input)
+        {
+            var result = new List<CK5>();
+            //get plant from user plant map by user id
+            //get plant from waste role
+            var plantId = _wasteRoleServices.GetPlantIdByUserId(input.UserId);
+            //var listPlant = _userPlantMapBll.GetPlantByUserId(input.UserId);
+            //if (listPlant.Count > 0)
+            if (!string.IsNullOrEmpty(plantId))
+            {
+                Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
+                Expression<Func<CK5, bool>> queryFilterDisposall = PredicateHelper.True<CK5>();
+                Expression<Func<CK5, bool>> queryFilterApproval = PredicateHelper.True<CK5>();
+
+                if (!string.IsNullOrEmpty(input.DocumentNumber))
+                {
+                    queryFilter = queryFilter.And(c => c.SUBMISSION_NUMBER.Contains(input.DocumentNumber));
+                }
+
+                if (!string.IsNullOrEmpty(input.POA))
+                {
+                    queryFilter = queryFilter.And(c => c.APPROVED_BY_POA.Contains(input.POA));
+                }
+
+                if (!string.IsNullOrEmpty(input.Creator))
+                {
+                    queryFilter = queryFilter.And(c => c.CREATED_BY.Contains(input.Creator));
+                }
+
+                if (!string.IsNullOrEmpty(input.NPPBKCOrigin))
+                {
+                    queryFilter = queryFilter.And(c => c.SOURCE_PLANT_NPPBKC_ID.Contains(input.NPPBKCOrigin));
+
+                }
+
+                if (!string.IsNullOrEmpty(input.NPPBKCDestination))
+                {
+                    queryFilter = queryFilter.And(c => c.DEST_PLANT_NPPBKC_ID.Contains(input.NPPBKCDestination));
+
+                }
+
+
+                if (_wasteRoleServices.IsUserDisposalTeamByPlant(input.UserId, plantId))
+                {
+                    queryFilterDisposall = queryFilter.And(c => c.CK5_TYPE == Enums.CK5Type.Waste &&
+                                                                c.STATUS_ID == Enums.DocumentStatus.WasteDisposal
+                                                                && c.DEST_PLANT_ID == plantId);
+
+                    var dbListCk5 =
+                        _repository.Get(queryFilterDisposall).ToList();
+                    result.AddRange(dbListCk5);
+
+                }
+
+
+                //foreach (var plant in listPlant)
+                //{
+                if (_wasteRoleServices.IsUserWasteApproverByPlant(input.UserId, plantId))
+                {
+                    queryFilterApproval = queryFilter.And(c => c.CK5_TYPE == Enums.CK5Type.Waste &&
+                                                               c.STATUS_ID == Enums.DocumentStatus.WasteApproval
+                                                               && c.DEST_PLANT_ID == plantId);
+
+                    var dbListCk5 =
+                        _repository.Get(queryFilterApproval).ToList();
+                    result.AddRange(dbListCk5);
+
+                }
+                //}
+
+            }
+
+            return result;
+
+        }
         public List<CK5Dto> GetCK5MarketReturnCompletedByParam(CK5GetByParamInput input)
         {
           
@@ -352,7 +460,9 @@ namespace Sampoerna.EMS.BLL
         {
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Export ||
                 input.Ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter ||
-                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.MarketReturn)
+                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.MarketReturn ||
+                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Return ||
+                input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Waste)
                 return;
             
             if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Manual)
@@ -583,7 +693,116 @@ namespace Sampoerna.EMS.BLL
             return ValidateCk5MarketReturnMaterial(inputs).FirstOrDefault();
         }
 
+        private List<CK5MaterialOutput> ValidateCk5WasteMaterial(List<CK5MaterialInput> inputs)
+        {
+            var messageList = new List<string>();
+            var outputList = new List<CK5MaterialOutput>();
+            Dictionary<string,decimal> currentStock = new Dictionary<string, decimal>();
+            foreach (var ck5MaterialInput in inputs)
+            {
+                messageList.Clear();
 
+                var output = Mapper.Map<CK5MaterialOutput>(ck5MaterialInput);
+                output.ConvertedUom = "G";
+
+                //validate
+                var dbBrand = _materialBll.GetByPlantIdAndStickerCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand);
+                if (dbBrand == null)
+                    messageList.Add("Material Number Not Exist");
+                else
+                {
+                    int iExist = 0;
+                    foreach (var ck5MaterialCheck in inputs)
+                    {
+                        if (ck5MaterialInput.Brand == ck5MaterialCheck.Brand)
+                            iExist++;
+                    }
+                    //if (iExist > 1)
+                    //    messageList.Add("Found Double Material Number");
+                }
+
+                if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Qty))
+                    messageList.Add("Qty not valid");
+                
+                if (ConvertHelper.ConvertToDecimalOrZero(ck5MaterialInput.Qty) <= 0)
+                    messageList.Add("Qty <= 0");
+
+
+                if (!_uomBll.IsUomIdExist(ck5MaterialInput.Uom))
+                    messageList.Add("UOM not exist");
+
+                if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Convertion))
+                    messageList.Add("Convertion not valid");
+
+
+                if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.UsdValue))
+                    messageList.Add("UsdValue not valid");
+
+                if (ConvertHelper.IsNumeric(ck5MaterialInput.Qty)
+                    && ConvertHelper.IsNumeric(ck5MaterialInput.Convertion)
+                    && dbBrand != null)
+                {
+
+                    var wasteStock = ConvertHelper.ConvertToDecimalOrZero(ck5MaterialInput.WasteStock);
+                    if (wasteStock <= 0)
+                    {
+                        
+                        wasteStock = GetWasteStockQuota(ck5MaterialInput.Plant, ck5MaterialInput.Brand).WasteStockRemainingCount;
+                        if (!currentStock.ContainsKey(ck5MaterialInput.Plant + "-" + ck5MaterialInput.Brand))
+                        {
+                            currentStock.Add(ck5MaterialInput.Plant + "-" + ck5MaterialInput.Brand, wasteStock);
+                            currentStock[ck5MaterialInput.Plant + "-" + ck5MaterialInput.Brand] = currentStock[ck5MaterialInput.Plant + "-" + ck5MaterialInput.Brand]
+                                - (ConvertHelper.ConvertToDecimalOrZero(ck5MaterialInput.Qty) * ConvertHelper.ConvertToDecimalOrZero(ck5MaterialInput.Convertion))
+                            ;
+                        }
+                        else
+                        {
+                            currentStock[ck5MaterialInput.Plant + "-" + ck5MaterialInput.Brand] = currentStock[ck5MaterialInput.Plant + "-" + ck5MaterialInput.Brand]
+                                - (ConvertHelper.ConvertToDecimalOrZero(ck5MaterialInput.Qty) * ConvertHelper.ConvertToDecimalOrZero(ck5MaterialInput.Convertion))
+                            ;
+
+                            if (currentStock[ck5MaterialInput.Plant + "-" + ck5MaterialInput.Brand] < 0)
+                            {
+                                messageList.Add("Waste Stock Quota Exceeded");
+                            }
+                        }
+                    }
+
+                    var qty = ConvertHelper.ConvertToDecimalOrZero(ck5MaterialInput.Qty);
+                    var convertion = ConvertHelper.ConvertToDecimalOrZero(ck5MaterialInput.Convertion);
+
+                    if (wasteStock < (qty*convertion))
+                        messageList.Add("Waste Stock Quota Exceeded");
+                }
+
+                if (messageList.Count > 0)
+                {
+                    output.IsValid = false;
+                    output.Message = "";
+                    foreach (var message in messageList)
+                    {
+                        output.Message += message + ";";
+                    }
+                }
+                else
+                {
+                    output.IsValid = true;
+                }
+
+                outputList.Add(output);
+            }
+
+
+            return outputList;
+        }
+
+        public CK5MaterialOutput ValidateCk5WasteMaterial(CK5MaterialInput input)
+        {
+            var messageList = new List<string>();
+            var inputs = new List<CK5MaterialInput>();
+            inputs.Add(input);
+            return ValidateCk5WasteMaterial(inputs).FirstOrDefault();
+        }
 
         private List<CK5MaterialOutput> ValidateCk5Material(List<CK5MaterialInput> inputs, Enums.ExGoodsType groupType)
         {
@@ -952,6 +1171,41 @@ namespace Sampoerna.EMS.BLL
             return input;
         }
 
+        private CK5MaterialOutput GetAdditionalValueCk5WasteMaterial(CK5MaterialOutput input)
+        {
+            //input.ConvertedQty = Convert.ToInt32(input.Qty) * Convert.ToInt32(input.Convertion);
+            input.ConvertedQty = ConvertHelper.GetDecimal(input.Qty) * ConvertHelper.GetDecimal(input.Convertion);
+
+            input.Convertion = ConvertHelper.GetDecimal(input.Convertion).ToString();
+
+
+
+            var dbMaterial = _materialBll.GetByPlantIdAndStickerCode(input.Plant, input.Brand);
+            if (dbMaterial == null)
+            {
+                input.Hje = 0;
+                input.Tariff = 0;
+
+            }
+            else
+            {
+                input.Hje = dbMaterial.HJE.HasValue ? dbMaterial.HJE.Value : 0;
+                input.Tariff = dbMaterial.TARIFF.HasValue ? dbMaterial.TARIFF.Value : 0;
+                input.MaterialDesc = dbMaterial.ZAIDM_EX_GOODTYP.EXT_TYP_DESC;
+
+                input.ExciseQty = input.ConvertedQty;
+                input.ExciseUom = "G";
+
+                input.WasteStock = GetWasteStockQuota(input.Plant, input.Brand).WasteStockRemaining;
+
+            }
+
+            input.ExciseValue = input.ConvertedQty * input.Tariff;
+
+            return input;
+        }
+
+
         public List<CK5MaterialOutput> CK5MaterialProcess(List<CK5MaterialInput> inputs, Enums.ExGoodsType groupType)
         {
             var outputList = ValidateCk5Material(inputs,groupType);
@@ -998,8 +1252,31 @@ namespace Sampoerna.EMS.BLL
             return outputList;
         }
 
-       
+        public List<CK5MaterialOutput> Ck5WasteMaterialProcess(List<CK5MaterialInput> inputs)
+        {
 
+            var outputList = ValidateCk5WasteMaterial(inputs);
+
+            if (!outputList.All(ck5MaterialOutput => ck5MaterialOutput.IsValid))
+                return outputList;
+
+            foreach (var output in outputList)
+            {
+                var resultValue = GetAdditionalValueCk5WasteMaterial(output);
+
+                output.ConvertedQty = resultValue.ConvertedQty;
+                output.Hje = resultValue.Hje;
+                output.Tariff = resultValue.Tariff;
+                output.ExciseValue = resultValue.ExciseValue;
+                output.ConvertedUom = "G";
+                output.ExciseUom = resultValue.ConvertedUom;
+                output.ExciseQty = resultValue.ExciseQty;
+                output.WasteStock = resultValue.WasteStock;
+            }
+
+            return outputList;
+        }
+      
         private void SetChangeHistory(string oldValue, string newValue, string fieldName, string userId, string ck5Id)
         {
             var changes = new CHANGES_HISTORY();
@@ -1230,6 +1507,10 @@ namespace Sampoerna.EMS.BLL
             {
                 input.PlantId = dtData.DEST_PLANT_ID;
             }
+            else if (dtData.CK5_TYPE == Enums.CK5Type.Waste)
+            {
+                input.PlantId = dtData.DEST_PLANT_ID;
+            }
          
             output.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(input);
 
@@ -1403,10 +1684,27 @@ namespace Sampoerna.EMS.BLL
                     break;
                 case Enums.ActionType.GoodIssue:
                     GoodIssueDocument(input);
+                    if (input.Ck5Type == Enums.CK5Type.Waste)
+                        isNeedSendNotif = true;
+                    
                     break;
                 case Enums.ActionType.GoodReceive:
                     GoodReceiveDocument(input);
+                    if (input.Ck5Type == Enums.CK5Type.Waste)
+                        isNeedSendNotif = true;
                     break;
+                case Enums.ActionType.WasteDisposalUploaded:
+                    WasteDisposalDocument(input);
+                    isNeedSendNotif = true;
+                    break;
+                //case Enums.ActionType.WasteApproved:
+                //    WasteApprovalDocument(input);
+                //    isNeedSendNotif = true;
+                //    break;
+                //case Enums.ActionType.WasteDisposalRejected:
+                //    RejectDisposalDocument(input);
+                //    isNeedSendNotif = true;
+                //    break;
             }
 
             //todo sent mail
@@ -1419,7 +1717,7 @@ namespace Sampoerna.EMS.BLL
 
         private void SendEmailWorkflow(CK5WorkflowDocumentInput input)
         {
-       
+      
             var ck5Dto = Mapper.Map<CK5Dto>(_repository.Get(c => c.CK5_ID == input.DocumentId).FirstOrDefault());
 
             var mailProcess = ProsesMailNotificationBody(ck5Dto, input.ActionType);
@@ -1449,25 +1747,39 @@ namespace Sampoerna.EMS.BLL
                 FormType = Enums.FormType.CK5
             });
 
+            var listEmailTransportAndFacLogistic = new List<string>();
+            if (ck5Dto.CK5_TYPE == Enums.CK5Type.Waste)
+            {
+                listEmailTransportAndFacLogistic =
+                    _wasteRoleServices.GetListEmailTransportationAndFactoryLogisticTeamByPlant(ck5Dto.SOURCE_PLANT_ID,
+                        ck5Dto.DEST_PLANT_ID);
+            }
+
+            var userCreatorInfo = _userBll.GetUserById(ck5Dto.CREATED_BY);
+            var userPoaApprovalInfo = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
+
+            List<POADto> poaDestList;
+            List<POADto> poaSourceList;
+
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
             rc.Subject = "CK-5 " + ck5Dto.SUBMISSION_NUMBER + " is " + EnumHelper.GetDescription(ck5Dto.STATUS_ID);
             bodyMail.Append("Dear Team,<br />");
-            bodyMail.AppendLine();
+            //bodyMail.AppendLine();
             bodyMail.Append("Kindly be informed, " + rc.Subject + ". <br />");
-            bodyMail.AppendLine();
+            //bodyMail.AppendLine();
             bodyMail.Append("<table><tr><td>Company Code </td><td>: " + ck5Dto.SOURCE_PLANT_COMPANY_CODE + "</td></tr>");
-            bodyMail.AppendLine();
+            //bodyMail.AppendLine();
             bodyMail.Append("<tr><td>NPPBKC </td><td>: " + ck5Dto.SOURCE_PLANT_NPPBKC_ID + "</td></tr>");
-            bodyMail.AppendLine();
+            //bodyMail.AppendLine();
             bodyMail.Append("<tr><td>Document Number</td><td> : " + ck5Dto.SUBMISSION_NUMBER + "</td></tr>");
-            bodyMail.AppendLine();
+            //bodyMail.AppendLine();
             bodyMail.Append("<tr><td>Document Type</td><td> : CK-5</td></tr>");
-            bodyMail.AppendLine();
+            //bodyMail.AppendLine();
             bodyMail.Append("<tr><td>CK-5 Type</td><td> : " + EnumHelper.GetDescription(ck5Dto.CK5_TYPE) + "</td></tr>");
-            bodyMail.AppendLine();
+            //bodyMail.AppendLine();
             bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/CK5/Details/" + ck5Dto.CK5_ID + "'>link</a> to show detailed information</i></td></tr>");
-            bodyMail.AppendLine();
+            //bodyMail.AppendLine();
             bodyMail.Append("</table>");
             bodyMail.AppendLine();
             bodyMail.Append("<br />Regards,<br />");
@@ -1517,8 +1829,10 @@ namespace Sampoerna.EMS.BLL
                             
                         }
 
-                        var userData = _userBll.GetUserById(ck5Dto.CREATED_BY);
-                        rc.CC.Add(userData.EMAIL);
+                        //var userData = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                        //rc.CC.Add(userData.EMAIL);
+                        rc.CC.Add(userCreatorInfo.EMAIL);
+
                     }
                     else if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
@@ -1526,17 +1840,28 @@ namespace Sampoerna.EMS.BLL
                         var managerDetail = _userBll.GetUserById(managerId);
                         rc.To.Add(managerDetail.EMAIL);
                     }
+
+                    //Transportation and FactoryLogistic
+                    if (listEmailTransportAndFacLogistic.Count > 0)
+                    {
+                        foreach (var emailUser in listEmailTransportAndFacLogistic)
+                        {
+                            rc.CC.Add(emailUser);
+                        }
+
+                    }
+
                     break;
                 case Enums.ActionType.Approve:
                     if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
                         rc.To.Add(GetManagerEmail(ck5Dto.APPROVED_BY_POA));
-                        var poaData = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
-                        var creatorData = _userBll.GetUserById(ck5Dto.CREATED_BY);
-                        if(poaData != null)
-                            rc.CC.Add(poaData.EMAIL);
-                        if(creatorData != null)
-                            rc.CC.Add(creatorData.EMAIL);
+                        //var poaData = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
+                        //var creatorData = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                        if(userPoaApprovalInfo != null)
+                            rc.CC.Add(userPoaApprovalInfo.EMAIL);
+                        if(userCreatorInfo != null)
+                            rc.CC.Add(userCreatorInfo.EMAIL);
                     }
                     else if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingGovApproval)
                     {
@@ -1549,45 +1874,218 @@ namespace Sampoerna.EMS.BLL
                         else
                         {
                             //creator is excise executive
-                            var userData = _userBll.GetUserById(ck5Dto.CREATED_BY);
-                            var poaUserData = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
+                            //var userData = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                            //var poaUserData = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
                             
-                            rc.To.Add(userData.EMAIL);
-                            if (poaUserData != null)
-                                rc.CC.Add(poaUserData.EMAIL);
+                            rc.To.Add(userCreatorInfo.EMAIL);
+                            if (userPoaApprovalInfo != null)
+                                rc.CC.Add(userPoaApprovalInfo.EMAIL);
                         }
                     }
+
+                    //Transportation and FactoryLogistic
+                    if (listEmailTransportAndFacLogistic.Count > 0)
+                    {
+                        foreach (var emailUser in listEmailTransportAndFacLogistic)
+                        {
+                            rc.CC.Add(emailUser);
+                        }
+
+                    }
+
                     break;
                 case Enums.ActionType.Reject:
                     //send notification to creator
-                    var userDetail = _userBll.GetUserById(ck5Dto.CREATED_BY);
-                    rc.To.Add(userDetail.EMAIL);
+                    //var userDetail = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                    rc.To.Add(userCreatorInfo.EMAIL);
+
+                    //Transportation and FactoryLogistic
+                    if (listEmailTransportAndFacLogistic.Count > 0)
+                    {
+                        foreach (var emailUser in listEmailTransportAndFacLogistic)
+                        {
+                            rc.CC.Add(emailUser);
+                        }
+
+                    }
+
                     break;
                 case Enums.ActionType.GovApprove:
-                    
-                    var creatorDetail = _userBll.GetUserById(ck5Dto.CREATED_BY);
-                    var poaSender = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
 
-                    if(poaSender != null)
-                        rc.CC.Add(poaSender.EMAIL);
+                  
 
-                    rc.CC.Add(creatorDetail.EMAIL);
-
-                    if (ck5Dto.CK5_TYPE != Enums.CK5Type.Manual ||
-                        (ck5Dto.MANUAL_FREE_TEXT != Enums.Ck5ManualFreeText.SourceFreeText &&
-                         ck5Dto.MANUAL_FREE_TEXT != Enums.Ck5ManualFreeText.DestFreeText))
+                    if (ck5Dto.CK5_TYPE == Enums.CK5Type.Waste)
                     {
-                        //var poaReceiverList = _poaBll.GetPoaActiveByNppbkcId(ck5Dto.DEST_PLANT_NPPBKC_ID).Distinct();
-                        var poaReceiverList = _poaBll.GetPoaActiveByPlantId(ck5Dto.DEST_PLANT_ID).Distinct();
-                        foreach (var poaDto in poaReceiverList)
+                        
+                        rc.To.Add(userCreatorInfo.EMAIL);
+
+                        //cc to poa destination
+                        poaDestList = _poaBll.GetPoaActiveByPlantId(ck5Dto.DEST_PLANT_ID).Distinct().ToList();
+
+                        foreach (var poaDto in poaDestList)
                         {
-                            rc.To.Add(poaDto.POA_EMAIL);
+                            rc.CC.Add(poaDto.POA_EMAIL);
+                        }
+
+                    }
+                    else
+                    {
+                        if (userPoaApprovalInfo != null)
+                            rc.CC.Add(userPoaApprovalInfo.EMAIL);
+
+                        rc.CC.Add(userCreatorInfo.EMAIL);
+
+
+                        if (ck5Dto.CK5_TYPE != Enums.CK5Type.Manual ||
+                            (ck5Dto.MANUAL_FREE_TEXT != Enums.Ck5ManualFreeText.SourceFreeText &&
+                             ck5Dto.MANUAL_FREE_TEXT != Enums.Ck5ManualFreeText.DestFreeText))
+                        {
+                            //var poaReceiverList = _poaBll.GetPoaActiveByPlantId(ck5Dto.DEST_PLANT_ID).Distinct();
+                            poaDestList = _poaBll.GetPoaActiveByPlantId(ck5Dto.DEST_PLANT_ID).Distinct().ToList();
+
+                            foreach (var poaDto in poaDestList)
+                            {
+                                rc.To.Add(poaDto.POA_EMAIL);
+                            }
                         }
                     }
-                    //else if(ck5Dto.CK5_TYPE == Enums.CK5Type.DomesticAlcohol || ck5Dto.ck)
+                   
+                    if (listEmailTransportAndFacLogistic.Count > 0)
+                    {
+                        foreach (var emailUser in listEmailTransportAndFacLogistic)
+                        {
+                            rc.CC.Add(emailUser);
+                        }
+
+                    }
                     
 
                     break;
+                case Enums.ActionType.GoodIssue: 
+                    //send notification to creator
+                    //rc.To.Add(userCreatorInfo.EMAIL);
+                   //to poa destination
+                    poaDestList = _poaBll.GetPoaActiveByPlantId(ck5Dto.DEST_PLANT_ID).Distinct().ToList();
+                    foreach (var poaDto in poaDestList)
+                    {
+                        rc.To.Add(poaDto.POA_EMAIL);
+                    }
+
+                    //cc creator
+                    rc.CC.Add(userCreatorInfo.EMAIL);
+
+                    if (listEmailTransportAndFacLogistic.Count > 0)
+                    {
+                        foreach (var emailUser in listEmailTransportAndFacLogistic)
+                        {
+                            rc.CC.Add(emailUser);
+                        }
+
+                    }
+
+                    break;
+                case Enums.ActionType.GoodReceive:
+                    
+                    //to disposal team
+                    var listEmail = _wasteRoleServices.GetListEmailDisposalTeamByPlant(ck5Dto.DEST_PLANT_ID);
+                    if (listEmail.Count == 0)
+                        throw new BLLException(ExceptionCodes.BLLExceptions.DisposalTeamEmailNotFound);
+
+                    foreach (var emailUser in listEmail)
+                    {
+                        rc.To.Add(emailUser);
+                    }
+
+                    //cc to disposal group use plant destination
+                    //cc creator
+                    rc.To.Add(userCreatorInfo.EMAIL);
+
+                    if (listEmailTransportAndFacLogistic.Count > 0)
+                    {
+                        foreach (var emailUser in listEmailTransportAndFacLogistic)
+                        {
+                            rc.CC.Add(emailUser);
+                        }
+
+                    }
+
+                    break;
+
+                case Enums.ActionType.WasteDisposalUploaded:
+                    rc.To.Add(userCreatorInfo.EMAIL);
+
+                    poaSourceList = _poaBll.GetPoaActiveByPlantId(ck5Dto.SOURCE_PLANT_ID);
+
+                    foreach (var poaDto in poaSourceList)
+                    {
+                        rc.CC.Add(poaDto.POA_EMAIL);
+                    }
+
+                    ////to waste approval
+                    //var listEmailApproval = _wasteRoleServices.GetListEmailWasteApprovalByPlant(ck5Dto.DEST_PLANT_ID);
+                    //if (listEmailApproval.Count == 0)
+                    //    throw new BLLException(ExceptionCodes.BLLExceptions.WasteApprovalEmailNotFound);
+
+                    //foreach (var emailUser in listEmailApproval)
+                    //{
+                    //    rc.To.Add(emailUser);
+                    //}
+
+
+                    ////cc disposal team,
+                    //var listEmailDisposalTeam = _wasteRoleServices.GetListEmailDisposalTeamByPlant(ck5Dto.DEST_PLANT_ID);
+
+                    ////Transportation and FactoryLogistic
+                    //if (listEmailTransportAndFacLogistic.Count > 0)
+                    //{
+                    //    listEmailDisposalTeam.AddRange(listEmailTransportAndFacLogistic);
+                    //}
+
+                    //foreach (var userEmail in listEmailDisposalTeam)
+                    //{
+                    //    rc.CC.Add(userEmail);
+                    //}
+                    break;
+
+                //case Enums.ActionType.WasteDisposalRejected: 
+                //    //send notification to creator
+                //    //var userWasteDisposalReject = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                //    rc.To.Add(userCreatorInfo.EMAIL);
+
+                //    //cc to Disposal team use plant destination
+                //    var listEmailWasteRejected = _wasteRoleServices.GetListEmailDisposalTeamByPlant(ck5Dto.DEST_PLANT_ID);
+
+                //    //Transportation and FactoryLogistic
+                //    if (listEmailTransportAndFacLogistic.Count > 0)
+                //    {
+                //        listEmailWasteRejected.AddRange(listEmailTransportAndFacLogistic);
+                //    }
+
+
+                //    foreach (var userEmail in listEmailWasteRejected)
+                //    {
+                //        rc.CC.Add(userEmail);
+                //    }
+                //    break;
+
+                //case Enums.ActionType.WasteApproved: 
+                //    //send notification to creator
+                //    //var userWasteApproval = _userBll.GetUserById(ck5Dto.CREATED_BY);
+                //    rc.To.Add(userCreatorInfo.EMAIL);
+
+
+                //    //Transportation and FactoryLogistic
+                //    if (listEmailTransportAndFacLogistic.Count > 0)
+                //    {
+                //        foreach (var userEmail in listEmailTransportAndFacLogistic)
+                //        {
+                //            rc.CC.Add(userEmail);
+                //        }
+                //    }
+
+
+
+                //    break;
             }
             rc.Body = bodyMail.ToString();
             return rc;
@@ -1744,6 +2242,29 @@ namespace Sampoerna.EMS.BLL
             SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
         }
 
+        private void RejectDisposalDocument(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS_ID != Enums.DocumentStatus.WasteApproval)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            string oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
+            string newValue = "";
+
+            dbData.STATUS_ID = Enums.DocumentStatus.WasteDisposal;
+            newValue = EnumHelper.GetDescription(Enums.DocumentStatus.WasteDisposalRejected);
+
+            input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+            AddWorkflowHistory(input);
+
+            //set change history
+            SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
+        }
+
         private bool IsCompletedMarketReturnWorkflow(CK5WorkflowDocumentInput input)
         {
             if (string.IsNullOrEmpty(input.AdditionalDocumentData.RegistrationNumber))
@@ -1883,6 +2404,9 @@ namespace Sampoerna.EMS.BLL
                 case Enums.CK5Type.DomesticAlcohol:
                     newValue = EnumHelper.GetDescription(Enums.DocumentStatus.PurchaseOrder);
                     break;
+                case Enums.CK5Type.Waste:
+                    newValue = EnumHelper.GetDescription(Enums.DocumentStatus.GoodIssue);
+                    break;
                 default:
                     newValue = EnumHelper.GetDescription(Enums.DocumentStatus.CreateSTO);
                     break;
@@ -1906,6 +2430,9 @@ namespace Sampoerna.EMS.BLL
                     break;
                 case Enums.CK5Type.DomesticAlcohol:
                     dbData.STATUS_ID = Enums.DocumentStatus.PurchaseOrder;
+                    break;
+                case Enums.CK5Type.Waste:
+                    dbData.STATUS_ID = Enums.DocumentStatus.GoodIssue;
                     break;
                 default:
                     dbData.STATUS_ID = Enums.DocumentStatus.CreateSTO;
@@ -2191,13 +2718,65 @@ namespace Sampoerna.EMS.BLL
                 && input.UnSealingDate.HasValue)
             {
                 //change status
-                dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+                if (dbData.CK5_TYPE == Enums.CK5Type.Waste)
+                    dbData.STATUS_ID = Enums.DocumentStatus.WasteDisposal;
+                else
+                    dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+                
+                
 
                 //add to workflow
                 AddWorkflowHistory(input);
             }
 
         }
+
+        private void WasteDisposalDocument(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS_ID != Enums.DocumentStatus.WasteDisposal)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            dbData.CK5_FILE_UPLOAD = Mapper.Map<List<CK5_FILE_UPLOAD>>(input.AdditionalDocumentData.Ck5FileUploadList);
+
+            if (input.AdditionalDocumentData.Ck5FileUploadList.Any())
+                CheckFileUploadChange(input);
+
+            input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+            //dbData.STATUS_ID = Enums.DocumentStatus.WasteApproval;
+            dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+
+            //add to workflow
+            AddWorkflowHistory(input);
+            
+        }
+
+
+        private void WasteApprovalDocument(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS_ID != Enums.DocumentStatus.WasteApproval)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+
+            input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+            dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+
+            //add to workflow
+            AddWorkflowHistory(input);
+
+        }
+
 
         private void PoCreatedDocument(CK5WorkflowDocumentInput input)
         {
@@ -2341,7 +2920,7 @@ namespace Sampoerna.EMS.BLL
                     CheckFileUploadChange(input);
             }
 
-            if (dbData.CK5_TYPE == Enums.CK5Type.Manual )
+            if (dbData.CK5_TYPE == Enums.CK5Type.Manual || dbData.CK5_TYPE == Enums.CK5Type.Return)
             {
                 if (!string.IsNullOrEmpty(dbData.SEALING_NOTIF_NUMBER)
                        && !string.IsNullOrEmpty(dbData.UNSEALING_NOTIF_NUMBER)
@@ -2358,7 +2937,7 @@ namespace Sampoerna.EMS.BLL
 
                     input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
-                    AddWorkflowHistory(input);
+                    if (dbData.CK5_TYPE != Enums.CK5Type.Return) AddWorkflowHistory(input);
                 }
 
             }
@@ -3127,7 +3706,9 @@ namespace Sampoerna.EMS.BLL
                 if ((output.CK5_TYPE == Enums.CK5Type.Domestic &&
                      output.SOURCE_PLANT_NPPBKC_ID == output.DEST_PLANT_NPPBKC_ID)
                     || output.CK5_TYPE == Enums.CK5Type.Manual
-                    || output.CK5_TYPE == Enums.CK5Type.Export)
+                    || output.CK5_TYPE == Enums.CK5Type.Export 
+                    || output.CK5_TYPE == Enums.CK5Type.Waste
+                    || output.CK5_TYPE == Enums.CK5Type.Return)
                 {
 
                 }
@@ -3219,7 +3800,10 @@ namespace Sampoerna.EMS.BLL
             foreach (var ck5UploadFileDocumentsInput in inputs)
             {
                 var inputCk5Material = new CK5MaterialInput();
+                inputCk5Material.Ck5Type = ck5UploadFileDocumentsInput.Ck5Type;
                 if (ck5UploadFileDocumentsInput.Ck5Type == Enums.CK5Type.DomesticAlcohol.ToString() ||
+                    int.Parse(ck5UploadFileDocumentsInput.Ck5Type) == (int)Enums.CK5Type.DomesticAlcohol ||
+                    int.Parse(ck5UploadFileDocumentsInput.Ck5Type) == (int)Enums.CK5Type.PortToImporter ||
                     ck5UploadFileDocumentsInput.Ck5Type == Enums.CK5Type.PortToImporter.ToString())
                 {
                     inputCk5Material.Plant = ck5UploadFileDocumentsInput.DestPlantId;
@@ -3243,9 +3827,33 @@ namespace Sampoerna.EMS.BLL
 
             }
 
-            var outputListCk5Material = ValidateCk5Material(lisCk5Material);
+            List<CK5MaterialOutput> outputListCk5Material = new List<CK5MaterialOutput>();
+            var wastelist = lisCk5Material.Where(x => int.Parse(x.Ck5Type) == (int) Enums.CK5Type.Waste || x.Ck5Type == Enums.CK5Type.Waste.ToString()).ToList();
+            var normalList =
+                lisCk5Material.Where(
+                    x =>
+                        (int.Parse(x.Ck5Type) != (int) Enums.CK5Type.Waste &&
+                         x.Ck5Type != Enums.CK5Type.Waste.ToString())).ToList();
 
+            outputListCk5Material.AddRange(ValidateCk5WasteMaterial(wastelist));
+            outputListCk5Material.AddRange(ValidateCk5Material(normalList));
+            //foreach (var input in lisCk5Material)
+            //{
+            //    if (int.Parse(input.Ck5Type) == (int)Enums.CK5Type.Waste)
+            //    {
+            //        outputListCk5Material.Add(ValidateCk5WasteMaterial(input));
+            //    }
+            //    else
+            //    {
+            //        var inputMaterial = new List<CK5MaterialInput> {input};
+            //        outputListCk5Material.AddRange(ValidateCk5Material(inputMaterial));    
+            //    }
+                
+            //}
+            
+            
 
+            //ValidateCk5WasteMaterial(lisCk5Material);
 
             var outputList = ValidateCk5UploadFileDocuments(inputs);
 
@@ -3422,11 +4030,17 @@ namespace Sampoerna.EMS.BLL
                 }
                 if (input.Ck5Dto.CK5_TYPE != Enums.CK5Type.MarketReturn)
                 {
-                    if (input.Ck5Dto.EX_GOODS_TYPE == Enums.ExGoodsType.HasilTembakau)
-                        dbData.PACKAGE_UOM_ID = "G";
+                    if (input.Ck5Dto.CK5_TYPE == Enums.CK5Type.Waste)
+                    {
+                        ck5Item.CONVERTED_UOM = "G";
+                    }
                     else
-                        dbData.PACKAGE_UOM_ID = "L";
-                   
+                    {
+                        if (input.Ck5Dto.EX_GOODS_TYPE == Enums.ExGoodsType.HasilTembakau)
+                            dbData.PACKAGE_UOM_ID = "G";
+                        else
+                            dbData.PACKAGE_UOM_ID = "L";
+                    }
                 }
                 if (ck5Material.CONVERTED_QTY.HasValue)
                     tempTotal += ck5Material.CONVERTED_QTY.Value;
@@ -3556,18 +4170,23 @@ namespace Sampoerna.EMS.BLL
                 
                 dataXmlDto.SOURCE_PLANT_ID = plantMap.IMPORT_PLANT_ID;
             }
-
-            if (dataXmlDto.CK5_TYPE == Enums.CK5Type.Export) {
+            else if (dataXmlDto.CK5_TYPE == Enums.CK5Type.Export) {
                 var plantMap = _virtualMappingBLL.GetByCompany(dataXmlDto.SOURCE_PLANT_COMPANY_CODE);
 
                 dataXmlDto.DEST_PLANT_ID = plantMap.EXPORT_PLANT_ID;
             }
-
-            if (dataXmlDto.CK5_TYPE == Enums.CK5Type.PortToImporter) {
+            else if (dataXmlDto.CK5_TYPE == Enums.CK5Type.PortToImporter) {
                 var plantMap = _virtualMappingBLL.GetByCompany(dataXmlDto.DEST_PLANT_COMPANY_CODE);
 
                 dataXmlDto.SOURCE_PLANT_ID = plantMap.IMPORT_PLANT_ID;
                 dataXmlDto.DEST_PLANT_ID = plantMap.IMPORT_PLANT_ID;
+            }
+            else if (dataXmlDto.CK5_TYPE == Enums.CK5Type.Return)
+            {
+                dataXmlDto.CK5_TYPE = Enums.CK5Type.Intercompany;
+
+                if (dataXmlDto.SOURCE_PLANT_COMPANY_CODE == dataXmlDto.DEST_PLANT_COMPANY_CODE)
+                    dataXmlDto.CK5_TYPE = Enums.CK5Type.Domestic;
             }
 
             foreach (var ck5MaterialDto in dataXmlDto.Ck5Material)
@@ -3912,7 +4531,9 @@ namespace Sampoerna.EMS.BLL
                     if (!ck5.REDUCE_TRIAL.HasValue || !ck5.REDUCE_TRIAL.Value)
                         continue;
                 }
-                else if (ck5.CK5_TYPE == Enums.CK5Type.Export || ck5.CK5_TYPE == Enums.CK5Type.MarketReturn)
+                else if (ck5.CK5_TYPE == Enums.CK5Type.Export || ck5.CK5_TYPE == Enums.CK5Type.MarketReturn
+                    || ck5.CK5_TYPE == Enums.CK5Type.Return
+                    || ck5.CK5_TYPE == Enums.CK5Type.Waste)
                     continue;
                 else if (ck5.CK5_TYPE == Enums.CK5Type.Domestic && (ck5.SOURCE_PLANT_ID == ck5.DEST_PLANT_ID))
                     continue;
@@ -4042,6 +4663,14 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<GetListMaterialMarketReturnOutput>>(listBrand);
         }
 
+        public List<GetListMaterialMarketReturnOutput> GetListMaterialWaste(string plantId)
+        {
+            var listMaterial = _wasteStockServices.GetListByPlant(plantId);
+
+            return Mapper.Map<List<GetListMaterialMarketReturnOutput>>(listMaterial);
+        }
+
+
         private void ValidateCk5MaterialConvertedUom(CK5SaveInput input)
         {
             foreach (var ck5MaterialDto in input.Ck5Material)
@@ -4107,6 +4736,47 @@ namespace Sampoerna.EMS.BLL
             return null;
         }
 
+        public WasteStockQuotaOutput GetWasteStockQuota(string plantId, string materialNumber)
+        {
+            var result = new WasteStockQuotaOutput();
+
+            var dbWaste = _wasteStockServices.GetByPlantAndMaterialNumber(plantId, materialNumber);
+            
+            //get from ck5 
+            if (dbWaste != null)
+            {
+                //var dbCk5 = _repository.Get(c => c.CK5_TYPE == Enums.CK5Type.Waste
+                //                                 && c.SOURCE_PLANT_ID == plantId &&
+                //                                 (c.STATUS_ID != Enums.DocumentStatus.Cancelled), null, "CK5_MATERIAL");
+
+                //decimal wasteStockUsed =
+                //    dbCk5.Sum(
+                //        c =>
+                //            c.CK5_MATERIAL.Where(ck5Material => ck5Material.BRAND == materialNumber)
+                //                .Sum(
+                //                    ck5Material =>
+                //                        ck5Material.CONVERTED_QTY.HasValue ? ck5Material.CONVERTED_QTY.Value : 0));
+
+              
+
+                //result.WasteStock = ConvertHelper.ConvertDecimalToStringMoneyFormat(dbWaste.STOCK);
+                //result.WasteStockUsed = ConvertHelper.ConvertDecimalToStringMoneyFormat(wasteStockUsed);
+                //result.WasteStockRemaining =
+                //    ConvertHelper.ConvertDecimalToStringMoneyFormat((dbWaste.STOCK - wasteStockUsed));
+                //result.WasteStockRemainingCount = dbWaste.STOCK - wasteStockUsed;
+                result = _ck5Service.GetWasteStockQuota(dbWaste.STOCK, plantId, materialNumber);
+            }
+            else
+            {
+                result.WasteStock = "0";
+                result.WasteStockUsed = "0";
+                result.WasteStockRemaining = "0";
+                result.WasteStockRemainingCount = 0;
+            }
+            return result;
+
+        }
+        
         public void AddAttachmentDocument(CK5WorkflowDocumentInput input)
         {
             var dbData = _repository.GetByID(input.DocumentId);
@@ -4135,8 +4805,6 @@ namespace Sampoerna.EMS.BLL
 
                 _uow.SaveChanges();
             }
-
-
-        }
+            }
     }
 }

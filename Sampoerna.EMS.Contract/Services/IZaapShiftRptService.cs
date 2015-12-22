@@ -7,5 +7,6 @@ namespace Sampoerna.EMS.Contract.Services
     public interface IZaapShiftRptService
     {
         List<ZAAP_SHIFT_RPT> GetForLack1ByParam(ZaapShiftRptGetForLack1ByParamInput input);
+        List<ZAAP_SHIFT_RPT> GetAll();
     }
 }

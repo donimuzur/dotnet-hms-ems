@@ -58,10 +58,14 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public List<Lack1IncomeDetailItemModel> IncomeList { get; set; }
         public List<Lack1Pbck1MappingItemModel> Lack1Pbck1Mapping { get; set; }
         public List<Lack1PlantItemModel> Lack1Plant { get; set; }
-        public List<Lack1ProductionDetailItemModel> ProductionList { get; set; }
-        public List<Lack1ProductionDetailItemSummaryByProdTypeModel> ProductionSummaryByProdTypeList { get; set; }
-        public List<Lack1SummaryProductionItemModel> SummaryProductionList { get; set; }//todo: set manually from controller to create summary of ProductionList
+        
         public string Noted { get; set; }
+
+        public string DocumentNoted { get; set; }
+        public bool IsTisToTisReport { get; set; }
+        public Lack1InventoryAndProductionModel InventoryProductionTisToFa { get; set; }
+        public Lack1InventoryAndProductionModel InventoryProductionTisToTis { get; set; }
+        public List<Lack1SummaryProductionItemModel> FusionSummaryProductionList { get; set; }
 
         public Lack1HeaderFooter HeaderFooter { get; set; }
 
@@ -79,6 +83,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string ExcisableExecutiveCreator { get; set; }
 
         public string NppbkcCity { get; set; }
+        public Lack1RemarkModel Ck5RemarkData { get; set; }
 
     }
 

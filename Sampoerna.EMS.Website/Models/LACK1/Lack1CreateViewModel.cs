@@ -72,5 +72,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
 
         public bool? IsCreateNew { get; set; }
 
+        public bool IsTisToTisReport { get; set; }
+
     }
 }

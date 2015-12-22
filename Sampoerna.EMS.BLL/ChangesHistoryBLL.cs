@@ -67,5 +67,21 @@ namespace Sampoerna.EMS.BLL
             history.FORM_ID = formId;
             _repository.Update(history);
         }
+
+        public void UpdateHistoryFormIdByFormType(string oldFormId, string newFormId, Enums.MenuList formType)
+        {
+            var dtData = _repository.Get(c => c.FORM_TYPE_ID == formType && c.FORM_ID == oldFormId).ToList();
+            foreach (var changesHistory in dtData)
+            {
+                var changeHistory = _repository.GetByID(changesHistory.CHANGES_HISTORY_ID);
+                changesHistory.FORM_ID = newFormId;
+                _repository.Update(changesHistory);
+            }
+        }
+
+        public List<CHANGES_HISTORY> GetByFormTypeAndListFormId(Enums.MenuList formTypeId, List<string> listId)
+        {
+            return _repository.Get(c => c.FORM_TYPE_ID == formTypeId && listId.Contains(c.FORM_ID) , null, includeTables).OrderByDescending(c => c.MODIFIED_DATE).ToList();
+        }
     }
 }

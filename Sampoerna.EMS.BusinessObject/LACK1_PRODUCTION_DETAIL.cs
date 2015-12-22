@@ -23,6 +23,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string UOM_ID { get; set; }
         public string FA_CODE { get; set; }
         public string ORDR { get; set; }
+        public Nullable<bool> IS_TISTOTIS_DATA { get; set; }
     
         public virtual LACK1 LACK1 { get; set; }
         public virtual UOM UOM { get; set; }

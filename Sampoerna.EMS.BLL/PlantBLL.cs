@@ -20,6 +20,7 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<PLANT_RECEIVE_MATERIAL> _plantReceiveMaterialRepository;
         private IGenericRepository<T001W> _t001WRepository;
         private IGenericRepository<T001K> _repositoryT001K;
+        private IGenericRepository<ZAIDM_EX_NPPBKC> _nppbkcRepository;
 
         private IChangesHistoryBLL _changesHistoryBll;
         private ILogger _logger;
@@ -39,6 +40,7 @@ namespace Sampoerna.EMS.BLL
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
             _nppbkcbll = new ZaidmExNPPBKCBLL(_uow, _logger);
             _repositoryT001K = _uow.GetGenericRepository<T001K>();
+            _nppbkcRepository = _uow.GetGenericRepository<ZAIDM_EX_NPPBKC>();
         }
 
         public T001W GetT001W(string NppbkcId, bool? IsPlant)
@@ -331,7 +333,34 @@ namespace Sampoerna.EMS.BLL
                 c => c.IS_DELETED != true && c.ZAIDM_EX_NPPBKC.IS_DELETED != true;
             return Mapper.Map<List<Plant>>(_repository.Get(queryFilter, null, includeTables).ToList());
         }
-        
-      
+
+        public List<T001WCompositeDto> GetCompositeListByNppbkcIdWithFlag(string nppbkcId)
+        {
+            //check if NPPBKC flagged
+            var nppbkcData = _nppbkcRepository.Get(c => c.NPPBKC_ID == nppbkcId).FirstOrDefault();
+            if (nppbkcData == null || !nppbkcData.FLAG_FOR_LACK1.HasValue || !nppbkcData.FLAG_FOR_LACK1.Value)
+            {
+                return new List<T001WCompositeDto>();
+            }
+            
+            Expression<Func<T001W, bool>> queryFilter = PredicateHelper.True<T001W>();
+            //if (!string.IsNullOrEmpty(nppbkcId))
+            //{
+
+            //}
+
+            queryFilter =
+                queryFilter.And(
+                    c =>
+                        !string.IsNullOrEmpty(c.NPPBKC_ID) &&
+                        (c.NPPBKC_ID.Contains(nppbkcId) || c.NPPBKC_IMPORT_ID.Contains(nppbkcId)));
+
+            var dbData = _repository.Get(queryFilter, null, includeTables);
+            if (dbData == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+            return Mapper.Map<List<T001WCompositeDto>>(dbData);
+        }
     }
 }
