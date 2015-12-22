@@ -14,6 +14,8 @@ using Voxteneo.WebComponents.Logger;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebCompoments.NLogLogger;
+using Enums = Sampoerna.EMS.Core.Enums;
+
 namespace Sampoerna.EMS.XMLReader
 {
     public class XmlDataMapper
@@ -79,6 +81,8 @@ namespace Sampoerna.EMS.XMLReader
         public MovedFileOutput InsertToDatabase<T>(List<T> items) where T : class
         {
             var repo = uow.GetGenericRepository<T>();
+            var xmlRepo = uow.GetGenericRepository<XML_LOGS>();
+            var xmllogs = GetXmlLogs(_xmlName);
             var errorCount = 0;
             var itemToInsert = 0;
             var fileName = string.Empty;
@@ -121,24 +125,53 @@ namespace Sampoerna.EMS.XMLReader
 
                 }
 
-                foreach (var item in items)
-                {
-                    itemToInsert++;
-                    repo.InsertOrUpdate(item);
-                    
-                    
-                }
+                
+
+                
 
                 if (Errors.Count == 0)
                 {
+                    
+                    foreach (var item in items)
+                    {
+                        itemToInsert++;
+                        repo.InsertOrUpdate(item);
+
+
+                    }
+
+                    if (xmllogs != null)
+                    {
+                        xmllogs.STATUS = Enums.XmlLogStatus.Success;
+                    }
+
                     uow.SaveChanges();
                 }
                 else
                 {
+                    
+                    if (xmllogs == null)
+                    {
+                        xmllogs = new XML_LOGS();
+                        xmllogs.XML_FILENAME = _xmlName;
+                        xmllogs.XML_LOGS_DETAILS = new List<XML_LOGS_DETAILS>();
+                        xmllogs.LAST_ERROR_TIME = DateTime.Now;
+                        xmllogs.STATUS = Enums.XmlLogStatus.Error;
+                        xmllogs.CREATED_BY = "PI";
+                        xmllogs.CREATED_DATE = DateTime.Now;
+
+                    }
                     foreach (var error in Errors)
                     {
+                        XML_LOGS_DETAILS detailError = new XML_LOGS_DETAILS();
                         logger.Warn(error);
+                        detailError.ERROR_TIME = DateTime.Now;
+                        detailError.LOGS = error;
+                        xmllogs.XML_LOGS_DETAILS.Add(detailError);
+
                     }
+                    xmlRepo.InsertOrUpdate(xmllogs);
+                    uow.SaveChanges();
                     
                 }
                 
@@ -348,6 +381,15 @@ namespace Sampoerna.EMS.XMLReader
             }
 
             return result;
+        }
+
+
+        public XML_LOGS GetXmlLogs(string filename)
+        {
+            var xmlLogs = uow.GetGenericRepository<XML_LOGS>()
+                .Get(x=> x.XML_FILENAME == filename,null,"XML_LOGS_DETAILS").FirstOrDefault();
+
+            return xmlLogs;
         }
 
     }
