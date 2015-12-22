@@ -44,7 +44,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ProdTypeCode, opt => opt.MapFrom(src => src.ProductCode))
                 .ForMember(dest => dest.ProdTypeName, opt => opt.MapFrom(src => src.ProdTypeName))
                 .ForMember(dest => dest.ProdAlias, opt => opt.MapFrom(src => src.ProdTypeAlias))
-                .ForMember(dest => dest.ConverterOutput, opt => opt.MapFrom(src => src.ConverterOutput))
+                .ForMember(dest => dest.ConverterOutput, opt => opt.ResolveUsing<StringToDecimalResolver>().FromMember(src => src.ConverterOutput))
                 .ForMember(dest => dest.ConverterOutputUomId, opt => opt.MapFrom(src => src.ConverterUomId))
                 ;
             Mapper.CreateMap<Pbck1ProdConverterDto, Pbck1ProdConvModel>().IgnoreAllNonExisting()
