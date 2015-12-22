@@ -128,6 +128,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string StoSenderNumber { get; set; }
         public string DnNumber { get; set; }
         public Enums.CK5Type Ck5Type { get; set; }
+        public bool IsCk5ReduceTrial { get; set; }
         public string RegistrationNumber { get; set; }
         public DateTime? RegistrationDate { get; set; }
         public string StringRegistrationDate { get; set; }
