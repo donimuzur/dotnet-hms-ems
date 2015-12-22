@@ -96,6 +96,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<long> CK5_REF_ID { get; set; }
         public Nullable<bool> REDUCE_TRIAL { get; set; }
         public Nullable<Sampoerna.EMS.Core.Enums.Ck5ManualFreeText> MANUAL_FREE_TEXT { get; set; }
+        public Nullable<bool> FLAG_FOR_LACK1 { get; set; }
     
         public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual PBCK1 PBCK1 { get; set; }

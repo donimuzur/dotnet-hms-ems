@@ -60,7 +60,9 @@ namespace Sampoerna.EMS.Website
             #endregion
 
             Mapper.CreateMap<Lack1GenerateInputModel, Lack1GenerateDataParamInput>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.Lack1Level, opt => opt.MapFrom(src => (Enums.Lack1Level)src.Lack1Level));
+                .ForMember(dest => dest.Lack1Level, opt => opt.MapFrom(src => (Enums.Lack1Level)src.Lack1Level))
+                .ForMember(dest => dest.IsTisToTis, opt => opt.MapFrom(src => src.IsTisToTisReport))
+                ;
             Mapper.CreateMap<Lack1GeneratedDto, Lack1GeneratedItemModel>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<Lack1CreateViewModel, Lack1CreateParamInput>().IgnoreAllNonExisting()
@@ -80,6 +82,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ReturnAmountUom, opt => opt.MapFrom(src => src.ReturnUom))
                 .ForMember(dest => dest.Lack1Level, opt => opt.MapFrom(src => src.Lack1Level))
                 .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => src.Noted))
+                .ForMember(dest => dest.IsTisToTis, opt => opt.MapFrom(src => src.IsTisToTisReport))
                 ;
 
             Mapper.CreateMap<Lack1DocumentDto, Lack1DocumentItemModel>().IgnoreAllNonExisting();
@@ -91,6 +94,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.RegistrationNumber, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
                 .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE))
                 .ForMember(dest => dest.StringRegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE.HasValue ? src.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy") : string.Empty))
+                .ForMember(dest => dest.Ck5Type, opt => opt.MapFrom(src => src.CK5_TYPE))
+                .ForMember(dest => dest.PackageUomId, opt => opt.MapFrom(src => src.PACKAGE_UOM_ID))
+                .ForMember(dest => dest.PackageUomDesc, opt => opt.MapFrom(src => src.PACKAGE_UOM_DESC))
                 ;
             Mapper.CreateMap<Lack1Pbck1MappingDto, Lack1Pbck1MappingItemModel>().IgnoreAllNonExisting();
             Mapper.CreateMap<Lack1PlantDto, Lack1PlantItemModel>().IgnoreAllNonExisting()
@@ -123,14 +129,21 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.DisplaySupplierPlant, opt => opt.MapFrom(src => src.SupplierPlantId + '-' + src.SupplierPlant))
                 .ForMember(dest => dest.StatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
                 .ForMember(dest => dest.GovStatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.GovStatus)))
-                .ForMember(dest => dest.EndingBalance, opt => opt.MapFrom(src => (src.BeginingBalance - src.Usage + src.TotalIncome)))
+                .ForMember(dest => dest.EndingBalance, opt => opt.MapFrom(src => src.EndingBalance))
                 .ForMember(dest => dest.TotalUsage, opt => opt.MapFrom(src => src.Usage))
+                .ForMember(dest => dest.TotalUsageTisToTis, opt => opt.MapFrom(src => src.UsageTisToTis))
+                .ForMember(dest => dest.IsTisToTisReport, opt => opt.MapFrom(src => src.IsTisToTis))
                 .ForMember(dest => dest.Lack1Document, opt => opt.MapFrom(src => Mapper.Map<List<Lack1DocumentItemModel>>(src.Lack1Document)))
                 .ForMember(dest => dest.IncomeList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailItemModel>>(src.Lack1IncomeDetail)))
+                .ForMember(dest => dest.Ck5RemarkData, opt => opt.MapFrom(src => Mapper.Map<Lack1RemarkModel>(src.Ck5RemarkData)))
                 .ForMember(dest => dest.Lack1Pbck1Mapping, opt => opt.MapFrom(src => Mapper.Map<List<Lack1Pbck1MappingItemModel>>(src.Lack1Pbck1Mapping)))
                 .ForMember(dest => dest.Lack1Plant, opt => opt.MapFrom(src => Mapper.Map<List<Lack1PlantItemModel>>(src.Lack1Plant)))
-                .ForMember(dest => dest.ProductionList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailItemModel>>(src.Lack1ProductionDetail)))
-                .ForMember(dest => dest.ProductionSummaryByProdTypeList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailItemSummaryByProdTypeModel>>(src.Lack1ProductionDetailSummaryByProdType)))
+                ;
+
+            Mapper.CreateMap<Lack1RemarkDto, Lack1RemarkModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Ck5WasteData, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailItemModel>>(src.Ck5WasteData)))
+                .ForMember(dest => dest.Ck5ReturnData, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailItemModel>>(src.Ck5ReturnData)))
+                .ForMember(dest => dest.Ck5TrialData, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailItemModel>>(src.Ck5TrialData)))
                 ;
 
             Mapper.CreateMap<Lack1DetailsDto, Lack1EditViewModel>().IgnoreAllNonExisting()
@@ -139,27 +152,49 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.DisplaySupplierPlant, opt => opt.MapFrom(src => src.SupplierPlantId + '-' + src.SupplierPlant))
                 .ForMember(dest => dest.StatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
                 .ForMember(dest => dest.GovStatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.GovStatus)))
-                .ForMember(dest => dest.EndingBalance, opt => opt.MapFrom(src => (src.BeginingBalance - src.Usage + src.TotalIncome)))
+                .ForMember(dest => dest.EndingBalance, opt => opt.MapFrom(src => src.EndingBalance))
+                .ForMember(dest => dest.IsTisToTisReport, opt => opt.MapFrom(src => src.IsTisToTis))
                 .ForMember(dest => dest.TotalUsage, opt => opt.MapFrom(src => src.Usage))
+                .ForMember(dest => dest.TotalUsageTisToTis, opt => opt.MapFrom(src => src.UsageTisToTis))
+                .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Noted) ? src.Noted.Replace("<br />", Environment.NewLine) : ""))
+                .ForMember(dest => dest.DocumentNoted, opt => opt.MapFrom(src => src.DocumentNoted))
                 .ForMember(dest => dest.Lack1Document, opt => opt.MapFrom(src => Mapper.Map<List<Lack1DocumentItemModel>>(src.Lack1Document)))
+                .ForMember(dest => dest.Ck5RemarkData, opt => opt.MapFrom(src => Mapper.Map<Lack1RemarkModel>(src.Ck5RemarkData)))
                 .ForMember(dest => dest.IncomeList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailItemModel>>(src.Lack1IncomeDetail)))
-                .ForMember(dest => dest.ProductionList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailItemModel>>(src.Lack1ProductionDetail)))
-                .ForMember(dest => dest.ProductionSummaryByProdTypeList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailItemSummaryByProdTypeModel>>(src.Lack1ProductionDetailSummaryByProdType)))
+                .ForMember(dest => dest.InventoryProductionTisToFa, opt => opt.MapFrom(src => Mapper.Map<Lack1InventoryAndProductionModel>(src.InventoryProductionTisToFa)))
+                .ForMember(dest => dest.InventoryProductionTisToTis, opt => opt.MapFrom(src => Mapper.Map<Lack1InventoryAndProductionModel>(src.InventoryProductionTisToTis)))
+                .ForMember(dest => dest.FusionSummaryProductionByProdTypeList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailItemSummaryByProdTypeModel>>(src.FusionSummaryProductionByProdTypeList)))
                 ;
+
+            Mapper.CreateMap<Lack1ProductionSummaryByProdTypeDto, Lack1ProductionDetailItemSummaryByProdTypeModel>()
+                .IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack1InventoryAndProductionDto, Lack1InventoryAndProductionModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ProductionData,
+                    opt =>
+                        opt.MapFrom(src => Mapper.Map<Lack1ProductionModel>(src.ProductionData)));
+
+            Mapper.CreateMap<Lack1ProductionDto, Lack1ProductionModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ProductionList,
+                    opt =>
+                        opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailItemModel>>(src.ProductionList)))
+                .ForMember(dest => dest.ProductionSummaryByProdTypeList,
+                    opt =>
+                        opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailItemSummaryByProdTypeModel>>(src.ProductionSummaryByProdTypeList)))
+                        ;
 
             Mapper.CreateMap<HEADER_FOOTER_MAPDto, Lack1HeaderFooter>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<Lack1PrintOutDto, Lack1PrintOutModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.StatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
                 .ForMember(dest => dest.GovStatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.GovStatus)))
-                .ForMember(dest => dest.EndingBalance, opt => opt.MapFrom(src => (src.BeginingBalance - src.Usage + src.TotalIncome)))
+                .ForMember(dest => dest.EndingBalance, opt => opt.MapFrom(src => src.EndingBalance))
                 .ForMember(dest => dest.TotalUsage, opt => opt.MapFrom(src => src.Usage))
                 .ForMember(dest => dest.Lack1Document, opt => opt.MapFrom(src => Mapper.Map<List<Lack1DocumentItemModel>>(src.Lack1Document)))
                 .ForMember(dest => dest.IncomeList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailItemModel>>(src.Lack1IncomeDetail)))
+                .ForMember(dest => dest.Ck5RemarkData, opt => opt.MapFrom(src => Mapper.Map<Lack1RemarkModel>(src.Ck5RemarkData)))
                 .ForMember(dest => dest.Lack1Pbck1Mapping, opt => opt.MapFrom(src => Mapper.Map<List<Lack1Pbck1MappingItemModel>>(src.Lack1Pbck1Mapping)))
                 .ForMember(dest => dest.Lack1Plant, opt => opt.MapFrom(src => Mapper.Map<List<Lack1PlantItemModel>>(src.Lack1Plant)))
-                .ForMember(dest => dest.ProductionList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailItemModel>>(src.Lack1ProductionDetail)))
-                .ForMember(dest => dest.ProductionSummaryByProdTypeList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailItemSummaryByProdTypeModel>>(src.Lack1ProductionDetailSummaryByProdType)))
                 .ForMember(dest => dest.HeaderFooter, opt => opt.MapFrom(src => Mapper.Map<Lack1HeaderFooter>(src.HeaderFooter)))
                 ;
 
@@ -204,9 +239,7 @@ namespace Sampoerna.EMS.Website
                     opt => opt.MapFrom(src => Mapper.Map<List<Lack1DocumentDto>>(src.Lack1Document)))
                 .ForMember(dest => dest.Lack1IncomeDetail,
                     opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.IncomeList)))
-                .ForMember(dest => dest.Lack1ProductionDetail,
-                    opt =>
-                        opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailDto>>(src.ProductionList)));
+                ;
 
 
             #region ----------- Summary Report -----------

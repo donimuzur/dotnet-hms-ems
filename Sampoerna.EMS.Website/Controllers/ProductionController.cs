@@ -129,8 +129,8 @@ namespace Sampoerna.EMS.Website.Controllers
             var userPlantCompany = _userPlantMapBll.GetCompanyByUserId(CurrentUser.USER_ID);
             var poaMapCompany = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
             var distinctCompany = company.Where(x => userPlantCompany.Contains(x.Value) || poaMapCompany.Contains(x.Value));
-            var getCompany = new SelectList(distinctCompany, "Value", "Text");
-
+            var getCompany = new SelectList(distinctCompany,"Value", "Text");
+            
 
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;

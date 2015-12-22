@@ -14,6 +14,8 @@ using Voxteneo.WebComponents.Logger;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.DAL;
 using Voxteneo.WebCompoments.NLogLogger;
+using Enums = Sampoerna.EMS.Core.Enums;
+
 namespace Sampoerna.EMS.XMLReader
 {
     public class XmlDataMapper
@@ -24,6 +26,7 @@ namespace Sampoerna.EMS.XMLReader
         public IUnitOfWork uow;
         public List<String> Errors;
         private int _errorCount;
+        public string lastField = null;
     
         public XmlDataMapper(string xmlName)
         {
@@ -78,6 +81,8 @@ namespace Sampoerna.EMS.XMLReader
         public MovedFileOutput InsertToDatabase<T>(List<T> items) where T : class
         {
             var repo = uow.GetGenericRepository<T>();
+            var xmlRepo = uow.GetGenericRepository<XML_LOGS>();
+            var xmllogs = GetXmlLogs(_xmlName);
             var errorCount = 0;
             var itemToInsert = 0;
             var fileName = string.Empty;
@@ -120,24 +125,53 @@ namespace Sampoerna.EMS.XMLReader
 
                 }
 
-                foreach (var item in items)
-                {
-                    itemToInsert++;
-                    repo.InsertOrUpdate(item);
-                    
-                    
-                }
+                
+
+                
 
                 if (Errors.Count == 0)
                 {
+                    
+                    foreach (var item in items)
+                    {
+                        itemToInsert++;
+                        repo.InsertOrUpdate(item);
+
+
+                    }
+
+                    if (xmllogs != null)
+                    {
+                        xmllogs.STATUS = Enums.XmlLogStatus.Success;
+                    }
+
                     uow.SaveChanges();
                 }
                 else
                 {
+                    
+                    if (xmllogs == null)
+                    {
+                        xmllogs = new XML_LOGS();
+                        xmllogs.XML_FILENAME = _xmlName;
+                        xmllogs.XML_LOGS_DETAILS = new List<XML_LOGS_DETAILS>();
+                        xmllogs.LAST_ERROR_TIME = DateTime.Now;
+                        xmllogs.STATUS = Enums.XmlLogStatus.Error;
+                        xmllogs.CREATED_BY = "PI";
+                        xmllogs.CREATED_DATE = DateTime.Now;
+
+                    }
                     foreach (var error in Errors)
                     {
-                        logger.Error(error);
+                        XML_LOGS_DETAILS detailError = new XML_LOGS_DETAILS();
+                        logger.Warn(error);
+                        detailError.ERROR_TIME = DateTime.Now;
+                        detailError.LOGS = error;
+                        xmllogs.XML_LOGS_DETAILS.Add(detailError);
+
                     }
+                    xmlRepo.InsertOrUpdate(xmllogs);
+                    uow.SaveChanges();
                     
                 }
                 
@@ -146,7 +180,7 @@ namespace Sampoerna.EMS.XMLReader
             catch (Exception ex)
             {
                 errorCount++;
-                logger.Error(ex.Message);
+                logger.Warn(ex.Message);
                 this.Errors.Add(ex.Message);
                 //uow.RevertChanges();
             }
@@ -161,7 +195,8 @@ namespace Sampoerna.EMS.XMLReader
                 return new MovedFileOutput(fileName);
             }
             fileName = MoveFile(true,needMoved);
-            return new MovedFileOutput(fileName, true);
+            Errors.Insert(0,String.Format("Last field read : {0}",lastField));
+            return new MovedFileOutput(fileName, true,Errors);
 
             
 
@@ -239,6 +274,7 @@ namespace Sampoerna.EMS.XMLReader
 
         public DateTime? GetDate(string valueStr)
         {
+            lastField = String.Format("input = {0}", valueStr);
             if (valueStr.Length == 8)
             {
                 var year = Convert.ToInt32(valueStr.Substring(0, 4));
@@ -250,6 +286,7 @@ namespace Sampoerna.EMS.XMLReader
         }
         public DateTime? GetDateDotSeparator(string valueStr)
         {
+            lastField = String.Format("input = {0}", valueStr);
             if (valueStr.Length == 10)
             {
                 var year = Convert.ToInt32(valueStr.Substring(6, 4));
@@ -264,7 +301,8 @@ namespace Sampoerna.EMS.XMLReader
             
             if (element == null)
                 return null;
-            logger.Debug(String.Format("processing field : {0} value = {1}", element.Name.LocalName, element.Value));
+            //logger.Debug(String.Format("processing field : {0} value = {1}", element.Name.LocalName, element.Value));
+            lastField = String.Format("{0} value = {1}", element.Name.LocalName, element.Value);
             if (element.Value == "/")
                 return null;
             return element.Value;
@@ -327,6 +365,31 @@ namespace Sampoerna.EMS.XMLReader
             return romanValue;
 
 
+        }
+
+        public string GetInnerException(Exception ex)
+        {
+            string result = "";
+
+            if (ex.InnerException != null)
+            {
+                result = GetInnerException(ex.InnerException);
+            }
+            else
+            {
+                result = ex.Message;
+            }
+
+            return result;
+        }
+
+
+        public XML_LOGS GetXmlLogs(string filename)
+        {
+            var xmlLogs = uow.GetGenericRepository<XML_LOGS>()
+                .Get(x=> x.XML_FILENAME == filename,null,"XML_LOGS_DETAILS").FirstOrDefault();
+
+            return xmlLogs;
         }
 
     }

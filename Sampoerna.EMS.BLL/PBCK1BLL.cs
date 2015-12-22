@@ -1804,7 +1804,7 @@ namespace Sampoerna.EMS.BLL
                         rc.BrandRegistrationList = new List<Pbck1ReportBrandRegistrationDto>();
                         foreach (var dataItem in dataJoined)
                         {
-                            rc.BrandRegistrationList.Add(new Pbck1ReportBrandRegistrationDto() { Brand = dataItem.BRAND_CE, Convertion = dataItem.CONVERTER_OUTPUT.Value.ToString("N2"), ConvertionUomId = dataItem.CONVERTER_UOM_ID, Kadar = "-", Type = dataItem.PRODUCT_ALIAS, ConvertionUom = dataItem.UOM.UOM_DESC});
+                            rc.BrandRegistrationList.Add(new Pbck1ReportBrandRegistrationDto() { Brand = dataItem.BRAND_CE, Convertion = dataItem.CONVERTER_OUTPUT.Value.ToString("N5"), ConvertionUomId = dataItem.CONVERTER_UOM_ID, Kadar = "-", Type = dataItem.PRODUCT_ALIAS, ConvertionUom = dataItem.UOM.UOM_DESC});
                         }
                     }
                 }
@@ -2048,8 +2048,9 @@ namespace Sampoerna.EMS.BLL
             }
 
             reportData.Detail.ProductConvertedOutputs = string.Join(Environment.NewLine,
-                totalAmount.Select(d => String.Format("{0:n}", reportData.Detail.ConvertedUomId.ToLower() == "g" ? d.TotalAmount / 1000 : d.TotalAmount)
-                        + " " + uomAmount + " " 
+                totalAmount.Select(
+                d => String.Format("{0:n}", (reportData.Detail.ConvertedUomId.ToLower() == "g" && d.ProdAlias.ToUpper() != "TIS") ? d.TotalAmount / 1000 : d.TotalAmount)
+                        + " " + (d.ProdAlias.ToUpper() == "TIS" ? "Gram" : uomAmount) + " " 
                         + d.ProdName + " (" + d.ProdAlias + ")").ToArray());
 
             reportData.SummaryProdPlantList = groupedData.ToList();

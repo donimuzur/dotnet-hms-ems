@@ -27,7 +27,7 @@
                             <th>User Name</th>
                             <th>Plant</th>
                             <th>Group Role</th>
-                            <th>Email</th>
+                            @*<th>Email</th>*@
                             <th>Phone</th>
 
                         </tr>
@@ -39,7 +39,7 @@
                             <th></th>
                             <th></th>
                             <th></th>
-                            <th></th>
+                            @*<th></th>*@
                             <th></th>
 
                         </tr>
@@ -49,7 +49,7 @@
                         @foreach (var item in Model.ListWasteRoles)
                         {
                             <tr>
-                                <td class="action">
+                                <td class="action"> 
                                     <a href="@Url.Action("Detail", "WasteRole", new { id = item.WasteRoleId })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
 
                                     <a href="@Url.Action("Edit", "WasteRole", new { id = item.WasteRoleId })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
@@ -58,9 +58,11 @@
                                 <td>@Html.DisplayFor(model => item.UserId)</td>
                                 <td>@Html.DisplayFor(model => item.FirstName)</td>
                                 <td>@Html.DisplayFor(model => item.PlantDescription)</td>
-                                <td>@Html.DisplayFor(model => item.WasteGroupDescription)</td>
-                                <td>@Html.DisplayFor(model => item.EmailAddress)</td>
+                                @*<td>@Html.DisplayFor(model => item.WasteGroupDescription)</td>*@
+                                <td>@Html.Raw(item.WasteGroupDescription)</td>
+                                @*<td>@Html.DisplayFor(model => item.EmailAddress)</td>*@
                                 <td>@Html.DisplayFor(model => item.Phone)</td>
+                               
 
                             </tr>
 

@@ -51,4 +51,15 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public string Uom { get; set; }
         public string MaterialDesc { get; set; }
     }
+
+    public class WasteStockQuotaOutput
+    {
+        public string WasteStock { get; set; }
+        public string WasteStockUsed { get; set; }
+        public string WasteStockRemaining { get; set; }
+        public decimal WasteStockRemainingCount { get; set; }
+
+        public string PlantId { get; set; }
+        public string MaterialNumber { get; set; }
+    }
 }

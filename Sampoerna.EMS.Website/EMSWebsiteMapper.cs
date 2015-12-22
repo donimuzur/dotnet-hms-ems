@@ -35,6 +35,8 @@ using Sampoerna.EMS.Website.Models.EmailTemplate;
 using Sampoerna.EMS.Website.Models.LACK2;
 using Sampoerna.EMS.Website.Models.WasteRole;
 using Sampoerna.EMS.Website.Models.WasteStock;
+using Sampoerna.EMS.Website.Models.XmlFileManagement;
+using Sampoerna.EMS.Website.Models.XmlLog;
 
 namespace Sampoerna.EMS.Website
 {
@@ -491,8 +493,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.CityAlias, opt => opt.MapFrom(src => src.CITY_ALIAS))
                 .ForMember(dest => dest.AcountNumber, opt => opt.MapFrom(src => src.LFA1.LIFNR))
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.START_DATE))
-                .ForMember(dest => dest.Is_Deleted, opt => opt.MapFrom(src => src.IS_DELETED.HasValue && src.IS_DELETED.Value ? "Yes" : "No"))
-                .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.END_DATE));
+                .ForMember(dest => dest.Is_Deleted,opt => opt.MapFrom(src => src.IS_DELETED.HasValue && src.IS_DELETED.Value ? "Yes" : "No"))
+                .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.END_DATE))
+                .ForMember(dest => dest.FlagForLack1, opt => opt.MapFrom(src => src.FLAG_FOR_LACK1.HasValue && src.FLAG_FOR_LACK1.Value));
 
             Mapper.CreateMap<VirtualNppbckDetails, ZAIDM_EX_NPPBKC>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.VirtualNppbckId))
@@ -500,7 +503,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.REGION_DGCE, opt => opt.MapFrom(src => src.RegionOfficeOfDGCE))
                 .ForMember(dest => dest.REGION, opt => opt.MapFrom(src => src.Region))
                 .ForMember(dest => dest.TEXT_TO, opt => opt.MapFrom(src => src.TextTo))
-                .ForMember(dest => dest.CITY_ALIAS, opt => opt.MapFrom(src => src.CityAlias));
+                .ForMember(dest => dest.CITY_ALIAS, opt => opt.MapFrom(src => src.CityAlias))
+                .ForMember(dest => dest.FLAG_FOR_LACK1, opt => opt.MapFrom(src => src.FlagForLack1));
+                
 
 
             #endregion
@@ -926,6 +931,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
                 .ForMember(dest => dest.MODIFIED_BY, opt => opt.MapFrom(src => src.ModifiedBy))
                 .ForMember(dest => dest.MODIFIED_DATE, opt => opt.MapFrom(src => src.ModifiedDate))
+                .ForMember(dest => dest.Details, opt => opt.MapFrom(src => Mapper.Map<List<WasteRoleDetailsDto>>(src.Details)))
                 ;
 
             Mapper.CreateMap<WasteRoleDto, WasteRoleFormViewModel>().IgnoreAllNonExisting()
@@ -942,11 +948,17 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PlantDescription, opt => opt.MapFrom(src => src.WERKS + "-" + src.PlantDescription))
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CREATED_BY))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
-                 .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.MODIFIED_BY))
+                .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.MODIFIED_BY))
                 .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.MODIFIED_DATE))
+                .ForMember(dest => dest.Details, opt => opt.MapFrom(src => Mapper.Map<List<WasteRoleFormDetails>>(src.Details)))
                 ;
 
+            Mapper.CreateMap<WasteRoleDetailsDto, WasteRoleFormDetails>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.WasteRoleId, opt => opt.MapFrom(src => src.WASTE_ROLE_ID));
 
+            Mapper.CreateMap<WasteRoleFormDetails, WasteRoleDetailsDto>().IgnoreAllNonExisting()
+              .ForMember(dest => dest.WASTE_ROLE_ID, opt => opt.MapFrom(src => src.WasteRoleId))
+              ;
 
             #endregion
 
@@ -980,6 +992,37 @@ namespace Sampoerna.EMS.Website
                 ;
 
             #endregion
+
+            #region Nlog
+
+            Mapper.CreateMap<NlogDto, XmlLogFormViewModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.XmlLogId, opt => opt.MapFrom(src => src.Nlog_Id))
+                .ForMember(dest => dest.TimeStampDisplay, opt => opt.MapFrom(src => src.Timestamp.HasValue ? src.Timestamp.Value.ToString("dd MMM yyyy hh:mm:ss tt"): string.Empty))
+                //.ForMember(dest => dest.Logger, opt => opt.ResolveUsing<ConcatStringResolver>().FromMember(src => src.Logger))
+                //.ForMember(dest => dest.Message, opt => opt.ResolveUsing<ConcatStringResolver>().FromMember(src => src.Message))
+                ;
+
+            #endregion
+
+            #region xml file log
+
+            Mapper.CreateMap<XML_LOGSDto, XmlFileManagementFormViewModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.XmlLogId, opt => opt.MapFrom(src => src.XML_LOGS_ID))
+                .ForMember(dest => dest.FileName, opt => opt.MapFrom(src => src.XML_FILENAME))
+                .ForMember(dest => dest.TimeStamp, opt => opt.MapFrom(src => src.LAST_ERROR_TIME))
+                .ForMember(dest => dest.TimeStampDisplay, opt => opt.MapFrom(src => src.LAST_ERROR_TIME.ToString("dd MMM yyyy HH:mm:ss") ))
+                .ForMember(dest => dest.XmlLogStatus, opt => opt.MapFrom(src => src.STATUS))
+                .ForMember(dest => dest.XmlLogStatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS)))
+                .ForMember(dest => dest.DetailListLogs, opt => opt.MapFrom(src => Mapper.Map<List<XmlFileManagementDetailsViewModel>>(src.DetailList)))
+                ;
+
+            Mapper.CreateMap<XML_LOGS_DETAILSDto, XmlFileManagementDetailsViewModel>().IgnoreAllNonExisting()
+                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.LOGS))
+                 .ForMember(dest => dest.TimeStampDisplay, opt => opt.MapFrom(src => src.ERROR_TIME.HasValue? src.ERROR_TIME.Value.ToString("dd MMM yyyy HH:mm:ss") : string.Empty))
+                ;
+
+            #endregion
+
         }
     }
 

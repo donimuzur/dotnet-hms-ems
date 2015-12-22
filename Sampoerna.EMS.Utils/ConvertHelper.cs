@@ -123,6 +123,11 @@ namespace Sampoerna.EMS.Utils
             }
         }
 
+        public static string ConvertDecimalFiveToString(decimal? value)
+        {
+            return value.HasValue ? value.Value.ToString("#,##0.####0") : string.Empty;
+        }
+
         public static string ConvertInt32ToString(int? value)
         {
             try
@@ -137,5 +142,6 @@ namespace Sampoerna.EMS.Utils
                 return "";
             }
         }
+
     }
 }

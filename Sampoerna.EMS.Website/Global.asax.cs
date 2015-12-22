@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
@@ -93,6 +94,8 @@ namespace Sampoerna.EMS.Website
             container.Register<IBlockStockBLL, BlockStockBLL>();
             container.Register<IWasteRoleBLL, WasteRoleBLL>();
             container.Register<IWasteStockBLL, WasteStockBLL>();
+            container.Register<INlogBLL, NlogBLL>();
+            container.Register<IXmlFileLogBLL, XmlFileLogBLL>();
 
             // 3. Optionally verify the container's configuration.
             container.Verify();
@@ -122,8 +125,20 @@ namespace Sampoerna.EMS.Website
         //protected void Application_Error(object sender, EventArgs e)
         //{
         //    Exception exception = Server.GetLastError();
+        //    //Server.ClearError();
+        //    //Response.Redirect("Error/ErrorHandling");
+        //    var routeData = new RouteData();
+        //    routeData.Values["controller"] = "Error";
+        //    routeData.Values["action"] = "GeneralError";
+        //    routeData.Values["Exception"] = exception;
+        //    Response.StatusCode = 500;
+
+        //    Response.Clear();
         //    Server.ClearError();
-        //    Response.Redirect("Error/ErrorHandling");
+
+        //    IController errorsController = new ErrorController();
+        //    var rc = new RequestContext(new HttpContextWrapper(Context), routeData);
+        //    errorsController.Execute(rc);
         //}
        
     }

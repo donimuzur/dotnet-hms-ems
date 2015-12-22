@@ -145,9 +145,9 @@
 @section scripts {
 
     <script src="~/Scripts/thousand-separator.js"></script>
-    <script src="~/Scripts/lack1/Lack1GenerateTable.js"></script>
+    <script src="~/Scripts/lack1/Lack1GenerateTable.js?v=0.0.2"></script>
     <script src="~/Scripts/lack1/Lack1Upload.js"></script>
-    <script src="~/Scripts/lack1/Lack1Scripts.js"></script>
+    <script src="~/Scripts/lack1/Lack1Scripts.js?v=0.0.2"></script>
     <script type="text/javascript">
 
         $('#MenuLack1CompletedDocument').addClass('@Model.MenuCompletedAddClassCss');
@@ -182,9 +182,15 @@
             $('#generated-data-container').html('');
 
             var jsonData = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model)));
-            console.log(jsonData);
-            var generateTableD = generateTable(jsonData);
-            $('#generated-data-container').append(generateTableD);
+            //console.log(jsonData);
+            
+            if (jsonData.IsTisToTisReport) {
+                var generateTableE = generateTableWithTisToTis(jsonData);
+                $('#generated-data-container').append(generateTableE);
+            } else {
+                var generateTableD = generateTable(jsonData);
+                $('#generated-data-container').append(generateTableD);
+            }
 
             $('#Bukrs').on('change', function () {
                 BukrsOnChange();

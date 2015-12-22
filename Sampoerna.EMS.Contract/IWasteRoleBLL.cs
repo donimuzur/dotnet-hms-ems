@@ -10,10 +10,14 @@ namespace Sampoerna.EMS.Contract
 
         List<WasteRoleDto> GetAllDataOrderByUserAndGroupRole();
 
+        List<WasteRoleDto> GetAllDataGroupByRoleOrderByUserAndGroupRole();
+
         WasteRoleDto SaveWasteRole(WasteRoleSaveInput input);
 
         WasteRoleDto GetById(int id);
 
         WasteRoleDto GetById(int id, bool isIncludeTable);
+
+        WasteRoleDto GetDetailsById(int id);
     }
 }

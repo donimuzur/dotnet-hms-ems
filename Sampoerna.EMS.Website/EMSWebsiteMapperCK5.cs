@@ -118,6 +118,7 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<CK5Dto, CK5FormViewModel>().IgnoreAllNonExisting()
             .ForMember(dest => dest.Ck5Id, opt => opt.MapFrom(src => src.CK5_ID))
             .ForMember(dest => dest.Ck5Type, opt => opt.MapFrom(src => src.CK5_TYPE))
+            .ForMember(dest => dest.Ck5TypeString, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.CK5_TYPE)))
             .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CREATED_BY))
             .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
 
@@ -198,6 +199,7 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.IsCompleted, opt => opt.MapFrom(src => src.STATUS_ID == Enums.DocumentStatus.Completed ? true:false))
             .ForMember(dest => dest.IsReducePbck1Ck5Trial, opt => opt.MapFrom(src => src.REDUCE_TRIAL.HasValue ? src.REDUCE_TRIAL : false))
             .ForMember(dest => dest.IsCk5Manual, opt => opt.MapFrom(src => src.CK5_TYPE == Enums.CK5Type.Manual))
+            .ForMember(dest => dest.IsTriggerSto, opt => opt.MapFrom(src => src.CK5_TYPE == Enums.CK5Type.Return))
             ;
 
             Mapper.CreateMap<CK5_FILE_UPLOADDto, CK5FileUploadViewModel>().IgnoreAllNonExisting();

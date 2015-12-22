@@ -67,7 +67,12 @@ namespace Sampoerna.EMS.Core
             [Description("Completed")]
             Completed = 7,
             [Description("Market Return")]
-            MarketReturn = 8
+            MarketReturn = 8,
+            [Description("Return")]
+            Return = 9, //TriggerSTO
+            [Description("Waste")]
+            Waste = 10
+
         }
 
 
@@ -174,9 +179,16 @@ namespace Sampoerna.EMS.Core
             GICompleted = 90,
             [Description("Good Issue Reversal")]
             GIReversal = 95,
+            [Description("Waiting for Disposal")]
+            WasteDisposal = 96,
+            [Description("Waiting for Waste Approval")]
+            WasteApproval = 97,
+            [Description("Disposal Rejected")]
+            WasteDisposalRejected = 98,
+            [Description("Disposal Uploaded")]
+            WasteDisposalUploaded = 99,
             [Description("Cancelled")]
             Cancelled = 100,
-
             [Description("Completed")]
             Completed = 105,
 
@@ -325,8 +337,18 @@ namespace Sampoerna.EMS.Core
             GICompleted = 90,
             [Description("Good Issue Reversal")]
             GIReversal = 95,
+            [Description("Waiting For Disposal")]
+            WaitingForWasteDisposal = 96,
+            [Description("Waiting For Waste Approval")]
+            WaitingForWasteApproval = 97,
+            [Description("Disposal Rejected")]
+            WasteDisposalRejected = 98,
+            [Description("Disposal Uploaded")]
+            WasteDisposalUploaded = 99,
             [Description("Cancelled")]
             Cancelled = 100,
+            [Description("Waste Approved")]
+            WasteApproved = 101,
             [Description("STOB Good Issue Completed")]
             StobGICompleted = 105,
             [Description("REC STO Created")]
@@ -635,5 +657,14 @@ namespace Sampoerna.EMS.Core
             WasteApprover = 4
         }
 
+        public enum XmlLogStatus
+        {
+            [Description("Error")]
+            Error = 1,
+            [Description("Re-Run")]
+            ReRun = 2,
+            [Description("Re-run Success")]
+            Success = 3
+        }
     }
 }

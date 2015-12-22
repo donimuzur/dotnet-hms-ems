@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Core.Metadata.Edm;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -11,6 +13,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
@@ -34,6 +37,9 @@ namespace Sampoerna.EMS.BLL
         private IUserPlantMapBLL _userPlantBll;
         private IPOAMapBLL _poaMapBll;
 
+        private IWasteStockBLL _wasteStockBll;
+        private IMaterialBLL _materialBll;
+
         public WasteBLL(ILogger logger, IUnitOfWork uow)
         {
             _logger = logger;
@@ -50,6 +56,8 @@ namespace Sampoerna.EMS.BLL
             _brandRegistrationBll = new BrandRegistrationBLL(_uow, _logger);
             _userPlantBll = new UserPlantMapBLL(_uow, _logger);
             _poaMapBll = new POAMapBLL(_uow, _logger);
+            _wasteStockBll = new WasteStockBLL(_uow, _logger);
+            _materialBll = new MaterialBLL(_uow, _logger);
         }
         public List<WasteDto> GetAllByParam(WasteGetByParamInput input)
         {
@@ -75,6 +83,7 @@ namespace Sampoerna.EMS.BLL
 
                 queryFilter = queryFilter.And(c => listUserPlant.Contains(c.WERKS) || listPoaPlant.Contains(c.WERKS));
             }
+
 
             Func<IQueryable<WASTE>, IOrderedQueryable<WASTE>> orderBy = null;
             {
@@ -113,10 +122,18 @@ namespace Sampoerna.EMS.BLL
             wasteDto.CompanyName = company.BUTXT;
             wasteDto.PlantName = plant.NAME1;
             wasteDto.BrandDescription = brandDesc.BRAND_CE;
-           
+
             #endregion
 
             var dbWaste = Mapper.Map<WASTE>(wasteDto);
+
+            dbWaste.MARKER_REJECT_STICK_QTY = wasteDto.MarkerStr == null ? 0 : Convert.ToDecimal(wasteDto.MarkerStr);
+            dbWaste.PACKER_REJECT_STICK_QTY = wasteDto.PackerStr == null ? 0 : Convert.ToDecimal(wasteDto.PackerStr);
+            dbWaste.DUST_WASTE_GRAM_QTY = wasteDto.DustGramStr == null ? 0 : Convert.ToDecimal(wasteDto.DustGramStr);
+            dbWaste.FLOOR_WASTE_GRAM_QTY = wasteDto.FloorGramStr == null ? 0 : Convert.ToDecimal(wasteDto.FloorGramStr);
+            dbWaste.DUST_WASTE_STICK_QTY = wasteDto.DustStickStr == null ? 0 : Convert.ToDecimal(wasteDto.DustStickStr);
+            dbWaste.FLOOR_WASTE_STICK_QTY = wasteDto.FloorStickStr == null ? 0 : Convert.ToDecimal(wasteDto.FloorStickStr);
+            dbWaste.STAMP_WASTE_QTY = wasteDto.StampWasteQtyStr == null ? 0 : Convert.ToDecimal(wasteDto.StampWasteQtyStr);
 
             var origin = _repository.GetByID(wasteDto.CompanyCodeX, wasteDto.PlantWerksX, wasteDto.FaCodeX,
                 wasteDto.WasteProductionDateX);
@@ -128,23 +145,101 @@ namespace Sampoerna.EMS.BLL
 
             if (originDto != null)
             {
-                dbWaste.CREATED_BY = origin.CREATED_BY;
-                dbWaste.CREATED_DATE = origin.CREATED_DATE;
-
                 SetChange(originDto, wasteDto, userId);
                 isNewData = false;
             }
 
+
             _repository.InsertOrUpdate(dbWaste);
+
+
+            //update waste stock table
+            UpdateWasteStockTable(dbWaste, userId, isNewData);
+            
             _uow.SaveChanges();
 
             return isNewData;
         }
 
+        private void UpdateWasteStockTable(WASTE dbWaste, string userId, bool isNewData)
+        {
+
+            var dbdata = GetAllByParam(new WasteGetByParamInput
+            {
+                Plant = dbWaste.WERKS
+            });
+            var dbQtyWaste = CalculateWasteQuantity(dbdata);
+
+            var listWasteStockDto = new List<WasteStockDto>();
+
+            decimal? updateValueFloor = dbQtyWaste.FloorWasteGramQty;
+            decimal? updateValueDust = dbQtyWaste.DustWasteGramQty;
+            decimal? updateValueStamp = dbQtyWaste.StampWasteQty;
+
+            if (isNewData && dbQtyWaste.PlantWerks == dbWaste.WERKS)
+            {
+                updateValueFloor = dbQtyWaste.FloorWasteGramQty + dbWaste.FLOOR_WASTE_GRAM_QTY;
+                updateValueDust = dbQtyWaste.DustWasteGramQty + dbWaste.DUST_WASTE_GRAM_QTY;
+                updateValueStamp = dbQtyWaste.StampWasteQty + dbWaste.STAMP_WASTE_QTY;
+
+            }
+
+            var wasStockWsapoon = new WasteStockDto();
+            wasStockWsapoon.WERKS = dbQtyWaste.PlantWerks;
+            wasStockWsapoon.MATERIAL_NUMBER = Constans.WasteFloor;
+            wasStockWsapoon.STOCK = Convert.ToDecimal(updateValueFloor);
+            wasStockWsapoon.CREATED_BY = userId;
+
+            listWasteStockDto.Add(wasStockWsapoon);
+
+            var wasteStockGagang = new WasteStockDto();
+            wasteStockGagang.WERKS = dbQtyWaste.PlantWerks;
+            wasteStockGagang.MATERIAL_NUMBER = Constans.WasteDust;
+            wasteStockGagang.STOCK = Convert.ToDecimal(updateValueDust);
+            wasteStockGagang.CREATED_BY = userId;
+
+            listWasteStockDto.Add(wasteStockGagang);
+
+            var wasteStockStem = new WasteStockDto();
+            wasteStockStem.WERKS = dbQtyWaste.PlantWerks;
+            wasteStockStem.MATERIAL_NUMBER = Constans.WasteStem;
+            wasteStockStem.STOCK = Convert.ToDecimal(updateValueStamp);
+            wasteStockStem.CREATED_BY = userId;
+
+            listWasteStockDto.Add(wasteStockStem);
+
+
+
+            foreach (var wasteStockDto in listWasteStockDto)
+            {
+                //CHECK ON MATERIAL PLANT AND STICKER CODE EXIST
+
+                var dbMaterial = _materialBll.GetByPlantIdAndStickerCode(wasteStockDto.WERKS, wasteStockDto.MATERIAL_NUMBER);
+
+                if (dbMaterial == null)
+                {
+                    throw new BLLException(ExceptionCodes.BLLExceptions.PlantInWasteNotHaveStickerCode);
+                }
+                else
+                {
+                    _wasteStockBll.UpdateWasteStockFromWaste(wasteStockDto, userId);
+                }
+
+            }
+
+        }
         public WasteDto GetById(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate)
         {
             var dbData = _repository.GetByID(companyCode, plantWerk, faCode, wasteProductionDate);
             var item = Mapper.Map<WasteDto>(dbData);
+
+            item.MarkerStr = item.MarkerRejectStickQty == null ? string.Empty : item.MarkerRejectStickQty.ToString();
+            item.PackerStr = item.PackerRejectStickQty == null ? string.Empty : item.PackerRejectStickQty.ToString();
+            item.DustGramStr = item.DustWasteGramQty == null ? string.Empty : item.DustWasteGramQty.ToString();
+            item.FloorGramStr = item.FloorWasteGramQty == null ? string.Empty : item.FloorWasteGramQty.ToString();
+            item.DustStickStr = item.DustWasteStickQty == null ? string.Empty : item.DustWasteStickQty.ToString();
+            item.FloorStickStr = item.FloorWasteStickQty == null ? string.Empty : item.FloorWasteStickQty.ToString();
+            item.StampWasteQtyStr = item.StampWasteQty == null ? string.Empty : item.StampWasteQty.ToString();
 
             if (dbData == null)
             {
@@ -164,18 +259,46 @@ namespace Sampoerna.EMS.BLL
                     .FirstOrDefault();
         }
 
-
-        public void SaveUpload(WasteUploadItems wasteUpload)
+        public WasteDto CalculateWasteQuantity(List<WasteDto> wasteDtos)
         {
+            var result = wasteDtos.GroupBy(p => p.PlantWerks)
+                .Select(p => new WasteDto
+                {
+
+                    PlantWerks = p.Key,
+                    CompanyCode = p.Select(x => x.CompanyCode).FirstOrDefault(),
+                    FaCode = p.Select(x => x.FaCode).FirstOrDefault(),
+                    WasteProductionDate = p.Select(x => x.WasteProductionDate).FirstOrDefault(),
+                    FloorWasteGramQty = p.Sum(x => x.FloorWasteGramQty),
+                    DustWasteGramQty = p.Sum(x => x.DustWasteGramQty),
+                    StampWasteQty = p.Sum(x => x.StampWasteQty)
+
+                }).FirstOrDefault();
+
+            return result;
+        }
+
+        public void SaveUpload(WasteUploadItems wasteUpload, string userId)
+        {
+            bool isNewData = false;
             var dbUpload = Mapper.Map<WASTE>(wasteUpload);
+
+            var dbResult = _repository.GetByID(dbUpload.COMPANY_CODE, dbUpload.WERKS, dbUpload.FA_CODE,
+                dbUpload.WASTE_PROD_DATE);
+
+            if (dbResult == null)
+            {
+                isNewData = true;
+            }
             _repository.InsertOrUpdate(dbUpload);
 
-
+            UpdateWasteStockTable(dbUpload, userId, isNewData);
             _uow.SaveChanges();
         }
 
-        private void SetChange(WasteDto origin, WasteDto data, string userId)
+        private bool SetChange(WasteDto origin, WasteDto data, string userId)
         {
+            bool isModified = false;
             var changeData = new Dictionary<string, bool>();
             changeData.Add("COMPANY_CODE", origin.CompanyCode == data.CompanyCode);
             changeData.Add("WERKS", origin.PlantWerks == data.PlantWerks);
@@ -184,16 +307,17 @@ namespace Sampoerna.EMS.BLL
             changeData.Add("BRAND_DESC", origin.BrandDescription == data.BrandDescription);
             changeData.Add("PLANT_NAME", origin.PlantName == data.PlantName);
             changeData.Add("COMPANY_NAME", origin.CompanyName == data.CompanyName);
-            changeData.Add("MARKER_REJECT_STICK_QTY", origin.MarkerRejectStickQty == data.MarkerRejectStickQty);
-            changeData.Add("PACKER_REJECT_STICK_QTY", origin.PackerRejectStickQty == data.PackerRejectStickQty);
-            changeData.Add("DUST_WASTE_GRAM_QTY", origin.DustWasteGramQty == data.DustWasteGramQty);
-            changeData.Add("FLOOR_WASTE_GRAM_QTY", origin.FloorWasteGramQty == data.FloorWasteGramQty);
-            changeData.Add("DUST_WASTE_STICK_QTY", origin.DustWasteStickQty == data.DustWasteStickQty);
-            changeData.Add("FLOOR_WASTE_STICK_QTY", origin.FloorWasteStickQty == data.FloorWasteStickQty);
+            changeData.Add("MARKER_REJECT_STICK_QTY", origin.MarkerRejectStickQty == Convert.ToDecimal(data.MarkerStr));
+            changeData.Add("PACKER_REJECT_STICK_QTY", origin.PackerRejectStickQty == Convert.ToDecimal(data.PackerStr));
+            changeData.Add("DUST_WASTE_GRAM_QTY", origin.DustWasteGramQty == Convert.ToDecimal(data.DustGramStr));
+            changeData.Add("FLOOR_WASTE_GRAM_QTY", origin.FloorWasteGramQty == Convert.ToDecimal(data.FloorGramStr));
+            //changeData.Add("DUST_WASTE_STICK_QTY", origin.DustWasteStickQty == data.DustWasteStickQty);
+            //changeData.Add("FLOOR_WASTE_STICK_QTY", origin.FloorWasteStickQty == data.FloorWasteStickQty);
+            changeData.Add("STAMP_WASTE_QTY", origin.StampWasteQty == Convert.ToDecimal(data.StampWasteQtyStr));
 
             foreach (var listChange in changeData)
             {
-                if (!listChange.Value)
+                if (listChange.Value) continue;
                 {
                     var changes = new CHANGES_HISTORY()
                     {
@@ -244,42 +368,47 @@ namespace Sampoerna.EMS.BLL
                             break;
                         case "MARKER_REJECT_STICK_QTY":
                             changes.OLD_VALUE = origin.MarkerRejectStickQty.ToString();
-                            changes.NEW_VALUE = data.MarkerRejectStickQty.ToString();
+                            changes.NEW_VALUE = data.MarkerStr;
                             changes.FIELD_NAME = "Maker Reject Cigarette(stick)";
                             break;
                         case "PACKER_REJECT_STICK_QTY":
                             changes.OLD_VALUE = origin.PackerRejectStickQty.ToString();
-                            changes.NEW_VALUE = data.PackerRejectStickQty.ToString();
+                            changes.NEW_VALUE = data.PackerStr;
                             changes.FIELD_NAME = "Packer Reject Cigarette(stick)";
                             break;
                         case "DUST_WASTE_GRAM_QTY":
                             changes.OLD_VALUE = origin.DustWasteGramQty.ToString();
-                            changes.NEW_VALUE = data.DustWasteGramQty.ToString();
+                            changes.NEW_VALUE = data.DustGramStr;
                             changes.FIELD_NAME = "Dust Waste QTY (gram)";
                             break;
                         case "FLOOR_WASTE_GRAM_QTY":
                             changes.OLD_VALUE = origin.FloorWasteGramQty.ToString();
-                            changes.NEW_VALUE = data.FloorWasteGramQty.ToString();
+                            changes.NEW_VALUE = data.FloorGramStr;
                             changes.FIELD_NAME = "Floor Waste QTY (gram)";
                             break;
-                        case "DUST_WASTE_STICK_QTY":
-                            changes.OLD_VALUE = origin.DustWasteStickQty.ToString();
-                            changes.NEW_VALUE = data.DustWasteStickQty.ToString();
-                            changes.FIELD_NAME = "Dust Waste QTY (Stick)";
-                            break;
-                        case "FLOOR_WASTE_STICK_QTY":
-                            changes.OLD_VALUE = origin.FloorWasteStickQty.ToString();
-                            changes.NEW_VALUE = data.FloorWasteStickQty.ToString();
-                            changes.FIELD_NAME = "Floor Waste QTY (Stick)";
+                        //case "DUST_WASTE_STICK_QTY":
+                        //    changes.OLD_VALUE = origin.DustWasteStickQty.ToString();
+                        //    changes.NEW_VALUE = data.DustWasteStickQty.ToString();
+                        //    changes.FIELD_NAME = "Dust Waste QTY (Stick)";
+                        //    break;
+                        //case "FLOOR_WASTE_STICK_QTY":
+                        //    changes.OLD_VALUE = origin.FloorWasteStickQty.ToString();
+                        //    changes.NEW_VALUE = data.FloorWasteStickQty.ToString();
+                        //    changes.FIELD_NAME = "Floor Waste QTY (Stick)";
+                        //    break;
+                        case "STAMP_WASTE_QTY":
+                            changes.OLD_VALUE = origin.StampWasteQty.ToString();
+                            changes.NEW_VALUE = data.StampWasteQtyStr;
                             break;
                         default: break;
                     }
+                 
                     _changesHistoryBll.AddHistory(changes);
-
+                    isModified = true;
                 }
-
+               
             }
-
+            return isModified;
         }
 
         public void DeleteOldData(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate)
@@ -325,11 +454,11 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 List<string> messages;
-                
+
                 #region -------------- Company Code Validation ---------------
 
                 T001 companyTypedata = null;
-                if (ValidateCompanyCode(output.CompanyCode,out messages, out companyTypedata))
+                if (ValidateCompanyCode(output.CompanyCode, out messages, out companyTypedata))
                 {
                     output.CompanyCode = companyTypedata.BUKRS;
                 }
@@ -339,7 +468,7 @@ namespace Sampoerna.EMS.BLL
                     messageList.AddRange(messages);
                 }
                 #endregion
-               
+
                 #region -------------- Plant Code Validation ---------------
 
                 Plant plantTypeData = null;
@@ -354,11 +483,11 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 #endregion
-                
+
                 #region -------------- Fa Code Vlidation ------------------
 
                 ZAIDM_EX_BRAND brandTypeData = null;
-                if (ValidationFaCode(output.PlantWerks, output.FaCode,out messages, out brandTypeData))
+                if (ValidationFaCode(output.PlantWerks, output.FaCode, out messages, out brandTypeData))
                 {
                     output.FaCode = brandTypeData.FA_CODE;
                 }
@@ -368,7 +497,7 @@ namespace Sampoerna.EMS.BLL
                     messageList.AddRange(messages);
                 }
                 #endregion
-               
+
                 #region ------------ Brand Description Validation -----------------
 
                 if (ValidationBrandCe(output.PlantWerks, output.FaCode, output.BrandDescription, out messages, out brandTypeData))
@@ -381,7 +510,7 @@ namespace Sampoerna.EMS.BLL
                     messageList.AddRange(messages);
                 }
                 #endregion
-              
+
                 #region ---------------Waste Production Date validation-------------
                 int temp;
                 DateTime dateTemp;
@@ -494,7 +623,7 @@ namespace Sampoerna.EMS.BLL
                 if (messageList.Count > 0)
                 {
                     output.IsValid = false;
-                  
+
                     output.Message = "";
                     foreach (var message in messageList)
                     {
@@ -560,7 +689,7 @@ namespace Sampoerna.EMS.BLL
             if (!string.IsNullOrWhiteSpace(plantCode))
             {
                 plantData = _plantBll.GetId(plantCode);
-                if (plantData==null)
+                if (plantData == null)
                 {
                     messageList.Add("Plant Code/WERKS [" + plantCode + "] not valid");
                 }
@@ -632,7 +761,7 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-             messageList.Add("Brand Description is Empty");   
+                messageList.Add("Brand Description is Empty");
             }
             #endregion
 
@@ -640,6 +769,6 @@ namespace Sampoerna.EMS.BLL
             return valResult;
         }
 
-        
+
     }
 }
