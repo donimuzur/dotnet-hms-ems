@@ -3361,7 +3361,7 @@ namespace Sampoerna.EMS.BLL
                              //Date = p.SUBMISSION_DATE.Value.Day.ToString(),
                              //ItemCode = p.NPPBKC_ID,
                              //FinishGoodCode = p.NPPBKC_ID,
-                             //Remaining = p.LACK1_PBCK1_MAPPING.
+                             Remaining = p.LACK1_PBCK1_MAPPING.Sum(x => x.PBCK1.REMAINING_QUOTA.HasValue ? x.PBCK1.REMAINING_QUOTA.Value : 0),
                              BeginningStock = p.BEGINING_BALANCE,
                              Received = p.TOTAL_INCOME,
                              //UsageOther = p.USAGE,
