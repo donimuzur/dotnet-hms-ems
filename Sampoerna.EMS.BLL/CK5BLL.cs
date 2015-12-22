@@ -697,7 +697,7 @@ namespace Sampoerna.EMS.BLL
         {
             var messageList = new List<string>();
             var outputList = new List<CK5MaterialOutput>();
-
+            Dictionary<string,decimal> currentStock = new Dictionary<string, decimal>();
             foreach (var ck5MaterialInput in inputs)
             {
                 messageList.Clear();
@@ -717,8 +717,8 @@ namespace Sampoerna.EMS.BLL
                         if (ck5MaterialInput.Brand == ck5MaterialCheck.Brand)
                             iExist++;
                     }
-                    if (iExist > 1)
-                        messageList.Add("Found Double Material Number");
+                    //if (iExist > 1)
+                    //    messageList.Add("Found Double Material Number");
                 }
 
                 if (!Utils.ConvertHelper.IsNumeric(ck5MaterialInput.Qty))
@@ -746,7 +746,26 @@ namespace Sampoerna.EMS.BLL
                     var wasteStock = ConvertHelper.ConvertToDecimalOrZero(ck5MaterialInput.WasteStock);
                     if (wasteStock <= 0)
                     {
+                        
                         wasteStock = GetWasteStockQuota(ck5MaterialInput.Plant, ck5MaterialInput.Brand).WasteStockRemainingCount;
+                        if (!currentStock.ContainsKey(ck5MaterialInput.Plant + "-" + ck5MaterialInput.Brand))
+                        {
+                            currentStock.Add(ck5MaterialInput.Plant + "-" + ck5MaterialInput.Brand, wasteStock);
+                            currentStock[ck5MaterialInput.Plant + "-" + ck5MaterialInput.Brand] = currentStock[ck5MaterialInput.Plant + "-" + ck5MaterialInput.Brand]
+                                - (ConvertHelper.ConvertToDecimalOrZero(ck5MaterialInput.Qty) * ConvertHelper.ConvertToDecimalOrZero(ck5MaterialInput.Convertion))
+                            ;
+                        }
+                        else
+                        {
+                            currentStock[ck5MaterialInput.Plant + "-" + ck5MaterialInput.Brand] = currentStock[ck5MaterialInput.Plant + "-" + ck5MaterialInput.Brand]
+                                - (ConvertHelper.ConvertToDecimalOrZero(ck5MaterialInput.Qty) * ConvertHelper.ConvertToDecimalOrZero(ck5MaterialInput.Convertion))
+                            ;
+
+                            if (currentStock[ck5MaterialInput.Plant + "-" + ck5MaterialInput.Brand] < 0)
+                            {
+                                messageList.Add("Waste Stock Quota Exceeded");
+                            }
+                        }
                     }
 
                     var qty = ConvertHelper.ConvertToDecimalOrZero(ck5MaterialInput.Qty);
@@ -3783,6 +3802,8 @@ namespace Sampoerna.EMS.BLL
                 var inputCk5Material = new CK5MaterialInput();
                 inputCk5Material.Ck5Type = ck5UploadFileDocumentsInput.Ck5Type;
                 if (ck5UploadFileDocumentsInput.Ck5Type == Enums.CK5Type.DomesticAlcohol.ToString() ||
+                    int.Parse(ck5UploadFileDocumentsInput.Ck5Type) == (int)Enums.CK5Type.DomesticAlcohol ||
+                    int.Parse(ck5UploadFileDocumentsInput.Ck5Type) == (int)Enums.CK5Type.PortToImporter ||
                     ck5UploadFileDocumentsInput.Ck5Type == Enums.CK5Type.PortToImporter.ToString())
                 {
                     inputCk5Material.Plant = ck5UploadFileDocumentsInput.DestPlantId;
@@ -3807,19 +3828,28 @@ namespace Sampoerna.EMS.BLL
             }
 
             List<CK5MaterialOutput> outputListCk5Material = new List<CK5MaterialOutput>();
-            foreach (var input in lisCk5Material)
-            {
-                if (input.Ck5Type == Enums.CK5Type.Waste.ToString())
-                {
-                    outputListCk5Material.Add(ValidateCk5WasteMaterial(input));
-                }
-                else
-                {
-                    var inputMaterial = new List<CK5MaterialInput> {input};
-                    outputListCk5Material.AddRange(ValidateCk5Material(inputMaterial));    
-                }
+            var wastelist = lisCk5Material.Where(x => int.Parse(x.Ck5Type) == (int) Enums.CK5Type.Waste || x.Ck5Type == Enums.CK5Type.Waste.ToString()).ToList();
+            var normalList =
+                lisCk5Material.Where(
+                    x =>
+                        (int.Parse(x.Ck5Type) != (int) Enums.CK5Type.Waste &&
+                         x.Ck5Type != Enums.CK5Type.Waste.ToString())).ToList();
+
+            outputListCk5Material.AddRange(ValidateCk5WasteMaterial(wastelist));
+            outputListCk5Material.AddRange(ValidateCk5Material(normalList));
+            //foreach (var input in lisCk5Material)
+            //{
+            //    if (int.Parse(input.Ck5Type) == (int)Enums.CK5Type.Waste)
+            //    {
+            //        outputListCk5Material.Add(ValidateCk5WasteMaterial(input));
+            //    }
+            //    else
+            //    {
+            //        var inputMaterial = new List<CK5MaterialInput> {input};
+            //        outputListCk5Material.AddRange(ValidateCk5Material(inputMaterial));    
+            //    }
                 
-            }
+            //}
             
             
 
