@@ -3273,6 +3273,7 @@ namespace Sampoerna.EMS.BLL
                         }).ToList();
                     usageConsolidationData.AddRange(groupedCk5Material);
                 }
+
                 item.TrackingConsolidations.AddRange(usageConsolidationData.Distinct().ToList());
 
                 item.TrackingConsolidations = item.TrackingConsolidations.OrderBy(o => o.MaterialCode).ThenBy(o => o.Batch).ToList();
@@ -3307,6 +3308,8 @@ namespace Sampoerna.EMS.BLL
         {
             var usageConsolidationData = new List<Lack1TrackingConsolidationDetailReportDto>();
             var usageReceiving = new List<Lack1UsageReceivingTrackingDetailDto>();
+
+            //var uomGram = uomData.FirstOrDefault(c => c.UOM_ID.ToLower() == "g");
             
             if (data.LACK1_TRACKING != null && data.LACK1_TRACKING.Count > 0)
             {
@@ -3348,7 +3351,7 @@ namespace Sampoerna.EMS.BLL
                 }).Select(g => new
                 {
                     MaterialId = g.Key.MATERIAL_ID,
-                    Qty = g.Sum(p => p.QTY.HasValue ? p.QTY.Value : 0),
+                    Qty = g.Sum(p => p.QTY.HasValue ? (-1) * p.QTY.Value : 0),
                     Batch = g.Key.BATCH,
                     PostingDate = g.Key.POSTING_DATE,
                     Bun = g.First().BUN
