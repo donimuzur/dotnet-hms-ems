@@ -437,6 +437,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.SourcePlantList = GlobalFunctions.GetExternalSupplierList(model.Ck5Type);
                 model.DestPlantList = GlobalFunctions.GetPlantAll();
             }
+            else if (model.Ck5Type == Enums.CK5Type.Manual && model.FLAG_NPPBKC_IMPORT)
+            {
+
+                model.SourcePlantList = GlobalFunctions.GetPlantByNppbkcImport(true);
+                model.DestPlantList = GlobalFunctions.GetPlantAll();
+            }
             else
             {
                 model.SourcePlantList = GlobalFunctions.GetPlantAll();
@@ -4457,6 +4463,24 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
             return PartialView("_CK5OriginalPlantDestination", model);
+        }
+
+        [HttpPost]
+        public JsonResult GetListPlant(bool isNppbkcImport)
+        {
+            SelectList data;
+
+            if (isNppbkcImport)
+            {
+                data = GlobalFunctions.GetPlantByNppbkcImport(true);
+            }
+            else
+            {
+                data = GlobalFunctions.GetPlantAll();
+
+            }
+
+             return Json(data);
         }
 
     }
