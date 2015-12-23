@@ -336,7 +336,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult CK5TriggerSto()
         {
-            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.TriggerSto);
+            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Return);
             return View("CK5TriggerSto", model);
         }
 
@@ -435,6 +435,12 @@ namespace Sampoerna.EMS.Website.Controllers
             else if (model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
             {
                 model.SourcePlantList = GlobalFunctions.GetExternalSupplierList(model.Ck5Type);
+                model.DestPlantList = GlobalFunctions.GetPlantAll();
+            }
+            else if (model.Ck5Type == Enums.CK5Type.Manual && model.FLAG_NPPBKC_IMPORT)
+            {
+
+                model.SourcePlantList = GlobalFunctions.GetPlantByNppbkcImport(true);
                 model.DestPlantList = GlobalFunctions.GetPlantAll();
             }
             else
@@ -583,8 +589,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("CK5TriggerSto");
             }
 
-            
-            var model = InitCreateCK5(Enums.CK5Type.TriggerSto);
+
+            var model = InitCreateCK5(Enums.CK5Type.Return);
             model.IsTriggerSto = true;
 
             return View("Create", model);
@@ -768,7 +774,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     if (model.UploadItemModels.Count > 0)
                     {
                         if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId)
-                            || model.Ck5Type == Enums.CK5Type.MarketReturn || model.Ck5Type == Enums.CK5Type.TriggerSto
+                            || model.Ck5Type == Enums.CK5Type.MarketReturn || model.Ck5Type == Enums.CK5Type.Return
                             || model.Ck5Type == Enums.CK5Type.Waste)
                         {
 
@@ -1165,7 +1171,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     model.IsCk5PortToImporter = true;
                 }
-                else if (model.Ck5Type == Enums.CK5Type.TriggerSto)
+                else if (model.Ck5Type == Enums.CK5Type.Return)
                 {
                     model.IsTriggerSto = true;
                 }
@@ -1173,7 +1179,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
                 if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId)
-                    || model.Ck5Type == Enums.CK5Type.MarketReturn || model.Ck5Type == Enums.CK5Type.TriggerSto
+                    || model.Ck5Type == Enums.CK5Type.MarketReturn || model.Ck5Type == Enums.CK5Type.Return
                     || model.Ck5Type == Enums.CK5Type.Waste)
                 {
 
@@ -1268,7 +1274,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         {
                             //quota
                             if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId)
-                                || model.Ck5Type == Enums.CK5Type.MarketReturn || model.Ck5Type == Enums.CK5Type.TriggerSto
+                                || model.Ck5Type == Enums.CK5Type.MarketReturn || model.Ck5Type == Enums.CK5Type.Return
                                 || model.Ck5Type == Enums.CK5Type.Waste)
                             {
 
@@ -1435,6 +1441,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     input.NppbkcId = model.DestNppbkcId;
                     input.PlantId = ck5Details.Ck5Dto.DEST_PLANT_ID;
                 }
+                else if (model.Ck5Type == Enums.CK5Type.Return)
+                {
+                    model.IsTriggerSto = true;
+                }
 
                 if (model.Ck5Type == Enums.CK5Type.ImporterToPlant)
                 {
@@ -1462,7 +1472,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (!allowApproveAndReject)
                 {
                     model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
-                    model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                    //model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
                 }
 
 
@@ -1473,7 +1483,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.CommentGov = outputHistory.Comment;
 
                 if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId)
-                    || model.Ck5Type == Enums.CK5Type.MarketReturn || model.Ck5Type == Enums.CK5Type.TriggerSto
+                    || model.Ck5Type == Enums.CK5Type.MarketReturn || model.Ck5Type == Enums.CK5Type.Return
                     || model.Ck5Type == Enums.CK5Type.Waste)
                 {
 
@@ -1517,6 +1527,20 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.AllowGoodIssue = _workflowBll.AllowDomesticAlcoholGoodIssue(input);
                     model.AllowGoodReceive = _workflowBll.AllowDomesticAlcoholGoodReceive(input);
                     model.AllowPurchaseOrder = _workflowBll.AllowDomesticAlcoholPurchaseOrder(input);
+                    
+                }
+                else if (model.Ck5Type == Enums.CK5Type.Return)
+                {
+                    if (model.SourceCompanyCode != model.DestCompanyCode)
+                    {
+                        model.AllowGiCreated = _workflowBll.AllowStoGiCompleted(input);
+                        model.AllowGrCreated = _workflowBll.AllowStoGrCreated(input);
+                    }
+                    else
+                    {
+                        model.AllowGiCreated = _workflowBll.AllowGiCreated(input);
+                        model.AllowGrCreated = _workflowBll.AllowGrCreated(input);
+                    }
                     
                 }
                 else if (model.Ck5Type == Enums.CK5Type.Waste)
@@ -1624,6 +1648,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     model.IsCk5Waste = true;
                 }
+                else if (model.Ck5Type == Enums.CK5Type.Return)
+                {
+                    model.IsTriggerSto = true;
+                }
 
                 if (model.Ck5Type == Enums.CK5Type.MarketReturn)
                 {
@@ -1669,7 +1697,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.CommentGov = outputHistory.Comment;
 
                 if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId)
-                  || model.Ck5Type == Enums.CK5Type.MarketReturn || model.Ck5Type == Enums.CK5Type.TriggerSto
+                  || model.Ck5Type == Enums.CK5Type.MarketReturn || model.Ck5Type == Enums.CK5Type.Return
                   || model.Ck5Type == Enums.CK5Type.Waste)
                 {
 
@@ -2213,7 +2241,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //   || model.Ck5Type == Enums.CK5Type.MarketReturn)
             //{
             if (model.Ck5Type == Enums.CK5Type.Domestic && (model.SourceNppbkcId == model.DestNppbkcId)
-               || model.Ck5Type == Enums.CK5Type.MarketReturn || model.Ck5Type == Enums.CK5Type.TriggerSto
+               || model.Ck5Type == Enums.CK5Type.MarketReturn || model.Ck5Type == Enums.CK5Type.Return
                || model.Ck5Type == Enums.CK5Type.Waste)
             {
            
@@ -4435,6 +4463,24 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
             return PartialView("_CK5OriginalPlantDestination", model);
+        }
+
+        [HttpPost]
+        public JsonResult GetListPlant(bool isNppbkcImport)
+        {
+            SelectList data;
+
+            if (isNppbkcImport)
+            {
+                data = GlobalFunctions.GetPlantByNppbkcImport(true);
+            }
+            else
+            {
+                data = GlobalFunctions.GetPlantAll();
+
+            }
+
+             return Json(data);
         }
 
     }

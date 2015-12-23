@@ -81,7 +81,19 @@
                                     </div>
                                 </div>
                             </div>
-
+                            @if (Model.IsCk5Manual && Model.Ck5ManualType == Enums.Ck5ManualType.Trial)
+                            {
+                                <div class="row" id="idFlagNppbkc">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">NPPBKC Import</label>
+                                            <div class="col-md-8">
+                                                @Html.CheckBoxFor(model => model.FLAG_NPPBKC_IMPORT, new { @disabled = "disabled" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -409,6 +421,20 @@
                                 </div>
 
 
+                            }
+                            
+                            @if (Model.IsTriggerSto)
+                            {
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-md-4">Flaging Lack-1</label>
+                                            <div class="col-md-8">
+                                                @Html.CheckBoxFor(model => model.FLAG_FOR_LACK1, new { @class = "checkbox", @disabled = "disabled" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             }
                         </div>
 

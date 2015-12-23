@@ -97,7 +97,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     UserId = curUser.USER_ID
                 })),
                 IsShowNewButton = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer ? true : false),
-                IsNotViewer = curUser.UserRole != Enums.UserRole.Viewer
+                //first code when manager exists
+                //IsNotViewer = curUser.UserRole != Enums.UserRole.Viewer
+                IsNotViewer = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer ? true : false)
             });
 
             return View("Index", data);
@@ -131,7 +133,9 @@ namespace Sampoerna.EMS.Website.Controllers
             var result = Mapper.Map<List<Lack1NppbkcData>>(dbData);
 
             var viewModel = new Lack1IndexViewModel { Details = result };
-            viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            //first code when manager exists
+            //viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            viewModel.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
 
             return PartialView("_Lack1Table", viewModel);
         }
@@ -156,7 +160,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     UserId = curUser.USER_ID
                 })),
                 IsShowNewButton = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer ? true : false),
-                IsNotViewer = curUser.UserRole != Enums.UserRole.Viewer
+                //first code when manager exists
+                //IsNotViewer = curUser.UserRole != Enums.UserRole.Viewer
+                IsNotViewer = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer ? true : false)
             });
 
             return View("ListByPlant", data);
@@ -187,7 +193,9 @@ namespace Sampoerna.EMS.Website.Controllers
             var resultPlant = Mapper.Map<List<Lack1PlantData>>(dbDataPlant);
 
             var viewModel = new Lack1IndexPlantViewModel { Details = resultPlant };
-            viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            //first code when manager exists
+            //viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            viewModel.IsNotViewer = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer ? true : false);
 
             return PartialView("_Lack1ListByPlantTable", viewModel);
 
@@ -279,7 +287,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 MenuPlantAddClassCss = lack1Level.Value == Enums.Lack1Level.Plant ? "active" : "",
                 MenuNppbkcAddClassCss = lack1Level.Value == Enums.Lack1Level.Nppbkc ? "active" : "",
                 IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
-                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
+                //first code when manager exists
+                //IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
             };
 
             return CreateInitial(model);
@@ -471,7 +481,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Details = Mapper.Map<List<Lack1CompletedDocumentData>>(_lack1Bll.GetCompletedDocumentByParam(new Lack1GetByParamInput())),
-                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
+                //first code when manager exists
+                //IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
             });
 
             return View("ListCompletedDocument", data);
@@ -498,7 +510,9 @@ namespace Sampoerna.EMS.Website.Controllers
             var resultPlant = Mapper.Map<List<Lack1CompletedDocumentData>>(dbDataPlant);
 
             var viewModel = new Lack1IndexCompletedDocumentViewModel { Details = resultPlant };
-            viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            //first code when manager exists
+            //viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            viewModel.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
 
             return PartialView("_Lack1CompletedDocumentTable", viewModel);
 
@@ -619,7 +633,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dMasterRow.NppbkcCity = data.NppbkcCity;
             dMasterRow.NppbkcId = data.NppbkcId;
             dMasterRow.SubmissionDate = data.SubmissionDateDisplayString;
-            dMasterRow.CreatorName = data.ApprovedByPoa;
+            dMasterRow.CreatorName = data.PoaPrintedName;
             dMasterRow.PrintTitle = printTitle;
             if (data.HeaderFooter != null)
             {
@@ -675,7 +689,18 @@ namespace Sampoerna.EMS.Website.Controllers
             var totalAmount = data.Lack1IncomeDetail.Sum(d => d.AMOUNT);
             var endingBalance = (data.BeginingBalance - (data.Usage + (data.UsageTisToTis.HasValue ? data.UsageTisToTis.Value  : 0)) + data.TotalIncome - data.ReturnQty);
             var noted = !string.IsNullOrEmpty(data.Noted) ? data.Noted.Replace("<br />", Environment.NewLine) : string.Empty;
-            var docNoted = !string.IsNullOrEmpty(data.DocumentNoted) ? data.DocumentNoted.Replace("<br />", Environment.NewLine) : string.Empty;
+            //var docNoted = !string.IsNullOrEmpty(data.DocumentNoted) ? data.DocumentNoted.Replace("<br />", Environment.NewLine) : string.Empty;
+
+            var docNoted = string.Empty;
+            if (data.Ck5RemarkData != null)
+            {
+                docNoted = GenerateRemarkContent(data.Ck5RemarkData.Ck5WasteData, "Waste");
+                docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.Ck5RemarkData.Ck5ReturnData, "Return");
+                docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.Ck5RemarkData.Ck5TrialData, "Trial");
+            }
+
+            var docToDisplay = (noted.Trim() != string.Empty ? noted.Trim() + Environment.NewLine : string.Empty) +
+                               docNoted;
             
             foreach (var item in data.Lack1IncomeDetail)
             {
@@ -688,7 +713,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 detailRow.ListJenisBKC = summaryProductionJenis;
                 detailRow.ListJumlahBKC = summaryProductionAmount;
                 detailRow.EndingBalance = endingBalance.ToString("N2");
-                detailRow.Noted = noted + " " + docNoted;
+                detailRow.Noted = docToDisplay;
                 detailRow.Ck5TotalAmount = totalAmount.ToString("N2");
                 detailRow.ListTotalJumlahBKC = totalSummaryProductionList;
 
@@ -697,6 +722,25 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             return dsReport;
+        }
+
+        private string GenerateRemarkContent(List<Lack1IncomeDetailDto> data, string title)
+        {
+            var rc = string.Empty;
+            if (data.Count <= 0) return rc;
+            rc = title + Environment.NewLine;
+            //rc += string.Join(Environment.NewLine, data.Select(
+            //    d =>
+            //        "CK-5 " + d.REGISTRATION_NUMBER + " - " +
+            //        (d.REGISTRATION_DATE.HasValue
+            //            ? d.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy")
+            //            : string.Empty) + " : " + d.AMOUNT.ToString("N2") + " " + d.PACKAGE_UOM_DESC).ToList());
+
+            //LOGS SKYPE, REMOVE DATE
+            rc += string.Join(Environment.NewLine, data.Select(
+               d =>
+                   "CK-5 " + d.REGISTRATION_NUMBER + " : " + d.AMOUNT.ToString("N2") + " " + d.PACKAGE_UOM_DESC).ToList());
+            return rc;
         }
 
         private byte[] GetHeader(string imagePath)
@@ -750,30 +794,46 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            //first code when manager exists
+            //if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
             {
                 //redirect to details for approval/rejected
                 return RetDetails(lack1Data, true);
             }
 
-            if (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval ||
-                lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+            if (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval)
             {
                 return RetDetails(lack1Data, false);
             }
-            
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
-            {
-                //redirect to details for approval/rejected
-                return RetDetails(lack1Data, true);
-            }
+
+            /* Old Code before CR-2 : 2015-12-22 Remove manager approve*/
+            //if (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval ||
+            //    lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+            //{
+            //    return RetDetails(lack1Data, false);
+            //}
+
+            //first code when manager exists
+            //if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            //{
+            //    //redirect to details for approval/rejected
+            //    return RetDetails(lack1Data, true);
+            //}
 
             if (CurrentUser.USER_ID == lack1Data.CreateBy &&
-                (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval ||
-                 lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager))
+                lack1Data.Status == Enums.DocumentStatus.WaitingForApproval)
             {
                 return RetDetails(lack1Data, false);
             }
+
+            /* Old code before CR-2  : 2015-12-22 Remove manager approve */
+            //if (CurrentUser.USER_ID == lack1Data.CreateBy &&
+            //    (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval ||
+            //     lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager))
+            //{
+            //    return RetDetails(lack1Data, false);
+            //}
 
             var model = InitEditModel(lack1Data);
             model = InitEditList(model);
@@ -897,7 +957,9 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 FormNumber = model.Lack1Number,
                 DocumentStatus = model.Status,
-                NppbkcId = model.NppbkcId
+                NppbkcId = model.NppbkcId,
+                DocumentCreator = model.CreateBy,
+                PlantId = model.LevelPlantId
             };
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
@@ -994,7 +1056,8 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!allowApproveAndReject)
             {
                 model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
-                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                //first code when manager exists
+                //model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
             }
 
             model.AllowPrintDocument = _workflowBll.AllowPrint(model.Status);
@@ -1011,7 +1074,9 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 FormNumber = model.Lack1Number,
                 DocumentStatus = model.Status,
-                NppbkcId = model.NppbkcId
+                NppbkcId = model.NppbkcId,
+                DocumentCreator = model.CreateBy,
+                PlantId = model.LevelPlantId
             };
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
@@ -1073,7 +1138,8 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!allowApproveAndReject)
             {
                 model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
-                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                //first code when manager exists
+                //model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
             }
 
             model.AllowPrintDocument = _workflowBll.AllowPrint(model.Status);
@@ -1741,7 +1807,7 @@ namespace Sampoerna.EMS.Website.Controllers
             
             int iRow = 3; //starting row data
 
-            //var needToMerge = new List<DetailReportNeedToMerge>();
+            var needToMerge = new List<DetailReportNeedToMerge>();
             
             foreach (var item in dataDetailReport)
             {
@@ -1755,10 +1821,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     var lastMaterialCode = item.TrackingConsolidations[0].MaterialCode;
                     var lastBatch = item.TrackingConsolidations[0].Batch;
+                    var lastDate = item.TrackingConsolidations[0].GiDate;
 
                     int dataCount = item.TrackingConsolidations.Count - 1;
 
                     //first record
+                    slDocument.SetCellValue(iRow, iColumn, item.Lack1Number);
+                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
+                    iColumn++;
+
                     slDocument.SetCellValue(iRow, iColumn, item.Lack1LevelName);
                     slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
@@ -1768,6 +1839,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].Ck5Number);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].Ck5TypeText);
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].Ck5RegistrationNumber);
@@ -1788,14 +1862,28 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].MaterialCode);
                     iColumn++;
 
-                    slDocument.SetCellValue(iRow, iColumn, !item.TrackingConsolidations[0].UsageQty.HasValue ? "-" : ( (-1) * item.TrackingConsolidations[0].UsageQty.Value).ToString("N3"));
-                    iColumn++;
+                    if (string.IsNullOrEmpty(item.TrackingConsolidations[0].MaterialCode))
+                    {
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
 
-                    slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].OriginalUomDesc);
-                    iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
 
-                    slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].ConvertedUomDesc);
-                    iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+                    }
+                    else
+                    {
+                        slDocument.SetCellValue(iRow, iColumn, !item.TrackingConsolidations[0].UsageQty.HasValue ? "-" : (item.TrackingConsolidations[0].UsageQty.Value).ToString("N3"));
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].OriginalUomDesc);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].ConvertedUomDesc);
+                        iColumn++;
+                    }
 
                     slDocument.SetCellValue(iRow, iColumn, item.EndingBalance.ToString("N2"));
                     slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
@@ -1803,9 +1891,16 @@ namespace Sampoerna.EMS.Website.Controllers
                     for (int i = 1; i < item.TrackingConsolidations.Count; i++)
                     {
                         iRow++;
-                        iColumn = 3;
+                        iColumn = 4;
+
+                        var curMaterialCode = item.TrackingConsolidations[i].MaterialCode;
+                        var curBatch = item.TrackingConsolidations[i].Batch;
+                        var curDate = item.TrackingConsolidations[i].GiDate;
                         
                         slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].Ck5Number);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].Ck5TypeText);
                         iColumn++;
 
                         slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].Ck5RegistrationNumber);
@@ -1826,27 +1921,77 @@ namespace Sampoerna.EMS.Website.Controllers
                         slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].MaterialCode);
                         iColumn++;
 
-                        slDocument.SetCellValue(iRow, iColumn, !item.TrackingConsolidations[i].UsageQty.HasValue ? "-" :((-1) * item.TrackingConsolidations[i].UsageQty.Value).ToString("N3"));
-                        iColumn++;
+                        if (string.IsNullOrEmpty(item.TrackingConsolidations[i].MaterialCode))
+                        {
+                            slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                            iColumn++;
 
-                        slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].OriginalUomDesc);
-                        iColumn++;
+                            slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                            iColumn++;
 
-                        slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].ConvertedUomDesc);
+                            slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        }
+                        else
+                        {
+                            slDocument.SetCellValue(iRow, iColumn, !item.TrackingConsolidations[i].UsageQty.HasValue ? "-" : (item.TrackingConsolidations[i].UsageQty.Value).ToString("N3"));
+                            iColumn++;
+
+                            slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].OriginalUomDesc);
+                            iColumn++;
+
+                            slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].ConvertedUomDesc);
+
+                            if (lastMaterialCode == curMaterialCode && lastBatch == curBatch && lastDate == curDate)
+                            {
+                                iEndRow = iRow;
+                                if (i == item.TrackingConsolidations.Count - 1)
+                                {
+                                    if (iStartRow != iEndRow)
+                                    {
+                                        //need to merge
+                                        needToMerge.Add(new DetailReportNeedToMerge()
+                                        {
+                                            StartRowIndex = iStartRow,
+                                            EndRowIndex = iEndRow
+                                        });
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (iStartRow != iEndRow)
+                                {
+                                    //need to merge
+                                    needToMerge.Add(new DetailReportNeedToMerge()
+                                    {
+                                        StartRowIndex = iStartRow,
+                                        EndRowIndex = iEndRow
+                                    });
+                                }
+                                iStartRow = iRow;
+                                iEndRow = iStartRow;
+                            }
+                        }
                         
+                        lastMaterialCode = curMaterialCode;
+                        lastBatch = curBatch;
+                        lastDate = curDate;
                     }
                     
                 }
                 else
                 {
-                    
+
+                    slDocument.SetCellValue(iRow, iColumn, item.Lack1Number);
+                    iColumn++;
+
                     slDocument.SetCellValue(iRow, iColumn, item.Lack1LevelName);
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.BeginingBalance.ToString("N2"));
                     iColumn++;
 
-                    for (int i = 0; i < 10; i++)
+                    for (int i = 0; i < 11; i++)
                     {
                         slDocument.SetCellValue(iRow, iColumn, "-");
                         iColumn++;
@@ -1858,6 +2003,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 iRow++;
             }
 
+            slDocument = DetailReportDoingMerge(slDocument, needToMerge);
+
             return CreateXlsFileDetailReports(slDocument, endColumnIndex,  iRow - 1);
 
         }
@@ -1867,6 +2014,10 @@ namespace Sampoerna.EMS.Website.Controllers
             int iColumn = 1;
 
             //first row
+            slDocument.SetCellValue(1, iColumn, "LACK-1 Number");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
             slDocument.SetCellValue(1, iColumn, "LACK-1 Level");
             slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
             iColumn = iColumn + 1;
@@ -1876,8 +2027,8 @@ namespace Sampoerna.EMS.Website.Controllers
             iColumn = iColumn + 1;
 
             slDocument.SetCellValue(1, iColumn, "Receiving");
-            slDocument.MergeWorksheetCells(1, iColumn, 1, (iColumn + 4));//ColSpan = 5
-            iColumn = iColumn + 5;
+            slDocument.MergeWorksheetCells(1, iColumn, 1, (iColumn + 5));//ColSpan = 5
+            iColumn = iColumn + 6;
 
             slDocument.SetCellValue(1, iColumn, "Usage");
             slDocument.MergeWorksheetCells(1, iColumn, 1, (iColumn + 4)); //ColSpan = 5
@@ -1885,12 +2036,16 @@ namespace Sampoerna.EMS.Website.Controllers
 
             slDocument.SetCellValue(1, iColumn, "Ending Balance");
             slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan 2
-
+            iColumn = iColumn + 1;
+            
             endColumnIndex = iColumn;
 
             //second row
-            iColumn = 3;
+            iColumn = 4;
             slDocument.SetCellValue(2, iColumn, "CK-5 Number");
+            iColumn++;
+
+            slDocument.SetCellValue(2, iColumn, "CK-5 Type");
             iColumn++;
             
             slDocument.SetCellValue(2, iColumn, "CK-5 Registration Number");
@@ -1933,7 +2088,7 @@ namespace Sampoerna.EMS.Website.Controllers
             valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
             valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
             valueStyle.Alignment.Vertical = VerticalAlignmentValues.Center;
-            
+
             //set header style
             SLStyle headerStyle = slDocument.CreateStyle();
             headerStyle.Alignment.Horizontal = HorizontalAlignmentValues.Center;
@@ -1944,13 +2099,13 @@ namespace Sampoerna.EMS.Website.Controllers
             headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
 
             //set border to value cell
-            slDocument.SetCellStyle(3, 1, endRowIndex, endColumnIndex, valueStyle);
+            slDocument.SetCellStyle(3, 1, endRowIndex, endColumnIndex - 1, valueStyle);
 
             //set header style
-            slDocument.SetCellStyle(1, 1, 2, endColumnIndex, headerStyle);
+            slDocument.SetCellStyle(1, 1, 2, endColumnIndex - 1, headerStyle);
 
             //set auto fit to all column
-            slDocument.AutoFitColumn(1, endColumnIndex);
+            slDocument.AutoFitColumn(1, endColumnIndex - 1);
 
             var fileName = "lack1_detreport" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
             var path = Path.Combine(Server.MapPath(Constans.Lack1UploadFolderPath), fileName);
@@ -1959,6 +2114,40 @@ namespace Sampoerna.EMS.Website.Controllers
             slDocument.SaveAs(path);
 
             return path;
+        }
+
+        private SLDocument DetailReportDoingMerge(SLDocument slDocument, List<DetailReportNeedToMerge> items)
+        {
+            if (items.Count <= 0) return slDocument;
+
+            foreach (var item in items)
+            {
+                //need set to empty cell first before doing merge
+                for (int i = item.StartRowIndex + 1; i < item.EndRowIndex; i++)
+                {
+                    slDocument.SetCellValue(i, 12, string.Empty);
+                    slDocument.SetCellValue(i, 13, string.Empty);
+                    slDocument.SetCellValue(i, 14, string.Empty);
+                }
+
+                //Usage Qty
+                slDocument.MergeWorksheetCells(item.StartRowIndex, 12, item.EndRowIndex, 12);
+
+                //Original UOM
+                slDocument.MergeWorksheetCells(item.StartRowIndex, 13, item.EndRowIndex, 13);
+
+                //Converted UOM
+                slDocument.MergeWorksheetCells(item.StartRowIndex, 14, item.EndRowIndex, 14);
+
+            }
+
+            return slDocument;
+        }
+
+        private class DetailReportNeedToMerge
+        {
+            public int StartRowIndex { get; set; }
+            public int EndRowIndex { get; set; }
         }
         
         #endregion
@@ -1994,11 +2183,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.Detail = new DashboardDetilModel
             {
-                WaitingForAppTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager),
+                //first code when manager exists
+                //WaitingForAppTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager),
                 DraftTotal = data.Count(x => x.Status == Enums.DocumentStatus.Draft),
                 WaitingForPoaTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApproval),
-                WaitingForManagerTotal =
-                    data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager),
+                //first code when manager exists
+                //WaitingForManagerTotal =
+                //    data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager),
                 WaitingForGovTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingGovApproval),
                 CompletedTotal = data.Count(x => x.Status == Enums.DocumentStatus.Completed)
             };

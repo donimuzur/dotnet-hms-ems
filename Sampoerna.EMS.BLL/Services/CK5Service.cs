@@ -56,7 +56,10 @@ namespace Sampoerna.EMS.BLL.Services
                         c => c.PBCK1_DECREE_ID.HasValue && input.Pbck1DecreeIdList.Contains(c.PBCK1_DECREE_ID.Value));
             }
 
-            return _repository.Get(queryFilterCk5).ToList();
+            /* story : http://192.168.62.216/TargetProcess/entity/1637 */
+            queryFilterCk5 = queryFilterCk5.And(c => (c.CK5_TYPE != Enums.CK5Type.Manual || (c.CK5_TYPE == Enums.CK5Type.Manual && c.REDUCE_TRIAL.HasValue && c.REDUCE_TRIAL.Value)));
+
+            return _repository.Get(queryFilterCk5, null, "UOM").ToList();
         }
 
         public List<CK5> GetForLack2ByParam(Ck5GetForLack2ByParamInput input)
@@ -110,6 +113,15 @@ namespace Sampoerna.EMS.BLL.Services
             }
             return result;
 
+        }
+
+        public List<CK5> GetByStoNumberList(List<string> stoNumberList)
+        {
+            Expression<Func<CK5, bool>> queryFilter =
+                c => stoNumberList.Contains(c.STO_RECEIVER_NUMBER) || stoNumberList.Contains(c.STO_SENDER_NUMBER) ||
+                    stoNumberList.Contains(c.DN_NUMBER);
+
+            return _repository.Get(queryFilter, null, "UOM").ToList();
         }
 
     }

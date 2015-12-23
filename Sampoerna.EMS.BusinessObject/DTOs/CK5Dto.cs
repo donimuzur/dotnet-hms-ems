@@ -117,5 +117,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public bool IsModifiedHistory { get; set; }
 
         public Enums.Ck5ManualFreeText? MANUAL_FREE_TEXT { get; set; }
+        public bool? FLAG_FOR_LACK1 { get; set; }
+        public bool? FLAG_NPPBKC_IMPORT { get; set; }
     }
 }

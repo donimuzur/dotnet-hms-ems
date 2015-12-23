@@ -69,7 +69,7 @@ namespace Sampoerna.EMS.Core
             [Description("Market Return")]
             MarketReturn = 8,
             [Description("Return")]
-            TriggerSto = 9,
+            Return = 9, //TriggerSTO
             [Description("Waste")]
             Waste = 10
 
@@ -657,5 +657,14 @@ namespace Sampoerna.EMS.Core
             WasteApprover = 4
         }
 
+        public enum XmlLogStatus
+        {
+            [Description("Error")]
+            Error = 1,
+            [Description("Re-Run")]
+            ReRun = 2,
+            [Description("Re-run Success")]
+            Success = 3
+        }
     }
 }

@@ -341,7 +341,7 @@
                     location.href = '@Url.Action("CK5Manual", "CK5")';
                 else if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()')
                     location.href = '@Url.Action("CK5MarketReturn", "CK5")';
-                else if ('@Model.Ck5Type' == '@Enums.CK5Type.TriggerSto.ToString()')
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Return.ToString()')
                     location.href = '@Url.Action("CK5TriggerSto", "CK5")';
                 else if ('@Model.Ck5Type' == '@Enums.CK5Type.Waste.ToString()')
                     location.href = '@Url.Action("CK5Waste", "CK5")';
@@ -927,13 +927,22 @@
                     $('#IsFreeTextSource').attr("disabled", true);
                     $('#IsFreeTextDestination').attr("disabled", true);
                     $('#ck5TrialPbck1Reduce').show();
+                    
+                    $('#idFlagNppbkc').show();
+                    $('#FLAG_NPPBKC_IMPORT').prop('checked', false);
 
                 } else {
                     $('#IsFreeTextSource').removeAttr("disabled");
                     $('#IsFreeTextDestination').removeAttr("disabled");
                     $('#ck5TrialPbck1Reduce').hide();
                     $('#IsReducePbck1Ck5Trial').prop('checked', false);
+                    
+                    $('#idFlagNppbkc').hide();
+                    $('#FLAG_NPPBKC_IMPORT').prop('checked', false);
                 }
+                
+                //reset source plant for manual
+                GetPlantListByNppbkcImport(false);
             }
         });
 
@@ -1005,6 +1014,47 @@
                 $("input[name='RemainQuota']").val('0');
                 $("input[name='PbckUom']").val('');
             }
+
+        });
+
+        function GetPlantListByNppbkcImport(isNppbkcImport) {
+
+            $("input[name='SourceNpwp']").val('');
+            $("input[name='SourceNppbkcId']").val('');
+            $("input[name='SourceCompanyCode']").val('');
+            $("input[name='SourceCompanyName']").val('');
+            $("*[name='SourceAddress']").val('');
+            $("input[name='SourceKppbcName']").val('');
+            $("input[name='SourcePlantName']").val('');
+
+            var formData = { isNppbkcImport: isNppbkcImport };
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetListPlant", "CK5")',
+                data: formData,
+                success: function (data) {
+                    var listMaterial = $('#SourcePlantId');
+                    listMaterial.empty();
+                    var list = '<option value>Select</option>';
+                    if (data != null) {
+                        for (var i = 0; i < data.length; i++) {
+
+                            list += "<option value='" + data[i].Value + "'>" + data[i].Text + "</option>";
+                        }
+                    }
+                    listMaterial.html(list);
+                }
+            });
+        }
+
+        $("#FLAG_NPPBKC_IMPORT").on('change', function () {
+
+            var isNppbkcImport = false;
+            if ($(this).is(':checked')) {
+                isNppbkcImport = true;
+            }
+
+            GetPlantListByNppbkcImport(isNppbkcImport);
 
         });
     </script>

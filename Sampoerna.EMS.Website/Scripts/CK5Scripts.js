@@ -28,7 +28,7 @@ function OnReadyFunction(ck5Type) {
     } else if (ck5Type == 'MarketReturn') {
         $('#liCK5MarketReturnOpenDocument').addClass('active');
     }
-    else if (ck5Type == 'TriggerSto') {
+    else if (ck5Type == 'Return') {
         $('#MenuCK5TriggerSto').addClass('active');
     }
     else {
@@ -126,7 +126,7 @@ function OnReadyFunction(ck5Type) {
 
 
         if (ck5Type == 'Export' || (ck5Type == 'Manual' && $('#IsReducePbck1Ck5Trial').is(':checked') == false)
-            || ck5Type == 'MarketReturn' || ck5Type == 'PortToImporter' || ck5Type == 'TriggerSto' || ck5Type == 'Waste') {
+            || ck5Type == 'MarketReturn' || ck5Type == 'PortToImporter' || ck5Type == 'Return' || ck5Type == 'Waste') {
             $('#ck5TableItem tbody').append(data);
             return;
         }
@@ -846,7 +846,7 @@ function ValidateCk5Form(ck5Type) {
     if (result) {
 
         if (ck5Type == 'Export' || ck5Type == "Manual" || ck5Type == 'PortToImporter'
-            || ck5Type == 'MarketReturn' || ck5Type == 'TriggerSto'
+            || ck5Type == 'MarketReturn' || ck5Type == 'Return'
             || ck5Type == 'Waste')
             return result;
 

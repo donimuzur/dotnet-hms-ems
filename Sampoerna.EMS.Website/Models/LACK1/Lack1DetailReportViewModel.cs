@@ -67,6 +67,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string Ck5RegistrationDate { get; set; }
         public string Ck5GrDate { get; set; }
         public decimal Qty { get; set; }
+        public string Ck5TypeText { get; set; }
         #endregion
 
         #region ----------- Usage Table on FS Doc ---------

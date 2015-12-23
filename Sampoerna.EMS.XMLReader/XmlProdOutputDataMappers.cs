@@ -176,7 +176,8 @@ namespace Sampoerna.EMS.XMLReader
                     }
                     catch (Exception ex)
                     {
-                        _xmlMapper.Errors.Add(ex.Message);
+                        string errorMessage = _xmlMapper.GetInnerException(ex);
+                        _xmlMapper.Errors.Add(errorMessage);
                         
 
                     }

@@ -8,5 +8,6 @@ namespace Sampoerna.EMS.Contract
     {
         List<POADto> GetPOAByNPPBKCID(string NPPBKCID);
         List<POA_MAPDto> GetByUserLogin(string userLogin);
+        List<POA_MAPDto> GetByPoaId(string poaId);
     }
 }

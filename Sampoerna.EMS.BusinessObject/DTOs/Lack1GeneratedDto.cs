@@ -35,7 +35,15 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string PeriodMonthName { get; set; }
         public int PeriodYear { get; set; }
         public decimal BeginingBalance { get; set; }
-
+        /// <summary>
+        /// all income list that got use current logic for saving to database
+        /// use this field for saving to database instead IncomeList 
+        /// </summary>
+        public List<Lack1GeneratedIncomeDataDto> AllIncomeList { get; set; }
+        /// <summary>
+        /// exclude ck5 type : waste, return and manual
+        /// for display only
+        /// </summary>
         public List<Lack1GeneratedIncomeDataDto> IncomeList { get; set; }
         public decimal TotalIncome { get; set; }
         public decimal TotalUsage { get; set; }
@@ -52,6 +60,15 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public List<Lack1GeneratedInvMovementProductionStepTracingItem> AlcoholTrackingList { get; set; }
 
+        public Lack1GeneratedRemarkDto Ck5RemarkData { get; set; }
+
+    }
+
+    public class Lack1GeneratedRemarkDto
+    {
+        public List<Lack1GeneratedIncomeDataDto> Ck5WasteData { get; set; }
+        public List<Lack1GeneratedIncomeDataDto> Ck5ReturnData { get; set; }
+        public List<Lack1GeneratedIncomeDataDto> Ck5TrialData { get; set; }
     }
 
     public class Lack1GeneratedInventoryAndProductionDto
@@ -111,9 +128,13 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string StoSenderNumber { get; set; }
         public string DnNumber { get; set; }
         public Enums.CK5Type Ck5Type { get; set; }
+        public bool IsCk5ReduceTrial { get; set; }
         public string RegistrationNumber { get; set; }
         public DateTime? RegistrationDate { get; set; }
         public string StringRegistrationDate { get; set; }
+        public string PackageUomId { get; set; }
+        public string PackageUomDesc { get; set; }
+        public bool FlagForLack1 { get; set; }
     }
 
     public class Lack1GeneratedProductionDataDto

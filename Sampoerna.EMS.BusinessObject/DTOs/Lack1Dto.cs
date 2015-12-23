@@ -113,6 +113,14 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ApprovedByManager { get; set; }
         public DateTime? ApprovedManagerDate { get; set; }
         public List<Lack1DocumentDto> Lack1Document { get; set; }
+        /// <summary>
+        /// All data from table LACK1_INCOME_DETAIL
+        /// </summary>
+        public List<Lack1IncomeDetailDto> AllLack1IncomeDetail { get; set; }
+        /// <summary>
+        /// Exclude CK5 Return, Waste and Trial
+        /// for display only
+        /// </summary>
         public List<Lack1IncomeDetailDto> Lack1IncomeDetail { get; set; }
         public List<Lack1Pbck1MappingDto> Lack1Pbck1Mapping { get; set; }
         public List<Lack1PlantDto> Lack1Plant { get; set; }
@@ -123,6 +131,14 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Noted { get; set; }
         public string DocumentNoted { get; set; }
         public bool IsTisToTis { get; set; }
+        public Lack1RemarkDto Ck5RemarkData { get; set; }
+    }
+
+    public class Lack1RemarkDto
+    {
+        public List<Lack1IncomeDetailDto> Ck5WasteData { get; set; }
+        public List<Lack1IncomeDetailDto> Ck5ReturnData { get; set; }
+        public List<Lack1IncomeDetailDto> Ck5TrialData { get; set; }
     }
 
 }

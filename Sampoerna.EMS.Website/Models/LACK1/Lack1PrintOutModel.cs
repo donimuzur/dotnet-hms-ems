@@ -83,6 +83,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string ExcisableExecutiveCreator { get; set; }
 
         public string NppbkcCity { get; set; }
+        public Lack1RemarkModel Ck5RemarkData { get; set; }
 
     }
 

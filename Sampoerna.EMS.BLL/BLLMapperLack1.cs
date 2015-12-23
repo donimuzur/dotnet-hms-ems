@@ -69,7 +69,12 @@ namespace Sampoerna.EMS.BLL
 
             Mapper.CreateMap<LACK1_DOCUMENT, Lack1DocumentDto>().IgnoreAllNonExisting();
 
-            Mapper.CreateMap<LACK1_INCOME_DETAIL, Lack1IncomeDetailDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<LACK1_INCOME_DETAIL, Lack1IncomeDetailDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PACKAGE_UOM_ID, opt => opt.MapFrom(src => src.CK5 != null ? src.CK5.PACKAGE_UOM_ID : string.Empty))
+                .ForMember(dest => dest.CK5_TYPE, opt => opt.MapFrom(src => src.CK5.CK5_TYPE))
+                .ForMember(dest => dest.FLAG_FOR_LACK1, opt => opt.MapFrom(src => src.CK5.FLAG_FOR_LACK1.HasValue && src.CK5.FLAG_FOR_LACK1.Value))
+                .ForMember(dest => dest.PACKAGE_UOM_DESC, opt => opt.MapFrom(src => src.CK5 != null && src.CK5.UOM != null ? src.CK5.UOM.UOM_DESC : string.Empty))
+                ;
 
             Mapper.CreateMap<LACK1_PBCK1_MAPPING, Lack1Pbck1MappingDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PBCK1_NUMBER, opt => opt.MapFrom(src => src.PBCK1.NUMBER))
@@ -126,8 +131,12 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.StoSenderNumber, opt => opt.MapFrom(src => src.STO_SENDER_NUMBER))
                 .ForMember(dest => dest.DnNumber, opt => opt.MapFrom(src => src.DN_NUMBER))
                 .ForMember(dest => dest.Ck5Type, opt => opt.MapFrom(src => src.CK5_TYPE))
+                .ForMember(dest => dest.PackageUomId, opt => opt.MapFrom(src => src.PACKAGE_UOM_ID))
+                .ForMember(dest => dest.PackageUomDesc, opt => opt.MapFrom(src => src.UOM != null ? src.UOM.UOM_DESC : string.Empty))
                 .ForMember(dest => dest.RegistrationNumber, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
                 .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE))
+                .ForMember(dest => dest.FlagForLack1, opt => opt.MapFrom(src => src.FLAG_FOR_LACK1.HasValue && src.FLAG_FOR_LACK1.Value))
+                .ForMember(dest => dest.IsCk5ReduceTrial, opt => opt.MapFrom(src => src.REDUCE_TRIAL.HasValue && src.REDUCE_TRIAL.Value))
                 .ForMember(dest => dest.StringRegistrationDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE.HasValue ? src.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy") : string.Empty))
                 ;
 
@@ -151,7 +160,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.LACK1_UOM_ID, opt => opt.MapFrom(src => src.Lack1UomId))
                 .ForMember(dest => dest.DOCUMENT_NOTED, opt => opt.MapFrom(src => src.DocumentNoted))
                 .ForMember(dest => dest.NOTED, opt => opt.MapFrom(src => src.Noted))
-                .ForMember(dest => dest.LACK1_INCOME_DETAIL, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_INCOME_DETAIL>>(src.IncomeList)))
+                //.ForMember(dest => dest.LACK1_INCOME_DETAIL, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_INCOME_DETAIL>>(src.IncomeList)))/*For display*/
+                .ForMember(dest => dest.LACK1_INCOME_DETAIL, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_INCOME_DETAIL>>(src.AllIncomeList)))/*For saving to database*/
                 //.ForMember(dest => dest.LACK1_PLANT, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PLANT>>(src.PlantList))) //todo: set from BLL
                 //.ForMember(dest => dest.LACK1_PRODUCTION_DETAIL, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(src.ProductionList))) //todo: set from BLL
                 .ForMember(dest => dest.LACK1_PBCK1_MAPPING, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PBCK1_MAPPING>>(src.Pbck1List)))
@@ -253,7 +263,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ApprovedByPoa, opt => opt.MapFrom(src => src.APPROVED_BY_POA))
                 .ForMember(dest => dest.ApprovedPoaDate, opt => opt.MapFrom(src => src.APPROVED_DATE_POA))
                 .ForMember(dest => dest.Lack1Document, opt => opt.MapFrom(src => Mapper.Map<List<Lack1DocumentDto>>(src.LACK1_DOCUMENT)))
-                .ForMember(dest => dest.Lack1IncomeDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.LACK1_INCOME_DETAIL)))
+                //.ForMember(dest => dest.Lack1IncomeDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.LACK1_INCOME_DETAIL)))//todo: set from BLL, need to exlude some CK5 Type for display only
+                .ForMember(dest => dest.AllLack1IncomeDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.LACK1_INCOME_DETAIL)))
                 .ForMember(dest => dest.Lack1Pbck1Mapping, opt => opt.MapFrom(src => Mapper.Map<List<Lack1Pbck1MappingDto>>(src.LACK1_PBCK1_MAPPING)))
                 .ForMember(dest => dest.Lack1Plant, opt => opt.MapFrom(src => Mapper.Map<List<Lack1PlantDto>>(src.LACK1_PLANT)))
                 .ForMember(dest => dest.Lack1ProductionDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailDto>>(src.LACK1_PRODUCTION_DETAIL)))
@@ -304,7 +315,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ApprovedByPoa, opt => opt.MapFrom(src => src.APPROVED_BY_POA))
                 .ForMember(dest => dest.ApprovedPoaDate, opt => opt.MapFrom(src => src.APPROVED_DATE_POA))
                 .ForMember(dest => dest.Lack1Document, opt => opt.MapFrom(src => Mapper.Map<List<Lack1DocumentDto>>(src.LACK1_DOCUMENT)))
-                .ForMember(dest => dest.Lack1IncomeDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.LACK1_INCOME_DETAIL)))
+                //.ForMember(dest => dest.Lack1IncomeDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.LACK1_INCOME_DETAIL)))//todo: set from BLL
+                .ForMember(dest => dest.AllLack1IncomeDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.LACK1_INCOME_DETAIL)))
                 .ForMember(dest => dest.Lack1Pbck1Mapping, opt => opt.MapFrom(src => Mapper.Map<List<Lack1Pbck1MappingDto>>(src.LACK1_PBCK1_MAPPING)))
                 .ForMember(dest => dest.Lack1Plant, opt => opt.MapFrom(src => Mapper.Map<List<Lack1PlantDto>>(src.LACK1_PLANT)))
                 .ForMember(dest => dest.Lack1ProductionDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailDto>>(src.LACK1_PRODUCTION_DETAIL)))
@@ -471,6 +483,24 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Batch, opt => opt.MapFrom(src => src.BATCH))
                 .ForMember(dest => dest.Ordr, opt => opt.MapFrom(src => src.ORDR))
                 .IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack1GeneratedRemarkDto, Lack1RemarkDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Ck5WasteData, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.Ck5WasteData)))
+                .ForMember(dest => dest.Ck5ReturnData, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.Ck5ReturnData)))
+                .ForMember(dest => dest.Ck5TrialData, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.Ck5TrialData)))
+                ;
+
+            Mapper.CreateMap<Lack1GeneratedIncomeDataDto, Lack1IncomeDetailDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.CK5_ID, opt => opt.MapFrom(src => src.Ck5Id))
+                .ForMember(dest => dest.AMOUNT, opt => opt.MapFrom(src => src.Amount))
+                .ForMember(dest => dest.CK5_TYPE, opt => opt.MapFrom(src => src.Ck5Type))
+                .ForMember(dest => dest.REGISTRATION_NUMBER, opt => opt.MapFrom(src => src.RegistrationNumber))
+                .ForMember(dest => dest.REGISTRATION_DATE, opt => opt.MapFrom(src => src.RegistrationDate))
+                .ForMember(dest => dest.PACKAGE_UOM_ID, opt => opt.MapFrom(src => src.PackageUomId))
+                .ForMember(dest => dest.PACKAGE_UOM_DESC, opt => opt.MapFrom(src => src.PackageUomDesc))
+                .ForMember(dest => dest.PACKAGE_UOM_DESC, opt => opt.MapFrom(src => src.PackageUomDesc))
+                .ForMember(dest => dest.FLAG_FOR_LACK1, opt => opt.MapFrom(src => src.FlagForLack1))
+                ;
 
         }
 
