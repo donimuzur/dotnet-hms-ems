@@ -40,5 +40,6 @@ namespace Sampoerna.EMS.Contract.Services
 
         List<LACK1> GetDashboardDataByParam(Lack1GetDashboardDataByParamInput input);
 
+        List<LACK1> GetReconciliationByParamInput(Lack1GetReconciliationByParamInput input);
     }
 }
