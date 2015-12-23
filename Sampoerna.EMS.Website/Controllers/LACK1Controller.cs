@@ -2027,8 +2027,8 @@ namespace Sampoerna.EMS.Website.Controllers
             iColumn = iColumn + 1;
 
             slDocument.SetCellValue(1, iColumn, "Receiving");
-            slDocument.MergeWorksheetCells(1, iColumn, 1, (iColumn + 4));//ColSpan = 5
-            iColumn = iColumn + 5;
+            slDocument.MergeWorksheetCells(1, iColumn, 1, (iColumn + 5));//ColSpan = 5
+            iColumn = iColumn + 6;
 
             slDocument.SetCellValue(1, iColumn, "Usage");
             slDocument.MergeWorksheetCells(1, iColumn, 1, (iColumn + 4)); //ColSpan = 5
@@ -2037,10 +2037,7 @@ namespace Sampoerna.EMS.Website.Controllers
             slDocument.SetCellValue(1, iColumn, "Ending Balance");
             slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan 2
             iColumn = iColumn + 1;
-
-            slDocument.SetCellValue(1, iColumn, "Remark");
-            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan 2
-
+            
             endColumnIndex = iColumn;
 
             //second row
@@ -2092,14 +2089,6 @@ namespace Sampoerna.EMS.Website.Controllers
             valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
             valueStyle.Alignment.Vertical = VerticalAlignmentValues.Center;
 
-            SLStyle remarkColumnStyle = slDocument.CreateStyle();
-            remarkColumnStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
-            remarkColumnStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
-            remarkColumnStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
-            remarkColumnStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
-            remarkColumnStyle.Alignment.Vertical = VerticalAlignmentValues.Center;
-            remarkColumnStyle.SetWrapText(true);
-            
             //set header style
             SLStyle headerStyle = slDocument.CreateStyle();
             headerStyle.Alignment.Horizontal = HorizontalAlignmentValues.Center;
@@ -2111,13 +2100,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //set border to value cell
             slDocument.SetCellStyle(3, 1, endRowIndex, endColumnIndex - 1, valueStyle);
-            slDocument.SetCellStyle(3, endColumnIndex, endRowIndex, endColumnIndex, remarkColumnStyle);
 
             //set header style
-            slDocument.SetCellStyle(1, 1, 2, endColumnIndex, headerStyle);
+            slDocument.SetCellStyle(1, 1, 2, endColumnIndex - 1, headerStyle);
 
             //set auto fit to all column
-            slDocument.AutoFitColumn(1, endColumnIndex);
+            slDocument.AutoFitColumn(1, endColumnIndex - 1);
 
             var fileName = "lack1_detreport" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
             var path = Path.Combine(Server.MapPath(Constans.Lack1UploadFolderPath), fileName);
