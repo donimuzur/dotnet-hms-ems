@@ -1991,12 +1991,12 @@ namespace Sampoerna.EMS.Website.Controllers
             iColumn = iColumn + 1;
 
             slDocument.SetCellValue(1, iColumn, "Receiving");
-            slDocument.MergeWorksheetCells(1, iColumn, 1, (iColumn + 4));//ColSpan = 5
-            iColumn = iColumn + 5;
+            slDocument.MergeWorksheetCells(1, iColumn, 1, (iColumn + 5));//ColSpan = 5
+            iColumn = iColumn + 6;
 
             slDocument.SetCellValue(1, iColumn, "Usage");
-            slDocument.MergeWorksheetCells(1, iColumn, 1, (iColumn + 5)); //ColSpan = 5
-            iColumn = iColumn + 6;
+            slDocument.MergeWorksheetCells(1, iColumn, 1, (iColumn + 4)); //ColSpan = 5
+            iColumn = iColumn + 5;
 
             slDocument.SetCellValue(1, iColumn, "Ending Balance");
             slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan 2

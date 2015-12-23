@@ -3173,6 +3173,15 @@ namespace Sampoerna.EMS.BLL
             var rc = new List<Lack1DetailReportDto>();
             var uomData = _uomBll.GetAll();
 
+            var uomGram = uomData.FirstOrDefault(c => c.UOM_ID.ToLower() == "g");
+                var uomGramDesc = "";
+                var uomGramId = "";
+                if (uomGram != null)
+                {
+                    uomGramDesc = uomGram.UOM_DESC;
+                    uomGramId = uomGram.UOM_ID;
+                }
+
             foreach (var data in tempData)
             {
                 var item = new Lack1DetailReportDto()
@@ -3214,7 +3223,7 @@ namespace Sampoerna.EMS.BLL
                                   }).ToList();
 
                 var usageConsolidationData = ProcessUsageConsolidationDetailReport(data, incomeList, uomData);
-
+                
                 //add record for CK5 manual
                 foreach (var ck5Item in incomeListCk5Manual)
                 {
@@ -3246,6 +3255,7 @@ namespace Sampoerna.EMS.BLL
                         MaterialCodeUsageRecCount = 1,
                         Ck5TypeText = EnumHelper.GetDescription(g.First().CK5.CK5_TYPE)
                     }).ToList();
+
                     groupedCk5Material = (from x in groupedCk5Material
                         join u in uomData on x.OriginalUomId.ToLower() equals u.UOM_ID.ToLower() into gj1
                         from subU in gj1.DefaultIfEmpty()
@@ -3258,15 +3268,15 @@ namespace Sampoerna.EMS.BLL
                             Ck5RegistrationNumber = x.Ck5RegistrationNumber,
                             Ck5RegistrationDate = x.Ck5RegistrationDate,
                             Ck5GrDate = x.Ck5GrDate,
-                            Qty = x.Qty,
+                            Qty = x.ConvertedUomId.ToLower() == "kg" ? 1000 * x.Qty : x.Qty,
                             GiDate = x.GiDate,
                             PurchaseDoc = string.Empty,
                             MaterialCode = x.MaterialCode,
-                            UsageQty = x.UsageQty,
+                            UsageQty = x.ConvertedUomId.ToLower() == "kg" ? 1000 * x.UsageQty : x.UsageQty,
                             OriginalUomId = x.OriginalUomId,
                             OriginalUomDesc = subU != null ? subU.UOM_DESC : string.Empty,
-                            ConvertedUomId = x.ConvertedUomId,
-                            ConvertedUomDesc = subU2 != null ? subU2.UOM_DESC : string.Empty,
+                            ConvertedUomId =  x.ConvertedUomId.ToLower() == "kg" ? uomGramId : x.ConvertedUomId,
+                            ConvertedUomDesc = x.ConvertedUomId.ToLower() == "kg" ? uomGramDesc : (subU2 != null ? subU2.UOM_DESC : string.Empty),
                             Batch = string.Empty,
                             MaterialCodeUsageRecCount = x.MaterialCodeUsageRecCount,
                             Ck5TypeText = x.Ck5TypeText
@@ -3309,8 +3319,15 @@ namespace Sampoerna.EMS.BLL
             var usageConsolidationData = new List<Lack1TrackingConsolidationDetailReportDto>();
             var usageReceiving = new List<Lack1UsageReceivingTrackingDetailDto>();
 
-            //var uomGram = uomData.FirstOrDefault(c => c.UOM_ID.ToLower() == "g");
-            
+            var uomGram = uomData.FirstOrDefault(c => c.UOM_ID.ToLower() == "g");
+            var uomGramDesc = "";
+            var uomGramId = "";
+            if (uomGram != null)
+            {
+                uomGramDesc = uomGram.UOM_DESC;
+                uomGramId = uomGram.UOM_ID;
+            }
+
             if (data.LACK1_TRACKING != null && data.LACK1_TRACKING.Count > 0)
             {
                 var receivingMvtType = new List<string>()
@@ -3323,7 +3340,7 @@ namespace Sampoerna.EMS.BLL
                     data.LACK1_TRACKING.Where(
                         c => receivingMvtType.Contains(c.INVENTORY_MOVEMENT.MVT)).Select(d => d.INVENTORY_MOVEMENT).DistinctBy(ds => ds.INVENTORY_MOVEMENT_ID)
                         .ToList();
-                
+
                 var mvtTypeForUsage = new List<string>
                     {
                         EnumHelper.GetDescription(Enums.MovementTypeCode.Usage261),
@@ -3368,14 +3385,15 @@ namespace Sampoerna.EMS.BLL
                                   {
                                       PurchaseDoc = rec.PurchDoc,
                                       MaterialCode = u.MaterialId,
-                                      UsageQty = u.Qty,
+                                      UsageQty = u.Bun.ToLower() == "kg" ? 1000 * u.Qty : u.Qty,
                                       Batch = rec.Batch,
                                       PostingDate = u.PostingDate,
-                                      OriginalUom = string.Empty, //get from PACKAGE_UOM on CK5 table
-                                      ConvertedUom = u.Bun,
-                                      ConvertedUomDesc = subUom != null ? subUom.UOM_DESC : string.Empty
+                                      OriginalUom = u.Bun,
+                                      OriginalUomDesc = subUom != null ? subUom.UOM_DESC : string.Empty,
+                                      ConvertedUomId = u.Bun.ToLower() == "kg" ? uomGramId : u.Bun,
+                                      ConvertedUomDesc = u.Bun.ToLower() == "kg" ? uomGramDesc : (subUom != null ? subUom.UOM_DESC : string.Empty)
                                   }).ToList();
-                
+
             }
 
             //null sto number
@@ -3398,9 +3416,9 @@ namespace Sampoerna.EMS.BLL
                                                        PurchaseDoc = subRec != null ? subRec.PurchaseDoc : string.Empty,
                                                        MaterialCode = subRec != null ? subRec.MaterialCode : string.Empty,
                                                        UsageQty = subRec != null ? subRec.UsageQty : null,
-                                                       OriginalUomId = inc.UomId, //get from Package_UomId on CK5 table
-                                                       OriginalUomDesc = inc.UomDesc,
-                                                       ConvertedUomId = subRec != null ? subRec.ConvertedUom : string.Empty, //get from BUN on INVENTORY_MOVEMENT table
+                                                       OriginalUomId = subRec != null ? subRec.OriginalUom : string.Empty,
+                                                       OriginalUomDesc = subRec != null ? subRec.OriginalUomDesc : string.Empty,
+                                                       ConvertedUomId = subRec != null ? subRec.ConvertedUomId : string.Empty,
                                                        ConvertedUomDesc = subRec != null ? subRec.ConvertedUomDesc : string.Empty,
                                                        Batch = subRec != null ? subRec.Batch : string.Empty,
                                                        MaterialCodeUsageRecCount = subRec != null ? subRec.RecordCountForMerge : 1,
@@ -3426,7 +3444,7 @@ namespace Sampoerna.EMS.BLL
                 m.GR_DATE,
                 m.GRAND_TOTAL_EX,
                 m.PACKAGE_UOM_ID,
-                PACKAGE_UOM_DESC =  m.UOM != null ? m.UOM.UOM_DESC : string.Empty,
+                PACKAGE_UOM_DESC = m.UOM != null ? m.UOM.UOM_DESC : string.Empty,
                 Ck5TypeText = EnumHelper.GetDescription(m.CK5_TYPE),
                 STO_NUMBER = m.CK5_TYPE == Enums.CK5Type.Intercompany
                                               ? m.STO_RECEIVER_NUMBER
@@ -3435,27 +3453,27 @@ namespace Sampoerna.EMS.BLL
             }).ToList();
 
             var newRightJoined = (from x in rightJoined
-                join y in ck5DataByStoNumberList on x.PurchaseDoc equals y.STO_NUMBER
-                select new Lack1TrackingConsolidationDetailReportDto()
-                {
-                    Ck5Id = y.CK5_ID,
-                    Ck5Number = y.SUBMISSION_NUMBER,
-                    Ck5RegistrationNumber = y.REGISTRATION_NUMBER,
-                    Ck5RegistrationDate = y.REGISTRATION_DATE,
-                    Ck5GrDate = y.GR_DATE,
-                    Qty = y.GRAND_TOTAL_EX.HasValue ? y.GRAND_TOTAL_EX.Value : 0,
-                    GiDate = x.PostingDate,
-                    PurchaseDoc = x.PurchaseDoc,
-                    MaterialCode = x.MaterialCode,
-                    UsageQty = x.UsageQty,
-                    OriginalUomId = y.PACKAGE_UOM_ID, //get from Package_UomId on CK5 table
-                    OriginalUomDesc = y.PACKAGE_UOM_DESC,
-                    ConvertedUomId = x.ConvertedUom, //get from BUN on INVENTORY_MOVEMENT table
-                    ConvertedUomDesc = x.ConvertedUomDesc,
-                    Batch = x.Batch,
-                    MaterialCodeUsageRecCount = 1,
-                    Ck5TypeText = y.Ck5TypeText
-                }).ToList();
+                                  join y in ck5DataByStoNumberList on x.PurchaseDoc equals y.STO_NUMBER
+                                  select new Lack1TrackingConsolidationDetailReportDto()
+                                  {
+                                      Ck5Id = y.CK5_ID,
+                                      Ck5Number = y.SUBMISSION_NUMBER,
+                                      Ck5RegistrationNumber = y.REGISTRATION_NUMBER,
+                                      Ck5RegistrationDate = y.REGISTRATION_DATE,
+                                      Ck5GrDate = y.GR_DATE,
+                                      Qty = y.GRAND_TOTAL_EX.HasValue ? y.GRAND_TOTAL_EX.Value : 0,
+                                      GiDate = x.PostingDate,
+                                      PurchaseDoc = x.PurchaseDoc,
+                                      MaterialCode = x.MaterialCode,
+                                      UsageQty = x.UsageQty,
+                                      OriginalUomId = x.OriginalUom,
+                                      OriginalUomDesc = x.OriginalUomDesc,
+                                      ConvertedUomId = x.ConvertedUomId,
+                                      ConvertedUomDesc = x.ConvertedUomDesc,
+                                      Batch = x.Batch,
+                                      MaterialCodeUsageRecCount = 1,
+                                      Ck5TypeText = y.Ck5TypeText
+                                  }).ToList();
 
             //join leftJoined and rightJoined and distinct as result
             var joinedData = leftJoined;
@@ -3477,7 +3495,7 @@ namespace Sampoerna.EMS.BLL
             for (var i = 0; i < joinedData.Count; i++)
             {
                 var chk =
-                    joinedDataRecordCount.FirstOrDefault(c => c.MaterialCode == joinedData[i].MaterialCode 
+                    joinedDataRecordCount.FirstOrDefault(c => c.MaterialCode == joinedData[i].MaterialCode
                         && c.Batch == joinedData[i].Batch && c.GiDate == joinedData[i].GiDate);
                 if (chk != null)
                 {
@@ -3498,15 +3516,15 @@ namespace Sampoerna.EMS.BLL
                 PurchaseDoc = string.Empty,
                 MaterialCode = string.Empty,
                 UsageQty = null,
-                OriginalUomId = inc.UomId,
-                OriginalUomDesc = inc.UomDesc,
+                OriginalUomId = string.Empty,
+                OriginalUomDesc = string.Empty,
                 ConvertedUomId = string.Empty,
                 ConvertedUomDesc = string.Empty,
                 Batch = string.Empty,
                 MaterialCodeUsageRecCount = 1,
                 Ck5TypeText = inc.Ck5TypeText
             }));
-            
+
             usageConsolidationData = joinedData.DistinctBy(m => new
             {
                 m.Ck5Number,
