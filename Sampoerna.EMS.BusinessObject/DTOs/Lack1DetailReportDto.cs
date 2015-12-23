@@ -76,7 +76,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Batch { get; set; }
         public DateTime? PostingDate { get; set; }
         public string OriginalUom { get; set; }
-        public string ConvertedUom { get; set; }//bun
+        public string OriginalUomDesc { get; set; }
+        public string ConvertedUomId { get; set; }
         public string ConvertedUomDesc { get; set; }
         public int RecordCountForMerge { get; set; }
     }
