@@ -145,7 +145,7 @@ namespace Sampoerna.EMS.XMLReader
                         xmllogs.STATUS = Enums.XmlLogStatus.Success;
                     }
 
-                    uow.SaveChanges();
+                    
                 }
                 else
                 {
@@ -171,9 +171,10 @@ namespace Sampoerna.EMS.XMLReader
 
                     }
                     xmlRepo.InsertOrUpdate(xmllogs);
-                    uow.SaveChanges();
+                    //uow.SaveChanges();
                     
                 }
+                uow.SaveChanges();
                 
               
             }
