@@ -107,6 +107,17 @@ namespace Sampoerna.EMS.BLL.Services
             return  ck4CItemData.Select(c => c.FA_CODE).Distinct().ToList();
 
         }
+
+        public List<CK4C_ITEM> GetByPlant(List<string> plant, int month, int year)
+        {
+            Expression<Func<CK4C_ITEM, bool>> queryFilterCk4C = PredicateHelper.True<CK4C_ITEM>();
+
+            queryFilterCk4C =
+                    queryFilterCk4C.And(
+                        c => c.CK4C.REPORTED_MONTH == month && c.CK4C.REPORTED_YEAR == year && plant.Contains(c.WERKS));
+
+            return _ck4CItemRepository.Get(queryFilterCk4C, null, "CK4C").ToList();
+        }
         
     }
 }

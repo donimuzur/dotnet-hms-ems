@@ -47,11 +47,11 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string RemarkDesc { get; set; }
         public string RemarkCk5No { get; set; }
         public decimal RemarkQty { get; set; }
-        public int StickProd { get; set; }
-        public int PackProd { get; set; }
-        public int Wip { get; set; }
-        public int RejectMaker { get; set; }
-        public int RejectPacker { get; set; }
+        public decimal StickProd { get; set; }
+        public decimal PackProd { get; set; }
+        public decimal Wip { get; set; }
+        public decimal RejectMaker { get; set; }
+        public decimal RejectPacker { get; set; }
         public decimal FloorSweep { get; set; }
         public decimal Stem { get; set; }
     }
