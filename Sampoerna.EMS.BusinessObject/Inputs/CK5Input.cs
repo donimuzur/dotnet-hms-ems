@@ -128,6 +128,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public List<string> StoNumberList { get; set; }
 
+        public List<int> Pbck1DecreeIdList { get; set; }
+
     }
 
     public class Ck5GetForLack2ByParamInput

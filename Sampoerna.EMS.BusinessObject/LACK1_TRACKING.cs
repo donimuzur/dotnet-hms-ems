@@ -18,6 +18,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<int> LACK1_ID { get; set; }
         public Nullable<long> INVENTORY_MOVEMENT_ID { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
+        public Nullable<bool> IS_TISTOTIS_DATA { get; set; }
     
         public virtual INVENTORY_MOVEMENT INVENTORY_MOVEMENT { get; set; }
         public virtual LACK1 LACK1 { get; set; }

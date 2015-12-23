@@ -52,6 +52,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public decimal BeginingBalance { get; set; }
         public decimal TotalIncome { get; set; }
         public decimal TotalUsage { get; set; }
+        public decimal? TotalUsageTisToTis { get; set; }
         public decimal EndingBalance { get; set; }
         public string Lack1UomId { get; set; }
         public string Lack1UomName { get; set; }
@@ -66,11 +67,16 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public List<Lack1IncomeDetailItemModel> IncomeList { get; set; }
         public List<Lack1Pbck1MappingItemModel> Lack1Pbck1Mapping { get; set; }
         public List<Lack1PlantItemModel> Lack1Plant { get; set; }
-        public List<Lack1ProductionDetailItemModel> ProductionList { get; set; }
-        public List<Lack1ProductionDetailItemSummaryByProdTypeModel> ProductionSummaryByProdTypeList { get; set; }
-        public List<Lack1SummaryProductionItemModel> SummaryProductionList { get; set; }//todo: set manually from controller to create summary of ProductionList
+        
         public string Noted { get; set; }
         public string DocumentNoted { get; set; }
+        public bool IsTisToTisReport { get; set; }
+        public Lack1InventoryAndProductionModel InventoryProductionTisToFa { get; set; }
+        public Lack1InventoryAndProductionModel InventoryProductionTisToTis { get; set; }
+        public List<Lack1SummaryProductionItemModel> FusionSummaryProductionList { get; set; }//set by controller
+        public List<Lack1ProductionDetailItemSummaryByProdTypeModel> FusionSummaryProductionByProdTypeList { get; set; }
+
+        public Lack1RemarkModel Ck5RemarkData { get; set; }
 
         #endregion
 
@@ -111,6 +117,14 @@ namespace Sampoerna.EMS.Website.Models.LACK1
 
 
     #region ------------ Class Definition related with Lack1ItemViewModel -----------------
+
+    public class Lack1RemarkModel
+    {
+        public List<Lack1IncomeDetailItemModel> Ck5WasteData { get; set; }
+        public List<Lack1IncomeDetailItemModel> Ck5ReturnData { get; set; }
+        public List<Lack1IncomeDetailItemModel> Ck5TrialData { get; set; }
+    }
+
     public class Lack1SummaryProductionItemModel
     {
         public decimal Amount { get; set; }
@@ -169,7 +183,10 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public decimal Amount { get; set; }
         public string RegistrationNumber { get; set; }
         public DateTime? RegistrationDate { get; set; }
+        public Enums.CK5Type Ck5Type { get; set; }
         public string StringRegistrationDate { get; set; }
+        public string PackageUomId { get; set; }
+        public string PackageUomDesc { get; set; }
     }
 
     public class Lack1DocumentItemModel
@@ -178,6 +195,18 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public int LACK1_ID { get; set; }
         public string FILE_NAME { get; set; }
         public string FILE_PATH { get; set; }
+    }
+
+    public class Lack1InventoryAndProductionModel
+    {
+        public Lack1ProductionModel ProductionData { get; set; }
+    }
+
+    public class Lack1ProductionModel
+    {
+        public List<Lack1ProductionDetailItemModel> ProductionList { get; set; }
+        public List<Lack1ProductionDetailItemSummaryByProdTypeModel> ProductionSummaryByProdTypeList { get; set; }
+        public List<Lack1SummaryProductionItemModel> SummaryProductionList { get; set; }//todo: set manually from controller to create summary of ProductionList
     }
 
     #endregion

@@ -438,6 +438,15 @@ namespace Sampoerna.EMS.BLL
 
             Mapper.CreateMap<WasteRoleDto, WASTE_ROLE>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<WasteDto, WasteGetByParamInput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Plant, opt => opt.MapFrom(src => src.PlantWerks));
+
+            Mapper.CreateMap<WASTE_ROLE, WasteRoleDetailsDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.WASTE_ROLE_ID, opt => opt.MapFrom(src => src.WASTE_ROLE_ID))
+                .ForMember(dest => dest.WasteGroup, opt => opt.MapFrom(src => src.GROUP_ROLE))
+                .ForMember(dest => dest.WasteGroupDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.GROUP_ROLE)))
+                ;
+
             #endregion
 
             #region Waste Stock
@@ -453,6 +462,22 @@ namespace Sampoerna.EMS.BLL
               ;
 
             Mapper.CreateMap<WasteStockDto, WASTE_STOCK>().IgnoreAllNonExisting();
+
+            #endregion
+
+            #region Nlog
+
+            Mapper.CreateMap<NlogLogs, NlogDto>().IgnoreAllNonExisting();
+            
+            #endregion
+
+            #region Xml Log
+
+            Mapper.CreateMap<XML_LOGS, XML_LOGSDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.DetailList, opt => opt.MapFrom(src => Mapper.Map<List<XML_LOGS_DETAILSDto>>(src.XML_LOGS_DETAILS)))
+                ;
+
+            Mapper.CreateMap<XML_LOGS_DETAILS, XML_LOGS_DETAILSDto>().IgnoreAllNonExisting();
 
             #endregion
         }

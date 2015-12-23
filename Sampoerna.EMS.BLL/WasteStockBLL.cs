@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Data.Entity.Validation;
 using System.Linq;
 using AutoMapper;
+using CrystalDecisions.Shared.Json;
+using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
@@ -24,17 +27,19 @@ namespace Sampoerna.EMS.BLL
 
         private IChangesHistoryBLL _changesHistoryBll;
         private IMaterialBLL _materialBll;
+        private ICK5Service _ck5Service;
 
         private string _includeTables = "ZAIDM_EX_MATERIAL, USER, T001W";
 
         public WasteStockBLL(IUnitOfWork uow, ILogger logger)
         {
-           _uow = uow;
-           _logger = logger;
-           _repository = _uow.GetGenericRepository<WASTE_STOCK>();
+            _uow = uow;
+            _logger = logger;
+            _repository = _uow.GetGenericRepository<WASTE_STOCK>();
 
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
             _materialBll = new MaterialBLL(_uow, _logger);
+            _ck5Service = new CK5Service(_uow, _logger);
         }
 
         public WasteStockDto GetById(int id)
@@ -69,8 +74,17 @@ namespace Sampoerna.EMS.BLL
                 n => n.OrderBy(z => z.WERKS).ThenBy(z => z.MATERIAL_NUMBER);
 
             var listData = _repository.Get(null, orderByFilter, _includeTables).ToList();
+            
+            var result = Mapper.Map<List<WasteStockDto>>(listData);
 
-            return Mapper.Map<List<WasteStockDto>>(listData);
+            //feedback user 22-12-2015
+            //uom showed at waste stock must be in G
+            foreach (var wasteStockDto in result)
+            {
+                wasteStockDto.Uom = "G";
+            }
+
+            return result;
         }
 
 
@@ -81,18 +95,22 @@ namespace Sampoerna.EMS.BLL
             var dbMaterial = _materialBll.GetMaterialByPlantId(plantId);
             foreach (var material in dbMaterial)
             {
-                var data = new GetListMaterialByPlantOutput();
-                data.MaterialNumber = material.STICKER_CODE;
-                data.MaterialDescription = material.MATERIAL_DESC;
+                if (material.IS_FROM_SAP == false)
+                {
+                    var data = new GetListMaterialByPlantOutput();
+                    data.MaterialNumber = material.STICKER_CODE;
+                    data.MaterialDescription = material.MATERIAL_DESC;
 
-                output.Add(data);
+                    output.Add(data);
+                }
             }
 
             return output;
-           
+
         }
 
-        public GetListMaterialUomByMaterialAndPlantOutput GetListMaterialUomByMaterialAndPlant(string materialNumber, string plantId)
+        public GetListMaterialUomByMaterialAndPlantOutput GetListMaterialUomByMaterialAndPlant(string materialNumber,
+            string plantId)
         {
             var output = new GetListMaterialUomByMaterialAndPlantOutput();
 
@@ -116,7 +134,8 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                var dbData = _repository.Get(c => c.WASTE_STOCK_ID == input.WasteStockDto.WASTE_STOCK_ID).FirstOrDefault();
+                var dbData =
+                    _repository.Get(c => c.WASTE_STOCK_ID == input.WasteStockDto.WASTE_STOCK_ID).FirstOrDefault();
 
                 if (dbData != null)
                 {
@@ -131,7 +150,7 @@ namespace Sampoerna.EMS.BLL
 
             if (isNeedCheck)
             {
-                 var dbData =
+                var dbData =
                     _repository.Get(
                         c =>
                             c.WERKS == input.WasteStockDto.WERKS &&
@@ -240,6 +259,76 @@ namespace Sampoerna.EMS.BLL
                 isModified = true;
             }
             return isModified;
+        }
+
+
+        public void SaveDataFromWaste(List<WasteStockDto> input, string userId)
+        {
+            foreach (var item in input)
+            {
+                var dbdata = Mapper.Map<WASTE_STOCK>(item);
+                if (dbdata.ZAIDM_EX_MATERIAL != null)
+                {
+                    dbdata.CREATED_BY = userId;
+                    dbdata.CREATED_DATE = DateTime.Now;
+
+                    _repository.InsertOrUpdate(dbdata);
+                }
+              
+            }
+            _uow.SaveChanges();
+        }
+
+        //public WasteStockDto GetExisWasteStockByWerksAndMaterial(string werks, string materialNumber)
+        //{
+        //    var dbdata = _uow.GetGenericRepository<WASTE_STOCK>().Get(p => p.WERKS == werks && p.MATERIAL_NUMBER == materialNumber).FirstOrDefault();
+           
+        //    return Mapper.Map<WasteStockDto>(dbdata);
+        //}
+
+        public void UpdateWasteStockFromWaste(WasteStockDto input, string userId)
+        {
+            var dbWasteStock =
+                _repository.Get(c => c.WERKS == input.WERKS && c.MATERIAL_NUMBER == input.MATERIAL_NUMBER)
+                    .FirstOrDefault();
+
+            var origin = Mapper.Map<WasteStockDto>(dbWasteStock);
+
+            if (dbWasteStock == null)
+            {
+                dbWasteStock = new WASTE_STOCK();
+                Mapper.Map<WasteStockDto, WASTE_STOCK>(input, dbWasteStock);
+
+                dbWasteStock.CREATED_BY = input.CREATED_BY;
+                dbWasteStock.CREATED_DATE = DateTime.Now;
+            }
+            else
+            {
+                //update
+                dbWasteStock.STOCK = input.STOCK;
+
+                dbWasteStock.MODIFIED_BY = input.CREATED_BY;
+                dbWasteStock.MODIFIED_DATE = DateTime.Now;
+                var dbData = _repository.GetByID(dbWasteStock.WASTE_STOCK_ID);
+
+                var inputNew = Mapper.Map<WasteStockDto>(dbData);
+                if (inputNew.WASTE_STOCK_ID > 0)
+                {
+                   
+                    SetChangesHistory(origin, inputNew, userId);
+                }
+            }
+           
+            _repository.InsertOrUpdate(dbWasteStock);
+         
+            
+        }
+
+        public string GetRemainingQuota(decimal wasteStock, string plantId, string materialNumber)
+        {
+            var remaingQuota = _ck5Service.GetWasteStockQuota(wasteStock, plantId, materialNumber);
+
+            return remaingQuota.WasteStockRemaining;
         }
     }
 }

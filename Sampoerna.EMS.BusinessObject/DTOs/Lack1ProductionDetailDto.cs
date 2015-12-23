@@ -1,5 +1,19 @@
-﻿namespace Sampoerna.EMS.BusinessObject.DTOs
+﻿
+using System.Collections.Generic;
+namespace Sampoerna.EMS.BusinessObject.DTOs
 {
+
+    public class Lack1InventoryAndProductionDto
+    {
+        public Lack1ProductionDto ProductionData { get; set; }
+    }
+
+    public class Lack1ProductionDto
+    {
+        public List<Lack1ProductionDetailDto> ProductionList { get; set; }
+        public List<Lack1ProductionSummaryByProdTypeDto> ProductionSummaryByProdTypeList { get; set; }
+    }
+
     public class Lack1ProductionDetailDto
     {
         public long LACK1_PRODUCTION_ID { get; set; }
@@ -12,6 +26,7 @@
         public string UOM_DESC { get; set; }
         public string FA_CODE { get; set; }
         public string ORDR { get; set; }
+        public bool? IS_TISTOTIS_DATA { get; set; }
     }
 
     public class Lack1ProductionSummaryByProdTypeDto

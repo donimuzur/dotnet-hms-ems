@@ -162,6 +162,7 @@
     <Compile Include="DTOs\LFA1Dto.cs" />
     <Compile Include="DTOs\Lack1DocumentDto.cs" />
     <Compile Include="DTOs\MaterialDto.cs" />
+    <Compile Include="DTOs\NlogDto.cs" />
     <Compile Include="DTOs\NppbkcPlantDto.cs" />
     <Compile Include="DTOs\Pbck1DecreeDocDto.cs" />
     <Compile Include="DTOs\Lack1Dto.cs" />
@@ -198,6 +199,8 @@
     <Compile Include="DTOs\WasteRoleDto.cs" />
     <Compile Include="DTOs\WasteStockDto.cs" />
     <Compile Include="DTOs\WorkflowHistoryDto.cs" />
+    <Compile Include="DTOs\XML_LOGSDto.cs" />
+    <Compile Include="DTOs\XML_LOGS_DETAILSDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_GOODTYPCompositeDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_KPPBCDto.cs" />
     <Compile Include="DTOs\ZAIDM_EX_NPPBKCCompositeDto.cs" />
@@ -217,6 +220,9 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="FILE_UPLOAD.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GOOD_PROD_TYPE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="HEADER_FOOTER.cs">
@@ -245,6 +251,7 @@
     <Compile Include="Inputs\LFAInputs.cs" />
     <Compile Include="Inputs\Lack2GetByParamInput.cs" />
     <Compile Include="Inputs\MaterialInput.cs" />
+    <Compile Include="Inputs\NlogInput.cs" />
     <Compile Include="Inputs\PBCK1Input.cs" />
     <Compile Include="Inputs\Pbck1ProdConverterInput.cs" />
     <Compile Include="Inputs\Pbck1ProdPlanInput.cs" />
@@ -265,6 +272,7 @@
     <Compile Include="Inputs\WasteUploadItemsInput.cs" />
     <Compile Include="Inputs\WorkflowHistoryInput.cs" />
     <Compile Include="Inputs\WorkflowInput.cs" />
+    <Compile Include="Inputs\XmlFileInput.cs" />
     <Compile Include="Inputs\ZaapShiftRptInputs.cs" />
     <Compile Include="Inputs\ZaidmExPOAInputs.cs" />
     <Compile Include="Inputs\ZaidmPOAMapInputs.cs" />
@@ -292,6 +300,9 @@
     <Compile Include="LACK1_TRACKING.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="LACK1_TRACKING_ALCOHOL.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="LACK2.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -311,6 +322,9 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="MONTH.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="NlogLogs.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="Outputs\AutoCompletePlant.cs" />
@@ -458,6 +472,12 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="WORKFLOW_STATE_USERS.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XML_LOGS.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="XML_LOGS_DETAILS.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="ZAAP_SHIFT_RPT.cs">

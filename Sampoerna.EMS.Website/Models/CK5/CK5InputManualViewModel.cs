@@ -23,6 +23,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public decimal? UsdValue { get; set; }
         public string Note { get; set; }
         public string Message { get; set; }
-        
+
+        public string StockRemaining { get; set; }
     }
 }

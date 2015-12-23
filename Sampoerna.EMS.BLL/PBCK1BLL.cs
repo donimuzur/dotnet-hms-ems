@@ -1804,7 +1804,7 @@ namespace Sampoerna.EMS.BLL
                         rc.BrandRegistrationList = new List<Pbck1ReportBrandRegistrationDto>();
                         foreach (var dataItem in dataJoined)
                         {
-                            rc.BrandRegistrationList.Add(new Pbck1ReportBrandRegistrationDto() { Brand = dataItem.BRAND_CE, Convertion = dataItem.CONVERTER_OUTPUT.Value.ToString("N2"), ConvertionUomId = dataItem.CONVERTER_UOM_ID, Kadar = "-", Type = dataItem.PRODUCT_ALIAS, ConvertionUom = dataItem.UOM.UOM_DESC});
+                            rc.BrandRegistrationList.Add(new Pbck1ReportBrandRegistrationDto() { Brand = dataItem.BRAND_CE, Convertion = dataItem.CONVERTER_OUTPUT.Value.ToString("N5"), ConvertionUomId = dataItem.CONVERTER_UOM_ID, Kadar = "-", Type = dataItem.PRODUCT_ALIAS, ConvertionUom = dataItem.UOM.UOM_DESC});
                         }
                     }
                 }

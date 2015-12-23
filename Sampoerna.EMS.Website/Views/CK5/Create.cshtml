@@ -39,7 +39,7 @@
                         @Html.HiddenFor(model => model.CeOfficeCode)
 
                         @Html.HiddenFor(model => model.SubmissionNumber)
-                        
+
                         @if (Model.IsDomesticAlcohol)
                         {
                             @Html.HiddenFor(model => model.SourceNppbkcId)
@@ -65,7 +65,7 @@
                             @Html.HiddenFor(model => model.SourceAddress)
                             @*}*@
                         }
-                        
+
 
 
 
@@ -204,8 +204,21 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                        <label>Converted UOM<span class="red">*</span></label>
-                        @Html.DropDownListFor(model => model.PackageUomName, Model.PackageConvertedUomList, "Select", new { @class = "form-control", @id = "uploadConvertedUom" })
+
+                        @if (Model.IsCk5Waste)
+                        {
+                            <label>Converted UOM</label>
+
+                            @Html.TextBoxFor(model => model.ConvertedUomManual, new { @class = "form-control ", @disabled = "true" })
+                            @*@Html.TextBox("uploadConvertedUom", convertedUomStatic, new { @class = "form-control", @disabled = "true" })*@
+
+                        }
+                        else
+                        {
+                            <label>Converted UOM<span class="red">*</span></label>
+                            @Html.DropDownListFor(model => model.PackageUomName, Model.PackageConvertedUomList, "Select", new { @class = "form-control", @id = "uploadConvertedUom" })
+                        }
+
 
                     </div>
 
@@ -223,7 +236,14 @@
                         <label>Note</label>
                         <textarea class="form-control" id="uploadNote" cols="20" rows="5" maxlength="100"></textarea>
                     </div>
+                    @if (Model.IsCk5Waste)
+                    {
+                        <div class="col-md-6">
+                            <label class="col-md-4">Stock</label>
+                            @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadWasteStock", @disabled = "disabled" })
 
+                        </div>
+                    }
                 </div>
             </div>
             <div class="modal-footer">
@@ -274,6 +294,10 @@
                     location.href = '@Url.Action("CK5Manual", "CK5")';
                 else if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()')
                     location.href = '@Url.Action("CK5MarketReturn", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Return.ToString()')
+                    location.href = '@Url.Action("CK5TriggerSto", "CK5")';
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Waste.ToString()')
+                    location.href = '@Url.Action("CK5Waste", "CK5")';
 
             });
 
@@ -300,7 +324,12 @@
             });
 
             $('#CK5UploadSubmitBtn').click(function () {
-                GenerateXlsCk5Material('@Url.Action("UploadFile", "CK5")', '@Model.Ck5Type.ToString()');
+                if ('@Model.Ck5Type.ToString()' == "Waste") {
+                    GenerateXlsCk5Material('@Url.Action("UploadFileCk5Waste", "CK5")', '@Model.Ck5Type.ToString()');
+                } else {
+                    GenerateXlsCk5Material('@Url.Action("UploadFile", "CK5")', '@Model.Ck5Type.ToString()');
+                }
+
             });
 
 
@@ -308,6 +337,7 @@
             OnChangeSourcePlant();
 
             $('#ck5TrialPbck1Reduce').hide();
+            $('#idFlagNppbkc').hide();
         });
 
         function OnChangeDestinationPlant() {
@@ -474,7 +504,13 @@
                 $('#ModalCk5Material').modal('show');
                 return;
             }
-            ajaxGetListMaterial('@Url.Action("GetListMaterialByGroupType", "CK5")', { plantId: sourcePlant, goodTypeGroup: goodTypeGroupId });
+
+            if ('@Model.Ck5Type.ToString()' == "Waste") {
+                ajaxGetListMaterial('@Url.Action("GetListMaterialWaste", "CK5")', { plantId: sourcePlant, goodTypeGroup: goodTypeGroupId });
+            } else {
+                ajaxGetListMaterial('@Url.Action("GetListMaterialByGroupType", "CK5")', { plantId: sourcePlant, goodTypeGroup: goodTypeGroupId });
+            }
+
 
             $('#btnSaveMaterial').show();
             $('#btnUpdateMaterial').hide();
@@ -514,12 +550,22 @@
             materialInput.ConvertedUom = convertedUom;
             materialInput.UsdValue = $('#uploadUsdValue').val();
             materialInput.Note = $('#uploadNote').val();
-
             materialInput.ExGoodsType = goodTypeGroupId;
-            ajaxValidateMaterial('@Url.Action("ValidateMaterial", "CK5")', { input: materialInput }, function (data) {
-                AddRow('@Url.Action("GetListMaterialByGroupType", "CK5")', data);
 
-            });
+            if ('@Model.Ck5Type.ToString()' == "Waste") {
+                materialInput.WasteStock = $('#uploadWasteStock').val();
+
+                ajaxValidateMaterial('@Url.Action("ValidateManualCk5Waste", "CK5")', { input: materialInput }, function (data) {
+                    AddRowWaste('@Url.Action("GetListMaterialWaste", "CK5")', data);
+
+                });
+            } else {
+                ajaxValidateMaterial('@Url.Action("ValidateMaterial", "CK5")', { input: materialInput }, function (data) {
+                    AddRow('@Url.Action("GetListMaterialByGroupType", "CK5")', data);
+
+                });
+            }
+
 
         });
 
@@ -535,7 +581,12 @@
                 } else {
                     var sourcePlant = $("#uploadMaterialPlant").val(); // $("#SourcePlantId").find("option:selected").val();
 
-                    ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariff", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
+                    if ('@Model.Ck5Type.ToString()' == "Waste") {
+                        ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariffWaste", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
+                    } else {
+                        ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariff", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
+                    }
+
                 }
             }
         });
@@ -567,14 +618,22 @@
             materialInput.ConvertedUom = convertedUom;
             materialInput.UsdValue = $('#uploadUsdValue').val();
             materialInput.Note = $('#uploadNote').val();
-
             materialInput.ExGoodsType = goodTypeGroupId;
-            ajaxValidateMaterial('@Url.Action("ValidateMaterial", "CK5")', { input: materialInput }, function (data) {
-                UpdateRow(data);
-                //if (data.success) {
-                //    UpdateRow(data);
-                //}
-            });
+
+            if ('@Model.Ck5Type.ToString()' == "Waste") {
+                materialInput.WasteStock = $('#uploadWasteStock').val();
+
+                ajaxValidateMaterial('@Url.Action("ValidateManualCk5Waste", "CK5")', { input: materialInput }, function (data) {
+                    UpdateRowWaste(data);
+
+                });
+            } else {
+                ajaxValidateMaterial('@Url.Action("ValidateMaterial", "CK5")', { input: materialInput }, function (data) {
+                    UpdateRow(data);
+
+                });
+            }
+
 
         });
 
@@ -592,6 +651,8 @@
                 $('#ModalCk5Material').modal('show');
                 return;
             }
+
+
             ajaxGetListMaterial(url, { plantId: plant, goodTypeGroup: goodTypeGroupId }, materialnumber);
 
             $('#btnSaveMaterial').hide();
@@ -628,6 +689,8 @@
             //=============================
 
             $('#uploadMaterialId').val(nRow.find("td").eq(18).html());
+
+            $('#uploadWasteStock').val(nRow.find("td").eq(20).html());
 
             ClearValidation();
 
@@ -714,6 +777,9 @@
 
                     $('#ck5TrialPbck1Reduce').show();
 
+                    $('#idFlagNppbkc').show();
+                    $('#FLAG_NPPBKC_IMPORT').prop('checked', false);
+
                 } else {
                     $('#IsFreeTextSource').removeAttr("disabled");
                     $('#IsFreeTextDestination').removeAttr("disabled");
@@ -721,7 +787,13 @@
                     $('#ck5TrialPbck1Reduce').hide();
                     $('#IsReducePbck1Ck5Trial').prop('checked', false);
 
+                    $('#idFlagNppbkc').hide();
+                    $('#FLAG_NPPBKC_IMPORT').prop('checked', false);
+
                 }
+
+                //reset source plant for manual
+                GetPlantListByNppbkcImport(false);
             }
         });
 
@@ -793,6 +865,47 @@
                 $("input[name='RemainQuota']").val('0');
                 $("input[name='PbckUom']").val('');
             }
+
+        });
+
+        function GetPlantListByNppbkcImport(isNppbkcImport) {
+            
+            $("input[name='SourceNpwp']").val('');
+            $("input[name='SourceNppbkcId']").val('');
+            $("input[name='SourceCompanyCode']").val('');
+            $("input[name='SourceCompanyName']").val('');
+            $("*[name='SourceAddress']").val('');
+            $("input[name='SourceKppbcName']").val('');
+            $("input[name='SourcePlantName']").val('');
+
+            var formData = { isNppbkcImport: isNppbkcImport };
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetListPlant", "CK5")',
+                data: formData,
+                success: function (data) {
+                    var listMaterial = $('#SourcePlantId');
+                    listMaterial.empty();
+                    var list = '<option value>Select</option>';
+                    if (data != null) {
+                        for (var i = 0; i < data.length; i++) {
+
+                            list += "<option value='" + data[i].Value + "'>" + data[i].Text + "</option>";
+                        }
+                    }
+                    listMaterial.html(list);
+                }
+            });
+        }
+        
+        $("#FLAG_NPPBKC_IMPORT").on('change', function () {
+
+            var isNppbkcImport = false;
+            if ($(this).is(':checked')) {
+                isNppbkcImport = true;
+            }
+
+            GetPlantListByNppbkcImport(isNppbkcImport);
 
         });
 

@@ -39,6 +39,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal BeginingBalance { get; set; }
         public decimal TotalIncome { get; set; }
         public decimal Usage { get; set; }
+        public decimal? UsageTisToTis { get; set; }
         public decimal TotalProduction { get; set; }
 
         public string Lack1UomId { get; set; }
