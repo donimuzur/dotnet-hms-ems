@@ -57,7 +57,6 @@ namespace Sampoerna.EMS.BLL
         private IPbck1ProdConverterService _pbck1ProdConverterService;
         private IZaidmExMaterialService _materialService;
         private IGoodProdTypeService _goodProdTypeService;
-        private IMaterialUomService _materialUomService;
 
         public LACK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -94,7 +93,6 @@ namespace Sampoerna.EMS.BLL
             _pbck1ProdConverterService = new Pbck1ProdConverterService(_uow, _logger);
             _materialService = new ZaidmExMaterialService(_uow, _logger);
             _goodProdTypeService = new GoodProdTypeService(_uow, _logger);
-            _materialUomService = new MaterialUomService(_uow, _logger);
         }
 
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
@@ -2891,14 +2889,7 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                var invMovementsWithConvertion =
-                    InvMovementConvertionProcess(getInventoryMovementByParamOutput.IncludeInCk5List, bkcUomId);
-                decimal totalUsageIncludeCk5 = 0;
-                if (invMovementsWithConvertion.Count > 0)
-                {
-                    totalUsageIncludeCk5 = (-1) * invMovementsWithConvertion.Sum(d => d.ConvertedQty);
-                }
-
+                var totalUsageIncludeCk5 = (-1) * getInventoryMovementByParamOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
                 totalUsage = totalUsageIncludeCk5;
             }
 
@@ -2922,36 +2913,6 @@ namespace Sampoerna.EMS.BLL
 
         private List<InvMovementItemWithConvertion> InvMovementConvertionProcess(List<INVENTORY_MOVEMENT> invMovements, string bkcUomId)
         {
-            var materialIdList = invMovements.Select(d => d.MATERIAL_ID).Distinct().ToList();
-            var plantIdList = invMovements.Select(d => d.PLANT_ID).Distinct().ToList();
-            var materialUomList = _materialUomService.GetByMaterialListAndPlantIdListSpecificBkcUom(materialIdList, plantIdList, bkcUomId);
-
-            var dataToReturn = from x in invMovements
-                join m in materialUomList on new { x.MATERIAL_ID, x.PLANT_ID, x.BUN}
-                    equals new { MATERIAL_ID = m.STICKER_CODE, PLANT_ID = m.WERKS, BUN = m.ZAIDM_EX_MATERIAL.BASE_UOM_ID}
-                select new InvMovementItemWithConvertion()
-                {
-                    INVENTORY_MOVEMENT_ID = x.INVENTORY_MOVEMENT_ID,
-                    MVT = x.MVT,
-                    MATERIAL_ID = x.MATERIAL_ID,
-                    PLANT_ID = x.PLANT_ID,
-                    QTY = x.QTY,
-                    SLOC = x.SLOC,
-                    VENDOR = x.VENDOR,
-                    BUN = x.BUN,
-                    PURCH_DOC = x.PURCH_DOC,
-                    POSTING_DATE = x.POSTING_DATE,
-                    ENTRY_DATE = x.ENTRY_DATE,
-                    TIME = x.TIME,
-                    CREATED_USER = x.CREATED_USER,
-                    MAT_DOC = x.MAT_DOC,
-                    BATCH = x.BATCH,
-                    ORDR = x.ORDR,
-                    ConvertedUomId = m.MEINH,
-                    ConvertedQty = x.QTY.HasValue && m.UMREN.HasValue ? (x.QTY.Value / m.UMREN.Value) : 0
-                };
-
-            return dataToReturn.ToList();
 
         }
 
@@ -2998,18 +2959,8 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                var invMovementsWithConvertion =
-                    InvMovementConvertionProcess(getInventoryMovementByParamOutput.IncludeInCk5List, bkcUomId);
-                decimal totalUsageIncludeCk5 = 0;
-                if (invMovementsWithConvertion.Count > 0)
-                {
-                    totalUsageIncludeCk5 = (-1) * invMovementsWithConvertion.Sum(d => d.ConvertedQty);
-                }
-
+                var totalUsageIncludeCk5 = (-1) * getInventoryMovementByParamOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
                 totalUsage = totalUsageIncludeCk5;
-                /*Old Code, remove hardcoded convertion */
-                //var totalUsageIncludeCk5 = (-1) * getInventoryMovementByParamOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
-                //totalUsage = totalUsageIncludeCk5;
             }
             if (isForTisToTis)
             {

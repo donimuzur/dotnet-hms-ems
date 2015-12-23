@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Sampoerna.EMS.BusinessObject.Outputs
 {
@@ -17,6 +16,12 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public List<INVENTORY_MOVEMENT> ReceivingList { get; set; }
         public List<INVENTORY_MOVEMENT> AllUsageList { get; set; }
         public List<InvMovementUsageProportional> UsageProportionalList { get; set; }
+    }
+
+    public class InvMovementItemWithConvertion : INVENTORY_MOVEMENT
+    {
+        public string ConvertedUomId { get; set; }
+        public decimal ConvertedQty { get; set; }
     }
 
     public class InvMovementUsageProportional

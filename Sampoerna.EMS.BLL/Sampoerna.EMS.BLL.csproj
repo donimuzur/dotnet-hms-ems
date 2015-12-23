@@ -104,6 +104,7 @@
     <Compile Include="Services\Lack2DocumentService.cs" />
     <Compile Include="Services\Lack2ItemService.cs" />
     <Compile Include="Services\Lack2Service.cs" />
+    <Compile Include="Services\MaterialUomService.cs" />
     <Compile Include="Services\Pbck1ProdConverterService.cs" />
     <Compile Include="Services\PBCK1Service.cs" />
     <Compile Include="Services\Pbck3Services.cs" />
