@@ -145,7 +145,7 @@ namespace Sampoerna.EMS.XMLReader
                         xmllogs.STATUS = Enums.XmlLogStatus.Success;
                     }
 
-                    uow.SaveChanges();
+                    
                 }
                 else
                 {
@@ -153,7 +153,7 @@ namespace Sampoerna.EMS.XMLReader
                     if (xmllogs == null)
                     {
                         xmllogs = new XML_LOGS();
-                        xmllogs.XML_FILENAME = _xmlName;
+                        xmllogs.XML_FILENAME = _xmlName.Split('\\')[_xmlName.Split('\\').Length - 1];
                         xmllogs.XML_LOGS_DETAILS = new List<XML_LOGS_DETAILS>();
                         xmllogs.LAST_ERROR_TIME = DateTime.Now;
                         xmllogs.STATUS = Enums.XmlLogStatus.Error;
@@ -171,9 +171,10 @@ namespace Sampoerna.EMS.XMLReader
 
                     }
                     xmlRepo.InsertOrUpdate(xmllogs);
-                    uow.SaveChanges();
+                    //uow.SaveChanges();
                     
                 }
+                uow.SaveChanges();
                 
               
             }

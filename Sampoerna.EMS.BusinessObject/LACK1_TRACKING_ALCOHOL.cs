@@ -30,6 +30,9 @@ namespace Sampoerna.EMS.BusinessObject
         public int TrackLevel { get; set; }
         public string PARENT_ORDR { get; set; }
         public decimal PROD_QTY { get; set; }
+        public Nullable<decimal> CONVERTED_QTY { get; set; }
+        public string CONVERTED_UOM_ID { get; set; }
+        public string CONVERTED_UOM_DESC { get; set; }
     
         public virtual LACK1 LACK1 { get; set; }
     }
