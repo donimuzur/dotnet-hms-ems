@@ -6,6 +6,22 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
     {
         public InvMovementGetForLack1UsageMovementByParamOutput()
         {
+            IncludeInCk5List = new List<InvMovementItemWithConvertion>();
+            ExcludeFromCk5List = new List<InvMovementItemWithConvertion>();
+            ReceivingList = new List<InvMovementItemWithConvertion>();
+            AllUsageList = new List<InvMovementItemWithConvertion>();
+        }
+        public List<InvMovementItemWithConvertion> IncludeInCk5List { get; set; }
+        public List<InvMovementItemWithConvertion> ExcludeFromCk5List { get; set; }
+        public List<InvMovementItemWithConvertion> ReceivingList { get; set; }
+        public List<InvMovementItemWithConvertion> AllUsageList { get; set; }
+        public List<InvMovementUsageProportional> UsageProportionalList { get; set; }
+    }
+
+    public class InvMovementGetForLack1UsageMovementForEtilAlcoholByParamOutput
+    {
+        public InvMovementGetForLack1UsageMovementForEtilAlcoholByParamOutput()
+        {
             IncludeInCk5List = new List<INVENTORY_MOVEMENT>();
             ExcludeFromCk5List = new List<INVENTORY_MOVEMENT>();
             ReceivingList = new List<INVENTORY_MOVEMENT>();
@@ -21,6 +37,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
     public class InvMovementItemWithConvertion : INVENTORY_MOVEMENT
     {
         public string ConvertedUomId { get; set; }
+        public string ConvertedUomDesc { get; set; }
         public decimal ConvertedQty { get; set; }
     }
 

@@ -193,7 +193,7 @@ namespace Sampoerna.EMS.BLL
 
                 allTrackingList = toAddRange;
             }
-            if (input.IsTisToTis)
+            if (input.IsTisToTis && !generatedData.IsEtilAlcohol)
             {
                 //Tis To Tis
                 if (generatedData.Data.InventoryProductionTisToTis.InvetoryMovementData != null)
@@ -250,7 +250,7 @@ namespace Sampoerna.EMS.BLL
                 productionDetail.AddRange(toAddRange);
             }
 
-            if (input.IsTisToTis)
+            if (input.IsTisToTis && !generatedData.IsEtilAlcohol)
             {
                 //tis to tis
                 if (generatedData.Data.InventoryProductionTisToTis.ProductionData != null)
@@ -397,7 +397,7 @@ namespace Sampoerna.EMS.BLL
                     productionDetail.AddRange(toAddRange);
                 }
 
-                if (input.IsTisToTis)
+                if (input.IsTisToTis && !generatedData.IsEtilAlcohol)
                 {
                     //tis to tis
                     if (generatedData.Data.InventoryProductionTisToTis.ProductionData != null)
@@ -429,7 +429,7 @@ namespace Sampoerna.EMS.BLL
 
                     allTrackingList = toAddRange;
                 }
-                if (input.IsTisToTis)
+                if (input.IsTisToTis && !generatedData.IsEtilAlcohol)
                 {
                     //Tis To Tis
                     if (generatedData.Data.InventoryProductionTisToTis.InvetoryMovementData != null)
@@ -534,6 +534,14 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData = _lack1Service.GetDetailsById(id);
             var rc = Mapper.Map<Lack1DetailsDto>(dbData);
+            if (rc.ExGoodsTypeDesc.ToLower().Contains("alcohol") || rc.ExGoodsTypeDesc.ToLower().Contains("alkohol"))
+            {
+                rc.IsEtilAlcohol = true;
+            }
+            else
+            {
+                rc.IsEtilAlcohol = false;
+            }
             rc.FusionSummaryProductionByProdTypeList = GetProductionDetailSummaryByProdType(rc.Lack1ProductionDetail);
 
             //process separate between tis to tis and tis to fa from production detail
@@ -1731,6 +1739,7 @@ namespace Sampoerna.EMS.BLL
             rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - (rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0)) - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
 
             oReturn.Data = rc;
+            oReturn.IsEtilAlcohol = outProcess.IsEtilAlcohol;
 
             return oReturn;
         }
@@ -1780,7 +1789,7 @@ namespace Sampoerna.EMS.BLL
             var stoReceiverNumberList = rc.IncomeList.Select(d => d.DnNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
 
             var prevInventoryMovementByParam = GetInventoryMovementByParam(prevInventoryMovementByParamInput,
-                stoReceiverNumberList);
+                stoReceiverNumberList, bkcUomId);
 
             //set production List
             var productionTraceList = new List<Lack1GeneratedProductionDomesticAlcoholDto>();
@@ -1814,7 +1823,7 @@ namespace Sampoerna.EMS.BLL
                 };
 
                 var traceItems = GetUsageEtilAlcoholProdTrace(item.ParentOrdr, 0, item.Batch, item.PlantId,
-                    input.PeriodMonth, input.PeriodYear).ToList();
+                    input.PeriodMonth, input.PeriodYear, bkcUomId).ToList();
 
                 if (traceItems.Count > 0)
                 {
@@ -1916,11 +1925,12 @@ namespace Sampoerna.EMS.BLL
                 Data = rc,
                 ErrorCode = string.Empty,
                 ErrorMessage = string.Empty,
-                Success = true
+                Success = true,
+                IsEtilAlcohol = true
             };
         }
 
-        private IEnumerable<Lack1GeneratedInvMovementProductionStepTracingItem> GetUsageEtilAlcoholProdTrace(string parentOrdr, int trackLevel, string batch, string plantId, int periodMonth, int periodYear)
+        private IEnumerable<Lack1GeneratedInvMovementProductionStepTracingItem> GetUsageEtilAlcoholProdTrace(string parentOrdr, int trackLevel, string batch, string plantId, int periodMonth, int periodYear, string bkcUomId)
         {
             var traceItems = new List<Lack1GeneratedInvMovementProductionStepTracingItem>();
 
@@ -1934,7 +1944,9 @@ namespace Sampoerna.EMS.BLL
                         PeriodMonth = periodMonth
                     });
 
-            var groupedUsageList = InvMovementGroupedForProductionStepTracingItem(usageList).ToList();
+            var usageListWithConvertion = InvMovementConvertionProcess(usageList, bkcUomId);
+
+            var groupedUsageList = InvMovementGroupedForProductionStepTracingItem(usageListWithConvertion).ToList();
 
             parentOrdr = trackLevel == 0 && groupedUsageList.Count > 0 ? groupedUsageList.First().Ordr : parentOrdr;
 
@@ -1946,7 +1958,7 @@ namespace Sampoerna.EMS.BLL
                 item.ProductionQty = item.Qty;
 
                 var receivingList = GetReceivingEtilAlcoholProdTrace(parentOrdr, (trackLevel + 1), item.Ordr, plantId,
-                    periodMonth, periodYear).ToList();
+                    periodMonth, periodYear, bkcUomId).ToList();
 
                 if (receivingList.Count <= 0)
                 {
@@ -1969,7 +1981,7 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        private IEnumerable<Lack1GeneratedInvMovementProductionStepTracingItem> GetReceivingEtilAlcoholProdTrace(string parentOrdr, int trackLevel, string ordr, string plantId, int periodMonth, int periodYear)
+        private IEnumerable<Lack1GeneratedInvMovementProductionStepTracingItem> GetReceivingEtilAlcoholProdTrace(string parentOrdr, int trackLevel, string ordr, string plantId, int periodMonth, int periodYear, string bkcUomId)
         {
             var traceItems = new List<Lack1GeneratedInvMovementProductionStepTracingItem>();
             var receivingList =
@@ -1982,7 +1994,9 @@ namespace Sampoerna.EMS.BLL
                         PeriodMonth = periodMonth
                     });
 
-            var groupedReceivingList = InvMovementGroupedForProductionStepTracingItem(receivingList);
+            var receivingListWithConvertion = InvMovementConvertionProcess(receivingList, bkcUomId);
+
+            var groupedReceivingList = InvMovementGroupedForProductionStepTracingItem(receivingListWithConvertion);
 
             foreach (var item in groupedReceivingList)
             {
@@ -2006,7 +2020,7 @@ namespace Sampoerna.EMS.BLL
                 {
                     //not exists in zaidm_ex_material = continue get 261
                     item.IsFinalGoodsType = false;
-                    var usageList = GetUsageEtilAlcoholProdTrace(parentOrdr, trackLevel, item.Batch, plantId, periodMonth, periodYear).ToList();
+                    var usageList = GetUsageEtilAlcoholProdTrace(parentOrdr, trackLevel, item.Batch, plantId, periodMonth, periodYear, bkcUomId).ToList();
                     if (usageList.Count <= 0)
                     {
                         //set prodution qty to zero cause of no more usage at next level
@@ -2029,7 +2043,7 @@ namespace Sampoerna.EMS.BLL
         }
 
         private IEnumerable<Lack1GeneratedInvMovementProductionStepTracingItem>
-            InvMovementGroupedForProductionStepTracingItem(IEnumerable<INVENTORY_MOVEMENT> invMovements)
+            InvMovementGroupedForProductionStepTracingItem(IEnumerable<InvMovementItemWithConvertion> invMovements)
         {
             return invMovements.GroupBy(p => new
             {
@@ -2050,7 +2064,10 @@ namespace Sampoerna.EMS.BLL
                 MatDoc = g.Key.MAT_DOC,
                 PurchDoc = g.First().PURCH_DOC,
                 PostingDate = g.First().POSTING_DATE,
-                Qty = g.Sum(p => p.QTY.HasValue ? p.QTY.Value : 0)
+                Qty = g.Sum(p => p.QTY.HasValue ? p.QTY.Value : 0),
+                ConvertedUomDesc = g.First().ConvertedUomDesc,
+                ConvertedUomId = g.First().ConvertedUomId,
+                ConvertedQty = g.Sum(p => p.ConvertedQty)
             }).ToList();
         }
 
@@ -2076,7 +2093,10 @@ namespace Sampoerna.EMS.BLL
                 Bun = g.First().BUN,
                 PurchDoc = g.First().PURCH_DOC,
                 PostingDate = g.First().POSTING_DATE,
-                Qty = g.Sum(p => p.QTY.HasValue ? p.QTY.Value : 0)
+                Qty = g.Sum(p => p.QTY.HasValue ? p.QTY.Value : 0),
+                ConvertedUomDesc = g.First().ConvertedUomDesc,
+                ConvertedQty = g.Sum(p => p.ConvertedQty),
+                ConvertedUomId = g.First().ConvertedUomId
             }).ToList();
         }
 
@@ -2141,7 +2161,8 @@ namespace Sampoerna.EMS.BLL
                 Success = true,
                 ErrorCode = string.Empty,
                 ErrorMessage = string.Empty,
-                Data = rc
+                Data = rc,
+                IsEtilAlcohol = false
             };
 
         }
@@ -2163,12 +2184,12 @@ namespace Sampoerna.EMS.BLL
             return groupedData.ToList();
         }
 
-        private string GeneratedNoteFormat(string prefix, decimal? nominal, string uomId)
-        {
-            if (nominal.HasValue)
-                return prefix + " : " + nominal.Value.ToString("N2") + " " + uomId;
-            return "";
-        }
+        //private string GeneratedNoteFormat(string prefix, decimal? nominal, string uomId)
+        //{
+        //    if (nominal.HasValue)
+        //        return prefix + " : " + nominal.Value.ToString("N2") + " " + uomId;
+        //    return "";
+        //}
 
         /// <summary>
         /// for normal LACK-1 Production Data
@@ -2304,7 +2325,7 @@ namespace Sampoerna.EMS.BLL
             var stoReceiverNumberList = rc.IncomeList.Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
 
             var prevInventoryMovementByParam = GetInventoryMovementByParam(prevInventoryMovementByParamInput,
-                stoReceiverNumberList);
+                stoReceiverNumberList, bkcUomId);
 
             //calculation proccess
             foreach (var item in joinedWithUomData)
@@ -2502,7 +2523,7 @@ namespace Sampoerna.EMS.BLL
             var stoReceiverNumberList = rc.IncomeList.Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
 
             var prevInventoryMovementByParam = GetInventoryMovementByParam(prevInventoryMovementByParamInput,
-                stoReceiverNumberList);
+                stoReceiverNumberList, bkcUomId);
 
             //calculation proccess
             foreach (var item in joinedWithUomData)
@@ -2527,8 +2548,11 @@ namespace Sampoerna.EMS.BLL
                     if (chk != null)
                     {
                         //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
-                        var totalUsageInCk5PrevPeriod = (-1) * prevInventoryMovementByParam.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
-                        var totalUsageExcludeCk5PrevPeriod = (-1) * prevInventoryMovementByParam.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
+                        //old logic, hard coded about UOM
+                        //var totalUsageInCk5PrevPeriod = (-1) * prevInventoryMovementByParam.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
+                        //var totalUsageExcludeCk5PrevPeriod = (-1) * prevInventoryMovementByParam.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
+                        var totalUsageInCk5PrevPeriod = (-1) * prevInventoryMovementByParam.IncludeInCk5List.Sum(d => d.ConvertedQty);
+                        var totalUsageExcludeCk5PrevPeriod = (-1) * prevInventoryMovementByParam.ExcludeFromCk5List.Sum(d => d.ConvertedQty);
                         var totalUsagePrevPeriod = totalUsageInCk5PrevPeriod + totalUsageExcludeCk5PrevPeriod;
 
                         itemToInsert.Amount =
@@ -2871,7 +2895,7 @@ namespace Sampoerna.EMS.BLL
                 PlantIdList = plantIdList,
                 IsTisToTis = false,
                 IsEtilAlcohol = true
-            }, stoReceiverNumberList);
+            }, stoReceiverNumberList, bkcUomId);
 
             //bypass this error handling base on user story => http://192.168.62.216/TargetProcess/entity/1465
             //if (getInventoryMovementByParamOutput.AllUsageList.Count <= 0)
@@ -2891,15 +2915,7 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                var invMovementsWithConvertion =
-                    InvMovementConvertionProcess(getInventoryMovementByParamOutput.IncludeInCk5List, bkcUomId);
-                decimal totalUsageIncludeCk5 = 0;
-                if (invMovementsWithConvertion.Count > 0)
-                {
-                    totalUsageIncludeCk5 = (-1) * invMovementsWithConvertion.Sum(d => d.ConvertedQty);
-                }
-
-                totalUsage = totalUsageIncludeCk5;
+                totalUsage = (-1) * getInventoryMovementByParamOutput.IncludeInCk5List.Sum(d => d.ConvertedQty);
             }
 
             //nebeng in tis to fa field
@@ -2926,9 +2942,27 @@ namespace Sampoerna.EMS.BLL
             var plantIdList = invMovements.Select(d => d.PLANT_ID).Distinct().ToList();
             var materialUomList = _materialUomService.GetByMaterialListAndPlantIdListSpecificBkcUom(materialIdList, plantIdList, bkcUomId);
 
+            var uomData = _uomBll.GetAll().Distinct().ToList();
+
+            //join material_uom and uom
+            var joinedMaterialUomData = from x in materialUomList
+                join y in uomData on x.MEINH equals y.UOM_ID into gj
+                from subY in gj.DefaultIfEmpty()
+                select new
+                {
+                    x.STICKER_CODE,
+                    x.WERKS,
+                    x.ZAIDM_EX_MATERIAL.BASE_UOM_ID,
+                    x.MEINH,
+                    x.UMREN,
+                    ConvertedUomDesc = subY != null ? subY.UOM_DESC : string.Empty
+                };
+            
+            //left join
             var dataToReturn = from x in invMovements
-                join m in materialUomList on new { x.MATERIAL_ID, x.PLANT_ID, x.BUN}
-                    equals new { MATERIAL_ID = m.STICKER_CODE, PLANT_ID = m.WERKS, BUN = m.ZAIDM_EX_MATERIAL.BASE_UOM_ID}
+                               join m in joinedMaterialUomData on new { x.MATERIAL_ID, x.PLANT_ID, x.BUN }
+                    equals new { MATERIAL_ID = m.STICKER_CODE, PLANT_ID = m.WERKS, BUN = m.BASE_UOM_ID } into gj
+                    from subM in gj.DefaultIfEmpty()
                 select new InvMovementItemWithConvertion()
                 {
                     INVENTORY_MOVEMENT_ID = x.INVENTORY_MOVEMENT_ID,
@@ -2947,8 +2981,9 @@ namespace Sampoerna.EMS.BLL
                     MAT_DOC = x.MAT_DOC,
                     BATCH = x.BATCH,
                     ORDR = x.ORDR,
-                    ConvertedUomId = m.MEINH,
-                    ConvertedQty = x.QTY.HasValue && m.UMREN.HasValue ? (x.QTY.Value / m.UMREN.Value) : 0
+                    ConvertedUomId = subM != null ? subM.MEINH : string.Empty,
+                    ConvertedUomDesc = subM != null ? subM.ConvertedUomDesc : string.Empty,
+                    ConvertedQty = subM != null ? (x.QTY.HasValue && subM.UMREN.HasValue ? (x.QTY.Value / subM.UMREN.Value) : 0) : 0
                 };
 
             return dataToReturn.ToList();
@@ -2978,7 +3013,7 @@ namespace Sampoerna.EMS.BLL
                 PlantIdList = plantIdList,
                 IsTisToTis = isForTisToTis,
                 IsEtilAlcohol = false
-            }, stoReceiverNumberList);
+            }, stoReceiverNumberList, bkcUomId);
 
             //bypass this handling base on user story => http://192.168.62.216/TargetProcess/entity/1465
             //if (getInventoryMovementByParamOutput.AllUsageList.Count <= 0)
@@ -2998,15 +3033,8 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                var invMovementsWithConvertion =
-                    InvMovementConvertionProcess(getInventoryMovementByParamOutput.IncludeInCk5List, bkcUomId);
-                decimal totalUsageIncludeCk5 = 0;
-                if (invMovementsWithConvertion.Count > 0)
-                {
-                    totalUsageIncludeCk5 = (-1) * invMovementsWithConvertion.Sum(d => d.ConvertedQty);
-                }
-
-                totalUsage = totalUsageIncludeCk5;
+                totalUsage = (-1) * getInventoryMovementByParamOutput.IncludeInCk5List.Sum(d => d.ConvertedQty);
+ 
                 /*Old Code, remove hardcoded convertion */
                 //var totalUsageIncludeCk5 = (-1) * getInventoryMovementByParamOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
                 //totalUsage = totalUsageIncludeCk5;
@@ -3046,7 +3074,7 @@ namespace Sampoerna.EMS.BLL
         }
 
         private InvMovementGetForLack1UsageMovementByParamOutput GetInventoryMovementByParam(
-            InvMovementGetUsageByParamInput input, List<string> stoReceiverNumberList)
+            InvMovementGetUsageByParamInput input, List<string> stoReceiverNumberList, string bkcUomId)
         {
 
             var usageParamInput = new InvMovementGetUsageByParamInput()
@@ -3089,24 +3117,27 @@ namespace Sampoerna.EMS.BLL
             }
 
             var movementUsageAll = _inventoryMovementService.GetUsageByParam(usageParamInput);
+            var movementUsaheAllWithConvertion = InvMovementConvertionProcess(movementUsageAll, bkcUomId);
             var receiving = _inventoryMovementService.GetReceivingByParam(receivingParamInput);
             //get prev receiving for CASE 2 : prev Receiving, Current Receiving, Current Usage
             var prevReceiving = _inventoryMovementService.GetReceivingByParam(prevReceivingParamInput);
             var receivingAll = receiving.Where(c => stoReceiverNumberList.Contains(c.PURCH_DOC)).ToList();
             receivingAll.AddRange(prevReceiving);
 
+            var receivingAllWithConvertion = InvMovementConvertionProcess(receivingAll, bkcUomId);
+
             //there is records on receiving Data
             //normal case
-            var receivingList = (from rec in receivingAll
-                                 join a in movementUsageAll.DistinctBy(d => new { d.MAT_DOC, d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR }) on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
+            var receivingList = (from rec in receivingAllWithConvertion
+                                 join a in movementUsaheAllWithConvertion.DistinctBy(d => new { d.MAT_DOC, d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR }) on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
                                  select rec).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
-            var usageReceivingList = (from rec in receivingAll.DistinctBy(d => new { d.MAT_DOC, d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR })
-                                      join a in movementUsageAll on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
+            var usageReceivingList = (from rec in receivingAllWithConvertion.DistinctBy(d => new { d.MAT_DOC, d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR })
+                                      join a in movementUsaheAllWithConvertion on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
                                       select a).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
             //get exclude in receiving data
-            var movementExclueInCk5List = (movementUsageAll.Where(
+            var movementExclueInCk5List = (movementUsaheAllWithConvertion.Where(
                 all => !usageReceivingList.Select(d => d.INVENTORY_MOVEMENT_ID)
                     .ToList()
                     .Contains(all.INVENTORY_MOVEMENT_ID))).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
@@ -3117,14 +3148,14 @@ namespace Sampoerna.EMS.BLL
             {
                 IncludeInCk5List = usageReceivingList,
                 ReceivingList = receivingList,
-                AllUsageList = movementUsageAll,
+                AllUsageList = movementUsaheAllWithConvertion,
                 ExcludeFromCk5List = movementExclueInCk5List,
                 UsageProportionalList = usageProportionalList
             };
 
             return rc;
         }
-
+        
         private List<InvMovementUsageProportional> CalculateInvMovementUsageProportional(
             IEnumerable<INVENTORY_MOVEMENT> usageReceivingAll, IEnumerable<INVENTORY_MOVEMENT> usageAll)
         {

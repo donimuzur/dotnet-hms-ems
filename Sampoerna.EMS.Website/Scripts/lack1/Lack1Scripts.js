@@ -54,14 +54,21 @@
                 $('#generated-data-container').html("");
                 var data = response.Data;
                 //console.log(response.IsWithTisToTisReport);
-                if (response.IsWithTisToTisReport) {
-                    var tableGenerated1 = generateTableWithTisToTis(data);
-                    /*console.log(tableGenerated1);*/
-                    $('#generated-data-container').append(tableGenerated1);
-                } else {
-                    var tableGenerated2 = generateTable(data);
+                if (response.IsEtilAlcohol) {
+                    /*force to use tis to fa generate table*/
+                    var tableGeneratedEtilAlcohol = generateTable(data);
                     /*console.log(tableGenerated2);*/
-                    $('#generated-data-container').append(tableGenerated2);
+                    $('#generated-data-container').append(tableGeneratedEtilAlcohol);
+                } else {
+                    if (response.IsWithTisToTisReport) {
+                        var tableGenerated1 = generateTableWithTisToTis(data);
+                        /*console.log(tableGenerated1);*/
+                        $('#generated-data-container').append(tableGenerated1);
+                    } else {
+                        var tableGenerated2 = generateTable(data);
+                        /*console.log(tableGenerated2);*/
+                        $('#generated-data-container').append(tableGenerated2);
+                    }
                 }
                 
             } else {
