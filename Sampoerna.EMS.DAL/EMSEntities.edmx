@@ -279,6 +279,7 @@
           <Property Name="REDUCE_TRIAL" Type="bit" />
           <Property Name="MANUAL_FREE_TEXT" Type="int" />
           <Property Name="FLAG_FOR_LACK1" Type="bit" />
+          <Property Name="FLAG_NPPBKC_IMPORT" Type="bit" />
         </EntityType>
         <EntityType Name="CK5_FILE_UPLOAD">
           <Key>
@@ -415,7 +416,7 @@
           <Property Name="MVT" Type="nvarchar" MaxLength="3" Nullable="false" />
           <Property Name="MATERIAL_ID" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="QTY" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="QTY" Type="decimal" Precision="18" Scale="5" />
           <Property Name="SLOC" Type="nvarchar" MaxLength="4" />
           <Property Name="VENDOR" Type="nvarchar" MaxLength="10" />
           <Property Name="BUN" Type="nvarchar" MaxLength="5" />
@@ -534,6 +535,9 @@
           <Property Name="INVENTORY_MOVEMENT_ID" Type="bigint" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="IS_TISTOTIS_DATA" Type="bit" />
+          <Property Name="CONVERTED_QTY" Type="decimal" Precision="18" Scale="5" />
+          <Property Name="CONVERTED_UOM_ID" Type="nvarchar" MaxLength="5" />
+          <Property Name="CONVERTED_UOM_DESC" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="LACK1_TRACKING_ALCOHOL">
           <Key>
@@ -555,6 +559,9 @@
           <Property Name="TrackLevel" Type="int" Nullable="false" />
           <Property Name="PARENT_ORDR" Type="nvarchar" MaxLength="10" />
           <Property Name="PROD_QTY" Type="decimal" Precision="18" Scale="5" Nullable="false" />
+          <Property Name="CONVERTED_QTY" Type="decimal" Precision="18" Scale="5" />
+          <Property Name="CONVERTED_UOM_ID" Type="nvarchar" MaxLength="5" />
+          <Property Name="CONVERTED_UOM_DESC" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="LACK2">
           <Key>
@@ -1557,7 +1564,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER">
+        <Association Name="FK_CHANGES_HISTORY_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="CHANGES_HISTORY" Type="Self.CHANGES_HISTORY" Multiplicity="*" />
           <ReferentialConstraint>
@@ -3450,7 +3457,7 @@
             <End Role="USER_BROLE" EntitySet="USER_BROLE" />
             <End Role="BROLE_MAP" EntitySet="BROLE_MAP" />
           </AssociationSet>
-          <AssociationSet Name="FK_CHANGES_HISTORY_MODIFIED_BY_USER" Association="Self.FK_CHANGES_HISTORY_MODIFIED_BY_USER">
+          <AssociationSet Name="FK_CHANGES_HISTORY_USER" Association="Self.FK_CHANGES_HISTORY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="CHANGES_HISTORY" EntitySet="CHANGES_HISTORY" />
           </AssociationSet>
@@ -5288,6 +5295,7 @@
           <Property Name="REDUCE_TRIAL" Type="Boolean" />
           <Property Name="MANUAL_FREE_TEXT" Type="EMSModel.Ck5ManualFreeText" />
           <Property Name="FLAG_FOR_LACK1" Type="Boolean" />
+          <Property Name="FLAG_NPPBKC_IMPORT" Type="Boolean" />
         </EntityType>
         <Association Name="FK_CK5_MATERIAL_CK5">
           <End Type="EMSModel.CK5" Role="CK5" Multiplicity="0..1" />
@@ -7121,7 +7129,7 @@
           <Property Name="MVT" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="true" />
           <Property Name="MATERIAL_ID" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_ID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="QTY" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="QTY" Type="Decimal" Precision="18" Scale="5" />
           <Property Name="SLOC" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="VENDOR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="BUN" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
@@ -7285,6 +7293,9 @@
           <NavigationProperty Name="INVENTORY_MOVEMENT" Relationship="EMSModel.FK_LACK1_TRACKING_INVENTORY_MOVEMENT" FromRole="LACK1_TRACKING" ToRole="INVENTORY_MOVEMENT" />
           <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_TRACKING_LACK1" FromRole="LACK1_TRACKING" ToRole="LACK1" />
           <Property Name="IS_TISTOTIS_DATA" Type="Boolean" />
+          <Property Name="CONVERTED_QTY" Type="Decimal" Precision="18" Scale="5" />
+          <Property Name="CONVERTED_UOM_ID" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="CONVERTED_UOM_DESC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_LACK1_INCOME_DETAIL_CK5">
           <End Type="EMSModel.CK5" Role="CK5" Multiplicity="0..1" />
@@ -8467,6 +8478,9 @@
           <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_TRACKING_ALCOHOL_LACK1" FromRole="LACK1_TRACKING_ALCOHOL" ToRole="LACK1" />
           <Property Name="PARENT_ORDR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="PROD_QTY" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
+          <Property Name="CONVERTED_QTY" Type="Decimal" Precision="18" Scale="5" />
+          <Property Name="CONVERTED_UOM_ID" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="CONVERTED_UOM_DESC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_LACK1_TRACKING_ALCOHOL_LACK1">
           <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="1" />
@@ -8839,7 +8853,8 @@
     <EntitySetMapping Name="CK5">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.CK5)">
         <MappingFragment StoreEntitySet="CK5">
-          <ScalarProperty Name="FLAG_FOR_LACK1" ColumnName="FLAG_FOR_LACK1" />
+          <ScalarProperty Name="FLAG_NPPBKC_IMPORT" ColumnName="FLAG_NPPBKC_IMPORT" />
+                <ScalarProperty Name="FLAG_FOR_LACK1" ColumnName="FLAG_FOR_LACK1" />
                 <ScalarProperty Name="MANUAL_FREE_TEXT" ColumnName="MANUAL_FREE_TEXT" />
                 <ScalarProperty Name="REDUCE_TRIAL" ColumnName="REDUCE_TRIAL" />
                 <ScalarProperty Name="CK5_REF_ID" ColumnName="CK5_REF_ID" />
@@ -9610,6 +9625,9 @@
           <EntitySetMapping Name="LACK1_TRACKING">
             <EntityTypeMapping TypeName="EMSModel.LACK1_TRACKING">
               <MappingFragment StoreEntitySet="LACK1_TRACKING">
+                <ScalarProperty Name="CONVERTED_UOM_DESC" ColumnName="CONVERTED_UOM_DESC" />
+                <ScalarProperty Name="CONVERTED_UOM_ID" ColumnName="CONVERTED_UOM_ID" />
+                <ScalarProperty Name="CONVERTED_QTY" ColumnName="CONVERTED_QTY" />
                 <ScalarProperty Name="IS_TISTOTIS_DATA" ColumnName="IS_TISTOTIS_DATA" />
                 <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="INVENTORY_MOVEMENT_ID" ColumnName="INVENTORY_MOVEMENT_ID" />
@@ -10033,6 +10051,9 @@
           <EntitySetMapping Name="LACK1_TRACKING_ALCOHOL">
             <EntityTypeMapping TypeName="EMSModel.LACK1_TRACKING_ALCOHOL">
               <MappingFragment StoreEntitySet="LACK1_TRACKING_ALCOHOL">
+                <ScalarProperty Name="CONVERTED_UOM_DESC" ColumnName="CONVERTED_UOM_DESC" />
+                <ScalarProperty Name="CONVERTED_UOM_ID" ColumnName="CONVERTED_UOM_ID" />
+                <ScalarProperty Name="CONVERTED_QTY" ColumnName="CONVERTED_QTY" />
                 <ScalarProperty Name="PROD_QTY" ColumnName="PROD_QTY" />
                 <ScalarProperty Name="PARENT_ORDR" ColumnName="PARENT_ORDR" />
                 <ScalarProperty Name="TrackLevel" ColumnName="TrackLevel" />
