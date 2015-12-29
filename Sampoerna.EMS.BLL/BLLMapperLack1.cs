@@ -7,6 +7,7 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.BusinessObject.Outputs;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -325,7 +326,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.IsTisToTis, opt => opt.MapFrom(src => src.IS_TIS_TO_TIS))
                 ;
 
-            Mapper.CreateMap<INVENTORY_MOVEMENT, Lack1GeneratedTrackingDto>().IgnoreAllNonExisting()
+            Mapper.CreateMap<InvMovementItemWithConvertion, Lack1GeneratedTrackingDto>().IgnoreAllNonExisting()
                 //.ForMember(dest => dest.INVENTORY_MOVEMENT_ID, opt => opt.MapFrom(src => src.INVENTORY_MOVEMENT_ID))
                 ;
 
@@ -333,6 +334,9 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.INVENTORY_MOVEMENT_ID, opt => opt.MapFrom(src => src.INVENTORY_MOVEMENT_ID))
                 .ForMember(dest => dest.IS_TISTOTIS_DATA, opt => opt.MapFrom(src => src.IsTisToTisData))
                 .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => DateTime.Now))
+                .ForMember(dest => dest.CONVERTED_QTY, opt => opt.MapFrom(src => src.ConvertedQty))
+                .ForMember(dest => dest.CONVERTED_UOM_ID, opt => opt.MapFrom(src => src.ConvertedUomId))
+                .ForMember(dest => dest.CONVERTED_UOM_DESC, opt => opt.MapFrom(src => src.ConvertedUomDesc))
                 ;
 
             Mapper.CreateMap<Lack1WorkflowDocumentInput, WorkflowHistoryDto>().IgnoreAllNonExisting()
@@ -469,6 +473,9 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.TrackLevel, opt => opt.MapFrom(src => src.TrackLevel))
                 .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => DateTime.Now))
                 .ForMember(dest => dest.PARENT_ORDR, opt => opt.MapFrom(src => src.ParentOrdr))
+                .ForMember(dest => dest.CONVERTED_QTY, opt => opt.MapFrom(src => src.ConvertedQty))
+                .ForMember(dest => dest.CONVERTED_UOM_ID, opt => opt.MapFrom(src => src.ConvertedUomId))
+                .ForMember(dest => dest.CONVERTED_UOM_DESC, opt => opt.MapFrom(src => src.ConvertedUomDesc))
                 ;
 
             Mapper.CreateMap<INVENTORY_MOVEMENT, Lack1GeneratedInvMovementProductionStepTracingItem>()

@@ -647,7 +647,8 @@ namespace Sampoerna.EMS.Website.Controllers
             int loopCountForUsage = prodTisToFa.ProductionSummaryByProdTypeList.Count;
             var usage = data.Usage.ToString("N2");
 
-            if (data.IsTisToTis)
+            /*skip this logic for etil alcohol, although IsTisToTis flag is checked*/
+            if (data.IsTisToTis && !data.IsEtilAlcohol)
             {
                 //with tis to tis
                 //process tis to tis
@@ -681,7 +682,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (data.Ck5RemarkData != null)
             {
                 docNoted = GenerateRemarkContent(data.Ck5RemarkData.Ck5WasteData, "Waste");
-                docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.Ck5RemarkData.Ck5ReturnData, "Return");
+                //docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.Ck5RemarkData.Ck5ReturnData, "Return");
                 docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.Ck5RemarkData.Ck5TrialData, "Trial");
             }
 
@@ -713,7 +714,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private string GenerateRemarkContent(List<Lack1IncomeDetailDto> data, string title)
         {
             var rc = string.Empty;
-            if (data.Count <= 0) return rc;
+            if (data == null || data.Count <= 0) return rc;
             rc = title + Environment.NewLine;
             //rc += string.Join(Environment.NewLine, data.Select(
             //    d =>
@@ -1905,10 +1906,26 @@ namespace Sampoerna.EMS.Website.Controllers
 
                             slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].ConvertedUomDesc);
 
-                            if (lastMaterialCode == curMaterialCode && lastBatch == curBatch && lastDate == curDate)
+                            if (item.TrackingConsolidations[i].Ck5TypeText !=
+                                EnumHelper.GetDescription(Enums.CK5Type.Manual))
                             {
-                                iEndRow = iRow;
-                                if (i == item.TrackingConsolidations.Count - 1)
+                                if (lastMaterialCode == curMaterialCode && lastBatch == curBatch && lastDate == curDate)
+                                {
+                                    iEndRow = iRow;
+                                    if (i == item.TrackingConsolidations.Count - 1)
+                                    {
+                                        if (iStartRow != iEndRow)
+                                        {
+                                            //need to merge
+                                            needToMerge.Add(new DetailReportNeedToMerge()
+                                            {
+                                                StartRowIndex = iStartRow,
+                                                EndRowIndex = iEndRow
+                                            });
+                                        }
+                                    }
+                                }
+                                else
                                 {
                                     if (iStartRow != iEndRow)
                                     {
@@ -1919,22 +1936,11 @@ namespace Sampoerna.EMS.Website.Controllers
                                             EndRowIndex = iEndRow
                                         });
                                     }
+                                    iStartRow = iRow;
+                                    iEndRow = iStartRow;
                                 }
                             }
-                            else
-                            {
-                                if (iStartRow != iEndRow)
-                                {
-                                    //need to merge
-                                    needToMerge.Add(new DetailReportNeedToMerge()
-                                    {
-                                        StartRowIndex = iStartRow,
-                                        EndRowIndex = iEndRow
-                                    });
-                                }
-                                iStartRow = iRow;
-                                iEndRow = iStartRow;
-                            }
+                            
                         }
                         
                         lastMaterialCode = curMaterialCode;
