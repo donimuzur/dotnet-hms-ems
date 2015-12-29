@@ -1312,6 +1312,14 @@ namespace Sampoerna.EMS.BLL
                     c =>
                         !((c.CK5_TYPE == Enums.CK5Type.Return && c.FLAG_FOR_LACK1) || c.CK5_TYPE == Enums.CK5Type.Waste)).ToList();
 
+            if (string.IsNullOrEmpty(dtToReturn.ExGoodsTypeDesc)) return dtToReturn;
+
+            if (dtToReturn.ExGoodsTypeDesc.ToLower().Contains("alcohol") ||
+                dtToReturn.ExGoodsTypeDesc.ToLower().Contains("alkohol"))
+            {
+                dtToReturn.IsEtilAlcohol = true;
+            }
+
             return dtToReturn;
         }
 

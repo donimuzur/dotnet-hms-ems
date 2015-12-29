@@ -647,7 +647,8 @@ namespace Sampoerna.EMS.Website.Controllers
             int loopCountForUsage = prodTisToFa.ProductionSummaryByProdTypeList.Count;
             var usage = data.Usage.ToString("N2");
 
-            if (data.IsTisToTis)
+            /*skip this logic for etil alcohol, although IsTisToTis flag is checked*/
+            if (data.IsTisToTis && !data.IsEtilAlcohol)
             {
                 //with tis to tis
                 //process tis to tis
