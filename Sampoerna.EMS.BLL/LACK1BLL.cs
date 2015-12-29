@@ -2650,33 +2650,69 @@ namespace Sampoerna.EMS.BLL
                 };
             }
 
-            var gramUomData = uomData.Count > 0
-                ? uomData.FirstOrDefault(c => c.UOM_ID.ToLower() == "g" || c.UOM_DESC.ToLower() == "gram")
-                : null;
+            //old code, remove harcoded uom on tis to tis production list
+            //var gramUomData = uomData.Count > 0
+            //    ? uomData.FirstOrDefault(c => c.UOM_ID.ToLower() == "g" || c.UOM_DESC.ToLower() == "gram")
+            //    : null;
 
-            if (gramUomData == null)
-            {
-                return new Lack1GeneratedOutput()
-                {
-                    Success = false,
-                    ErrorCode = ExceptionCodes.BLLExceptions.MissingUomData.ToString(),
-                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingUomData),
-                    Data = rc
-                };
-            }
+            //if (gramUomData == null)
+            //{
+            //    return new Lack1GeneratedOutput()
+            //    {
+            //        Success = false,
+            //        ErrorCode = ExceptionCodes.BLLExceptions.MissingUomData.ToString(),
+            //        ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingUomData),
+            //        Data = rc
+            //    };
+            //}
+
+            //old code, remove harcoded uom on tis to tis production list
+            //var joinedWithUomData = (from j in pbck1ProdConverter
+            //                         join u in uomData on j.CONVERTER_UOM_ID equals u.UOM_ID
+            //                         select new
+            //                         {
+            //                             j.PROD_CODE,
+            //                             j.PRODUCT_TYPE,
+            //                             j.PRODUCT_ALIAS,
+            //                             j.CONVERTER_OUTPUT,
+            //                             j.CONVERTER_UOM_ID,
+            //                             u.UOM_DESC,
+            //                             Convertion = (decimal)(j.CONVERTER_UOM_ID.ToLower() == "kg" ? 1000 : 1)
+            //                         }).Distinct().ToList();
 
             var joinedWithUomData = (from j in pbck1ProdConverter
-                                     join u in uomData on j.CONVERTER_UOM_ID equals u.UOM_ID
                                      select new
                                      {
+                                         j.PBCK1_PROD_COV_ID,
                                          j.PROD_CODE,
                                          j.PRODUCT_TYPE,
                                          j.PRODUCT_ALIAS,
-                                         j.CONVERTER_OUTPUT,
-                                         j.CONVERTER_UOM_ID,
-                                         u.UOM_DESC,
-                                         Convertion = (decimal)(j.CONVERTER_UOM_ID.ToLower() == "kg" ? 0.001 : 1)
+                                         j.CONVERTER_OUTPUT
                                      }).Distinct().ToList();
+            //2015-12-29
+            var firstDataInventoryMovementTisToTis =
+                rc.InventoryProductionTisToTis.InvetoryMovementData.InvMovementReceivingCk5List.FirstOrDefault(c => !string.IsNullOrEmpty(c.ConvertedUomId));
+            var uomIdFirstDataInvMovementTisToTis = "";
+            var uomDescFirstDataInvMovementTisToTis = "";
+
+            if (firstDataInventoryMovementTisToTis != null)
+            {
+                uomIdFirstDataInvMovementTisToTis = firstDataInventoryMovementTisToTis.ConvertedUomId;
+                uomDescFirstDataInvMovementTisToTis = firstDataInventoryMovementTisToTis.ConvertedUomDesc;
+            }
+
+            //old code, remove harcoded uom on tis to tis production list
+            //var productionList = joinedWithUomData.Select(item => new Lack1GeneratedProductionDataDto()
+            //{
+            //    FaCode = null,
+            //    Ordr = null,
+            //    ProdCode = item.PROD_CODE,
+            //    ProductType = item.PRODUCT_TYPE,
+            //    ProductAlias = item.PRODUCT_ALIAS,
+            //    Amount = item.CONVERTER_OUTPUT.HasValue ? ((rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0) * item.CONVERTER_OUTPUT.Value * item.Convertion) : 0,
+            //    UomId = item.CONVERTER_UOM_ID.ToLower() == "kg" ? gramUomData.UOM_ID : item.CONVERTER_UOM_ID,
+            //    UomDesc = item.CONVERTER_UOM_ID.ToLower() == "kg" ? gramUomData.UOM_DESC : item.UOM_DESC
+            //}).ToList();
 
             var productionList = joinedWithUomData.Select(item => new Lack1GeneratedProductionDataDto()
             {
@@ -2685,9 +2721,9 @@ namespace Sampoerna.EMS.BLL
                 ProdCode = item.PROD_CODE,
                 ProductType = item.PRODUCT_TYPE,
                 ProductAlias = item.PRODUCT_ALIAS,
-                Amount = item.CONVERTER_OUTPUT.HasValue ? ((rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0) * item.CONVERTER_OUTPUT.Value * item.Convertion) : 0,
-                UomId = item.CONVERTER_UOM_ID.ToLower() == "kg" ? gramUomData.UOM_ID : item.CONVERTER_UOM_ID,
-                UomDesc = item.CONVERTER_UOM_ID.ToLower() == "kg" ? gramUomData.UOM_DESC : item.UOM_DESC
+                Amount = item.CONVERTER_OUTPUT.HasValue ? ((rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0) * item.CONVERTER_OUTPUT.Value) : 0,
+                UomId = uomIdFirstDataInvMovementTisToTis,
+                UomDesc = uomDescFirstDataInvMovementTisToTis
             }).ToList();
 
             rc.InventoryProductionTisToTis.ProductionData = new Lack1GeneratedProductionDto

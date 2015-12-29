@@ -681,7 +681,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (data.Ck5RemarkData != null)
             {
                 docNoted = GenerateRemarkContent(data.Ck5RemarkData.Ck5WasteData, "Waste");
-                docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.Ck5RemarkData.Ck5ReturnData, "Return");
+                //docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.Ck5RemarkData.Ck5ReturnData, "Return");
                 docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.Ck5RemarkData.Ck5TrialData, "Trial");
             }
 
