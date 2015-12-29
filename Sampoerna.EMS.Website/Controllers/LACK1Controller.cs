@@ -713,7 +713,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private string GenerateRemarkContent(List<Lack1IncomeDetailDto> data, string title)
         {
             var rc = string.Empty;
-            if (data.Count <= 0) return rc;
+            if (data == null || data.Count <= 0) return rc;
             rc = title + Environment.NewLine;
             //rc += string.Join(Environment.NewLine, data.Select(
             //    d =>
