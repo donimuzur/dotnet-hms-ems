@@ -1905,10 +1905,26 @@ namespace Sampoerna.EMS.Website.Controllers
 
                             slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].ConvertedUomDesc);
 
-                            if (lastMaterialCode == curMaterialCode && lastBatch == curBatch && lastDate == curDate)
+                            if (item.TrackingConsolidations[i].Ck5TypeText !=
+                                EnumHelper.GetDescription(Enums.CK5Type.Manual))
                             {
-                                iEndRow = iRow;
-                                if (i == item.TrackingConsolidations.Count - 1)
+                                if (lastMaterialCode == curMaterialCode && lastBatch == curBatch && lastDate == curDate)
+                                {
+                                    iEndRow = iRow;
+                                    if (i == item.TrackingConsolidations.Count - 1)
+                                    {
+                                        if (iStartRow != iEndRow)
+                                        {
+                                            //need to merge
+                                            needToMerge.Add(new DetailReportNeedToMerge()
+                                            {
+                                                StartRowIndex = iStartRow,
+                                                EndRowIndex = iEndRow
+                                            });
+                                        }
+                                    }
+                                }
+                                else
                                 {
                                     if (iStartRow != iEndRow)
                                     {
@@ -1919,22 +1935,11 @@ namespace Sampoerna.EMS.Website.Controllers
                                             EndRowIndex = iEndRow
                                         });
                                     }
+                                    iStartRow = iRow;
+                                    iEndRow = iStartRow;
                                 }
                             }
-                            else
-                            {
-                                if (iStartRow != iEndRow)
-                                {
-                                    //need to merge
-                                    needToMerge.Add(new DetailReportNeedToMerge()
-                                    {
-                                        StartRowIndex = iStartRow,
-                                        EndRowIndex = iEndRow
-                                    });
-                                }
-                                iStartRow = iRow;
-                                iEndRow = iStartRow;
-                            }
+                            
                         }
                         
                         lastMaterialCode = curMaterialCode;
