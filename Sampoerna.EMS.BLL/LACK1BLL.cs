@@ -1843,7 +1843,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             //process the production list got from previous process
-            var finalGoodsList = allTrackingList.Where(c => c.IsFinalGoodsType && c.ProductionQty != 0).ToList();
+            var finalGoodsList = allTrackingList.Where(c => c.IsFinalGoodsType).ToList();
 
             var productionList = new List<Lack1GeneratedProductionDataDto>();
 
@@ -2525,10 +2525,55 @@ namespace Sampoerna.EMS.BLL
             var prevInventoryMovementByParam = GetInventoryMovementByParam(prevInventoryMovementByParamInput,
                 stoReceiverNumberList, bkcUomId);
 
-            //calculation proccess
-            foreach (var item in joinedWithUomData)
+            if (prevInventoryMovementByParam.UsageProportionalList.Count > 0)
             {
-                var itemToInsert = new Lack1GeneratedProductionDataDto()
+                //need to proportional or not base on ORDR
+                //calculation proccess
+                foreach (var item in joinedWithUomData)
+                {
+                    var itemToInsert = new Lack1GeneratedProductionDataDto()
+                    {
+                        FaCode = item.FA_CODE,
+                        Ordr = item.ORDR,
+                        ProdCode = item.PROD_CODE,
+                        ProductType = item.PRODUCT_TYPE,
+                        ProductAlias = item.PRODUCT_ALIAS,
+                        Amount = item.QTY.HasValue ? item.QTY.Value : 0,
+                        UomId = item.UOM,
+                        UomDesc = item.UOM_DESC
+                    };
+
+                    var chk =
+                             prevInventoryMovementByParam.UsageProportionalList.FirstOrDefault(
+                                 c => c.Order == item.ORDR);
+                    if (chk != null)
+                    {
+                        //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
+                        //old logic, hard coded about UOM
+                        //var totalUsageInCk5PrevPeriod = (-1) * prevInventoryMovementByParam.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
+                        //var totalUsageExcludeCk5PrevPeriod = (-1) * prevInventoryMovementByParam.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
+                        //    var totalUsageInCk5PrevPeriod = (-1) * prevInventoryMovementByParam.IncludeInCk5List.Sum(d => d.ConvertedQty);
+                        //    var totalUsageExcludeCk5PrevPeriod = (-1) * prevInventoryMovementByParam.ExcludeFromCk5List.Sum(d => d.ConvertedQty);
+                        //    var totalUsagePrevPeriod = totalUsageInCk5PrevPeriod + totalUsageExcludeCk5PrevPeriod;
+
+                        //    itemToInsert.Amount =
+                        //Math.Round(
+                        //    ((totalUsageInCk5PrevPeriod / totalUsagePrevPeriod) * itemToInsert.Amount), 3);
+
+                        //calculate proporsional
+                        //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
+                        itemToInsert.Amount =
+                    Math.Round(
+                        ((chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount), 3);
+                    }
+
+                    productionList.Add(itemToInsert);
+                }
+            }
+            else
+            {
+                //100% production result
+                productionList.AddRange(joinedWithUomData.Select(item => new Lack1GeneratedProductionDataDto()
                 {
                     FaCode = item.FA_CODE,
                     Ordr = item.ORDR,
@@ -2538,31 +2583,10 @@ namespace Sampoerna.EMS.BLL
                     Amount = item.QTY.HasValue ? item.QTY.Value : 0,
                     UomId = item.UOM,
                     UomDesc = item.UOM_DESC
-                };
-
-                if (prevInventoryMovementByParam.IncludeInCk5List.Count > 0)
-                {
-                    var chk =
-                        prevInventoryMovementByParam.IncludeInCk5List.FirstOrDefault(
-                            c => c.ORDR == item.ORDR);
-                    if (chk != null)
-                    {
-                        //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
-                        //old logic, hard coded about UOM
-                        //var totalUsageInCk5PrevPeriod = (-1) * prevInventoryMovementByParam.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
-                        //var totalUsageExcludeCk5PrevPeriod = (-1) * prevInventoryMovementByParam.ExcludeFromCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
-                        var totalUsageInCk5PrevPeriod = (-1) * prevInventoryMovementByParam.IncludeInCk5List.Sum(d => d.ConvertedQty);
-                        var totalUsageExcludeCk5PrevPeriod = (-1) * prevInventoryMovementByParam.ExcludeFromCk5List.Sum(d => d.ConvertedQty);
-                        var totalUsagePrevPeriod = totalUsageInCk5PrevPeriod + totalUsageExcludeCk5PrevPeriod;
-
-                        itemToInsert.Amount =
-                    Math.Round(
-                        ((totalUsageInCk5PrevPeriod / totalUsagePrevPeriod) * itemToInsert.Amount), 3);
-                    }
-                }
-
-                productionList.Add(itemToInsert);
+                }));
             }
+
+
             //set to Tis To Fa data
             rc.InventoryProductionTisToFa.ProductionData = new Lack1GeneratedProductionDto
             {
@@ -2946,52 +2970,52 @@ namespace Sampoerna.EMS.BLL
 
             //join material_uom and uom
             var joinedMaterialUomData = from x in materialUomList
-                join y in uomData on x.MEINH equals y.UOM_ID into gj
-                from subY in gj.DefaultIfEmpty()
-                select new
-                {
-                    x.STICKER_CODE,
-                    x.WERKS,
-                    x.ZAIDM_EX_MATERIAL.BASE_UOM_ID,
-                    x.MEINH,
-                    x.UMREN,
-                    ConvertedUomDesc = subY != null ? subY.UOM_DESC : string.Empty
-                };
-            
+                                        join y in uomData on x.MEINH equals y.UOM_ID into gj
+                                        from subY in gj.DefaultIfEmpty()
+                                        select new
+                                        {
+                                            x.STICKER_CODE,
+                                            x.WERKS,
+                                            x.ZAIDM_EX_MATERIAL.BASE_UOM_ID,
+                                            x.MEINH,
+                                            x.UMREN,
+                                            ConvertedUomDesc = subY != null ? subY.UOM_DESC : string.Empty
+                                        };
+
             //left join
             var dataToReturn = from x in invMovements
                                join m in joinedMaterialUomData on new { x.MATERIAL_ID, x.PLANT_ID, x.BUN }
                     equals new { MATERIAL_ID = m.STICKER_CODE, PLANT_ID = m.WERKS, BUN = m.BASE_UOM_ID } into gj
-                    from subM in gj.DefaultIfEmpty()
-                select new InvMovementItemWithConvertion()
-                {
-                    INVENTORY_MOVEMENT_ID = x.INVENTORY_MOVEMENT_ID,
-                    MVT = x.MVT,
-                    MATERIAL_ID = x.MATERIAL_ID,
-                    PLANT_ID = x.PLANT_ID,
-                    QTY = x.QTY,
-                    SLOC = x.SLOC,
-                    VENDOR = x.VENDOR,
-                    BUN = x.BUN,
-                    PURCH_DOC = x.PURCH_DOC,
-                    POSTING_DATE = x.POSTING_DATE,
-                    ENTRY_DATE = x.ENTRY_DATE,
-                    TIME = x.TIME,
-                    CREATED_USER = x.CREATED_USER,
-                    MAT_DOC = x.MAT_DOC,
-                    BATCH = x.BATCH,
-                    ORDR = x.ORDR,
-                    ConvertedUomId = subM != null ? subM.MEINH : string.Empty,
-                    ConvertedUomDesc = subM != null ? subM.ConvertedUomDesc : string.Empty,
-                    ConvertedQty = subM != null ? (x.QTY.HasValue && subM.UMREN.HasValue ? (x.QTY.Value / subM.UMREN.Value) : 0) : 0
-                };
+                               from subM in gj.DefaultIfEmpty()
+                               select new InvMovementItemWithConvertion()
+                               {
+                                   INVENTORY_MOVEMENT_ID = x.INVENTORY_MOVEMENT_ID,
+                                   MVT = x.MVT,
+                                   MATERIAL_ID = x.MATERIAL_ID,
+                                   PLANT_ID = x.PLANT_ID,
+                                   QTY = x.QTY,
+                                   SLOC = x.SLOC,
+                                   VENDOR = x.VENDOR,
+                                   BUN = x.BUN,
+                                   PURCH_DOC = x.PURCH_DOC,
+                                   POSTING_DATE = x.POSTING_DATE,
+                                   ENTRY_DATE = x.ENTRY_DATE,
+                                   TIME = x.TIME,
+                                   CREATED_USER = x.CREATED_USER,
+                                   MAT_DOC = x.MAT_DOC,
+                                   BATCH = x.BATCH,
+                                   ORDR = x.ORDR,
+                                   ConvertedUomId = subM != null ? subM.MEINH : string.Empty,
+                                   ConvertedUomDesc = subM != null ? subM.ConvertedUomDesc : string.Empty,
+                                   ConvertedQty = subM != null ? (x.QTY.HasValue && subM.UMREN.HasValue ? (x.QTY.Value / subM.UMREN.Value) : 0) : 0
+                               };
 
             return dataToReturn.ToList();
 
         }
 
         private Lack1GeneratedOutput SetGenerateLack1InventoryMovement(Lack1GeneratedDto rc,
-            Lack1GenerateDataParamInput input, List<string> plantIdList, bool isForTisToTis, out InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput, 
+            Lack1GenerateDataParamInput input, List<string> plantIdList, bool isForTisToTis, out InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput,
             string bkcUomId)
         {
             //invMovementOutput = new InvMovementGetForLack1UsageMovementByParamOutput();
@@ -3034,7 +3058,7 @@ namespace Sampoerna.EMS.BLL
             else
             {
                 totalUsage = (-1) * getInventoryMovementByParamOutput.IncludeInCk5List.Sum(d => d.ConvertedQty);
- 
+
                 /*Old Code, remove hardcoded convertion */
                 //var totalUsageIncludeCk5 = (-1) * getInventoryMovementByParamOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
                 //totalUsage = totalUsageIncludeCk5;
@@ -3155,7 +3179,7 @@ namespace Sampoerna.EMS.BLL
 
             return rc;
         }
-        
+
         private List<InvMovementUsageProportional> CalculateInvMovementUsageProportional(
             IEnumerable<INVENTORY_MOVEMENT> usageReceivingAll, IEnumerable<INVENTORY_MOVEMENT> usageAll)
         {
@@ -3274,13 +3298,13 @@ namespace Sampoerna.EMS.BLL
             var uomData = _uomBll.GetAll();
 
             var uomGram = uomData.FirstOrDefault(c => c.UOM_ID.ToLower() == "g");
-                var uomGramDesc = "";
-                var uomGramId = "";
-                if (uomGram != null)
-                {
-                    uomGramDesc = uomGram.UOM_DESC;
-                    uomGramId = uomGram.UOM_ID;
-                }
+            var uomGramDesc = "";
+            var uomGramId = "";
+            if (uomGram != null)
+            {
+                uomGramDesc = uomGram.UOM_DESC;
+                uomGramId = uomGram.UOM_ID;
+            }
 
             foreach (var data in tempData)
             {
@@ -3323,7 +3347,7 @@ namespace Sampoerna.EMS.BLL
                                   }).ToList();
 
                 var usageConsolidationData = ProcessUsageConsolidationDetailReport(data, incomeList, uomData);
-                
+
                 //add record for CK5 manual
                 foreach (var ck5Item in incomeListCk5Manual)
                 {
@@ -3357,30 +3381,30 @@ namespace Sampoerna.EMS.BLL
                     }).ToList();
 
                     groupedCk5Material = (from x in groupedCk5Material
-                        join u in uomData on x.OriginalUomId.ToLower() equals u.UOM_ID.ToLower() into gj1
-                        from subU in gj1.DefaultIfEmpty()
-                        join u1 in uomData1 on x.ConvertedUomId.ToLower() equals u1.UOM_ID.ToLower() into gj2
-                        from subU2 in gj2.DefaultIfEmpty()
-                        select new Lack1TrackingConsolidationDetailReportDto()
-                        {
-                            Ck5Id = x.Ck5Id,
-                            Ck5Number = x.Ck5Number,
-                            Ck5RegistrationNumber = x.Ck5RegistrationNumber,
-                            Ck5RegistrationDate = x.Ck5RegistrationDate,
-                            Ck5GrDate = x.Ck5GrDate,
-                            Qty = x.ConvertedUomId.ToLower() == "kg" ? 1000 * x.Qty : x.Qty,
-                            GiDate = x.GiDate,
-                            PurchaseDoc = string.Empty,
-                            MaterialCode = x.MaterialCode,
-                            UsageQty = x.ConvertedUomId.ToLower() == "kg" ? 1000 * x.UsageQty : x.UsageQty,
-                            OriginalUomId = x.OriginalUomId,
-                            OriginalUomDesc = subU != null ? subU.UOM_DESC : string.Empty,
-                            ConvertedUomId =  x.ConvertedUomId.ToLower() == "kg" ? uomGramId : x.ConvertedUomId,
-                            ConvertedUomDesc = x.ConvertedUomId.ToLower() == "kg" ? uomGramDesc : (subU2 != null ? subU2.UOM_DESC : string.Empty),
-                            Batch = string.Empty,
-                            MaterialCodeUsageRecCount = x.MaterialCodeUsageRecCount,
-                            Ck5TypeText = x.Ck5TypeText
-                        }).ToList();
+                                          join u in uomData on x.OriginalUomId.ToLower() equals u.UOM_ID.ToLower() into gj1
+                                          from subU in gj1.DefaultIfEmpty()
+                                          join u1 in uomData1 on x.ConvertedUomId.ToLower() equals u1.UOM_ID.ToLower() into gj2
+                                          from subU2 in gj2.DefaultIfEmpty()
+                                          select new Lack1TrackingConsolidationDetailReportDto()
+                                          {
+                                              Ck5Id = x.Ck5Id,
+                                              Ck5Number = x.Ck5Number,
+                                              Ck5RegistrationNumber = x.Ck5RegistrationNumber,
+                                              Ck5RegistrationDate = x.Ck5RegistrationDate,
+                                              Ck5GrDate = x.Ck5GrDate,
+                                              Qty = x.ConvertedUomId.ToLower() == "kg" ? 1000 * x.Qty : x.Qty,
+                                              GiDate = x.GiDate,
+                                              PurchaseDoc = string.Empty,
+                                              MaterialCode = x.MaterialCode,
+                                              UsageQty = x.ConvertedUomId.ToLower() == "kg" ? 1000 * x.UsageQty : x.UsageQty,
+                                              OriginalUomId = x.OriginalUomId,
+                                              OriginalUomDesc = subU != null ? subU.UOM_DESC : string.Empty,
+                                              ConvertedUomId = x.ConvertedUomId.ToLower() == "kg" ? uomGramId : x.ConvertedUomId,
+                                              ConvertedUomDesc = x.ConvertedUomId.ToLower() == "kg" ? uomGramDesc : (subU2 != null ? subU2.UOM_DESC : string.Empty),
+                                              Batch = string.Empty,
+                                              MaterialCodeUsageRecCount = x.MaterialCodeUsageRecCount,
+                                              Ck5TypeText = x.Ck5TypeText
+                                          }).ToList();
                     usageConsolidationData.AddRange(groupedCk5Material);
                 }
 
