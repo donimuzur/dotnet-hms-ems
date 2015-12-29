@@ -1,4 +1,6 @@
-﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1DetailReportViewModel
+﻿@using Sampoerna.EMS.Core
+@using EnumHelper = Sampoerna.EMS.Utils.EnumHelper
+@model Sampoerna.EMS.Website.Models.LACK1.Lack1DetailReportViewModel
 
 <table id="lack1Table" border="0" class="table table-bordered">
     <thead>
@@ -63,9 +65,9 @@
                         }
                         else
                         {
+                            <td rowspan="@item.TrackingConsolidations[0].MaterialCodeUsageRecCount"></td>
                             <td rowspan="@item.TrackingConsolidations[0].MaterialCodeUsageRecCount">@item.TrackingConsolidations[0].OriginalUomDesc</td>
                             <td rowspan="@item.TrackingConsolidations[0].MaterialCodeUsageRecCount">@item.TrackingConsolidations[0].ConvertedUomDesc</td>
-                            <td rowspan="@item.TrackingConsolidations[0].MaterialCodeUsageRecCount"></td>
                         }
                     }
                     <td rowspan="@trackingConsolidationCount">@item.EndingBalance.ToString("N2")</td>
@@ -92,20 +94,41 @@
                         }
                         else
                         {
-                            if (!(lastBatch == curBatch && lastDate == curDate && lastMaterialCode == curMaterialCode))
+                            if (item.TrackingConsolidations[i].Ck5TypeText == EnumHelper.GetDescription(Enums.CK5Type.Manual))
                             {
+                                /*Force to print out to views*/
                                 if (item.TrackingConsolidations[i].UsageQty.HasValue)
                                 {
-                                    <td rowspan="@item.TrackingConsolidations[i].MaterialCodeUsageRecCount">@((item.TrackingConsolidations[i].UsageQty.Value).ToString("N3"))</td>
-                                    <td rowspan="@item.TrackingConsolidations[i].MaterialCodeUsageRecCount">@item.TrackingConsolidations[i].OriginalUomDesc</td>
-                                    <td rowspan="@item.TrackingConsolidations[i].MaterialCodeUsageRecCount">@item.TrackingConsolidations[i].ConvertedUomDesc</td>
+                                    <td>@((item.TrackingConsolidations[i].UsageQty.Value).ToString("N3"))</td>
+                                    <td>@item.TrackingConsolidations[i].OriginalUomDesc</td>
+                                    <td>@item.TrackingConsolidations[i].ConvertedUomDesc</td>
                                 }
                                 else
                                 {
-                                    <td rowspan="@item.TrackingConsolidations[i].MaterialCodeUsageRecCount"></td>
-
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                 }
                             }
+                            else
+                            {
+                                if (!(lastBatch == curBatch && lastDate == curDate && lastMaterialCode == curMaterialCode))
+                                {
+                                    if (item.TrackingConsolidations[i].UsageQty.HasValue)
+                                    {
+                                        <td rowspan="@item.TrackingConsolidations[i].MaterialCodeUsageRecCount">@((item.TrackingConsolidations[i].UsageQty.Value).ToString("N3"))</td>
+                                        <td rowspan="@item.TrackingConsolidations[i].MaterialCodeUsageRecCount">@item.TrackingConsolidations[i].OriginalUomDesc</td>
+                                        <td rowspan="@item.TrackingConsolidations[i].MaterialCodeUsageRecCount">@item.TrackingConsolidations[i].ConvertedUomDesc</td>
+                                    }
+                                    else
+                                    {
+                                        <td rowspan="@item.TrackingConsolidations[i].MaterialCodeUsageRecCount"></td>
+                                        <td rowspan="@item.TrackingConsolidations[i].MaterialCodeUsageRecCount"></td>
+                                        <td rowspan="@item.TrackingConsolidations[i].MaterialCodeUsageRecCount"></td>
+                                    }
+                                }
+                            }
+
                         }
                     </tr>
                         lastMaterialCode = curMaterialCode;

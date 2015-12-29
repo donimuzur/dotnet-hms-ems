@@ -3476,17 +3476,18 @@ namespace Sampoerna.EMS.BLL
         private List<Lack1TrackingConsolidationDetailReportDto> ProcessUsageConsolidationDetailReport(Lack1DetailReportTempDto data,
             List<Lack1ReceivingDetailReportDto> incomeList, List<UOM> uomData)
         {
-            var usageConsolidationData = new List<Lack1TrackingConsolidationDetailReportDto>();
+            
             var usageReceiving = new List<Lack1UsageReceivingTrackingDetailDto>();
 
-            var uomGram = uomData.FirstOrDefault(c => c.UOM_ID.ToLower() == "g");
-            var uomGramDesc = "";
-            var uomGramId = "";
-            if (uomGram != null)
-            {
-                uomGramDesc = uomGram.UOM_DESC;
-                uomGramId = uomGram.UOM_ID;
-            }
+            //old code, remove hardcoded uom
+            //var uomGram = uomData.FirstOrDefault(c => c.UOM_ID.ToLower() == "g");
+            //var uomGramDesc = "";
+            //var uomGramId = "";
+            //if (uomGram != null)
+            //{
+            //    uomGramDesc = uomGram.UOM_DESC;
+            //    uomGramId = uomGram.UOM_ID;
+            //}
 
             if (data.LACK1_TRACKING != null && data.LACK1_TRACKING.Count > 0)
             {
@@ -3515,7 +3516,18 @@ namespace Sampoerna.EMS.BLL
 
                 var usage =
                     data.LACK1_TRACKING.Where(c => mvtTypeForUsage.Contains(c.INVENTORY_MOVEMENT.MVT))
-                        .Select(d => d.INVENTORY_MOVEMENT).DistinctBy(ds => ds.INVENTORY_MOVEMENT_ID)
+                        .Select(d => new
+                        {
+                            d.INVENTORY_MOVEMENT_ID,
+                            d.INVENTORY_MOVEMENT.MATERIAL_ID,
+                            d.INVENTORY_MOVEMENT.BATCH,
+                            d.INVENTORY_MOVEMENT.POSTING_DATE,
+                            d.INVENTORY_MOVEMENT.QTY,
+                            d.INVENTORY_MOVEMENT.BUN,
+                            d.CONVERTED_UOM_ID,
+                            d.CONVERTED_QTY,
+                            d.CONVERTED_UOM_DESC
+                        }).DistinctBy(ds => ds.INVENTORY_MOVEMENT_ID)
                         .ToList();
 
                 //need to grouping before process
@@ -3531,7 +3543,10 @@ namespace Sampoerna.EMS.BLL
                     Qty = g.Sum(p => p.QTY.HasValue ? (-1) * p.QTY.Value : 0),
                     Batch = g.Key.BATCH,
                     PostingDate = g.Key.POSTING_DATE,
-                    Bun = g.First().BUN
+                    Bun = g.First().BUN,
+                    ConvertedUomId = g.First().CONVERTED_UOM_ID,
+                    ConvertedUomDesc = g.First().CONVERTED_UOM_DESC,
+                    ConvertedQty = g.Sum(p => p.CONVERTED_QTY.HasValue ? p.CONVERTED_QTY.Value : 0)
                 });
 
                 var groupedReceiving = DetailReportTrackingGroupedBy(receiving);
@@ -3545,13 +3560,13 @@ namespace Sampoerna.EMS.BLL
                                   {
                                       PurchaseDoc = rec.PurchDoc,
                                       MaterialCode = u.MaterialId,
-                                      UsageQty = u.Bun.ToLower() == "kg" ? 1000 * u.Qty : u.Qty,
+                                      UsageQty = u.ConvertedQty,
                                       Batch = rec.Batch,
                                       PostingDate = u.PostingDate,
                                       OriginalUom = u.Bun,
                                       OriginalUomDesc = subUom != null ? subUom.UOM_DESC : string.Empty,
-                                      ConvertedUomId = u.Bun.ToLower() == "kg" ? uomGramId : u.Bun,
-                                      ConvertedUomDesc = u.Bun.ToLower() == "kg" ? uomGramDesc : (subUom != null ? subUom.UOM_DESC : string.Empty)
+                                      ConvertedUomId = u.ConvertedUomId,
+                                      ConvertedUomDesc = u.ConvertedUomDesc
                                   }).ToList();
 
             }
@@ -3685,7 +3700,7 @@ namespace Sampoerna.EMS.BLL
                 Ck5TypeText = inc.Ck5TypeText
             }));
 
-            usageConsolidationData = joinedData.DistinctBy(m => new
+            var usageConsolidationData = joinedData.DistinctBy(m => new
             {
                 m.Ck5Number,
                 m.Ck5TypeText,
