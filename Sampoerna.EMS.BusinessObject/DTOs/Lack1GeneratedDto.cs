@@ -154,6 +154,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     {
         //public long INVENTORY_MOVEMENT_ID { get; set; }
         public bool IsTisToTisData { get; set; }
+        public string ConvertedUomId { get; set; }
+        public string ConvertedUomDesc { get; set; }
+        public decimal ConvertedQty { get; set; }
     }
 
     public class Lack1GeneratedProductionDomesticAlcoholDto
@@ -181,6 +184,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string UomId { get; set; }
         public string UomDesc { get; set; }
         public DateTime? PostingDate { get; set; }
+        public decimal? ConvertedQty { get; set; }
+        public string ConvertedUomId { get; set; }
+        public string ConvertedUomDesc { get; set; }
     }
 
 }

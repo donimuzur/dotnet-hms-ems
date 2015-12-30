@@ -75,6 +75,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public List<Lack1SummaryProductionItemModel> FusionSummaryProductionList { get; set; }//set by controller
         public List<Lack1ProductionDetailItemSummaryByProdTypeModel> FusionSummaryProductionByProdTypeList { get; set; }
         public Lack1RemarkModel Ck5RemarkData { get; set; }
+        public bool IsEtilAlcohol { get; set; }
 
         #endregion
 
