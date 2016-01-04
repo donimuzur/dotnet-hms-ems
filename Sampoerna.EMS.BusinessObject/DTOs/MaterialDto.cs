@@ -31,7 +31,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
 
         public ICollection<MATERIAL_UOM> MATERIAL_UOM { get; set; }
-        public T001WDto T001W { get; set; }
+        public T001W T001W { get; set; }
         public UOM UOM { get; set; }
         public ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
 
