@@ -9,5 +9,10 @@ namespace Sampoerna.EMS.Contract
         List<POA_DELEGATIONDto> GetAllData();
 
         POA_DELEGATIONDto SavePoaDelegation(PoaDelegationSaveInput input);
+
+        POA_DELEGATIONDto GetById(int id);
+
+        POA_DELEGATIONDto GetById(int id, bool isIncludeTable);
+
     }
 }

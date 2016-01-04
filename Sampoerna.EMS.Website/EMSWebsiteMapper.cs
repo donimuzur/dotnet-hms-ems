@@ -1030,9 +1030,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PoaFrom, opt => opt.MapFrom(src => src.POA_FROM))
                 .ForMember(dest => dest.PoaTo, opt => opt.MapFrom(src => src.POA_TO))
                 .ForMember(dest => dest.DateFrom, opt => opt.MapFrom(src => src.DATE_FROM))
-                .ForMember(dest => dest.DateFromDisplay, opt => opt.MapFrom(src => src.DATE_FROM.ToString("dd MMM yyyy HH:mm:ss")))
+                .ForMember(dest => dest.DateFromDisplay, opt => opt.MapFrom(src => src.DATE_FROM.ToString("dd MMM yyyy")))
                 .ForMember(dest => dest.DateTo, opt => opt.MapFrom(src => src.DATE_TO))
-                .ForMember(dest => dest.DateToDisplay, opt => opt.MapFrom(src => src.DATE_TO.ToString("dd MMM yyyy HH:mm:ss")))
+                .ForMember(dest => dest.DateToDisplay, opt => opt.MapFrom(src => src.DATE_TO.ToString("dd MMM yyyy")))
                 .ForMember(dest => dest.Reason, opt => opt.MapFrom(src => src.REASON)) 
                 ;
 

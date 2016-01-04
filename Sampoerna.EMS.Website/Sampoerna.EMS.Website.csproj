@@ -1280,6 +1280,8 @@
     <Content Include="Views\XmlFileManagement\Detail.cshtml" />
     <Content Include="Views\PoaDelegation\Index.cshtml" />
     <Content Include="Views\PoaDelegation\Create.cshtml" />
+    <Content Include="Views\PoaDelegation\Detail.cshtml" />
+    <Content Include="Views\PoaDelegation\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

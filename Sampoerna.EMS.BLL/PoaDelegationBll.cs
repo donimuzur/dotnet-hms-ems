@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
+using System.Linq;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -16,7 +17,8 @@ namespace Sampoerna.EMS.BLL
          private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<POA_DELEGATION> _repository;
-        
+        private string _includeTables = "POA, USER";
+
         public PoaDelegationBLL(IUnitOfWork uow, ILogger logger)
         {
             _uow = uow;
@@ -88,6 +90,31 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        public POA_DELEGATIONDto GetById(int id)
+        {
+            var dtData = _repository.GetByID(id);
+            if (dtData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            return Mapper.Map<POA_DELEGATIONDto>(dtData);
+
+        }
+
+        public POA_DELEGATIONDto GetById(int id, bool isIncludeTable)
+        {
+            string include = "";
+            if (isIncludeTable)
+            {
+                include = _includeTables;
+                var dtData = _repository.Get(c => c.POA_DELEGATION_ID == id, null, include).FirstOrDefault();
+                if (dtData == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+                return Mapper.Map<POA_DELEGATIONDto>(dtData);
+            }
+
+            return GetById(id);
+        }
 
     }
 }
