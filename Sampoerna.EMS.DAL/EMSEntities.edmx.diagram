@@ -264,6 +264,8 @@
         <AssociationConnector Association="EMSModel.FK_POA_DELEGATION_POA1" />
         <AssociationConnector Association="EMSModel.FK_POA_DELEGATION_USER" />
         <AssociationConnector Association="EMSModel.FK_POA_DELEGATION_USER1" />
+        <EntityTypeShape EntityType="EMSModel.ZAIDM_EX_MATERIAL_BALANCE" Width="1.5" PointX="20.25" PointY="44.125" />
+        <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_BALANCE_ZAIDM_EX_MATERIAL" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
