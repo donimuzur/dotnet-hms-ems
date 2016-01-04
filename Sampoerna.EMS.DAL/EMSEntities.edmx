@@ -1012,18 +1012,9 @@
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="IS_ACTIVE" Type="bit" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'EMS_CR1_S.dbo.POA_DELEGATION' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="POA_DELEGATION">
           <Key>
             <PropertyRef Name="POA_DELEGATION_ID" />
-            <PropertyRef Name="POA_FROM" />
-            <PropertyRef Name="POA_TO" />
-            <PropertyRef Name="DATE_FROM" />
-            <PropertyRef Name="DATE_TO" />
-            <PropertyRef Name="REASON" />
-            <PropertyRef Name="CREATED_DATE" />
-            <PropertyRef Name="CREATED_BY" />
           </Key>
           <Property Name="POA_DELEGATION_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="POA_FROM" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -3498,6 +3489,7 @@ warning 6002: The table/view 'EMS_CR1_S.dbo.POA_DELEGATION' does not have a prim
           <EntitySet Name="PBCK7_ITEM" EntityType="Self.PBCK7_ITEM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PLANT_RECEIVE_MATERIAL" EntityType="Self.PLANT_RECEIVE_MATERIAL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="POA" EntityType="Self.POA" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="POA_DELEGATION" EntityType="Self.POA_DELEGATION" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="POA_MAP" EntityType="Self.POA_MAP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="POA_SK" EntityType="Self.POA_SK" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PRINT_HISTORY" EntityType="Self.PRINT_HISTORY" Schema="dbo" store:Type="Tables" />
@@ -3530,20 +3522,6 @@ warning 6002: The table/view 'EMS_CR1_S.dbo.POA_DELEGATION' does not have a prim
           <EntitySet Name="ZAIDM_EX_PCODE" EntityType="Self.ZAIDM_EX_PCODE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_PRODTYP" EntityType="Self.ZAIDM_EX_PRODTYP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_SERIES" EntityType="Self.ZAIDM_EX_SERIES" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="POA_DELEGATION" EntityType="Self.POA_DELEGATION" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [POA_DELEGATION].[POA_DELEGATION_ID] AS [POA_DELEGATION_ID], 
-    [POA_DELEGATION].[POA_FROM] AS [POA_FROM], 
-    [POA_DELEGATION].[POA_TO] AS [POA_TO], 
-    [POA_DELEGATION].[DATE_FROM] AS [DATE_FROM], 
-    [POA_DELEGATION].[DATE_TO] AS [DATE_TO], 
-    [POA_DELEGATION].[REASON] AS [REASON], 
-    [POA_DELEGATION].[CREATED_DATE] AS [CREATED_DATE], 
-    [POA_DELEGATION].[CREATED_BY] AS [CREATED_BY], 
-    [POA_DELEGATION].[MODIFIED_DATE] AS [MODIFIED_DATE], 
-    [POA_DELEGATION].[MODIFIED_BY] AS [MODIFIED_BY]
-    FROM [dbo].[POA_DELEGATION] AS [POA_DELEGATION]</DefiningQuery>
-          </EntitySet>
           <AssociationSet Name="FK_BACK1_CK5" Association="Self.FK_BACK1_CK5">
             <End Role="CK5" EntitySet="CK5" />
             <End Role="BACK1" EntitySet="BACK1" />
@@ -4920,6 +4898,11 @@ warning 6002: The table/view 'EMS_CR1_S.dbo.POA_DELEGATION' does not have a prim
             <End Role="XML_LOGS" EntitySet="XML_LOGS" />
             <End Role="XML_LOGS_DETAILS" EntitySet="XML_LOGS_DETAILS" />
           </AssociationSet>
+          <EntitySet Name="ZAIDM_EX_MATERIAL_BALANCE" EntityType="EMSModel.ZAIDM_EX_MATERIAL_BALANCE" />
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_BALANCE_ZAIDM_EX_MATERIAL" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_BALANCE_ZAIDM_EX_MATERIAL">
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+            <End Role="ZAIDM_EX_MATERIAL_BALANCE" EntitySet="ZAIDM_EX_MATERIAL_BALANCE" />
+          </AssociationSet>
           <EntitySet Name="POA_DELEGATION" EntityType="EMSModel.POA_DELEGATION" />
           <AssociationSet Name="FK_POA_DELEGATION_POA" Association="EMSModel.FK_POA_DELEGATION_POA">
             <End Role="POA" EntitySet="POA" />
@@ -4936,11 +4919,6 @@ warning 6002: The table/view 'EMS_CR1_S.dbo.POA_DELEGATION' does not have a prim
           <AssociationSet Name="FK_POA_DELEGATION_USER1" Association="EMSModel.FK_POA_DELEGATION_USER1">
             <End Role="USER" EntitySet="USER" />
             <End Role="POA_DELEGATION" EntitySet="POA_DELEGATION" />
-          </AssociationSet>
-          <EntitySet Name="ZAIDM_EX_MATERIAL_BALANCE" EntityType="EMSModel.ZAIDM_EX_MATERIAL_BALANCE" />
-          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_BALANCE_ZAIDM_EX_MATERIAL" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_BALANCE_ZAIDM_EX_MATERIAL">
-            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
-            <End Role="ZAIDM_EX_MATERIAL_BALANCE" EntitySet="ZAIDM_EX_MATERIAL_BALANCE" />
           </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -6184,7 +6162,7 @@ warning 6002: The table/view 'EMS_CR1_S.dbo.POA_DELEGATION' does not have a prim
           <NavigationProperty Name="PBCK3" Relationship="EMSModel.FK_PBCK3_POA" FromRole="POA" ToRole="PBCK3" />
           <NavigationProperty Name="POA_DELEGATION" Relationship="EMSModel.FK_POA_DELEGATION_POA" FromRole="POA" ToRole="POA_DELEGATION" />
           <NavigationProperty Name="POA_DELEGATION1" Relationship="EMSModel.FK_POA_DELEGATION_POA1" FromRole="POA" ToRole="POA_DELEGATION" />
-        </EntityType>
+          </EntityType>
         <EntityType Name="POA_MAP">
           <Key>
             <PropertyRef Name="POA_MAP_ID" />
@@ -8694,16 +8672,37 @@ warning 6002: The table/view 'EMS_CR1_S.dbo.POA_DELEGATION' does not have a prim
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ZAIDM_EX_MATERIAL_BALANCE">
+          <Key>
+            <PropertyRef Name="MATERIAL_BALANCE_ID" />
+          </Key>
+          <Property Name="MATERIAL_BALANCE_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MATERIAL_ID" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="WERKS" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="PERIOD_YEAR" Type="Int32" />
+          <Property Name="PERIOD_MONTH" Type="Int32" />
+          <Property Name="OPEN_BALANCE" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="CLOSE_BALANCE" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="LGORT" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_BALANCE_ZAIDM_EX_MATERIAL" FromRole="ZAIDM_EX_MATERIAL_BALANCE" ToRole="ZAIDM_EX_MATERIAL" />
+        </EntityType>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_BALANCE_ZAIDM_EX_MATERIAL">
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL_BALANCE" Role="ZAIDM_EX_MATERIAL_BALANCE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="STICKER_CODE" />
+              <PropertyRef Name="WERKS" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL_BALANCE">
+              <PropertyRef Name="MATERIAL_ID" />
+              <PropertyRef Name="WERKS" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityType Name="POA_DELEGATION">
           <Key>
             <PropertyRef Name="POA_DELEGATION_ID" />
-            <PropertyRef Name="POA_FROM" />
-            <PropertyRef Name="POA_TO" />
-            <PropertyRef Name="DATE_FROM" />
-            <PropertyRef Name="DATE_TO" />
-            <PropertyRef Name="REASON" />
-            <PropertyRef Name="CREATED_DATE" />
-            <PropertyRef Name="CREATED_BY" />
           </Key>
           <Property Name="POA_DELEGATION_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="POA_FROM" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -8765,34 +8764,6 @@ warning 6002: The table/view 'EMS_CR1_S.dbo.POA_DELEGATION' does not have a prim
             </Principal>
             <Dependent Role="POA_DELEGATION">
               <PropertyRef Name="MODIFIED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="ZAIDM_EX_MATERIAL_BALANCE">
-          <Key>
-            <PropertyRef Name="MATERIAL_BALANCE_ID" />
-          </Key>
-          <Property Name="MATERIAL_BALANCE_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MATERIAL_ID" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
-          <Property Name="WERKS" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="PERIOD_YEAR" Type="Int32" />
-          <Property Name="PERIOD_MONTH" Type="Int32" />
-          <Property Name="OPEN_BALANCE" Type="Decimal" Precision="18" Scale="4" />
-          <Property Name="CLOSE_BALANCE" Type="Decimal" Precision="18" Scale="4" />
-          <Property Name="LGORT" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_BALANCE_ZAIDM_EX_MATERIAL" FromRole="ZAIDM_EX_MATERIAL_BALANCE" ToRole="ZAIDM_EX_MATERIAL" />
-        </EntityType>
-        <Association Name="FK_ZAIDM_EX_MATERIAL_BALANCE_ZAIDM_EX_MATERIAL">
-          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="0..1" />
-          <End Type="EMSModel.ZAIDM_EX_MATERIAL_BALANCE" Role="ZAIDM_EX_MATERIAL_BALANCE" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_MATERIAL">
-              <PropertyRef Name="STICKER_CODE" />
-              <PropertyRef Name="WERKS" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_MATERIAL_BALANCE">
-              <PropertyRef Name="MATERIAL_ID" />
-              <PropertyRef Name="WERKS" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -10363,6 +10334,20 @@ warning 6002: The table/view 'EMS_CR1_S.dbo.POA_DELEGATION' does not have a prim
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="ZAIDM_EX_MATERIAL_BALANCE">
+            <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_MATERIAL_BALANCE">
+              <MappingFragment StoreEntitySet="ZAIDM_EX_MATERIAL_BALANCE">
+                <ScalarProperty Name="LGORT" ColumnName="LGORT" />
+                <ScalarProperty Name="CLOSE_BALANCE" ColumnName="CLOSE_BALANCE" />
+                <ScalarProperty Name="OPEN_BALANCE" ColumnName="OPEN_BALANCE" />
+                <ScalarProperty Name="PERIOD_MONTH" ColumnName="PERIOD_MONTH" />
+                <ScalarProperty Name="PERIOD_YEAR" ColumnName="PERIOD_YEAR" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="MATERIAL_ID" ColumnName="MATERIAL_ID" />
+                <ScalarProperty Name="MATERIAL_BALANCE_ID" ColumnName="MATERIAL_BALANCE_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="POA_DELEGATION">
             <EntityTypeMapping TypeName="EMSModel.POA_DELEGATION">
               <MappingFragment StoreEntitySet="POA_DELEGATION">
@@ -10376,20 +10361,6 @@ warning 6002: The table/view 'EMS_CR1_S.dbo.POA_DELEGATION' does not have a prim
                 <ScalarProperty Name="POA_TO" ColumnName="POA_TO" />
                 <ScalarProperty Name="POA_FROM" ColumnName="POA_FROM" />
                 <ScalarProperty Name="POA_DELEGATION_ID" ColumnName="POA_DELEGATION_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ZAIDM_EX_MATERIAL_BALANCE">
-            <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_MATERIAL_BALANCE">
-              <MappingFragment StoreEntitySet="ZAIDM_EX_MATERIAL_BALANCE">
-                <ScalarProperty Name="LGORT" ColumnName="LGORT" />
-                <ScalarProperty Name="CLOSE_BALANCE" ColumnName="CLOSE_BALANCE" />
-                <ScalarProperty Name="OPEN_BALANCE" ColumnName="OPEN_BALANCE" />
-                <ScalarProperty Name="PERIOD_MONTH" ColumnName="PERIOD_MONTH" />
-                <ScalarProperty Name="PERIOD_YEAR" ColumnName="PERIOD_YEAR" />
-                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
-                <ScalarProperty Name="MATERIAL_ID" ColumnName="MATERIAL_ID" />
-                <ScalarProperty Name="MATERIAL_BALANCE_ID" ColumnName="MATERIAL_BALANCE_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
