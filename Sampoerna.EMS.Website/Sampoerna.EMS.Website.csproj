@@ -229,6 +229,7 @@
       <DependentUpon>GenericReportViewer.aspx</DependentUpon>
     </Compile>
     <Compile Include="Controllers\PBCK4Controller.cs" />
+    <Compile Include="Controllers\PoaDelegationController.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Code\PdfResult.cs" />
     <Compile Include="Controllers\WasteController.cs" />
@@ -1281,6 +1282,7 @@
     <Folder Include="Content\upload\Lack1\" />
     <Folder Include="Models\WorkflowHistory\" />
     <Folder Include="Views\AspxReportViewer\" />
+    <Folder Include="Views\PoaDelegation\" />
     <Folder Include="Views\SettingsGlobal\" />
     <Folder Include="Views\Settings\" />
   </ItemGroup>

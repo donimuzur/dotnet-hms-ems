@@ -68,6 +68,7 @@
     <Compile Include="IPbck3Services.cs" />
     <Compile Include="IPBCK4BLL.cs" />
     <Compile Include="IPBCK7And3BLL.cs" />
+    <Compile Include="IPoaDelegationBLL.cs" />
     <Compile Include="IPOASKBLL.cs" />
     <Compile Include="ICompanyBLL.cs" />
     <Compile Include="IDocumentSequenceNumberBLL.cs" />
