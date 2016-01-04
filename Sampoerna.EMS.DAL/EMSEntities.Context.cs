@@ -120,7 +120,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<LACK1_TRACKING_ALCOHOL> LACK1_TRACKING_ALCOHOL { get; set; }
         public virtual DbSet<XML_LOGS> XML_LOGS { get; set; }
         public virtual DbSet<XML_LOGS_DETAILS> XML_LOGS_DETAILS { get; set; }
-        public virtual DbSet<POA_DELEGATION> POA_DELEGATION { get; set; }
         public virtual DbSet<ZAIDM_EX_MATERIAL_BALANCE> ZAIDM_EX_MATERIAL_BALANCE { get; set; }
+        public virtual DbSet<POA_DELEGATION> POA_DELEGATION { get; set; }
     }
 }
