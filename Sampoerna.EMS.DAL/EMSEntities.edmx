@@ -416,7 +416,7 @@
           <Property Name="MVT" Type="nvarchar" MaxLength="3" Nullable="false" />
           <Property Name="MATERIAL_ID" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="QTY" Type="decimal" Precision="18" Scale="5" />
+          <Property Name="QTY" Type="decimal" Precision="15" Scale="2" />
           <Property Name="SLOC" Type="nvarchar" MaxLength="4" />
           <Property Name="VENDOR" Type="nvarchar" MaxLength="10" />
           <Property Name="BUN" Type="nvarchar" MaxLength="5" />
@@ -1011,6 +1011,30 @@
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="IS_ACTIVE" Type="bit" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'EMS_CR1_S.dbo.POA_DELEGATION' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="POA_DELEGATION">
+          <Key>
+            <PropertyRef Name="POA_DELEGATION_ID" />
+            <PropertyRef Name="POA_FROM" />
+            <PropertyRef Name="POA_TO" />
+            <PropertyRef Name="DATE_FROM" />
+            <PropertyRef Name="DATE_TO" />
+            <PropertyRef Name="REASON" />
+            <PropertyRef Name="CREATED_DATE" />
+            <PropertyRef Name="CREATED_BY" />
+          </Key>
+          <Property Name="POA_DELEGATION_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="POA_FROM" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="POA_TO" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="DATE_FROM" Type="datetime" Nullable="false" />
+          <Property Name="DATE_TO" Type="datetime" Nullable="false" />
+          <Property Name="REASON" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="POA_MAP">
           <Key>
@@ -2769,6 +2793,54 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_POA_DELEGATION_POA">
+          <End Role="POA" Type="Self.POA" Multiplicity="1" />
+          <End Role="POA_DELEGATION" Type="Self.POA_DELEGATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="POA_DELEGATION">
+              <PropertyRef Name="POA_FROM" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_DELEGATION_POA1">
+          <End Role="POA" Type="Self.POA" Multiplicity="1" />
+          <End Role="POA_DELEGATION" Type="Self.POA_DELEGATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="POA_DELEGATION">
+              <PropertyRef Name="POA_TO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_DELEGATION_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="POA_DELEGATION" Type="Self.POA_DELEGATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA_DELEGATION">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_DELEGATION_USER1">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="POA_DELEGATION" Type="Self.POA_DELEGATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA_DELEGATION">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_POA_LOGIN_AS_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="1" />
           <End Role="POA" Type="Self.POA" Multiplicity="*" />
@@ -3430,6 +3502,20 @@
           <EntitySet Name="ZAIDM_EX_PCODE" EntityType="Self.ZAIDM_EX_PCODE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_PRODTYP" EntityType="Self.ZAIDM_EX_PRODTYP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_SERIES" EntityType="Self.ZAIDM_EX_SERIES" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="POA_DELEGATION" EntityType="Self.POA_DELEGATION" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [POA_DELEGATION].[POA_DELEGATION_ID] AS [POA_DELEGATION_ID], 
+    [POA_DELEGATION].[POA_FROM] AS [POA_FROM], 
+    [POA_DELEGATION].[POA_TO] AS [POA_TO], 
+    [POA_DELEGATION].[DATE_FROM] AS [DATE_FROM], 
+    [POA_DELEGATION].[DATE_TO] AS [DATE_TO], 
+    [POA_DELEGATION].[REASON] AS [REASON], 
+    [POA_DELEGATION].[CREATED_DATE] AS [CREATED_DATE], 
+    [POA_DELEGATION].[CREATED_BY] AS [CREATED_BY], 
+    [POA_DELEGATION].[MODIFIED_DATE] AS [MODIFIED_DATE], 
+    [POA_DELEGATION].[MODIFIED_BY] AS [MODIFIED_BY]
+    FROM [dbo].[POA_DELEGATION] AS [POA_DELEGATION]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_BACK1_CK5" Association="Self.FK_BACK1_CK5">
             <End Role="CK5" EntitySet="CK5" />
             <End Role="BACK1" EntitySet="BACK1" />
@@ -3857,6 +3943,22 @@
           <AssociationSet Name="FK_POA_CREATED_BY_USER" Association="Self.FK_POA_CREATED_BY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="POA" EntitySet="POA" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_DELEGATION_POA" Association="Self.FK_POA_DELEGATION_POA">
+            <End Role="POA" EntitySet="POA" />
+            <End Role="POA_DELEGATION" EntitySet="POA_DELEGATION" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_DELEGATION_POA1" Association="Self.FK_POA_DELEGATION_POA1">
+            <End Role="POA" EntitySet="POA" />
+            <End Role="POA_DELEGATION" EntitySet="POA_DELEGATION" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_DELEGATION_USER" Association="Self.FK_POA_DELEGATION_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA_DELEGATION" EntitySet="POA_DELEGATION" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_DELEGATION_USER1" Association="Self.FK_POA_DELEGATION_USER1">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA_DELEGATION" EntitySet="POA_DELEGATION" />
           </AssociationSet>
           <AssociationSet Name="FK_POA_LOGIN_AS_USER" Association="Self.FK_POA_LOGIN_AS_USER">
             <End Role="USER" EntitySet="USER" />
@@ -4786,6 +4888,23 @@
             <End Role="XML_LOGS" EntitySet="XML_LOGS" />
             <End Role="XML_LOGS_DETAILS" EntitySet="XML_LOGS_DETAILS" />
           </AssociationSet>
+          <EntitySet Name="POA_DELEGATION" EntityType="EMSModel.POA_DELEGATION" />
+          <AssociationSet Name="FK_POA_DELEGATION_POA" Association="EMSModel.FK_POA_DELEGATION_POA">
+            <End Role="POA" EntitySet="POA" />
+            <End Role="POA_DELEGATION" EntitySet="POA_DELEGATION" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_DELEGATION_POA1" Association="EMSModel.FK_POA_DELEGATION_POA1">
+            <End Role="POA" EntitySet="POA" />
+            <End Role="POA_DELEGATION" EntitySet="POA_DELEGATION" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_DELEGATION_USER" Association="EMSModel.FK_POA_DELEGATION_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA_DELEGATION" EntitySet="POA_DELEGATION" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_DELEGATION_USER1" Association="EMSModel.FK_POA_DELEGATION_USER1">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA_DELEGATION" EntitySet="POA_DELEGATION" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -5657,6 +5776,8 @@
           <NavigationProperty Name="WASTE_STOCK" Relationship="EMSModel.FK_WASTE_STOCK_USER" FromRole="USER" ToRole="WASTE_STOCK" />
           <NavigationProperty Name="WASTE_STOCK1" Relationship="EMSModel.FK_WASTE_STOCK_USER1" FromRole="USER" ToRole="WASTE_STOCK" />
           <NavigationProperty Name="WASTE_STOCK2" Relationship="EMSModel.FK_WASTE_STOCK_USER2" FromRole="USER" ToRole="WASTE_STOCK" />
+          <NavigationProperty Name="POA_DELEGATION" Relationship="EMSModel.FK_POA_DELEGATION_USER" FromRole="USER" ToRole="POA_DELEGATION" />
+          <NavigationProperty Name="POA_DELEGATION1" Relationship="EMSModel.FK_POA_DELEGATION_USER1" FromRole="USER" ToRole="POA_DELEGATION" />
           </EntityType>
         <EntityType Name="USER_BROLE">
           <Key>
@@ -6024,6 +6145,8 @@
           <NavigationProperty Name="PBCK7" Relationship="EMSModel.FK_PBCK7_POA" FromRole="POA" ToRole="PBCK7" />
           <NavigationProperty Name="PBCK4" Relationship="EMSModel.FK_PBCK4_POA" FromRole="POA" ToRole="PBCK4" />
           <NavigationProperty Name="PBCK3" Relationship="EMSModel.FK_PBCK3_POA" FromRole="POA" ToRole="PBCK3" />
+          <NavigationProperty Name="POA_DELEGATION" Relationship="EMSModel.FK_POA_DELEGATION_POA" FromRole="POA" ToRole="POA_DELEGATION" />
+          <NavigationProperty Name="POA_DELEGATION1" Relationship="EMSModel.FK_POA_DELEGATION_POA1" FromRole="POA" ToRole="POA_DELEGATION" />
         </EntityType>
         <EntityType Name="POA_MAP">
           <Key>
@@ -7130,7 +7253,7 @@
           <Property Name="MVT" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="true" />
           <Property Name="MATERIAL_ID" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_ID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="QTY" Type="Decimal" Precision="18" Scale="5" />
+          <Property Name="QTY" Type="Decimal" Precision="15" Scale="2" />
           <Property Name="SLOC" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="VENDOR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="BUN" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
@@ -8530,6 +8653,80 @@
             </Principal>
             <Dependent Role="XML_LOGS_DETAILS">
               <PropertyRef Name="XML_LOGS_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="POA_DELEGATION">
+          <Key>
+            <PropertyRef Name="POA_DELEGATION_ID" />
+            <PropertyRef Name="POA_FROM" />
+            <PropertyRef Name="POA_TO" />
+            <PropertyRef Name="DATE_FROM" />
+            <PropertyRef Name="DATE_TO" />
+            <PropertyRef Name="REASON" />
+            <PropertyRef Name="CREATED_DATE" />
+            <PropertyRef Name="CREATED_BY" />
+          </Key>
+          <Property Name="POA_DELEGATION_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="POA_FROM" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="POA_TO" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DATE_FROM" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DATE_TO" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="REASON" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="POA" Relationship="EMSModel.FK_POA_DELEGATION_POA" FromRole="POA_DELEGATION" ToRole="POA" />
+          <NavigationProperty Name="POA1" Relationship="EMSModel.FK_POA_DELEGATION_POA1" FromRole="POA_DELEGATION" ToRole="POA" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_POA_DELEGATION_USER" FromRole="POA_DELEGATION" ToRole="USER" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_POA_DELEGATION_USER1" FromRole="POA_DELEGATION" ToRole="USER" />
+        </EntityType>
+        <Association Name="FK_POA_DELEGATION_POA">
+          <End Type="EMSModel.POA" Role="POA" Multiplicity="1" />
+          <End Type="EMSModel.POA_DELEGATION" Role="POA_DELEGATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="POA_DELEGATION">
+              <PropertyRef Name="POA_FROM" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_DELEGATION_POA1">
+          <End Type="EMSModel.POA" Role="POA" Multiplicity="1" />
+          <End Type="EMSModel.POA_DELEGATION" Role="POA_DELEGATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="POA_DELEGATION">
+              <PropertyRef Name="POA_TO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_DELEGATION_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.POA_DELEGATION" Role="POA_DELEGATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA_DELEGATION">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_DELEGATION_USER1">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.POA_DELEGATION" Role="POA_DELEGATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA_DELEGATION">
+              <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -10097,6 +10294,22 @@
                 <ScalarProperty Name="LOGS" ColumnName="LOGS" />
                 <ScalarProperty Name="XML_LOGS_ID" ColumnName="XML_LOGS_ID" />
                 <ScalarProperty Name="XML_LOGS_DETAILS_ID" ColumnName="XML_LOGS_DETAILS_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="POA_DELEGATION">
+            <EntityTypeMapping TypeName="EMSModel.POA_DELEGATION">
+              <MappingFragment StoreEntitySet="POA_DELEGATION">
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="REASON" ColumnName="REASON" />
+                <ScalarProperty Name="DATE_TO" ColumnName="DATE_TO" />
+                <ScalarProperty Name="DATE_FROM" ColumnName="DATE_FROM" />
+                <ScalarProperty Name="POA_TO" ColumnName="POA_TO" />
+                <ScalarProperty Name="POA_FROM" ColumnName="POA_FROM" />
+                <ScalarProperty Name="POA_DELEGATION_ID" ColumnName="POA_DELEGATION_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

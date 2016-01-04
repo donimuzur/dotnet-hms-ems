@@ -259,6 +259,11 @@
         <EntityTypeShape EntityType="EMSModel.XML_LOGS" Width="1.5" PointX="13.375" PointY="14" />
         <EntityTypeShape EntityType="EMSModel.XML_LOGS_DETAILS" Width="1.5" PointX="15.625" PointY="13.375" />
         <AssociationConnector Association="EMSModel.FK_XML_LOGS_DETAILS_XML_LOGS" />
+        <EntityTypeShape EntityType="EMSModel.POA_DELEGATION" Width="1.5" PointX="12.875" PointY="55.5" />
+        <AssociationConnector Association="EMSModel.FK_POA_DELEGATION_POA" />
+        <AssociationConnector Association="EMSModel.FK_POA_DELEGATION_POA1" />
+        <AssociationConnector Association="EMSModel.FK_POA_DELEGATION_USER" />
+        <AssociationConnector Association="EMSModel.FK_POA_DELEGATION_USER1" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
