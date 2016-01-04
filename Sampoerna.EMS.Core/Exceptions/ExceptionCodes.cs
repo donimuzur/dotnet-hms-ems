@@ -144,7 +144,10 @@ namespace Sampoerna.EMS.Core.Exceptions
             GoodsProdTypeMappingNotFound,
 
             [Description("Waste Approval Email Not Found")]
-            WasteApprovalEmailNotFound
+            WasteApprovalEmailNotFound,
+
+            [Description("CK5 Package UOM not found.")]
+            Ck5PackageUomNullOrEmpty
         }
 
         /// <summary>

@@ -160,10 +160,20 @@ namespace Sampoerna.EMS.XMLReader
                                   
                                     #region "Domestic"
 
-                                    var giDate = _xmlMapper.GetElementValue(xElement.Element("GI_DATE"));
-                                    item.GI_DATE = _xmlMapper.GetDate(giDate);
+                                    if (typeCk5 == Enums.CK5Type.Intercompany)
+                                    {
+                                        _xmlMapper.Errors.Add("Ck 5 type intercompany with status GI Completed(16) is not processed by EMS in this build.");
+                                        //continue;
+                                    }
+                                    else
+                                    {
+                                        var giDate = _xmlMapper.GetElementValue(xElement.Element("GI_DATE"));
+                                        item.GI_DATE = _xmlMapper.GetDate(giDate);
 
-                                    UpdateDNumber(item, existingCk5, xElement);
+                                        UpdateDNumber(item, existingCk5, xElement);
+                                    }
+
+                                    
 
 
                                     #endregion
@@ -375,7 +385,7 @@ namespace Sampoerna.EMS.XMLReader
                                     //var emailManager = GetEmail(item.APPROVED_BY_MANAGER);
                                     //var emailBody = string.Format("Status : {0}", item.STATUS_ID.ToString());
                                     //AddWorkflowHistory(workflowHistory, emailCreator, emailPoa, emailManager, emailBody);
-
+                                    
                                     AddWorkflowHistory(workflowHistory);
                                 }
                             }
@@ -454,7 +464,11 @@ namespace Sampoerna.EMS.XMLReader
 
         private void AddWorkflowHistory(WORKFLOW_HISTORY workflowHistory)
         {
-            _xmlMapper.InsertOrUpdate(workflowHistory);
+            if (_xmlMapper.Errors.Count == 0)
+            {
+                _xmlMapper.InsertOrUpdate(workflowHistory);    
+            }
+            
         }
 
         private void CreateCk5XmlCancel(CK5 ck5)

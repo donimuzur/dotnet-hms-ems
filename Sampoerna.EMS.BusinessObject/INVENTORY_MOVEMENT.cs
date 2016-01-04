@@ -35,6 +35,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string MAT_DOC { get; set; }
         public string BATCH { get; set; }
         public string ORDR { get; set; }
+        public string XML_FILE { get; set; }
     
         public virtual ICollection<LACK1_TRACKING> LACK1_TRACKING { get; set; }
     }

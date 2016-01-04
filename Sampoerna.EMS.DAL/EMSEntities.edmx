@@ -416,7 +416,7 @@
           <Property Name="MVT" Type="nvarchar" MaxLength="3" Nullable="false" />
           <Property Name="MATERIAL_ID" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="QTY" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="QTY" Type="decimal" Precision="18" Scale="5" />
           <Property Name="SLOC" Type="nvarchar" MaxLength="4" />
           <Property Name="VENDOR" Type="nvarchar" MaxLength="10" />
           <Property Name="BUN" Type="nvarchar" MaxLength="5" />
@@ -428,6 +428,7 @@
           <Property Name="MAT_DOC" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="BATCH" Type="nvarchar" MaxLength="35" />
           <Property Name="ORDR" Type="nvarchar" MaxLength="10" />
+          <Property Name="XML_FILE" Type="nvarchar" MaxLength="250" />
         </EntityType>
         <EntityType Name="LACK1">
           <Key>
@@ -535,6 +536,9 @@
           <Property Name="INVENTORY_MOVEMENT_ID" Type="bigint" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="IS_TISTOTIS_DATA" Type="bit" />
+          <Property Name="CONVERTED_QTY" Type="decimal" Precision="18" Scale="5" />
+          <Property Name="CONVERTED_UOM_ID" Type="nvarchar" MaxLength="5" />
+          <Property Name="CONVERTED_UOM_DESC" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="LACK1_TRACKING_ALCOHOL">
           <Key>
@@ -556,6 +560,9 @@
           <Property Name="TrackLevel" Type="int" Nullable="false" />
           <Property Name="PARENT_ORDR" Type="nvarchar" MaxLength="10" />
           <Property Name="PROD_QTY" Type="decimal" Precision="18" Scale="5" Nullable="false" />
+          <Property Name="CONVERTED_QTY" Type="decimal" Precision="18" Scale="5" />
+          <Property Name="CONVERTED_UOM_ID" Type="nvarchar" MaxLength="5" />
+          <Property Name="CONVERTED_UOM_DESC" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="LACK2">
           <Key>
@@ -4773,8 +4780,8 @@
             <End Role="LACK1" EntitySet="LACK1" />
             <End Role="LACK1_TRACKING_ALCOHOL" EntitySet="LACK1_TRACKING_ALCOHOL" />
           </AssociationSet>
-          <EntitySet Name="XML_LOGS_DETAILS" EntityType="EMSModel.XML_LOGS_DETAILS" />
           <EntitySet Name="XML_LOGS" EntityType="EMSModel.XML_LOGS" />
+          <EntitySet Name="XML_LOGS_DETAILS" EntityType="EMSModel.XML_LOGS_DETAILS" />
           <AssociationSet Name="FK_XML_LOGS_DETAILS_XML_LOGS" Association="EMSModel.FK_XML_LOGS_DETAILS_XML_LOGS">
             <End Role="XML_LOGS" EntitySet="XML_LOGS" />
             <End Role="XML_LOGS_DETAILS" EntitySet="XML_LOGS_DETAILS" />
@@ -7123,7 +7130,7 @@
           <Property Name="MVT" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="true" />
           <Property Name="MATERIAL_ID" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_ID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="QTY" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="QTY" Type="Decimal" Precision="18" Scale="5" />
           <Property Name="SLOC" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="VENDOR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="BUN" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
@@ -7136,6 +7143,7 @@
           <Property Name="BATCH" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="LACK1_TRACKING" Relationship="EMSModel.FK_LACK1_TRACKING_INVENTORY_MOVEMENT" FromRole="INVENTORY_MOVEMENT" ToRole="LACK1_TRACKING" />
           <Property Name="ORDR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="XML_FILE" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="CK4C_ITEM">
           <Key>
@@ -7287,6 +7295,9 @@
           <NavigationProperty Name="INVENTORY_MOVEMENT" Relationship="EMSModel.FK_LACK1_TRACKING_INVENTORY_MOVEMENT" FromRole="LACK1_TRACKING" ToRole="INVENTORY_MOVEMENT" />
           <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_TRACKING_LACK1" FromRole="LACK1_TRACKING" ToRole="LACK1" />
           <Property Name="IS_TISTOTIS_DATA" Type="Boolean" />
+          <Property Name="CONVERTED_QTY" Type="Decimal" Precision="18" Scale="5" />
+          <Property Name="CONVERTED_UOM_ID" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="CONVERTED_UOM_DESC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_LACK1_INCOME_DETAIL_CK5">
           <End Type="EMSModel.CK5" Role="CK5" Multiplicity="0..1" />
@@ -8469,6 +8480,9 @@
           <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_TRACKING_ALCOHOL_LACK1" FromRole="LACK1_TRACKING_ALCOHOL" ToRole="LACK1" />
           <Property Name="PARENT_ORDR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="PROD_QTY" Type="Decimal" Nullable="false" Precision="18" Scale="5" />
+          <Property Name="CONVERTED_QTY" Type="Decimal" Precision="18" Scale="5" />
+          <Property Name="CONVERTED_UOM_ID" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="CONVERTED_UOM_DESC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_LACK1_TRACKING_ALCOHOL_LACK1">
           <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="1" />
@@ -8483,16 +8497,6 @@
           </ReferentialConstraint>
         </Association>
         <EnumType Name="XmlLogStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.XmlLogStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
-        <EntityType Name="XML_LOGS_DETAILS">
-          <Key>
-            <PropertyRef Name="XML_LOGS_DETAILS_ID" />
-          </Key>
-          <Property Name="XML_LOGS_DETAILS_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="XML_LOGS_ID" Type="Int64" Nullable="false" />
-          <Property Name="LOGS" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="ERROR_TIME" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="XML_LOGS" Relationship="EMSModel.FK_XML_LOGS_DETAILS_XML_LOGS" FromRole="XML_LOGS_DETAILS" ToRole="XML_LOGS" />
-        </EntityType>
         <EntityType Name="XML_LOGS">
           <Key>
             <PropertyRef Name="XML_LOGS_ID" />
@@ -8506,6 +8510,16 @@
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="STATUS" Type="EMSModel.XmlLogStatus" Nullable="false" />
           <NavigationProperty Name="XML_LOGS_DETAILS" Relationship="EMSModel.FK_XML_LOGS_DETAILS_XML_LOGS" FromRole="XML_LOGS" ToRole="XML_LOGS_DETAILS" />
+        </EntityType>
+        <EntityType Name="XML_LOGS_DETAILS">
+          <Key>
+            <PropertyRef Name="XML_LOGS_DETAILS_ID" />
+          </Key>
+          <Property Name="XML_LOGS_DETAILS_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="XML_LOGS_ID" Type="Int64" Nullable="false" />
+          <Property Name="LOGS" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ERROR_TIME" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="XML_LOGS" Relationship="EMSModel.FK_XML_LOGS_DETAILS_XML_LOGS" FromRole="XML_LOGS_DETAILS" ToRole="XML_LOGS" />
         </EntityType>
         <Association Name="FK_XML_LOGS_DETAILS_XML_LOGS">
           <End Type="EMSModel.XML_LOGS" Role="XML_LOGS" Multiplicity="1" />
@@ -9491,6 +9505,7 @@
           <EntitySetMapping Name="INVENTORY_MOVEMENT">
             <EntityTypeMapping TypeName="EMSModel.INVENTORY_MOVEMENT">
               <MappingFragment StoreEntitySet="INVENTORY_MOVEMENT">
+                <ScalarProperty Name="XML_FILE" ColumnName="XML_FILE" />
                 <ScalarProperty Name="ORDR" ColumnName="ORDR" />
                 <ScalarProperty Name="BATCH" ColumnName="BATCH" />
                 <ScalarProperty Name="MAT_DOC" ColumnName="MAT_DOC" />
@@ -9613,6 +9628,9 @@
           <EntitySetMapping Name="LACK1_TRACKING">
             <EntityTypeMapping TypeName="EMSModel.LACK1_TRACKING">
               <MappingFragment StoreEntitySet="LACK1_TRACKING">
+                <ScalarProperty Name="CONVERTED_UOM_DESC" ColumnName="CONVERTED_UOM_DESC" />
+                <ScalarProperty Name="CONVERTED_UOM_ID" ColumnName="CONVERTED_UOM_ID" />
+                <ScalarProperty Name="CONVERTED_QTY" ColumnName="CONVERTED_QTY" />
                 <ScalarProperty Name="IS_TISTOTIS_DATA" ColumnName="IS_TISTOTIS_DATA" />
                 <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
                 <ScalarProperty Name="INVENTORY_MOVEMENT_ID" ColumnName="INVENTORY_MOVEMENT_ID" />
@@ -10036,6 +10054,9 @@
           <EntitySetMapping Name="LACK1_TRACKING_ALCOHOL">
             <EntityTypeMapping TypeName="EMSModel.LACK1_TRACKING_ALCOHOL">
               <MappingFragment StoreEntitySet="LACK1_TRACKING_ALCOHOL">
+                <ScalarProperty Name="CONVERTED_UOM_DESC" ColumnName="CONVERTED_UOM_DESC" />
+                <ScalarProperty Name="CONVERTED_UOM_ID" ColumnName="CONVERTED_UOM_ID" />
+                <ScalarProperty Name="CONVERTED_QTY" ColumnName="CONVERTED_QTY" />
                 <ScalarProperty Name="PROD_QTY" ColumnName="PROD_QTY" />
                 <ScalarProperty Name="PARENT_ORDR" ColumnName="PARENT_ORDR" />
                 <ScalarProperty Name="TrackLevel" ColumnName="TrackLevel" />
@@ -10055,16 +10076,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="XML_LOGS_DETAILS">
-            <EntityTypeMapping TypeName="EMSModel.XML_LOGS_DETAILS">
-              <MappingFragment StoreEntitySet="XML_LOGS_DETAILS">
-                <ScalarProperty Name="ERROR_TIME" ColumnName="ERROR_TIME" />
-                <ScalarProperty Name="LOGS" ColumnName="LOGS" />
-                <ScalarProperty Name="XML_LOGS_ID" ColumnName="XML_LOGS_ID" />
-                <ScalarProperty Name="XML_LOGS_DETAILS_ID" ColumnName="XML_LOGS_DETAILS_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="XML_LOGS">
             <EntityTypeMapping TypeName="EMSModel.XML_LOGS">
               <MappingFragment StoreEntitySet="XML_LOGS">
@@ -10076,6 +10087,16 @@
                 <ScalarProperty Name="LAST_ERROR_TIME" ColumnName="LAST_ERROR_TIME" />
                 <ScalarProperty Name="XML_FILENAME" ColumnName="XML_FILENAME" />
                 <ScalarProperty Name="XML_LOGS_ID" ColumnName="XML_LOGS_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="XML_LOGS_DETAILS">
+            <EntityTypeMapping TypeName="EMSModel.XML_LOGS_DETAILS">
+              <MappingFragment StoreEntitySet="XML_LOGS_DETAILS">
+                <ScalarProperty Name="ERROR_TIME" ColumnName="ERROR_TIME" />
+                <ScalarProperty Name="LOGS" ColumnName="LOGS" />
+                <ScalarProperty Name="XML_LOGS_ID" ColumnName="XML_LOGS_ID" />
+                <ScalarProperty Name="XML_LOGS_DETAILS_ID" ColumnName="XML_LOGS_DETAILS_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
