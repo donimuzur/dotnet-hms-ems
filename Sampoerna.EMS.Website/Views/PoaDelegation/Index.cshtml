@@ -1,0 +1,143 @@
+﻿@model Sampoerna.EMS.Website.Models.PoaDelegation.PoaDelegationIndexViewModel
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="desc">POA Delegation<span>(Power of Attorney)</span></h3>
+            <div class="action-button new">
+                <a href="@Url.Action("Create", "PoaDelegation")">
+                    <button class="btn btn-blue">NEW</button>
+                </a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+
+            <table id="poaDelegationTable" class="display" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th class="toggle-row"> Filter </th>
+                        <th>No</th>
+                        <th>Delegation From</th>
+                        <th>Delegation To</th>
+                        <th>From Date</th>
+                        <th>To Date</th>
+                        <th>Reason</th>
+
+                    </tr>
+                </thead>
+                <thead class="filters">
+                    <tr>
+                        <th> Action</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    @for (int i = 0; i < Model.ListPoaDelegations.Count(); i++)
+                    {
+
+                        <tr>
+                            <td class="action">
+                                <a href="@Url.Action("Detail", "XmlFileManagement", new { id = Model.ListPoaDelegations[i].POA_DELEGATION_ID })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
+                                <a href="@Url.Action("Edit", "PoaDelegation", new { id = Model.ListPoaDelegations[i].POA_DELEGATION_ID })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                            </td>
+                            <td>@(i + 1)</td>
+                            <td>@Html.DisplayFor(model => model.ListPoaDelegations[i].PoaFrom)</td>
+                            <td>@Html.DisplayFor(model => model.ListPoaDelegations[i].PoaTo)</td>
+                            <td>@Html.DisplayFor(model => model.ListPoaDelegations[i].DateFromDisplay)</td>
+                            <td>@Html.DisplayFor(model => model.ListPoaDelegations[i].DateToDisplay)</td>
+                            <td>@Html.DisplayFor(model => model.ListPoaDelegations[i].Reason)</td>
+
+                        </tr>
+                    }
+
+                  
+                </tbody>
+            </table>
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            $('#MenuPoaDelegation').addClass('active');
+
+            setupDataTables();
+
+        });
+
+
+        function setupDataTables() {
+
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#poaDelegationTable')) {
+                table = $('#xmlLogTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#poaDelegationTable').DataTable(
+                  {
+                      "sDom": "Rlfrtip",
+                      "language": {
+                          "zeroRecords": "No records found",
+                          "infoFiltered": "(filtered from _MAX_ total records)"
+                      }
+                   
+                  });
+
+
+            $('#poaDelegationTable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+
+
+        }
+
+        function ReloadDataTables() {
+
+            setupDataTables();
+        }
+
+
+
+
+      
+
+    </script>
+}

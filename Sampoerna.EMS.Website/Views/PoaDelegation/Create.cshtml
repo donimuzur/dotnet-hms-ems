@@ -1,0 +1,230 @@
+﻿@model Sampoerna.EMS.Website.Models.PoaDelegation.PoaDelegationFormViewModel
+
+
+@using (Html.BeginForm("Create", "PoaDelegation", FormMethod.Post, new { @class = "form-excise", @id = "SavePoaDelegationForms" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3 class="desc">POA Delegation<span>(Power of Attorney)</span></h3>
+                <div class="action-button">
+                    <input type="button" id="btnSave" class="btn btn-blue" value="Save" />
+                    <input type="button" value="Back" class="btn btn-grey" id="btnBack" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="white-wrapper">
+                    @*<div class="scroll">*@
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Create POA Delegation
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <form class="form-excise" role="form">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3 long">Delegation From<span class="red">*</span></label>
+                                                    <div class="col-md-9">
+                                                        @Html.DropDownListFor(model => model.PoaFrom, Model.ListPoaFrom, "Select", new { @class = "form-control selectpicker" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3 long">Delegation To<span class="red">*</span></label>
+                                                    <div class="col-md-9">
+                                                        @Html.DropDownListFor(model => model.PoaTo, Model.ListPoaTo, "Select", new { @class = "form-control selectpicker" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">From Date<span class="red">*</span></label>
+                                                    <div class="col-md-9">
+                                                        <div class="input-group date">
+                                                            @Html.TextBoxFor(model => model.DateFrom, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                            <span class="input-group-addon">
+                                                                <i class="fa fa-calendar"></i>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">From To<span class="red">*</span></label>
+                                                    <div class="col-md-9">
+                                                        <div class="input-group date">
+                                                            @Html.TextBoxFor(model => model.DateTo, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                            <span class="input-group-addon">
+                                                                <i class="fa fa-calendar"></i>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Reason<span class="red">*</span></label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.Reason, new { @class = "form-control" })
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    @*</div>*@
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <span class="red">*</span> ) This Field Required
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+     <div id="ModalPoaDelegation" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"> Error</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        <span id="modalBodyMessage">Error</span>
+                    </p>
+
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+                </div>
+            </div>
+        </div>
+    </div>
+   
+
+}
+@section scripts {
+   
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            $('#MenuPoaDelegation').addClass('active');
+
+            $('#btnBack').click(function (e) {
+                location.href = '@Url.Action("Index", "PoaDelegation")';
+            });
+
+            $("#btnSave").click(function () {
+                if (ValidatePoaDelegationForm()) {
+                    $('#SavePoaDelegationForms').submit();
+                }
+            });
+           
+        });
+
+
+        function ValidatePoaDelegationForm() {
+            var result = true;
+            var blModal = false;
+            
+            if ($('#PoaFrom').find("option:selected").val() == '') {
+                AddValidationClass(false, 'PoaFrom');
+                result = false;
+                $('#modalBodyMessage').text('Please fill Delegation From');
+                $('#ModalPoaDelegation').modal('show');
+                blModal = true;
+            }
+
+            if ($('#PoaTo').find("option:selected").val() == '') {
+                AddValidationClass(false, 'PoaTo');
+                result = false;
+                if (!blModal) {
+                    $('#modalBodyMessage').text('Please fill Delegation To');
+                    $('#ModalPoaDelegation').modal('show');
+                }
+            }
+
+            if ($('#DateFrom').val() == '') {
+                AddValidationClass(false, 'DateFrom');
+                result = false;
+              
+            }
+
+            if ($('#DateTo').val() == '') {
+                AddValidationClass(false, 'DateTo');
+                result = false;
+
+            }
+
+            if ($('#Reason').val() == '') {
+                AddValidationClass(false, 'Reason');
+                result = false;
+
+            }
+
+
+            if (!result) {
+                $('#collapseOne').removeClass('collapse');
+                $('#collapseOne').addClass('in');
+                $("#collapseOne").css({ height: "auto" });
+            }
+
+
+            return result;
+        }
+
+        function AddValidationClass(isValid, objName) {
+            if (isValid) {
+                $('#' + objName).removeClass('input-validation-error');
+                $('#' + objName).addClass('valid');
+            } else {
+                $('#' + objName).removeClass('valid');
+                $('#' + objName).addClass('input-validation-error');
+            }
+        }
+
+       
+    </script>
+}
