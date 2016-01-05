@@ -230,6 +230,15 @@
 
             }
 
+            if ($('#PoaFrom').find("option:selected").val() == $('#PoaTo').find("option:selected").val()) {
+                AddValidationClass(false, 'PoaFrom');
+                AddValidationClass(false, 'PoaTo');
+                result = false;
+                if (!blModal) {
+                    $('#modalBodyMessage').text('Delegation From and To Same');
+                    $('#ModalPoaDelegation').modal('show');
+                }
+            }
 
             if (!result) {
                 $('#collapseOne').removeClass('collapse');

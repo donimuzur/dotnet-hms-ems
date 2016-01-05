@@ -134,6 +134,10 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 model = Mapper.Map<PoaDelegationFormViewModel>(_poaDelegationBll.GetById(id));
                 model = SetListModel(model);
+
+                model.ChangesHistoryList =
+                    Mapper.Map<List<ChangesHistoryItemModel>>(
+                        _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PoaDelegation, id.ToString()));
             }
             catch (Exception ex)
             {

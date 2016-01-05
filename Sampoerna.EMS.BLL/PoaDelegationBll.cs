@@ -8,7 +8,9 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
+using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -17,6 +19,9 @@ namespace Sampoerna.EMS.BLL
          private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<POA_DELEGATION> _repository;
+
+        private IChangesHistoryBLL _changesHistoryBll;
+
         private string _includeTables = "POA, USER";
 
         public PoaDelegationBLL(IUnitOfWork uow, ILogger logger)
@@ -24,6 +29,8 @@ namespace Sampoerna.EMS.BLL
             _uow = uow;
             _logger = logger;
             _repository = _uow.GetGenericRepository<POA_DELEGATION>();
+
+            _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
         }
 
 
@@ -49,7 +56,7 @@ namespace Sampoerna.EMS.BLL
                 //set changes history
                 var origin = Mapper.Map<POA_DELEGATIONDto>(dbData);
 
-                //SetChangesHistory(origin, input.WasteStockDto, input.UserId);
+                SetChangesHistory(origin, input.PoaDelegationDto, input.UserId);
 
                 Mapper.Map(input.PoaDelegationDto, dbData);
 
@@ -89,6 +96,62 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<POA_DELEGATIONDto>(dbData);
 
         }
+
+        private bool SetChangesHistory(POA_DELEGATIONDto origin, POA_DELEGATIONDto data, string userId)
+        {
+            bool isModified = false;
+
+            var changesData = new Dictionary<string, bool>();
+            changesData.Add("DELEGATION_FROM", origin.POA_FROM == data.POA_FROM);
+            changesData.Add("DELEGATION_TO", origin.POA_TO == data.POA_TO);
+            changesData.Add("FROM_DATE", origin.DATE_FROM == data.DATE_FROM);
+            changesData.Add("TO_DATE", origin.DATE_TO == data.DATE_TO);
+            changesData.Add("REASON", origin.REASON == data.REASON);
+
+            foreach (var listChange in changesData)
+            {
+                if (listChange.Value) continue;
+                var changes = new CHANGES_HISTORY();
+                changes.FORM_TYPE_ID = Enums.MenuList.PoaDelegation;
+                changes.FORM_ID = origin.POA_DELEGATION_ID.ToString();
+                changes.FIELD_NAME = listChange.Key;
+                changes.MODIFIED_BY = userId;
+                changes.MODIFIED_DATE = DateTime.Now;
+                switch (listChange.Key)
+                {
+                    case "DELEGATION_FROM":
+                        changes.OLD_VALUE = origin.POA_FROM;
+                        changes.NEW_VALUE = data.POA_FROM;
+                        break;
+
+                    case "DELEGATION_TO":
+                        changes.OLD_VALUE = origin.POA_TO;
+                        changes.NEW_VALUE = data.POA_TO;
+                        break;
+
+                    case "FROM_DATE":
+                        changes.OLD_VALUE = ConvertHelper.ConvertDateToStringddMMMyyyy(origin.DATE_FROM);
+                        changes.NEW_VALUE = ConvertHelper.ConvertDateToStringddMMMyyyy(data.DATE_FROM);
+                        break;
+
+                    case "TO_DATE":
+                        changes.OLD_VALUE = ConvertHelper.ConvertDateToStringddMMMyyyy(origin.DATE_TO);
+                        changes.NEW_VALUE = ConvertHelper.ConvertDateToStringddMMMyyyy(data.DATE_TO);
+                        break;
+
+                    case "REASON":
+                        changes.OLD_VALUE = origin.REASON;
+                        changes.NEW_VALUE = data.REASON;
+                        break;
+
+                }
+
+                _changesHistoryBll.AddHistory(changes);
+                isModified = true;
+            }
+            return isModified;
+        }
+
 
         public POA_DELEGATIONDto GetById(int id)
         {
