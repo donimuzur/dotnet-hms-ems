@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.Server;
 using Sampoerna.EMS.BLL.Services;
@@ -19,6 +20,8 @@ namespace Sampoerna.EMS.BLL
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IWasteRoleServices _wasteRoleServices;
 
+        private IPoaDelegationServices _poaDelegationServices;
+
         public WorkflowBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -29,6 +32,7 @@ namespace Sampoerna.EMS.BLL
             _poaMapBll = new ZaidmExPOAMapBLL(_uow, _logger);
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
             _wasteRoleServices = new WasteRoleServices(_uow, _logger);
+            _poaDelegationServices = new PoaDelegationServices(_uow, _logger);
         }
 
         public bool AllowEditDocument(WorkflowAllowEditAndSubmitInput input)
@@ -66,21 +70,39 @@ namespace Sampoerna.EMS.BLL
         /// <returns></returns>
         private bool IsOneNppbkc(string nppbkcId, string approvalUser)
         {
-            var poaApprovalUserData = _poaMapBll.GetByUserLogin(approvalUser);
+            //var poaApprovalUserData = _poaMapBll.GetByUserLogin(approvalUser);
+            //var data = poaApprovalUserData.Where(c => c.NPPBKC_ID == nppbkcId).ToList();
 
-            //return nppbkcId == poaApprovalUserData.NPPBKC_ID;
-            var data = poaApprovalUserData.Where(c => c.NPPBKC_ID == nppbkcId).ToList();
+            //return data.Count > 0;
 
-            return data.Count > 0;
+            var poaApprovalUserData = _poabll.GetPoaActiveByNppbkcId(nppbkcId);
+
+            //add delegate poa too
+            List<string> listUser = poaApprovalUserData.Select(c => c.POA_ID).Distinct().ToList();
+            var listPoaDelegate =
+                       _poaDelegationServices.GetListPoaDelegateByDate(listUser, DateTime.Now);
+            listUser.AddRange(listPoaDelegate);
+
+            return listUser.Contains(approvalUser);
+
+            
+           
         }
 
         private bool IsOnePlant(string plantId, string approvalUser)
         {
             var listApprovalUser = _poabll.GetPoaActiveByPlantId(plantId);
 
-            var data = listApprovalUser.FirstOrDefault(c => c.POA_ID == approvalUser);
+            //add delegate poa too
+            List<string> listUser = listApprovalUser.Select(c => c.POA_ID).Distinct().ToList();
+            var listPoaDelegate =
+                       _poaDelegationServices.GetListPoaDelegateByDate(listUser, DateTime.Now);
+            listUser.AddRange(listPoaDelegate);
+            return  listUser.Contains(approvalUser);
 
-            return data != null;
+            //var data = listApprovalUser.FirstOrDefault(c => c.POA_ID == approvalUser);
+
+            //return data != null;
         }
 
         /// <summary>
@@ -131,7 +153,9 @@ namespace Sampoerna.EMS.BLL
                 {
                     //created user is poa, let's check isOneNppbkc with current user or not
                     return IsOneNppbkc(input.NppbkcId, input.CurrentUser);
+                   
                 }
+                
                 return input.PlantId != null ? IsOnePlant(input.PlantId, input.CurrentUser) : IsOneNppbkc(input.NppbkcId, input.CurrentUser);
             }
             

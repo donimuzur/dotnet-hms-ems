@@ -109,6 +109,7 @@
     <Compile Include="Services\Pbck1ProdConverterService.cs" />
     <Compile Include="Services\PBCK1Service.cs" />
     <Compile Include="Services\Pbck3Services.cs" />
+    <Compile Include="Services\PoaDelegationServices.cs" />
     <Compile Include="Services\T001KService.cs" />
     <Compile Include="Services\T001Service.cs" />
     <Compile Include="Services\T001WService.cs" />

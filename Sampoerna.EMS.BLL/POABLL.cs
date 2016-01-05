@@ -172,5 +172,11 @@ namespace Sampoerna.EMS.BLL
             var poaList = dbData.ToList().Select(d => d.POA);
             return Mapper.Map<List<POADto>>(poaList.ToList());
         }
+
+        public List<POADto> GetAllPoaActive()
+        {
+            var dbData = _repository.Get(c => c.IS_ACTIVE.Value).ToList();
+            return Mapper.Map<List<POADto>>(dbData);
+        }
     }
 }

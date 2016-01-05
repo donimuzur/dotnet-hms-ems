@@ -27,6 +27,7 @@ namespace Sampoerna.EMS.BLL
         private string includeTables = "USER";
 
         private IWasteRoleServices _wasteRoleServices;
+        private IPoaDelegationServices _poaDelegationServices;
 
         public WorkflowHistoryBLL(IUnitOfWork uow, ILogger logger)
         {
@@ -36,6 +37,7 @@ namespace Sampoerna.EMS.BLL
             _poaMapBll = new ZaidmExPOAMapBLL(_uow,_logger);
             _poaBll = new POABLL(_uow,_logger);
             _wasteRoleServices = new WasteRoleServices(_uow, _logger);
+            _poaDelegationServices = new PoaDelegationServices(_uow, _logger);
         }
 
         public WorkflowHistoryDto GetById(long id)
@@ -161,11 +163,12 @@ namespace Sampoerna.EMS.BLL
             {
                 if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApproval)
                 {
+                    List<POADto> listPoa;
                     if(input.FormType == Enums.FormType.PBCK1){
-                        var listPoa = _poaBll.GetPoaByNppbkcIdAndMainPlant(input.NppbkcId).Distinct().ToList();
-                        displayUserId = listPoa.Aggregate("", (current, poaDto) => current + (poaDto.POA_ID + ","));
+                       
+                        listPoa = _poaBll.GetPoaByNppbkcIdAndMainPlant(input.NppbkcId).Distinct().ToList();
+                        //displayUserId = listPoa.Aggregate("", (current, poaDto) => current + (poaDto.POA_ID + ","));
                     }else{
-                        List<POADto> listPoa;
                         var isPoaCreatedUser = _poaBll.GetActivePoaById(input.DocumentCreator);
                         if (isPoaCreatedUser != null)
                         {
@@ -181,11 +184,21 @@ namespace Sampoerna.EMS.BLL
                             listPoa = !string.IsNullOrEmpty(input.PlantId) ? _poaBll.GetPoaActiveByPlantId(input.PlantId).Distinct().ToList()
                             : _poaBll.GetPoaActiveByNppbkcId(input.NppbkcId).Distinct().ToList();
                         }
-                        
-                        displayUserId = listPoa.Aggregate("", (current, poaMapDto) => current + (poaMapDto.POA_ID + ","));
+
+                        //old code
+                        //displayUserId = listPoa.Aggregate("", (current, poaMapDto) => current + (poaMapDto.POA_ID + ","));
                     }
-                    if (displayUserId.Length > 0)
-                        displayUserId = displayUserId.Substring(0, displayUserId.Length - 1);
+
+                    //add delegate poa
+                    List<string> listUser = listPoa.Select(c => c.POA_ID).ToList();
+                    var listPoaDelegate =
+                        _poaDelegationServices.GetListPoaDelegateByDate(listUser, DateTime.Now);
+                    listUser.AddRange(listPoaDelegate);
+
+                    displayUserId = string.Join(",", listUser.Distinct());
+
+                    //if (displayUserId.Length > 0)
+                    //    displayUserId = displayUserId.Substring(0, displayUserId.Length - 1);
 
                     newRecord.ROLE = Enums.UserRole.POA;
                 }

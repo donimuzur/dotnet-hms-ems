@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
 using iTextSharp.text;
@@ -46,8 +47,18 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
 
-            model.ListPoaFrom = GlobalFunctions.GetPoaAll(_poabll);
-            model.ListPoaTo = GlobalFunctions.GetPoaAll(_poabll);
+            var listPoa = _poabll.GetAllPoaActive();
+
+            var selectList = from s in listPoa
+                             select new SelectListItem
+                             {
+                                 Value = s.POA_ID,
+                                 Text = s.POA_ID 
+                                 //Text = s.POA_ID + "-" + s.PRINTED_NAME
+                             };
+
+            model.ListPoaFrom = new SelectList(selectList, "Value", "Text"); ;// GlobalFunctions.GetPoaAll(_poabll);
+            model.ListPoaTo = new SelectList(selectList, "Value", "Text");
 
             //model.PlantList = GlobalFunctions.GetPlantAll();
             //model.MaterialNumberList = GetMaterialList(model.PlantId);
