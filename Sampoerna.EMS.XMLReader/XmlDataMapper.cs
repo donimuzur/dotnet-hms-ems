@@ -93,7 +93,7 @@ namespace Sampoerna.EMS.XMLReader
                 foreach (var item in existingData)
                 {
                     if (item is PRODUCTION || item is INVENTORY_MOVEMENT)
-                        needMoved = false;
+                        needMoved = true;
                     if (item is LFA1)
                         continue;
 
