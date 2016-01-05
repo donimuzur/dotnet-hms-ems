@@ -38,6 +38,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string FinishGoodCode { get; set; }
         public decimal Remaining { get; set; }
         public decimal BeginningStock { get; set; }
+        public string ReceivedCk5No { get; set; }
         public decimal Received { get; set; }
         public decimal UsageOther { get; set; }
         public decimal UsageSelf { get; set; }

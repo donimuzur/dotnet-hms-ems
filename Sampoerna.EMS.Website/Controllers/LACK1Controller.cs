@@ -2350,6 +2350,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 slDocument.SetCellValue(iRow, iColumn, data.BeginningStock);
                 iColumn = iColumn + 1;
 
+                slDocument.SetCellValue(iRow, iColumn, data.ReceivedCk5No);
+                iColumn = iColumn + 1;
+
                 slDocument.SetCellValue(iRow, iColumn, data.Received);
                 iColumn = iColumn + 1;
 
@@ -2478,6 +2481,10 @@ namespace Sampoerna.EMS.Website.Controllers
             iColumn = iColumn + 1;
 
             slDocument.SetCellValue(1, iColumn, "Beginning Stock (gr)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "CK-5 No");
             slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
             iColumn = iColumn + 1;
 
