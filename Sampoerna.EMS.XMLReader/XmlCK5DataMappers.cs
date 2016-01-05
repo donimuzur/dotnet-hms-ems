@@ -475,7 +475,8 @@ namespace Sampoerna.EMS.XMLReader
         {
             //create xml file status 03 
             var ck5Writer = new XmlCK5DataWriter();
-            BLLMapper.InitializeCK5();
+            //BLLMapper.InitializeCK5(); 
+            BLLMapper.Initialize();
             var outboundPath = ConfigurationManager.AppSettings["XmlOutboundPath"];
             var date = DateTime.Now.ToString("yyyyMMdd");
             var time = DateTime.Now.ToString("hhmmss");
