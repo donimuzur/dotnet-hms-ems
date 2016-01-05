@@ -501,6 +501,9 @@
     <Compile Include="ZAIDM_EX_MATERIAL.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="ZAIDM_EX_MATERIAL_BALANCE.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="ZAIDM_EX_NPPBKC.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
