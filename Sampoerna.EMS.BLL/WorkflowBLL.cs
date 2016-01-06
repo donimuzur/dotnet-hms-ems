@@ -5,6 +5,7 @@ using Microsoft.SqlServer.Server;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Voxteneo.WebComponents.Logger;
 using Enums = Sampoerna.EMS.Core.Enums;
 
@@ -41,7 +42,10 @@ namespace Sampoerna.EMS.BLL
                 return false;
 
             if (input.CreatedUser != input.CurrentUser)
-                return false;
+            {
+                return _poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
+                    DateTime.Now);
+            }
 
             return true;
         }
@@ -126,11 +130,41 @@ namespace Sampoerna.EMS.BLL
                 //    return false;
 
                 //if document was rejected then must approve by poa that rejected
-                var rejectedPoa = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
-                if (rejectedPoa != "")
+                //var rejectedPoa = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
+                var rejectedPoa = _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
+                
+                if (rejectedPoa != null)
                 {
-                    if (input.CurrentUser != rejectedPoa)
+                    var listUser = new List<string>();
+                    
+
+                    //delegate
+                    string originalPoa;
+                    if (rejectedPoa.COMMENT.Contains(Constans.LabelDelegatedBy))
+                    {
+                        //rejected by delegated
+                        //find the original
+                        originalPoa = rejectedPoa.COMMENT.Substring(rejectedPoa.COMMENT.IndexOf(Constans.LabelDelegatedBy, System.StringComparison.Ordinal));
+                        originalPoa = originalPoa.Replace(Constans.LabelDelegatedBy, "");
+                        originalPoa = originalPoa.Replace("]", "");
+
+                    }
+                    else
+                    {
+                        originalPoa = rejectedPoa.ACTION_BY;
+                    }
+
+                    listUser.Add(originalPoa);
+
+                    var poaDelegate = _poaDelegationServices.GetPoaDelegationToByPoaFromAndDate(originalPoa, DateTime.Now);
+                    listUser.AddRange(poaDelegate);
+
+                    if (!listUser.Contains(input.CurrentUser))
                         return false;
+                    //end delegate
+
+                    //if (input.CurrentUser != rejectedPoa)
+                    //    return false;
                 }
 
                 if (input.FormType == Enums.FormType.PBCK3)
@@ -195,27 +229,63 @@ namespace Sampoerna.EMS.BLL
 
             if (input.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval || completedEdit)
             {
+                string originalPoa;
+
                 if (input.UserRole == Enums.UserRole.Manager)
                     return false;
 
-                //if (input.CreatedUser == input.CurrentUser && input.UserRole == Enums.UserRole.User)
-                //    return true;
-
-                //allow poa and creator
                 if (input.CreatedUser == input.CurrentUser)
                     return true;
 
+                originalPoa = input.CreatedUser;
+
+                ////get delegate if exist
+                //var listDelegatedUser = _poaDelegationServices.GetPoaDelegationToByPoaFromAndDate(
+                //    input.CreatedUser, DateTime.Now);
+                //if (listDelegatedUser.Contains(input.CurrentUser))
+                //    return true;
+
                 if (input.UserRole == Enums.UserRole.POA)
                 {
-                   
-                    //get poa that already approve or reject
-                    var poaId = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
-                    if (string.IsNullOrEmpty(poaId))
-                        return false;
+                    //get poa Original that already approve or reject
+                    var workflowHistoryDto =
+                        _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
 
-                    if (poaId == input.CurrentUser)
-                        return true;
+                    if (workflowHistoryDto.COMMENT.Contains(Constans.LabelDelegatedBy)) //approve by delegated
+                    {
+                        //find the original
+                        originalPoa =
+                            workflowHistoryDto.COMMENT.Substring(
+                                workflowHistoryDto.COMMENT.IndexOf(Constans.LabelDelegatedBy,
+                                    System.StringComparison.Ordinal));
+                        originalPoa = originalPoa.Replace(Constans.LabelDelegatedBy, "");
+                        originalPoa = originalPoa.Replace("]", "");
+                    }
+                    else
+                    {
+                        originalPoa = workflowHistoryDto.ACTION_BY;
+                    }
+
+                    ////get poa that already approve or reject
+                    //var poaId = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
+                    //if (string.IsNullOrEmpty(poaId))
+                    //    return false;
+
+                    //if (poaId == input.CurrentUser)
+                    //    return true;
                 }
+
+                //get delegated user
+                var listUser = new List<string>();
+                listUser.Add(originalPoa);
+                var poaDelegate = _poaDelegationServices.GetPoaDelegationToByPoaFromAndDate(originalPoa,
+                    DateTime.Now);
+
+                listUser.AddRange(poaDelegate);
+
+                if (listUser.Contains(input.CurrentUser))
+                    return true;
+
 
             }
 

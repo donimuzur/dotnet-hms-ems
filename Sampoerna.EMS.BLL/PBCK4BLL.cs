@@ -14,6 +14,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.MessagingService;
 using Sampoerna.EMS.Utils;
@@ -46,6 +47,7 @@ namespace Sampoerna.EMS.BLL
         private IBlockStockBLL _blockStockBll;
         private IHeaderFooterBLL _headerFooterBll;
         private IWorkflowBLL _workflowBll;
+        private IPoaDelegationServices _poaDelegationServices;
 
         private string includeTables = "PBCK4_ITEM,PBCK4_DOCUMENT, POA, USER, PBCK4_ITEM.CK1, PBCK4_ITEM.CK1.CK1_ITEM";
 
@@ -73,6 +75,7 @@ namespace Sampoerna.EMS.BLL
             _blockStockBll = new BlockStockBLL(_uow, _logger);
             _headerFooterBll = new HeaderFooterBLL(_uow, _logger);
             _workflowBll = new WorkflowBLL(_uow, _logger);
+            _poaDelegationServices = new PoaDelegationServices(_uow, _logger);
         }
 
         public List<Pbck4Dto> GetPbck4ByParam(Pbck4GetByParamInput input)
@@ -256,6 +259,23 @@ namespace Sampoerna.EMS.BLL
                     dbData.PBCK4_ITEM.Add(pbck4Item);
                 }
 
+                //delegate user
+                inputWorkflowHistory.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY,
+                    input.UserId, DateTime.Now);
+
+
+                //if (dbData.CREATED_BY != input.UserId)
+                //{
+                //    // need to check again ?
+                //    if (_poaDelegationServices.IsDelegatedUserByUserAndDate(dbData.CREATED_BY, input.UserId,
+                //        DateTime.Now))
+                //    {
+                //        inputWorkflowHistory.Comment = Constans.LabelDelegatedBy + dbData.CREATED_BY;
+                //        //add to poa delegate history
+                //    }
+                //    else 
+                //        throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+                //}
             }
             else
             {
@@ -1026,6 +1046,10 @@ namespace Sampoerna.EMS.BLL
 
             input.DocumentNumber = dbData.PBCK4_NUMBER;
 
+            //delegate
+            input.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY, input.UserId,
+                DateTime.Now);
+
             AddWorkflowHistory(input);
 
             switch (input.UserRole)
@@ -1119,6 +1143,34 @@ namespace Sampoerna.EMS.BLL
 
 
             input.DocumentNumber = dbData.PBCK4_NUMBER;
+            
+            //delegate
+            var inputHistory = new GetByFormTypeAndFormIdInput();
+            inputHistory.FormId = dbData.PBCK4_ID;
+            inputHistory.FormType = Enums.FormType.PBCK4;
+
+            var rejectedPoa = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(inputHistory);
+            if (rejectedPoa != null)
+            {
+                input.Comment = _poaDelegationServices.CommentDelegatedUserRejected(rejectedPoa.COMMENT,
+                    rejectedPoa.ACTION_BY, input.UserId, DateTime.Now);
+            }
+            else
+            {
+                var isPoaCreatedUser = _poaBll.GetActivePoaById(dbData.CREATED_BY);
+                if (isPoaCreatedUser != null) //if creator = poa
+                {
+                    input.Comment = _poaDelegationServices.CommentDelegatedUserApprovalByNppbkc(dbData.NPPBKC_ID,
+                        input.UserId, DateTime.Now);
+
+                }
+                else
+                {
+                    input.Comment = _poaDelegationServices.CommentDelegatedUserApprovalByPlant(dbData.PLANT_ID,
+                        input.UserId, DateTime.Now);
+                }
+            }
+            //end delegate
 
             AddWorkflowHistory(input);
 
@@ -1153,6 +1205,38 @@ namespace Sampoerna.EMS.BLL
             dbData.REJECTED_DATE = DateTime.Now;
 
             input.DocumentNumber = dbData.PBCK4_NUMBER;
+
+            //delegate
+            var inputHistory = new GetByFormTypeAndFormIdInput();
+            inputHistory.FormId = dbData.PBCK4_ID;
+            inputHistory.FormType = Enums.FormType.PBCK4;
+
+            var rejectedPoa = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(inputHistory);
+            string commentReject;
+            if (rejectedPoa != null)
+            {
+                commentReject = _poaDelegationServices.CommentDelegatedUserRejected(rejectedPoa.COMMENT,
+                    rejectedPoa.ACTION_BY, input.UserId, DateTime.Now);
+            }
+            else
+            {
+                var isPoaCreatedUser = _poaBll.GetActivePoaById(dbData.CREATED_BY);
+                if (isPoaCreatedUser != null) //if creator = poa
+                {
+                    commentReject = _poaDelegationServices.CommentDelegatedUserApprovalByNppbkc(dbData.NPPBKC_ID,
+                        input.UserId, DateTime.Now);
+
+                }
+                else
+                {
+                    commentReject = _poaDelegationServices.CommentDelegatedUserApprovalByPlant(dbData.PLANT_ID,
+                        input.UserId, DateTime.Now);
+                }
+            }
+            if (!string.IsNullOrEmpty(commentReject))
+                input.Comment += " [" + commentReject + "]";
+            //end delegate
+
 
             AddWorkflowHistory(input);
 
@@ -1995,6 +2079,7 @@ namespace Sampoerna.EMS.BLL
 
             }
         }
-        
+
+      
     }
 }

@@ -8,6 +8,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
@@ -108,7 +109,36 @@ namespace Sampoerna.EMS.BLL
                 {
                     //was rejected
                     input.IsRejected = true;
-                    input.RejectedBy = rejected.ACTION_BY;
+
+                    //delegated
+                    string originalPoa;
+                    var listUser = new List<string>();
+                     //is the rejected original or delegated
+                    if (rejected.COMMENT.Contains(Constans.LabelDelegatedBy))
+                    {
+                        //rejected by delegated
+                        //find the original
+                        originalPoa = rejected.COMMENT.Substring(rejected.COMMENT.IndexOf(Constans.LabelDelegatedBy, System.StringComparison.Ordinal));
+                        originalPoa = originalPoa.Replace(Constans.LabelDelegatedBy, "");
+                        originalPoa = originalPoa.Replace("]", "");
+
+                    }
+                    else
+                    {
+                        originalPoa = rejected.ACTION_BY;
+                    }
+
+                    listUser.Add(originalPoa);
+                    var poaDelegate = _poaDelegationServices.GetPoaDelegationToByPoaFromAndDate(originalPoa, DateTime.Now);
+                    
+                    listUser.AddRange(poaDelegate);
+
+                    input.RejectedBy = string.Join(",", listUser);
+
+                    //end delegated
+
+
+                    //input.RejectedBy = rejected.ACTION_BY;
                 }
                 else
                 {
@@ -258,14 +288,15 @@ namespace Sampoerna.EMS.BLL
 
             var dbData =
                 _repository.Get(
-                    c =>
-                        c.FORM_NUMBER == documentNumber && (c.ACTION == Enums.ActionType.Reject || c.ACTION == Enums.ActionType.Approve) && c.ROLE == Enums.UserRole.POA).FirstOrDefault();
+                    c => c.FORM_NUMBER == documentNumber && (c.ACTION == Enums.ActionType.Reject || c.ACTION == Enums.ActionType.Approve) && c.ROLE == Enums.UserRole.POA).FirstOrDefault();
 
             if (dbData != null)
                 result = dbData.ACTION_BY;
 
             return result;
         }
+
+      
 
         public string GetPoaByDocumentNumber(string documentNumber)
         {
@@ -419,7 +450,17 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
-        
+        public WorkflowHistoryDto GetDtoApprovedRejectedPoaByDocumentNumber(string documentNumber)
+        {
+            
+            var dbData =
+                _repository.Get(
+                    c =>c.FORM_NUMBER == documentNumber && (c.ACTION == Enums.ActionType.Reject || c.ACTION == Enums.ActionType.Approve) && c.ROLE == Enums.UserRole.POA).FirstOrDefault();
+
+
+            return Mapper.Map<WorkflowHistoryDto>(dbData);
+        }
+
 
     }
 }

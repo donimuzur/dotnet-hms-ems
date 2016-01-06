@@ -20,6 +20,8 @@
         public const string WasteDust = "W.DUST";
         public const string WasteStem = "W.STEM";
 
+        public const string LabelDelegatedBy = "Delegated By ";
+
         /// <summary>
         /// list of SessionKey constanta
         /// </summary>

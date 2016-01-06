@@ -9,4 +9,11 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string UserId { get; set; }
         public Enums.UserRole UserRole { get; set; }
     }
+
+    public class GetCommentDelegateForWorkflowInput
+    {
+        public long FormId { get; set; }
+        public Enums.FormType FormType { get; set; }
+
+    }
 }
