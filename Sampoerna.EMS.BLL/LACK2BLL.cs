@@ -1336,6 +1336,25 @@ namespace Sampoerna.EMS.BLL
 
         public List<Lack2Dto> GetDashboardDataByParam(Lack2GetDashboardDataByParamInput input)
         {
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                var nppbkc = _nppbkcService.GetNppbkcsByPoa(input.UserId);
+                if (nppbkc != null && nppbkc.Count > 0)
+                {
+                    input.NppbkcList = nppbkc.Select(c => c.NPPBKC_ID).ToList();
+                }
+                else
+                {
+                    input.NppbkcList = new List<string>();
+                }
+            }
+            else if (input.UserRole == Enums.UserRole.Manager)
+            {
+                var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
+                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+                input.DocumentNumberList = document;
+            }
+
             var data = _lack2Service.GetDashboardDataByParam(input);
             return Mapper.Map<List<Lack2Dto>>(data);
         }
