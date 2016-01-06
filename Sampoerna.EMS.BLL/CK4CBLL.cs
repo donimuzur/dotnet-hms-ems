@@ -1353,6 +1353,8 @@ namespace Sampoerna.EMS.BLL
             if (input.isForExport)
                 data = SetDataSummaryForExport(rc);
 
+            data = data.OrderBy(x => x.PlantId).ToList();
+
             return data;
         }
 
