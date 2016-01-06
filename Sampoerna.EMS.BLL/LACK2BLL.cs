@@ -1149,6 +1149,9 @@ namespace Sampoerna.EMS.BLL
         public List<Lack2SummaryReportDto> GetSummaryReportsByParam(Lack2GetSummaryReportByParamInput input)
         {
             var rc = _lack2Service.GetSummaryReportsByParam(input);
+
+            rc = rc.OrderBy(x => x.LEVEL_PLANT_ID).ToList();
+
             return SetDataSummaryReport(rc);
         }
 
@@ -1231,6 +1234,8 @@ namespace Sampoerna.EMS.BLL
         {
 
             var rc = _lack2Service.GetDetailReportsByParam(input);
+
+            rc = rc.OrderBy(x => x.LEVEL_PLANT_ID).ToList();
 
             if (rc == null)
             {
