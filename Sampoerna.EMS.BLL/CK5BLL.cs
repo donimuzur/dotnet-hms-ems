@@ -3242,8 +3242,8 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
 
-           
-            var mapResult = Mapper.Map<List<Ck5SummaryReportDto>>(rc.ToList());
+
+            var mapResult = Mapper.Map<List<Ck5SummaryReportDto>>(rc.OrderBy(x => x.SUBMISSION_DATE).OrderBy(x => x.DEST_PLANT_ID).OrderBy(x => x.SOURCE_PLANT_ID).ToList());
 
             foreach (var ck5SummaryReportDto in mapResult)
             {
