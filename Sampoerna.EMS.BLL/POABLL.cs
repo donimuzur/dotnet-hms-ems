@@ -178,5 +178,7 @@ namespace Sampoerna.EMS.BLL
             var dbData = _repository.Get(c => c.IS_ACTIVE.Value).ToList();
             return Mapper.Map<List<POADto>>(dbData);
         }
+
+      
     }
 }

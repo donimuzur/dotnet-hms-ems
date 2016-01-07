@@ -19,14 +19,17 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPoaDelegationBLL _poaDelegationBll;
         private IPOABLL _poabll;
         private IChangesHistoryBLL _changesHistoryBll;
+        private IUserBLL _userBll;
+
 
         public PoaDelegationController(IPageBLL pageBLL, IPoaDelegationBLL poaDelegationBll, IPOABLL poabll,
-            IChangesHistoryBLL changesHistoryBll)
+            IChangesHistoryBLL changesHistoryBll, IUserBLL userBll)
             : base(pageBLL, Enums.MenuList.MasterData)
         {
             _poaDelegationBll = poaDelegationBll;
             _poabll = poabll;
             _changesHistoryBll = changesHistoryBll;
+            _userBll = userBll;
         }
 
         // GET: /PoaDelegation/
@@ -42,34 +45,59 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
         }
 
-        private PoaDelegationFormViewModel SetListModel(PoaDelegationFormViewModel model)
+        private PoaDelegationFormViewModel SetListModel(PoaDelegationFormViewModel model, bool isCreateView)
         {
             model.MainMenu = Enums.MenuList.MasterData;
             model.CurrentMenu = PageInfo;
 
-            var listPoa = _poabll.GetAllPoaActive();
+            if (isCreateView)
+            {
+                var listUsers = _userBll.GetUsers();
 
-            var selectList = from s in listPoa
-                             select new SelectListItem
-                             {
-                                 Value = s.POA_ID,
-                                 Text = s.POA_ID 
-                                 //Text = s.POA_ID + "-" + s.PRINTED_NAME
-                             };
+                var selectList = from s in listUsers
+                                 select new SelectListItem
+                                 {
+                                     Value = s.USER_ID,
+                                     Text = s.USER_ID
+                                     //Text = s.POA_ID + "-" + s.PRINTED_NAME
+                                 };
 
-            model.ListPoaFrom = new SelectList(selectList, "Value", "Text"); ;// GlobalFunctions.GetPoaAll(_poabll);
-            model.ListPoaTo = new SelectList(selectList, "Value", "Text");
+                model.ListPoaFrom = new SelectList(selectList, "Value", "Text"); ;// GlobalFunctions.GetPoaAll(_poabll);
+                //model.ListPoaTo = new SelectList(selectList, "Value", "Text");
+            }
 
-            //model.PlantList = GlobalFunctions.GetPlantAll();
-            //model.MaterialNumberList = GetMaterialList(model.PlantId);
+            else
+            {
+                var listUsers = _userBll.GetUsers();
 
+                var selectList = from s in listUsers
+                                 select new SelectListItem
+                                 {
+                                     Value = s.USER_ID,
+                                     Text = s.USER_ID
+                                 };
+
+                model.ListPoaFrom = new SelectList(selectList, "Value", "Text"); ;// GlobalFunctions.GetPoaAll(_poabll);
+
+                var listUsersTo = _userBll.GetListUserRoleByUserId(model.PoaFrom);
+
+                var selectListTo = from s in listUsersTo
+                                 select new SelectListItem
+                                 {
+                                     Value = s.UserId,
+                                     Text = s.UserId
+                                 };
+
+                model.ListPoaTo = new SelectList(selectListTo, "Value", "Text");
+            }
+          
             return model;
         }
 
         public ActionResult Create()
         {
             var model = new PoaDelegationFormViewModel();
-            model = SetListModel(model);
+            model = SetListModel(model, true);
             return View("Create", model);
         }
 
@@ -92,7 +120,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
             }
 
-            model = SetListModel(model);
+            model = SetListModel(model,false);
             return View("Create", model);
         }
 
@@ -144,7 +172,7 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 model = Mapper.Map<PoaDelegationFormViewModel>(_poaDelegationBll.GetById(id));
-                model = SetListModel(model);
+                model = SetListModel(model, false);
 
                 model.ChangesHistoryList =
                     Mapper.Map<List<ChangesHistoryItemModel>>(
@@ -153,7 +181,7 @@ namespace Sampoerna.EMS.Website.Controllers
             catch (Exception ex)
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
-                model = SetListModel(model);
+                model = SetListModel(model, false);
             }
 
             return View("Edit", model);
@@ -178,8 +206,21 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
             }
 
-            model = SetListModel(model);
+            model = SetListModel(model, false);
             return View("Edit", model);
         }
+
+        [HttpPost]
+        public JsonResult GetListUsersRole(string userId)
+        {
+            var dbUser = _userBll.GetListUserRoleByUserId(userId);
+
+            //var model = Mapper.Map<WasteRoleFormViewModel>(dbUser);
+
+
+            return Json(dbUser);
+        }
+
+
     }
 }

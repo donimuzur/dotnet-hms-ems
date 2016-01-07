@@ -48,7 +48,18 @@
                                                 <div class="row">
                                                     <label class="col-md-3 long">Delegation To<span class="red">*</span></label>
                                                     <div class="col-md-9">
-                                                        @Html.DropDownListFor(model => model.PoaTo, Model.ListPoaTo, "Select", new { @class = "form-control selectpicker" })
+                                                        @if (Model.ListPoaTo == null)
+                                                        {
+                                                            <select class="form-control selectpicker" id="PoaTo">
+                                                                <option value="">Select</option>
+                                                            </select>
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.DropDownListFor(model => model.PoaTo, Model.ListPoaTo, "Select", new { @class = "form-control selectpicker" })
+                                                        }
+
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -94,7 +105,7 @@
                                                 <div class="row">
                                                     <label class="col-md-3">Reason<span class="red">*</span></label>
                                                     <div class="col-md-9">
-                                                        @Html.TextAreaFor(model => model.Reason, new { @class = "form-control", @rows="5" })
+                                                        @Html.TextAreaFor(model => model.Reason, new { @class = "form-control", @rows = "5" })
 
                                                     </div>
                                                 </div>
@@ -124,7 +135,7 @@
         </div>
     </div>
 
-     <div id="ModalPoaDelegation" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div id="ModalPoaDelegation" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
@@ -142,11 +153,11 @@
             </div>
         </div>
     </div>
-   
+
 
 }
 @section scripts {
-   
+
     <script type="text/javascript" language="javascript">
 
         $(document).ready(function () {
@@ -161,14 +172,15 @@
                     $('#SavePoaDelegationForms').submit();
                 }
             });
-           
+
+            OnChangeUserFrom();
         });
 
 
         function ValidatePoaDelegationForm() {
             var result = true;
             var blModal = false;
-            
+
             if ($('#PoaFrom').find("option:selected").val() == '') {
                 AddValidationClass(false, 'PoaFrom');
                 result = false;
@@ -189,7 +201,7 @@
             if ($('#DateFrom').val() == '') {
                 AddValidationClass(false, 'DateFrom');
                 result = false;
-              
+
             }
 
             if ($('#DateTo').val() == '') {
@@ -213,7 +225,7 @@
                     $('#ModalPoaDelegation').modal('show');
                 }
             }
-            
+
             if (!result) {
                 $('#collapseOne').removeClass('collapse');
                 $('#collapseOne').addClass('in');
@@ -234,6 +246,55 @@
             }
         }
 
-       
+
+        function OnChangeUserFrom() {
+            $("#PoaFrom").change(function () {
+                if ($("#PoaFrom").length) {
+                    var userFrom = $(this).find("option:selected").val();
+
+
+                    if (userFrom == '') {
+                        var listTo = $('#PoaTo');
+                        listTo.empty();
+                        var list = '<option value>Select</option>';
+                        listTo.html(list);
+                    } else {
+
+                        ajaxGetListUser('@Url.Action("GetListUsersRole", "PoaDelegation")', { userId: userFrom });
+                    }
+                }
+            });
+        }
+
+        function ajaxGetListUser(url, formData) {
+            if (formData.userId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+
+                        if (data != null) {
+
+                            var listTo = $('#PoaTo');
+                            listTo.empty();
+
+                            var list = '<option value>Select</option>';
+
+
+                            for (var i = 0; i < data.length; i++) {
+                                list += "<option value='" + data[i].UserId + "'>" + data[i].UserId + "</option>";
+                            }
+                            listTo.html(list);
+
+                            listTo.selectpicker('refresh');
+                        }
+
+
+                    }
+                });
+            }
+        }
+
     </script>
 }

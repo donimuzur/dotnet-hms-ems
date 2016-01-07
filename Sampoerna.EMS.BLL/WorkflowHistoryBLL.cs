@@ -455,7 +455,7 @@ namespace Sampoerna.EMS.BLL
             
             var dbData =
                 _repository.Get(
-                    c =>c.FORM_NUMBER == documentNumber && (c.ACTION == Enums.ActionType.Reject || c.ACTION == Enums.ActionType.Approve) && c.ROLE == Enums.UserRole.POA).FirstOrDefault();
+                    c =>c.FORM_NUMBER == documentNumber && (c.ACTION == Enums.ActionType.Reject || c.ACTION == Enums.ActionType.Approve) && c.ROLE == Enums.UserRole.POA).OrderByDescending(c=>c.ACTION_DATE).FirstOrDefault();
 
 
             return Mapper.Map<WorkflowHistoryDto>(dbData);

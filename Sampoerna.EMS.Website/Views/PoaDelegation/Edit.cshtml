@@ -186,7 +186,7 @@
                 }
             });
 
-
+            OnChangeUserFrom();
 
         });
 
@@ -260,6 +260,53 @@
             }
         }
 
+        function OnChangeUserFrom() {
+            $("#PoaFrom").change(function () {
+                if ($("#PoaFrom").length) {
+                    var userFrom = $(this).find("option:selected").val();
 
+
+                    if (userFrom == '') {
+                        var listTo = $('#PoaTo');
+                        listTo.empty();
+                        var list = '<option value>Select</option>';
+                        listTo.html(list);
+                    } else {
+
+                        ajaxGetListUser('@Url.Action("GetListUsersRole", "PoaDelegation")', { userId: userFrom });
+                    }
+                }
+            });
+        }
+
+        function ajaxGetListUser(url, formData) {
+            if (formData.userId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+
+                        if (data != null) {
+
+                            var listTo = $('#PoaTo');
+                            listTo.empty();
+
+                            var list = '<option value>Select</option>';
+
+
+                            for (var i = 0; i < data.length; i++) {
+                                list += "<option value='" + data[i].UserId + "'>" + data[i].UserId + "</option>";
+                            }
+                            listTo.html(list);
+
+                            listTo.selectpicker('refresh');
+                        }
+
+
+                    }
+                });
+            }
+        }
     </script>
 }

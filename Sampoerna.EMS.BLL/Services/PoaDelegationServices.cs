@@ -14,8 +14,7 @@ namespace Sampoerna.EMS.BLL.Services
          private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<POA_DELEGATION> _repository;
-        private IPOABLL _poaBll;
-
+        
         private string _includeTables = "POA, USER";
 
         public PoaDelegationServices(IUnitOfWork uow, ILogger logger)
@@ -24,8 +23,7 @@ namespace Sampoerna.EMS.BLL.Services
            _logger = logger;
            _repository = _uow.GetGenericRepository<POA_DELEGATION>();
 
-            _poaBll = new POABLL(_uow, _logger);
-
+           
         }
 
         public List<string> GetListPoaDelegateByDate(List<string> listPoa, DateTime date)
@@ -124,35 +122,63 @@ namespace Sampoerna.EMS.BLL.Services
             return string.Empty;
         }
 
-        public string CommentDelegatedUserApprovalByNppbkc(string nppbkc, string currentUser, DateTime date)
-        {
-            var listPoa = _poaBll.GetPoaActiveByNppbkcId(nppbkc).Select(c=>c.POA_ID).ToList();
+        //public string CommentDelegatedUserApprovalByNppbkc(string nppbkc, string currentUser, DateTime date)
+        //{
+        //    var listPoa = _poaBll.GetPoaActiveByNppbkcId(nppbkc).Select(c=>c.POA_ID).ToList();
 
-            return CommentDelegatedUserApproval(listPoa, currentUser, date);
+        //    return CommentDelegatedUserApproval(listPoa, currentUser, date);
 
-        }
+        //}
 
-        public string CommentDelegatedUserApprovalByPlant(string plant, string currentUser, DateTime date)
-        {
-            var listPoa = _poaBll.GetPoaActiveByPlantId(plant).Select(c => c.POA_ID).ToList();
+        //public string CommentDelegatedUserApprovalByPlant(string plant, string currentUser, DateTime date)
+        //{
+        //    var listPoa = _poaBll.GetPoaActiveByPlantId(plant).Select(c => c.POA_ID).ToList();
 
-            return CommentDelegatedUserApproval(listPoa, currentUser, date);
+        //    return CommentDelegatedUserApproval(listPoa, currentUser, date);
 
-        }
+        //}
 
-        public string CommentDelegatedUserRejected(string workflowHistoryComment,string workflowHistoryActionBy, string currentUser, DateTime date)
+        //public string CommentDelegatedUserRejected(string workflowHistoryComment,string workflowHistoryActionBy, string currentUser, DateTime date)
+        //{
+        //    string originalPoa = "";
+
+        //    //is the rejected original or delegated
+        //    if (workflowHistoryComment.Contains(Constans.LabelDelegatedBy))
+        //    {
+        //        //rejected by delegated
+        //        //find the original
+        //        originalPoa = workflowHistoryComment.Substring(workflowHistoryComment.IndexOf(Constans.LabelDelegatedBy, System.StringComparison.Ordinal));
+        //        originalPoa = originalPoa.Replace(Constans.LabelDelegatedBy, "");
+        //        originalPoa = originalPoa.Replace("]", "");
+                
+        //    }
+        //    else
+        //    {
+        //        originalPoa = workflowHistoryActionBy;
+        //    }
+
+        //    if (originalPoa == currentUser)
+        //        return string.Empty;
+
+
+        //    return Constans.LabelDelegatedBy + originalPoa;
+
+        //}
+
+        public string CommentDelegatedByHistory(string workflowHistoryComment, string workflowHistoryActionBy, string currentUser, DateTime date)
         {
             string originalPoa = "";
 
             //is the rejected original or delegated
-            if (workflowHistoryComment.Contains(Constans.LabelDelegatedBy))
+            if (!string.IsNullOrEmpty(workflowHistoryComment) &&
+                workflowHistoryComment.Contains(Constans.LabelDelegatedBy))
             {
                 //rejected by delegated
                 //find the original
                 originalPoa = workflowHistoryComment.Substring(workflowHistoryComment.IndexOf(Constans.LabelDelegatedBy, System.StringComparison.Ordinal));
                 originalPoa = originalPoa.Replace(Constans.LabelDelegatedBy, "");
                 originalPoa = originalPoa.Replace("]", "");
-                
+
             }
             else
             {
@@ -162,11 +188,12 @@ namespace Sampoerna.EMS.BLL.Services
             if (originalPoa == currentUser)
                 return string.Empty;
 
-            return Constans.LabelDelegatedBy + originalPoa;
+            //confirm current user is delegated from original
+            if (IsDelegatedUserByUserAndDate(originalPoa, currentUser, date))
+                return Constans.LabelDelegatedBy + originalPoa;
+
+            return string.Empty;
 
         }
-
-      
-
     }
 }

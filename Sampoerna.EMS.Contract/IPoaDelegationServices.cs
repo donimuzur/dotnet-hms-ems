@@ -20,11 +20,11 @@ namespace Sampoerna.EMS.Contract
 
         string CommentDelegatedUserApproval(List<string> userApprovedPoa, string currentUser, DateTime date);
 
-        string CommentDelegatedUserApprovalByNppbkc(string nppbkc, string currentUser, DateTime date);
+        //string CommentDelegatedUserApprovalByNppbkc(string nppbkc, string currentUser, DateTime date);
 
-        string CommentDelegatedUserApprovalByPlant(string plant, string currentUser, DateTime date);
+        //string CommentDelegatedUserApprovalByPlant(string plant, string currentUser, DateTime date);
 
-        string CommentDelegatedUserRejected(string workflowHistoryComment, string workflowHistoryActionBy,
+        string CommentDelegatedByHistory(string workflowHistoryComment, string workflowHistoryActionBy,
             string currentUser, DateTime date);
     }
 }
