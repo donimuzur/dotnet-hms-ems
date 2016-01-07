@@ -140,6 +140,23 @@ namespace Sampoerna.EMS.XMLReader
                                     item.CREATED_DATE = DateTime.Now;
                                     items.Add(item);
                                 }
+
+
+                                //material balance
+                                var materialBalanceList = plant.Elements("Z1A_OPN_CLO_BALANCE");
+                                foreach (var element in materialBalanceList)
+                                {
+                                    var matBalance = new ZAIDM_EX_MATERIAL_BALANCE();
+                                    matBalance.MATERIAL_ID = _xmlMapper.GetElementValue(element.Element("MATNR"));
+                                    matBalance.WERKS = _xmlMapper.GetElementValue(element.Element("WERKS"));
+                                    matBalance.PERIOD_YEAR = Convert.ToInt32(_xmlMapper.GetElementValue(element.Element("LFGJA")));
+                                    matBalance.PERIOD_MONTH = Convert.ToInt32(_xmlMapper.GetElementValue(element.Element("LFMON")));
+                                    matBalance.OPEN_BALANCE = Convert.ToDecimal(_xmlMapper.GetElementValue(element.Element("OPN_BAL")));
+                                    matBalance.CLOSE_BALANCE = Convert.ToDecimal(_xmlMapper.GetElementValue(element.Element("CLO_BAL")));
+                                    matBalance.LGORT = _xmlMapper.GetElementValue(element.Element("LGORT"));
+
+                                    _xmlMapper.InsertOrUpdate(matBalance);
+                                }
                             }
                         }
                     }
