@@ -65,6 +65,7 @@ namespace Sampoerna.EMS.BLL
         private IWasteRoleServices _wasteRoleServices;
         private IUserPlantMapBLL _userPlantMapBll;
         private ICK5Service _ck5Service;
+        private IPoaDelegationServices _poaDelegationServices;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
         private List<string> _allowedCk5Uom =  new List<string>(new string[] { "KG", "G", "L" });
@@ -118,6 +119,7 @@ namespace Sampoerna.EMS.BLL
             _userPlantMapBll = new UserPlantMapBLL(_uow, _logger);
 
             _ck5Service = new CK5Service(_uow, _logger);
+            _poaDelegationServices = new PoaDelegationServices(_uow, _logger);
         }
         
 
@@ -588,7 +590,9 @@ namespace Sampoerna.EMS.BLL
                 inputWorkflowHistory.DocumentNumber = dbData.SUBMISSION_NUMBER;
                 inputWorkflowHistory.UserId = input.UserId;
                 inputWorkflowHistory.UserRole = input.UserRole;
-
+                //delegate user
+                inputWorkflowHistory.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY,
+                    input.UserId, DateTime.Now);
 
                 AddWorkflowHistory(inputWorkflowHistory);
 
@@ -2121,6 +2125,10 @@ namespace Sampoerna.EMS.BLL
             
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
+            //delegate
+            input.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY, input.UserId,
+                DateTime.Now);
+
             AddWorkflowHistory(input);
 
             switch (input.UserRole)
@@ -2204,12 +2212,71 @@ namespace Sampoerna.EMS.BLL
 
 
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
-
+            //delegate
+            input.Comment = CommentDelegateUser(dbData, input);
+            //end delegate
             AddWorkflowHistory(input);
 
             //set change history
             SetChangeHistory(oldValue, newValue, "STATUS", input.UserId,dbData.CK5_ID.ToString());
 
+        }
+
+        private string CommentDelegateUser(CK5 dbData, CK5WorkflowDocumentInput input)
+        {
+            string comment;
+
+            //delegate
+            var inputHistory = new GetByFormTypeAndFormIdInput();
+            inputHistory.FormId = dbData.CK5_ID;
+            inputHistory.FormType = Enums.FormType.CK5;
+
+            var rejectedPoa = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(inputHistory);
+            if (rejectedPoa != null)
+            {
+                comment = _poaDelegationServices.CommentDelegatedByHistory(rejectedPoa.COMMENT,
+                    rejectedPoa.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+            }
+            else
+            {
+                var isPoaCreatedUser = _poaBll.GetActivePoaById(dbData.CREATED_BY);
+                List<string> listPoa;
+                string plantId = dbData.SOURCE_PLANT_ID;
+                string nppbkcId = dbData.SOURCE_PLANT_NPPBKC_ID;
+
+                if (dbData.CK5_TYPE == Enums.CK5Type.DomesticAlcohol
+                    || dbData.CK5_TYPE == Enums.CK5Type.PortToImporter)
+                {
+                    plantId = dbData.DEST_PLANT_ID;
+                    nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
+                }
+                else if (dbData.CK5_TYPE == Enums.CK5Type.Manual &&
+                         dbData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                {
+                    plantId = dbData.DEST_PLANT_ID;
+                    nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
+                }
+                else if (dbData.CK5_TYPE == Enums.CK5Type.Waste)
+                {
+                    plantId = dbData.DEST_PLANT_ID;
+                    nppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
+                }
+
+                if (isPoaCreatedUser != null) //if creator = poa
+                {
+                    listPoa = _poaBll.GetPoaActiveByNppbkcId(nppbkcId).Select(c => c.POA_ID).ToList();
+                }
+                else
+                {
+                    listPoa = _poaBll.GetPoaActiveByPlantId(plantId).Select(c => c.POA_ID).ToList();
+                }
+
+                comment = _poaDelegationServices.CommentDelegatedUserApproval(listPoa, input.UserId, DateTime.Now);
+
+            }
+            //end delegate
+
+            return comment;
         }
 
         private void RejectDocument(CK5WorkflowDocumentInput input)
@@ -2232,7 +2299,14 @@ namespace Sampoerna.EMS.BLL
             newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Rejected);
           
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
-            //input.ActionType = Enums.ActionType.Reject;
+
+            //delegate
+            string commentReject = CommentDelegateUser(dbData, input);
+            if (!string.IsNullOrEmpty(commentReject))
+                input.Comment += " [" + commentReject + "]";
+
+            //end delegate
+
             AddWorkflowHistory(input);
 
             //set change history
@@ -2461,6 +2535,16 @@ namespace Sampoerna.EMS.BLL
 
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
+            //delegate
+            if (dbData.CREATED_BY != input.UserId)
+            {
+                var workflowHistoryDto =
+                    _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
+                input.Comment = _poaDelegationServices.CommentDelegatedByHistory(workflowHistoryDto.COMMENT,
+                    workflowHistoryDto.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+            }
+            //end delegate
+
             AddWorkflowHistory(input);
 
            
@@ -2558,6 +2642,20 @@ namespace Sampoerna.EMS.BLL
          
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
+            //delegate
+            if (dbData.CREATED_BY != input.UserId)
+            {
+                var workflowHistoryDto =
+                    _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
+                var commentReject = _poaDelegationServices.CommentDelegatedByHistory(workflowHistoryDto.COMMENT,
+                    workflowHistoryDto.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+
+                if (!string.IsNullOrEmpty(commentReject))
+                    input.Comment += " [" + commentReject + "]";
+
+            }
+            //end delegate
+
             AddWorkflowHistory(input);
 
         }
@@ -2573,7 +2671,7 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             string oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
-            string newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Completed); ;
+            string newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Completed); 
             //set change history
             if (oldValue != newValue)
                 SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
@@ -2581,6 +2679,20 @@ namespace Sampoerna.EMS.BLL
             dbData.STATUS_ID = Enums.DocumentStatus.Completed;
             
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+            //delegate
+            if (dbData.CREATED_BY != input.UserId)
+            {
+                var workflowHistoryDto =
+                    _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
+                var commentReject = _poaDelegationServices.CommentDelegatedByHistory(workflowHistoryDto.COMMENT,
+                    workflowHistoryDto.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+
+                if (!string.IsNullOrEmpty(commentReject))
+                    input.Comment += " [" + commentReject + "]";
+
+            }
+            //end delegate
 
             AddWorkflowHistory(input);
         }
@@ -2850,6 +2962,9 @@ namespace Sampoerna.EMS.BLL
             }
 
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+            //delegate
+            input.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY, input.UserId,
+                DateTime.Now);
 
             //for manual
             if (dbData.CK5_TYPE == Enums.CK5Type.Manual)
@@ -2916,6 +3031,10 @@ namespace Sampoerna.EMS.BLL
                 if (input.AdditionalDocumentData.Ck5FileUploadList.Any())
                     CheckFileUploadChange(input);
             }
+
+            //delegate
+            input.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY, input.UserId,
+                DateTime.Now);
 
             if (dbData.CK5_TYPE == Enums.CK5Type.Manual || dbData.CK5_TYPE == Enums.CK5Type.Return)
             {

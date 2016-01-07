@@ -140,7 +140,8 @@ namespace Sampoerna.EMS.BLL
 
                     //delegate
                     string originalPoa;
-                    if (rejectedPoa.COMMENT.Contains(Constans.LabelDelegatedBy))
+                    if (!string.IsNullOrEmpty(rejectedPoa.COMMENT) && 
+                        rejectedPoa.COMMENT.Contains(Constans.LabelDelegatedBy))
                     {
                         //rejected by delegated
                         //find the original
@@ -251,7 +252,8 @@ namespace Sampoerna.EMS.BLL
                     var workflowHistoryDto =
                         _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
 
-                    if (workflowHistoryDto.COMMENT.Contains(Constans.LabelDelegatedBy)) //approve by delegated
+                    if (!string.IsNullOrEmpty(workflowHistoryDto.COMMENT) && 
+                        workflowHistoryDto.COMMENT.Contains(Constans.LabelDelegatedBy)) //approve by delegated
                     {
                         //find the original
                         originalPoa =
@@ -282,6 +284,15 @@ namespace Sampoerna.EMS.BLL
                     DateTime.Now);
 
                 listUser.AddRange(poaDelegate);
+
+                if (originalPoa != input.CreatedUser)
+                {
+                    //get delegate for created user too
+                    poaDelegate = _poaDelegationServices.GetPoaDelegationToByPoaFromAndDate(input.CreatedUser,
+                    DateTime.Now);
+
+                    listUser.AddRange(poaDelegate);
+                }
 
                 if (listUser.Contains(input.CurrentUser))
                     return true;
@@ -317,7 +328,12 @@ namespace Sampoerna.EMS.BLL
         public bool AllowGiCreated(WorkflowAllowApproveAndRejectInput input)
         {
             if (input.CreatedUser != input.CurrentUser)
-                return false;
+            {
+                if (
+                    !_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
+                        DateTime.Now))
+                    return false;
+            }
 
             return input.DocumentStatus == Enums.DocumentStatus.GICreated ||
                    input.DocumentStatus == Enums.DocumentStatus.GICompleted ||
@@ -327,7 +343,12 @@ namespace Sampoerna.EMS.BLL
         public bool AllowGrCreated(WorkflowAllowApproveAndRejectInput input)
         {
             if (input.CreatedUser != input.CurrentUser)
-                return false;
+            {
+                if (
+                    !_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
+                        DateTime.Now))
+                    return false;
+            }
             
             return input.DocumentStatus == Enums.DocumentStatus.GRCreated ||
                     input.DocumentStatus == Enums.DocumentStatus.GRCompleted ||

@@ -25,6 +25,6 @@ namespace Sampoerna.EMS.Contract
         //string CommentDelegatedUserApprovalByPlant(string plant, string currentUser, DateTime date);
 
         string CommentDelegatedByHistory(string workflowHistoryComment, string workflowHistoryActionBy,
-            string currentUser, DateTime date);
+            string currentUser, Core.Enums.UserRole currentUserRole, string createdUser, DateTime date);
     }
 }

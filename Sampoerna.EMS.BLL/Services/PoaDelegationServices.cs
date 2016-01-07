@@ -6,6 +6,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL.Services
 {
@@ -165,24 +166,34 @@ namespace Sampoerna.EMS.BLL.Services
 
         //}
 
-        public string CommentDelegatedByHistory(string workflowHistoryComment, string workflowHistoryActionBy, string currentUser, DateTime date)
+        public string CommentDelegatedByHistory(string workflowHistoryComment, string workflowHistoryActionBy,
+            string currentUser, Core.Enums.UserRole currentUserRole,string createdUser, DateTime date)
         {
             string originalPoa = "";
 
-            //is the rejected original or delegated
-            if (!string.IsNullOrEmpty(workflowHistoryComment) &&
-                workflowHistoryComment.Contains(Constans.LabelDelegatedBy))
+            if (currentUserRole == Enums.UserRole.POA)
             {
-                //rejected by delegated
-                //find the original
-                originalPoa = workflowHistoryComment.Substring(workflowHistoryComment.IndexOf(Constans.LabelDelegatedBy, System.StringComparison.Ordinal));
-                originalPoa = originalPoa.Replace(Constans.LabelDelegatedBy, "");
-                originalPoa = originalPoa.Replace("]", "");
+                //is the rejected original or delegated
+                if (!string.IsNullOrEmpty(workflowHistoryComment) &&
+                    workflowHistoryComment.Contains(Constans.LabelDelegatedBy))
+                {
+                    //rejected by delegated
+                    //find the original
+                    originalPoa =
+                        workflowHistoryComment.Substring(workflowHistoryComment.IndexOf(Constans.LabelDelegatedBy,
+                            System.StringComparison.Ordinal));
+                    originalPoa = originalPoa.Replace(Constans.LabelDelegatedBy, "");
+                    originalPoa = originalPoa.Replace("]", "");
 
+                }
+                else
+                {
+                    originalPoa = workflowHistoryActionBy;
+                }
             }
             else
             {
-                originalPoa = workflowHistoryActionBy;
+                originalPoa = createdUser;
             }
 
             if (originalPoa == currentUser)
@@ -191,6 +202,12 @@ namespace Sampoerna.EMS.BLL.Services
             //confirm current user is delegated from original
             if (IsDelegatedUserByUserAndDate(originalPoa, currentUser, date))
                 return Constans.LabelDelegatedBy + originalPoa;
+
+            if (createdUser != currentUser)
+            {
+                if (IsDelegatedUserByUserAndDate(createdUser, currentUser, date))
+                    return Constans.LabelDelegatedBy + createdUser;
+            }
 
             return string.Empty;
 

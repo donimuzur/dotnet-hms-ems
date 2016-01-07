@@ -114,7 +114,8 @@ namespace Sampoerna.EMS.BLL
                     string originalPoa;
                     var listUser = new List<string>();
                      //is the rejected original or delegated
-                    if (rejected.COMMENT.Contains(Constans.LabelDelegatedBy))
+                    if (!string.IsNullOrEmpty(rejected.COMMENT) && 
+                        rejected.COMMENT.Contains(Constans.LabelDelegatedBy))
                     {
                         //rejected by delegated
                         //find the original
