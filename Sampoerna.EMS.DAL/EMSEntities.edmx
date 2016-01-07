@@ -2797,24 +2797,24 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_POA_DELEGATION_POA">
-          <End Role="POA" Type="Self.POA" Multiplicity="1" />
+        <Association Name="FK_POA_DELEGATION_POAUSER">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
           <End Role="POA_DELEGATION" Type="Self.POA_DELEGATION" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="POA">
-              <PropertyRef Name="POA_ID" />
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
             </Principal>
             <Dependent Role="POA_DELEGATION">
               <PropertyRef Name="POA_FROM" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_POA_DELEGATION_POA1">
-          <End Role="POA" Type="Self.POA" Multiplicity="1" />
+        <Association Name="FK_POA_DELEGATION_POAUSER11">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
           <End Role="POA_DELEGATION" Type="Self.POA_DELEGATION" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="POA">
-              <PropertyRef Name="POA_ID" />
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
             </Principal>
             <Dependent Role="POA_DELEGATION">
               <PropertyRef Name="POA_TO" />
@@ -3950,12 +3950,12 @@
             <End Role="USER" EntitySet="USER" />
             <End Role="POA" EntitySet="POA" />
           </AssociationSet>
-          <AssociationSet Name="FK_POA_DELEGATION_POA" Association="Self.FK_POA_DELEGATION_POA">
-            <End Role="POA" EntitySet="POA" />
+          <AssociationSet Name="FK_POA_DELEGATION_POAUSER" Association="Self.FK_POA_DELEGATION_POAUSER">
+            <End Role="USER" EntitySet="USER" />
             <End Role="POA_DELEGATION" EntitySet="POA_DELEGATION" />
           </AssociationSet>
-          <AssociationSet Name="FK_POA_DELEGATION_POA1" Association="Self.FK_POA_DELEGATION_POA1">
-            <End Role="POA" EntitySet="POA" />
+          <AssociationSet Name="FK_POA_DELEGATION_POAUSER11" Association="Self.FK_POA_DELEGATION_POAUSER11">
+            <End Role="USER" EntitySet="USER" />
             <End Role="POA_DELEGATION" EntitySet="POA_DELEGATION" />
           </AssociationSet>
           <AssociationSet Name="FK_POA_DELEGATION_USER" Association="Self.FK_POA_DELEGATION_USER">
@@ -4904,12 +4904,12 @@
             <End Role="ZAIDM_EX_MATERIAL_BALANCE" EntitySet="ZAIDM_EX_MATERIAL_BALANCE" />
           </AssociationSet>
           <EntitySet Name="POA_DELEGATION" EntityType="EMSModel.POA_DELEGATION" />
-          <AssociationSet Name="FK_POA_DELEGATION_POA" Association="EMSModel.FK_POA_DELEGATION_POA">
-            <End Role="POA" EntitySet="POA" />
+          <AssociationSet Name="FK_POA_DELEGATION_POAUSER" Association="EMSModel.FK_POA_DELEGATION_POAUSER">
+            <End Role="USER" EntitySet="USER" />
             <End Role="POA_DELEGATION" EntitySet="POA_DELEGATION" />
           </AssociationSet>
-          <AssociationSet Name="FK_POA_DELEGATION_POA1" Association="EMSModel.FK_POA_DELEGATION_POA1">
-            <End Role="POA" EntitySet="POA" />
+          <AssociationSet Name="FK_POA_DELEGATION_POAUSER11" Association="EMSModel.FK_POA_DELEGATION_POAUSER11">
+            <End Role="USER" EntitySet="USER" />
             <End Role="POA_DELEGATION" EntitySet="POA_DELEGATION" />
           </AssociationSet>
           <AssociationSet Name="FK_POA_DELEGATION_USER" Association="EMSModel.FK_POA_DELEGATION_USER">
@@ -5791,8 +5791,10 @@
           <NavigationProperty Name="WASTE_STOCK" Relationship="EMSModel.FK_WASTE_STOCK_USER" FromRole="USER" ToRole="WASTE_STOCK" />
           <NavigationProperty Name="WASTE_STOCK1" Relationship="EMSModel.FK_WASTE_STOCK_USER1" FromRole="USER" ToRole="WASTE_STOCK" />
           <NavigationProperty Name="WASTE_STOCK2" Relationship="EMSModel.FK_WASTE_STOCK_USER2" FromRole="USER" ToRole="WASTE_STOCK" />
-          <NavigationProperty Name="POA_DELEGATION" Relationship="EMSModel.FK_POA_DELEGATION_USER" FromRole="USER" ToRole="POA_DELEGATION" />
-          <NavigationProperty Name="POA_DELEGATION1" Relationship="EMSModel.FK_POA_DELEGATION_USER1" FromRole="USER" ToRole="POA_DELEGATION" />
+          <NavigationProperty Name="POA_DELEGATION" Relationship="EMSModel.FK_POA_DELEGATION_POAUSER" FromRole="USER" ToRole="POA_DELEGATION" />
+          <NavigationProperty Name="POA_DELEGATION1" Relationship="EMSModel.FK_POA_DELEGATION_POAUSER11" FromRole="USER" ToRole="POA_DELEGATION" />
+          <NavigationProperty Name="POA_DELEGATION2" Relationship="EMSModel.FK_POA_DELEGATION_USER" FromRole="USER" ToRole="POA_DELEGATION" />
+          <NavigationProperty Name="POA_DELEGATION3" Relationship="EMSModel.FK_POA_DELEGATION_USER1" FromRole="USER" ToRole="POA_DELEGATION" />
           </EntityType>
         <EntityType Name="USER_BROLE">
           <Key>
@@ -6160,8 +6162,6 @@
           <NavigationProperty Name="PBCK7" Relationship="EMSModel.FK_PBCK7_POA" FromRole="POA" ToRole="PBCK7" />
           <NavigationProperty Name="PBCK4" Relationship="EMSModel.FK_PBCK4_POA" FromRole="POA" ToRole="PBCK4" />
           <NavigationProperty Name="PBCK3" Relationship="EMSModel.FK_PBCK3_POA" FromRole="POA" ToRole="PBCK3" />
-          <NavigationProperty Name="POA_DELEGATION" Relationship="EMSModel.FK_POA_DELEGATION_POA" FromRole="POA" ToRole="POA_DELEGATION" />
-          <NavigationProperty Name="POA_DELEGATION1" Relationship="EMSModel.FK_POA_DELEGATION_POA1" FromRole="POA" ToRole="POA_DELEGATION" />
           </EntityType>
         <EntityType Name="POA_MAP">
           <Key>
@@ -8714,29 +8714,29 @@
           <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="POA" Relationship="EMSModel.FK_POA_DELEGATION_POA" FromRole="POA_DELEGATION" ToRole="POA" />
-          <NavigationProperty Name="POA1" Relationship="EMSModel.FK_POA_DELEGATION_POA1" FromRole="POA_DELEGATION" ToRole="POA" />
-          <NavigationProperty Name="USER" Relationship="EMSModel.FK_POA_DELEGATION_USER" FromRole="POA_DELEGATION" ToRole="USER" />
-          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_POA_DELEGATION_USER1" FromRole="POA_DELEGATION" ToRole="USER" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_POA_DELEGATION_POAUSER" FromRole="POA_DELEGATION" ToRole="USER" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_POA_DELEGATION_POAUSER11" FromRole="POA_DELEGATION" ToRole="USER" />
+          <NavigationProperty Name="USER2" Relationship="EMSModel.FK_POA_DELEGATION_USER" FromRole="POA_DELEGATION" ToRole="USER" />
+          <NavigationProperty Name="USER3" Relationship="EMSModel.FK_POA_DELEGATION_USER1" FromRole="POA_DELEGATION" ToRole="USER" />
         </EntityType>
-        <Association Name="FK_POA_DELEGATION_POA">
-          <End Type="EMSModel.POA" Role="POA" Multiplicity="1" />
+        <Association Name="FK_POA_DELEGATION_POAUSER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
           <End Type="EMSModel.POA_DELEGATION" Role="POA_DELEGATION" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="POA">
-              <PropertyRef Name="POA_ID" />
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
             </Principal>
             <Dependent Role="POA_DELEGATION">
               <PropertyRef Name="POA_FROM" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_POA_DELEGATION_POA1">
-          <End Type="EMSModel.POA" Role="POA" Multiplicity="1" />
+        <Association Name="FK_POA_DELEGATION_POAUSER11">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
           <End Type="EMSModel.POA_DELEGATION" Role="POA_DELEGATION" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="POA">
-              <PropertyRef Name="POA_ID" />
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
             </Principal>
             <Dependent Role="POA_DELEGATION">
               <PropertyRef Name="POA_TO" />
