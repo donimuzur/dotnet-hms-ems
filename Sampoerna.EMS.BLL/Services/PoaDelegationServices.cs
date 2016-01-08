@@ -123,49 +123,7 @@ namespace Sampoerna.EMS.BLL.Services
             return string.Empty;
         }
 
-        //public string CommentDelegatedUserApprovalByNppbkc(string nppbkc, string currentUser, DateTime date)
-        //{
-        //    var listPoa = _poaBll.GetPoaActiveByNppbkcId(nppbkc).Select(c=>c.POA_ID).ToList();
-
-        //    return CommentDelegatedUserApproval(listPoa, currentUser, date);
-
-        //}
-
-        //public string CommentDelegatedUserApprovalByPlant(string plant, string currentUser, DateTime date)
-        //{
-        //    var listPoa = _poaBll.GetPoaActiveByPlantId(plant).Select(c => c.POA_ID).ToList();
-
-        //    return CommentDelegatedUserApproval(listPoa, currentUser, date);
-
-        //}
-
-        //public string CommentDelegatedUserRejected(string workflowHistoryComment,string workflowHistoryActionBy, string currentUser, DateTime date)
-        //{
-        //    string originalPoa = "";
-
-        //    //is the rejected original or delegated
-        //    if (workflowHistoryComment.Contains(Constans.LabelDelegatedBy))
-        //    {
-        //        //rejected by delegated
-        //        //find the original
-        //        originalPoa = workflowHistoryComment.Substring(workflowHistoryComment.IndexOf(Constans.LabelDelegatedBy, System.StringComparison.Ordinal));
-        //        originalPoa = originalPoa.Replace(Constans.LabelDelegatedBy, "");
-        //        originalPoa = originalPoa.Replace("]", "");
-                
-        //    }
-        //    else
-        //    {
-        //        originalPoa = workflowHistoryActionBy;
-        //    }
-
-        //    if (originalPoa == currentUser)
-        //        return string.Empty;
-
-
-        //    return Constans.LabelDelegatedBy + originalPoa;
-
-        //}
-
+       
         public string CommentDelegatedByHistory(string workflowHistoryComment, string workflowHistoryActionBy,
             string currentUser, Core.Enums.UserRole currentUserRole,string createdUser, DateTime date)
         {

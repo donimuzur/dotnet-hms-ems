@@ -1665,9 +1665,9 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.GovCancel:
                     GovCancelledDocument(input);
                     break;
-                case Enums.ActionType.Cancel:
-                    CancelledDocument(input);
-                    break;
+                //case Enums.ActionType.Cancel:
+                //    CancelledDocument(input);
+                //    break;
                 case Enums.ActionType.POCreated:
                     PoCreatedDocument(input);
                     break;
@@ -2397,6 +2397,16 @@ namespace Sampoerna.EMS.BLL
                 _back1Services.SaveBack1ByCk5Id(inputBack1);
             }
 
+            //delegate
+            if (dbData.CREATED_BY != input.UserId)
+            {
+                var workflowHistoryDto =
+                    _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
+                input.Comment = _poaDelegationServices.CommentDelegatedByHistory(workflowHistoryDto.COMMENT,
+                    workflowHistoryDto.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+            }
+            //end delegate
+
             AddWorkflowHistory(input);
 
             if (IsCompletedMarketReturnWorkflow(input))
@@ -2697,30 +2707,30 @@ namespace Sampoerna.EMS.BLL
             AddWorkflowHistory(input);
         }
 
-        private void CancelledDocument(CK5WorkflowDocumentInput input)
-        {
-            var dbData = _repository.GetByID(input.DocumentId);
+        //private void CancelledDocument(CK5WorkflowDocumentInput input)
+        //{
+        //    var dbData = _repository.GetByID(input.DocumentId);
 
-            if (dbData == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+        //    if (dbData == null)
+        //        throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-            if (dbData.STATUS_ID != Enums.DocumentStatus.Draft)
-                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+        //    if (dbData.STATUS_ID != Enums.DocumentStatus.Draft)
+        //        throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            string oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
-            string newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Cancelled); ;
-            //set change history
-            if (oldValue != newValue)
-                SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
-
-
-            dbData.STATUS_ID = Enums.DocumentStatus.Cancelled;
+        //    string oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
+        //    string newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Cancelled); ;
+        //    //set change history
+        //    if (oldValue != newValue)
+        //        SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
 
 
-            input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+        //    dbData.STATUS_ID = Enums.DocumentStatus.Cancelled;
 
-            AddWorkflowHistory(input);
-        }
+
+        //    input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+        //    AddWorkflowHistory(input);
+        //}
 
         private void GoodIssueDocument(CK5WorkflowDocumentInput input)
         {
@@ -2865,6 +2875,24 @@ namespace Sampoerna.EMS.BLL
 
             //dbData.STATUS_ID = Enums.DocumentStatus.WasteApproval;
             dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+
+            //delegate
+            //get list poa disposal
+            var listDisposal = _wasteRoleServices.GetUserDisposalTeamByPlant(dbData.DEST_PLANT_ID);
+            if (!listDisposal.Contains(input.UserId)) //if delegate
+            {
+                //poa must be delegate
+                //get the original poa
+                var originalPoaDelegate = _poaDelegationServices.GetPoaDelegationByPoaToAndDate(input.UserId, DateTime.Now);
+                if (originalPoaDelegate != null)
+                {
+                    input.Comment = Core.Constans.LabelDelegatedBy + originalPoaDelegate.POA_FROM;
+                }
+                ////get list delegate
+                //var poaDelegate = _poaDelegationServices.GetListPoaDelegateByDate(listDisposal, DateTime.Now);
+                // if (poaDelegate.Contains(input.UserId))
+            }
+            //end delagete
 
             //add to workflow
             AddWorkflowHistory(input);
@@ -3162,6 +3190,10 @@ namespace Sampoerna.EMS.BLL
             dbData.STATUS_ID = Enums.DocumentStatus.Cancelled;
 
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+            //delegate
+            input.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY, input.UserId,
+                DateTime.Now);
 
             AddWorkflowHistory(input);
         }
@@ -4765,6 +4797,18 @@ namespace Sampoerna.EMS.BLL
 
             //add workflow history
             input.ActionType = Enums.ActionType.Modified;
+
+            var inputHistory = new GetByFormTypeAndFormIdInput();
+            inputHistory.FormId = dbData.CK5_ID;
+            inputHistory.FormType = Enums.FormType.CK5;
+
+            var rejectedPoa = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(inputHistory);
+            if (rejectedPoa != null)
+            {
+                input.Comment = _poaDelegationServices.CommentDelegatedByHistory(rejectedPoa.COMMENT,
+                    rejectedPoa.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+            }
+          
 
             AddWorkflowHistory(input);
          

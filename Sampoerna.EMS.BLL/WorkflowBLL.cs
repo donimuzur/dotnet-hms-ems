@@ -135,33 +135,11 @@ namespace Sampoerna.EMS.BLL
                 
                 if (rejectedPoa != null)
                 {
-                    var listUser = new List<string>();
-                    
-
+                 
                     //delegate
-                    string originalPoa;
-                    if (!string.IsNullOrEmpty(rejectedPoa.COMMENT) && 
-                        rejectedPoa.COMMENT.Contains(Constans.LabelDelegatedBy))
-                    {
-                        //rejected by delegated
-                        //find the original
-                        originalPoa = rejectedPoa.COMMENT.Substring(rejectedPoa.COMMENT.IndexOf(Constans.LabelDelegatedBy, System.StringComparison.Ordinal));
-                        originalPoa = originalPoa.Replace(Constans.LabelDelegatedBy, "");
-                        originalPoa = originalPoa.Replace("]", "");
-
-                    }
-                    else
-                    {
-                        originalPoa = rejectedPoa.ACTION_BY;
-                    }
-
-                    listUser.Add(originalPoa);
-
-                    var poaDelegate = _poaDelegationServices.GetPoaDelegationToByPoaFromAndDate(originalPoa, DateTime.Now);
-                    listUser.AddRange(poaDelegate);
-
-                    if (!listUser.Contains(input.CurrentUser))
+                    if (!IsPoaAllowedDelegate(input.DocumentNumber, input.CurrentUser))
                         return false;
+
                     //end delegate
 
                     //if (input.CurrentUser != rejectedPoa)
@@ -381,16 +359,20 @@ namespace Sampoerna.EMS.BLL
 
             return true;
         }
-
+     
         public bool AllowAttachmentCompleted(WorkflowAllowApproveAndRejectInput input)
         {
             if (input.DocumentStatus != Enums.DocumentStatus.Completed) return false;
             if (input.CreatedUser == input.CurrentUser) return true;
-            if (!_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser, DateTime.Now))
-                return false;
-            if (input.UserRole == Enums.UserRole.POA)
+            if (input.UserRole == Enums.UserRole.User)
             {
-                return input.CurrentUser == input.PoaApprove;
+                if (!_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser, DateTime.Now))
+                    return false;    
+            }
+            else if (input.UserRole == Enums.UserRole.POA)
+            {
+                return IsPoaAllowedDelegate(input.DocumentNumber, input.CurrentUser);
+                //return input.CurrentUser == input.PoaApprove;
             }
             return false;
         }
@@ -399,11 +381,15 @@ namespace Sampoerna.EMS.BLL
         {
             if (input.DocumentStatus <= Enums.DocumentStatus.WaitingGovApproval) return false;
             if (input.CreatedUser == input.CurrentUser) return true;
-            if (!_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,DateTime.Now))
-                return false;
-            if (input.UserRole == Enums.UserRole.POA)
+            if (input.UserRole == Enums.UserRole.User)
             {
-                return input.CurrentUser == input.PoaApprove;
+                if (!_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser, DateTime.Now))
+                    return false;
+            }
+            else if (input.UserRole == Enums.UserRole.POA)
+            {
+                return IsPoaAllowedDelegate(input.DocumentNumber, input.CurrentUser);
+                //return input.CurrentUser == input.PoaApprove;
             }
             return false;
         }
@@ -527,20 +513,61 @@ namespace Sampoerna.EMS.BLL
             //    return false;
 
             if (!_wasteRoleServices.IsUserDisposalTeamByPlant(input.CurrentUser, input.DestPlant))
-                return false;
+
+            {
+                //get delegated disposal poa
+                var listDisposal = _wasteRoleServices.GetUserDisposalTeamByPlant(input.DestPlant);
+                var poaDelegate = _poaDelegationServices.GetListPoaDelegateByDate(listDisposal, DateTime.Now);
+                if (!poaDelegate.Contains(input.CurrentUser))
+                    return false;
+            }
 
             return input.DocumentStatus == Enums.DocumentStatus.WasteDisposal;
         }
 
-        public bool AllowWasteApproval(WorkflowAllowApproveAndRejectInput input)
+        //public bool AllowWasteApproval(WorkflowAllowApproveAndRejectInput input)
+        //{
+        //    //if (input.CreatedUser != input.CurrentUser)
+        //    //    return false;
+
+        //    if (!_wasteRoleServices.IsUserWasteApproverByPlant(input.CurrentUser, input.DestPlant))
+        //        return false;
+
+        //    return input.DocumentStatus == Enums.DocumentStatus.WasteApproval;
+        //}
+
+        private bool IsPoaAllowedDelegate(string documentNumber, string currentUser)
         {
-            //if (input.CreatedUser != input.CurrentUser)
-            //    return false;
+            //get history is poa delegated or poa original
+            var listUser = new List<string>();
+            var approvedRejectedPoa = _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(documentNumber);
+            string originalPoa;
+            if (!string.IsNullOrEmpty(approvedRejectedPoa.COMMENT) &&
+                approvedRejectedPoa.COMMENT.Contains(Constans.LabelDelegatedBy))
+            {
+                //rejected by delegated
+                //find the original
+                originalPoa =
+                    approvedRejectedPoa.COMMENT.Substring(approvedRejectedPoa.COMMENT.IndexOf(Constans.LabelDelegatedBy,
+                        System.StringComparison.Ordinal));
+                originalPoa = originalPoa.Replace(Constans.LabelDelegatedBy, "");
+                originalPoa = originalPoa.Replace("]", "");
+            }
+            else
+            {
+                originalPoa = approvedRejectedPoa.ACTION_BY;
+            }
 
-            if (!_wasteRoleServices.IsUserWasteApproverByPlant(input.CurrentUser, input.DestPlant))
-                return false;
+            listUser.Add(originalPoa);
 
-            return input.DocumentStatus == Enums.DocumentStatus.WasteApproval;
+            var poaDelegate = _poaDelegationServices.GetPoaDelegationToByPoaFromAndDate(originalPoa, DateTime.Now);
+            listUser.AddRange(poaDelegate);
+
+            if (listUser.Contains(currentUser))
+                return true;
+
+            return false;
         }
+
     }
 }
