@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.SqlServer.Server;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -99,8 +100,8 @@ namespace Sampoerna.EMS.BLL
                     return false;
                 
                 //created user need to as user
-                if (_poabll.GetUserRole(input.CreatedUser) != Enums.UserRole.User)
-                    return false;
+                //if (_poabll.GetUserRole(input.CreatedUser) != Enums.UserRole.User)
+                //    return false;
 
                 //if document was rejected then must approve by poa that rejected
                 var rejectedPoa = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
@@ -125,29 +126,32 @@ namespace Sampoerna.EMS.BLL
                 if (poa == null)
                     return false;
 
-                if (input.PlantId != null)
-                    return IsOnePlant(input.PlantId, input.CurrentUser);
-                
-                return IsOneNppbkc(input.NppbkcId, input.CurrentUser);
+                var isPoaCreatedUser = _poabll.GetActivePoaById(input.CreatedUser);
+                if (isPoaCreatedUser != null)
+                {
+                    //created user is poa, let's check isOneNppbkc with current user or not
+                    return IsOneNppbkc(input.NppbkcId, input.CurrentUser);
+                }
+                return input.PlantId != null ? IsOnePlant(input.PlantId, input.CurrentUser) : IsOneNppbkc(input.NppbkcId, input.CurrentUser);
             }
             
-            if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApprovalManager)
-            {
-                if (input.UserRole != Enums.UserRole.Manager)
-                    return false;
+            //if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApprovalManager)
+            //{
+            //    if (input.UserRole != Enums.UserRole.Manager)
+            //        return false;
 
-                //get poa id by document number in workflow history
+            //    //get poa id by document number in workflow history
 
-                var poaId = _workflowHistoryBll.GetPoaByDocumentNumber(input.DocumentNumber);
+            //    var poaId = _workflowHistoryBll.GetPoaByDocumentNumber(input.DocumentNumber);
 
-                if (string.IsNullOrEmpty(poaId))
-                    return false;
+            //    if (string.IsNullOrEmpty(poaId))
+            //        return false;
 
-                var managerId = _poabll.GetManagerIdByPoaId(poaId);
+            //    var managerId = _poabll.GetManagerIdByPoaId(poaId);
 
-                return managerId == input.CurrentUser;
+            //    return managerId == input.CurrentUser;
 
-            }
+            //}
 
             return false;
           
