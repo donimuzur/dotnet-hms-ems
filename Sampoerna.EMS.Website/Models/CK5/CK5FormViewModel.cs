@@ -230,7 +230,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string Ck5TotalExciseable { get; set; }
         public string RemainQuota { get; set; }
 
-        public bool AllowManagerReject { get; set; }
+        //public bool AllowManagerReject { get; set; }
 
         public string Command { get; set; }
 

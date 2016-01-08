@@ -26,6 +26,7 @@
 
         public string FormNumberSource { get; set; }
         public string PlantId { get; set; }
+        public string DocumentCreator { get; set; }
     }
 
     

@@ -366,11 +366,6 @@ namespace Sampoerna.EMS.BLL
         
         #region workflow
 
-        //private void Lack2WorkflowAfterCompleted(Lack2WorkflowDocumentInput input)
-        //{
-             
-        //}
-
         public void Lack2Workflow(Lack2WorkflowDocumentInput input)
         {
             var isNeedSendNotif = true;
@@ -440,7 +435,9 @@ namespace Sampoerna.EMS.BLL
                         dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
                         break;
                     case Enums.UserRole.POA:
-                        dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                        //first code when manager exists
+                        //dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                        dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
                         break;
                     default:
                         throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
@@ -483,20 +480,29 @@ namespace Sampoerna.EMS.BLL
                 //Add Changes
                 if (input.UserRole == Enums.UserRole.POA)
                 {
-                    WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingForApprovalManager);
-                    dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-                    //dbData.APPROVED_BY_POA = input.UserId;
-                    //dbData.APPROVED_DATE_POA = DateTime.Now;
-                    dbData.APPROVED_BY = input.UserId;
-                    dbData.APPROVED_DATE = DateTime.Now;
+                    if (dbData.STATUS == Enums.DocumentStatus.WaitingForApproval)
+                    {
+                        //first code when manager exists
+                        //WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingForApprovalManager);
+                        //dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                        WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
+                        dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                        dbData.APPROVED_BY = input.UserId;
+                        dbData.APPROVED_DATE = DateTime.Now;
+                    }
+                    else
+                    {
+                        throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+                    }
                 }
-                else
-                {
-                    WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
-                    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
-                    dbData.APPROVED_BY_MANAGER = input.UserId;
-                    dbData.APPROVED_BY_MANAGER_DATE = DateTime.Now;
-                }
+                //first code when manager exists
+                //else
+                //{
+                //    WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
+                //    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                //    dbData.APPROVED_BY_MANAGER = input.UserId;
+                //    dbData.APPROVED_BY_MANAGER_DATE = DateTime.Now;
+                //}
 
                 input.DocumentNumber = dbData.LACK2_NUMBER;
             }
@@ -514,27 +520,34 @@ namespace Sampoerna.EMS.BLL
                 if (dbData == null)
                     throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
+                //first code when manager exists
+                //if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
+                //    dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager &&
+                //    dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
                 if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
-                    dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager &&
                     dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
                 //Add Changes
                 WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
 
-                //todo ask
-                if (dbData.STATUS == Enums.DocumentStatus.WaitingForApprovalManager)
-                {
-                    //manager reject
-                    dbData.APPROVED_BY_MANAGER = null;
-                    dbData.APPROVED_BY_MANAGER_DATE = null;
-                }
-                else
-                {
-                    //poa reject
-                    dbData.APPROVED_BY = null;
-                    dbData.APPROVED_DATE = null;
-                }
+                //first code when manager exists
+                ////todo ask
+                //if (dbData.STATUS == Enums.DocumentStatus.WaitingForApprovalManager)
+                //{
+                //    //manager reject
+                //    dbData.APPROVED_BY_MANAGER = null;
+                //    dbData.APPROVED_BY_MANAGER_DATE = null;
+                //}
+                //else
+                //{
+                //    //poa reject
+                //    dbData.APPROVED_BY = null;
+                //    dbData.APPROVED_DATE = null;
+                //}
+
+                dbData.APPROVED_BY = null;
+                dbData.APPROVED_DATE = null;
 
                 dbData.STATUS = Enums.DocumentStatus.Rejected;
 
@@ -568,9 +581,6 @@ namespace Sampoerna.EMS.BLL
                 dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
                 dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
                 dbData.GOV_STATUS = Enums.DocumentStatusGovType2.Approved;
-
-                //dbData.APPROVED_BY_POA = input.UserId;
-                //dbData.APPROVED_DATE_POA = DateTime.Now;
 
                 //dbData.APPROVED_BY = input.UserId;
                 //dbData.APPROVED_DATE = DateTime.Now;
@@ -702,17 +712,13 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        private string GetManagerEmail(string poaId)
-        {
-            var managerMail = string.Empty;
-
-            var managerId = _poaBll.GetManagerIdByPoaId(poaId);
-            var managerDetail = _userBll.GetUserById(managerId);
-
-            managerMail = managerDetail == null ? string.Empty : managerDetail.EMAIL;
-
-            return managerMail;
-        }
+        //first code when manager exists
+        //private string GetManagerEmail(string poaId)
+        //{
+        //    var managerId = _poaBll.GetManagerIdByPoaId(poaId);
+        //    var managerDetail = _userBll.GetUserById(managerId);
+        //    return managerDetail.EMAIL;
+        //}
 
         private MailNotification ProsesMailNotificationBody(Lack2Dto lackData, Lack2WorkflowDocumentInput input)
         {
@@ -725,7 +731,9 @@ namespace Sampoerna.EMS.BLL
                 FormType = Enums.FormType.LACK2
             });
 
-            var poaList = _poaBll.GetPoaActiveByPlantId(lackData.LevelPlantId);
+            var creatorPoa = _poaBll.GetById(lackData.CreatedBy);
+            var poaList = creatorPoa == null ? _poaBll.GetPoaActiveByPlantId(lackData.LevelPlantId) :
+                            _poaBll.GetPoaByNppbkcIdAndMainPlant(lackData.NppbkcId).Where(x => x.POA_ID != lackData.CreatedBy).ToList();
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
@@ -770,49 +778,40 @@ namespace Sampoerna.EMS.BLL
                         }
 
                         rc.CC.Add(_userBll.GetUserById(lackData.CreatedBy).EMAIL);
-                    }
-                    else if (lackData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
-                    {
-                        var poaData = _poaBll.GetById(lackData.CreatedBy);
-                        rc.To.Add(GetManagerEmail(lackData.CreatedBy));
-                        rc.CC.Add(poaData.POA_EMAIL);
 
-                        foreach (var poaDto in poaList)
-                        {
-                            if (poaData.POA_ID != poaDto.POA_ID)
-                                rc.To.Add(poaDto.POA_EMAIL);
-                        }
-                    }
-                    rc.IsCCExist = true;
-                    break;
-                case Enums.ActionType.Approve:
-                    if (lackData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
-                    {
-                        rc.To.Add(GetManagerEmail(lackData.ApprovedBy));
-
-                        if (rejected != null)
-                        {
-                            rc.CC.Add(_poaBll.GetById(rejected.ACTION_BY).POA_EMAIL);
-                        }
-                        else
-                        {
-                            foreach (var poaDto in poaList)
-                            {
-                                rc.CC.Add(poaDto.POA_EMAIL);
-                            }
-                        }
-
-                        rc.CC.Add(_userBll.GetUserById(lackData.CreatedBy).EMAIL);
-
+                        rc.IsCCExist = true;
                     }
                     else if (lackData.Status == Enums.DocumentStatus.WaitingGovApproval)
+                    {
+                        var userData = _userBll.GetUserById(lackData.CreatedBy);
+                        rc.To.Add(userData.EMAIL);
+
+                        rc.IsCCExist = false;
+                    }
+                    //first code when manager exists
+                    //else if (lackData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+                    //{
+                    //    var poaData = _poaBll.GetById(lackData.CreatedBy);
+                    //    rc.To.Add(GetManagerEmail(lackData.CreatedBy));
+                    //    rc.CC.Add(poaData.POA_EMAIL);
+
+                    //    foreach (var poaDto in poaList)
+                    //    {
+                    //        if (poaData.POA_ID != poaDto.POA_ID)
+                    //            rc.To.Add(poaDto.POA_EMAIL);
+                    //    }
+                    //}
+                    break;
+                case Enums.ActionType.Approve:
+                    if (lackData.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
                         var poaData = _poaBll.GetActivePoaById(lackData.CreatedBy);
                         if (poaData != null)
                         {
                             //creator is poa user
                             rc.To.Add(poaData.POA_EMAIL);
-                            rc.CC.Add(GetManagerEmail(lackData.CreatedBy));
+                            //first code when manager exists
+                            //rc.CC.Add(GetManagerEmail(lackData.CreatedBy));
                         }
                         else
                         {
@@ -821,9 +820,30 @@ namespace Sampoerna.EMS.BLL
 
                             rc.To.Add(userData.EMAIL);
                             rc.CC.Add(_poaBll.GetById(lackData.ApprovedBy).POA_EMAIL);
-                            rc.CC.Add(GetManagerEmail(lackData.ApprovedBy));
+                            //first code when manager exists
+                            //rc.CC.Add(GetManagerEmail(lackData.ApprovedBy));
                         }
                     }
+                    //first code when manager exists
+                    //else if (lackData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+                    //{
+                    //    rc.To.Add(GetManagerEmail(lackData.ApprovedBy));
+
+                    //    if (rejected != null)
+                    //    {
+                    //        rc.CC.Add(_poaBll.GetById(rejected.ACTION_BY).POA_EMAIL);
+                    //    }
+                    //    else
+                    //    {
+                    //        foreach (var poaDto in poaList)
+                    //        {
+                    //            rc.CC.Add(poaDto.POA_EMAIL);
+                    //        }
+                    //    }
+
+                    //    rc.CC.Add(_userBll.GetUserById(lackData.CreatedBy).EMAIL);
+
+                    //}
                     rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.Reject:
@@ -838,12 +858,14 @@ namespace Sampoerna.EMS.BLL
                             var poa = _poaBll.GetById(lackData.ApprovedBy);
                             rc.To.Add(userDetail.EMAIL);
                             rc.CC.Add(poa.POA_EMAIL);
-                            rc.CC.Add(GetManagerEmail(lackData.ApprovedBy));
+                            //first code when manager exists
+                            //rc.CC.Add(GetManagerEmail(lackData.ApprovedBy));
                         }
                         else
                         {
                             rc.To.Add(poaData2.POA_EMAIL);
-                            rc.CC.Add(GetManagerEmail(lackData.CreatedBy));
+                            //first code when manager exists
+                            //rc.CC.Add(GetManagerEmail(lackData.CreatedBy));
                         }
                     }
                     else
@@ -865,7 +887,8 @@ namespace Sampoerna.EMS.BLL
                     {
                         //creator is poa user
                         rc.To.Add(poaData3.POA_EMAIL);
-                        rc.CC.Add(GetManagerEmail(lackData.CreatedBy));
+                        //first code when manager exists
+                        //rc.CC.Add(GetManagerEmail(lackData.CreatedBy));
                     }
                     else
                     {
@@ -873,7 +896,8 @@ namespace Sampoerna.EMS.BLL
                         var userData = _userBll.GetUserById(lackData.CreatedBy);
                         rc.To.Add(userData.EMAIL);
                         rc.CC.Add(_poaBll.GetById(lackData.ApprovedBy).POA_EMAIL);
-                        rc.CC.Add(GetManagerEmail(lackData.ApprovedBy));
+                        //first code when manager exists
+                        //rc.CC.Add(GetManagerEmail(lackData.ApprovedBy));
                     }
                     rc.IsCCExist = true;
                     break;
@@ -883,7 +907,8 @@ namespace Sampoerna.EMS.BLL
                     {
                         //creator is poa user
                         rc.To.Add(poaData4.POA_EMAIL);
-                        rc.CC.Add(GetManagerEmail(lackData.CreatedBy));
+                        //first code when manager exists
+                        //rc.CC.Add(GetManagerEmail(lackData.CreatedBy));
                     }
                     else
                     {
@@ -895,7 +920,8 @@ namespace Sampoerna.EMS.BLL
                         var userData = _userBll.GetUserById(lackData.CreatedBy);
                         rc.To.Add(userData.EMAIL);
                         rc.CC.Add(_poaBll.GetById(lackData.ApprovedBy).POA_EMAIL);
-                        rc.CC.Add(GetManagerEmail(lackData.ApprovedBy));
+                        //first code when manager exists
+                        //rc.CC.Add(GetManagerEmail(lackData.ApprovedBy));
                     }
                     rc.IsCCExist = true;
                     break;
@@ -903,9 +929,11 @@ namespace Sampoerna.EMS.BLL
                     var poaData5 = _poaBll.GetActivePoaById(lackData.CreatedBy);
                     if (poaData5 != null)
                     {
+                        //first code when manager exists
                         //creator is poa user
-                        rc.To.Add(GetManagerEmail(lackData.CreatedBy));
-                        rc.CC.Add(poaData5.POA_EMAIL);
+                        //rc.To.Add(GetManagerEmail(lackData.CreatedBy));
+                        //rc.CC.Add(poaData5.POA_EMAIL);
+                        rc.To.Add(poaData5.POA_EMAIL);
                     }
                     else
                     {
@@ -913,7 +941,8 @@ namespace Sampoerna.EMS.BLL
                         var userData = _userBll.GetUserById(lackData.CreatedBy);
 
                         rc.To.Add(_poaBll.GetById(lackData.ApprovedBy).POA_EMAIL);
-                        rc.To.Add(GetManagerEmail(lackData.ApprovedBy));
+                        //first code when manager exists
+                        //rc.To.Add(GetManagerEmail(lackData.ApprovedBy));
                         rc.CC.Add(userData.EMAIL);
                     }
                     rc.IsCCExist = true;
@@ -1201,7 +1230,8 @@ namespace Sampoerna.EMS.BLL
                 summaryDto.LegalizeData = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.DECREE_DATE);
                 
                 summaryDto.Poa = dtData.APPROVED_BY;
-                summaryDto.PoaManager = dtData.APPROVED_BY_MANAGER;
+                //first code when manager exists
+                //summaryDto.PoaManager = dtData.APPROVED_BY_MANAGER;
 
 
                 summaryDto.CreatedDate = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.CREATED_DATE);
@@ -1311,6 +1341,25 @@ namespace Sampoerna.EMS.BLL
 
         public List<Lack2Dto> GetDashboardDataByParam(Lack2GetDashboardDataByParamInput input)
         {
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                var nppbkc = _nppbkcService.GetNppbkcsByPoa(input.UserId);
+                if (nppbkc != null && nppbkc.Count > 0)
+                {
+                    input.NppbkcList = nppbkc.Select(c => c.NPPBKC_ID).ToList();
+                }
+                else
+                {
+                    input.NppbkcList = new List<string>();
+                }
+            }
+            else if (input.UserRole == Enums.UserRole.Manager)
+            {
+                var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
+                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+                input.DocumentNumberList = document;
+            }
+
             var data = _lack2Service.GetDashboardDataByParam(input);
             return Mapper.Map<List<Lack2Dto>>(data);
         }

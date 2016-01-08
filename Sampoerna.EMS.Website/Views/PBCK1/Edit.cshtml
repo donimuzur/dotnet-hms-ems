@@ -16,7 +16,8 @@
                 <div class="action-button">
                     @if (@ViewBag.IsCurrManager != null && @ViewBag.IsCurrManager)
                     {
-                        if (Model.AllowApproveAndReject)
+                        //first code when manager exists
+                        @*if (Model.AllowApproveAndReject)
                         {
                             <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
 
@@ -28,7 +29,7 @@
                             {
                                 <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
                             }
-                        }
+                        }*@
                     }
                     else
                     {

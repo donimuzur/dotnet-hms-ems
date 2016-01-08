@@ -1,0 +1,203 @@
+﻿@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.LACK1.Lack1ReconciliationModel
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 id="lblTitle">LACK-1 Reconciliation</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                <div class="form-excise" role="form">
+                    <div class="row">
+                        @using (Ajax.BeginForm("SearchReconciliation", "Lack1",
+                            new AjaxOptions
+                            {
+                                HttpMethod = "POST",
+                                InsertionMode = InsertionMode.Replace,
+                                UpdateTargetId = "contenttable"
+
+                            }))
+                        {
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">NPPBKC ID</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.SearchView.NppbkcId, Model.SearchView.NppbkcIdList, "All", new { @class = "form-control selectreset" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Plant Id</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.SearchView.PlantId, Model.SearchView.PlantIdList, "All", new { @class = "form-control selectreset" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Excisable Goods Type</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.SearchView.ExGoodType, Model.SearchView.ExGoodTypeList, "All", new { @class = "form-control selectreset" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-8">
+                                    <button class="btn btn-blue full">FILTER</button>
+                                </div>
+                                <div class="col-md-2">
+                                    <input id="btn-export-to-excel" type="button" class="btn btn-blue full" value="EXPORT" />
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            @using (Html.BeginForm("ExportReconciliation", "LACK1", FormMethod.Post, new { @id = "ExportXlsReconciliation" }))
+            {
+                @Html.HiddenFor(model => model.ExportSearchView.NppbkcId)
+                @Html.HiddenFor(model => model.ExportSearchView.PlantId)
+                @Html.HiddenFor(model => model.ExportSearchView.ExGoodType)
+            }
+        </div>
+    </div>
+    <div id="contenttable" class="table-container">
+        @Html.Partial("_Lack1Reconciliation")
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/js/vendors/jquery.table2excel.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+
+        $('#MenuLack1OpenDocument').removeClass('open');
+        $('#MenuLack1Report').addClass('open');
+        $('#MenuLack1ReconReport').addClass('active');
+
+        $(document).ready(function() {
+
+            $('#SearchView_NppbkcId').on('change', function() {
+                OnNppbkcIdChange();
+            });
+
+            $('#SearchView_ExGoodType').on('change', function () {
+                OnExcisableGoodsTypeChange();
+            });
+
+            $('#btn-export-to-excel').click(function() {
+                exportReconciliation();
+            });
+
+        });
+
+        function OnNppbkcIdChange() {
+            if ($("#SearchView_NppbkcId").length) {
+                var nppbkcId = $('#SearchView_NppbkcId').find("option:selected").val();
+                $('#SearchView_PlantId option').remove();
+                ajaxLoadPlantList('@Url.Action("GetPlantListByNppbkcId", "LACK1")', { nppbkcId: nppbkcId });
+
+                /*load excisablegoodstype*/
+                ajaxLoadExcisableGoodsType('@Url.Action("GetExcisableGoodsTypeByNppbkcId", "LACK1")', { nppbkcId: nppbkcId });
+
+            }
+        }
+
+        function OnExcisableGoodsTypeChange() {
+            if ($("#SearchView_NppbkcId").length && $("#SearchView_ExGoodType").length) {
+                var excisableGoodsType = $('#SearchView_ExGoodType').find("option:selected").val();
+                var nppbkcId = $('#SearchView_NppbkcId').find("option:selected").val();
+                console.log(excisableGoodsType + "," + nppbkcId);
+                /*load supplier list*/
+                $('#SearchView_PlantId option').remove();
+                if (excisableGoodsType != '' && nppbkcId != '') {
+                } else {
+                    $('#SearchView_PlantId').append('<option value="">All</option>');
+                }
+            }
+        }
+
+        function ajaxLoadPlantList(url, formData) {
+            if (formData.nppbkcId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function(data) {
+                        var list = data.ReceivePlantList;
+                        $('#SearchView_PlantId').append('<option value="">All</option>');
+                        if (list.length > 0) {
+                            for (var i = 0; i < list.length; i++) {
+                                $('#SearchView_PlantId').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
+                            }
+                        }
+                    }
+                });
+            } else {
+                $('#SearchView_PlantId').append('<option value="">All</option>');
+            }
+        }
+
+        function ajaxLoadExcisableGoodsType(url, formData) {
+            $('#SearchView_ExGoodType option').remove();
+            if (formData.nppbkcId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function(data) {
+                        var list = data.ExGoodTypeList;
+                        $('#SearchView_ExGoodType').append('<option value="">All</option>');
+                        if (list.length > 0) {
+                            for (var i = 0; i < list.length; i++) {
+                                $('#SearchView_ExGoodType').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
+                            }
+                        }
+                    }
+                });
+            } else {
+                $('#SearchView_ExGoodType').append('<option value="">All</option>');
+            }
+        }
+
+        function ajaxLoadNppbkcList(url, formData) {
+            if (formData.companyCode) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function(data) {
+                        var list = data;
+                        $('#SearchView_NppbkcId').append('<option value="">All</option>');
+                        if (list.length > 0) {
+                            for (var i = 0; i < list.length; i++) {
+                                $('#SearchView_NppbkcId').append('<option value=' + list[i].NPPBKC_ID + '>' + list[i].NPPBKC_ID + '</option>');
+                            }
+                        }
+                    }
+                });
+            } else {
+                $('#SearchView_NppbkcId').append('<option value="">All</option>');
+            }
+        }
+
+        function exportReconciliation() {
+            $('#ExportSearchView_NppbkcId').val($('#SearchView_NppbkcId').find("option:selected").val());
+            $('#ExportSearchView_PlantId').val($('#SearchView_PlantId').find("option:selected").val());
+            $('#ExportSearchView_ExGoodType').val($('#SearchView_ExGoodType').find("option:selected").val());
+            $('#ExportXlsReconciliation').submit();
+        }
+
+    </script>
+}
