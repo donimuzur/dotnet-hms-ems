@@ -586,7 +586,7 @@ namespace Sampoerna.EMS.BLL
             //process for incomedetail remark
             rc.Ck5RemarkData = new Lack1RemarkDto()
             {
-                Ck5ReturnData = rc.AllLack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Return && c.FLAG_FOR_LACK1).ToList(),
+                //Ck5ReturnData = rc.AllLack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Return && c.FLAG_FOR_LACK1).ToList(),
                 /*story : http://192.168.62.216/TargetProcess/entity/1637 
                  * Ck5 Manual Trial don't include in remark column, 
                  * see previous function about getting data from ck5 that only include ck5 manual trial if REDUCE_TRIAL value is TRUE
@@ -598,7 +598,7 @@ namespace Sampoerna.EMS.BLL
             rc.Lack1IncomeDetail =
                 rc.AllLack1IncomeDetail.Where(
                     c =>
-                        !((c.CK5_TYPE == Enums.CK5Type.Return && c.FLAG_FOR_LACK1) || c.CK5_TYPE == Enums.CK5Type.Waste)).ToList();
+                        !(c.CK5_TYPE == Enums.CK5Type.Waste)).ToList();
 
             return rc;
         }
@@ -1326,7 +1326,7 @@ namespace Sampoerna.EMS.BLL
                 return dtToReturn;
             dtToReturn.Ck5RemarkData = new Lack1RemarkDto()
             {
-                Ck5ReturnData = dtToReturn.AllLack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Return && c.FLAG_FOR_LACK1).ToList(),
+                //Ck5ReturnData = dtToReturn.AllLack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Return && c.FLAG_FOR_LACK1).ToList(),
                 /*story : http://192.168.62.216/TargetProcess/entity/1637 
                  * Ck5 Manual Trial don't include in remark column, 
                  * see previous function about getting data from ck5 that only include ck5 manual trial if REDUCE_TRIAL value is TRUE
@@ -1337,7 +1337,7 @@ namespace Sampoerna.EMS.BLL
             dtToReturn.Lack1IncomeDetail =
                 dtToReturn.AllLack1IncomeDetail.Where(
                     c =>
-                        !((c.CK5_TYPE == Enums.CK5Type.Return && c.FLAG_FOR_LACK1) || c.CK5_TYPE == Enums.CK5Type.Waste)).ToList();
+                        !(c.CK5_TYPE == Enums.CK5Type.Waste)).ToList();
 
             if (string.IsNullOrEmpty(dtToReturn.ExGoodsTypeDesc)) return dtToReturn;
 
@@ -2850,7 +2850,7 @@ namespace Sampoerna.EMS.BLL
 
             rc.Ck5RemarkData = new Lack1GeneratedRemarkDto()
             {
-                Ck5ReturnData = rc.AllIncomeList.Where(c => c.Ck5Type == Enums.CK5Type.Return && c.FlagForLack1).ToList(),
+                //Ck5ReturnData = rc.AllIncomeList.Where(c => c.Ck5Type == Enums.CK5Type.Return && c.FlagForLack1).ToList(),
                 /*story : http://192.168.62.216/TargetProcess/entity/1637 
                  * Ck5 Manual Trial don't include in remark column, 
                  * see previous function about getting data from ck5 that only include ck5 manual trial if REDUCE_TRIAL value is TRUE
@@ -2860,7 +2860,7 @@ namespace Sampoerna.EMS.BLL
             };
 
             rc.IncomeList = rc.AllIncomeList.Where(c =>
-                !((c.Ck5Type == Enums.CK5Type.Return && c.FlagForLack1) || c.Ck5Type == Enums.CK5Type.Waste)).ToList();
+                !(c.Ck5Type == Enums.CK5Type.Waste)).ToList();
 
             rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
 
