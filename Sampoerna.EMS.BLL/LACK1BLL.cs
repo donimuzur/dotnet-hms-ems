@@ -35,7 +35,8 @@ namespace Sampoerna.EMS.BLL
         private IHeaderFooterBLL _headerFooterBll;
         private IWorkflowBLL _workflowBll;
         private IUserBLL _userBll;
-
+        private IWasteBLL _wasteBll;
+        
         //services
         private ICK4CItemService _ck4cItemService;
         private ICK5Service _ck5Service;
@@ -58,6 +59,7 @@ namespace Sampoerna.EMS.BLL
         private IZaidmExMaterialService _materialService;
         private IGoodProdTypeService _goodProdTypeService;
         private IMaterialUomService _materialUomService;
+        private IBrandRegistrationService _brandRegService;
 
         public LACK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -73,6 +75,7 @@ namespace Sampoerna.EMS.BLL
             _poaBll = new POABLL(_uow, _logger);
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
+            _wasteBll = new WasteBLL(_logger, _uow);
 
             _ck4cItemService = new CK4CItemService(_uow, _logger);
             _ck5Service = new CK5Service(_uow, _logger);
@@ -94,6 +97,7 @@ namespace Sampoerna.EMS.BLL
             _pbck1ProdConverterService = new Pbck1ProdConverterService(_uow, _logger);
             _materialService = new ZaidmExMaterialService(_uow, _logger);
             _goodProdTypeService = new GoodProdTypeService(_uow, _logger);
+            _brandRegService = new BrandRegistrationService(_uow, _logger);
             _materialUomService = new MaterialUomService(_uow, _logger);
         }
 
@@ -105,6 +109,10 @@ namespace Sampoerna.EMS.BLL
                 if (nppbkc != null && nppbkc.Count > 0)
                 {
                     input.NppbkcList = nppbkc.Select(c => c.NPPBKC_ID).ToList();
+                }
+                else
+                {
+                    input.NppbkcList = new List<string>();
                 }
             }
             else if (input.UserRole == Enums.UserRole.Manager)
@@ -697,7 +705,9 @@ namespace Sampoerna.EMS.BLL
                         dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
                         break;
                     case Enums.UserRole.POA:
-                        dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                        //dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                        /* CR-2 : 2015-12-22 */
+                        dbData.STATUS = Enums.DocumentStatus.WaitingForApproval;
                         break;
                     default:
                         throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
@@ -728,8 +738,11 @@ namespace Sampoerna.EMS.BLL
                     if (dbData.STATUS == Enums.DocumentStatus.WaitingForApproval)
                     {
                         //Add Changes
-                        WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingForApprovalManager);
-                        dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                        //WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingForApprovalManager);
+                        //dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
+                        /* CR-2 : 2015-12-22 Remove manager approve */
+                        WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
+                        dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
                         dbData.APPROVED_BY_POA = input.UserId;
                         dbData.APPROVED_DATE_POA = DateTime.Now;
                     }
@@ -738,22 +751,23 @@ namespace Sampoerna.EMS.BLL
                         throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
                     }
                 }
-                else
-                {
-                    //manager
-                    if (dbData.STATUS == Enums.DocumentStatus.WaitingForApprovalManager)
-                    {
-                        //Add Changes
-                        WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
-                        dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
-                        dbData.APPROVED_BY_MANAGER = input.UserId;
-                        dbData.APPROVED_DATE_MANAGER = DateTime.Now;
-                    }
-                    else
-                    {
-                        throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-                    }
-                }
+                /* CR-2 : 2015-12-22 Remove manager approve */
+                //else
+                //{
+                //    //manager
+                //    if (dbData.STATUS == Enums.DocumentStatus.WaitingForApprovalManager)
+                //    {
+                //        //Add Changes
+                //        WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
+                //        dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                //        dbData.APPROVED_BY_MANAGER = input.UserId;
+                //        dbData.APPROVED_DATE_MANAGER = DateTime.Now;
+                //    }
+                //    else
+                //    {
+                //        throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+                //    }
+                //}
 
                 input.DocumentNumber = dbData.LACK1_NUMBER;
             }
@@ -771,8 +785,11 @@ namespace Sampoerna.EMS.BLL
                 if (dbData == null)
                     throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
+                //if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
+                //    dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager &&
+                //    dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
+                /* CR-2 : 2015-12-22 Remove manager approve */
                 if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
-                    dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager &&
                     dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
@@ -999,79 +1016,74 @@ namespace Sampoerna.EMS.BLL
 
                         rc.CC.Add(_userBll.GetUserById(lack1Data.CreateBy).EMAIL);
                     }
+                        /* CR-2 : 2015-12-22 Remove manager approve*/
                     else if (lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     {
-                        var poaData = _poaBll.GetActivePoaById(lack1Data.CreateBy);
-                        rc.To.Add(GetManagerEmail(lack1Data.CreateBy));
-                        rc.CC.Add(poaData.POA_EMAIL);
-
-                        foreach (var poaDto in poaList)
-                        {
-                            if (poaData.POA_ID != poaDto.POA_ID)
-                                rc.To.Add(poaDto.POA_EMAIL);
-                        }
+                        //var poaData = _poaBll.GetActivePoaById(lack1Data.CreateBy);
+                        //rc.To.Add(GetManagerEmail(lack1Data.CreateBy));
+                        var userData = _userBll.GetUserById(lack1Data.CreateBy);
+                        rc.To.Add(userData.EMAIL);
                     }
+                    /*Old code before CR-2*/
+                    //else if (lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+                    //{
+                    //    var poaData = _poaBll.GetActivePoaById(lack1Data.CreateBy);
+                    //    rc.To.Add(GetManagerEmail(lack1Data.CreateBy));
+                    //    rc.CC.Add(poaData.POA_EMAIL);
+
+                    //    foreach (var poaDto in poaList)
+                    //    {
+                    //        if (poaData.POA_ID != poaDto.POA_ID)
+                    //            rc.To.Add(poaDto.POA_EMAIL);
+                    //    }
+                    //}
                     rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.Approve:
-                    if (lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
-                    {
-                        rc.To.Add(GetManagerEmail(lack1Data.ApprovedByPoa));
-
-                        if (rejected != null)
-                        {
-                            rc.CC.Add(_poaBll.GetById(rejected.ACTION_BY).POA_EMAIL);
-                        }
-                        else
-                        {
-                            foreach (var poaDto in poaList)
-                            {
-                                rc.CC.Add(poaDto.POA_EMAIL);
-                            }
-                        }
-
-                        rc.CC.Add(_userBll.GetUserById(lack1Data.CreateBy).EMAIL);
-
-                    }
-                    else if (lack1Data.Status == Enums.DocumentStatus.WaitingGovApproval)
+                    if (lack1Data.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
                         var poaData = _poaBll.GetActivePoaById(lack1Data.CreateBy);
                         if (poaData != null)
                         {
                             //creator is poa user
                             rc.To.Add(poaData.POA_EMAIL);
-                            rc.CC.Add(GetManagerEmail(lack1Data.CreateBy));
+                            //first code when manager exists
+                            //rc.CC.Add(GetManagerEmail(lackData.CreatedBy));
                         }
                         else
                         {
                             //creator is excise executive
                             var userData = _userBll.GetUserById(lack1Data.CreateBy);
+
                             rc.To.Add(userData.EMAIL);
                             rc.CC.Add(_poaBll.GetById(lack1Data.ApprovedByPoa).POA_EMAIL);
-                            rc.CC.Add(GetManagerEmail(lack1Data.ApprovedByPoa));
+                            //first code when manager exists
+                            //rc.CC.Add(GetManagerEmail(lackData.ApprovedBy));
                         }
                     }
+                    //first code when manager exists
+                    //else if (lackData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+                    //{
+                    //    rc.To.Add(GetManagerEmail(lackData.ApprovedBy));
+
+                    //    if (rejected != null)
+                    //    {
+                    //        rc.CC.Add(_poaBll.GetById(rejected.ACTION_BY).POA_EMAIL);
+                    //    }
+                    //    else
+                    //    {
+                    //        foreach (var poaDto in poaList)
+                    //        {
+                    //            rc.CC.Add(poaDto.POA_EMAIL);
+                    //        }
+                    //    }
+
+                    //    rc.CC.Add(_userBll.GetUserById(lackData.CreatedBy).EMAIL);
+
+                    //}
                     rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.Reject:
-                    ////send notification to creator
-                    //var userDetail = _userBll.GetUserById(pbck4Dto.CREATED_BY);
-                    //rc.To.Add(userDetail.EMAIL);
-
-                    ////rejected by poa or manager
-                    //rc.CC.Add(_userBll.GetUserById(input.UserId).EMAIL);
-
-                    //if (input.UserRole == Enums.UserRole.Manager) //rejected by manager
-                    //{
-                    //    //add cc poa
-                    //    if (pbck4Dto.APPROVED_BY_POA != null)
-                    //    {
-                    //        rc.CC.Add(_userBll.GetUserById(pbck4Dto.APPROVED_BY_POA).EMAIL);
-                    //    }
-                    //}
-
-                    //rc.IsCCExist = true;
-                    //break;
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(lack1Data.CreateBy);
                     var poaData2 = _poaBll.GetActivePoaById(lack1Data.CreateBy);
@@ -1083,12 +1095,14 @@ namespace Sampoerna.EMS.BLL
                             var poa = _poaBll.GetById(lack1Data.ApprovedByPoa);
                             rc.To.Add(userDetail.EMAIL);
                             rc.CC.Add(poa.POA_EMAIL);
-                            rc.CC.Add(GetManagerEmail(lack1Data.ApprovedByPoa));
+                            //first code when manager exists
+                            //rc.CC.Add(GetManagerEmail(lackData.ApprovedBy));
                         }
                         else
                         {
                             rc.To.Add(poaData2.POA_EMAIL);
-                            rc.CC.Add(GetManagerEmail(lack1Data.CreateBy));
+                            //first code when manager exists
+                            //rc.CC.Add(GetManagerEmail(lackData.CreatedBy));
                         }
                     }
                     else
@@ -1105,20 +1119,22 @@ namespace Sampoerna.EMS.BLL
                     break;
 
                 case Enums.ActionType.GovApprove:
-                    var poaData3 = _poaBll.GetActivePoaById(lack1Data.CreateBy);
+                   var poaData3 = _poaBll.GetActivePoaById(lack1Data.CreateBy);
                     if (poaData3 != null)
                     {
                         //creator is poa user
-                        rc.To.Add(GetManagerEmail(lack1Data.CreateBy));
-                        rc.CC.Add(poaData3.POA_EMAIL);
+                        rc.To.Add(poaData3.POA_EMAIL);
+                        //first code when manager exists
+                        //rc.CC.Add(GetManagerEmail(lackData.CreatedBy));
                     }
                     else
                     {
                         //creator is excise executive
                         var userData = _userBll.GetUserById(lack1Data.CreateBy);
-                        rc.To.Add(_poaBll.GetById(lack1Data.ApprovedByPoa).POA_EMAIL);
-                        rc.To.Add(GetManagerEmail(lack1Data.ApprovedByPoa));
-                        rc.CC.Add(userData.EMAIL);
+                        rc.To.Add(userData.EMAIL);
+                        rc.CC.Add(_poaBll.GetById(lack1Data.ApprovedByPoa).POA_EMAIL);
+                        //first code when manager exists
+                        //rc.CC.Add(GetManagerEmail(lackData.ApprovedBy));
                     }
                     rc.IsCCExist = true;
                     break;
@@ -1127,16 +1143,22 @@ namespace Sampoerna.EMS.BLL
                     if (poaData4 != null)
                     {
                         //creator is poa user
-                        rc.To.Add(GetManagerEmail(lack1Data.CreateBy));
-                        rc.CC.Add(poaData4.POA_EMAIL);
+                        rc.To.Add(poaData4.POA_EMAIL);
+                        //first code when manager exists
+                        //rc.CC.Add(GetManagerEmail(lackData.CreatedBy));
                     }
                     else
                     {
                         //creator is excise executive
+                        //var userData = _userBll.GetUserById(lackData.CreatedBy);
+                        //rc.To.Add(_poaBll.GetById(lackData.ApprovedBy).POA_EMAIL);
+                        //rc.To.Add(GetManagerEmail(lackData.ApprovedBy));
+                        //rc.CC.Add(userData.EMAIL);
                         var userData = _userBll.GetUserById(lack1Data.CreateBy);
-                        rc.To.Add(_poaBll.GetById(lack1Data.ApprovedByPoa).POA_EMAIL);
-                        rc.To.Add(GetManagerEmail(lack1Data.ApprovedByPoa));
-                        rc.CC.Add(userData.EMAIL);
+                        rc.To.Add(userData.EMAIL);
+                        rc.CC.Add(_poaBll.GetById(lack1Data.ApprovedByPoa).POA_EMAIL);
+                        //first code when manager exists
+                        //rc.CC.Add(GetManagerEmail(lackData.ApprovedBy));
                     }
                     rc.IsCCExist = true;
                     break;
@@ -1144,16 +1166,20 @@ namespace Sampoerna.EMS.BLL
                     var poaData5 = _poaBll.GetActivePoaById(lack1Data.CreateBy);
                     if (poaData5 != null)
                     {
+                        //first code when manager exists
                         //creator is poa user
-                        rc.To.Add(GetManagerEmail(lack1Data.CreateBy));
-                        rc.CC.Add(poaData5.POA_EMAIL);
+                        //rc.To.Add(GetManagerEmail(lackData.CreatedBy));
+                        //rc.CC.Add(poaData5.POA_EMAIL);
+                        rc.To.Add(poaData5.POA_EMAIL);
                     }
                     else
                     {
                         //creator is excise executive
                         var userData = _userBll.GetUserById(lack1Data.CreateBy);
+
                         rc.To.Add(_poaBll.GetById(lack1Data.ApprovedByPoa).POA_EMAIL);
-                        rc.To.Add(GetManagerEmail(lack1Data.ApprovedByPoa));
+                        //first code when manager exists
+                        //rc.To.Add(GetManagerEmail(lackData.ApprovedBy));
                         rc.CC.Add(userData.EMAIL);
                     }
                     rc.IsCCExist = true;
@@ -1164,12 +1190,13 @@ namespace Sampoerna.EMS.BLL
             return rc;
         }
 
-        private string GetManagerEmail(string poaId)
-        {
-            var managerId = _poaBll.GetManagerIdByPoaId(poaId);
-            var managerDetail = _userBll.GetUserById(managerId);
-            return managerDetail.EMAIL;
-        }
+        /* CR-2 : 2015-12-22 Remove manager approve */
+        //private string GetManagerEmail(string poaId)
+        //{
+        //    var managerId = _poaBll.GetManagerIdByPoaId(poaId);
+        //    var managerDetail = _userBll.GetUserById(managerId);
+        //    return managerDetail.EMAIL;
+        //}
 
         #endregion
 
@@ -3754,11 +3781,70 @@ namespace Sampoerna.EMS.BLL
 
         public List<Lack1Dto> GetDashboardDataByParam(Lack1GetDashboardDataByParamInput input)
         {
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                var nppbkc = _nppbkcService.GetNppbkcsByPoa(input.UserId);
+                if (nppbkc != null && nppbkc.Count > 0)
+                {
+                    input.NppbkcList = nppbkc.Select(c => c.NPPBKC_ID).ToList();
+                }
+                else
+                {
+                    input.NppbkcList = new List<string>();
+                }
+            }
+            else if (input.UserRole == Enums.UserRole.Manager)
+            {
+                var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
+                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+                input.DocumentNumberList = document;
+            }
+
             var data = _lack1Service.GetDashboardDataByParam(input);
             return Mapper.Map<List<Lack1Dto>>(data);
         }
 
         #endregion
 
+        #region ------------- Reconciliation -----------
+
+        public List<Lack1ReconciliationDto> GetReconciliationByParam(Lack1GetReconciliationByParamInput input)
+        {
+            var dbData = from p in _lack1Service.GetReconciliationByParamInput(input)
+                         select new Lack1ReconciliationDto()
+                         {
+                             NppbkcId = p.NPPBKC_ID,
+                             PlantId = string.Join(Environment.NewLine, p.LACK1_PLANT.Select(x => x.PLANT_ID)),
+                             Month = p.MONTH.MONTH_NAME_ENG,
+                             Date = p.SUBMISSION_DATE.Value.Day.ToString(),
+                             ItemCode = string.Join(Environment.NewLine, _brandRegService.GetByPlantAndFaCode(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), _ck4cItemService.GetByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Select(c => c.FA_CODE).Distinct().ToList()).Select(b => b.STICKER_CODE).Distinct()),
+                             FinishGoodCode = string.Join(Environment.NewLine, _ck4cItemService.GetByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Select(c => c.FA_CODE).Distinct()),
+                             Remaining = p.LACK1_PBCK1_MAPPING.Sum(x => x.PBCK1.REMAINING_QUOTA.HasValue ? x.PBCK1.REMAINING_QUOTA.Value : 0),
+                             BeginningStock = p.BEGINING_BALANCE,
+                             ReceivedCk5No = string.Join(Environment.NewLine, p.LACK1_INCOME_DETAIL.Where(x => x.CK5.CK5_TYPE != Enums.CK5Type.Waste && x.CK5.CK5_TYPE != Enums.CK5Type.Return).Select(x => x.CK5.SUBMISSION_NUMBER).Distinct()),
+                             Received = p.TOTAL_INCOME,
+                             UsageOther = p.USAGE + (p.USAGE_TISTOTIS.HasValue ? p.USAGE_TISTOTIS.Value : 0),
+                             UsageSelf = p.LACK1_TRACKING.Sum(x => x.INVENTORY_MOVEMENT.QTY.Value) > (p.USAGE + (p.USAGE_TISTOTIS.HasValue ? p.USAGE_TISTOTIS.Value : 0)) ?
+                                         p.LACK1_TRACKING.Sum(x => x.INVENTORY_MOVEMENT.QTY.Value) - (p.USAGE + (p.USAGE_TISTOTIS.HasValue ? p.USAGE_TISTOTIS.Value : 0)) :
+                                         (p.USAGE + (p.USAGE_TISTOTIS.HasValue ? p.USAGE_TISTOTIS.Value : 0)) - p.LACK1_TRACKING.Sum(x => x.INVENTORY_MOVEMENT.QTY.Value),
+                             ResultTis = p.LACK1_PRODUCTION_DETAIL.Where(x => x.UOM_ID.ToLower() == "g").Sum(x => x.AMOUNT),
+                             ResultStick = p.LACK1_PRODUCTION_DETAIL.Where(x => x.UOM_ID.ToLower() == "btg").Sum(x => x.AMOUNT),
+                             EndingStock = p.BEGINING_BALANCE + p.TOTAL_INCOME - p.USAGE - (p.RETURN_QTY.HasValue ? p.RETURN_QTY.Value : 0),
+                             RemarkDesc = p.DOCUMENT_NOTED != null ? p.DOCUMENT_NOTED.Replace("<br />", Environment.NewLine) : string.Empty,
+                             RemarkCk5No = string.Join(Environment.NewLine, p.LACK1_INCOME_DETAIL.Where(x => x.CK5.CK5_TYPE == Enums.CK5Type.Waste || x.CK5.CK5_TYPE == Enums.CK5Type.Return).Select(x => x.CK5.SUBMISSION_NUMBER).Distinct()),
+                             RemarkQty = (p.RETURN_QTY.HasValue ? p.RETURN_QTY.Value : 0) + (p.WASTE_QTY.HasValue ? p.WASTE_QTY.Value : 0),
+                             StickProd = _ck4cItemService.GetByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Sum(c => c.PROD_QTY),
+                             PackProd = _ck4cItemService.GetByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Sum(c => c.PACKED_QTY.HasValue ? c.PACKED_QTY.Value : 0),
+                             Wip = _ck4cItemService.GetByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Sum(c => c.UNPACKED_QTY.HasValue ? c.UNPACKED_QTY.Value : 0),
+                             RejectMaker = _wasteBll.GetAllByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Sum(c => c.MarkerRejectStickQty.HasValue ? c.MarkerRejectStickQty.Value : 0),
+                             RejectPacker = _wasteBll.GetAllByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Sum(c => c.PackerRejectStickQty.HasValue ? c.PackerRejectStickQty.Value : 0),
+                             FloorSweep = _wasteBll.GetAllByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Sum(c => c.FloorWasteGramQty.HasValue ? c.FloorWasteGramQty.Value : 0),
+                             Stem = _wasteBll.GetAllByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Sum(c => c.StampWasteQty.HasValue ? c.StampWasteQty.Value : 0)
+                         };
+
+            return dbData.ToList();
+        }
+
+        #endregion
     }
 }

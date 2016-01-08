@@ -17,7 +17,8 @@
             <th>Total Delivered Excisable Goods (kg)</th>
             <th>UOM</th>
             <th>POA</th>
-            <th>POA  Manager</th>
+            @*first code when manager exists
+            @*<th>POA  Manager</th>*@
             <th>Created Date</th>
             <th>Created Time</th>
             <th>Created By</th>
@@ -52,7 +53,8 @@
                     <td>@Html.DisplayFor(model => item.TotalDeliveryExcisable)</td>
                     <td>@Html.DisplayFor(model => item.Uom)</td>
                     <td>@Html.DisplayFor(model => item.Poa)</td>
-                    <td>@Html.DisplayFor(model => item.PoaManager)</td>
+                    @*first code when manager exists
+                    @*<td>@Html.DisplayFor(model => item.PoaManager)</td>*@
                     <td>@Html.DisplayFor(model => item.CreatedDate)</td>
                     <td>@Html.DisplayFor(model => item.CreatedTime)</td>
                     <td>@Html.DisplayFor(model => item.CreatedBy)</td>

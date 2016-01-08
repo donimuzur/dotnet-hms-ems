@@ -166,8 +166,21 @@ namespace Sampoerna.EMS.BLL
                         displayUserId = listPoa.Aggregate("", (current, poaDto) => current + (poaDto.POA_ID + ","));
                     }else{
                         List<POADto> listPoa;
-                        listPoa = input.PlantId != null ? _poaBll.GetPoaActiveByPlantId(input.PlantId).Distinct().ToList() 
+                        var isPoaCreatedUser = _poaBll.GetActivePoaById(input.DocumentCreator);
+                        if (isPoaCreatedUser != null)
+                        {
+                            //created user is poa, let's get poa list in one Nppbkc
+                            listPoa = _poaBll.GetPoaActiveByNppbkcId(input.NppbkcId).Distinct().ToList();
+                            if (listPoa.Count > 0)
+                            {
+                                listPoa = listPoa.Where(c => c.POA_ID != isPoaCreatedUser.POA_ID).Distinct().ToList();
+                            }
+                        }
+                        else
+                        {
+                            listPoa = !string.IsNullOrEmpty(input.PlantId) ? _poaBll.GetPoaActiveByPlantId(input.PlantId).Distinct().ToList()
                             : _poaBll.GetPoaActiveByNppbkcId(input.NppbkcId).Distinct().ToList();
+                        }
                         
                         displayUserId = listPoa.Aggregate("", (current, poaMapDto) => current + (poaMapDto.POA_ID + ","));
                     }

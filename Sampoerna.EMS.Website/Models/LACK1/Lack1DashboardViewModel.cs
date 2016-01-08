@@ -4,6 +4,11 @@ namespace Sampoerna.EMS.Website.Models.LACK1
 {
     public class Lack1DashboardViewModel : BaseModel
     {
+        public Lack1DashboardViewModel()
+        {
+           Detail = new DashboardDetilModel();
+        }
+
         public Lack1DashboardSearchViewModel SearchViewModel { get; set; }
         public DashboardDetilModel Detail { get; set; }
     }
