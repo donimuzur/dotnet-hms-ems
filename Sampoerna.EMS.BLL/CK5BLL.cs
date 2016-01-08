@@ -2772,6 +2772,10 @@ namespace Sampoerna.EMS.BLL
                 //change status
                 dbData.STATUS_ID = Enums.DocumentStatus.GoodReceive;
 
+                //delegate
+                input.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY, input.UserId,
+                    DateTime.Now);
+
                 //add to workflow
                 AddWorkflowHistory(input);
             }
@@ -2831,8 +2835,10 @@ namespace Sampoerna.EMS.BLL
                     dbData.STATUS_ID = Enums.DocumentStatus.WasteDisposal;
                 else
                     dbData.STATUS_ID = Enums.DocumentStatus.Completed;
-                
-                
+
+                //delegate
+                input.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY, input.UserId,
+                    DateTime.Now);
 
                 //add to workflow
                 AddWorkflowHistory(input);
@@ -2917,6 +2923,10 @@ namespace Sampoerna.EMS.BLL
             dbData.STATUS_ID = Enums.DocumentStatus.GoodIssue;
 
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+            //delegate
+            input.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY, input.UserId,
+                DateTime.Now);
 
             AddWorkflowHistory(input);
 

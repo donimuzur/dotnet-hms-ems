@@ -358,7 +358,10 @@ namespace Sampoerna.EMS.BLL
         public bool AllowTfPostedPortToImporter(WorkflowAllowApproveAndRejectInput input)
         {
             if (input.CreatedUser != input.CurrentUser)
-                return false;
+                if (
+                    !_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
+                        DateTime.Now))
+                    return false;
 
             return input.DocumentStatus == Enums.DocumentStatus.TFPosted;
         }
@@ -371,7 +374,10 @@ namespace Sampoerna.EMS.BLL
                 input.DocumentStatus == Enums.DocumentStatus.Completed)
                 return false;
             if (input.CreatedUser != input.CurrentUser)
-                return false;
+                if (
+                   !_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
+                       DateTime.Now))
+                    return false;
 
             return true;
         }
@@ -380,6 +386,8 @@ namespace Sampoerna.EMS.BLL
         {
             if (input.DocumentStatus != Enums.DocumentStatus.Completed) return false;
             if (input.CreatedUser == input.CurrentUser) return true;
+            if (!_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser, DateTime.Now))
+                return false;
             if (input.UserRole == Enums.UserRole.POA)
             {
                 return input.CurrentUser == input.PoaApprove;
@@ -391,6 +399,8 @@ namespace Sampoerna.EMS.BLL
         {
             if (input.DocumentStatus <= Enums.DocumentStatus.WaitingGovApproval) return false;
             if (input.CreatedUser == input.CurrentUser) return true;
+            if (!_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,DateTime.Now))
+                return false;
             if (input.UserRole == Enums.UserRole.POA)
             {
                 return input.CurrentUser == input.PoaApprove;
@@ -401,7 +411,10 @@ namespace Sampoerna.EMS.BLL
         public bool AllowStoGiCompleted(WorkflowAllowApproveAndRejectInput input)
         {
             if (input.CreatedUser != input.CurrentUser)
-                return false;
+                if (
+                    !_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
+                        DateTime.Now))
+                    return false;
 
             return input.DocumentStatus == Enums.DocumentStatus.StoRecGICompleted;
         }
@@ -409,7 +422,10 @@ namespace Sampoerna.EMS.BLL
         public bool AllowStoGrCreated(WorkflowAllowApproveAndRejectInput input)
         {
             if (input.CreatedUser != input.CurrentUser)
-                return false;
+                if (
+                    !_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
+                        DateTime.Now))
+                    return false;
 
             return input.DocumentStatus == Enums.DocumentStatus.StoRecGRCompleted;
         }
@@ -417,7 +433,10 @@ namespace Sampoerna.EMS.BLL
         public bool AllowGoodIssue(WorkflowAllowApproveAndRejectInput input)
         {
             if (input.CreatedUser != input.CurrentUser)
-                return false;
+                if (
+                    !_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
+                        DateTime.Now))
+                    return false;
 
             if (input.Ck5ManualType != Enums.Ck5ManualType.Trial)
                 return false;
@@ -428,7 +447,10 @@ namespace Sampoerna.EMS.BLL
         public bool AllowDomesticAlcoholPurchaseOrder(WorkflowAllowApproveAndRejectInput input)
         {
             if (input.CreatedUser != input.CurrentUser)
-                return false;
+                if (
+                    !_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
+                        DateTime.Now))
+                    return false;
 
             return input.DocumentStatus == Enums.DocumentStatus.PurchaseOrder;
         }
@@ -436,7 +458,10 @@ namespace Sampoerna.EMS.BLL
         public bool AllowDomesticAlcoholGoodIssue(WorkflowAllowApproveAndRejectInput input)
         {
             if (input.CreatedUser != input.CurrentUser)
-                return false;
+                if (
+                   !_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
+                       DateTime.Now))
+                    return false;
 
             return input.DocumentStatus == Enums.DocumentStatus.GoodIssue;
         }
@@ -444,7 +469,10 @@ namespace Sampoerna.EMS.BLL
         public bool AllowDomesticAlcoholGoodReceive(WorkflowAllowApproveAndRejectInput input)
         {
             if (input.CreatedUser != input.CurrentUser)
-                return false;
+                if (
+                    !_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
+                        DateTime.Now))
+                    return false;
 
             return input.DocumentStatus == Enums.DocumentStatus.GoodReceive;
         }
@@ -452,7 +480,10 @@ namespace Sampoerna.EMS.BLL
         public bool AllowGoodReceive(WorkflowAllowApproveAndRejectInput input)
         {
             if (input.CreatedUser != input.CurrentUser)
-                return false;
+                if (
+                    !_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
+                        DateTime.Now))
+                    return false;
 
             if (input.Ck5ManualType != Enums.Ck5ManualType.Trial)
                 return false;
@@ -463,7 +494,10 @@ namespace Sampoerna.EMS.BLL
         public bool AllowWasteGoodIssue(WorkflowAllowApproveAndRejectInput input)
         {
             if (input.CreatedUser != input.CurrentUser)
-                return false;
+                if (
+                    !_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
+                        DateTime.Now))
+                    return false;
 
             return input.DocumentStatus == Enums.DocumentStatus.GoodIssue;
         }
@@ -478,6 +512,10 @@ namespace Sampoerna.EMS.BLL
 
             if (input.CreatedUser == input.CurrentUser)
                 return true;
+
+            if (_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
+                       DateTime.Now))
+                return false;
 
             return IsOnePlant(input.DestPlant, input.CurrentUser);
 
