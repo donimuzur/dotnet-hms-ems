@@ -2430,7 +2430,9 @@ namespace Sampoerna.EMS.BLL
                 if (dbData.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
                     inputPbck3.NppbkcId = dbData.DEST_PLANT_NPPBKC_ID;
 
-                inputPbck3.UserId = input.UserId;
+                //inputPbck3.UserId = input.UserId;
+                inputPbck3.UserId = dbData.CREATED_BY;
+
                 var pbck3Number = _pbck3Services.InsertPbck3FromCk5MarketReturn(inputPbck3);
 
                 //add workflow history pbck3
@@ -2439,7 +2441,8 @@ namespace Sampoerna.EMS.BLL
                 inputCk5MarketReturn.UserId = input.UserId;
                 inputCk5MarketReturn.UserRole = input.UserRole;
                 inputCk5MarketReturn.ActionType = Enums.ActionType.Created;
-                
+                inputCk5MarketReturn.Comment = input.Comment;
+
                 AddWorkflowHistoryPbck3(inputCk5MarketReturn);
 
             }

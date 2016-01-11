@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
+using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Voxteneo.WebComponents.Logger;
@@ -18,12 +19,15 @@ namespace Sampoerna.EMS.BLL.Services
         
         private string _includeTables = "POA, USER";
 
+        //private IPOABLL _poaBll;
+
         public PoaDelegationServices(IUnitOfWork uow, ILogger logger)
         {
            _uow = uow;
            _logger = logger;
            _repository = _uow.GetGenericRepository<POA_DELEGATION>();
 
+            //_poabll = new POABLL(_uow, _logger);
            
         }
 
@@ -170,5 +174,41 @@ namespace Sampoerna.EMS.BLL.Services
             return string.Empty;
 
         }
+
+        //private string CommentDelegateUser(int formId, Core.Enums.FormType formType, 
+        //    WorkflowHistoryDto workflowHistoryDto, string currentUserId, Enums.UserRole currentUserRole,
+        //    string createdUser, DateTime date, string nppbkcId, string plantId)
+        //{
+        //    string comment = "";
+
+        //    var inputHistory = new GetByFormTypeAndFormIdInput();
+        //    inputHistory.FormId = formId;
+        //    inputHistory.FormType = formType;
+
+        //    //var rejectedPoa = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(inputHistory);
+        //    if (workflowHistoryDto != null)
+        //    {
+        //        comment = CommentDelegatedByHistory(workflowHistoryDto.COMMENT,
+        //            workflowHistoryDto.ACTION_BY, currentUserId, currentUserRole, createdUser, date);
+        //    }
+        //    else
+        //    {
+        //        var isPoaCreatedUser = _poaBll.GetActivePoaById(createdUser);
+        //        List<string> listPoa;
+        //        if (isPoaCreatedUser != null) //if creator = poa
+        //        {
+        //            listPoa = _poaBll.GetPoaActiveByNppbkcId(nppbkcId).Select(c => c.POA_ID).ToList();
+        //        }
+        //        else
+        //        {
+        //            listPoa = _poaBll.GetPoaActiveByPlantId(plantId).Select(c => c.POA_ID).ToList();
+        //        }
+
+        //        comment = CommentDelegatedUserApproval(listPoa, currentUserId, date);
+
+        //    }
+
+        //    return comment;
+        //}
     }
 }

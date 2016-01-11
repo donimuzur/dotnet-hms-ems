@@ -353,10 +353,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     return View(model);
                 }
 
-                if (model.CreatedBy != CurrentUser.USER_ID)
-                {
+                //if (model.CreatedBy != CurrentUser.USER_ID)
+                //{
+                //    return RedirectToAction("Detail", new { id = model.Lack2Id });
+                //}
+                if (!_workflowBll.IsAllowEditLack1(model.CreatedBy, CurrentUser.USER_ID, model.Status))
                     return RedirectToAction("Detail", new { id = model.Lack2Id });
-                }
 
                 bool isSubmit = model.IsSaveSubmit == "submit";
 
@@ -483,14 +485,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private bool IsAllowEditLack1(string userId, Enums.DocumentStatus status)
         {
-            bool isAllow = CurrentUser.USER_ID == userId;
-            if (!(status == Enums.DocumentStatus.Draft || status == Enums.DocumentStatus.Rejected
-                || status == Enums.DocumentStatus.WaitingGovApproval || status == Enums.DocumentStatus.Completed))
-            {
-                isAllow = false;
-            }
+            //bool isAllow = CurrentUser.USER_ID == userId;
+            //if (!(status == Enums.DocumentStatus.Draft || status == Enums.DocumentStatus.Rejected
+            //    || status == Enums.DocumentStatus.WaitingGovApproval || status == Enums.DocumentStatus.Completed))
+            //{
+            //    isAllow = false;
+            //}
 
-            return isAllow;
+            //return isAllow;
+            return _workflowBll.IsAllowEditLack1(userId, CurrentUser.USER_ID, status);
         }
 
         private string GetPoaListByNppbkcId(string nppbkcId)

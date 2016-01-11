@@ -155,7 +155,36 @@ namespace Sampoerna.EMS.BLL
                         {
                             //was rejected
                             input.IsRejected = true;
-                            input.RejectedBy = rejectedSource.ACTION_BY;
+                            //input.RejectedBy = rejectedSource.ACTION_BY;
+
+                            //delegated
+                            string originalPoa;
+                            var listUser = new List<string>();
+                            //is the rejected original or delegated
+                            if (!string.IsNullOrEmpty(rejectedSource.COMMENT) &&
+                                rejectedSource.COMMENT.Contains(Constans.LabelDelegatedBy))
+                            {
+                                //rejected by delegated
+                                //find the original
+                                originalPoa = rejectedSource.COMMENT.Substring(rejectedSource.COMMENT.IndexOf(Constans.LabelDelegatedBy, System.StringComparison.Ordinal));
+                                originalPoa = originalPoa.Replace(Constans.LabelDelegatedBy, "");
+                                originalPoa = originalPoa.Replace("]", "");
+
+                            }
+                            else
+                            {
+                                originalPoa = rejectedSource.ACTION_BY;
+                            }
+
+                            listUser.Add(originalPoa);
+                            var poaDelegate = _poaDelegationServices.GetPoaDelegationToByPoaFromAndDate(originalPoa, DateTime.Now);
+
+                            listUser.AddRange(poaDelegate);
+
+                            input.RejectedBy = string.Join(",", listUser);
+
+                            //end delegated
+
                         }
                     }
                 }
@@ -259,6 +288,10 @@ namespace Sampoerna.EMS.BLL
             string displayUserId = "";
 
             var listUserDisposal = _wasteRoleServices.GetUserDisposalTeamByPlant(input.PlantId);
+
+            var poaDelegate = _poaDelegationServices.GetListPoaDelegateByDate(listUserDisposal, DateTime.Now);
+            listUserDisposal.AddRange(poaDelegate);
+
 
             displayUserId = String.Join(", ", listUserDisposal.ToArray());
             newRecord.ROLE = Enums.UserRole.User;

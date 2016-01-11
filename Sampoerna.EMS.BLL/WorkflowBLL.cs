@@ -151,8 +151,13 @@ namespace Sampoerna.EMS.BLL
                     var rejectedSourcePoa = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(input.DocumentNumberSource);
                     if (rejectedSourcePoa != "")
                     {
-                        if (input.CurrentUser != rejectedSourcePoa)
+                        //if (input.CurrentUser != rejectedSourcePoa)
+                        //    return false;
+                        //delegate
+                        if (!IsPoaAllowedDelegate(input.DocumentNumberSource, input.CurrentUser))
                             return false;
+
+                        //end delegate
                     }
                 }
 
@@ -230,21 +235,26 @@ namespace Sampoerna.EMS.BLL
                     var workflowHistoryDto =
                         _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
 
-                    if (!string.IsNullOrEmpty(workflowHistoryDto.COMMENT) && 
-                        workflowHistoryDto.COMMENT.Contains(Constans.LabelDelegatedBy)) //approve by delegated
+                    if (workflowHistoryDto != null)
                     {
-                        //find the original
-                        originalPoa =
-                            workflowHistoryDto.COMMENT.Substring(
-                                workflowHistoryDto.COMMENT.IndexOf(Constans.LabelDelegatedBy,
-                                    System.StringComparison.Ordinal));
-                        originalPoa = originalPoa.Replace(Constans.LabelDelegatedBy, "");
-                        originalPoa = originalPoa.Replace("]", "");
+
+                        if (!string.IsNullOrEmpty(workflowHistoryDto.COMMENT) &&
+                            workflowHistoryDto.COMMENT.Contains(Constans.LabelDelegatedBy)) //approve by delegated
+                        {
+                            //find the original
+                            originalPoa =
+                                workflowHistoryDto.COMMENT.Substring(
+                                    workflowHistoryDto.COMMENT.IndexOf(Constans.LabelDelegatedBy,
+                                        System.StringComparison.Ordinal));
+                            originalPoa = originalPoa.Replace(Constans.LabelDelegatedBy, "");
+                            originalPoa = originalPoa.Replace("]", "");
+                        }
+                        else
+                        {
+                            originalPoa = workflowHistoryDto.ACTION_BY;
+                        }
                     }
-                    else
-                    {
-                        originalPoa = workflowHistoryDto.ACTION_BY;
-                    }
+
 
                     ////get poa that already approve or reject
                     //var poaId = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
@@ -541,6 +551,9 @@ namespace Sampoerna.EMS.BLL
             //get history is poa delegated or poa original
             var listUser = new List<string>();
             var approvedRejectedPoa = _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(documentNumber);
+            
+            if (approvedRejectedPoa == null) return false;
+
             string originalPoa;
             if (!string.IsNullOrEmpty(approvedRejectedPoa.COMMENT) &&
                 approvedRejectedPoa.COMMENT.Contains(Constans.LabelDelegatedBy))
@@ -569,5 +582,21 @@ namespace Sampoerna.EMS.BLL
             return false;
         }
 
+        public bool IsAllowEditLack1(string createdUser, string currentUserId,Enums.DocumentStatus status)
+        {
+            if (createdUser != currentUserId)
+                if (
+                    !_poaDelegationServices.IsDelegatedUserByUserAndDate(createdUser, currentUserId,
+                        DateTime.Now))
+                    return false;
+
+            if (!(status == Enums.DocumentStatus.Draft || status == Enums.DocumentStatus.Rejected
+              || status == Enums.DocumentStatus.WaitingGovApproval || status == Enums.DocumentStatus.Completed))
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }
