@@ -51,7 +51,7 @@ namespace Sampoerna.EMS.XMLReader
                         }
 
                         item.BATCH = _xmlMapper.GetElementValue(xElement.Element("Batch"));
-
+                        
                         var bundle = _xmlMapper.GetElementValue(xElement.Element("Bundle"));
                         if(String.IsNullOrEmpty(bundle))
                             item.BUNDLE = null;
@@ -59,7 +59,8 @@ namespace Sampoerna.EMS.XMLReader
                         {
                             item.BUNDLE = Convert.ToInt32(bundle);
                         }
-                        
+
+                        var mvt = _xmlMapper.GetElementValue(xElement.Element("MVT"));
                         
                         //item.MARKET = _xmlMapper.GetElementValue(xElement.Element("Market"));
                         //item.DOCGMVTER = _xmlMapper.GetElementValue(xElement.Element("DocGMvtEr"));
@@ -146,6 +147,7 @@ namespace Sampoerna.EMS.XMLReader
                             zaapShftRptItem.ORIGINAL_UOM = bun;
                             zaapShftRptItem.PRODUCTION_DATE = item.PRODUCTION_DATE;
                             zaapShftRptItem.WERKS = item.WERKS;
+                            zaapShftRptItem.MVT = mvt;
 
 
                             var existingZaap = GetExistingZaapShiftRpt(zaapShftRptItem.MATDOC);
