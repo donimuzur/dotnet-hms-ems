@@ -172,15 +172,15 @@ namespace Sampoerna.EMS.BLL
 
             var listWasteStockDto = new List<WasteStockDto>();
 
-            decimal? updateValueFloor = dbQtyWaste.FloorWasteGramQty;
-            decimal? updateValueDust = dbQtyWaste.DustWasteGramQty;
-            decimal? updateValueStamp = dbQtyWaste.StampWasteQty;
+            decimal? updateValueFloor = dbWaste.FLOOR_WASTE_GRAM_QTY;
+            decimal? updateValueDust = dbWaste.DUST_WASTE_GRAM_QTY;
+            decimal? updateValueStamp = dbWaste.STAMP_WASTE_QTY;
 
-            if (isNewData)
+            if (!isNewData)
             {
-                updateValueFloor = dbWaste.FLOOR_WASTE_GRAM_QTY;
-                updateValueDust = dbWaste.DUST_WASTE_GRAM_QTY;
-                updateValueStamp = dbWaste.STAMP_WASTE_QTY;
+                updateValueFloor = dbQtyWaste.FloorWasteGramQty;
+                updateValueDust = dbQtyWaste.DustWasteGramQty;
+                updateValueStamp = dbQtyWaste.StampWasteQty;
 
             }
 
@@ -207,6 +207,7 @@ namespace Sampoerna.EMS.BLL
             wasteStockStem.CREATED_BY = userId;
 
             listWasteStockDto.Add(wasteStockStem);
+
 
 
 
