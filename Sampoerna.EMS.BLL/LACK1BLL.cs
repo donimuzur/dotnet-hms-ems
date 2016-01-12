@@ -59,6 +59,7 @@ namespace Sampoerna.EMS.BLL
         private IGoodProdTypeService _goodProdTypeService;
         private IMaterialUomService _materialUomService;
         private IPoaDelegationServices _poaDelegationServices;
+        private IMaterialBalanceService _materialBalanceService;
 
         public LACK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -97,6 +98,7 @@ namespace Sampoerna.EMS.BLL
             _goodProdTypeService = new GoodProdTypeService(_uow, _logger);
             _materialUomService = new MaterialUomService(_uow, _logger);
             _poaDelegationServices = new PoaDelegationServices(_uow, _logger);
+            _materialBalanceService = new MaterialBalanceService(_uow, _logger);
         }
 
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
@@ -2971,23 +2973,29 @@ namespace Sampoerna.EMS.BLL
             }
 
             //valid input
-            var dtTo = new DateTime(input.PeriodYear, input.PeriodMonth, 1);
-            var selected = _lack1Service.GetLatestLack1ByParam(new Lack1GetLatestLack1ByParamInput()
-            {
-                CompanyCode = input.CompanyCode,
-                Lack1Level = input.Lack1Level,
-                NppbkcId = input.NppbkcId,
-                ExcisableGoodsType = input.ExcisableGoodsType,
-                SupplierPlantId = input.SupplierPlantId,
-                ReceivedPlantId = input.ReceivedPlantId,
-                PeriodTo = dtTo,
-                ExcludeLack1Id = input.Lack1Id
-            });
+            //var dtTo = new DateTime(input.PeriodYear, input.PeriodMonth, 1);
+            //var selected = _lack1Service.GetLatestLack1ByParam(new Lack1GetLatestLack1ByParamInput()
+            //{
+            //    CompanyCode = input.CompanyCode,
+            //    Lack1Level = input.Lack1Level,
+            //    NppbkcId = input.NppbkcId,
+            //    ExcisableGoodsType = input.ExcisableGoodsType,
+            //    SupplierPlantId = input.SupplierPlantId,
+            //    ReceivedPlantId = input.ReceivedPlantId,
+            //    PeriodTo = dtTo,
+            //    ExcludeLack1Id = input.Lack1Id
+            //});
+
+            var listMaterial = _materialService.GetByPlantIdAndExGoodType(input.SupplierPlantId, input.ExcisableGoodsType);
+            var listSticker = listMaterial.Select(x => x.STICKER_CODE).ToList();
+
+            var listMaterialBalance = _materialBalanceService.GetByPlantAndMaterialList(input.SupplierPlantId, listSticker);
 
             rc.BeginingBalance = 0;
-            if (selected != null)
+            if (listMaterialBalance.Count > 0)
             {
-                rc.BeginingBalance = selected.BEGINING_BALANCE + selected.TOTAL_INCOME - selected.USAGE;
+                //rc.BeginingBalance = selected.BEGINING_BALANCE + selected.TOTAL_INCOME - selected.USAGE;
+                rc.BeginingBalance = listMaterialBalance.Sum(x => x.OPEN_BALANCE.Value);
             }
 
             return rc;
