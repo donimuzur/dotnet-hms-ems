@@ -14,6 +14,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.MessagingService;
 using Sampoerna.EMS.Utils;
@@ -1808,6 +1809,22 @@ namespace Sampoerna.EMS.BLL
                 inputPbck3.Pbck7Id = dbData.PBCK7_ID;
                 inputPbck3.NppbkcId = dbData.NPPBKC;
                 inputPbck3.UserId = input.UserId;
+                //delegate
+                if (!string.IsNullOrEmpty(input.Comment))
+                {
+                    string originalUser = "";
+                    if (input.Comment.Contains(Constans.LabelDelegatedBy))
+                    {
+                        originalUser = input.Comment.Substring(input.Comment.IndexOf(Constans.LabelDelegatedBy,
+                         System.StringComparison.Ordinal));
+                        originalUser = originalUser.Replace(Constans.LabelDelegatedBy, "");
+                        originalUser = originalUser.Replace("]", "");
+
+                        inputPbck3.UserId = originalUser;
+                    }
+                }
+              
+
                 inputPbck3.Pbck7ExecFrom = dbData.EXEC_DATE_FROM;
                 inputPbck3.Pbck7ExecTo = dbData.EXEC_DATE_TO;
 
@@ -1818,6 +1835,7 @@ namespace Sampoerna.EMS.BLL
                 inputWorkflowHistoryPbck3.UserId = input.UserId;
                 inputWorkflowHistoryPbck3.UserRole = input.UserRole;
                 inputWorkflowHistoryPbck3.ActionType = Enums.ActionType.Created;
+                inputWorkflowHistoryPbck3.Comment = input.Comment;
 
                 AddWorkflowHistoryPbck3(inputWorkflowHistoryPbck3);
 
