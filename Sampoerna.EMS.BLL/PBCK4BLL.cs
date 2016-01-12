@@ -819,6 +819,25 @@ namespace Sampoerna.EMS.BLL
             bodyMail.Append("</table>");
             bodyMail.AppendLine();
             bodyMail.Append("<br />Regards,<br />");
+
+            //delegate 
+            var inputDelegate = new GetEmailDelegateUserInput();
+            inputDelegate.FormType = Enums.FormType.PBCK4;
+            inputDelegate.FormId = pbck4Dto.PBCK4_ID;
+            inputDelegate.FormNumber = pbck4Dto.PBCK4_NUMBER;
+            inputDelegate.ActionType = input.ActionType;
+
+            inputDelegate.CurrentUser = input.UserId;
+            inputDelegate.CreatedUser = pbck4Dto.CREATED_BY;
+            inputDelegate.Date = DateTime.Now;
+
+            inputDelegate.WorkflowHistoryDto = rejected;
+            inputDelegate.UserApprovedPoa = poaList != null ? poaList.Select(c => c.POA_ID).ToList() : null;
+            string emailResult = "";
+            emailResult = _poaDelegationServices.GetEmailDelegateOrOriginalUserByAction(inputDelegate);
+
+            //end delegate
+
             switch (input.ActionType)
             {
                 case Enums.ActionType.Submit:
@@ -838,7 +857,9 @@ namespace Sampoerna.EMS.BLL
 
                         rc.CC.Add(_userBll.GetUserById(pbck4Dto.CREATED_BY).EMAIL);
 
+                        
                         rc.IsCCExist = true;
+                       
                     }
                     //first code when manager exists
                     //else if (pbck4Dto.Status == Enums.DocumentStatus.WaitingForApprovalManager)
@@ -895,6 +916,7 @@ namespace Sampoerna.EMS.BLL
                     //    rc.CC.Add(_userBll.GetUserById(pbck4Dto.CREATED_BY).EMAIL);
 
                     //}
+                   
                     rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.Reject:
@@ -928,6 +950,7 @@ namespace Sampoerna.EMS.BLL
                             rc.CC.Add(poaDto.POA_EMAIL);
                         }
                     }
+
 
                     rc.IsCCExist = true;
                     break;
@@ -1017,6 +1040,15 @@ namespace Sampoerna.EMS.BLL
                 //     break;
 
             }
+
+            //delegate
+            if (!string.IsNullOrEmpty(emailResult))
+            {
+                rc.IsCCExist = true;
+                rc.CC.Add(emailResult);
+            }
+            //end delegate
+
             rc.Body = bodyMail.ToString();
             return rc;
         }

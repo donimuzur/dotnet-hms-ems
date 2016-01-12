@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Inputs;
 
 namespace Sampoerna.EMS.Contract
 {
@@ -26,5 +27,7 @@ namespace Sampoerna.EMS.Contract
 
         string CommentDelegatedByHistory(string workflowHistoryComment, string workflowHistoryActionBy,
             string currentUser, Core.Enums.UserRole currentUserRole, string createdUser, DateTime date);
+
+        string GetEmailDelegateOrOriginalUserByAction(GetEmailDelegateUserInput input);
     }
 }

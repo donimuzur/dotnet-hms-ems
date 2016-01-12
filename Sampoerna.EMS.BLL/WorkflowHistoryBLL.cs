@@ -329,9 +329,7 @@ namespace Sampoerna.EMS.BLL
 
             return result;
         }
-
-      
-
+        
         public string GetPoaByDocumentNumber(string documentNumber)
         {
             

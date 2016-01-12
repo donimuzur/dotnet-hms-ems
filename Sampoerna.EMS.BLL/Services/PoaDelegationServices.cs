@@ -16,18 +16,22 @@ namespace Sampoerna.EMS.BLL.Services
          private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<POA_DELEGATION> _repository;
+        private IGenericRepository<WORKFLOW_HISTORY> _repositoryWorkflowHistory;
         
         private string _includeTables = "POA, USER";
 
         //private IPOABLL _poaBll;
+        private IUserBLL _userBll;
 
         public PoaDelegationServices(IUnitOfWork uow, ILogger logger)
         {
            _uow = uow;
            _logger = logger;
            _repository = _uow.GetGenericRepository<POA_DELEGATION>();
+           _repositoryWorkflowHistory = _uow.GetGenericRepository<WORKFLOW_HISTORY>();
 
             //_poabll = new POABLL(_uow, _logger);
+            _userBll = new UserBLL(_uow, _logger);
            
         }
 
@@ -210,5 +214,95 @@ namespace Sampoerna.EMS.BLL.Services
 
         //    return comment;
         //}
+
+        public string GetEmailDelegateOrOriginalUserByAction(GetEmailDelegateUserInput input)
+        {
+            string emailResult = "";
+
+
+            string userId = "";
+            switch (input.ActionType)
+            {
+                case Enums.ActionType.Submit:
+                    if (input.CreatedUser != input.CurrentUser)
+                    {
+                        if (IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser, input.Date))
+                        {
+                            userId = input.CurrentUser;
+                        }
+                    }
+                    break;
+
+                case Enums.ActionType.Approve:
+                case Enums.ActionType.Reject:
+                case Enums.ActionType.GovApprove:
+                case Enums.ActionType.GovPartialApprove:
+                    //get original email
+                    var dbWorkflowHistory =
+                        _repositoryWorkflowHistory.Get(
+                            c =>
+                                c.FORM_TYPE_ID == input.FormType && c.FORM_ID == input.FormId &&
+                                c.FORM_NUMBER == input.FormNumber &&
+                                (c.ACTION == Enums.ActionType.Reject || c.ACTION == Enums.ActionType.Approve)).OrderByDescending(c=>c.ACTION_DATE).FirstOrDefault();
+
+                    if (dbWorkflowHistory == null)
+                    {
+                        
+                        if (!input.UserApprovedPoa.Contains(input.CurrentUser))
+                        {   //delegated user approve
+                            //get original
+                            var dbPoa = GetPoaDelegationByPoaToAndDate(input.CurrentUser, input.Date);
+                            if (dbPoa != null)
+                            {
+                                userId = dbPoa.POA_FROM;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(dbWorkflowHistory.COMMENT) &&
+                            dbWorkflowHistory.COMMENT.Contains(Constans.LabelDelegatedBy))
+                        {
+                            var originalUser =
+                                dbWorkflowHistory.COMMENT.Substring(
+                                    dbWorkflowHistory.COMMENT.IndexOf(Constans.LabelDelegatedBy,
+                                        System.StringComparison.Ordinal));
+                            originalUser = originalUser.Replace(Constans.LabelDelegatedBy, "");
+                            originalUser = originalUser.Replace("]", "");
+                            if (originalUser != input.CurrentUser)
+                                userId = originalUser;
+                        }
+                        else
+                        {
+                            if (dbWorkflowHistory.ACTION_BY != input.CurrentUser)
+                                userId = dbWorkflowHistory.ACTION_BY;
+                        }
+                    }
+
+                    ////get email original user
+                    ////get from comment
+                    //var originalUser =
+                    //    dbWorkflowHistory.COMMENT.Substring(
+                    //        dbWorkflowHistory.COMMENT.IndexOf(Constans.LabelDelegatedBy,
+                    //            System.StringComparison.Ordinal));
+                    //originalUser = originalUser.Replace(Constans.LabelDelegatedBy, "");
+                    //originalUser = originalUser.Replace("]", "");
+                    //userId = originalUser;
+                    
+
+                    break;
+
+            }
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var dbUser = _userBll.GetUserById(userId);
+                if (dbUser != null)
+                {
+                    emailResult = dbUser.EMAIL;
+                }
+            }
+            return emailResult;
+        }
     }
 }
