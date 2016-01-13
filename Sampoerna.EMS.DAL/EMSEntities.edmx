@@ -1317,6 +1317,8 @@
           <Property Name="ORIGINAL_QTY" Type="decimal" Precision="15" Scale="2" />
           <Property Name="ORIGINAL_UOM" Type="nvarchar" MaxLength="5" />
           <Property Name="MVT" Type="nvarchar" MaxLength="3" />
+          <Property Name="ENTERED_DATE" Type="datetime" />
+          <Property Name="POSTING_DATE" Type="datetime" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_BRAND">
           <Key>
@@ -8251,6 +8253,8 @@
           <Property Name="ORIGINAL_QTY" Type="Decimal" Precision="15" Scale="2" />
           <Property Name="ORIGINAL_UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="MVT" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="ENTERED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="POSTING_DATE" Type="DateTime" Precision="3" />
         </EntityType>
         <EnumType Name="Ck5ManualFreeText" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.Ck5ManualFreeText" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatusGovType2" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatusGovType2" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -9955,6 +9959,8 @@
           <EntitySetMapping Name="ZAAP_SHIFT_RPT">
             <EntityTypeMapping TypeName="EMSModel.ZAAP_SHIFT_RPT">
               <MappingFragment StoreEntitySet="ZAAP_SHIFT_RPT">
+                <ScalarProperty Name="POSTING_DATE" ColumnName="POSTING_DATE" />
+                <ScalarProperty Name="ENTERED_DATE" ColumnName="ENTERED_DATE" />
                 <ScalarProperty Name="MVT" ColumnName="MVT" />
                 <ScalarProperty Name="ORIGINAL_UOM" ColumnName="ORIGINAL_UOM" />
                 <ScalarProperty Name="ORIGINAL_QTY" ColumnName="ORIGINAL_QTY" />
