@@ -290,7 +290,7 @@ namespace Sampoerna.EMS.XMLReader
         public DateTime? GetDateDotSeparator(string valueStr)
         {
             lastField = String.Format("input = {0}", valueStr);
-            if (valueStr.Length == 10)
+            if (!string.IsNullOrEmpty(valueStr) && valueStr.Length == 10)
             {
                 var year = Convert.ToInt32(valueStr.Substring(6, 4));
                 var month = Convert.ToInt32(valueStr.Substring(3, 2));
