@@ -237,15 +237,17 @@ namespace Sampoerna.EMS.BLL.Services
                 case Enums.ActionType.Reject:
                 case Enums.ActionType.GovApprove:
                 case Enums.ActionType.GovPartialApprove:
-                    //get original email
-                    var dbWorkflowHistory =
-                        _repositoryWorkflowHistory.Get(
-                            c =>
-                                c.FORM_TYPE_ID == input.FormType && c.FORM_ID == input.FormId &&
-                                c.FORM_NUMBER == input.FormNumber &&
-                                (c.ACTION == Enums.ActionType.Reject || c.ACTION == Enums.ActionType.Approve)).OrderByDescending(c=>c.ACTION_DATE).FirstOrDefault();
+                case Enums.ActionType.GovReject:
+                case Enums.ActionType.Completed:
+                    ////get original email
+                    //var dbWorkflowHistory =
+                    //    _repositoryWorkflowHistory.Get(
+                    //        c =>
+                    //            c.FORM_TYPE_ID == input.FormType && c.FORM_ID == input.FormId &&
+                    //            c.FORM_NUMBER == input.FormNumber &&
+                    //            (c.ACTION == Enums.ActionType.Reject || c.ACTION == Enums.ActionType.Approve)).OrderByDescending(c=>c.ACTION_DATE).FirstOrDefault();
 
-                    if (dbWorkflowHistory == null)
+                    if (input.WorkflowHistoryDto == null)
                     {
                         
                         if (!input.UserApprovedPoa.Contains(input.CurrentUser))
@@ -260,12 +262,12 @@ namespace Sampoerna.EMS.BLL.Services
                     }
                     else
                     {
-                        if (!string.IsNullOrEmpty(dbWorkflowHistory.COMMENT) &&
-                            dbWorkflowHistory.COMMENT.Contains(Constans.LabelDelegatedBy))
+                        if (!string.IsNullOrEmpty(input.WorkflowHistoryDto.COMMENT) &&
+                            input.WorkflowHistoryDto.COMMENT.Contains(Constans.LabelDelegatedBy))
                         {
                             var originalUser =
-                                dbWorkflowHistory.COMMENT.Substring(
-                                    dbWorkflowHistory.COMMENT.IndexOf(Constans.LabelDelegatedBy,
+                                input.WorkflowHistoryDto.COMMENT.Substring(
+                                    input.WorkflowHistoryDto.COMMENT.IndexOf(Constans.LabelDelegatedBy,
                                         System.StringComparison.Ordinal));
                             originalUser = originalUser.Replace(Constans.LabelDelegatedBy, "");
                             originalUser = originalUser.Replace("]", "");
@@ -274,24 +276,19 @@ namespace Sampoerna.EMS.BLL.Services
                         }
                         else
                         {
-                            if (dbWorkflowHistory.ACTION_BY != input.CurrentUser)
-                                userId = dbWorkflowHistory.ACTION_BY;
+                            if (input.WorkflowHistoryDto.ACTION_BY != input.CurrentUser)
+                                userId = input.WorkflowHistoryDto.ACTION_BY;
                         }
                     }
-
-                    ////get email original user
-                    ////get from comment
-                    //var originalUser =
-                    //    dbWorkflowHistory.COMMENT.Substring(
-                    //        dbWorkflowHistory.COMMENT.IndexOf(Constans.LabelDelegatedBy,
-                    //            System.StringComparison.Ordinal));
-                    //originalUser = originalUser.Replace(Constans.LabelDelegatedBy, "");
-                    //originalUser = originalUser.Replace("]", "");
-                    //userId = originalUser;
-                    
-
                     break;
 
+                case Enums.ActionType.GoodIssue:
+                case Enums.ActionType.GoodReceive:
+                case Enums.ActionType.WasteDisposalUploaded:
+                    //get current user
+                    userId = input.CurrentUser;
+                    break;
+                
             }
 
             if (!string.IsNullOrEmpty(userId))

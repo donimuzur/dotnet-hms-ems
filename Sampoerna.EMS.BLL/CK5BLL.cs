@@ -1730,7 +1730,7 @@ namespace Sampoerna.EMS.BLL
       
             var ck5Dto = Mapper.Map<CK5Dto>(_repository.Get(c => c.CK5_ID == input.DocumentId).FirstOrDefault());
 
-            var mailProcess = ProsesMailNotificationBody(ck5Dto, input.ActionType);
+            var mailProcess = ProsesMailNotificationBody(ck5Dto, input);
 
             //distinct double To email
             List<string> ListTo = mailProcess.To.Distinct().ToList();
@@ -1747,7 +1747,7 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        private MailNotification ProsesMailNotificationBody(CK5Dto ck5Dto, Enums.ActionType actionType)
+        private MailNotification ProsesMailNotificationBody(CK5Dto ck5Dto, CK5WorkflowDocumentInput input)
         {
             var bodyMail = new StringBuilder();
             var rc = new MailNotification();
@@ -1793,7 +1793,8 @@ namespace Sampoerna.EMS.BLL
             bodyMail.Append("</table>");
             bodyMail.AppendLine();
             bodyMail.Append("<br />Regards,<br />");
-            switch (actionType)
+            
+            switch (input.ActionType)
             {
                 case Enums.ActionType.Submit:
                     if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApproval)
@@ -1831,7 +1832,7 @@ namespace Sampoerna.EMS.BLL
                             }
 
                             poaList = _poaBll.GetPoaActiveByPlantId(plantId);
-
+                            
                             foreach (var poaDto in poaList)
                             {
                                 rc.To.Add(poaDto.POA_EMAIL);
@@ -1922,8 +1923,6 @@ namespace Sampoerna.EMS.BLL
                     break;
                 case Enums.ActionType.GovApprove:
 
-                  
-
                     if (ck5Dto.CK5_TYPE == Enums.CK5Type.Waste)
                     {
                         
@@ -1968,8 +1967,6 @@ namespace Sampoerna.EMS.BLL
                         }
 
                     }
-                    
-
                     break;
                 case Enums.ActionType.GoodIssue: 
                     //send notification to creator
@@ -2031,74 +2028,95 @@ namespace Sampoerna.EMS.BLL
                         rc.CC.Add(poaDto.POA_EMAIL);
                     }
 
-                    ////to waste approval
-                    //var listEmailApproval = _wasteRoleServices.GetListEmailWasteApprovalByPlant(ck5Dto.DEST_PLANT_ID);
-                    //if (listEmailApproval.Count == 0)
-                    //    throw new BLLException(ExceptionCodes.BLLExceptions.WasteApprovalEmailNotFound);
-
-                    //foreach (var emailUser in listEmailApproval)
-                    //{
-                    //    rc.To.Add(emailUser);
-                    //}
-
-
-                    ////cc disposal team,
-                    //var listEmailDisposalTeam = _wasteRoleServices.GetListEmailDisposalTeamByPlant(ck5Dto.DEST_PLANT_ID);
-
-                    ////Transportation and FactoryLogistic
-                    //if (listEmailTransportAndFacLogistic.Count > 0)
-                    //{
-                    //    listEmailDisposalTeam.AddRange(listEmailTransportAndFacLogistic);
-                    //}
-
-                    //foreach (var userEmail in listEmailDisposalTeam)
-                    //{
-                    //    rc.CC.Add(userEmail);
-                    //}
                     break;
 
-                //case Enums.ActionType.WasteDisposalRejected: 
-                //    //send notification to creator
-                //    //var userWasteDisposalReject = _userBll.GetUserById(ck5Dto.CREATED_BY);
-                //    rc.To.Add(userCreatorInfo.EMAIL);
-
-                //    //cc to Disposal team use plant destination
-                //    var listEmailWasteRejected = _wasteRoleServices.GetListEmailDisposalTeamByPlant(ck5Dto.DEST_PLANT_ID);
-
-                //    //Transportation and FactoryLogistic
-                //    if (listEmailTransportAndFacLogistic.Count > 0)
-                //    {
-                //        listEmailWasteRejected.AddRange(listEmailTransportAndFacLogistic);
-                //    }
-
-
-                //    foreach (var userEmail in listEmailWasteRejected)
-                //    {
-                //        rc.CC.Add(userEmail);
-                //    }
-                //    break;
-
-                //case Enums.ActionType.WasteApproved: 
-                //    //send notification to creator
-                //    //var userWasteApproval = _userBll.GetUserById(ck5Dto.CREATED_BY);
-                //    rc.To.Add(userCreatorInfo.EMAIL);
-
-
-                //    //Transportation and FactoryLogistic
-                //    if (listEmailTransportAndFacLogistic.Count > 0)
-                //    {
-                //        foreach (var userEmail in listEmailTransportAndFacLogistic)
-                //        {
-                //            rc.CC.Add(userEmail);
-                //        }
-                //    }
-
-
-
-                //    break;
+             
             }
+
+            //delegate
+            var emailResult = EmailDelegateUser(ck5Dto, input, rejected);
+
+            if (!string.IsNullOrEmpty(emailResult))
+            {
+                rc.IsCCExist = true;
+                rc.CC.Add(emailResult);
+            }
+            //end delegate
+
+
             rc.Body = bodyMail.ToString();
             return rc;
+        }
+
+        private string EmailDelegateUser(CK5Dto ck5Dto, CK5WorkflowDocumentInput input, WorkflowHistoryDto workflowHistoryDto)
+        {
+            
+            //delegate 
+            var inputDelegate = new GetEmailDelegateUserInput();
+            inputDelegate.FormType = Enums.FormType.CK5;
+            if (ck5Dto.CK5_TYPE == Enums.CK5Type.MarketReturn)
+                inputDelegate.FormType = Enums.FormType.CK5MarketReturn;
+
+            inputDelegate.FormId = ck5Dto.CK5_ID;
+            inputDelegate.FormNumber = ck5Dto.SUBMISSION_NUMBER;
+            inputDelegate.ActionType = input.ActionType;
+
+            inputDelegate.CurrentUser = input.UserId;
+            inputDelegate.CreatedUser = ck5Dto.CREATED_BY;
+            inputDelegate.Date = DateTime.Now;
+
+            inputDelegate.WorkflowHistoryDto = workflowHistoryDto;
+            //inputDelegate.UserApprovedPoa = poaList != null ? poaList.Select(c => c.POA_ID).ToList() : null;
+            string emailResult = "";
+         
+            //end delegate
+
+            switch (input.ActionType)
+            {
+                case Enums.ActionType.Approve:
+                case Enums.ActionType.Reject:
+                case Enums.ActionType.GovApprove:
+                case Enums.ActionType.GovPartialApprove:
+                    var isPoaCreatedUser = _poaBll.GetActivePoaById(ck5Dto.CREATED_BY);
+                    List<string> listPoa;
+                    string plantId = ck5Dto.SOURCE_PLANT_ID;
+                    string nppbkcId = ck5Dto.SOURCE_PLANT_NPPBKC_ID;
+
+                    if (ck5Dto.CK5_TYPE == Enums.CK5Type.DomesticAlcohol
+                        || ck5Dto.CK5_TYPE == Enums.CK5Type.PortToImporter)
+                    {
+                        plantId = ck5Dto.DEST_PLANT_ID;
+                        nppbkcId = ck5Dto.DEST_PLANT_NPPBKC_ID;
+                    }
+                    else if (ck5Dto.CK5_TYPE == Enums.CK5Type.Manual &&
+                             ck5Dto.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                    {
+                        plantId = ck5Dto.DEST_PLANT_ID;
+                        nppbkcId = ck5Dto.DEST_PLANT_NPPBKC_ID;
+                    }
+                    else if (ck5Dto.CK5_TYPE == Enums.CK5Type.Waste)
+                    {
+                        plantId = ck5Dto.DEST_PLANT_ID;
+                        nppbkcId = ck5Dto.DEST_PLANT_NPPBKC_ID;
+                    }
+
+                    if (isPoaCreatedUser != null) //if creator = poa
+                    {
+                        listPoa = _poaBll.GetPoaActiveByNppbkcId(nppbkcId).Select(c => c.POA_ID).ToList();
+                    }
+                    else
+                    {
+                        listPoa = _poaBll.GetPoaActiveByPlantId(plantId).Select(c => c.POA_ID).ToList();
+                    }
+
+                    inputDelegate.UserApprovedPoa = listPoa;
+                  
+                    break;
+            }
+
+            emailResult = _poaDelegationServices.GetEmailDelegateOrOriginalUserByAction(inputDelegate);
+
+            return emailResult;
         }
 
         private string GetManagerEmail(string poaId)

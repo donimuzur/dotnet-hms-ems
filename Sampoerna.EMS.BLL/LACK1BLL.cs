@@ -1275,6 +1275,29 @@ namespace Sampoerna.EMS.BLL
                     break;
 
             }
+            //delegatemail
+            var inputDelegate = new GetEmailDelegateUserInput();
+            inputDelegate.FormType = Enums.FormType.LACK1;
+            inputDelegate.FormId = lack1Data.Lack1Id;
+            inputDelegate.FormNumber = lack1Data.Lack1Number;
+            inputDelegate.ActionType = input.ActionType;
+
+            inputDelegate.CurrentUser = input.UserId;
+            inputDelegate.CreatedUser = lack1Data.CreateBy;
+            inputDelegate.Date = DateTime.Now;
+
+            inputDelegate.WorkflowHistoryDto = rejected;
+            inputDelegate.UserApprovedPoa = poaList.Select(c => c.POA_ID).ToList();
+            string emailResult = "";
+            emailResult = _poaDelegationServices.GetEmailDelegateOrOriginalUserByAction(inputDelegate);
+
+            if (!string.IsNullOrEmpty(emailResult))
+            {
+                rc.IsCCExist = true;
+                rc.CC.Add(emailResult);
+            }
+            //end delegate
+
             rc.Body = bodyMail.ToString();
             return rc;
         }
@@ -2422,6 +2445,7 @@ namespace Sampoerna.EMS.BLL
                                          j.PRODUCT_ALIAS,
                                          j.PRODUCT_TYPE,
                                          u.UOM_DESC
+                                         
                                      }).Distinct().ToList();
 
             //Get Prev Inventory Movement

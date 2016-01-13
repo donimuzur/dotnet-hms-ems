@@ -1718,7 +1718,7 @@ namespace Sampoerna.EMS.BLL
 
             var pbck1Data = Mapper.Map<Pbck1Dto>(_repository.Get(c => c.PBCK1_ID == input.DocumentId, null, includeTables).FirstOrDefault());
 
-            var mailProcess = ProsesMailNotificationBody(pbck1Data, input.ActionType, input.Comment);
+            var mailProcess = ProsesMailNotificationBody(pbck1Data, input);
 
             //distinct To email
             var ListTo = mailProcess.To.Distinct().ToList();
@@ -2291,7 +2291,7 @@ namespace Sampoerna.EMS.BLL
         }
 
 
-        private Pbck1MailNotification ProsesMailNotificationBody(Pbck1Dto pbck1Data, Enums.ActionType actionType, String comment)
+        private Pbck1MailNotification ProsesMailNotificationBody(Pbck1Dto pbck1Data, Pbck1WorkflowDocumentInput input)
         {
             var bodyMail = new StringBuilder();
             var rc = new Pbck1MailNotification();
@@ -2314,9 +2314,9 @@ namespace Sampoerna.EMS.BLL
             bodyMail.AppendLine();
             bodyMail.Append("<tr><td>Document Type</td><td> : PBCK-1</td></tr>");
             bodyMail.AppendLine();
-            if (actionType == Enums.ActionType.Reject)
+            if (input.ActionType == Enums.ActionType.Reject)
             {
-                bodyMail.Append("<tr><td>Comment</td><td> : " + comment + "</td></tr>");
+                bodyMail.Append("<tr><td>Comment</td><td> : " + input.Comment + "</td></tr>");
                 bodyMail.AppendLine();
             }
             bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/Pbck1/Edit/" + pbck1Data.Pbck1Id + "'>link</a> to show detailed information</i></td></tr>");
@@ -2326,7 +2326,7 @@ namespace Sampoerna.EMS.BLL
             bodyMail.Append("<br />Regards,<br />");
 
 
-            switch (actionType)
+            switch (input.ActionType)
             {
                 case Enums.ActionType.Submit:
                     if (pbck1Data.Status == Enums.DocumentStatus.WaitingForApproval)
@@ -2503,6 +2503,29 @@ namespace Sampoerna.EMS.BLL
                         rc.IsCCExist = true;
                     break;
             }
+            //delegatemail
+            var inputDelegate = new GetEmailDelegateUserInput();
+            inputDelegate.FormType = Enums.FormType.PBCK1;
+            inputDelegate.FormId = pbck1Data.Pbck1Id;
+            inputDelegate.FormNumber = pbck1Data.Pbck1Number;
+            inputDelegate.ActionType = input.ActionType;
+
+            inputDelegate.CurrentUser = input.UserId;
+            inputDelegate.CreatedUser = pbck1Data.CreatedById;
+            inputDelegate.Date = DateTime.Now;
+
+            inputDelegate.WorkflowHistoryDto = rejected;
+            inputDelegate.UserApprovedPoa = poaList.Select(c => c.POA_ID).ToList();
+            string emailResult = "";
+            emailResult = _poaDelegationServices.GetEmailDelegateOrOriginalUserByAction(inputDelegate);
+
+            if (!string.IsNullOrEmpty(emailResult))
+            {
+                rc.IsCCExist = true;
+                rc.CC.Add(emailResult);
+            }
+            //end delegate
+
             rc.Body = bodyMail.ToString();
             return rc;
         }

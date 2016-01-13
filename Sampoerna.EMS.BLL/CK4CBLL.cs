@@ -276,7 +276,8 @@ namespace Sampoerna.EMS.BLL
             var plant = _plantBll.GetT001WById(ck4cData.PlantId);
             var nppbkc = ck4cData.NppbkcId;
             var firstText = input.ActionType == Enums.ActionType.Reject ? " Document" : string.Empty;
-            var approveRejectedPoa = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(ck4cData.Number);
+            //var approveRejectedPoa = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(ck4cData.Number);
+            var approveRejectedPoa = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(new GetByFormTypeAndFormIdInput() { FormId = ck4cData.Ck4CId, FormType = Enums.FormType.CK4C });
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
@@ -303,14 +304,17 @@ namespace Sampoerna.EMS.BLL
             bodyMail.Append("</table>");
             bodyMail.AppendLine();
             bodyMail.Append("<br />Regards,<br />");
+
+            var poaList = new List<POADto>();
+
             switch (input.ActionType)
             {
                 case Enums.ActionType.Submit:
                     if (ck4cData.Status == Enums.DocumentStatus.WaitingForApproval)
                     {
-                        if (approveRejectedPoa != "")
+                        if (approveRejectedPoa != null)
                         {
-                            var poaApproveId = _userBll.GetUserById(approveRejectedPoa);
+                            var poaApproveId = _userBll.GetUserById(approveRejectedPoa.ACTION_BY);
 
                             rc.To.Add(poaApproveId.EMAIL);
                         }
@@ -318,7 +322,7 @@ namespace Sampoerna.EMS.BLL
                         {
                             var creatorPoa = _poabll.GetById(ck4cData.CreatedBy);
 
-                            var poaList = new List<POADto>();
+                          
 
                             if (creatorPoa != null)
                             {
@@ -396,11 +400,9 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Reject:
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(ck4cData.CreatedBy);
-                    var poaApprove = _userBll.GetUserById(approveRejectedPoa);
-                    var poaId = approveRejectedPoa == "" ? ck4cData.CreatedBy : approveRejectedPoa;
-                    //first code when manager exists
-                    //var managerMail = GetManagerEmail(poaId) == "" ? GetManagerEmail(input.UserId) : GetManagerEmail(poaId);
-
+                    var poaApprove = _userBll.GetUserById(approveRejectedPoa.ACTION_BY);
+                    //var poaId = approveRejectedPoa == null ? ck4cData.CreatedBy : approveRejectedPoa.ACTION_BY;
+                  
                     rc.To.Add(userDetail.EMAIL);
                     if (poaApprove != null)
                         rc.CC.Add(poaApprove.EMAIL);
@@ -450,6 +452,30 @@ namespace Sampoerna.EMS.BLL
                     rc.IsCCExist = true;
                     break;
             }
+            //delegate
+
+            var inputDelegate = new GetEmailDelegateUserInput();
+            inputDelegate.FormType = Enums.FormType.CK4C;
+            inputDelegate.FormId = ck4cData.Ck4CId;
+            inputDelegate.FormNumber = ck4cData.Number;
+            inputDelegate.ActionType = input.ActionType;
+
+            inputDelegate.CurrentUser = input.UserId;
+            inputDelegate.CreatedUser = ck4cData.CreatedBy;
+            inputDelegate.Date = DateTime.Now;
+
+            inputDelegate.WorkflowHistoryDto = approveRejectedPoa;
+            inputDelegate.UserApprovedPoa = poaList.Select(c => c.POA_ID).ToList();
+            string emailResult = "";
+            emailResult = _poaDelegationServices.GetEmailDelegateOrOriginalUserByAction(inputDelegate);
+
+            if (!string.IsNullOrEmpty(emailResult))
+            {
+                rc.IsCCExist = true;
+                rc.CC.Add(emailResult);
+            }
+            //end delegate
+
             rc.Body = bodyMail.ToString();
             return rc;
         }

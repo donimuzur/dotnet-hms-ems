@@ -820,24 +820,6 @@ namespace Sampoerna.EMS.BLL
             bodyMail.AppendLine();
             bodyMail.Append("<br />Regards,<br />");
 
-            //delegate 
-            var inputDelegate = new GetEmailDelegateUserInput();
-            inputDelegate.FormType = Enums.FormType.PBCK4;
-            inputDelegate.FormId = pbck4Dto.PBCK4_ID;
-            inputDelegate.FormNumber = pbck4Dto.PBCK4_NUMBER;
-            inputDelegate.ActionType = input.ActionType;
-
-            inputDelegate.CurrentUser = input.UserId;
-            inputDelegate.CreatedUser = pbck4Dto.CREATED_BY;
-            inputDelegate.Date = DateTime.Now;
-
-            inputDelegate.WorkflowHistoryDto = rejected;
-            inputDelegate.UserApprovedPoa = poaList != null ? poaList.Select(c => c.POA_ID).ToList() : null;
-            string emailResult = "";
-            emailResult = _poaDelegationServices.GetEmailDelegateOrOriginalUserByAction(inputDelegate);
-
-            //end delegate
-
             switch (input.ActionType)
             {
                 case Enums.ActionType.Submit:
@@ -861,19 +843,7 @@ namespace Sampoerna.EMS.BLL
                         rc.IsCCExist = true;
                        
                     }
-                    //first code when manager exists
-                    //else if (pbck4Dto.Status == Enums.DocumentStatus.WaitingForApprovalManager)
-                    //{
-                    //    var poaData = _poaBll.GetById(pbck4Dto.CREATED_BY);
-                    //    rc.To.Add(GetManagerEmail(pbck4Dto.CREATED_BY));
-                    //    rc.CC.Add(poaData.POA_EMAIL);
-
-                    //    foreach (var poaDto in poaList)
-                    //    {
-                    //        if (poaData.POA_ID != poaDto.POA_ID)
-                    //            rc.To.Add(poaDto.POA_EMAIL);
-                    //    }
-                    //}
+                  
                     break;
                 case Enums.ActionType.Approve:
                     if (pbck4Dto.Status == Enums.DocumentStatus.WaitingGovApproval)
@@ -896,26 +866,7 @@ namespace Sampoerna.EMS.BLL
                             //rc.CC.Add(GetManagerEmail(pbck4Dto.APPROVED_BY_POA));
                         }
                     }
-                    //first code when manager exists
-                    //else if (pbck4Dto.Status == Enums.DocumentStatus.WaitingForApprovalManager)
-                    //{
-                    //    rc.To.Add(GetManagerEmail(pbck4Dto.APPROVED_BY_POA));
-
-                    //    if (rejected != null)
-                    //    {
-                    //        rc.CC.Add(_poaBll.GetById(rejected.ACTION_BY).POA_EMAIL);
-                    //    }
-                    //    else
-                    //    {
-                    //        foreach (var poaDto in poaList)
-                    //        {
-                    //            rc.CC.Add(poaDto.POA_EMAIL);
-                    //        }
-                    //    }
-
-                    //    rc.CC.Add(_userBll.GetUserById(pbck4Dto.CREATED_BY).EMAIL);
-
-                    //}
+                 
                    
                     rc.IsCCExist = true;
                     break;
@@ -931,14 +882,11 @@ namespace Sampoerna.EMS.BLL
                             var poa = _poaBll.GetActivePoaById(pbck4Dto.APPROVED_BY_POA);
                             rc.To.Add(userDetail.EMAIL);
                             rc.CC.Add(poa.POA_EMAIL);
-                            //first code when manager exists
-                            //rc.CC.Add(GetManagerEmail(pbck4Dto.APPROVED_BY_POA));
+                         
                         }
                         else
                         {
                             rc.To.Add(poaData2.POA_EMAIL);
-                            //first code when manager exists
-                            //rc.CC.Add(GetManagerEmail(pbck4Dto.CREATED_BY));
                         }
                     }
                     else
@@ -974,74 +922,31 @@ namespace Sampoerna.EMS.BLL
                         {
                             //creator is excise executive
                             rc.CC.Add(_poaBll.GetById(pbck4Dto.APPROVED_BY_POA).POA_EMAIL);
-                            //first code when manager exists
-                            //rc.CC.Add(GetManagerEmail(pbck4Dto.APPROVED_BY_POA));
+                          
                         }
                         rc.IsCCExist = true;
                     }
                     break;
 
-
-                //case Enums.ActionType.GovApprove:
-                //     var poaData3 = _poaBll.GetById(pbck4Dto.CREATED_BY);
-                //     if (poaData3 != null)
-                //     {
-                //         //creator is poa user
-                //         rc.To.Add(GetManagerEmail(pbck4Dto.CREATED_BY));
-                //         rc.CC.Add(poaData3.POA_EMAIL);
-                //     }
-                //     else
-                //     {
-                //         //creator is excise executive
-                //         var userData = _userBll.GetUserById(pbck4Dto.CREATED_BY);
-                //         rc.To.Add(_poaBll.GetById(pbck4Dto.APPROVED_BY_POA).POA_EMAIL);
-                //         rc.To.Add(GetManagerEmail(pbck4Dto.APPROVED_BY_POA));
-                //         rc.CC.Add(userData.EMAIL);
-                //     }
-                //     rc.IsCCExist = true;
-                //     break;
-
-
-                //case Enums.ActionType.GovPartialApprove:
-                //     var poaData4 = _poaBll.GetById(pbck4Dto.CREATED_BY);
-                //     if (poaData4 != null)
-                //     {
-                //         //creator is poa user
-                //         rc.To.Add(GetManagerEmail(pbck4Dto.CREATED_BY));
-                //         rc.CC.Add(poaData4.POA_EMAIL);
-                //     }
-                //     else
-                //     {
-                //         //creator is excise executive
-                //         var userData = _userBll.GetUserById(pbck4Dto.CREATED_BY);
-                //         rc.To.Add(_poaBll.GetById(pbck4Dto.APPROVED_BY_POA).POA_EMAIL);
-                //         rc.To.Add(GetManagerEmail(pbck4Dto.APPROVED_BY_POA));
-                //         rc.CC.Add(userData.EMAIL);
-                //     }
-                //     rc.IsCCExist = true;
-                //     break;
-                //case Enums.ActionType.GovReject:
-                //     var poaData5 = _poaBll.GetById(pbck4Dto.CREATED_BY);
-                //     if (poaData5 != null)
-                //     {
-                //         //creator is poa user
-                //         rc.To.Add(GetManagerEmail(pbck4Dto.CREATED_BY));
-                //         rc.CC.Add(poaData5.POA_EMAIL);
-                //     }
-                //     else
-                //     {
-                //         //creator is excise executive
-                //         var userData = _userBll.GetUserById(pbck4Dto.CREATED_BY);
-                //         rc.To.Add(_poaBll.GetById(pbck4Dto.APPROVED_BY_POA).POA_EMAIL);
-                //         rc.To.Add(GetManagerEmail(pbck4Dto.APPROVED_BY_POA));
-                //         rc.CC.Add(userData.EMAIL);
-                //     }
-                //     rc.IsCCExist = true;
-                //     break;
-
             }
 
             //delegate
+            
+            var inputDelegate = new GetEmailDelegateUserInput();
+            inputDelegate.FormType = Enums.FormType.PBCK4;
+            inputDelegate.FormId = pbck4Dto.PBCK4_ID;
+            inputDelegate.FormNumber = pbck4Dto.PBCK4_NUMBER;
+            inputDelegate.ActionType = input.ActionType;
+
+            inputDelegate.CurrentUser = input.UserId;
+            inputDelegate.CreatedUser = pbck4Dto.CREATED_BY;
+            inputDelegate.Date = DateTime.Now;
+
+            inputDelegate.WorkflowHistoryDto = rejected;
+            inputDelegate.UserApprovedPoa = poaList != null ? poaList.Select(c => c.POA_ID).ToList() : null;
+            string emailResult = "";
+            emailResult = _poaDelegationServices.GetEmailDelegateOrOriginalUserByAction(inputDelegate);
+           
             if (!string.IsNullOrEmpty(emailResult))
             {
                 rc.IsCCExist = true;
