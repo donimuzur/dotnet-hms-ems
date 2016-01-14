@@ -1012,6 +1012,21 @@
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="IS_ACTIVE" Type="bit" />
         </EntityType>
+        <EntityType Name="POA_DELEGATION">
+          <Key>
+            <PropertyRef Name="POA_DELEGATION_ID" />
+          </Key>
+          <Property Name="POA_DELEGATION_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="POA_FROM" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="POA_TO" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="DATE_FROM" Type="datetime" Nullable="false" />
+          <Property Name="DATE_TO" Type="datetime" Nullable="false" />
+          <Property Name="REASON" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="POA_MAP">
           <Key>
             <PropertyRef Name="POA_MAP_ID" />
@@ -1422,6 +1437,19 @@
           <Property Name="TARIFF_CURR" Type="nvarchar" MaxLength="5" />
           <Property Name="PLANT_DELETION" Type="bit" />
           <Property Name="CLIENT_DELETION" Type="bit" />
+        </EntityType>
+        <EntityType Name="ZAIDM_EX_MATERIAL_BALANCE">
+          <Key>
+            <PropertyRef Name="MATERIAL_BALANCE_ID" />
+          </Key>
+          <Property Name="MATERIAL_BALANCE_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MATERIAL_ID" Type="nvarchar" MaxLength="18" />
+          <Property Name="WERKS" Type="nvarchar" MaxLength="4" />
+          <Property Name="PERIOD_YEAR" Type="int" />
+          <Property Name="PERIOD_MONTH" Type="int" />
+          <Property Name="OPEN_BALANCE" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="CLOSE_BALANCE" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="LGORT" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_NPPBKC">
           <Key>
@@ -2772,6 +2800,54 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_POA_DELEGATION_POAUSER">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="POA_DELEGATION" Type="Self.POA_DELEGATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA_DELEGATION">
+              <PropertyRef Name="POA_FROM" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_DELEGATION_POAUSER11">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="POA_DELEGATION" Type="Self.POA_DELEGATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA_DELEGATION">
+              <PropertyRef Name="POA_TO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_DELEGATION_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="POA_DELEGATION" Type="Self.POA_DELEGATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA_DELEGATION">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_DELEGATION_USER1">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="POA_DELEGATION" Type="Self.POA_DELEGATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA_DELEGATION">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_POA_LOGIN_AS_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="1" />
           <End Role="POA" Type="Self.POA" Multiplicity="*" />
@@ -3254,6 +3330,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_BALANCE_ZAIDM_EX_MATERIAL">
+          <End Role="ZAIDM_EX_MATERIAL" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="0..1" />
+          <End Role="ZAIDM_EX_MATERIAL_BALANCE" Type="Self.ZAIDM_EX_MATERIAL_BALANCE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="STICKER_CODE" />
+              <PropertyRef Name="WERKS" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL_BALANCE">
+              <PropertyRef Name="MATERIAL_ID" />
+              <PropertyRef Name="WERKS" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ZAIDM_EX_MATERIAL_T001W">
           <End Role="T001W" Type="Self.T001W" Multiplicity="1" />
           <End Role="ZAIDM_EX_MATERIAL" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="*" />
@@ -3402,6 +3492,7 @@
           <EntitySet Name="PBCK7_ITEM" EntityType="Self.PBCK7_ITEM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PLANT_RECEIVE_MATERIAL" EntityType="Self.PLANT_RECEIVE_MATERIAL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="POA" EntityType="Self.POA" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="POA_DELEGATION" EntityType="Self.POA_DELEGATION" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="POA_MAP" EntityType="Self.POA_MAP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="POA_SK" EntityType="Self.POA_SK" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PRINT_HISTORY" EntityType="Self.PRINT_HISTORY" Schema="dbo" store:Type="Tables" />
@@ -3429,6 +3520,7 @@
           <EntitySet Name="ZAIDM_EX_KPPBC" EntityType="Self.ZAIDM_EX_KPPBC" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_MARKET" EntityType="Self.ZAIDM_EX_MARKET" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_MATERIAL" EntityType="Self.ZAIDM_EX_MATERIAL" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ZAIDM_EX_MATERIAL_BALANCE" EntityType="Self.ZAIDM_EX_MATERIAL_BALANCE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_NPPBKC" EntityType="Self.ZAIDM_EX_NPPBKC" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_PCODE" EntityType="Self.ZAIDM_EX_PCODE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_PRODTYP" EntityType="Self.ZAIDM_EX_PRODTYP" Schema="dbo" store:Type="Tables" />
@@ -3861,6 +3953,22 @@
             <End Role="USER" EntitySet="USER" />
             <End Role="POA" EntitySet="POA" />
           </AssociationSet>
+          <AssociationSet Name="FK_POA_DELEGATION_POAUSER" Association="Self.FK_POA_DELEGATION_POAUSER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA_DELEGATION" EntitySet="POA_DELEGATION" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_DELEGATION_POAUSER11" Association="Self.FK_POA_DELEGATION_POAUSER11">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA_DELEGATION" EntitySet="POA_DELEGATION" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_DELEGATION_USER" Association="Self.FK_POA_DELEGATION_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA_DELEGATION" EntitySet="POA_DELEGATION" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_DELEGATION_USER1" Association="Self.FK_POA_DELEGATION_USER1">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA_DELEGATION" EntitySet="POA_DELEGATION" />
+          </AssociationSet>
           <AssociationSet Name="FK_POA_LOGIN_AS_USER" Association="Self.FK_POA_LOGIN_AS_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="POA" EntitySet="POA" />
@@ -4020,6 +4128,10 @@
           <AssociationSet Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" Association="Self.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES">
             <End Role="ZAIDM_EX_SERIES" EntitySet="ZAIDM_EX_SERIES" />
             <End Role="ZAIDM_EX_BRAND" EntitySet="ZAIDM_EX_BRAND" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_BALANCE_ZAIDM_EX_MATERIAL" Association="Self.FK_ZAIDM_EX_MATERIAL_BALANCE_ZAIDM_EX_MATERIAL">
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+            <End Role="ZAIDM_EX_MATERIAL_BALANCE" EntitySet="ZAIDM_EX_MATERIAL_BALANCE" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_T001W" Association="Self.FK_ZAIDM_EX_MATERIAL_T001W">
             <End Role="T001W" EntitySet="T001W" />
@@ -4788,6 +4900,28 @@
           <AssociationSet Name="FK_XML_LOGS_DETAILS_XML_LOGS" Association="EMSModel.FK_XML_LOGS_DETAILS_XML_LOGS">
             <End Role="XML_LOGS" EntitySet="XML_LOGS" />
             <End Role="XML_LOGS_DETAILS" EntitySet="XML_LOGS_DETAILS" />
+          </AssociationSet>
+          <EntitySet Name="ZAIDM_EX_MATERIAL_BALANCE" EntityType="EMSModel.ZAIDM_EX_MATERIAL_BALANCE" />
+          <AssociationSet Name="FK_ZAIDM_EX_MATERIAL_BALANCE_ZAIDM_EX_MATERIAL" Association="EMSModel.FK_ZAIDM_EX_MATERIAL_BALANCE_ZAIDM_EX_MATERIAL">
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+            <End Role="ZAIDM_EX_MATERIAL_BALANCE" EntitySet="ZAIDM_EX_MATERIAL_BALANCE" />
+          </AssociationSet>
+          <EntitySet Name="POA_DELEGATION" EntityType="EMSModel.POA_DELEGATION" />
+          <AssociationSet Name="FK_POA_DELEGATION_POAUSER" Association="EMSModel.FK_POA_DELEGATION_POAUSER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA_DELEGATION" EntitySet="POA_DELEGATION" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_DELEGATION_POAUSER11" Association="EMSModel.FK_POA_DELEGATION_POAUSER11">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA_DELEGATION" EntitySet="POA_DELEGATION" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_DELEGATION_USER" Association="EMSModel.FK_POA_DELEGATION_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA_DELEGATION" EntitySet="POA_DELEGATION" />
+          </AssociationSet>
+          <AssociationSet Name="FK_POA_DELEGATION_USER1" Association="EMSModel.FK_POA_DELEGATION_USER1">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="POA_DELEGATION" EntitySet="POA_DELEGATION" />
           </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -5660,6 +5794,10 @@
           <NavigationProperty Name="WASTE_STOCK" Relationship="EMSModel.FK_WASTE_STOCK_USER" FromRole="USER" ToRole="WASTE_STOCK" />
           <NavigationProperty Name="WASTE_STOCK1" Relationship="EMSModel.FK_WASTE_STOCK_USER1" FromRole="USER" ToRole="WASTE_STOCK" />
           <NavigationProperty Name="WASTE_STOCK2" Relationship="EMSModel.FK_WASTE_STOCK_USER2" FromRole="USER" ToRole="WASTE_STOCK" />
+          <NavigationProperty Name="POA_DELEGATION" Relationship="EMSModel.FK_POA_DELEGATION_POAUSER" FromRole="USER" ToRole="POA_DELEGATION" />
+          <NavigationProperty Name="POA_DELEGATION1" Relationship="EMSModel.FK_POA_DELEGATION_POAUSER11" FromRole="USER" ToRole="POA_DELEGATION" />
+          <NavigationProperty Name="POA_DELEGATION2" Relationship="EMSModel.FK_POA_DELEGATION_USER" FromRole="USER" ToRole="POA_DELEGATION" />
+          <NavigationProperty Name="POA_DELEGATION3" Relationship="EMSModel.FK_POA_DELEGATION_USER1" FromRole="USER" ToRole="POA_DELEGATION" />
           </EntityType>
         <EntityType Name="USER_BROLE">
           <Key>
@@ -6027,7 +6165,7 @@
           <NavigationProperty Name="PBCK7" Relationship="EMSModel.FK_PBCK7_POA" FromRole="POA" ToRole="PBCK7" />
           <NavigationProperty Name="PBCK4" Relationship="EMSModel.FK_PBCK4_POA" FromRole="POA" ToRole="PBCK4" />
           <NavigationProperty Name="PBCK3" Relationship="EMSModel.FK_PBCK3_POA" FromRole="POA" ToRole="PBCK3" />
-        </EntityType>
+          </EntityType>
         <EntityType Name="POA_MAP">
           <Key>
             <PropertyRef Name="POA_MAP_ID" />
@@ -6535,6 +6673,7 @@
           <NavigationProperty Name="ZAIDM_EX_GOODTYP" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_ZAIDM_EX_GOODTYP" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_GOODTYP" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_UOM" FromRole="ZAIDM_EX_MATERIAL" ToRole="UOM" />
           <NavigationProperty Name="WASTE_STOCK" Relationship="EMSModel.FK_WASTE_STOCK_ZAIDM_EX_MATERIAL" FromRole="ZAIDM_EX_MATERIAL" ToRole="WASTE_STOCK" />
+          <NavigationProperty Name="ZAIDM_EX_MATERIAL_BALANCE" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_BALANCE_ZAIDM_EX_MATERIAL" FromRole="ZAIDM_EX_MATERIAL" ToRole="ZAIDM_EX_MATERIAL_BALANCE" />
         </EntityType>
         <Association Name="FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL">
           <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="1" />
@@ -8539,6 +8678,101 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ZAIDM_EX_MATERIAL_BALANCE">
+          <Key>
+            <PropertyRef Name="MATERIAL_BALANCE_ID" />
+          </Key>
+          <Property Name="MATERIAL_BALANCE_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MATERIAL_ID" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="WERKS" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="PERIOD_YEAR" Type="Int32" />
+          <Property Name="PERIOD_MONTH" Type="Int32" />
+          <Property Name="OPEN_BALANCE" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="CLOSE_BALANCE" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="LGORT" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="EMSModel.FK_ZAIDM_EX_MATERIAL_BALANCE_ZAIDM_EX_MATERIAL" FromRole="ZAIDM_EX_MATERIAL_BALANCE" ToRole="ZAIDM_EX_MATERIAL" />
+        </EntityType>
+        <Association Name="FK_ZAIDM_EX_MATERIAL_BALANCE_ZAIDM_EX_MATERIAL">
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL" Role="ZAIDM_EX_MATERIAL" Multiplicity="0..1" />
+          <End Type="EMSModel.ZAIDM_EX_MATERIAL_BALANCE" Role="ZAIDM_EX_MATERIAL_BALANCE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_MATERIAL">
+              <PropertyRef Name="STICKER_CODE" />
+              <PropertyRef Name="WERKS" />
+            </Principal>
+            <Dependent Role="ZAIDM_EX_MATERIAL_BALANCE">
+              <PropertyRef Name="MATERIAL_ID" />
+              <PropertyRef Name="WERKS" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="POA_DELEGATION">
+          <Key>
+            <PropertyRef Name="POA_DELEGATION_ID" />
+          </Key>
+          <Property Name="POA_DELEGATION_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="POA_FROM" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="POA_TO" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DATE_FROM" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DATE_TO" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="REASON" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_POA_DELEGATION_POAUSER" FromRole="POA_DELEGATION" ToRole="USER" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_POA_DELEGATION_POAUSER11" FromRole="POA_DELEGATION" ToRole="USER" />
+          <NavigationProperty Name="USER2" Relationship="EMSModel.FK_POA_DELEGATION_USER" FromRole="POA_DELEGATION" ToRole="USER" />
+          <NavigationProperty Name="USER3" Relationship="EMSModel.FK_POA_DELEGATION_USER1" FromRole="POA_DELEGATION" ToRole="USER" />
+        </EntityType>
+        <Association Name="FK_POA_DELEGATION_POAUSER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.POA_DELEGATION" Role="POA_DELEGATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA_DELEGATION">
+              <PropertyRef Name="POA_FROM" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_DELEGATION_POAUSER11">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.POA_DELEGATION" Role="POA_DELEGATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA_DELEGATION">
+              <PropertyRef Name="POA_TO" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_DELEGATION_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.POA_DELEGATION" Role="POA_DELEGATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA_DELEGATION">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_POA_DELEGATION_USER1">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.POA_DELEGATION" Role="POA_DELEGATION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="POA_DELEGATION">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -10106,6 +10340,36 @@
                 <ScalarProperty Name="LOGS" ColumnName="LOGS" />
                 <ScalarProperty Name="XML_LOGS_ID" ColumnName="XML_LOGS_ID" />
                 <ScalarProperty Name="XML_LOGS_DETAILS_ID" ColumnName="XML_LOGS_DETAILS_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ZAIDM_EX_MATERIAL_BALANCE">
+            <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_MATERIAL_BALANCE">
+              <MappingFragment StoreEntitySet="ZAIDM_EX_MATERIAL_BALANCE">
+                <ScalarProperty Name="LGORT" ColumnName="LGORT" />
+                <ScalarProperty Name="CLOSE_BALANCE" ColumnName="CLOSE_BALANCE" />
+                <ScalarProperty Name="OPEN_BALANCE" ColumnName="OPEN_BALANCE" />
+                <ScalarProperty Name="PERIOD_MONTH" ColumnName="PERIOD_MONTH" />
+                <ScalarProperty Name="PERIOD_YEAR" ColumnName="PERIOD_YEAR" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="MATERIAL_ID" ColumnName="MATERIAL_ID" />
+                <ScalarProperty Name="MATERIAL_BALANCE_ID" ColumnName="MATERIAL_BALANCE_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="POA_DELEGATION">
+            <EntityTypeMapping TypeName="EMSModel.POA_DELEGATION">
+              <MappingFragment StoreEntitySet="POA_DELEGATION">
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="REASON" ColumnName="REASON" />
+                <ScalarProperty Name="DATE_TO" ColumnName="DATE_TO" />
+                <ScalarProperty Name="DATE_FROM" ColumnName="DATE_FROM" />
+                <ScalarProperty Name="POA_TO" ColumnName="POA_TO" />
+                <ScalarProperty Name="POA_FROM" ColumnName="POA_FROM" />
+                <ScalarProperty Name="POA_DELEGATION_ID" ColumnName="POA_DELEGATION_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

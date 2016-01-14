@@ -416,6 +416,9 @@
     <Compile Include="POA.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="POA_DELEGATION.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="POA_MAP.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -497,6 +500,9 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="ZAIDM_EX_MATERIAL.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ZAIDM_EX_MATERIAL_BALANCE.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="ZAIDM_EX_NPPBKC.cs">

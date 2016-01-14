@@ -18,6 +18,7 @@ namespace Sampoerna.EMS.BusinessObject
         {
             this.MATERIAL_UOM = new HashSet<MATERIAL_UOM>();
             this.WASTE_STOCK = new HashSet<WASTE_STOCK>();
+            this.ZAIDM_EX_MATERIAL_BALANCE = new HashSet<ZAIDM_EX_MATERIAL_BALANCE>();
         }
     
         public string STICKER_CODE { get; set; }
@@ -45,5 +46,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
         public virtual UOM UOM { get; set; }
         public virtual ICollection<WASTE_STOCK> WASTE_STOCK { get; set; }
+        public virtual ICollection<ZAIDM_EX_MATERIAL_BALANCE> ZAIDM_EX_MATERIAL_BALANCE { get; set; }
     }
 }

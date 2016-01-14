@@ -74,6 +74,10 @@ namespace Sampoerna.EMS.BusinessObject
             this.WASTE_STOCK = new HashSet<WASTE_STOCK>();
             this.WASTE_STOCK1 = new HashSet<WASTE_STOCK>();
             this.WASTE_STOCK2 = new HashSet<WASTE_STOCK>();
+            this.POA_DELEGATION = new HashSet<POA_DELEGATION>();
+            this.POA_DELEGATION1 = new HashSet<POA_DELEGATION>();
+            this.POA_DELEGATION2 = new HashSet<POA_DELEGATION>();
+            this.POA_DELEGATION3 = new HashSet<POA_DELEGATION>();
         }
     
         public string USER_ID { get; set; }
@@ -145,5 +149,9 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<WASTE_STOCK> WASTE_STOCK { get; set; }
         public virtual ICollection<WASTE_STOCK> WASTE_STOCK1 { get; set; }
         public virtual ICollection<WASTE_STOCK> WASTE_STOCK2 { get; set; }
+        public virtual ICollection<POA_DELEGATION> POA_DELEGATION { get; set; }
+        public virtual ICollection<POA_DELEGATION> POA_DELEGATION1 { get; set; }
+        public virtual ICollection<POA_DELEGATION> POA_DELEGATION2 { get; set; }
+        public virtual ICollection<POA_DELEGATION> POA_DELEGATION3 { get; set; }
     }
 }
