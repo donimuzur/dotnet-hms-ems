@@ -128,8 +128,11 @@ namespace Sampoerna.EMS.XMLReader
                             }
                             item.BRAND_DESC = existingBrand.BRAND_CE;
 
-                                
-                            items.Add(item);
+                            if (mvt == "101")
+                            {
+                                items.Add(item);    
+                            }    
+                            
 
 
                             zaapShftRptItem.MATDOC = _xmlMapper.GetElementValue(xElement.Element("MatDoc"));
@@ -302,6 +305,7 @@ namespace Sampoerna.EMS.XMLReader
                 }
                 else
                 {
+                    //if(item)
                     item.QTY = existingProduction.QTY + item.QTY;
                     item.MODIFIED_DATE = DateTime.Now;
                     item.MODIFIED_BY = "PI";
