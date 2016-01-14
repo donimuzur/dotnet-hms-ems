@@ -1,0 +1,4 @@
+ALTER TABLE ZAAP_SHIFT_RPT ADD
+POSTING_DATE datetime null,
+ENTERED_DATE datetime null
+GO

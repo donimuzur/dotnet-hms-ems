@@ -61,6 +61,8 @@ namespace Sampoerna.EMS.XMLReader
                         }
 
                         var mvt = _xmlMapper.GetElementValue(xElement.Element("MVT"));
+                        var enteredOn = Convert.ToDateTime(_xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("EnteredOn"))));
+                        var postingDate = Convert.ToDateTime(_xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("PostgDate")))); 
                         
                         //item.MARKET = _xmlMapper.GetElementValue(xElement.Element("Market"));
                         //item.DOCGMVTER = _xmlMapper.GetElementValue(xElement.Element("DocGMvtEr"));
@@ -126,8 +128,11 @@ namespace Sampoerna.EMS.XMLReader
                             }
                             item.BRAND_DESC = existingBrand.BRAND_CE;
 
-                                
-                            items.Add(item);
+                            if (mvt == "101")
+                            {
+                                items.Add(item);    
+                            }    
+                            
 
 
                             zaapShftRptItem.MATDOC = _xmlMapper.GetElementValue(xElement.Element("MatDoc"));
@@ -148,6 +153,8 @@ namespace Sampoerna.EMS.XMLReader
                             zaapShftRptItem.PRODUCTION_DATE = item.PRODUCTION_DATE;
                             zaapShftRptItem.WERKS = item.WERKS;
                             zaapShftRptItem.MVT = mvt;
+                            zaapShftRptItem.POSTING_DATE = postingDate;
+                            zaapShftRptItem.ENTERED_DATE = enteredOn;
 
 
                             var existingZaap = GetExistingZaapShiftRpt(zaapShftRptItem.MATDOC);
@@ -298,6 +305,7 @@ namespace Sampoerna.EMS.XMLReader
                 }
                 else
                 {
+                    //if(item)
                     item.QTY = existingProduction.QTY + item.QTY;
                     item.MODIFIED_DATE = DateTime.Now;
                     item.MODIFIED_BY = "PI";
