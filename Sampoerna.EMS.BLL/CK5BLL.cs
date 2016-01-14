@@ -1512,8 +1512,8 @@ namespace Sampoerna.EMS.BLL
             }
             else if (dtData.CK5_TYPE == Enums.CK5Type.Waste)
             {
-                input.PlantId = dtData.DEST_PLANT_ID;
-                input.NppbkcId = dtData.DEST_PLANT_NPPBKC_ID;
+                input.PlantId = dtData.SOURCE_PLANT_ID;
+                input.NppbkcId = dtData.SOURCE_PLANT_NPPBKC_ID;
             }
          
             output.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(input);
