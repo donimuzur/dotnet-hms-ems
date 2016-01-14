@@ -3884,17 +3884,22 @@ namespace Sampoerna.EMS.BLL
                 var ck5List = _ck5Service.GetReconciliationLack1()
                     .Where(x => x.DEST_PLANT_NPPBKC_ID == data.NppbkcId && x.GR_DATE.Value.Month == data.MonthNumber && x.GR_DATE.Value.Year == data.Year);
                 var plantList = ck5List.Select(x => x.DEST_PLANT_ID).Distinct();
+                var supPlantList = ck5List.Select(x => x.SOURCE_PLANT_ID).Distinct();
                 var brandList = ck5List.Select(x => x.CK5_MATERIAL.Select(c => c.BRAND).Distinct().ToList());
+                var stickerList = _brandRegService.GetByPlantAndFaCode(plantList.ToList(), brandList.FirstOrDefault()).Select(b => b.STICKER_CODE).Distinct();
                 var ck4cList = _ck4cItemService.GetByPlant(plantList.ToList(), data.MonthNumber, data.Year);
                 var wasteList = _wasteBll.GetAllByPlant(plantList.ToList(), data.MonthNumber, data.Year);
                 var wasteQty = ck5List.Where(x => x.CK5_TYPE == Enums.CK5Type.Waste).Sum(x => x.GRAND_TOTAL_EX.HasValue ? x.GRAND_TOTAL_EX.Value : 0);
                 var returnQty = ck5List.Where(x => x.CK5_TYPE == Enums.CK5Type.Return).Sum(x => x.GRAND_TOTAL_EX.HasValue ? x.GRAND_TOTAL_EX.Value : 0);
-                var beginningBalance = 0;
+                var beginningBalance = Convert.ToDecimal(0);
                 var totalIncome = ck5List.Where(x => x.CK5_TYPE != Enums.CK5Type.Waste).Sum(x => x.GRAND_TOTAL_EX.HasValue ? x.GRAND_TOTAL_EX.Value : 0);
+
+                var listMaterialBalance = _materialBalanceService.GetByPlantListAndMaterialList(supPlantList.ToList(), stickerList.ToList());
+                if (listMaterialBalance.Count > 0) beginningBalance = listMaterialBalance.Sum(x => x.OPEN_BALANCE.Value);
 
                 data.PlantId = string.Join(Environment.NewLine, plantList.Distinct());
                 data.Date = string.Empty;
-                data.ItemCode = string.Join(Environment.NewLine, _brandRegService.GetByPlantAndFaCode(plantList.ToList(), brandList.FirstOrDefault()).Select(b => b.STICKER_CODE).Distinct());
+                data.ItemCode = string.Join(Environment.NewLine, stickerList);
                 data.FinishGoodCode = string.Join(Environment.NewLine, brandList.FirstOrDefault());
                 data.Remaining = ck5List.Sum(x => x.PBCK1 != null ? (x.PBCK1.REMAINING_QUOTA.HasValue ? x.PBCK1.REMAINING_QUOTA.Value : 0) : 0);
                 data.BeginningStock = beginningBalance;
