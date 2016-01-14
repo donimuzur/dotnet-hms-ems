@@ -156,9 +156,19 @@ namespace Sampoerna.EMS.BLL
                         //delegate
                         if (!IsPoaAllowedDelegate(input.DocumentNumberSource, input.CurrentUser))
                             return false;
-
                         //end delegate
                     }
+                }
+                else if (input.FormType == Enums.FormType.PBCK1)
+                {
+                    var lisPoa = _poabll.GetPoaByNppbkcIdAndMainPlant(input.NppbkcId);
+                    //add delegate poa too
+                    List<string> listUser = lisPoa.Select(c => c.POA_ID).Distinct().ToList();
+                    var listPoaDelegate =
+                               _poaDelegationServices.GetListPoaDelegateByDate(listUser, DateTime.Now);
+                    listUser.AddRange(listPoaDelegate);
+
+                    return listUser.Contains(input.CurrentUser);
                 }
 
                 //poa must be active
@@ -597,6 +607,28 @@ namespace Sampoerna.EMS.BLL
             }
 
             return true;
+        }
+
+        public bool AllowApproveAndRejectPbck1(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser == input.CurrentUser)
+                return false;
+
+            if (input.DocumentStatus != Enums.DocumentStatus.WaitingForApproval)
+                return false;
+
+            if (input.UserRole != Enums.UserRole.POA)
+                return false;
+
+            var lisPoa = _poabll.GetPoaByNppbkcIdAndMainPlant(input.NppbkcId);
+
+            //add delegate poa too
+            List<string> listUser = lisPoa.Select(c => c.POA_ID).Distinct().ToList();
+            var listPoaDelegate =
+                       _poaDelegationServices.GetListPoaDelegateByDate(listUser, DateTime.Now);
+            listUser.AddRange(listPoaDelegate);
+
+            return listUser.Contains(input.CurrentUser);
         }
     }
 }

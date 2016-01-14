@@ -63,7 +63,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                  };
 
                 model.ListPoaFrom = new SelectList(selectList, "Value", "Text"); ;// GlobalFunctions.GetPoaAll(_poabll);
-                //model.ListPoaTo = new SelectList(selectList, "Value", "Text");
+                model.ListPoaTo = new SelectList(selectList, "Value", "Text");
             }
 
             else
