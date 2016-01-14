@@ -301,6 +301,14 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
+            #region ------------ Reconciliation ---------
+
+            Mapper.CreateMap<Lack1ReconciliationDto, DataReconciliation>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack1SearchReconciliationModel, Lack1GetReconciliationByParamInput>().IgnoreAllNonExisting();
+
+            #endregion
+
         }
     }
 }

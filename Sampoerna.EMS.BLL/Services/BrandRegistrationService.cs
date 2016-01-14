@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
+using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL.Services
@@ -59,6 +62,22 @@ namespace Sampoerna.EMS.BLL.Services
         {
             var dbData = _repository.Get(c => c.WERKS == plant && prodCode.Contains(c.PROD_CODE));
             return dbData.ToList();
+        }
+
+        public List<ZAIDM_EX_BRAND> GetByPlantAndFaCode(List<string> plant, List<string> faCode)
+        {
+            Expression<Func<ZAIDM_EX_BRAND, bool>> queryFilter = PredicateHelper.True<ZAIDM_EX_BRAND>();
+
+            var dbData = new List<ZAIDM_EX_BRAND>();
+
+            if(plant.Count > 0 && faCode.Count > 0)
+            {
+                queryFilter = queryFilter.And(b => plant.Contains(b.WERKS) && faCode.Contains(b.FA_CODE));
+
+                dbData = _repository.Get(queryFilter).ToList();
+            }
+
+            return dbData;
         }
     }
 }

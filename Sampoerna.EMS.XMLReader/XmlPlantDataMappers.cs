@@ -47,6 +47,7 @@ namespace Sampoerna.EMS.XMLReader
                             item.IS_MAIN_PLANT = exisitingPlant.IS_MAIN_PLANT;
                             item.CREATED_BY = exisitingPlant.CREATED_BY;
                             item.CREATED_DATE = exisitingPlant.CREATED_DATE;
+                            item.ADDRESS = exisitingPlant.ADDRESS;
                             item.MODIFIED_DATE = DateTime.Now;
                             item.MODIFIED_BY = Constans.PI;
                             items.Add(item);

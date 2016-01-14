@@ -236,6 +236,7 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<MaterialDto, ZAIDM_EX_MATERIAL>().IgnoreAllNonExisting();
             Mapper.CreateMap<ZAIDM_EX_MATERIAL, MaterialDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.GoodTypeDescription, opt => opt.MapFrom(src => src.ZAIDM_EX_GOODTYP.EXT_TYP_DESC))
+                .ForMember(dest => dest.T001W, opt => opt.MapFrom(src => src.T001W))
                 ;
 
             #endregion

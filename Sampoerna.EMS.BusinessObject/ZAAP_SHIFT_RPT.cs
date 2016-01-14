@@ -33,5 +33,8 @@ namespace Sampoerna.EMS.BusinessObject
         public string SHIFT { get; set; }
         public Nullable<decimal> ORIGINAL_QTY { get; set; }
         public string ORIGINAL_UOM { get; set; }
+        public string MVT { get; set; }
+        public Nullable<System.DateTime> ENTERED_DATE { get; set; }
+        public Nullable<System.DateTime> POSTING_DATE { get; set; }
     }
 }

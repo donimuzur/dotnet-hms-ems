@@ -35,7 +35,8 @@ namespace Sampoerna.EMS.BLL
         private IHeaderFooterBLL _headerFooterBll;
         private IWorkflowBLL _workflowBll;
         private IUserBLL _userBll;
-
+        private IWasteBLL _wasteBll;
+        
         //services
         private ICK4CItemService _ck4cItemService;
         private ICK5Service _ck5Service;
@@ -59,6 +60,7 @@ namespace Sampoerna.EMS.BLL
         private IGoodProdTypeService _goodProdTypeService;
         private IMaterialUomService _materialUomService;
         private IMaterialBalanceService _materialBalanceService;
+        private IBrandRegistrationService _brandRegService;
 
         public LACK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -74,6 +76,7 @@ namespace Sampoerna.EMS.BLL
             _poaBll = new POABLL(_uow, _logger);
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
+            _wasteBll = new WasteBLL(_logger, _uow);
 
             _ck4cItemService = new CK4CItemService(_uow, _logger);
             _ck5Service = new CK5Service(_uow, _logger);
@@ -95,6 +98,7 @@ namespace Sampoerna.EMS.BLL
             _pbck1ProdConverterService = new Pbck1ProdConverterService(_uow, _logger);
             _materialService = new ZaidmExMaterialService(_uow, _logger);
             _goodProdTypeService = new GoodProdTypeService(_uow, _logger);
+            _brandRegService = new BrandRegistrationService(_uow, _logger);
             _materialUomService = new MaterialUomService(_uow, _logger);
             _materialBalanceService = new MaterialBalanceService(_uow, _logger);
         }
@@ -107,6 +111,10 @@ namespace Sampoerna.EMS.BLL
                 if (nppbkc != null && nppbkc.Count > 0)
                 {
                     input.NppbkcList = nppbkc.Select(c => c.NPPBKC_ID).ToList();
+                }
+                else
+                {
+                    input.NppbkcList = new List<string>();
                 }
             }
             else if (input.UserRole == Enums.UserRole.Manager)
@@ -580,7 +588,7 @@ namespace Sampoerna.EMS.BLL
             //process for incomedetail remark
             rc.Ck5RemarkData = new Lack1RemarkDto()
             {
-                Ck5ReturnData = rc.AllLack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Return && c.FLAG_FOR_LACK1).ToList(),
+                //Ck5ReturnData = rc.AllLack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Return && c.FLAG_FOR_LACK1).ToList(),
                 /*story : http://192.168.62.216/TargetProcess/entity/1637 
                  * Ck5 Manual Trial don't include in remark column, 
                  * see previous function about getting data from ck5 that only include ck5 manual trial if REDUCE_TRIAL value is TRUE
@@ -592,7 +600,7 @@ namespace Sampoerna.EMS.BLL
             rc.Lack1IncomeDetail =
                 rc.AllLack1IncomeDetail.Where(
                     c =>
-                        !((c.CK5_TYPE == Enums.CK5Type.Return && c.FLAG_FOR_LACK1) || c.CK5_TYPE == Enums.CK5Type.Waste)).ToList();
+                        !(c.CK5_TYPE == Enums.CK5Type.Waste)).ToList();
 
             return rc;
         }
@@ -1320,7 +1328,7 @@ namespace Sampoerna.EMS.BLL
                 return dtToReturn;
             dtToReturn.Ck5RemarkData = new Lack1RemarkDto()
             {
-                Ck5ReturnData = dtToReturn.AllLack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Return && c.FLAG_FOR_LACK1).ToList(),
+                //Ck5ReturnData = dtToReturn.AllLack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Return && c.FLAG_FOR_LACK1).ToList(),
                 /*story : http://192.168.62.216/TargetProcess/entity/1637 
                  * Ck5 Manual Trial don't include in remark column, 
                  * see previous function about getting data from ck5 that only include ck5 manual trial if REDUCE_TRIAL value is TRUE
@@ -1331,7 +1339,7 @@ namespace Sampoerna.EMS.BLL
             dtToReturn.Lack1IncomeDetail =
                 dtToReturn.AllLack1IncomeDetail.Where(
                     c =>
-                        !((c.CK5_TYPE == Enums.CK5Type.Return && c.FLAG_FOR_LACK1) || c.CK5_TYPE == Enums.CK5Type.Waste)).ToList();
+                        !(c.CK5_TYPE == Enums.CK5Type.Waste)).ToList();
 
             if (string.IsNullOrEmpty(dtToReturn.ExGoodsTypeDesc)) return dtToReturn;
 
@@ -2844,7 +2852,7 @@ namespace Sampoerna.EMS.BLL
 
             rc.Ck5RemarkData = new Lack1GeneratedRemarkDto()
             {
-                Ck5ReturnData = rc.AllIncomeList.Where(c => c.Ck5Type == Enums.CK5Type.Return && c.FlagForLack1).ToList(),
+                //Ck5ReturnData = rc.AllIncomeList.Where(c => c.Ck5Type == Enums.CK5Type.Return && c.FlagForLack1).ToList(),
                 /*story : http://192.168.62.216/TargetProcess/entity/1637 
                  * Ck5 Manual Trial don't include in remark column, 
                  * see previous function about getting data from ck5 that only include ck5 manual trial if REDUCE_TRIAL value is TRUE
@@ -2854,7 +2862,7 @@ namespace Sampoerna.EMS.BLL
             };
 
             rc.IncomeList = rc.AllIncomeList.Where(c =>
-                !((c.Ck5Type == Enums.CK5Type.Return && c.FlagForLack1) || c.Ck5Type == Enums.CK5Type.Waste)).ToList();
+                !(c.Ck5Type == Enums.CK5Type.Waste)).ToList();
 
             rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
 
@@ -3781,11 +3789,70 @@ namespace Sampoerna.EMS.BLL
 
         public List<Lack1Dto> GetDashboardDataByParam(Lack1GetDashboardDataByParamInput input)
         {
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                var nppbkc = _nppbkcService.GetNppbkcsByPoa(input.UserId);
+                if (nppbkc != null && nppbkc.Count > 0)
+                {
+                    input.NppbkcList = nppbkc.Select(c => c.NPPBKC_ID).ToList();
+                }
+                else
+                {
+                    input.NppbkcList = new List<string>();
+                }
+            }
+            else if (input.UserRole == Enums.UserRole.Manager)
+            {
+                var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
+                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+                input.DocumentNumberList = document;
+            }
+
             var data = _lack1Service.GetDashboardDataByParam(input);
             return Mapper.Map<List<Lack1Dto>>(data);
         }
 
         #endregion
 
+        #region ------------- Reconciliation -----------
+
+        public List<Lack1ReconciliationDto> GetReconciliationByParam(Lack1GetReconciliationByParamInput input)
+        {
+            var dbData = from p in _lack1Service.GetReconciliationByParamInput(input)
+                         select new Lack1ReconciliationDto()
+                         {
+                             NppbkcId = p.NPPBKC_ID,
+                             PlantId = string.Join(Environment.NewLine, p.LACK1_PLANT.Select(x => x.PLANT_ID)),
+                             Month = p.MONTH.MONTH_NAME_ENG,
+                             Date = p.SUBMISSION_DATE.Value.Day.ToString(),
+                             ItemCode = string.Join(Environment.NewLine, _brandRegService.GetByPlantAndFaCode(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), _ck4cItemService.GetByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Select(c => c.FA_CODE).Distinct().ToList()).Select(b => b.STICKER_CODE).Distinct()),
+                             FinishGoodCode = string.Join(Environment.NewLine, _ck4cItemService.GetByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Select(c => c.FA_CODE).Distinct()),
+                             Remaining = p.LACK1_PBCK1_MAPPING.Sum(x => x.PBCK1.REMAINING_QUOTA.HasValue ? x.PBCK1.REMAINING_QUOTA.Value : 0),
+                             BeginningStock = p.BEGINING_BALANCE,
+                             ReceivedCk5No = string.Join(Environment.NewLine, p.LACK1_INCOME_DETAIL.Where(x => x.CK5.CK5_TYPE != Enums.CK5Type.Waste && x.CK5.CK5_TYPE != Enums.CK5Type.Return).Select(x => x.CK5.SUBMISSION_NUMBER).Distinct()),
+                             Received = p.TOTAL_INCOME,
+                             UsageOther = p.USAGE + (p.USAGE_TISTOTIS.HasValue ? p.USAGE_TISTOTIS.Value : 0),
+                             UsageSelf = p.LACK1_TRACKING.Sum(x => x.INVENTORY_MOVEMENT.QTY.Value) > (p.USAGE + (p.USAGE_TISTOTIS.HasValue ? p.USAGE_TISTOTIS.Value : 0)) ?
+                                         p.LACK1_TRACKING.Sum(x => x.INVENTORY_MOVEMENT.QTY.Value) - (p.USAGE + (p.USAGE_TISTOTIS.HasValue ? p.USAGE_TISTOTIS.Value : 0)) :
+                                         (p.USAGE + (p.USAGE_TISTOTIS.HasValue ? p.USAGE_TISTOTIS.Value : 0)) - p.LACK1_TRACKING.Sum(x => x.INVENTORY_MOVEMENT.QTY.Value),
+                             ResultTis = p.LACK1_PRODUCTION_DETAIL.Where(x => x.UOM_ID.ToLower() == "g").Sum(x => x.AMOUNT),
+                             ResultStick = p.LACK1_PRODUCTION_DETAIL.Where(x => x.UOM_ID.ToLower() == "btg").Sum(x => x.AMOUNT),
+                             EndingStock = p.BEGINING_BALANCE + p.TOTAL_INCOME - p.USAGE - (p.RETURN_QTY.HasValue ? p.RETURN_QTY.Value : 0),
+                             RemarkDesc = p.DOCUMENT_NOTED != null ? p.DOCUMENT_NOTED.Replace("<br />", Environment.NewLine) : string.Empty,
+                             RemarkCk5No = string.Join(Environment.NewLine, p.LACK1_INCOME_DETAIL.Where(x => x.CK5.CK5_TYPE == Enums.CK5Type.Waste || x.CK5.CK5_TYPE == Enums.CK5Type.Return).Select(x => x.CK5.SUBMISSION_NUMBER).Distinct()),
+                             RemarkQty = (p.RETURN_QTY.HasValue ? p.RETURN_QTY.Value : 0) + (p.WASTE_QTY.HasValue ? p.WASTE_QTY.Value : 0),
+                             StickProd = _ck4cItemService.GetByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Sum(c => c.PROD_QTY),
+                             PackProd = _ck4cItemService.GetByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Sum(c => c.PACKED_QTY.HasValue ? c.PACKED_QTY.Value : 0),
+                             Wip = _ck4cItemService.GetByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Sum(c => c.UNPACKED_QTY.HasValue ? c.UNPACKED_QTY.Value : 0),
+                             RejectMaker = _wasteBll.GetAllByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Sum(c => c.MarkerRejectStickQty.HasValue ? c.MarkerRejectStickQty.Value : 0),
+                             RejectPacker = _wasteBll.GetAllByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Sum(c => c.PackerRejectStickQty.HasValue ? c.PackerRejectStickQty.Value : 0),
+                             FloorSweep = _wasteBll.GetAllByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Sum(c => c.FloorWasteGramQty.HasValue ? c.FloorWasteGramQty.Value : 0),
+                             Stem = _wasteBll.GetAllByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Sum(c => c.StampWasteQty.HasValue ? c.StampWasteQty.Value : 0)
+                         };
+
+            return dbData.ToList();
+        }
+
+        #endregion
     }
 }
