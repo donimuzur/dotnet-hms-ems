@@ -163,6 +163,10 @@ namespace Sampoerna.EMS.BLL
                 {
                     if(input.FormType == Enums.FormType.PBCK1){
                         var listPoa = _poaBll.GetPoaByNppbkcIdAndMainPlant(input.NppbkcId).Distinct().ToList();
+                        if (listPoa.Count > 0)
+                        {
+                            listPoa = listPoa.Where(c => c.POA_ID != input.DocumentCreator).Distinct().ToList();
+                        }
                         displayUserId = listPoa.Aggregate("", (current, poaDto) => current + (poaDto.POA_ID + ","));
                     }else{
                         List<POADto> listPoa;

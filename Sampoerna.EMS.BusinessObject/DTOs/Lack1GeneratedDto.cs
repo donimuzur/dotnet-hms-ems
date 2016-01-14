@@ -35,6 +35,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string PeriodMonthName { get; set; }
         public int PeriodYear { get; set; }
         public decimal BeginingBalance { get; set; }
+        public decimal CloseBalance { get; set; }
         /// <summary>
         /// all income list that got use current logic for saving to database
         /// use this field for saving to database instead IncomeList 

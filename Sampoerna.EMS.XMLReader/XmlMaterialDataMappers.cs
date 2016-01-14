@@ -140,6 +140,36 @@ namespace Sampoerna.EMS.XMLReader
                                     item.CREATED_DATE = DateTime.Now;
                                     items.Add(item);
                                 }
+
+
+                                //material balance
+                                var materialBalanceList = plant.Elements("Z1A_OPN_CLO_BALANCE");
+                                foreach (var element in materialBalanceList)
+                                {
+                                    var matBalance = new ZAIDM_EX_MATERIAL_BALANCE();
+                                    matBalance.MATERIAL_ID = _xmlMapper.GetElementValue(element.Element("MATNR"));
+                                    matBalance.WERKS = _xmlMapper.GetElementValue(element.Element("WERKS"));
+                                    matBalance.PERIOD_YEAR = Convert.ToInt32(_xmlMapper.GetElementValue(element.Element("LFGJA")));
+                                    matBalance.PERIOD_MONTH = Convert.ToInt32(_xmlMapper.GetElementValue(element.Element("LFMON")));
+                                    
+                                    matBalance.LGORT = _xmlMapper.GetElementValue(element.Element("LGORT"));
+
+                                    var exsitingMatBalance = GetMaterialBalance(matBalance.MATERIAL_ID, matBalance.WERKS,
+                                        matBalance.PERIOD_MONTH.Value, matBalance.PERIOD_YEAR.Value, matBalance.LGORT);
+
+                                    if (exsitingMatBalance != null)
+                                    {
+                                        //_xmlMapper.uow.GetGenericRepository<ZAIDM_EX_MATERIAL_BALANCE>().Delete(exsitingMatBalance);
+                                        matBalance = exsitingMatBalance;
+
+                                    }
+                                    
+                                    matBalance.OPEN_BALANCE = Convert.ToDecimal(_xmlMapper.GetElementValue(element.Element("OPN_BAL")));
+                                    matBalance.CLOSE_BALANCE = Convert.ToDecimal(_xmlMapper.GetElementValue(element.Element("CLO_BAL")));
+
+
+                                    _xmlMapper.InsertOrUpdate(matBalance);
+                                }
                             }
                         }
                     }
@@ -148,17 +178,7 @@ namespace Sampoerna.EMS.XMLReader
                         _xmlMapper.Errors.Add(ex.Message);
                     }
 
-
-
-
-
-
-
-
-
-
                 }
-                
                 
                 return items;
             }
@@ -186,7 +206,14 @@ namespace Sampoerna.EMS.XMLReader
             return existingData;
         }
 
-        
+        public ZAIDM_EX_MATERIAL_BALANCE GetMaterialBalance(string materialNumber, string plant, int month, int year, string lgort)
+        {
+            var existingData = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_MATERIAL_BALANCE>()
+                .Get(x => x.MATERIAL_ID == materialNumber && x.WERKS == plant 
+                    && x.PERIOD_MONTH == month && x.PERIOD_YEAR == year
+                    && x.LGORT == lgort).FirstOrDefault();
+            return existingData;
+        }
 
 
     }
