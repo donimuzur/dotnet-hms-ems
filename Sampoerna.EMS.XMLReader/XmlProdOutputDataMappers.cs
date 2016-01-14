@@ -60,7 +60,7 @@ namespace Sampoerna.EMS.XMLReader
                             item.BUNDLE = Convert.ToInt32(bundle);
                         }
 
-                        var mvt = _xmlMapper.GetElementValue(xElement.Element("MVT"));
+                        var mvt = _xmlMapper.GetElementValue(xElement.Element("MvT"));
                         var enteredOn = Convert.ToDateTime(_xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("EnteredOn"))));
                         var postingDate = Convert.ToDateTime(_xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("PostgDate")))); 
                         

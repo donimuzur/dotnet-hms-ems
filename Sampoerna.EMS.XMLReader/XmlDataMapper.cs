@@ -197,8 +197,19 @@ namespace Sampoerna.EMS.XMLReader
                 fileName = MoveFile();
                 return new MovedFileOutput(fileName);
             }
-            fileName = MoveFile(true,needMoved);
-            Errors.Insert(0,String.Format("Last field read : {0}",lastField));
+            else if (itemToInsert > 0 && (errorCount == 0 || Errors.Count == 0))
+            {
+                Errors.Insert(0, String.Format("Last field read : {0}", lastField));
+                fileName = MoveFile(true, needMoved);
+            }
+            else
+            {
+                fileName = MoveFile();
+                return new MovedFileOutput(fileName);
+            }
+
+            
+            
             return new MovedFileOutput(fileName, true,Errors);
 
             
