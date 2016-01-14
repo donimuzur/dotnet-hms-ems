@@ -189,12 +189,26 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
+            //delegate 
+            var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
+
+
             if (input.UserRole == Enums.UserRole.POA)
             {
                 var nppbkc = _nppbkcBll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
 
                 if (input.Ck5Type == Enums.CK5Type.PortToImporter || input.Ck5Type == Enums.CK5Type.DomesticAlcohol)
                 {
+                    if (delegateUser.Count > 0)
+                    {
+                        queryFilter =
+                       queryFilter.And(
+                           c =>
+                               (delegateUser.Contains(c.CREATED_BY) ||
+                                (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                 nppbkc.Contains(c.DEST_PLANT_NPPBKC_ID))));
+                    }
+                    else 
                     queryFilter =
                         queryFilter.And(
                             c =>
@@ -204,6 +218,25 @@ namespace Sampoerna.EMS.BLL
                 }
                 else if (input.Ck5Type == Enums.CK5Type.Manual || input.Ck5Type == Enums.CK5Type.MarketReturn)
                 {
+                    if (delegateUser.Count > 0)
+                    {
+                        queryFilter =
+                        queryFilter.And(
+                            c =>
+                                (delegateUser.Contains(c.CREATED_BY) ||
+                                 (
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
+                                     ((c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
+                                       nppbkc.Contains(c.DEST_PLANT_NPPBKC_ID)
+                                         ) ||
+                                      nppbkc.Contains(c.SOURCE_PLANT_NPPBKC_ID)
+                                         )
+                                     )
+
+                                    )
+                            );
+                    }
+                    else 
                     queryFilter =
                         queryFilter.And(
                             c =>
@@ -224,6 +257,21 @@ namespace Sampoerna.EMS.BLL
                 {
                     var plantDest = _poaMapBll.GetByPoaId(input.UserId).Select(d => d.WERKS).ToList();
 
+                    if (delegateUser.Count > 0)
+                    {
+                        queryFilter =
+                       queryFilter.And(
+                           c =>
+                               (delegateUser.Contains(c.CREATED_BY) ||
+                                (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                 nppbkc.Contains(c.SOURCE_PLANT_NPPBKC_ID))
+                                 ||
+                                 (c.STATUS_ID == Enums.DocumentStatus.GoodReceive &&
+                                  plantDest.Contains(c.DEST_PLANT_ID)
+                                  )
+                                 ));
+                    }
+                    else 
                     queryFilter =
                        queryFilter.And(
                            c =>
@@ -238,6 +286,16 @@ namespace Sampoerna.EMS.BLL
                 }
                 else
                 {
+                    if (delegateUser.Count > 0)
+                    {
+                        queryFilter =
+                        queryFilter.And(
+                            c =>
+                                (delegateUser.Contains(c.CREATED_BY) ||
+                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                  nppbkc.Contains(c.SOURCE_PLANT_NPPBKC_ID))));
+                    }
+                    else
                     queryFilter =
                         queryFilter.And(
                             c =>
@@ -261,7 +319,15 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);
+                //delegate 
+                if (delegateUser.Count > 0)
+                {
+                    delegateUser.Add(input.UserId);
+                    queryFilter = queryFilter.And(c => delegateUser.Contains(c.CREATED_BY));
+                }
+                else
+                    queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);
+                
             }
 
 

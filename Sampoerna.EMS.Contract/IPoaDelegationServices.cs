@@ -15,6 +15,8 @@ namespace Sampoerna.EMS.Contract
 
         List<string> GetPoaDelegationToByPoaFromAndDate(string userFrom, DateTime date);
 
+        List<string> GetPoaDelegationFromByPoaToAndDate(string userTo, DateTime date);
+
         string GetPoaDelegationToFirstByPoaFromAndDate(string userFrom, DateTime date);
 
         POA_DELEGATION GetPoaDelegationByPoaToAndDate(string poaTo, DateTime date);

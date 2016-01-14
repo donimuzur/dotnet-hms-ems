@@ -17,7 +17,7 @@ namespace Sampoerna.EMS.Contract
 
         List<Pbck7AndPbck3Dto> GetPbck7ByParam(Pbck7AndPbck3Input input, Login user, bool IsComplete=false);
 
-        List<Pbck3Dto> GetPbck3ByParam(Pbck7AndPbck3Input input, Login user, bool IsComplete = false);
+        List<Pbck3Dto> GetPbck3ByParam(Pbck7AndPbck3Input input, Login user, bool isComplete = false);
 
 
         Pbck7AndPbck3Dto GetPbck7ById(int? id);

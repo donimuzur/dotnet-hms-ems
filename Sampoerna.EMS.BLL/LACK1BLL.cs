@@ -103,6 +103,7 @@ namespace Sampoerna.EMS.BLL
 
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
         {
+
             if (input.UserRole == Enums.UserRole.POA)
             {
                 var nppbkc = _nppbkcService.GetNppbkcsByPoa(input.UserId);

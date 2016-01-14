@@ -896,13 +896,27 @@ namespace Sampoerna.EMS.BLL
         {
             var queryFilter = ProcessQueryFilter(input);
 
+            //delegate 
+            var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
+
+
             if (input.UserRole == Enums.UserRole.POA)
             {
                 var listNppbkc = _userPlantBll.GetNppbkcByUserId(input.UserId);
 
                 var nppbkc = _poaMapBll.GetNppbkcByPoaId(input.UserId);
 
-                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && (nppbkc.Contains(c.NPPBKC_ID) || listNppbkc.Contains(c.NPPBKC_ID)))));
+                //delegate
+                if (delegateUser.Count > 0)
+                {
+                    delegateUser.Add(input.UserId);
+                    queryFilter = queryFilter.And(c => (delegateUser.Contains(c.CREATED_BY)|| (c.STATUS != Enums.DocumentStatus.Draft && (nppbkc.Contains(c.NPPBKC_ID) || listNppbkc.Contains(c.NPPBKC_ID)))));
+                }
+                else
+                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && (nppbkc.Contains(c.NPPBKC_ID) || listNppbkc.Contains(c.NPPBKC_ID)))));
+
+
+                
             }
             //first code when manager exists
             //else if (input.UserRole == Enums.UserRole.Manager)

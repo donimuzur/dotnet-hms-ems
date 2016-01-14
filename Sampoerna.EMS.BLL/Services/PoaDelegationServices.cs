@@ -67,6 +67,18 @@ namespace Sampoerna.EMS.BLL.Services
             return result;
         }
 
+        public List<string> GetPoaDelegationFromByPoaToAndDate(string userTo, DateTime date)
+        {
+            var inputDate = new DateTime(date.Year, date.Month, date.Day);
+            var result =
+                _repository.Get(
+                    c =>
+                        c.POA_TO == userTo && c.DATE_FROM <= inputDate &&
+                        c.DATE_TO >= inputDate).Select(c => c.POA_FROM).ToList();
+
+            return result;
+        }
+
         public string GetPoaDelegationToFirstByPoaFromAndDate(string userFrom, DateTime date)
         {
             var inputDate = new DateTime(date.Year, date.Month, date.Day);
@@ -81,6 +93,8 @@ namespace Sampoerna.EMS.BLL.Services
 
             return string.Empty;
         }
+
+     
 
         public POA_DELEGATION GetPoaDelegationByPoaToAndDate(string poaTo, DateTime date)
         {
