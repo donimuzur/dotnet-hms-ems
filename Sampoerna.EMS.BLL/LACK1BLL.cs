@@ -2909,6 +2909,7 @@ namespace Sampoerna.EMS.BLL
             {
                 //rc.BeginingBalance = selected.BEGINING_BALANCE + selected.TOTAL_INCOME - selected.USAGE;
                 rc.BeginingBalance = listMaterialBalance.Sum(x => x.OPEN_BALANCE.Value);
+                rc.CloseBalance = listMaterialBalance.Sum(x => x.CLOSE_BALANCE.Value);
             }
 
             return rc;
