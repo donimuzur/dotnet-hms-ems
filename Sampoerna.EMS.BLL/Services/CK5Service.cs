@@ -41,7 +41,10 @@ namespace Sampoerna.EMS.BLL.Services
 
             if (input.Lack1Level == Enums.Lack1Level.Plant)
             {
-                queryFilterCk5 = queryFilterCk5.And(c => c.DEST_PLANT_ID == input.ReceivedPlantId);
+                queryFilterCk5 = queryFilterCk5.And(c => (c.DEST_PLANT_ID == input.ReceivedPlantId 
+                    && (c.CK5_TYPE != Enums.CK5Type.Waste))
+                    || (c.SOURCE_PLANT_ID == input.ReceivedPlantId
+                    && (c.CK5_TYPE == Enums.CK5Type.Waste)));
             }
 
             if (input.IsExcludeSameNppbkcId)

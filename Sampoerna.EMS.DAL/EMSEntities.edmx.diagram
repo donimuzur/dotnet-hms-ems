@@ -261,9 +261,9 @@
         <AssociationConnector Association="EMSModel.FK_XML_LOGS_DETAILS_XML_LOGS" />
         <EntityTypeShape EntityType="EMSModel.ZAIDM_EX_MATERIAL_BALANCE" Width="1.5" PointX="20.25" PointY="44.125" />
         <AssociationConnector Association="EMSModel.FK_ZAIDM_EX_MATERIAL_BALANCE_ZAIDM_EX_MATERIAL" />
-        <EntityTypeShape EntityType="EMSModel.POA_DELEGATION" Width="1.5" PointX="12.875" PointY="55.5" />
-        <AssociationConnector Association="EMSModel.FK_POA_DELEGATION_POA" />
-        <AssociationConnector Association="EMSModel.FK_POA_DELEGATION_POA1" />
+        <EntityTypeShape EntityType="EMSModel.POA_DELEGATION" Width="1.5" PointX="3.625" PointY="41.375" />
+        <AssociationConnector Association="EMSModel.FK_POA_DELEGATION_POAUSER" />
+        <AssociationConnector Association="EMSModel.FK_POA_DELEGATION_POAUSER11" />
         <AssociationConnector Association="EMSModel.FK_POA_DELEGATION_USER" />
         <AssociationConnector Association="EMSModel.FK_POA_DELEGATION_USER1" />
         </Diagram>

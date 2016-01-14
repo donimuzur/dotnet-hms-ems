@@ -152,6 +152,7 @@ namespace Sampoerna.EMS.BLL
 
             _repository.InsertOrUpdate(dbWaste);
 
+            _uow.SaveChanges();
 
             //update waste stock table
             UpdateWasteStockTable(dbWaste, userId, isNewData);
@@ -176,13 +177,13 @@ namespace Sampoerna.EMS.BLL
             decimal? updateValueDust = dbQtyWaste.DustWasteGramQty;
             decimal? updateValueStamp = dbQtyWaste.StampWasteQty;
 
-            if (isNewData && dbQtyWaste.PlantWerks == dbWaste.WERKS)
-            {
-                updateValueFloor = dbQtyWaste.FloorWasteGramQty + dbWaste.FLOOR_WASTE_GRAM_QTY;
-                updateValueDust = dbQtyWaste.DustWasteGramQty + dbWaste.DUST_WASTE_GRAM_QTY;
-                updateValueStamp = dbQtyWaste.StampWasteQty + dbWaste.STAMP_WASTE_QTY;
+            //if (isNewData && dbQtyWaste.PlantWerks == dbWaste.WERKS)
+            //{
+            //    updateValueFloor = dbQtyWaste.FloorWasteGramQty + dbWaste.FLOOR_WASTE_GRAM_QTY;
+            //    updateValueDust = dbQtyWaste.DustWasteGramQty + dbWaste.DUST_WASTE_GRAM_QTY;
+            //    updateValueStamp = dbQtyWaste.StampWasteQty + dbWaste.STAMP_WASTE_QTY;
 
-            }
+            //}
 
             var wasStockWsapoon = new WasteStockDto();
             wasStockWsapoon.WERKS = dbQtyWaste.PlantWerks;
@@ -769,6 +770,23 @@ namespace Sampoerna.EMS.BLL
             return valResult;
         }
 
+        public List<WasteDto> GetAllByPlant(List<string> plant, int month, int year)
+        {
+            Expression<Func<WASTE, bool>> queryFilter = PredicateHelper.True<WASTE>();
 
+            queryFilter = queryFilter.And(c => plant.Contains(c.WERKS) && c.WASTE_PROD_DATE.Month == month && c.WASTE_PROD_DATE.Year == year);
+            
+            Func<IQueryable<WASTE>, IOrderedQueryable<WASTE>> orderBy = null;
+            {
+                var dbData = _repository.Get(queryFilter, orderBy);
+                if (dbData == null)
+                {
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+                }
+                var mapResult = Mapper.Map<List<WasteDto>>(dbData.ToList());
+
+                return mapResult;
+            }
+        }
     }
 }

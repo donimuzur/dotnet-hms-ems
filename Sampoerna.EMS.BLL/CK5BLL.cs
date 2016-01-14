@@ -1512,8 +1512,8 @@ namespace Sampoerna.EMS.BLL
             }
             else if (dtData.CK5_TYPE == Enums.CK5Type.Waste)
             {
-                input.PlantId = dtData.DEST_PLANT_ID;
-                input.NppbkcId = dtData.DEST_PLANT_NPPBKC_ID;
+                input.PlantId = dtData.SOURCE_PLANT_ID;
+                input.NppbkcId = dtData.SOURCE_PLANT_NPPBKC_ID;
             }
          
             output.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(input);
@@ -3242,8 +3242,8 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
 
-           
-            var mapResult = Mapper.Map<List<Ck5SummaryReportDto>>(rc.ToList());
+
+            var mapResult = Mapper.Map<List<Ck5SummaryReportDto>>(rc.OrderBy(x => x.SUBMISSION_DATE).OrderBy(x => x.DEST_PLANT_ID).OrderBy(x => x.SOURCE_PLANT_ID).ToList());
 
             foreach (var ck5SummaryReportDto in mapResult)
             {
