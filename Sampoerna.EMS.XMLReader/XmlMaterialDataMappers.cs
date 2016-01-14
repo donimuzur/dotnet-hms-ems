@@ -151,8 +151,7 @@ namespace Sampoerna.EMS.XMLReader
                                     matBalance.WERKS = _xmlMapper.GetElementValue(element.Element("WERKS"));
                                     matBalance.PERIOD_YEAR = Convert.ToInt32(_xmlMapper.GetElementValue(element.Element("LFGJA")));
                                     matBalance.PERIOD_MONTH = Convert.ToInt32(_xmlMapper.GetElementValue(element.Element("LFMON")));
-                                    matBalance.OPEN_BALANCE = Convert.ToDecimal(_xmlMapper.GetElementValue(element.Element("OPN_BAL")));
-                                    matBalance.CLOSE_BALANCE = Convert.ToDecimal(_xmlMapper.GetElementValue(element.Element("CLO_BAL")));
+                                    
                                     matBalance.LGORT = _xmlMapper.GetElementValue(element.Element("LGORT"));
 
                                     var exsitingMatBalance = GetMaterialBalance(matBalance.MATERIAL_ID, matBalance.WERKS,
@@ -160,8 +159,14 @@ namespace Sampoerna.EMS.XMLReader
 
                                     if (exsitingMatBalance != null)
                                     {
-                                        _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_MATERIAL_BALANCE>().Delete(exsitingMatBalance);
+                                        //_xmlMapper.uow.GetGenericRepository<ZAIDM_EX_MATERIAL_BALANCE>().Delete(exsitingMatBalance);
+                                        matBalance = exsitingMatBalance;
+
                                     }
+                                    
+                                    matBalance.OPEN_BALANCE = Convert.ToDecimal(_xmlMapper.GetElementValue(element.Element("OPN_BAL")));
+                                    matBalance.CLOSE_BALANCE = Convert.ToDecimal(_xmlMapper.GetElementValue(element.Element("CLO_BAL")));
+
 
                                     _xmlMapper.InsertOrUpdate(matBalance);
                                 }
@@ -204,7 +209,9 @@ namespace Sampoerna.EMS.XMLReader
         public ZAIDM_EX_MATERIAL_BALANCE GetMaterialBalance(string materialNumber, string plant, int month, int year, string lgort)
         {
             var existingData = _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_MATERIAL_BALANCE>()
-                .Get(x => x.MATERIAL_ID == materialNumber && x.WERKS == plant && x.PERIOD_MONTH == month && x.PERIOD_YEAR == year).FirstOrDefault();
+                .Get(x => x.MATERIAL_ID == materialNumber && x.WERKS == plant 
+                    && x.PERIOD_MONTH == month && x.PERIOD_YEAR == year
+                    && x.LGORT == lgort).FirstOrDefault();
             return existingData;
         }
 
