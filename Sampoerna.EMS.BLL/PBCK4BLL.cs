@@ -1990,6 +1990,26 @@ namespace Sampoerna.EMS.BLL
             return result;
         }
 
+        public string GetListPoaByPlantId(string plantId)
+        {
+            var dbPoa = _poaBll.GetPoaActiveByPlantId(plantId).Distinct();
+            var result = "";
+
+            foreach (var poaDto in dbPoa)
+            {
+                result += poaDto.PRINTED_NAME + ",";
+            }
+
+            if (result.Length > 0)
+            {
+                result = result.Substring(0, result.Length - 1);
+            }
+
+
+
+            return result;
+        }
+
         public List<Pbck4Dto> GetAllByParam(Pbck4DasboardParamInput input)
         {
             Expression<Func<PBCK4, bool>> queryFilter = PredicateHelper.True<PBCK4>();

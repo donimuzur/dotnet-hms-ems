@@ -35,6 +35,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime EXEC_DATE_FROM { get; set; }
         public DateTime EXEC_DATE_TO { get; set; }
 
+        public string PoaList { get; set; }
+
        //pbck7
         public Pbck3Pbck7DtoComposite Pbck7Composite { get; set; } 
 

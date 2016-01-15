@@ -11,6 +11,7 @@ using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
 using CrystalDecisions.Shared;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -288,6 +289,14 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetPoaByPlantId(string plantid)
+        {
+            var data = _poaBll.GetPoaActiveByPlantId(plantid);
+            return Json(data.Distinct());
+
+        }
+
+        [HttpPost]
         public JsonResult PoaAndPlantListPartialPbck7(string nppbkcId)
         {
             var listPoa = GlobalFunctions.GetPoaByNppbkcId(nppbkcId);
@@ -333,7 +342,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             model.NppbkIdList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
             model.PlantList = GlobalFunctions.GetPlantAll();
-            model.PoaList = GetPoaList(model.NppbkcId);
+            model.PoaList = GetPoaListByPlant(model.PlantId); //;GetPoaList(model.NppbkcId);
             model.Pbck7Date = DateTime.Now;
 
             return model;
@@ -744,13 +753,31 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+        public string GetPoaListByPlant(string plantId)
+        {
+            var poaList = _poaBll.GetPoaActiveByPlantId(plantId).Distinct().ToList();
+            var poaListStr = string.Empty;
+            var poaLength = poaList.Count;
+
+            for (int i = 0; i < poaLength; i++)
+            {
+                poaListStr += poaList[i].PRINTED_NAME;
+                if (i < poaLength)
+                {
+                    poaListStr += ", ";
+                }
+            }
+            return poaListStr;
+
+        }
+
         private Pbck7Pbck3CreateViewModel InitialModel(Pbck7Pbck3CreateViewModel model)
         {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.NppbkIdList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
             model.PlantList = GlobalFunctions.GetPlantAll();
-            model.PoaList = GetPoaList(model.NppbkcId);
+            model.PoaList = GetPoaListByPlant(model.PlantId);//GetPoaList(model.NppbkcId);
 
             return (model);
         }

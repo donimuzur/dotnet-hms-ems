@@ -2063,6 +2063,8 @@ namespace Sampoerna.EMS.BLL
             workflowInput.FormType = Enums.FormType.PBCK3;
             workflowInput.DocumentCreator = output.Pbck3CompositeDto.CREATED_BY;
 
+           
+
             if (result.FromPbck7)
             {
                 workflowInput.FormNumberSource = result.Pbck7Composite.Pbck7Number;
@@ -2075,6 +2077,9 @@ namespace Sampoerna.EMS.BLL
                 workflowInput.NppbkcId = result.Ck5Composite.Ck5Dto.DEST_PLANT_NPPBKC_ID;
                 workflowInput.PlantId = result.Ck5Composite.Ck5Dto.DEST_PLANT_ID;
             }
+
+            var poaList = _poaBll.GetPoaActiveByPlantId(result.Pbck7Composite.PlantId);
+            output.Pbck3CompositeDto.PoaList = string.Join(",", poaList.Select(c => c.PRINTED_NAME));
 
             output.WorkflowHistoryPbck3 = _workflowHistoryBll.GetByFormNumber(workflowInput);
 
