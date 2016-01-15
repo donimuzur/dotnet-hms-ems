@@ -480,6 +480,15 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<XML_LOGS_DETAILS, XML_LOGS_DETAILSDto>().IgnoreAllNonExisting();
 
             #endregion
+
+            #region Poa Delegation
+
+            Mapper.CreateMap<POA_DELEGATION, POA_DELEGATIONDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<POA_DELEGATIONDto, POA_DELEGATION>().IgnoreAllNonExisting();
+
+            #endregion
+
         }
     }
 }

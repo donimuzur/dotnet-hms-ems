@@ -2868,19 +2868,19 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
         }
 
-        public ActionResult CancelDocument(CK5FormViewModel model)
-        {
-            try
-            {
-                CK5Workflow(model.Ck5Id, Enums.ActionType.Cancel, model.Comment);
-                AddMessageInfo("Success Cancel Document", Enums.MessageInfoType.Success);
-            }
-            catch (Exception ex)
-            {
-                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
-            }
-            return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
-        }
+        //public ActionResult CancelDocument(CK5FormViewModel model)
+        //{
+        //    try
+        //    {
+        //        CK5Workflow(model.Ck5Id, Enums.ActionType.Cancel, model.Comment);
+        //        AddMessageInfo("Success Cancel Document", Enums.MessageInfoType.Success);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+        //    }
+        //    return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+        //}
 
         public ActionResult CancelSAPDocument(long id)
         {

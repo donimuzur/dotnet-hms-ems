@@ -82,6 +82,7 @@
     <Compile Include="NlogBLL.cs" />
     <Compile Include="PBCK4BLL.cs" />
     <Compile Include="PBCK7AndPBCK3BLL.cs" />
+    <Compile Include="PoaDelegationBLL.cs" />
     <Compile Include="ProductionBLL.cs" />
     <Compile Include="Services\Back1Services.cs" />
     <Compile Include="Services\Back3Services.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="Services\Pbck1ProdConverterService.cs" />
     <Compile Include="Services\PBCK1Service.cs" />
     <Compile Include="Services\Pbck3Services.cs" />
+    <Compile Include="Services\PoaDelegationServices.cs" />
     <Compile Include="Services\T001KService.cs" />
     <Compile Include="Services\T001Service.cs" />
     <Compile Include="Services\T001WService.cs" />

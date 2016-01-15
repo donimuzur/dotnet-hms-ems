@@ -820,7 +820,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentUser = CurrentUser.USER_ID,
                 CurrentUserGroup = CurrentUser.USER_GROUP_ID,
                 DocumentNumber = model.Detail.Pbck1Number,
-                NppbkcId = model.Detail.NppbkcId
+                NppbkcId = model.Detail.NppbkcId,
+                FormType = Enums.FormType.PBCK1
                 //first code when manager exists
                 //ManagerApprove = model.Detail.ApprovedByManagerId
             };
@@ -835,18 +836,18 @@ namespace Sampoerna.EMS.Website.Controllers
                 //first code when manager exists
                 //model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
             }
-            else if (CurrentUser.UserRole == Enums.UserRole.POA)
-            {
-                model.AllowApproveAndReject = false;
-                foreach (POADto poa in _poaBll.GetPoaByNppbkcIdAndMainPlant(model.Detail.NppbkcId))
-                {
-                    if (poa.POA_ID == CurrentUser.USER_ID)
-                    {
-                        model.AllowApproveAndReject = true;
-                    }
-                }
+            //else if (CurrentUser.UserRole == Enums.UserRole.POA)
+            //{
+            //    model.AllowApproveAndReject = false;
+            //    foreach (POADto poa in _poaBll.GetPoaByNppbkcIdAndMainPlant(model.Detail.NppbkcId))
+            //    {
+            //        if (poa.POA_ID == CurrentUser.USER_ID)
+            //        {
+            //            model.AllowApproveAndReject = true;
+            //        }
+            //    }
 
-            }
+            //}
 
 
 

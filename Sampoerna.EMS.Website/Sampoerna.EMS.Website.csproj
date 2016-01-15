@@ -229,6 +229,7 @@
       <DependentUpon>GenericReportViewer.aspx</DependentUpon>
     </Compile>
     <Compile Include="Controllers\PBCK4Controller.cs" />
+    <Compile Include="Controllers\PoaDelegationController.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Code\PdfResult.cs" />
     <Compile Include="Controllers\WasteController.cs" />
@@ -401,6 +402,8 @@
     <Compile Include="Models\PlantReceiveMaterial\PlantReceiveMaterialViewModel.cs" />
     <Compile Include="Models\PLANT\PlantViewModel.cs" />
     <Compile Include="Models\PLANT\T001WModel.cs" />
+    <Compile Include="Models\PoaDelegation\PoaDelegationFormViewModel.cs" />
+    <Compile Include="Models\PoaDelegation\PoaDelegationIndexViewModel.cs" />
     <Compile Include="Models\POAMap\PoaMapIndexViewModel.cs" />
     <Compile Include="Models\POAMap\PoaMapDetailViewModel.cs" />
     <Compile Include="Models\POA\POAViewModel.cs" />
@@ -1275,6 +1278,10 @@
     <Content Include="Views\XmlFileManagement\_XmlFileSearch.cshtml" />
     <Content Include="Views\XmlFileManagement\_XmlFileViewIndex.cshtml" />
     <Content Include="Views\XmlFileManagement\Detail.cshtml" />
+    <Content Include="Views\PoaDelegation\Index.cshtml" />
+    <Content Include="Views\PoaDelegation\Create.cshtml" />
+    <Content Include="Views\PoaDelegation\Detail.cshtml" />
+    <Content Include="Views\PoaDelegation\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

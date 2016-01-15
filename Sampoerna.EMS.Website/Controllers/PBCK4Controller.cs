@@ -274,7 +274,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Poa = poa.PRINTED_NAME;
             else
             {
-                model.Poa = _pbck4Bll.GetListPoaByNppbkcId(model.NppbkcId);
+                //model.Poa = _pbck4Bll.GetListPoaByNppbkcId(model.NppbkcId);
+                model.Poa = _pbck4Bll.GetListPoaByPlantId(plantId);
             }
             return Json(model);
         }

@@ -48,6 +48,8 @@ namespace Sampoerna.EMS.BLL
 
         private string includeTables = "MONTH, CK4C_ITEM, CK4C_DECREE_DOC";
 
+        private IPoaDelegationServices _poaDelegationServices;
+
         public CK4CBLL(ILogger logger, IUnitOfWork uow)
         {
             _logger = logger;
@@ -73,6 +75,7 @@ namespace Sampoerna.EMS.BLL
             _poaMapBll = new POAMapBLL(_uow, _logger);
             _userPlantBll = new UserPlantMapBLL(_uow, _logger);
             _documentSequenceNumberBll = new DocumentSequenceNumberBLL(_uow, _logger);
+            _poaDelegationServices = new PoaDelegationServices(_uow, _logger);
         }
 
         public List<Ck4CDto> GetAllByParam(Ck4CDashboardParamInput input)
@@ -186,6 +189,10 @@ namespace Sampoerna.EMS.BLL
                     UserRole = getUserRole
                 };
 
+                //delegate user
+                input.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(model.CREATED_BY,
+                    input.UserId, DateTime.Now);
+
                 if (changed)
                 {
                     AddWorkflowHistory(input);
@@ -269,7 +276,8 @@ namespace Sampoerna.EMS.BLL
             var plant = _plantBll.GetT001WById(ck4cData.PlantId);
             var nppbkc = ck4cData.NppbkcId;
             var firstText = input.ActionType == Enums.ActionType.Reject ? " Document" : string.Empty;
-            var approveRejectedPoa = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(ck4cData.Number);
+            //var approveRejectedPoa = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(ck4cData.Number);
+            var approveRejectedPoa = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(new GetByFormTypeAndFormIdInput() { FormId = ck4cData.Ck4CId, FormType = Enums.FormType.CK4C });
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
@@ -296,14 +304,17 @@ namespace Sampoerna.EMS.BLL
             bodyMail.Append("</table>");
             bodyMail.AppendLine();
             bodyMail.Append("<br />Regards,<br />");
+
+            var poaList = new List<POADto>();
+
             switch (input.ActionType)
             {
                 case Enums.ActionType.Submit:
                     if (ck4cData.Status == Enums.DocumentStatus.WaitingForApproval)
                     {
-                        if (approveRejectedPoa != "")
+                        if (approveRejectedPoa != null)
                         {
-                            var poaApproveId = _userBll.GetUserById(approveRejectedPoa);
+                            var poaApproveId = _userBll.GetUserById(approveRejectedPoa.ACTION_BY);
 
                             rc.To.Add(poaApproveId.EMAIL);
                         }
@@ -311,7 +322,7 @@ namespace Sampoerna.EMS.BLL
                         {
                             var creatorPoa = _poabll.GetById(ck4cData.CreatedBy);
 
-                            var poaList = new List<POADto>();
+                          
 
                             if (creatorPoa != null)
                             {
@@ -389,11 +400,9 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Reject:
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(ck4cData.CreatedBy);
-                    var poaApprove = _userBll.GetUserById(approveRejectedPoa);
-                    var poaId = approveRejectedPoa == "" ? ck4cData.CreatedBy : approveRejectedPoa;
-                    //first code when manager exists
-                    //var managerMail = GetManagerEmail(poaId) == "" ? GetManagerEmail(input.UserId) : GetManagerEmail(poaId);
-
+                    var poaApprove = _userBll.GetUserById(approveRejectedPoa.ACTION_BY);
+                    //var poaId = approveRejectedPoa == null ? ck4cData.CreatedBy : approveRejectedPoa.ACTION_BY;
+                  
                     rc.To.Add(userDetail.EMAIL);
                     if (poaApprove != null)
                         rc.CC.Add(poaApprove.EMAIL);
@@ -443,6 +452,30 @@ namespace Sampoerna.EMS.BLL
                     rc.IsCCExist = true;
                     break;
             }
+            //delegate
+
+            var inputDelegate = new GetEmailDelegateUserInput();
+            inputDelegate.FormType = Enums.FormType.CK4C;
+            inputDelegate.FormId = ck4cData.Ck4CId;
+            inputDelegate.FormNumber = ck4cData.Number;
+            inputDelegate.ActionType = input.ActionType;
+
+            inputDelegate.CurrentUser = input.UserId;
+            inputDelegate.CreatedUser = ck4cData.CreatedBy;
+            inputDelegate.Date = DateTime.Now;
+
+            inputDelegate.WorkflowHistoryDto = approveRejectedPoa;
+            inputDelegate.UserApprovedPoa = poaList.Select(c => c.POA_ID).ToList();
+            string emailResult = "";
+            emailResult = _poaDelegationServices.GetEmailDelegateOrOriginalUserByAction(inputDelegate);
+
+            if (!string.IsNullOrEmpty(emailResult))
+            {
+                rc.IsCCExist = true;
+                rc.CC.Add(emailResult);
+            }
+            //end delegate
+
             rc.Body = bodyMail.ToString();
             return rc;
         }
@@ -518,6 +551,10 @@ namespace Sampoerna.EMS.BLL
             }
 
             input.DocumentNumber = dbData.NUMBER;
+
+            //delegate
+            input.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY, input.UserId,
+                DateTime.Now);
 
             AddWorkflowHistory(input);
 
@@ -636,8 +673,46 @@ namespace Sampoerna.EMS.BLL
 
             input.DocumentNumber = dbData.NUMBER;
 
+            //delegate
+            input.Comment = CommentDelegateUser(dbData, input);
+            //end delegate
+
             AddWorkflowHistory(input);
 
+        }
+
+        private string CommentDelegateUser(CK4C dbData, Ck4cWorkflowDocumentInput input)
+        {
+            string comment = "";
+
+            var inputHistory = new GetByFormTypeAndFormIdInput();
+            inputHistory.FormId = dbData.CK4C_ID;
+            inputHistory.FormType = Enums.FormType.CK4C;
+
+            var rejectedPoa = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(inputHistory);
+            if (rejectedPoa != null)
+            {
+                comment = _poaDelegationServices.CommentDelegatedByHistory(rejectedPoa.COMMENT,
+                    rejectedPoa.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+            }
+            else
+            {
+                var isPoaCreatedUser = _poabll.GetActivePoaById(dbData.CREATED_BY);
+                List<string> listPoa;
+                if (isPoaCreatedUser != null) //if creator = poa
+                {
+                    listPoa = _poabll.GetPoaActiveByNppbkcId(dbData.NPPBKC_ID).Select(c => c.POA_ID).ToList();
+                }
+                else
+                {
+                    listPoa = _poabll.GetPoaActiveByPlantId(dbData.PLANT_ID).Select(c => c.POA_ID).ToList();
+                }
+
+                comment = _poaDelegationServices.CommentDelegatedUserApproval(listPoa, input.UserId, DateTime.Now);
+
+            }
+
+            return comment;
         }
 
         private void RejectDocument(Ck4cWorkflowDocumentInput input)
@@ -662,6 +737,13 @@ namespace Sampoerna.EMS.BLL
             dbData.STATUS = Enums.DocumentStatus.Rejected;
 
             input.DocumentNumber = dbData.NUMBER;
+            
+            //delegate
+            string commentReject = CommentDelegateUser(dbData, input);
+
+            if (!string.IsNullOrEmpty(commentReject))
+                input.Comment += " [" + commentReject + "]";
+            //end delegate
 
             AddWorkflowHistory(input);
 
@@ -692,6 +774,16 @@ namespace Sampoerna.EMS.BLL
             //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
 
+            //delegate
+            if (dbData.CREATED_BY != input.UserId)
+            {
+                var workflowHistoryDto =
+                    _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
+                input.Comment = _poaDelegationServices.CommentDelegatedByHistory(workflowHistoryDto.COMMENT,
+                    workflowHistoryDto.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+            }
+            //end delegate
+
             AddWorkflowHistory(input);
 
         }
@@ -714,6 +806,20 @@ namespace Sampoerna.EMS.BLL
             dbData.GOV_STATUS = Enums.StatusGovCk4c.Rejected;
 
             input.DocumentNumber = dbData.NUMBER;
+
+            //delegate
+            if (dbData.CREATED_BY != input.UserId)
+            {
+                var workflowHistoryDto =
+                    _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
+                var commentReject = _poaDelegationServices.CommentDelegatedByHistory(workflowHistoryDto.COMMENT,
+                    workflowHistoryDto.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+
+                if (!string.IsNullOrEmpty(commentReject))
+                    input.Comment += " [" + commentReject + "]";
+
+            }
+            //end delegate
 
             AddWorkflowHistory(input);
 
@@ -744,6 +850,10 @@ namespace Sampoerna.EMS.BLL
             //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
             input.ActionType = Enums.ActionType.Modified;
+
+            //delegate
+            input.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY, input.UserId,
+                DateTime.Now);
 
             AddWorkflowHistory(input);
 
@@ -786,13 +896,27 @@ namespace Sampoerna.EMS.BLL
         {
             var queryFilter = ProcessQueryFilter(input);
 
+            //delegate 
+            var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
+
+
             if (input.UserRole == Enums.UserRole.POA)
             {
                 var listNppbkc = _userPlantBll.GetNppbkcByUserId(input.UserId);
 
                 var nppbkc = _poaMapBll.GetNppbkcByPoaId(input.UserId);
 
-                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && (nppbkc.Contains(c.NPPBKC_ID) || listNppbkc.Contains(c.NPPBKC_ID)))));
+                //delegate
+                if (delegateUser.Count > 0)
+                {
+                    delegateUser.Add(input.UserId);
+                    queryFilter = queryFilter.And(c => (delegateUser.Contains(c.CREATED_BY)|| (c.STATUS != Enums.DocumentStatus.Draft && (nppbkc.Contains(c.NPPBKC_ID) || listNppbkc.Contains(c.NPPBKC_ID)))));
+                }
+                else
+                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && (nppbkc.Contains(c.NPPBKC_ID) || listNppbkc.Contains(c.NPPBKC_ID)))));
+
+
+                
             }
             //first code when manager exists
             //else if (input.UserRole == Enums.UserRole.Manager)
