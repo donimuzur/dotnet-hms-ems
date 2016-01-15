@@ -147,4 +147,10 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string Back1Number { get; set; }
         public DateTime? Back1Date { get; set; }
    }
+
+    public class CK5MarketReturnGetSummaryReportByParamInput
+    {
+        public string SubmissionNumber { get; set; }
+        
+    }
 }

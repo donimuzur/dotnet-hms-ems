@@ -311,6 +311,7 @@
     <Compile Include="Models\CK5\CK5DetailsViewModel.cs" />
     <Compile Include="Models\CK5\CK5EditViewModel.cs" />
     <Compile Include="Models\CK5\CK5InputManualViewModel.cs" />
+    <Compile Include="Models\CK5\CK5MarketReturnSummaryReportsViewModel.cs" />
     <Compile Include="Models\CK5\CK5PlantModel.cs" />
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
@@ -1282,6 +1283,8 @@
     <Content Include="Views\PoaDelegation\Create.cshtml" />
     <Content Include="Views\PoaDelegation\Detail.cshtml" />
     <Content Include="Views\PoaDelegation\Edit.cshtml" />
+    <Content Include="Views\CK5\CK5MarketReturnSummaryReport.cshtml" />
+    <Content Include="Views\CK5\_CK5MarketReturnListSummaryReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

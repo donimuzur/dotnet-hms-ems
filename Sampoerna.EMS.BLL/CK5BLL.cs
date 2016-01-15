@@ -5033,7 +5033,7 @@ namespace Sampoerna.EMS.BLL
             return result;
 
         }
-        
+
         public void AddAttachmentDocument(CK5WorkflowDocumentInput input)
         {
             var dbData = _repository.GetByID(input.DocumentId);
@@ -5050,7 +5050,7 @@ namespace Sampoerna.EMS.BLL
 
             if (!_workflowBll.AllowAttachment(inputWorkflow))
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-            
+
             if (input.AdditionalDocumentData != null
                 && input.AdditionalDocumentData.Ck5FileUploadList.Count > 0)
             {
@@ -5062,6 +5062,72 @@ namespace Sampoerna.EMS.BLL
 
                 _uow.SaveChanges();
             }
+        }
+
+        public List<Ck5MarketReturnSummaryReportDto> GetSummaryReportsMarketReturnByParam(CK5MarketReturnGetSummaryReportByParamInput input)
+        {
+
+            Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
+
+            if (!string.IsNullOrEmpty(input.SubmissionNumber))
+            {
+                queryFilter = queryFilter.And(c => c.SUBMISSION_NUMBER.Contains(input.SubmissionNumber));
             }
+
+            queryFilter = queryFilter.And(c => c.CK5_TYPE == Enums.CK5Type.MarketReturn);
+
+            //queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed);
+
+
+            var rc = _repository.Get(queryFilter, null, includeTables);
+            if (rc == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+
+            //var mapResult = Mapper.Map<List<CK5Dto>>(rc.ToList());
+
+            //return mapResult;
+            return SetDataSummaryReportMarketReturn(rc.ToList());
+
+
+        }
+
+        private List<Ck5MarketReturnSummaryReportDto> SetDataSummaryReportMarketReturn(List<CK5> listCk5)
+        {
+            var result = new List<Ck5MarketReturnSummaryReportDto>();
+
+            foreach (var dtData in listCk5)
+            {
+                foreach (var ck5Item in dtData.CK5_MATERIAL)
+                {
+                    var summaryDto = new Ck5MarketReturnSummaryReportDto();
+
+                    summaryDto.Ck5Id = dtData.CK5_ID;
+
+                    summaryDto.FaCode = ck5Item.BRAND;
+                    summaryDto.Brand = ck5Item.BRAND;
+                    summaryDto.Content = "";
+                    summaryDto.Hje = ConvertHelper.ConvertDecimalToStringMoneyFormat(ck5Item.HJE);
+                    summaryDto.Tariff = ConvertHelper.ConvertDecimalToStringMoneyFormat(ck5Item.TARIFF);
+                    summaryDto.Ck5MarketReturnQty = ConvertHelper.ConvertDecimalToStringMoneyFormat(dtData.GRAND_TOTAL_EX);
+                    summaryDto.FiscalYear = "";
+                    summaryDto.ExciseValue = ConvertHelper.ConvertDecimalToStringMoneyFormat(ck5Item.EXCISE_VALUE);
+                    summaryDto.Poa = dtData.APPROVED_BY_POA;
+                    summaryDto.Creator = dtData.CREATED_BY;
+
+                    summaryDto.Pbck3No = "";
+                    summaryDto.Pbck3Status = "";
+                    summaryDto.Ck2Number = "";
+                    summaryDto.Ck2Value = "";
+                    summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS_ID);
+
+                    result.Add(summaryDto);
+                }
+
+            }
+
+            return result;
+        }
     }
 }
