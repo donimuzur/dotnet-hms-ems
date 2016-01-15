@@ -17,11 +17,12 @@ namespace Sampoerna.EMS.XMLReader
     public class XmlMovementDataMapper : IXmlDataReader 
     {
         private XmlDataMapper _xmlMapper = null;
+        private string _xmlFileName;
 
         public XmlMovementDataMapper(string filename)
         {
             _xmlMapper = new XmlDataMapper(filename);
-           
+            _xmlFileName = filename.Split('\\')[filename.Split('\\').Length - 1];
         }
 
 
@@ -32,19 +33,22 @@ namespace Sampoerna.EMS.XMLReader
                 var xmlRoot = _xmlMapper.GetElement("InvMovementDetails");
                 var xmlItems = xmlRoot.Elements("Movement");
                 var items = new List<INVENTORY_MOVEMENT>();
+
+                DeleteDataByXmlFile(_xmlFileName);
+
                 foreach (var xElement in xmlItems)
                 {
                     try
                     {
                         var item = new INVENTORY_MOVEMENT();
                         item.MAT_DOC = _xmlMapper.GetElementValue(xElement.Element("MatDoc"));
-                        var existingData = GetMovement(item.MAT_DOC);
+                        //var existingData = GetMovement(item.MAT_DOC);
 
-                        if (existingData != null)
-                        {
-                            item = existingData;
+                        //if (existingData != null)
+                        //{
+                        //    item = existingData;
                             
-                        }
+                        //}
                         
 
                         
@@ -60,6 +64,7 @@ namespace Sampoerna.EMS.XMLReader
                         item.ENTRY_DATE = _xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("EntryDate")));
                         item.CREATED_USER = _xmlMapper.GetElementValue(xElement.Element("Username"));
                         item.ORDR = _xmlMapper.GetElementValue(xElement.Element("Order"));
+                        item.XML_FILE = _xmlFileName;
                         items.Add(item);
                     }
                     catch (Exception ex)
@@ -102,6 +107,25 @@ namespace Sampoerna.EMS.XMLReader
                 .Get(x => x.MAT_DOC == matdoc, null, "").FirstOrDefault();
 
             return existingMvmt;
+        }
+
+        public void DeleteDataByXmlFile(string xmlFileName)
+        {
+            var repo = _xmlMapper.uow.GetGenericRepository<INVENTORY_MOVEMENT>();
+            var listInvMovement = repo.Get(x => x.XML_FILE == xmlFileName).ToList();
+            
+            
+
+            if (listInvMovement.Any())
+            {
+                foreach (var inventoryMovement in listInvMovement)
+                {
+                    repo.Delete(inventoryMovement);
+                }
+
+                _xmlMapper.uow.SaveChanges();
+            }
+                
         }
 
 

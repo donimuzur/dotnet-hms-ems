@@ -133,6 +133,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.TotalUsage, opt => opt.MapFrom(src => src.Usage))
                 .ForMember(dest => dest.TotalUsageTisToTis, opt => opt.MapFrom(src => src.UsageTisToTis))
                 .ForMember(dest => dest.IsTisToTisReport, opt => opt.MapFrom(src => src.IsTisToTis))
+                .ForMember(dest => dest.IsEtilAlcohol, opt => opt.MapFrom(src => src.IsEtilAlcohol))
                 .ForMember(dest => dest.Lack1Document, opt => opt.MapFrom(src => Mapper.Map<List<Lack1DocumentItemModel>>(src.Lack1Document)))
                 .ForMember(dest => dest.IncomeList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailItemModel>>(src.Lack1IncomeDetail)))
                 .ForMember(dest => dest.Ck5RemarkData, opt => opt.MapFrom(src => Mapper.Map<Lack1RemarkModel>(src.Ck5RemarkData)))
@@ -154,6 +155,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.GovStatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.GovStatus)))
                 .ForMember(dest => dest.EndingBalance, opt => opt.MapFrom(src => src.EndingBalance))
                 .ForMember(dest => dest.IsTisToTisReport, opt => opt.MapFrom(src => src.IsTisToTis))
+                .ForMember(dest => dest.IsEtilAlcohol, opt => opt.MapFrom(src => src.IsEtilAlcohol))
                 .ForMember(dest => dest.TotalUsage, opt => opt.MapFrom(src => src.Usage))
                 .ForMember(dest => dest.TotalUsageTisToTis, opt => opt.MapFrom(src => src.UsageTisToTis))
                 .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.Noted) ? src.Noted.Replace("<br />", Environment.NewLine) : ""))
@@ -296,6 +298,14 @@ namespace Sampoerna.EMS.Website
             #region ------------ Dashboard ---------
 
             Mapper.CreateMap<Lack1DashboardSearchViewModel, Lack1GetDashboardDataByParamInput>().IgnoreAllNonExisting();
+
+            #endregion
+
+            #region ------------ Reconciliation ---------
+
+            Mapper.CreateMap<Lack1ReconciliationDto, DataReconciliation>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack1SearchReconciliationModel, Lack1GetReconciliationByParamInput>().IgnoreAllNonExisting();
 
             #endregion
 

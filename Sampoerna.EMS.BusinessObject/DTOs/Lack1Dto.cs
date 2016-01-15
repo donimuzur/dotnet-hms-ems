@@ -99,6 +99,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? DecreeDate { get; set; }
         public string NppbkcId { get; set; }
         public decimal BeginingBalance { get; set; }
+        public decimal CloseBalance { get; set; }
         public decimal TotalIncome { get; set; }
         public decimal Usage { get; set; }
         public decimal? UsageTisToTis { get; set; }
@@ -132,6 +133,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string DocumentNoted { get; set; }
         public bool IsTisToTis { get; set; }
         public Lack1RemarkDto Ck5RemarkData { get; set; }
+        public bool IsEtilAlcohol { get; set; }
     }
 
     public class Lack1RemarkDto

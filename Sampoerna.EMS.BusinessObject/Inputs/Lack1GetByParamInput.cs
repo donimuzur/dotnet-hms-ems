@@ -193,4 +193,11 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string SupplierPlantId { get; set; }
         public string ExcisableGoodsTypeId { get; set; }
     }
+
+    public class Lack1GetReconciliationByParamInput
+    {
+        public string NppbkcId { get; set; }
+        public string PlantId { get; set; }
+        public string ExGoodType { get; set; }
+    }
 }

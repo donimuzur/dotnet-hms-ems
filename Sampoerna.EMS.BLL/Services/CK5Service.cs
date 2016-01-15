@@ -41,7 +41,10 @@ namespace Sampoerna.EMS.BLL.Services
 
             if (input.Lack1Level == Enums.Lack1Level.Plant)
             {
-                queryFilterCk5 = queryFilterCk5.And(c => c.DEST_PLANT_ID == input.ReceivedPlantId);
+                queryFilterCk5 = queryFilterCk5.And(c => (c.DEST_PLANT_ID == input.ReceivedPlantId 
+                    && (c.CK5_TYPE != Enums.CK5Type.Waste))
+                    || (c.SOURCE_PLANT_ID == input.ReceivedPlantId
+                    && (c.CK5_TYPE == Enums.CK5Type.Waste)));
             }
 
             if (input.IsExcludeSameNppbkcId)
@@ -55,6 +58,9 @@ namespace Sampoerna.EMS.BLL.Services
                     queryFilterCk5.And(
                         c => c.PBCK1_DECREE_ID.HasValue && input.Pbck1DecreeIdList.Contains(c.PBCK1_DECREE_ID.Value));
             }
+
+            /* story : http://192.168.62.216/TargetProcess/entity/1637 */
+            queryFilterCk5 = queryFilterCk5.And(c => (c.CK5_TYPE != Enums.CK5Type.Manual || (c.CK5_TYPE == Enums.CK5Type.Manual && c.REDUCE_TRIAL.HasValue && c.REDUCE_TRIAL.Value)));
 
             return _repository.Get(queryFilterCk5, null, "UOM").ToList();
         }

@@ -35,6 +35,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string PeriodMonthName { get; set; }
         public int PeriodYear { get; set; }
         public decimal BeginingBalance { get; set; }
+        public decimal CloseBalance { get; set; }
         /// <summary>
         /// all income list that got use current logic for saving to database
         /// use this field for saving to database instead IncomeList 
@@ -128,6 +129,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string StoSenderNumber { get; set; }
         public string DnNumber { get; set; }
         public Enums.CK5Type Ck5Type { get; set; }
+        public bool IsCk5ReduceTrial { get; set; }
         public string RegistrationNumber { get; set; }
         public DateTime? RegistrationDate { get; set; }
         public string StringRegistrationDate { get; set; }
@@ -153,6 +155,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     {
         //public long INVENTORY_MOVEMENT_ID { get; set; }
         public bool IsTisToTisData { get; set; }
+        public string ConvertedUomId { get; set; }
+        public string ConvertedUomDesc { get; set; }
+        public decimal ConvertedQty { get; set; }
     }
 
     public class Lack1GeneratedProductionDomesticAlcoholDto
@@ -180,6 +185,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string UomId { get; set; }
         public string UomDesc { get; set; }
         public DateTime? PostingDate { get; set; }
+        public decimal? ConvertedQty { get; set; }
+        public string ConvertedUomId { get; set; }
+        public string ConvertedUomDesc { get; set; }
     }
 
 }

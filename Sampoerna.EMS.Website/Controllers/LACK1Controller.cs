@@ -97,7 +97,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     UserId = curUser.USER_ID
                 })),
                 IsShowNewButton = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer ? true : false),
-                IsNotViewer = curUser.UserRole != Enums.UserRole.Viewer
+                //first code when manager exists
+                //IsNotViewer = curUser.UserRole != Enums.UserRole.Viewer
+                IsNotViewer = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer ? true : false)
             });
 
             return View("Index", data);
@@ -131,7 +133,9 @@ namespace Sampoerna.EMS.Website.Controllers
             var result = Mapper.Map<List<Lack1NppbkcData>>(dbData);
 
             var viewModel = new Lack1IndexViewModel { Details = result };
-            viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            //first code when manager exists
+            //viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            viewModel.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
 
             return PartialView("_Lack1Table", viewModel);
         }
@@ -156,7 +160,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     UserId = curUser.USER_ID
                 })),
                 IsShowNewButton = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer ? true : false),
-                IsNotViewer = curUser.UserRole != Enums.UserRole.Viewer
+                //first code when manager exists
+                //IsNotViewer = curUser.UserRole != Enums.UserRole.Viewer
+                IsNotViewer = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer ? true : false)
             });
 
             return View("ListByPlant", data);
@@ -187,7 +193,9 @@ namespace Sampoerna.EMS.Website.Controllers
             var resultPlant = Mapper.Map<List<Lack1PlantData>>(dbDataPlant);
 
             var viewModel = new Lack1IndexPlantViewModel { Details = resultPlant };
-            viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            //first code when manager exists
+            //viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            viewModel.IsNotViewer = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer ? true : false);
 
             return PartialView("_Lack1ListByPlantTable", viewModel);
 
@@ -279,7 +287,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 MenuPlantAddClassCss = lack1Level.Value == Enums.Lack1Level.Plant ? "active" : "",
                 MenuNppbkcAddClassCss = lack1Level.Value == Enums.Lack1Level.Nppbkc ? "active" : "",
                 IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
-                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
+                //first code when manager exists
+                //IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
             };
 
             return CreateInitial(model);
@@ -471,7 +481,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Details = Mapper.Map<List<Lack1CompletedDocumentData>>(_lack1Bll.GetCompletedDocumentByParam(new Lack1GetByParamInput())),
-                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
+                //first code when manager exists
+                //IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
             });
 
             return View("ListCompletedDocument", data);
@@ -498,7 +510,9 @@ namespace Sampoerna.EMS.Website.Controllers
             var resultPlant = Mapper.Map<List<Lack1CompletedDocumentData>>(dbDataPlant);
 
             var viewModel = new Lack1IndexCompletedDocumentViewModel { Details = resultPlant };
-            viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            //first code when manager exists
+            //viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            viewModel.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
 
             return PartialView("_Lack1CompletedDocumentTable", viewModel);
 
@@ -619,7 +633,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dMasterRow.NppbkcCity = data.NppbkcCity;
             dMasterRow.NppbkcId = data.NppbkcId;
             dMasterRow.SubmissionDate = data.SubmissionDateDisplayString;
-            dMasterRow.CreatorName = data.ApprovedByPoa;
+            dMasterRow.CreatorName = data.PoaPrintedName;
             dMasterRow.PrintTitle = printTitle;
             if (data.HeaderFooter != null)
             {
@@ -647,7 +661,8 @@ namespace Sampoerna.EMS.Website.Controllers
             int loopCountForUsage = prodTisToFa.ProductionSummaryByProdTypeList.Count;
             var usage = data.Usage.ToString("N2");
 
-            if (data.IsTisToTis)
+            /*skip this logic for etil alcohol, although IsTisToTis flag is checked*/
+            if (data.IsTisToTis && !data.IsEtilAlcohol)
             {
                 //with tis to tis
                 //process tis to tis
@@ -681,7 +696,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (data.Ck5RemarkData != null)
             {
                 docNoted = GenerateRemarkContent(data.Ck5RemarkData.Ck5WasteData, "Waste");
-                docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.Ck5RemarkData.Ck5ReturnData, "Return");
+                //docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.Ck5RemarkData.Ck5ReturnData, "Return");
                 docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.Ck5RemarkData.Ck5TrialData, "Trial");
             }
 
@@ -713,7 +728,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private string GenerateRemarkContent(List<Lack1IncomeDetailDto> data, string title)
         {
             var rc = string.Empty;
-            if (data.Count <= 0) return rc;
+            if (data == null || data.Count <= 0) return rc;
             rc = title + Environment.NewLine;
             //rc += string.Join(Environment.NewLine, data.Select(
             //    d =>
@@ -780,30 +795,46 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            //first code when manager exists
+            //if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
             {
                 //redirect to details for approval/rejected
                 return RetDetails(lack1Data, true);
             }
 
-            if (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval ||
-                lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+            if (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval)
             {
                 return RetDetails(lack1Data, false);
             }
-            
-            if (CurrentUser.UserRole == Enums.UserRole.Manager)
-            {
-                //redirect to details for approval/rejected
-                return RetDetails(lack1Data, true);
-            }
+
+            /* Old Code before CR-2 : 2015-12-22 Remove manager approve*/
+            //if (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval ||
+            //    lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+            //{
+            //    return RetDetails(lack1Data, false);
+            //}
+
+            //first code when manager exists
+            //if (CurrentUser.UserRole == Enums.UserRole.Manager)
+            //{
+            //    //redirect to details for approval/rejected
+            //    return RetDetails(lack1Data, true);
+            //}
 
             if (CurrentUser.USER_ID == lack1Data.CreateBy &&
-                (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval ||
-                 lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager))
+                lack1Data.Status == Enums.DocumentStatus.WaitingForApproval)
             {
                 return RetDetails(lack1Data, false);
             }
+
+            /* Old code before CR-2  : 2015-12-22 Remove manager approve */
+            //if (CurrentUser.USER_ID == lack1Data.CreateBy &&
+            //    (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval ||
+            //     lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalManager))
+            //{
+            //    return RetDetails(lack1Data, false);
+            //}
 
             var model = InitEditModel(lack1Data);
             model = InitEditList(model);
@@ -927,7 +958,9 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 FormNumber = model.Lack1Number,
                 DocumentStatus = model.Status,
-                NppbkcId = model.NppbkcId
+                NppbkcId = model.NppbkcId,
+                DocumentCreator = model.CreateBy,
+                PlantId = model.LevelPlantId
             };
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
@@ -1024,7 +1057,8 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!allowApproveAndReject)
             {
                 model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
-                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                //first code when manager exists
+                //model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
             }
 
             model.AllowPrintDocument = _workflowBll.AllowPrint(model.Status);
@@ -1041,7 +1075,9 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 FormNumber = model.Lack1Number,
                 DocumentStatus = model.Status,
-                NppbkcId = model.NppbkcId
+                NppbkcId = model.NppbkcId,
+                DocumentCreator = model.CreateBy,
+                PlantId = model.LevelPlantId
             };
 
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
@@ -1103,7 +1139,8 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!allowApproveAndReject)
             {
                 model.AllowGovApproveAndReject = _workflowBll.AllowGovApproveAndReject(input);
-                model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
+                //first code when manager exists
+                //model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
             }
 
             model.AllowPrintDocument = _workflowBll.AllowPrint(model.Status);
@@ -1905,10 +1942,26 @@ namespace Sampoerna.EMS.Website.Controllers
 
                             slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[i].ConvertedUomDesc);
 
-                            if (lastMaterialCode == curMaterialCode && lastBatch == curBatch && lastDate == curDate)
+                            if (item.TrackingConsolidations[i].Ck5TypeText !=
+                                EnumHelper.GetDescription(Enums.CK5Type.Manual))
                             {
-                                iEndRow = iRow;
-                                if (i == item.TrackingConsolidations.Count - 1)
+                                if (lastMaterialCode == curMaterialCode && lastBatch == curBatch && lastDate == curDate)
+                                {
+                                    iEndRow = iRow;
+                                    if (i == item.TrackingConsolidations.Count - 1)
+                                    {
+                                        if (iStartRow != iEndRow)
+                                        {
+                                            //need to merge
+                                            needToMerge.Add(new DetailReportNeedToMerge()
+                                            {
+                                                StartRowIndex = iStartRow,
+                                                EndRowIndex = iEndRow
+                                            });
+                                        }
+                                    }
+                                }
+                                else
                                 {
                                     if (iStartRow != iEndRow)
                                     {
@@ -1919,22 +1972,11 @@ namespace Sampoerna.EMS.Website.Controllers
                                             EndRowIndex = iEndRow
                                         });
                                     }
+                                    iStartRow = iRow;
+                                    iEndRow = iStartRow;
                                 }
                             }
-                            else
-                            {
-                                if (iStartRow != iEndRow)
-                                {
-                                    //need to merge
-                                    needToMerge.Add(new DetailReportNeedToMerge()
-                                    {
-                                        StartRowIndex = iStartRow,
-                                        EndRowIndex = iEndRow
-                                    });
-                                }
-                                iStartRow = iRow;
-                                iEndRow = iStartRow;
-                            }
+                            
                         }
                         
                         lastMaterialCode = curMaterialCode;
@@ -1991,8 +2033,8 @@ namespace Sampoerna.EMS.Website.Controllers
             iColumn = iColumn + 1;
 
             slDocument.SetCellValue(1, iColumn, "Receiving");
-            slDocument.MergeWorksheetCells(1, iColumn, 1, (iColumn + 4));//ColSpan = 5
-            iColumn = iColumn + 5;
+            slDocument.MergeWorksheetCells(1, iColumn, 1, (iColumn + 5));//ColSpan = 5
+            iColumn = iColumn + 6;
 
             slDocument.SetCellValue(1, iColumn, "Usage");
             slDocument.MergeWorksheetCells(1, iColumn, 1, (iColumn + 4)); //ColSpan = 5
@@ -2001,10 +2043,7 @@ namespace Sampoerna.EMS.Website.Controllers
             slDocument.SetCellValue(1, iColumn, "Ending Balance");
             slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan 2
             iColumn = iColumn + 1;
-
-            slDocument.SetCellValue(1, iColumn, "Remark");
-            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan 2
-
+            
             endColumnIndex = iColumn;
 
             //second row
@@ -2056,14 +2095,6 @@ namespace Sampoerna.EMS.Website.Controllers
             valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
             valueStyle.Alignment.Vertical = VerticalAlignmentValues.Center;
 
-            SLStyle remarkColumnStyle = slDocument.CreateStyle();
-            remarkColumnStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
-            remarkColumnStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
-            remarkColumnStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
-            remarkColumnStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
-            remarkColumnStyle.Alignment.Vertical = VerticalAlignmentValues.Center;
-            remarkColumnStyle.SetWrapText(true);
-            
             //set header style
             SLStyle headerStyle = slDocument.CreateStyle();
             headerStyle.Alignment.Horizontal = HorizontalAlignmentValues.Center;
@@ -2075,13 +2106,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //set border to value cell
             slDocument.SetCellStyle(3, 1, endRowIndex, endColumnIndex - 1, valueStyle);
-            slDocument.SetCellStyle(3, endColumnIndex, endRowIndex, endColumnIndex, remarkColumnStyle);
 
             //set header style
-            slDocument.SetCellStyle(1, 1, 2, endColumnIndex, headerStyle);
+            slDocument.SetCellStyle(1, 1, 2, endColumnIndex - 1, headerStyle);
 
             //set auto fit to all column
-            slDocument.AutoFitColumn(1, endColumnIndex);
+            slDocument.AutoFitColumn(1, endColumnIndex - 1);
 
             var fileName = "lack1_detreport" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
             var path = Path.Combine(Server.MapPath(Constans.Lack1UploadFolderPath), fileName);
@@ -2159,11 +2189,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.Detail = new DashboardDetilModel
             {
-                WaitingForAppTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager),
+                //first code when manager exists
+                //WaitingForAppTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApproval || x.Status == Enums.DocumentStatus.WaitingForApprovalManager),
                 DraftTotal = data.Count(x => x.Status == Enums.DocumentStatus.Draft),
                 WaitingForPoaTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApproval),
-                WaitingForManagerTotal =
-                    data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager),
+                //first code when manager exists
+                //WaitingForManagerTotal =
+                //    data.Count(x => x.Status == Enums.DocumentStatus.WaitingForApprovalManager),
                 WaitingForGovTotal = data.Count(x => x.Status == Enums.DocumentStatus.WaitingGovApproval),
                 CompletedTotal = data.Count(x => x.Status == Enums.DocumentStatus.Completed)
             };
@@ -2204,5 +2236,341 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
+
+        #region ----------------- Reconciliation Page -------------
+
+        public ActionResult Reconciliation()
+        {
+
+            Lack1ReconciliationModel model;
+            try
+            {
+                model = new Lack1ReconciliationModel()
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo,
+                    Detail = SearchReconciliation()
+                };
+                model = InitSearchReconciliationModel(model);
+            }
+            catch (Exception ex)
+            {
+                model = new Lack1ReconciliationModel()
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo
+                };
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return View("Reconciliation", model);
+        }
+
+        private Lack1ReconciliationModel InitSearchReconciliationModel(Lack1ReconciliationModel model)
+        {
+            model.SearchView = new Lack1SearchReconciliationModel();
+            model.SearchView.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.SearchView.PlantIdList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.SearchView.NppbkcId);
+            model.SearchView.ExGoodTypeList = GetExciseGoodsTypeList(model.SearchView.NppbkcId);
+            return model;
+        }
+
+        private List<DataReconciliation> SearchReconciliation(Lack1SearchReconciliationModel filter = null)
+        {
+            //Get All
+            if (filter == null)
+            {
+                //Get All
+                var data = _lack1Bll.GetReconciliationByParam(new Lack1GetReconciliationByParamInput());
+                return Mapper.Map<List<DataReconciliation>>(data);
+            }
+            //getbyparams
+            var input = Mapper.Map<Lack1GetReconciliationByParamInput>(filter);
+
+            var dbData = _lack1Bll.GetReconciliationByParam(input);
+            return Mapper.Map<List<DataReconciliation>>(dbData);
+        }
+
+        [HttpPost]
+        public ActionResult SearchReconciliation(Lack1ReconciliationModel model)
+        {
+            model.Detail = SearchReconciliation(model.SearchView);
+            return PartialView("_Lack1Reconciliation", model);
+        }
+
+        public void ExportReconciliation(Lack1ReconciliationModel model)
+        {
+            string pathFile = "";
+
+            pathFile = CreateXlsReconciliation(model.ExportSearchView);
+
+            var newFile = new FileInfo(pathFile);
+
+            var fileName = Path.GetFileName(pathFile);
+
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+        }
+
+        private string CreateXlsReconciliation(Lack1SearchReconciliationModel model)
+        {
+            var dataReconciliation = SearchReconciliation(model);
+
+            var slDocument = new SLDocument();
+            int endColumnIndex;
+            //create header
+            slDocument = CreateHeaderExcelReconciliation(slDocument, out endColumnIndex);
+
+            int iRow = 3; //starting row data
+            int iColumn = 1;
+            foreach (var data in dataReconciliation)
+            {
+                iColumn = 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.NppbkcId);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.PlantId);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.Month);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.Date);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.ItemCode);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.FinishGoodCode);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.Remaining);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.BeginningStock);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.ReceivedCk5No);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.Received);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.UsageOther);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.UsageSelf);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.ResultTis);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.ResultStick);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.EndingStock);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.RemarkDesc);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.RemarkCk5No);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.RemarkQty);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.StickProd);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.PackProd);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.Wip);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.RejectMaker);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.RejectPacker);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.FloorSweep);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.Stem);
+                iColumn = iColumn + 1;
+
+                iRow++;
+            }
+
+            return CreateXlsFileReconciliation(slDocument, endColumnIndex, iRow - 1);
+
+        }
+
+        private string CreateXlsFileReconciliation(SLDocument slDocument, int endColumnIndex, int endRowIndex)
+        {
+
+            //create style
+            SLStyle valueStyle = slDocument.CreateStyle();
+            valueStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Alignment.Vertical = VerticalAlignmentValues.Center;
+            valueStyle.SetWrapText(true);
+
+            //set header style
+            SLStyle headerStyle = slDocument.CreateStyle();
+            headerStyle.Alignment.Horizontal = HorizontalAlignmentValues.Center;
+            headerStyle.Font.Bold = true;
+            headerStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+
+            //set border to value cell
+            slDocument.SetCellStyle(3, 1, endRowIndex, endColumnIndex, valueStyle);
+
+            //set header style
+            slDocument.SetCellStyle(1, 1, 2, endColumnIndex, headerStyle);
+
+            //set auto fit to all column
+            slDocument.AutoFitColumn(1, endColumnIndex);
+
+            var fileName = "lack1_reconciliation" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+            var path = Path.Combine(Server.MapPath(Constans.Lack1UploadFolderPath), fileName);
+
+            //var outpu = new 
+            slDocument.SaveAs(path);
+
+            return path;
+        }
+
+        private SLDocument CreateHeaderExcelReconciliation(SLDocument slDocument, out int endColumnIndex)
+        {
+            int iColumn = 1;
+
+            //first row
+            slDocument.SetCellValue(1, iColumn, "NPPBKC");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Plant ID");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Month");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Date");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Item Code");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Finish Goods Code");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Remaining (gr)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Beginning Stock (gr)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "CK-5 No");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Received (gr)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Usage (gr)");
+            slDocument.MergeWorksheetCells(1, iColumn, 1, (iColumn + 1));//ColSpan = 2
+            iColumn = iColumn + 2;
+
+            slDocument.SetCellValue(1, iColumn, "Production Result");
+            slDocument.MergeWorksheetCells(1, iColumn, 1, (iColumn + 1)); //ColSpan = 2
+            iColumn = iColumn + 2;
+
+            slDocument.SetCellValue(1, iColumn, "Ending Stock (gr)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Remark");
+            slDocument.MergeWorksheetCells(1, iColumn, 1, (iColumn + 2)); //ColSpan = 3
+            iColumn = iColumn + 3;
+
+            slDocument.SetCellValue(1, iColumn, "Stick Produced (sticks)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Pack Produced (sticks)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "WIP (sticks)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Reject Maker (sticks)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Reject Packer (sticks)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Floor sweep (gr)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Stem (gr)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan 2
+
+            endColumnIndex = iColumn;
+
+            //second row
+            iColumn = 10;
+            slDocument.SetCellValue(2, iColumn, "Supplied by other");
+            iColumn++;
+
+            slDocument.SetCellValue(2, iColumn, "Self Supplied");
+            iColumn++;
+
+            slDocument.SetCellValue(2, iColumn, "TIS (gr)");
+            iColumn++;
+
+            slDocument.SetCellValue(2, iColumn, "Stick (gr)");
+            iColumn++;
+
+            iColumn = 15;
+            slDocument.SetCellValue(2, iColumn, "Descr");
+            iColumn++;
+
+            slDocument.SetCellValue(2, iColumn, "CK-5 no.");
+            iColumn++;
+
+            slDocument.SetCellValue(2, iColumn, "Qty (gr)");
+            iColumn++;
+
+            return slDocument;
+
+        }
+
+        #endregion
     }
 }

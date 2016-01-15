@@ -24,7 +24,8 @@
                         }
 
                     }
-                    else
+                    //first code when manager exists
+                    @*else
                     {
                         if (Model.AllowManagerReject)
                         {
@@ -33,7 +34,7 @@
                                 <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
                             }
                         }
-                    }
+                    }*@
 
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "PBCK1", new { id = @Model.Detail.Pbck1Id })')" />
 

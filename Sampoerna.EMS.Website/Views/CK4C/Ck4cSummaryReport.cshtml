@@ -211,14 +211,15 @@
                                                         @Html.CheckBoxFor(model => model.ExportModel.PoaApproved, new { @class = "checkbox checkexport", @datacolumn = "24" })POA Approved
                                                     </label>
                                                 </div>
-                                                <div class="checkbox">
+                                                @*first code when manager exists
+                                                @*<div class="checkbox">
                                                     <label>
                                                         @Html.CheckBoxFor(model => model.ExportModel.ManagerApproved, new { @class = "checkbox checkexport", @datacolumn = "25" })Manager Approved
                                                     </label>
-                                                </div>
+                                                </div>*@
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.Status, new { @id = "checkboxDefault9", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "26" })Status
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Status, new { @id = "checkboxDefault9", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "25" })Status
                                                     </label>
                                                 </div>
                                             </div>
@@ -302,7 +303,7 @@
                 $('#ck4CTable').parents('div.dataTables_wrapper').first().show();
             });
 
-            for (var i = 1; i < 27; i++) {
+            for (var i = 1; i < 26; i++) {
                 table.column(i).visible(false);
             }
 
@@ -314,7 +315,7 @@
             table.column(7).visible(true);
             table.column(8).visible(true);
             table.column(9).visible(true);
-            table.column(26).visible(true);
+            table.column(25).visible(true);
           
 
            $('#selecctall').change(function () {
@@ -323,7 +324,7 @@
                     // Show a column
                     $('#ck4CTable').parents('div.dataTables_wrapper').first().show();
                     var table = $('#ck4CTable').DataTable();
-                    for (var i = 0; i < 27; i++) {
+                    for (var i = 0; i < 26; i++) {
                         table.column(i).visible(true);
 
                     }
@@ -337,7 +338,7 @@
 
                     });
                     var table = $('#ck4CTable').DataTable();
-                    for (var i = 0; i < 27; i++) {
+                    for (var i = 0; i < 26; i++) {
                         table.column(i).visible(false);
 
                     }
