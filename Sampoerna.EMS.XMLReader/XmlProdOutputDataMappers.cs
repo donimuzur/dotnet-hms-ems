@@ -287,7 +287,7 @@ namespace Sampoerna.EMS.XMLReader
                             zaapShftRptItem.ENTERED_DATE = enteredOn;
 
 
-                            var existingZaap = GetExistingZaapShiftRpt(zaapShftRptItem);
+                            var existingZaap = GetExistingZaapShiftRpt(zaapShftRptItem.MATDOC);
                             if (existingZaap != null)
                             {
                                 zaapShftRptItem.MODIFIED_BY = "PI";
@@ -431,10 +431,20 @@ namespace Sampoerna.EMS.XMLReader
             return existingData;
         }
 
+        private ZAAP_SHIFT_RPT GetExistingZaapShiftRpt(string matdoc)
+        {
+            var existingData = _xmlMapper.uow.GetGenericRepository<ZAAP_SHIFT_RPT>()
+                .GetByID(matdoc);
+
+            return existingData;
+        }
+
         private void RecalculateWithDatabase(List<PRODUCTION> itemList)
         {
             foreach (var item in itemList)
             {
+
+
                 var existingProduction = GetProductionExisting(item.FA_CODE, item.WERKS,item.PRODUCTION_DATE);
                 
                 if (existingProduction == null)
@@ -442,11 +452,45 @@ namespace Sampoerna.EMS.XMLReader
                     item.PROD_QTY_STICK = item.QTY;            
                     item.CREATED_DATE = DateTime.Now;
                     item.CREATED_BY = "PI";
+
+                    switch (item.UOM)
+                    {
+                        case "TH":
+
+                            
+                                item.QTY_PACKED = item.QTY;
+
+                            
+
+
+                            break;
+                        case "KG":
+
+                            
+                                item.QTY_PACKED = item.QTY;
+                                //item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
+
+                            
+                            break;
+                        default:
+
+
+                           
+                                //item.QTY_PACKED = existingProduction.QTY_PACKED;
+                                if (String.IsNullOrEmpty(item.BATCH))
+                                {
+                                    //item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
+                                }
+                            
+                            break;
+                    }
                 }
                 else
                 {
+
+                    
                     //if(item)
-                    item.PROD_QTY_STICK = existingProduction.PROD_QTY_STICK + item.QTY;
+                    item.PROD_QTY_STICK = item.QTY;
                     item.QTY = existingProduction.QTY;
                     item.MODIFIED_DATE = DateTime.Now;
                     item.MODIFIED_BY = "PI";
@@ -455,41 +499,7 @@ namespace Sampoerna.EMS.XMLReader
                                 
                 }
 
-                switch (item.UOM)
-                {
-                    case "TH":
-                        
-                        if (existingProduction == null)
-                        {
-                            item.QTY_PACKED = item.QTY;
-                                        
-                        }
-                        
-
-                        break;
-                    case "KG":
-                        
-                        if (existingProduction != null)
-                        {
-
-                            item.QTY_PACKED = item.QTY;
-                            //item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
-                                
-                        }
-                        break;
-                    default:
-                        
-
-                        if (existingProduction != null)
-                        {
-                            //item.QTY_PACKED = existingProduction.QTY_PACKED;
-                            if (String.IsNullOrEmpty(item.BATCH))
-                            {
-                                //item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
-                            }
-                        }
-                        break;
-                }
+                
 
                 var existingBrand = GetMaterialBrand(item.FA_CODE, item.WERKS);
                 if (existingBrand != null)
