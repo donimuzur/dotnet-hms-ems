@@ -484,6 +484,7 @@ namespace Sampoerna.EMS.XMLReader
                             
                             break;
                     }
+                    item.QTY = 0;
                 }
                 else
                 {
