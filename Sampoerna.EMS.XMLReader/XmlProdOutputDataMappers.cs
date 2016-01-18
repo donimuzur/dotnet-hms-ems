@@ -155,7 +155,7 @@ namespace Sampoerna.EMS.XMLReader
                         production.MODIFIED_DATE = DateTime.Now;
                         production.CREATED_BY = existingProd.CREATED_BY;
                         production.CREATED_DATE = existingProd.CREATED_DATE;
-
+                        production.QTY = existingProd.QTY;
                     }
                     else
                     {
