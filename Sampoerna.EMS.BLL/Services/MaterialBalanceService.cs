@@ -29,5 +29,13 @@ namespace Sampoerna.EMS.BLL.Services
 
             return _repository.Get(queryFilter).ToList();
         }
+
+        public List<ZAIDM_EX_MATERIAL_BALANCE> GetByPlantListAndMaterialList(List<string> plantId, List<string> materialList)
+        {
+            Expression<Func<ZAIDM_EX_MATERIAL_BALANCE, bool>> queryFilter =
+                c => plantId.Contains(c.WERKS) && materialList.Contains(c.MATERIAL_ID);
+
+            return _repository.Get(queryFilter).ToList();
+        }
     }
 }

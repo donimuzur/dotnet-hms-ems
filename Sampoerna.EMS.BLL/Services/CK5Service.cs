@@ -127,6 +127,14 @@ namespace Sampoerna.EMS.BLL.Services
             return _repository.Get(queryFilter, null, "UOM").ToList();
         }
 
+        public List<CK5> GetReconciliationLack1()
+        {
+            Expression<Func<CK5, bool>> queryFilter =
+                c => c.STATUS_ID == Enums.DocumentStatus.Completed && c.GR_DATE != null &&
+                    ((c.PBCK1_DECREE_ID != null) || (c.CK5_TYPE == Enums.CK5Type.Waste || c.CK5_TYPE == Enums.CK5Type.Return));
+
+            return _repository.Get(queryFilter, null, "PBCK1, CK5_MATERIAL").OrderBy(x => x.GR_DATE).ToList();
+        }
     }
 
 }

@@ -2338,6 +2338,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 slDocument.SetCellValue(iRow, iColumn, data.PlantId);
                 iColumn = iColumn + 1;
 
+                slDocument.SetCellValue(iRow, iColumn, data.Year);
+                iColumn = iColumn + 1;
+
                 slDocument.SetCellValue(iRow, iColumn, data.Month);
                 iColumn = iColumn + 1;
 
@@ -2463,6 +2466,10 @@ namespace Sampoerna.EMS.Website.Controllers
             iColumn = iColumn + 1;
 
             slDocument.SetCellValue(1, iColumn, "Plant ID");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Year");
             slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
             iColumn = iColumn + 1;
 
