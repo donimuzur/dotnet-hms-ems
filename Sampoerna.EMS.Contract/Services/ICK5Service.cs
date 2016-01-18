@@ -14,5 +14,6 @@ namespace Sampoerna.EMS.Contract.Services
 
         List<CK5> GetByStoNumberList(List<string> stoNumberList);
 
+        List<CK5> GetReconciliationLack1();
     }
 }

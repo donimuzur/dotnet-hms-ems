@@ -8,7 +8,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     {
         public string NppbkcId { get; set; }
         public string PlantId { get; set; }
+        public int Year { get; set; }
         public string Month { get; set; }
+        public int MonthNumber { get; set; }
         public string Date { get; set; }
         public string ItemCode { get; set; }
         public string FinishGoodCode { get; set; }
@@ -31,5 +33,12 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal RejectPacker { get; set; }
         public decimal FloorSweep { get; set; }
         public decimal Stem { get; set; }
+    }
+
+    public class Lack1MonthReconciliation
+    {
+        public int Month { get; set; }
+        public int Year { get; set; }
+        public string NppbkcId { get; set; }
     }
 }
