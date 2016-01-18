@@ -115,7 +115,10 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string GiDate { get; set; }
         public string Status { get; set; }
 
-
+        public string CompanySource { get; set; }
+        public string CompanyDestination { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
     }
 
     public class CK5ExportSummaryReportsViewModel : CK5SearchSummaryReportsViewModel
@@ -169,6 +172,11 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool GrDate { get; set; }
         public bool GiDate { get; set; }
         public bool Status { get; set; }
+
+        public bool CompanySource { get; set; }
+        public bool CompanyDestination { get; set; }
+        public bool Poa { get; set; }
+        public bool Creator { get; set; }
     }
 
   

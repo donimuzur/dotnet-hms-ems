@@ -3519,7 +3519,6 @@ namespace Sampoerna.EMS.BLL
 
             return mapResult;
 
-
         }
 
         public List<CK5Dto> GetCk5CompletedByCk5Type(Enums.CK5Type ck5Type)
