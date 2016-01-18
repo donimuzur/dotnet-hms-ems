@@ -36,6 +36,7 @@ namespace Sampoerna.EMS.BLL
         private IWorkflowBLL _workflowBll;
         private IUserBLL _userBll;
         private IWasteBLL _wasteBll;
+        private IProductionBLL _prodBll;
         
         //services
         private ICK4CItemService _ck4cItemService;
@@ -77,6 +78,7 @@ namespace Sampoerna.EMS.BLL
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
             _wasteBll = new WasteBLL(_logger, _uow);
+            _prodBll = new ProductionBLL(_logger, _uow);
 
             _ck4cItemService = new CK4CItemService(_uow, _logger);
             _ck5Service = new CK5Service(_uow, _logger);
@@ -3854,6 +3856,20 @@ namespace Sampoerna.EMS.BLL
                              Stem = _wasteBll.GetAllByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Sum(c => c.StampWasteQty.HasValue ? c.StampWasteQty.Value : 0)
                          };
 
+            foreach (var item in dbData)
+            {
+                reconciliationList.Add(item);
+            }
+
+            reconciliationList = GetUnReconciliation(reconciliationList);
+
+            reconciliationList = reconciliationList.OrderBy(x => x.MonthNumber).OrderBy(x => x.Year).ToList();
+
+            return reconciliationList;
+        }
+
+        private List<Lack1ReconciliationDto> GetUnReconciliation(List<Lack1ReconciliationDto> list)
+        {
             var monthList = from m in _ck5Service.GetReconciliationLack1()
                             select new Lack1MonthReconciliation()
                             {
@@ -3879,7 +3895,7 @@ namespace Sampoerna.EMS.BLL
                                 MonthNumber = r.Month
                             };
 
-            foreach(var data in reconData)
+            foreach (var data in reconData)
             {
                 var ck5List = _ck5Service.GetReconciliationLack1()
                     .Where(x => x.DEST_PLANT_NPPBKC_ID == data.NppbkcId && x.GR_DATE.Value.Month == data.MonthNumber && x.GR_DATE.Value.Year == data.Year);
@@ -3893,9 +3909,56 @@ namespace Sampoerna.EMS.BLL
                 var returnQty = ck5List.Where(x => x.CK5_TYPE == Enums.CK5Type.Return).Sum(x => x.GRAND_TOTAL_EX.HasValue ? x.GRAND_TOTAL_EX.Value : 0);
                 var beginningBalance = Convert.ToDecimal(0);
                 var totalIncome = ck5List.Where(x => x.CK5_TYPE != Enums.CK5Type.Waste).Sum(x => x.GRAND_TOTAL_EX.HasValue ? x.GRAND_TOTAL_EX.Value : 0);
+                var prodTis = Convert.ToDecimal(0);
+                var prodStick = Convert.ToDecimal(0);
 
                 var listMaterialBalance = _materialBalanceService.GetByPlantListAndMaterialList(supPlantList.ToList(), stickerList.ToList());
                 if (listMaterialBalance.Count > 0) beginningBalance = listMaterialBalance.Sum(x => x.OPEN_BALANCE.Value);
+
+                var stoReceiverNumberList = ck5List.Where(x => x.CK5_TYPE != Enums.CK5Type.Waste).Where(c => c.CK5_TYPE != Enums.CK5Type.Manual).Select(d => d.CK5_TYPE == Enums.CK5Type.Intercompany ? d.STO_RECEIVER_NUMBER : d.STO_SENDER_NUMBER).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
+
+                var bkcUomId = ck5List.Select(d => d.PACKAGE_UOM_ID).First(c => !string.IsNullOrEmpty(c));
+
+                var getInventoryMovementByParamOutput = GetInventoryMovementByParam(new InvMovementGetUsageByParamInput()
+                {
+                    NppbkcId = data.NppbkcId,
+                    PeriodMonth = data.MonthNumber,
+                    PeriodYear = data.Year,
+                    PlantIdList = plantList.ToList(),
+                    IsTisToTis = false,
+                    IsEtilAlcohol = false
+                }, stoReceiverNumberList, bkcUomId);
+
+                decimal totalUsage;
+                if (getInventoryMovementByParamOutput.IncludeInCk5List.Count == 0)
+                {
+                    totalUsage = 0;
+                }
+                else
+                {
+                    totalUsage = (-1) * getInventoryMovementByParamOutput.IncludeInCk5List.Sum(d => d.ConvertedQty);
+                }
+
+                decimal allUsage;
+                if (getInventoryMovementByParamOutput.AllUsageList.Count == 0)
+                {
+                    allUsage = 0;
+                }
+                else
+                {
+                    allUsage = (-1) * getInventoryMovementByParamOutput.AllUsageList.Sum(d => d.ConvertedQty);
+                }
+
+                var prodList = from a in getInventoryMovementByParamOutput.UsageProportionalList
+                               join p in _prodBll.GetAllProduction() on a.Order equals p.Ordr
+                               select new ProductionDto()
+                               {
+                                   Qty = p.Qty,
+                                   Uom = p.Uom
+                               };
+
+                prodTis = prodList.Where(x => x.Uom.ToLower() == "g").Sum(x => x.Qty.HasValue ? x.Qty.Value : 0);
+                prodStick = prodList.Where(x => x.Uom.ToLower() == "btg").Sum(x => x.Qty.HasValue ? x.Qty.Value : 0);
 
                 data.PlantId = string.Join(Environment.NewLine, plantList.Distinct());
                 data.Date = string.Empty;
@@ -3903,10 +3966,15 @@ namespace Sampoerna.EMS.BLL
                 data.FinishGoodCode = string.Join(Environment.NewLine, brandList.FirstOrDefault());
                 data.Remaining = ck5List.Sum(x => x.PBCK1 != null ? (x.PBCK1.REMAINING_QUOTA.HasValue ? x.PBCK1.REMAINING_QUOTA.Value : 0) : 0);
                 data.BeginningStock = beginningBalance;
-                data.ReceivedCk5No = string.Join(Environment.NewLine, 
+                data.ReceivedCk5No = string.Join(Environment.NewLine,
                     ck5List.Where(x => x.CK5_TYPE != Enums.CK5Type.Waste)
                     .Select(x => x.SUBMISSION_NUMBER).Distinct());
                 data.Received = totalIncome;
+                data.UsageOther = totalUsage;
+                data.UsageSelf = allUsage > totalUsage ? allUsage - totalUsage : totalUsage - allUsage;
+                data.ResultTis = prodTis;
+                data.ResultStick = prodStick;
+                data.EndingStock = beginningBalance + totalIncome - totalUsage - returnQty;
                 data.RemarkDesc = string.Empty;
                 data.RemarkCk5No = string.Join(Environment.NewLine,
                     ck5List.Where(x => x.CK5_TYPE == Enums.CK5Type.Waste)
@@ -3920,10 +3988,10 @@ namespace Sampoerna.EMS.BLL
                 data.FloorSweep = wasteList.Sum(c => c.FloorWasteGramQty.HasValue ? c.FloorWasteGramQty.Value : 0);
                 data.Stem = wasteList.Sum(c => c.StampWasteQty.HasValue ? c.StampWasteQty.Value : 0);
 
-                reconciliationList.Add(data);
+                list.Add(data);
             }
 
-            return reconciliationList;
+            return list;
         }
 
         #endregion
