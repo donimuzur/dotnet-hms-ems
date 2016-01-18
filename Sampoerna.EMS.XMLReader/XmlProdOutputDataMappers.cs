@@ -25,7 +25,7 @@ namespace Sampoerna.EMS.XMLReader
         }
 
 
-        public List<PRODUCTION> ItemsTemp
+        public List<PRODUCTION> Items
         {
             get
             {
@@ -60,12 +60,12 @@ namespace Sampoerna.EMS.XMLReader
                     decimal qty;
                     try
                     {
-                        qty = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("Quantity")).Replace(",", ""));
+                        qty = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("ConfQty")).Replace(",", ""));
                     }
                     catch (Exception ex)
                     {
                         string reason = "";
-                        var qtyString = _xmlMapper.GetElementValue(xElement.Element("Quantity"));
+                        var qtyString = _xmlMapper.GetElementValue(xElement.Element("ConfQty"));
                         if (ex.GetType() == typeof(FormatException))
                             reason = "format not handled";
                         else
@@ -114,6 +114,13 @@ namespace Sampoerna.EMS.XMLReader
                     zaapShftRptItem.POSTING_DATE = postingDate;
                     zaapShftRptItem.ENTERED_DATE = enteredOn;
 
+                    var company = GetCompanyByPlant(zaapShftRptItem.WERKS);
+                    if (company != null)
+                    {
+                        zaapShftRptItem.COMPANY_CODE = company.BUKRS;
+                        //zaapShftRptItem.COMPANY_NAME = company.T001.BUTXT;
+                        //zaapShftRptItem.PLANT_NAME = company.T001W.NAME1;
+                    }
 
                     var existingZaap = GetExistingZaapShiftRpt(zaapShftRptItem);
                     if (existingZaap != null)
@@ -143,11 +150,46 @@ namespace Sampoerna.EMS.XMLReader
 
                     if (existingProd != null)
                     {
+                        
                         production.MODIFIED_BY = "PI";
                         production.MODIFIED_DATE = DateTime.Now;
+                        production.CREATED_BY = existingProd.CREATED_BY;
+                        production.CREATED_DATE = existingProd.CREATED_DATE;
 
-//                        production.
                     }
+                    else
+                    {
+                        production.CREATED_BY = "PI";
+                        production.CREATED_DATE = DateTime.Now;
+
+                        production.QTY = 0;
+                        
+                    }
+
+                    var existingBrand = GetMaterialBrand(production.FA_CODE, production.WERKS);
+                    if (existingBrand != null)
+                    {
+                        if (existingBrand.BRAND_CONTENT == null)
+                        {
+                            throw new Exception(String.Format(
+                                "Brand {0} - {2} in plant {1} has null CONTENT value", existingBrand.FA_CODE,
+                                existingBrand.WERKS, existingBrand.STICKER_CODE));
+                        }
+
+                        production.BRAND_DESC = existingBrand.BRAND_CE;
+                    }
+
+                    var company = GetCompanyByPlant(production.WERKS);
+                    if (company != null)
+                    {
+                        production.COMPANY_CODE = company.BUKRS;
+                        production.COMPANY_NAME = company.T001.BUTXT;
+                        production.PLANT_NAME = company.T001W.NAME1;
+                    }
+
+                    production.PROD_QTY_STICK = production.QTY_PACKED;
+
+                    items.Add(production);
                 }
 
                 return items;
@@ -155,7 +197,7 @@ namespace Sampoerna.EMS.XMLReader
         }
 
 
-        public List<PRODUCTION> Items
+        public List<PRODUCTION> ItemsTemp
         {
             get
             {
@@ -207,9 +249,13 @@ namespace Sampoerna.EMS.XMLReader
                         var bun = _xmlMapper.GetElementValue(xElement.Element("BUn"));
 
                         decimal qty;
+                        decimal confQty;
+                        decimal oriConfQty;
                         try
                         {
-                            qty = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("ConfQty")).Replace(",", ""));
+                            qty = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("Quantity")).Replace(",", ""));
+                            confQty = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("ConfQty")).Replace(",", ""));
+                            oriConfQty = confQty;
                         }
                         catch (Exception ex)
                         {
@@ -239,12 +285,14 @@ namespace Sampoerna.EMS.XMLReader
                             switch (bun)
                             {
                                 case "TH":
+                                    confQty = oriConfQty * 1000;
                                     item.QTY = qty * 1000;
                                     item.UOM = "Btg";
                                     
 
                                     break;
                                 case "KG":
+                                    confQty = oriConfQty * 1000;
                                     item.QTY = qty * 1000;
                                     item.UOM = "G";
                                     
@@ -276,9 +324,9 @@ namespace Sampoerna.EMS.XMLReader
                             zaapShftRptItem.SHIFT = _xmlMapper.GetElementValue(xElement.Element("Shift"));
                             zaapShftRptItem.COMPANY_CODE = item.COMPANY_CODE;
                             zaapShftRptItem.FA_CODE = item.FA_CODE;
-                            zaapShftRptItem.QTY = item.QTY;
+                            zaapShftRptItem.QTY = confQty;
                             zaapShftRptItem.UOM = item.UOM;
-                            zaapShftRptItem.ORIGINAL_QTY = qty;
+                            zaapShftRptItem.ORIGINAL_QTY = oriConfQty;
                             zaapShftRptItem.ORIGINAL_UOM = bun;
                             zaapShftRptItem.PRODUCTION_DATE = item.PRODUCTION_DATE;
                             zaapShftRptItem.WERKS = item.WERKS;
@@ -426,7 +474,7 @@ namespace Sampoerna.EMS.XMLReader
                     && x.PRODUCTION_DATE  == item.PRODUCTION_DATE
                     && x.POSTING_DATE == item.POSTING_DATE
                     && x.ENTERED_DATE == item.ENTERED_DATE
-                    ,null,null).FirstOrDefault();
+                    ,null).FirstOrDefault();
 
             return existingData;
         }
@@ -535,11 +583,13 @@ namespace Sampoerna.EMS.XMLReader
 
         private List<PRODUCTION> RecalculateZaapShftRpt()
         {
+            
             var prodList = _xmlMapper.uow.GetGenericRepository<ZAAP_SHIFT_RPT>().Get(x=> x.MVT == "101").GroupBy(x => new
             {
                 FA_CODE = x.FA_CODE,
                 WERKS = x.WERKS,
                 PRODUCTION_DATE = x.PRODUCTION_DATE
+                //MATDOC = x.MATDOC
             }).Select(x=>
             {
                 var zaapShiftRpt = x.FirstOrDefault();
@@ -548,9 +598,15 @@ namespace Sampoerna.EMS.XMLReader
                                   FA_CODE = zaapShiftRpt.FA_CODE,
                                   WERKS = zaapShiftRpt.WERKS,
                                   PRODUCTION_DATE = zaapShiftRpt.PRODUCTION_DATE,
-                                  QTY_PACKED = x.Sum(y=> y.QTY)
+                                  QTY_PACKED = x.Sum(y=> y.QTY),
+                                  //COMPANY_CODE = zaapShiftRpt.COMPANY_CODE,
+                                  BUNDLE = zaapShiftRpt.BUNDLE,
+                                  ORDR = zaapShiftRpt.ORDR,
+                                  DOCGMVTER = zaapShiftRpt.DOCGMVTER,
+                                  UOM = zaapShiftRpt.UOM
                               } : null;
             });
+
 
             return prodList.ToList();
         }
