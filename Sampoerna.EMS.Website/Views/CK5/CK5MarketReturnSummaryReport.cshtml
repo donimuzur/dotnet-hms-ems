@@ -17,7 +17,7 @@
                
                 <div class="form-excise" role="form">
                     <div class="row">
-                        @using (Ajax.BeginForm("SearchMarketReturnSummaryReports", "CK5",
+                        @using (Ajax.BeginForm("SearchSummaryReportsMarketReturn", "CK5",
                             new AjaxOptions
                             {
                                 HttpMethod = "POST",
@@ -29,31 +29,32 @@
                         {
                             <div class="col-md-6">
                                 <div class="row">
-                                    <label class="col-md-4">CK5 Market Return No</label>
+                                    <label class="col-md-4">Fa Code</label>
                                     <div class="col-md-8">
-                                        @(Model.SearchView.Ck5MarketReturnNoList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                      : Html.DropDownListFor(model => model.SearchView.Ck5MarketReturnNo, Model.SearchView.Ck5MarketReturnNoList, "All", new { @class = "form-control selectreset" }))
+                                        @(Model.SearchView.FaCodeList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                              : Html.DropDownListFor(model => model.SearchView.FaCode, Model.SearchView.FaCodeList, "All", new { @class = "form-control selectreset" }))
 
                                     </div>
                                 </div>
                             </div>
                               <div class="col-md-6">
                                 <div class="row">
-                                    <label class="col-md-4">Plant</label>
+                                    <label class="col-md-4">POA</label>
                                     <div class="col-md-8">
 
-                                        @(Model.SearchView.PlantIdList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                              : Html.DropDownListFor(model => model.SearchView.PlantId, Model.SearchView.PlantIdList, "All", new { @class = "form-control selectreset" }))
+                                        @(Model.SearchView.PoaList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                              : Html.DropDownListFor(model => model.SearchView.Poa, Model.SearchView.PoaList, "All", new { @class = "form-control selectreset" }))
 
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="row">
-                                    <label class="col-md-4">Year From</label>
+                                    <label class="col-md-4">Creator</label>
                                     <div class="col-md-8">
-                                        @(Model.SearchView.YearFromList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                      : Html.DropDownListFor(model => model.SearchView.YearFrom, Model.SearchView.YearFromList, "All", new { @class = "form-control selectreset" }))
+                                        @(Model.SearchView.CreatorList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                              : Html.DropDownListFor(model => model.SearchView.Creator, Model.SearchView.CreatorList, "All", new { @class = "form-control selectreset" }))
+
 
                                     </div>
                                 </div>
@@ -61,16 +62,27 @@
 
                             <div class="col-md-6">
                                 <div class="row">
-                                    <label class="col-md-4">Year To</label>
+                                    <label class="col-md-4">PBCK-3 No</label>
                                     <div class="col-md-8">
-                                        @(Model.SearchView.YearToList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                      : Html.DropDownListFor(model => model.SearchView.YearTo, Model.SearchView.YearToList, "All", new { @class = "form-control selectreset" }))
+                                        @(Model.SearchView.Pbck3NoList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                              : Html.DropDownListFor(model => model.SearchView.Pbck3No, Model.SearchView.Pbck3NoList, "All", new { @class = "form-control selectreset" }))
 
 
                                     </div>
                                 </div>
                             </div>
-                         
+                            
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">CK-2 No</label>
+                                    <div class="col-md-8">
+                                        @(Model.SearchView.Ck2NoList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                      : Html.DropDownListFor(model => model.SearchView.Ck2No, Model.SearchView.Ck2NoList, "All", new { @class = "form-control selectreset" }))
+
+
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="col-md-2 col-md-offset-8">
                                 <button class="btn btn-blue full">FILTER</button>
@@ -94,10 +106,11 @@
                                 <div class="col-md-12">
                                     <div>
 
-                                        @Html.HiddenFor(model => model.ExportModel.Ck5MarketReturnNo)
-                                        @Html.HiddenFor(model => model.ExportModel.YearFrom)
-                                        @Html.HiddenFor(model => model.ExportModel.YearTo)
-                                        @Html.HiddenFor(model => model.ExportModel.PlantId)
+                                        @Html.HiddenFor(model => model.ExportModel.FaCode)
+                                        @Html.HiddenFor(model => model.ExportModel.Poa)
+                                        @Html.HiddenFor(model => model.ExportModel.Creator)
+                                        @Html.HiddenFor(model => model.ExportModel.Pbck3No)
+                                        @Html.HiddenFor(model => model.ExportModel.Ck2No)
                                       
 
                                         <div class="row toggle">
@@ -146,22 +159,22 @@
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.FiscalYear, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "7" })Fiscal Year
+                                                        @Html.CheckBoxFor(model => model.ExportModel.FiscalYear, new { @class = "checkbox checkexport", @datacolumn = "7" })Fiscal Year
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.ExciseValue, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "8" })Excise Value
+                                                        @Html.CheckBoxFor(model => model.ExportModel.ExciseValue, new { @class = "checkbox checkexport", @datacolumn = "8" })Excise Value
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.Poa, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "9" })POA
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Poa, new { @class = "checkbox checkexport", @datacolumn = "9" })POA
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.Creator, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "10" })Creator
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Creator, new { @class = "checkbox checkexport", @datacolumn = "10" })Creator
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
@@ -302,7 +315,7 @@
             });
 
             if (blFirst) {
-                for (var i = 5; i < 15; i++) {
+                for (var i = 7; i < 15; i++) {
                     table.column(i).visible(false);
                 }
             } else {
@@ -332,21 +345,16 @@
         }
 
         $("#btnExport").click(function () {
-            //GetSearchSummaryReports();
+            GetSearchSummaryReports();
             $('#ExportSummaryReportsForms').submit();
         });
 
         function GetSearchSummaryReports() {
-            $('#ExportModel_CompanyCodeSource').val($('#SearchView_CompanyCodeSource').find("option:selected").val());
-            $('#ExportModel_CompanyCodeDest').val($('#SearchView_CompanyCodeDest').find("option:selected").val());
-
-            $('#ExportModel_NppbkcIdSource').val($('#SearchView_NppbkcIdSource').find("option:selected").val());
-            $('#ExportModel_NppbkcIdDestt').val($('#SearchView_NppbkcIdDest').find("option:selected").val());
-            $('#ExportModel_PlantSource').val($('#SearchView_PlantSource').find("option:selected").val());
-            $('#ExportModel_PlantDest').val($('#SearchView_PlantDest').find("option:selected").val());
-            $('#ExportModel_DateFrom').val($('#SearchView_DateFrom').find("option:selected").val());
-            $('#ExportModel_DateTo').val($('#SearchView_DateTo').find("option:selected").val());
-
+            $('#ExportModel_FaCode').val($('#SearchView_FaCode').find("option:selected").val());
+            $('#ExportModel_Poa').val($('#SearchView_Poa').find("option:selected").val());
+            $('#ExportModel_Creator').val($('#SearchView_Creator').find("option:selected").val());
+            $('#ExportModel_Pbck3No').val($('#SearchView_Pbck3No').find("option:selected").val());
+            $('#ExportModel_Ck2No').val($('#SearchView_Ck2No').find("option:selected").val());
         }
 
 

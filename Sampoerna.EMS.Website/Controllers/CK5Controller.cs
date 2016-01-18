@@ -4483,6 +4483,8 @@ namespace Sampoerna.EMS.Website.Controllers
              return Json(data);
         }
 
+        #region Summary Reports MarketReturn
+
         public ActionResult SummaryReportsMarketReturn()
         {
 
@@ -4506,18 +4508,76 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("CK5MarketReturnSummaryReport", model);
         }
 
+        private SelectList GetCk5MarketReturnSummaryList(List<Ck5MarketReturnSummaryReportDto> listCk5, int type)
+        {
+            IEnumerable<SelectItemModel> query = null;
+
+            switch (type)
+            {
+                case 1: //facode
+                    query = from x in listCk5
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.FaCode,
+                                TextField = x.FaCode
+                            };
+                    break;
+
+                case 2: //POA
+                    query = from x in listCk5
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Poa,
+                                TextField = x.Poa
+                            };
+                    break;
+
+                case 3: //creator
+                    query = from x in listCk5
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Creator,
+                                TextField = x.Creator
+                            };
+                    break;
+
+                case 4: //pbck3 no
+                    query = from x in listCk5
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Pbck3No,
+                                TextField = x.Pbck3No
+                            };
+                    break;
+
+                case 5: //ck2 no
+                    query = from x in listCk5
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Ck2Number,
+                                TextField = x.Ck2Number
+                            };
+                    break;
+            }
+           
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
         private CK5MarketReturnSummaryReportsViewModel InitSummaryReportsMarketReturn(CK5MarketReturnSummaryReportsViewModel model)
         {
             model.MainMenu = Enums.MenuList.CK5MRETURN;
             model.CurrentMenu = PageInfo;
 
 
-            //var listCk5 = _ck5Bll.GetSummaryReportsMarketReturnByParam(new CK5MarketReturnGetSummaryReportByParamInput());
+            var listCk5 = _ck5Bll.GetSummaryReportsMarketReturnByParam(new CK5MarketReturnGetSummaryReportByParamInput());
 
-            //model.SearchView.Ck5MarketReturnNo = GetPbck4NumberList(listPbck4);
-            //model.SearchView.YearFromList = GetYearListPbck4(true, listPbck4);
-            //model.SearchView.YearToList = GetYearListPbck4(false, listPbck4);
-            //model.SearchView.PlantIdList = GetPlantList(listPbck4);
+            model.SearchView.FaCodeList = GetCk5MarketReturnSummaryList(listCk5, 1);
+            model.SearchView.PoaList = GetCk5MarketReturnSummaryList(listCk5, 2);
+            model.SearchView.CreatorList = GetCk5MarketReturnSummaryList(listCk5, 3);
+            model.SearchView.Pbck3NoList = GetCk5MarketReturnSummaryList(listCk5, 4);
+            model.SearchView.Ck2NoList = GetCk5MarketReturnSummaryList(listCk5, 5);
 
             var filter = new CK5MarketReturnSearchSummaryReportsViewModel();
 
@@ -4553,7 +4613,6 @@ namespace Sampoerna.EMS.Website.Controllers
             model.DetailsList = SearchMarketReturnDataSummaryReports(model.SearchView);
             return PartialView("_CK5MarketReturnListSummaryReport", model);
         }
-
 
         public void ExportXlsMarketReturnSummaryReports(CK5MarketReturnSummaryReportsViewModel model)
         {
@@ -4801,6 +4860,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return path;
         }
+
+        #endregion
 
     }
 }

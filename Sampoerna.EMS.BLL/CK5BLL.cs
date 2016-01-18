@@ -5069,9 +5069,29 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
-            if (!string.IsNullOrEmpty(input.SubmissionNumber))
+            if (!string.IsNullOrEmpty(input.FaCode))
             {
-                queryFilter = queryFilter.And(c => c.SUBMISSION_NUMBER.Contains(input.SubmissionNumber));
+                queryFilter = queryFilter.And(c => c.CK5_MATERIAL.Any(x=>x.BRAND == input.FaCode));
+            }
+
+            if (!string.IsNullOrEmpty(input.Poa))
+            {
+                queryFilter = queryFilter.And(c => c.APPROVED_BY_POA == input.Poa);
+            }
+
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
+
+            if (!string.IsNullOrEmpty(input.Pbck3No))
+            {
+                queryFilter = queryFilter.And(c => c.PBCK3.Any(x=>x.PBCK3_NUMBER == input.Pbck3No));
+            }
+
+            if (!string.IsNullOrEmpty(input.Ck2No))
+            {
+                queryFilter = queryFilter.And(c => c.PBCK3.Any(x => x.CK2.Any(z=>z.CK2_NUMBER == input.Ck2No)));
             }
 
             queryFilter = queryFilter.And(c => c.CK5_TYPE == Enums.CK5Type.MarketReturn);
@@ -5079,7 +5099,7 @@ namespace Sampoerna.EMS.BLL
             //queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed);
 
 
-            var rc = _repository.Get(queryFilter, null, includeTables);
+            var rc = _repository.Get(queryFilter, null, "CK5_MATERIAL, PBCK3, PBCK3.CK2");
             if (rc == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
@@ -5120,6 +5140,22 @@ namespace Sampoerna.EMS.BLL
                     summaryDto.Pbck3Status = "";
                     summaryDto.Ck2Number = "";
                     summaryDto.Ck2Value = "";
+
+                    var pbck3Data = _pbck3Services.GetPbck3ByCk5Id(dtData.CK5_ID);
+                    if (pbck3Data != null)
+                    {
+                        summaryDto.Pbck3No = pbck3Data.PBCK3_NUMBER;
+                        summaryDto.Pbck3Status = EnumHelper.GetDescription(pbck3Data.STATUS);
+                        var ck2Data = pbck3Data.CK2.FirstOrDefault();
+
+                        if (ck2Data != null)
+                        {
+                            summaryDto.Ck2Number = ck2Data.CK2_NUMBER;
+                            summaryDto.Ck2Value = ConvertHelper.ConvertDecimalToStringMoneyFormat(ck2Data.CK2_VALUE);
+                        }
+                    }
+                    
+                    
                     summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS_ID);
 
                     result.Add(summaryDto);

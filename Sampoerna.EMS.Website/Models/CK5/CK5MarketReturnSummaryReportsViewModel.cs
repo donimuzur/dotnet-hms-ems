@@ -22,18 +22,20 @@ namespace Sampoerna.EMS.Website.Models.CK5
     public class CK5MarketReturnSearchSummaryReportsViewModel
     {
 
-        public string Ck5MarketReturnNo { get; set; }
-        public SelectList Ck5MarketReturnNoList { get; set; }
+        public string FaCode { get; set; }
+        public SelectList FaCodeList { get; set; }
 
-        public int? YearFrom { get; set; }
-        public SelectList YearFromList { get; set; }
+        public string Poa { get; set; }
+        public SelectList PoaList { get; set; }
 
-        public int? YearTo { get; set; }
-        public SelectList YearToList { get; set; }
+        public string Creator { get; set; }
+        public SelectList CreatorList { get; set; }
 
+        public string Pbck3No { get; set; }
+        public SelectList Pbck3NoList { get; set; }
 
-        public string PlantId { get; set; }
-        public SelectList PlantIdList { get; set; }
+        public string Ck2No { get; set; }
+        public SelectList Ck2NoList { get; set; }
 
     }
 

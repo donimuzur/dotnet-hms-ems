@@ -150,7 +150,11 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
     public class CK5MarketReturnGetSummaryReportByParamInput
     {
-        public string SubmissionNumber { get; set; }
+        public string FaCode { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
+        public string Pbck3No { get; set; }
+        public string Ck2No { get; set; }
         
     }
 }
