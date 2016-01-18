@@ -1310,20 +1310,20 @@
         </EntityType>
         <EntityType Name="ZAAP_SHIFT_RPT">
           <Key>
-            <PropertyRef Name="MATDOC" />
+            <PropertyRef Name="ZAAP_SHIFT_RPT_ID" />
           </Key>
           <Property Name="COMPANY_CODE" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="UOM" Type="nvarchar" MaxLength="5" />
           <Property Name="PRODUCTION_DATE" Type="datetime" Nullable="false" />
-          <Property Name="BATCH" Type="nvarchar" MaxLength="35" />
+          <Property Name="BATCH" Type="nvarchar" MaxLength="35" Nullable="false" />
           <Property Name="QTY" Type="decimal" Precision="15" Scale="2" />
           <Property Name="BUNDLE" Type="int" />
-          <Property Name="MARKET" Type="nvarchar" MaxLength="2" />
+          <Property Name="MARKET" Type="nvarchar" MaxLength="30" />
           <Property Name="DOCGMVTER" Type="nvarchar" MaxLength="35" />
           <Property Name="MATDOC" Type="nvarchar" MaxLength="10" Nullable="false" />
-          <Property Name="ORDR" Type="nvarchar" MaxLength="10" />
+          <Property Name="ORDR" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
@@ -1331,9 +1331,10 @@
           <Property Name="SHIFT" Type="nvarchar" MaxLength="10" />
           <Property Name="ORIGINAL_QTY" Type="decimal" Precision="15" Scale="2" />
           <Property Name="ORIGINAL_UOM" Type="nvarchar" MaxLength="5" />
-          <Property Name="MVT" Type="nvarchar" MaxLength="3" />
-          <Property Name="ENTERED_DATE" Type="datetime" />
           <Property Name="POSTING_DATE" Type="datetime" />
+          <Property Name="ENTERED_DATE" Type="datetime" />
+          <Property Name="MVT" Type="varchar" MaxLength="5" />
+          <Property Name="ZAAP_SHIFT_RPT_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_BRAND">
           <Key>
@@ -8370,20 +8371,20 @@
         </Association>
         <EntityType Name="ZAAP_SHIFT_RPT">
           <Key>
-            <PropertyRef Name="MATDOC" />
+            <PropertyRef Name="ZAAP_SHIFT_RPT_ID" />
           </Key>
           <Property Name="COMPANY_CODE" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="FA_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
           <Property Name="UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="PRODUCTION_DATE" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="BATCH" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="BATCH" Type="String" MaxLength="35" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="QTY" Type="Decimal" Precision="15" Scale="2" />
           <Property Name="BUNDLE" Type="Int32" />
-          <Property Name="MARKET" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="MARKET" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="DOCGMVTER" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="MATDOC" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="ORDR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ORDR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -8391,9 +8392,10 @@
           <Property Name="SHIFT" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="ORIGINAL_QTY" Type="Decimal" Precision="15" Scale="2" />
           <Property Name="ORIGINAL_UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="MVT" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="MVT" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="ENTERED_DATE" Type="DateTime" Precision="3" />
           <Property Name="POSTING_DATE" Type="DateTime" Precision="3" />
+          <Property Name="ZAAP_SHIFT_RPT_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
         </EntityType>
         <EnumType Name="Ck5ManualFreeText" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.Ck5ManualFreeText" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatusGovType2" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatusGovType2" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -10193,6 +10195,7 @@
           <EntitySetMapping Name="ZAAP_SHIFT_RPT">
             <EntityTypeMapping TypeName="EMSModel.ZAAP_SHIFT_RPT">
               <MappingFragment StoreEntitySet="ZAAP_SHIFT_RPT">
+                <ScalarProperty Name="ZAAP_SHIFT_RPT_ID" ColumnName="ZAAP_SHIFT_RPT_ID" />
                 <ScalarProperty Name="POSTING_DATE" ColumnName="POSTING_DATE" />
                 <ScalarProperty Name="ENTERED_DATE" ColumnName="ENTERED_DATE" />
                 <ScalarProperty Name="MVT" ColumnName="MVT" />
