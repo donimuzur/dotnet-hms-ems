@@ -1834,6 +1834,24 @@ namespace Sampoerna.EMS.BLL
             if (!string.IsNullOrEmpty(input.NppbkcId))
                 queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbkcId);
 
+            if (!string.IsNullOrEmpty(input.SupNppbkc))
+                queryFilter = queryFilter.And(c => c.SUPPLIER_NPPBKC_ID == input.SupNppbkc);
+
+            if (!string.IsNullOrEmpty(input.SupKppbc))
+                queryFilter = queryFilter.And(c => c.SUPPLIER_KPPBC_ID == input.SupKppbc);
+
+            if (!string.IsNullOrEmpty(input.SupPlant))
+                queryFilter = queryFilter.And(c => c.SUPPLIER_PLANT_WERKS == input.SupPlant);
+
+            if (!string.IsNullOrEmpty(input.SupCompany))
+                queryFilter = queryFilter.And(c => c.SUPPLIER_COMPANY == input.SupCompany);
+
+            if (!string.IsNullOrEmpty(input.Poa))
+                queryFilter = queryFilter.And(c => c.APPROVED_BY_POA == input.Poa);
+
+            if (!string.IsNullOrEmpty(input.Creator))
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+
             var pbck1Data = GetPbck1Data(queryFilter, input.SortOrderColumn);
 
             if (pbck1Data == null)

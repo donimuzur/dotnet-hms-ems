@@ -123,6 +123,12 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(data, "BUKRS", "BUTXT");
         }
 
+        public static SelectList GetCompanyListIdText(ICompanyBLL companyBll)
+        {
+            var data = companyBll.GetAllData().Where(x => x.IS_DELETED != true);
+            return new SelectList(data, "BUTXT", "BUTXT");
+        }
+
         public static SelectList GetVirtualPlantList()
         {
             IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
@@ -522,6 +528,14 @@ namespace Sampoerna.EMS.Website.Code
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(users);
             return new SelectList(selectItemSource, "ValueField", "TextField");
 
+        }
+
+        public static SelectList GetKppbcAll(IZaidmExKPPBCBLL kppbcBll)
+        {
+            IZaidmExKPPBCBLL kppbcbll = kppbcBll;
+            var kppbcList = kppbcbll.GetAll().Where(x => x.IS_DELETED != true).OrderBy(x => x.KPPBC_ID);
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(kppbcList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
         }
     }
 

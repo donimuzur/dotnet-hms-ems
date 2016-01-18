@@ -54,6 +54,12 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string CompanyCode { get; set; }
         public int? YearFrom { get; set; }
         public int? YearTo { get; set; }
+        public string SupNppbkc { get; set; }
+        public string SupKppbc { get; set; }
+        public string SupPlant { get; set; }
+        public string SupCompany { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
         /// <summary>
         /// optional if want to sorting from query
         /// </summary>
