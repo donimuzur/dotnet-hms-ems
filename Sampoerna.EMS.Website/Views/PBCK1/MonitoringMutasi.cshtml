@@ -17,128 +17,182 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="white-wrapper">
-                <div id="upload" class="tab-pane active" role="tabpanel">
-                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                        <div class="panel panel-default">
-                            <div id="headingOne" role="tab" class="panel-heading">
-                                <h4 class="panel-title">
-                                    <a class="collapsed" aria-controls="collapseOne" aria-expanded="true" href="#collapseOne" data-parent="#accordion" data-toggle="">
-                                        Monitoring Mutasi
-                                    </a>
-                                </h4>
+                <div class="form-excise" role="form">
+                    <div class="row">
+                        @using (Ajax.BeginForm("FilterMutasiIndex", "Pbck1",
+                        new AjaxOptions
+                        {
+                            HttpMethod = "POST",
+                            InsertionMode = InsertionMode.Replace,
+                            UpdateTargetId = "contenttable",
+                            OnComplete = "ReloadDataTables"
+
+                        }))
+                        {
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-5">PBCK-1 Number</label>
+                                    <div class="col-md-7">
+                                        @Html.DropDownListFor(model => model.pbck1Number, Model.pbck1NumberList, "All", new { @class = "form-control selectreset" })
+                                    </div>
+                                </div>
                             </div>
-                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                                <div class="panel-body">
-                                    <div class="row">
-                                        @using (Ajax.BeginForm("FilterMutasiIndex", "Pbck1",
-                                            new AjaxOptions
-                                            {
-                                                HttpMethod = "POST",
-                                                InsertionMode = InsertionMode.Replace,
-                                                UpdateTargetId = "contenttable",
-                                                OnComplete = "ReloadDataTables"
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">Period</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.yearFrom, Model.yearFromList, "All", new { @class = "form-control selectreset" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.yearTo, Model.yearToList, "All", new { @class = "form-control selectreset" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-5">Supplier Plant</label>
+                                    <div class="col-md-7">
+                                        @Html.DropDownListFor(model => model.supPlant, Model.supPlantList, "All", new { @class = "form-control selectreset" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">Supplier Company</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.supComp, Model.supCompList, "All", new { @class = "form-control selectreset" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">Original NPPBKC</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.oriNppbkc, Model.oriNppbkcList, "All", new { @class = "form-control selectreset" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-5">Original KPPBC</label>
+                                    <div class="col-md-7">
+                                        @Html.DropDownListFor(model => model.oriKppbc, Model.oriKppbcList, "All", new { @class = "form-control selectreset" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">POA</label>
+                                    <div id="divPoaList" class="col-md-8 ui-widget">
+                                        <select id="SearchInput_POA" name="SearchInput.POA" class="form-control selectreset">
+                                            <option value="">All</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">Creator</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.creator, Model.creatorList, "All", new { @class = "form-control selectreset" })
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4 col-md-offset-8">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input id="btnFILTER" type="submit" class="btn btn-blue full" value="FILTER">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input id="btnExport" type="button" class="btn btn-blue full" value="EXPORT" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
 
-                                            }))
-                                        {
-                                            <div role="form" class="form-excise">
-                                                <div class="row">
-                                                    <div class="col-md-7">
-                                                        <label class="col-md-3">PBCK-1 Number</label>
-                                                        <div class="col-md-6">
-                                                            @Html.DropDownListFor(model => model.pbck1Number, Model.pbck1NumberList, "All", new { @class = "form-control selectreset selectpicker" })
-                                                        </div>
-                                                    </div>
+            @using (Html.BeginForm("ExportMonitoringMutasi", "Pbck1", FormMethod.Post, new { @id = "ExportMonitoringMutasi" }))
+            {
+                <div class="white-wrapper toggle-wrapper">
+                    <div class="form-excise" role="form">
+                        <div class="row">
 
-                                                    <div class="col-md-4">
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <input id="btnFILTER" type="submit" class="btn btn-blue full" value="FILTER">
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <input id="btnExport" type="button" class="btn btn-blue full" value="EXPORT" />
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                            <div class="last-form">
+                                <div class="col-md-12">
+                                    <div>
+                                        @Html.Hidden("FilterPbck1Number")
+                                        @Html.Hidden("FilterYearFrom")
+                                        @Html.Hidden("FilterYearTo")
+                                        @Html.Hidden("FilterSupPlant")
+                                        @Html.Hidden("FilterSupComp")
+                                        @Html.Hidden("FilterOriNppbkc")
+                                        @Html.Hidden("FilterOriKppbc")
+                                        @Html.Hidden("FilterPoa")
+                                        @Html.Hidden("FilterCreator")
+
+                                        <div class="row toggle">
+                                            <div class="toggle-title">
+                                                Toggle column <i class="fa fa-chevron-down"></i>
+                                            </div>
+
+                                            <div class="toggle-component">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" id="selecctall" /><b>Select All</b>
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("Pbck1Number", new { id = "checkboxDefault1", @checked = "checked", @class = "checkbox checkexport", datacolumn = "1" })Pbck-1 Number
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("TotalPbck1Quota", new { @id = "checkboxDefault2", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2" })Total PBCK-1 Quota
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("QuotaRemaining", new { @id = "checkboxDefault3", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3" })PBCK-1 Quota remaining
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("Received", new { @id = "checkboxDefault4", @class = "checkbox checkexport", @datacolumn = "4" })Total CK-5 Used
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("DocNumberCk5", new { @id = "checkboxDefault5", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "5" })CK-5 number
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("GrandTotalExciseable", new { @id = "checkboxDefault6", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "6" })Total Ex Good Type
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("UoM", new { @id = "checkboxDefault7", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "7" })UoM
+                                                    </label>
                                                 </div>
                                             </div>
-                                        }
+                                        </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-@using (Html.BeginForm("ExportMonitoringMutasi", "Pbck1", FormMethod.Post, new { @id = "ExportMonitoringMutasi" }))
-{
-    <div class="white-wrapper toggle-wrapper">
-        <div class="form-excise" role="form">
-            <div class="row">
-
-                <div class="last-form">
-                    <div class="col-md-12">
-                        <div>
-                            @Html.Hidden("FilterPbck1Number")
-                            <div class="row toggle">
-                                <div class="toggle-title">
-                                    Toggle column <i class="fa fa-chevron-down"></i>
-                                </div>
-
-                                <div class="toggle-component" style="columns: 7 100px; -moz-columns: 7 100px; -webkit-columns: 7 100px; ">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" id="selecctall" /><b>Select All</b>
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            @Html.CheckBox("Pbck1Number", new { id = "checkboxDefault1", @checked = "checked", @class = "checkbox checkexport", datacolumn = "1" })Pbck-1 Number
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            @Html.CheckBox("TotalPbck1Quota", new { @id = "checkboxDefault2", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2" })Total PBCK-1 Quota
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            @Html.CheckBox("QuotaRemaining", new { @id = "checkboxDefault3", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3" })PBCK-1 Quota remaining
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            @Html.CheckBox("Received", new { @id = "checkboxDefault4", @class = "checkbox checkexport", @datacolumn = "4" })Total CK-5 Used
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            @Html.CheckBox("DocNumberCk5", new { @id = "checkboxDefault5", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "5" })CK-5 number
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            @Html.CheckBox("GrandTotalExciseable", new { @id = "checkboxDefault6", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "6" })Total Ex Good Type
-                                        </label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            @Html.CheckBox("UoM", new { @id = "checkboxDefault7", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "7" })UoM
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
+            }
         </div>
-    </div>
-}
-            </div>
-        </div>
-
     </div>
     <div id="contenttable" class="table-container">
         @Html.Partial("_MutasiList")
@@ -259,6 +313,36 @@
             $('#FilterPbck1Number').val($('#pbck1Number').find("option:selected").val());
             $('#ExportMonitoringMutasi').submit();
         });
+
+        $('#oriNppbkc').change(function () {
+            var nbck = $(this).val();
+            $('#SearchInput_POA option').remove();
+            console.log(nbck);
+            if (nbck == '' || $(this).val() == '') {
+                $('#SearchInput_POA').append('<option value="">All</option>');
+            } else {
+                ajaxSelectNppbck('@Url.Action("PoaListPartial", "PBCK1")', { nppbkcId: nbck });
+            }
+        });
+
+        function ajaxSelectNppbck(url, formData) {
+            if (formData.nppbkcId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        var list = data.SearchInput.PoaList;
+                        $('#SearchInput_POA').append('<option value="">All</option>');
+                        if (list.length > 0) {
+                            for (var i = 0; i < list.length; i++) {
+                                $('#SearchInput_POA').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
+                            }
+                        }
+                    }
+                });
+            }
+        }
 
     </script>
 }

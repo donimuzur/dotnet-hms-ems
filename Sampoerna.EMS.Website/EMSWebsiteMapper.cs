@@ -91,6 +91,10 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.NPPBKC_ID))
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.NPPBKC_ID));
 
+            Mapper.CreateMap<ZAIDM_EX_KPPBCDto, SelectItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.KPPBC_ID))
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.KPPBC_ID));
+
             Mapper.CreateMap<USER, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.USER_ID))
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => (src.FIRST_NAME + ' ' + src.LAST_NAME)));
