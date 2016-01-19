@@ -276,6 +276,17 @@ namespace Sampoerna.EMS.BLL
              .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.CREATED_BY))
              ;
 
+            Mapper.CreateMap<PBCK3, Pbck3SummaryReportDto>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.Pbck3Id, opt => opt.MapFrom(src => src.PBCK3_ID))
+               .ForMember(dest => dest.Pbck3Number, opt => opt.MapFrom(src => src.PBCK3_NUMBER))
+               .ForMember(dest => dest.Pbck7Number, opt => opt.MapFrom(src => src.PBCK7.PBCK7_NUMBER))
+               .ForMember(dest => dest.Ck5Number, opt => opt.MapFrom(src => src.CK5.SUBMISSION_NUMBER))
+               .ForMember(dest => dest.Pbck3Date, opt => opt.MapFrom(src => src.PBCK3_DATE.ToString("dd MMM yyyy")))
+               .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PBCK7 != null ? src.PBCK7.PLANT_ID + "-" + src.PBCK7.PLANT_NAME : src.CK5.SOURCE_PLANT_ID + "-" + src.CK5.SOURCE_PLANT_NAME))
+               .ForMember(dest => dest.Nppbkc, opt => opt.MapFrom(src => src.PBCK7 != null ? src.PBCK7.NPPBKC : src.CK5.SOURCE_PLANT_NPPBKC_ID))
+               .ForMember(dest => dest.Pbck3Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS)))
+               ;
+
         }
     }
 }

@@ -12,5 +12,7 @@ namespace Sampoerna.EMS.Contract
         string InsertPbck3FromPbck7(InsertPbck3FromPbck7Input input);
 
         PBCK3 GetPbck3ByCk5Id(long ck5Id);
+
+        PBCK3 GetPbck3ByPbck7Id(int pbck7Id);
     }
 }

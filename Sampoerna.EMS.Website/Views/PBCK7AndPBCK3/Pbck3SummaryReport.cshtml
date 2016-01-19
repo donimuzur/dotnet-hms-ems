@@ -186,7 +186,7 @@
                 </div>
             <div class="table-container">
                 <div id="contenttable" class="dataTables_wrapper no-footer">
-                    @Html.Partial("_Pbck3SummaryIndex", Model.ReportItems)
+                    @Html.Partial("_Pbck3SummaryIndex")
                 </div>
             </div>
         </div>
@@ -297,13 +297,13 @@
                     }
 
                     function ReloadDataTables() {
-                        $('.toggle-row').click(function() {
+                        //$('.toggle-row').click(function() {
 
-                            var filter = $(".filters");
-                            filter.slideToggle(100).promise().done(function() {
+                        //    var filter = $(".filters");
+                        //    filter.slideToggle(100).promise().done(function() {
 
-                            });
-                        });
+                        //    });
+                        //});
 
                         setupDataTables(false);
                     }

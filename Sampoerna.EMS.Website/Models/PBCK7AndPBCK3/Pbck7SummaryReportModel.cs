@@ -78,6 +78,20 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public bool IsSelectBack1No { get; set; }
         public bool IsSelectBack1Date { get; set; }
 
+        public bool IsSelectFaCode { get; set; }
+        public bool IsSelectBrand { get; set; }
+        public bool IsSelectContent { get; set; }
+        public bool IsSelectHje { get; set; }
+        public bool IsSelectTariff { get; set; }
+        public bool IsSelectPbck7Qty { get; set; }
+        public bool IsSelectFiscalYear { get; set; }
+        public bool IsSelectExciseValue { get; set; }
+        public bool IsSelectPoa { get; set; }
+        public bool IsSelectCreator { get; set; }
+        public bool IsSelectPbck3No { get; set; }
+        public bool IsSelectPbck3Status { get; set; }
+        public bool IsSelectCk2No { get; set; }
+        public bool IsSelectCk2Value { get; set; }
     }
 
     public class Pbck7SummaryReportItem

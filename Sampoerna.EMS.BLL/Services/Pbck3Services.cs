@@ -91,5 +91,10 @@ namespace Sampoerna.EMS.BLL.Services
         {
             return _repository.Get(c => c.CK5_ID == ck5Id, null, "CK2").FirstOrDefault();
         }
+
+        public PBCK3 GetPbck3ByPbck7Id(int pbck7Id)
+        {
+            return _repository.Get(c => c.PBCK7_ID == pbck7Id, null, "CK2").FirstOrDefault();
+        }
     }
 }
