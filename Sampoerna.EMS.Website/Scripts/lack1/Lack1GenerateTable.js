@@ -1,6 +1,6 @@
 ﻿function generateHeaderTable() {
     var rc =  /*start header*/
-        '<thead><tr><th rowspan="2">No<br>Urut</th><th rowspan="2">Saldo<br>Awal</th><th colspan="2">Pemasukan</th><th rowspan="2">Penggunaan</th><th colspan="2">Hasil Produksi BKC</th><th rowspan="2">Saldo<br>Akhir</th><th rowspan="2">Keterangan</th></tr><tr><th>No. & Tgl. CK-5</th><th>Jumlah</th><th>Jenis</th><th>Jumlah</th></tr></thead>';
+        '<thead><tr><th rowspan="2">No<br>Urut</th><th rowspan="2">Saldo<br>Awal</th><th colspan="2">Pemasukan</th><th rowspan="2">Penggunaan</th><th colspan="2">Hasil Produksi BKC</th><th rowspan="2">Saldo<br>Akhir</th><th rowspan="2">Saldo Akhir<br>(SAP)</th><th rowspan="2">Keterangan</th></tr><tr><th>No. & Tgl. CK-5</th><th>Jumlah</th><th>Jenis</th><th>Jumlah</th></tr></thead>';
     /*end of header*/
     return rc;
 }
@@ -8,7 +8,7 @@
 function generateTable(data) {
     console.log('Only Tis To Fa');
     var rc = '<table border="0" class="table table-bordered">' + generateHeaderTable();
-    rc = rc + '<tbody><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>';
+    rc = rc + '<tbody><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>';
 
     if (data.IncomeList != null && data.IncomeList.length > 0) {
         if (data.IncomeList) {
@@ -26,6 +26,7 @@ function generateTable(data) {
             '<td rowspan="' + rowCount + '">' + generateJenisHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
             '<td rowspan="' + rowCount + '">' + generateJumlahHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
             '<td rowspan="' + rowCount + '">' + (data.EndingBalance < 0 ? '-' : '') + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
+            '<td rowspan="' + rowCount + '">' + (data.CloseBalance < 0 ? '-' : '') + ThausandSeperator(data.CloseBalance, 2) + '</td>' +
             '<td rowspan="' + rowCount + '">' + generateRemark(data) + '</td></tr>';
             /*LOGS POINT 19 Google Doc*/
             /*'<td rowspan="' + rowCount + '">' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';*/
@@ -51,6 +52,7 @@ function generateTable(data) {
             '<td>' + generateJenisHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
             '<td>' + generateJumlahHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
             '<td>' + (data.EndingBalance < 0 ? '-' : '') + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
+            '<td>' + (data.CloseBalance < 0 ? '-' : '') + ThausandSeperator(data.CloseBalance, 2) + '</td>' +
              '<td>' + generateRemark(data) + '</td></tr>';
             /*'<td>' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>'; *//*LOGS POINT 19 Feedback Google Docs*/
             
@@ -59,7 +61,7 @@ function generateTable(data) {
     }
     /*footer*/
     rc = rc + '<tr><td></td><td></td><td></td><td>Total : ' + '<input name="TotalIncome" type="hidden" value = "' + data.TotalIncome + '" />'
-        + ((data.TotalIncome == 0) ? '-' : (data.TotalIncome < 0 ? '-' : '') + ThausandSeperator(data.TotalIncome, 2)) + '</td><td></td><td></td><td>' + generateSummaryJumlahProduksi(data.FusionSummaryProductionList) + '</td><td colspan="2"></td></tr>' +
+        + ((data.TotalIncome == 0) ? '-' : (data.TotalIncome < 0 ? '-' : '') + ThausandSeperator(data.TotalIncome, 2)) + '</td><td></td><td></td><td>' + generateSummaryJumlahProduksi(data.FusionSummaryProductionList) + '</td><td colspan="3"></td></tr>' +
         '</tbody></table>';
 
     //rc = rc + generatePlant(data.Lack1Plant);
@@ -74,7 +76,7 @@ function generateTableWithTisToTis(data) {
     console.log('With Tis To Tis');
     console.log(data);
     var rc = '<table border="0" class="table table-bordered">' + generateHeaderTable();
-    rc = rc + '<tbody><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>';
+    rc = rc + '<tbody><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>';
 
     if (data.IncomeList != null && data.IncomeList.length > 0) {
         if (data.IncomeList) {
@@ -97,6 +99,7 @@ function generateTableWithTisToTis(data) {
             '<td>' + generateJenisHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
             '<td>' + generateJumlahHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
             '<td rowspan="2">' + (data.EndingBalance < 0 ? '-' : '') + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
+            '<td rowspan="2">' + (data.CloseBalance < 0 ? '-' : '') + ThausandSeperator(data.CloseBalance, 2) + '</td>' +
             '<td rowspan="2">' + generateRemark(data) + '</td></tr>';
             /*LOGS POINT 19 - 2015-12-17*/
             //'<td rowspan="2">' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';
@@ -111,7 +114,7 @@ function generateTableWithTisToTis(data) {
     }
     /*footer*/
     rc = rc + '<tr><td></td><td></td><td></td><td>Total : ' + '<input name="TotalIncome" type="hidden" value = "' + data.TotalIncome + '" />'
-        + ((data.TotalIncome == 0) ? '-' : (data.TotalIncome < 0 ? '-' : '') + ThausandSeperator(data.TotalIncome, 2)) + '</td><td></td><td></td><td>' + generateSummaryJumlahProduksi(data.FusionSummaryProductionList) + '</td><td colspan="2"></td></tr>' +
+        + ((data.TotalIncome == 0) ? '-' : (data.TotalIncome < 0 ? '-' : '') + ThausandSeperator(data.TotalIncome, 2)) + '</td><td></td><td></td><td>' + generateSummaryJumlahProduksi(data.FusionSummaryProductionList) + '</td><td colspan="3"></td></tr>' +
         '</tbody></table>';
     
     return rc;
@@ -133,6 +136,7 @@ function generateContentTableLack1WithTisToTisOnlyOneIncomeList(data) {
     '<td style="border-bottom:none">' + generateJenisHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
     '<td style="border-bottom:none">' + generateJumlahHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
     '<td rowspan="2">' + (data.EndingBalance < 0 ? '-' : '') + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
+    '<td rowspan="2">' + (data.CloseBalance < 0 ? '-' : '') + ThausandSeperator(data.CloseBalance, 2) + '</td>' +
     '<td rowspan="2">' + generateRemark(data) + '</td></tr>';
     /*LOGS POINT 19 - 2015-12-17*/
     //'<td rowspan="2">' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';
@@ -166,6 +170,7 @@ function generateContentTableLack1WithTisToTis(data) {
     '<td rowspan="' + rowSpan1 + '" style="border-bottom:none">' + generateJenisHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
     '<td rowspan="' + rowSpan1 + '" style="border-bottom:none">' + generateJumlahHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
     '<td rowspan="' + rowCount + '">' + (data.EndingBalance < 0 ? '-' : '') + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
+    '<td rowspan="' + rowCount + '">' + (data.CloseBalance < 0 ? '-' : '') + ThausandSeperator(data.CloseBalance, 2) + '</td>' +
     '<td rowspan="' + rowCount + '">' + generateRemark(data) + '</td></tr>';/*LOGS POINT 19 - 2015-12-17*/
     //'<td rowspan="' + rowCount + '">' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';
 
@@ -300,7 +305,7 @@ function generatePbck1Mapping(data) {
 
 function generateEmptyTable() {
     var rc = '<table border="0" class="table table-bordered">' + generateHeaderTable();
-    rc = rc + '<tbody><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>';
+    rc = rc + '<tbody><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>';
     rc = rc +
         /*Only 1 Record*/
         '<tr><td></td>' +
@@ -311,7 +316,9 @@ function generateEmptyTable() {
         '<td></td>' +
         '<td></td>' +
         '<td></td>' +
-        '<td rowspan="2"></td></tr>';
+        '<td rowspan="2"></td>' +
+        '<td rowspan="2"></td>' +
+        '</tr>';
     /*footer*/
     rc = rc + '<tr><td></td><td></td><td></td><td>Total : -</td><td></td><td></td><td>Total: -</td><td></td></tr>' +
         '</tbody></table>';

@@ -138,7 +138,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.MENGETAHUI, opt => opt.MapFrom(src => src.MENGETAHUI))
                 .ForMember(dest => dest.MENGETAHUI_DETAIL, opt => opt.MapFrom(src => src.MENGETAHUI_DETAIL))
                 .ForMember(dest => dest.CK1_KEP_HEADER, opt => opt.MapFrom(src => src.CK1_KEP_HEADER))
-                .ForMember(dest => dest.CK1_KEP_FOOTER, opt => opt.MapFrom(src => src.CK1_KEP_FOOTER));
+                .ForMember(dest => dest.CK1_KEP_FOOTER, opt => opt.MapFrom(src => src.CK1_KEP_FOOTER))
+                .ForMember(dest => dest.IS_DELETED, opt => opt.MapFrom(src => src.IS_DELETED));
 
 
             Mapper.CreateMap<LFA1, LFA1Dto>().IgnoreAllNonExisting()
@@ -236,6 +237,7 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<MaterialDto, ZAIDM_EX_MATERIAL>().IgnoreAllNonExisting();
             Mapper.CreateMap<ZAIDM_EX_MATERIAL, MaterialDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.GoodTypeDescription, opt => opt.MapFrom(src => src.ZAIDM_EX_GOODTYP.EXT_TYP_DESC))
+                .ForMember(dest => dest.T001W, opt => opt.MapFrom(src => src.T001W))
                 ;
 
             #endregion
