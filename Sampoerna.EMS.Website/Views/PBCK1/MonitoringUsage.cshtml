@@ -16,14 +16,14 @@
                 <div class="form-excise" role="form">
                     <div class="row">
                         @using (Ajax.BeginForm("SearchMonitoringUsage", "Pbck1",
-                new AjaxOptions
-                {
-                    HttpMethod = "POST",
-                    InsertionMode = InsertionMode.Replace,
-                    UpdateTargetId = "contenttable",
-                    OnComplete = "ReloadDataTables"
+                        new AjaxOptions
+                        {
+                            HttpMethod = "POST",
+                            InsertionMode = InsertionMode.Replace,
+                            UpdateTargetId = "contenttable",
+                            OnComplete = "ReloadDataTables"
 
-                }))
+                        }))
                         {
                             <div class="col-md-4">
                                 <div class="row">

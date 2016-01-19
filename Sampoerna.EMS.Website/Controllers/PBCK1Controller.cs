@@ -2811,6 +2811,13 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var monitoringDtos = _pbck1Bll.GetMonitoringMutasiByParam(new Pbck1GetMonitoringMutasiByParamInput());
             model.pbck1NumberList = new SelectList(monitoringDtos, "Pbck1Number", "Pbck1Number");
+            model.yearFromList = GetYearListPbck1(true);
+            model.yearToList = GetYearListPbck1(false);
+            model.supPlantList = GlobalFunctions.GetPlantAll();
+            model.supCompList = GlobalFunctions.GetCompanyListIdText(_companyBll);
+            model.oriNppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.oriKppbcList = GlobalFunctions.GetKppbcAll(_kppbcbll);
+            model.creatorList = GlobalFunctions.GetCreatorList();
 
             var input = Mapper.Map<Pbck1GetMonitoringMutasiByParamInput>(model);
 
@@ -2853,7 +2860,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var dbResult = _pbck1Bll.GetMonitoringMutasiByParam(new Pbck1GetMonitoringMutasiByParamInput
             {
-                pbck1Number = model.FilterPbck1Number
+                pbck1Number = model.FilterPbck1Number,
+                yearFrom = model.FilterYearFrom,
+                yearTo = model.FilterYearTo,
+                supPlant = model.FilterSupPlant,
+                supComp = model.FilterSupComp,
+                oriNppbkc = model.FilterOriNppbkc,
+                oriKppbc = model.FilterOriKppbc,
+                poa = model.FilterPoa,
+                creator = model.FilterCreator
             });
 
             //todo refactor mapper

@@ -133,6 +133,14 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string SortOrderColumn { get; set; }
 
         public string pbck1Number { get; set; }
+        public int? yearFrom { get; set; }
+        public int? yearTo { get; set; }
+        public string supPlant { get; set; }
+        public string supComp { get; set; }
+        public string oriNppbkc { get; set; }
+        public string oriKppbc { get; set; }
+        public string poa { get; set; }
+        public string creator { get; set; }
     }
 
     public class Pbck1GetProductionLack1TisToTisParamInput
