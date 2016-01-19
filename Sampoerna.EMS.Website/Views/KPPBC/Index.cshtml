@@ -76,7 +76,9 @@
                             <tr>
                                 <td class="action">
                                     <a href="@Url.Action("Detail", "KPPBC", new { id = item.KPPBC_ID })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    @if (Model.IsNotViewer){
                                     <a href="@Url.Action("Edit", "KPPBC", new { id = item.KPPBC_ID })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                                    }
                                 </td>
                                 <td>@item.KPPBC_ID</td>
                                 <td>@item.KPPBC_TYPE</td>
