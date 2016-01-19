@@ -1280,15 +1280,13 @@
     <Content Include="Views\XmlFileManagement\Index.cshtml" />
     <Content Include="Views\XmlFileManagement\_XmlFileSearch.cshtml" />
     <Content Include="Views\XmlFileManagement\_XmlFileViewIndex.cshtml" />
-<<<<<<< HEAD
+
     <Content Include="Views\XmlFileManagement\Detail.cshtml" />
     <Content Include="Views\PoaDelegation\Index.cshtml" />
     <Content Include="Views\PoaDelegation\Create.cshtml" />
     <Content Include="Views\PoaDelegation\Detail.cshtml" />
     <Content Include="Views\PoaDelegation\Edit.cshtml" />
-=======
-    <Content Include="Views\XmlFileManagement\Detail.cshtml" />
->>>>>>> dev
+
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

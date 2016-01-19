@@ -225,7 +225,7 @@ namespace Sampoerna.EMS.BLL
                 {
                     List<POADto> listPoa;
                     if(input.FormType == Enums.FormType.PBCK1){
-                        var listPoa = _poaBll.GetPoaByNppbkcIdAndMainPlant(input.NppbkcId).Distinct().ToList();
+                        listPoa = _poaBll.GetPoaByNppbkcIdAndMainPlant(input.NppbkcId).Distinct().ToList();
                         if (listPoa.Count > 0)
                         {
                             listPoa = listPoa.Where(c => c.POA_ID != input.DocumentCreator).Distinct().ToList();
