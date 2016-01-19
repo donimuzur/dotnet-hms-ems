@@ -58,5 +58,11 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string GrDate { get; set; }
         public string GiDate { get; set; }
         public string Status { get; set; }
+
+        public string CompanySource { get; set; }
+        public string CompanyDestination { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
+
     }
 }

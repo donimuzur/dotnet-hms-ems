@@ -400,6 +400,30 @@
                                                     </label>
                                                 </div>
                                                 
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.CompanySource, new { @class = "checkbox checkexport", @datacolumn = "47" })Company Source
+                                                    </label>
+                                                </div>
+                                                
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.CompanyDestination, new { @class = "checkbox checkexport", @datacolumn = "48" })Company Destination
+                                                    </label>
+                                                </div>
+                                                
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Poa, new { @class = "checkbox checkexport", @datacolumn = "49" })POA
+                                                    </label>
+                                                </div>
+                                                
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Creator, new { @class = "checkbox checkexport", @datacolumn = "50" })Creator
+                                                    </label>
+                                                </div>
+
                                             </div>
                                         </div>
 
@@ -483,7 +507,7 @@
                     $('.checkexport').each(function () {
                         this.checked = true;
                     });
-                    for (var i = 0; i < 47; i++) {
+                    for (var i = 0; i < 51; i++) {
                         table.column(i).visible(true);
                     }
                     $('#ck5Table').parents('div.dataTables_wrapper').first().show();
@@ -493,7 +517,7 @@
                     $('.checkexport').each(function () {
                         this.checked = false;
                     });
-                    for (var i = 0; i < 47; i++) {
+                    for (var i = 0; i < 51; i++) {
                         table.column(i).visible(false);
                     }
                     $('#ck5Table').parents('div.dataTables_wrapper').first().hide();
@@ -512,7 +536,7 @@
                 
                 $('#ck5Table').parents('div.dataTables_wrapper').first().hide();
 
-                for (var i = 0; i < 47; i++) {
+                for (var i = 0; i < 51; i++) {
                     if (table.column(i).visible()) {
                         $('#ck5Table').parents('div.dataTables_wrapper').first().show();
                         return;
@@ -522,7 +546,7 @@
             });
 
             if (blFirst) {
-                for (var i = 11; i < 47; i++) {
+                for (var i = 11; i < 51; i++) {
                     table.column(i).visible(false);
                 }
             } else {
