@@ -113,7 +113,7 @@ namespace Sampoerna.EMS.BLL
         }
 
 
-        public List<Pbck7AndPbck3Dto> GetPbck7SummaryReportsByParam(Pbck7SummaryInput input)
+        public List<Pbck7SummaryReportDto> GetPbck7SummaryReportsByParam(Pbck7SummaryInput input)
         {
             Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
             if (!string.IsNullOrEmpty(input.NppbkcId))
@@ -152,11 +152,31 @@ namespace Sampoerna.EMS.BLL
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
-            var mapResult = Mapper.Map<List<Pbck7AndPbck3Dto>>(dbData.ToList());
-            foreach (var pbck7AndPbck3Dto in mapResult)
+            var mapResult = Mapper.Map<List<Pbck7SummaryReportDto>>(dbData.ToList());
+
+            foreach (var pbck7SummaryReportDto in mapResult)
             {
-                pbck7AndPbck3Dto.Back1Dto = GetBack1ByPbck7(pbck7AndPbck3Dto.Pbck7Id);
+                pbck7SummaryReportDto.Back1No = "";
+                pbck7SummaryReportDto.Back1Date = "";
+                var back1Dto = GetBack1ByPbck7(pbck7SummaryReportDto.Pbck7Id);
+                if (back1Dto != null)
+                {
+                    pbck7SummaryReportDto.Back1No = back1Dto.Back1Number;
+                    pbck7SummaryReportDto.Back1Date = ConvertHelper.ConvertDateToStringddMMMyyyy(back1Dto.Back1Date);
+                }
+
+                pbck7SummaryReportDto.Pbck3No = "";
+                pbck7SummaryReportDto.Pbck3Status = "";
+                pbck7SummaryReportDto.Ck2No = "";
+                pbck7SummaryReportDto.Ck2Value = "";
+                //var pbck3Data = _pbck3Services.get
             }
+
+            //foreach (var pbck7AndPbck3Dto in dbData)
+            //{
+            //    //pbck7AndPbck3Dto.Back1Dto = GetBack1ByPbck7(pbck7AndPbck3Dto.Pbck7Id);
+            //    
+            //}
             return mapResult;
 
         }

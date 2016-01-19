@@ -1126,7 +1126,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Pbck7List = GetAllPbck7No();
             model.FromYear = GlobalFunctions.GetYearList();
             model.ToYear = model.FromYear;
-            model.ReportItems = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(new Pbck7SummaryInput());
+            model.ReportItems = Mapper.Map<List<Pbck7SummaryReportItem>>(_pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(new Pbck7SummaryInput()));
         }
 
         private void InitSummaryReportsPbck3(Pbck3SummaryReportModel model)
@@ -1205,25 +1205,26 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var input = Mapper.Map<Pbck7SummaryInput>(model.ExportModel);
             var result = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input);
-            var src = (from b in result
-                       select new Pbck7SummaryReportItem()
-                       {
+            //var src = (from b in result
+            //           select new Pbck7SummaryReportItem()
+            //           {
 
-                           Pbck7Number = b.Pbck7Number,
-                           Nppbkc = b.NppbkcId,
-                           PlantName = b.PlantId + "-" + b.PlantName,
-                           DocumentType = EnumHelper.GetDescription(b.DocumentType),
-                           Pbck7Date = b.Pbck7Date,
-                           Pbck7Status = EnumHelper.GetDescription(b.Pbck7Status),
-                           ExecFrom = b.ExecDateFrom,
-                           ExecTo = b.ExecDateTo,
-                           Back1No = b.Back1Dto != null ? b.Back1Dto.Back1Number : string.Empty,
-                           Back1Date = b.Back1Dto != null ? b.Back1Dto.Back1Date : null
+            //               Pbck7Number = b.Pbck7Number,
+            //               Nppbkc = b.NppbkcId,
+            //               PlantName = b.PlantId + "-" + b.PlantName,
+            //               DocumentType = EnumHelper.GetDescription(b.DocumentType),
+            //               Pbck7Date = b.Pbck7Date,
+            //               Pbck7Status = EnumHelper.GetDescription(b.Pbck7Status),
+            //               ExecFrom = b.ExecDateFrom,
+            //               ExecTo = b.ExecDateTo,
+            //               Back1No = b.Back1Dto != null ? b.Back1Dto.Back1Number : string.Empty,
+            //               Back1Date = b.Back1Dto != null ? b.Back1Dto.Back1Date : null
 
 
-                       }).ToList();
+            //           }).ToList();
 
-            var dataSummaryReport = src.OrderBy(a => a.Pbck7Number);
+            //var dataSummaryReport = src.OrderBy(a => a.Pbck7Number);
+            var dataSummaryReport = Mapper.Map<List<Pbck7SummaryReportItem>>(result.OrderBy(c => c.Pbck7Number));
 
             int iRow = 1;
             var slDocument = new SLDocument();
@@ -1256,9 +1257,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.ExportModel.IsSelectDate)
                 {
-                    slDocument.SetCellValue(iRow, iColumn,
-                        data.Pbck7Date.HasValue ? data.Pbck7Date.Value.ToString("dd MMM yyyy") : string.Empty);
-                    
+                    //slDocument.SetCellValue(iRow, iColumn,
+                    //    data.Pbck7Date.HasValue ? data.Pbck7Date.Value.ToString("dd MMM yyyy") : string.Empty);
+                    slDocument.SetCellValue(iRow, iColumn,data.Pbck7Date);
                     iColumn = iColumn + 1;
                 }
                 if (model.ExportModel.IsSelectDocType)
@@ -1276,15 +1277,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.ExportModel.IsSelectExecFrom)
                 {
-                    slDocument.SetCellValue(iRow, iColumn,
-                        data.ExecFrom.HasValue ? data.ExecFrom.Value.ToString("dd MMM yyyy") : string.Empty);
+                    slDocument.SetCellValue(iRow, iColumn,data.ExecFrom);
                     
                     iColumn = iColumn + 1;
                 }
                 if (model.ExportModel.IsSelectExecTo)
                 {
-                    slDocument.SetCellValue(iRow, iColumn,
-                        data.ExecTo.HasValue ? data.ExecTo.Value.ToString("dd MMM yyyy") : string.Empty);
+                    slDocument.SetCellValue(iRow, iColumn,data.ExecTo);
 
                     iColumn = iColumn + 1;
                 }
@@ -1297,8 +1296,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.ExportModel.IsSelectBack1Date)
                 {
-                    slDocument.SetCellValue(iRow, iColumn,
-                        data.Back1Date.HasValue ? data.Back1Date.Value.ToString("dd MMM yyyy") : string.Empty);
+                    slDocument.SetCellValue(iRow, iColumn,data.Back1Date);
                     iColumn = iColumn + 1;
                 }
 

@@ -13,7 +13,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
     {
         public Pbck7SummaryReportModel()
         {
-            ReportItems = new List<Pbck7AndPbck3Dto>();
+            ReportItems = new List<Pbck7SummaryReportItem>();
             //ExportModel = new Pbck7ExportModel();
         }
         public string SelectedNumber { get; set; }
@@ -34,7 +34,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public int? To { get; set; }
 
-        public List<Pbck7AndPbck3Dto> ReportItems { get; set; }
+        public List<Pbck7SummaryReportItem> ReportItems { get; set; }
 
         public Pbck7ExportModel ExportModel { get; set; }
     }
@@ -82,23 +82,30 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
     public class Pbck7SummaryReportItem
     {
-        public  string Pbck7Number { get; set; }
-        public DateTime? Pbck7Date { get; set; }
-
-       
+        public string Pbck7Number { get; set; }
+        public string Pbck7Date { get; set; }
         public string PlantName { get; set; }
-
         public string DocumentType { get; set; }
-
         public string Nppbkc { get; set; }
-
-        public DateTime? ExecFrom { get; set; }
-
-        public DateTime? ExecTo { get; set; }
-
+        public string ExecFrom { get; set; }
+        public string ExecTo { get; set; }
         public string Back1No { get; set; }
-
-        public DateTime? Back1Date { get; set; }
+        public string Back1Date { get; set; }
         public string Pbck7Status { get; set; }
+
+        public string FaCode { get; set; }
+        public string Brand { get; set; }
+        public string Content { get; set; }
+        public string Hje { get; set; }
+        public string Tariff { get; set; }
+        public string Pbck7Qty { get; set; }
+        public string FiscalYear { get; set; }
+        public string ExciseValue { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
+        public string Pbck3No { get; set; }
+        public string Pbck3Status { get; set; }
+        public string Ck2No { get; set; }
+        public string Ck2Value { get; set; }
     }
 }

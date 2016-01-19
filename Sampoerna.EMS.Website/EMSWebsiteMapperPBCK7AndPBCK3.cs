@@ -224,6 +224,8 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<Pbck7Pbck3DashboardSearchViewModel, GetDashboardPbck3ByParamInput>().IgnoreAllNonExisting();
 
             #endregion
+
+            Mapper.CreateMap<Pbck7SummaryReportDto, Pbck7SummaryReportItem>().IgnoreAllNonExisting();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿@model List<Sampoerna.EMS.BusinessObject.DTOs.Pbck7AndPbck3Dto>
+﻿@*@model List<Sampoerna.EMS.BusinessObject.DTOs.Pbck7AndPbck3Dto>*@
+@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck7SummaryReportModel
 
 <table id="pbck7-summary" class="table-condensed display compact nowrap">
     <thead>
@@ -20,11 +21,23 @@
     <tbody>
         @if (Model != null)
         {
-            foreach (var item in Model)
+            //foreach (var item in Model)
+            //{
+             foreach (var item in Model.ReportItems)
             {
                 <tr>
+                    <td>@Html.DisplayFor(model => item.Pbck7Number)</td>
+                    <td>@Html.DisplayFor(model => item.Nppbkc)</td>
+                    <td>@Html.DisplayFor(model => item.PlantName)</td>
+                    <td>@Html.DisplayFor(model => item.Pbck7Date)</td>
+                    <td>@Html.DisplayFor(model => item.DocumentType)</td>
+                    <td>@Html.DisplayFor(model => item.Pbck7Status)</td>
+                    <td>@Html.DisplayFor(model => item.ExecFrom)</td>
+                    <td>@Html.DisplayFor(model => item.ExecTo)</td>
+                    <td>@Html.DisplayFor(model => item.Back1No)</td>
+                    <td>@Html.DisplayFor(model => item.Back1Date)</td>
 
-                    <td>@item.Pbck7Number</td>
+                    @*<td>@item.Pbck7Number</td>
                     <td>@item.NppbkcId</td>
                     <td>@(item.PlantId + "-" + item.PlantName)</td>
                     <td>@item.Pbck7Date.ToString("dd MMM yyyy")</td>
@@ -33,7 +46,7 @@
                     <td>@(item.ExecDateFrom.HasValue?item.ExecDateFrom.Value.ToString("dd MMM yyyy") : string.Empty)</td>
                     <td>@(item.ExecDateTo.HasValue ? item.ExecDateTo.Value.ToString("dd MMM yyyy") : string.Empty)</td>
                     <td>@(item.Back1Dto != null ? item.Back1Dto.Back1Number : string.Empty)</td>
-                    <td>@(item.Back1Dto != null ? item.Back1Dto.Back1Date.Value.ToString("dd MMM yyyy") : string.Empty)</td>
+                    <td>@(item.Back1Dto != null ? item.Back1Dto.Back1Date.Value.ToString("dd MMM yyyy") : string.Empty)</td>*@
                 </tr>
             }
         }
