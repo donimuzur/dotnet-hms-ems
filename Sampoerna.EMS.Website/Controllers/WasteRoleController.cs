@@ -43,6 +43,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             //model.ListWasteRoles = Mapper.Map<List<WasteRoleFormViewModel>>(_wasteRoleBll.GetAllDataOrderByUserAndGroupRole());
             model.ListWasteRoles = Mapper.Map<List<WasteRoleFormViewModel>>(_wasteRoleBll.GetAllDataGroupByRoleOrderByUserAndGroupRole());
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
 
             return View("Index",model);
         }
@@ -134,6 +135,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
             var model = new WasteRoleFormViewModel();
             model = SetListModel(model);
             return View("Create",model);
@@ -141,6 +148,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Edit(int id)
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Detail", new { id });
+            }
+
             var model = new WasteRoleFormViewModel();
 
             try

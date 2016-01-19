@@ -49,6 +49,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var dbData = _brandRegistrationBll.GetAllBrands();
             model.Details = Mapper.Map<List<BrandRegistrationDetail>>(dbData);
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             ViewBag.Message = TempData["message"];
             return View("Index", model);
         }
@@ -101,6 +102,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
             var model = new BrandRegistrationCreateViewModel();
 
             model = InitCreate(model);
@@ -206,7 +213,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Edit(string plant, string facode,string stickercode)
         {
-           
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Details", new { plant, facode, stickercode });
+            }
+
             var model = new BrandRegistrationEditViewModel();
 
 
@@ -431,6 +442,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Delete(string plant, string facode,string stickercode)
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
             var decodeFacode = HttpUtility.UrlDecode(facode);
             AddHistoryDelete(plant, decodeFacode, stickercode);
             var isDeleted = _brandRegistrationBll.Delete(plant, decodeFacode, stickercode);

@@ -44,6 +44,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var dbData = _virtualMappingPlanBll.GetAll();
             model.Details = AutoMapper.Mapper.Map<List<VirtualMappingPlantDetail>>(dbData);
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             ViewBag.Message = TempData["message"];
             return View("Index", model);
         }
@@ -62,6 +63,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
             var model = new VirtualMappingPlantCreateViewModel();
 
             InitCreateModel(model);
@@ -176,7 +183,11 @@ namespace Sampoerna.EMS.Website.Controllers
         
         public ActionResult Edit(int id)
         {
-            
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Details", new { id });
+            }
+
             var model = new VirtualMappingPlantEditViewModel();
            
             InitEditModel(model);
@@ -250,6 +261,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Delete(int id)
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
            var newStatus = _virtualMappingPlanBll.Delete(id, CurrentUser.USER_ID);
             if (newStatus)
             {

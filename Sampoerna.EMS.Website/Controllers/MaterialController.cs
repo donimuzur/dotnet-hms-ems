@@ -54,6 +54,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var data = _materialBll.getAll();
             model.Details = AutoMapper.Mapper.Map<List<MaterialDetails>>(data);
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             ViewBag.Message = TempData["message"];
             return View("Index", model);
 
@@ -128,6 +129,12 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /Material/Create
         public ActionResult Create()
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
             var model = new MaterialCreateViewModel();
             InitCreateModel(model);
             return View(model);
@@ -201,6 +208,11 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /Material/Edit/5
         public ActionResult Edit(string mn, string p)
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Details", new { mn, p });
+            }
+
             var data = _materialBll.getByID(mn, p);
 
 
@@ -295,6 +307,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Delete(string mn, string p)
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
             try
             {
                 // TODO: Add delete logic here

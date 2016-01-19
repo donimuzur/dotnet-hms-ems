@@ -41,6 +41,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.ListPoaDelegations =
                 AutoMapper.Mapper.Map<List<PoaDelegationFormViewModel>>(_poaDelegationBll.GetAllData());
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
 
             return View(model);
         }
@@ -96,6 +97,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
             var model = new PoaDelegationFormViewModel();
             model = SetListModel(model, true);
             return View("Create", model);
@@ -167,6 +174,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Edit(int id)
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Detail", new { id });
+            }
+
             var model = new PoaDelegationFormViewModel();
 
             try

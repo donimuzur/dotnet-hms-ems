@@ -66,6 +66,7 @@
     <div class="row">
         <div class="col-sm-12">
             <h3>@ViewBag.Title</h3>
+            @if (Model.IsNotViewer){
             <div class="action-button new">
                 <a href="@Url.Action("Create", "GoodsTypeGroup")">
                     <button class="btn btn-blue">NEW</button>
@@ -74,6 +75,7 @@
 
                 </a>
             </div>
+            }
         </div>
     </div>
 </div>
@@ -107,7 +109,9 @@
                                 @*<td></td>*@
                                 <td class="action">
                                     <a href="@Url.Action("Details", "GoodsTypeGroup", new { id = item.GoodsTypeId })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    @if (Model.IsNotViewer){
                                     <a href="@Url.Action("Edit", "GoodsTypeGroup", new { id = item.GoodsTypeId })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                                    }
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.GroupName)
