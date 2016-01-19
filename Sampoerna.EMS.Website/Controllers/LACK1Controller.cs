@@ -2239,5 +2239,348 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
+
+        #region ----------------- Reconciliation Page -------------
+
+        public ActionResult Reconciliation()
+        {
+
+            Lack1ReconciliationModel model;
+            try
+            {
+                model = new Lack1ReconciliationModel()
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo,
+                    Detail = SearchReconciliation()
+                };
+                model = InitSearchReconciliationModel(model);
+            }
+            catch (Exception ex)
+            {
+                model = new Lack1ReconciliationModel()
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo
+                };
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return View("Reconciliation", model);
+        }
+
+        private Lack1ReconciliationModel InitSearchReconciliationModel(Lack1ReconciliationModel model)
+        {
+            model.SearchView = new Lack1SearchReconciliationModel();
+            model.SearchView.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.SearchView.PlantIdList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.SearchView.NppbkcId);
+            model.SearchView.ExGoodTypeList = GetExciseGoodsTypeList(model.SearchView.NppbkcId);
+            return model;
+        }
+
+        private List<DataReconciliation> SearchReconciliation(Lack1SearchReconciliationModel filter = null)
+        {
+            //Get All
+            if (filter == null)
+            {
+                //Get All
+                var data = _lack1Bll.GetReconciliationByParam(new Lack1GetReconciliationByParamInput());
+                return Mapper.Map<List<DataReconciliation>>(data);
+            }
+            //getbyparams
+            var input = Mapper.Map<Lack1GetReconciliationByParamInput>(filter);
+
+            var dbData = _lack1Bll.GetReconciliationByParam(input);
+            return Mapper.Map<List<DataReconciliation>>(dbData);
+        }
+
+        [HttpPost]
+        public ActionResult SearchReconciliation(Lack1ReconciliationModel model)
+        {
+            model.Detail = SearchReconciliation(model.SearchView);
+            return PartialView("_Lack1Reconciliation", model);
+        }
+
+        public void ExportReconciliation(Lack1ReconciliationModel model)
+        {
+            string pathFile = "";
+
+            pathFile = CreateXlsReconciliation(model.ExportSearchView);
+
+            var newFile = new FileInfo(pathFile);
+
+            var fileName = Path.GetFileName(pathFile);
+
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+        }
+
+        private string CreateXlsReconciliation(Lack1SearchReconciliationModel model)
+        {
+            var dataReconciliation = SearchReconciliation(model);
+
+            var slDocument = new SLDocument();
+            int endColumnIndex;
+            //create header
+            slDocument = CreateHeaderExcelReconciliation(slDocument, out endColumnIndex);
+
+            int iRow = 3; //starting row data
+            int iColumn = 1;
+            foreach (var data in dataReconciliation)
+            {
+                iColumn = 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.NppbkcId);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.PlantId);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.Year);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.Month);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.Date);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.ItemCode);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.FinishGoodCode);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.Remaining);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.BeginningStock);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.ReceivedCk5No);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.Received);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.UsageOther);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.UsageSelf);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.ResultTis);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.ResultStick);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.EndingStock);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.RemarkDesc);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.RemarkCk5No);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.RemarkQty);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.StickProd);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.PackProd);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.Wip);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.RejectMaker);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.RejectPacker);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.FloorSweep);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.Stem);
+                iColumn = iColumn + 1;
+
+                iRow++;
+            }
+
+            return CreateXlsFileReconciliation(slDocument, endColumnIndex, iRow - 1);
+
+        }
+
+        private string CreateXlsFileReconciliation(SLDocument slDocument, int endColumnIndex, int endRowIndex)
+        {
+
+            //create style
+            SLStyle valueStyle = slDocument.CreateStyle();
+            valueStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Alignment.Vertical = VerticalAlignmentValues.Center;
+            valueStyle.SetWrapText(true);
+
+            //set header style
+            SLStyle headerStyle = slDocument.CreateStyle();
+            headerStyle.Alignment.Horizontal = HorizontalAlignmentValues.Center;
+            headerStyle.Font.Bold = true;
+            headerStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+
+            //set border to value cell
+            slDocument.SetCellStyle(3, 1, endRowIndex, endColumnIndex, valueStyle);
+
+            //set header style
+            slDocument.SetCellStyle(1, 1, 2, endColumnIndex, headerStyle);
+
+            //set auto fit to all column
+            slDocument.AutoFitColumn(1, endColumnIndex);
+
+            var fileName = "lack1_reconciliation" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+            var path = Path.Combine(Server.MapPath(Constans.Lack1UploadFolderPath), fileName);
+
+            //var outpu = new 
+            slDocument.SaveAs(path);
+
+            return path;
+        }
+
+        private SLDocument CreateHeaderExcelReconciliation(SLDocument slDocument, out int endColumnIndex)
+        {
+            int iColumn = 1;
+
+            //first row
+            slDocument.SetCellValue(1, iColumn, "NPPBKC");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Plant ID");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Year");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Month");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Date");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Item Code");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Finish Goods Code");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Remaining (gr)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Beginning Stock (gr)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "CK-5 No");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Received (gr)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Usage (gr)");
+            slDocument.MergeWorksheetCells(1, iColumn, 1, (iColumn + 1));//ColSpan = 2
+            iColumn = iColumn + 2;
+
+            slDocument.SetCellValue(1, iColumn, "Production Result");
+            slDocument.MergeWorksheetCells(1, iColumn, 1, (iColumn + 1)); //ColSpan = 2
+            iColumn = iColumn + 2;
+
+            slDocument.SetCellValue(1, iColumn, "Ending Stock (gr)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Remark");
+            slDocument.MergeWorksheetCells(1, iColumn, 1, (iColumn + 2)); //ColSpan = 3
+            iColumn = iColumn + 3;
+
+            slDocument.SetCellValue(1, iColumn, "Stick Produced (sticks)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Pack Produced (sticks)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "WIP (sticks)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Reject Maker (sticks)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Reject Packer (sticks)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Floor sweep (gr)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Stem (gr)");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan 2
+
+            endColumnIndex = iColumn;
+
+            //second row
+            iColumn = 10;
+            slDocument.SetCellValue(2, iColumn, "Supplied by other");
+            iColumn++;
+
+            slDocument.SetCellValue(2, iColumn, "Self Supplied");
+            iColumn++;
+
+            slDocument.SetCellValue(2, iColumn, "TIS (gr)");
+            iColumn++;
+
+            slDocument.SetCellValue(2, iColumn, "Stick (gr)");
+            iColumn++;
+
+            iColumn = 15;
+            slDocument.SetCellValue(2, iColumn, "Descr");
+            iColumn++;
+
+            slDocument.SetCellValue(2, iColumn, "CK-5 no.");
+            iColumn++;
+
+            slDocument.SetCellValue(2, iColumn, "Qty (gr)");
+            iColumn++;
+
+            return slDocument;
+
+        }
+
+        #endregion
     }
 }

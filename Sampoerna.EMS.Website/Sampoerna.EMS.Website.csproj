@@ -344,6 +344,7 @@
     <Compile Include="Models\LACK1\Lack1NppbkcData.cs" />
     <Compile Include="Models\LACK1\Lack1PlantData.cs" />
     <Compile Include="Models\LACK1\Lack1PrintOutModel.cs" />
+    <Compile Include="Models\LACK1\Lack1ReconciliationModel.cs" />
     <Compile Include="Models\LACK1\Lack1SummaryReportViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2BaseItemModel.cs" />
     <Compile Include="Models\LACK2\LACK2CreateViewModel.cs" />
@@ -1274,14 +1275,20 @@
     <Content Include="Views\XmlLog\Detail.cshtml" />
     <Content Include="Views\XmlLog\_XmlLogViewIndex.cshtml" />
     <Content Include="Views\Error\Unauthorized.cshtml" />
+    <Content Include="Views\LACK1\Reconciliation.cshtml" />
+    <Content Include="Views\LACK1\_Lack1Reconciliation.cshtml" />
     <Content Include="Views\XmlFileManagement\Index.cshtml" />
     <Content Include="Views\XmlFileManagement\_XmlFileSearch.cshtml" />
     <Content Include="Views\XmlFileManagement\_XmlFileViewIndex.cshtml" />
+<<<<<<< HEAD
     <Content Include="Views\XmlFileManagement\Detail.cshtml" />
     <Content Include="Views\PoaDelegation\Index.cshtml" />
     <Content Include="Views\PoaDelegation\Create.cshtml" />
     <Content Include="Views\PoaDelegation\Detail.cshtml" />
     <Content Include="Views\PoaDelegation\Edit.cshtml" />
+=======
+    <Content Include="Views\XmlFileManagement\Detail.cshtml" />
+>>>>>>> dev
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

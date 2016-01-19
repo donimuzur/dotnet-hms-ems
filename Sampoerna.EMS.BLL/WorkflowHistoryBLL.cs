@@ -225,9 +225,12 @@ namespace Sampoerna.EMS.BLL
                 {
                     List<POADto> listPoa;
                     if(input.FormType == Enums.FormType.PBCK1){
-                       
-                        listPoa = _poaBll.GetPoaByNppbkcIdAndMainPlant(input.NppbkcId).Distinct().ToList();
-                        //displayUserId = listPoa.Aggregate("", (current, poaDto) => current + (poaDto.POA_ID + ","));
+                        var listPoa = _poaBll.GetPoaByNppbkcIdAndMainPlant(input.NppbkcId).Distinct().ToList();
+                        if (listPoa.Count > 0)
+                        {
+                            listPoa = listPoa.Where(c => c.POA_ID != input.DocumentCreator).Distinct().ToList();
+                        }
+                        displayUserId = listPoa.Aggregate("", (current, poaDto) => current + (poaDto.POA_ID + ","));
                     }else{
                         var isPoaCreatedUser = _poaBll.GetActivePoaById(input.DocumentCreator);
                         if (isPoaCreatedUser != null)
