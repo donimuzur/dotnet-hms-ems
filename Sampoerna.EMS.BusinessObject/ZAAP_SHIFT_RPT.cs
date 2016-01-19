@@ -36,5 +36,6 @@ namespace Sampoerna.EMS.BusinessObject
         public string MVT { get; set; }
         public Nullable<System.DateTime> ENTERED_DATE { get; set; }
         public Nullable<System.DateTime> POSTING_DATE { get; set; }
+        public long ZAAP_SHIFT_RPT_ID { get; set; }
     }
 }
