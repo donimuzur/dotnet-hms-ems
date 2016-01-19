@@ -1,0 +1,3 @@
+ALTER TABLE ZAAP_SHIFT_RPT ADD
+MVT nvarchar(3) null
+GO

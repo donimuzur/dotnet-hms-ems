@@ -113,7 +113,7 @@ namespace Sampoerna.EMS.BLL
         }
 
 
-        public List<Pbck7AndPbck3Dto> GetPbck7SummaryReportsByParam(Pbck7SummaryInput input)
+        public List<Pbck7SummaryReportDto> GetPbck7SummaryReportsByParam(Pbck7SummaryInput input)
         {
             Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
             if (!string.IsNullOrEmpty(input.NppbkcId))
@@ -152,16 +152,84 @@ namespace Sampoerna.EMS.BLL
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
-            var mapResult = Mapper.Map<List<Pbck7AndPbck3Dto>>(dbData.ToList());
-            foreach (var pbck7AndPbck3Dto in mapResult)
+            var mapResult = Mapper.Map<List<Pbck7SummaryReportDto>>(dbData.ToList());
+
+            foreach (var pbck7SummaryReportDto in mapResult)
             {
-                pbck7AndPbck3Dto.Back1Dto = GetBack1ByPbck7(pbck7AndPbck3Dto.Pbck7Id);
+                pbck7SummaryReportDto.Back1No = "";
+                pbck7SummaryReportDto.Back1Date = "";
+                var back1Dto = GetBack1ByPbck7(pbck7SummaryReportDto.Pbck7Id);
+                if (back1Dto != null)
+                {
+                    pbck7SummaryReportDto.Back1No = back1Dto.Back1Number;
+                    pbck7SummaryReportDto.Back1Date = ConvertHelper.ConvertDateToStringddMMMyyyy(back1Dto.Back1Date);
+                }
+
+                pbck7SummaryReportDto.Pbck3No = "";
+                pbck7SummaryReportDto.Pbck3Status = "";
+                pbck7SummaryReportDto.Ck2No = "";
+                pbck7SummaryReportDto.Ck2Value = "";
+                var pbck3Data = _pbck3Services.GetPbck3ByPbck7Id(pbck7SummaryReportDto.Pbck7Id);
+                if (pbck3Data != null)
+                {
+                    pbck7SummaryReportDto.Pbck3No = pbck3Data.PBCK3_NUMBER;
+                    pbck7SummaryReportDto.Pbck3Status = EnumHelper.GetDescription(pbck3Data.STATUS);
+                    var ck2Data = pbck3Data.CK2.FirstOrDefault();
+
+                    if (ck2Data != null)
+                    {
+                        pbck7SummaryReportDto.Ck2No = ck2Data.CK2_NUMBER;
+                        pbck7SummaryReportDto.Ck2Value = ConvertHelper.ConvertDecimalToStringMoneyFormat(ck2Data.CK2_VALUE);
+                    }
+                }
+
+                //pbck7item
+                pbck7SummaryReportDto.FaCode = "";
+                var listFaCode = new List<string>();
+                var listBrand = new List<string>();
+                var listContent = new List<string>();
+                var listHje = new List<string>();
+                var listTariff = new List<string>();
+                var listPbck7Qty = new List<string>();
+                var listFiscalYear = new List<string>();
+                var listExciseValue = new List<string>();
+                Pbck7SummaryReportDto dto = pbck7SummaryReportDto;
+                var pbck7Item = _repositoryPbck7Item.Get(c => c.PBCK7_ID == dto.Pbck7Id);
+                foreach (var item in pbck7Item)
+                {
+                        listFaCode.Add(item.FA_CODE);
+                        listBrand.Add(item.BRAND_CE);
+                        listContent.Add(ConvertHelper.ConvertDecimalToStringMoneyFormat(item.BRAND_CONTENT));
+
+                        listHje.Add(ConvertHelper.ConvertDecimalToStringMoneyFormat(item.HJE));
+                        listTariff.Add(ConvertHelper.ConvertDecimalToStringMoneyFormat(item.TARIFF));
+                        listPbck7Qty.Add(ConvertHelper.ConvertDecimalToStringMoneyFormat(item.PBCK7_QTY));
+                        listFiscalYear.Add(item.FISCAL_YEAR.ToString());
+                        listExciseValue.Add(ConvertHelper.ConvertDecimalToStringMoneyFormat(item.EXCISE_VALUE));
+                }
+
+                pbck7SummaryReportDto.FaCode = string.Join("<br/>", listFaCode);
+                pbck7SummaryReportDto.Brand = string.Join("<br/>", listBrand);
+                pbck7SummaryReportDto.Content = string.Join("<br/>", listContent);
+
+                pbck7SummaryReportDto.Hje = string.Join("<br/>", listHje);
+                pbck7SummaryReportDto.Tariff = string.Join("<br/>", listTariff);
+                pbck7SummaryReportDto.Pbck7Qty = string.Join("<br/>", listPbck7Qty);
+                pbck7SummaryReportDto.FiscalYear = string.Join("<br/>", listFiscalYear);
+                pbck7SummaryReportDto.ExciseValue = string.Join("<br/>", listExciseValue);
+
             }
+
+            //foreach (var pbck7AndPbck3Dto in dbData)
+            //{
+            //    //pbck7AndPbck3Dto.Back1Dto = GetBack1ByPbck7(pbck7AndPbck3Dto.Pbck7Id);
+            //    
+            //}
             return mapResult;
 
         }
 
-        public List<Pbck3Dto> GetPbck3SummaryReportsByParam(Pbck3SummaryInput input)
+        public List<Pbck3SummaryReportDto> GetPbck3SummaryReportsByParam(Pbck3SummaryInput input)
         {
             Expression<Func<PBCK3, bool>> queryFilter = PredicateHelper.True<PBCK3>();
             if (!string.IsNullOrEmpty(input.NppbkcId))
@@ -200,11 +268,28 @@ namespace Sampoerna.EMS.BLL
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
-            var mapResult = Mapper.Map<List<Pbck3Dto>>(dbData.ToList());
+            var mapResult = Mapper.Map<List<Pbck3SummaryReportDto>>(dbData.ToList());
             foreach (var pbck3Dto in mapResult)
             {
-                pbck3Dto.Back3Dto = GetBack3ByPbck3Id(pbck3Dto.Pbck3Id);
-                pbck3Dto.Ck2Dto = GetCk2ByPbck3Id(pbck3Dto.Pbck3Id);
+                pbck3Dto.Back3No = "";
+                pbck3Dto.Back3Date = "";
+                var back3Data = GetBack3ByPbck3Id(pbck3Dto.Pbck3Id);
+                if (back3Data != null)
+                {
+                    pbck3Dto.Back3No = back3Data.Back3Number;
+                    pbck3Dto.Back3Date = ConvertHelper.ConvertDateToStringddMMMyyyy(back3Data.Back3Date);
+                }
+
+                pbck3Dto.Ck2No = "";
+                pbck3Dto.Ck2Date = "";
+                pbck3Dto.Ck2Value = "";
+                var ck2 = GetCk2ByPbck3Id(pbck3Dto.Pbck3Id);
+                if (ck2 != null)
+                {
+                    pbck3Dto.Ck2No = ck2.Ck2Number;
+                    pbck3Dto.Ck2Date = ConvertHelper.ConvertDateToStringddMMMyyyy(ck2.Ck2Date);
+                    pbck3Dto.Ck2Value = ConvertHelper.ConvertDecimalToStringMoneyFormat(ck2.Ck2Value);
+                }
             }
             return mapResult;
         }

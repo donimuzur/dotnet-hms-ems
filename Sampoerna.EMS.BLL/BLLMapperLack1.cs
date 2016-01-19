@@ -405,6 +405,7 @@ namespace Sampoerna.EMS.BLL
                .ForMember(dest => dest.ExGoodsTypeDesc, opt => opt.MapFrom(src => src.ExcisableGoodsTypeDesc))
                .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NppbkcId))
                .ForMember(dest => dest.BeginingBalance, opt => opt.MapFrom(src => src.BeginingBalance))
+               .ForMember(dest => dest.CloseBalance, opt => opt.MapFrom(src => src.CloseBalance))
                .ForMember(dest => dest.TotalIncome, opt => opt.MapFrom(src => src.TotalIncome))
                .ForMember(dest => dest.Usage, opt => opt.MapFrom(src => src.TotalUsage))
                .ForMember(dest => dest.UsageTisToTis, opt => opt.MapFrom(src => src.TotalUsageTisToTis))

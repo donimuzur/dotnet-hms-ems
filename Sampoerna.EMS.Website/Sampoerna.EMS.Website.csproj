@@ -311,6 +311,7 @@
     <Compile Include="Models\CK5\CK5DetailsViewModel.cs" />
     <Compile Include="Models\CK5\CK5EditViewModel.cs" />
     <Compile Include="Models\CK5\CK5InputManualViewModel.cs" />
+    <Compile Include="Models\CK5\CK5MarketReturnSummaryReportsViewModel.cs" />
     <Compile Include="Models\CK5\CK5PlantModel.cs" />
     <Compile Include="Models\CK5\CK5SearchViewModel.cs" />
     <Compile Include="Models\CK5\CK5IndexViewModel.cs" />
@@ -344,6 +345,7 @@
     <Compile Include="Models\LACK1\Lack1NppbkcData.cs" />
     <Compile Include="Models\LACK1\Lack1PlantData.cs" />
     <Compile Include="Models\LACK1\Lack1PrintOutModel.cs" />
+    <Compile Include="Models\LACK1\Lack1ReconciliationModel.cs" />
     <Compile Include="Models\LACK1\Lack1SummaryReportViewModel.cs" />
     <Compile Include="Models\LACK2\Lack2BaseItemModel.cs" />
     <Compile Include="Models\LACK2\LACK2CreateViewModel.cs" />
@@ -1274,14 +1276,19 @@
     <Content Include="Views\XmlLog\Detail.cshtml" />
     <Content Include="Views\XmlLog\_XmlLogViewIndex.cshtml" />
     <Content Include="Views\Error\Unauthorized.cshtml" />
+    <Content Include="Views\LACK1\Reconciliation.cshtml" />
+    <Content Include="Views\LACK1\_Lack1Reconciliation.cshtml" />
     <Content Include="Views\XmlFileManagement\Index.cshtml" />
     <Content Include="Views\XmlFileManagement\_XmlFileSearch.cshtml" />
     <Content Include="Views\XmlFileManagement\_XmlFileViewIndex.cshtml" />
+
     <Content Include="Views\XmlFileManagement\Detail.cshtml" />
     <Content Include="Views\PoaDelegation\Index.cshtml" />
     <Content Include="Views\PoaDelegation\Create.cshtml" />
     <Content Include="Views\PoaDelegation\Detail.cshtml" />
     <Content Include="Views\PoaDelegation\Edit.cshtml" />
+    <Content Include="Views\CK5\CK5MarketReturnSummaryReport.cshtml" />
+    <Content Include="Views\CK5\_CK5MarketReturnListSummaryReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

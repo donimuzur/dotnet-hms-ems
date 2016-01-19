@@ -1,6 +1,7 @@
-﻿@model List<Sampoerna.EMS.BusinessObject.DTOs.Pbck7AndPbck3Dto>
+﻿@*@model List<Sampoerna.EMS.BusinessObject.DTOs.Pbck7AndPbck3Dto>*@
+@model Sampoerna.EMS.Website.Models.PBCK7AndPBCK3.Pbck7SummaryReportModel
 
-<table id="pbck7-summary" class="table-condensed display compact nowrap">
+<table id="pbck7-summary" class="display" cellspacing="0" width="100%">
     <thead>
         <tr>
 
@@ -14,30 +15,73 @@
             <th>Exec To</th>
             <th>Back-1 No</th>
             <th>Back-1 Date</th>
+
+            <th>FA Code</th>
+            <th>Brand</th>
+            <th>Content</th>
+            <th>Hje</th>
+            <th>Tariff</th>
+            <th>PBCK-7 Qty</th>
+            <th>Fiscal Year</th>
+            <th>Excise Value</th>
+            <th>POA</th>
+            <th>Creator</th>
+            <th>PBCK-3 No</th>
+            <th>PBCK-3 Status</th>
+            <th>CK-2 No</th>
+            <th>CK-2 Value</th>
         </tr>
     </thead>
-    
+
     <tbody>
         @if (Model != null)
         {
-            foreach (var item in Model)
+            //foreach (var item in Model)
+            //{
+            foreach (var item in Model.ReportItems)
             {
                 <tr>
+                    <td>@Html.DisplayFor(model => item.Pbck7Number)</td>
+                    <td>@Html.DisplayFor(model => item.Nppbkc)</td>
+                    <td>@Html.DisplayFor(model => item.PlantName)</td>
+                    <td>@Html.DisplayFor(model => item.Pbck7Date)</td>
+                    <td>@Html.DisplayFor(model => item.DocumentType)</td>
+                    <td>@Html.DisplayFor(model => item.Pbck7Status)</td>
+                    <td>@Html.DisplayFor(model => item.ExecFrom)</td>
+                    <td>@Html.DisplayFor(model => item.ExecTo)</td>
+                    <td>@Html.DisplayFor(model => item.Back1No)</td>
+                    <td>@Html.DisplayFor(model => item.Back1Date)</td>
 
-                    <td>@item.Pbck7Number</td>
-                    <td>@item.NppbkcId</td>
-                    <td>@(item.PlantId + "-" + item.PlantName)</td>
-                    <td>@item.Pbck7Date.ToString("dd MMM yyyy")</td>
-                    <td>@Sampoerna.EMS.Utils.EnumHelper.GetDescription(item.DocumentType)</td>
-                    <td>@Sampoerna.EMS.Utils.EnumHelper.GetDescription(item.Pbck7Status)</td>
-                    <td>@(item.ExecDateFrom.HasValue?item.ExecDateFrom.Value.ToString("dd MMM yyyy") : string.Empty)</td>
-                    <td>@(item.ExecDateTo.HasValue ? item.ExecDateTo.Value.ToString("dd MMM yyyy") : string.Empty)</td>
-                    <td>@(item.Back1Dto != null ? item.Back1Dto.Back1Number : string.Empty)</td>
-                    <td>@(item.Back1Dto != null ? item.Back1Dto.Back1Date.Value.ToString("dd MMM yyyy") : string.Empty)</td>
+                    <td>@Html.Raw(item.FaCode)</td>
+                    <td>@Html.Raw(item.Brand)</td>
+                    <td>@Html.Raw(item.Content)</td>
+                    <td>@Html.Raw(item.Hje)</td>
+                    <td>@Html.Raw(item.Tariff)</td>
+                    <td>@Html.Raw(item.Pbck7Qty)</td>
+                    <td>@Html.Raw(item.FiscalYear)</td>
+                    <td>@Html.Raw(item.ExciseValue)</td>
+                    <td>@Html.DisplayFor(model => item.Poa)</td>
+                    <td>@Html.DisplayFor(model => item.Creator)</td>
+                    <td>@Html.DisplayFor(model => item.Pbck3No)</td>
+                    <td>@Html.DisplayFor(model => item.Pbck3Status)</td>
+                    <td>@Html.DisplayFor(model => item.Ck2No)</td>
+                    <td>@Html.DisplayFor(model => item.Ck2Value)</td>
+
+                    @*<td>@item.Pbck7Number</td>
+                        <td>@item.NppbkcId</td>
+                        <td>@(item.PlantId + "-" + item.PlantName)</td>
+                        <td>@item.Pbck7Date.ToString("dd MMM yyyy")</td>
+                        <td>@Sampoerna.EMS.Utils.EnumHelper.GetDescription(item.DocumentType)</td>
+                        <td>@Sampoerna.EMS.Utils.EnumHelper.GetDescription(item.Pbck7Status)</td>
+                        <td>@(item.ExecDateFrom.HasValue?item.ExecDateFrom.Value.ToString("dd MMM yyyy") : string.Empty)</td>
+                        <td>@(item.ExecDateTo.HasValue ? item.ExecDateTo.Value.ToString("dd MMM yyyy") : string.Empty)</td>
+                        <td>@(item.Back1Dto != null ? item.Back1Dto.Back1Number : string.Empty)</td>
+                        <td>@(item.Back1Dto != null ? item.Back1Dto.Back1Date.Value.ToString("dd MMM yyyy") : string.Empty)</td>*@
                 </tr>
             }
         }
 
     </tbody>
 </table>
+
 

@@ -135,6 +135,7 @@
     <Compile Include="DTOs\Ck4CSummaryReportDto.cs" />
     <Compile Include="DTOs\CK5Dto.cs" />
     <Compile Include="DTOs\CK5FileDocumentDto.cs" />
+    <Compile Include="DTOs\Ck5MarketReturnSummaryReportDto.cs" />
     <Compile Include="DTOs\CK5MaterialDto.cs" />
     <Compile Include="DTOs\CK5ReportDto.cs" />
     <Compile Include="DTOs\Ck5SummaryReportDto.cs" />
@@ -152,6 +153,7 @@
     <Compile Include="DTOs\Lack1PlantDto.cs" />
     <Compile Include="DTOs\Lack1PrintOutDto.cs" />
     <Compile Include="DTOs\Lack1ProductionDetailDto.cs" />
+    <Compile Include="DTOs\Lack1ReconciliationDto.cs" />
     <Compile Include="DTOs\Lack1SummaryReportDto.cs" />
     <Compile Include="DTOs\Lack1TrackingDto.cs" />
     <Compile Include="DTOs\Lack2DashboardDto.cs" />
@@ -175,6 +177,7 @@
     <Compile Include="DTOs\Pbck1ReportDto.cs" />
     <Compile Include="DTOs\Pbck1SummaryReportDto.cs" />
     <Compile Include="DTOs\Pbck3CompositeDto.cs" />
+    <Compile Include="DTOs\Pbck3SummaryReportDto.cs" />
     <Compile Include="DTOs\Pbck4Dto.cs" />
     <Compile Include="DTOs\Pbck4ItemDto.cs" />
     <Compile Include="DTOs\Pbck4ReportDto.cs" />
@@ -183,6 +186,7 @@
     <Compile Include="DTOs\PBCK4_DOCUMENTDto.cs" />
     <Compile Include="DTOs\Pbck7AndPbck3Dto.cs" />
     <Compile Include="DTOs\Pbck7PrintOutDto.cs" />
+    <Compile Include="DTOs\Pbck7SummaryReportDto.cs" />
     <Compile Include="DTOs\PBCK7_ITEMDto.cs" />
     <Compile Include="DTOs\POADto.cs" />
     <Compile Include="DTOs\POA_DELEGATIONDto.cs" />
