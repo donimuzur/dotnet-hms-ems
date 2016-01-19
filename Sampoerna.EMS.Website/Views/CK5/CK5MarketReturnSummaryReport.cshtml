@@ -1,0 +1,369 @@
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.CK5.CK5MarketReturnSummaryReportsViewModel
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 id="lblTitle">Summary Report</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+               
+                <div class="form-excise" role="form">
+                    <div class="row">
+                        @using (Ajax.BeginForm("SearchSummaryReportsMarketReturn", "CK5",
+                            new AjaxOptions
+                            {
+                                HttpMethod = "POST",
+                                InsertionMode = InsertionMode.Replace,
+                                UpdateTargetId = "contenttable",
+                                OnComplete = "ReloadDataTables"
+
+                            }))
+                        {
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">Fa Code</label>
+                                    <div class="col-md-8">
+                                        @(Model.SearchView.FaCodeList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                              : Html.DropDownListFor(model => model.SearchView.FaCode, Model.SearchView.FaCodeList, "All", new { @class = "form-control selectreset" }))
+
+                                    </div>
+                                </div>
+                            </div>
+                              <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">POA</label>
+                                    <div class="col-md-8">
+
+                                        @(Model.SearchView.PoaList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                              : Html.DropDownListFor(model => model.SearchView.Poa, Model.SearchView.PoaList, "All", new { @class = "form-control selectreset" }))
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">Creator</label>
+                                    <div class="col-md-8">
+                                        @(Model.SearchView.CreatorList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                              : Html.DropDownListFor(model => model.SearchView.Creator, Model.SearchView.CreatorList, "All", new { @class = "form-control selectreset" }))
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">PBCK-3 No</label>
+                                    <div class="col-md-8">
+                                        @(Model.SearchView.Pbck3NoList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                              : Html.DropDownListFor(model => model.SearchView.Pbck3No, Model.SearchView.Pbck3NoList, "All", new { @class = "form-control selectreset" }))
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">CK-2 No</label>
+                                    <div class="col-md-8">
+                                        @(Model.SearchView.Ck2NoList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                      : Html.DropDownListFor(model => model.SearchView.Ck2No, Model.SearchView.Ck2NoList, "All", new { @class = "form-control selectreset" }))
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 col-md-offset-8">
+                                <button class="btn btn-blue full">FILTER</button>
+                            </div>
+                            <div class="col-md-2">
+                                <input id="btnExport" type="button" class="btn btn-blue full" value="EXPORT" />
+                            </div>
+
+
+                        }
+                    </div>
+                </div>
+            </div>
+            @using (Html.BeginForm("ExportXlsMarketReturnSummaryReports", "CK5", FormMethod.Post, new { @id = "ExportSummaryReportsForms" }))
+            {
+                <div class="white-wrapper toggle-wrapper">
+                    <div class="form-excise" role="form">
+                        <div class="row">
+
+                            <div class="last-form">
+                                <div class="col-md-12">
+                                    <div>
+
+                                        @Html.HiddenFor(model => model.ExportModel.FaCode)
+                                        @Html.HiddenFor(model => model.ExportModel.Poa)
+                                        @Html.HiddenFor(model => model.ExportModel.Creator)
+                                        @Html.HiddenFor(model => model.ExportModel.Pbck3No)
+                                        @Html.HiddenFor(model => model.ExportModel.Ck2No)
+                                      
+
+                                        <div class="row toggle">
+
+                                            <div class="toggle-title">
+                                                Toggle column <i class="fa fa-chevron-down"></i>
+                                            </div>
+
+                                            <div class="toggle-component">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" id="selecctall" /><b>Select All</b>
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.FaCode, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "1" })Fa Code
+                                                    </label>
+                                                </div>
+
+                                                @*//start*@
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Brand, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2" })Brand
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Content, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3" })Content
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Hje, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "4" })HJE
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Tariff, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "5" })Tariff
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Ck5MarketReturnQty, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "6" })CK-5 Market Return Qty
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.FiscalYear, new { @class = "checkbox checkexport", @datacolumn = "7" })Fiscal Year
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.ExciseValue, new { @class = "checkbox checkexport", @datacolumn = "8" })Excise Value
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Poa, new { @class = "checkbox checkexport", @datacolumn = "9" })POA
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Creator, new { @class = "checkbox checkexport", @datacolumn = "10" })Creator
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Pbck3No, new { @class = "checkbox checkexport", @datacolumn = "11" })PBCK-3 No.
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Pbck3Status, new { @class = "checkbox checkexport", @datacolumn = "12" })PBCK-3 Status
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Ck2Number, new { @class = "checkbox checkexport", @datacolumn = "13" })CK-2 No.
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Ck2Value, new { @class = "checkbox checkexport", @datacolumn = "14" })CK-2 Value
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+
+            }
+        </div>
+    </div>
+    <div id="contenttable" class="table-container">
+        @Html.Partial("_CK5MarketReturnListSummaryReport")
+
+    </div>
+</div>
+
+
+
+
+
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" language="javascript">
+
+       
+        $(document).ready(function () {
+
+            setupDataTables(true);
+           
+            $('#menuCk5MarketReturnOpenDocuments').removeClass('open');
+
+            $('#menuCk5MarketReturnReport').addClass('open');
+            $('#menuCk5MarketReturnReport').addClass('active');
+            
+            $('#MenuCk5MarketReturnSummaryReports').addClass('active');
+
+            $("#SearchView_Ck5Type").change(function () {
+                if ($("#SearchView_Ck5Type").length) {
+                    location.href = '@Url.Action("SummaryReports", "CK5")';
+                }
+
+            });
+
+        });
+
+
+        function setupDataTables(blFirst) {
+
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#ck5Table')) {
+                table = $('#ck5Table').DataTable();
+                table.destroy();
+            }
+
+            table = $('#ck5Table').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+
+            $('#selecctall').change(function () {
+                if ($(this).is(':checked')) {
+                    $('.checkexport').each(function () {
+                        this.checked = true;
+                    });
+                    for (var i = 0; i < 15; i++) {
+                        table.column(i).visible(true);
+                    }
+                    $('#ck5Table').parents('div.dataTables_wrapper').first().show();
+
+
+                } else {
+                    $('.checkexport').each(function () {
+                        this.checked = false;
+                    });
+                    for (var i = 0; i < 15; i++) {
+                        table.column(i).visible(false);
+                    }
+                    $('#ck5Table').parents('div.dataTables_wrapper').first().hide();
+                }
+            });
+
+            $('.checkexport').on('click', function (e) {
+                // e.preventDefault();
+                table.column(0).visible(true);
+
+                // Get the column API object
+                var column = table.column($(this).attr('datacolumn'));
+
+                // Toggle the visibility
+                column.visible(!column.visible());
+
+                $('#ck5Table').parents('div.dataTables_wrapper').first().hide();
+
+                for (var i = 0; i < 15; i++) {
+                    if (table.column(i).visible()) {
+                        $('#ck5Table').parents('div.dataTables_wrapper').first().show();
+                        return;
+                    }
+                }
+
+            });
+
+            if (blFirst) {
+                for (var i = 7; i < 15; i++) {
+                    table.column(i).visible(false);
+                }
+            } else {
+                $('.checkexport').each(function () {
+
+                    // Get the column API object
+                    var column = table.column($(this).attr('datacolumn'));
+
+                    // Toggle the visibility
+                    column.visible(false);
+                    if ($(this).is(':checked')) {
+                        // Toggle the visibility
+                        column.visible(true);
+                    }
+
+                });
+            }
+        }
+
+        function ReloadDataTables() {
+            setupDataTables(false);
+        }
+
+        function OnReset() {
+
+            $(".selectreset").val($(".selectreset option:first").val());
+        }
+
+        $("#btnExport").click(function () {
+            GetSearchSummaryReports();
+            $('#ExportSummaryReportsForms').submit();
+        });
+
+        function GetSearchSummaryReports() {
+            $('#ExportModel_FaCode').val($('#SearchView_FaCode').find("option:selected").val());
+            $('#ExportModel_Poa').val($('#SearchView_Poa').find("option:selected").val());
+            $('#ExportModel_Creator').val($('#SearchView_Creator').find("option:selected").val());
+            $('#ExportModel_Pbck3No').val($('#SearchView_Pbck3No').find("option:selected").val());
+            $('#ExportModel_Ck2No').val($('#SearchView_Ck2No').find("option:selected").val());
+        }
+
+
+        $("#btnConfirm").click(function () {
+            GetSearchSummaryReports();
+            $('#ExportSummaryReportsForms').submit();
+
+
+        });
+
+    </script>
+}

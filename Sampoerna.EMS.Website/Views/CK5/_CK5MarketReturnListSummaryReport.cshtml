@@ -1,0 +1,53 @@
+﻿@model Sampoerna.EMS.Website.Models.CK5.CK5MarketReturnSummaryReportsViewModel
+
+<table id="ck5Table" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> No </th>
+            <th>Fa Code</th>
+            <th>Brand</th>
+            <th>Content</th>
+            <th>HJE</th>
+            <th>Tariff</th>
+            <th>CK-5 Market Return Qty</th>
+            <th>Fiscal Year</th>
+            <th>Excise Value</th>
+            <th>POA</th>
+            <th>Creator</th>
+            <th>PBCK-3 No.</th>
+            <th>PBCK-3 Status</th>
+            <th>CK-2 No.</th>
+            <th>CK-2 Value</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @{
+            int row = 1;
+
+            foreach (var item in Model.DetailsList)
+            {
+                <tr>
+                    <td>@row</td>
+                    <td>@Html.DisplayFor(model => item.FaCode)</td>
+                    <td>@Html.DisplayFor(model => item.Brand)</td>
+                    <td>@Html.DisplayFor(model => item.Content)</td>
+                    <td>@Html.DisplayFor(model => item.Hje)</td>
+                    <td>@Html.DisplayFor(model => item.Tariff)</td>
+                    <td>@Html.DisplayFor(model => item.Ck5MarketReturnQty)</td>
+                    <td>@Html.DisplayFor(model => item.FiscalYear)</td>
+                    <td>@Html.DisplayFor(model => item.ExciseValue)</td>
+                    <td>@Html.DisplayFor(model => item.Poa)</td>
+                    <td>@Html.DisplayFor(model => item.Creator)</td>
+                    <td>@Html.DisplayFor(model => item.Pbck3No)</td>
+                    <td>@Html.DisplayFor(model => item.Pbck3Status)</td>
+                    <td>@Html.DisplayFor(model => item.Ck2Number)</td>
+                    <td>@Html.DisplayFor(model => item.Ck2Value)</td>
+                    
+                </tr>
+                row = row + 1;
+            }
+        }
+    </tbody>
+</table>
+

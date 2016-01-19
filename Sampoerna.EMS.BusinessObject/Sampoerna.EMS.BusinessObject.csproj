@@ -135,6 +135,7 @@
     <Compile Include="DTOs\Ck4CSummaryReportDto.cs" />
     <Compile Include="DTOs\CK5Dto.cs" />
     <Compile Include="DTOs\CK5FileDocumentDto.cs" />
+    <Compile Include="DTOs\Ck5MarketReturnSummaryReportDto.cs" />
     <Compile Include="DTOs\CK5MaterialDto.cs" />
     <Compile Include="DTOs\CK5ReportDto.cs" />
     <Compile Include="DTOs\Ck5SummaryReportDto.cs" />
