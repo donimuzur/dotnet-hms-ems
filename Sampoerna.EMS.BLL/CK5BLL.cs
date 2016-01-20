@@ -1498,6 +1498,7 @@ namespace Sampoerna.EMS.BLL
             input.DocumentStatus = dtData.STATUS_ID;
             input.PlantId = dtData.SOURCE_PLANT_ID;
             input.NppbkcId = dtData.SOURCE_PLANT_NPPBKC_ID;
+            input.DocumentCreator = dtData.CREATED_BY;
 
             if (dtData.CK5_TYPE == Enums.CK5Type.DomesticAlcohol || dtData.CK5_TYPE == Enums.CK5Type.PortToImporter)
             {
