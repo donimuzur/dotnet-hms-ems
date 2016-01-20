@@ -29,10 +29,29 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
         public int? YearTo { get; set; }
         public SelectList YearToList { get; set; }
 
-
         public string PlantId { get; set; }
         public SelectList PlantIdList { get; set; }
 
+        public string StickerCode { get; set; }
+        public SelectList StickerCodeList { get; set; }
+
+        public string FaCode { get; set; }
+        public SelectList FaCodeList { get; set; }
+
+        public string Nppbkc { get; set; }
+        public SelectList NppbkcList { get; set; }
+
+        public string CompName { get; set; }
+        public SelectList CompNameList { get; set; }
+
+        public string Poa { get; set; }
+        public SelectList PoaList { get; set; }
+
+        public string Ck1No { get; set; }
+        public SelectList Ck1NoList { get; set; }
+
+        public string Creator { get; set; }
+        public SelectList CreatorList { get; set; }
     }
 
     public class Pbck4SummaryReportsItem

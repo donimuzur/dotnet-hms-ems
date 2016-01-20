@@ -130,13 +130,7 @@ namespace Sampoerna.EMS.Website
                  .ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
                 ;
 
-            Mapper.CreateMap<Pbck4SearchSummaryReportsViewModel, Pbck4GetSummaryReportByParamInput>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.Pbck4No, opt => opt.MapFrom(src => src.Pbck4No))
-                .ForMember(dest => dest.YearFrom, opt => opt.MapFrom(src => src.YearFrom))
-                .ForMember(dest => dest.YearTo, opt => opt.MapFrom(src => src.YearTo))
-                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantId))
-
-                ;
+            Mapper.CreateMap<Pbck4SearchSummaryReportsViewModel, Pbck4GetSummaryReportByParamInput>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<Pbck4SummaryReportDto, Pbck4SummaryReportsItem>().IgnoreAllNonExisting();
 

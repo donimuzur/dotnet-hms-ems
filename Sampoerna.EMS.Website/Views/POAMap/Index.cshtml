@@ -44,12 +44,14 @@
     <div class="row">
         <div class="col-sm-12">
             <h3 class="desc">POA Map</h3>
+            @if (Model.IsNotViewer){
             <div class="action-button new">
                 <a href="@Url.Action("Create", "POAMap")"><button class="btn btn-blue">NEW</button></a>
                 <a data-toggle="modal" data-target=".menu-maping-type">
 
                 </a>
             </div>
+            }
         </div>
     </div>
 </div>
@@ -83,7 +85,9 @@
                             <tr>
                                 <td class="action">
                                     <a href="@Url.Action("Details", "POAMap", new { id = item.POA_MAP_ID })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    @if (Model.IsNotViewer){
                                     <a href="@Url.Action("Edit", "POAMap", new { id = item.POA_MAP_ID })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                                    }
                                 </td>
                                 <td>@item.NPPBKC_ID</td>
                                 <td>@(item.WERKS + Constans.DelimeterSelectItem + item.PLANT_NAME)</td>

@@ -47,7 +47,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                Details = Mapper.Map<List<POAViewDetailModel>>(_poaBll.GetAll())
+                Details = Mapper.Map<List<POAViewDetailModel>>(_poaBll.GetAll()),
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
             };
 
             ViewBag.Message = TempData["message"];
@@ -56,6 +57,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
 
             var poa = new POAFormModel();
             poa.MainMenu = _mainMenu;
@@ -121,6 +127,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Edit(string id)
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Detail", new { id });
+            }
+
             var poa = _poaBll.GetById(id);
 
 
@@ -294,6 +305,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Delete(string id)
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
             try
             {
                 _poaBll.Delete(id);

@@ -1700,6 +1700,40 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.PLANT_ID.Contains(input.PlantId));
             }
 
+            if (!string.IsNullOrEmpty(input.StickerCode))
+            {
+                queryFilter = queryFilter.And(c => c.PBCK4_ITEM.Select(x => x.STICKER_CODE).ToList().Contains(input.StickerCode));
+            }
+
+            if (!string.IsNullOrEmpty(input.FaCode))
+            {
+                queryFilter = queryFilter.And(c => c.PBCK4_ITEM.Select(x => x.FA_CODE).ToList().Contains(input.FaCode));
+            }
+
+            if (!string.IsNullOrEmpty(input.Nppbkc))
+            {
+                queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.Nppbkc);
+            }
+
+            if (!string.IsNullOrEmpty(input.CompName))
+            {
+                queryFilter = queryFilter.And(c => c.COMPANY_ID == input.CompName);
+            }
+
+            if (!string.IsNullOrEmpty(input.Poa))
+            {
+                queryFilter = queryFilter.And(c => c.APPROVED_BY_POA == input.Poa);
+            }
+
+            if (!string.IsNullOrEmpty(input.Ck1No))
+            {
+                queryFilter = queryFilter.And(c => c.PBCK4_ITEM.Select(x => x.CK1.CK1_NUMBER).ToList().Contains(input.Ck1No));
+            }
+
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
 
             queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
 
@@ -1746,7 +1780,9 @@ namespace Sampoerna.EMS.BLL
                     summaryDto.Tariff = pbck4Item.TARIFF.HasValue ? pbck4Item.TARIFF.Value.ToString("f2") : string.Empty;
                     summaryDto.ProductType = pbck4Item.PRODUCT_ALIAS;
 
-
+                    summaryDto.StickerCode = pbck4Item.STICKER_CODE;
+                    summaryDto.FaCode = pbck4Item.FA_CODE;
+                    summaryDto.Ck1No = pbck4Item.CK1 != null ? pbck4Item.CK1.CK1_NUMBER : null;
                     summaryDto.SeriesCode = pbck4Item.SERIES_CODE;
                     summaryDto.RequestedQty = ConvertHelper.ConvertDecimalToString(pbck4Item.REQUESTED_QTY);
 
