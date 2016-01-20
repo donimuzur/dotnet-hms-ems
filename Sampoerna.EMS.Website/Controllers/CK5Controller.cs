@@ -1426,7 +1426,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 else if (model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
                 {
-                    input.NppbkcId = ck5Details.Ck5Dto.DEST_PLANT_ID;
+                    input.NppbkcId = model.DestNppbkcId;
                     model.IsDomesticAlcohol = true;
 
                     input.PlantId = model.DestPlantId;
