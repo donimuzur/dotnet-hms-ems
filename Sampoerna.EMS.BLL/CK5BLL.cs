@@ -3492,28 +3492,53 @@ namespace Sampoerna.EMS.BLL
             }
 
 
-            var mapResult = Mapper.Map<List<Ck5SummaryReportDto>>(rc.OrderBy(x => x.SUBMISSION_DATE).OrderBy(x => x.DEST_PLANT_ID).OrderBy(x => x.SOURCE_PLANT_ID).ToList());
+            //var mapResult = Mapper.Map<List<Ck5SummaryReportDto>>(rc.OrderBy(x => x.SUBMISSION_DATE).OrderBy(x => x.DEST_PLANT_ID).OrderBy(x => x.SOURCE_PLANT_ID).ToList());
+            var mapResult = new List<Ck5SummaryReportDto>();
 
-            foreach (var ck5SummaryReportDto in mapResult)
+            foreach (var ck5 in rc)
             {
+                var lack1 = "";
+                var lack2 = "";
                 //get from lack1_income_detail
-                var dbLack1 = _lack1IncomeDetailService.GetLack1IncomeDetailByCk5Id(ck5SummaryReportDto.Ck5Id);
+                var dbLack1 = _lack1IncomeDetailService.GetLack1IncomeDetailByCk5Id(ck5.CK5_ID);
                 var lack1Result = dbLack1.FirstOrDefault(a => a.LACK1.STATUS == Enums.DocumentStatus.Completed);
                 if (lack1Result != null)
                 {
-                    ck5SummaryReportDto.Lack1 = lack1Result.LACK1.MONTH.MONTH_NAME_IND + " " +
+                    lack1 = lack1Result.LACK1.MONTH.MONTH_NAME_IND + " " +
                                                 lack1Result.LACK1.PERIOD_YEAR;
                 }
 
-                var dbLack2 = _lack2ItemService.GetLack2ItemByCk5Id(ck5SummaryReportDto.Ck5Id);
+                var dbLack2 = _lack2ItemService.GetLack2ItemByCk5Id(ck5.CK5_ID);
                 var lack2Result = dbLack2.FirstOrDefault(a => a.LACK2.STATUS == Enums.DocumentStatus.Completed);
                 if (lack2Result != null)
                 {
-                    ck5SummaryReportDto.Lack2 = lack2Result.LACK2.MONTH.MONTH_NAME_IND + " " +
+                    lack2 = lack2Result.LACK2.MONTH.MONTH_NAME_IND + " " +
                                                 lack2Result.LACK2.PERIOD_YEAR;
                 }
 
                 //get from lack2_item
+
+                //get frfom ck5 material
+                CK5 ck6 = ck5;
+                var listCk5Material = _repositoryCK5Material.Get(c => c.CK5_ID == ck6.CK5_ID);
+                foreach (var ck5Material in listCk5Material)
+                {
+                    var summaryReport = Mapper.Map<Ck5SummaryReportDto>(ck5);
+                    summaryReport.Lack1 = lack1;
+                    summaryReport.Lack2 = lack2;
+
+                    summaryReport.MaterialNumber = ck5Material.BRAND;
+                    
+                    //get description from zaidm_ex_material
+                    summaryReport.MaterialDescription = "";
+                    var material = _materialBll.GetByPlantIdAndStickerCode(ck5Material.PLANT_ID, ck5Material.BRAND);
+                    if (material != null)
+                    {
+                        summaryReport.MaterialDescription = material.MATERIAL_DESC;
+                    }
+
+                    mapResult.Add(summaryReport);
+                }
             }
 
             return mapResult;
@@ -5124,8 +5149,17 @@ namespace Sampoerna.EMS.BLL
                     summaryDto.Ck5Id = dtData.CK5_ID;
 
                     summaryDto.FaCode = ck5Item.BRAND;
-                    summaryDto.Brand = ck5Item.BRAND;
+                    summaryDto.Brand = "";
                     summaryDto.Content = "";
+
+                    //get from zaidex brand
+                    var brandData = _brandRegistration.GetByPlantIdAndFaCode(ck5Item.PLANT_ID, ck5Item.BRAND);
+                    if (brandData != null)
+                    {
+                        summaryDto.Brand = brandData.BRAND_CE;
+                        summaryDto.Content = brandData.BRAND_CONTENT;
+                    }
+
                     summaryDto.Hje = ConvertHelper.ConvertDecimalToStringMoneyFormat(ck5Item.HJE);
                     summaryDto.Tariff = ConvertHelper.ConvertDecimalToStringMoneyFormat(ck5Item.TARIFF);
                     summaryDto.Ck5MarketReturnQty = ConvertHelper.ConvertDecimalToStringMoneyFormat(dtData.GRAND_TOTAL_EX);
