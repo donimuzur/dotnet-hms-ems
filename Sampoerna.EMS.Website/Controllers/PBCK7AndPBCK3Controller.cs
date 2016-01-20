@@ -1239,9 +1239,9 @@ namespace Sampoerna.EMS.Website.Controllers
             iRow++;
             int iColumn = 1;
 
-            //create style
-            SLStyle styleWrap = slDocument.CreateStyle();
-            styleWrap.SetWrapText(true);
+            ////create style
+            //SLStyle styleWrap = slDocument.CreateStyle();
+            //styleWrap.SetWrapText(true);
 
             foreach (var data in dataSummaryReport)
             {
@@ -1311,59 +1311,53 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.ExportModel.IsSelectFaCode)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.FaCode.Replace("<br/>", Environment.NewLine));
+                    //slDocument.SetCellValue(iRow, iColumn, data.FaCode.Replace("<br/>", Environment.NewLine));
+                    slDocument.SetCellValue(iRow, iColumn, data.FaCode);
                     iColumn = iColumn + 1;
-                    slDocument.SetCellStyle(iRow - 1, iColumn - 1, styleWrap);
+                    //slDocument.SetCellStyle(iRow - 1, iColumn - 1, styleWrap);
                 }
 
                 if (model.ExportModel.IsSelectBrand)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.Brand.Replace("<br/>", Environment.NewLine));
+                    slDocument.SetCellValue(iRow, iColumn, data.Brand);
                     iColumn = iColumn + 1;
-                    slDocument.SetCellStyle(iRow - 1, iColumn - 1, styleWrap);
                 }
 
                 if (model.ExportModel.IsSelectContent)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.Content.Replace("<br/>", Environment.NewLine));
+                    slDocument.SetCellValue(iRow, iColumn, data.Content);
                     iColumn = iColumn + 1;
-                    slDocument.SetCellStyle(iRow - 1, iColumn - 1, styleWrap);
                 }
 
 
                 if (model.ExportModel.IsSelectHje)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.Hje.Replace("<br/>", Environment.NewLine));
+                    slDocument.SetCellValue(iRow, iColumn, data.Hje);
                     iColumn = iColumn + 1;
-                    slDocument.SetCellStyle(iRow - 1, iColumn - 1, styleWrap);
                 }
 
                 if (model.ExportModel.IsSelectTariff)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.Tariff.Replace("<br/>", Environment.NewLine));
+                    slDocument.SetCellValue(iRow, iColumn, data.Tariff);
                     iColumn = iColumn + 1;
-                    slDocument.SetCellStyle(iRow - 1, iColumn - 1, styleWrap);
                 }
 
                 if (model.ExportModel.IsSelectPbck7Qty)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.Pbck7Qty.Replace("<br/>", Environment.NewLine));
+                    slDocument.SetCellValue(iRow, iColumn, data.Pbck7Qty);
                     iColumn = iColumn + 1;
-                    slDocument.SetCellStyle(iRow - 1, iColumn - 1, styleWrap);
                 }
 
                 if (model.ExportModel.IsSelectFiscalYear)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.FiscalYear.Replace("<br/>",Environment.NewLine));
+                    slDocument.SetCellValue(iRow, iColumn, data.FiscalYear);
                     iColumn = iColumn + 1;
-                    slDocument.SetCellStyle(iRow - 1, iColumn - 1, styleWrap);
                 }
 
                 if (model.ExportModel.IsSelectExciseValue)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.ExciseValue.Replace("<br/>", Environment.NewLine));
+                    slDocument.SetCellValue(iRow, iColumn, data.ExciseValue);
                     iColumn = iColumn + 1;
-                    slDocument.SetCellStyle(iRow - 1, iColumn - 1, styleWrap);
                 }
 
                 if (model.ExportModel.IsSelectPoa)

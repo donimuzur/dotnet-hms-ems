@@ -3614,7 +3614,41 @@ namespace Sampoerna.EMS.Website.Controllers
                     iColumn = iColumn + 1;
                 }
 
+                if (modelExport.MaterialNumber)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.MaterialNumber);
+                    iColumn = iColumn + 1;
+                }
 
+                if (modelExport.MaterialDescription)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.MaterialDescription);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.CompanySource)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CompanySource);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.CompanyDestination)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CompanyDestination);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.Poa)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Poa);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.Creator)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Creator);
+                    iColumn = iColumn + 1;
+                }
                 iRow++;
             }
 
@@ -3869,6 +3903,43 @@ namespace Sampoerna.EMS.Website.Controllers
                 slDocument.SetCellValue(iRow, iColumn, "Status");
                 iColumn = iColumn + 1;
             }
+
+            if (modelExport.MaterialNumber)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Material Number");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.MaterialDescription)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Material Description");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.CompanySource)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Company Source");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.CompanyDestination)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Company Destination");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Poa)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "POA");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Creator)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Creator");
+                iColumn = iColumn + 1;
+            }
+
             return slDocument;
 
         }
@@ -3885,7 +3956,7 @@ namespace Sampoerna.EMS.Website.Controllers
             styleBorder.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
             styleBorder.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
 
-            styleBorder.SetWrapText(true);
+           // styleBorder.SetWrapText(true);
 
             //SLStyle styleWrap = slDocument.CreateStyle();
             //styleWrap.SetWrapText(true);

@@ -152,7 +152,10 @@ namespace Sampoerna.EMS.BLL
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
+
             var mapResult = Mapper.Map<List<Pbck7SummaryReportDto>>(dbData.ToList());
+
+            var result = new List<Pbck7SummaryReportDto>();
 
             foreach (var pbck7SummaryReportDto in mapResult)
             {
@@ -184,48 +187,78 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 //pbck7item
-                pbck7SummaryReportDto.FaCode = "";
-                var listFaCode = new List<string>();
-                var listBrand = new List<string>();
-                var listContent = new List<string>();
-                var listHje = new List<string>();
-                var listTariff = new List<string>();
-                var listPbck7Qty = new List<string>();
-                var listFiscalYear = new List<string>();
-                var listExciseValue = new List<string>();
+                //pbck7SummaryReportDto.FaCode = "";
+                //var listFaCode = new List<string>();
+                //var listBrand = new List<string>();
+                //var listContent = new List<string>();
+                //var listHje = new List<string>();
+                //var listTariff = new List<string>();
+                //var listPbck7Qty = new List<string>();
+                //var listFiscalYear = new List<string>();
+                //var listExciseValue = new List<string>();
                 Pbck7SummaryReportDto dto = pbck7SummaryReportDto;
-                var pbck7Item = _repositoryPbck7Item.Get(c => c.PBCK7_ID == dto.Pbck7Id);
+                var pbck7Item = _repositoryPbck7Item.Get(c => c.PBCK7_ID == dto.Pbck7Id).ToList();
+                //if (pbck7Item.Count == 0)
+                //    result.Add(pbck7SummaryReportDto);
+                //else
+                //{
                 foreach (var item in pbck7Item)
                 {
-                        listFaCode.Add(item.FA_CODE);
-                        listBrand.Add(item.BRAND_CE);
-                        listContent.Add(ConvertHelper.ConvertDecimalToStringMoneyFormat(item.BRAND_CONTENT));
+                    var summaryReport = new Pbck7SummaryReportDto();
+                    summaryReport.Pbck7Number = pbck7SummaryReportDto.Pbck7Number;
+                    summaryReport.Nppbkc = pbck7SummaryReportDto.Nppbkc;
+                    summaryReport.PlantName = pbck7SummaryReportDto.PlantName;
 
-                        listHje.Add(ConvertHelper.ConvertDecimalToStringMoneyFormat(item.HJE));
-                        listTariff.Add(ConvertHelper.ConvertDecimalToStringMoneyFormat(item.TARIFF));
-                        listPbck7Qty.Add(ConvertHelper.ConvertDecimalToStringMoneyFormat(item.PBCK7_QTY));
-                        listFiscalYear.Add(item.FISCAL_YEAR.ToString());
-                        listExciseValue.Add(ConvertHelper.ConvertDecimalToStringMoneyFormat(item.EXCISE_VALUE));
+                    summaryReport.Pbck7Date = pbck7SummaryReportDto.Pbck7Date;
+                    summaryReport.DocumentType = pbck7SummaryReportDto.DocumentType;
+                    summaryReport.Pbck7Status = pbck7SummaryReportDto.Pbck7Status;
+                    summaryReport.ExecFrom = pbck7SummaryReportDto.ExecFrom;
+                    summaryReport.ExecTo = pbck7SummaryReportDto.ExecTo;
+                    summaryReport.Back1No = pbck7SummaryReportDto.Back1No;
+                    summaryReport.Back1Date = pbck7SummaryReportDto.Back1Date;
+
+                    summaryReport.FaCode = item.FA_CODE;
+                    summaryReport.Brand = item.BRAND_CE;
+                    summaryReport.Content = ConvertHelper.ConvertDecimalToStringMoneyFormat(item.BRAND_CONTENT);
+                    summaryReport.Hje = ConvertHelper.ConvertDecimalToStringMoneyFormat(item.HJE);
+                    summaryReport.Tariff = ConvertHelper.ConvertDecimalToStringMoneyFormat(item.TARIFF);
+                    summaryReport.Pbck7Qty = ConvertHelper.ConvertDecimalToStringMoneyFormat(item.PBCK7_QTY);
+                    summaryReport.FiscalYear = item.FISCAL_YEAR.ToString();
+                    summaryReport.ExciseValue = ConvertHelper.ConvertDecimalToStringMoneyFormat(item.EXCISE_VALUE);
+
+                    summaryReport.Poa = pbck7SummaryReportDto.Poa;
+                    summaryReport.Creator = pbck7SummaryReportDto.Creator;
+                    summaryReport.Pbck3No = pbck7SummaryReportDto.Pbck3No;
+                    summaryReport.Pbck3Status = pbck7SummaryReportDto.Pbck3Status;
+                    summaryReport.Ck2No = pbck7SummaryReportDto.Ck2No;
+                    summaryReport.Ck2Value = pbck7SummaryReportDto.Ck2Value;
+
+                    result.Add(summaryReport);
+
+                    //listFaCode.Add(item.FA_CODE);
+                    //listBrand.Add(item.BRAND_CE);
+                    //listContent.Add(ConvertHelper.ConvertDecimalToStringMoneyFormat(item.BRAND_CONTENT));
+
+                    //listHje.Add(ConvertHelper.ConvertDecimalToStringMoneyFormat(item.HJE));
+                    //listTariff.Add(ConvertHelper.ConvertDecimalToStringMoneyFormat(item.TARIFF));
+                    //listPbck7Qty.Add(ConvertHelper.ConvertDecimalToStringMoneyFormat(item.PBCK7_QTY));
+                    //listFiscalYear.Add(item.FISCAL_YEAR.ToString());
+                    //listExciseValue.Add(ConvertHelper.ConvertDecimalToStringMoneyFormat(item.EXCISE_VALUE));
                 }
+                //}
+                //pbck7SummaryReportDto.FaCode = string.Join("<br/>", listFaCode);
+                //pbck7SummaryReportDto.Brand = string.Join("<br/>", listBrand);
+                //pbck7SummaryReportDto.Content = string.Join("<br/>", listContent);
 
-                pbck7SummaryReportDto.FaCode = string.Join("<br/>", listFaCode);
-                pbck7SummaryReportDto.Brand = string.Join("<br/>", listBrand);
-                pbck7SummaryReportDto.Content = string.Join("<br/>", listContent);
-
-                pbck7SummaryReportDto.Hje = string.Join("<br/>", listHje);
-                pbck7SummaryReportDto.Tariff = string.Join("<br/>", listTariff);
-                pbck7SummaryReportDto.Pbck7Qty = string.Join("<br/>", listPbck7Qty);
-                pbck7SummaryReportDto.FiscalYear = string.Join("<br/>", listFiscalYear);
-                pbck7SummaryReportDto.ExciseValue = string.Join("<br/>", listExciseValue);
+                //pbck7SummaryReportDto.Hje = string.Join("<br/>", listHje);
+                //pbck7SummaryReportDto.Tariff = string.Join("<br/>", listTariff);
+                //pbck7SummaryReportDto.Pbck7Qty = string.Join("<br/>", listPbck7Qty);
+                //pbck7SummaryReportDto.FiscalYear = string.Join("<br/>", listFiscalYear);
+                //pbck7SummaryReportDto.ExciseValue = string.Join("<br/>", listExciseValue);
 
             }
 
-            //foreach (var pbck7AndPbck3Dto in dbData)
-            //{
-            //    //pbck7AndPbck3Dto.Back1Dto = GetBack1ByPbck7(pbck7AndPbck3Dto.Pbck7Id);
-            //    
-            //}
-            return mapResult;
+            return result;
 
         }
 

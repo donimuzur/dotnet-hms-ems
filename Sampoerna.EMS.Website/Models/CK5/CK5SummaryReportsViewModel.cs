@@ -119,6 +119,9 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string CompanyDestination { get; set; }
         public string Poa { get; set; }
         public string Creator { get; set; }
+
+        public string MaterialNumber { get; set; }
+        public string MaterialDescription { get; set; }
     }
 
     public class CK5ExportSummaryReportsViewModel : CK5SearchSummaryReportsViewModel
@@ -177,6 +180,9 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool CompanyDestination { get; set; }
         public bool Poa { get; set; }
         public bool Creator { get; set; }
+
+        public bool MaterialNumber { get; set; }
+        public bool MaterialDescription { get; set; }
     }
 
   
