@@ -1,0 +1,10 @@
+
+/****** Object:  Table [dbo].[ZAAP_SHIFT_RPT]    Script Date: 1/20/2016 4:26:14 PM ******/
+ALTER TABLE ZAAP_SHIFT_RPT ALTER COLUMN 
+QTY decimal(18,3)
+
+GO
+
+ALTER TABLE ZAAP_SHIFT_RPT ALTER COLUMN
+ORIGINAL_QTY decimal(18,3)
+GO
