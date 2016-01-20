@@ -134,5 +134,24 @@ namespace Sampoerna.EMS.BLL.Services
             return data.ToList();
         }
 
+        public List<INVENTORY_MOVEMENT> GetMvt201(InvMovementGetUsageByParamInput input)
+        {
+            var mvtType201 = new List<string>()
+            {
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage201)
+            };
+
+            Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue
+                && c.POSTING_DATE.Value.Year == input.PeriodYear && c.POSTING_DATE.Value.Month == input.PeriodMonth;
+
+            if (input.PlantIdList.Count > 0)
+            {
+                queryFilter = queryFilter.And(c => input.PlantIdList.Contains(c.PLANT_ID));
+            }
+
+            queryFilter = queryFilter.And(c => mvtType201.Contains(c.MVT));
+
+            return _repository.Get(queryFilter).ToList();
+        }
     }
 }
