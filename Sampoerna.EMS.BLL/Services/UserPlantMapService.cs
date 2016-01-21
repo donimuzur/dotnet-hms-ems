@@ -89,5 +89,15 @@ namespace Sampoerna.EMS.BLL.Services
             return plantList;
         }
 
+
+        public List<USER_PLANT_MAP> GetByPlantId(string plantId)
+        {
+            return _repository.Get(p => p.PLANT_ID == plantId, null, "USER").ToList();
+        }
+
+        public List<USER_PLANT_MAP> GetByNppbkcId(string nppbkcId)
+        {
+            return _repository.Get(p => p.NPPBKC_ID == nppbkcId).ToList();
+        }
     }
 }

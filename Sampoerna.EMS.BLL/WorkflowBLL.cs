@@ -5,6 +5,7 @@ using Microsoft.SqlServer.Server;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core;
 using Voxteneo.WebComponents.Logger;
 using Enums = Sampoerna.EMS.Core.Enums;
@@ -22,6 +23,7 @@ namespace Sampoerna.EMS.BLL
         private IWasteRoleServices _wasteRoleServices;
 
         private IPoaDelegationServices _poaDelegationServices;
+        private IUserPlantMapService _userPlantMapService;
 
         public WorkflowBLL(IUnitOfWork uow, ILogger logger)
         {
@@ -34,6 +36,7 @@ namespace Sampoerna.EMS.BLL
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
             _wasteRoleServices = new WasteRoleServices(_uow, _logger);
             _poaDelegationServices = new PoaDelegationServices(_uow, _logger);
+            _userPlantMapService = new UserPlantMapService(_uow, _logger);
         }
 
         public bool AllowEditDocument(WorkflowAllowEditAndSubmitInput input)
@@ -340,14 +343,16 @@ namespace Sampoerna.EMS.BLL
 
         public bool AllowGrCreated(WorkflowAllowApproveAndRejectInput input)
         {
-            if (input.CreatedUser != input.CurrentUser)
-            {
-                if (
-                    !_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
-                        DateTime.Now))
-                    return false;
-            }
-            
+            //if (input.CreatedUser != input.CurrentUser)
+            //{
+            //    if (
+            //        !_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
+            //            DateTime.Now))
+            //        return false;
+            //}
+            if (!IsUserUnsealing(input))
+                return false;
+
             return input.DocumentStatus == Enums.DocumentStatus.GRCreated ||
                     input.DocumentStatus == Enums.DocumentStatus.GRCompleted ||
                     input.DocumentStatus == Enums.DocumentStatus.WaitingForUnSealing;
@@ -474,22 +479,26 @@ namespace Sampoerna.EMS.BLL
 
         public bool AllowDomesticAlcoholGoodReceive(WorkflowAllowApproveAndRejectInput input)
         {
-            if (input.CreatedUser != input.CurrentUser)
-                if (
-                    !_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
-                        DateTime.Now))
-                    return false;
+            //if (input.CreatedUser != input.CurrentUser)
+            //    if (
+            //        !_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
+            //            DateTime.Now))
+            //        return false;
+            if (!IsUserUnsealing(input))
+                return false;
 
             return input.DocumentStatus == Enums.DocumentStatus.GoodReceive;
         }
 
         public bool AllowGoodReceive(WorkflowAllowApproveAndRejectInput input)
         {
-            if (input.CreatedUser != input.CurrentUser)
-                if (
-                    !_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
-                        DateTime.Now))
-                    return false;
+            //if (input.CreatedUser != input.CurrentUser)
+            //    if (
+            //        !_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
+            //            DateTime.Now))
+            //        return false;
+            if (!IsUserUnsealing(input))
+                return false;
 
             if (input.Ck5ManualType != Enums.Ck5ManualType.Trial)
                 return false;
@@ -516,11 +525,13 @@ namespace Sampoerna.EMS.BLL
             if (input.DocumentStatus != Enums.DocumentStatus.GoodReceive)
                 return false;
 
-            if (input.CreatedUser == input.CurrentUser)
-                return true;
+            //if (input.CreatedUser == input.CurrentUser)
+            //    return true;
 
-            if (_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
-                       DateTime.Now))
+            //if (_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
+            //           DateTime.Now))
+            //    return false;
+            if (!IsUserUnsealing(input))
                 return false;
 
             return IsOnePlant(input.DestPlant, input.CurrentUser);
@@ -629,6 +640,22 @@ namespace Sampoerna.EMS.BLL
             listUser.AddRange(listPoaDelegate);
 
             return listUser.Contains(input.CurrentUser);
+        }
+
+        private bool IsUserUnsealing(WorkflowAllowApproveAndRejectInput input)
+        {
+            if (input.CreatedUser == input.CurrentUser) return true;
+            if (_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,DateTime.Now)) 
+                return true;
+            //return false;
+            //get user by plant 
+            var listUserPlantMap = _userPlantMapService.GetByPlantId(input.PlantId);
+            var listUser = listUserPlantMap.Select(c => c.USER_ID).ToList();
+            if (listUser.Contains(input.CurrentUser))
+                return true;
+            //and get user by plant delegate
+            var listUserDelegate = _poaDelegationServices.GetListPoaDelegateByDate(listUser, DateTime.Now);
+            return listUserDelegate.Contains(input.CurrentUser);
         }
     }
 }
