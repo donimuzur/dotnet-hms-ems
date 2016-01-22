@@ -26,7 +26,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string BATCH { get; set; }
         public Nullable<decimal> PROD_QTY_STICK { get; set; }
         public Nullable<decimal> QTY { get; set; }
-        public Nullable<int> BUNDLE { get; set; }
+        public Nullable<decimal> BUNDLE { get; set; }
         public string MARKET { get; set; }
         public string DOCGMVTER { get; set; }
         public string MATDOC { get; set; }

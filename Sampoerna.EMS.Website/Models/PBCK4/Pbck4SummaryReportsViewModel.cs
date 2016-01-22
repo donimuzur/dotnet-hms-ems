@@ -81,7 +81,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
         public string CompensatedCk1Number { get; set; }
         public string PaymentDate { get; set; }
         public string Status { get; set; }
-
+        public string CompletedDate { get; set; }
     }
 
     public class Pbck4ExportSummaryReportsViewModel : Pbck4SearchSummaryReportsViewModel
@@ -110,7 +110,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
         public bool CompensatedCk1Number { get; set; }
         public bool PaymentDate { get; set; }
         public bool Status { get; set; }
-        
+        public bool CompletedDate { get; set; }
     }
 
   

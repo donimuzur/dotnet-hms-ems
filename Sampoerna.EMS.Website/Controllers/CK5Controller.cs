@@ -3649,6 +3649,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, data.Creator);
                     iColumn = iColumn + 1;
                 }
+
+                if (modelExport.CompletedDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CompletedDate);
+                    iColumn = iColumn + 1;
+                }
+
                 iRow++;
             }
 
@@ -3937,6 +3944,12 @@ namespace Sampoerna.EMS.Website.Controllers
             if (modelExport.Creator)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Creator");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.CompletedDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Completed Date");
                 iColumn = iColumn + 1;
             }
 
@@ -4802,7 +4815,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, data.Ck2Value);
                     iColumn = iColumn + 1;
                 }
-                
+
+                if (modelExport.CompletedDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CompletedDate);
+                    iColumn = iColumn + 1;
+                }
+
                 iRow++;
             }
 
@@ -4893,6 +4912,12 @@ namespace Sampoerna.EMS.Website.Controllers
             if (modelExport.Ck2Value)
             {
                 slDocument.SetCellValue(iRow, iColumn, "CK-2 Value");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.CompletedDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Completed Date");
                 iColumn = iColumn + 1;
             }
            

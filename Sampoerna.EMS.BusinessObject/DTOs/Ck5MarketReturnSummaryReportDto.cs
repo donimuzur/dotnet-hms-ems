@@ -19,5 +19,6 @@
         public string Ck2Number { get; set; }
         public string Ck2Value { get; set; }
         public string Status { get; set; }
+        public string CompletedDate { get; set; }
     }
 }
