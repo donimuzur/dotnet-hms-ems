@@ -58,6 +58,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string Ck2Number { get; set; }
         public string Ck2Value { get; set; }
         public string Status { get; set; }
+        public string CompletedDate { get; set; }
 
     }
 
@@ -79,7 +80,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool Ck2Number { get; set; }
         public bool Ck2Value { get; set; }
         public bool Status { get; set; }
-
+        public bool CompletedDate { get; set; }
     }
 
 }

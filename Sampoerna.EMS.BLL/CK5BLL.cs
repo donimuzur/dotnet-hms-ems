@@ -2500,6 +2500,8 @@ namespace Sampoerna.EMS.BLL
                 SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
                 
                 dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+                dbData.MODIFIED_DATE = DateTime.Now;
+                
                 input.ActionType = Enums.ActionType.Completed;
                 AddWorkflowHistory(input);
 
@@ -2773,7 +2775,8 @@ namespace Sampoerna.EMS.BLL
                 SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
             
             dbData.STATUS_ID = Enums.DocumentStatus.Completed;
-            
+            dbData.MODIFIED_DATE = DateTime.Now;
+
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
             //delegate
@@ -2932,6 +2935,8 @@ namespace Sampoerna.EMS.BLL
                 else
                     dbData.STATUS_ID = Enums.DocumentStatus.Completed;
 
+                dbData.MODIFIED_DATE = DateTime.Now;
+
                 //delegate
                 input.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY, input.UserId,
                     DateTime.Now);
@@ -2961,6 +2966,7 @@ namespace Sampoerna.EMS.BLL
 
             //dbData.STATUS_ID = Enums.DocumentStatus.WasteApproval;
             dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+            dbData.MODIFIED_DATE = DateTime.Now;
 
             //delegate
             //get list poa disposal
@@ -3000,6 +3006,7 @@ namespace Sampoerna.EMS.BLL
             input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
             dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+            dbData.MODIFIED_DATE = DateTime.Now;
 
             //add to workflow
             AddWorkflowHistory(input);
@@ -3174,6 +3181,7 @@ namespace Sampoerna.EMS.BLL
                     SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
 
                     dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+                    dbData.MODIFIED_DATE = DateTime.Now;
 
                     input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
@@ -3197,6 +3205,7 @@ namespace Sampoerna.EMS.BLL
                         SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
 
                         dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+                        dbData.MODIFIED_DATE = DateTime.Now;
 
                         input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
@@ -3350,6 +3359,7 @@ namespace Sampoerna.EMS.BLL
                 SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
 
                 dbData.STATUS_ID = Enums.DocumentStatus.Completed;
+                dbData.MODIFIED_DATE = DateTime.Now;
 
                 input.DocumentNumber = dbData.SUBMISSION_NUMBER;
 
@@ -5189,7 +5199,10 @@ namespace Sampoerna.EMS.BLL
                     
                     
                     summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS_ID);
-
+                    if (dtData.STATUS_ID == Enums.DocumentStatus.Completed)
+                    {
+                        summaryDto.CompletedDate = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.MODIFIED_DATE);
+                    }
                     result.Add(summaryDto);
                 }
 

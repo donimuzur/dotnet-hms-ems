@@ -66,5 +66,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string MaterialNumber { get; set; }
         public string MaterialDescription { get; set; }
+
+        public string CompletedDate { get; set; }
     }
 }
