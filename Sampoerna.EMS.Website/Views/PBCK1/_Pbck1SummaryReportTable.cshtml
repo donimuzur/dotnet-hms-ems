@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1SummaryReportViewModel
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.PBCK1.Pbck1SummaryReportViewModel
 
 <table id="pbckTable" class="table-condensed display compact nowrap" width="100%">
     <thead>
@@ -45,6 +46,7 @@
             <th>Doc Number CK-5</th>
             <th>Status Doc</th>
             <th>Grand Total Exciseable</th>
+            <th>Completed Date</th>
         </tr>
     </thead>
     <tbody>
@@ -275,6 +277,23 @@
                             {
                                 <text>-</text>
                             } 
+                        </td>
+                        <td>
+                            @if (item.Status == Enums.DocumentStatus.Completed)
+                            {
+                                if (item.CompletedDate == null)
+                                {
+                                    @item.DecreeDate.Value.ToString("dd-MMMM-yyyy")
+                                }
+                                else
+                                {
+                                    @item.CompletedDate.Value.ToString("dd-MMMM-yyyy")
+                                }
+                            }
+                            else
+                            {
+                                <text>-</text>
+                            }
                         </td>
                     </tr>
                             row = row + 1;

@@ -62,6 +62,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public List<T001WDto> NppbkcPlants { get; set; }
         public bool IsNppbkcImport { get; set; }
         public List<string> PoaList { get; set; }
+        public DateTime? CompletedDate { get; set; }
 
         public List<Pbck1SummaryReportDto> Pbck1Childs { get; set; }
         public Pbck1SummaryReportDto Pbck1Parent { get; set; }

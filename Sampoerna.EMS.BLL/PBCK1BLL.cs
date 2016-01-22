@@ -1585,6 +1585,7 @@ namespace Sampoerna.EMS.BLL
             dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
             dbData.PBCK1_DECREE_DOC = Mapper.Map<List<PBCK1_DECREE_DOC>>(input.AdditionalDocumentData.Pbck1DecreeDoc);
             dbData.STATUS_GOV = Enums.DocumentStatusGov.FullApproved;
+            dbData.MODIFIED_DATE = DateTime.Now;
 
             //dbData.APPROVED_BY_POA = input.UserId;
             //dbData.APPROVED_DATE_POA = DateTime.Now;
@@ -1643,6 +1644,7 @@ namespace Sampoerna.EMS.BLL
             dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
             dbData.PBCK1_DECREE_DOC = Mapper.Map<List<PBCK1_DECREE_DOC>>(input.AdditionalDocumentData.Pbck1DecreeDoc);
             dbData.STATUS_GOV = Enums.DocumentStatusGov.PartialApproved;
+            dbData.MODIFIED_DATE = DateTime.Now;
 
             //dbData.APPROVED_BY_POA = input.UserId;
             //dbData.APPROVED_DATE_POA = DateTime.Now;
