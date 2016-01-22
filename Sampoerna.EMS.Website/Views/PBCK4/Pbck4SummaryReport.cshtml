@@ -321,7 +321,7 @@
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.CompletedDate, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "24" })Completed Date
+                                                        @Html.CheckBoxFor(model => model.ExportModel.CompletedDate, new { @class = "checkexport", @datacolumn = "24" })Completed Date
                                                     </label>
                                                 </div>
                                             </div>
@@ -404,7 +404,7 @@
                 column.visible(!column.visible());
             });
 
-            for (var i = 1; i < 24; i++) {
+            for (var i = 1; i < 25; i++) {
                 table.column(i).visible(false);
             }
             
