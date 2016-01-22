@@ -233,6 +233,11 @@
                                                         @Html.CheckBoxFor(model => model.ExportModel.IsSelectCk2Value, new { @class = "checkbox checkexport", @datacolumn = "23" })CK-2 Value
                                                     </label>
                                                 </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCompletedDate, new { @class = "checkbox checkexport", @datacolumn = "24" })CompletedDate
+                                                    </label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -293,7 +298,7 @@
                                 $('.checkexport').each(function () {
                                     this.checked = true;
                                 });
-                                for (var i = 0; i < 24; i++) {
+                                for (var i = 0; i < 25; i++) {
                                     table.column(i).visible(true);
                                 }
                                 $('#pbck7-summary').parents('div.dataTables_wrapper').first().show();
@@ -303,7 +308,7 @@
                                 $('.checkexport').each(function() {
                                     this.checked = false;
                                 });
-                                for (var i = 0; i < 24; i++) {
+                                for (var i = 0; i < 25; i++) {
                                     table.column(i).visible(false);
                                 }
                                 $('#pbck7-summary').parents('div.dataTables_wrapper').first().hide();
@@ -317,7 +322,7 @@
 
                             $('#pbck7-summary').parents('div.dataTables_wrapper').first().hide();
 
-                            for (var i = 0; i < 24; i++) {
+                            for (var i = 0; i < 25; i++) {
                                 if (table.column(i).visible()) {
                                     $('#pbck7-summary').parents('div.dataTables_wrapper').first().show();
                                     return;
@@ -328,7 +333,7 @@
 
                         if (blFirst) {
 
-                            for (var i = 3; i < 24; i++) {
+                            for (var i = 3; i < 25; i++) {
                                 table.column(i).visible(false);
                             }
 

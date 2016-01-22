@@ -1668,7 +1668,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, data.Status);
                     iColumn = iColumn + 1;
                 }
-             
+
+                if (modelExport.CompletedDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CompletedDate);
+                    iColumn = iColumn + 1;
+                }
+
                 iRow++;
             }
 
@@ -1804,6 +1810,12 @@ namespace Sampoerna.EMS.Website.Controllers
             if (modelExport.Status)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Status");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.CompletedDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Completed Date");
                 iColumn = iColumn + 1;
             }
           

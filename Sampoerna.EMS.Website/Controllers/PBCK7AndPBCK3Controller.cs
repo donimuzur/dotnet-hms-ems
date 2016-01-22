@@ -1209,25 +1209,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var input = Mapper.Map<Pbck7SummaryInput>(model.ExportModel);
             var result = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input);
-            //var src = (from b in result
-            //           select new Pbck7SummaryReportItem()
-            //           {
-
-            //               Pbck7Number = b.Pbck7Number,
-            //               Nppbkc = b.NppbkcId,
-            //               PlantName = b.PlantId + "-" + b.PlantName,
-            //               DocumentType = EnumHelper.GetDescription(b.DocumentType),
-            //               Pbck7Date = b.Pbck7Date,
-            //               Pbck7Status = EnumHelper.GetDescription(b.Pbck7Status),
-            //               ExecFrom = b.ExecDateFrom,
-            //               ExecTo = b.ExecDateTo,
-            //               Back1No = b.Back1Dto != null ? b.Back1Dto.Back1Number : string.Empty,
-            //               Back1Date = b.Back1Dto != null ? b.Back1Dto.Back1Date : null
-
-
-            //           }).ToList();
-
-            //var dataSummaryReport = src.OrderBy(a => a.Pbck7Number);
+           
             var dataSummaryReport = Mapper.Map<List<Pbck7SummaryReportItem>>(result.OrderBy(c => c.Pbck7Number));
 
             int iRow = 1;
@@ -1396,6 +1378,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     iColumn = iColumn + 1;
                 }
 
+                if (model.ExportModel.IsSelectCompletedDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CompletedDate);
+                    iColumn = iColumn + 1;
+                }
 
                 iRow++;
             }
@@ -1547,6 +1534,12 @@ namespace Sampoerna.EMS.Website.Controllers
             if (modelExport.IsSelectCk2Value)
             {
                 slDocument.SetCellValue(iRow, iColumn, "CK-2 Value");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectCompletedDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Completed Date");
                 iColumn = iColumn + 1;
             }
            

@@ -33,5 +33,6 @@
 
         public string PlantId { get; set; }
         public string PlantDescription { get; set; }
+        public string CompletedDate { get; set; }
     }
 }

@@ -122,6 +122,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public string MaterialNumber { get; set; }
         public string MaterialDescription { get; set; }
+        public string CompletedDate { get; set; }
     }
 
     public class CK5ExportSummaryReportsViewModel : CK5SearchSummaryReportsViewModel
@@ -183,6 +184,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public bool MaterialNumber { get; set; }
         public bool MaterialDescription { get; set; }
+        public bool CompletedDate { get; set; }
     }
 
   

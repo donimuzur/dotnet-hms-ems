@@ -197,7 +197,11 @@
                                                         @Html.CheckBoxFor(model => model.ExportModel.Ck2Value, new { @class = "checkbox checkexport", @datacolumn = "14" })CK-2 Value
                                                     </label>
                                                 </div>
-
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.CompletedDate, new { @class = "checkbox checkexport", @datacolumn = "15" })CompletedDate
+                                                    </label>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -276,7 +280,7 @@
                     $('.checkexport').each(function () {
                         this.checked = true;
                     });
-                    for (var i = 0; i < 15; i++) {
+                    for (var i = 0; i < 16; i++) {
                         table.column(i).visible(true);
                     }
                     $('#ck5Table').parents('div.dataTables_wrapper').first().show();
@@ -286,7 +290,7 @@
                     $('.checkexport').each(function () {
                         this.checked = false;
                     });
-                    for (var i = 0; i < 15; i++) {
+                    for (var i = 0; i < 16; i++) {
                         table.column(i).visible(false);
                     }
                     $('#ck5Table').parents('div.dataTables_wrapper').first().hide();
@@ -305,7 +309,7 @@
 
                 $('#ck5Table').parents('div.dataTables_wrapper').first().hide();
 
-                for (var i = 0; i < 15; i++) {
+                for (var i = 0; i < 16; i++) {
                     if (table.column(i).visible()) {
                         $('#ck5Table').parents('div.dataTables_wrapper').first().show();
                         return;
@@ -315,7 +319,7 @@
             });
 
             if (blFirst) {
-                for (var i = 7; i < 15; i++) {
+                for (var i = 7; i < 16; i++) {
                     table.column(i).visible(false);
                 }
             } else {

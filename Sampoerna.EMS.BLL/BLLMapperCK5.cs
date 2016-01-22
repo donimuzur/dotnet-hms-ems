@@ -176,6 +176,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.CompanyDestination, opt => opt.MapFrom(src => src.DEST_PLANT_COMPANY_CODE + "-" + src.DEST_PLANT_COMPANY_NAME))
                 .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.APPROVED_BY_POA))
                 .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.CREATED_BY))
+                .ForMember(dest => dest.CompletedDate, opt => opt.MapFrom(src => src.STATUS_ID == Enums.DocumentStatus.Completed ? (src.MODIFIED_DATE.HasValue ? src.MODIFIED_DATE.Value.ToString("dd MMM yyyy") : string.Empty):string.Empty))
                 ;
 
             Mapper.CreateMap<ZAIDM_EX_BRAND, GetListMaterialMarketReturnOutput>().IgnoreAllNonExisting()

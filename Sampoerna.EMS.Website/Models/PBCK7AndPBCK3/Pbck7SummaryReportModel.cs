@@ -92,6 +92,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public bool IsSelectPbck3Status { get; set; }
         public bool IsSelectCk2No { get; set; }
         public bool IsSelectCk2Value { get; set; }
+        public bool IsSelectCompletedDate { get; set; }
     }
 
     public class Pbck7SummaryReportItem
@@ -121,5 +122,6 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public string Pbck3Status { get; set; }
         public string Ck2No { get; set; }
         public string Ck2Value { get; set; }
+        public string CompletedDate { get; set; }
     }
 }
