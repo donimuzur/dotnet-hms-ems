@@ -34,6 +34,194 @@ namespace Sampoerna.EMS.XMLReader
                 var items = new List<PRODUCTION>();
                 foreach (var xElement in xmlItems)
                 {
+                    var zaapShftRptItem = new ZAAP_SHIFT_RPT();
+                    zaapShftRptItem.MATDOC = _xmlMapper.GetElementValue(xElement.Element("MatDoc"));
+
+                    zaapShftRptItem.BATCH = _xmlMapper.GetElementValue(xElement.Element("Batch"));
+
+                    var bundle = _xmlMapper.GetElementValue(xElement.Element("Bundle"));
+                    if (String.IsNullOrEmpty(bundle))
+                        zaapShftRptItem.BUNDLE = null;
+                    else
+                    {
+                        zaapShftRptItem.BUNDLE = Convert.ToDecimal(bundle);
+                    }
+                    
+                    //zaapShftRptItem.MARKET = _xmlMapper.GetElementValue(xElement.Element("Market"));
+                    zaapShftRptItem.DOCGMVTER = _xmlMapper.GetElementValue(xElement.Element("DocGMvtEr"));
+
+                    zaapShftRptItem.ORDR = _xmlMapper.GetElementValue(xElement.Element("Order"));
+                    zaapShftRptItem.SHIFT = _xmlMapper.GetElementValue(xElement.Element("Shift"));
+                    //zaapShftRptItem.COMPANY_CODE = item.COMPANY_CODE;
+
+                    
+                    zaapShftRptItem.FA_CODE = _xmlMapper.GetElementValue(xElement.Element("Material"));
+
+                    decimal qty;
+                    decimal confQty;
+                    try
+                    {
+                        confQty = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("ConfQty")).Replace(",", ""));
+                        qty = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("Quantity")).Replace(",", ""));
+                    }
+                    catch (Exception ex)
+                    {
+                        string reason = "";
+                        var qtyString = _xmlMapper.GetElementValue(xElement.Element("Quantity"));
+                        if (ex.GetType() == typeof(FormatException))
+                            reason = "format not handled";
+                        else
+                        {
+                            reason = "reason unknown";
+                        }
+                        _xmlMapper.Errors.Add(String.Format("failed to get qty : {0} value {1}", reason, qtyString));
+
+                        continue;
+                    }
+
+                    var bun = _xmlMapper.GetElementValue(xElement.Element("BUn"));
+                    switch (bun)
+                    {
+                        case "TH":
+                            zaapShftRptItem.QTY = qty * 1000;
+                            zaapShftRptItem.UOM = "Btg";
+
+
+                            break;
+                        case "KG":
+                            zaapShftRptItem.QTY = qty * 1000;
+                            zaapShftRptItem.UOM = "G";
+
+                            break;
+                        default:
+                            zaapShftRptItem.QTY = qty;
+                            zaapShftRptItem.UOM = bun;
+
+
+                            break;
+                    }
+                    //zaapShftRptItem.QTY = item.QTY;
+                    //zaapShftRptItem.UOM = item.UOM;
+
+                    zaapShftRptItem.ORIGINAL_QTY = confQty;
+                    zaapShftRptItem.ORIGINAL_UOM = bun;
+
+                    zaapShftRptItem.PRODUCTION_DATE = Convert.ToDateTime(_xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("ProdDate"))));
+                    zaapShftRptItem.WERKS = _xmlMapper.GetElementValue(xElement.Element("Plnt"));
+
+                    var mvt = _xmlMapper.GetElementValue(xElement.Element("MvT"));
+                    var enteredOn = Convert.ToDateTime(_xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("EnteredOn"))));
+                    var postingDate = Convert.ToDateTime(_xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("PostgDate")))); 
+                    zaapShftRptItem.MVT = mvt;
+                    zaapShftRptItem.POSTING_DATE = postingDate;
+                    zaapShftRptItem.ENTERED_DATE = enteredOn;
+
+                    var company = GetCompanyByPlant(zaapShftRptItem.WERKS);
+                    if (company != null)
+                    {
+                        zaapShftRptItem.COMPANY_CODE = company.BUKRS;
+                        //zaapShftRptItem.COMPANY_NAME = company.T001.BUTXT;
+                        //zaapShftRptItem.PLANT_NAME = company.T001W.NAME1;
+                    }
+
+                    var existingZaap = GetExistingZaapShiftRpt(zaapShftRptItem);
+                    if (existingZaap != null)
+                    {
+                        zaapShftRptItem.MODIFIED_BY = "PI";
+                        zaapShftRptItem.MODIFIED_DATE = DateTime.Now;
+                        zaapShftRptItem.CREATED_DATE = existingZaap.CREATED_DATE;
+                        zaapShftRptItem.CREATED_BY = existingZaap.CREATED_BY;
+                        zaapShftRptItem.ZAAP_SHIFT_RPT_ID = existingZaap.ZAAP_SHIFT_RPT_ID;
+                    }
+                    else
+                    {
+                        zaapShftRptItem.CREATED_BY = "PI";
+                        zaapShftRptItem.CREATED_DATE = DateTime.Now;
+                    }
+
+                    _xmlMapper.InsertOrUpdate(zaapShftRptItem);
+
+                }
+
+                var newData = RecalculateZaapShftRpt();
+
+                foreach (var production in newData)
+                {
+                    var existingProd = GetProductionExisting(production.FA_CODE, production.WERKS,
+                        production.PRODUCTION_DATE);
+
+                    if (existingProd != null)
+                    {
+                        
+                        production.MODIFIED_BY = "PI";
+                        production.MODIFIED_DATE = DateTime.Now;
+                        production.CREATED_BY = existingProd.CREATED_BY;
+                        production.CREATED_DATE = existingProd.CREATED_DATE;
+                        production.QTY = existingProd.QTY;
+                    }
+                    else
+                    {
+                        production.CREATED_BY = "PI";
+                        production.CREATED_DATE = DateTime.Now;
+
+                        production.QTY = 0;
+                        
+                    }
+
+                    var existingBrand = GetMaterialBrand(production.FA_CODE, production.WERKS);
+                    if (existingBrand != null)
+                    {
+                        if (existingBrand.BRAND_CONTENT == null)
+                        {
+                            throw new Exception(String.Format(
+                                "Brand {0} - {2} in plant {1} has null CONTENT value", existingBrand.FA_CODE,
+                                existingBrand.WERKS, existingBrand.STICKER_CODE));
+                        }
+
+                        production.BRAND_DESC = existingBrand.BRAND_CE;
+                    }
+
+                    var company = GetCompanyByPlant(production.WERKS);
+                    if (company != null)
+                    {
+                        production.COMPANY_CODE = company.BUKRS;
+                        production.COMPANY_NAME = company.T001.BUTXT;
+                        production.PLANT_NAME = company.T001W.NAME1;
+                    }
+
+                    switch (production.UOM)
+                    {
+                        case "Btg":
+                            production.QTY_PACKED = production.QTY_PACKED * 1000;
+                            
+
+
+                            break;
+                        case "G":
+                            production.QTY_PACKED = production.QTY_PACKED * 1000;
+                            
+
+                            break;
+                        
+                    }
+
+                    items.Add(production);
+                }
+
+                return items;
+            }
+        }
+
+
+        public List<PRODUCTION> ItemsTemp
+        {
+            get
+            {
+                var xmlRoot = _xmlMapper.GetElement("PRDOUTPUTDetails");
+                var xmlItems = xmlRoot.Elements("row");
+                var items = new List<PRODUCTION>();
+                foreach (var xElement in xmlItems)
+                {
                     try
                     {
                         var item = new PRODUCTION();
@@ -51,7 +239,7 @@ namespace Sampoerna.EMS.XMLReader
                         }
 
                         item.BATCH = _xmlMapper.GetElementValue(xElement.Element("Batch"));
-
+                        
                         var bundle = _xmlMapper.GetElementValue(xElement.Element("Bundle"));
                         if(String.IsNullOrEmpty(bundle))
                             item.BUNDLE = null;
@@ -59,7 +247,10 @@ namespace Sampoerna.EMS.XMLReader
                         {
                             item.BUNDLE = Convert.ToInt32(bundle);
                         }
-                        
+
+                        var mvt = _xmlMapper.GetElementValue(xElement.Element("MvT"));
+                        var enteredOn = Convert.ToDateTime(_xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("EnteredOn"))));
+                        var postingDate = Convert.ToDateTime(_xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("PostgDate")))); 
                         
                         //item.MARKET = _xmlMapper.GetElementValue(xElement.Element("Market"));
                         //item.DOCGMVTER = _xmlMapper.GetElementValue(xElement.Element("DocGMvtEr"));
@@ -74,14 +265,18 @@ namespace Sampoerna.EMS.XMLReader
                         var bun = _xmlMapper.GetElementValue(xElement.Element("BUn"));
 
                         decimal qty;
+                        decimal confQty;
+                        decimal oriConfQty;
                         try
                         {
-                            qty = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("Quantity")).Replace(",",""));
+                            qty = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("Quantity")).Replace(",", ""));
+                            confQty = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("ConfQty")).Replace(",", ""));
+                            oriConfQty = confQty;
                         }
                         catch (Exception ex)
                         {
                             string reason = "";
-                            var qtyString = _xmlMapper.GetElementValue(xElement.Element("Quantity"));
+                            var qtyString = _xmlMapper.GetElementValue(xElement.Element("ConfQty"));
                             if (ex.GetType() == typeof(FormatException))
                                 reason = "format not handled";
                             else
@@ -106,12 +301,14 @@ namespace Sampoerna.EMS.XMLReader
                             switch (bun)
                             {
                                 case "TH":
+                                    confQty = oriConfQty * 1000;
                                     item.QTY = qty * 1000;
                                     item.UOM = "Btg";
                                     
 
                                     break;
                                 case "KG":
+                                    confQty = oriConfQty * 1000;
                                     item.QTY = qty * 1000;
                                     item.UOM = "G";
                                     
@@ -125,8 +322,11 @@ namespace Sampoerna.EMS.XMLReader
                             }
                             item.BRAND_DESC = existingBrand.BRAND_CE;
 
-                                
-                            items.Add(item);
+                            if (mvt == "101")
+                            {
+                                items.Add(item);    
+                            }    
+                            
 
 
                             zaapShftRptItem.MATDOC = _xmlMapper.GetElementValue(xElement.Element("MatDoc"));
@@ -140,12 +340,15 @@ namespace Sampoerna.EMS.XMLReader
                             zaapShftRptItem.SHIFT = _xmlMapper.GetElementValue(xElement.Element("Shift"));
                             zaapShftRptItem.COMPANY_CODE = item.COMPANY_CODE;
                             zaapShftRptItem.FA_CODE = item.FA_CODE;
-                            zaapShftRptItem.QTY = item.QTY;
+                            zaapShftRptItem.QTY = confQty;
                             zaapShftRptItem.UOM = item.UOM;
-                            zaapShftRptItem.ORIGINAL_QTY = qty;
+                            zaapShftRptItem.ORIGINAL_QTY = oriConfQty;
                             zaapShftRptItem.ORIGINAL_UOM = bun;
                             zaapShftRptItem.PRODUCTION_DATE = item.PRODUCTION_DATE;
                             zaapShftRptItem.WERKS = item.WERKS;
+                            zaapShftRptItem.MVT = mvt;
+                            zaapShftRptItem.POSTING_DATE = postingDate;
+                            zaapShftRptItem.ENTERED_DATE = enteredOn;
 
 
                             var existingZaap = GetExistingZaapShiftRpt(zaapShftRptItem.MATDOC);
@@ -274,6 +477,25 @@ namespace Sampoerna.EMS.XMLReader
             return Convert.ToInt32(str);
         }
 
+        private ZAAP_SHIFT_RPT GetExistingZaapShiftRpt(ZAAP_SHIFT_RPT item)
+        {
+            var existingData = _xmlMapper.uow.GetGenericRepository<ZAAP_SHIFT_RPT>()
+                .Get(x=> x.BATCH == item.BATCH
+                    && x.FA_CODE == item.FA_CODE
+                    && x.WERKS == item.WERKS
+                    && x.MATDOC == item.MATDOC
+                    && x.MVT == item.MVT
+                    && x.ORDR == item.ORDR
+                    && x.SHIFT == item.SHIFT
+                    
+                    && x.PRODUCTION_DATE  == item.PRODUCTION_DATE
+                    && x.POSTING_DATE == item.POSTING_DATE
+                    && x.ENTERED_DATE == item.ENTERED_DATE
+                    ,null).FirstOrDefault();
+
+            return existingData;
+        }
+
         private ZAAP_SHIFT_RPT GetExistingZaapShiftRpt(string matdoc)
         {
             var existingData = _xmlMapper.uow.GetGenericRepository<ZAAP_SHIFT_RPT>()
@@ -286,17 +508,56 @@ namespace Sampoerna.EMS.XMLReader
         {
             foreach (var item in itemList)
             {
+
+
                 var existingProduction = GetProductionExisting(item.FA_CODE, item.WERKS,item.PRODUCTION_DATE);
                 
                 if (existingProduction == null)
                 {
-                                
+                    item.PROD_QTY_STICK = item.QTY;            
                     item.CREATED_DATE = DateTime.Now;
                     item.CREATED_BY = "PI";
+
+                    switch (item.UOM)
+                    {
+                        case "TH":
+
+                            
+                                item.QTY_PACKED = item.QTY;
+
+                            
+
+
+                            break;
+                        case "KG":
+
+                            
+                                item.QTY_PACKED = item.QTY;
+                                //item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
+
+                            
+                            break;
+                        default:
+
+
+                           
+                                //item.QTY_PACKED = existingProduction.QTY_PACKED;
+                                if (String.IsNullOrEmpty(item.BATCH))
+                                {
+                                    //item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
+                                }
+                            
+                            break;
+                    }
+                    item.QTY = 0;
                 }
                 else
                 {
-                    item.QTY = existingProduction.QTY + item.QTY;
+
+                    
+                    //if(item)
+                    item.PROD_QTY_STICK = item.QTY;
+                    item.QTY = existingProduction.QTY;
                     item.MODIFIED_DATE = DateTime.Now;
                     item.MODIFIED_BY = "PI";
                     item.CREATED_BY = existingProduction.CREATED_BY;
@@ -304,41 +565,7 @@ namespace Sampoerna.EMS.XMLReader
                                 
                 }
 
-                switch (item.UOM)
-                {
-                    case "TH":
-                        
-                        if (existingProduction == null)
-                        {
-                            item.PROD_QTY_STICK = item.QTY;
-                                        
-                        }
-                        
-
-                        break;
-                    case "KG":
-                        
-                        if (existingProduction != null)
-                        {
-
-                            item.QTY_PACKED = item.QTY;
-                            //item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
-                                
-                        }
-                        break;
-                    default:
-                        
-
-                        if (existingProduction != null)
-                        {
-                            //item.QTY_PACKED = existingProduction.QTY_PACKED;
-                            if (String.IsNullOrEmpty(item.BATCH))
-                            {
-                                //item.QTY_UNPACKED = existingProduction.QTY_UNPACKED;
-                            }
-                        }
-                        break;
-                }
+                
 
                 var existingBrand = GetMaterialBrand(item.FA_CODE, item.WERKS);
                 if (existingBrand != null)
@@ -346,15 +573,18 @@ namespace Sampoerna.EMS.XMLReader
                     int tempContent = 1;
                     if (int.TryParse(existingBrand.BRAND_CONTENT, out tempContent))
                     {
-                        if (item.QTY != null)
+                        
+                        if (item.PROD_QTY_STICK != null)
                         {
-                            decimal tempPack = decimal.Floor(item.QTY.Value/tempContent);
+                            decimal tempPack = decimal.Floor(item.PROD_QTY_STICK.Value / tempContent);
                             decimal tempQtyPacked = tempPack*tempContent;
 
                             item.QTY_PACKED = tempQtyPacked;
-                            //item.QTY_UNPACKED = item.QTY - item.QTY_PACKED;
-                            item.PROD_QTY_STICK = item.QTY;
                         }
+                        //item.QTY_UNPACKED = item.QTY - item.QTY_PACKED;
+                        //item.PROD_QTY_STICK = item.QTY;
+                            
+                        
                     }
                     else
                     {
@@ -366,6 +596,63 @@ namespace Sampoerna.EMS.XMLReader
                 }
             }
             
+        }
+
+        private List<PRODUCTION> RecalculateZaapShftRpt()
+        {
+            var tempProdList = _xmlMapper.uow.GetGenericRepository<ZAAP_SHIFT_RPT>().Get(x => x.MVT == "101").GroupBy(x => new
+            {
+                FA_CODE = x.FA_CODE,
+                WERKS = x.WERKS,
+                PRODUCTION_DATE = x.PRODUCTION_DATE,
+                MATDOC = x.MATDOC
+            }).Select(x =>
+            {
+                var zaapShiftRpt = x.FirstOrDefault();
+                return zaapShiftRpt != null ? new PRODUCTION()
+                {
+
+                    FA_CODE = zaapShiftRpt.FA_CODE,
+                    WERKS = zaapShiftRpt.WERKS,
+                    PRODUCTION_DATE = zaapShiftRpt.PRODUCTION_DATE,
+                    QTY_PACKED = zaapShiftRpt.ORIGINAL_QTY,
+                    PROD_QTY_STICK = x.Sum(y=> y.QTY),
+                    //COMPANY_CODE = zaapShiftRpt.COMPANY_CODE,
+                    BUNDLE = zaapShiftRpt.BUNDLE,
+                    ORDR = zaapShiftRpt.ORDR,
+                    DOCGMVTER = zaapShiftRpt.DOCGMVTER,
+                    UOM = zaapShiftRpt.UOM
+                } : null;
+            });
+
+
+            var prodList = tempProdList.GroupBy(x => new
+            {
+                FA_CODE = x.FA_CODE,
+                WERKS = x.WERKS,
+                PRODUCTION_DATE = x.PRODUCTION_DATE
+                //MATDOC = x.MATDOC
+            }).Select(x=>
+            {
+                var production = x.FirstOrDefault();
+                return production != null ? new PRODUCTION()
+                              {
+
+                                  FA_CODE = production.FA_CODE,
+                                  WERKS = production.WERKS,
+                                  PRODUCTION_DATE = production.PRODUCTION_DATE,
+                                  QTY_PACKED = x.Sum(y => y.QTY_PACKED),// production.QTY_PACKED,
+                                  //COMPANY_CODE = zaapShiftRpt.COMPANY_CODE,
+                                  PROD_QTY_STICK = x.Sum(y => y.PROD_QTY_STICK),
+                                  BUNDLE = production.BUNDLE,
+                                  ORDR = production.ORDR,
+                                  DOCGMVTER = production.DOCGMVTER,
+                                  UOM = production.UOM
+                              } : null;
+            });
+
+
+            return prodList.ToList();
         }
     }
 }

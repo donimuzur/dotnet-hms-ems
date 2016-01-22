@@ -109,9 +109,7 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<BACK1> BACK1 { get; set; }
         public virtual DbSet<PBCK3> PBCK3 { get; set; }
         public virtual DbSet<PBCK1_PROD_CONVERTER> PBCK1_PROD_CONVERTER { get; set; }
-        public virtual DbSet<PRODUCTION> PRODUCTION { get; set; }
         public virtual DbSet<USER_PLANT_MAP> USER_PLANT_MAP { get; set; }
-        public virtual DbSet<ZAAP_SHIFT_RPT> ZAAP_SHIFT_RPT { get; set; }
         public virtual DbSet<WASTE_ROLE> WASTE_ROLE { get; set; }
         public virtual DbSet<WASTE_STOCK> WASTE_STOCK { get; set; }
         public virtual DbSet<WASTE> WASTE { get; set; }
@@ -120,5 +118,9 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<LACK1_TRACKING_ALCOHOL> LACK1_TRACKING_ALCOHOL { get; set; }
         public virtual DbSet<XML_LOGS> XML_LOGS { get; set; }
         public virtual DbSet<XML_LOGS_DETAILS> XML_LOGS_DETAILS { get; set; }
+        public virtual DbSet<ZAIDM_EX_MATERIAL_BALANCE> ZAIDM_EX_MATERIAL_BALANCE { get; set; }
+        public virtual DbSet<POA_DELEGATION> POA_DELEGATION { get; set; }
+        public virtual DbSet<ZAAP_SHIFT_RPT> ZAAP_SHIFT_RPT { get; set; }
+        public virtual DbSet<PRODUCTION> PRODUCTION { get; set; }
     }
 }

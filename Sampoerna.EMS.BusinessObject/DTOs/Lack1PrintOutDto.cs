@@ -8,5 +8,7 @@
         public string ExcisableExecutiveCreator { get; set; }
 
         public string NppbkcCity { get; set; }
+
+        public string PoaPrintedName { get; set; }
     }
 }

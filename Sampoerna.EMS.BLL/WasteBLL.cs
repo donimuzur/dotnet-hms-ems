@@ -152,6 +152,7 @@ namespace Sampoerna.EMS.BLL
 
             _repository.InsertOrUpdate(dbWaste);
 
+            _uow.SaveChanges();
 
             //update waste stock table
             UpdateWasteStockTable(dbWaste, userId, isNewData);
@@ -170,63 +171,66 @@ namespace Sampoerna.EMS.BLL
             });
             var dbQtyWaste = CalculateWasteQuantity(dbdata);
 
-            var listWasteStockDto = new List<WasteStockDto>();
-
-            decimal? updateValueFloor = dbQtyWaste.FloorWasteGramQty;
-            decimal? updateValueDust = dbQtyWaste.DustWasteGramQty;
-            decimal? updateValueStamp = dbQtyWaste.StampWasteQty;
-
-            if (isNewData && dbQtyWaste.PlantWerks == dbWaste.WERKS)
+            if (dbQtyWaste != null)
             {
-                updateValueFloor = dbQtyWaste.FloorWasteGramQty + dbWaste.FLOOR_WASTE_GRAM_QTY;
-                updateValueDust = dbQtyWaste.DustWasteGramQty + dbWaste.DUST_WASTE_GRAM_QTY;
-                updateValueStamp = dbQtyWaste.StampWasteQty + dbWaste.STAMP_WASTE_QTY;
 
-            }
+                var listWasteStockDto = new List<WasteStockDto>();
 
-            var wasStockWsapoon = new WasteStockDto();
-            wasStockWsapoon.WERKS = dbQtyWaste.PlantWerks;
-            wasStockWsapoon.MATERIAL_NUMBER = Constans.WasteFloor;
-            wasStockWsapoon.STOCK = Convert.ToDecimal(updateValueFloor);
-            wasStockWsapoon.CREATED_BY = userId;
+                decimal? updateValueFloor = dbQtyWaste.FloorWasteGramQty;
+                decimal? updateValueDust = dbQtyWaste.DustWasteGramQty;
+                decimal? updateValueStamp = dbQtyWaste.StampWasteQty;
 
-            listWasteStockDto.Add(wasStockWsapoon);
+                //if (isNewData && dbQtyWaste.PlantWerks == dbWaste.WERKS)
+                //{
+                //    updateValueFloor = dbQtyWaste.FloorWasteGramQty + dbWaste.FLOOR_WASTE_GRAM_QTY;
+                //    updateValueDust = dbQtyWaste.DustWasteGramQty + dbWaste.DUST_WASTE_GRAM_QTY;
+                //    updateValueStamp = dbQtyWaste.StampWasteQty + dbWaste.STAMP_WASTE_QTY;
 
-            var wasteStockGagang = new WasteStockDto();
-            wasteStockGagang.WERKS = dbQtyWaste.PlantWerks;
-            wasteStockGagang.MATERIAL_NUMBER = Constans.WasteDust;
-            wasteStockGagang.STOCK = Convert.ToDecimal(updateValueDust);
-            wasteStockGagang.CREATED_BY = userId;
+                //}
 
-            listWasteStockDto.Add(wasteStockGagang);
+                var wasStockWsapoon = new WasteStockDto();
+                wasStockWsapoon.WERKS = dbQtyWaste.PlantWerks;
+                wasStockWsapoon.MATERIAL_NUMBER = Constans.WasteFloor;
+                wasStockWsapoon.STOCK = Convert.ToDecimal(updateValueFloor);
+                wasStockWsapoon.CREATED_BY = userId;
 
-            var wasteStockStem = new WasteStockDto();
-            wasteStockStem.WERKS = dbQtyWaste.PlantWerks;
-            wasteStockStem.MATERIAL_NUMBER = Constans.WasteStem;
-            wasteStockStem.STOCK = Convert.ToDecimal(updateValueStamp);
-            wasteStockStem.CREATED_BY = userId;
+                listWasteStockDto.Add(wasStockWsapoon);
 
-            listWasteStockDto.Add(wasteStockStem);
+                var wasteStockGagang = new WasteStockDto();
+                wasteStockGagang.WERKS = dbQtyWaste.PlantWerks;
+                wasteStockGagang.MATERIAL_NUMBER = Constans.WasteDust;
+                wasteStockGagang.STOCK = Convert.ToDecimal(updateValueDust);
+                wasteStockGagang.CREATED_BY = userId;
+
+                listWasteStockDto.Add(wasteStockGagang);
+
+                var wasteStockStem = new WasteStockDto();
+                wasteStockStem.WERKS = dbQtyWaste.PlantWerks;
+                wasteStockStem.MATERIAL_NUMBER = Constans.WasteStem;
+                wasteStockStem.STOCK = Convert.ToDecimal(updateValueStamp);
+                wasteStockStem.CREATED_BY = userId;
+
+                listWasteStockDto.Add(wasteStockStem);
 
 
 
-            foreach (var wasteStockDto in listWasteStockDto)
-            {
-                //CHECK ON MATERIAL PLANT AND STICKER CODE EXIST
-
-                var dbMaterial = _materialBll.GetByPlantIdAndStickerCode(wasteStockDto.WERKS, wasteStockDto.MATERIAL_NUMBER);
-
-                if (dbMaterial == null)
+                foreach (var wasteStockDto in listWasteStockDto)
                 {
-                    throw new BLLException(ExceptionCodes.BLLExceptions.PlantInWasteNotHaveStickerCode);
-                }
-                else
-                {
-                    _wasteStockBll.UpdateWasteStockFromWaste(wasteStockDto, userId);
-                }
+                    //CHECK ON MATERIAL PLANT AND STICKER CODE EXIST
 
+                    var dbMaterial = _materialBll.GetByPlantIdAndStickerCode(wasteStockDto.WERKS, wasteStockDto.MATERIAL_NUMBER);
+
+                    if (dbMaterial == null)
+                    {
+                        throw new BLLException(ExceptionCodes.BLLExceptions.PlantInWasteNotHaveStickerCode);
+                    }
+                    else
+                    {
+                        _wasteStockBll.UpdateWasteStockFromWaste(wasteStockDto, userId);
+                    }
+
+                }
             }
-
         }
         public WasteDto GetById(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate)
         {
@@ -292,7 +296,10 @@ namespace Sampoerna.EMS.BLL
             }
             _repository.InsertOrUpdate(dbUpload);
 
+            _uow.SaveChanges();
+
             UpdateWasteStockTable(dbUpload, userId, isNewData);
+
             _uow.SaveChanges();
         }
 
@@ -769,6 +776,23 @@ namespace Sampoerna.EMS.BLL
             return valResult;
         }
 
+        public List<WasteDto> GetAllByPlant(List<string> plant, int month, int year)
+        {
+            Expression<Func<WASTE, bool>> queryFilter = PredicateHelper.True<WASTE>();
 
+            queryFilter = queryFilter.And(c => plant.Contains(c.WERKS) && c.WASTE_PROD_DATE.Month == month && c.WASTE_PROD_DATE.Year == year);
+            
+            Func<IQueryable<WASTE>, IOrderedQueryable<WASTE>> orderBy = null;
+            {
+                var dbData = _repository.Get(queryFilter, orderBy);
+                if (dbData == null)
+                {
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+                }
+                var mapResult = Mapper.Map<List<WasteDto>>(dbData.ToList());
+
+                return mapResult;
+            }
+        }
     }
 }

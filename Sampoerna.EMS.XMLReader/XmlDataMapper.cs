@@ -155,8 +155,8 @@ namespace Sampoerna.EMS.XMLReader
                         xmllogs = new XML_LOGS();
                         xmllogs.XML_FILENAME = _xmlName.Split('\\')[_xmlName.Split('\\').Length - 1];
                         xmllogs.XML_LOGS_DETAILS = new List<XML_LOGS_DETAILS>();
-                        xmllogs.LAST_ERROR_TIME = DateTime.Now;
-                        xmllogs.STATUS = Enums.XmlLogStatus.Error;
+                        
+                        
                         xmllogs.CREATED_BY = "PI";
                         xmllogs.CREATED_DATE = DateTime.Now;
 
@@ -170,6 +170,8 @@ namespace Sampoerna.EMS.XMLReader
                         xmllogs.XML_LOGS_DETAILS.Add(detailError);
 
                     }
+                    xmllogs.STATUS = Enums.XmlLogStatus.Error;
+                    xmllogs.LAST_ERROR_TIME = DateTime.Now;
                     xmlRepo.InsertOrUpdate(xmllogs);
                     //uow.SaveChanges();
                     
@@ -190,14 +192,17 @@ namespace Sampoerna.EMS.XMLReader
             //    fileName = MoveFile();
             //    return fileName;
             //}
-            if (errorCount == 0 && itemToInsert > 0 && Errors.Count == 0)
+            if (errorCount == 0 && Errors.Count == 0)
             {
                 fileName = MoveFile();
                 return new MovedFileOutput(fileName);
             }
-            fileName = MoveFile(true,needMoved);
-            Errors.Insert(0,String.Format("Last field read : {0}",lastField));
-            return new MovedFileOutput(fileName, true,Errors);
+            
+            fileName = MoveFile(true, needMoved);
+            Errors.Insert(0, String.Format("Last field read : {0}", lastField));
+            return new MovedFileOutput(fileName, true, Errors);
+            
+            
 
             
 
@@ -288,7 +293,7 @@ namespace Sampoerna.EMS.XMLReader
         public DateTime? GetDateDotSeparator(string valueStr)
         {
             lastField = String.Format("input = {0}", valueStr);
-            if (valueStr.Length == 10)
+            if (!string.IsNullOrEmpty(valueStr) && valueStr.Length == 10)
             {
                 var year = Convert.ToInt32(valueStr.Substring(6, 4));
                 var month = Convert.ToInt32(valueStr.Substring(3, 2));
