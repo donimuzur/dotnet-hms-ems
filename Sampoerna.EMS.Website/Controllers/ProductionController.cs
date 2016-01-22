@@ -432,12 +432,16 @@ namespace Sampoerna.EMS.Website.Controllers
                     var existingData = _productionBll.GetExistDto(item.CompanyCode, item.PlantWerks, item.FaCode,
                         Convert.ToDateTime(item.ProductionDate));
 
-                    //if (existingData != null)
-                    //{
-                    //    AddMessageInfo("Data Already Exist, Please Check Data Company Code," +
-                    //                   " Plant Code, Fa Code, and Waste Production Date", Enums.MessageInfoType.Warning);
-                    //    return RedirectToAction("UploadManualProduction");
-                    //}
+                    if (existingData != null)
+                    {
+                        //AddMessageInfo("Data Already Exist, Please Check Data Company Code," +
+                        //               " Plant Code, Fa Code, and Waste Production Date", Enums.MessageInfoType.Warning);
+                        //return RedirectToAction("UploadManualProduction");
+                        var existItem = Mapper.Map<ProductionUploadItems>(existingData);
+                        existItem.Qty = item.Qty;
+                        listProduction.Add(existItem);
+                        continue;
+                    }
 
                     listProduction.Add(item);
                 }
