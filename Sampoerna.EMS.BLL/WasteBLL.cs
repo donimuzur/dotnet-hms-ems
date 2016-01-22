@@ -296,7 +296,10 @@ namespace Sampoerna.EMS.BLL
             }
             _repository.InsertOrUpdate(dbUpload);
 
+            _uow.SaveChanges();
+
             UpdateWasteStockTable(dbUpload, userId, isNewData);
+
             _uow.SaveChanges();
         }
 
