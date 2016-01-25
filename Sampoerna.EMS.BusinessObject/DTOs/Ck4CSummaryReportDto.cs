@@ -21,6 +21,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string PoaApproved { get; set; }
         public string ManagerApproved { get; set; }
         public string Status { get; set; }
+        public string CompletedDate { get; set; }
 
         public List<string> ProductionDate { get; set; }
         public List<string> FaCode { get; set; }

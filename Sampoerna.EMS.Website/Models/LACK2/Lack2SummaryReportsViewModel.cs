@@ -79,6 +79,7 @@ namespace Sampoerna.EMS.Website.Models.LACK2
             public string LastChangedTime { get; set; }
             public string Status { get; set; }
             public string LegalizeData { get; set; }
+            public string CompletedDate { get; set; }
         }
 
         public class Lack2ExportSummaryReportsViewModel : Lack2SearchSummaryReportsViewModel
@@ -107,6 +108,7 @@ namespace Sampoerna.EMS.Website.Models.LACK2
             public bool BLastChangedTime { get; set; }
             public bool BStatus { get; set; }
             public bool BLegalizeData { get; set; }
+            public bool CompletedDate { get; set; }
         }
     
 }

@@ -70,6 +70,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string ApprovedBy { get; set; }
         public string Creator { get; set; }
         public string Approver { get; set; }
+        public string CompletedDate { get; set; }
     }
 
     public class Lack1ExportSummaryReportViewModel : Lack1SearchSummaryReportViewModel
@@ -92,6 +93,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public bool BApprovedBy { get; set; }
         public bool BCreator { get; set; }
         public bool BApprover { get; set; }
+        public bool CompletedDate { get; set; }
     }
 
     public class Lack1ExportSummaryDataModel
@@ -114,6 +116,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string ApprovedBy { get; set; }
         public string Creator { get; set; }
         public string Approver { get; set; }
+        public string CompletedDate { get; set; }
     }
 
 }

@@ -37,7 +37,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string LastChangedTime { get; set; }
 
         public string Status { get; set; }
-
+        public string CompletedDate { get; set; }
         public string LegalizeData { get; set; }
         //search
         public string PeriodYear { get; set; }

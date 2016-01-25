@@ -1124,6 +1124,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     iColumn = iColumn + 1;
                 }
 
+                if (modelExport.CompletedDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CompletedDate);
+                    iColumn = iColumn + 1;
+                }
+
                 iRow++;
             }
 
@@ -1266,6 +1272,12 @@ namespace Sampoerna.EMS.Website.Controllers
             if (modelExport.BLegalizeData)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Legalize Date");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.CompletedDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Completed Date");
                 iColumn = iColumn + 1;
             }
 

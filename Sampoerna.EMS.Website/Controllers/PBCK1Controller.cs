@@ -1861,6 +1861,15 @@ namespace Sampoerna.EMS.Website.Controllers
                     HtmlEncode = false
                 });
             }
+            if (model.ExportModel.CompletedDate)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "CompletedDate",
+                    HeaderText = "Completed Date",
+                    HtmlEncode = false
+                });
+            }
 
             if (exportModel.Count == 0)
             {

@@ -640,6 +640,7 @@ namespace Sampoerna.EMS.BLL
                 dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
                 dbData.LACK2_DOCUMENT = Mapper.Map<List<LACK2_DOCUMENT>>(input.AdditionalDocumentData.Lack2DecreeDoc);
                 dbData.GOV_STATUS = Enums.DocumentStatusGovType2.Approved;
+                dbData.MODIFIED_DATE = DateTime.Now;
 
                 //dbData.APPROVED_BY = input.UserId;
                 //dbData.APPROVED_DATE = DateTime.Now;
@@ -1345,6 +1346,9 @@ namespace Sampoerna.EMS.BLL
                 summaryDto.CreatedTime = ConvertHelper.ConvertDateToStringHHmm(dtData.CREATED_DATE);
                 summaryDto.CreatedBy = dtData.CREATED_BY;
 
+                summaryDto.CompletedDate = dtData.STATUS == Enums.DocumentStatus.Completed ?
+                    (dtData.MODIFIED_DATE.HasValue ? ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.MODIFIED_DATE) :
+                    ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.DECREE_DATE)) : "-";
                 summaryDto.ApprovedDate = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.APPROVED_DATE);
                 summaryDto.ApprovedTime = ConvertHelper.ConvertDateToStringHHmm(dtData.APPROVED_DATE);
                 summaryDto.ApprovedBy = dtData.APPROVED_BY;
