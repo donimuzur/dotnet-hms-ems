@@ -1,23 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using Sampoerna.EMS.BusinessObject.DTOs;
 
 namespace Sampoerna.EMS.Website.Models.UserPlantMap
 {
-    public class UserPlantMapIndexViewModel : BaseModel
+    public class UserPlantMapDetailViewModel : BaseModel
     {
-        public List<UserPlantMapDetail> UserPlantList { get; set; }
-        public List<UserPlantMapDto> UserPlantMaps { get; set; }
-        public string IsActive { get; set; }
+        public UserPlantMapDto UserPlantMap { get; set; }
 
-    }
+        public SelectList Users { get; set; }
 
-    public class UserPlantMapDetail
-    {
-       public string UserId { get; set; }
-       
+        public List<PlantDto> Plants { get; set; }
+
+        public List<string> SelectedNppbkc { get; set; }
+
+        public MultiSelectList Nppbkcs { get; set; }
+
     }
 }

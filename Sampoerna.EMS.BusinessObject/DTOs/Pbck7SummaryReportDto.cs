@@ -29,6 +29,6 @@
         public string Pbck3Status { get; set; }
         public string Ck2No { get; set; }
         public string Ck2Value { get; set; }
-        
+        public string CompletedDate { get; set; }
     }
 }

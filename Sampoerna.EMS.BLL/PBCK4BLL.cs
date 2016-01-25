@@ -1456,6 +1456,9 @@ namespace Sampoerna.EMS.BLL
                 WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
 
                 dbData.STATUS = Enums.DocumentStatus.Completed;
+                dbData.MODIFIED_DATE = DateTime.Now;
+                dbData.MODIFIED_BY = input.UserId;
+
                 input.ActionType = Enums.ActionType.Completed;
 
                 AddWorkflowHistory(input);
@@ -1834,6 +1837,11 @@ namespace Sampoerna.EMS.BLL
 
                     summaryDto.PlantId = dtData.PLANT_ID;
                     summaryDto.PlantDescription = dtData.PLANT_NAME;
+
+                    if (dtData.STATUS == Enums.DocumentStatus.Completed)
+                    {
+                        summaryDto.CompletedDate = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.MODIFIED_DATE);
+                    }
 
                     result.Add(summaryDto);
                 }
