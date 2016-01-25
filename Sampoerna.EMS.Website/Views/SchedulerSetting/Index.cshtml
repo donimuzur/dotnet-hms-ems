@@ -1,4 +1,6 @@
 ﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Models.SchedulerSetting
+@model Sampoerna.EMS.Website.Models.SchedulerSetting.SchedulerSettingModel
 @{
     ViewBag.Title = "Index";
     
@@ -47,21 +49,20 @@
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="row">
-                                                        <label class="col-md-2">File Upload Size</label>
+                                                        <label class="col-md-2">Daily Scheduler</label>
                                                         <div class="col-md-2">
                                                             @*@Html.TextBoxFor(model => model.StickerCode, new { @class = "form-control", @maxlength = "18" })*@
-                                                            @Html.TextBoxFor(model => model.UploadFileSize, new { @class = "form-control" })
+                                                            @Html.TextBoxFor(model => model.DailyMinutes, new { @class = "form-control" })
                                                         </div>
                                                         <div class="col-md-2">
-                                                            @*@Html.TextBoxFor(model => model.StickerCode, new { @class = "form-control", @maxlength = "18" })*@
-                                                            @Html.DropDownListFor(model => model.FileSizeType, Model.SizeType, new { @class = "form-control", @onchange = "changebase();" })
+                                                            <label class="col-md-2">Minutes</label>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-2"></div>
                                                         <div class="col-md-6">
                                                             <span>
-                                                                Maximum file size allowed to be uploaded by EMS System.
+                                                                Interval which daily scheduler will run.
                                                             </span>
                                                         </div>
                                                     </div>
@@ -69,23 +70,26 @@
 
                                             </div>
                                             <div class="row">
-
-                                                @*<div class="col-md-12">
-                                                        <div class="row">
-                                                            <label class="col-md-2">Use Back Date</label>
-                                                            <div class="col-md-8">
-                                                                @Html.CheckBoxFor(model => model.UseBackDate, new { @class = "check-box" })
-                                                            </div>
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <label class="col-md-2">Monthly Scheduler</label>
+                                                        <div class="col-md-2">
+                                                            @*@Html.TextBoxFor(model => model.StickerCode, new { @class = "form-control", @maxlength = "18" })*@
+                                                            @Html.TextBoxFor(model => model.MonthlyMinutes, new { @class = "form-control" })
                                                         </div>
-                                                        <div class="row">
-                                                            <div class="col-md-2"></div>
-                                                            <div class="col-md-6">
-                                                                <span>
-                                                                    All transaction date can be picked from past date.
-                                                                </span>
-                                                            </div>
+                                                        <div class="col-md-2">
+                                                            <label class="col-md-2">Minutes</label>
                                                         </div>
-                                                    </div>*@
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-2"></div>
+                                                        <div class="col-md-6">
+                                                            <span>
+                                                                Interval which monthly scheduler will run.
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>

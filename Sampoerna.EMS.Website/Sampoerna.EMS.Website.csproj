@@ -412,6 +412,7 @@
     <Compile Include="Models\PrintHistory\PrintHistoryViewModel.cs" />
     <Compile Include="Models\PRODUCTION\ProductionUploadViewModel.cs" />
     <Compile Include="Models\PRODUCTION\ProductionViewModel.cs" />
+    <Compile Include="Models\SchedulerSetting\SchedulerSettingModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
     <Compile Include="Models\Settings\DocumentSequenceModel.cs" />
     <Compile Include="Models\Settings\GlobalSettingModel.cs" />

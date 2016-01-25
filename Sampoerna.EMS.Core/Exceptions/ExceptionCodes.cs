@@ -147,7 +147,10 @@ namespace Sampoerna.EMS.Core.Exceptions
             WasteApprovalEmailNotFound,
 
             [Description("CK5 Package UOM not found.")]
-            Ck5PackageUomNullOrEmpty
+            Ck5PackageUomNullOrEmpty,
+
+            [Description("The scheduler settings not found for this job.")]
+            SchedulerSetingCronNotFound
         }
 
         /// <summary>
