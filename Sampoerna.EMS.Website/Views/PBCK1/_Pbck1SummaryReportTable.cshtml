@@ -279,20 +279,13 @@
                             } 
                         </td>
                         <td>
-                            @if (item.Status == Enums.DocumentStatus.Completed)
+                            @if (item.CompletedDate == null)
                             {
-                                if (item.CompletedDate == null)
-                                {
-                                    @item.DecreeDate.Value.ToString("dd-MMMM-yyyy")
-                                }
-                                else
-                                {
-                                    @item.CompletedDate.Value.ToString("dd-MMMM-yyyy")
-                                }
+                                <text>-</text>
                             }
                             else
                             {
-                                <text>-</text>
+                                @item.CompletedDate.Value.ToString("dd-MMMM-yyyy")
                             }
                         </td>
                     </tr>
