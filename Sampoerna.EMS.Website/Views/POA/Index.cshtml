@@ -70,6 +70,7 @@
     <div class="row">
         <div class="col-sm-12">
             <h3 class="desc">POA <span>(Power of Attorney)</span></h3>
+            @if (Model.IsNotViewer){
             <div class="action-button new">
                 <a href="@Url.Action("Create", "POA")">
                     <button class="btn btn-blue">NEW</button>
@@ -78,6 +79,7 @@
 
                 </a>
             </div>
+            }
         </div>
     </div>
 </div>
@@ -119,7 +121,9 @@
                             <tr>
                                 <td class="action">
                                     <a href="@Url.Action("Detail", "POA", new { id = item.PoaId })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "POA", new { id = item.PoaId })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                                    @if (Model.IsNotViewer){
+                                        <a href="@Url.Action("Edit", "POA", new { id = item.PoaId })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                                    }
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.PoaIdCard)

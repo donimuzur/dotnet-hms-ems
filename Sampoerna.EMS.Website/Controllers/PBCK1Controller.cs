@@ -58,9 +58,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private ILFA1BLL _lfa1Bll;
         private IT001KBLL _t001kBll;
         private IPOABLL _poabll;
+        private IZaidmExKPPBCBLL _kppbcbll;
 
         public PBCK1Controller(IPageBLL pageBLL, IUnitOfMeasurementBLL uomBll, ICompanyBLL companyBll, IMasterDataBLL masterDataBll, IMonthBLL monthbll, IZaidmExGoodTypeBLL goodTypeBll, ISupplierPortBLL supplierPortBll, IZaidmExNPPBKCBLL nppbkcbll, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll,
-            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll, ILFA1BLL lfa1Bll, IT001KBLL t001kBll, IPbck1DecreeDocBLL pbck1DecreeDocBll, ICK5BLL ck5Bll, IPOABLL poabll)
+            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll, ILFA1BLL lfa1Bll, IT001KBLL t001kBll, IPbck1DecreeDocBLL pbck1DecreeDocBll, ICK5BLL ck5Bll, IPOABLL poabll, IZaidmExKPPBCBLL kppbcbll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
@@ -83,6 +84,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _pbck1DecreeDocBll = pbck1DecreeDocBll;
             _ck5Bll = ck5Bll;
             _poabll = poabll;
+            _kppbcbll = kppbcbll;
         }
 
         private List<Pbck1Item> GetOpenDocument(Pbck1FilterViewModel filter = null)
@@ -1859,6 +1861,15 @@ namespace Sampoerna.EMS.Website.Controllers
                     HtmlEncode = false
                 });
             }
+            if (model.ExportModel.CompletedDate)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "CompletedDate",
+                    HeaderText = "Completed Date",
+                    HtmlEncode = false
+                });
+            }
 
             if (exportModel.Count == 0)
             {
@@ -1907,7 +1918,12 @@ namespace Sampoerna.EMS.Website.Controllers
                         CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll),
                         YearFromList = GetYearListPbck1(true),
                         YearToList = GetYearListPbck1(false),
-                        NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll)
+                        NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll),
+                        SupNppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcbll),
+                        SupKppbcList = GlobalFunctions.GetKppbcAll(_kppbcbll),
+                        SupPlantList = GlobalFunctions.GetPlantAll(),
+                        SupCompanyList = GlobalFunctions.GetCompanyListIdText(_companyBll),
+                        CreatorList = GlobalFunctions.GetCreatorList()
                     },
                     DetailsList = SearchMonitoringUsages().OrderBy(c => c.NppbkcId).ToList()
                 };
@@ -1982,6 +1998,12 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchView.YearFrom = model.ExportModel.YearFrom;
             model.SearchView.YearTo = model.ExportModel.YearTo;
             model.SearchView.NppbkcId = model.ExportModel.NppbkcId;
+            model.SearchView.SupNppbkc = model.ExportModel.SupNppbkc;
+            model.SearchView.SupKppbc = model.ExportModel.SupKppbc;
+            model.SearchView.SupPlant = model.ExportModel.SupPlant;
+            model.SearchView.SupCompany = model.ExportModel.SupCompany;
+            model.SearchView.Poa = model.ExportModel.Poa;
+            model.SearchView.Creator = model.ExportModel.Creator;
 
             var dataToExport = SearchMonitoringUsages(model.SearchView);
 
@@ -2798,6 +2820,13 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var monitoringDtos = _pbck1Bll.GetMonitoringMutasiByParam(new Pbck1GetMonitoringMutasiByParamInput());
             model.pbck1NumberList = new SelectList(monitoringDtos, "Pbck1Number", "Pbck1Number");
+            model.yearFromList = GetYearListPbck1(true);
+            model.yearToList = GetYearListPbck1(false);
+            model.supPlantList = GlobalFunctions.GetPlantAll();
+            model.supCompList = GlobalFunctions.GetCompanyListIdText(_companyBll);
+            model.oriNppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.oriKppbcList = GlobalFunctions.GetKppbcAll(_kppbcbll);
+            model.creatorList = GlobalFunctions.GetCreatorList();
 
             var input = Mapper.Map<Pbck1GetMonitoringMutasiByParamInput>(model);
 
@@ -2840,7 +2869,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var dbResult = _pbck1Bll.GetMonitoringMutasiByParam(new Pbck1GetMonitoringMutasiByParamInput
             {
-                pbck1Number = model.FilterPbck1Number
+                pbck1Number = model.FilterPbck1Number,
+                yearFrom = model.FilterYearFrom,
+                yearTo = model.FilterYearTo,
+                supPlant = model.FilterSupPlant,
+                supComp = model.FilterSupComp,
+                oriNppbkc = model.FilterOriNppbkc,
+                oriKppbc = model.FilterOriKppbc,
+                poa = model.FilterPoa,
+                creator = model.FilterCreator
             });
 
             //todo refactor mapper

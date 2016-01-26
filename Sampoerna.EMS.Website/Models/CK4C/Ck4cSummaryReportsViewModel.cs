@@ -48,6 +48,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public string PoaApproved { get; set; }
         public string ManagerApproved { get; set; }
         public string Status { get; set; }
+        public string CompletedDate { get; set; }
 
         public List<string> ProductionDate { get; set; }
         public List<string> FaCode { get; set; }
@@ -82,6 +83,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public bool PoaApproved { get; set; }
         public bool ManagerApproved { get; set; }
         public bool Status { get; set; }
+        public bool CompletedDate { get; set; }
 
         public bool ProductionDate { get; set; }
         public bool FaCode { get; set; }

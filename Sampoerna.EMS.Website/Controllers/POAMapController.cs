@@ -40,6 +40,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             model.PoaMaps = Mapper.Map<List<POA_MAPDto>>(_poaMapBLL.GetAll());
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             return View("Index", model);
         }
 
@@ -61,6 +62,12 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /POAMap/Create
         public ActionResult Create()
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
             var model = new PoaMapDetailViewModel
             {
                 CurrentMenu = PageInfo,
@@ -109,6 +116,11 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /POAMap/Edit/5
         public ActionResult Edit(int id)
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Details", new { id });
+            }
+
             var existingData = _poaMapBLL.GetById(id);
             var model = new PoaMapDetailViewModel
             {
@@ -125,6 +137,12 @@ namespace Sampoerna.EMS.Website.Controllers
         
         public ActionResult Delete(int id)
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
             try
             {
                 

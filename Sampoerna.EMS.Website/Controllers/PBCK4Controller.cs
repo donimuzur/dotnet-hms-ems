@@ -43,12 +43,12 @@ namespace Sampoerna.EMS.Website.Controllers
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IPrintHistoryBLL _printHistoryBll;
         private IMonthBLL _monthBll;
-      
+        private ICompanyBLL _companyBll;
        
 
         public PBCK4Controller(IPageBLL pageBLL, IPOABLL poabll, IZaidmExNPPBKCBLL nppbkcBll,
             IPBCK4BLL pbck4Bll, IPlantBLL plantBll, IWorkflowBLL workflowBll, IChangesHistoryBLL changesHistoryBll,
-            IWorkflowHistoryBLL workflowHistoryBll, IPrintHistoryBLL printHistoryBll, IMonthBLL monthBll)
+            IWorkflowHistoryBLL workflowHistoryBll, IPrintHistoryBLL printHistoryBll, IMonthBLL monthBll, ICompanyBLL companyBll)
             : base(pageBLL, Enums.MenuList.PBCK4)
         {
             _poaBll = poabll;
@@ -60,7 +60,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _workflowHistoryBll = workflowHistoryBll;
             _printHistoryBll = printHistoryBll;
             _monthBll = monthBll;
-           
+            _companyBll = companyBll;
 
         }
 
@@ -1380,6 +1380,50 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+        private SelectList GetStickerCodeList(List<Pbck4SummaryReportDto> listPbck4)
+        {
+            IEnumerable<SelectItemModel> query;
+
+            query = from x in listPbck4
+                    select new SelectItemModel()
+                    {
+                        ValueField = x.StickerCode,
+                        TextField = x.StickerCode
+                    };
+
+            return new SelectList(query.DistinctBy(c => c.ValueField).Where(c => c.ValueField != null), "ValueField", "TextField");
+
+        }
+
+        private SelectList GetFaCodeList(List<Pbck4SummaryReportDto> listPbck4)
+        {
+            IEnumerable<SelectItemModel> query;
+
+            query = from x in listPbck4
+                    select new SelectItemModel()
+                    {
+                        ValueField = x.FaCode,
+                        TextField = x.FaCode
+                    };
+
+            return new SelectList(query.DistinctBy(c => c.ValueField).Where(c => c.ValueField != null), "ValueField", "TextField");
+
+        }
+
+        private SelectList GetCk1NoList(List<Pbck4SummaryReportDto> listPbck4)
+        {
+            IEnumerable<SelectItemModel> query;
+
+            query = from x in listPbck4
+                    select new SelectItemModel()
+                    {
+                        ValueField = x.Ck1No,
+                        TextField = x.Ck1No
+                    };
+
+            return new SelectList(query.DistinctBy(c => c.ValueField).Where(c => c.ValueField != null), "ValueField", "TextField");
+
+        }
 
 
         private Pbck4SummaryReportsViewModel InitSummaryReports(Pbck4SummaryReportsViewModel model)
@@ -1393,7 +1437,13 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchView.YearFromList = GetYearListPbck4(true, listPbck4);
             model.SearchView.YearToList = GetYearListPbck4(false, listPbck4);
             model.SearchView.PlantIdList = GetPlantList(listPbck4);
-            
+            model.SearchView.StickerCodeList = GetStickerCodeList(listPbck4);
+            model.SearchView.FaCodeList = GetFaCodeList(listPbck4);
+            model.SearchView.NppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
+            model.SearchView.CompNameList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.SearchView.PoaList = GlobalFunctions.GetPoaAll(_poaBll);
+            model.SearchView.Ck1NoList = GetCk1NoList(listPbck4);
+            model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
 
             var filter = new Pbck4SearchSummaryReportsViewModel();
         
@@ -1618,7 +1668,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, data.Status);
                     iColumn = iColumn + 1;
                 }
-             
+
+                if (modelExport.CompletedDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CompletedDate);
+                    iColumn = iColumn + 1;
+                }
+
                 iRow++;
             }
 
@@ -1754,6 +1810,12 @@ namespace Sampoerna.EMS.Website.Controllers
             if (modelExport.Status)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Status");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.CompletedDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Completed Date");
                 iColumn = iColumn + 1;
             }
           

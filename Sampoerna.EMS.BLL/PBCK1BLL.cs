@@ -1585,6 +1585,7 @@ namespace Sampoerna.EMS.BLL
             dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
             dbData.PBCK1_DECREE_DOC = Mapper.Map<List<PBCK1_DECREE_DOC>>(input.AdditionalDocumentData.Pbck1DecreeDoc);
             dbData.STATUS_GOV = Enums.DocumentStatusGov.FullApproved;
+            dbData.MODIFIED_DATE = DateTime.Now;
 
             //dbData.APPROVED_BY_POA = input.UserId;
             //dbData.APPROVED_DATE_POA = DateTime.Now;
@@ -1643,6 +1644,7 @@ namespace Sampoerna.EMS.BLL
             dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
             dbData.PBCK1_DECREE_DOC = Mapper.Map<List<PBCK1_DECREE_DOC>>(input.AdditionalDocumentData.Pbck1DecreeDoc);
             dbData.STATUS_GOV = Enums.DocumentStatusGov.PartialApproved;
+            dbData.MODIFIED_DATE = DateTime.Now;
 
             //dbData.APPROVED_BY_POA = input.UserId;
             //dbData.APPROVED_DATE_POA = DateTime.Now;
@@ -1833,6 +1835,24 @@ namespace Sampoerna.EMS.BLL
 
             if (!string.IsNullOrEmpty(input.NppbkcId))
                 queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbkcId);
+
+            if (!string.IsNullOrEmpty(input.SupNppbkc))
+                queryFilter = queryFilter.And(c => c.SUPPLIER_NPPBKC_ID == input.SupNppbkc);
+
+            if (!string.IsNullOrEmpty(input.SupKppbc))
+                queryFilter = queryFilter.And(c => c.SUPPLIER_KPPBC_ID == input.SupKppbc);
+
+            if (!string.IsNullOrEmpty(input.SupPlant))
+                queryFilter = queryFilter.And(c => c.SUPPLIER_PLANT_WERKS == input.SupPlant);
+
+            if (!string.IsNullOrEmpty(input.SupCompany))
+                queryFilter = queryFilter.And(c => c.SUPPLIER_COMPANY == input.SupCompany);
+
+            if (!string.IsNullOrEmpty(input.Poa))
+                queryFilter = queryFilter.And(c => c.APPROVED_BY_POA == input.Poa);
+
+            if (!string.IsNullOrEmpty(input.Creator))
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
 
             var pbck1Data = GetPbck1Data(queryFilter, input.SortOrderColumn);
 
@@ -2773,6 +2793,40 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.NUMBER == input.pbck1Number);
             }
+            if (input.yearFrom.HasValue)
+            {
+                queryFilter =
+                    queryFilter.And(c => c.PERIOD_FROM.HasValue && c.PERIOD_FROM.Value.Year >= input.yearFrom.Value);
+            }
+            if (input.yearTo.HasValue)
+            {
+                queryFilter =
+                    queryFilter.And(c => c.PERIOD_TO.HasValue && c.PERIOD_TO.Value.Year <= input.yearTo.Value);
+            }
+            if (!string.IsNullOrEmpty(input.supPlant))
+            {
+                queryFilter = queryFilter.And(c => c.SUPPLIER_PLANT_WERKS == input.supPlant);
+            }
+            if (!string.IsNullOrEmpty(input.supComp))
+            {
+                queryFilter = queryFilter.And(c => c.SUPPLIER_COMPANY == input.supComp);
+            }
+            if (!string.IsNullOrEmpty(input.oriNppbkc))
+            {
+                queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.oriNppbkc);
+            }
+            if (!string.IsNullOrEmpty(input.oriKppbc))
+            {
+                queryFilter = queryFilter.And(c => c.NPPBKC_KPPBC_ID == input.oriKppbc);
+            }
+            if (!string.IsNullOrEmpty(input.poa))
+            {
+                queryFilter = queryFilter.And(c => c.APPROVED_BY_POA == input.poa);
+            }
+            if (!string.IsNullOrEmpty(input.creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.creator);
+            }                
 
             Func<IQueryable<PBCK1>, IOrderedQueryable<PBCK1>> orderBy = null;
             {

@@ -113,7 +113,7 @@ namespace Sampoerna.EMS.BLL
         }
 
 
-        public List<Pbck7AndPbck3Dto> GetPbck7SummaryReportsByParam(Pbck7SummaryInput input)
+        public List<Pbck7SummaryReportDto> GetPbck7SummaryReportsByParam(Pbck7SummaryInput input)
         {
             Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
             if (!string.IsNullOrEmpty(input.NppbkcId))
@@ -152,16 +152,117 @@ namespace Sampoerna.EMS.BLL
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
-            var mapResult = Mapper.Map<List<Pbck7AndPbck3Dto>>(dbData.ToList());
-            foreach (var pbck7AndPbck3Dto in mapResult)
+
+            //var mapResult = Mapper.Map<List<Pbck7SummaryReportDto>>(dbData.ToList());
+
+            var result = new List<Pbck7SummaryReportDto>();
+           
+            foreach (var pbck7 in dbData)
             {
-                pbck7AndPbck3Dto.Back1Dto = GetBack1ByPbck7(pbck7AndPbck3Dto.Pbck7Id);
+                //pbck7SummaryReportDto.Back1No = "";
+                //pbck7SummaryReportDto.Back1Date = "";
+                //var back1Dto = GetBack1ByPbck7(pbck7SummaryReportDto.Pbck7Id);
+                //if (back1Dto != null)
+                //{
+                //    pbck7SummaryReportDto.Back1No = back1Dto.Back1Number;
+                //    pbck7SummaryReportDto.Back1Date = ConvertHelper.ConvertDateToStringddMMMyyyy(back1Dto.Back1Date);
+                //}
+
+                //pbck7SummaryReportDto.Pbck3No = "";
+                //pbck7SummaryReportDto.Pbck3Status = "";
+                //pbck7SummaryReportDto.Ck2No = "";
+                //pbck7SummaryReportDto.Ck2Value = "";
+                //var pbck3Data = _pbck3Services.GetPbck3ByPbck7Id(pbck7SummaryReportDto.Pbck7Id);
+                //if (pbck3Data != null)
+                //{
+                //    pbck7SummaryReportDto.Pbck3No = pbck3Data.PBCK3_NUMBER;
+                //    pbck7SummaryReportDto.Pbck3Status = EnumHelper.GetDescription(pbck3Data.STATUS);
+                //    var ck2Data = pbck3Data.CK2.FirstOrDefault();
+
+                //    if (ck2Data != null)
+                //    {
+                //        pbck7SummaryReportDto.Ck2No = ck2Data.CK2_NUMBER;
+                //        pbck7SummaryReportDto.Ck2Value = ConvertHelper.ConvertDecimalToStringMoneyFormat(ck2Data.CK2_VALUE);
+                //    }
+                //}
+
+                PBCK7 pbck8 = pbck7;
+                var pbck7Item = _repositoryPbck7Item.Get(c => c.PBCK7_ID == pbck8.PBCK7_ID).ToList();
+               
+                foreach (var item in pbck7Item)
+                {
+                    var summaryReport = new Pbck7SummaryReportDto();
+
+                    summaryReport.Pbck7Number = pbck7.PBCK7_NUMBER;
+                    summaryReport.Nppbkc = pbck7.NPPBKC;
+                    summaryReport.PlantName = pbck7.PLANT_ID + "-" + pbck7.PLANT_NAME;
+
+                    summaryReport.Pbck7Date = ConvertHelper.ConvertDateToStringddMMMyyyy(pbck7.PBCK7_DATE);
+                    summaryReport.DocumentType = EnumHelper.GetDescription(pbck7.DOCUMENT_TYPE);
+                    summaryReport.Pbck7Status = EnumHelper.GetDescription(pbck7.STATUS);
+                    summaryReport.ExecFrom = ConvertHelper.ConvertDateToStringddMMMyyyy(pbck7.EXEC_DATE_FROM);
+                    summaryReport.ExecTo = ConvertHelper.ConvertDateToStringddMMMyyyy(pbck7.EXEC_DATE_TO);
+
+                    summaryReport.Back1No = "";
+                    summaryReport.Back1Date = "";
+
+                    var back1Dto = GetBack1ByPbck7(pbck7.PBCK7_ID);
+                    if (back1Dto != null)
+                    {
+                        summaryReport.Back1No = back1Dto.Back1Number;
+                        summaryReport.Back1Date = ConvertHelper.ConvertDateToStringddMMMyyyy(back1Dto.Back1Date);
+                    }
+
+
+                    summaryReport.FaCode = item.FA_CODE;
+                    summaryReport.Brand = item.BRAND_CE;
+                    summaryReport.Content = ConvertHelper.ConvertDecimalToStringMoneyFormat(item.BRAND_CONTENT);
+                    summaryReport.Hje = ConvertHelper.ConvertDecimalToStringMoneyFormat(item.HJE);
+                    summaryReport.Tariff = ConvertHelper.ConvertDecimalToStringMoneyFormat(item.TARIFF);
+                    summaryReport.Pbck7Qty = ConvertHelper.ConvertDecimalToStringMoneyFormat(item.PBCK7_QTY);
+                    summaryReport.FiscalYear = item.FISCAL_YEAR.ToString();
+                    summaryReport.ExciseValue = ConvertHelper.ConvertDecimalToStringMoneyFormat(item.EXCISE_VALUE);
+
+                    summaryReport.Poa = pbck7.APPROVED_BY;
+                    summaryReport.Creator = pbck7.CREATED_BY;
+
+                    summaryReport.Pbck3No = "";
+                    summaryReport.Pbck3Status = "";
+                    summaryReport.Ck2No = "";
+                    summaryReport.Ck2Value = "";
+
+                    var pbck3Data = _pbck3Services.GetPbck3ByPbck7Id(pbck7.PBCK7_ID);
+                    if (pbck3Data != null)
+                    {
+                        summaryReport.Pbck3No = pbck3Data.PBCK3_NUMBER;
+                        summaryReport.Pbck3Status = EnumHelper.GetDescription(pbck3Data.STATUS);
+                        var ck2Data = pbck3Data.CK2.FirstOrDefault();
+
+                        if (ck2Data != null)
+                        {
+                            summaryReport.Ck2No = ck2Data.CK2_NUMBER;
+                            summaryReport.Ck2Value = ConvertHelper.ConvertDecimalToStringMoneyFormat(ck2Data.CK2_VALUE);
+                        }
+                    }
+
+                    if (pbck7.STATUS == Enums.DocumentStatus.Completed)
+                    {
+                        summaryReport.CompletedDate = ConvertHelper.ConvertDateToStringddMMMyyyy(pbck7.MODIFIED_DATE);
+                    }
+
+                    result.Add(summaryReport);
+
+                 
+                }
+                
+
             }
-            return mapResult;
+
+            return result;
 
         }
 
-        public List<Pbck3Dto> GetPbck3SummaryReportsByParam(Pbck3SummaryInput input)
+        public List<Pbck3SummaryReportDto> GetPbck3SummaryReportsByParam(Pbck3SummaryInput input)
         {
             Expression<Func<PBCK3, bool>> queryFilter = PredicateHelper.True<PBCK3>();
             if (!string.IsNullOrEmpty(input.NppbkcId))
@@ -200,11 +301,28 @@ namespace Sampoerna.EMS.BLL
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
-            var mapResult = Mapper.Map<List<Pbck3Dto>>(dbData.ToList());
+            var mapResult = Mapper.Map<List<Pbck3SummaryReportDto>>(dbData.ToList());
             foreach (var pbck3Dto in mapResult)
             {
-                pbck3Dto.Back3Dto = GetBack3ByPbck3Id(pbck3Dto.Pbck3Id);
-                pbck3Dto.Ck2Dto = GetCk2ByPbck3Id(pbck3Dto.Pbck3Id);
+                pbck3Dto.Back3No = "";
+                pbck3Dto.Back3Date = "";
+                var back3Data = GetBack3ByPbck3Id(pbck3Dto.Pbck3Id);
+                if (back3Data != null)
+                {
+                    pbck3Dto.Back3No = back3Data.Back3Number;
+                    pbck3Dto.Back3Date = ConvertHelper.ConvertDateToStringddMMMyyyy(back3Data.Back3Date);
+                }
+
+                pbck3Dto.Ck2No = "";
+                pbck3Dto.Ck2Date = "";
+                pbck3Dto.Ck2Value = "";
+                var ck2 = GetCk2ByPbck3Id(pbck3Dto.Pbck3Id);
+                if (ck2 != null)
+                {
+                    pbck3Dto.Ck2No = ck2.Ck2Number;
+                    pbck3Dto.Ck2Date = ConvertHelper.ConvertDateToStringddMMMyyyy(ck2.Ck2Date);
+                    pbck3Dto.Ck2Value = ConvertHelper.ConvertDecimalToStringMoneyFormat(ck2.Ck2Value);
+                }
             }
             return mapResult;
         }
@@ -1881,6 +1999,9 @@ namespace Sampoerna.EMS.BLL
                 WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
 
                 dbData.STATUS = Enums.DocumentStatus.Completed;
+                dbData.MODIFIED_DATE = DateTime.Now;
+                dbData.MODIFIED_BY = input.UserId;
+
                 input.ActionType = Enums.ActionType.Completed;
 
                 //insert to pbck3
@@ -2629,6 +2750,9 @@ namespace Sampoerna.EMS.BLL
                 WorkflowStatusAddChangesPbck3(input, dbData.STATUS.Value, Enums.DocumentStatus.Completed);
 
                 dbData.STATUS = Enums.DocumentStatus.Completed;
+                dbData.MODIFIED_DATE = DateTime.Now;
+                dbData.MODIFIED_BY = input.UserId;
+
                 input.ActionType = Enums.ActionType.Completed;
 
                 AddWorkflowHistoryPbck3(input);

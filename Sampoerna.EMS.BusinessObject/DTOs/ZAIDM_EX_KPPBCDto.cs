@@ -14,5 +14,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string CK1_KEP_FOOTER { get; set; }
         public DateTime CREATED_DATE { get; set; }
         public DateTime? MODIFIED_DATE { get; set; }
+        public Nullable<bool> IS_DELETED { get; set; }
     }
 }

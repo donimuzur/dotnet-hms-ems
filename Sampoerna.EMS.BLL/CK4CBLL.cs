@@ -770,6 +770,7 @@ namespace Sampoerna.EMS.BLL
             dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
             dbData.CK4C_DECREE_DOC = Mapper.Map<List<CK4C_DECREE_DOC>>(input.AdditionalDocumentData.Ck4cDecreeDoc);
             dbData.GOV_STATUS = Enums.StatusGovCk4c.Approved;
+            dbData.MODIFIED_DATE = DateTime.Now;
 
             //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
@@ -1504,6 +1505,9 @@ namespace Sampoerna.EMS.BLL
                 //first code when manager exists
                 //summaryDto.ManagerApproved = dtData.APPROVED_BY_MANAGER == null ? "-" : dtData.APPROVED_BY_MANAGER;
                 summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
+                summaryDto.CompletedDate = dtData.STATUS == Enums.DocumentStatus.Completed ?
+                    (dtData.MODIFIED_DATE == null ? ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.DECREE_DATE) :
+                    ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.MODIFIED_DATE)) : "-";
 
                 var prodDate = new List<string>();
                 var faCode = new List<string>();
@@ -1592,6 +1596,9 @@ namespace Sampoerna.EMS.BLL
                     //first code when manager exists
                     //summaryDto.ManagerApproved = dtData.APPROVED_BY_MANAGER == null ? "-" : dtData.APPROVED_BY_MANAGER;
                     summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
+                    summaryDto.CompletedDate = dtData.STATUS == Enums.DocumentStatus.Completed ?
+                        (dtData.MODIFIED_DATE == null ? ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.DECREE_DATE) :
+                        ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.MODIFIED_DATE)) : "-";
 
                     var prodDate = new List<string>();
                     var faCode = new List<string>();

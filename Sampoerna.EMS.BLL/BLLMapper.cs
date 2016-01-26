@@ -138,7 +138,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.MENGETAHUI, opt => opt.MapFrom(src => src.MENGETAHUI))
                 .ForMember(dest => dest.MENGETAHUI_DETAIL, opt => opt.MapFrom(src => src.MENGETAHUI_DETAIL))
                 .ForMember(dest => dest.CK1_KEP_HEADER, opt => opt.MapFrom(src => src.CK1_KEP_HEADER))
-                .ForMember(dest => dest.CK1_KEP_FOOTER, opt => opt.MapFrom(src => src.CK1_KEP_FOOTER));
+                .ForMember(dest => dest.CK1_KEP_FOOTER, opt => opt.MapFrom(src => src.CK1_KEP_FOOTER))
+                .ForMember(dest => dest.IS_DELETED, opt => opt.MapFrom(src => src.IS_DELETED));
 
 
             Mapper.CreateMap<LFA1, LFA1Dto>().IgnoreAllNonExisting()
@@ -215,7 +216,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.USER_ID))
                 .ForMember(dest => dest.UserName,
                     opt => opt.MapFrom(src => src.USER.FIRST_NAME + " " + src.USER.LAST_NAME))
-                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IS_ACTIVE == true ? "Yes" : "No"));
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IS_ACTIVE == false || src.IS_ACTIVE == null ? "No" : "Yes"));
 
             Mapper.CreateMap<UserPlantMapDto, USER_PLANT_MAP>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.USER_PLANT_MAP_ID, opt => opt.MapFrom(src => src.Id))

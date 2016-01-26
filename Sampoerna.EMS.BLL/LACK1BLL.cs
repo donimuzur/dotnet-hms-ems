@@ -908,6 +908,7 @@ namespace Sampoerna.EMS.BLL
                 dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
                 dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
                 dbData.GOV_STATUS = Enums.DocumentStatusGovType2.Approved;
+                dbData.MODIFIED_DATE = DateTime.Now;
 
                 input.DocumentNumber = dbData.LACK1_NUMBER;
 
@@ -3144,6 +3145,16 @@ namespace Sampoerna.EMS.BLL
                 totalUsage = (-1) * getInventoryMovementByParamOutput.IncludeInCk5List.Sum(d => d.ConvertedQty);
             }
 
+            decimal mvt201;
+            if (getInventoryMovementByParamOutput.Mvt201List.Count == 0)
+            {
+                mvt201 = 0;
+            }
+            else
+            {
+                mvt201 = (-1) * getInventoryMovementByParamOutput.Mvt201List.Sum(d => d.ConvertedQty);
+            }
+
             //nebeng in tis to fa field
             //set to tis to fa
             rc.InventoryProductionTisToFa.InvetoryMovementData = new Lack1GeneratedInventoryMovementDto
@@ -3155,7 +3166,7 @@ namespace Sampoerna.EMS.BLL
                 InvMovementAllList =
                     Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.AllUsageList)
             };
-            rc.TotalUsage = totalUsage;
+            rc.TotalUsage = totalUsage - mvt201;
 
             invMovementOutput = getInventoryMovementByParamOutput;
 
@@ -3265,6 +3276,19 @@ namespace Sampoerna.EMS.BLL
                 //var totalUsageIncludeCk5 = (-1) * getInventoryMovementByParamOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
                 //totalUsage = totalUsageIncludeCk5;
             }
+
+            decimal mvt201;
+            if (getInventoryMovementByParamOutput.Mvt201List.Count == 0)
+            {
+                mvt201 = 0;
+            }
+            else
+            {
+                mvt201 = (-1) * getInventoryMovementByParamOutput.Mvt201List.Sum(d => d.ConvertedQty);
+            }
+
+            totalUsage = totalUsage - mvt201;
+
             if (isForTisToTis)
             {
                 //set to tis to tis
@@ -3344,6 +3368,8 @@ namespace Sampoerna.EMS.BLL
 
             var movementUsageAll = _inventoryMovementService.GetUsageByParam(usageParamInput);
             var movementUsaheAllWithConvertion = InvMovementConvertionProcess(movementUsageAll, bkcUomId);
+            var movement201 = _inventoryMovementService.GetMvt201(usageParamInput);
+            var movement201WithConvertion = InvMovementConvertionProcess(movement201, bkcUomId);
             var receiving = _inventoryMovementService.GetReceivingByParam(receivingParamInput);
             //get prev receiving for CASE 2 : prev Receiving, Current Receiving, Current Usage
             var prevReceiving = _inventoryMovementService.GetReceivingByParam(prevReceivingParamInput);
@@ -3376,7 +3402,8 @@ namespace Sampoerna.EMS.BLL
                 ReceivingList = receivingList,
                 AllUsageList = movementUsaheAllWithConvertion,
                 ExcludeFromCk5List = movementExclueInCk5List,
-                UsageProportionalList = usageProportionalList
+                UsageProportionalList = usageProportionalList,
+                Mvt201List = movement201WithConvertion
             };
 
             return rc;

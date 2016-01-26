@@ -39,7 +39,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                Details = Mapper.Map<List<DetailPlantT1001W>>(_plantBll.GetAllPlant())
+                Details = Mapper.Map<List<DetailPlantT1001W>>(_plantBll.GetAllPlant()),
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
             };
             ViewBag.Message = TempData["message"];
             return View("Index", plant);
@@ -48,7 +49,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Edit(string id)
         {
-
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Detail", new { id });
+            }
             
             var plant = _plantBll.GetId(id);
             //NPPBKC Import for the dropdown dikosongkan default value

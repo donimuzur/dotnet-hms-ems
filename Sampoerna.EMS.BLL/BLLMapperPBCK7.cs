@@ -262,6 +262,31 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ExecDateTo, opt => opt.MapFrom(src => src.EXEC_DATE_TO))
                 ;
 
+            Mapper.CreateMap<PBCK7, Pbck7SummaryReportDto>().IgnoreAllNonExisting()
+              .ForMember(dest => dest.Pbck7Id, opt => opt.MapFrom(src => src.PBCK7_ID))
+             .ForMember(dest => dest.Pbck7Number, opt => opt.MapFrom(src => src.PBCK7_NUMBER))
+             .ForMember(dest => dest.Nppbkc, opt => opt.MapFrom(src => src.NPPBKC))
+             .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PLANT_ID + "-" + src.PLANT_NAME))
+             .ForMember(dest => dest.Pbck7Date, opt => opt.MapFrom(src => src.PBCK7_DATE.ToString("dd MMM yyyy")))
+             .ForMember(dest => dest.DocumentType, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.DOCUMENT_TYPE)))
+             .ForMember(dest => dest.Pbck7Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS)))
+             .ForMember(dest => dest.ExecFrom, opt => opt.MapFrom(src => src.EXEC_DATE_FROM.ToString("dd MMM yyyy")))
+             .ForMember(dest => dest.ExecTo, opt => opt.MapFrom(src => src.EXEC_DATE_TO.ToString("dd MMM yyyy")))
+             .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.APPROVED_BY))
+             .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.CREATED_BY))
+             ;
+
+            Mapper.CreateMap<PBCK3, Pbck3SummaryReportDto>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.Pbck3Id, opt => opt.MapFrom(src => src.PBCK3_ID))
+               .ForMember(dest => dest.Pbck3Number, opt => opt.MapFrom(src => src.PBCK3_NUMBER))
+               .ForMember(dest => dest.Pbck7Number, opt => opt.MapFrom(src => src.PBCK7.PBCK7_NUMBER))
+               .ForMember(dest => dest.Ck5Number, opt => opt.MapFrom(src => src.CK5.SUBMISSION_NUMBER))
+               .ForMember(dest => dest.Pbck3Date, opt => opt.MapFrom(src => src.PBCK3_DATE.ToString("dd MMM yyyy")))
+               .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PBCK7 != null ? src.PBCK7.PLANT_ID + "-" + src.PBCK7.PLANT_NAME : src.CK5.SOURCE_PLANT_ID + "-" + src.CK5.SOURCE_PLANT_NAME))
+               .ForMember(dest => dest.Nppbkc, opt => opt.MapFrom(src => src.PBCK7 != null ? src.PBCK7.NPPBKC : src.CK5.SOURCE_PLANT_NPPBKC_ID))
+               .ForMember(dest => dest.Pbck3Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS)))
+               ;
+
         }
     }
 }

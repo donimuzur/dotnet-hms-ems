@@ -61,11 +61,13 @@
     <div class="row">
         <div class="col-sm-12">
             <h3>Material Master</h3>
+            @if (Model.IsNotViewer){
             <div class="action-button new">
                 <a href="@Url.Action("Create", "Material")">
                     <button class="btn btn-blue">NEW</button>
                 </a>
             </div>
+            }
         </div>
     </div>
 </div>
@@ -112,7 +114,9 @@
                             <tr>
                                 <td class="action">
                                     <a href="@Url.Action("Details", "Material", new { mn = item.MaterialNumber, p= item.PlantId })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    @if (Model.IsNotViewer){
                                     <a href="@Url.Action("Edit", "Material", new { mn = item.MaterialNumber, p = item.PlantId })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                                    }
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.PlantName)
