@@ -8,6 +8,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core.Exceptions;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL.Services
 {
@@ -16,6 +17,8 @@ namespace Sampoerna.EMS.BLL.Services
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<USER_PLANT_MAP> _repository;
+        private IGenericRepository<BROLE_MAP> _repositoryBRoleMap;
+
         private string _includeTables = "USER, T001W, T001W.T001K";
 
         public UserPlantMapService(IUnitOfWork uow, ILogger logger)
@@ -23,6 +26,7 @@ namespace Sampoerna.EMS.BLL.Services
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<USER_PLANT_MAP>();
+            _repositoryBRoleMap = _uow.GetGenericRepository<BROLE_MAP>();
         }
         public void Save(USER_PLANT_MAP userPlantMap)
         {
@@ -99,5 +103,17 @@ namespace Sampoerna.EMS.BLL.Services
         {
             return _repository.Get(p => p.NPPBKC_ID == nppbkcId).ToList();
         }
+
+        public List<string> GetUserBRoleMapByPlantIdAndUserRole(string plantId, Enums.UserRole userRole)
+        {
+            var listUserMap = _repository.Get(p => p.PLANT_ID == plantId).ToList();
+            var listUser = listUserMap.Select(x => x.USER_ID).ToList();
+            var listBrole =
+                _repositoryBRoleMap.Get(
+                    c => listUser.Contains(c.MSACCT) && c.ROLEID == userRole);
+
+            return listBrole.Select(x => x.MSACCT).ToList();
+        }
+
     }
 }

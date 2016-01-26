@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Contract.Services
 {
@@ -19,5 +20,7 @@ namespace Sampoerna.EMS.Contract.Services
         List<USER_PLANT_MAP> GetByPlantId(string plantId);
 
         List<USER_PLANT_MAP> GetByNppbkcId(string nppbkcId);
+
+        List<string> GetUserBRoleMapByPlantIdAndUserRole(string plantId, Enums.UserRole userRole);
     }
 }

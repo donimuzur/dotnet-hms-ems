@@ -2967,7 +2967,7 @@ namespace Sampoerna.EMS.BLL
                     DateTime.Now);
                 if (string.IsNullOrEmpty(input.Comment))
                 {
-                    input.Comment = DelegateCommentUnsealingUser(dbData, input.UserId);
+                    input.Comment = DelegateCommentUnsealingUser(dbData, input.UserId, input.UserRole);
                 }
 
                 //add to workflow
@@ -3197,7 +3197,7 @@ namespace Sampoerna.EMS.BLL
                 DateTime.Now);
             if (string.IsNullOrEmpty(input.Comment))
             {
-                input.Comment = DelegateCommentUnsealingUser(dbData, input.UserId);
+                input.Comment = DelegateCommentUnsealingUser(dbData, input.UserId, input.UserRole);
             }
 
             if (dbData.CK5_TYPE == Enums.CK5Type.Manual || dbData.CK5_TYPE == Enums.CK5Type.Return)
@@ -3248,27 +3248,71 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
-        private string DelegateCommentUnsealingUser(CK5 ck5, string currentUser)
+        private string DelegateCommentUnsealingUser(CK5 ck5, string currentUser, Enums.UserRole userRole)
         {
             string plantId = ck5.SOURCE_PLANT_ID;
+            string nppbkcId = ck5.SOURCE_PLANT_NPPBKC_ID;
+
             switch (ck5.CK5_TYPE)
             {
                 case Enums.CK5Type.PortToImporter:
                 case Enums.CK5Type.DomesticAlcohol:
                     plantId = ck5.DEST_PLANT_ID;
+                    nppbkcId = ck5.DEST_PLANT_NPPBKC_ID;
                     break;
                 case Enums.CK5Type.Manual:
                     if (ck5.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                    {
                         plantId = ck5.DEST_PLANT_ID;
+                        nppbkcId = ck5.DEST_PLANT_NPPBKC_ID;
+                    }
                     break;
             }
 
-            var listUserPlantMap = _userPlantMapService.GetByPlantId(plantId);
-            var listUser = listUserPlantMap.Select(c => c.USER_ID).ToList();
-            if (listUser.Contains(currentUser))
+            //var listUserPlantMap = _userPlantMapService.GetByPlantId(plantId);
+            //var listUser = listUserPlantMap.Select(c => c.USER_ID).ToList();
+            //if (listUser.Contains(currentUser))
+            //    return string.Empty;
+            ////and get user by plant delegate
+            //var listUserDelegate = _poaDelegationServices.GetListPoaDelegateByDate(listUser, DateTime.Now);
+            //if (listUserDelegate.Contains(currentUser))
+            //{
+            //    //get user original
+            //    var originalUser = _poaDelegationServices.GetPoaDelegationByPoaToAndDate(currentUser, DateTime.Now);
+            //    if (originalUser != null)
+            //        return Constans.LabelDelegatedBy + originalUser.POA_FROM;
+            //}
+            //return string.Empty;
+
+
+            //get user by plant 
+            var listUser = new List<string>();
+            if (userRole == Enums.UserRole.User)
+            {
+                var listUserPlantMap = _userPlantMapService.GetUserBRoleMapByPlantIdAndUserRole(plantId, Enums.UserRole.User);
+
+                if (listUserPlantMap.Contains(currentUser))
+                    return string.Empty;
+
+                listUser.AddRange(listUserPlantMap);
+
+                ////and get user by plant delegate
+                //var listUserDelegate = _poaDelegationServices.GetListPoaDelegateByDate(listUserPlantMap, DateTime.Now);
+                //if (listUserDelegate.Contains(input.CurrentUser))
+                //    return true;
+            }
+            else if (userRole == Enums.UserRole.POA)
+            {
+                var listPoa = _poaBll.GetPoaActiveByNppbkcId(nppbkcId);
+                listUser.AddRange(listPoa.Select(c => c.POA_ID));
+                if (listUser.Contains(currentUser))
+                    return string.Empty;
+            }
+            else
                 return string.Empty;
-            //and get user by plant delegate
+
             var listUserDelegate = _poaDelegationServices.GetListPoaDelegateByDate(listUser, DateTime.Now);
+
             if (listUserDelegate.Contains(currentUser))
             {
                 //get user original
