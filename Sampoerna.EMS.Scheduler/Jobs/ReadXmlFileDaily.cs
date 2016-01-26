@@ -80,8 +80,11 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 }
                 catch (Exception ex)
                 {
-
                     logger.Error("Reading XML crashed", ex);
+                    var body = ex.Message;
+                    if (!String.IsNullOrEmpty(body))
+                        logger.Error(EmailUtility.Email(body,"Scheduler is down"));
+                    
                 }
                 //if (errorList.Count > 0)
                 //{
@@ -95,7 +98,7 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 //}
                 if (errorFileList.Count == 0)
                 {
-                    var body = string.Empty;
+                    
                     if (_svc.filesMoved.Count > 0)
                     {
                         foreach (var file in _svc.filesMoved)
@@ -111,7 +114,7 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                             logger.Info(info);
                         }
                         if(!String.IsNullOrEmpty(body))
-                            logger.Error(EmailUtility.Email(body, null));
+                            logger.Error(EmailUtility.Email(body));
                     }
 
 
