@@ -38,6 +38,7 @@ using Sampoerna.EMS.Website.Models.WasteStock;
 using Sampoerna.EMS.Website.Models.XmlFileManagement;
 using Sampoerna.EMS.Website.Models.XmlLog;
 using Sampoerna.EMS.Website.Models.PoaDelegation;
+using Sampoerna.EMS.Website.Models.SchedulerSetting;
 
 namespace Sampoerna.EMS.Website
 {
@@ -1050,6 +1051,12 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
+
+            #region Scheduler Setting
+
+            Mapper.CreateMap<SchedulerSetting, SchedulerSettingModel>().IgnoreAllNonExisting();
+            Mapper.CreateMap<SchedulerSettingModel, SchedulerSetting>().IgnoreAllNonExisting();
+            #endregion
         }
     }
 
