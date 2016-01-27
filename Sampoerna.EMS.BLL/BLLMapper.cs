@@ -340,7 +340,7 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<PRODUCTION, ProductionUploadItems>().IgnoreAllNonExisting()
             .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.COMPANY_CODE))
             .ForMember(dest => dest.PlantWerks, opt => opt.MapFrom(src => src.WERKS))
-            .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.BRAND_DESC))
+            .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
             .ForMember(dest => dest.BrandDescription, opt => opt.MapFrom(src => src.BRAND_DESC))
             .ForMember(dest => dest.QtyPacked, opt => opt.MapFrom(src => src.QTY_PACKED))
             .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.QTY))
