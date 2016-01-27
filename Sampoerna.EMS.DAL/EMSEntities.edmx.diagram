@@ -266,6 +266,8 @@
         <AssociationConnector Association="EMSModel.FK_POA_DELEGATION_USER1" />
         <EntityTypeShape EntityType="EMSModel.ZAAP_SHIFT_RPT" Width="1.5" PointX="11.375" PointY="7.75" />
         <EntityTypeShape EntityType="EMSModel.PRODUCTION" Width="1.5" PointX="0.75" PointY="11.75" />
+        <EntityTypeShape EntityType="EMSModel.REVERSAL" Width="1.5" PointX="13.625" PointY="9.375" />
+        <AssociationConnector Association="EMSModel.FK_REVERSAL_ZAAP_SHIFT_RPT" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

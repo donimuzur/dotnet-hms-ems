@@ -1659,6 +1659,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 });
             }
 
+            if (model.ExportModel.CompletedDate)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "CompletedDate",
+                    HeaderText = "CompletedDate"
+                });
+            }
+
             grid.DataBind();
 
             var fileName = "Lack1" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";

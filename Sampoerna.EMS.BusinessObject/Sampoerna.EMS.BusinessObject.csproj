@@ -79,6 +79,7 @@
     <Compile Include="Business\Pbck1ProdConverter.cs" />
     <Compile Include="Business\Pbck1ProdPlan.cs" />
     <Compile Include="Business\Plant.cs" />
+    <Compile Include="Business\SchedulerSetting.cs" />
     <Compile Include="CHANGES_HISTORY.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -438,6 +439,9 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Business\UserTree.cs" />
+    <Compile Include="REVERSAL.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="SUPPLIER_PORT.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>

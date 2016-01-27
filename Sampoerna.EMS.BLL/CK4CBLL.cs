@@ -770,6 +770,7 @@ namespace Sampoerna.EMS.BLL
             dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
             dbData.CK4C_DECREE_DOC = Mapper.Map<List<CK4C_DECREE_DOC>>(input.AdditionalDocumentData.Ck4cDecreeDoc);
             dbData.GOV_STATUS = Enums.StatusGovCk4c.Approved;
+            dbData.MODIFIED_DATE = DateTime.Now;
 
             //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
@@ -1348,9 +1349,46 @@ namespace Sampoerna.EMS.BLL
                     prodTotal = String.Format("{0:n}", nBatang) + " batang dan Nihil gram";
             }
 
+            var groupItemList = GroupListItem(result.Ck4cItemList);
+
+            result.Ck4cItemList = groupItemList;
+
             result.Detail.ProdTotal = prodTotal;
 
             return result;
+        }
+
+        private List<Ck4cReportItemDto> GroupListItem(List<Ck4cReportItemDto> list)
+        {
+            var itemList = new List<Ck4cReportItemDto>();
+
+            var groupItem = Mapper.Map<List<Ck4cGroupReportItemDto>>(list);
+
+            var groupList = groupItem
+                .GroupBy(x => new { x.Ck4cItemId, x.ProdQty, x.ProdCode, x.ProdType, x.Merk, x.Hje, x.No, x.NoProd, x.ProdDate, x.Isi, x.Comment, x.CollumNo })
+                .Select(p => new Ck4cGroupReportItemDto()
+                {
+                    Ck4cItemId = p.FirstOrDefault().Ck4cItemId,
+                    ProdQty = p.FirstOrDefault().ProdQty,
+                    ProdCode = p.FirstOrDefault().ProdCode,
+                    ProdType = p.FirstOrDefault().ProdType,
+                    Merk = p.FirstOrDefault().Merk,
+                    Hje = p.FirstOrDefault().Hje,
+                    No = p.FirstOrDefault().No,
+                    NoProd = p.FirstOrDefault().NoProd,
+                    ProdDate = p.FirstOrDefault().ProdDate,
+                    Isi = p.FirstOrDefault().Isi,
+                    Comment = p.FirstOrDefault().Comment,
+                    CollumNo = p.FirstOrDefault().CollumNo,
+                    SumBtg = p.Sum(c => c.SumBtg),
+                    BtgGr = p.Sum(c => c.BtgGr),
+                    Total = p.Sum(c => c.Total),
+                    ProdWaste = p.Sum(c => c.ProdWaste)
+                });
+
+            itemList = Mapper.Map<List<Ck4cReportItemDto>>(groupList.ToList());
+
+            return itemList;
         }
 
         private bool SetChangesHistory(CK4C origin, Ck4CDto data, string userId)
@@ -1504,6 +1542,9 @@ namespace Sampoerna.EMS.BLL
                 //first code when manager exists
                 //summaryDto.ManagerApproved = dtData.APPROVED_BY_MANAGER == null ? "-" : dtData.APPROVED_BY_MANAGER;
                 summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
+                summaryDto.CompletedDate = dtData.STATUS == Enums.DocumentStatus.Completed ?
+                    (dtData.MODIFIED_DATE == null ? ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.DECREE_DATE) :
+                    ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.MODIFIED_DATE)) : "-";
 
                 var prodDate = new List<string>();
                 var faCode = new List<string>();
@@ -1592,6 +1633,9 @@ namespace Sampoerna.EMS.BLL
                     //first code when manager exists
                     //summaryDto.ManagerApproved = dtData.APPROVED_BY_MANAGER == null ? "-" : dtData.APPROVED_BY_MANAGER;
                     summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
+                    summaryDto.CompletedDate = dtData.STATUS == Enums.DocumentStatus.Completed ?
+                        (dtData.MODIFIED_DATE == null ? ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.DECREE_DATE) :
+                        ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.MODIFIED_DATE)) : "-";
 
                     var prodDate = new List<string>();
                     var faCode = new List<string>();
