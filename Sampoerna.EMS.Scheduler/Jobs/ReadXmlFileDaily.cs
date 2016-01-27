@@ -98,7 +98,7 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 //}
                 if (errorFileList.Count == 0)
                 {
-                    
+                    var body = string.Empty;
                     if (_svc.filesMoved.Count > 0)
                     {
                         foreach (var file in _svc.filesMoved)
