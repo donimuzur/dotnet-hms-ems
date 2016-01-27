@@ -360,11 +360,13 @@ namespace Sampoerna.EMS.BLL
 
         public bool AllowTfPostedPortToImporter(WorkflowAllowApproveAndRejectInput input)
         {
-            if (input.CreatedUser != input.CurrentUser)
-                if (
-                    !_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
-                        DateTime.Now))
-                    return false;
+            //if (input.CreatedUser != input.CurrentUser)
+            //    if (
+            //        !_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
+            //            DateTime.Now))
+            //        return false;
+            if (!IsUserUnsealing(input))
+                return false;
 
             return input.DocumentStatus == Enums.DocumentStatus.TFPosted;
         }
