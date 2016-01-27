@@ -134,6 +134,21 @@ namespace Sampoerna.EMS.BLL
 
             Mapper.CreateMap<Ck4cDecreeDocDto, CK4C_DECREE_DOC>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<Ck4cReportItemDto, Ck4cGroupReportItemDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Comment, opt => opt.MapFrom(src => src.Comment == null ? string.Empty : src.Comment))
+                .ForMember(dest => dest.SumBtg, opt => opt.MapFrom(src => src.SumBtg == "Nihil" ? 0 : Convert.ToDecimal(src.SumBtg)))
+                .ForMember(dest => dest.BtgGr, opt => opt.MapFrom(src => src.BtgGr == "Nihil" ? 0 : Convert.ToDecimal(src.BtgGr)))
+                .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.Total == "Nihil" ? 0 : Convert.ToDecimal(src.Total)))
+                .ForMember(dest => dest.ProdWaste, opt => opt.MapFrom(src => src.ProdWaste == "Nihil" ? 0 : Convert.ToDecimal(src.ProdWaste)))
+                ;
+
+            Mapper.CreateMap<Ck4cGroupReportItemDto, Ck4cReportItemDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.SumBtg, opt => opt.MapFrom(src => src.SumBtg == 0 ? "Nihil" : String.Format("{0:n}", src.SumBtg)))
+                .ForMember(dest => dest.BtgGr, opt => opt.MapFrom(src => src.BtgGr == 0 ? "Nihil" : String.Format("{0:n}", src.BtgGr)))
+                .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.Total == 0 ? "Nihil" : String.Format("{0:n}", src.Total)))
+                .ForMember(dest => dest.ProdWaste, opt => opt.MapFrom(src => src.ProdWaste == 0 ? "Nihil" : String.Format("{0:n}", src.ProdWaste)))
+                ;
+
             #endregion
         }
 
