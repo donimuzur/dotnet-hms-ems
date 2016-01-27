@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 
 namespace Sampoerna.EMS.Website.Models.Reversal
@@ -17,6 +18,8 @@ namespace Sampoerna.EMS.Website.Models.Reversal
 
         public string ProductionDate { get; set; }
         public string PlantWerks { get; set; }
+
+        public Enums.CK4CType Ck4CType { get; set; }
 
         public SelectList PlantWerksList { get; set; }
 

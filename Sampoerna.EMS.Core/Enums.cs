@@ -574,7 +574,9 @@ namespace Sampoerna.EMS.Core
             [Description("CK4CDocument")]
             Ck4CDocument = 3,
             [Description("CompletedDocument")]
-            CompletedDocument = 4
+            CompletedDocument = 4,
+            [Description("Reversal")]
+            Reversal = 5
         }
 
         public enum MovementTypeCode

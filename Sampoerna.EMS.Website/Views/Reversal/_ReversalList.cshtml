@@ -4,26 +4,16 @@
     <thead>
         <tr>
             <th class="toggle-row"> Action </th>
-            <th> CK-4C No </th>
-            <th> Company </th>
-            <th> Based On </th>
-            <th> NPPBKC </th>
-            <th> Plant Id </th>
-            <th> Period </th>
-            <th> Month </th>
-            <th> Year </th>
-            <th> Status </th>
+            <th> Production Date </th>
+            <th> Plant </th>
+            <th> Fa Code </th>
+            <th> Reversal </th>
         </tr>
 
     </thead>
     <thead class="filters">
         <tr>
             <th> Filter </th>
-            <th> </th>
-            <th> </th>
-            <th> </th>
-            <th> </th>
-            <th> </th>
             <th> </th>
             <th> </th>
             <th> </th>
@@ -43,31 +33,16 @@
                     }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Number)
+                    @Html.DisplayFor(modelItem => item.ProductionDate)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CompanyName)
+                    @Html.DisplayFor(modelItem => item.Werks)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.BasedOn)
+                    @Html.DisplayFor(modelItem => item.FaCode)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.NppbkcId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PlantId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ReportedPeriod)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ReportedMonthName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ReportedYears)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StatusName)
+                    @Html.DisplayFor(modelItem => item.ReversalQty)
                 </td>
 
             </tr>
