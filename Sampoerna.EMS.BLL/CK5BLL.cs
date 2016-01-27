@@ -2037,24 +2037,44 @@ namespace Sampoerna.EMS.BLL
                     }
 
                     //cc to user destination 
-                     string plantIdDestination = ck5Dto.SOURCE_PLANT_ID;
-                    switch (ck5Dto.CK5_TYPE)
+                     string plantIdDestination = ck5Dto.DEST_PLANT_ID;
+                    string nppbkcDestination = ck5Dto.DEST_PLANT_NPPBKC_ID;
+                    //switch (ck5Dto.CK5_TYPE)
+                    //{
+                    //    case Enums.CK5Type.PortToImporter:
+                    //    case Enums.CK5Type.DomesticAlcohol:
+                    //        plantIdDestination = ck5Dto.DEST_PLANT_ID;
+                    //        break;
+                    //    case Enums.CK5Type.Manual:
+                    //        if (ck5Dto.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                    //            plantIdDestination = ck5Dto.DEST_PLANT_ID;
+                    //        break;
+                    //}
+                    if (ck5Dto.CK5_TYPE == Enums.CK5Type.Manual &&
+                        ck5Dto.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.DestFreeText)
                     {
-                        case Enums.CK5Type.PortToImporter:
-                        case Enums.CK5Type.DomesticAlcohol:
-                            plantIdDestination = ck5Dto.DEST_PLANT_ID;
-                            break;
-                        case Enums.CK5Type.Manual:
-                            if (ck5Dto.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
-                                plantIdDestination = ck5Dto.DEST_PLANT_ID;
-                            break;
+                        plantIdDestination = ck5Dto.SOURCE_PLANT_ID;
+                        nppbkcDestination = ck5Dto.SOURCE_PLANT_NPPBKC_ID;
                     }
-                    var listUserPlantMap = _userPlantMapService.GetByPlantId(plantIdDestination);
-                    foreach (var userPlantMap in listUserPlantMap)
+
+                    //get list user
+                    var listUser = new List<string>();
+                    var listUserPlantMap = _userPlantMapService.GetUserBRoleMapByPlantIdAndUserRole(plantIdDestination,Enums.UserRole.User);
+                    listUser.AddRange(listUserPlantMap);
+
+                    //get list poa
+                     var listPoa = _poaBll.GetPoaActiveByNppbkcId(nppbkcDestination);
+                    listUser.AddRange(listPoa.Select(c => c.POA_ID));
+
+                    //get from table user
+                    var tbUser = _userBll.GetUsersByListId(listUser);
+
+                  
+                    foreach (var user in tbUser)
                     {
-                        if (userPlantMap.USER == null) continue;
-                        if (!string.IsNullOrEmpty(userPlantMap.USER.EMAIL))
-                            rc.CC.Add(userPlantMap.USER.EMAIL);
+
+                        if (!string.IsNullOrEmpty(user.EMAIL))
+                            rc.CC.Add(user.EMAIL);
                     }
 
                     break;
@@ -3250,24 +3270,31 @@ namespace Sampoerna.EMS.BLL
 
         private string DelegateCommentUnsealingUser(CK5 ck5, string currentUser, Enums.UserRole userRole)
         {
-            string plantId = ck5.SOURCE_PLANT_ID;
-            string nppbkcId = ck5.SOURCE_PLANT_NPPBKC_ID;
+            string plantId = ck5.DEST_PLANT_ID;
+            string nppbkcId = ck5.DEST_PLANT_NPPBKC_ID;
 
-            switch (ck5.CK5_TYPE)
+            if (ck5.CK5_TYPE == Enums.CK5Type.Manual &&
+                      ck5.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.DestFreeText)
             {
-                case Enums.CK5Type.PortToImporter:
-                case Enums.CK5Type.DomesticAlcohol:
-                    plantId = ck5.DEST_PLANT_ID;
-                    nppbkcId = ck5.DEST_PLANT_NPPBKC_ID;
-                    break;
-                case Enums.CK5Type.Manual:
-                    if (ck5.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
-                    {
-                        plantId = ck5.DEST_PLANT_ID;
-                        nppbkcId = ck5.DEST_PLANT_NPPBKC_ID;
-                    }
-                    break;
+                plantId = ck5.SOURCE_PLANT_ID;
+                nppbkcId = ck5.SOURCE_PLANT_NPPBKC_ID;
             }
+
+            //switch (ck5.CK5_TYPE)
+            //{
+            //    case Enums.CK5Type.PortToImporter:
+            //    case Enums.CK5Type.DomesticAlcohol:
+            //        plantId = ck5.DEST_PLANT_ID;
+            //        nppbkcId = ck5.DEST_PLANT_NPPBKC_ID;
+            //        break;
+            //    case Enums.CK5Type.Manual:
+            //        if (ck5.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+            //        {
+            //            plantId = ck5.DEST_PLANT_ID;
+            //            nppbkcId = ck5.DEST_PLANT_NPPBKC_ID;
+            //        }
+            //        break;
+            //}
 
             //var listUserPlantMap = _userPlantMapService.GetByPlantId(plantId);
             //var listUser = listUserPlantMap.Select(c => c.USER_ID).ToList();
@@ -3287,30 +3314,20 @@ namespace Sampoerna.EMS.BLL
 
             //get user by plant 
             var listUser = new List<string>();
-            if (userRole == Enums.UserRole.User)
-            {
-                var listUserPlantMap = _userPlantMapService.GetUserBRoleMapByPlantIdAndUserRole(plantId, Enums.UserRole.User);
 
-                if (listUserPlantMap.Contains(currentUser))
-                    return string.Empty;
+            var listUserPlantMap = _userPlantMapService.GetUserBRoleMapByPlantIdAndUserRole(plantId, Enums.UserRole.User);
+            listUser.AddRange(listUserPlantMap);
 
-                listUser.AddRange(listUserPlantMap);
-
-                ////and get user by plant delegate
-                //var listUserDelegate = _poaDelegationServices.GetListPoaDelegateByDate(listUserPlantMap, DateTime.Now);
-                //if (listUserDelegate.Contains(input.CurrentUser))
-                //    return true;
-            }
-            else if (userRole == Enums.UserRole.POA)
-            {
-                var listPoa = _poaBll.GetPoaActiveByNppbkcId(nppbkcId);
-                listUser.AddRange(listPoa.Select(c => c.POA_ID));
-                if (listUser.Contains(currentUser))
-                    return string.Empty;
-            }
-            else
+            if (listUserPlantMap.Contains(currentUser))
                 return string.Empty;
+            
+            //list poa
+            var listPoa = _poaBll.GetPoaActiveByNppbkcId(nppbkcId);
+            listUser.AddRange(listPoa.Select(c => c.POA_ID));
 
+            if (listUser.Contains(currentUser))
+                return string.Empty;
+           
             var listUserDelegate = _poaDelegationServices.GetListPoaDelegateByDate(listUser, DateTime.Now);
 
             if (listUserDelegate.Contains(currentUser))

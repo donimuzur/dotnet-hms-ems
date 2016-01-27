@@ -432,11 +432,14 @@ namespace Sampoerna.EMS.BLL
 
         public bool AllowStoGrCreated(WorkflowAllowApproveAndRejectInput input)
         {
-            if (input.CreatedUser != input.CurrentUser)
-                if (
-                    !_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
-                        DateTime.Now))
-                    return false;
+            //if (input.CreatedUser != input.CurrentUser)
+            //    if (
+            //        !_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
+            //            DateTime.Now))
+            //        return false;
+
+            if (!IsUserUnsealing(input))
+                return false;
 
             return input.DocumentStatus == Enums.DocumentStatus.StoRecGRCompleted;
         }
@@ -659,29 +662,19 @@ namespace Sampoerna.EMS.BLL
 
             //get user by plant 
             var listUser = new List<string>();
-            if (input.UserRole == Enums.UserRole.User)
-            {
-                var listUserPlantMap = _userPlantMapService.GetUserBRoleMapByPlantIdAndUserRole(input.PlantId, Enums.UserRole.User);
-              
-                if (listUserPlantMap.Contains(input.CurrentUser))
-                    return true;
 
-                listUser.AddRange(listUserPlantMap);
+            var listUserPlantMap = _userPlantMapService.GetUserBRoleMapByPlantIdAndUserRole(input.DestPlant,
+                Enums.UserRole.User);
+            listUser.AddRange(listUserPlantMap);
 
-                ////and get user by plant delegate
-                //var listUserDelegate = _poaDelegationServices.GetListPoaDelegateByDate(listUserPlantMap, DateTime.Now);
-                //if (listUserDelegate.Contains(input.CurrentUser))
-                //    return true;
-            }
-            else if (input.UserRole == Enums.UserRole.POA)
-            {
-                var listPoa = _poabll.GetPoaActiveByNppbkcId(input.NppbkcId);
-                listUser.AddRange(listPoa.Select(c=>c.POA_ID));
-                if (listUser.Contains(input.CurrentUser))
-                    return true;
-            }
-            else
-                return false;
+            //list poa
+            var listPoa = _poabll.GetPoaActiveByNppbkcId(input.DestNppbkcId);
+
+            listUser.AddRange(listPoa.Select(c => c.POA_ID));
+
+            if (listUser.Contains(input.CurrentUser))
+                return true;
+           
 
             var listUserDelegate = _poaDelegationServices.GetListPoaDelegateByDate(listUser, DateTime.Now);
             return listUserDelegate.Contains(input.CurrentUser);

@@ -1417,6 +1417,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.NppbkcId = model.SourceNppbkcId;
                 input.PlantId = ck5Details.Ck5Dto.SOURCE_PLANT_ID;
 
+                input.DestNppbkcId = model.DestNppbkcId;
+                input.DestPlant = ck5Details.Ck5Dto.DEST_PLANT_ID;
+
                 if (model.Ck5Type == Enums.CK5Type.PortToImporter)
                 {
                     input.NppbkcId = model.DestNppbkcId;
@@ -1440,6 +1443,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     input.NppbkcId = model.DestNppbkcId;
                     input.PlantId = ck5Details.Ck5Dto.DEST_PLANT_ID;
+                }
+                else if (model.Ck5Type == Enums.CK5Type.Manual &&
+                    model.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.DestFreeText)
+                {
+                    input.DestNppbkcId = model.SourceNppbkcId;
+                    input.DestPlant = ck5Details.Ck5Dto.SOURCE_PLANT_ID;
                 }
                 else if (model.Ck5Type == Enums.CK5Type.Return)
                 {
