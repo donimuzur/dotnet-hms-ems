@@ -415,8 +415,8 @@
     <Compile Include="Models\UOM\UomIndexViewModel.cs" />
     <Compile Include="Models\UserAuthorization\CreateUserAuthorizationViewModel.cs" />
     <Compile Include="Models\UserAuthorization\IndexUserAuthorizationViewModel.cs" />
-    <Compile Include="Models\UserPlantMap\UserPlantMapIndexViewModel.cs" />
     <Compile Include="Models\UserPlantMap\UserPlantMapDetailViewModel.cs" />
+    <Compile Include="Models\UserPlantMap\UserPlantMapIndexViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Models\Vendor\VendorDetailViewModel.cs" />
     <Compile Include="Models\Vendor\VendorIndexViewModel.cs" />

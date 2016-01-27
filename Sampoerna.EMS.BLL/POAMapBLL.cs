@@ -62,7 +62,7 @@ namespace Sampoerna.EMS.BLL
         {
             var list = new List<string>();
 
-            var data = _uow.GetGenericRepository<POA_MAP>().Get(p => p.POA_ID == id, null, _includeProperties);
+            var data = _uow.GetGenericRepository<POA_MAP>().Get(p => p.POA_ID == id && p.POA.IS_ACTIVE.Value == true, null, _includeProperties);
 
             foreach (var item in data)
             {
@@ -76,7 +76,7 @@ namespace Sampoerna.EMS.BLL
         {
             var list = new List<string>();
 
-            var data = _uow.GetGenericRepository<POA_MAP>().Get(p => p.POA_ID == id, null, _includeProperties);
+            var data = _uow.GetGenericRepository<POA_MAP>().Get(p => p.POA_ID == id && p.POA.IS_ACTIVE.Value == true, null, _includeProperties);
 
             foreach (var item in data)
             {
@@ -92,7 +92,7 @@ namespace Sampoerna.EMS.BLL
 
             var list = new List<string>();
 
-            var data = _uow.GetGenericRepository<POA_MAP>().Get(p => p.POA_ID == id, null, _includeProperties);
+            var data = _uow.GetGenericRepository<POA_MAP>().Get(p => p.POA_ID == id && p.POA.IS_ACTIVE.Value == true, null, _includeProperties);
 
             var company = string.Empty;
 

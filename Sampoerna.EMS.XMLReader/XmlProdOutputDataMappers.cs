@@ -44,7 +44,7 @@ namespace Sampoerna.EMS.XMLReader
                         zaapShftRptItem.BUNDLE = null;
                     else
                     {
-                        zaapShftRptItem.BUNDLE = Convert.ToInt32(bundle);
+                        zaapShftRptItem.BUNDLE = Convert.ToDecimal(bundle);
                     }
                     
                     //zaapShftRptItem.MARKET = _xmlMapper.GetElementValue(xElement.Element("Market"));

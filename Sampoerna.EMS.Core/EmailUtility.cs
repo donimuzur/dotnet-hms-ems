@@ -12,9 +12,7 @@ namespace Sampoerna.EMS.Core
 {
     public class EmailUtility
     {
-        public static string Email(
-                         string body, 
-                         params MailAttachment[] attachments)
+        public static string Email(string body,string subject = null, params MailAttachment[] attachments)
         {
             string error = string.Empty;
             try
@@ -39,7 +37,13 @@ namespace Sampoerna.EMS.Core
                 mail.IsBodyHtml = true;
                 
                 mail.From = new MailAddress(config.Sender, config.SenderDisplay, Encoding.UTF8);
-                mail.Subject = config.Subject;
+                if (string.IsNullOrEmpty(subject))
+                    mail.Subject = config.Subject;
+                else
+                {
+
+                    mail.Subject = subject;
+                }
                 mail.SubjectEncoding = Encoding.UTF8;
                 mail.Priority = MailPriority.Normal;
                 if (attachments != null)
@@ -63,6 +67,9 @@ namespace Sampoerna.EMS.Core
             return error;
 
         }
+
+
+
         public class MailAttachment
         {
             #region Fields
