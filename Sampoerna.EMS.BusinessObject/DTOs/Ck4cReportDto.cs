@@ -99,6 +99,41 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public int CollumNo { get; set; }
     }
 
+    public class Ck4cGroupReportItemDto
+    {
+        public int Ck4cItemId { get; set; }
+
+        public string ProdQty { get; set; }
+
+        public string ProdCode { get; set; }
+
+        public string ProdType { get; set; }
+
+        public string Merk { get; set; }
+
+        public string Hje { get; set; }
+
+        public string No { get; set; }
+
+        public string NoProd { get; set; }
+
+        public string ProdDate { get; set; }
+
+        public decimal SumBtg { get; set; }
+
+        public decimal BtgGr { get; set; }
+
+        public string Isi { get; set; }
+
+        public decimal Total { get; set; }
+
+        public decimal ProdWaste { get; set; }
+
+        public string Comment { get; set; }
+
+        public int CollumNo { get; set; }
+    }
+
     public class Ck4cTotalProd
     {
         public string Comment { get; set; }
