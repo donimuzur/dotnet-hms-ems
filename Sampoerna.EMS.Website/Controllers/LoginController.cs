@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Collections.Generic;
+using System.Web.Mvc;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models;
@@ -39,6 +40,19 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentUser.UserRole = _poabll.GetUserRole(loginResult.USER_ID);
                 CurrentUser.AuthorizePages = _userAuthorizationBll.GetAuthPages(loginResult.USER_ID);
                 CurrentUser.NppbckPlants = _userAuthorizationBll.GetNppbckPlants(loginResult.USER_ID);
+                CurrentUser.ListUserPlants = new List<string>();
+
+                if (CurrentUser.UserRole == Enums.UserRole.User)
+                {
+                    CurrentUser.ListUserPlants =
+                        _userAuthorizationBll.GetListPlantByUserId(loginResult.USER_ID);
+                }
+                else if (CurrentUser.UserRole == Enums.UserRole.POA)
+                {
+                    CurrentUser.ListUserPlants = _poabll.GetPoaPlantByPoaId(loginResult.USER_ID);
+                }
+              
+
                 return RedirectToAction("Index", "Home");
             }
 

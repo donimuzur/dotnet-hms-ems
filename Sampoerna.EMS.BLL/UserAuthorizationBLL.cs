@@ -79,5 +79,24 @@ namespace Sampoerna.EMS.BLL
             }
             return nppbkcPlantList;
         }
+
+        public List<string> GetListPlantByUserId(string userId)
+        {
+            //var result = new List<string>();
+            //var user = _repositoryRoleMap.Get(c => c.MSACCT == userId).FirstOrDefault();
+            //if (user == null)
+            //    return result;
+
+            var listUserPlantMap = _userPlantMapBll.GetByUserId(userId).Select(c => c.PLANT_ID).ToList();
+            return listUserPlantMap;
+
+            //var listUserPlantMap = _userPlantMapBll.GetByUserId(userId).Select(c=>c.USER_ID).ToList();
+
+            //var listBrole =
+            //    _repositoryRoleMap.Get(
+            //        c => listUserPlantMap.Contains(c.MSACCT) && c.ROLEID == userRole);
+
+            //return listBrole.Select(x => x.).ToList();
+        }
     }
 }

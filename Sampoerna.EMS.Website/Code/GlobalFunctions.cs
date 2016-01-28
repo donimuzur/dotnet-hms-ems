@@ -537,6 +537,23 @@ namespace Sampoerna.EMS.Website.Code
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(kppbcList);
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
+
+        public static SelectList GetPlantByListUserPlant(List<string> listPlant )
+        {
+            IPlantBLL plantBll = MvcApplication.GetInstance<PlantBLL>();
+            List<T001W> plantIdList;
+            plantIdList = plantBll.GetAllPlant();
+            plantIdList =
+                plantIdList.Where(
+                    x => listPlant.Contains(x.WERKS) 
+                        && x.IS_DELETED != true && x.ZAIDM_EX_NPPBKC != null 
+                        && x.ZAIDM_EX_NPPBKC.IS_DELETED != true)
+                    .OrderBy(x => x.WERKS)
+                    .ToList();
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(plantIdList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+
+        }
     }
 
 }
