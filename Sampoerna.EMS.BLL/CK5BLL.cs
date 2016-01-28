@@ -66,6 +66,7 @@ namespace Sampoerna.EMS.BLL
         private IUserPlantMapBLL _userPlantMapBll;
         private ICK5Service _ck5Service;
         private IPoaDelegationServices _poaDelegationServices;
+        private IInventoryMovementService _movementService;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
         private List<string> _allowedCk5Uom =  new List<string>(new string[] { "KG", "G", "L" });
@@ -120,6 +121,7 @@ namespace Sampoerna.EMS.BLL
 
             _ck5Service = new CK5Service(_uow, _logger);
             _poaDelegationServices = new PoaDelegationServices(_uow, _logger);
+            _movementService = new InventoryMovementService(_uow,_logger);
         }
         
 
@@ -5210,5 +5212,31 @@ namespace Sampoerna.EMS.BLL
 
             return result;
         }
+
+        public List<Ck5MatdocDto> GetMatdocList(int ck5Id = 0)
+        {
+            
+            var tempData = new List<INVENTORY_MOVEMENT>();
+            if (ck5Id == 0)
+            {
+
+                tempData = _movementService.GetMvt201bySto();
+            }
+            else
+            {
+                var ck5 = _ck5Service.GetById(ck5Id);
+                if (ck5 != null)
+                {
+                    
+                    var stoNumber = ck5.STOB_NUMBER ?? ck5.STO_SENDER_NUMBER;
+                    tempData = _movementService.GetMvt201bySto(stoNumber);
+                }
+            }
+
+
+            var data = Mapper.Map<List<Ck5MatdocDto>>(tempData);
+
+            return data;
+        } 
     }
 }
