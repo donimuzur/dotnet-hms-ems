@@ -8,6 +8,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core.Exceptions;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL.Services
 {
@@ -16,6 +17,8 @@ namespace Sampoerna.EMS.BLL.Services
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<USER_PLANT_MAP> _repository;
+        private IGenericRepository<BROLE_MAP> _repositoryBRoleMap;
+
         private string _includeTables = "USER, T001W, T001W.T001K";
 
         public UserPlantMapService(IUnitOfWork uow, ILogger logger)
@@ -23,6 +26,7 @@ namespace Sampoerna.EMS.BLL.Services
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<USER_PLANT_MAP>();
+            _repositoryBRoleMap = _uow.GetGenericRepository<BROLE_MAP>();
         }
         public void Save(USER_PLANT_MAP userPlantMap)
         {
@@ -87,6 +91,28 @@ namespace Sampoerna.EMS.BLL.Services
             if (dataMap.Count == 0) return new List<T001W>();
             var plantList = dataMap.Where(c => c.T001W != null && (!c.T001W.IS_DELETED.HasValue || !c.T001W.IS_DELETED.Value)).Select(d => d.T001W).Distinct().ToList();
             return plantList;
+        }
+
+
+        public List<USER_PLANT_MAP> GetByPlantId(string plantId)
+        {
+            return _repository.Get(p => p.PLANT_ID == plantId, null, "USER").ToList();
+        }
+
+        public List<USER_PLANT_MAP> GetByNppbkcId(string nppbkcId)
+        {
+            return _repository.Get(p => p.NPPBKC_ID == nppbkcId).ToList();
+        }
+
+        public List<string> GetUserBRoleMapByPlantIdAndUserRole(string plantId, Enums.UserRole userRole)
+        {
+            var listUserMap = _repository.Get(p => p.PLANT_ID == plantId).ToList();
+            var listUser = listUserMap.Select(x => x.USER_ID).ToList();
+            var listBrole =
+                _repositoryBRoleMap.Get(
+                    c => listUser.Contains(c.MSACCT) && c.ROLEID == userRole);
+
+            return listBrole.Select(x => x.MSACCT).ToList();
         }
 
     }
