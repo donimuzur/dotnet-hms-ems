@@ -124,7 +124,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.IsCompletedDocument = isCompletedDocument;
                 input.UserId = CurrentUser.USER_ID;
                 input.UserRole = CurrentUser.UserRole;
-
+                input.ListUserPlant = CurrentUser.ListUserPlants;
                 dbData = _pbck4Bll.GetPbck4ByParam(input);
                 return Mapper.Map<List<Pbck4Item>>(dbData);
             }
@@ -135,7 +135,7 @@ namespace Sampoerna.EMS.Website.Controllers
             input.IsCompletedDocument = isCompletedDocument;
             input.UserId = CurrentUser.USER_ID;
             input.UserRole = CurrentUser.UserRole;
-
+            input.ListUserPlant = CurrentUser.ListUserPlants;
             dbData = _pbck4Bll.GetPbck4ByParam(input);
             return Mapper.Map<List<Pbck4Item>>(dbData);
         }
@@ -199,7 +199,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.PBCK4;
             model.CurrentMenu = PageInfo;
 
-            model.PlantList = GlobalFunctions.GetPlantAll();
+            model.PlantList = GlobalFunctions.GetPlantByListUserPlant(CurrentUser.ListUserPlants);//GlobalFunctions.GetPlantAll();
 
             return model;
         }
@@ -498,7 +498,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
 
-            model.PlantList = GlobalFunctions.GetPlantAll();
+            model.PlantList = GlobalFunctions.GetPlantByListUserPlant(CurrentUser.ListUserPlants);//GlobalFunctions.GetPlantAll();
 
             return model;
         }

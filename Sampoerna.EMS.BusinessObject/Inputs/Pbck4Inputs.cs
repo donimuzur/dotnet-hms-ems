@@ -27,6 +27,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string UserId { get; set; }
 
         public Enums.UserRole UserRole { get; set; }
+
+        public List<string> ListUserPlant { get; set; }
     }
 
     public class Pbck4SaveInput

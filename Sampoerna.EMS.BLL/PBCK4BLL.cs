@@ -86,41 +86,52 @@ namespace Sampoerna.EMS.BLL
             //delegate 
             var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
 
+            if (input.ListUserPlant == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
 
-            if (input.UserRole == Enums.UserRole.POA)
+            if (delegateUser.Count > 0)
             {
-                var nppbkc = _nppbkcBll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
-                
-                //delegate
-                if (delegateUser.Count > 0)
-                {
-                    delegateUser.Add(input.UserId);
-                    queryFilter = queryFilter.And(c => (delegateUser.Contains(c.CREATED_BY) || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))));
-                }
-                else
-                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))));
-
-
+                delegateUser.Add(input.UserId);
+                queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID) || delegateUser.Contains(c.CREATED_BY));
             }
-            //first code when manager exists
-            //else if (input.UserRole == Enums.UserRole.Manager)
+            else 
+                queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID));
+
+
+            //if (input.UserRole == Enums.UserRole.POA)
             //{
-            //    var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
-            //    var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+            //    var nppbkc = _nppbkcBll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
+                
+            //    //delegate
+            //    if (delegateUser.Count > 0)
+            //    {
+            //        delegateUser.Add(input.UserId);
+            //        queryFilter = queryFilter.And(c => (delegateUser.Contains(c.CREATED_BY) || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))));
+            //    }
+            //    else
+            //        queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))));
 
-            //    queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.PBCK4_NUMBER));
+
             //}
-            else
-            {
-                //delegate 
-                if (delegateUser.Count > 0)
-                {
-                    delegateUser.Add(input.UserId);
-                    queryFilter = queryFilter.And(c => delegateUser.Contains(c.CREATED_BY));
-                }
-                else 
-                    queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);
-            }
+            ////first code when manager exists
+            ////else if (input.UserRole == Enums.UserRole.Manager)
+            ////{
+            ////    var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
+            ////    var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+
+            ////    queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.PBCK4_NUMBER));
+            ////}
+            //else
+            //{
+            //    //delegate 
+            //    if (delegateUser.Count > 0)
+            //    {
+            //        delegateUser.Add(input.UserId);
+            //        queryFilter = queryFilter.And(c => delegateUser.Contains(c.CREATED_BY));
+            //    }
+            //    else 
+            //        queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);
+            //}
 
             if (!string.IsNullOrEmpty(input.NppbkcId))
             {
