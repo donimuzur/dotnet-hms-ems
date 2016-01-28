@@ -449,6 +449,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.DestPlantList = GlobalFunctions.GetPlantAll();
             }
 
+
+            //model.MatdocList = _ck5Bll.get
            
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedListByPlant("");
 
@@ -4575,6 +4577,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
              return Json(data);
         }
+
 
         #region Summary Reports MarketReturn
 
