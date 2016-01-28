@@ -15,6 +15,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.LinqExtensions;
 using Sampoerna.EMS.MessagingService;
@@ -66,6 +67,7 @@ namespace Sampoerna.EMS.BLL
         private IUserPlantMapBLL _userPlantMapBll;
         private ICK5Service _ck5Service;
         private IPoaDelegationServices _poaDelegationServices;
+        private IUserPlantMapService _userPlantMapService;
         private IInventoryMovementService _movementService;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
@@ -121,6 +123,7 @@ namespace Sampoerna.EMS.BLL
 
             _ck5Service = new CK5Service(_uow, _logger);
             _poaDelegationServices = new PoaDelegationServices(_uow, _logger);
+            _userPlantMapService = new UserPlantMapService(_uow, _logger);
             _movementService = new InventoryMovementService(_uow,_logger);
         }
         
@@ -2034,6 +2037,48 @@ namespace Sampoerna.EMS.BLL
                         }
 
                     }
+
+                    //cc to user destination 
+                     string plantIdDestination = ck5Dto.DEST_PLANT_ID;
+                    string nppbkcDestination = ck5Dto.DEST_PLANT_NPPBKC_ID;
+                    //switch (ck5Dto.CK5_TYPE)
+                    //{
+                    //    case Enums.CK5Type.PortToImporter:
+                    //    case Enums.CK5Type.DomesticAlcohol:
+                    //        plantIdDestination = ck5Dto.DEST_PLANT_ID;
+                    //        break;
+                    //    case Enums.CK5Type.Manual:
+                    //        if (ck5Dto.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                    //            plantIdDestination = ck5Dto.DEST_PLANT_ID;
+                    //        break;
+                    //}
+                    if (ck5Dto.CK5_TYPE == Enums.CK5Type.Manual &&
+                        ck5Dto.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.DestFreeText)
+                    {
+                        plantIdDestination = ck5Dto.SOURCE_PLANT_ID;
+                        nppbkcDestination = ck5Dto.SOURCE_PLANT_NPPBKC_ID;
+                    }
+
+                    //get list user
+                    var listUser = new List<string>();
+                    var listUserPlantMap = _userPlantMapService.GetUserBRoleMapByPlantIdAndUserRole(plantIdDestination,Enums.UserRole.User);
+                    listUser.AddRange(listUserPlantMap);
+
+                    //get list poa
+                     var listPoa = _poaBll.GetPoaActiveByNppbkcId(nppbkcDestination);
+                    listUser.AddRange(listPoa.Select(c => c.POA_ID));
+
+                    //get from table user
+                    var tbUser = _userBll.GetUsersByListId(listUser);
+
+                  
+                    foreach (var user in tbUser)
+                    {
+
+                        if (!string.IsNullOrEmpty(user.EMAIL))
+                            rc.CC.Add(user.EMAIL);
+                    }
+
                     break;
                 case Enums.ActionType.GoodIssue: 
                     //send notification to creator
@@ -2942,6 +2987,10 @@ namespace Sampoerna.EMS.BLL
                 //delegate
                 input.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY, input.UserId,
                     DateTime.Now);
+                if (string.IsNullOrEmpty(input.Comment))
+                {
+                    input.Comment = DelegateCommentUnsealingUser(dbData, input.UserId, input.UserRole);
+                }
 
                 //add to workflow
                 AddWorkflowHistory(input);
@@ -3168,6 +3217,10 @@ namespace Sampoerna.EMS.BLL
             //delegate
             input.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY, input.UserId,
                 DateTime.Now);
+            if (string.IsNullOrEmpty(input.Comment))
+            {
+                input.Comment = DelegateCommentUnsealingUser(dbData, input.UserId, input.UserRole);
+            }
 
             if (dbData.CK5_TYPE == Enums.CK5Type.Manual || dbData.CK5_TYPE == Enums.CK5Type.Return)
             {
@@ -3217,6 +3270,77 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
+        private string DelegateCommentUnsealingUser(CK5 ck5, string currentUser, Enums.UserRole userRole)
+        {
+            string plantId = ck5.DEST_PLANT_ID;
+            string nppbkcId = ck5.DEST_PLANT_NPPBKC_ID;
+
+            if (ck5.CK5_TYPE == Enums.CK5Type.Manual &&
+                      ck5.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.DestFreeText)
+            {
+                plantId = ck5.SOURCE_PLANT_ID;
+                nppbkcId = ck5.SOURCE_PLANT_NPPBKC_ID;
+            }
+
+            //switch (ck5.CK5_TYPE)
+            //{
+            //    case Enums.CK5Type.PortToImporter:
+            //    case Enums.CK5Type.DomesticAlcohol:
+            //        plantId = ck5.DEST_PLANT_ID;
+            //        nppbkcId = ck5.DEST_PLANT_NPPBKC_ID;
+            //        break;
+            //    case Enums.CK5Type.Manual:
+            //        if (ck5.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+            //        {
+            //            plantId = ck5.DEST_PLANT_ID;
+            //            nppbkcId = ck5.DEST_PLANT_NPPBKC_ID;
+            //        }
+            //        break;
+            //}
+
+            //var listUserPlantMap = _userPlantMapService.GetByPlantId(plantId);
+            //var listUser = listUserPlantMap.Select(c => c.USER_ID).ToList();
+            //if (listUser.Contains(currentUser))
+            //    return string.Empty;
+            ////and get user by plant delegate
+            //var listUserDelegate = _poaDelegationServices.GetListPoaDelegateByDate(listUser, DateTime.Now);
+            //if (listUserDelegate.Contains(currentUser))
+            //{
+            //    //get user original
+            //    var originalUser = _poaDelegationServices.GetPoaDelegationByPoaToAndDate(currentUser, DateTime.Now);
+            //    if (originalUser != null)
+            //        return Constans.LabelDelegatedBy + originalUser.POA_FROM;
+            //}
+            //return string.Empty;
+
+
+            //get user by plant 
+            var listUser = new List<string>();
+
+            var listUserPlantMap = _userPlantMapService.GetUserBRoleMapByPlantIdAndUserRole(plantId, Enums.UserRole.User);
+            listUser.AddRange(listUserPlantMap);
+
+            if (listUserPlantMap.Contains(currentUser))
+                return string.Empty;
+            
+            //list poa
+            var listPoa = _poaBll.GetPoaActiveByNppbkcId(nppbkcId);
+            listUser.AddRange(listPoa.Select(c => c.POA_ID));
+
+            if (listUser.Contains(currentUser))
+                return string.Empty;
+           
+            var listUserDelegate = _poaDelegationServices.GetListPoaDelegateByDate(listUser, DateTime.Now);
+
+            if (listUserDelegate.Contains(currentUser))
+            {
+                //get user original
+                var originalUser = _poaDelegationServices.GetPoaDelegationByPoaToAndDate(currentUser, DateTime.Now);
+                if (originalUser != null)
+                    return Constans.LabelDelegatedBy + originalUser.POA_FROM;
+            }
+            return string.Empty;
+        }
         public void CancelSTOCreatedRollback(CK5WorkflowDocumentInput input)
         {
             var dbData = _repository.GetByID(input.DocumentId);
