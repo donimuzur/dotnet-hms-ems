@@ -98,5 +98,12 @@ namespace Sampoerna.EMS.BLL
 
             //return listBrole.Select(x => x.).ToList();
         }
+
+        public List<string> GetListNppbkcByUserId(string userId)
+        {
+            var listUserPlantMap = _userPlantMapBll.GetByUserId(userId).Select(c => c.NPPBKC_ID).Distinct().ToList();
+
+            return listUserPlantMap;
+        }
     }
 }

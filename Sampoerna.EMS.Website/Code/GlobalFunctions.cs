@@ -554,6 +554,12 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectItemSource, "ValueField", "TextField");
 
         }
+
+        public SelectList GetNppbkcByCurrentUser(List<string> listUserNppbkc)
+        {
+            return new SelectList(listUserNppbkc);
+        }
+
     }
 
 }

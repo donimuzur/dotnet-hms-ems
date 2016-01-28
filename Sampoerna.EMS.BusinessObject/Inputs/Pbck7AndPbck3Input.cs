@@ -32,9 +32,9 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public int? To { get; set; }
         public string Pbck7Number { get; set; }
         public string ShortOrderColum { get; set; }
-       
 
-
+        public List<string> ListUserPlant { get; set; }
+        public string UserId { get; set; }
 
 
     }
@@ -47,6 +47,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string Pbck3Number { get; set; }
         public string ShortOrderColum { get; set; }
 
+        public List<string> ListUserPlant { get; set; }
+        public string UserId { get; set; }
     }
 
     public class InsertPbck3FromCk5MarketReturnInput
