@@ -1697,6 +1697,20 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<PBCK4, bool>> queryFilter = PredicateHelper.True<PBCK4>();
 
+            //delegate 
+            var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
+
+            if (input.ListUserPlant == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
+
+            if (delegateUser.Count > 0)
+            {
+                delegateUser.Add(input.UserId);
+                queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID) || delegateUser.Contains(c.CREATED_BY));
+            }
+            else
+                queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID));
+
             if (!string.IsNullOrEmpty(input.Pbck4No))
             {
                 queryFilter = queryFilter.And(c => c.PBCK4_NUMBER.Contains(input.Pbck4No));

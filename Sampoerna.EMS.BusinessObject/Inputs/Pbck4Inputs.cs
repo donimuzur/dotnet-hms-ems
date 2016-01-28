@@ -107,6 +107,9 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string Ck1No { get; set; }
 
         public string Creator { get; set; }
+
+        public List<string> ListUserPlant { get; set; }
+        public string UserId { get; set; }
     }
 
     public class GetListCk1ByPlantAndFaCodeInput
