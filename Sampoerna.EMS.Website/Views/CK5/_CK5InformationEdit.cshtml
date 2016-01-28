@@ -676,6 +676,22 @@
                                 </div>
 
                             }
+                            
+                            @if (Model.IsCk5Manual && Model.DocumentStatus == Enums.DocumentStatus.Completed)
+                            {
+                                   <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                @Html.LabelFor(model => model.MatDoc, new { @class = "col-md-4" })
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.MatDoc, Model.MatdocList, new { @class = "form-control selectlist" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                   </div>
+                            }
+                            
+
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">

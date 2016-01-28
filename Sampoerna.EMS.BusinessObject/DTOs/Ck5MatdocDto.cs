@@ -13,5 +13,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Bun { get; set; }
 
         public DateTime PostingDate { get; set; }
+
+        
     }
 }

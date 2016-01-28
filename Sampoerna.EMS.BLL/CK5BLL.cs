@@ -5337,7 +5337,7 @@ namespace Sampoerna.EMS.BLL
             return result;
         }
 
-        public List<Ck5MatdocDto> GetMatdocList(int ck5Id = 0)
+        public List<Ck5MatdocDto> GetMatdocList(long ck5Id = 0)
         {
             
             var tempData = new List<INVENTORY_MOVEMENT>();

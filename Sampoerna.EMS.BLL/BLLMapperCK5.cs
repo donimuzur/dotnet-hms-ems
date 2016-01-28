@@ -185,7 +185,10 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<WASTE_STOCK, GetListMaterialMarketReturnOutput>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.MaterialNumber, opt => opt.MapFrom(src => src.MATERIAL_NUMBER))
                 ;
-          
+
+            Mapper.CreateMap<INVENTORY_MOVEMENT, Ck5MatdocDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PostingDate, opt => opt.MapFrom(src => src.POSTING_DATE));
+
         }
     }
 }

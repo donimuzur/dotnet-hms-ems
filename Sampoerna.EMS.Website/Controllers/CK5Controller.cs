@@ -450,7 +450,12 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
 
-            //model.MatdocList = _ck5Bll.get
+            if (model.Ck5Type == Enums.CK5Type.Manual && model.DocumentStatus == Enums.DocumentStatus.Completed)
+            {
+                var dataList = _ck5Bll.GetMatdocList(model.Ck5Id);
+                model.MatdocList = Mapper.Map<SelectList>(dataList);
+            }
+            
            
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedListByPlant("");
 
