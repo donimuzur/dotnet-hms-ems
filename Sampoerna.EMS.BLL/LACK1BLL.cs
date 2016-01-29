@@ -2901,10 +2901,25 @@ namespace Sampoerna.EMS.BLL
             //    ExcludeLack1Id = input.Lack1Id
             //});
 
-            var listMaterial = _materialService.GetByPlantIdAndExGoodType(input.SupplierPlantId, input.ExcisableGoodsType);
-            var listSticker = listMaterial.Select(x => x.STICKER_CODE).ToList();
+            var plantList = new List<string>();
 
-            var listMaterialBalance = _materialBalanceService.GetByPlantAndMaterialList(input.SupplierPlantId, listSticker);
+            if (input.Lack1Level == Enums.Lack1Level.Nppbkc)
+            {
+                var plantListFromMaster = _t001WServices.GetByNppbkcId(input.NppbkcId);
+                foreach (var item in plantListFromMaster)
+                {
+                    plantList.Add(item.WERKS);
+                }
+            }
+            else
+            {
+                plantList.Add(input.ReceivedPlantId);
+            }
+
+            var listMaterial = _materialService.GetByPlantIdAndExGoodType(plantList, input.ExcisableGoodsType);
+            var listSticker = listMaterial.Select(x => x.STICKER_CODE).Distinct().ToList();
+
+            var listMaterialBalance = _materialBalanceService.GetByPlantAndMaterialList(plantList, listSticker, input.PeriodMonth, input.PeriodYear);
 
             rc.BeginingBalance = 0;
             if (listMaterialBalance.Count > 0)
