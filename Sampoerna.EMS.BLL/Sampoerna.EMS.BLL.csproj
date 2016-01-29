@@ -90,6 +90,7 @@
     <Compile Include="PBCK7AndPBCK3BLL.cs" />
     <Compile Include="PoaDelegationBLL.cs" />
     <Compile Include="ProductionBLL.cs" />
+    <Compile Include="ReversalBLL.cs" />
     <Compile Include="SchedulerSettingBLL.cs" />
     <Compile Include="Services\Back1Services.cs" />
     <Compile Include="Services\Back3Services.cs" />

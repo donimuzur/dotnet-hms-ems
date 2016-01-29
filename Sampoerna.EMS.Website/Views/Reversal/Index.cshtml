@@ -7,7 +7,7 @@
             <div class="action-button new">
                 @if (Model.IsShowNewButton)
                 {
-                    <a href="@Url.Action("Ck4CCreateDocumentList", "CK4C")"><button class="btn btn-blue">NEW</button></a>
+                    <a href="@Url.Action("Create", "Reversal")"><button class="btn btn-blue">NEW</button></a>
                 }
             </div>
         </div>
@@ -82,7 +82,7 @@
             setupDataTables();
         });
 
-        $('#MenuCk4cDocumentList').addClass("active");
+        $('#MenuCk4cReversalProduction').addClass("active");
 
         function setupDataTables() {
             $('#btn-reset-filter').click(function () {

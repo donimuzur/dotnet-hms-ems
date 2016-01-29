@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -21,7 +22,10 @@ namespace Sampoerna.EMS.Website.Models.Reversal
 
         public Enums.CK4CType Ck4CType { get; set; }
 
+        public SelectList ZaapShiftList { get; set; }
+        public SelectList FaCodeList { get; set; }
         public SelectList PlantWerksList { get; set; }
+        public DataReversal Details { get; set; }
 
         public List<DataReversal> Detail { get; set; }
         public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
@@ -30,10 +34,15 @@ namespace Sampoerna.EMS.Website.Models.Reversal
     public class DataReversal
     {
         public int ReversalId { get; set; }
+        [Required]
         public int ZaapShiftId { get; set; }
+        [Required]
         public DateTime? ProductionDate { get; set; }
+        [Required]
         public string FaCode { get; set; }
+        [Required]
         public string Werks { get; set; }
+        [Required]
         public Decimal ReversalQty { get; set; }
     }
 }
