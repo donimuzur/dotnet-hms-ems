@@ -280,6 +280,7 @@
           <Property Name="MANUAL_FREE_TEXT" Type="int" />
           <Property Name="FLAG_FOR_LACK1" Type="bit" />
           <Property Name="FLAG_NPPBKC_IMPORT" Type="bit" />
+          <Property Name="MATDOC" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="CK5_FILE_UPLOAD">
           <Key>
@@ -5468,6 +5469,7 @@
           <Property Name="MANUAL_FREE_TEXT" Type="EMSModel.Ck5ManualFreeText" />
           <Property Name="FLAG_FOR_LACK1" Type="Boolean" />
           <Property Name="FLAG_NPPBKC_IMPORT" Type="Boolean" />
+          <Property Name="MATDOC" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <Association Name="FK_CK5_MATERIAL_CK5">
           <End Type="EMSModel.CK5" Role="CK5" Multiplicity="0..1" />
@@ -9155,7 +9157,8 @@
     <EntitySetMapping Name="CK5">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.CK5)">
         <MappingFragment StoreEntitySet="CK5">
-          <ScalarProperty Name="FLAG_NPPBKC_IMPORT" ColumnName="FLAG_NPPBKC_IMPORT" />
+          <ScalarProperty Name="MATDOC" ColumnName="MATDOC" />
+                <ScalarProperty Name="FLAG_NPPBKC_IMPORT" ColumnName="FLAG_NPPBKC_IMPORT" />
                 <ScalarProperty Name="FLAG_FOR_LACK1" ColumnName="FLAG_FOR_LACK1" />
                 <ScalarProperty Name="MANUAL_FREE_TEXT" ColumnName="MANUAL_FREE_TEXT" />
                 <ScalarProperty Name="REDUCE_TRIAL" ColumnName="REDUCE_TRIAL" />
