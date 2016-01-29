@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
@@ -46,10 +47,21 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     CurrentUser.ListUserPlants =
                         _userAuthorizationBll.GetListPlantByUserId(loginResult.USER_ID);
+                    CurrentUser.ListUserNppbkc =
+                        _userAuthorizationBll.GetListNppbkcByUserId(loginResult.USER_ID);
                 }
                 else if (CurrentUser.UserRole == Enums.UserRole.POA)
                 {
-                    CurrentUser.ListUserPlants = _poabll.GetPoaPlantByPoaId(loginResult.USER_ID);
+                    //CurrentUser.ListUserPlants = _poabll.GetPoaPlantByPoaId(loginResult.USER_ID);
+                    CurrentUser.ListUserPlants = new List<string>();
+                    foreach (var nppbkcPlantDto in CurrentUser.NppbckPlants)
+                    {
+                        foreach (var plantDto in nppbkcPlantDto.Plants)
+                        {
+                            CurrentUser.ListUserPlants.Add(plantDto.WERKS);
+                        }
+                    }
+                    CurrentUser.ListUserNppbkc = CurrentUser.NppbckPlants.Select(c => c.NppbckId).ToList();
                 }
               
 
