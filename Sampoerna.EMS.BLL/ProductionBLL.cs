@@ -188,6 +188,14 @@ namespace Sampoerna.EMS.BLL
             item.QtyPackedStr = item.QtyPacked == null ? string.Empty : item.QtyPacked.ToString();
             item.QtyStr = item.Qty == null ? string.Empty : item.Qty.ToString();
             item.ProdQtyStickStr = item.ProdQtyStick == null ? string.Empty : item.ProdQtyStick.ToString();
+            var brand = _brandRegistrationBll.GetByFaCode(item.PlantWerks, item.FaCode);
+
+            if (brand.IS_FROM_SAP != null && brand.IS_FROM_SAP.Value)
+            {
+                item.IsBrandFromSap = brand.IS_FROM_SAP != null && brand.IS_FROM_SAP.Value;
+            }
+
+            
 
             if (dbData == null)
             {
