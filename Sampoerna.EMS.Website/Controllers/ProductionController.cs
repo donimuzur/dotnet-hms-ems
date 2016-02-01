@@ -228,6 +228,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ProductionDateX = model.ProductionDate;
             model.FaCodeX = model.FaCode;
 
+            
             return View(model);
         }
 
@@ -539,7 +540,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetFaCodeDescription(string plantWerk, string faCode)
         {
             var fa = _brandRegistrationBll.GetByFaCode(plantWerk, faCode);
-            return Json(fa.BRAND_CE);
+            return Json(fa);
         }
 
         [HttpPost]
