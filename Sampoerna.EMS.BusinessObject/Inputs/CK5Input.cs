@@ -26,6 +26,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string UserId { get; set; }
 
         public Enums.UserRole UserRole { get; set; }
+
+        public List<string> ListUserPlant { get; set; }
     }
 
     public class CK5SaveInput
@@ -111,6 +113,11 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime? DateTo { get; set; }
 
         public Enums.CK5Type Ck5Type { get; set; }
+
+        public List<string> ListUserPlant { get; set; }
+
+        public string UserId { get; set; }
+
     }
 
     public class Ck5GetForLack1ByParamInput
@@ -155,6 +162,9 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string Creator { get; set; }
         public string Pbck3No { get; set; }
         public string Ck2No { get; set; }
-        
+
+        public List<string> ListUserPlant { get; set; }
+
+        public string UserId { get; set; }
     }
 }
