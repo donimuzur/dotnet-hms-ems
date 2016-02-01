@@ -1062,7 +1062,7 @@ namespace Sampoerna.EMS.BLL
 
                     var ck4cItem = new Ck4cReportItemDto();
 
-                    var unpackedQty = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE).Where(c => c.ProdDate < saldoDate).LastOrDefault();
+                    var unpackedQty = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE, dtData.PLANT_ID).Where(c => c.ProdDate < saldoDate).LastOrDefault();
 
                     var oldData = _productionBll.GetOldSaldo(dtData.COMPANY_ID, item, data.FA_CODE, saldoDate).LastOrDefault();
 
@@ -1096,7 +1096,7 @@ namespace Sampoerna.EMS.BLL
                     {
                         var CheckBrand = _brandBll.GetByFaCode(dtData.PLANT_ID, data.FA_CODE);
 
-                        if (CheckBrand == null)
+                        if (CheckBrand == null || dtData.PLANT_ID != item)
                         {
                             ck4cItem.ProdWaste = "Nihil";
                         }
@@ -1235,7 +1235,7 @@ namespace Sampoerna.EMS.BLL
 
                             var lastUnpacked = unpackedList.Where(c => c.PlantId == item && c.Facode == data.FA_CODE && c.ProdDate == lastProdDate).Sum(x => x.Unpacked);
 
-                            var lastSaldo = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE).Where(c => c.ProdDate < saldoDate).LastOrDefault();
+                            var lastSaldo = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE, dtData.PLANT_ID).Where(c => c.ProdDate < saldoDate).LastOrDefault();
 
                             var oldData = _productionBll.GetOldSaldo(dtData.COMPANY_ID, item, data.FA_CODE, saldoDate).LastOrDefault();
 
@@ -1266,7 +1266,7 @@ namespace Sampoerna.EMS.BLL
                         {
                             var CheckBrand = _brandBll.GetByFaCode(dtData.PLANT_ID, data.FA_CODE);
 
-                            if (CheckBrand == null)
+                            if (CheckBrand == null || dtData.PLANT_ID != item)
                             {
                                 ck4cItem.SumBtg = "Nihil";
                                 ck4cItem.BtgGr = "Nihil";
