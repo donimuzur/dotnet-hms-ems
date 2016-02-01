@@ -1,8 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 using AutoMapper;
 
@@ -14,6 +17,8 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<CK4C_ITEM> _repository;
+
+        private string includeTables = "CK4C";
 
         public CK4CItemBLL(IUnitOfWork uow, ILogger logger)
         {
@@ -33,9 +38,13 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
-        public List<Ck4cItem> GetDataByPlantAndFacode(string plant, string facode)
+        public List<Ck4cItem> GetDataByPlantAndFacode(string plant, string facode, string levelPlant)
         {
-            var data = _repository.Get(c => c.WERKS == plant && c.FA_CODE == facode).ToList();
+            Expression<Func<CK4C_ITEM, bool>> queryFilter = PredicateHelper.True<CK4C_ITEM>();
+
+            queryFilter = queryFilter.And(c => c.WERKS == plant && c.FA_CODE == facode && c.CK4C.PLANT_ID == levelPlant);
+
+            var data = _repository.Get(queryFilter, null, includeTables).ToList();
 
             return Mapper.Map<List<Ck4cItem>>(data);
         }
