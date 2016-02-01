@@ -120,7 +120,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<ZAAP_SHIFT_RPT, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.ZAAP_SHIFT_RPT_ID))
-                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.QTY.Value));
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => string.Format("{0} - {1} - {2}", src.PRODUCTION_DATE.ToString("dd MMM yyyy"), src.QTY.Value, src.BUNDLE)));
 
 
             #region NPPBKC
@@ -1059,7 +1059,9 @@ namespace Sampoerna.EMS.Website
 
             #region Reversal
 
-            Mapper.CreateMap<ReversalDto, DataReversal>().IgnoreAllNonExisting();
+            Mapper.CreateMap<ReversalDto, DataReversal>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ProductionDateDisplay, opt => opt.MapFrom(src => src.ProductionDate.Value.ToString("dd MMM yyyy")))
+                ;
 
             Mapper.CreateMap<DataReversal, ReversalDto>().IgnoreAllNonExisting();
 
@@ -1067,6 +1069,8 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.DateProduction, opt => opt.MapFrom(src => src.ProductionDate))
                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantWerks))
                ;
+
+            Mapper.CreateMap<DataReversal, ReversalCreateParamInput>().IgnoreAllNonExisting();
 
             #endregion
 

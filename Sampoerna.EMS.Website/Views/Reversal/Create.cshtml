@@ -5,6 +5,7 @@
 
 @using (Html.BeginForm("Create", "Reversal"))
 {
+    @Html.AntiForgeryToken()
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
@@ -49,15 +50,37 @@
         $("#SearchInput_PlantId").change(function () {
             if ($("#SearchInput_PlantId").length) {
                 var ce = $(this).find("option:selected").val();
-                $('#SearchInput_BrandCe option').remove();
+                $('#SearchInput_FaCode option').remove();
+                $('#SearchInput_Zaap option').remove();
                 if (ce == '' || $(this).find("option:selected").val() == '') {
-                    $('#SearchInput_BrandCe option').append('<option value="">Select</option>');
-
+                    $('#SearchInput_FaCode option').append('<option value="">Select</option>');
+                    $('#SearchInput_Zaap option').append('<option value="">Select</option>');
                 } else {
-                    ajaxSelectPlantWerks('@Url.Action("GetBrandCeByPlant", "Reversal")', { plantWerk: ce });
+                    ajaxSelectPlantWerks('@Url.Action("GetFaCodeByPlant", "Reversal")', { plantWerk: ce });
+                    ajaxSetPlantAndFacode();
                 }
             }
         });
+
+        $("#SearchInput_FaCode").change(function () {
+            if ($("#SearchInput_FaCode").length) {
+                $('#SearchInput_Zaap option').remove();
+                if ($(this).find("option:selected").val() == '') {
+                    $('#SearchInput_Zaap option').append('<option value="">Select</option>');
+                } else {
+                    ajaxSetPlantAndFacode();
+                }
+            }
+        });
+
+        function ajaxSetPlantAndFacode() {
+            var plant = $("#SearchInput_PlantId").find("option:selected").val();
+            var facode = $("#SearchInput_FaCode").find("option:selected").val();
+
+            var url = '@Url.Action("GetZaapData", "Reversal")';
+
+            ajaxSelectZaapShift(url, { plantWerk: plant, faCode: facode });
+        }
 
         function ajaxSelectPlantWerks(url, formData) {
             if (formData.plantWerk) {
@@ -67,10 +90,10 @@
                     data: formData,
                     success: function (data) {
                         var facodeList = data.FaCodeList;
-                        $('#SearchInput_BrandCe').append('<option value="">Select</option>');
+                        $('#SearchInput_FaCode').append('<option value="">Select</option>');
                         if (facodeList.length > 0) {
                             for (var i = 0; i < facodeList.length; i++) {
-                                $('#SearchInput_BrandCe').append('<option value=' + facodeList[i].Value + '>' + facodeList[i].Text + '</option>');
+                                $('#SearchInput_FaCode').append('<option value=' + facodeList[i].Value + '>' + facodeList[i].Text + '</option>');
                             }
                         }
 

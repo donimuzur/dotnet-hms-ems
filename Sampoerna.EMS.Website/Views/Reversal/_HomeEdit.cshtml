@@ -1,7 +1,7 @@
 ﻿@model Sampoerna.EMS.Website.Models.Reversal.ReversalIndexViewModel
 @using Sampoerna.EMS.Website.Helpers
 @{
-    ViewBag.Title = "_HomeCreate";
+    ViewBag.Title = "_HomeEdit";
 }
 
 <div id="information" class="tab-pane active" role="tabpanel">
@@ -11,7 +11,7 @@
                 <div id="headingOne" role="tab" class="panel-heading">
                     <h4 class="panel-title">
                         <a aria-controls="collapseOne" aria-expanded="true" href="#collapseOne" data-parent="#accordion" data-toggle="collapse">
-                            Reversal Form Create
+                            Reversal Form Edit
                             <i class="fa fa-caret-down"></i>
                         </a>
                     </h4>
@@ -24,6 +24,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Plant<span class="red">*</span></label>
                                         <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.Details.ReversalId)
                                             @Html.DropDownListFor(model => model.Details.Werks, Model.PlantWerksList, "Select", new { @class = "form-control ", id = "SearchInput_PlantId" })
                                         </div>
                                     </div>
@@ -43,7 +44,7 @@
                                         <label class="col-md-4">Date<span class="red">*</span></label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
-                                                @Html.TextBoxFor(model => model.Details.ProductionDate, new { @class = "form-control" })
+                                                @Html.TextBoxFor(model => model.Details.ProductionDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </span>

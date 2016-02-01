@@ -364,6 +364,7 @@
     <Compile Include="Outputs\Pbck1ProdConverterOutput.cs" />
     <Compile Include="Outputs\Pbck1ProdPlanOutput.cs" />
     <Compile Include="Outputs\ProductionUploadItemsOutput.cs" />
+    <Compile Include="Outputs\ReversalOutput.cs" />
     <Compile Include="Outputs\VirtualMappingPlantOutput.cs" />
     <Compile Include="Outputs\WasteStockOutput.cs" />
     <Compile Include="Outputs\WasteUploadItemsOutput.cs" />

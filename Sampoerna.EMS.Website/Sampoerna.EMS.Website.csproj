@@ -1298,6 +1298,8 @@
     <Content Include="Views\Reversal\_ReversalList.cshtml" />
     <Content Include="Views\Reversal\Create.cshtml" />
     <Content Include="Views\Reversal\_HomeCreate.cshtml" />
+    <Content Include="Views\Reversal\Edit.cshtml" />
+    <Content Include="Views\Reversal\_HomeEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,0 +1,141 @@
+﻿@model Sampoerna.EMS.Website.Models.Reversal.ReversalIndexViewModel
+@{
+    ViewBag.Title = "Create";
+}
+
+@using (Html.BeginForm("Edit", "Reversal"))
+{
+    @Html.AntiForgeryToken()
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Reversal Production Edit</h3>
+                <div class="action-button">
+                    <button class="btn btn-blue">Save</button>
+                    <a href="@Url.Action("Index", "Reversal")" class="btn btn-grey">Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+
+                    <!-- Nav tabs -->
+                    <ul role="tablist" class="nav nav-tabs">
+                        <li class="active" id="tab-information" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.Partial("_HomeEdit")
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+@section scripts
+{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/thousand-separator.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+    $(document).ready(function () {
+        SetExistingData();
+    });
+
+    $('#MenuCk4cReversalProduction').addClass('active');
+
+    $("#SearchInput_PlantId").change(function () {
+        if ($("#SearchInput_PlantId").length) {
+            var ce = $(this).find("option:selected").val();
+            $('#SearchInput_FaCode option').remove();
+            $('#SearchInput_Zaap option').remove();
+            if (ce == '' || $(this).find("option:selected").val() == '') {
+                $('#SearchInput_FaCode option').append('<option value="">Select</option>');
+                $('#SearchInput_Zaap option').append('<option value="">Select</option>');
+            } else {
+                ajaxSelectPlantWerks('@Url.Action("GetFaCodeByPlant", "Reversal")', { plantWerk: ce });
+                ajaxSetPlantAndFacode();
+            }
+        }
+    });
+
+    $("#SearchInput_FaCode").change(function () {
+        if ($("#SearchInput_FaCode").length) {
+            $('#SearchInput_Zaap option').remove();
+            if ($(this).find("option:selected").val() == '') {
+                $('#SearchInput_Zaap option').append('<option value="">Select</option>');
+            } else {
+                ajaxSetPlantAndFacode();
+            }
+        }
+    });
+
+    function ajaxSetPlantAndFacode() {
+        var plant = $("#SearchInput_PlantId").find("option:selected").val();
+        var facode = $("#SearchInput_FaCode").find("option:selected").val();
+
+        var url = '@Url.Action("GetZaapData", "Reversal")';
+
+        ajaxSelectZaapShift(url, { plantWerk: plant, faCode: facode });
+    }
+
+    function ajaxSelectPlantWerks(url, formData) {
+        if (formData.plantWerk) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    var facodeList = data.FaCodeList;
+                    $('#SearchInput_FaCode').append('<option value="">Select</option>');
+                    if (facodeList.length > 0) {
+                        for (var i = 0; i < facodeList.length; i++) {
+                            $('#SearchInput_FaCode').append('<option value=' + facodeList[i].Value + '>' + facodeList[i].Text + '</option>');
+                        }
+                    }
+
+                }
+            });
+        }
+    }
+
+    function ajaxSelectZaapShift(url, formData) {
+        if (formData.plantWerk && formData.faCode) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    var zaapShiftList = data.ZaapShiftList;
+                    $('#SearchInput_Zaap').append('<option value="">Select</option>');
+                    if (zaapShiftList.length > 0) {
+                        for (var i = 0; i < zaapShiftList.length; i++) {
+                            $('#SearchInput_Zaap').append('<option value=' + zaapShiftList[i].Value + '>' + zaapShiftList[i].Text + '</option>');
+                        }
+                    }
+
+                }
+            });
+        }
+    }
+
+    function SetExistingData() {
+        var facode = '@Model.Details.FaCode';
+        var zaap = '@Model.Details.ZaapShiftId';
+        alert('test');
+        $('#SearchInput_FaCode').val(facode);
+
+        ajaxSetPlantAndFacode();
+
+        $('#SearchInput_Zaap').val(zaap);
+    }
+
+</script>
+}

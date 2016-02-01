@@ -26,14 +26,14 @@
         {
             <tr>
                 <td class="action">
-                    <a href="@Url.Action("Detail", "CK4C", new { id = item.ReversalId })" data-tooggle="tooltip" data-placement="top" title="Detail"><i class=" fa fa-eye"></i></a>
+                    <a href="@Url.Action("Detail", "Reversal", new { id = item.ReversalId })" data-tooggle="tooltip" data-placement="top" title="Detail"><i class=" fa fa-eye"></i></a>
                     @if (Model.IsNotViewer)
                     {
-                        <a href="@Url.Action("Edit", "CK4C", new { id = item.ReversalId })" data-tooggle="tooltip" data-placement="top" title="Edit"><i class=" fa fa-pencil-square-o"></i></a>
+                        <a href="@Url.Action("Edit", "Reversal", new { id = item.ReversalId })" data-tooggle="tooltip" data-placement="top" title="Edit"><i class=" fa fa-pencil-square-o"></i></a>
                     }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ProductionDate)
+                    @Html.DisplayFor(modelItem => item.ProductionDateDisplay)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Werks)

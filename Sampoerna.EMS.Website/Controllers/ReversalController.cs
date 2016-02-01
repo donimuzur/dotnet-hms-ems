@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
@@ -66,9 +67,18 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //getbyparams
             var input = Mapper.Map<ReversalGetByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
 
             var dbData = _reversalBll.GetListDocumentByParam(input).OrderByDescending(c => c.ProductionDate);
             return Mapper.Map<List<DataReversal>>(dbData);
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterListData(ReversalIndexViewModel model)
+        {
+            model.Detail = GetListDocument(model);
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            return PartialView("_ReversalList", model);
         }
 
         #endregion
@@ -110,10 +120,82 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.PlantWerksList = getPlant;
-            model.FaCodeList = GlobalFunctions.GetFaCodeByPlant("");
+            model.FaCodeList = GlobalFunctions.GetFaCodeByPlant(model.Details.Werks);
             model.ZaapShiftList = GlobalFunctions.GetReversalData("", "");
 
             return (model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(ReversalIndexViewModel model)
+        {
+            try
+            {
+                ReversalDto item = new ReversalDto();
+
+                item = Mapper.Map<ReversalDto>(model.Details);
+
+                var createInput = Mapper.Map<ReversalCreateParamInput>(model.Details);
+
+                var checkData = _reversalBll.CheckData(createInput);
+
+                if (checkData.IsMoreThanQuota)
+                {
+                    AddMessageInfo("Can't create reversal data, quota exceed", Enums.MessageInfoType.Info);
+                    model = InitialModel(model);
+                    return View(model);
+                }
+
+                var reversalData = _reversalBll.Save(item, CurrentUser.USER_ID);
+                AddMessageInfo("Create Success", Enums.MessageInfoType.Success);
+                return RedirectToAction("Index");
+            }
+            catch (Exception exception)
+            {
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+                model = InitialModel(model);
+                return View(model);
+            }
+        }
+
+        #endregion
+
+        #region Edit
+
+        public ActionResult Edit(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var reversalData = _reversalBll.GetById(id.Value);
+
+            if (reversalData == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = new ReversalIndexViewModel();
+
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
+            {
+                return RedirectToAction("Detail", new { id });
+            }
+
+            try
+            {
+                model.Details = Mapper.Map<DataReversal>(reversalData);
+                model = InitialModel(model);
+            }
+            catch (Exception exception)
+            {
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
+            return View(model);
         }
 
         #endregion
@@ -121,11 +203,21 @@ namespace Sampoerna.EMS.Website.Controllers
         #region json data
 
         [HttpPost]
-        public JsonResult GetBrandCeByPlant(string plantWerk)
+        public JsonResult GetFaCodeByPlant(string plantWerk)
         {
             var listBrandCe = GlobalFunctions.GetFaCodeByPlant(plantWerk);
 
             var model = new ReversalIndexViewModel() { FaCodeList = listBrandCe };
+
+            return Json(model);
+        }
+
+        [HttpPost]
+        public JsonResult GetZaapData(string plantWerk, string faCode)
+        {
+            var listZaap = GlobalFunctions.GetReversalData(plantWerk, faCode);
+
+            var model = new ReversalIndexViewModel() { ZaapShiftList = listZaap };
 
             return Json(model);
         }
