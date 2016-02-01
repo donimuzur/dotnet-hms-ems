@@ -966,6 +966,17 @@ namespace Sampoerna.EMS.BLL
                     ck4cItem.ProdWaste = unpackedQty == null ? strOldUnpacked : (unpackedQty.UnpackedQty == 0 ? "Nihil" : String.Format("{0:n}", unpackedQty.UnpackedQty));
                     ck4cItem.Comment = "Saldo CK-4C Sebelumnya";
 
+                    //disable quantity when ck4c level by plant
+                    if (dtData.PLANT_ID != null)
+                    {
+                        var CheckBrand = _brandBll.GetByFaCode(dtData.PLANT_ID, data.FA_CODE);
+
+                        if (CheckBrand == null)
+                        {
+                            ck4cItem.ProdWaste = "Nihil";
+                        }
+                    }
+
                     //result.Ck4cItemList.Add(ck4cItem);
                     tempListck4c1.Add(ck4cItem);
                 }
@@ -1124,6 +1135,20 @@ namespace Sampoerna.EMS.BLL
                         ck4cItem.Total = total == null || total == 0 ? "Nihil" : String.Format("{0:n}", total);
                         ck4cItem.ProdWaste = unpackedQty == null || unpackedQty == 0 ? "Nihil" : String.Format("{0:n}", unpackedQty);
                         ck4cItem.Comment = remarks == null ? string.Empty : remarks.REMARKS;
+
+                        //disable quantity when ck4c level by plant
+                        if (dtData.PLANT_ID != null)
+                        {
+                            var CheckBrand = _brandBll.GetByFaCode(dtData.PLANT_ID, data.FA_CODE);
+
+                            if (CheckBrand == null)
+                            {
+                                ck4cItem.SumBtg = "Nihil";
+                                ck4cItem.BtgGr = "Nihil";
+                                ck4cItem.Total = "Nihil";
+                                ck4cItem.ProdWaste = "Nihil";
+                            }
+                        }
 
                         //result.Ck4cItemList.Add(ck4cItem);
                         tempListck4c2.Add(ck4cItem);
