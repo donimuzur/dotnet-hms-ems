@@ -444,7 +444,7 @@ namespace Sampoerna.EMS.BLL
 
                 var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
 
-                var prodWaste = oldWaste < item.QtyProduced ? oldWaste : 0;
+                var prodWaste = oldWaste <= item.QtyProduced ? oldWaste : 0;
 
                 var unpackedQty = oldUnpacked + item.QtyProduced - item.QtyPacked - oldWaste;
 
@@ -813,7 +813,7 @@ namespace Sampoerna.EMS.BLL
 
                 var packed = item.QTY_PACKED == null ? 0 : item.QTY_PACKED;
 
-                var prodWaste = oldWaste < prodQty ? oldWaste : 0;
+                var prodWaste = oldWaste <= prodQty ? oldWaste : 0;
 
                 var prod = new ProductionDto
                 {
