@@ -11,9 +11,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string MatDoc { get; set; }
         public decimal Qty { get; set; }
         public string Bun { get; set; }
-
-        public DateTime PostingDate { get; set; }
-
-        
+        public string PostingDate { get; set; }
     }
 }

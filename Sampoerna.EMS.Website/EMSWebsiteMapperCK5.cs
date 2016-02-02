@@ -390,8 +390,7 @@ namespace Sampoerna.EMS.Website
                 Mapper.CreateMap<CK5MarketReturnSearchSummaryReportsViewModel, CK5MarketReturnGetSummaryReportByParamInput>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<Ck5MatdocDto, SelectItemModel>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.TextField,
-                    opt => opt.MapFrom(src => string.Format("{0}-{1}-{2}", src.MatDoc, src.Qty, src.PostingDate)))
+                .ForMember(dest => dest.TextField,opt => opt.MapFrom(src => string.Format("{0} - {1} - {2}", src.MatDoc, src.Qty, src.PostingDate)))
                 .ForMember(dest => dest.ValueField, opt=> opt.MapFrom(src => src.MatDoc));
         }
     }

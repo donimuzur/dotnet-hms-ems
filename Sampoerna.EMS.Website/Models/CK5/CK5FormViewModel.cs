@@ -323,5 +323,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         [Display(Name = "MatDoc")]
         public string MatDoc { get; set; }
+
+        public bool IsViewMatDoc { get; set; }
     }
 }

@@ -742,7 +742,22 @@
                                         <div class="row">
                                             @Html.LabelFor(model => model.MatDoc, new { @class = "col-md-4" })
                                             <div class="col-md-8">
-                                                @Html.DropDownListFor(model => model.MatDoc, Model.MatdocList, new { @class = "form-control selectlist" })
+                                                @if (Model.IsViewMatDoc)
+                                                {
+                                                    @Html.TextBoxFor(model => model.MatDoc, new { @class = "form-control", @disabled = "true" })
+                                                }
+                                                else
+                                                {
+                                                    if (Model.MatdocList == null)
+                                                     {
+                                                         @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                                     }
+                                                     else
+                                                     {
+                                                         @Html.DropDownListFor(model => model.MatDoc, Model.MatdocList, "Select", new {@class = "form-control selectlist"})
+                                                     }
+                                                }
+                                                
                                             </div>
                                         </div>
                                     </div>
