@@ -104,7 +104,13 @@
                     url: url,
                     data: formData,
                     success: function (data) {
-                        $('#test').val(data);
+                        $('#test').val(data.BRAND_CE);
+                        if (!data.IS_FROM_SAP) {
+                            $('#QtyPacked').prop('disabled', false);
+                        } else {
+                            $('#QtyPacked').prop('disabled', true);
+                        }
+                        
                     }
                 });
             }
