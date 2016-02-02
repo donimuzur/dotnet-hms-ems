@@ -1096,6 +1096,7 @@ namespace Sampoerna.EMS.BLL
                         var brand = _brandBll.GetById(item, data.FA_CODE);
                         var prodType = _prodTypeBll.GetById(data.PROD_CODE);
                         var itemCk4c = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat);
+                        var lastItemCk4c = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE < prodDateFormat).LastOrDefault();
                         var prodQty = itemCk4c.Sum(x => x.PROD_QTY);
                         var packedQty = itemCk4c.Sum(x => x.PACKED_QTY);
                         var unpackedQty = itemCk4c.Sum(x => x.UNPACKED_QTY);
@@ -1104,21 +1105,31 @@ namespace Sampoerna.EMS.BLL
 
                         if (unpackedQty == 0)
                         {
-                            var wasteData = _wasteBll.GetExistDto(dtData.COMPANY_ID, item, data.FA_CODE, prodDateFormat);
+                            if(itemCk4c.ToList().Count == 0)
+                            {
+                                if (lastItemCk4c != null)
+                                {
+                                    unpackedQty = lastItemCk4c.UNPACKED_QTY.Value;
+                                }
+                                else
+                                {
+                                    var wasteData = _wasteBll.GetExistDto(dtData.COMPANY_ID, item, data.FA_CODE, prodDateFormat);
 
-                            var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
+                                    var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
 
-                            var lastUnpacked = unpackedList.Where(c => c.PlantId == item && c.Facode == data.FA_CODE && c.ProdDate == lastProdDate).Sum(x => x.Unpacked);
+                                    var lastUnpacked = unpackedList.Where(c => c.PlantId == item && c.Facode == data.FA_CODE && c.ProdDate == lastProdDate).Sum(x => x.Unpacked);
 
-                            var lastSaldo = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE, dtData.PLANT_ID).Where(c => c.ProdDate < saldoDate).LastOrDefault();
+                                    var lastSaldo = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE, dtData.PLANT_ID).Where(c => c.ProdDate < saldoDate).LastOrDefault();
 
-                            var oldData = _productionBll.GetOldSaldo(dtData.COMPANY_ID, item, data.FA_CODE, saldoDate).LastOrDefault();
+                                    var oldData = _productionBll.GetOldSaldo(dtData.COMPANY_ID, item, data.FA_CODE, saldoDate).LastOrDefault();
 
-                            var oldUnpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
+                                    var oldUnpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
 
-                            var lastSaldoUnpacked = lastSaldo == null ? oldUnpacked : lastSaldo.UnpackedQty;
+                                    var lastSaldoUnpacked = lastSaldo == null ? oldUnpacked : lastSaldo.UnpackedQty;
 
-                            unpackedQty = (lastUnpacked == 0 ? lastSaldoUnpacked : lastUnpacked) - oldWaste;
+                                    unpackedQty = (lastUnpacked == 0 ? lastSaldoUnpacked : lastUnpacked) - oldWaste;
+                                }
+                            }
                         }
 
                         ck4cItem.CollumNo = i;
