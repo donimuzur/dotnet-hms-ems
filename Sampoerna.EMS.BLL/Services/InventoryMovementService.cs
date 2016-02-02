@@ -157,20 +157,21 @@ namespace Sampoerna.EMS.BLL.Services
         public List<INVENTORY_MOVEMENT> GetMvt201bySto(string stoNumber = null)
         {
             var data = new List<INVENTORY_MOVEMENT>();
-
+            var usage201 = (int)Core.Enums.MovementTypeCode.Usage201;
             if (string.IsNullOrEmpty(stoNumber))
             {
-                data = _repository.Get(x => x.MVT == EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage201)).ToList();  
+               data = _repository.Get(x => x.MVT == usage201.ToString()).ToList();  
             }
             else
             {
-                var ck5Receiving = _repository.Get(x => x.PURCH_DOC == stoNumber && x.MVT == EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving101)).FirstOrDefault();
+                var receiving101 = (int)Core.Enums.MovementTypeCode.Receiving101;
+                var ck5Receiving = _repository.Get(x => x.PURCH_DOC == stoNumber && x.MVT == receiving101.ToString()).FirstOrDefault();
 
                 data =
                     _repository.Get(
                         x =>
                             x.BATCH == ck5Receiving.BATCH &&
-                            x.MVT == EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage201)).ToList();    
+                            x.MVT == usage201.ToString()).ToList();    
             }
 
             return data;
