@@ -38,7 +38,9 @@ namespace Sampoerna.EMS.Core
             KPPBC = 31,
             UserPlantMap = 32,
             WasteRole = 33,
-            WasteStock = 34
+            WasteStock = 34,
+            PoaDelegation = 35,
+            SchedulerSettings = 36
         }
         public enum PBCK1Type
         {

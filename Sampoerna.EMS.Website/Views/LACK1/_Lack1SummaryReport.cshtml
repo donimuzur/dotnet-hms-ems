@@ -22,6 +22,7 @@
             <th>Approved By</th>
             <th>Creator</th>
             <th>Approver</th>
+            <th>Completed Date</th>
         </tr>
     </thead>
 
@@ -52,6 +53,7 @@
                     <td>@Html.DisplayFor(model => item.ApprovedBy)</td>
                     <td>@Html.DisplayFor(model => item.Creator)</td>
                     <td class="last">@Html.DisplayFor(model => item.Approver)</td>
+                    <td>@Html.DisplayFor(model => item.CompletedDate)</td>
                 </tr>
                 row = row + 1;
             }

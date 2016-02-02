@@ -48,6 +48,8 @@ namespace Sampoerna.EMS.BLL
 
         private string includeTables = "MONTH, CK4C_ITEM, CK4C_DECREE_DOC";
 
+        private IPoaDelegationServices _poaDelegationServices;
+
         public CK4CBLL(ILogger logger, IUnitOfWork uow)
         {
             _logger = logger;
@@ -73,6 +75,7 @@ namespace Sampoerna.EMS.BLL
             _poaMapBll = new POAMapBLL(_uow, _logger);
             _userPlantBll = new UserPlantMapBLL(_uow, _logger);
             _documentSequenceNumberBll = new DocumentSequenceNumberBLL(_uow, _logger);
+            _poaDelegationServices = new PoaDelegationServices(_uow, _logger);
         }
 
         public List<Ck4CDto> GetAllByParam(Ck4CDashboardParamInput input)
@@ -186,6 +189,10 @@ namespace Sampoerna.EMS.BLL
                     UserRole = getUserRole
                 };
 
+                //delegate user
+                input.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(model.CREATED_BY,
+                    input.UserId, DateTime.Now);
+
                 if (changed)
                 {
                     AddWorkflowHistory(input);
@@ -269,7 +276,8 @@ namespace Sampoerna.EMS.BLL
             var plant = _plantBll.GetT001WById(ck4cData.PlantId);
             var nppbkc = ck4cData.NppbkcId;
             var firstText = input.ActionType == Enums.ActionType.Reject ? " Document" : string.Empty;
-            var approveRejectedPoa = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(ck4cData.Number);
+            //var approveRejectedPoa = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(ck4cData.Number);
+            var approveRejectedPoa = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(new GetByFormTypeAndFormIdInput() { FormId = ck4cData.Ck4CId, FormType = Enums.FormType.CK4C });
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
@@ -296,14 +304,17 @@ namespace Sampoerna.EMS.BLL
             bodyMail.Append("</table>");
             bodyMail.AppendLine();
             bodyMail.Append("<br />Regards,<br />");
+
+            var poaList = new List<POADto>();
+
             switch (input.ActionType)
             {
                 case Enums.ActionType.Submit:
                     if (ck4cData.Status == Enums.DocumentStatus.WaitingForApproval)
                     {
-                        if (approveRejectedPoa != "")
+                        if (approveRejectedPoa != null)
                         {
-                            var poaApproveId = _userBll.GetUserById(approveRejectedPoa);
+                            var poaApproveId = _userBll.GetUserById(approveRejectedPoa.ACTION_BY);
 
                             rc.To.Add(poaApproveId.EMAIL);
                         }
@@ -311,7 +322,7 @@ namespace Sampoerna.EMS.BLL
                         {
                             var creatorPoa = _poabll.GetById(ck4cData.CreatedBy);
 
-                            var poaList = new List<POADto>();
+                          
 
                             if (creatorPoa != null)
                             {
@@ -389,11 +400,9 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Reject:
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(ck4cData.CreatedBy);
-                    var poaApprove = _userBll.GetUserById(approveRejectedPoa);
-                    var poaId = approveRejectedPoa == "" ? ck4cData.CreatedBy : approveRejectedPoa;
-                    //first code when manager exists
-                    //var managerMail = GetManagerEmail(poaId) == "" ? GetManagerEmail(input.UserId) : GetManagerEmail(poaId);
-
+                    var poaApprove = _userBll.GetUserById(approveRejectedPoa.ACTION_BY);
+                    //var poaId = approveRejectedPoa == null ? ck4cData.CreatedBy : approveRejectedPoa.ACTION_BY;
+                  
                     rc.To.Add(userDetail.EMAIL);
                     if (poaApprove != null)
                         rc.CC.Add(poaApprove.EMAIL);
@@ -443,6 +452,30 @@ namespace Sampoerna.EMS.BLL
                     rc.IsCCExist = true;
                     break;
             }
+            //delegate
+
+            var inputDelegate = new GetEmailDelegateUserInput();
+            inputDelegate.FormType = Enums.FormType.CK4C;
+            inputDelegate.FormId = ck4cData.Ck4CId;
+            inputDelegate.FormNumber = ck4cData.Number;
+            inputDelegate.ActionType = input.ActionType;
+
+            inputDelegate.CurrentUser = input.UserId;
+            inputDelegate.CreatedUser = ck4cData.CreatedBy;
+            inputDelegate.Date = DateTime.Now;
+
+            inputDelegate.WorkflowHistoryDto = approveRejectedPoa;
+            inputDelegate.UserApprovedPoa = poaList.Select(c => c.POA_ID).ToList();
+            string emailResult = "";
+            emailResult = _poaDelegationServices.GetEmailDelegateOrOriginalUserByAction(inputDelegate);
+
+            if (!string.IsNullOrEmpty(emailResult))
+            {
+                rc.IsCCExist = true;
+                rc.CC.Add(emailResult);
+            }
+            //end delegate
+
             rc.Body = bodyMail.ToString();
             return rc;
         }
@@ -518,6 +551,10 @@ namespace Sampoerna.EMS.BLL
             }
 
             input.DocumentNumber = dbData.NUMBER;
+
+            //delegate
+            input.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY, input.UserId,
+                DateTime.Now);
 
             AddWorkflowHistory(input);
 
@@ -636,8 +673,46 @@ namespace Sampoerna.EMS.BLL
 
             input.DocumentNumber = dbData.NUMBER;
 
+            //delegate
+            input.Comment = CommentDelegateUser(dbData, input);
+            //end delegate
+
             AddWorkflowHistory(input);
 
+        }
+
+        private string CommentDelegateUser(CK4C dbData, Ck4cWorkflowDocumentInput input)
+        {
+            string comment = "";
+
+            var inputHistory = new GetByFormTypeAndFormIdInput();
+            inputHistory.FormId = dbData.CK4C_ID;
+            inputHistory.FormType = Enums.FormType.CK4C;
+
+            var rejectedPoa = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(inputHistory);
+            if (rejectedPoa != null)
+            {
+                comment = _poaDelegationServices.CommentDelegatedByHistory(rejectedPoa.COMMENT,
+                    rejectedPoa.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+            }
+            else
+            {
+                var isPoaCreatedUser = _poabll.GetActivePoaById(dbData.CREATED_BY);
+                List<string> listPoa;
+                if (isPoaCreatedUser != null) //if creator = poa
+                {
+                    listPoa = _poabll.GetPoaActiveByNppbkcId(dbData.NPPBKC_ID).Select(c => c.POA_ID).ToList();
+                }
+                else
+                {
+                    listPoa = _poabll.GetPoaActiveByPlantId(dbData.PLANT_ID).Select(c => c.POA_ID).ToList();
+                }
+
+                comment = _poaDelegationServices.CommentDelegatedUserApproval(listPoa, input.UserId, DateTime.Now);
+
+            }
+
+            return comment;
         }
 
         private void RejectDocument(Ck4cWorkflowDocumentInput input)
@@ -662,6 +737,13 @@ namespace Sampoerna.EMS.BLL
             dbData.STATUS = Enums.DocumentStatus.Rejected;
 
             input.DocumentNumber = dbData.NUMBER;
+            
+            //delegate
+            string commentReject = CommentDelegateUser(dbData, input);
+
+            if (!string.IsNullOrEmpty(commentReject))
+                input.Comment += " [" + commentReject + "]";
+            //end delegate
 
             AddWorkflowHistory(input);
 
@@ -688,9 +770,20 @@ namespace Sampoerna.EMS.BLL
             dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
             dbData.CK4C_DECREE_DOC = Mapper.Map<List<CK4C_DECREE_DOC>>(input.AdditionalDocumentData.Ck4cDecreeDoc);
             dbData.GOV_STATUS = Enums.StatusGovCk4c.Approved;
+            dbData.MODIFIED_DATE = DateTime.Now;
 
             //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
+
+            //delegate
+            if (dbData.CREATED_BY != input.UserId)
+            {
+                var workflowHistoryDto =
+                    _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
+                input.Comment = _poaDelegationServices.CommentDelegatedByHistory(workflowHistoryDto.COMMENT,
+                    workflowHistoryDto.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+            }
+            //end delegate
 
             AddWorkflowHistory(input);
 
@@ -714,6 +807,20 @@ namespace Sampoerna.EMS.BLL
             dbData.GOV_STATUS = Enums.StatusGovCk4c.Rejected;
 
             input.DocumentNumber = dbData.NUMBER;
+
+            //delegate
+            if (dbData.CREATED_BY != input.UserId)
+            {
+                var workflowHistoryDto =
+                    _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
+                var commentReject = _poaDelegationServices.CommentDelegatedByHistory(workflowHistoryDto.COMMENT,
+                    workflowHistoryDto.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+
+                if (!string.IsNullOrEmpty(commentReject))
+                    input.Comment += " [" + commentReject + "]";
+
+            }
+            //end delegate
 
             AddWorkflowHistory(input);
 
@@ -744,6 +851,10 @@ namespace Sampoerna.EMS.BLL
             //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.NUMBER;
             input.ActionType = Enums.ActionType.Modified;
+
+            //delegate
+            input.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY, input.UserId,
+                DateTime.Now);
 
             AddWorkflowHistory(input);
 
@@ -786,13 +897,27 @@ namespace Sampoerna.EMS.BLL
         {
             var queryFilter = ProcessQueryFilter(input);
 
+            //delegate 
+            var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
+
+
             if (input.UserRole == Enums.UserRole.POA)
             {
                 var listNppbkc = _userPlantBll.GetNppbkcByUserId(input.UserId);
 
                 var nppbkc = _poaMapBll.GetNppbkcByPoaId(input.UserId);
 
-                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && (nppbkc.Contains(c.NPPBKC_ID) || listNppbkc.Contains(c.NPPBKC_ID)))));
+                //delegate
+                if (delegateUser.Count > 0)
+                {
+                    delegateUser.Add(input.UserId);
+                    queryFilter = queryFilter.And(c => (delegateUser.Contains(c.CREATED_BY)|| (c.STATUS != Enums.DocumentStatus.Draft && (nppbkc.Contains(c.NPPBKC_ID) || listNppbkc.Contains(c.NPPBKC_ID)))));
+                }
+                else
+                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && (nppbkc.Contains(c.NPPBKC_ID) || listNppbkc.Contains(c.NPPBKC_ID)))));
+
+
+                
             }
             //first code when manager exists
             //else if (input.UserRole == Enums.UserRole.Manager)
@@ -937,7 +1062,7 @@ namespace Sampoerna.EMS.BLL
 
                     var ck4cItem = new Ck4cReportItemDto();
 
-                    var unpackedQty = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE).Where(c => c.ProdDate < saldoDate).LastOrDefault();
+                    var unpackedQty = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE, dtData.PLANT_ID).Where(c => c.ProdDate < saldoDate).LastOrDefault();
 
                     var oldData = _productionBll.GetOldSaldo(dtData.COMPANY_ID, item, data.FA_CODE, saldoDate).LastOrDefault();
 
@@ -965,6 +1090,17 @@ namespace Sampoerna.EMS.BLL
                     ck4cItem.Total = "Nihil";
                     ck4cItem.ProdWaste = unpackedQty == null ? strOldUnpacked : (unpackedQty.UnpackedQty == 0 ? "Nihil" : String.Format("{0:n}", unpackedQty.UnpackedQty));
                     ck4cItem.Comment = "Saldo CK-4C Sebelumnya";
+
+                    //disable quantity when ck4c level by plant
+                    if (dtData.PLANT_ID != null)
+                    {
+                        var CheckBrand = _brandBll.GetByFaCode(dtData.PLANT_ID, data.FA_CODE);
+
+                        if (CheckBrand == null || dtData.PLANT_ID != item)
+                        {
+                            ck4cItem.ProdWaste = "Nihil";
+                        }
+                    }
 
                     //result.Ck4cItemList.Add(ck4cItem);
                     tempListck4c1.Add(ck4cItem);
@@ -1085,6 +1221,7 @@ namespace Sampoerna.EMS.BLL
                         var brand = _brandBll.GetById(item, data.FA_CODE);
                         var prodType = _prodTypeBll.GetById(data.PROD_CODE);
                         var itemCk4c = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat);
+                        var lastItemCk4c = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE < prodDateFormat).LastOrDefault();
                         var prodQty = itemCk4c.Sum(x => x.PROD_QTY);
                         var packedQty = itemCk4c.Sum(x => x.PACKED_QTY);
                         var unpackedQty = itemCk4c.Sum(x => x.UNPACKED_QTY);
@@ -1093,21 +1230,31 @@ namespace Sampoerna.EMS.BLL
 
                         if (unpackedQty == 0)
                         {
-                            var wasteData = _wasteBll.GetExistDto(dtData.COMPANY_ID, item, data.FA_CODE, prodDateFormat);
+                            if(itemCk4c.ToList().Count == 0)
+                            {
+                                if (lastItemCk4c != null)
+                                {
+                                    unpackedQty = lastItemCk4c.UNPACKED_QTY.Value;
+                                }
+                                else
+                                {
+                                    var wasteData = _wasteBll.GetExistDto(dtData.COMPANY_ID, item, data.FA_CODE, prodDateFormat);
 
-                            var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
+                                    var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
 
-                            var lastUnpacked = unpackedList.Where(c => c.PlantId == item && c.Facode == data.FA_CODE && c.ProdDate == lastProdDate).Sum(x => x.Unpacked);
+                                    var lastUnpacked = unpackedList.Where(c => c.PlantId == item && c.Facode == data.FA_CODE && c.ProdDate == lastProdDate).Sum(x => x.Unpacked);
 
-                            var lastSaldo = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE).Where(c => c.ProdDate < saldoDate).LastOrDefault();
+                                    var lastSaldo = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE, dtData.PLANT_ID).Where(c => c.ProdDate < saldoDate).LastOrDefault();
 
-                            var oldData = _productionBll.GetOldSaldo(dtData.COMPANY_ID, item, data.FA_CODE, saldoDate).LastOrDefault();
+                                    var oldData = _productionBll.GetOldSaldo(dtData.COMPANY_ID, item, data.FA_CODE, saldoDate).LastOrDefault();
 
-                            var oldUnpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
+                                    var oldUnpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
 
-                            var lastSaldoUnpacked = lastSaldo == null ? oldUnpacked : lastSaldo.UnpackedQty;
+                                    var lastSaldoUnpacked = lastSaldo == null ? oldUnpacked : lastSaldo.UnpackedQty;
 
-                            unpackedQty = (lastUnpacked == 0 ? lastSaldoUnpacked : lastUnpacked) - oldWaste;
+                                    unpackedQty = (lastUnpacked == 0 ? lastSaldoUnpacked : lastUnpacked) - oldWaste;
+                                }
+                            }
                         }
 
                         ck4cItem.CollumNo = i;
@@ -1124,6 +1271,20 @@ namespace Sampoerna.EMS.BLL
                         ck4cItem.Total = total == null || total == 0 ? "Nihil" : String.Format("{0:n}", total);
                         ck4cItem.ProdWaste = unpackedQty == null || unpackedQty == 0 ? "Nihil" : String.Format("{0:n}", unpackedQty);
                         ck4cItem.Comment = remarks == null ? string.Empty : remarks.REMARKS;
+
+                        //disable quantity when ck4c level by plant
+                        if (dtData.PLANT_ID != null)
+                        {
+                            var CheckBrand = _brandBll.GetByFaCode(dtData.PLANT_ID, data.FA_CODE);
+
+                            if (CheckBrand == null || dtData.PLANT_ID != item)
+                            {
+                                ck4cItem.SumBtg = "Nihil";
+                                ck4cItem.BtgGr = "Nihil";
+                                ck4cItem.Total = "Nihil";
+                                ck4cItem.ProdWaste = "Nihil";
+                            }
+                        }
 
                         //result.Ck4cItemList.Add(ck4cItem);
                         tempListck4c2.Add(ck4cItem);
@@ -1224,9 +1385,46 @@ namespace Sampoerna.EMS.BLL
                     prodTotal = String.Format("{0:n}", nBatang) + " batang dan Nihil gram";
             }
 
+            var groupItemList = GroupListItem(result.Ck4cItemList);
+
+            result.Ck4cItemList = groupItemList;
+
             result.Detail.ProdTotal = prodTotal;
 
             return result;
+        }
+
+        private List<Ck4cReportItemDto> GroupListItem(List<Ck4cReportItemDto> list)
+        {
+            var itemList = new List<Ck4cReportItemDto>();
+
+            var groupItem = Mapper.Map<List<Ck4cGroupReportItemDto>>(list);
+
+            var groupList = groupItem
+                .GroupBy(x => new { x.Ck4cItemId, x.ProdQty, x.ProdCode, x.ProdType, x.Merk, x.Hje, x.No, x.NoProd, x.ProdDate, x.Isi, x.Comment, x.CollumNo })
+                .Select(p => new Ck4cGroupReportItemDto()
+                {
+                    Ck4cItemId = p.FirstOrDefault().Ck4cItemId,
+                    ProdQty = p.FirstOrDefault().ProdQty,
+                    ProdCode = p.FirstOrDefault().ProdCode,
+                    ProdType = p.FirstOrDefault().ProdType,
+                    Merk = p.FirstOrDefault().Merk,
+                    Hje = p.FirstOrDefault().Hje,
+                    No = p.FirstOrDefault().No,
+                    NoProd = p.FirstOrDefault().NoProd,
+                    ProdDate = p.FirstOrDefault().ProdDate,
+                    Isi = p.FirstOrDefault().Isi,
+                    Comment = p.FirstOrDefault().Comment,
+                    CollumNo = p.FirstOrDefault().CollumNo,
+                    SumBtg = p.Sum(c => c.SumBtg),
+                    BtgGr = p.Sum(c => c.BtgGr),
+                    Total = p.Sum(c => c.Total),
+                    ProdWaste = p.Sum(c => c.ProdWaste)
+                });
+
+            itemList = Mapper.Map<List<Ck4cReportItemDto>>(groupList.ToList());
+
+            return itemList;
         }
 
         private bool SetChangesHistory(CK4C origin, Ck4CDto data, string userId)
@@ -1380,6 +1578,9 @@ namespace Sampoerna.EMS.BLL
                 //first code when manager exists
                 //summaryDto.ManagerApproved = dtData.APPROVED_BY_MANAGER == null ? "-" : dtData.APPROVED_BY_MANAGER;
                 summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
+                summaryDto.CompletedDate = dtData.STATUS == Enums.DocumentStatus.Completed ?
+                    (dtData.MODIFIED_DATE == null ? ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.DECREE_DATE) :
+                    ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.MODIFIED_DATE)) : "-";
 
                 var prodDate = new List<string>();
                 var faCode = new List<string>();
@@ -1468,6 +1669,9 @@ namespace Sampoerna.EMS.BLL
                     //first code when manager exists
                     //summaryDto.ManagerApproved = dtData.APPROVED_BY_MANAGER == null ? "-" : dtData.APPROVED_BY_MANAGER;
                     summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
+                    summaryDto.CompletedDate = dtData.STATUS == Enums.DocumentStatus.Completed ?
+                        (dtData.MODIFIED_DATE == null ? ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.DECREE_DATE) :
+                        ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.MODIFIED_DATE)) : "-";
 
                     var prodDate = new List<string>();
                     var faCode = new List<string>();

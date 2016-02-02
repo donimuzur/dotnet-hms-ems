@@ -52,7 +52,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 CurrentMenu = PageInfo,
                 MainMenu = _mainMenu,
-                Details = Mapper.Map<List<HeaderFooterItem>>(data)
+                Details = Mapper.Map<List<HeaderFooterItem>>(data),
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
             };
             ViewBag.Message = TempData["message"];
             return View(model);
@@ -81,6 +82,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
             return InitialCreate(new HeaderFooterItemViewModel()
             {
                 CurrentMenu = PageInfo,
@@ -132,6 +139,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Edit(int id)
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Details", new { id });
+            }
+
             var data = _headerFooterBll.GetDetailsById(id);
             if (data.IS_DELETED.HasValue && data.IS_DELETED.Value)
             {
@@ -288,6 +300,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Delete(int id)
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
 
             _headerFooterBll.Delete(id, CurrentUser.USER_ID);
             TempData[Constans.SubmitType.Delete] = Constans.SubmitMessage.Deleted;

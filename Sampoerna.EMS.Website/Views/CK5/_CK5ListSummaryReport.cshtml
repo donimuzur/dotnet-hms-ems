@@ -51,7 +51,13 @@
             <th>GR Date</th>
             <th>GI Date</th>
             <th>Status</th>
-            
+            <th>Material Number</th>
+            <th>Material Description</th>
+            <th>Company Source</th>
+            <th>Company Destination</th>
+            <th>POA</th>
+            <th>Creator</th>
+            <th>Completed Date</th>
            </tr>
     </thead>
    
@@ -112,6 +118,13 @@
                     <td>@Html.DisplayFor(model => item.GrDate)</td>
                     <td>@Html.DisplayFor(model => item.GiDate)</td>
                     <td>@Html.DisplayFor(model => item.Status)</td>
+                    <td>@Html.DisplayFor(model => item.MaterialNumber)</td>
+                    <td>@Html.DisplayFor(model => item.MaterialDescription)</td>
+                    <td>@Html.DisplayFor(model => item.CompanySource)</td>
+                    <td>@Html.DisplayFor(model => item.CompanyDestination)</td>
+                    <td>@Html.DisplayFor(model => item.Poa)</td>
+                    <td>@Html.DisplayFor(model => item.Creator)</td>
+                    <td>@Html.DisplayFor(model => item.CompletedDate)</td>
                 </tr>
                 row = row + 1;
             }

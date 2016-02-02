@@ -44,7 +44,7 @@ namespace Sampoerna.EMS.XMLReader
                         zaapShftRptItem.BUNDLE = null;
                     else
                     {
-                        zaapShftRptItem.BUNDLE = Convert.ToInt32(bundle);
+                        zaapShftRptItem.BUNDLE = Convert.ToDecimal(bundle);
                     }
                     
                     //zaapShftRptItem.MARKET = _xmlMapper.GetElementValue(xElement.Element("Market"));
@@ -108,6 +108,24 @@ namespace Sampoerna.EMS.XMLReader
 
                     zaapShftRptItem.PRODUCTION_DATE = Convert.ToDateTime(_xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("ProdDate"))));
                     zaapShftRptItem.WERKS = _xmlMapper.GetElementValue(xElement.Element("Plnt"));
+
+                    var existingBrand = GetMaterialBrand(zaapShftRptItem.FA_CODE, zaapShftRptItem.WERKS);
+                    if (existingBrand != null)
+                    {
+                        if (existingBrand.BRAND_CONTENT == null)
+                        {
+                            throw new Exception(String.Format(
+                                "Brand {0} - {2} in plant {1} has null CONTENT value", existingBrand.FA_CODE,
+                                existingBrand.WERKS, existingBrand.STICKER_CODE));
+                        }
+
+                        //zaapShftRptItem.BRAND_DESC = existingBrand.BRAND_CE;
+                    }
+                    else
+                    {
+                        _xmlMapper.Errors.Add(string.Format("no brand fa_code {0} - werks {1}", zaapShftRptItem.FA_CODE,
+                            zaapShftRptItem.WERKS));
+                    }
 
                     var mvt = _xmlMapper.GetElementValue(xElement.Element("MvT"));
                     var enteredOn = Convert.ToDateTime(_xmlMapper.GetDateDotSeparator(_xmlMapper.GetElementValue(xElement.Element("EnteredOn"))));

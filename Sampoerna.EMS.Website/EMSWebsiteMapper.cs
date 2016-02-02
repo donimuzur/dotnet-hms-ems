@@ -37,6 +37,8 @@ using Sampoerna.EMS.Website.Models.WasteRole;
 using Sampoerna.EMS.Website.Models.WasteStock;
 using Sampoerna.EMS.Website.Models.XmlFileManagement;
 using Sampoerna.EMS.Website.Models.XmlLog;
+using Sampoerna.EMS.Website.Models.PoaDelegation;
+using Sampoerna.EMS.Website.Models.SchedulerSetting;
 
 namespace Sampoerna.EMS.Website
 {
@@ -89,6 +91,10 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<ZAIDM_EX_NPPBKC, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.NPPBKC_ID))
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.NPPBKC_ID));
+
+            Mapper.CreateMap<ZAIDM_EX_KPPBCDto, SelectItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.KPPBC_ID))
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.KPPBC_ID));
 
             Mapper.CreateMap<USER, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.USER_ID))
@@ -1023,6 +1029,34 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
+            #region POA Delegation
+
+            Mapper.CreateMap<POA_DELEGATIONDto, PoaDelegationFormViewModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PoaFrom, opt => opt.MapFrom(src => src.POA_FROM))
+                .ForMember(dest => dest.PoaTo, opt => opt.MapFrom(src => src.POA_TO))
+                .ForMember(dest => dest.DateFrom, opt => opt.MapFrom(src => src.DATE_FROM))
+                .ForMember(dest => dest.DateFromDisplay, opt => opt.MapFrom(src => src.DATE_FROM.ToString("dd MMM yyyy")))
+                .ForMember(dest => dest.DateTo, opt => opt.MapFrom(src => src.DATE_TO))
+                .ForMember(dest => dest.DateToDisplay, opt => opt.MapFrom(src => src.DATE_TO.ToString("dd MMM yyyy")))
+                .ForMember(dest => dest.Reason, opt => opt.MapFrom(src => src.REASON)) 
+                ;
+
+            Mapper.CreateMap<PoaDelegationFormViewModel, POA_DELEGATIONDto>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.POA_FROM, opt => opt.MapFrom(src => src.PoaFrom))
+               .ForMember(dest => dest.POA_TO, opt => opt.MapFrom(src => src.PoaTo))
+               .ForMember(dest => dest.DATE_FROM, opt => opt.MapFrom(src => src.DateFrom))
+               .ForMember(dest => dest.DATE_TO, opt => opt.MapFrom(src => src.DateTo))
+               .ForMember(dest => dest.REASON, opt => opt.MapFrom(src => src.Reason))
+               ;
+
+            #endregion
+
+
+            #region Scheduler Setting
+
+            Mapper.CreateMap<SchedulerSetting, SchedulerSettingModel>().IgnoreAllNonExisting();
+            Mapper.CreateMap<SchedulerSettingModel, SchedulerSetting>().IgnoreAllNonExisting();
+            #endregion
         }
     }
 

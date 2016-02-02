@@ -449,6 +449,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.DestPlantList = GlobalFunctions.GetPlantAll();
             }
 
+
+            //model.MatdocList = _ck5Bll.get
            
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedListByPlant("");
 
@@ -1417,6 +1419,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.NppbkcId = model.SourceNppbkcId;
                 input.PlantId = ck5Details.Ck5Dto.SOURCE_PLANT_ID;
 
+                input.DestNppbkcId = model.DestNppbkcId;
+                input.DestPlant = ck5Details.Ck5Dto.DEST_PLANT_ID;
+
                 if (model.Ck5Type == Enums.CK5Type.PortToImporter)
                 {
                     input.NppbkcId = model.DestNppbkcId;
@@ -1426,10 +1431,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 else if (model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
                 {
-                    input.NppbkcId = ck5Details.Ck5Dto.DEST_PLANT_ID;
+                    input.NppbkcId = model.DestNppbkcId;
                     model.IsDomesticAlcohol = true;
 
-                    input.PlantId = model.DestPlantId;
+                    input.PlantId = ck5Details.Ck5Dto.DEST_PLANT_ID;
                 }
                 else if (model.Ck5Type == Enums.CK5Type.Waste)
                 {
@@ -1440,6 +1445,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     input.NppbkcId = model.DestNppbkcId;
                     input.PlantId = ck5Details.Ck5Dto.DEST_PLANT_ID;
+                }
+                else if (model.Ck5Type == Enums.CK5Type.Manual &&
+                    model.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.DestFreeText)
+                {
+                    input.DestNppbkcId = model.SourceNppbkcId;
+                    input.DestPlant = ck5Details.Ck5Dto.SOURCE_PLANT_ID;
                 }
                 else if (model.Ck5Type == Enums.CK5Type.Return)
                 {
@@ -2868,19 +2879,19 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
         }
 
-        public ActionResult CancelDocument(CK5FormViewModel model)
-        {
-            try
-            {
-                CK5Workflow(model.Ck5Id, Enums.ActionType.Cancel, model.Comment);
-                AddMessageInfo("Success Cancel Document", Enums.MessageInfoType.Success);
-            }
-            catch (Exception ex)
-            {
-                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
-            }
-            return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
-        }
+        //public ActionResult CancelDocument(CK5FormViewModel model)
+        //{
+        //    try
+        //    {
+        //        CK5Workflow(model.Ck5Id, Enums.ActionType.Cancel, model.Comment);
+        //        AddMessageInfo("Success Cancel Document", Enums.MessageInfoType.Success);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+        //    }
+        //    return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+        //}
 
         public ActionResult CancelSAPDocument(long id)
         {
@@ -3614,6 +3625,47 @@ namespace Sampoerna.EMS.Website.Controllers
                     iColumn = iColumn + 1;
                 }
 
+                if (modelExport.MaterialNumber)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.MaterialNumber);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.MaterialDescription)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.MaterialDescription);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.CompanySource)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CompanySource);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.CompanyDestination)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CompanyDestination);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.Poa)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Poa);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.Creator)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Creator);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.CompletedDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CompletedDate);
+                    iColumn = iColumn + 1;
+                }
 
                 iRow++;
             }
@@ -3869,6 +3921,49 @@ namespace Sampoerna.EMS.Website.Controllers
                 slDocument.SetCellValue(iRow, iColumn, "Status");
                 iColumn = iColumn + 1;
             }
+
+            if (modelExport.MaterialNumber)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Material Number");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.MaterialDescription)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Material Description");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.CompanySource)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Company Source");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.CompanyDestination)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Company Destination");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Poa)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "POA");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Creator)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Creator");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.CompletedDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Completed Date");
+                iColumn = iColumn + 1;
+            }
+
             return slDocument;
 
         }
@@ -3885,7 +3980,7 @@ namespace Sampoerna.EMS.Website.Controllers
             styleBorder.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
             styleBorder.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
 
-            styleBorder.SetWrapText(true);
+           // styleBorder.SetWrapText(true);
 
             //SLStyle styleWrap = slDocument.CreateStyle();
             //styleWrap.SetWrapText(true);
@@ -4482,6 +4577,399 @@ namespace Sampoerna.EMS.Website.Controllers
 
              return Json(data);
         }
+
+
+        #region Summary Reports MarketReturn
+
+        public ActionResult SummaryReportsMarketReturn()
+        {
+
+            CK5MarketReturnSummaryReportsViewModel model;
+            try
+            {
+
+                model = new CK5MarketReturnSummaryReportsViewModel();
+
+                model = InitSummaryReportsMarketReturn(model);
+
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model = new CK5MarketReturnSummaryReportsViewModel();
+                model.MainMenu = Enums.MenuList.CK5MRETURN;
+                model.CurrentMenu = PageInfo;
+            }
+
+            return View("CK5MarketReturnSummaryReport", model);
+        }
+
+        private SelectList GetCk5MarketReturnSummaryList(List<Ck5MarketReturnSummaryReportDto> listCk5, int type)
+        {
+            IEnumerable<SelectItemModel> query = null;
+
+            switch (type)
+            {
+                case 1: //facode
+                    query = from x in listCk5
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.FaCode,
+                                TextField = x.FaCode
+                            };
+                    break;
+
+                case 2: //POA
+                    query = from x in listCk5
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Poa,
+                                TextField = x.Poa
+                            };
+                    break;
+
+                case 3: //creator
+                    query = from x in listCk5
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Creator,
+                                TextField = x.Creator
+                            };
+                    break;
+
+                case 4: //pbck3 no
+                    query = from x in listCk5
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Pbck3No,
+                                TextField = x.Pbck3No
+                            };
+                    break;
+
+                case 5: //ck2 no
+                    query = from x in listCk5
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Ck2Number,
+                                TextField = x.Ck2Number
+                            };
+                    break;
+            }
+           
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
+        private CK5MarketReturnSummaryReportsViewModel InitSummaryReportsMarketReturn(CK5MarketReturnSummaryReportsViewModel model)
+        {
+            model.MainMenu = Enums.MenuList.CK5MRETURN;
+            model.CurrentMenu = PageInfo;
+
+
+            var listCk5 = _ck5Bll.GetSummaryReportsMarketReturnByParam(new CK5MarketReturnGetSummaryReportByParamInput());
+
+            model.SearchView.FaCodeList = GetCk5MarketReturnSummaryList(listCk5, 1);
+            model.SearchView.PoaList = GetCk5MarketReturnSummaryList(listCk5, 2);
+            model.SearchView.CreatorList = GetCk5MarketReturnSummaryList(listCk5, 3);
+            model.SearchView.Pbck3NoList = GetCk5MarketReturnSummaryList(listCk5, 4);
+            model.SearchView.Ck2NoList = GetCk5MarketReturnSummaryList(listCk5, 5);
+
+            var filter = new CK5MarketReturnSearchSummaryReportsViewModel();
+
+            model.DetailsList = SearchMarketReturnDataSummaryReports(filter);
+
+            return model;
+        }
+
+        private List<CK5MarketReturnSummaryReportsItem> SearchMarketReturnDataSummaryReports(CK5MarketReturnSearchSummaryReportsViewModel filter = null)
+        {
+            CK5MarketReturnGetSummaryReportByParamInput input;
+            List<Ck5MarketReturnSummaryReportDto> dbData;
+            if (filter == null)
+            {
+                //Get All
+                input = new CK5MarketReturnGetSummaryReportByParamInput();
+
+                dbData = _ck5Bll.GetSummaryReportsMarketReturnByParam(input);
+                return Mapper.Map<List<CK5MarketReturnSummaryReportsItem>>(dbData);
+            }
+
+            //getbyparams
+
+            input = Mapper.Map<CK5MarketReturnGetSummaryReportByParamInput>(filter);
+
+            dbData = _ck5Bll.GetSummaryReportsMarketReturnByParam(input);
+            return Mapper.Map<List<CK5MarketReturnSummaryReportsItem>>(dbData);
+        }
+
+        [HttpPost]
+        public PartialViewResult SearchSummaryReportsMarketReturn(CK5MarketReturnSummaryReportsViewModel model)
+        {
+            model.DetailsList = SearchMarketReturnDataSummaryReports(model.SearchView);
+            return PartialView("_CK5MarketReturnListSummaryReport", model);
+        }
+
+        public void ExportXlsMarketReturnSummaryReports(CK5MarketReturnSummaryReportsViewModel model)
+        {
+            string pathFile = "";
+
+            pathFile = CreateXlsMarketReturnSummaryReports(model.ExportModel);
+
+
+            var newFile = new FileInfo(pathFile);
+
+            var fileName = Path.GetFileName(pathFile);// "CK5" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+        }
+
+        private string CreateXlsMarketReturnSummaryReports(CK5MarketReturnExportSummaryReportsViewModel modelExport)
+        {
+            var dataSummaryReport = SearchMarketReturnDataSummaryReports(modelExport);
+
+            int iRow = 1;
+            var slDocument = new SLDocument();
+
+            //create header
+            slDocument = CreateHeaderExcelMarketReturn(slDocument, modelExport);
+
+            iRow++;
+            int iColumn = 1;
+            foreach (var data in dataSummaryReport)
+            {
+
+                iColumn = 1;
+                if (modelExport.FaCode)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.FaCode);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.Brand)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Brand);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.Content)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Content);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.Hje)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Hje);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.Tariff)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Tariff);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.Ck5MarketReturnQty)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck5MarketReturnQty);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.FiscalYear)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.FiscalYear);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.ExciseValue)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ExciseValue);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.Poa)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Poa);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.Creator)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Creator);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.Pbck3No)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Pbck3No);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.Pbck3Status)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Pbck3Status);
+                    iColumn = iColumn + 1;
+                }
+
+                //start
+                if (modelExport.Ck2Number)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck2Number);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.Ck2Value)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck2Value);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.CompletedDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CompletedDate);
+                    iColumn = iColumn + 1;
+                }
+
+                iRow++;
+            }
+
+            return CreateXlsFileSummaryReportsMarketReturn(slDocument, iColumn, iRow);
+
+        }
+
+        private SLDocument CreateHeaderExcelMarketReturn(SLDocument slDocument, CK5MarketReturnExportSummaryReportsViewModel modelExport)
+        {
+            int iColumn = 1;
+            int iRow = 1;
+
+            if (modelExport.FaCode)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Fa Code");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.Brand)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Brand");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Content)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Content");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Hje)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "HJE");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.Tariff)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Tariff");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.Ck5MarketReturnQty)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-5 Market Return Qty");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.FiscalYear)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Fiscal Year");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.ExciseValue)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Excise Value");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Poa)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "POA");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Creator)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Creator");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Pbck3No)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "PBCK-3 No.");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Pbck3Status)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "PBCK-3 Status");
+                iColumn = iColumn + 1;
+            }
+
+            //start
+            if (modelExport.Ck2Number)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-2 No.");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.Ck2Value)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-2 Value");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.CompletedDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Completed Date");
+                iColumn = iColumn + 1;
+            }
+           
+            return slDocument;
+
+        }
+
+        private string CreateXlsFileSummaryReportsMarketReturn(SLDocument slDocument, int iColumn, int iRow)
+        {
+
+            //create style
+            SLStyle styleBorder = slDocument.CreateStyle();
+            styleBorder.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+
+            styleBorder.SetWrapText(true);
+
+            //SLStyle styleWrap = slDocument.CreateStyle();
+            //styleWrap.SetWrapText(true);
+
+            //SLStyle styleHeader = slDocument.CreateStyle();
+            //styleHeader.Font.Bold = true;
+
+            slDocument.AutoFitColumn(1, iColumn - 1);
+            slDocument.SetCellStyle(1, 1, iRow - 1, iColumn - 1, styleBorder);
+
+
+            var fileName = "CK5MarketReturn" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+
+            var path = Path.Combine(Server.MapPath(Constans.CK5FolderPath), fileName);
+
+            //var outpu = new 
+            slDocument.SaveAs(path);
+
+            return path;
+        }
+
+        #endregion
 
     }
 }

@@ -171,63 +171,66 @@ namespace Sampoerna.EMS.BLL
             });
             var dbQtyWaste = CalculateWasteQuantity(dbdata);
 
-            var listWasteStockDto = new List<WasteStockDto>();
-
-            decimal? updateValueFloor = dbQtyWaste.FloorWasteGramQty;
-            decimal? updateValueDust = dbQtyWaste.DustWasteGramQty;
-            decimal? updateValueStamp = dbQtyWaste.StampWasteQty;
-
-            //if (isNewData && dbQtyWaste.PlantWerks == dbWaste.WERKS)
-            //{
-            //    updateValueFloor = dbQtyWaste.FloorWasteGramQty + dbWaste.FLOOR_WASTE_GRAM_QTY;
-            //    updateValueDust = dbQtyWaste.DustWasteGramQty + dbWaste.DUST_WASTE_GRAM_QTY;
-            //    updateValueStamp = dbQtyWaste.StampWasteQty + dbWaste.STAMP_WASTE_QTY;
-
-            //}
-
-            var wasStockWsapoon = new WasteStockDto();
-            wasStockWsapoon.WERKS = dbQtyWaste.PlantWerks;
-            wasStockWsapoon.MATERIAL_NUMBER = Constans.WasteFloor;
-            wasStockWsapoon.STOCK = Convert.ToDecimal(updateValueFloor);
-            wasStockWsapoon.CREATED_BY = userId;
-
-            listWasteStockDto.Add(wasStockWsapoon);
-
-            var wasteStockGagang = new WasteStockDto();
-            wasteStockGagang.WERKS = dbQtyWaste.PlantWerks;
-            wasteStockGagang.MATERIAL_NUMBER = Constans.WasteDust;
-            wasteStockGagang.STOCK = Convert.ToDecimal(updateValueDust);
-            wasteStockGagang.CREATED_BY = userId;
-
-            listWasteStockDto.Add(wasteStockGagang);
-
-            var wasteStockStem = new WasteStockDto();
-            wasteStockStem.WERKS = dbQtyWaste.PlantWerks;
-            wasteStockStem.MATERIAL_NUMBER = Constans.WasteStem;
-            wasteStockStem.STOCK = Convert.ToDecimal(updateValueStamp);
-            wasteStockStem.CREATED_BY = userId;
-
-            listWasteStockDto.Add(wasteStockStem);
-
-
-
-            foreach (var wasteStockDto in listWasteStockDto)
+            if (dbQtyWaste != null)
             {
-                //CHECK ON MATERIAL PLANT AND STICKER CODE EXIST
 
-                var dbMaterial = _materialBll.GetByPlantIdAndStickerCode(wasteStockDto.WERKS, wasteStockDto.MATERIAL_NUMBER);
+                var listWasteStockDto = new List<WasteStockDto>();
 
-                if (dbMaterial == null)
+                decimal? updateValueFloor = dbQtyWaste.FloorWasteGramQty;
+                decimal? updateValueDust = dbQtyWaste.DustWasteGramQty;
+                decimal? updateValueStamp = dbQtyWaste.StampWasteQty;
+
+                //if (isNewData && dbQtyWaste.PlantWerks == dbWaste.WERKS)
+                //{
+                //    updateValueFloor = dbQtyWaste.FloorWasteGramQty + dbWaste.FLOOR_WASTE_GRAM_QTY;
+                //    updateValueDust = dbQtyWaste.DustWasteGramQty + dbWaste.DUST_WASTE_GRAM_QTY;
+                //    updateValueStamp = dbQtyWaste.StampWasteQty + dbWaste.STAMP_WASTE_QTY;
+
+                //}
+
+                var wasStockWsapoon = new WasteStockDto();
+                wasStockWsapoon.WERKS = dbQtyWaste.PlantWerks;
+                wasStockWsapoon.MATERIAL_NUMBER = Constans.WasteFloor;
+                wasStockWsapoon.STOCK = Convert.ToDecimal(updateValueFloor);
+                wasStockWsapoon.CREATED_BY = userId;
+
+                listWasteStockDto.Add(wasStockWsapoon);
+
+                var wasteStockGagang = new WasteStockDto();
+                wasteStockGagang.WERKS = dbQtyWaste.PlantWerks;
+                wasteStockGagang.MATERIAL_NUMBER = Constans.WasteDust;
+                wasteStockGagang.STOCK = Convert.ToDecimal(updateValueDust);
+                wasteStockGagang.CREATED_BY = userId;
+
+                listWasteStockDto.Add(wasteStockGagang);
+
+                var wasteStockStem = new WasteStockDto();
+                wasteStockStem.WERKS = dbQtyWaste.PlantWerks;
+                wasteStockStem.MATERIAL_NUMBER = Constans.WasteStem;
+                wasteStockStem.STOCK = Convert.ToDecimal(updateValueStamp);
+                wasteStockStem.CREATED_BY = userId;
+
+                listWasteStockDto.Add(wasteStockStem);
+
+
+
+                foreach (var wasteStockDto in listWasteStockDto)
                 {
-                    throw new BLLException(ExceptionCodes.BLLExceptions.PlantInWasteNotHaveStickerCode);
-                }
-                else
-                {
-                    _wasteStockBll.UpdateWasteStockFromWaste(wasteStockDto, userId);
-                }
+                    //CHECK ON MATERIAL PLANT AND STICKER CODE EXIST
 
+                    var dbMaterial = _materialBll.GetByPlantIdAndStickerCode(wasteStockDto.WERKS, wasteStockDto.MATERIAL_NUMBER);
+
+                    if (dbMaterial == null)
+                    {
+                        throw new BLLException(ExceptionCodes.BLLExceptions.PlantInWasteNotHaveStickerCode);
+                    }
+                    else
+                    {
+                        _wasteStockBll.UpdateWasteStockFromWaste(wasteStockDto, userId);
+                    }
+
+                }
             }
-
         }
         public WasteDto GetById(string companyCode, string plantWerk, string faCode, DateTime wasteProductionDate)
         {
@@ -293,7 +296,10 @@ namespace Sampoerna.EMS.BLL
             }
             _repository.InsertOrUpdate(dbUpload);
 
+            _uow.SaveChanges();
+
             UpdateWasteStockTable(dbUpload, userId, isNewData);
+
             _uow.SaveChanges();
         }
 

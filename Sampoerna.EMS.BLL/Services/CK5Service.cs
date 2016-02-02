@@ -27,6 +27,11 @@ namespace Sampoerna.EMS.BLL.Services
 
         }
 
+        public CK5 GetById(long id)
+        {
+            var dbData = _repository.GetByID(id);
+            return dbData;
+        }
         public List<CK5> GetForLack1ByParam(Ck5GetForLack1ByParamInput input)
         {
             //&& !string.IsNullOrEmpty(c.STO_RECEIVER_NUMBER)

@@ -79,6 +79,7 @@
     <Compile Include="Business\Pbck1ProdConverter.cs" />
     <Compile Include="Business\Pbck1ProdPlan.cs" />
     <Compile Include="Business\Plant.cs" />
+    <Compile Include="Business\SchedulerSetting.cs" />
     <Compile Include="CHANGES_HISTORY.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -135,6 +136,8 @@
     <Compile Include="DTOs\Ck4CSummaryReportDto.cs" />
     <Compile Include="DTOs\CK5Dto.cs" />
     <Compile Include="DTOs\CK5FileDocumentDto.cs" />
+    <Compile Include="DTOs\Ck5MarketReturnSummaryReportDto.cs" />
+    <Compile Include="DTOs\Ck5MatdocDto.cs" />
     <Compile Include="DTOs\CK5MaterialDto.cs" />
     <Compile Include="DTOs\CK5ReportDto.cs" />
     <Compile Include="DTOs\Ck5SummaryReportDto.cs" />
@@ -176,6 +179,7 @@
     <Compile Include="DTOs\Pbck1ReportDto.cs" />
     <Compile Include="DTOs\Pbck1SummaryReportDto.cs" />
     <Compile Include="DTOs\Pbck3CompositeDto.cs" />
+    <Compile Include="DTOs\Pbck3SummaryReportDto.cs" />
     <Compile Include="DTOs\Pbck4Dto.cs" />
     <Compile Include="DTOs\Pbck4ItemDto.cs" />
     <Compile Include="DTOs\Pbck4ReportDto.cs" />
@@ -184,8 +188,10 @@
     <Compile Include="DTOs\PBCK4_DOCUMENTDto.cs" />
     <Compile Include="DTOs\Pbck7AndPbck3Dto.cs" />
     <Compile Include="DTOs\Pbck7PrintOutDto.cs" />
+    <Compile Include="DTOs\Pbck7SummaryReportDto.cs" />
     <Compile Include="DTOs\PBCK7_ITEMDto.cs" />
     <Compile Include="DTOs\POADto.cs" />
+    <Compile Include="DTOs\POA_DELEGATIONDto.cs" />
     <Compile Include="DTOs\POA_MAPDto.cs" />
     <Compile Include="DTOs\PrintHistoryDto.cs" />
     <Compile Include="DTOs\ProductionDto.cs" />
@@ -261,6 +267,7 @@
     <Compile Include="Inputs\Pbck7AndPbck3Input.cs" />
     <Compile Include="Inputs\Pbck4Inputs.cs" />
     <Compile Include="Inputs\Pbck7ItemsInput.cs" />
+    <Compile Include="Inputs\PoaDelegationInput.cs" />
     <Compile Include="Inputs\PrintHistoryInputs.cs" />
     <Compile Include="Inputs\ProductionGetByParamInput.cs" />
     <Compile Include="Inputs\ProductionUploadItemsInput.cs" />
@@ -433,6 +440,9 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Business\UserTree.cs" />
+    <Compile Include="REVERSAL.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="SUPPLIER_PORT.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>

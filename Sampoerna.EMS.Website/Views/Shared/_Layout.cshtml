@@ -67,7 +67,7 @@
                     switch (Model.MainMenu)
                     {
                         case Enums.MenuList.PBCK1:
-                            <a href="@Url.Action("Dashboard", "PBCK1")" class="list-group-item">
+                            <a href="@Url.Action("Dashboard", "PBCK1")" class="list-group-item" style="display: none;">
                                 <i class="fa fa-tachometer"></i>
                                 <span>Dashboard</span>
                             </a>
@@ -295,6 +295,12 @@
                                         XML File Management
                                     </a>
                                 </li>
+                                <li>
+                                    <a id="MenuXmlFile" href="@Url.Action("Index", "SchedulerSetting")">
+                                        <i class="fa fa-angle-right"></i>
+                                        Scheduler Setting
+                                    </a>
+                                </li>
                             </ul>
                         </div>
 
@@ -303,7 +309,7 @@
 
                         case Enums.MenuList.LACK1:
                         <div class="list-group">
-                            <a href="@Url.Action("Dashboard", "LACK1")" class="list-group-item">
+                            <a href="@Url.Action("Dashboard", "LACK1")" class="list-group-item" style="display: none;">
                                 <i class="fa fa-tachometer"></i>
                                 <span>Dashboard</span>
                             </a>
@@ -337,7 +343,7 @@
 
                         case Enums.MenuList.LACK2:
                         <div class="list-group">
-                            <a href="@Url.Action("Dashboard", "LACK2")" class="list-group-item">
+                            <a href="@Url.Action("Dashboard", "LACK2")" class="list-group-item" style="display: none;">
                                 <i class="fa fa-tachometer"></i>
                                 <span>Dashboard</span>
                             </a>
@@ -370,7 +376,7 @@
 
                         case Enums.MenuList.PBCK7:
                         <div class="list-group">
-                            <a href="@Url.Action("Dashboard", "PBCK7AndPBCK3")" class="list-group-item">
+                            <a href="@Url.Action("Dashboard", "PBCK7AndPBCK3")" class="list-group-item" style="display: none;">
                                 <i class="fa fa-tachometer"></i>
                                 <span>Dashboard</span>
                             </a>
@@ -406,7 +412,7 @@
                             break;
                         case Enums.MenuList.CK4C:
                         <div class="list-group">
-                            <a href="@Url.Action("Dashboard", "CK4C")" class="list-group-item">
+                            <a href="@Url.Action("Dashboard", "CK4C")" class="list-group-item" style="display: none;">
                                 <i class="fa fa-tachometer"></i>
                                 <span>Dashboard</span>
                             </a>
@@ -441,7 +447,7 @@
 
                         case Enums.MenuList.PBCK4:
                         <div class="list-group">
-                            <a href="@Url.Action("Dashboard", "PBCK4")" class="list-group-item">
+                            <a href="@Url.Action("Dashboard", "PBCK4")" class="list-group-item" style="display: none;">
                                 <i class="fa fa-tachometer"></i>
                                 <span>Dashboard</span>
                             </a>
@@ -484,7 +490,17 @@
                                     <li><a id="liCK5MarketReturnCompleted" href="@Url.Action("CK5MarketReturnCompleted", "CK5")"><i class="fa fa-angle-right"></i> Completed Document</a></li>
                                 </ul>
                             </div>
-
+                            
+                            <div id="menuCk5MarketReturnReport" class="collapse-menu">
+                                <a href="#" class="list-group-item list-parent">
+                                    <i class="fa fa-signal"></i>
+                                    <span>Report</span>
+                                    <i class="down fa fa-caret-down"></i>
+                                </a>
+                                <ul class="child list">
+                                    <li><a id="MenuCk5MarketReturnSummaryReports" href="@Url.Action("SummaryReportsMarketReturn", "CK5")"><i class="fa fa-angle-right"></i>Summary Reports</a></li>
+                                </ul>
+                            </div>
 
                         </div>
                             break;

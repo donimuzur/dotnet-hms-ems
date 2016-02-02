@@ -412,8 +412,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.ContentPerPack = Convert.ToInt32(brand.BRAND_CONTENT);
                 if (item.PackedInPack == 0)
                     item.PackedInPack = Convert.ToInt32(item.PackedQty) / Convert.ToInt32(brand.BRAND_CONTENT);
-                if (item.ProdQty == 0)
-                    item.ProdQty = item.PackedQty + item.UnpackedQty;
+                //if (item.ProdQty == 0)
+                //    item.ProdQty = item.PackedQty + item.UnpackedQty;
                 item.ProdDateName = item.ProdDate.ToString("dd MMM yyyy");
                 item.BrandDescription = brand.BRAND_CE;
                 item.PlantName = item.Werks + "-" + plant.NAME1;
@@ -1608,6 +1608,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     iColumn = iColumn + 1;
                 }
 
+                if (modelExport.CompletedDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CompletedDate);
+                    iColumn = iColumn + 1;
+                }
+
                 iRow++;
             }
 
@@ -1775,6 +1781,12 @@ namespace Sampoerna.EMS.Website.Controllers
             if (modelExport.Status)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Status");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.CompletedDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Completed Date");
                 iColumn = iColumn + 1;
             }
 

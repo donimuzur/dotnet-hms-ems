@@ -60,6 +60,7 @@ namespace Sampoerna.EMS.BLL
         private IZaidmExMaterialService _materialService;
         private IGoodProdTypeService _goodProdTypeService;
         private IMaterialUomService _materialUomService;
+        private IPoaDelegationServices _poaDelegationServices;
         private IMaterialBalanceService _materialBalanceService;
         private IBrandRegistrationService _brandRegService;
 
@@ -102,11 +103,13 @@ namespace Sampoerna.EMS.BLL
             _goodProdTypeService = new GoodProdTypeService(_uow, _logger);
             _brandRegService = new BrandRegistrationService(_uow, _logger);
             _materialUomService = new MaterialUomService(_uow, _logger);
+            _poaDelegationServices = new PoaDelegationServices(_uow, _logger);
             _materialBalanceService = new MaterialBalanceService(_uow, _logger);
         }
 
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
         {
+
             if (input.UserRole == Enums.UserRole.POA)
             {
                 var nppbkc = _nppbkcService.GetNppbkcsByPoa(input.UserId);
@@ -534,6 +537,10 @@ namespace Sampoerna.EMS.BLL
                 UserRole = getUserRole
             };
 
+            //delegate user
+            inputAddWorkflowHistory.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY,
+                input.UserId, DateTime.Now);
+
             AddWorkflowHistory(inputAddWorkflowHistory);
 
             _uow.SaveChanges();
@@ -662,6 +669,17 @@ namespace Sampoerna.EMS.BLL
                 WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, null);
                 dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
                 dbData.GOV_STATUS = null;
+
+                //delegate
+                if (dbData.CREATED_BY != input.UserId)
+                {
+                    var workflowHistoryDto =
+                        _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
+                    input.Comment = _poaDelegationServices.CommentDelegatedByHistory(workflowHistoryDto.COMMENT,
+                        workflowHistoryDto.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+                }
+                //end delegate
+
             }
             else
             {
@@ -718,7 +736,13 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 input.DocumentNumber = dbData.LACK1_NUMBER;
+
+                //delegate
+                input.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY, input.UserId,
+                    DateTime.Now);
             }
+
+           
 
             AddWorkflowHistory(input);
 
@@ -774,10 +798,49 @@ namespace Sampoerna.EMS.BLL
                 //}
 
                 input.DocumentNumber = dbData.LACK1_NUMBER;
+
+                //delegate
+                input.Comment = CommentDelegateUser(dbData, input);
+                //end delegate
             }
 
             AddWorkflowHistory(input);
 
+        }
+
+        private string CommentDelegateUser(LACK1 dbData, Lack1WorkflowDocumentInput input)
+        {
+            string comment = "";
+
+            var inputHistory = new GetByFormTypeAndFormIdInput();
+            inputHistory.FormId = dbData.LACK1_ID;
+            inputHistory.FormType = Enums.FormType.LACK1;
+
+            var rejectedPoa = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(inputHistory);
+            if (rejectedPoa != null)
+            {
+                comment = _poaDelegationServices.CommentDelegatedByHistory(rejectedPoa.COMMENT,
+                    rejectedPoa.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+            }
+            else
+            {
+                //var isPoaCreatedUser = _poaBll.GetActivePoaById(dbData.CREATED_BY);
+                //List<string> listPoa;
+                //if (isPoaCreatedUser != null) //if creator = poa
+                //{
+                //    listPoa = _poaBll.GetPoaActiveByNppbkcId(dbData.NPPBKC_ID).Select(c => c.POA_ID).ToList();
+                //}
+                //else
+                //{
+                //    listPoa = _poaBll.GetPoaActiveByPlantId(dbData.PLANT_ID).Select(c => c.POA_ID).ToList();
+                //}
+
+                var listPoa = _poaBll.GetPoaActiveByPlantId(dbData.NPPBKC_ID).Select(c => c.POA_ID).ToList();
+                comment = _poaDelegationServices.CommentDelegatedUserApproval(listPoa, input.UserId, DateTime.Now);
+
+            }
+
+            return comment;
         }
 
         private void RejectDocument(Lack1WorkflowDocumentInput input)
@@ -808,6 +871,14 @@ namespace Sampoerna.EMS.BLL
                 dbData.APPROVED_DATE_POA = null;
 
                 input.DocumentNumber = dbData.LACK1_NUMBER;
+
+                //delegate
+                string commentReject = CommentDelegateUser(dbData, input);
+
+                if (!string.IsNullOrEmpty(commentReject))
+                    input.Comment += " [" + commentReject + "]";
+                //end delegate
+
             }
 
             AddWorkflowHistory(input);
@@ -837,8 +908,20 @@ namespace Sampoerna.EMS.BLL
                 dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
                 dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
                 dbData.GOV_STATUS = Enums.DocumentStatusGovType2.Approved;
+                dbData.MODIFIED_DATE = DateTime.Now;
 
                 input.DocumentNumber = dbData.LACK1_NUMBER;
+
+                //delegate
+                if (dbData.CREATED_BY != input.UserId)
+                {
+                    var workflowHistoryDto =
+                        _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
+                    input.Comment = _poaDelegationServices.CommentDelegatedByHistory(workflowHistoryDto.COMMENT,
+                        workflowHistoryDto.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+                }
+                //end delegate
+
             }
 
             AddWorkflowHistory(input);
@@ -876,6 +959,20 @@ namespace Sampoerna.EMS.BLL
                 dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
 
                 input.DocumentNumber = dbData.LACK1_NUMBER;
+
+                //delegate
+                if (dbData.CREATED_BY != input.UserId)
+                {
+                    var workflowHistoryDto =
+                        _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
+                    var commentReject = _poaDelegationServices.CommentDelegatedByHistory(workflowHistoryDto.COMMENT,
+                        workflowHistoryDto.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+
+                    if (!string.IsNullOrEmpty(commentReject))
+                        input.Comment += " [" + commentReject + "]";
+
+                }
+                //end delegate
             }
 
             AddWorkflowHistory(input);
@@ -1190,6 +1287,29 @@ namespace Sampoerna.EMS.BLL
                     break;
 
             }
+            //delegatemail
+            var inputDelegate = new GetEmailDelegateUserInput();
+            inputDelegate.FormType = Enums.FormType.LACK1;
+            inputDelegate.FormId = lack1Data.Lack1Id;
+            inputDelegate.FormNumber = lack1Data.Lack1Number;
+            inputDelegate.ActionType = input.ActionType;
+
+            inputDelegate.CurrentUser = input.UserId;
+            inputDelegate.CreatedUser = lack1Data.CreateBy;
+            inputDelegate.Date = DateTime.Now;
+
+            inputDelegate.WorkflowHistoryDto = rejected;
+            inputDelegate.UserApprovedPoa = poaList.Select(c => c.POA_ID).ToList();
+            string emailResult = "";
+            emailResult = _poaDelegationServices.GetEmailDelegateOrOriginalUserByAction(inputDelegate);
+
+            if (!string.IsNullOrEmpty(emailResult))
+            {
+                rc.IsCCExist = true;
+                rc.CC.Add(emailResult);
+            }
+            //end delegate
+
             rc.Body = bodyMail.ToString();
             return rc;
         }
@@ -2337,6 +2457,7 @@ namespace Sampoerna.EMS.BLL
                                          j.PRODUCT_ALIAS,
                                          j.PRODUCT_TYPE,
                                          u.UOM_DESC
+                                         
                                      }).Distinct().ToList();
 
             //Get Prev Inventory Movement
@@ -2901,10 +3022,25 @@ namespace Sampoerna.EMS.BLL
             //    ExcludeLack1Id = input.Lack1Id
             //});
 
-            var listMaterial = _materialService.GetByPlantIdAndExGoodType(input.SupplierPlantId, input.ExcisableGoodsType);
-            var listSticker = listMaterial.Select(x => x.STICKER_CODE).ToList();
+            var plantList = new List<string>();
 
-            var listMaterialBalance = _materialBalanceService.GetByPlantAndMaterialList(input.SupplierPlantId, listSticker);
+            if (input.Lack1Level == Enums.Lack1Level.Nppbkc)
+            {
+                var plantListFromMaster = _t001WServices.GetByNppbkcId(input.NppbkcId);
+                foreach (var item in plantListFromMaster)
+                {
+                    plantList.Add(item.WERKS);
+                }
+            }
+            else
+            {
+                plantList.Add(input.ReceivedPlantId);
+            }
+
+            var listMaterial = _materialService.GetByPlantIdAndExGoodType(plantList, input.ExcisableGoodsType);
+            var listSticker = listMaterial.Select(x => x.STICKER_CODE).Distinct().ToList();
+
+            var listMaterialBalance = _materialBalanceService.GetByPlantAndMaterialList(plantList, listSticker, input.PeriodMonth, input.PeriodYear);
 
             rc.BeginingBalance = 0;
             if (listMaterialBalance.Count > 0)
