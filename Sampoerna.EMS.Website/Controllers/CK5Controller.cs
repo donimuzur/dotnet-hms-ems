@@ -453,7 +453,8 @@ namespace Sampoerna.EMS.Website.Controllers
             if (model.Ck5Type == Enums.CK5Type.Manual && model.DocumentStatus == Enums.DocumentStatus.Completed)
             {
                 var dataList = _ck5Bll.GetMatdocList(model.Ck5Id);
-                model.MatdocList = Mapper.Map<SelectList>(dataList);
+                var selectItems = Mapper.Map<List<SelectItemModel>>(dataList);
+                model.MatdocList = new SelectList(selectItems, "ValueField", "TextField");
             }
             
            
