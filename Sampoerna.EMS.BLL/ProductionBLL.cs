@@ -37,6 +37,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfMeasurementBLL _uomBll;
         private IUserPlantMapBLL _userPlantBll;
         private IPOAMapBLL _poaMapBll;
+        private ICK4CItemBLL _ck4cItemBll;
 
         public ProductionBLL(ILogger logger, IUnitOfWork uow)
         {
@@ -55,6 +56,7 @@ namespace Sampoerna.EMS.BLL
             _uomBll = new UnitOfMeasurementBLL(uow, _logger);
             _userPlantBll = new UserPlantMapBLL(_uow, _logger);
             _poaMapBll = new POAMapBLL(_uow, _logger);
+            _ck4cItemBll = new CK4CItemBLL(_uow, _logger);
         }
 
         public List<ProductionDto> GetAllByParam(ProductionGetByParamInput input)
@@ -226,6 +228,7 @@ namespace Sampoerna.EMS.BLL
                              ProductionDate = p.PRODUCTION_DATE,
                              FaCode = p.FA_CODE,
                              PlantWerks = p.WERKS,
+                             LevelPlant = p.WERKS,
                              BrandDescription = p.BRAND_DESC,
                              PlantName = t.NAME1,
                              TobaccoProductType = g.PRODUCT_TYPE,
@@ -253,6 +256,7 @@ namespace Sampoerna.EMS.BLL
                              ProductionDate = p.PRODUCTION_DATE,
                              FaCode = p.FA_CODE,
                              PlantWerks = p.WERKS,
+                             LevelPlant = null,
                              BrandDescription = p.BRAND_DESC,
                              PlantName = t.NAME1,
                              TobaccoProductType = g.PRODUCT_TYPE,
@@ -421,9 +425,13 @@ namespace Sampoerna.EMS.BLL
 
                 if (unpacked == 0)
                 {
+                    var unpackedCk4cItem = _ck4cItemBll.GetDataByPlantAndFacode(item.PlantWerks, item.FaCode, item.LevelPlant).Where(c => c.ProdDate < item.ProductionDate).LastOrDefault();
+
                     var oldData = GetOldSaldo(item.CompanyCode, item.PlantWerks, item.FaCode, item.ProductionDate).LastOrDefault();
 
-                    unpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
+                    var unpackedOld = oldData == null ? 0 : oldData.QtyUnpacked.Value;
+
+                    unpacked = unpackedCk4cItem == null ? unpackedOld : unpackedCk4cItem.UnpackedQty;
 
                     plant = item.PlantWerks;
 
