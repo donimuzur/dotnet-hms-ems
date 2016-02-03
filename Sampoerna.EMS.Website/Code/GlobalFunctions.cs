@@ -8,10 +8,12 @@ using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.ExtendedProperties;
 using DocumentFormat.OpenXml.Math;
 using Sampoerna.EMS.BLL;
+using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models;
 
@@ -560,6 +562,13 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(listUserNppbkc);
         }
 
+        public static SelectList GetReversalData(string plant, string facode)
+        {
+            IZaapShiftRptService zaapBll = MvcApplication.GetInstance<ZaapShiftRptService>();
+            var zaapList = zaapBll.GetReversalData(plant, facode);
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(zaapList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
     }
 
 }
