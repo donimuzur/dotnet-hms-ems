@@ -206,6 +206,7 @@
                 <input id="uploadMaterialId" type="hidden" value="">
                 <input id="uploadMaterialRow" type="hidden" value="">
                 <input id="uploadMaterialDesc" type="hidden" value="">
+                <input id="uploadQtyOri" type="hidden" value="0">
                 <div class="row">
                     <div class="col-md-6">
                         <label>Plant</label>
@@ -755,8 +756,10 @@
             materialInput.ExGoodsType = goodTypeGroupId;
           
             if ('@Model.Ck5Type.ToString()' == "Waste") {
-                materialInput.WasteStock = $('#uploadWasteStock').val();
-
+                //materialInput.WasteStock = $('#uploadWasteStock').val() + $('#uploadQtyOri').val();
+                var tempCount = parseFloat($('#uploadWasteStock').val().replace(/\,/g, ''));
+                tempCount = tempCount + parseFloat($('#uploadQtyOri').val().replace(/\,/g, ''));
+                materialInput.WasteStock = tempCount.toString();
                 ajaxValidateMaterial('@Url.Action("ValidateManualCk5Waste", "CK5")', { input: materialInput }, function (data) {
                     UpdateRowWaste(data);
 
@@ -809,7 +812,8 @@
 
             $('#uploadMaterialNumber').val(materialnumber);
             $('#uploadMaterialQty').val(nRow.find("td").eq(3).html());
-
+            $('#uploadQtyOri').val(nRow.find("td").eq(3).html());
+            
             $('#uploadMaterialUom').val(nRow.find("td").eq(4).html());
             $('#uploadMaterialConvertion').val(nRow.find("td").eq(5).html());
 
@@ -831,6 +835,7 @@
             $('#uploadMaterialId').val(nRow.find("td").eq(18).html());
 
             $('#uploadWasteStock').val(nRow.find("td").eq(20).html());
+           
             
             ClearValidation();
 
