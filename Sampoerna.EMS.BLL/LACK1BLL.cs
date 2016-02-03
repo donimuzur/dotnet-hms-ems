@@ -3170,6 +3170,16 @@ namespace Sampoerna.EMS.BLL
                 mvt201 = (-1) * getInventoryMovementByParamOutput.Mvt201List.Sum(d => d.ConvertedQty);
             }
 
+            decimal mvt201Asigned;
+            if (getInventoryMovementByParamOutput.Mvt201Assigned.Count == 0)
+            {
+                mvt201Asigned = 0;
+            }
+            else
+            {
+                mvt201Asigned = (-1) * getInventoryMovementByParamOutput.Mvt201Assigned.Sum(d => d.ConvertedQty);
+            }
+
             //nebeng in tis to fa field
             //set to tis to fa
             rc.InventoryProductionTisToFa.InvetoryMovementData = new Lack1GeneratedInventoryMovementDto
@@ -3181,7 +3191,7 @@ namespace Sampoerna.EMS.BLL
                 InvMovementAllList =
                     Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.AllUsageList)
             };
-            rc.TotalUsage = totalUsage - mvt201;
+            rc.TotalUsage = totalUsage + mvt201 - mvt201Asigned;
 
             invMovementOutput = getInventoryMovementByParamOutput;
 
