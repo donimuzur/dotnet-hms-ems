@@ -2906,10 +2906,7 @@ namespace Sampoerna.EMS.BLL
             if (input.Lack1Level == Enums.Lack1Level.Nppbkc)
             {
                 var plantListFromMaster = _t001WServices.GetByNppbkcId(input.NppbkcId);
-                foreach (var item in plantListFromMaster)
-                {
-                    plantList.Add(item.WERKS);
-                }
+                plantList.AddRange(plantListFromMaster.Select(item => item.WERKS));
             }
             else
             {
@@ -2919,14 +2916,14 @@ namespace Sampoerna.EMS.BLL
             var listMaterial = _materialService.GetByPlantIdAndExGoodType(plantList, input.ExcisableGoodsType);
             var listSticker = listMaterial.Select(x => x.STICKER_CODE).Distinct().ToList();
 
-            var listMaterialBalance = _materialBalanceService.GetByPlantAndMaterialList(plantList, listSticker, input.PeriodMonth, input.PeriodYear);
+            var listMaterialBalance = _materialBalanceService.GetByPlantAndMaterialList(plantList, listSticker, input.PeriodMonth, input.PeriodYear, rc.Lack1UomId);
 
             rc.BeginingBalance = 0;
             if (listMaterialBalance.Count > 0)
             {
                 //rc.BeginingBalance = selected.BEGINING_BALANCE + selected.TOTAL_INCOME - selected.USAGE;
-                rc.BeginingBalance = listMaterialBalance.Sum(x => x.OPEN_BALANCE.Value);
-                rc.CloseBalance = listMaterialBalance.Sum(x => x.CLOSE_BALANCE.Value);
+                rc.BeginingBalance = listMaterialBalance.Sum(x => x.OPEN_BALANCE != null ? x.OPEN_BALANCE.Value : 0);
+                rc.CloseBalance = listMaterialBalance.Sum(x => x.CLOSE_BALANCE != null ? x.CLOSE_BALANCE.Value : 0);
             }
 
             return rc;
@@ -3039,6 +3036,16 @@ namespace Sampoerna.EMS.BLL
                 totalUsage = (-1) * getInventoryMovementByParamOutput.IncludeInCk5List.Sum(d => d.ConvertedQty);
             }
 
+            decimal mvt201;
+            if (getInventoryMovementByParamOutput.Mvt201List.Count == 0)
+            {
+                mvt201 = 0;
+            }
+            else
+            {
+                mvt201 = (-1) * getInventoryMovementByParamOutput.Mvt201List.Sum(d => d.ConvertedQty);
+            }
+
             //nebeng in tis to fa field
             //set to tis to fa
             rc.InventoryProductionTisToFa.InvetoryMovementData = new Lack1GeneratedInventoryMovementDto
@@ -3050,12 +3057,15 @@ namespace Sampoerna.EMS.BLL
                 InvMovementAllList =
                     Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.AllUsageList)
             };
-            rc.TotalUsage = totalUsage;
+            rc.TotalUsage = totalUsage + mvt201;
 
             invMovementOutput = getInventoryMovementByParamOutput;
 
             return oRet;
         }
+
+
+        
 
         private List<InvMovementItemWithConvertion> InvMovementConvertionProcess(List<INVENTORY_MOVEMENT> invMovements, string bkcUomId)
         {
@@ -3160,6 +3170,19 @@ namespace Sampoerna.EMS.BLL
                 //var totalUsageIncludeCk5 = (-1) * getInventoryMovementByParamOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
                 //totalUsage = totalUsageIncludeCk5;
             }
+
+            decimal mvt201;
+            if (getInventoryMovementByParamOutput.Mvt201List.Count == 0)
+            {
+                mvt201 = 0;
+            }
+            else
+            {
+                mvt201 = (-1) * getInventoryMovementByParamOutput.Mvt201List.Sum(d => d.ConvertedQty);
+            }
+
+            totalUsage = totalUsage - mvt201;
+
             if (isForTisToTis)
             {
                 //set to tis to tis
@@ -3239,6 +3262,8 @@ namespace Sampoerna.EMS.BLL
 
             var movementUsageAll = _inventoryMovementService.GetUsageByParam(usageParamInput);
             var movementUsaheAllWithConvertion = InvMovementConvertionProcess(movementUsageAll, bkcUomId);
+            var movement201 = _inventoryMovementService.GetMvt201(usageParamInput);
+            var movement201WithConvertion = InvMovementConvertionProcess(movement201, bkcUomId);
             var receiving = _inventoryMovementService.GetReceivingByParam(receivingParamInput);
             //get prev receiving for CASE 2 : prev Receiving, Current Receiving, Current Usage
             var prevReceiving = _inventoryMovementService.GetReceivingByParam(prevReceivingParamInput);
@@ -3271,7 +3296,8 @@ namespace Sampoerna.EMS.BLL
                 ReceivingList = receivingList,
                 AllUsageList = movementUsaheAllWithConvertion,
                 ExcludeFromCk5List = movementExclueInCk5List,
-                UsageProportionalList = usageProportionalList
+                UsageProportionalList = usageProportionalList,
+                Mvt201List = movement201WithConvertion
             };
 
             return rc;
@@ -3326,6 +3352,7 @@ namespace Sampoerna.EMS.BLL
 
             return rc;
         }
+
 
         #endregion
 

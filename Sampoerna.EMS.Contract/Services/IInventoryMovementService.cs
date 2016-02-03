@@ -22,5 +22,6 @@ namespace Sampoerna.EMS.Contract.Services
         List<INVENTORY_MOVEMENT> GetReceivingByOrderAndPlantIdInPeriod(
             GetReceivingByOrderAndPlantIdInPeriodParamInput input);
 
+        List<INVENTORY_MOVEMENT> GetMvt201(InvMovementGetUsageByParamInput input);
     }
 }
