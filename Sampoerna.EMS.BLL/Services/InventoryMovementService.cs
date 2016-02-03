@@ -138,7 +138,12 @@ namespace Sampoerna.EMS.BLL.Services
         {
             var mvtType201 = new List<string>()
             {
-                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage201)
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage201),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage202),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage901),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage902),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.UsageZ01),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.UsageZ02)
             };
 
             Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue
@@ -153,7 +158,6 @@ namespace Sampoerna.EMS.BLL.Services
 
             return _repository.Get(queryFilter).ToList();
         }
-
         public List<INVENTORY_MOVEMENT> GetMvt201bySto(string stoNumber = null)
         {
             var data = new List<INVENTORY_MOVEMENT>();
