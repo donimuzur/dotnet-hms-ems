@@ -134,7 +134,9 @@ namespace Sampoerna.EMS.BLL.Services
             return data.ToList();
         }
 
-        public List<INVENTORY_MOVEMENT> GetMvt201(List<string> stoReceiverNumberList)
+        
+ 
+        public List<INVENTORY_MOVEMENT> GetMvt201(InvMovementGetUsageByParamInput input,bool isAssigned = false)
         {
             var mvtType201 = new List<string>()
             {
@@ -144,29 +146,6 @@ namespace Sampoerna.EMS.BLL.Services
                 EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage902),
                 EnumHelper.GetDescription(Core.Enums.MovementTypeCode.UsageZ01),
                 EnumHelper.GetDescription(Core.Enums.MovementTypeCode.UsageZ02)
-            };
-
-            var mvtType101 = new List<string>()
-            {
-                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving101)
-            };
-
-            Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter =
-                c => stoReceiverNumberList.Contains(c.PURCH_DOC) && mvtType101.Contains(c.MVT);
-
-            var invMvt101Batch = _repository.Get(queryFilter).Select(x => x.BATCH).ToList();
-
-            queryFilter = c => invMvt101Batch.Contains(c.BATCH) && mvtType201.Contains(c.MVT);
-
-            return _repository.Get(queryFilter).ToList();
-        }
- 
-        public List<INVENTORY_MOVEMENT> GetMvt201(InvMovementGetUsageByParamInput input,bool isAssigned = false)
-        {
-            var mvtType201 = new List<string>()
-            {
-                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage201),
-                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage202)
             };
 
             Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue
@@ -179,27 +158,25 @@ namespace Sampoerna.EMS.BLL.Services
 
             queryFilter = queryFilter.And(c => mvtType201.Contains(c.MVT));
 
-            return _repository.Get(queryFilter).ToList();
-        }
-        public List<INVENTORY_MOVEMENT> GetMvt201bySto(string stoNumber = null)
-        {
-            var data = new List<INVENTORY_MOVEMENT>();
-            var usage201 = (int)Core.Enums.MovementTypeCode.Usage201;
-            if (string.IsNullOrEmpty(stoNumber))
+
+            var data = _repository.Get(queryFilter).ToList();
+            if (!isAssigned)
             {
-               data = _repository.Get(x => x.MVT == usage201.ToString()).ToList();  
+                return data;
             }
             else
             {
-                var receiving101 = (int)Core.Enums.MovementTypeCode.Receiving101;
-                var ck5Receiving = _repository.Get(x => x.PURCH_DOC == stoNumber && x.MVT == receiving101.ToString()).FirstOrDefault();
-
-                data =
-                    _repository.Get(
-                        x =>
-                            x.BATCH == ck5Receiving.BATCH &&
-                            x.MVT == usage201.ToString()).ToList();    
+                
+                return null;
             }
+        }
+
+        public List<INVENTORY_MOVEMENT> GetMvt201NotUsed(List<string> usedList)
+        {
+           
+
+            List<INVENTORY_MOVEMENT> data = _repository.Get(x => usedList.Contains(x.MAT_DOC)).ToList();    
+            
 
             return data;
         }

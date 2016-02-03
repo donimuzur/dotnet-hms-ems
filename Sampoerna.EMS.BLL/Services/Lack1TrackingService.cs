@@ -41,5 +41,12 @@ namespace Sampoerna.EMS.BLL.Services
                 }
             }
         }
+
+        public List<string> GetMovement201FromTracking()
+        {
+            var data = _repository.Get(x => x.INVENTORY_MOVEMENT.MVT == Core.Enums.MovementTypeCode.Usage201.ToString(), null,
+                "INVENTORY_MOVEMENT").Select(x => x.INVENTORY_MOVEMENT.MAT_DOC).ToList();
+            return data;
+        }   
     }
 }

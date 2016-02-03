@@ -3393,8 +3393,16 @@ namespace Sampoerna.EMS.BLL
 
             var movementUsageAll = _inventoryMovementService.GetUsageByParam(usageParamInput);
             var movementUsaheAllWithConvertion = InvMovementConvertionProcess(movementUsageAll, bkcUomId);
-            var movement201 = _inventoryMovementService.GetMvt201(usageParamInput);
+            var originMovement201 = _inventoryMovementService.GetMvt201(usageParamInput);
+            var matDocCk5List = _ck5Service.GetCk5AssignedMatdoc();
+            var movement201 = originMovement201;
+            var assignedMovement201 = originMovement201.Where(x => matDocCk5List.Contains(x.MAT_DOC)).ToList();
+            var assignedMovement201WithConvertion = InvMovementConvertionProcess(assignedMovement201, bkcUomId);
             var movement201WithConvertion = InvMovementConvertionProcess(movement201, bkcUomId);
+
+            
+            
+
             var receiving = _inventoryMovementService.GetReceivingByParam(receivingParamInput);
             //get prev receiving for CASE 2 : prev Receiving, Current Receiving, Current Usage
             var prevReceiving = _inventoryMovementService.GetReceivingByParam(prevReceivingParamInput);
@@ -3428,7 +3436,8 @@ namespace Sampoerna.EMS.BLL
                 AllUsageList = movementUsaheAllWithConvertion,
                 ExcludeFromCk5List = movementExclueInCk5List,
                 UsageProportionalList = usageProportionalList,
-                Mvt201List = movement201WithConvertion
+                Mvt201List = movement201WithConvertion,
+                Mvt201Assigned = assignedMovement201WithConvertion,
             };
 
             return rc;
