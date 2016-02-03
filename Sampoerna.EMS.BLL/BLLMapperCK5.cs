@@ -35,8 +35,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Ck5FileUploadDtos, opt => opt.MapFrom(src => Mapper.Map<List<CK5_FILE_UPLOADDto>>(src.CK5_FILE_UPLOAD)))
                 .ForMember(dest => dest.Ck5MaterialDtos, opt => opt.MapFrom(src=> Mapper.Map<List<CK5MaterialDto>>(src.CK5_MATERIAL)))
                 .ForMember(dest => dest.GIDateStr, opt => opt.MapFrom(src => src.SUBMISSION_DATE == null ?string.Empty : Convert.ToDateTime(src.SUBMISSION_DATE).ToString("dd MMM yyyy")))
-                .ForMember(dest => dest.NoDateWithFormat, opt => opt.MapFrom(src => src.REGISTRATION_DATE == null ? src.REGISTRATION_NUMBER : src.REGISTRATION_NUMBER + "-" + Convert.ToDateTime(src.REGISTRATION_DATE).ToString("dd.MM.yyyy")));
-                
+                .ForMember(dest => dest.NoDateWithFormat, opt => opt.MapFrom(src => src.REGISTRATION_DATE == null ? src.REGISTRATION_NUMBER : src.REGISTRATION_NUMBER + "-" + Convert.ToDateTime(src.REGISTRATION_DATE).ToString("dd.MM.yyyy")))
+                .ForMember(dest => dest.MatDoc, opt => opt.MapFrom(src => src.MATDOC))
                 ;
 
 
@@ -185,7 +185,12 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<WASTE_STOCK, GetListMaterialMarketReturnOutput>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.MaterialNumber, opt => opt.MapFrom(src => src.MATERIAL_NUMBER))
                 ;
-          
+
+            Mapper.CreateMap<INVENTORY_MOVEMENT, Ck5MatdocDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PostingDate, opt => opt.MapFrom(src => src.POSTING_DATE.HasValue ? src.POSTING_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
+                .ForMember(dest => dest.MatDoc, opt => opt.MapFrom(src => src.MAT_DOC))
+                ;
+
         }
     }
 }
