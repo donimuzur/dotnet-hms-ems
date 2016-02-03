@@ -232,6 +232,7 @@
     <Compile Include="Controllers\PoaDelegationController.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Code\PdfResult.cs" />
+    <Compile Include="Controllers\ReversalController.cs" />
     <Compile Include="Controllers\SchedulerSettingController.cs" />
     <Compile Include="Controllers\WasteController.cs" />
     <Compile Include="Controllers\WasteRoleController.cs" />
@@ -413,6 +414,7 @@
     <Compile Include="Models\PrintHistory\PrintHistoryViewModel.cs" />
     <Compile Include="Models\PRODUCTION\ProductionUploadViewModel.cs" />
     <Compile Include="Models\PRODUCTION\ProductionViewModel.cs" />
+    <Compile Include="Models\Reversal\ReversalIndexViewModel.cs" />
     <Compile Include="Models\SchedulerSetting\SchedulerSettingModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
     <Compile Include="Models\Settings\DocumentSequenceModel.cs" />
@@ -1292,6 +1294,14 @@
     <Content Include="Views\CK5\CK5MarketReturnSummaryReport.cshtml" />
     <Content Include="Views\CK5\_CK5MarketReturnListSummaryReport.cshtml" />
     <Content Include="Views\XmlFileManagement\Detail.cshtml" />
+    <Content Include="Views\Reversal\Index.cshtml" />
+    <Content Include="Views\Reversal\_ReversalList.cshtml" />
+    <Content Include="Views\Reversal\Create.cshtml" />
+    <Content Include="Views\Reversal\_HomeCreate.cshtml" />
+    <Content Include="Views\Reversal\Edit.cshtml" />
+    <Content Include="Views\Reversal\_HomeEdit.cshtml" />
+    <Content Include="Views\Reversal\Detail.cshtml" />
+    <Content Include="Views\Reversal\_HomeDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
