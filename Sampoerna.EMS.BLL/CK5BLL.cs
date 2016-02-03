@@ -5412,10 +5412,22 @@ namespace Sampoerna.EMS.BLL
             if (dbData.STATUS_ID != Enums.DocumentStatus.Completed)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            dbData.CK5_FILE_UPLOAD = Mapper.Map<List<CK5_FILE_UPLOAD>>(input.AdditionalDocumentData.Ck5FileUploadList);
-
-            if (input.AdditionalDocumentData.Ck5FileUploadList.Count() > 0)
+            if (input.AdditionalDocumentData.Ck5FileUploadList.Count > 0)
+            {
+                dbData.CK5_FILE_UPLOAD = Mapper.Map<List<CK5_FILE_UPLOAD>>(input.AdditionalDocumentData.Ck5FileUploadList);
                 CheckFileUploadChange(input);
+            }
+
+          
+            string oldValue = dbData.MATDOC;
+            string newValue = input.MatDoc;
+            if (oldValue != newValue)
+                SetChangeHistory(oldValue, newValue, "MATDOC", input.UserId, dbData.CK5_ID.ToString());
+
+            dbData.MATDOC = input.MatDoc;
+
+            //if (input.AdditionalDocumentData.Ck5FileUploadList.Count() > 0)
+            //    CheckFileUploadChange(input);
 
             //add workflow history
             input.ActionType = Enums.ActionType.Modified;
@@ -5430,7 +5442,6 @@ namespace Sampoerna.EMS.BLL
                 input.Comment = _poaDelegationServices.CommentDelegatedByHistory(rejectedPoa.COMMENT,
                     rejectedPoa.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
             }
-          
 
             AddWorkflowHistory(input);
          
@@ -5741,7 +5752,7 @@ namespace Sampoerna.EMS.BLL
             return result;
         }
 
-        public List<Ck5MatdocDto> GetMatdocList(int ck5Id = 0)
+        public List<Ck5MatdocDto> GetMatdocList(long ck5Id = 0)
         {
             
             var tempData = new List<INVENTORY_MOVEMENT>();

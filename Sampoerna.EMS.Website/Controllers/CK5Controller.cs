@@ -456,7 +456,8 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
 
-            //model.MatdocList = _ck5Bll.get
+         
+            
            
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedListByPlant("");
 
@@ -1590,6 +1591,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     model.AllowAttachmentCompleted = _workflowBll.AllowAttachmentCompleted(input);
 
+                    if (model.Ck5Type == Enums.CK5Type.Manual)
+                    {
+                        var dataList = _ck5Bll.GetMatdocList(model.Ck5Id);
+                        var selectItems = Mapper.Map<List<SelectItemModel>>(dataList);
+                        model.MatdocList = new SelectList(selectItems, "ValueField", "TextField");
+                    }
+
                 }
                 else
                 {
@@ -1669,7 +1677,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     model.IsTriggerSto = true;
                 }
-
+                else if (model.Ck5Type == Enums.CK5Type.Manual)
+                {
+                    if (model.IsCompleted)
+                        model.IsViewMatDoc = true;
+                }
                 if (model.Ck5Type == Enums.CK5Type.MarketReturn)
                 {
                     model.MainMenu = Enums.MenuList.CK5MRETURN;
@@ -2742,28 +2754,46 @@ namespace Sampoerna.EMS.Website.Controllers
                 else
                 {
                     AddMessageInfo("Empty File", Enums.MessageInfoType.Error);
-                    RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+                    RedirectToAction("Details", "CK5", new {id = model.Ck5Id});
                 }
+
+                var input = new CK5WorkflowDocumentInput()
+                {
+                    DocumentId = model.Ck5Id,
+                    DocumentNumber = model.SubmissionNumber,
+                    UserRole = CurrentUser.UserRole,
+                    UserId = CurrentUser.USER_ID,
+                    Ck5Type = model.Ck5Type,
+                    MatDoc = model.MatDoc,
+                    AdditionalDocumentData = new CK5WorkflowDocumentData()
+                    {
+                        Ck5FileUploadList = new List<CK5_FILE_UPLOADDto>()
+                    }
+
+                };
 
                 if (model.Ck5FileUploadModelList.Count > 0)
                 {
-                    var input = new CK5WorkflowDocumentInput()
-                    {
-                        DocumentId = model.Ck5Id,
-                        DocumentNumber = model.SubmissionNumber,
-                        UserRole = CurrentUser.UserRole,
-                        UserId = CurrentUser.USER_ID,
-                        Ck5Type = model.Ck5Type,
-                        AdditionalDocumentData = new CK5WorkflowDocumentData()
-                        {
-                            Ck5FileUploadList = Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList),
+                    //var input = new CK5WorkflowDocumentInput()
+                    //{
+                    //    DocumentId = model.Ck5Id,
+                    //    DocumentNumber = model.SubmissionNumber,
+                    //    UserRole = CurrentUser.UserRole,
+                    //    UserId = CurrentUser.USER_ID,
+                    //    Ck5Type = model.Ck5Type,
+                    //    AdditionalDocumentData = new CK5WorkflowDocumentData()
+                    //    {
+                    //        Ck5FileUploadList = Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList),
 
-                        }
-                    };
-
-                    _ck5Bll.CK5CompletedAttachment(input);
-                    AddMessageInfo("Success Save", Enums.MessageInfoType.Success);
+                    //    }
+                    //};
+                    input.AdditionalDocumentData.Ck5FileUploadList =
+                        Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList);
                 }
+
+                _ck5Bll.CK5CompletedAttachment(input);
+                AddMessageInfo("Success Save", Enums.MessageInfoType.Success);
+
             }
             catch (Exception ex)
             {
