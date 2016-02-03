@@ -2906,10 +2906,7 @@ namespace Sampoerna.EMS.BLL
             if (input.Lack1Level == Enums.Lack1Level.Nppbkc)
             {
                 var plantListFromMaster = _t001WServices.GetByNppbkcId(input.NppbkcId);
-                foreach (var item in plantListFromMaster)
-                {
-                    plantList.Add(item.WERKS);
-                }
+                plantList.AddRange(plantListFromMaster.Select(item => item.WERKS));
             }
             else
             {
@@ -2919,14 +2916,14 @@ namespace Sampoerna.EMS.BLL
             var listMaterial = _materialService.GetByPlantIdAndExGoodType(plantList, input.ExcisableGoodsType);
             var listSticker = listMaterial.Select(x => x.STICKER_CODE).Distinct().ToList();
 
-            var listMaterialBalance = _materialBalanceService.GetByPlantAndMaterialList(plantList, listSticker, input.PeriodMonth, input.PeriodYear);
+            var listMaterialBalance = _materialBalanceService.GetByPlantAndMaterialList(plantList, listSticker, input.PeriodMonth, input.PeriodYear, rc.Lack1UomId);
 
             rc.BeginingBalance = 0;
             if (listMaterialBalance.Count > 0)
             {
                 //rc.BeginingBalance = selected.BEGINING_BALANCE + selected.TOTAL_INCOME - selected.USAGE;
-                rc.BeginingBalance = listMaterialBalance.Sum(x => x.OPEN_BALANCE.Value);
-                rc.CloseBalance = listMaterialBalance.Sum(x => x.CLOSE_BALANCE.Value);
+                rc.BeginingBalance = listMaterialBalance.Sum(x => x.OPEN_BALANCE != null ? x.OPEN_BALANCE.Value : 0);
+                rc.CloseBalance = listMaterialBalance.Sum(x => x.CLOSE_BALANCE != null ? x.CLOSE_BALANCE.Value : 0);
             }
 
             return rc;
@@ -3060,12 +3057,15 @@ namespace Sampoerna.EMS.BLL
                 InvMovementAllList =
                     Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.AllUsageList)
             };
-            rc.TotalUsage = totalUsage - mvt201;
+            rc.TotalUsage = totalUsage + mvt201;
 
             invMovementOutput = getInventoryMovementByParamOutput;
 
             return oRet;
         }
+
+
+        
 
         private List<InvMovementItemWithConvertion> InvMovementConvertionProcess(List<INVENTORY_MOVEMENT> invMovements, string bkcUomId)
         {
@@ -3352,6 +3352,7 @@ namespace Sampoerna.EMS.BLL
 
             return rc;
         }
+
 
         #endregion
 
