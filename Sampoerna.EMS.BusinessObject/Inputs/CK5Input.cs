@@ -69,6 +69,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime? GiDate { get; set; }
         public DateTime? GrDate { get; set; }
         public string DnNumber { get; set; }
+        public string MatDoc { get; set; }
     }
 
     public class CK5WorkflowDocumentData

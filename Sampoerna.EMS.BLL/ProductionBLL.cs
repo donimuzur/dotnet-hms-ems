@@ -37,6 +37,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfMeasurementBLL _uomBll;
         private IUserPlantMapBLL _userPlantBll;
         private IPOAMapBLL _poaMapBll;
+        private ICK4CItemBLL _ck4cItemBll;
 
         public ProductionBLL(ILogger logger, IUnitOfWork uow)
         {
@@ -55,6 +56,7 @@ namespace Sampoerna.EMS.BLL
             _uomBll = new UnitOfMeasurementBLL(uow, _logger);
             _userPlantBll = new UserPlantMapBLL(_uow, _logger);
             _poaMapBll = new POAMapBLL(_uow, _logger);
+            _ck4cItemBll = new CK4CItemBLL(_uow, _logger);
         }
 
         public List<ProductionDto> GetAllByParam(ProductionGetByParamInput input)
@@ -188,6 +190,14 @@ namespace Sampoerna.EMS.BLL
             item.QtyPackedStr = item.QtyPacked == null ? string.Empty : item.QtyPacked.ToString();
             item.QtyStr = item.Qty == null ? string.Empty : item.Qty.ToString();
             item.ProdQtyStickStr = item.ProdQtyStick == null ? string.Empty : item.ProdQtyStick.ToString();
+            var brand = _brandRegistrationBll.GetByFaCode(item.PlantWerks, item.FaCode);
+
+            if (brand.IS_FROM_SAP != null && brand.IS_FROM_SAP.Value)
+            {
+                item.IsBrandFromSap = brand.IS_FROM_SAP != null && brand.IS_FROM_SAP.Value;
+            }
+
+            
 
             if (dbData == null)
             {
@@ -218,6 +228,7 @@ namespace Sampoerna.EMS.BLL
                              ProductionDate = p.PRODUCTION_DATE,
                              FaCode = p.FA_CODE,
                              PlantWerks = p.WERKS,
+                             LevelPlant = p.WERKS,
                              BrandDescription = p.BRAND_DESC,
                              PlantName = t.NAME1,
                              TobaccoProductType = g.PRODUCT_TYPE,
@@ -245,6 +256,7 @@ namespace Sampoerna.EMS.BLL
                              ProductionDate = p.PRODUCTION_DATE,
                              FaCode = p.FA_CODE,
                              PlantWerks = p.WERKS,
+                             LevelPlant = null,
                              BrandDescription = p.BRAND_DESC,
                              PlantName = t.NAME1,
                              TobaccoProductType = g.PRODUCT_TYPE,
@@ -413,9 +425,13 @@ namespace Sampoerna.EMS.BLL
 
                 if (unpacked == 0)
                 {
+                    var unpackedCk4cItem = _ck4cItemBll.GetDataByPlantAndFacode(item.PlantWerks, item.FaCode, item.LevelPlant).Where(c => c.ProdDate < item.ProductionDate).LastOrDefault();
+
                     var oldData = GetOldSaldo(item.CompanyCode, item.PlantWerks, item.FaCode, item.ProductionDate).LastOrDefault();
 
-                    unpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
+                    var unpackedOld = oldData == null ? 0 : oldData.QtyUnpacked.Value;
+
+                    unpacked = unpackedCk4cItem == null ? unpackedOld : unpackedCk4cItem.UnpackedQty;
 
                     plant = item.PlantWerks;
 
@@ -428,7 +444,7 @@ namespace Sampoerna.EMS.BLL
 
                 var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
 
-                var prodWaste = oldWaste < item.QtyProduced ? oldWaste : 0;
+                var prodWaste = oldWaste <= item.QtyProduced ? oldWaste : 0;
 
                 var unpackedQty = oldUnpacked + item.QtyProduced - item.QtyPacked - oldWaste;
 
@@ -797,7 +813,7 @@ namespace Sampoerna.EMS.BLL
 
                 var packed = item.QTY_PACKED == null ? 0 : item.QTY_PACKED;
 
-                var prodWaste = oldWaste < prodQty ? oldWaste : 0;
+                var prodWaste = oldWaste <= prodQty ? oldWaste : 0;
 
                 var prod = new ProductionDto
                 {

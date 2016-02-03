@@ -25,6 +25,7 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         public string FaCode { get; set; }
         public string Uom { get; set; }
         public string ProductionDate { get; set; }
+
        
 
         //selecList
@@ -88,6 +89,8 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         public string Batch { get; set; }
         public string CreatedBy { get; set; }
         public string CreatedDate { get; set; }
+
+        public bool IsBrandFromSap { get; set; }
 
         //selecList
         public SelectList CompanyCodeList { get; set; }
