@@ -73,6 +73,24 @@
             }
         });
 
+        $("#SearchInput_Zaap").change(function () {
+            var formData = {zaapShift: $(this).find("option:selected").val()};
+
+            if (formData.zaapShift == '') {
+                $('#Details_ReversalQty').val(0);
+            }
+            else {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetRemainingQuota", "Reversal")',
+                    data: formData,
+                    success: function (data) {
+                        $('#Details_ReversalQty').val(data);
+                    }
+                });
+            }
+        });
+
         function ajaxSetPlantAndFacode() {
             var plant = $("#SearchInput_PlantId").find("option:selected").val();
             var facode = $("#SearchInput_FaCode").find("option:selected").val();

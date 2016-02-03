@@ -137,8 +137,23 @@ namespace Sampoerna.EMS.Website.Controllers
                 item = Mapper.Map<ReversalDto>(model.Details);
 
                 var createInput = Mapper.Map<ReversalCreateParamInput>(model.Details);
+                createInput.ReversalId = 0;
 
                 var checkData = _reversalBll.CheckData(createInput);
+
+                if (checkData.IsForCk4cCompleted)
+                {
+                    AddMessageInfo("Can't create reversal data for ck4c completed", Enums.MessageInfoType.Info);
+                    model = InitialModel(model);
+                    return View(model);
+                }
+
+                if (checkData.IsPackedQtyNotExists)
+                {
+                    AddMessageInfo("Can't create reversal data, no packed qty", Enums.MessageInfoType.Info);
+                    model = InitialModel(model);
+                    return View(model);
+                }
 
                 if (checkData.IsMoreThanQuota)
                 {
@@ -198,6 +213,88 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(ReversalIndexViewModel model)
+        {
+            try
+            {
+                ReversalDto item = new ReversalDto();
+
+                item = Mapper.Map<ReversalDto>(model.Details);
+
+                var createInput = Mapper.Map<ReversalCreateParamInput>(model.Details);
+
+                var checkData = _reversalBll.CheckData(createInput);
+
+                if (checkData.IsForCk4cCompleted)
+                {
+                    AddMessageInfo("Can't create reversal data for ck4c completed", Enums.MessageInfoType.Info);
+                    model = InitialModel(model);
+                    return View(model);
+                }
+
+                if (checkData.IsPackedQtyNotExists)
+                {
+                    AddMessageInfo("Can't create reversal data, no packed qty", Enums.MessageInfoType.Info);
+                    model = InitialModel(model);
+                    return View(model);
+                }
+
+                if (checkData.IsMoreThanQuota)
+                {
+                    AddMessageInfo("Can't create reversal data, quota exceed", Enums.MessageInfoType.Info);
+                    model = InitialModel(model);
+                    return View(model);
+                }
+
+                var reversalData = _reversalBll.Save(item, CurrentUser.USER_ID);
+                AddMessageInfo("Save Successfully", Enums.MessageInfoType.Success);
+                return RedirectToAction("Edit", new { id = model.Details.ReversalId });
+            }
+            catch (Exception exception)
+            {
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+                model = InitialModel(model);
+                return View(model);
+            }
+        }
+
+        #endregion
+
+
+        #region detail
+
+        public ActionResult Detail(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var reversalData = _reversalBll.GetById(id.Value);
+
+            if (reversalData == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = new ReversalIndexViewModel();
+
+            try
+            {
+                model.Details = Mapper.Map<DataReversal>(reversalData);
+                model = InitialModel(model);
+            }
+            catch (Exception exception)
+            {
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
+            return View(model);
+        }
+
         #endregion
 
         #region json data
@@ -220,6 +317,21 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new ReversalIndexViewModel() { ZaapShiftList = listZaap };
 
             return Json(model);
+        }
+
+        [HttpPost]
+        public JsonResult GetRemainingQuota(string zaapShift)
+        {
+            var paramInput = new ReversalCreateParamInput();
+            paramInput.ZaapShiftId = Convert.ToInt32(zaapShift);
+            paramInput.ReversalQty = 0;
+            paramInput.ReversalId = 0;
+            paramInput.Werks = string.Empty;
+            paramInput.FaCode = string.Empty;
+
+            var checkData = _reversalBll.CheckData(paramInput);
+
+            return Json(checkData.RemainingQuota);
         }
 
         #endregion

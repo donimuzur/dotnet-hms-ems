@@ -120,7 +120,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<ZAAP_SHIFT_RPT, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.ZAAP_SHIFT_RPT_ID))
-                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => string.Format("{0} - {1} - {2}", src.PRODUCTION_DATE.ToString("dd MMM yyyy"), src.QTY.Value, src.BUNDLE)));
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => string.Format("{0} - {1} - {2} - {3}", src.POSTING_DATE.Value.ToString("dd MMM yyyy"), src.QTY.Value, src.ORDR, src.MATDOC)));
 
 
             #region NPPBKC

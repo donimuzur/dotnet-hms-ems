@@ -17,7 +17,11 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
     public class ReversalCreateParamInput
     {
+        public int ReversalId { get; set; }
         public int ZaapShiftId { get; set; }
         public Decimal ReversalQty { get; set; }
+        public DateTime? ProductionDate { get; set; }
+        public string Werks { get; set; }
+        public string FaCode { get; set; }
     }
 }

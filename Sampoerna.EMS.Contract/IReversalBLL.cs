@@ -15,5 +15,6 @@ namespace Sampoerna.EMS.Contract
         ReversalDto Save(ReversalDto item, string userId);
         ReversalDto GetById(long id);
         ReversalOutput CheckData(ReversalCreateParamInput reversalInput);
+        List<ReversalDto> GetListByParam(string plant, string facode, DateTime prodDate);
     }
 }
