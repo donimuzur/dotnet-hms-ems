@@ -39,6 +39,7 @@ using Sampoerna.EMS.Website.Models.XmlFileManagement;
 using Sampoerna.EMS.Website.Models.XmlLog;
 using Sampoerna.EMS.Website.Models.PoaDelegation;
 using Sampoerna.EMS.Website.Models.SchedulerSetting;
+using Sampoerna.EMS.Website.Models.Reversal;
 
 namespace Sampoerna.EMS.Website
 {
@@ -116,6 +117,10 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<ZAIDM_EX_GOODTYP, SelectItemModel>().IgnoreAllNonExisting()
                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.EXC_GOOD_TYP + "-" + src.EXT_TYP_DESC))
                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.EXC_GOOD_TYP));
+
+            Mapper.CreateMap<ZAAP_SHIFT_RPT, SelectItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.ZAAP_SHIFT_RPT_ID))
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => string.Format("{0} - {1} - {2} - {3}", src.POSTING_DATE.Value.ToString("dd MMM yyyy"), src.QTY.Value, src.ORDR, src.MATDOC)));
 
 
             #region NPPBKC
@@ -1051,6 +1056,23 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
+
+            #region Reversal
+
+            Mapper.CreateMap<ReversalDto, DataReversal>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ProductionDateDisplay, opt => opt.MapFrom(src => src.ProductionDate.Value.ToString("dd MMM yyyy")))
+                ;
+
+            Mapper.CreateMap<DataReversal, ReversalDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<ReversalIndexViewModel, ReversalGetByParamInput>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.DateProduction, opt => opt.MapFrom(src => src.ProductionDate))
+               .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PlantWerks))
+               ;
+
+            Mapper.CreateMap<DataReversal, ReversalCreateParamInput>().IgnoreAllNonExisting();
+
+            #endregion
 
             #region Scheduler Setting
 
