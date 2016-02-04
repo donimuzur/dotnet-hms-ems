@@ -132,6 +132,8 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = Mapper.Map<Ck4cGetOpenDocumentByParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
             input.UserRole = CurrentUser.UserRole;
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
+            input.ListUserPlant = CurrentUser.ListUserPlants;
 
             var dbData = _ck4CBll.GetOpenDocumentByParam(input).OrderByDescending(c => c.Number);
             return Mapper.Map<List<DataDocumentList>>(dbData);
@@ -148,6 +150,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //getbyparams
             var input = Mapper.Map<Ck4cGetCompletedDocumentByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
+            input.ListUserPlant = CurrentUser.ListUserPlants;
+
             var dbData = _ck4CBll.GetCompletedDocumentByParam(input).OrderByDescending(d => d.Number);
             return Mapper.Map<List<DataDocumentList>>(dbData);
         }
@@ -199,13 +206,16 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var listPlant = GlobalFunctions.GetPlantByCompanyId(companyId);
 
-            var userPlant = _userPlantBll.GetPlantByUserId(CurrentUser.USER_ID);
-
-            var poaMap = _poaMapBll.GetPlantByPoaId(CurrentUser.USER_ID);
-
-            var filterPlant = listPlant.Where(x => userPlant.Contains(x.Value) || poaMap.Contains(x.Value));
+            var filterPlant = listPlant;
 
             var newListPlant = new SelectList(filterPlant, "Value", "Text");
+
+            if (CurrentUser.UserRole == Enums.UserRole.User)
+            {
+                var newFilterPlant = listPlant.Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
+
+                newListPlant = new SelectList(newFilterPlant, "Value", "Text");
+            }
 
             var model = new Ck4CIndexDocumentListViewModel() { PlanList = newListPlant };
 
@@ -216,6 +226,8 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetNppbkcByCompanyId(string companyId)
         {
             var data = _nppbkcbll.GetNppbkcsByCompany(companyId);
+
+            data = data.Where(x => CurrentUser.ListUserNppbkc.Contains(x.NPPBKC_ID)).ToList();
 
             return Json(data);
         }
@@ -300,7 +312,8 @@ namespace Sampoerna.EMS.Website.Controllers
             var comp = GlobalFunctions.GetCompanyList(_companyBll);
             var userComp = _userPlantBll.GetCompanyByUserId(CurrentUser.USER_ID);
             var poaComp = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
-            var distinctComp = comp.Where(x => userComp.Contains(x.Value) || poaComp.Contains(x.Value));
+            var distinctComp = comp.Where(x => userComp.Contains(x.Value));
+            if (CurrentUser.UserRole == Enums.UserRole.POA) distinctComp = comp.Where(x => poaComp.Contains(x.Value));
             var getComp = new SelectList(distinctComp, "Value", "Text");
 
             model.MainMenu = _mainMenu;
@@ -1349,15 +1362,14 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.CK4C;
             model.CurrentMenu = PageInfo;
 
-            var listCk4C = _ck4CBll.GetSummaryReportsByParam(new Ck4CGetSummaryReportByParamInput());
-
-            model.SearchView.Ck4CNoList = GetCk4CNumberList(listCk4C);
-            model.SearchView.PlantIdList = GetPlantList(listCk4C);
-
-
             var filter = new Ck4CSearchSummaryReportsViewModel();
 
             model.DetailsList = SearchDataSummaryReports(filter);
+
+            var listCk4c = Mapper.Map<List<Ck4CSummaryReportDto>>(model.DetailsList);
+
+            model.SearchView.Ck4CNoList = GetCk4CNumberList(listCk4c);
+            model.SearchView.PlantIdList = GetPlantList(listCk4c);
 
             return model;
         }
@@ -1378,6 +1390,9 @@ namespace Sampoerna.EMS.Website.Controllers
             //getbyparams
 
             input = Mapper.Map<Ck4CGetSummaryReportByParamInput>(filter);
+            input.UserRole = CurrentUser.UserRole;
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
+            input.ListUserPlant = CurrentUser.ListUserPlants;
 
             dbData = _ck4CBll.GetSummaryReportsByParam(input);
             return Mapper.Map<List<Ck4CSummaryReportsItem>>(dbData);
@@ -2014,6 +2029,8 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = Mapper.Map<Ck4CDashboardParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
             input.UserRole = CurrentUser.UserRole;
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
+            input.ListUserPlant = CurrentUser.ListUserPlants;
 
             var dbData = _ck4CBll.GetAllByParam(input);
             return dbData;

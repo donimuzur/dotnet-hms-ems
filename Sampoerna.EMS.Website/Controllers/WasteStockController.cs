@@ -42,7 +42,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new WasteStockIndexViewModel();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.ListWasteStocks = Mapper.Map<List<WasteStockFormViewModel>>(_wasteStockBll.GetAllDataOrderByUserAndGroupRole());
+            model.ListWasteStocks = Mapper.Map<List<WasteStockFormViewModel>>(_wasteStockBll.GetAllDataOrderByUserAndGroupRole(CurrentUser.ListUserPlants));
 
             foreach (var wasteStockFormViewModel in model.ListWasteStocks)
             {
