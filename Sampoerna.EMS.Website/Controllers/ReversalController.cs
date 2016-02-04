@@ -49,7 +49,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private ReversalIndexViewModel InitIndexViewModel(
             ReversalIndexViewModel model)
         {
-            model.PlantWerksList = GlobalFunctions.GetPlantAll();
+            var listPlant = GlobalFunctions.GetPlantAll().Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
+
+            model.PlantWerksList = new SelectList(listPlant, "Value", "Text");
 
             model.Detail = GetListDocument(model);
 
@@ -68,6 +70,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //getbyparams
             var input = Mapper.Map<ReversalGetByParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
+            input.ListUserPlants = CurrentUser.ListUserPlants;
 
             var dbData = _reversalBll.GetListDocumentByParam(input).OrderByDescending(c => c.ProductionDate);
             return Mapper.Map<List<DataReversal>>(dbData);
@@ -112,9 +115,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private ReversalIndexViewModel InitialModel(ReversalIndexViewModel model)
         {
             var plantList = GlobalFunctions.GetPlantAll();
-            var userPlant = _userPlantBll.GetPlantByUserId(CurrentUser.USER_ID);
-            var poaPlant = _poaMapBll.GetPlantByPoaId(CurrentUser.USER_ID);
-            var distinctPlant = plantList.Where(x => userPlant.Contains(x.Value) || poaPlant.Contains(x.Value));
+            var distinctPlant = plantList.Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
             var getPlant = new SelectList(distinctPlant, "Value", "Text");
 
             model.MainMenu = _mainMenu;
