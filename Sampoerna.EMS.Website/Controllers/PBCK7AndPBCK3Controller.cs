@@ -334,14 +334,14 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return View("Create", model);
         }
-
+       
 
         private Pbck7Pbck3CreateViewModel InitListPbck7(Pbck7Pbck3CreateViewModel model)
         {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.NppbkIdList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
-            model.PlantList = GlobalFunctions.GetPlantAll();
+            model.NppbkIdList = new SelectList(CurrentUser.ListUserNppbkc);//GlobalFunctions.GetNppbkcAll(_nppbkcBll);
+            model.PlantList = GlobalFunctions.GetPlantByListUserPlant(CurrentUser.ListUserPlants);// GlobalFunctions.GetPlantAll();
             model.PoaList = GetPoaListByPlant(model.PlantId); //;GetPoaList(model.NppbkcId);
             model.Pbck7Date = DateTime.Now;
 
@@ -456,7 +456,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (!_workflowBll.AllowEditDocument(input))
                     return RedirectToAction("Detail", new { @id = existingData.Pbck7Dto.Pbck7Id });
 
-                model = InitialModel(model);
+                model = InitListPbck7(model);
 
                 model.Back1Dto = existingData.Back1Dto;
                 model.Pbck3Dto = existingData.Pbck3Dto;
@@ -484,12 +484,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.WorkflowHistoryPbck3 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck3);
 
 
-                return View("Edit", InitialModel(model));
+                return View("Edit", InitListPbck7(model));
             }
             catch (Exception ex)
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
-                model = InitialModel(model);
+                model = InitListPbck7(model);
             }
 
             return View(model);
@@ -520,7 +520,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 //model.WorkflowHistoryPbck3 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck3);
 
 
-                model = InitialModel(model);
+                model = InitListPbck7(model);
 
 
                 model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(existingData.ListPrintHistorys);
@@ -591,7 +591,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 //model.WorkflowHistoryPbck3 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck3);
 
 
-                model = InitialModel(model);
+                model = InitListPbck7(model);
 
 
                 model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(existingData.ListPrintHistorys);
@@ -699,7 +699,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 else
                     AddMessageInfo("Not Valid Model", Enums.MessageInfoType.Error);
 
-                model = InitialModel(model);
+                model = InitListPbck7(model);
                 model = GetHistorys(model);
 
                 return View(model);
@@ -708,7 +708,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
 
-                model = InitialModel(model);
+                model = InitListPbck7(model);
                 model = GetHistorys(model);
 
                 return View(model);
@@ -771,16 +771,16 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        private Pbck7Pbck3CreateViewModel InitialModel(Pbck7Pbck3CreateViewModel model)
-        {
-            model.MainMenu = _mainMenu;
-            model.CurrentMenu = PageInfo;
-            model.NppbkIdList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
-            model.PlantList = GlobalFunctions.GetPlantAll();
-            model.PoaList = GetPoaListByPlant(model.PlantId);//GetPoaList(model.NppbkcId);
+        //private Pbck7Pbck3CreateViewModel InitialModel(Pbck7Pbck3CreateViewModel model)
+        //{
+        //    model.MainMenu = _mainMenu;
+        //    model.CurrentMenu = PageInfo;
+        //    model.NppbkIdList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
+        //    model.PlantList = GlobalFunctions.GetPlantAll();
+        //    model.PoaList = GetPoaListByPlant(model.PlantId);//GetPoaList(model.NppbkcId);
 
-            return (model);
-        }
+        //    return (model);
+        //}
 
 
 
@@ -1126,7 +1126,12 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Pbck7List = GetAllPbck7No();
             model.FromYear = GlobalFunctions.GetYearList();
             model.ToYear = model.FromYear;
-            model.ReportItems = Mapper.Map<List<Pbck7SummaryReportItem>>(_pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(new Pbck7SummaryInput()));
+
+            var input = new Pbck7SummaryInput();
+            input.ListUserPlant = CurrentUser.ListUserPlants;
+            input.UserId = CurrentUser.USER_ID;
+
+            model.ReportItems = Mapper.Map<List<Pbck7SummaryReportItem>>(_pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input));
         }
 
         private void InitSummaryReportsPbck3(Pbck3SummaryReportModel model)
@@ -1139,7 +1144,11 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Pbck3List = GetAllPbck3No();
             model.FromYear = GlobalFunctions.GetYearList();
             model.ToYear = model.FromYear;
-            model.ReportItems = Mapper.Map<List<Pbck3SummaryReportItem>>(_pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(new Pbck3SummaryInput()));
+            var input = new Pbck3SummaryInput();
+            input.ListUserPlant = CurrentUser.ListUserPlants;
+            input.UserId = CurrentUser.USER_ID;
+
+            model.ReportItems = Mapper.Map<List<Pbck3SummaryReportItem>>(_pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(input));
         }
 
         private SelectList GetAllPbck7No()
@@ -1160,6 +1169,8 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterPbck7SummaryReport(Pbck7SummaryReportModel model)
         {
             var input = Mapper.Map<Pbck7SummaryInput>(model);
+            input.ListUserPlant = CurrentUser.ListUserPlants;
+            input.UserId = CurrentUser.USER_ID;
 
             var result = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input);
             model.ReportItems = Mapper.Map<List<Pbck7SummaryReportItem>>(result);
@@ -1170,6 +1181,9 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterPbck3SummaryReport(Pbck3SummaryReportModel model)
         {
             var input = Mapper.Map<Pbck3SummaryInput>(model);
+            input.ListUserPlant = CurrentUser.ListUserPlants;
+            input.UserId = CurrentUser.USER_ID;
+
             var result = _pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(input);
             model.ReportItems = Mapper.Map<List<Pbck3SummaryReportItem>>(result);
 
@@ -1208,6 +1222,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private string CreateXlsSummaryReportsPbck7(Pbck7SummaryReportModel model)
         {
             var input = Mapper.Map<Pbck7SummaryInput>(model.ExportModel);
+            input.ListUserPlant = CurrentUser.ListUserPlants;
+            input.UserId = CurrentUser.USER_ID;
+
             var result = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input);
            
             var dataSummaryReport = Mapper.Map<List<Pbck7SummaryReportItem>>(result.OrderBy(c => c.Pbck7Number));
@@ -1621,6 +1638,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private string CreateXlsSummaryReportsPbck3(Pbck3SummaryReportModel model)
         {
             var input = Mapper.Map<Pbck3SummaryInput>(model.ExportModel);
+            input.ListUserPlant = CurrentUser.ListUserPlants;
+            input.UserId = CurrentUser.USER_ID;
+
             var result = _pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(input);
             //var src = (from b in result
             //           select new Pbck3SummaryReportItem()

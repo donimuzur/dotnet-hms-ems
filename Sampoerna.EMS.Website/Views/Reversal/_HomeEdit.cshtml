@@ -1,0 +1,88 @@
+﻿@model Sampoerna.EMS.Website.Models.Reversal.ReversalIndexViewModel
+@using Sampoerna.EMS.Website.Helpers
+@{
+    ViewBag.Title = "_HomeEdit";
+}
+
+<div id="information" class="tab-pane active" role="tabpanel">
+    <div class="tab-wrapper">
+        <div aria-multiselectable="true" role="tablist" id="accordion" class="panel-group">
+            <div class="panel panel-default">
+                <div id="headingOne" role="tab" class="panel-heading">
+                    <h4 class="panel-title">
+                        <a aria-controls="collapseOne" aria-expanded="true" href="#collapseOne" data-parent="#accordion" data-toggle="collapse">
+                            Reversal Form Edit
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div aria-labelledby="headingOne" role="tabpanel" class="panel-collapse collapse in" id="collapseOne">
+                    <div class="panel-body">
+                        <div role="form" class="form-excise">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Plant<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.Details.ReversalId)
+                                            @Html.DropDownListFor(model => model.Details.Werks, Model.PlantWerksList, "Select", new { @class = "form-control ", id = "SearchInput_PlantId" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Fa Code<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.Details.FaCode, Model.FaCodeList, "Select", new { @class = "form-control", id = "SearchInput_FaCode" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Date<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(model => model.Details.ProductionDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Zaap Shift<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.Details.ZaapShiftId, Model.ZaapShiftList, "Select", new { @class = "form-control", id = "SearchInput_Zaap" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Reversal<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.Details.ReversalQty, new { @class = "form-control" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <span class="red">*</span> ) This Field Required
+        </div>
+    </div>
+</div>

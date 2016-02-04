@@ -14,6 +14,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ProductionDateX { get; set; }
         public string CompanyCode { get; set; }
         public string PlantWerks { get; set; }
+        public string LevelPlant { get; set; }
         public string FaCode { get; set; }
         public string BrandDescription { get; set; }
         public decimal? QtyUnpacked { get; set; }
@@ -60,6 +61,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public List<ProductionUploadItems> UploadItems { get; set; }
         public int ContentPerPack { get; set; }
         public int PackedInPack { get; set; }
+
+        public bool IsBrandFromSap { get; set; }
     }
 
     public class ProductionUploadItems

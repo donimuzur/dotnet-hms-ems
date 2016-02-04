@@ -24,5 +24,7 @@ namespace Sampoerna.EMS.Contract
 
         List<string> GetListPlantByUserId(string userId);
 
+        List<string> GetListNppbkcByUserId(string userId);
+
     }
 }

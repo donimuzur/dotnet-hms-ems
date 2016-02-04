@@ -81,7 +81,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.Ck5Type = ck5Type;
                 input.UserId = CurrentUser.USER_ID;
                 input.UserRole = CurrentUser.UserRole;
-
+                input.ListUserPlant = CurrentUser.ListUserPlants;
+                
                 dbData = _ck5Bll.GetCK5ByParam(input);
                 return Mapper.Map<List<CK5Item>>(dbData);
             }
@@ -92,6 +93,7 @@ namespace Sampoerna.EMS.Website.Controllers
             input.Ck5Type = ck5Type;
             input.UserId = CurrentUser.USER_ID;
             input.UserRole = CurrentUser.UserRole;
+            input.ListUserPlant = CurrentUser.ListUserPlants;
 
             dbData = _ck5Bll.GetCK5ByParam(input);
             return Mapper.Map<List<CK5Item>>(dbData);
@@ -105,6 +107,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
 
                 input = new CK5GetByParamInput();
+                input.UserId = CurrentUser.USER_ID;
+                input.ListUserPlant = CurrentUser.ListUserPlants;
 
                 dbData = _ck5Bll.GetCK5MarketReturnCompletedByParam(input);
                 return Mapper.Map<List<CK5Item>>(dbData);
@@ -113,6 +117,8 @@ namespace Sampoerna.EMS.Website.Controllers
             //getbyparams
 
             input = Mapper.Map<CK5GetByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.ListUserPlant = CurrentUser.ListUserPlants;
 
             dbData = _ck5Bll.GetCK5MarketReturnCompletedByParam(input);
             return Mapper.Map<List<CK5Item>>(dbData);
@@ -424,7 +430,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (model.Ck5Type == Enums.CK5Type.ImporterToPlant)
             {
                 model.SourcePlantList = GlobalFunctions.GetPlantImportList();
-                model.DestPlantList = GlobalFunctions.GetPlantAll();
+                model.DestPlantList = GlobalFunctions.GetPlantByListUserPlant(CurrentUser.ListUserPlants);//GlobalFunctions.GetPlantAll();
                 model.Ck5RefList = GlobalFunctions.GetCk5RefPortToImporter(_ck5Bll, model.Ck5RefId);
             }
             else if (model.Ck5Type == Enums.CK5Type.PortToImporter)
@@ -445,10 +451,13 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             else
             {
-                model.SourcePlantList = GlobalFunctions.GetPlantAll();
+                model.SourcePlantList = GlobalFunctions.GetPlantByListUserPlant(CurrentUser.ListUserPlants);// GlobalFunctions.GetPlantAll();
                 model.DestPlantList = GlobalFunctions.GetPlantAll();
             }
 
+
+         
+            
            
             model.PbckDecreeList = GlobalFunctions.GetPbck1CompletedListByPlant("");
 
@@ -1432,7 +1441,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     input.NppbkcId = model.DestNppbkcId;
                     model.IsDomesticAlcohol = true;
 
-                    input.PlantId = model.DestPlantId;
+                    input.PlantId = ck5Details.Ck5Dto.DEST_PLANT_ID;
                 }
                 else if (model.Ck5Type == Enums.CK5Type.Waste)
                 {
@@ -1582,6 +1591,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     model.AllowAttachmentCompleted = _workflowBll.AllowAttachmentCompleted(input);
 
+                    if (model.Ck5Type == Enums.CK5Type.Manual)
+                    {
+                        var dataList = _ck5Bll.GetMatdocList(model.Ck5Id);
+                        var selectItems = Mapper.Map<List<SelectItemModel>>(dataList);
+                        model.MatdocList = new SelectList(selectItems, "ValueField", "TextField");
+                    }
+
                 }
                 else
                 {
@@ -1661,7 +1677,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     model.IsTriggerSto = true;
                 }
-
+                else if (model.Ck5Type == Enums.CK5Type.Manual)
+                {
+                    if (model.IsCompleted)
+                        model.IsViewMatDoc = true;
+                }
                 if (model.Ck5Type == Enums.CK5Type.MarketReturn)
                 {
                     model.MainMenu = Enums.MenuList.CK5MRETURN;
@@ -2734,28 +2754,46 @@ namespace Sampoerna.EMS.Website.Controllers
                 else
                 {
                     AddMessageInfo("Empty File", Enums.MessageInfoType.Error);
-                    RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+                    RedirectToAction("Details", "CK5", new {id = model.Ck5Id});
                 }
+
+                var input = new CK5WorkflowDocumentInput()
+                {
+                    DocumentId = model.Ck5Id,
+                    DocumentNumber = model.SubmissionNumber,
+                    UserRole = CurrentUser.UserRole,
+                    UserId = CurrentUser.USER_ID,
+                    Ck5Type = model.Ck5Type,
+                    MatDoc = model.MatDoc,
+                    AdditionalDocumentData = new CK5WorkflowDocumentData()
+                    {
+                        Ck5FileUploadList = new List<CK5_FILE_UPLOADDto>()
+                    }
+
+                };
 
                 if (model.Ck5FileUploadModelList.Count > 0)
                 {
-                    var input = new CK5WorkflowDocumentInput()
-                    {
-                        DocumentId = model.Ck5Id,
-                        DocumentNumber = model.SubmissionNumber,
-                        UserRole = CurrentUser.UserRole,
-                        UserId = CurrentUser.USER_ID,
-                        Ck5Type = model.Ck5Type,
-                        AdditionalDocumentData = new CK5WorkflowDocumentData()
-                        {
-                            Ck5FileUploadList = Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList),
+                    //var input = new CK5WorkflowDocumentInput()
+                    //{
+                    //    DocumentId = model.Ck5Id,
+                    //    DocumentNumber = model.SubmissionNumber,
+                    //    UserRole = CurrentUser.UserRole,
+                    //    UserId = CurrentUser.USER_ID,
+                    //    Ck5Type = model.Ck5Type,
+                    //    AdditionalDocumentData = new CK5WorkflowDocumentData()
+                    //    {
+                    //        Ck5FileUploadList = Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList),
 
-                        }
-                    };
-
-                    _ck5Bll.CK5CompletedAttachment(input);
-                    AddMessageInfo("Success Save", Enums.MessageInfoType.Success);
+                    //    }
+                    //};
+                    input.AdditionalDocumentData.Ck5FileUploadList =
+                        Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList);
                 }
+
+                _ck5Bll.CK5CompletedAttachment(input);
+                AddMessageInfo("Success Save", Enums.MessageInfoType.Success);
+
             }
             catch (Exception ex)
             {
@@ -3116,7 +3154,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //_ck5Bll.GetSummaryReportsByParam(input);
             //var listCk5 = _ck5Bll.GetCk5CompletedByCk5Type(model.Ck5Type);
-            var listCk5 = _ck5Bll.GetSummaryReportsByParam(new CK5GetSummaryReportByParamInput());
+            var input = new CK5GetSummaryReportByParamInput();
+            input.UserId = CurrentUser.USER_ID;
+            input.ListUserPlant = CurrentUser.ListUserPlants;
+
+            var listCk5 = _ck5Bll.GetSummaryReportsByParam(input);
 
             model.SearchView.CompanyCodeSourceList = GetCompanyList(true, listCk5);
             model.SearchView.CompanyCodeDestList = GetCompanyList(false, listCk5);
@@ -3323,6 +3365,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 //Get All
                 input = new CK5GetSummaryReportByParamInput();
+                input.UserId = CurrentUser.USER_ID;
+                input.ListUserPlant = CurrentUser.ListUserPlants;
 
                 dbData = _ck5Bll.GetSummaryReportsViewByParam(input);
                 return Mapper.Map<List<CK5SummaryReportsItem>>(dbData);
@@ -3331,6 +3375,8 @@ namespace Sampoerna.EMS.Website.Controllers
             //getbyparams
 
             input = Mapper.Map<CK5GetSummaryReportByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.ListUserPlant = CurrentUser.ListUserPlants;
 
             dbData = _ck5Bll.GetSummaryReportsViewByParam(input);
             return Mapper.Map<List<CK5SummaryReportsItem>>(dbData);
@@ -4576,6 +4622,7 @@ namespace Sampoerna.EMS.Website.Controllers
              return Json(data);
         }
 
+
         #region Summary Reports MarketReturn
 
         public ActionResult SummaryReportsMarketReturn()
@@ -4663,8 +4710,11 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.CK5MRETURN;
             model.CurrentMenu = PageInfo;
 
+            var input = new CK5MarketReturnGetSummaryReportByParamInput();
+            input.UserId = CurrentUser.USER_ID;
+            input.ListUserPlant = CurrentUser.ListUserPlants;
 
-            var listCk5 = _ck5Bll.GetSummaryReportsMarketReturnByParam(new CK5MarketReturnGetSummaryReportByParamInput());
+            var listCk5 = _ck5Bll.GetSummaryReportsMarketReturnByParam(input);
 
             model.SearchView.FaCodeList = GetCk5MarketReturnSummaryList(listCk5, 1);
             model.SearchView.PoaList = GetCk5MarketReturnSummaryList(listCk5, 2);
@@ -4687,6 +4737,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 //Get All
                 input = new CK5MarketReturnGetSummaryReportByParamInput();
+                input.UserId = CurrentUser.USER_ID;
+                input.ListUserPlant = CurrentUser.ListUserPlants;
 
                 dbData = _ck5Bll.GetSummaryReportsMarketReturnByParam(input);
                 return Mapper.Map<List<CK5MarketReturnSummaryReportsItem>>(dbData);
@@ -4695,6 +4747,8 @@ namespace Sampoerna.EMS.Website.Controllers
             //getbyparams
 
             input = Mapper.Map<CK5MarketReturnGetSummaryReportByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.ListUserPlant = CurrentUser.ListUserPlants;
 
             dbData = _ck5Bll.GetSummaryReportsMarketReturnByParam(input);
             return Mapper.Map<List<CK5MarketReturnSummaryReportsItem>>(dbData);

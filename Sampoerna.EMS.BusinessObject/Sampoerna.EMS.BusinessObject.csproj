@@ -137,6 +137,7 @@
     <Compile Include="DTOs\CK5Dto.cs" />
     <Compile Include="DTOs\CK5FileDocumentDto.cs" />
     <Compile Include="DTOs\Ck5MarketReturnSummaryReportDto.cs" />
+    <Compile Include="DTOs\Ck5MatdocDto.cs" />
     <Compile Include="DTOs\CK5MaterialDto.cs" />
     <Compile Include="DTOs\CK5ReportDto.cs" />
     <Compile Include="DTOs\Ck5SummaryReportDto.cs" />
@@ -194,6 +195,7 @@
     <Compile Include="DTOs\POA_MAPDto.cs" />
     <Compile Include="DTOs\PrintHistoryDto.cs" />
     <Compile Include="DTOs\ProductionDto.cs" />
+    <Compile Include="DTOs\ReversalDto.cs" />
     <Compile Include="DTOs\T001Dto.cs" />
     <Compile Include="DTOs\T001KCompositDto.cs" />
     <Compile Include="DTOs\T001KDto.cs" />
@@ -270,6 +272,7 @@
     <Compile Include="Inputs\PrintHistoryInputs.cs" />
     <Compile Include="Inputs\ProductionGetByParamInput.cs" />
     <Compile Include="Inputs\ProductionUploadItemsInput.cs" />
+    <Compile Include="Inputs\ReversalGetByParamInput.cs" />
     <Compile Include="Inputs\UserInput.cs" />
     <Compile Include="Inputs\UserPlantMapInputs.cs" />
     <Compile Include="Inputs\VirtualMappingPlantInput.cs" />
@@ -361,6 +364,7 @@
     <Compile Include="Outputs\Pbck1ProdConverterOutput.cs" />
     <Compile Include="Outputs\Pbck1ProdPlanOutput.cs" />
     <Compile Include="Outputs\ProductionUploadItemsOutput.cs" />
+    <Compile Include="Outputs\ReversalOutput.cs" />
     <Compile Include="Outputs\VirtualMappingPlantOutput.cs" />
     <Compile Include="Outputs\WasteStockOutput.cs" />
     <Compile Include="Outputs\WasteUploadItemsOutput.cs" />
