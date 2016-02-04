@@ -43,25 +43,26 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentUser.NppbckPlants = _userAuthorizationBll.GetNppbckPlants(loginResult.USER_ID);
                 CurrentUser.ListUserPlants = new List<string>();
 
-                if (CurrentUser.UserRole == Enums.UserRole.User)
+                switch (CurrentUser.UserRole)
                 {
-                    CurrentUser.ListUserPlants =
-                        _userAuthorizationBll.GetListPlantByUserId(loginResult.USER_ID);
-                    CurrentUser.ListUserNppbkc =
-                        _userAuthorizationBll.GetListNppbkcByUserId(loginResult.USER_ID);
-                }
-                else if (CurrentUser.UserRole == Enums.UserRole.POA)
-                {
-                    //CurrentUser.ListUserPlants = _poabll.GetPoaPlantByPoaId(loginResult.USER_ID);
-                    CurrentUser.ListUserPlants = new List<string>();
-                    foreach (var nppbkcPlantDto in CurrentUser.NppbckPlants)
-                    {
-                        foreach (var plantDto in nppbkcPlantDto.Plants)
+                    case Enums.UserRole.User:
+                    case Enums.UserRole.Viewer:
+                        CurrentUser.ListUserPlants =
+                            _userAuthorizationBll.GetListPlantByUserId(loginResult.USER_ID);
+                        CurrentUser.ListUserNppbkc =
+                            _userAuthorizationBll.GetListNppbkcByUserId(loginResult.USER_ID);
+                        break;
+                    case Enums.UserRole.POA:
+                        CurrentUser.ListUserPlants = new List<string>();
+                        foreach (var nppbkcPlantDto in CurrentUser.NppbckPlants)
                         {
-                            CurrentUser.ListUserPlants.Add(plantDto.WERKS);
+                            foreach (var plantDto in nppbkcPlantDto.Plants)
+                            {
+                                CurrentUser.ListUserPlants.Add(plantDto.WERKS);
+                            }
                         }
-                    }
-                    CurrentUser.ListUserNppbkc = CurrentUser.NppbckPlants.Select(c => c.NppbckId).ToList();
+                        CurrentUser.ListUserNppbkc = CurrentUser.NppbckPlants.Select(c => c.NppbckId).ToList();
+                        break;
                 }
               
 
