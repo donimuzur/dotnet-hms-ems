@@ -1666,8 +1666,7 @@ namespace Sampoerna.EMS.BLL
                 BeginingBalance = 0 //set default
             };
 
-            //set begining balance
-            rc = SetBeginingBalanceBySelectionCritera(rc, input);
+            
 
             //set Pbck-1 Data by selection criteria
             rc = SetPbck1DataBySelectionCriteria(rc, input);
@@ -1746,6 +1745,10 @@ namespace Sampoerna.EMS.BLL
             }
 
             rc.PeriodYear = input.PeriodYear;
+
+            //set begining balance
+            rc = SetBeginingBalanceBySelectionCritera(rc, input);
+
             //format for noted
             //LOGS POINT 19 : replace with new logic for remark
             //var noteTemp = new List<string>();

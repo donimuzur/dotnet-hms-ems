@@ -28,7 +28,7 @@ namespace Sampoerna.EMS.BLL.Services
                 c => plantId.Contains(c.WERKS) && materialList.Contains(c.MATERIAL_ID)
                     && c.PERIOD_MONTH == month && c.PERIOD_YEAR == year;
 
-            var data = _repository.Get(queryFilter,null,"ZAIDM_EX_MATERIAL,MATERIAL_UOM").ToList();
+            var data = _repository.Get(queryFilter, null, "ZAIDM_EX_MATERIAL,ZAIDM_EX_MATERIAL.MATERIAL_UOM").ToList();
             data = ProcessConvertionMaterialbalance(data, uomId);
             return data;
         }
