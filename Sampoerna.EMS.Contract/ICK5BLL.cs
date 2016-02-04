@@ -105,5 +105,7 @@ namespace Sampoerna.EMS.Contract
         List<Ck5MarketReturnSummaryReportDto> GetSummaryReportsMarketReturnByParam(CK5MarketReturnGetSummaryReportByParamInput input);
 
        List<Ck5MatdocDto> GetMatdocList(long ck5Id = 0);
+
+       
    }
 }
