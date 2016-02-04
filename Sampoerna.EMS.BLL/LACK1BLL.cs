@@ -1786,8 +1786,7 @@ namespace Sampoerna.EMS.BLL
                 BeginingBalance = 0 //set default
             };
 
-            //set begining balance
-            rc = SetBeginingBalanceBySelectionCritera(rc, input);
+            
 
             //set Pbck-1 Data by selection criteria
             rc = SetPbck1DataBySelectionCriteria(rc, input);
@@ -1866,6 +1865,10 @@ namespace Sampoerna.EMS.BLL
             }
 
             rc.PeriodYear = input.PeriodYear;
+
+            //set begining balance
+            rc = SetBeginingBalanceBySelectionCritera(rc, input);
+
             //format for noted
             //LOGS POINT 19 : replace with new logic for remark
             //var noteTemp = new List<string>();
@@ -3312,7 +3315,17 @@ namespace Sampoerna.EMS.BLL
                 mvt201 = (-1) * getInventoryMovementByParamOutput.Mvt201List.Sum(d => d.ConvertedQty);
             }
 
-            totalUsage = totalUsage - mvt201;
+            decimal mvt201Asigned;
+            if (getInventoryMovementByParamOutput.Mvt201Assigned.Count == 0)
+            {
+                mvt201Asigned = 0;
+            }
+            else
+            {
+                mvt201Asigned = (-1) * getInventoryMovementByParamOutput.Mvt201Assigned.Sum(d => d.ConvertedQty);
+            }
+
+            totalUsage = totalUsage - mvt201 + mvt201Asigned;
 
             if (isForTisToTis)
             {
