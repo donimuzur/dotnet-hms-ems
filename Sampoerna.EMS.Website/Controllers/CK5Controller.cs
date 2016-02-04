@@ -2868,6 +2868,8 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
         }
 
+
+        [HttpPost]
         public ActionResult CancelDocument(CK5FormViewModel model)
         {
             try
