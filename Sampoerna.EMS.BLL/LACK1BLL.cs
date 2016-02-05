@@ -2384,7 +2384,16 @@ namespace Sampoerna.EMS.BLL
                     UomDesc = item.UOM_DESC
                 };
 
-                var rec = invMovementOutput.UsageProportionalList.FirstOrDefault(c =>
+                var groupUsageProporsional = invMovementOutput.UsageProportionalList.GroupBy(x => new { x.MaterialId, x.Order })
+                    .Select(p => new InvMovementUsageProportional()
+                    {
+                        MaterialId = p.FirstOrDefault().MaterialId,
+                        Order = p.FirstOrDefault().Order,
+                        Qty = p.Sum(x => x.Qty),
+                        TotalQtyPerMaterialId = p.FirstOrDefault().TotalQtyPerMaterialId
+                    });
+
+                var rec = groupUsageProporsional.ToList().FirstOrDefault(c =>
                     c.Order == item.ORDR);
 
                 if (rec != null)
