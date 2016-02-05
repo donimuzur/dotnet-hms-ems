@@ -73,7 +73,7 @@ namespace Sampoerna.EMS.BLL
         private ILack1TrackingService _lack1TrackingService;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
-        private List<string> _allowedCk5Uom =  new List<string>(new string[] { "KG", "G", "L" });
+        private List<string> _allowedCk5Uom =  new List<string>(new string[] { "KG", "G", "L", "Btg" });
 
         private List<string> _allowedCk5MarketReturnProdCode= new List<string>(new string[] { "01", "02", "03","04","05","06" });
 
@@ -4634,21 +4634,21 @@ namespace Sampoerna.EMS.BLL
 
                             throw new Exception(
                                 String.Format("Conversion value for {0} in {1} to {2} is not found in material master",
-                                    ck5MaterialDto.BRAND, ck5MaterialDto.PLANT_ID, ck5MaterialDto.CONVERTED_UOM_ID));
+                                    material.STICKER_CODE, material.WERKS, ck5MaterialDto.CONVERTED_UOM_ID));
                         }
                     }
                     else
                     {
                         throw new Exception(
                                 String.Format("Conversion value for {0} in {1} to {2} is not found in material master",
-                                    ck5MaterialDto.BRAND, ck5MaterialDto.PLANT_ID, ck5MaterialDto.CONVERTED_UOM_ID));
+                                    material.STICKER_CODE, material.WERKS, ck5MaterialDto.CONVERTED_UOM_ID));
                     }
                     ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
                 }
                 else
                 {
 
-                    throw new Exception(String.Format("Material Conversion {0} in {1} is not found in material master", ck5MaterialDto.BRAND, ck5MaterialDto.PLANT_ID));
+                    throw new Exception(String.Format("Material Conversion {0} in {1} is not found in material master", material.STICKER_CODE, material.WERKS));
                 }
                 // ck5MaterialDto.CONVERTED_UOM_ID
             }
