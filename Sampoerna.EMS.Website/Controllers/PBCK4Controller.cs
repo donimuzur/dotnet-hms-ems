@@ -298,6 +298,21 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 Mapper.Map(pbck4Details.Pbck4Dto, model);
 
+                var inputEdit = new WorkflowAllowAccessDataInput
+                {
+                    UserId = CurrentUser.USER_ID,
+                    UserRole = CurrentUser.UserRole,
+                    UserPlant = CurrentUser.ListUserPlants,
+                    DataPlant = pbck4Details.Pbck4Dto.PlantId,
+                    DataUser = pbck4Details.Pbck4Dto.CREATED_BY
+                };
+
+                if (!_workflowBll.AllowAccessData(inputEdit))
+                {
+                    AddMessageInfo("No Access to Edit/View the data", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Index");
+                }
+
               
                 model.MainMenu = Enums.MenuList.PBCK4;
                 model.CurrentMenu = PageInfo;
@@ -385,6 +400,21 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
                 Mapper.Map(pbck4Details.Pbck4Dto, model);
+
+                var inputEdit = new WorkflowAllowAccessDataInput
+                {
+                    UserId = CurrentUser.USER_ID,
+                    UserRole = CurrentUser.UserRole,
+                    UserPlant = CurrentUser.ListUserPlants,
+                    DataPlant = pbck4Details.Pbck4Dto.PlantId,
+                    DataUser = pbck4Details.Pbck4Dto.CREATED_BY
+                };
+
+                if (!_workflowBll.AllowAccessData(inputEdit))
+                {
+                    AddMessageInfo("No Access to Edit/View the data", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Index");
+                }
 
 
                 model.MainMenu = Enums.MenuList.PBCK4;
@@ -519,6 +549,21 @@ namespace Sampoerna.EMS.Website.Controllers
                 var pbck4Details = _pbck4Bll.GetDetailsPbck4(id);
 
                 Mapper.Map(pbck4Details.Pbck4Dto, model);
+
+                var inputEdit = new WorkflowAllowAccessDataInput
+                {
+                    UserId = CurrentUser.USER_ID,
+                    UserRole = CurrentUser.UserRole,
+                    UserPlant = CurrentUser.ListUserPlants,
+                    DataPlant = pbck4Details.Pbck4Dto.PlantId,
+                    DataUser = pbck4Details.Pbck4Dto.CREATED_BY
+                };
+
+                if (!_workflowBll.AllowAccessData(inputEdit))
+                {
+                    AddMessageInfo("No Access to Edit/View the data", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Index");
+                }
 
                 //validate
                 //only allow edit/submit when current_user = createdby and document = draft
@@ -2008,13 +2053,17 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             if (filter == null)
             {
-                var pbck4 = _pbck4Bll.GetAllByParam(new Pbck4DasboardParamInput());
+                var inputAll = new Pbck4DasboardParamInput();
+                inputAll.ListUserPlant = CurrentUser.ListUserPlants;
+
+                var pbck4 = _pbck4Bll.GetAllByParam(inputAll);
                 return pbck4;
             }
 
             var input = Mapper.Map<Pbck4DasboardParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
             input.UserRole = CurrentUser.UserRole;
+            input.ListUserPlant = CurrentUser.ListUserPlants;
             var dbData = _pbck4Bll.GetAllByParam(input);
             return dbData;
         }

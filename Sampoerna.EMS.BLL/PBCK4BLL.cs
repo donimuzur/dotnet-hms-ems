@@ -2100,25 +2100,19 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.APPROVED_BY_POA.Contains(input.Poa));
             }
 
-            if (input.UserRole == Enums.UserRole.POA)
-            {
-                var nppbkc = _nppbkcBll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
-               
-                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))) || c.STATUS == Enums.DocumentStatus.Completed);
-                
-            }
-            //first code when manager exists
-            //else if (input.UserRole == Enums.UserRole.Manager)
+            //if (input.UserRole == Enums.UserRole.POA)
             //{
-            //    var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
-            //    var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
-
-            //    queryFilter = queryFilter.And(c => (c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.PBCK4_NUMBER)) || c.STATUS == Enums.DocumentStatus.Completed);
+            //    var nppbkc = _nppbkcBll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
+               
+            //    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))) || c.STATUS == Enums.DocumentStatus.Completed);
+                
             //}
-            else
-            {
-                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId) || c.STATUS == Enums.DocumentStatus.Completed);
-            }
+           
+            //else
+            //{
+            //    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId) || c.STATUS == Enums.DocumentStatus.Completed);
+            //}
+            queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID));
 
             Func<IQueryable<PBCK4>, IOrderedQueryable<PBCK4>> orderBy = null;
             {

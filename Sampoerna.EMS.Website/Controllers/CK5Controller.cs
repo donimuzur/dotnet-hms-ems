@@ -1078,6 +1078,27 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var ck5Details = _ck5Bll.GetDetailsCK5(id);
 
+                string plantId = ck5Details.Ck5Dto.SOURCE_PLANT_ID;
+                switch (ck5Details.Ck5Dto.CK5_TYPE)
+                {
+                    case Enums.CK5Type.PortToImporter:
+                    case Enums.CK5Type.DomesticAlcohol:
+                        plantId = ck5Details.Ck5Dto.DEST_PLANT_ID;
+                        break;
+                    case Enums.CK5Type.Manual:
+                        if (ck5Details.Ck5Dto.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                            plantId = ck5Details.Ck5Dto.DEST_PLANT_ID;
+                        break;
+                }
+                var inputEdit = new WorkflowAllowAccessDataInput
+                {
+                    UserId = CurrentUser.USER_ID,
+                    UserRole = CurrentUser.UserRole,
+                    UserPlant = CurrentUser.ListUserPlants,
+                    DataPlant = plantId,
+                    DataUser = ck5Details.Ck5Dto.CREATED_BY
+                };
+
                 Mapper.Map(ck5Details.Ck5Dto, model);
 
                 //validate
@@ -1382,6 +1403,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 Mapper.Map(ck5Details.Ck5Dto, model);
 
+             
+
                 model.SourcePlantId = model.SourcePlantId + " - " + model.SourcePlantName;
                 model.DestPlantId = model.DestPlantId + " - " + model.DestPlantName;
 
@@ -1481,6 +1504,22 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
                 input.PoaApprove = ck5Details.Ck5Dto.APPROVED_BY_POA;
+
+
+                var inputEdit = new WorkflowAllowAccessDataInput
+                {
+                    UserId = CurrentUser.USER_ID,
+                    UserRole = CurrentUser.UserRole,
+                    UserPlant = CurrentUser.ListUserPlants,
+                    DataPlant = input.PlantId,
+                    DataUser = input.CreatedUser
+                };
+
+                if (!_workflowBll.AllowAccessData(inputEdit))
+                {
+                    AddMessageInfo("No Access to Edit/View the data", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Index");
+                }
 
                 //workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
@@ -1655,6 +1694,32 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var ck5Details = _ck5Bll.GetDetailsCK5(id);
 
+                string plantId = ck5Details.Ck5Dto.SOURCE_PLANT_ID;
+                switch (ck5Details.Ck5Dto.CK5_TYPE)
+                {
+                    case Enums.CK5Type.PortToImporter:
+                    case Enums.CK5Type.DomesticAlcohol:
+                        plantId = ck5Details.Ck5Dto.DEST_PLANT_ID;
+                        break;
+                    case Enums.CK5Type.Manual:
+                        if (ck5Details.Ck5Dto.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                            plantId = ck5Details.Ck5Dto.DEST_PLANT_ID;
+                        break;
+                }
+                var inputEdit = new WorkflowAllowAccessDataInput
+                {
+                    UserId = CurrentUser.USER_ID,
+                    UserRole = CurrentUser.UserRole,
+                    UserPlant = CurrentUser.ListUserPlants,
+                    DataPlant = plantId,
+                    DataUser = ck5Details.Ck5Dto.CREATED_BY
+                };
+
+                if (!_workflowBll.AllowAccessData(inputEdit))
+                {
+                    AddMessageInfo("No Access to Edit/View the data", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Index");
+                }
 
                 Mapper.Map(ck5Details.Ck5Dto, model);
 
