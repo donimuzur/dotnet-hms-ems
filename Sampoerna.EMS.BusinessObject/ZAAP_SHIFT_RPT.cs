@@ -21,7 +21,7 @@ namespace Sampoerna.EMS.BusinessObject
         public System.DateTime PRODUCTION_DATE { get; set; }
         public string BATCH { get; set; }
         public Nullable<decimal> QTY { get; set; }
-        public Nullable<int> BUNDLE { get; set; }
+        public Nullable<decimal> BUNDLE { get; set; }
         public string MARKET { get; set; }
         public string DOCGMVTER { get; set; }
         public string MATDOC { get; set; }
@@ -33,8 +33,9 @@ namespace Sampoerna.EMS.BusinessObject
         public string SHIFT { get; set; }
         public Nullable<decimal> ORIGINAL_QTY { get; set; }
         public string ORIGINAL_UOM { get; set; }
-        public string MVT { get; set; }
-        public Nullable<System.DateTime> ENTERED_DATE { get; set; }
         public Nullable<System.DateTime> POSTING_DATE { get; set; }
+        public Nullable<System.DateTime> ENTERED_DATE { get; set; }
+        public string MVT { get; set; }
+        public long ZAAP_SHIFT_RPT_ID { get; set; }
     }
 }

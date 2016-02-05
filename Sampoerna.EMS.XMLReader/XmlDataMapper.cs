@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -82,7 +83,9 @@ namespace Sampoerna.EMS.XMLReader
         {
             var repo = uow.GetGenericRepository<T>();
             var xmlRepo = uow.GetGenericRepository<XML_LOGS>();
-            var xmllogs = GetXmlLogs(_xmlName);
+            var xmlRepoDetails = uow.GetGenericRepository<XML_LOGS_DETAILS>();
+            var shortFilename = _xmlName.Split('\\')[_xmlName.Split('\\').Length - 1];
+            var xmllogs = GetXmlLogs(shortFilename);
             var errorCount = 0;
             var itemToInsert = 0;
             var fileName = string.Empty;
@@ -149,25 +152,49 @@ namespace Sampoerna.EMS.XMLReader
                 }
                 else
                 {
-                    
+
                     if (xmllogs == null)
                     {
                         xmllogs = new XML_LOGS();
                         xmllogs.XML_FILENAME = _xmlName.Split('\\')[_xmlName.Split('\\').Length - 1];
                         xmllogs.XML_LOGS_DETAILS = new List<XML_LOGS_DETAILS>();
-                        
-                        
+
+
                         xmllogs.CREATED_BY = "PI";
                         xmllogs.CREATED_DATE = DateTime.Now;
 
                     }
+                    else
+                    {
+                        xmllogs.MODIFIED_BY = "PI";
+                        xmllogs.MODIFIED_DATE = DateTime.Now;
+                        foreach (var details in xmllogs.XML_LOGS_DETAILS.ToList())
+                        {
+                            xmlRepoDetails.Delete(details);
+                            
+                        }
+                        //uow.SaveChanges();
+                        
+                    }
+                    //xmllogs.XML_LOGS_DETAILS = new Collection<XML_LOGS_DETAILS>();
+                    Errors = Errors.Distinct().ToList();
                     foreach (var error in Errors)
                     {
                         XML_LOGS_DETAILS detailError = new XML_LOGS_DETAILS();
                         logger.Warn(error);
                         detailError.ERROR_TIME = DateTime.Now;
                         detailError.LOGS = error;
-                        xmllogs.XML_LOGS_DETAILS.Add(detailError);
+                        if (xmllogs.XML_LOGS_ID != 0)
+                        {
+                            detailError.XML_LOGS_ID = xmllogs.XML_LOGS_ID;
+                            xmlRepoDetails.InsertOrUpdate(detailError);
+                        }
+                        //else
+                        //{
+                        //    xmllogs.XML_LOGS_DETAILS.Add(detailError);    
+                        //}
+
+                        //xmllogs.XML_LOGS_DETAILS.Add(detailError);
 
                     }
                     xmllogs.STATUS = Enums.XmlLogStatus.Error;
@@ -192,25 +219,17 @@ namespace Sampoerna.EMS.XMLReader
             //    fileName = MoveFile();
             //    return fileName;
             //}
-            if (errorCount == 0 && itemToInsert > 0 && Errors.Count == 0)
+            if (errorCount == 0 && Errors.Count == 0)
             {
                 fileName = MoveFile();
                 return new MovedFileOutput(fileName);
             }
-            else if (itemToInsert > 0 && (errorCount == 0 || Errors.Count == 0))
-            {
-                Errors.Insert(0, String.Format("Last field read : {0}", lastField));
-                fileName = MoveFile(true, needMoved);
-            }
-            else
-            {
-                fileName = MoveFile();
-                return new MovedFileOutput(fileName);
-            }
-
+            
+            fileName = MoveFile(true, needMoved);
+            Errors.Insert(0, String.Format("Last field read : {0}", lastField));
+            return new MovedFileOutput(fileName, true, Errors);
             
             
-            return new MovedFileOutput(fileName, true,Errors);
 
             
 

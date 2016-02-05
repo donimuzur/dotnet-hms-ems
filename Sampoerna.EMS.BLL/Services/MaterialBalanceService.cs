@@ -22,10 +22,19 @@ namespace Sampoerna.EMS.BLL.Services
             _repository = _uow.GetGenericRepository<ZAIDM_EX_MATERIAL_BALANCE>();
         }
 
-        public List<ZAIDM_EX_MATERIAL_BALANCE> GetByPlantAndMaterialList(string plantId, List<string> materialList)
+        public List<ZAIDM_EX_MATERIAL_BALANCE> GetByPlantAndMaterialList(List<string> plantId, List<string> materialList, int month, int year)
         {
             Expression<Func<ZAIDM_EX_MATERIAL_BALANCE, bool>> queryFilter =
-                c => c.WERKS == plantId && materialList.Contains(c.MATERIAL_ID);
+                c => plantId.Contains(c.WERKS) && materialList.Contains(c.MATERIAL_ID)
+                    && c.PERIOD_MONTH == month && c.PERIOD_YEAR == year;
+
+            return _repository.Get(queryFilter).ToList();
+        }
+
+        public List<ZAIDM_EX_MATERIAL_BALANCE> GetByPlantListAndMaterialList(List<string> plantId, List<string> materialList)
+        {
+            Expression<Func<ZAIDM_EX_MATERIAL_BALANCE, bool>> queryFilter =
+                c => plantId.Contains(c.WERKS) && materialList.Contains(c.MATERIAL_ID);
 
             return _repository.Get(queryFilter).ToList();
         }

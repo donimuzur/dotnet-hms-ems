@@ -32,6 +32,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
     {
         public string NppbkcId { get; set; }
         public string PlantId { get; set; }
+        public int Year { get; set; }
         public string Month { get; set; }
         public string Date { get; set; }
         public string ItemCode { get; set; }

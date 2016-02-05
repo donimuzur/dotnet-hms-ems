@@ -215,7 +215,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.USER_ID))
                 .ForMember(dest => dest.UserName,
                     opt => opt.MapFrom(src => src.USER.FIRST_NAME + " " + src.USER.LAST_NAME))
-                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IS_ACTIVE == true ? "Yes" : "No"));
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IS_ACTIVE == false || src.IS_ACTIVE == null ? "No" : "Yes"));
 
             Mapper.CreateMap<UserPlantMapDto, USER_PLANT_MAP>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.USER_PLANT_MAP_ID, opt => opt.MapFrom(src => src.Id))
@@ -339,7 +339,7 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<PRODUCTION, ProductionUploadItems>().IgnoreAllNonExisting()
             .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.COMPANY_CODE))
             .ForMember(dest => dest.PlantWerks, opt => opt.MapFrom(src => src.WERKS))
-            .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.BRAND_DESC))
+            .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
             .ForMember(dest => dest.BrandDescription, opt => opt.MapFrom(src => src.BRAND_DESC))
             .ForMember(dest => dest.QtyPacked, opt => opt.MapFrom(src => src.QTY_PACKED))
             .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.QTY))
