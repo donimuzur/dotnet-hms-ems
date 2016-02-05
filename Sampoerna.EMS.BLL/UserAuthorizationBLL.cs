@@ -18,14 +18,16 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<USER_BROLE> _repository;
         private IGenericRepository<BROLE_MAP> _repositoryRoleMap;
         private IUserPlantMapBLL _userPlantMapBll;
-       
-        public UserAuthorizationBLL(ILogger logger, IUnitOfWork uow, IUserPlantMapBLL userPlantMapBll)
+        private IPOAMapBLL _poaMapBll;
+
+        public UserAuthorizationBLL(ILogger logger, IUnitOfWork uow, IUserPlantMapBLL userPlantMapBll, IPOAMapBLL poaMapBll)
         {
             _logger = logger;
             _uow = uow;
             _repository = uow.GetGenericRepository<USER_BROLE>();
             _repositoryRoleMap = uow.GetGenericRepository<BROLE_MAP>();
             _userPlantMapBll = userPlantMapBll;
+            _poaMapBll = poaMapBll;
         }
         public List<UserAuthorizationDto> GetAll()
         {
@@ -66,7 +68,8 @@ namespace Sampoerna.EMS.BLL
         public List<NppbkcPlantDto> GetNppbckPlants(string userid)
         {
             
-            var data = _userPlantMapBll.GetByUserId(userid);
+            //var data = _userPlantMapBll.GetByUserId(userid);
+            var data = _poaMapBll.GetAll().Where(x => x.POA_ID == userid && x.POA.IS_ACTIVE == true);
             var nppbkclist = data.GroupBy(x => x.T001W.NPPBKC_ID).Select(x => x.Key);
             var nppbkcPlantList = new List<NppbkcPlantDto>();
             foreach (var nppbkc in nppbkclist)

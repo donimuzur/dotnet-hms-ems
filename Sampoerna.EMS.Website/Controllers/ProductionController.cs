@@ -71,12 +71,22 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private ProductionViewModel InitProductionViewModel(ProductionViewModel model)
         {
-            model.CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll);
-            model.PlantWerkList = GlobalFunctions.GetPlantAll();
+            var company = GlobalFunctions.GetCompanyList(_companyBll);
+            var userPlantCompany = _userPlantMapBll.GetCompanyByUserId(CurrentUser.USER_ID);
+            var poaMapCompany = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+            var distinctCompany = company.Where(x => userPlantCompany.Contains(x.Value));
+            if (CurrentUser.UserRole == Enums.UserRole.POA) distinctCompany = company.Where(x => poaMapCompany.Contains(x.Value));
+            var getCompany = new SelectList(distinctCompany, "Value", "Text");
+
+            var listPlant = GlobalFunctions.GetPlantAll().Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
+
+            model.CompanyCodeList = getCompany;
+            model.PlantWerkList = new SelectList(listPlant, "Value", "Text");
 
             var input = Mapper.Map<ProductionGetByParamInput>(model);
             input.ProoductionDate = null;
             input.UserId = CurrentUser.USER_ID;
+            input.ListUserPlants = CurrentUser.ListUserPlants;
 
             var dbData = _productionBll.GetAllByParam(input);
 
@@ -94,6 +104,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.ProoductionDate = Convert.ToDateTime(input.ProoductionDate).ToString();
             }
             input.UserId = CurrentUser.USER_ID;
+            input.ListUserPlants = CurrentUser.ListUserPlants;
 
             var dbData = _productionBll.GetAllByParam(input);
             var result = Mapper.Map<List<ProductionDetail>>(dbData);
@@ -128,9 +139,9 @@ namespace Sampoerna.EMS.Website.Controllers
             var company = GlobalFunctions.GetCompanyList(_companyBll);
             var userPlantCompany = _userPlantMapBll.GetCompanyByUserId(CurrentUser.USER_ID);
             var poaMapCompany = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
-            var distinctCompany = company.Where(x => userPlantCompany.Contains(x.Value) || poaMapCompany.Contains(x.Value));
+            var distinctCompany = company.Where(x => userPlantCompany.Contains(x.Value));
+            if (CurrentUser.UserRole == Enums.UserRole.POA) distinctCompany = company.Where(x => poaMapCompany.Contains(x.Value));
             var getCompany = new SelectList(distinctCompany,"Value", "Text");
-            
 
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
@@ -240,7 +251,8 @@ namespace Sampoerna.EMS.Website.Controllers
             var company = GlobalFunctions.GetCompanyList(_companyBll);
             var userPlantCompany = _userPlantMapBll.GetCompanyByUserId(CurrentUser.USER_ID);
             var poaMapCompany = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
-            var distinctCompany = company.Where(x => userPlantCompany.Contains(x.Value) || poaMapCompany.Contains(x.Value));
+            var distinctCompany = company.Where(x => userPlantCompany.Contains(x.Value));
+            if (CurrentUser.UserRole == Enums.UserRole.POA) distinctCompany = company.Where(x => poaMapCompany.Contains(x.Value));
             var getCompany = new SelectList(distinctCompany, "Value", "Text");
 
             model.CompanyCodeList = getCompany;
@@ -526,12 +538,19 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult CompanyListPartialProduction(string companyId)
         {
             var listPlant = GlobalFunctions.GetPlantByCompanyId(companyId);
-            var userPlnatMap = _userPlantMapBll.GetPlantByUserId(CurrentUser.USER_ID);
-            var poaMap = _poaMapBll.GetPlantByPoaId(CurrentUser.USER_ID);
-            var distinctPlant = listPlant.Where(x => userPlnatMap.Contains(x.Value) || poaMap.Contains(x.Value));
-            var listPlanNew = new SelectList(distinctPlant, "Value", "Text");
 
-            var model = new ProductionDetail() { PlantWerkList = listPlanNew };
+            var filterPlant = listPlant;
+
+            var newListPlant = new SelectList(filterPlant, "Value", "Text");
+
+            if (CurrentUser.UserRole == Enums.UserRole.User)
+            {
+                var newFilterPlant = listPlant.Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
+
+                newListPlant = new SelectList(newFilterPlant, "Value", "Text");
+            }
+
+            var model = new ProductionDetail() { PlantWerkList = newListPlant };
 
             return Json(model);
         }

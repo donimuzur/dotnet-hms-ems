@@ -13,5 +13,6 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string Plant { get; set; }
         public string ShortOrderColumn { get; set; }
         public string UserId { get; set; }
+        public List<string> ListUserPlants { get; set; }
     }
 }

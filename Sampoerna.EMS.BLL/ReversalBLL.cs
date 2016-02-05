@@ -69,11 +69,7 @@ namespace Sampoerna.EMS.BLL
 
             if (!string.IsNullOrEmpty(input.UserId))
             {
-                var listUserPlant = _userPlantBll.GetPlantByUserId(input.UserId);
-
-                var listPoaPlant = _poaMapBll.GetPlantByPoaId(input.UserId);
-
-                queryFilter = queryFilter.And(c => listUserPlant.Contains(c.WERKS) || listPoaPlant.Contains(c.WERKS));
+                queryFilter = queryFilter.And(c => input.ListUserPlants.Contains(c.WERKS));
             }
             
             return queryFilter;
