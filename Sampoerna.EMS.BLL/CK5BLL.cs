@@ -4223,21 +4223,21 @@ namespace Sampoerna.EMS.BLL
 
                             throw new Exception(
                                 String.Format("Conversion value for {0} in {1} to {2} is not found in material master",
-                                    ck5MaterialDto.BRAND, ck5MaterialDto.PLANT_ID, ck5MaterialDto.CONVERTED_UOM_ID));
+                                    material.STICKER_CODE, material.WERKS, ck5MaterialDto.CONVERTED_UOM_ID));
                         }
                     }
                     else
                     {
                         throw new Exception(
                                 String.Format("Conversion value for {0} in {1} to {2} is not found in material master",
-                                    ck5MaterialDto.BRAND, ck5MaterialDto.PLANT_ID, ck5MaterialDto.CONVERTED_UOM_ID));
+                                    material.STICKER_CODE, material.WERKS, ck5MaterialDto.CONVERTED_UOM_ID));
                     }
                     ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
                 }
                 else
                 {
 
-                    throw new Exception(String.Format("Material Conversion {0} in {1} is not found in material master", ck5MaterialDto.BRAND, ck5MaterialDto.PLANT_ID));
+                    throw new Exception(String.Format("Material Conversion {0} in {1} is not found in material master", material.STICKER_CODE, material.WERKS));
                 }
                 // ck5MaterialDto.CONVERTED_UOM_ID
             }
