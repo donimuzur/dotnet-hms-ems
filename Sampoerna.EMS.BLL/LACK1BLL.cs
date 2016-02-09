@@ -2009,38 +2009,32 @@ namespace Sampoerna.EMS.BLL
 
             var productionList = new List<Lack1GeneratedProductionDataDto>();
 
+            //Get product type info
+            var prodType = _goodProdTypeService.GetProdCodeByGoodTypeId(rc.ExcisableGoodsType);
+            if (prodType == null)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Data = null,
+                    ErrorCode = ExceptionCodes.BLLExceptions.GoodsProdTypeMappingNotFound.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.GoodsProdTypeMappingNotFound),
+                    Success = false
+                };
+            }
+
             foreach (var item in finalGoodsList)
             {
                 var itemToInsert = new Lack1GeneratedProductionDataDto()
                 {
                     FaCode = item.MaterialId,
                     Ordr = item.Ordr,
-                    ProdCode = "", //from ?
-                    ProductType = "",//from ?
-                    ProductAlias = "",//from?
+                    ProdCode = prodType.PROD_CODE,
+                    ProductType = prodType.PRODUCT_ALIAS,
+                    ProductAlias = prodType.PRODUCT_TYPE,
                     Amount = item.ProductionQty,
                     UomId = item.UomId,
                     UomDesc = item.UomDesc
                 };
-
-                //Get product type info
-                var prodType = _goodProdTypeService.GetProdCodeByGoodTypeId(item.ExGoodsTypeId);
-                if (prodType != null)
-                {
-                    itemToInsert.ProdCode = prodType.PROD_CODE;
-                    itemToInsert.ProductAlias = prodType.PRODUCT_ALIAS;
-                    itemToInsert.ProductType = prodType.PRODUCT_TYPE;
-                }
-                else
-                {
-                    return new Lack1GeneratedOutput()
-                    {
-                        Data = null,
-                        ErrorCode = ExceptionCodes.BLLExceptions.GoodsProdTypeMappingNotFound.ToString(),
-                        ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.GoodsProdTypeMappingNotFound),
-                        Success = false
-                    };
-                }
 
                 var rec = invMovementOutput.UsageProportionalList.FirstOrDefault(c =>
                     c.Order == item.ParentOrdr);
@@ -2067,8 +2061,10 @@ namespace Sampoerna.EMS.BLL
                     }
                 }
 
-                productionList.Add(itemToInsert);
-
+                if (itemToInsert.UomId != null)
+                {
+                    productionList.Add(itemToInsert);
+                }
             }
 
             rc.AlcoholTrackingList = allTrackingList;
