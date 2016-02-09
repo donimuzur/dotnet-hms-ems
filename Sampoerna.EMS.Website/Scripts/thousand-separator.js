@@ -28,7 +28,7 @@ function characterControl(value) {
     var len = value.length;
     for (i = 0; i < len; i++) {
         var chr = value.substr(i, 1);
-        if ((chr < '0' || chr > '9') && chr != '.' && chr != ',') {
+        if ((chr < '0' || chr > '9') && chr != '.' && chr != ',' && chr != '-') {
             chr = '';
         }
 
