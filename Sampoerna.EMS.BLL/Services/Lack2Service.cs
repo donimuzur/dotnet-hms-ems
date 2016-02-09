@@ -66,23 +66,26 @@ namespace Sampoerna.EMS.BLL.Services
 
             switch (input.UserRole)
             {
-                case Enums.UserRole.POA:
-                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId
-                        || (c.STATUS != Enums.DocumentStatus.Draft
-                        && input.NppbkcList.Contains(c.NPPBKC_ID))));
-                    break;
-                case Enums.UserRole.Manager:
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                c.STATUS != Enums.DocumentStatus.Draft &&
-                                c.STATUS != Enums.DocumentStatus.WaitingForApproval &&
-                                input.DocumentNumberList.Contains(c.LACK2_NUMBER));
-                    break;
+                //case Enums.UserRole.POA:
+                //    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId
+                //        || (c.STATUS != Enums.DocumentStatus.Draft
+                //        && input.NppbkcList.Contains(c.NPPBKC_ID))));
+                //    break;
+                //case Enums.UserRole.Manager:
+                //    queryFilter =
+                //        queryFilter.And(
+                //            c =>
+                //                c.STATUS != Enums.DocumentStatus.Draft &&
+                //                c.STATUS != Enums.DocumentStatus.WaitingForApproval &&
+                //                input.DocumentNumberList.Contains(c.LACK2_NUMBER));
+                //    break;
                 default:
                     queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);
                     break;
             }
+
+
+            queryFilter = queryFilter.And(c => input.PlantList.Contains(c.LEVEL_PLANT_ID));
 
             Func<IQueryable<LACK2>, IOrderedQueryable<LACK2>> orderBy = null;
 
@@ -112,6 +115,8 @@ namespace Sampoerna.EMS.BLL.Services
             {
                 queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
             }
+
+            queryFilter = queryFilter.And(c => input.PlantList.Contains(c.LEVEL_PLANT_ID));
 
             Func<IQueryable<LACK2>, IOrderedQueryable<LACK2>> orderBy = null;
 

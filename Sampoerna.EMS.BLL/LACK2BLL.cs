@@ -80,24 +80,24 @@ namespace Sampoerna.EMS.BLL
 
         public List<Lack2Dto> GetByParam(Lack2GetByParamInput input)
         {
-            if (input.UserRole == Enums.UserRole.POA)
-            {
-                var nppbkc = _nppbkcService.GetNppbkcsByPoa(input.UserId);
-                if (nppbkc != null && nppbkc.Count > 0)
-                {
-                    input.NppbkcList = nppbkc.Select(c => c.NPPBKC_ID).ToList();
-                }
-                else
-                {
-                    input.NppbkcList = new List<string>();
-                }
-            }
-            else if (input.UserRole == Enums.UserRole.Manager)
-            {
-                var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
-                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
-                input.DocumentNumberList = document;
-            }
+            //if (input.UserRole == Enums.UserRole.POA)
+            //{
+            //    var nppbkc = _nppbkcService.GetNppbkcsByPoa(input.UserId);
+            //    if (nppbkc != null && nppbkc.Count > 0)
+            //    {
+            //        input.NppbkcList = nppbkc.Select(c => c.NPPBKC_ID).ToList();
+            //    }
+            //    else
+            //    {
+            //        input.NppbkcList = new List<string>();
+            //    }
+            //}
+            //else if (input.UserRole == Enums.UserRole.Manager)
+            //{
+            //    var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
+            //    var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
+            //    input.DocumentNumberList = document;
+            //}
             
             return Mapper.Map<List<Lack2Dto>>(_lack2Service.GetByParam(input));
         }

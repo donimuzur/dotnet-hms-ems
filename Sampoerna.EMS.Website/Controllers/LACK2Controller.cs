@@ -84,6 +84,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 UserId = currUser.USER_ID,
                 UserRole = currUser.UserRole,
+                NppbkcList = currUser.ListUserNppbkc,
+                PlantList = currUser.ListUserPlants,
                 IsOpenDocList = true
             };
 
@@ -113,6 +115,8 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = Mapper.Map<Lack2GetByParamInput>(searchInput);
             input.UserId = curUser.USER_ID;
             input.UserRole = curUser.UserRole;
+            input.NppbkcList = curUser.ListUserNppbkc;
+            input.PlantList = curUser.ListUserPlants;
             input.IsOpenDocList = true;
 
             var dbData = _lack2Bll.GetByParam(input);
@@ -134,6 +138,8 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = Mapper.Map<Lack2GetByParamInput>(searchInput);
             input.UserId = curUser.USER_ID;
             input.UserRole = curUser.UserRole;
+            input.PlantList = curUser.ListUserPlants;
+            input.NppbkcList = curUser.ListUserNppbkc;
 
             var dbData = _lack2Bll.GetCompletedByParam(input);
             var model = new Lack2IndexViewModel { Details = dbData };
@@ -1910,9 +1916,9 @@ namespace Sampoerna.EMS.Website.Controllers
         /// <returns>Lack2IndexViewModel</returns>
         private Lack2IndexViewModel InitIndexViewModel(Lack2IndexViewModel model)
         {
-            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.NppbkcIdList = GlobalFunctions.GetNppbkcByCurrentUser(CurrentUser.ListUserNppbkc);
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
-            model.PlantIdList = GlobalFunctions.GetPlantAll();
+            model.PlantIdList = GlobalFunctions.GetPlantByListUserPlant(CurrentUser.ListUserPlants);
             model.CreatorList = GlobalFunctions.GetCreatorList();
 
             return model;
