@@ -68,6 +68,7 @@
                         
                         @if (Model.AllowEditCompletedDocument)
                         {
+                            @Html.HiddenFor(model => model.Pbck4Id)
                             @Html.Partial("_Pbck4EditCompleted")
                         }
                         else if ((Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)

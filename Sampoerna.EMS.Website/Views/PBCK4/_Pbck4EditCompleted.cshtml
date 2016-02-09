@@ -143,6 +143,7 @@
 
                                     @for (int i = 0; i < Model.UploadItemModels.Count(); i++)
                                     {
+                                        @Html.HiddenFor(model => model.UploadItemModels[i].PBCK4_ITEM_ID)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].FaCode)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].StickerCode)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].Ck1No)
@@ -157,9 +158,9 @@
                                         @Html.HiddenFor(model => model.UploadItemModels[i].ReqQty)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].TotalHje)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].TotalStamps)
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].NoPengawas)
+                                        @*@Html.HiddenFor(model => model.UploadItemModels[i].NoPengawas)*@
                                         @Html.HiddenFor(model => model.UploadItemModels[i].ApprovedQty)
-                                        @Html.HiddenFor(model => model.UploadItemModels[i].Remark)
+                                        @*@Html.HiddenFor(model => model.UploadItemModels[i].Remark)*@
                                         @Html.HiddenFor(model => model.UploadItemModels[i].CK1_ID)
 
 
@@ -179,9 +180,10 @@
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].ReqQty)</td>
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].TotalHje)</td>
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].TotalStamps)</td>
-                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].NoPengawas)</td>
+                                            <td>@Html.TextBoxFor(model => model.UploadItemModels[i].NoPengawas, new { @class = "form-control", @style = "width : 100px" })</td>
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].ApprovedQty)</td>
-                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].Remark)</td>
+                                            <td>@Html.TextBoxFor(model => model.UploadItemModels[i].Remark, new { @class = "form-control", @style = "width : 100px" })</td>
+                                            
 
                                         </tr>
                                     }
@@ -291,50 +293,7 @@
                             </div>
                         </div>
                         
-                        @*<div class="row">
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">BACK-1 Doc</label>
-                                    <div class="col-md-8">
-                                        @if (Model.Pbck4FileUploadModelList != null)
-                                        {
-                                            foreach (var file in Model.Pbck4FileUploadModelList)
-                                            {
-                                                <div class="row">
-                                                    <div class="col-sm-12">
-                                                        <i class="fa fa-file"></i>
-                                                        <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
-                                                    </div>
-
-                                                </div>
-                                            }
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <label class="col-md-4">CK-3 Doc</label>
-                                    <div class="col-md-8">
-                                        
-                                        @if (Model.Pbck4FileUploadModelList2 != null)
-                                        {
-                                            foreach (var file in Model.Pbck4FileUploadModelList2)
-                                            {
-                                                <div class="row">
-                                                    <div class="col-sm-12">
-                                                        <i class="fa fa-file"></i>
-                                                        <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
-                                                    </div>
-
-                                                </div>
-                                            }
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        </div>*@
-                        
+                     
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="row">
@@ -399,7 +358,7 @@
 
                                                                 </div>
                                                                 <div class="col-sm-2">
-                                                                    <button class="btn btn-danger full" type="button" onclick='removeUploadDocPbck4(this,"Pbck4FileUploadModelList2", "@i") '><i class="fa fa-times"></i></button>
+                                                                    <button class="btn btn-danger full" type="button" onclick='removeUploadDocPbck4(this,"Pbck4FileUploadModelList2_", "@i") '><i class="fa fa-times"></i></button>
                                                                 </div>
                                                             </div>
 

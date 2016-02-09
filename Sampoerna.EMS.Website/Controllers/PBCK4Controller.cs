@@ -2142,7 +2142,20 @@ namespace Sampoerna.EMS.Website.Controllers
                  var pbckDocument = Mapper.Map<List<PBCK4_DOCUMENTDto>>(model.Pbck4FileUploadModelList);
                  pbckDocument.AddRange(Mapper.Map<List<PBCK4_DOCUMENTDto>>(model.Pbck4FileUploadModelList2));
 
-                 _pbck4Bll.UpdateUploadedFileCompleted(pbckDocument);
+                 var input = new EditCompletedDocumentInput();
+                 input.DocumentId = model.Pbck4Id;
+                 input.UserId = CurrentUser.USER_ID;
+                 input.UserRole = CurrentUser.UserRole;
+                 input.ListFile = pbckDocument;
+                 input.ReportedOn = model.ReportedOn;
+                 input.BACK1_NO = model.BACK1_NO;
+                 input.BACK1_DATE = model.BACK1_DATE;
+                 input.CK3_NO = model.CK3_NO;
+                 input.CK3_DATE = model.CK3_DATE;
+                 input.Ck3OfficeValue = model.CK3_OFFICE_VALUE;
+                 input.Pbck4ItemsDto = Mapper.Map<List<Pbck4ItemDto>>(model.UploadItemModels);
+
+                 _pbck4Bll.EditCompletedDocument(input);
 
                  AddMessageInfo("Success Update Document PBCK-4", Enums.MessageInfoType.Success);
 
