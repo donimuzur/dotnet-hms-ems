@@ -2505,17 +2505,18 @@ namespace Sampoerna.EMS.BLL
                     UomDesc = item.UOM_DESC
                 };
 
-                var groupUsageProporsional = invMovementOutput.UsageProportionalList.GroupBy(x => new { x.MaterialId, x.Order })
+                var groupUsageProporsional = invMovementOutput.UsageProportionalList.GroupBy(x => new { x.MaterialId, x.Order, x.Batch })
                     .Select(p => new InvMovementUsageProportional()
                     {
                         MaterialId = p.FirstOrDefault().MaterialId,
                         Order = p.FirstOrDefault().Order,
+                        Batch = p.FirstOrDefault().Batch,
                         Qty = p.Sum(x => x.Qty),
                         TotalQtyPerMaterialId = p.FirstOrDefault().TotalQtyPerMaterialId
                     });
 
                 var rec = groupUsageProporsional.ToList().FirstOrDefault(c =>
-                    c.Order == item.ORDR);
+                    c.Order == item.ORDR && c.Batch == item.BATCH);
 
                 if (rec != null)
                 {
