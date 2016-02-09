@@ -1292,6 +1292,7 @@
     <Content Include="Views\CK5\CK5MarketReturnSummaryReport.cshtml" />
     <Content Include="Views\CK5\_CK5MarketReturnListSummaryReport.cshtml" />
     <Content Include="Views\XmlFileManagement\Detail.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4EditCompleted.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
