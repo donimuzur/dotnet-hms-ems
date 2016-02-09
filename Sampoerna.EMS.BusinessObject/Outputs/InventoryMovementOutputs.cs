@@ -49,5 +49,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public string Order { get; set; }
         public decimal Qty { get; set; }
         public decimal TotalQtyPerMaterialId { get; set; }
+
+        public string Batch { get; set; }
     }
 }
