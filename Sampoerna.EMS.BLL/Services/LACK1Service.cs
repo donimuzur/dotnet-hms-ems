@@ -82,6 +82,16 @@ namespace Sampoerna.EMS.BLL.Services
                 orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<LACK1>(input.SortOrderColumn));
             }
 
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                queryFilter = queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID));
+            }
+            else
+            {
+                queryFilter = queryFilter.And(c => (input.ListUserPlant.Contains(c.LACK1_PLANT.FirstOrDefault().PLANT_ID) && c.LACK1_LEVEL == Enums.Lack1Level.Plant) ||
+                                                    (input.ListNppbkc.Contains(c.NPPBKC_ID) && c.LACK1_LEVEL == Enums.Lack1Level.Nppbkc));
+            }
+
             var dbData = _repository.Get(queryFilter, orderBy, includeTables);
             if (dbData == null)
             {
@@ -235,18 +245,11 @@ namespace Sampoerna.EMS.BLL.Services
             switch (input.UserRole)
             {
                 case Enums.UserRole.POA:
-                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && input.NppbkcList.Contains(c.NPPBKC_ID))));
-                    break;
-                case Enums.UserRole.Manager:
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                c.STATUS != Enums.DocumentStatus.Draft &&
-                                c.STATUS != Enums.DocumentStatus.WaitingForApproval &&
-                                input.DocumentNumberList.Contains(c.LACK1_NUMBER));
+                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && input.ListNppbkc.Contains(c.NPPBKC_ID))));
                     break;
                 default:
-                    queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);
+                    queryFilter = queryFilter.And(c => (input.ListUserPlant.Contains(c.LACK1_PLANT.FirstOrDefault().PLANT_ID) && c.LACK1_LEVEL == Enums.Lack1Level.Plant) ||
+                                                    (input.ListNppbkc.Contains(c.NPPBKC_ID) && c.LACK1_LEVEL == Enums.Lack1Level.Nppbkc));
                     break;
             }
 
@@ -348,6 +351,17 @@ namespace Sampoerna.EMS.BLL.Services
             {
                 queryFilter = queryFilter.And(c => c.APPROVED_BY_MANAGER == input.Approver);
             }
+
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                queryFilter = queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID));
+            }
+            else
+            {
+                queryFilter = queryFilter.And(c => (input.ListUserPlant.Contains(c.LACK1_PLANT.FirstOrDefault().PLANT_ID) && c.LACK1_LEVEL == Enums.Lack1Level.Plant) ||
+                                                    (input.ListNppbkc.Contains(c.NPPBKC_ID) && c.LACK1_LEVEL == Enums.Lack1Level.Nppbkc));
+            }
+
             return _repository.Get(queryFilter, null, incTables).ToList();
         }
 
@@ -394,6 +408,16 @@ namespace Sampoerna.EMS.BLL.Services
                 queryFilter = queryFilter.And(c => c.LACK1_LEVEL == input.Lack1Level.Value);
             }
 
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                queryFilter = queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID));
+            }
+            else
+            {
+                queryFilter = queryFilter.And(c => (input.ListUserPlant.Contains(c.LACK1_PLANT.FirstOrDefault().PLANT_ID) && c.LACK1_LEVEL == Enums.Lack1Level.Plant) ||
+                                                    (input.ListNppbkc.Contains(c.NPPBKC_ID) && c.LACK1_LEVEL == Enums.Lack1Level.Nppbkc));
+            }
+
             return _repository.Get(queryFilter, null, incTables).ToList();
         }
 
@@ -419,15 +443,13 @@ namespace Sampoerna.EMS.BLL.Services
             if (input.UserRole == Enums.UserRole.POA)
             {
                 queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft
-                       && input.NppbkcList.Contains(c.NPPBKC_ID))) || c.STATUS == Enums.DocumentStatus.Completed);
-            }
-            else if (input.UserRole == Enums.UserRole.Manager)
-            {
-                queryFilter = queryFilter.And(c => (c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && input.DocumentNumberList.Contains(c.LACK1_NUMBER)) || c.STATUS == Enums.DocumentStatus.Completed);
+                       && input.ListNppbkc.Contains(c.NPPBKC_ID))));
             }
             else
             {
-                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId) || c.STATUS == Enums.DocumentStatus.Completed);
+                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId) ||
+                    (input.ListUserPlant.Contains(c.LACK1_PLANT.FirstOrDefault().PLANT_ID) && c.LACK1_LEVEL == Enums.Lack1Level.Plant) ||
+                                                    (input.ListNppbkc.Contains(c.NPPBKC_ID) && c.LACK1_LEVEL == Enums.Lack1Level.Nppbkc));
             }
             return _repository.Get(queryFilter).ToList();
         }
@@ -449,6 +471,16 @@ namespace Sampoerna.EMS.BLL.Services
             if (!string.IsNullOrEmpty(input.ExGoodType))
             {
                 queryFilter = queryFilter.And(c => c.EX_GOODTYP == input.ExGoodType);
+            }
+
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                queryFilter = queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID));
+            }
+            else
+            {
+                queryFilter = queryFilter.And(c => (input.ListUserPlant.Contains(c.LACK1_PLANT.FirstOrDefault().PLANT_ID) && c.LACK1_LEVEL == Enums.Lack1Level.Plant) ||
+                                                    (input.ListNppbkc.Contains(c.NPPBKC_ID) && c.LACK1_LEVEL == Enums.Lack1Level.Nppbkc));
             }
 
             var data = _repository.Get(queryFilter, null, incTables).ToList();
