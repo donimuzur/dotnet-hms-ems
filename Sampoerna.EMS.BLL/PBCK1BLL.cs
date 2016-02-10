@@ -99,19 +99,14 @@ namespace Sampoerna.EMS.BLL
 
 
             if(input.UserRole == Enums.UserRole.POA){
-                var nppbkc = _nppbkcbll.GetNppbkcMainPlantOnlyByPoa(input.UserId).Select(d => d.NPPBKC_ID).ToList();
-
                 //delegate
                 if (delegateUser.Count > 0)
                 {
                     delegateUser.Add(input.UserId);
-                    queryFilter = queryFilter.And(c => (delegateUser.Contains(c.CREATED_BY) || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))));
+                    queryFilter = queryFilter.And(c => (delegateUser.Contains(c.CREATED_BY) || (c.STATUS != Enums.DocumentStatus.Draft)));
                 }
                 else
-                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))));
-
-
-                
+                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft)));
             }
             //first code when manager exists
             //else if (input.UserRole == Enums.UserRole.Manager) {
@@ -187,9 +182,7 @@ namespace Sampoerna.EMS.BLL
             {
                 if (input.UserRole == Enums.UserRole.POA)
                 {
-                    var nppbkc = _nppbkcbll.GetNppbkcMainPlantOnlyByPoa(input.UserId).Select(d => d.NPPBKC_ID).ToList();
-
-                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID)) || c.STATUS == Enums.DocumentStatus.Completed));
+                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && input.ListNppbkc.Contains(c.NPPBKC_ID))));
                 }
                 //first code when manager exists
                 //else if (input.UserRole == Enums.UserRole.Manager)
@@ -201,7 +194,7 @@ namespace Sampoerna.EMS.BLL
                 //}
                 else
                 {
-                    queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId || c.STATUS == Enums.DocumentStatus.Completed);
+                    queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId || input.ListNppbkc.Contains(c.NPPBKC_ID));
                 }
             }
 
@@ -1785,6 +1778,9 @@ namespace Sampoerna.EMS.BLL
             if (!string.IsNullOrEmpty(input.pbck1Number))
                 queryFilter = queryFilter.And(c => c.NUMBER == input.pbck1Number);
 
+            queryFilter =
+                    queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID));
+
             var pbck1Data = GetPbck1Data(queryFilter, input.SortOrderColumn);
 
             if (pbck1Data == null)
@@ -1820,7 +1816,7 @@ namespace Sampoerna.EMS.BLL
             Expression<Func<PBCK1, bool>> queryFilter = PredicateHelper.True<PBCK1>();
 
             queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed
-                && c.PBCK1_TYPE == Enums.PBCK1Type.New);
+                && c.PBCK1_TYPE == Enums.PBCK1Type.New && input.ListNppbkc.Contains(c.NPPBKC_ID));
 
             if (input.YearFrom.HasValue)
                 queryFilter =
@@ -2826,7 +2822,9 @@ namespace Sampoerna.EMS.BLL
             if (!string.IsNullOrEmpty(input.creator))
             {
                 queryFilter = queryFilter.And(c => c.CREATED_BY == input.creator);
-            }                
+            }
+
+            queryFilter = queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID));
 
             Func<IQueryable<PBCK1>, IOrderedQueryable<PBCK1>> orderBy = null;
             {

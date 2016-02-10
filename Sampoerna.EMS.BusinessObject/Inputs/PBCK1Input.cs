@@ -22,12 +22,11 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public string UserId { get; set; }
         public Enums.UserRole UserRole { get; set; }
+        public List<string> ListNppbkc { get; set; }
     }
 
     public class Pbck1GetOpenDocumentByParamInput : Pbck1GetByParamInput
     {
-        public string UserId { get; set; }
-        public Enums.UserRole UserRole { get; set; }
     }
 
     public class Pbck1GetCompletedDocumentByParamInput : Pbck1GetByParamInput
@@ -46,6 +45,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string SortOrderColumn { get; set; }
 
         public string pbck1Number { get; set; }
+        public List<string> ListNppbkc { get; set; }
     }
 
     public class Pbck1GetMonitoringUsageByParamInput
@@ -64,6 +64,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         /// optional if want to sorting from query
         /// </summary>
         public string SortOrderColumn { get; set; }
+        public List<string> ListNppbkc { get; set; }
     }
 
     public class Pbck1SaveInput 
@@ -141,6 +142,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string oriKppbc { get; set; }
         public string poa { get; set; }
         public string creator { get; set; }
+        public List<string> ListNppbkc { get; set; }
     }
 
     public class Pbck1GetProductionLack1TisToTisParamInput
