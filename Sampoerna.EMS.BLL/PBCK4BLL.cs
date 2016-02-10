@@ -2080,7 +2080,8 @@ namespace Sampoerna.EMS.BLL
             //{
             //    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId) || c.STATUS == Enums.DocumentStatus.Completed);
             //}
-            queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID));
+            if (input.UserRole != Enums.UserRole.Administrator)
+                queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID));
 
             Func<IQueryable<PBCK4>, IOrderedQueryable<PBCK4>> orderBy = null;
             {
