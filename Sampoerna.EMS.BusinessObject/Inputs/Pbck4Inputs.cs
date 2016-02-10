@@ -135,6 +135,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public Enums.UserRole UserRole { get; set; }
         public string UserId { get; set; }
+        public List<string> ListUserPlant { get; set; }
     }
 
     public class EditCompletedDocumentInput

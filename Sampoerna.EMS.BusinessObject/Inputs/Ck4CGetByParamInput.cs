@@ -18,6 +18,10 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string NppbkcId { get; set; }
         public string ShortOrderColumn { get; set; }
         public Enums.CK4CType Ck4CType { get; set; }
+        public List<string> ListNppbkc { get; set; }
+        public List<string> ListUserPlant { get; set; }
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
 
     }
 
@@ -51,8 +55,6 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
     public class Ck4cGetOpenDocumentByParamInput : Ck4CGetByParamInput
     {
-        public string UserId { get; set; }
-        public Enums.UserRole UserRole { get; set; }
     }
 
     public class Ck4cGetCompletedDocumentByParamInput : Ck4CGetByParamInput
@@ -67,6 +69,10 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string PlantId { get; set; }
 
         public bool isForExport { get; set; }
+
+        public List<string> ListNppbkc { get; set; }
+        public List<string> ListUserPlant { get; set; }
+        public Enums.UserRole UserRole { get; set; }
     }
 
     public class Ck4CDashboardParamInput
@@ -82,5 +88,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string UserId { get; set; }
 
         public Enums.UserRole UserRole { get; set; }
+        public List<string> ListNppbkc { get; set; }
+        public List<string> ListUserPlant { get; set; }
     }
 }

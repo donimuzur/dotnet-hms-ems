@@ -94,6 +94,7 @@
     <Compile Include="PBCK7AndPBCK3BLL.cs" />
     <Compile Include="PoaDelegationBLL.cs" />
     <Compile Include="ProductionBLL.cs" />
+    <Compile Include="ReversalBLL.cs" />
     <Compile Include="SchedulerSettingBLL.cs" />
     <Compile Include="Services\Back1Services.cs" />
     <Compile Include="Services\Back3Services.cs" />
@@ -207,9 +208,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="job_scheduling_data_2_0.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

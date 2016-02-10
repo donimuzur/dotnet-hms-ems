@@ -682,5 +682,13 @@ namespace Sampoerna.EMS.BLL
             return listUserDelegate.Contains(input.CurrentUser);
 
         }
+
+        public bool AllowAccessData(WorkflowAllowAccessDataInput input)
+        {
+            if (input.UserPlant.Contains(input.DataPlant))
+                return true;
+
+            return false;
+        }
     }
 }

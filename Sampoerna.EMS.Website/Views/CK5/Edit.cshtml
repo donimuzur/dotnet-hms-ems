@@ -657,6 +657,7 @@
         });
 
         $("#btnSaveMaterial").click(function () {
+            
             var materialInput = {};
             var materialNumber = $('#uploadMaterialNumber').val();
             var sourcePlant = $("#SourcePlantId").find("option:selected").val();
@@ -703,6 +704,7 @@
         });
 
         $("#uploadMaterialNumber").change(function () {
+            
             if ($("#uploadMaterialNumber").length) {
                 var materialNumber = $(this).find("option:selected").val();
 
@@ -713,6 +715,14 @@
 
                 } else {
                     var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+
+                    if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
+                        sourcePlant = $("#DestPlantId").find("option:selected").val();
+                    } else if ('@Model.Ck5Type.ToString()' == '@Enums.CK5Type.Manual.ToString()') {
+                        if ($('#IsFreeTextSource').is(':checked')) {
+                            sourcePlant = $("#DestPlantId").find("option:selected").val();
+                        }
+                    }
 
                     if ('@Model.Ck5Type.ToString()' == "Waste") {
                         ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariffWaste", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });

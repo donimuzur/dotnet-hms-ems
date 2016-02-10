@@ -7,6 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
@@ -69,9 +70,10 @@ namespace Sampoerna.EMS.BLL
         private IPoaDelegationServices _poaDelegationServices;
         private IUserPlantMapService _userPlantMapService;
         private IInventoryMovementService _movementService;
+        private ILack1TrackingService _lack1TrackingService;
 
         private string includeTables = "CK5_MATERIAL, PBCK1, UOM, USER, USER1, CK5_FILE_UPLOAD";
-        private List<string> _allowedCk5Uom =  new List<string>(new string[] { "KG", "G", "L" });
+        private List<string> _allowedCk5Uom =  new List<string>(new string[] { "KG", "G", "L", "Btg" });
 
         private List<string> _allowedCk5MarketReturnProdCode= new List<string>(new string[] { "01", "02", "03","04","05","06" });
 
@@ -125,6 +127,7 @@ namespace Sampoerna.EMS.BLL
             _poaDelegationServices = new PoaDelegationServices(_uow, _logger);
             _userPlantMapService = new UserPlantMapService(_uow, _logger);
             _movementService = new InventoryMovementService(_uow,_logger);
+            _lack1TrackingService = new Lack1TrackingService(_uow,_logger);
         }
         
 
@@ -5007,21 +5010,21 @@ namespace Sampoerna.EMS.BLL
 
                             throw new Exception(
                                 String.Format("Conversion value for {0} in {1} to {2} is not found in material master",
-                                    ck5MaterialDto.BRAND, ck5MaterialDto.PLANT_ID, ck5MaterialDto.CONVERTED_UOM_ID));
+                                    material.STICKER_CODE, material.WERKS, ck5MaterialDto.CONVERTED_UOM_ID));
                         }
                     }
                     else
                     {
                         throw new Exception(
                                 String.Format("Conversion value for {0} in {1} to {2} is not found in material master",
-                                    ck5MaterialDto.BRAND, ck5MaterialDto.PLANT_ID, ck5MaterialDto.CONVERTED_UOM_ID));
+                                    material.STICKER_CODE, material.WERKS, ck5MaterialDto.CONVERTED_UOM_ID));
                     }
                     ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
                 }
                 else
                 {
 
-                    throw new Exception(String.Format("Material Conversion {0} in {1} is not found in material master", ck5MaterialDto.BRAND, ck5MaterialDto.PLANT_ID));
+                    throw new Exception(String.Format("Material Conversion {0} in {1} is not found in material master", material.STICKER_CODE, material.WERKS));
                 }
                 // ck5MaterialDto.CONVERTED_UOM_ID
             }
@@ -5752,30 +5755,26 @@ namespace Sampoerna.EMS.BLL
             return result;
         }
 
-        public List<Ck5MatdocDto> GetMatdocList(long ck5Id = 0)
+        public List<Ck5MatdocDto> GetMatdocList(long ck5Id)
         {
             
             var tempData = new List<INVENTORY_MOVEMENT>();
-            if (ck5Id == 0)
-            {
 
-                tempData = _movementService.GetMvt201bySto();
-            }
-            else
+            var ck5 = _ck5Service.GetById(ck5Id);
+            if (ck5 != null)
             {
-                var ck5 = _ck5Service.GetById(ck5Id);
-                if (ck5 != null)
-                {
-                    
-                    var stoNumber = ck5.STOB_NUMBER ?? ck5.STO_SENDER_NUMBER;
-                    tempData = _movementService.GetMvt201bySto(stoNumber);
-                }
+                var listUsed201 = _lack1TrackingService.GetMovement201FromTracking();
+                
+                tempData = _movementService.GetMvt201NotUsed(listUsed201);
             }
+            
 
 
             var data = Mapper.Map<List<Ck5MatdocDto>>(tempData);
 
             return data;
-        } 
+        }
+
+        
     }
 }

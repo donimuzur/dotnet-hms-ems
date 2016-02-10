@@ -38,6 +38,7 @@ namespace Sampoerna.EMS.BLL
         private IUserPlantMapBLL _userPlantBll;
         private IPOAMapBLL _poaMapBll;
         private ICK4CItemBLL _ck4cItemBll;
+        private IReversalBLL _reversalBll;
 
         public ProductionBLL(ILogger logger, IUnitOfWork uow)
         {
@@ -57,6 +58,7 @@ namespace Sampoerna.EMS.BLL
             _userPlantBll = new UserPlantMapBLL(_uow, _logger);
             _poaMapBll = new POAMapBLL(_uow, _logger);
             _ck4cItemBll = new CK4CItemBLL(_uow, _logger);
+            _reversalBll = new ReversalBLL(_logger,_uow);
         }
 
         public List<ProductionDto> GetAllByParam(ProductionGetByParamInput input)
@@ -77,11 +79,7 @@ namespace Sampoerna.EMS.BLL
             }
             if (!string.IsNullOrEmpty(input.UserId))
             {
-                var listUserPlant = _userPlantBll.GetPlantByUserId(input.UserId);
-
-                var listPoaPlant = _poaMapBll.GetPlantByPoaId(input.UserId);
-
-                queryFilter = queryFilter.And(c => listUserPlant.Contains(c.WERKS) || listPoaPlant.Contains(c.WERKS));
+                queryFilter = queryFilter.And(c => input.ListUserPlants.Contains(c.WERKS));
             }
 
             Func<IQueryable<PRODUCTION>, IOrderedQueryable<PRODUCTION>> orderBy = null;
@@ -438,6 +436,10 @@ namespace Sampoerna.EMS.BLL
                     facode = item.FaCode;
                 }
 
+                var reversalData = _reversalBll.GetListByParam(item.PlantWerks, item.FaCode, item.ProductionDate);
+
+                var existReversal = reversalData == null ? 0 : reversalData.Sum(x => x.ReversalQty);
+
                 var wasteData = _wasteBll.GetExistDto(item.CompanyCode, item.PlantWerks, item.FaCode, item.ProductionDate);
 
                 var oldUnpacked = unpacked;
@@ -446,13 +448,17 @@ namespace Sampoerna.EMS.BLL
 
                 var prodWaste = oldWaste <= item.QtyProduced ? oldWaste : 0;
 
-                var unpackedQty = oldUnpacked + item.QtyProduced - item.QtyPacked - oldWaste;
+                var unpackedQty = oldUnpacked + (item.QtyProduced - oldWaste) - (item.QtyPacked - existReversal);
 
                 var prodQty = item.QtyProduced - prodWaste;
+
+                var packedQty = item.QtyPacked - existReversal;
 
                 item.QtyUnpacked = unpackedQty;
 
                 item.QtyProduced = prodQty;
+
+                item.QtyPacked = packedQty;
 
                 list.Add(item);
 
@@ -805,6 +811,10 @@ namespace Sampoerna.EMS.BLL
 
             foreach (var item in list)
             {
+                var reversalData = _reversalBll.GetListByParam(item.WERKS, item.FA_CODE, item.PRODUCTION_DATE);
+
+                var existReversal = reversalData == null ? 0 : reversalData.Sum(x => x.ReversalQty);
+
                 var wasteData = _wasteBll.GetExistDto(item.COMPANY_CODE, item.WERKS, item.FA_CODE, item.PRODUCTION_DATE);
 
                 var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
@@ -821,8 +831,8 @@ namespace Sampoerna.EMS.BLL
                     FaCode = item.FA_CODE,
                     ProductionDate = item.PRODUCTION_DATE,
                     QtyProduced = prodQty - prodWaste,
-                    QtyPacked = packed,
-                    QtyUnpacked = lastUnpacked + prodQty - packed - oldWaste
+                    QtyPacked = (packed - existReversal),
+                    QtyUnpacked = lastUnpacked + (prodQty - oldWaste) - (packed - existReversal)
                 };
 
                 lastUnpacked = prod.QtyUnpacked == null ? 0 : prod.QtyUnpacked.Value;

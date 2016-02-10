@@ -140,6 +140,12 @@ namespace Sampoerna.EMS.BLL.Services
 
             return _repository.Get(queryFilter, null, "PBCK1, CK5_MATERIAL").OrderBy(x => x.GR_DATE).ToList();
         }
+
+        public List<string> GetCk5AssignedMatdoc()
+        {
+            Expression<Func<CK5, bool>> queryFilter = c => !string.IsNullOrEmpty(c.MATDOC);
+            return _repository.Get(queryFilter).Select(x => x.MATDOC).ToList();
+        } 
     }
 
 }

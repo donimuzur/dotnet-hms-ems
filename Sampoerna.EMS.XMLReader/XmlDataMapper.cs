@@ -100,15 +100,17 @@ namespace Sampoerna.EMS.XMLReader
                     if (item is LFA1)
                         continue;
 
-                    //if (item is USER)
-                    //{
-                    //    var is_active = item.GetType().GetProperty("IS_ACTIVE");
-                    //    if (is_active != null)
-                    //    {
-                    //        item.GetType().GetProperty("IS_ACTIVE").SetValue(item, 0);
-                    //        repo.Update(item);
-                    //    }
-                    //}
+                    if (item is USER)
+                    {
+                        var isActive = item.GetType().GetProperty("IS_ACTIVE") != null && (bool)item.GetType().GetProperty("IS_ACTIVE").GetValue(item);
+                        if (!isActive)
+                        {
+                            item.GetType().GetProperty("IS_ACTIVE").SetValue(item, 0);
+                            repo.Update(item);
+                            continue;
+                            
+                        }
+                    }
 
                     var isFromSap = item.GetType().GetProperty("IS_FROM_SAP") != null && (bool)item.GetType().GetProperty("IS_FROM_SAP").GetValue(item);
                     if (!isFromSap)

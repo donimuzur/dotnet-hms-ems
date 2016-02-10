@@ -54,6 +54,6 @@ namespace Sampoerna.EMS.Contract
 
         bool IsAllowEditLack1(string createdUser, string currentUserId, Enums.DocumentStatus status);
 
-
+        bool AllowAccessData(WorkflowAllowAccessDataInput input);
     }
 }

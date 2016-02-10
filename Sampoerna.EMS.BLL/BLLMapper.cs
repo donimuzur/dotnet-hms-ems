@@ -491,6 +491,27 @@ namespace Sampoerna.EMS.BLL
 
             #endregion
 
+            #region Reversal
+
+            Mapper.CreateMap<REVERSAL, ReversalDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ReversalId, opt => opt.MapFrom(src => src.REVERSAL_ID))
+                .ForMember(dest => dest.ZaapShiftId, opt => opt.MapFrom(src => src.ZAAP_SHIFT_RPT_ID))
+                .ForMember(dest => dest.ProductionDate, opt => opt.MapFrom(src => src.PRODUCTION_DATE))
+                .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
+                .ForMember(dest => dest.Werks, opt => opt.MapFrom(src => src.WERKS))
+                .ForMember(dest => dest.ReversalQty, opt => opt.MapFrom(src => src.REVERSAL_QTY))
+                ;
+
+            Mapper.CreateMap<ReversalDto, REVERSAL>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.REVERSAL_ID, opt => opt.MapFrom(src => src.ReversalId))
+                .ForMember(dest => dest.ZAAP_SHIFT_RPT_ID, opt => opt.MapFrom(src => src.ZaapShiftId))
+                .ForMember(dest => dest.PRODUCTION_DATE, opt => opt.MapFrom(src => src.ProductionDate))
+                .ForMember(dest => dest.FA_CODE, opt => opt.MapFrom(src => src.FaCode))
+                .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.Werks))
+                .ForMember(dest => dest.REVERSAL_QTY, opt => opt.MapFrom(src => src.ReversalQty))
+                ;
+
+            #endregion
         }
     }
 }

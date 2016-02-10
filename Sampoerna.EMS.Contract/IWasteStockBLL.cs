@@ -11,7 +11,7 @@ namespace Sampoerna.EMS.Contract
 
         WasteStockDto GetById(int id, bool isIncludeTable);
 
-        List<WasteStockDto> GetAllDataOrderByUserAndGroupRole();
+        List<WasteStockDto> GetAllDataOrderByUserAndGroupRole(List<string> ListUserPlants);
 
         List<GetListMaterialByPlantOutput> GetListMaterialByPlant(string plantId);
 

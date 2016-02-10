@@ -1,4 +1,5 @@
-﻿using Sampoerna.EMS.Core;
+﻿using System.Collections.Generic;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.Inputs
 {
@@ -31,5 +32,14 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string CurrentUser { get; set; }
     }
 
-  
+
+    public class WorkflowAllowAccessDataInput
+    {
+        public List<string> UserPlant { get; set; }
+        public Enums.UserRole UserRole { get; set; }
+        public string UserId { get; set; }
+
+        public string DataPlant { get; set; }
+        public string DataUser { get; set; }
+    }
 }

@@ -1078,6 +1078,27 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var ck5Details = _ck5Bll.GetDetailsCK5(id);
 
+                string plantId = ck5Details.Ck5Dto.SOURCE_PLANT_ID;
+                switch (ck5Details.Ck5Dto.CK5_TYPE)
+                {
+                    case Enums.CK5Type.PortToImporter:
+                    case Enums.CK5Type.DomesticAlcohol:
+                        plantId = ck5Details.Ck5Dto.DEST_PLANT_ID;
+                        break;
+                    case Enums.CK5Type.Manual:
+                        if (ck5Details.Ck5Dto.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                            plantId = ck5Details.Ck5Dto.DEST_PLANT_ID;
+                        break;
+                }
+                var inputEdit = new WorkflowAllowAccessDataInput
+                {
+                    UserId = CurrentUser.USER_ID,
+                    UserRole = CurrentUser.UserRole,
+                    UserPlant = CurrentUser.ListUserPlants,
+                    DataPlant = plantId,
+                    DataUser = ck5Details.Ck5Dto.CREATED_BY
+                };
+
                 Mapper.Map(ck5Details.Ck5Dto, model);
 
                 //validate
@@ -1382,6 +1403,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 Mapper.Map(ck5Details.Ck5Dto, model);
 
+             
+
                 model.SourcePlantId = model.SourcePlantId + " - " + model.SourcePlantName;
                 model.DestPlantId = model.DestPlantId + " - " + model.DestPlantName;
 
@@ -1481,6 +1504,22 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
                 input.PoaApprove = ck5Details.Ck5Dto.APPROVED_BY_POA;
+
+
+                var inputEdit = new WorkflowAllowAccessDataInput
+                {
+                    UserId = CurrentUser.USER_ID,
+                    UserRole = CurrentUser.UserRole,
+                    UserPlant = CurrentUser.ListUserPlants,
+                    DataPlant = input.PlantId,
+                    DataUser = input.CreatedUser
+                };
+
+                if (!_workflowBll.AllowAccessData(inputEdit))
+                {
+                    AddMessageInfo("No Access to Edit/View the data", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Index");
+                }
 
                 //workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
@@ -1655,6 +1694,32 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var ck5Details = _ck5Bll.GetDetailsCK5(id);
 
+                string plantId = ck5Details.Ck5Dto.SOURCE_PLANT_ID;
+                switch (ck5Details.Ck5Dto.CK5_TYPE)
+                {
+                    case Enums.CK5Type.PortToImporter:
+                    case Enums.CK5Type.DomesticAlcohol:
+                        plantId = ck5Details.Ck5Dto.DEST_PLANT_ID;
+                        break;
+                    case Enums.CK5Type.Manual:
+                        if (ck5Details.Ck5Dto.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText)
+                            plantId = ck5Details.Ck5Dto.DEST_PLANT_ID;
+                        break;
+                }
+                var inputEdit = new WorkflowAllowAccessDataInput
+                {
+                    UserId = CurrentUser.USER_ID,
+                    UserRole = CurrentUser.UserRole,
+                    UserPlant = CurrentUser.ListUserPlants,
+                    DataPlant = plantId,
+                    DataUser = ck5Details.Ck5Dto.CREATED_BY
+                };
+
+                if (!_workflowBll.AllowAccessData(inputEdit))
+                {
+                    AddMessageInfo("No Access to Edit/View the data", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Index");
+                }
 
                 Mapper.Map(ck5Details.Ck5Dto, model);
 
@@ -2915,19 +2980,21 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
         }
 
-        //public ActionResult CancelDocument(CK5FormViewModel model)
-        //{
-        //    try
-        //    {
-        //        CK5Workflow(model.Ck5Id, Enums.ActionType.Cancel, model.Comment);
-        //        AddMessageInfo("Success Cancel Document", Enums.MessageInfoType.Success);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
-        //    }
-        //    return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
-        //}
+
+        [HttpPost]
+        public ActionResult CancelDocument(CK5FormViewModel model)
+        {
+            try
+            {
+                CK5Workflow(model.Ck5Id, Enums.ActionType.Cancel, model.Comment);
+                AddMessageInfo("Success Cancel Document", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+        }
 
         public ActionResult CancelSAPDocument(long id)
         {
@@ -2937,88 +3004,100 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (ck5.STATUS_ID == Enums.DocumentStatus.STOCreated && string.IsNullOrEmpty(ck5.DN_NUMBER))
                 {
+
+
                     CK5Workflow(id, Enums.ActionType.CancelSTOCreated, string.Empty);
 
-                    try
+                    if (ck5.CK5_TYPE != Enums.CK5Type.Manual && ck5.CK5_TYPE != Enums.CK5Type.MarketReturn &&
+                        ck5.CK5_TYPE != Enums.CK5Type.DomesticAlcohol && ck5.CK5_TYPE != Enums.CK5Type.Waste)
                     {
-                        //create xml file
-                        var ck5XmlDto = _ck5Bll.GetCk5ForXmlById(id);
-                        ////todo check validation
-                        //var fileName = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5APP_" +
-                        //               ck5XmlDto.SUBMISSION_NUMBER + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
+                        try
+                        {
+                            //create xml file
+                            var ck5XmlDto = _ck5Bll.GetCk5ForXmlById(id);
+                            ////todo check validation
+                            //var fileName = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5APP_" +
+                            //               ck5XmlDto.SUBMISSION_NUMBER + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
 
-                        var date = DateTime.Now.ToString("yyyyMMdd");
-                        var time = DateTime.Now.ToString("hhmmss");
+                            var date = DateTime.Now.ToString("yyyyMMdd");
+                            var time = DateTime.Now.ToString("hhmmss");
 
-                        var fileName = string.Format("CK5CAN_{0}-{1}-{2}.xml", ck5.SUBMISSION_NUMBER, date, time);
+                            var fileName = string.Format("CK5CAN_{0}-{1}-{2}.xml", ck5.SUBMISSION_NUMBER, date, time);
 
-                        if (fileName.Contains("/"))
-                            throw new Exception("You use Old CK5Number");
+                            if (fileName.Contains("/"))
+                                throw new Exception("You use Old CK5Number");
 
-                        ck5XmlDto.Ck5PathXml = Path.Combine(ConfigurationManager.AppSettings["CK5PathXml"], fileName);
+                            ck5XmlDto.Ck5PathXml = Path.Combine(ConfigurationManager.AppSettings["CK5PathXml"], fileName);
 
-                        XmlCK5DataWriter rt = new XmlCK5DataWriter();
+                            XmlCK5DataWriter rt = new XmlCK5DataWriter();
 
-                        rt.CreateCK5Xml(ck5XmlDto, "03");
+                            rt.CreateCK5Xml(ck5XmlDto, "03");
 
-                        AddMessageInfo("Success Cancel Document", Enums.MessageInfoType.Success);
+                            AddMessageInfo("Success Cancel Document", Enums.MessageInfoType.Success);
+                        }
+                        catch (Exception ex)
+                        {
+                            //failed create xml...
+                            //rollaback the update
+                            var input = new CK5WorkflowDocumentInput();
+                            input.DocumentId = id;
+                            input.UserId = CurrentUser.USER_ID;
+                            input.UserRole = CurrentUser.UserRole;
+                            input.ActionType = Enums.ActionType.CancelSTOCreated;
+
+                            _ck5Bll.CancelSTOCreatedRollback(input);
+                            AddMessageInfo("Failed Create CK5  XMl 03 message : " + ex.Message,
+                                Enums.MessageInfoType.Error);
+
+                        }
+
                     }
-                    catch (Exception ex)
-                    {
-                        //failed create xml...
-                        //rollaback the update
-                        var input = new CK5WorkflowDocumentInput();
-                        input.DocumentId = id;
-                        input.UserId = CurrentUser.USER_ID;
-                        input.UserRole = CurrentUser.UserRole;
-                        input.ActionType = Enums.ActionType.CancelSTOCreated;
-
-                        _ck5Bll.CancelSTOCreatedRollback(input);
-                        AddMessageInfo("Failed Create CK5  XMl 03 message : " + ex.Message, Enums.MessageInfoType.Error);
-
-                    }
-
                 }
                 else if (string.IsNullOrEmpty(ck5.DN_NUMBER))
                 {
                     CK5Workflow(id, Enums.ActionType.CancelSAP, string.Empty);
-                    try
+                    if (ck5.CK5_TYPE != Enums.CK5Type.Manual && ck5.CK5_TYPE != Enums.CK5Type.MarketReturn &&
+                        ck5.CK5_TYPE != Enums.CK5Type.DomesticAlcohol && ck5.CK5_TYPE != Enums.CK5Type.Waste)
                     {
-                        //create xml file
-                        var ck5XmlDto = _ck5Bll.GetCk5ForXmlById(id);
-                        ////todo check validation
-                        //var fileName = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5APP_" +
-                        //               ck5XmlDto.SUBMISSION_NUMBER + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
+                        try
+                        {
+                            //create xml file
+                            var ck5XmlDto = _ck5Bll.GetCk5ForXmlById(id);
+                            ////todo check validation
+                            //var fileName = ConfigurationManager.AppSettings["CK5PathXml"] + "CK5APP_" +
+                            //               ck5XmlDto.SUBMISSION_NUMBER + "-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
 
-                        var date = DateTime.Now.ToString("yyyyMMdd");
-                        var time = DateTime.Now.ToString("hhmmss");
+                            var date = DateTime.Now.ToString("yyyyMMdd");
+                            var time = DateTime.Now.ToString("hhmmss");
 
-                        var fileName = string.Format("CK5CAN_{0}-{1}-{2}.xml", ck5.SUBMISSION_NUMBER, date, time);
+                            var fileName = string.Format("CK5CAN_{0}-{1}-{2}.xml", ck5.SUBMISSION_NUMBER, date, time);
 
-                        if (fileName.Contains("/"))
-                            throw new Exception("You use Old CK5Number");
+                            if (fileName.Contains("/"))
+                                throw new Exception("You use Old CK5Number");
 
-                        ck5XmlDto.Ck5PathXml = Path.Combine(ConfigurationManager.AppSettings["CK5PathXml"], fileName);
+                            ck5XmlDto.Ck5PathXml = Path.Combine(ConfigurationManager.AppSettings["CK5PathXml"], fileName);
 
-                        XmlCK5DataWriter rt = new XmlCK5DataWriter();
+                            XmlCK5DataWriter rt = new XmlCK5DataWriter();
 
-                        rt.CreateCK5Xml(ck5XmlDto, "03");
+                            rt.CreateCK5Xml(ck5XmlDto, "03");
 
-                        AddMessageInfo("Success Cancel Document", Enums.MessageInfoType.Success);
-                    }
-                    catch (Exception ex)
-                    {
-                        //failed create xml...
-                        //rollaback the update
-                        var input = new CK5WorkflowDocumentInput();
-                        input.DocumentId = id;
-                        input.UserId = CurrentUser.USER_ID;
-                        input.UserRole = CurrentUser.UserRole;
-                        input.ActionType = Enums.ActionType.CancelSTOCreated;
+                            AddMessageInfo("Success Cancel Document", Enums.MessageInfoType.Success);
+                        }
+                        catch (Exception ex)
+                        {
+                            //failed create xml...
+                            //rollaback the update
+                            var input = new CK5WorkflowDocumentInput();
+                            input.DocumentId = id;
+                            input.UserId = CurrentUser.USER_ID;
+                            input.UserRole = CurrentUser.UserRole;
+                            input.ActionType = Enums.ActionType.CancelSTOCreated;
 
-                        _ck5Bll.CancelSTOCreatedRollback(input);
-                        AddMessageInfo("Failed Create CK5  XMl 03 message : " + ex.Message, Enums.MessageInfoType.Error);
+                            _ck5Bll.CancelSTOCreatedRollback(input);
+                            AddMessageInfo("Failed Create CK5  XMl 03 message : " + ex.Message,
+                                Enums.MessageInfoType.Error);
 
+                        }
                     }
                 }
                 else

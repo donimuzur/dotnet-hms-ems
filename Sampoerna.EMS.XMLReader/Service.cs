@@ -70,6 +70,11 @@ namespace Sampoerna.EMS.XMLReader
             {
                 return new XmlPaymentDataMapper(xmlfile);
             }
+            else if (xmlfile.Contains("USER"))
+            {
+                return new XmlUserDataMapper(xmlfile);
+            }
+
             return null;
         }
         private IXmlDataReader XmlReaderFactoryMonthly(string xmlfile)
@@ -127,10 +132,7 @@ namespace Sampoerna.EMS.XMLReader
             {
                 return new XmlMaterialDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("USER"))
-            {
-                return new XmlUserDataMapper(xmlfile);
-            }
+            
 
             return null;
         }

@@ -17,6 +17,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public List<InvMovementItemWithConvertion> ReceivingList { get; set; }
         public List<InvMovementItemWithConvertion> AllUsageList { get; set; }
         public List<InvMovementItemWithConvertion> Mvt201List { get; set; }
+        public List<InvMovementItemWithConvertion> Mvt201Assigned { get; set; }
         public List<InvMovementUsageProportional> UsageProportionalList { get; set; }
     }
 
@@ -49,5 +50,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public string Order { get; set; }
         public decimal Qty { get; set; }
         public decimal TotalQtyPerMaterialId { get; set; }
+
+        public string Batch { get; set; }
     }
 }
