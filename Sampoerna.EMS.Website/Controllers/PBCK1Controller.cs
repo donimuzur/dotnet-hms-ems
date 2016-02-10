@@ -59,9 +59,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IT001KBLL _t001kBll;
         private IPOABLL _poabll;
         private IZaidmExKPPBCBLL _kppbcbll;
+        private IUserPlantMapBLL _userPlantBll;
+        private IPOAMapBLL _poaMapBll;
 
         public PBCK1Controller(IPageBLL pageBLL, IUnitOfMeasurementBLL uomBll, ICompanyBLL companyBll, IMasterDataBLL masterDataBll, IMonthBLL monthbll, IZaidmExGoodTypeBLL goodTypeBll, ISupplierPortBLL supplierPortBll, IZaidmExNPPBKCBLL nppbkcbll, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll,
-            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll, ILFA1BLL lfa1Bll, IT001KBLL t001kBll, IPbck1DecreeDocBLL pbck1DecreeDocBll, ICK5BLL ck5Bll, IPOABLL poabll, IZaidmExKPPBCBLL kppbcbll)
+            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll, ILFA1BLL lfa1Bll, IT001KBLL t001kBll, IPbck1DecreeDocBLL pbck1DecreeDocBll, ICK5BLL ck5Bll, IPOABLL poabll, IZaidmExKPPBCBLL kppbcbll, IUserPlantMapBLL userPlantBll, IPOAMapBLL poaMapBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
@@ -85,6 +87,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _ck5Bll = ck5Bll;
             _poabll = poabll;
             _kppbcbll = kppbcbll;
+            _userPlantBll = userPlantBll;
+            _poaMapBll = poaMapBll;
         }
 
         private List<Pbck1Item> GetOpenDocument(Pbck1FilterViewModel filter = null)
@@ -100,6 +104,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = Mapper.Map<Pbck1GetOpenDocumentByParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
             input.UserRole = CurrentUser.UserRole;
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
 
             var dbData = _pbck1Bll.GetOpenDocumentByParam(input).OrderByDescending(c => c.Pbck1Number);
             return Mapper.Map<List<Pbck1Item>>(dbData);
@@ -116,6 +121,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //getbyparams
             var input = Mapper.Map<Pbck1GetCompletedDocumentByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
+
             var dbData = _pbck1Bll.GetCompletedDocumentByParam(input);
             return Mapper.Map<List<Pbck1Item>>(dbData);
         }
@@ -257,10 +266,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private Pbck1ItemViewModel ModelInitial(Pbck1ItemViewModel model)
         {
+            var nppbkc = GlobalFunctions.GetNppbkcByFlagDeletionList(false);
+            var filterNppbkc = nppbkc.Where(c => CurrentUser.ListUserNppbkc.Contains(c.Value));
 
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.NppbkcList = GlobalFunctions.GetNppbkcByFlagDeletionList(false);
+            model.NppbkcList = new SelectList(filterNppbkc, "Value", "Text");
             model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
             model.SupplierPortList = GlobalFunctions.GetSupplierPortList(_supplierPortBll);
             //model.SupplierPlantList = GlobalFunctions.GetSupplierPlantList();
@@ -428,7 +439,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public Pbck1ViewModel InitPbck1ViewModel(Pbck1ViewModel model)
         {
-            model.SearchInput.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            var nppbkc = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            var filterNppbkc = nppbkc.Where(x => CurrentUser.ListUserNppbkc.Contains(x.Value));
+
+            model.SearchInput.NppbkcIdList = new SelectList(filterNppbkc, "Value", "Text");
             model.SearchInput.CreatorList = GlobalFunctions.GetCreatorList();
             model.SearchInput.PoaList = new SelectList(new List<SelectItemModel>(), "ValueField", "TextField");
             switch (model.SearchInput.DocumentType)
@@ -1412,6 +1426,15 @@ namespace Sampoerna.EMS.Website.Controllers
             Pbck1SummaryReportViewModel model;
             try
             {
+                var comp = GlobalFunctions.GetCompanyList(_companyBll);
+                var userComp = _userPlantBll.GetCompanyByUserId(CurrentUser.USER_ID);
+                var poaComp = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+                var distinctComp = comp.Where(x => userComp.Contains(x.Value));
+                if (CurrentUser.UserRole == Enums.UserRole.POA) distinctComp = comp.Where(x => poaComp.Contains(x.Value));
+                var getComp = new SelectList(distinctComp, "Value", "Text");
+
+                var nppbkc = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+                var filterNppbkc = nppbkc.Where(x => CurrentUser.ListUserNppbkc.Contains(x.Value));
 
                 model = new Pbck1SummaryReportViewModel
                 {
@@ -1419,10 +1442,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     CurrentMenu = PageInfo,
                     SearchView =
                     {
-                        CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll),
+                        CompanyCodeList = getComp,
                         YearFromList = GetYearListPbck1(true),
                         YearToList = GetYearListPbck1(false),
-                        NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll)
+                        NppbkcIdList = new SelectList(filterNppbkc, "Value", "Text")
                     },
                     //view all data pbck1 completed document
                     DetailsList = SearchSummaryReports().OrderBy(c => c.NppbkcId).ToList()
@@ -1452,7 +1475,9 @@ namespace Sampoerna.EMS.Website.Controllers
             if (filter == null)
             {
                 //Get All
-                var pbck1Data = _pbck1Bll.GetSummaryReportByParam(new Pbck1GetSummaryReportByParamInput());
+                var pbck1Data = _pbck1Bll.GetSummaryReportByParam(new Pbck1GetSummaryReportByParamInput() { 
+                    ListNppbkc = CurrentUser.ListUserNppbkc
+                });
                 foreach (var item in pbck1Data)
                 {
                     var Kppbc = _lfa1Bll.GetById(item.NppbkcKppbcId);
@@ -1465,6 +1490,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //getbyparams
             var input = Mapper.Map<Pbck1GetSummaryReportByParamInput>(filter);
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
+
             var dbData = _pbck1Bll.GetSummaryReportByParam(input);
             foreach (var item in dbData)
             {
@@ -1478,7 +1505,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private SelectList GetYearListPbck1(bool isFrom)
         {
-            var pbck1List = _pbck1Bll.GetAllByParam(new Pbck1GetByParamInput());
+            var pbck1List = _pbck1Bll.GetAllByParam(new Pbck1GetByParamInput() { 
+                ListNppbkc = CurrentUser.ListUserNppbkc
+            });
 
             IEnumerable<SelectItemModel> query;
             if (isFrom)
@@ -1908,6 +1937,15 @@ namespace Sampoerna.EMS.Website.Controllers
             Pbck1MonitoringUsageViewModel model;
             try
             {
+                var comp = GlobalFunctions.GetCompanyList(_companyBll);
+                var userComp = _userPlantBll.GetCompanyByUserId(CurrentUser.USER_ID);
+                var poaComp = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+                var distinctComp = comp.Where(x => userComp.Contains(x.Value));
+                if (CurrentUser.UserRole == Enums.UserRole.POA) distinctComp = comp.Where(x => poaComp.Contains(x.Value));
+                var getComp = new SelectList(distinctComp, "Value", "Text");
+
+                var nppbkc = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+                var filterNppbkc = nppbkc.Where(x => CurrentUser.ListUserNppbkc.Contains(x.Value));
 
                 model = new Pbck1MonitoringUsageViewModel
                 {
@@ -1915,10 +1953,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     CurrentMenu = PageInfo,
                     SearchView =
                     {
-                        CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll),
+                        CompanyCodeList = getComp,
                         YearFromList = GetYearListPbck1(true),
                         YearToList = GetYearListPbck1(false),
-                        NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll),
+                        NppbkcIdList = new SelectList(filterNppbkc, "Value", "Text"),
                         SupNppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcbll),
                         SupKppbcList = GlobalFunctions.GetKppbcAll(_kppbcbll),
                         SupPlantList = GlobalFunctions.GetPlantAll(),
@@ -1947,7 +1985,9 @@ namespace Sampoerna.EMS.Website.Controllers
             if (filter == null)
             {
                 //Get All
-                var pbck1Data = _pbck1Bll.GetMonitoringUsageByParam(new Pbck1GetMonitoringUsageByParamInput());
+                var pbck1Data = _pbck1Bll.GetMonitoringUsageByParam(new Pbck1GetMonitoringUsageByParamInput() {
+                    ListNppbkc = CurrentUser.ListUserNppbkc
+                });
                 foreach (var item in pbck1Data)
                 {
                     var Kppbc = _lfa1Bll.GetById(item.NppbkcKppbcId);
@@ -1959,6 +1999,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //getbyparams
             var input = Mapper.Map<Pbck1GetMonitoringUsageByParamInput>(filter);
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
+
             var dbData = _pbck1Bll.GetMonitoringUsageByParam(input);
             foreach (var item in dbData)
             {
@@ -2138,12 +2180,17 @@ namespace Sampoerna.EMS.Website.Controllers
             if (String.IsNullOrEmpty(companyId))
             {
                 //GET All NPPBKC
-                var NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll).ToList();
+                var NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll).Where(x => CurrentUser.ListUserNppbkc.Contains(x.Value)).ToList();
                 return Json(NppbkcIdList.Select(c => c.Text).ToList(), JsonRequestBehavior.AllowGet);
             }
             else
             {
-                var NppbkcIdList = _t001kBll.GetNPPBKCIDByCompany(companyId);
+                var data = _nppbkcbll.GetNppbkcsByCompany(companyId);
+
+                data = data.Where(x => CurrentUser.ListUserNppbkc.Contains(x.NPPBKC_ID)).ToList();
+
+                var NppbkcIdList = data.Select(x => x.NPPBKC_ID).ToList();
+
                 return Json(NppbkcIdList, JsonRequestBehavior.AllowGet);
             }
         }
@@ -2818,17 +2865,24 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private Pbck1MonitoringMutasiViewModel InitMonitoringMutasi(Pbck1MonitoringMutasiViewModel model)
         {
-            var monitoringDtos = _pbck1Bll.GetMonitoringMutasiByParam(new Pbck1GetMonitoringMutasiByParamInput());
+            var monitoringDtos = _pbck1Bll.GetMonitoringMutasiByParam(new Pbck1GetMonitoringMutasiByParamInput() {
+                ListNppbkc = CurrentUser.ListUserNppbkc
+            });
+
+            var nppbkc = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            var filterNppbkc = nppbkc.Where(x => CurrentUser.ListUserNppbkc.Contains(x.Value));
+
             model.pbck1NumberList = new SelectList(monitoringDtos, "Pbck1Number", "Pbck1Number");
             model.yearFromList = GetYearListPbck1(true);
             model.yearToList = GetYearListPbck1(false);
             model.supPlantList = GlobalFunctions.GetPlantAll();
             model.supCompList = GlobalFunctions.GetCompanyListIdText(_companyBll);
-            model.oriNppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.oriNppbkcList = new SelectList(filterNppbkc, "Value", "Text");
             model.oriKppbcList = GlobalFunctions.GetKppbcAll(_kppbcbll);
             model.creatorList = GlobalFunctions.GetCreatorList();
 
             var input = Mapper.Map<Pbck1GetMonitoringMutasiByParamInput>(model);
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
 
             var dbData = _pbck1Bll.GetMonitoringMutasiByParam(input);
             model.DetailsList = Mapper.Map<List<Pbck1MonitoringMutasiItem>>(dbData);
@@ -3029,6 +3083,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = Mapper.Map<Pbck1GetByParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
             input.UserRole = CurrentUser.UserRole;
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
 
             var dbData = _pbck1Bll.GetAllByParam(input);
             return dbData;
