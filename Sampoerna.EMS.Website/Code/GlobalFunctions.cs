@@ -557,7 +557,7 @@ namespace Sampoerna.EMS.Website.Code
 
         }
 
-        public SelectList GetNppbkcByCurrentUser(List<string> listUserNppbkc)
+        public static SelectList GetNppbkcByCurrentUser(List<string> listUserNppbkc)
         {
             return new SelectList(listUserNppbkc);
         }
