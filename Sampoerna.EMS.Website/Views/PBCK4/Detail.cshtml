@@ -14,6 +14,7 @@
                 <div class="action-button">
                     <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "PBCK4", new { id = @Model.Pbck4Id })')" />
+                   
                 </div>
             </div>
         </div>
@@ -36,6 +37,8 @@
                         @Html.HiddenFor(model => model.PlantDesc)
                         @Html.HiddenFor(model => model.NppbkcId)
                         @Html.HiddenFor(model => model.NppbkcDesc)
+
+                        @Html.Partial("_Pbck4InformationDetails")
 
                         @Html.Partial("_Pbck4InformationDetails")
                         @Html.Partial("_Pbck4Printout")
@@ -393,5 +396,7 @@
             $('#upload').addClass('active');
 
         });
+
+     
     </script>
 }

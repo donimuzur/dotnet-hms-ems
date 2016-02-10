@@ -20,6 +20,10 @@
                         <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
                         <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
                     }
+                    else if (Model.AllowEditCompletedDocument)
+                    {
+                        <input type="button" class="btn btn-blue" value="Save" id="btnSave" />
+                    }
                     else
                     {
                         if (Model.AllowGovApproveAndReject || Model.DocumentStatus == Enums.DocumentStatus.Completed)
@@ -61,8 +65,13 @@
                         @Html.HiddenFor(model => model.PlantDesc)
                         @Html.HiddenFor(model => model.NppbkcId)
                         @Html.HiddenFor(model => model.NppbkcDesc)
-
-                        @if ((Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
+                        
+                        @if (Model.AllowEditCompletedDocument)
+                        {
+                            @Html.HiddenFor(model => model.Pbck4Id)
+                            @Html.Partial("_Pbck4EditCompleted")
+                        }
+                        else if ((Model.IsWaitingGovApproval && Model.AllowGovApproveAndReject)
                             || Model.DocumentStatus == Enums.DocumentStatus.Completed)
                         {
                             @Html.HiddenFor(model => model.Pbck4Id)
@@ -570,6 +579,10 @@
             $('#information').removeClass('active');
             $('#upload').addClass('active');
 
+        });
+        
+        $("#btnSave").click(function () {
+            $('#GovApproveForm').submit();
         });
     </script>
 }

@@ -22,6 +22,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Enums.UserRole UserRole { get; set; }
         public List<string> NppbkcList { get; set; }
         public List<string> DocumentNumberList { get; set; }
+        public List<string> ListNppbkc { get; set; }
+        public List<string> ListUserPlant { get; set; }
 
     }
 }

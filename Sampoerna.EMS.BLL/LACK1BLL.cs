@@ -109,25 +109,6 @@ namespace Sampoerna.EMS.BLL
 
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
         {
-
-            if (input.UserRole == Enums.UserRole.POA)
-            {
-                var nppbkc = _nppbkcService.GetNppbkcsByPoa(input.UserId);
-                if (nppbkc != null && nppbkc.Count > 0)
-                {
-                    input.NppbkcList = nppbkc.Select(c => c.NPPBKC_ID).ToList();
-                }
-                else
-                {
-                    input.NppbkcList = new List<string>();
-                }
-            }
-            else if (input.UserRole == Enums.UserRole.Manager)
-            {
-                var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
-                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
-                input.DocumentNumberList = document;
-            }
             return Mapper.Map<List<Lack1Dto>>(_lack1Service.GetAllByParam(input));
         }
 
@@ -2009,38 +1990,32 @@ namespace Sampoerna.EMS.BLL
 
             var productionList = new List<Lack1GeneratedProductionDataDto>();
 
+            //Get product type info
+            var prodType = _goodProdTypeService.GetProdCodeByGoodTypeId(rc.ExcisableGoodsType);
+            if (prodType == null)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Data = null,
+                    ErrorCode = ExceptionCodes.BLLExceptions.GoodsProdTypeMappingNotFound.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.GoodsProdTypeMappingNotFound),
+                    Success = false
+                };
+            }
+
             foreach (var item in finalGoodsList)
             {
                 var itemToInsert = new Lack1GeneratedProductionDataDto()
                 {
                     FaCode = item.MaterialId,
                     Ordr = item.Ordr,
-                    ProdCode = "", //from ?
-                    ProductType = "",//from ?
-                    ProductAlias = "",//from?
+                    ProdCode = prodType.PROD_CODE,
+                    ProductType = prodType.PRODUCT_ALIAS,
+                    ProductAlias = prodType.PRODUCT_TYPE,
                     Amount = item.ProductionQty,
                     UomId = item.UomId,
                     UomDesc = item.UomDesc
                 };
-
-                //Get product type info
-                var prodType = _goodProdTypeService.GetProdCodeByGoodTypeId(item.ExGoodsTypeId);
-                if (prodType != null)
-                {
-                    itemToInsert.ProdCode = prodType.PROD_CODE;
-                    itemToInsert.ProductAlias = prodType.PRODUCT_ALIAS;
-                    itemToInsert.ProductType = prodType.PRODUCT_TYPE;
-                }
-                else
-                {
-                    return new Lack1GeneratedOutput()
-                    {
-                        Data = null,
-                        ErrorCode = ExceptionCodes.BLLExceptions.GoodsProdTypeMappingNotFound.ToString(),
-                        ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.GoodsProdTypeMappingNotFound),
-                        Success = false
-                    };
-                }
 
                 var rec = invMovementOutput.UsageProportionalList.FirstOrDefault(c =>
                     c.Order == item.ParentOrdr);
@@ -2067,8 +2042,10 @@ namespace Sampoerna.EMS.BLL
                     }
                 }
 
-                productionList.Add(itemToInsert);
-
+                if (itemToInsert.UomId != null)
+                {
+                    productionList.Add(itemToInsert);
+                }
             }
 
             rc.AlcoholTrackingList = allTrackingList;
@@ -3997,26 +3974,8 @@ namespace Sampoerna.EMS.BLL
 
         public List<Lack1Dto> GetDashboardDataByParam(Lack1GetDashboardDataByParamInput input)
         {
-            if (input.UserRole == Enums.UserRole.POA)
-            {
-                var nppbkc = _nppbkcService.GetNppbkcsByPoa(input.UserId);
-                if (nppbkc != null && nppbkc.Count > 0)
-                {
-                    input.NppbkcList = nppbkc.Select(c => c.NPPBKC_ID).ToList();
-                }
-                else
-                {
-                    input.NppbkcList = new List<string>();
-                }
-            }
-            else if (input.UserRole == Enums.UserRole.Manager)
-            {
-                var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
-                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
-                input.DocumentNumberList = document;
-            }
-
             var data = _lack1Service.GetDashboardDataByParam(input);
+
             return Mapper.Map<List<Lack1Dto>>(data);
         }
 
