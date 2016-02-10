@@ -1295,6 +1295,7 @@
     <Content Include="Views\CK5\_CK5MarketReturnListSummaryReport.cshtml" />
     <Content Include="Views\XmlFileManagement\Detail.cshtml" />
     <Content Include="Views\Reversal\Index.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4EditCompleted.cshtml" />
     <Content Include="Views\Reversal\_ReversalList.cshtml" />
     <Content Include="Views\Reversal\Create.cshtml" />
     <Content Include="Views\Reversal\_HomeCreate.cshtml" />
