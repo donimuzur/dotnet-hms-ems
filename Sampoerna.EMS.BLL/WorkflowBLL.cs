@@ -685,6 +685,7 @@ namespace Sampoerna.EMS.BLL
 
         public bool AllowAccessData(WorkflowAllowAccessDataInput input)
         {
+            if (input.UserRole == Enums.UserRole.Administrator) return true;
             if (input.UserPlant.Contains(input.DataPlant))
                 return true;
 
