@@ -35,7 +35,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public List<string> ListUserPlant { get; set; }
         public string UserId { get; set; }
-
+        public Enums.UserRole UserRole { get; set; }
 
     }
     public class Pbck3SummaryInput
@@ -173,6 +173,26 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     public class GetDashboardPbck3ByParamInput : GetDashboardPbck7ByParamInput
     {
         
+    }
+
+    public class EditCompletedDocumentPbck7Input
+    {
+        public int DocumentId { get; set; }
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
+        public List<BACK1_DOCUMENTDto> ListFile { get; set; }
+
+        public DateTime? Pbck7Date { get; set; }
+        public string Lampiran { get; set; }
+        public Enums.DocumentTypePbck7AndPbck3 DocumentType { get; set; }
+        public DateTime? ExecDateFrom { get; set; }
+        public DateTime? ExecDateTo { get; set; }
+
+        public string Back1Number { get; set; }
+        public DateTime? Back1Date { get; set; }
+        public List<BACK1_DOCUMENTDto> Back1Documents { get; set; }
+
+        public List<PBCK7_ITEMDto> Pbck7ItemsDto { get; set; }
     }
 
 }

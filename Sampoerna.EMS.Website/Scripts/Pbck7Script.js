@@ -453,20 +453,20 @@ function ValidateGovInput() {
             result = false;
         }
 
-        if ($('#poa_sk0').length == 0) {
-            AddValidationClass(false, 'poa-files');
+        //if ($('#poa_sk0').length == 0) {
+        //    AddValidationClass(false, 'poa-files');
 
-            if (result) {
-                $('#modalBodyMessage').text('Missing attach files BACK-1 Doc');
-                $('#ModalPbck7ValidateGov').modal('show');
+        //    if (result) {
+        //        $('#modalBodyMessage').text('Missing attach files BACK-1 Doc');
+        //        $('#ModalPbck7ValidateGov').modal('show');
 
-                $('#collapseFour').removeClass('collapse');
-                $('#collapseFour').addClass('in');
-                $("#collapseFour").css({ height: "auto" });
+        //        $('#collapseFour').removeClass('collapse');
+        //        $('#collapseFour').addClass('in');
+        //        $("#collapseFour").css({ height: "auto" });
 
-            }
-            result = false;
-        }
+        //    }
+        //    result = false;
+        //}
     }
     if (result == false) {
         $('#collapseFour').removeClass('collapse');

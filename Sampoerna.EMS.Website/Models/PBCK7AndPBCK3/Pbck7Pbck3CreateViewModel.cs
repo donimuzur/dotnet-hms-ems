@@ -142,5 +142,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public decimal RequestedQty { get; set; }
         public int FiscalYear { get; set; }
+
+        public bool AllowEditCompletedDocument { get; set; }
     }
 }

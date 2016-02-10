@@ -1665,19 +1665,24 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<PBCK4, bool>> queryFilter = PredicateHelper.True<PBCK4>();
 
-            //delegate 
-            var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
-
-            if (input.ListUserPlant == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
-
-            if (delegateUser.Count > 0)
+            if (input.UserRole != Enums.UserRole.Administrator)
             {
-                delegateUser.Add(input.UserId);
-                queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID) || delegateUser.Contains(c.CREATED_BY));
+                //delegate 
+                var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
+
+                if (input.ListUserPlant == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
+
+                if (delegateUser.Count > 0)
+                {
+                    delegateUser.Add(input.UserId);
+                    queryFilter =
+                        queryFilter.And(
+                            c => input.ListUserPlant.Contains(c.PLANT_ID) || delegateUser.Contains(c.CREATED_BY));
+                }
+                else
+                    queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID));
             }
-            else
-                queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID));
 
             if (!string.IsNullOrEmpty(input.Pbck4No))
             {

@@ -117,20 +117,25 @@ namespace Sampoerna.EMS.BLL
         {
             Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
 
-            //delegate 
-            var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
-
-            if (input.ListUserPlant == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
-
-            if (delegateUser.Count > 0)
+            if (input.UserRole != Enums.UserRole.Administrator)
             {
-                delegateUser.Add(input.UserId);
-                queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID) || delegateUser.Contains(c.CREATED_BY));
+                //delegate 
+                var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
+
+                if (input.ListUserPlant == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
+
+                if (delegateUser.Count > 0)
+                {
+                    delegateUser.Add(input.UserId);
+                    queryFilter =
+                        queryFilter.And(
+                            c => input.ListUserPlant.Contains(c.PLANT_ID) || delegateUser.Contains(c.CREATED_BY));
+                }
+                else
+                    queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID));
+                //end delegate
             }
-            else
-                queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID));
-            //end delegate
 
             if (!string.IsNullOrEmpty(input.NppbkcId))
             {
@@ -383,20 +388,24 @@ namespace Sampoerna.EMS.BLL
         {
             Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
 
-            //delegate 
-            var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(user.USER_ID, DateTime.Now);
-
-            if (user.ListUserPlants == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
-
-            if (delegateUser.Count > 0)
+            if (user.UserRole != Enums.UserRole.Administrator)
             {
-                delegateUser.Add(user.USER_ID);
-                queryFilter = queryFilter.And(c => user.ListUserPlants.Contains(c.PLANT_ID) || delegateUser.Contains(c.CREATED_BY));
-            }
-            else
-                queryFilter = queryFilter.And(c => user.ListUserPlants.Contains(c.PLANT_ID));
+                //delegate 
+                var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(user.USER_ID, DateTime.Now);
 
+                if (user.ListUserPlants == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
+
+                if (delegateUser.Count > 0)
+                {
+                    delegateUser.Add(user.USER_ID);
+                    queryFilter =
+                        queryFilter.And(
+                            c => user.ListUserPlants.Contains(c.PLANT_ID) || delegateUser.Contains(c.CREATED_BY));
+                }
+                else
+                    queryFilter = queryFilter.And(c => user.ListUserPlants.Contains(c.PLANT_ID));
+            }
             ////delegate 
             //var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(user.USER_ID, DateTime.Now);
 
@@ -3726,6 +3735,95 @@ namespace Sampoerna.EMS.BLL
 
         #endregion
 
+        public void EditCompletedDocumentPbck7(EditCompletedDocumentPbck7Input input)
+        {
+            var dbData = _repositoryPbck7.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS != Enums.DocumentStatus.Completed
+                && input.UserRole != Enums.UserRole.Administrator)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            
+            //prepare for set changes history
+            var origin = Mapper.Map<Pbck7AndPbck3Dto>(dbData);
+
+            var inputChangeLogs = new Pbck7AndPbck3Dto();
+            inputChangeLogs.Pbck7Date = input.Pbck7Date.HasValue ? input.Pbck7Date.Value : DateTime.Now;
+            inputChangeLogs.ExecDateFrom = input.ExecDateFrom;
+            inputChangeLogs.ExecDateTo = input.ExecDateTo;
+            inputChangeLogs.Lampiran = input.Lampiran;
+            inputChangeLogs.DocumentType = input.DocumentType;
+            
+            //add to change log
+            SetChangesHistory(origin, inputChangeLogs, input.UserId);
+
+            //update data
+            dbData.PBCK7_DATE = input.Pbck7Date.HasValue ? input.Pbck7Date.Value : DateTime.Now;
+            dbData.EXEC_DATE_FROM = input.ExecDateFrom.HasValue ? input.ExecDateFrom.Value : DateTime.Now;
+            dbData.EXEC_DATE_TO = input.ExecDateTo.HasValue ? input.ExecDateTo.Value : DateTime.Now;
+            dbData.LAMPIRAN = input.Lampiran;
+            dbData.DOCUMENT_TYPE = input.DocumentType;
+            
+
+            dbData.MODIFIED_DATE = DateTime.Now;
+            dbData.MODIFIED_BY = input.UserId;
+
+            //if (input.ListFile.Any())
+            //    CheckFileUploadChange(input);
+
+            _back1Services.InsertOrDeleteBack1Documents(input.ListFile);
+
+            string oldValue = "";
+            string newValue = "";
+
+            //pbck4 item
+            foreach (var pbck7ItemDto in input.Pbck7ItemsDto)
+            {
+                var dbPbck7Item = _repositoryPbck7Item.GetByID(pbck7ItemDto.PBCK7_ITEM_ID);
+                if (dbPbck7Item != null)
+                {
+                    //change log
+                    oldValue = ConvertHelper.ConvertInt32ToString(dbPbck7Item.FISCAL_YEAR);
+                    newValue = ConvertHelper.ConvertInt32ToString(pbck7ItemDto.FISCAL_YEAR);
+                    if (oldValue != newValue)
+                        SetChangeHistory(oldValue, newValue, "PBCK7_ITEM_FISCAL_YEAR", input.UserId, dbData.PBCK7_ID.ToString());
+
+
+
+                    dbPbck7Item.FISCAL_YEAR = pbck7ItemDto.FISCAL_YEAR;
+
+                    _repositoryPbck7Item.InsertOrUpdate(dbPbck7Item);
+                }
+            }
+
+            //back1
+            var dbBack1 = _back1Services.GetBack1ByPbck7Id(input.DocumentId);
+            if (dbBack1 != null)
+            {
+                //change log
+                oldValue = dbBack1.BACK1_NUMBER;
+                newValue = input.Back1Number;
+                if (oldValue != newValue)
+                    SetChangeHistory(oldValue, newValue, "BACK1_NUMBER", input.UserId, dbData.PBCK7_ID.ToString());
+
+                //change log
+                oldValue = ConvertHelper.ConvertDateToStringddMMMyyyy(dbBack1.BACK1_DATE);
+                newValue = ConvertHelper.ConvertDateToStringddMMMyyyy(input.Back1Date);
+                if (oldValue != newValue)
+                    SetChangeHistory(oldValue, newValue, "BACK1_DATE", input.UserId, dbData.PBCK7_ID.ToString());
+
+
+
+                dbPbck7Item.FISCAL_YEAR = pbck7ItemDto.FISCAL_YEAR;
+
+                _repositoryPbck7Item.InsertOrUpdate(dbPbck7Item);
+            }
+
+
+            _uow.SaveChanges();
+        }
     }
 
 

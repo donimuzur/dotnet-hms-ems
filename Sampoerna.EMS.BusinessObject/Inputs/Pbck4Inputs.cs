@@ -110,6 +110,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public List<string> ListUserPlant { get; set; }
         public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
     }
 
     public class GetListCk1ByPlantAndFaCodeInput

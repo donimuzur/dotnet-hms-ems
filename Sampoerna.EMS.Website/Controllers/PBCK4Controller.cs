@@ -1478,7 +1478,8 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = new Pbck4GetSummaryReportByParamInput
             {
                 ListUserPlant = CurrentUser.ListUserPlants,
-                UserId = CurrentUser.USER_ID
+                UserId = CurrentUser.USER_ID,
+                UserRole = CurrentUser.UserRole
             };
 
             var listPbck4 = _pbck4Bll.GetSummaryReportsByParam(input);
@@ -1513,6 +1514,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 input = new Pbck4GetSummaryReportByParamInput();
                 input.ListUserPlant = CurrentUser.ListUserPlants;
                 input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
 
                 dbData = _pbck4Bll.GetSummaryReportsByParam(input);
                 return Mapper.Map<List<Pbck4SummaryReportsItem>>(dbData);
@@ -1523,6 +1525,7 @@ namespace Sampoerna.EMS.Website.Controllers
             input = Mapper.Map<Pbck4GetSummaryReportByParamInput>(filter);
             input.ListUserPlant = CurrentUser.ListUserPlants;
             input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
 
             dbData = _pbck4Bll.GetSummaryReportsByParam(input);
             return Mapper.Map<List<Pbck4SummaryReportsItem>>(dbData);
