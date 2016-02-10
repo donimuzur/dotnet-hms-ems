@@ -1283,9 +1283,9 @@ namespace Sampoerna.EMS.BLL
 
         #region Summary Report 
 
-        public List<Lack2SummaryReportDto> GetSummaryReportsByParam(Lack2GetSummaryReportByParamInput input)
+        public List<Lack2SummaryReportDto> GetSummaryReportsByParam(Lack2GetSummaryReportByParamInput input, Login loginInfo)
         {
-            var rc = _lack2Service.GetSummaryReportsByParam(input);
+            var rc = _lack2Service.GetSummaryReportsByParam(input,loginInfo);
 
             rc = rc.OrderBy(x => x.LEVEL_PLANT_ID).ToList();
 
@@ -1371,10 +1371,10 @@ namespace Sampoerna.EMS.BLL
 
         #region Detail Report Summary
 
-        public List<Lack2DetailReportDto> GetDetailReportsByParam(Lack2GetDetailReportByParamInput input)
+        public List<Lack2DetailReportDto> GetDetailReportsByParam(Lack2GetDetailReportByParamInput input, Login loginInfo)
         {
 
-            var rc = _lack2Service.GetDetailReportsByParam(input);
+            var rc = _lack2Service.GetDetailReportsByParam(input,loginInfo);
 
             rc = rc.OrderBy(x => x.LEVEL_PLANT_ID).ToList();
 
@@ -1450,7 +1450,7 @@ namespace Sampoerna.EMS.BLL
 
         #region -------------- Dashboard ------------
 
-        public List<Lack2Dto> GetDashboardDataByParam(Lack2GetDashboardDataByParamInput input)
+        public List<Lack2Dto> GetDashboardDataByParam(Lack2GetDashboardDataByParamInput input, Login loginInfo)
         {
             if (input.UserRole == Enums.UserRole.POA)
             {
@@ -1471,7 +1471,7 @@ namespace Sampoerna.EMS.BLL
                 input.DocumentNumberList = document;
             }
 
-            var data = _lack2Service.GetDashboardDataByParam(input);
+            var data = _lack2Service.GetDashboardDataByParam(input,loginInfo);
             return Mapper.Map<List<Lack2Dto>>(data);
         }
 
