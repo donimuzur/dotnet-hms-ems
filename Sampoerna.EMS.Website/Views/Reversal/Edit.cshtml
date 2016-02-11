@@ -203,6 +203,27 @@
                 }
             });
         }
+
+        var formData = {
+            plantWerk: plant,
+            faCode: facode,
+            prodDate: '@Model.Details.ProductionDate'
+        };
+
+        if (formData.prodDate == '' || formData.plantWerk == '' || formData.faCode == '') {
+            $('#Details_PackedQty').val(0);
+        }
+        else {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetPackedData", "Reversal")',
+                data: formData,
+                success: function (data) {
+
+                    $('#Details_PackedQty').val(data);
+                }
+            });
+        }
     }
 
     function ajaxSelectPackedQty() {
@@ -221,6 +242,7 @@
                 url: '@Url.Action("GetPackedData", "Reversal")',
                 data: formData,
                 success: function (data) {
+                    
                     $('#Details_PackedQty').val(data);
                 }
             });
