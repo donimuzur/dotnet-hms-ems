@@ -54,6 +54,12 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string CompanyCode { get; set; }
         public int? YearFrom { get; set; }
         public int? YearTo { get; set; }
+        public string SupNppbkc { get; set; }
+        public string SupKppbc { get; set; }
+        public string SupPlant { get; set; }
+        public string SupCompany { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
         /// <summary>
         /// optional if want to sorting from query
         /// </summary>
@@ -127,6 +133,14 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string SortOrderColumn { get; set; }
 
         public string pbck1Number { get; set; }
+        public int? yearFrom { get; set; }
+        public int? yearTo { get; set; }
+        public string supPlant { get; set; }
+        public string supComp { get; set; }
+        public string oriNppbkc { get; set; }
+        public string oriKppbc { get; set; }
+        public string poa { get; set; }
+        public string creator { get; set; }
     }
 
     public class Pbck1GetProductionLack1TisToTisParamInput

@@ -69,6 +69,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime? GiDate { get; set; }
         public DateTime? GrDate { get; set; }
         public string DnNumber { get; set; }
+        public string MatDoc { get; set; }
     }
 
     public class CK5WorkflowDocumentData
@@ -147,4 +148,14 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string Back1Number { get; set; }
         public DateTime? Back1Date { get; set; }
    }
+
+    public class CK5MarketReturnGetSummaryReportByParamInput
+    {
+        public string FaCode { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
+        public string Pbck3No { get; set; }
+        public string Ck2No { get; set; }
+        
+    }
 }

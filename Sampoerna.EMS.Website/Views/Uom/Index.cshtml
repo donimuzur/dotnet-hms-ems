@@ -61,12 +61,14 @@
     <div class="row">
         <div class="col-sm-12">
             <h3 class="desc">UoM<span>Unit Of Measurement </span></h3>
+            @if (Model.IsNotViewer){
             <div class="action-button new">
                 <a href="@Url.Action("Create", "Uom")"><button class="btn btn-blue">NEW</button></a>
                 <a data-toggle="modal" data-target=".menu-maping-type">
 
                 </a>
             </div>
+            }
         </div>
     </div>
 </div>
@@ -104,7 +106,9 @@
                             <tr>
                                 <td class="action">
                                     <a href="@Url.Action("Details", "Uom", new { id = Url.Encode(item.UomId) })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    @if (Model.IsNotViewer){
                                     <a href="@Url.Action("Edit", "Uom", new { id = Url.Encode(item.UomId) })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                                    }
                                 </td>
                                 <td class="last">@Html.DisplayFor(model => item.UomId)</td>
                                 <td>@Html.DisplayFor(model => item.UomName)</td>

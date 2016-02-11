@@ -29,6 +29,7 @@
             <th>Last Change Time</th>
             <th>Status</th>
             <th>Legalize Date</th>
+            <th>Completed Date</th>
         </tr>
     </thead>
 
@@ -65,6 +66,7 @@
                     <td>@Html.DisplayFor(model => item.LastChangedTime)</td>
                     <td>@Html.DisplayFor(model => item.Status)</td>
                     <td class="last">@Html.DisplayFor(model => item.LegalizeData)</td>
+                    <td>@Html.DisplayFor(model => item.CompletedDate)</td>
                 </tr>
                 row = row + 1;
             }

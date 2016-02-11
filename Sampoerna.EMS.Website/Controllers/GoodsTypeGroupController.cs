@@ -99,6 +99,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             goodsTypeGroup.Details = distinctDetail;
+            goodsTypeGroup.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             return View("Index", goodsTypeGroup);
         }
 
@@ -112,6 +113,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
             var model = new GoodsTypeGroupCreateViewModel();
 
             InitCreateModel(model);
@@ -201,6 +208,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Edit(int id)
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Details", new { id });
+            }
+
             var model = new GoodsTypeGroupEditViewModel();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;

@@ -134,7 +134,9 @@ namespace Sampoerna.EMS.BLL.Services
             return data.ToList();
         }
 
-        public List<INVENTORY_MOVEMENT> GetMvt201(InvMovementGetUsageByParamInput input)
+        
+ 
+        public List<INVENTORY_MOVEMENT> GetMvt201(InvMovementGetUsageByParamInput input,bool isAssigned = false)
         {
             var mvtType201 = new List<string>()
             {
@@ -156,7 +158,27 @@ namespace Sampoerna.EMS.BLL.Services
 
             queryFilter = queryFilter.And(c => mvtType201.Contains(c.MVT));
 
-            return _repository.Get(queryFilter).ToList();
+
+            var data = _repository.Get(queryFilter).ToList();
+            if (!isAssigned)
+            {
+                return data;
+            }
+            else
+            {
+                
+                return null;
+            }
+        }
+
+        public List<INVENTORY_MOVEMENT> GetMvt201NotUsed(List<string> usedList)
+        {
+           
+
+            List<INVENTORY_MOVEMENT> data = _repository.Get(x => usedList.Contains(x.MAT_DOC)).ToList();    
+            
+
+            return data;
         }
     }
 }
