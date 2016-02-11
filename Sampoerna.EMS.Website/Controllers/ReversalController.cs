@@ -38,7 +38,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.Reversal,
-                ProductionDate = DateTime.Today.ToString("dd MMM yyyy"),
                 IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
                 IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
             });
@@ -162,6 +161,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     return View(model);
                 }
 
+                if (checkData.IsMoreThanPacked)
+                {
+                    AddMessageInfo("Can't create reversal data, reversal more than packed", Enums.MessageInfoType.Info);
+                    model = InitialModel(model);
+                    return View(model);
+                }
+
                 var reversalData = _reversalBll.Save(item, CurrentUser.USER_ID);
                 AddMessageInfo("Create Success", Enums.MessageInfoType.Success);
                 return RedirectToAction("Index");
@@ -244,6 +250,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (checkData.IsMoreThanQuota)
                 {
                     AddMessageInfo("Can't create reversal data, quota exceed", Enums.MessageInfoType.Info);
+                    model = InitialModel(model);
+                    return View(model);
+                }
+
+                if (checkData.IsMoreThanPacked)
+                {
+                    AddMessageInfo("Can't create reversal data, reversal more than packed", Enums.MessageInfoType.Info);
                     model = InitialModel(model);
                     return View(model);
                 }
@@ -332,6 +345,22 @@ namespace Sampoerna.EMS.Website.Controllers
             var checkData = _reversalBll.CheckData(paramInput);
 
             return Json(checkData.RemainingQuota);
+        }
+
+        [HttpPost]
+        public JsonResult GetPackedData(string plantWerk, string faCode, DateTime prodDate)
+        {
+            var paramInput = new ReversalCreateParamInput();
+            paramInput.ZaapShiftId = 0;
+            paramInput.ReversalQty = 0;
+            paramInput.ReversalId = 0;
+            paramInput.Werks = plantWerk;
+            paramInput.FaCode = faCode;
+            paramInput.ProductionDate = prodDate;
+
+            var checkData = _reversalBll.CheckData(paramInput);
+
+            return Json(checkData.PackedQty);
         }
 
         #endregion

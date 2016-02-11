@@ -100,9 +100,17 @@ namespace Sampoerna.EMS.BLL
 
             var reversalList = GetReversalData(x => x.ZAAP_SHIFT_RPT_ID == reversalInput.ZaapShiftId, null);
 
-            var remainingQty = (zaapData.QTY.HasValue ? zaapData.QTY.Value : 0) - (reversalList.Sum(x => x.REVERSAL_QTY.Value));
+            var remainingQty = (zaapData == null ? 0 : (zaapData.QTY.HasValue ? zaapData.QTY.Value : 0)) - 
+                (reversalList.Sum(x => x.REVERSAL_QTY.HasValue ? x.REVERSAL_QTY.Value : 0));
+
+            var reversalListByPlantFacodeDate = GetReversalData(x => x.WERKS == reversalInput.Werks && x.FA_CODE == reversalInput.FaCode
+                                                                    && x.PRODUCTION_DATE == reversalInput.ProductionDate, null);
+
+            var totalReversal = reversalListByPlantFacodeDate.Sum(x => x.REVERSAL_QTY.HasValue ? x.REVERSAL_QTY.Value : 0) + reversalInput.ReversalQty;
 
             output.IsPackedQtyNotExists = true;
+
+            output.PackedQty = 0;
 
             if (reversalInput.ReversalId > 0)
             {
@@ -134,11 +142,16 @@ namespace Sampoerna.EMS.BLL
 
                 if (prodData != null)
                 {
-                    if (prodData.QTY_PACKED.Value > 0) output.IsPackedQtyNotExists = false;
+                    if (prodData.QTY_PACKED.Value > 0) { 
+                        output.IsPackedQtyNotExists = false;
+                        output.PackedQty = prodData.QTY_PACKED.Value;
+                    }
                 }
             }
 
             if (reversalInput.ReversalQty > remainingQty) output.IsMoreThanQuota = true;
+
+            if (totalReversal > output.PackedQty) output.IsMoreThanPacked = true;
 
             output.RemainingQuota = remainingQty;
 

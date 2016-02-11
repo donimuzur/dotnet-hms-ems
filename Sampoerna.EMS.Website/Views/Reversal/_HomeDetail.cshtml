@@ -31,7 +31,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Fa Code</label>
+                                        <label class="col-md-4">FA Code</label>
                                         <div class="col-md-8">
                                             @Html.DropDownListFor(model => model.Details.FaCode, Model.FaCodeList, "Select", new { @class = "form-control", id = "SearchInput_FaCode", @disabled = "disabled" })
                                         </div>
@@ -41,7 +41,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Date</label>
+                                        <label class="col-md-4">Compensate Date</label>
                                         <div class="col-md-8">
                                             <div class="input-group date">
                                                 @Html.TextBoxFor(model => model.Details.ProductionDate, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
@@ -52,12 +52,11 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Zaap Shift</label>
+                                        <label class="col-md-4">Packed QTY (6)</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.Details.ZaapShiftId, Model.ZaapShiftList, "Select", new { @class = "form-control", id = "SearchInput_Zaap", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.Details.PackedQty, new { @class = "form-control", @readonly = "readonly" })
                                         </div>
                                     </div>
                                 </div>
@@ -65,7 +64,25 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Reversal</label>
+                                        <label class="col-md-4">Reversal Per Date</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.Details.ZaapShiftId, Model.ZaapShiftList, "Select", new { @class = "form-control", id = "SearchInput_Zaap", @disabled = "disabled" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Reversal Remaining</label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.Details.ReversalRemaining, new { @class = "form-control", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Reversal Amount</label>
                                         <div class="col-md-8">
                                             @Html.TextBoxFor(model => model.Details.ReversalQty, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
