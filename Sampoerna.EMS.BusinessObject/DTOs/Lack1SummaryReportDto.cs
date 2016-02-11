@@ -35,6 +35,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? ApprovedDate { get; set; }
         public string NppbkcId { get; set; }
         public string ExTypDesc { get; set; }
+        public DateTime? CompletedDate { get; set; }
         
         public decimal BeginingBalance { get; set; }
         public decimal TotalIncome { get; set; }

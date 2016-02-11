@@ -280,6 +280,7 @@
           <Property Name="MANUAL_FREE_TEXT" Type="int" />
           <Property Name="FLAG_FOR_LACK1" Type="bit" />
           <Property Name="FLAG_NPPBKC_IMPORT" Type="bit" />
+          <Property Name="MATDOC" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="CK5_FILE_UPLOAD">
           <Key>
@@ -416,7 +417,7 @@
           <Property Name="MVT" Type="nvarchar" MaxLength="3" Nullable="false" />
           <Property Name="MATERIAL_ID" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="QTY" Type="decimal" Precision="18" Scale="5" />
+          <Property Name="QTY" Type="decimal" Precision="15" Scale="2" />
           <Property Name="SLOC" Type="nvarchar" MaxLength="4" />
           <Property Name="VENDOR" Type="nvarchar" MaxLength="10" />
           <Property Name="BUN" Type="nvarchar" MaxLength="5" />
@@ -829,9 +830,9 @@
             <PropertyRef Name="PBCK3_PBCK7_ID" />
           </Key>
           <Property Name="PBCK3_PBCK7_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="PBCK7_NUMBER" Type="nvarchar" MaxLength="30" />
+          <Property Name="PBCK7_NUMBER" Type="nvarchar" MaxLength="30" Nullable="false" />
           <Property Name="PBCK3_NUMBER" Type="nvarchar" MaxLength="30" />
-          <Property Name="PBCK7_STATUS" Type="int" />
+          <Property Name="PBCK7_STATUS" Type="int" Nullable="false" />
           <Property Name="PBCK3_STATUS" Type="int" />
           <Property Name="PBCK7_DATE" Type="datetime" Nullable="false" />
           <Property Name="PBCK3_DATE" Type="datetime" />
@@ -1090,6 +1091,17 @@
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="LAST_SHIFT" Type="int" />
         </EntityType>
+        <EntityType Name="REVERSAL">
+          <Key>
+            <PropertyRef Name="REVERSAL_ID" />
+          </Key>
+          <Property Name="REVERSAL_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ZAAP_SHIFT_RPT_ID" Type="bigint" />
+          <Property Name="PRODUCTION_DATE" Type="datetime" />
+          <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" />
+          <Property Name="WERKS" Type="nvarchar" MaxLength="4" />
+          <Property Name="REVERSAL_QTY" Type="decimal" Precision="18" Scale="3" />
+        </EntityType>
         <EntityType Name="SUPPLIER_PORT">
           <Key>
             <PropertyRef Name="SUPPLIER_PORT_ID" />
@@ -1318,7 +1330,7 @@
           <Property Name="UOM" Type="nvarchar" MaxLength="5" />
           <Property Name="PRODUCTION_DATE" Type="datetime" Nullable="false" />
           <Property Name="BATCH" Type="nvarchar" MaxLength="35" Nullable="false" />
-          <Property Name="QTY" Type="decimal" Precision="18" Scale="3" />
+          <Property Name="QTY" Type="decimal" Precision="15" Scale="2" />
           <Property Name="BUNDLE" Type="decimal" Precision="18" Scale="3" />
           <Property Name="MARKET" Type="nvarchar" MaxLength="30" />
           <Property Name="DOCGMVTER" Type="nvarchar" MaxLength="35" />
@@ -1329,7 +1341,7 @@
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="SHIFT" Type="nvarchar" MaxLength="10" />
-          <Property Name="ORIGINAL_QTY" Type="decimal" Precision="18" Scale="3" />
+          <Property Name="ORIGINAL_QTY" Type="decimal" Precision="15" Scale="2" />
           <Property Name="ORIGINAL_UOM" Type="nvarchar" MaxLength="5" />
           <Property Name="POSTING_DATE" Type="datetime" />
           <Property Name="ENTERED_DATE" Type="datetime" />
@@ -2969,6 +2981,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_REVERSAL_ZAAP_SHIFT_RPT">
+          <End Role="ZAAP_SHIFT_RPT" Type="Self.ZAAP_SHIFT_RPT" Multiplicity="0..1" />
+          <End Role="REVERSAL" Type="Self.REVERSAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAAP_SHIFT_RPT">
+              <PropertyRef Name="ZAAP_SHIFT_RPT_ID" />
+            </Principal>
+            <Dependent Role="REVERSAL">
+              <PropertyRef Name="ZAAP_SHIFT_RPT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_T001K_T001">
           <End Role="T001" Type="Self.T001" Multiplicity="1" />
           <End Role="T001K" Type="Self.T001K" Multiplicity="*" />
@@ -3498,6 +3522,7 @@
           <EntitySet Name="POA_SK" EntityType="Self.POA_SK" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PRINT_HISTORY" EntityType="Self.PRINT_HISTORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PRODUCTION" EntityType="Self.PRODUCTION" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="REVERSAL" EntityType="Self.REVERSAL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SUPPLIER_PORT" EntityType="Self.SUPPLIER_PORT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T001" EntityType="Self.T001" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T001K" EntityType="Self.T001K" Schema="dbo" store:Type="Tables" />
@@ -4009,6 +4034,10 @@
           <AssociationSet Name="FK_PRINT_HISTORY_USER" Association="Self.FK_PRINT_HISTORY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="PRINT_HISTORY" EntitySet="PRINT_HISTORY" />
+          </AssociationSet>
+          <AssociationSet Name="FK_REVERSAL_ZAAP_SHIFT_RPT" Association="Self.FK_REVERSAL_ZAAP_SHIFT_RPT">
+            <End Role="ZAAP_SHIFT_RPT" EntitySet="ZAAP_SHIFT_RPT" />
+            <End Role="REVERSAL" EntitySet="REVERSAL" />
           </AssociationSet>
           <AssociationSet Name="FK_T001K_T001" Association="Self.FK_T001K_T001">
             <End Role="T001" EntitySet="T001" />
@@ -4924,6 +4953,11 @@
           </AssociationSet>
           <EntitySet Name="ZAAP_SHIFT_RPT" EntityType="EMSModel.ZAAP_SHIFT_RPT" />
           <EntitySet Name="PRODUCTION" EntityType="EMSModel.PRODUCTION" />
+          <EntitySet Name="REVERSAL" EntityType="EMSModel.REVERSAL" />
+          <AssociationSet Name="FK_REVERSAL_ZAAP_SHIFT_RPT" Association="EMSModel.FK_REVERSAL_ZAAP_SHIFT_RPT">
+            <End Role="ZAAP_SHIFT_RPT" EntitySet="ZAAP_SHIFT_RPT" />
+            <End Role="REVERSAL" EntitySet="REVERSAL" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -5435,6 +5469,7 @@
           <Property Name="MANUAL_FREE_TEXT" Type="EMSModel.Ck5ManualFreeText" />
           <Property Name="FLAG_FOR_LACK1" Type="Boolean" />
           <Property Name="FLAG_NPPBKC_IMPORT" Type="Boolean" />
+          <Property Name="MATDOC" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <Association Name="FK_CK5_MATERIAL_CK5">
           <End Type="EMSModel.CK5" Role="CK5" Multiplicity="0..1" />
@@ -6760,7 +6795,7 @@
             <PropertyRef Name="PBCK3_PBCK7_ID" />
           </Key>
           <Property Name="PBCK3_PBCK7_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PBCK7_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PBCK7_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="PBCK3_NUMBER" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="PBCK7_STATUS" Type="EMSModel.DocumentStatus" Nullable="false" />
           <Property Name="PBCK3_STATUS" Type="EMSModel.DocumentStatus" />
@@ -7273,7 +7308,7 @@
           <Property Name="MVT" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="true" />
           <Property Name="MATERIAL_ID" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_ID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="QTY" Type="Decimal" Precision="18" Scale="5" />
+          <Property Name="QTY" Type="Decimal" Precision="15" Scale="2" />
           <Property Name="SLOC" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="VENDOR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="BUN" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
@@ -8727,7 +8762,7 @@
           <Property Name="UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="PRODUCTION_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="BATCH" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="QTY" Type="Decimal" Precision="18" Scale="3" />
+          <Property Name="QTY" Type="Decimal" Precision="15" Scale="2" />
           <Property Name="BUNDLE" Type="Decimal" Precision="18" Scale="3" />
           <Property Name="MARKET" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="DOCGMVTER" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
@@ -8738,12 +8773,13 @@
           <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SHIFT" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="ORIGINAL_QTY" Type="Decimal" Precision="18" Scale="3" />
+          <Property Name="ORIGINAL_QTY" Type="Decimal" Precision="15" Scale="2" />
           <Property Name="ORIGINAL_UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="POSTING_DATE" Type="DateTime" Precision="3" />
           <Property Name="ENTERED_DATE" Type="DateTime" Precision="3" />
           <Property Name="MVT" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="ZAAP_SHIFT_RPT_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="REVERSAL" Relationship="EMSModel.FK_REVERSAL_ZAAP_SHIFT_RPT" FromRole="ZAAP_SHIFT_RPT" ToRole="REVERSAL" />
         </EntityType>
         <EntityType Name="PRODUCTION">
           <Key>
@@ -8775,6 +8811,30 @@
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="LAST_SHIFT" Type="Int32" />
         </EntityType>
+        <EntityType Name="REVERSAL">
+          <Key>
+            <PropertyRef Name="REVERSAL_ID" />
+          </Key>
+          <Property Name="REVERSAL_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ZAAP_SHIFT_RPT_ID" Type="Int64" />
+          <Property Name="PRODUCTION_DATE" Type="DateTime" Precision="3" />
+          <Property Name="FA_CODE" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="WERKS" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="REVERSAL_QTY" Type="Decimal" Precision="18" Scale="3" />
+          <NavigationProperty Name="ZAAP_SHIFT_RPT" Relationship="EMSModel.FK_REVERSAL_ZAAP_SHIFT_RPT" FromRole="REVERSAL" ToRole="ZAAP_SHIFT_RPT" />
+        </EntityType>
+        <Association Name="FK_REVERSAL_ZAAP_SHIFT_RPT">
+          <End Type="EMSModel.ZAAP_SHIFT_RPT" Role="ZAAP_SHIFT_RPT" Multiplicity="0..1" />
+          <End Type="EMSModel.REVERSAL" Role="REVERSAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAAP_SHIFT_RPT">
+              <PropertyRef Name="ZAAP_SHIFT_RPT_ID" />
+            </Principal>
+            <Dependent Role="REVERSAL">
+              <PropertyRef Name="ZAAP_SHIFT_RPT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -9097,7 +9157,8 @@
     <EntitySetMapping Name="CK5">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.CK5)">
         <MappingFragment StoreEntitySet="CK5">
-          <ScalarProperty Name="FLAG_NPPBKC_IMPORT" ColumnName="FLAG_NPPBKC_IMPORT" />
+          <ScalarProperty Name="MATDOC" ColumnName="MATDOC" />
+                <ScalarProperty Name="FLAG_NPPBKC_IMPORT" ColumnName="FLAG_NPPBKC_IMPORT" />
                 <ScalarProperty Name="FLAG_FOR_LACK1" ColumnName="FLAG_FOR_LACK1" />
                 <ScalarProperty Name="MANUAL_FREE_TEXT" ColumnName="MANUAL_FREE_TEXT" />
                 <ScalarProperty Name="REDUCE_TRIAL" ColumnName="REDUCE_TRIAL" />
@@ -10373,6 +10434,18 @@
                 <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
                 <ScalarProperty Name="WERKS" ColumnName="WERKS" />
                 <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="REVERSAL">
+            <EntityTypeMapping TypeName="EMSModel.REVERSAL">
+              <MappingFragment StoreEntitySet="REVERSAL">
+                <ScalarProperty Name="REVERSAL_QTY" ColumnName="REVERSAL_QTY" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
+                <ScalarProperty Name="PRODUCTION_DATE" ColumnName="PRODUCTION_DATE" />
+                <ScalarProperty Name="ZAAP_SHIFT_RPT_ID" ColumnName="ZAAP_SHIFT_RPT_ID" />
+                <ScalarProperty Name="REVERSAL_ID" ColumnName="REVERSAL_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

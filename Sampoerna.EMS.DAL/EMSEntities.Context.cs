@@ -122,5 +122,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<POA_DELEGATION> POA_DELEGATION { get; set; }
         public virtual DbSet<ZAAP_SHIFT_RPT> ZAAP_SHIFT_RPT { get; set; }
         public virtual DbSet<PRODUCTION> PRODUCTION { get; set; }
+        public virtual DbSet<REVERSAL> REVERSAL { get; set; }
     }
 }

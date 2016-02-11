@@ -11,6 +11,7 @@ using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
 using CrystalDecisions.Shared;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -288,6 +289,14 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetPoaByPlantId(string plantid)
+        {
+            var data = _poaBll.GetPoaActiveByPlantId(plantid);
+            return Json(data.Distinct());
+
+        }
+
+        [HttpPost]
         public JsonResult PoaAndPlantListPartialPbck7(string nppbkcId)
         {
             var listPoa = GlobalFunctions.GetPoaByNppbkcId(nppbkcId);
@@ -333,7 +342,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             model.NppbkIdList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
             model.PlantList = GlobalFunctions.GetPlantAll();
-            model.PoaList = GetPoaList(model.NppbkcId);
+            model.PoaList = GetPoaListByPlant(model.PlantId); //;GetPoaList(model.NppbkcId);
             model.Pbck7Date = DateTime.Now;
 
             return model;
@@ -744,13 +753,31 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+        public string GetPoaListByPlant(string plantId)
+        {
+            var poaList = _poaBll.GetPoaActiveByPlantId(plantId).Distinct().ToList();
+            var poaListStr = string.Empty;
+            var poaLength = poaList.Count;
+
+            for (int i = 0; i < poaLength; i++)
+            {
+                poaListStr += poaList[i].PRINTED_NAME;
+                if (i < poaLength)
+                {
+                    poaListStr += ", ";
+                }
+            }
+            return poaListStr;
+
+        }
+
         private Pbck7Pbck3CreateViewModel InitialModel(Pbck7Pbck3CreateViewModel model)
         {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.NppbkIdList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
             model.PlantList = GlobalFunctions.GetPlantAll();
-            model.PoaList = GetPoaList(model.NppbkcId);
+            model.PoaList = GetPoaListByPlant(model.PlantId);//GetPoaList(model.NppbkcId);
 
             return (model);
         }
@@ -1099,7 +1126,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Pbck7List = GetAllPbck7No();
             model.FromYear = GlobalFunctions.GetYearList();
             model.ToYear = model.FromYear;
-            model.ReportItems = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(new Pbck7SummaryInput());
+            model.ReportItems = Mapper.Map<List<Pbck7SummaryReportItem>>(_pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(new Pbck7SummaryInput()));
         }
 
         private void InitSummaryReportsPbck3(Pbck3SummaryReportModel model)
@@ -1112,7 +1139,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Pbck3List = GetAllPbck3No();
             model.FromYear = GlobalFunctions.GetYearList();
             model.ToYear = model.FromYear;
-            model.ReportItems = _pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(new Pbck3SummaryInput());
+            model.ReportItems = Mapper.Map<List<Pbck3SummaryReportItem>>(_pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(new Pbck3SummaryInput()));
         }
 
         private SelectList GetAllPbck7No()
@@ -1133,8 +1160,10 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterPbck7SummaryReport(Pbck7SummaryReportModel model)
         {
             var input = Mapper.Map<Pbck7SummaryInput>(model);
+
             var result = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input);
-            return PartialView("_Pbck7SummaryIndex", result);
+            model.ReportItems = Mapper.Map<List<Pbck7SummaryReportItem>>(result);
+            return PartialView("_Pbck7SummaryIndex", model);
         }
 
         [HttpPost]
@@ -1142,7 +1171,9 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var input = Mapper.Map<Pbck3SummaryInput>(model);
             var result = _pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(input);
-            return PartialView("_Pbck3SummaryIndex", result);
+            model.ReportItems = Mapper.Map<List<Pbck3SummaryReportItem>>(result);
+
+            return PartialView("_Pbck3SummaryIndex", model);
         }
 
 
@@ -1178,25 +1209,8 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var input = Mapper.Map<Pbck7SummaryInput>(model.ExportModel);
             var result = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input);
-            var src = (from b in result
-                       select new Pbck7SummaryReportItem()
-                       {
-
-                           Pbck7Number = b.Pbck7Number,
-                           Nppbkc = b.NppbkcId,
-                           PlantName = b.PlantId + "-" + b.PlantName,
-                           DocumentType = EnumHelper.GetDescription(b.DocumentType),
-                           Pbck7Date = b.Pbck7Date,
-                           Pbck7Status = EnumHelper.GetDescription(b.Pbck7Status),
-                           ExecFrom = b.ExecDateFrom,
-                           ExecTo = b.ExecDateTo,
-                           Back1No = b.Back1Dto != null ? b.Back1Dto.Back1Number : string.Empty,
-                           Back1Date = b.Back1Dto != null ? b.Back1Dto.Back1Date : null
-
-
-                       }).ToList();
-
-            var dataSummaryReport = src.OrderBy(a => a.Pbck7Number);
+           
+            var dataSummaryReport = Mapper.Map<List<Pbck7SummaryReportItem>>(result.OrderBy(c => c.Pbck7Number));
 
             int iRow = 1;
             var slDocument = new SLDocument();
@@ -1206,6 +1220,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
             iRow++;
             int iColumn = 1;
+
+            ////create style
+            //SLStyle styleWrap = slDocument.CreateStyle();
+            //styleWrap.SetWrapText(true);
+
             foreach (var data in dataSummaryReport)
             {
 
@@ -1229,9 +1248,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.ExportModel.IsSelectDate)
                 {
-                    slDocument.SetCellValue(iRow, iColumn,
-                        data.Pbck7Date.HasValue ? data.Pbck7Date.Value.ToString("dd MMM yyyy") : string.Empty);
-                    
+                    //slDocument.SetCellValue(iRow, iColumn,
+                    //    data.Pbck7Date.HasValue ? data.Pbck7Date.Value.ToString("dd MMM yyyy") : string.Empty);
+                    slDocument.SetCellValue(iRow, iColumn,data.Pbck7Date);
                     iColumn = iColumn + 1;
                 }
                 if (model.ExportModel.IsSelectDocType)
@@ -1249,15 +1268,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.ExportModel.IsSelectExecFrom)
                 {
-                    slDocument.SetCellValue(iRow, iColumn,
-                        data.ExecFrom.HasValue ? data.ExecFrom.Value.ToString("dd MMM yyyy") : string.Empty);
+                    slDocument.SetCellValue(iRow, iColumn,data.ExecFrom);
                     
                     iColumn = iColumn + 1;
                 }
                 if (model.ExportModel.IsSelectExecTo)
                 {
-                    slDocument.SetCellValue(iRow, iColumn,
-                        data.ExecTo.HasValue ? data.ExecTo.Value.ToString("dd MMM yyyy") : string.Empty);
+                    slDocument.SetCellValue(iRow, iColumn,data.ExecTo);
 
                     iColumn = iColumn + 1;
                 }
@@ -1270,12 +1287,103 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.ExportModel.IsSelectBack1Date)
                 {
-                    slDocument.SetCellValue(iRow, iColumn,
-                        data.Back1Date.HasValue ? data.Back1Date.Value.ToString("dd MMM yyyy") : string.Empty);
+                    slDocument.SetCellValue(iRow, iColumn,data.Back1Date);
                     iColumn = iColumn + 1;
                 }
 
-              
+                if (model.ExportModel.IsSelectFaCode)
+                {
+                    //slDocument.SetCellValue(iRow, iColumn, data.FaCode.Replace("<br/>", Environment.NewLine));
+                    slDocument.SetCellValue(iRow, iColumn, data.FaCode);
+                    iColumn = iColumn + 1;
+                    //slDocument.SetCellStyle(iRow - 1, iColumn - 1, styleWrap);
+                }
+
+                if (model.ExportModel.IsSelectBrand)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Brand);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectContent)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Content);
+                    iColumn = iColumn + 1;
+                }
+
+
+                if (model.ExportModel.IsSelectHje)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Hje);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectTariff)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Tariff);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectPbck7Qty)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Pbck7Qty);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectFiscalYear)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.FiscalYear);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectExciseValue)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ExciseValue);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectPoa)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Poa);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectCreator)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Creator);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectPbck3No)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Pbck3No);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectPbck3Status)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Pbck3Status);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectCk2No)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck2No);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectCk2Value)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck2Value);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectCompletedDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CompletedDate);
+                    iColumn = iColumn + 1;
+                }
+
                 iRow++;
             }
 
@@ -1345,6 +1453,95 @@ namespace Sampoerna.EMS.Website.Controllers
                 iColumn = iColumn + 1;
             }
 
+            if (modelExport.IsSelectFaCode)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "FA Code");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectBrand)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Brand");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectContent)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Content");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectHje)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "HJE");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectTariff)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Tariff");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectPbck7Qty)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "PBCK-7 Qty");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectFiscalYear)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Fiscal Year");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectExciseValue)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Excise Value");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectPoa)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "POA");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectCreator)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Creator");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectPbck3No)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "PBCK-3 No.");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectPbck3Status)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "PBCK-3 Status");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectCk2No)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-2 No.");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectCk2Value)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-2 Value");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectCompletedDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Completed Date");
+                iColumn = iColumn + 1;
+            }
            
             return slDocument;
 
@@ -1359,11 +1556,10 @@ namespace Sampoerna.EMS.Website.Controllers
             styleBorder.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
             styleBorder.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
             styleBorder.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
-
-
+            
             slDocument.AutoFitColumn(1, iColumn - 1);
             slDocument.SetCellStyle(1, 1, iRow - 1, iColumn - 1, styleBorder);
-
+            
             var fileName = "PBCK7" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
 
             var path = Path.Combine(Server.MapPath(Constans.CK5FolderPath), fileName);
@@ -1394,128 +1590,6 @@ namespace Sampoerna.EMS.Website.Controllers
             newFile.Delete();
             Response.End();
 
-
-            //var input = Mapper.Map<Pbck7SummaryInput>(model.ExportModel);
-            //var result = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input);
-            //var src = (from b in result
-            //           select new Pbck7SummaryReportItem()
-            //           {
-
-            //               Pbck7Number = b.Pbck7Number,
-            //               Nppbkc = b.NppbkcId,
-            //               PlantName = b.PlantId + "-" + b.PlantName,
-            //               Pbck7Date = b.Pbck7Date,
-            //               Pbck7Status = EnumHelper.GetDescription(b.Pbck7Status),
-            //               ExecFrom = b.ExecDateFrom,
-            //               ExecTo = b.ExecDateTo,
-            //               Back1No = b.Back1Dto != null ? b.Back1Dto.Back1Number : string.Empty,
-            //               Back1Date = b.Back1Dto != null ? b.Back1Dto.Back1Date : null
-
-
-            //           }).ToList();
-            //var grid = new GridView
-            //{
-            //    DataSource = src.OrderBy(c => c.Pbck7Number).ToList(),
-            //    AutoGenerateColumns = false
-            //};
-            //if (model.ExportModel.IsSelectPbck7No)
-            //{
-            //    grid.Columns.Add(new BoundField()
-            //    {
-            //        DataField = "Pbck7Number",
-            //        HeaderText = "Number"
-            //    });
-            //}
-            //if (model.ExportModel.IsSelectNppbkc)
-            //{
-            //    grid.Columns.Add(new BoundField()
-            //    {
-            //        DataField = "Nppbkc",
-            //        HeaderText = "Nppbkc"
-            //    });
-            //}
-            //if (model.ExportModel.IsSelectPlant)
-            //{
-            //    grid.Columns.Add(new BoundField()
-            //    {
-            //        DataField = "PlantName",
-            //        HeaderText = "Plant"
-            //    });
-            //}
-            //if (model.ExportModel.IsSelectDate)
-            //{
-            //    grid.Columns.Add(new BoundField()
-            //    {
-            //        DataField = "Pbck7Date",
-            //        HeaderText = "Date"
-            //    });
-            //}
-            //if (model.ExportModel.IsSelectExecFrom)
-            //{
-            //    grid.Columns.Add(new BoundField()
-            //    {
-            //        DataField = "ExecFrom",
-            //        HeaderText = "Exec Date From"
-            //    });
-            //}
-            //if (model.ExportModel.IsSelectExecFrom)
-            //{
-            //    grid.Columns.Add(new BoundField()
-            //    {
-            //        DataField = "ExecTo",
-            //        HeaderText = "Exec To From"
-            //    });
-            //}
-            //if (model.ExportModel.IsSelectBack1No)
-            //{
-            //    grid.Columns.Add(new BoundField()
-            //    {
-            //        DataField = "Back1No",
-            //        HeaderText = "Back-1 No"
-            //    });
-            //}
-            //if (model.ExportModel.IsSelectBack1Date)
-            //{
-            //    grid.Columns.Add(new BoundField()
-            //    {
-            //        DataField = "Back1Date",
-            //        HeaderText = "Back-1 Date"
-            //    });
-            //}
-            //if (model.ExportModel.IsSelectStatus)
-            //{
-            //    grid.Columns.Add(new BoundField()
-            //    {
-            //        DataField = "Pbck7Status",
-            //        HeaderText = "Status"
-            //    });
-            //}
-            //if (src.Count == 0)
-            //{
-            //    grid.ShowHeaderWhenEmpty = true;
-            //}
-
-            //grid.DataBind();
-
-            //var fileName = "PBCK7" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
-            //Response.ClearContent();
-            //Response.Buffer = true;
-            //Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
-            //Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-
-            ////'Excel 2003 : "application/vnd.ms-excel"
-            ////'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-
-            //var sw = new StringWriter();
-            //var htw = new HtmlTextWriter(sw);
-
-            //grid.RenderControl(htw);
-
-            //Response.Output.Write(sw.ToString());
-
-            //Response.Flush();
-
-            //Response.End();
         }
 
 
@@ -1541,8 +1615,13 @@ namespace Sampoerna.EMS.Website.Controllers
             newFile.Delete();
             Response.End();
 
-            //var input = Mapper.Map<Pbck3SummaryInput>(model.ExportModel);
-            //var result = _pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(input);
+         
+        }
+
+        private string CreateXlsSummaryReportsPbck3(Pbck3SummaryReportModel model)
+        {
+            var input = Mapper.Map<Pbck3SummaryInput>(model.ExportModel);
+            var result = _pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(input);
             //var src = (from b in result
             //           select new Pbck3SummaryReportItem()
             //           {
@@ -1558,153 +1637,9 @@ namespace Sampoerna.EMS.Website.Controllers
             //               Ck2No = b.Ck2Dto != null ? b.Ck2Dto.Ck2Number : string.Empty,
             //               Ck2Date = b.Ck2Dto != null ? b.Ck2Dto.Ck2Date : null,
             //               Ck2Value = b.Ck2Dto != null ? b.Ck2Dto.Ck2Value : 0
-
-
             //           }).ToList();
-            //var grid = new GridView
-            //{
-            //    DataSource = src.OrderBy(c => c.Pbck7Number).ToList(),
-            //    AutoGenerateColumns = false
-            //};
-            //if (model.ExportModel.IsSelectPbck3No)
-            //{
-            //    grid.Columns.Add(new BoundField()
-            //    {
-            //        DataField = "Pbck3Number",
-            //        HeaderText = "Number"
-            //    });
-            //}
-            //if (model.ExportModel.IsSelectPbck7)
-            //{
-            //    grid.Columns.Add(new BoundField()
-            //    {
-            //        DataField = "Pbck7Number",
-            //        HeaderText = "PBCK-7"
-            //    });
-            //}
-            //if (model.ExportModel.IsSelectNppbkc)
-            //{
-            //    grid.Columns.Add(new BoundField()
-            //    {
-            //        DataField = "Nppbkc",
-            //        HeaderText = "Nppbkc"
-            //    });
-            //}
-            //if (model.ExportModel.IsSelectPlant)
-            //{
-            //    grid.Columns.Add(new BoundField()
-            //    {
-            //        DataField = "PlantName",
-            //        HeaderText = "Plant"
-            //    });
-            //}
-            //if (model.ExportModel.IsSelectDate)
-            //{
-            //    grid.Columns.Add(new BoundField()
-            //    {
-            //        DataField = "Pbck3Date",
-            //        HeaderText = "Date"
-            //    });
-            //}
-
-            //if (model.ExportModel.IsSelectStatus)
-            //{
-            //    grid.Columns.Add(new BoundField()
-            //    {
-            //        DataField = "Pbck3Status",
-            //        HeaderText = "Status"
-            //    });
-            //}
-
-            //if (model.ExportModel.IsSelectBack3No)
-            //{
-            //    grid.Columns.Add(new BoundField()
-            //    {
-            //        DataField = "Back3No",
-            //        HeaderText = "BACK-3 No"
-            //    });
-            //}
-            //if (model.ExportModel.IsSelectBack3Date)
-            //{
-            //    grid.Columns.Add(new BoundField()
-            //    {
-            //        DataField = "Back3Date",
-            //        HeaderText = "BACK-3 Date"
-            //    });
-            //}
-            //if (model.ExportModel.IsSelectCk2No)
-            //{
-            //    grid.Columns.Add(new BoundField()
-            //    {
-            //        DataField = "Ck2No",
-            //        HeaderText = "CK-2 No"
-            //    });
-            //}
-            //if (model.ExportModel.IsSelectCk2Date)
-            //{
-            //    grid.Columns.Add(new BoundField()
-            //    {
-            //        DataField = "Ck2Date",
-            //        HeaderText = "CK-2 Date"
-            //    });
-            //}
-            //if (model.ExportModel.IsSelectCk2Value)
-            //{
-            //    grid.Columns.Add(new BoundField()
-            //    {
-            //        DataField = "Ck2Value",
-            //        HeaderText = "CK-2 Value"
-            //    });
-            //}
-            //if (src.Count == 0)
-            //{
-            //    grid.ShowHeaderWhenEmpty = true;
-            //}
-
-            //grid.DataBind();
-
-            //var fileName = "PBCK3" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
-            //Response.ClearContent();
-            //Response.Buffer = true;
-            //Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
-            //Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-
-            ////'Excel 2003 : "application/vnd.ms-excel"
-            ////'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-
-            //var sw = new StringWriter();
-            //var htw = new HtmlTextWriter(sw);
-
-            //grid.RenderControl(htw);
-
-            //Response.Output.Write(sw.ToString());
-
-            //Response.Flush();
-
-            //Response.End();
-        }
-
-        private string CreateXlsSummaryReportsPbck3(Pbck3SummaryReportModel model)
-        {
-            var input = Mapper.Map<Pbck3SummaryInput>(model.ExportModel);
-            var result = _pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(input);
-            var src = (from b in result
-                       select new Pbck3SummaryReportItem()
-                       {
-                           Pbck3Number = b.Pbck3Number,
-                           Pbck7Number = b.Pbck7Number,
-                           Ck5Number = b.Ck5Number,
-                           Nppbkc = b.NppbckId,
-                           PlantName = b.Plant,
-                           Pbck3Date = b.Pbck3Date,
-                           Pbck3Status = EnumHelper.GetDescription(b.Pbck3Status),
-                           Back3No = b.Back3Dto != null ? b.Back3Dto.Back3Number : string.Empty,
-                           Back3Date = b.Back3Dto != null ? b.Back3Dto.Back3Date : null,
-                           Ck2No = b.Ck2Dto != null ? b.Ck2Dto.Ck2Number : string.Empty,
-                           Ck2Date = b.Ck2Dto != null ? b.Ck2Dto.Ck2Date : null,
-                           Ck2Value = b.Ck2Dto != null ? b.Ck2Dto.Ck2Value : 0
-                       }).ToList();
-            var dataSummaryReport = src.OrderBy(a => a.Pbck3Number);
+            //var dataSummaryReport = src.OrderBy(a => a.Pbck3Number);
+            var dataSummaryReport = Mapper.Map<List<Pbck3SummaryReportItem>>(result.OrderBy(c => c.Pbck3Number));
 
             int iRow = 1;
             var slDocument = new SLDocument();
@@ -1748,8 +1683,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.ExportModel.IsSelectDate)
                 {
-                    slDocument.SetCellValue(iRow, iColumn,
-                        data.Pbck3Date.HasValue ? data.Pbck3Date.Value.ToString("dd MMM yyyy") : string.Empty);
+                    slDocument.SetCellValue(iRow, iColumn,data.Pbck3Date);
 
                     iColumn = iColumn + 1;
                 }
@@ -1770,8 +1704,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.ExportModel.IsSelectBack3Date)
                 {
-                    slDocument.SetCellValue(iRow, iColumn,
-                        data.Back3Date.HasValue ? data.Back3Date.Value.ToString("dd MMM yyyy") : string.Empty);
+                    slDocument.SetCellValue(iRow, iColumn,data.Back3Date);
                     iColumn = iColumn + 1;
                 }
 
@@ -1783,13 +1716,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.ExportModel.IsSelectCk2Date)
                 {
-                    slDocument.SetCellValue(iRow, iColumn,
-                        data.Ck2Date.HasValue ? data.Ck2Date.Value.ToString("dd MMM yyyy") : string.Empty);
+                    slDocument.SetCellValue(iRow, iColumn,data.Ck2Date);
                     iColumn = iColumn + 1;
                 }
                 if (model.ExportModel.IsSelectCk2Value)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.Ck2Value.HasValue ? data.Ck2Value.Value.ToString() : string.Empty);
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck2Value);
                     iColumn = iColumn + 1;
                 }
 

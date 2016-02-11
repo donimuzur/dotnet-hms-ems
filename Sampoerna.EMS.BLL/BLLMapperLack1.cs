@@ -438,6 +438,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.GovStatus, opt => opt.MapFrom(src => src.GOV_STATUS))
                 .ForMember(dest => dest.DecreeDate, opt => opt.MapFrom(src => src.DECREE_DATE))
                 .ForMember(dest => dest.CreateDate, opt => opt.MapFrom(src => src.CREATED_DATE))
+                .ForMember(dest => dest.CompletedDate, opt => opt.MapFrom(src => src.STATUS == Enums.DocumentStatus.Completed ? 
+                    (src.MODIFIED_DATE.HasValue ? src.MODIFIED_DATE : src.DECREE_DATE) : null))
                 .ForMember(dest => dest.CreateBy, opt => opt.MapFrom(src => src.CREATED_BY))
                 .ForMember(dest => dest.ApprovedBy, opt => opt.MapFrom(src => src.APPROVED_BY_POA))
                 .ForMember(dest => dest.ApprovedDate, opt => opt.MapFrom(src => src.APPROVED_DATE_POA))

@@ -318,5 +318,12 @@ namespace Sampoerna.EMS.Website.Models.CK5
         //public bool FLAG_FOR_LACK1 { get; set; }
 
         public bool FLAG_NPPBKC_IMPORT { get; set; }
+
+        public SelectList MatdocList { get; set; }
+
+        [Display(Name = "MatDoc")]
+        public string MatDoc { get; set; }
+
+        public bool IsViewMatDoc { get; set; }
     }
 }

@@ -8,10 +8,12 @@ using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.ExtendedProperties;
 using DocumentFormat.OpenXml.Math;
 using Sampoerna.EMS.BLL;
+using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models;
 
@@ -121,6 +123,12 @@ namespace Sampoerna.EMS.Website.Code
         {
             var data = companyBll.GetAllData().Where(x => x.IS_DELETED != true);
             return new SelectList(data, "BUKRS", "BUTXT");
+        }
+
+        public static SelectList GetCompanyListIdText(ICompanyBLL companyBll)
+        {
+            var data = companyBll.GetAllData().Where(x => x.IS_DELETED != true);
+            return new SelectList(data, "BUTXT", "BUTXT");
         }
 
         public static SelectList GetVirtualPlantList()
@@ -522,6 +530,22 @@ namespace Sampoerna.EMS.Website.Code
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(users);
             return new SelectList(selectItemSource, "ValueField", "TextField");
 
+        }
+
+        public static SelectList GetKppbcAll(IZaidmExKPPBCBLL kppbcBll)
+        {
+            IZaidmExKPPBCBLL kppbcbll = kppbcBll;
+            var kppbcList = kppbcbll.GetAll().Where(x => x.IS_DELETED != true).OrderBy(x => x.KPPBC_ID);
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(kppbcList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+
+        public static SelectList GetReversalData(string plant, string facode)
+        {
+            IZaapShiftRptService zaapBll = MvcApplication.GetInstance<ZaapShiftRptService>();
+            var zaapList = zaapBll.GetReversalData(plant, facode);
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(zaapList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
         }
     }
 

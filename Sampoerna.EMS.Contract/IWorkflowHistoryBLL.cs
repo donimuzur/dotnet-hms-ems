@@ -41,6 +41,6 @@ namespace Sampoerna.EMS.Contract
 
         void UpdateHistoryModifiedForSubmit(WorkflowHistoryDto history);
 
-        
+        WorkflowHistoryDto GetDtoApprovedRejectedPoaByDocumentNumber(string documentNumber);
     }
 }
