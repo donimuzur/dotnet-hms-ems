@@ -530,8 +530,8 @@ namespace Sampoerna.EMS.BLL
             if (dbData.STATUS != Enums.DocumentStatus.Draft && dbData.STATUS != Enums.DocumentStatus.Rejected)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            if (dbData.CREATED_BY != input.UserId)
-                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            //if (dbData.CREATED_BY != input.UserId)
+            //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingForApproval);
