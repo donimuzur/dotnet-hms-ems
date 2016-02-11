@@ -458,11 +458,15 @@ namespace Sampoerna.EMS.BLL
 
                 var packedQty = item.QtyPacked - existReversal;
 
+                var packedInPack = Convert.ToInt32(packedQty) / item.ContentPerPack;
+
                 item.QtyUnpacked = unpackedQty;
 
                 item.QtyProduced = prodQty;
 
                 item.QtyPacked = packedQty;
+
+                item.PackedInPack = packedInPack;
 
                 list.Add(item);
 
