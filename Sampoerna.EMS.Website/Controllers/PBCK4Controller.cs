@@ -358,7 +358,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.IsAllowPrint = _workflowBll.AllowPrint(model.DocumentStatus);
 
                 if (model.DocumentStatus == Enums.DocumentStatus.Completed
-                    && CurrentUser.UserRole == Enums.UserRole.Administrator)
+                    && CurrentUser.UserRole == Enums.UserRole.SuperAdmin)
                     model.AllowEditCompletedDocument = true;
           
 

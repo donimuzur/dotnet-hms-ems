@@ -44,15 +44,7 @@ namespace Sampoerna.EMS.BLL.Services
             dbBack3.BACK3_DATE = input.Back3Date;
 
             InsertOrDeleteBack3Item(input.Back3Documents);
-
-            //foreach (var back3Document in input.Back3Documents)
-            //{
-            //    back3Document.BACK3_ID = dbBack3.BACK3_ID;
-            //    back3Document.BACK3_DOC_ID = 0;
-            //    _repositoryBack3Documents.InsertOrUpdate(back3Document);
-
-            //}
-        
+            
             _repository.InsertOrUpdate(dbBack3);
         }
 
@@ -81,5 +73,9 @@ namespace Sampoerna.EMS.BLL.Services
             return dbBack3.Any(back3 => back3.BACK3_DOCUMENT.Count > 0);
         }
 
+        public BACK3_DOCUMENT GetBack3DocumentById(long id)
+        {
+            return _repositoryBack3Documents.GetByID(id);
+        }
     }
 }

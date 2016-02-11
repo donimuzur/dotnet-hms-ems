@@ -87,5 +87,6 @@ namespace Sampoerna.EMS.Contract
 
         void EditCompletedDocumentPbck7(EditCompletedDocumentPbck7Input input);
 
+        void EditCompletedDocumentPbck3(EditCompletedDocumentPbck3Input input);
     }
 }
