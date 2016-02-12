@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
 using Voxteneo.WebComponents.Logger;
@@ -50,6 +52,15 @@ namespace Sampoerna.EMS.BLL.Services
         public ZAIDM_EX_NPPBKC GetById(string nppbkcId)
         {
             return _nppbkcRepository.GetByID(nppbkcId);
+        }
+
+
+        public List<ZAIDM_EX_NPPBKCCompositeDto> GetNppbkcList(List<string> nppbkcList)
+        {
+            Expression<Func<ZAIDM_EX_NPPBKC, bool>> queryFilter = c => nppbkcList.Contains(c.NPPBKC_ID);
+            var data = _nppbkcRepository.Get(queryFilter);
+
+            return Mapper.Map<List<ZAIDM_EX_NPPBKCCompositeDto>>(data);
         }
     }
 }

@@ -99,8 +99,18 @@ namespace Sampoerna.EMS.Website.Controllers
         private Ck4CIndexDocumentListViewModel InitIndexDocumentListViewModel(
             Ck4CIndexDocumentListViewModel model)
         {
-            model.CompanyNameList = GlobalFunctions.GetCompanyList(_companyBll); ;
-            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            var comp = GlobalFunctions.GetCompanyList(_companyBll);
+            var userComp = _userPlantBll.GetCompanyByUserId(CurrentUser.USER_ID);
+            var poaComp = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+            var distinctComp = comp.Where(x => userComp.Contains(x.Value));
+            if (CurrentUser.UserRole == Enums.UserRole.POA) distinctComp = comp.Where(x => poaComp.Contains(x.Value));
+            var getComp = new SelectList(distinctComp, "Value", "Text");
+
+            var nppbkc = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            var filterNppbkc = nppbkc.Where(x => CurrentUser.ListUserNppbkc.Contains(x.Value));
+
+            model.CompanyNameList = getComp;
+            model.NppbkcIdList = new SelectList(filterNppbkc, "Value", "Text");
 
             switch (model.Ck4CType)
             {
