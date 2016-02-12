@@ -689,6 +689,10 @@ namespace Sampoerna.EMS.BLL
             if (input.UserPlant.Contains(input.DataPlant))
                 return true;
 
+            //only for edit document
+            if (_poaDelegationServices.IsDelegatedUserByUserAndDate(input.DataUser, input.UserId, DateTime.Now))
+                return true;
+
             return false;
         }
     }

@@ -3987,7 +3987,7 @@ namespace Sampoerna.EMS.BLL
             var StringDataNew = String.Join(", ", dataNew.OrderBy(c => c));
             
             if (StringDataOld != StringDataNew)
-                SetChangeHistory(StringDataOld, StringDataNew, "PBCK3_BACK3_DOCUMENTS", input.UserId, input.DocumentId.ToString());
+                SetChangeHistoryPbck3(StringDataOld, StringDataNew, "PBCK3_BACK3_DOCUMENTS", input.UserId, input.DocumentId.ToString());
 
            
         }
@@ -4023,7 +4023,7 @@ namespace Sampoerna.EMS.BLL
             var StringDataNew = String.Join(", ", dataNew.OrderBy(c => c));
 
             if (StringDataOld != StringDataNew)
-                SetChangeHistory(StringDataOld, StringDataNew, "PBCK3_CK2_DOCUMENTS", input.UserId, input.DocumentId.ToString());
+                SetChangeHistoryPbck3(StringDataOld, StringDataNew, "PBCK3_CK2_DOCUMENTS", input.UserId, input.DocumentId.ToString());
 
 
         }
