@@ -714,6 +714,18 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        public void EditCompletedDocument(Lack2EditCompletedDocumentInput input)
+        {
+            var dbData = _lack2Service.GetById(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS != Enums.DocumentStatus.Completed
+                && input.UserRole != Enums.UserRole.Administrator)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+        }
+
         private void WorkflowStatusAddChanges(Lack2WorkflowDocumentInput input, Enums.DocumentStatus oldStatus, Enums.DocumentStatus newStatus)
         {
             //set changes log

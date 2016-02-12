@@ -103,4 +103,14 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
     }
 
+    public class Lack2EditCompletedDocumentInput
+    {
+        public int DocumentId { get; set; }
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
+        public List<LACK2_DOCUMENT> ListFile { get; set; }
+
+        public DateTime? SubmissionDate { get; set; }
+    }
+
 }

@@ -561,6 +561,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var model = InitDetailModel(lack1Data);
 
+            if (model.DocumentStatus == Enums.DocumentStatus.Completed
+                    && CurrentUser.UserRole == Enums.UserRole.Administrator)
+                model.AllowEditCompletedDocument = true;
+
             return View(model);
         }
 
