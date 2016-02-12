@@ -180,21 +180,48 @@ namespace Sampoerna.EMS.BLL
 
             if (!string.IsNullOrEmpty(input.UserId))
             {
+                //delegate 
+                var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
+
+
                 if (input.UserRole == Enums.UserRole.POA)
                 {
                     queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && input.ListNppbkc.Contains(c.NPPBKC_ID))));
+                    if (delegateUser.Count > 0)
+                    {
+                        delegateUser.Add(input.UserId);
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (delegateUser.Contains(c.CREATED_BY) ||
+                                     (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID)) ||
+                                     c.STATUS == Enums.DocumentStatus.Completed));
+                    }
+                    else
+                    {
+                        queryFilter =
+                           queryFilter.And(
+                               c =>
+                                   (c.CREATED_BY == input.UserId ||
+                                    (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID)) ||
+                                    c.STATUS == Enums.DocumentStatus.Completed));
+                    }
                 }
-                //first code when manager exists
-                //else if (input.UserRole == Enums.UserRole.Manager)
-                //{
-                //    var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
-                //    var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
-
-                //    queryFilter = queryFilter.And(c => (c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.NUMBER)) || c.STATUS == Enums.DocumentStatus.Completed);
-                //}
                 else
                 {
-                    queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId || input.ListNppbkc.Contains(c.NPPBKC_ID));
+                    if (delegateUser.Count > 0)
+                    {
+                        delegateUser.Add(input.UserId);
+                        queryFilter =
+                            queryFilter.And(
+                                c => delegateUser.Contains(c.CREATED_BY) || c.STATUS == Enums.DocumentStatus.Completed);
+                    }
+                    else
+                    {
+                        queryFilter =
+                            queryFilter.And(
+                                c => c.CREATED_BY == input.UserId || c.STATUS == Enums.DocumentStatus.Completed);
+                    }
                 }
             }
 
@@ -1382,8 +1409,8 @@ namespace Sampoerna.EMS.BLL
             if (dbData.STATUS != Enums.DocumentStatus.Draft && dbData.STATUS != Enums.DocumentStatus.Rejected && dbData.STATUS != Enums.DocumentStatus.GovRejected)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            if (dbData.CREATED_BY != input.UserId)
-                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            //if (dbData.CREATED_BY != input.UserId)
+            //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingForApproval);

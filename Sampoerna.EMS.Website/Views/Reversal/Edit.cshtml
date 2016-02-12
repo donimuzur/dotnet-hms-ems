@@ -62,6 +62,7 @@
             } else {
                 ajaxSelectPlantWerks('@Url.Action("GetFaCodeByPlant", "Reversal")', { plantWerk: ce });
                 ajaxSetPlantAndFacode();
+                ajaxSelectPackedQty();
             }
         }
     });
@@ -73,6 +74,17 @@
                 $('#SearchInput_Zaap option').append('<option value="">Select</option>');
             } else {
                 ajaxSetPlantAndFacode();
+                ajaxSelectPackedQty();
+            }
+        }
+    });
+
+    $("#SearchInput_ProdDate").change(function () {
+        if ($("#SearchInput_ProdDate").length) {
+            if ($(this).find("option:selected").val() == '') {
+                $('#Details_PackedQty').val(0);
+            } else {
+                ajaxSelectPackedQty();
             }
         }
     });
@@ -84,6 +96,7 @@
 
         if (formData.zaapShift == '') {
             $('#Details_ReversalQty').val(0);
+            $('#Details_ReversalRemaining').val(0);
         }
         else {
             $.ajax({
@@ -96,6 +109,7 @@
                     }
 
                     $('#Details_ReversalQty').val(data);
+                    $('#Details_ReversalRemaining').val(data);
                 }
             });
         }
@@ -126,6 +140,7 @@
 
                         if (formData.faCode) {
                             ajaxSelectZaapShift('@Url.Action("GetZaapData", "Reversal")', { plantWerk: formData.plantWerk, faCode: formData.faCode, zaapShift: formData.zaapShift });
+                            ajaxSelectPackedQty();
                         }
                     }
                 }
@@ -166,6 +181,72 @@
         $('#SearchInput_Zaap option').remove();
 
         ajaxSelectPlantWerks('@Url.Action("GetFaCodeByPlant", "Reversal")', { plantWerk: plant, faCode: facode, zaapShift: zaap });
+
+        var formData = { zaapShift: '@Model.Details.ZaapShiftId' };
+        var zaap = '@Model.Details.ZaapShiftId';
+        var qty = '@Model.Details.ReversalQty';
+
+        if (formData.zaapShift == '') {
+            $('#Details_ReversalRemaining').val(0);
+        }
+        else {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetRemainingQuota", "Reversal")',
+                data: formData,
+                success: function (data) {
+                    if (zaap == formData.zaapShift) {
+                        data = parseInt(data) + parseInt(qty);
+                    }
+
+                    $('#Details_ReversalRemaining').val(data);
+                }
+            });
+        }
+
+        var formData = {
+            plantWerk: plant,
+            faCode: facode,
+            prodDate: '@Model.Details.ProductionDate'
+        };
+
+        if (formData.prodDate == '' || formData.plantWerk == '' || formData.faCode == '') {
+            $('#Details_PackedQty').val(0);
+        }
+        else {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetPackedData", "Reversal")',
+                data: formData,
+                success: function (data) {
+
+                    $('#Details_PackedQty').val(data);
+                }
+            });
+        }
+    }
+
+    function ajaxSelectPackedQty() {
+        var formData = {
+            plantWerk: $("#SearchInput_PlantId").find("option:selected").val(),
+            faCode: $("#SearchInput_FaCode").find("option:selected").val(),
+            prodDate: $("#SearchInput_ProdDate").val()
+        };
+
+        if (formData.prodDate == '' || formData.plantWerk == '' || formData.faCode == '') {
+            $('#Details_PackedQty').val(0);
+        }
+        else {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetPackedData", "Reversal")',
+                data: formData,
+                success: function (data) {
+                    
+                    $('#Details_PackedQty').val(data);
+                }
+            });
+        }
     }
 
 </script>
