@@ -47,6 +47,8 @@ namespace Sampoerna.EMS.Contract
 
        string GetListPoaByNppbkcId(string nppbkcId);
 
+       string GetListPoaByPlantId(string plantId);
+
        void SendMailCompletedPbck4Document(Pbck4WorkflowDocumentInput input);
 
        void UpdateUploadedFileCompleted(List<PBCK4_DOCUMENTDto> input);

@@ -102,5 +102,10 @@ namespace Sampoerna.EMS.Contract
        
         void AddAttachmentDocument(CK5WorkflowDocumentInput input);
 
+        List<Ck5MarketReturnSummaryReportDto> GetSummaryReportsMarketReturnByParam(CK5MarketReturnGetSummaryReportByParamInput input);
+
+       List<Ck5MatdocDto> GetMatdocList(long ck5Id = 0);
+
+       
    }
 }

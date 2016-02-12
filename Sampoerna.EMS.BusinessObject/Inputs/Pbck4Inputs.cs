@@ -92,6 +92,19 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public string PlantId { get; set; }
 
+        public string StickerCode { get; set; }
+
+        public string FaCode { get; set; }
+
+        public string Nppbkc { get; set; }
+
+        public string CompName { get; set; }
+
+        public string Poa { get; set; }
+
+        public string Ck1No { get; set; }
+
+        public string Creator { get; set; }
     }
 
     public class GetListCk1ByPlantAndFaCodeInput

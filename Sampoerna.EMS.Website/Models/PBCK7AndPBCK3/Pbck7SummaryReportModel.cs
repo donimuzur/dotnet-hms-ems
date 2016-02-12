@@ -13,7 +13,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
     {
         public Pbck7SummaryReportModel()
         {
-            ReportItems = new List<Pbck7AndPbck3Dto>();
+            ReportItems = new List<Pbck7SummaryReportItem>();
             //ExportModel = new Pbck7ExportModel();
         }
         public string SelectedNumber { get; set; }
@@ -34,7 +34,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public int? To { get; set; }
 
-        public List<Pbck7AndPbck3Dto> ReportItems { get; set; }
+        public List<Pbck7SummaryReportItem> ReportItems { get; set; }
 
         public Pbck7ExportModel ExportModel { get; set; }
     }
@@ -78,27 +78,50 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public bool IsSelectBack1No { get; set; }
         public bool IsSelectBack1Date { get; set; }
 
+        public bool IsSelectFaCode { get; set; }
+        public bool IsSelectBrand { get; set; }
+        public bool IsSelectContent { get; set; }
+        public bool IsSelectHje { get; set; }
+        public bool IsSelectTariff { get; set; }
+        public bool IsSelectPbck7Qty { get; set; }
+        public bool IsSelectFiscalYear { get; set; }
+        public bool IsSelectExciseValue { get; set; }
+        public bool IsSelectPoa { get; set; }
+        public bool IsSelectCreator { get; set; }
+        public bool IsSelectPbck3No { get; set; }
+        public bool IsSelectPbck3Status { get; set; }
+        public bool IsSelectCk2No { get; set; }
+        public bool IsSelectCk2Value { get; set; }
+        public bool IsSelectCompletedDate { get; set; }
     }
 
     public class Pbck7SummaryReportItem
     {
-        public  string Pbck7Number { get; set; }
-        public DateTime? Pbck7Date { get; set; }
-
-       
+        public string Pbck7Number { get; set; }
+        public string Pbck7Date { get; set; }
         public string PlantName { get; set; }
-
         public string DocumentType { get; set; }
-
         public string Nppbkc { get; set; }
-
-        public DateTime? ExecFrom { get; set; }
-
-        public DateTime? ExecTo { get; set; }
-
+        public string ExecFrom { get; set; }
+        public string ExecTo { get; set; }
         public string Back1No { get; set; }
-
-        public DateTime? Back1Date { get; set; }
+        public string Back1Date { get; set; }
         public string Pbck7Status { get; set; }
+
+        public string FaCode { get; set; }
+        public string Brand { get; set; }
+        public string Content { get; set; }
+        public string Hje { get; set; }
+        public string Tariff { get; set; }
+        public string Pbck7Qty { get; set; }
+        public string FiscalYear { get; set; }
+        public string ExciseValue { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
+        public string Pbck3No { get; set; }
+        public string Pbck3Status { get; set; }
+        public string Ck2No { get; set; }
+        public string Ck2Value { get; set; }
+        public string CompletedDate { get; set; }
     }
 }

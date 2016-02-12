@@ -128,6 +128,31 @@ function ajaxGetPoaByNppbkc(nppbkc, url) {
 }
 
 
+function ajaxGetPoaByPlant(plant, url) {
+
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: { plantid: plant },
+        success: function (data) {
+            $('#displayPoaList').html('');
+            var poalist = '';
+            for (var i = 0; i < data.length; i++) {
+
+                poalist += data[i].PRINTED_NAME;
+                if (data.length - 1 != i) {
+                    poalist += ', ';
+                }
+            }
+            $('#displayPoaList').html(poalist);
+        }
+    });
+
+}
+
+
+
+
 $('#btn-save-upload').click(function () {
 
     var uploaditems = GetTableData($('#Pbck7UploadTable'));
@@ -186,6 +211,8 @@ function ajaxGetPlantByNppbkc(nppbkc, url) {
         success: function (data) {
             $('#PlantId').html('');
 
+            $('#PlantId').append('<option value> Select </option>');
+            
             for (var i = 0; i < data.length; i++) {
                 $('#PlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
 
@@ -196,6 +223,7 @@ function ajaxGetPlantByNppbkc(nppbkc, url) {
     );
 
 }
+
 
 function AddValidationClass(isValid, objName) {
     if (isValid) {

@@ -28,7 +28,7 @@
             <th>Compensated CK-1 Number</th>
             <th>Payment Date</th>
             <th>Status</th>
-            
+            <th>Completed Date</th>
 
         </tr>
     </thead>
@@ -63,7 +63,8 @@
                     <td>@Html.DisplayFor(model => item.CompensatedCk1Date)</td>
                     <td>@Html.DisplayFor(model => item.CompensatedCk1Number)</td>
                     <td>@Html.DisplayFor(model => item.PaymentDate)</td>
-                    <td class="last">@Html.DisplayFor(model => item.Status)</td>
+                    <td>@Html.DisplayFor(model => item.Status)</td>
+                    <td class="last">@Html.DisplayFor(model => item.CompletedDate)</td>
                 </tr>
                 row = row + 1;
             }

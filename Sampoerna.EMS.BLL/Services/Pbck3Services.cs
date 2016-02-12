@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -84,6 +85,16 @@ namespace Sampoerna.EMS.BLL.Services
             _repository.InsertOrUpdate(dbPbck3);
 
             return dbPbck3.PBCK3_NUMBER;
+        }
+
+        public PBCK3 GetPbck3ByCk5Id(long ck5Id)
+        {
+            return _repository.Get(c => c.CK5_ID == ck5Id, null, "CK2").FirstOrDefault();
+        }
+
+        public PBCK3 GetPbck3ByPbck7Id(int pbck7Id)
+        {
+            return _repository.Get(c => c.PBCK7_ID == pbck7Id, null, "CK2").FirstOrDefault();
         }
     }
 }
