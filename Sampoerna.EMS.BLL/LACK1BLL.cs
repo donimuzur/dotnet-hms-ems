@@ -2407,8 +2407,8 @@ namespace Sampoerna.EMS.BLL
 
             //join data ck4cItem and ZaapShiftRpt
             var joinedData = (from zaap in zaapShiftRpt
-                              join ck4CItem in ck4CItemData on new { zaap.WERKS, zaap.FA_CODE } equals
-                                   new { ck4CItem.WERKS, ck4CItem.FA_CODE }
+                              join ck4CItem in ck4CItemData on new {zaap.WERKS, zaap.FA_CODE, PRODUCTION_DATE = zaap.PRODUCTION_DATE } equals
+                                   new { ck4CItem.WERKS, ck4CItem.FA_CODE, PRODUCTION_DATE = ck4CItem.PROD_DATE }
                               join prod in prodTypeData on new { ck4CItem.PROD_CODE } equals new { prod.PROD_CODE }
                               select new
                               {
@@ -2418,7 +2418,7 @@ namespace Sampoerna.EMS.BLL
                                   zaap.UOM,
                                   zaap.PRODUCTION_DATE,
                                   zaap.BATCH,
-                                  zaap.QTY,
+                                  ck4CItem.PROD_QTY,
                                   zaap.ORDR,
                                   ck4CItem.PROD_CODE,
                                   prod.PRODUCT_ALIAS,
@@ -2450,7 +2450,7 @@ namespace Sampoerna.EMS.BLL
                                          j.UOM,
                                          j.PRODUCTION_DATE,
                                          j.BATCH,
-                                         j.QTY,
+                                         j.PROD_QTY,
                                          j.ORDR,
                                          j.PROD_CODE,
                                          j.PRODUCT_ALIAS,
@@ -2496,7 +2496,7 @@ namespace Sampoerna.EMS.BLL
                     ProdCode = item.PROD_CODE,
                     ProductType = item.PRODUCT_TYPE,
                     ProductAlias = item.PRODUCT_ALIAS,
-                    Amount = item.QTY.HasValue ? item.QTY.Value : 0,
+                    Amount = item.PROD_QTY,
                     UomId = item.UOM,
                     UomDesc = item.UOM_DESC
                 };
@@ -2512,7 +2512,7 @@ namespace Sampoerna.EMS.BLL
                     });
 
                 var rec = groupUsageProporsional.ToList().FirstOrDefault(c =>
-                    c.Order == item.ORDR && c.Batch == item.BATCH);
+                    c.Order == item.ORDR);
 
                 if (rec != null)
                 {
