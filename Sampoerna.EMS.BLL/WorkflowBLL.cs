@@ -687,8 +687,12 @@ namespace Sampoerna.EMS.BLL
 
         public bool AllowAccessData(WorkflowAllowAccessDataInput input)
         {
-            if (input.UserRole == Enums.UserRole.Administrator) return true;
+            if (input.UserRole == Enums.UserRole.SuperAdmin) return true;
             if (input.UserPlant.Contains(input.DataPlant))
+                return true;
+
+            //only for edit document
+            if (_poaDelegationServices.IsDelegatedUserByUserAndDate(input.DataUser, input.UserId, DateTime.Now))
                 return true;
 
             return false;

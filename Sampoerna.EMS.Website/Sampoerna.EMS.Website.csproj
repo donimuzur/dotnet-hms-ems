@@ -1303,6 +1303,8 @@
     <Content Include="Views\Reversal\_HomeEdit.cshtml" />
     <Content Include="Views\Reversal\Detail.cshtml" />
     <Content Include="Views\Reversal\_HomeDetail.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck7EditCompleted.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck3EditCompleted.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
