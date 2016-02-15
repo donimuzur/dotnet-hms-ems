@@ -3235,6 +3235,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //var listCk5 = _ck5Bll.GetCk5CompletedByCk5Type(model.Ck5Type);
             var input = new CK5GetSummaryReportByParamInput();
             input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
             input.ListUserPlant = CurrentUser.ListUserPlants;
 
             var listCk5 = _ck5Bll.GetSummaryReportsByParam(input);
@@ -3445,6 +3446,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 //Get All
                 input = new CK5GetSummaryReportByParamInput();
                 input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
                 input.ListUserPlant = CurrentUser.ListUserPlants;
 
                 dbData = _ck5Bll.GetSummaryReportsViewByParam(input);
@@ -3455,6 +3457,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             input = Mapper.Map<CK5GetSummaryReportByParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
             input.ListUserPlant = CurrentUser.ListUserPlants;
 
             dbData = _ck5Bll.GetSummaryReportsViewByParam(input);

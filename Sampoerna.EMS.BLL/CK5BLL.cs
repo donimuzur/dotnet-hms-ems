@@ -196,123 +196,125 @@ namespace Sampoerna.EMS.BLL
            
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
-            //delegate 
-            var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
-
-            if (input.ListUserPlant == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
-
-             if (delegateUser.Count > 0)
-                 delegateUser.Add(input.UserId);
-
-            if (input.Ck5Type == Enums.CK5Type.PortToImporter || input.Ck5Type == Enums.CK5Type.DomesticAlcohol)
+            if (input.UserRole != Enums.UserRole.SuperAdmin)
             {
+                //delegate 
+                var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
+
+                if (input.ListUserPlant == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
+
                 if (delegateUser.Count > 0)
+                    delegateUser.Add(input.UserId);
+
+                if (input.Ck5Type == Enums.CK5Type.PortToImporter || input.Ck5Type == Enums.CK5Type.DomesticAlcohol)
                 {
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (delegateUser.Contains(c.CREATED_BY) ||
-                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                                  input.ListUserPlant.Contains(c.DEST_PLANT_ID))));
+                    if (delegateUser.Count > 0)
+                    {
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (delegateUser.Contains(c.CREATED_BY) ||
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                      input.ListUserPlant.Contains(c.DEST_PLANT_ID))));
+                    }
+                    else
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (c.CREATED_BY == input.UserId ||
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                      input.ListUserPlant.Contains(c.DEST_PLANT_ID))));
                 }
-                else
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (c.CREATED_BY == input.UserId ||
-                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                                  input.ListUserPlant.Contains(c.DEST_PLANT_ID))));
-            }
-            else if (input.Ck5Type == Enums.CK5Type.Manual || input.Ck5Type == Enums.CK5Type.MarketReturn)
-            {
-                if (delegateUser.Count > 0)
+                else if (input.Ck5Type == Enums.CK5Type.Manual || input.Ck5Type == Enums.CK5Type.MarketReturn)
                 {
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (delegateUser.Contains(c.CREATED_BY) ||
-                                 (
-                                     (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
-                                     ((c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
-                                       input.ListUserPlant.Contains(c.DEST_PLANT_ID)
-                                         ) ||
-                                      input.ListUserPlant.Contains(c.SOURCE_PLANT_ID)
+                    if (delegateUser.Count > 0)
+                    {
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (delegateUser.Contains(c.CREATED_BY) ||
+                                     (
+                                         (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
+                                         ((c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
+                                           input.ListUserPlant.Contains(c.DEST_PLANT_ID)
+                                             ) ||
+                                          input.ListUserPlant.Contains(c.SOURCE_PLANT_ID)
+                                             )
                                          )
-                                     )
 
-                                    )
-                            );
-                }
-                else
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (c.CREATED_BY == input.UserId ||
-                                 (
-                                     (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
-                                     ((c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
-                                       input.ListUserPlant.Contains(c.DEST_PLANT_ID)
-                                         ) ||
-                                      input.ListUserPlant.Contains(c.SOURCE_PLANT_ID)
+                                        )
+                                );
+                    }
+                    else
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (c.CREATED_BY == input.UserId ||
+                                     (
+                                         (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
+                                         ((c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
+                                           input.ListUserPlant.Contains(c.DEST_PLANT_ID)
+                                             ) ||
+                                          input.ListUserPlant.Contains(c.SOURCE_PLANT_ID)
+                                             )
                                          )
-                                     )
 
-                                    )
-                            );
-            }
-            else if (input.Ck5Type == Enums.CK5Type.Waste)
-            {
-                var plantDest = _poaMapBll.GetByPoaId(input.UserId).Select(d => d.WERKS).ToList();
-
-                if (delegateUser.Count > 0)
+                                        )
+                                );
+                }
+                else if (input.Ck5Type == Enums.CK5Type.Waste)
                 {
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (delegateUser.Contains(c.CREATED_BY) ||
-                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                                  input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))
-                                 ||
-                                 (c.STATUS_ID == Enums.DocumentStatus.GoodReceive &&
-                                  plantDest.Contains(c.DEST_PLANT_ID)
-                                     )
-                                    ));
+                    var plantDest = _poaMapBll.GetByPoaId(input.UserId).Select(d => d.WERKS).ToList();
+
+                    if (delegateUser.Count > 0)
+                    {
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (delegateUser.Contains(c.CREATED_BY) ||
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                      input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))
+                                     ||
+                                     (c.STATUS_ID == Enums.DocumentStatus.GoodReceive &&
+                                      plantDest.Contains(c.DEST_PLANT_ID)
+                                         )
+                                        ));
+                    }
+                    else
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (c.CREATED_BY == input.UserId ||
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                      input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))
+                                     ||
+                                     (c.STATUS_ID == Enums.DocumentStatus.GoodReceive &&
+                                      plantDest.Contains(c.DEST_PLANT_ID)
+                                         )
+                                        ));
                 }
                 else
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (c.CREATED_BY == input.UserId ||
-                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                                  input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))
-                                 ||
-                                 (c.STATUS_ID == Enums.DocumentStatus.GoodReceive &&
-                                  plantDest.Contains(c.DEST_PLANT_ID)
-                                     )
-                                    ));
-            }
-            else
-            {
-                if (delegateUser.Count > 0)
                 {
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (delegateUser.Contains(c.CREATED_BY) ||
-                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                                  input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
+                    if (delegateUser.Count > 0)
+                    {
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (delegateUser.Contains(c.CREATED_BY) ||
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                      input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
+                    }
+                    else
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (c.CREATED_BY == input.UserId ||
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                      input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
                 }
-                else
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (c.CREATED_BY == input.UserId ||
-                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                                  input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
+
             }
-
-
 
             ////delegate 
             //var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
@@ -3648,122 +3650,125 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
-            //delegate 
-            var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
-
-            if (input.ListUserPlant == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
-
-            if (delegateUser.Count > 0)
-                delegateUser.Add(input.UserId);
-
-            if (input.Ck5Type == Enums.CK5Type.PortToImporter || input.Ck5Type == Enums.CK5Type.DomesticAlcohol)
+            if (input.UserRole != Enums.UserRole.SuperAdmin)
             {
+                //delegate 
+                var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
+
+                if (input.ListUserPlant == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
+
                 if (delegateUser.Count > 0)
+                    delegateUser.Add(input.UserId);
+
+                if (input.Ck5Type == Enums.CK5Type.PortToImporter || input.Ck5Type == Enums.CK5Type.DomesticAlcohol)
                 {
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (delegateUser.Contains(c.CREATED_BY) ||
-                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                                  input.ListUserPlant.Contains(c.DEST_PLANT_ID))));
+                    if (delegateUser.Count > 0)
+                    {
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (delegateUser.Contains(c.CREATED_BY) ||
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                      input.ListUserPlant.Contains(c.DEST_PLANT_ID))));
+                    }
+                    else
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (c.CREATED_BY == input.UserId ||
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                      input.ListUserPlant.Contains(c.DEST_PLANT_ID))));
                 }
-                else
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (c.CREATED_BY == input.UserId ||
-                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                                  input.ListUserPlant.Contains(c.DEST_PLANT_ID))));
-            }
-            else if (input.Ck5Type == Enums.CK5Type.Manual || input.Ck5Type == Enums.CK5Type.MarketReturn)
-            {
-                if (delegateUser.Count > 0)
+                else if (input.Ck5Type == Enums.CK5Type.Manual || input.Ck5Type == Enums.CK5Type.MarketReturn)
                 {
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (delegateUser.Contains(c.CREATED_BY) ||
-                                 (
-                                     (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
-                                     ((c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
-                                       input.ListUserPlant.Contains(c.DEST_PLANT_ID)
-                                         ) ||
-                                      input.ListUserPlant.Contains(c.SOURCE_PLANT_ID)
+                    if (delegateUser.Count > 0)
+                    {
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (delegateUser.Contains(c.CREATED_BY) ||
+                                     (
+                                         (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
+                                         ((c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
+                                           input.ListUserPlant.Contains(c.DEST_PLANT_ID)
+                                             ) ||
+                                          input.ListUserPlant.Contains(c.SOURCE_PLANT_ID)
+                                             )
                                          )
-                                     )
 
-                                    )
-                            );
-                }
-                else
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (c.CREATED_BY == input.UserId ||
-                                 (
-                                     (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
-                                     ((c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
-                                       input.ListUserPlant.Contains(c.DEST_PLANT_ID)
-                                         ) ||
-                                      input.ListUserPlant.Contains(c.SOURCE_PLANT_ID)
+                                        )
+                                );
+                    }
+                    else
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (c.CREATED_BY == input.UserId ||
+                                     (
+                                         (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
+                                         ((c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
+                                           input.ListUserPlant.Contains(c.DEST_PLANT_ID)
+                                             ) ||
+                                          input.ListUserPlant.Contains(c.SOURCE_PLANT_ID)
+                                             )
                                          )
-                                     )
 
-                                    )
-                            );
-            }
-            else if (input.Ck5Type == Enums.CK5Type.Waste)
-            {
-                var plantDest = _poaMapBll.GetByPoaId(input.UserId).Select(d => d.WERKS).ToList();
-
-                if (delegateUser.Count > 0)
+                                        )
+                                );
+                }
+                else if (input.Ck5Type == Enums.CK5Type.Waste)
                 {
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (delegateUser.Contains(c.CREATED_BY) ||
-                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                                  input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))
-                                 ||
-                                 (c.STATUS_ID == Enums.DocumentStatus.GoodReceive &&
-                                  plantDest.Contains(c.DEST_PLANT_ID)
-                                     )
-                                    ));
+                    var plantDest = _poaMapBll.GetByPoaId(input.UserId).Select(d => d.WERKS).ToList();
+
+                    if (delegateUser.Count > 0)
+                    {
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (delegateUser.Contains(c.CREATED_BY) ||
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                      input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))
+                                     ||
+                                     (c.STATUS_ID == Enums.DocumentStatus.GoodReceive &&
+                                      plantDest.Contains(c.DEST_PLANT_ID)
+                                         )
+                                        ));
+                    }
+                    else
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (c.CREATED_BY == input.UserId ||
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                      input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))
+                                     ||
+                                     (c.STATUS_ID == Enums.DocumentStatus.GoodReceive &&
+                                      plantDest.Contains(c.DEST_PLANT_ID)
+                                         )
+                                        ));
                 }
                 else
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (c.CREATED_BY == input.UserId ||
-                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                                  input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))
-                                 ||
-                                 (c.STATUS_ID == Enums.DocumentStatus.GoodReceive &&
-                                  plantDest.Contains(c.DEST_PLANT_ID)
-                                     )
-                                    ));
-            }
-            else
-            {
-                if (delegateUser.Count > 0)
                 {
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (delegateUser.Contains(c.CREATED_BY) ||
-                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                                  input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
+                    if (delegateUser.Count > 0)
+                    {
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (delegateUser.Contains(c.CREATED_BY) ||
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                      input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
+                    }
+                    else
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (c.CREATED_BY == input.UserId ||
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                      input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
                 }
-                else
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (c.CREATED_BY == input.UserId ||
-                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                                  input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
-            }
 
+            }
             if (!string.IsNullOrEmpty(input.CompanyCodeSource))
             {
                 queryFilter = queryFilter.And(c => c.SOURCE_PLANT_COMPANY_CODE.Contains(input.CompanyCodeSource));
@@ -3833,120 +3838,124 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
-            //delegate 
-            var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
-
-            if (input.ListUserPlant == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
-
-            if (delegateUser.Count > 0)
-                delegateUser.Add(input.UserId);
-
-            if (input.Ck5Type == Enums.CK5Type.PortToImporter || input.Ck5Type == Enums.CK5Type.DomesticAlcohol)
+            if (input.UserRole != Enums.UserRole.SuperAdmin)
             {
+                //delegate 
+                var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
+
+                if (input.ListUserPlant == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
+
                 if (delegateUser.Count > 0)
+                    delegateUser.Add(input.UserId);
+
+                if (input.Ck5Type == Enums.CK5Type.PortToImporter || input.Ck5Type == Enums.CK5Type.DomesticAlcohol)
                 {
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (delegateUser.Contains(c.CREATED_BY) ||
-                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                                  input.ListUserPlant.Contains(c.DEST_PLANT_ID))));
+                    if (delegateUser.Count > 0)
+                    {
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (delegateUser.Contains(c.CREATED_BY) ||
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                      input.ListUserPlant.Contains(c.DEST_PLANT_ID))));
+                    }
+                    else
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (c.CREATED_BY == input.UserId ||
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                      input.ListUserPlant.Contains(c.DEST_PLANT_ID))));
                 }
-                else
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (c.CREATED_BY == input.UserId ||
-                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                                  input.ListUserPlant.Contains(c.DEST_PLANT_ID))));
-            }
-            else if (input.Ck5Type == Enums.CK5Type.Manual || input.Ck5Type == Enums.CK5Type.MarketReturn)
-            {
-                if (delegateUser.Count > 0)
+                else if (input.Ck5Type == Enums.CK5Type.Manual || input.Ck5Type == Enums.CK5Type.MarketReturn)
                 {
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (delegateUser.Contains(c.CREATED_BY) ||
-                                 (
-                                     (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
-                                     ((c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
-                                       input.ListUserPlant.Contains(c.DEST_PLANT_ID)
-                                         ) ||
-                                      input.ListUserPlant.Contains(c.SOURCE_PLANT_ID)
+                    if (delegateUser.Count > 0)
+                    {
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (delegateUser.Contains(c.CREATED_BY) ||
+                                     (
+                                         (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
+                                         ((c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
+                                           input.ListUserPlant.Contains(c.DEST_PLANT_ID)
+                                             ) ||
+                                          input.ListUserPlant.Contains(c.SOURCE_PLANT_ID)
+                                             )
                                          )
-                                     )
 
-                                    )
-                            );
-                }
-                else
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (c.CREATED_BY == input.UserId ||
-                                 (
-                                     (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
-                                     ((c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
-                                       input.ListUserPlant.Contains(c.DEST_PLANT_ID)
-                                         ) ||
-                                      input.ListUserPlant.Contains(c.SOURCE_PLANT_ID)
+                                        )
+                                );
+                    }
+                    else
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (c.CREATED_BY == input.UserId ||
+                                     (
+                                         (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
+                                         ((c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
+                                           input.ListUserPlant.Contains(c.DEST_PLANT_ID)
+                                             ) ||
+                                          input.ListUserPlant.Contains(c.SOURCE_PLANT_ID)
+                                             )
                                          )
-                                     )
 
-                                    )
-                            );
-            }
-            else if (input.Ck5Type == Enums.CK5Type.Waste)
-            {
-                var plantDest = _poaMapBll.GetByPoaId(input.UserId).Select(d => d.WERKS).ToList();
-
-                if (delegateUser.Count > 0)
+                                        )
+                                );
+                }
+                else if (input.Ck5Type == Enums.CK5Type.Waste)
                 {
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (delegateUser.Contains(c.CREATED_BY) ||
-                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                                  input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))
-                                 ||
-                                 (c.STATUS_ID == Enums.DocumentStatus.GoodReceive &&
-                                  plantDest.Contains(c.DEST_PLANT_ID)
-                                     )
-                                    ));
+                    var plantDest = _poaMapBll.GetByPoaId(input.UserId).Select(d => d.WERKS).ToList();
+
+                    if (delegateUser.Count > 0)
+                    {
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (delegateUser.Contains(c.CREATED_BY) ||
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                      input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))
+                                     ||
+                                     (c.STATUS_ID == Enums.DocumentStatus.GoodReceive &&
+                                      plantDest.Contains(c.DEST_PLANT_ID)
+                                         )
+                                        ));
+                    }
+                    else
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (c.CREATED_BY == input.UserId ||
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                      input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))
+                                     ||
+                                     (c.STATUS_ID == Enums.DocumentStatus.GoodReceive &&
+                                      plantDest.Contains(c.DEST_PLANT_ID)
+                                         )
+                                        ));
                 }
                 else
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (c.CREATED_BY == input.UserId ||
-                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                                  input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))
-                                 ||
-                                 (c.STATUS_ID == Enums.DocumentStatus.GoodReceive &&
-                                  plantDest.Contains(c.DEST_PLANT_ID)
-                                     )
-                                    ));
-            }
-            else
-            {
-                if (delegateUser.Count > 0)
                 {
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (delegateUser.Contains(c.CREATED_BY) ||
-                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                                  input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
+                    if (delegateUser.Count > 0)
+                    {
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (delegateUser.Contains(c.CREATED_BY) ||
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                      input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
+                    }
+                    else
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (c.CREATED_BY == input.UserId ||
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                      input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
                 }
-                else
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (c.CREATED_BY == input.UserId ||
-                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                                  input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
+
             }
 
             if (!string.IsNullOrEmpty(input.CompanyCodeSource))

@@ -119,6 +119,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public string UserId { get; set; }
 
+        public Enums.UserRole UserRole { get; set; }
     }
 
     public class Ck5GetForLack1ByParamInput
