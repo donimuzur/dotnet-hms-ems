@@ -1651,6 +1651,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
 
+                if (model.DocumentStatus == Enums.DocumentStatus.Completed
+                 && CurrentUser.UserRole == Enums.UserRole.SuperAdmin)
+                    model.AllowEditCompletedDocument = true;
+          
+
                 if (model.AllowGovApproveAndReject)
                     model.ActionType = "GovApproveDocument";
                 else if (model.AllowGiCreated)
@@ -1663,6 +1668,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.ActionType = "CK5GoodReceive";
                 else if (model.AllowTfPostedPortToImporter)
                     model.ActionType = "CK5TfPostedPortToImporter";
+                else if (model.AllowEditCompletedDocument)
+                    model.ActionType = "EditCompletedDocument";
                 else if (model.AllowAttachmentCompleted)
                     model.ActionType = "CK5CompletedAttachment";
                 else if (model.AllowPurchaseOrder)
@@ -5104,5 +5111,92 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
+
+        [HttpPost]
+        public ActionResult EditCompletedDocument(CK5FormViewModel model)
+        {
+
+            try
+            {
+                var currentUserId = CurrentUser.USER_ID;
+
+                model.Ck5FileUploadModelList = new List<CK5FileUploadViewModel>();
+                if (model.Ck5FileUploadFileList != null)
+                {
+                    foreach (var item in model.Ck5FileUploadFileList)
+                    {
+                        if (item != null)
+                        {
+                            var filenameCk5Check = item.FileName;
+                            if (filenameCk5Check.Contains("\\"))
+                                filenameCk5Check = filenameCk5Check.Split('\\')[filenameCk5Check.Split('\\').Length - 1];
+
+                            var ck5UploadFile = new CK5FileUploadViewModel
+                            {
+                                FILE_NAME = filenameCk5Check,
+                                FILE_PATH = SaveUploadedFile(item, model.Ck5Id),
+                                CREATED_DATE = DateTime.Now,
+                                CREATED_BY = currentUserId
+                            };
+                            model.Ck5FileUploadModelList.Add(ck5UploadFile);
+                        }
+
+                    }
+                }
+                else
+                {
+                    AddMessageInfo("Empty File", Enums.MessageInfoType.Error);
+                    RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+                }
+
+                //var input = new CK5WorkflowDocumentInput()
+                //{
+                //    DocumentId = model.Ck5Id,
+                //    DocumentNumber = model.SubmissionNumber,
+                //    UserRole = CurrentUser.UserRole,
+                //    UserId = CurrentUser.USER_ID,
+                //    Ck5Type = model.Ck5Type,
+                //    MatDoc = model.MatDoc,
+                //    AdditionalDocumentData = new CK5WorkflowDocumentData()
+                //    {
+                //        Ck5FileUploadList = new List<CK5_FILE_UPLOADDto>()
+                //    }
+
+                //};
+
+                //if (model.Ck5FileUploadModelList.Count > 0)
+                //{
+                   
+                //    input.AdditionalDocumentData.Ck5FileUploadList =
+                //        Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList);
+                //}
+
+                var input = new EditCompletedDocumentCk5Input();
+                input.DocumentId = model.Ck5Id;
+                input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
+
+                input.REGISTRATION_NUMBER = model.RegistrationNumber;
+                input.REGISTRATION_DATE = model.RegistrationDate;
+                input.EX_SETTLEMENT_ID = model.ExciseSettlement;
+                input.EX_STATUS_ID = model.ExciseStatus;
+                input.REQUEST_TYPE_ID = model.RequestType;
+                input.CARRIAGE_METHOD_ID = model.CarriageMethod;
+                input.INVOICE_NUMBER = model.InvoiceNumber;
+                input.INVOICE_DATE = model.InvoiceDate;
+
+                input.Ck5FileUploadList = Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList);
+
+                _ck5Bll.EditCompletedDocument(input);
+
+                AddMessageInfo("Success Update Document CK5", Enums.MessageInfoType.Success);
+
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
+        }
     }
 }

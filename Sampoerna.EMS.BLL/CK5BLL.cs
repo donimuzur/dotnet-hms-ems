@@ -2861,6 +2861,22 @@ namespace Sampoerna.EMS.BLL
             SetChangeHistory(StringDataOld, StringDataNew, "CK5_FILE_UPLOAD", input.UserId, input.DocumentId.ToString());
         }
 
+        public void CheckFileUploadChange(string userId,  long documentId, List<CK5_FILE_UPLOADDto> Ck5FileUploadList)
+        {
+            var dataOld = GetCk5FileUploadByCk5Id(documentId).Select(c => c.FILE_NAME).ToList();
+            var dataNew = Ck5FileUploadList.Select(c => c.FILE_NAME).ToList();
+
+            var StringDataOld = String.Join(", ", dataOld);
+            var StringDataNew = String.Join(", ", dataNew);
+
+            if (dataOld.Count > 0)
+            {
+                StringDataNew = StringDataOld + ", " + StringDataNew;
+            }
+
+            SetChangeHistory(StringDataOld, StringDataNew, "CK5_FILE_UPLOAD", userId, documentId.ToString());
+        }
+
         private void DeleteCk5FileUploadByCk5Id(long ck5Id)
         {
             var dbData = _repositoryCK5FileUpload.Get(c => c.CK5_ID == ck5Id);
@@ -5784,6 +5800,63 @@ namespace Sampoerna.EMS.BLL
             return data;
         }
 
-        
+        public void EditCompletedDocument(EditCompletedDocumentCk5Input input)
+        {
+
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS_ID != Enums.DocumentStatus.Completed
+               && input.UserRole != Enums.UserRole.SuperAdmin)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            if (input.Ck5FileUploadList.Count > 0)
+            {
+                dbData.CK5_FILE_UPLOAD = Mapper.Map<List<CK5_FILE_UPLOAD>>(input.Ck5FileUploadList);
+                CheckFileUploadChange(input.UserId,input.DocumentId, input.Ck5FileUploadList);
+            }
+
+            //prepare for set changes history
+            var origin = Mapper.Map<CK5Dto>(dbData);
+
+            var inputChangeLogs = new CK5Dto();
+            inputChangeLogs.KPPBC_CITY = origin.KPPBC_CITY;
+            inputChangeLogs.REGISTRATION_NUMBER = input.REGISTRATION_NUMBER;
+            inputChangeLogs.EX_GOODS_TYPE = origin.EX_GOODS_TYPE;
+            inputChangeLogs.EX_SETTLEMENT_ID = input.EX_SETTLEMENT_ID;
+            inputChangeLogs.EX_STATUS_ID = input.EX_STATUS_ID;
+            inputChangeLogs.REQUEST_TYPE_ID = input.REQUEST_TYPE_ID;
+            inputChangeLogs.SOURCE_PLANT_ID = origin.SOURCE_PLANT_ID;
+            inputChangeLogs.DEST_PLANT_ID = origin.DEST_PLANT_ID;
+            inputChangeLogs.INVOICE_NUMBER = input.INVOICE_NUMBER;
+            inputChangeLogs.INVOICE_DATE = input.INVOICE_DATE;
+            inputChangeLogs.PBCK1_DECREE_ID = origin.PBCK1_DECREE_ID;
+            inputChangeLogs.CARRIAGE_METHOD_ID = input.CARRIAGE_METHOD_ID;
+            inputChangeLogs.GRAND_TOTAL_EX = origin.GRAND_TOTAL_EX;
+            inputChangeLogs.PACKAGE_UOM_ID = origin.PACKAGE_UOM_ID;
+            inputChangeLogs.DEST_COUNTRY_NAME = origin.DEST_COUNTRY_NAME;
+            inputChangeLogs.SUBMISSION_DATE = origin.SUBMISSION_DATE;
+            inputChangeLogs.CK5_TYPE = origin.CK5_TYPE;
+            inputChangeLogs.SOURCE_PLANT_ADDRESS = origin.SOURCE_PLANT_ADDRESS;
+
+            //add to change log
+            SetChangesHistory(origin, inputChangeLogs, input.UserId);
+
+            //update data
+            dbData.REGISTRATION_NUMBER = input.REGISTRATION_NUMBER;
+            dbData.REGISTRATION_DATE = input.REGISTRATION_DATE;
+            dbData.EX_SETTLEMENT_ID = input.EX_SETTLEMENT_ID;
+            dbData.EX_STATUS_ID = input.EX_STATUS_ID;
+            dbData.REQUEST_TYPE_ID = input.REQUEST_TYPE_ID;
+            dbData.CARRIAGE_METHOD_ID = input.CARRIAGE_METHOD_ID;
+            dbData.INVOICE_NUMBER = input.INVOICE_NUMBER;
+            dbData.INVOICE_DATE = input.INVOICE_DATE;
+
+            dbData.MODIFIED_DATE = DateTime.Now;
+            
+            _uow.SaveChanges();
+        }
     }
 }

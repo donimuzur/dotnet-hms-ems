@@ -57,7 +57,11 @@
                             <input type="button" class="btn btn-danger" value="Cancel" id="btnCancelSAP" />
                         }
 
-                        if (Model.AllowAttachmentCompleted)
+                        if (Model.AllowEditCompletedDocument)
+                        {
+                            <input type="button" class="btn btn-blue" value="Save" id="btnSaveEditCompleted" />
+                        }
+                        else if (Model.AllowAttachmentCompleted)
                         {
                             <input type="button" class="btn btn-blue" value="Save" id="btnSaveAttachment" />
                         }
@@ -141,6 +145,11 @@
 
 
                             @Html.Partial("_CK5POReceive")
+                        }
+                         else if (Model.AllowEditCompletedDocument)
+                        {
+                          
+                            @Html.Partial("_CK5EditCompleted")
                         }
                         else
                         {
@@ -625,6 +634,10 @@
         });
         
         $("#btnAllowAttachment").click(function () {
+            $('#GovApproveForm').submit();
+        });
+        
+        $("#btnSaveEditCompleted").click(function () {
             $('#GovApproveForm').submit();
         });
     </script>
