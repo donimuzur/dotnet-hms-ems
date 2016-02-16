@@ -340,8 +340,12 @@
     <script type="text/javascript">
         $(document).ready(function() {
 
-       
-
+            $("select#RequestType option[value='Dibayar']").replaceWith("<optgroup label='Dibayar'>");
+            $("select#RequestType option[value='TidakDipungut']").replaceWith("<optgroup label='Tidak Dipungut'>");
+            $("select#RequestType option[value='Dibebaskan']").replaceWith("<optgroup label='Dibebaskan'>");
+            $("select#RequestType option[value='Lainnya']").replaceWith("<optgroup label='Lainnya'>");
+            $("#RequestType").find("option").eq(0).remove();
+            
             if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()' || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()') {
                 OnReadyFunction('@Model.DocumentStatus');
                 if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()') {
