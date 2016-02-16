@@ -63,7 +63,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.DailyProduction,
                 ProductionDate = DateTime.Today.ToString("dd MMM yyyy"),
-                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.SuperAdmin)
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer),
+                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.SuperAdmin)
             });
 
             return View("Index", data);
@@ -113,7 +114,8 @@ namespace Sampoerna.EMS.Website.Controllers
             var result = Mapper.Map<List<ProductionDetail>>(dbData);
             var viewModel = new ProductionViewModel();
             viewModel.Details = result;
-            viewModel.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.SuperAdmin);
+            viewModel.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer);
+            viewModel.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.SuperAdmin);
             return PartialView("_ProductionTableIndex", viewModel);
         }
         #endregion
@@ -252,13 +254,17 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             var company = GlobalFunctions.GetCompanyList(_companyBll);
-            var userPlantCompany = _userPlantMapBll.GetCompanyByUserId(CurrentUser.USER_ID);
-            var poaMapCompany = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
-            var distinctCompany = company.Where(x => userPlantCompany.Contains(x.Value));
-            if (CurrentUser.UserRole == Enums.UserRole.POA) distinctCompany = company.Where(x => poaMapCompany.Contains(x.Value));
-            var getCompany = new SelectList(distinctCompany, "Value", "Text");
 
-            model.CompanyCodeList = getCompany;
+            if (CurrentUser.UserRole != Enums.UserRole.SuperAdmin) { 
+                var userPlantCompany = _userPlantMapBll.GetCompanyByUserId(CurrentUser.USER_ID);
+                var poaMapCompany = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+                var distinctCompany = company.Where(x => userPlantCompany.Contains(x.Value));
+                if (CurrentUser.UserRole == Enums.UserRole.POA) distinctCompany = company.Where(x => poaMapCompany.Contains(x.Value));
+                var getCompany = new SelectList(distinctCompany, "Value", "Text");
+                company = getCompany;
+            }
+
+            model.CompanyCodeList = company;
             model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId("");
             model.FacodeList = GlobalFunctions.GetFaCodeByPlant("");
             model.UomList = GlobalFunctions.GetUomStickGram(_uomBll);

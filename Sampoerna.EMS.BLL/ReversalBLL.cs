@@ -69,7 +69,9 @@ namespace Sampoerna.EMS.BLL
 
             if (!string.IsNullOrEmpty(input.UserId))
             {
-                queryFilter = queryFilter.And(c => input.ListUserPlants.Contains(c.WERKS));
+                if (input.UserRole != Enums.UserRole.SuperAdmin) { 
+                    queryFilter = queryFilter.And(c => input.ListUserPlants.Contains(c.WERKS));
+                }
             }
             
             return queryFilter;
