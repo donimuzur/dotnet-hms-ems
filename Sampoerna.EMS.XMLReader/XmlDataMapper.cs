@@ -102,7 +102,7 @@ namespace Sampoerna.EMS.XMLReader
 
                     if (item is USER)
                     {
-                        var isActive = item.GetType().GetProperty("IS_ACTIVE") != null && (bool)item.GetType().GetProperty("IS_ACTIVE").GetValue(item);
+                        var isActive = item.GetType().GetProperty("IS_ACTIVE") != null && (int)item.GetType().GetProperty("IS_ACTIVE").GetValue(item) == 1;
                         if (!isActive)
                         {
                             item.GetType().GetProperty("IS_ACTIVE").SetValue(item, 0);
@@ -307,9 +307,17 @@ namespace Sampoerna.EMS.XMLReader
           
         }
 
-        public DateTime? GetDate(string valueStr)
+        public DateTime? GetDate(string valueStr, string key = null)
         {
-            lastField = String.Format("input = {0}", valueStr);
+            if (key != null)
+            {
+                lastField = String.Format("key = {1};input = {0}", valueStr,key);   
+            }
+            else
+            {
+                lastField = String.Format("input = {0}", valueStr);    
+            }
+            
             if (valueStr.Length == 8)
             {
                 var year = Convert.ToInt32(valueStr.Substring(0, 4));
@@ -319,9 +327,16 @@ namespace Sampoerna.EMS.XMLReader
             }
             return null;
         }
-        public DateTime? GetDateDotSeparator(string valueStr)
+        public DateTime? GetDateDotSeparator(string valueStr, string key = null)
         {
-            lastField = String.Format("input = {0}", valueStr);
+            if (key != null)
+            {
+                lastField = String.Format("key = {1};input = {0}", valueStr, key);   
+            }
+            else
+            {
+                lastField = String.Format("input = {0}", valueStr);
+            }
             if (!string.IsNullOrEmpty(valueStr) && valueStr.Length == 10)
             {
                 var year = Convert.ToInt32(valueStr.Substring(6, 4));
