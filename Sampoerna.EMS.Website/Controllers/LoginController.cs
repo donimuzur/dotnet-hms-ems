@@ -42,7 +42,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentUser.AuthorizePages = _userAuthorizationBll.GetAuthPages(loginResult.USER_ID);
                 CurrentUser.NppbckPlants = _userAuthorizationBll.GetNppbckPlants(loginResult.USER_ID);
                 CurrentUser.ListUserPlants = new List<string>();
-
+                CurrentUser.ListUserNppbkc = new List<string>();
                 switch (CurrentUser.UserRole)
                 {
                     case Enums.UserRole.User:

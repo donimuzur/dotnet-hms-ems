@@ -6,44 +6,48 @@
     ViewBag.Title = "Detail";
 }
 
-@using (Html.BeginForm(Model.ActionType, "PBCK7AndPBCK3", FormMethod.Post, new {@id = "form-pbck7-detail", @class = "form-excise", role = "form", enctype = "multipart/form-data"}))
+@using (Html.BeginForm(Model.ActionType, "PBCK7AndPBCK3", FormMethod.Post, new { @id = "form-pbck7-detail", @class = "form-excise", role = "form", enctype = "multipart/form-data" }))
 {
-  
-    
-    
-  
+
+
+
+
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
                 @*<h3>PBCK-3</h3>
-                <label class="status">@Model.Pbck3StatusName</label>*@
+                    <label class="status">@Model.Pbck3StatusName</label>*@
                 <h3>PBCK-7</h3>
                 <label class="status">@Model.Pbck7StatusName</label>
                 <div class="action-button">
                     <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
                     <input type="button" class="btn btn-grey" value="Print Preview PBCK-7" onclick="printPreview('@Url.EncryptedAction("PrintPreviewPbck7", "Pbck7AndPbck3", new { id = @Model.Id })')" />
 
-                        @if (Model.AllowApproveAndReject)
-                        {
-                            <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
+                    @if (Model.AllowApproveAndReject)
+                    {
+                        <input type="button" class="btn btn-blue" value="Approve" id="btnApprove" />
 
-                            <input type="button" class="btn btn-danger" value="Reject" id="btnRejectPbck7" />
+                        <input type="button" class="btn btn-danger" value="Reject" id="btnRejectPbck7" />
+                    }
+                      else if (Model.AllowEditCompletedDocument)
+                    {
+                        <input type="button" class="btn btn-blue" value="Save" id="btnSave" />
+                    }
+                    else
+                    {
+                        if (Model.AllowGovApproveAndReject || Model.Pbck7Status == Enums.DocumentStatus.Completed)
+                        {
+                            <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
                         }
-                        else
-                        {
-                            if (Model.AllowGovApproveAndReject || Model.Pbck7Status == Enums.DocumentStatus.Completed)
-                            {
-                                <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
-                            }
 
-                            //first code when manager exists
-                            @*if (Model.AllowManagerReject)
+                        //first code when manager exists
+                        @*if (Model.AllowManagerReject)
                             {
                                 <input type="button" class="btn btn-danger" value="Reject" id="btnRejectPbck7" />
                             }*@
-                        }
-                    
-                   
+                    }
+
+
                 </div>
             </div>
         </div>
@@ -70,72 +74,81 @@
                     @Html.HiddenFor(x => x.CreatedDate)
                     @Html.HiddenFor(x => x.Pbck7Status)
                     @Html.HiddenFor(x => x.Pbck7StatusName)
-                    
-                  
+
+
                     <!-- Tab panes -->
                     <div class="tab-content">
-                        @Html.Partial("_HomeDetail")
+                        @if (Model.AllowEditCompletedDocument)
+                        {
+                            @Html.HiddenFor(model => model.Id)
+                            @Html.Partial("_Pbck7EditCompleted")
+                        }
+                        else
+                        {
+                            @Html.Partial("_HomeDetail")
+                        }
+
                         @Html.Partial("_PrintOutPbck7")
                         @Html.Partial("_Pbck7ChangeLog")
-                       
 
-                       
+
+
                     </div>
-                   
+
                 </div>
             </div>
         </div>
     </div>
 }
 
-    <div id="pbck7ApproveModal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h3>Approve</h3>
-                </div>
-                <div class="modal-body">
-                    Approve Documents  ?
-                </div>
-                <div class="modal-footer">
-                    <input type="button" id="btnApproveConfirm" class="btn btn-blue" value="Yes" />
-                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
-                </div>
+<div id="pbck7ApproveModal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3>Approve</h3>
+            </div>
+            <div class="modal-body">
+                Approve Documents  ?
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="btnApproveConfirm" class="btn btn-blue" value="Yes" />
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
             </div>
         </div>
     </div>
-    <div id="pbck7RejectModal" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title">Reject PBCK-7 document</h4>
-                </div>
-                @using (Html.BeginForm("RejectDocumentPbck7", "Pbck7AndPbck3"))
-                {
-                    <div class="modal-body">
-                        @Html.HiddenFor(model => model.Id)
-                        <div class="form-excise" role="form">
-                            <div class="row">
-                                <label class="col-md-3">Add Comment<span class="red">*</span></label>
-                                <div class="col-md-9">
-                                    @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9" })
-                                </div>
+</div>
+<div id="pbck7RejectModal" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Reject PBCK-7 document</h4>
+            </div>
+            @using (Html.BeginForm("RejectDocumentPbck7", "Pbck7AndPbck3"))
+            {
+                <div class="modal-body">
+                    @Html.HiddenFor(model => model.Id)
+                    <div class="form-excise" role="form">
+                        <div class="row">
+                            <label class="col-md-3">Add Comment<span class="red">*</span></label>
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(model => model.Comment, new { @rows = "5", @class = "col-md-9" })
                             </div>
                         </div>
+                    </div>
 
-                    </div>
-                    <div class="modal-footer">
-                        <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
-                        <input type="submit" class="btn btn-danger" value="Reject" disabled id="btnConfirmRejectPbck7" />
-                    </div>
-                }
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                    <input type="submit" class="btn btn-danger" value="Reject" disabled id="btnConfirmRejectPbck7" />
+                </div>
+            }
         </div>
     </div>
+</div>
 
-    
+
 
 <div id="ModalPbck7ValidateGov" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog modal-sm">
@@ -162,7 +175,7 @@
     <script src="~/Scripts/UploadExcel.js"></script>
     <script src="~/Scripts/Pbck7Script.js"></script>
     <script src="~/Scripts/Pbck7ScriptDocUpload.js"></script>
-   
+
     <script type="text/javascript">
 
         var isCompleteView = '@Model.Pbck7Status';
@@ -172,7 +185,7 @@
             $('#MenuPBCK7Index').addClass('active');
         }
 
-        $('#btnBack').click(function(e) {
+        $('#btnBack').click(function (e) {
             if ('@Model.Pbck7Status' == '@Enums.DocumentStatus.Completed.ToString()')
                 location.href = '@Url.Action("Pbck7Completed", "PBCK7AndPBCK3")';
             else
@@ -180,17 +193,17 @@
         });
 
 
-        $('#btn-changelog-export-xls').click(function() {
+        $('#btn-changelog-export-xls').click(function () {
             location.href = '@Url.Action("ExportXls", "PBCK7AndPBCK3", new {pbckId = Model.Id})';
         });
 
-        $("#btnApproveConfirm").click(function() {
+        $("#btnApproveConfirm").click(function () {
             //$('#ActionType').val('Approve');
             //$('#form-pbck7-detail').submit();
             window.location = "@Url.Action("ApproveDocument", "PBCK7AndPBCK3", new {id = @Model.Id})";
         });
 
-        $("#btnSaveGovStatus").click(function() {
+        $("#btnSaveGovStatus").click(function () {
             if ('@Model.Pbck7Status' == '@Enums.DocumentStatus.Completed.ToString()') {
                 $('#form-pbck7-detail').submit();
             } else {
@@ -202,7 +215,7 @@
 
         $('#divComment').hide();
 
-        $('#Pbck7GovStatus').on('change', function(e) {
+        $('#Pbck7GovStatus').on('change', function (e) {
             var valueSelected = this.value;
 
             $('#divComment').hide();
@@ -216,27 +229,27 @@
         });
 
 
-        $("#btnApproveConfirmPbck3").click(function() {
+        $("#btnApproveConfirmPbck3").click(function () {
             $('#ActionType').val('ApprovePbck3');
             $('#form-pbck7-detail').submit();
         });
-        $('#btnApprove').click(function() {
+        $('#btnApprove').click(function () {
 
             $('#pbck7ApproveModal').modal('show');
         });
-        $('#btnApprovePbck3').click(function() {
+        $('#btnApprovePbck3').click(function () {
 
             $('#pbck3ApproveModal').modal('show');
         });
-        $("#btnSubmitConfirm").click(function() {
+        $("#btnSubmitConfirm").click(function () {
             $('#IsSaveSubmit').val('true');
             $('#form-pbck7-edit').submit();
         });
-        $('#btnSubmitDocument').click(function() {
+        $('#btnSubmitDocument').click(function () {
 
             $('#pbck7Modal').modal('show');
         });
-        $('#btn-generate-upload').click(function() {
+        $('#btn-generate-upload').click(function () {
             uploadXmlFile();
         });
 
@@ -246,11 +259,11 @@
             window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
 
         }
-        
+
         function openAttachment(url) {
             window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes');
         }
-     
+
         function PrintOutClick(reportUrl, addHistoryUrl, id) {
 
             window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
@@ -259,7 +272,7 @@
                 type: 'POST',
                 url: addHistoryUrl,
                 data: { id: id },
-                success: function(response) {
+                success: function (response) {
                     $('#PrintOutHistoryTable').html("");
                     $('#PrintOutHistoryTable').html(response);
                     ResetPrintHistoryDataTable();
@@ -287,13 +300,13 @@
 
         }
 
-        $('#btnRejectPbck7').click(function() {
+        $('#btnRejectPbck7').click(function () {
             $('#btnConfirmRejectPbck7').attr('disabled', 'disabled');
 
             $('#pbck7RejectModal').modal('show');
         });
 
-        $('#Comment').bind('input propertychange', function() {
+        $('#Comment').bind('input propertychange', function () {
 
             $('#btnConfirmRejectPbck7').attr('disabled', 'disabled');
 
@@ -302,13 +315,19 @@
 
             }
         });
-        $('#Pbck3Dto_Comment').bind('input propertychange', function() {
+        $('#Pbck3Dto_Comment').bind('input propertychange', function () {
 
             $('#btnConfirmRejectPbck3').attr('disabled', 'disabled');
 
             if (this.value.length) {
                 $('#btnConfirmRejectPbck3').removeAttr('disabled');
 
+            }
+        });
+        
+        $("#btnSave").click(function () {
+            if (ValidateGovInput()) {
+                $('#form-pbck7-detail').submit();
             }
         });
     </script>
