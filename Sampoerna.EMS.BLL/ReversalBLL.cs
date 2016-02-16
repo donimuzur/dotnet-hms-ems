@@ -115,6 +115,8 @@ namespace Sampoerna.EMS.BLL
                 var existsReversal = GetById(reversalInput.ReversalId);
 
                 remainingQty = remainingQty + existsReversal.ReversalQty;
+
+                totalReversal = reversalListByPlantFacodeDate.Where(x => x.REVERSAL_ID != reversalInput.ReversalId).Sum(x => x.REVERSAL_QTY.HasValue ? x.REVERSAL_QTY.Value : 0) + reversalInput.ReversalQty;
             }
 
             if (reversalInput.ProductionDate.HasValue)
