@@ -2501,10 +2501,10 @@ namespace Sampoerna.EMS.BLL
                     UomDesc = item.UOM_DESC
                 };
 
-                var groupUsageProporsional = invMovementOutput.UsageProportionalList.GroupBy(x => new { x.MaterialId, x.Order, x.Batch })
+                var groupUsageProporsional = invMovementOutput.UsageProportionalList.GroupBy(x => new { x.Order, x.Batch })
                     .Select(p => new InvMovementUsageProportional()
                     {
-                        MaterialId = p.FirstOrDefault().MaterialId,
+                        //MaterialId = p.FirstOrDefault().MaterialId,
                         Order = p.FirstOrDefault().Order,
                         Batch = p.FirstOrDefault().Batch,
                         Qty = p.Sum(x => x.Qty),
@@ -3472,27 +3472,27 @@ namespace Sampoerna.EMS.BLL
 
             var listTotalPerMaterialId = inventoryMovementUsageAll.GroupBy(p => new
             {
-                p.MATERIAL_ID
+                p.ORDR
             }).Select(g => new
             {
-                MaterialId = g.Key.MATERIAL_ID,
+                Order = g.Key.ORDR,
                 TotalQty = g.Sum(p => p.QTY.HasValue ? p.QTY.Value : 0)
             }).ToList();
 
             //grouped by MAT_DOC, MVT, MATERIAL_ID, PLANT_ID, BATCH and ORDR
             var groupedInventoryMovements = inventoryMovements.GroupBy(p => new
             {
-                p.MAT_DOC,
-                p.MVT,
-                p.MATERIAL_ID,
+                //p.MAT_DOC,
+                //p.MVT,
+                //p.MATERIAL_ID,
                 p.PLANT_ID,
                 p.BATCH,
                 p.ORDR
             }).Select(g => new
             {
-                MatDoc = g.Key.MAT_DOC,
-                Mvt = g.Key.MVT,
-                MaterialId = g.Key.MATERIAL_ID,
+                //MatDoc = g.Key.MAT_DOC,
+                //Mvt = g.Key.MVT,
+                //MaterialId = g.Key.MATERIAL_ID,
                 PlantId = g.Key.PLANT_ID,
                 Batch = g.Key.BATCH,
                 Ordr = g.Key.ORDR,
@@ -3500,10 +3500,10 @@ namespace Sampoerna.EMS.BLL
             }).ToList();
 
             var rc = (from x in groupedInventoryMovements
-                      join y in listTotalPerMaterialId on x.MaterialId equals y.MaterialId
+                      join y in listTotalPerMaterialId on x.Ordr equals y.Order
                       select new InvMovementUsageProportional()
                       {
-                          MaterialId = x.MaterialId,
+                          //MaterialId = x.MaterialId,
                           Qty = x.TotalQty,
                           TotalQtyPerMaterialId = y.TotalQty,
                           Order = x.Ordr
