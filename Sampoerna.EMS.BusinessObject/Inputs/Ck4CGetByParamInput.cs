@@ -45,6 +45,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     {
         public long Id { get; set; }
         public DateTime? ReportedOn { get; set; }
+        public DateTime? DecreeDate { get; set; }
     }
 
     public class Ck4cWorkflowDocumentData
