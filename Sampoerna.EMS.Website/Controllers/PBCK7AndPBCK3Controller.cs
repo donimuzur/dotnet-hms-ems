@@ -3115,33 +3115,36 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private List<Pbck7AndPbck3Dto> GetDashboardPbck7Data(Pbck7Pbck3DashboardSearchViewModel filter = null)
         {
-            if (filter == null)
-            {
-                //get All Data
-                var data = _pbck7Pbck3Bll.GetDashboardPbck7ByParam(new GetDashboardPbck7ByParamInput());
-                return data;
-            }
-
             var input = Mapper.Map<GetDashboardPbck7ByParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
             input.UserRole = CurrentUser.UserRole;
             input.ListUserPlants = CurrentUser.ListUserPlants;
+
+            if (filter == null)
+            {
+                //get All Data
+                
+                var data = _pbck7Pbck3Bll.GetDashboardPbck7ByParam(input);
+                return data;
+            }
+
+           
             return _pbck7Pbck3Bll.GetDashboardPbck7ByParam(input);
         }
 
         private List<Pbck3Dto> GetDashboardPbck3Data(Pbck7Pbck3DashboardSearchViewModel filter = null)
         {
-            if (filter == null)
-            {
-                //get All Data
-                var data = _pbck7Pbck3Bll.GetDashboardPbck3ByParam(new GetDashboardPbck3ByParamInput());
-                return data;
-            }
-
             var input = Mapper.Map<GetDashboardPbck3ByParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
             input.UserRole = CurrentUser.UserRole;
             input.ListUserPlants = CurrentUser.ListUserPlants;
+
+            if (filter == null)
+            {
+                //get All Data
+                var data = _pbck7Pbck3Bll.GetDashboardPbck3ByParam(input);
+                return data;
+            }
 
             return _pbck7Pbck3Bll.GetDashboardPbck3ByParam(input);
         }
