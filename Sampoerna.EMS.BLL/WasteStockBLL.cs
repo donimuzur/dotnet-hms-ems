@@ -69,14 +69,14 @@ namespace Sampoerna.EMS.BLL
             return GetById(id);
         }
 
-        public List<WasteStockDto> GetAllDataOrderByUserAndGroupRole(List<string> ListUserPlants)
+        public List<WasteStockDto> GetAllDataOrderByUserAndGroupRole(List<string> ListUserPlants, bool isSuperAdmin)
         {
             Func<IQueryable<WASTE_STOCK>, IOrderedQueryable<WASTE_STOCK>> orderByFilter =
                 n => n.OrderBy(z => z.WERKS).ThenBy(z => z.MATERIAL_NUMBER);
 
             Expression<Func<WASTE_STOCK, bool>> queryFilter = PredicateHelper.True<WASTE_STOCK>();
 
-            queryFilter = queryFilter.And(x => ListUserPlants.Contains(x.WERKS));
+            if (!isSuperAdmin) queryFilter = queryFilter.And(x => ListUserPlants.Contains(x.WERKS));
 
             var listData = _repository.Get(queryFilter, orderByFilter, _includeTables).ToList();
             

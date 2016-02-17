@@ -145,7 +145,7 @@ namespace Sampoerna.EMS.BLL
                 if (item.Ck4CId > 0)
                 {
                     //update
-                    model = _repository.Get(c => c.CK4C_ID == item.Ck4CId, null, includeTables).FirstOrDefault();
+                    model = _repository.Get(c => c.CK4C_ID == item.Ck4CId).FirstOrDefault();
 
                     if (model == null)
                         throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
@@ -774,10 +774,12 @@ namespace Sampoerna.EMS.BLL
             //delegate
             if (dbData.CREATED_BY != input.UserId)
             {
-                var workflowHistoryDto =
-                    _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
-                input.Comment = _poaDelegationServices.CommentDelegatedByHistory(workflowHistoryDto.COMMENT,
-                    workflowHistoryDto.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+                if (input.UserRole != Enums.UserRole.SuperAdmin) { 
+                    var workflowHistoryDto =
+                        _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
+                    input.Comment = _poaDelegationServices.CommentDelegatedByHistory(workflowHistoryDto.COMMENT,
+                        workflowHistoryDto.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+                }
             }
             //end delegate
 
@@ -877,6 +879,12 @@ namespace Sampoerna.EMS.BLL
         {
             CK4C dbData = _repository.Get(c => c.CK4C_ID == input.Id, null, includeTables).FirstOrDefault();
             dbData.REPORTED_ON = input.ReportedOn;
+
+            if (input.DecreeDate.HasValue)
+            {
+                dbData.DECREE_DATE = input.DecreeDate;
+            }
+
             _uow.SaveChanges();
         }
 
@@ -889,6 +897,10 @@ namespace Sampoerna.EMS.BLL
             if (input.UserRole == Enums.UserRole.POA)
             {
                 queryFilter = queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID));
+            }
+            else if (input.UserRole == Enums.UserRole.SuperAdmin)
+            {
+                queryFilter = queryFilter.And(c => c.GOV_STATUS == Enums.StatusGovCk4c.Approved);
             }
             else
             {
@@ -928,6 +940,10 @@ namespace Sampoerna.EMS.BLL
 
             //    queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.NUMBER));
             //}
+            else if (input.UserRole == Enums.UserRole.SuperAdmin)
+            {
+                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
+            }
             else
             {
                 queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID) ||
@@ -1532,6 +1548,10 @@ namespace Sampoerna.EMS.BLL
             if (input.UserRole == Enums.UserRole.POA)
             {
                 queryFilter = queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID));
+            }
+            else if (input.UserRole == Enums.UserRole.SuperAdmin)
+            {
+                queryFilter = queryFilter.And(c => c.COMPANY_ID != null);
             }
             else
             {
