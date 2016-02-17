@@ -2407,8 +2407,8 @@ namespace Sampoerna.EMS.BLL
 
             //join data ck4cItem and ZaapShiftRpt
             var joinedData = (from zaap in zaapShiftRpt
-                              join ck4CItem in ck4CItemData on new { zaap.WERKS, zaap.FA_CODE } equals
-                                   new { ck4CItem.WERKS, ck4CItem.FA_CODE }
+                              join ck4CItem in ck4CItemData on new {zaap.WERKS, zaap.FA_CODE, PRODUCTION_DATE = zaap.PRODUCTION_DATE } equals
+                                   new { ck4CItem.WERKS, ck4CItem.FA_CODE, PRODUCTION_DATE = ck4CItem.PROD_DATE }
                               join prod in prodTypeData on new { ck4CItem.PROD_CODE } equals new { prod.PROD_CODE }
                               select new
                               {
@@ -2418,7 +2418,7 @@ namespace Sampoerna.EMS.BLL
                                   zaap.UOM,
                                   zaap.PRODUCTION_DATE,
                                   zaap.BATCH,
-                                  zaap.QTY,
+                                  ck4CItem.PROD_QTY,
                                   zaap.ORDR,
                                   ck4CItem.PROD_CODE,
                                   prod.PRODUCT_ALIAS,
@@ -2450,7 +2450,7 @@ namespace Sampoerna.EMS.BLL
                                          j.UOM,
                                          j.PRODUCTION_DATE,
                                          j.BATCH,
-                                         j.QTY,
+                                         j.PROD_QTY,
                                          j.ORDR,
                                          j.PROD_CODE,
                                          j.PRODUCT_ALIAS,
@@ -2496,15 +2496,15 @@ namespace Sampoerna.EMS.BLL
                     ProdCode = item.PROD_CODE,
                     ProductType = item.PRODUCT_TYPE,
                     ProductAlias = item.PRODUCT_ALIAS,
-                    Amount = item.QTY.HasValue ? item.QTY.Value : 0,
+                    Amount = item.PROD_QTY,
                     UomId = item.UOM,
                     UomDesc = item.UOM_DESC
                 };
 
-                var groupUsageProporsional = invMovementOutput.UsageProportionalList.GroupBy(x => new { x.MaterialId, x.Order, x.Batch })
+                var groupUsageProporsional = invMovementOutput.UsageProportionalList.GroupBy(x => new { x.Order, x.Batch })
                     .Select(p => new InvMovementUsageProportional()
                     {
-                        MaterialId = p.FirstOrDefault().MaterialId,
+                        //MaterialId = p.FirstOrDefault().MaterialId,
                         Order = p.FirstOrDefault().Order,
                         Batch = p.FirstOrDefault().Batch,
                         Qty = p.Sum(x => x.Qty),
@@ -2512,7 +2512,7 @@ namespace Sampoerna.EMS.BLL
                     });
 
                 var rec = groupUsageProporsional.ToList().FirstOrDefault(c =>
-                    c.Order == item.ORDR && c.Batch == item.BATCH);
+                    c.Order == item.ORDR);
 
                 if (rec != null)
                 {
@@ -3472,27 +3472,27 @@ namespace Sampoerna.EMS.BLL
 
             var listTotalPerMaterialId = inventoryMovementUsageAll.GroupBy(p => new
             {
-                p.MATERIAL_ID
+                p.ORDR
             }).Select(g => new
             {
-                MaterialId = g.Key.MATERIAL_ID,
+                Order = g.Key.ORDR,
                 TotalQty = g.Sum(p => p.QTY.HasValue ? p.QTY.Value : 0)
             }).ToList();
 
             //grouped by MAT_DOC, MVT, MATERIAL_ID, PLANT_ID, BATCH and ORDR
             var groupedInventoryMovements = inventoryMovements.GroupBy(p => new
             {
-                p.MAT_DOC,
-                p.MVT,
-                p.MATERIAL_ID,
+                //p.MAT_DOC,
+                //p.MVT,
+                //p.MATERIAL_ID,
                 p.PLANT_ID,
                 p.BATCH,
                 p.ORDR
             }).Select(g => new
             {
-                MatDoc = g.Key.MAT_DOC,
-                Mvt = g.Key.MVT,
-                MaterialId = g.Key.MATERIAL_ID,
+                //MatDoc = g.Key.MAT_DOC,
+                //Mvt = g.Key.MVT,
+                //MaterialId = g.Key.MATERIAL_ID,
                 PlantId = g.Key.PLANT_ID,
                 Batch = g.Key.BATCH,
                 Ordr = g.Key.ORDR,
@@ -3500,10 +3500,10 @@ namespace Sampoerna.EMS.BLL
             }).ToList();
 
             var rc = (from x in groupedInventoryMovements
-                      join y in listTotalPerMaterialId on x.MaterialId equals y.MaterialId
+                      join y in listTotalPerMaterialId on x.Ordr equals y.Order
                       select new InvMovementUsageProportional()
                       {
-                          MaterialId = x.MaterialId,
+                          //MaterialId = x.MaterialId,
                           Qty = x.TotalQty,
                           TotalQtyPerMaterialId = y.TotalQty,
                           Order = x.Ordr

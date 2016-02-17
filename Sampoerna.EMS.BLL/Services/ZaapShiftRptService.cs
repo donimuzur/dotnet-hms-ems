@@ -50,7 +50,31 @@ namespace Sampoerna.EMS.BLL.Services
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
 
-            return dbData.ToList();
+            var retData = dbData.GroupBy(x => new {x.ORDR, x.COMPANY_CODE,x.WERKS,x.FA_CODE,x.PRODUCTION_DATE})
+                .Select(x=>
+                {
+                    var zaapShiftRpt = x.FirstOrDefault();
+                    return zaapShiftRpt != null ? new ZAAP_SHIFT_RPT()
+                                {
+                                    ORDR = zaapShiftRpt.ORDR,
+                                    COMPANY_CODE = zaapShiftRpt.COMPANY_CODE,
+                                    WERKS = zaapShiftRpt.WERKS,
+                                    FA_CODE = zaapShiftRpt.FA_CODE,
+                                    PRODUCTION_DATE = zaapShiftRpt.PRODUCTION_DATE,
+                                    UOM = zaapShiftRpt.UOM
+                                } : null;
+                }).ToList();
+                //(from data in dbData
+                //           group new {}
+                //           select new ZAAP_SHIFT_RPT()
+                //           {
+                //               ORDR = data.ORDR,
+                //               COMPANY_CODE = data.COMPANY_CODE,
+                //               WERKS = data.WERKS,
+                //               FA_CODE = data.FA_CODE,
+                //               PRODUCTION_DATE = data.PRODUCTION_DATE
+                //           }).Distinct().ToList();
+            return retData;
 
         }
 
