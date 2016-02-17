@@ -38,7 +38,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.Reversal,
-                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
+                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.SuperAdmin ? true : false),
                 IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
             });
 
@@ -48,9 +48,16 @@ namespace Sampoerna.EMS.Website.Controllers
         private ReversalIndexViewModel InitIndexViewModel(
             ReversalIndexViewModel model)
         {
-            var listPlant = GlobalFunctions.GetPlantAll().Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
+            var listPlant = GlobalFunctions.GetPlantAll();
 
-            model.PlantWerksList = new SelectList(listPlant, "Value", "Text");
+            if (CurrentUser.UserRole != Enums.UserRole.SuperAdmin)
+            {
+                var itemPlant = GlobalFunctions.GetPlantAll().Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
+
+                listPlant = new SelectList(itemPlant, "Value", "Text");
+            }
+
+            model.PlantWerksList = listPlant;
 
             model.Detail = GetListDocument(model);
 
@@ -69,6 +76,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //getbyparams
             var input = Mapper.Map<ReversalGetByParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
             input.ListUserPlants = CurrentUser.ListUserPlants;
 
             var dbData = _reversalBll.GetListDocumentByParam(input).OrderByDescending(c => c.ProductionDate);
@@ -90,7 +98,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.SuperAdmin)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
@@ -114,12 +122,17 @@ namespace Sampoerna.EMS.Website.Controllers
         private ReversalIndexViewModel InitialModel(ReversalIndexViewModel model)
         {
             var plantList = GlobalFunctions.GetPlantAll();
-            var distinctPlant = plantList.Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
-            var getPlant = new SelectList(distinctPlant, "Value", "Text");
+
+            if (CurrentUser.UserRole != Enums.UserRole.SuperAdmin)
+            {
+                var distinctPlant = plantList.Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
+                var getPlant = new SelectList(distinctPlant, "Value", "Text");
+                plantList = getPlant;
+            }
 
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.PlantWerksList = getPlant;
+            model.PlantWerksList = plantList;
             model.FaCodeList = GlobalFunctions.GetFaCodeByPlant(model.Details.Werks);
             model.ZaapShiftList = GlobalFunctions.GetReversalData("", "");
 

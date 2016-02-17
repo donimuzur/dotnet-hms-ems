@@ -194,7 +194,7 @@ namespace Sampoerna.EMS.BLL
                             queryFilter.And(
                                 c =>
                                     (delegateUser.Contains(c.CREATED_BY) ||
-                                     (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID)) ||
+                                     (c.STATUS != Enums.DocumentStatus.Draft && input.ListNppbkc.Contains(c.NPPBKC_ID)) ||
                                      c.STATUS == Enums.DocumentStatus.Completed));
                     }
                     else
@@ -203,7 +203,7 @@ namespace Sampoerna.EMS.BLL
                            queryFilter.And(
                                c =>
                                    (c.CREATED_BY == input.UserId ||
-                                    (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID)) ||
+                                    (c.STATUS != Enums.DocumentStatus.Draft && input.ListNppbkc.Contains(c.NPPBKC_ID)) ||
                                     c.STATUS == Enums.DocumentStatus.Completed));
                     }
                 }
