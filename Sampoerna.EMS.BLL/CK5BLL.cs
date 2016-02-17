@@ -602,34 +602,36 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
-            //delegate 
-            var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
-
-            if (input.ListUserPlant == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
-
-            if (delegateUser.Count > 0)
-                delegateUser.Add(input.UserId);
-
-
-            if (delegateUser.Count > 0)
+            if (input.UserRole != Enums.UserRole.SuperAdmin)
             {
-                queryFilter =
-                    queryFilter.And(
-                        c =>
-                            (delegateUser.Contains(c.CREATED_BY) ||
-                             (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                              input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
+                //delegate 
+                var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
+
+                if (input.ListUserPlant == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
+
+                if (delegateUser.Count > 0)
+                    delegateUser.Add(input.UserId);
+
+
+                if (delegateUser.Count > 0)
+                {
+                    queryFilter =
+                        queryFilter.And(
+                            c =>
+                                (delegateUser.Contains(c.CREATED_BY) ||
+                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                  input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
+                }
+                else
+                    queryFilter =
+                        queryFilter.And(
+                            c =>
+                                (c.CREATED_BY == input.UserId ||
+                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                  input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
+
             }
-            else
-                queryFilter =
-                    queryFilter.And(
-                        c =>
-                            (c.CREATED_BY == input.UserId ||
-                             (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                              input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
-
-
             if (!string.IsNullOrEmpty(input.DocumentNumber))
             {
                 queryFilter = queryFilter.And(c => c.SUBMISSION_NUMBER.Contains(input.DocumentNumber));
@@ -5643,34 +5645,36 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
-            //delegate 
-            var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
-
-            if (input.ListUserPlant == null)
-                throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
-
-            if (delegateUser.Count > 0)
-                delegateUser.Add(input.UserId);
-
-
-            if (delegateUser.Count > 0)
+            if (input.UserRole != Enums.UserRole.SuperAdmin)
             {
-                queryFilter =
-                    queryFilter.And(
-                        c =>
-                            (delegateUser.Contains(c.CREATED_BY) ||
-                             (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                              input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
-            }
-            else
-                queryFilter =
-                    queryFilter.And(
-                        c =>
-                            (c.CREATED_BY == input.UserId ||
-                             (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                              input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
+                //delegate 
+                var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
 
-           
+                if (input.ListUserPlant == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
+
+                if (delegateUser.Count > 0)
+                    delegateUser.Add(input.UserId);
+
+
+                if (delegateUser.Count > 0)
+                {
+                    queryFilter =
+                        queryFilter.And(
+                            c =>
+                                (delegateUser.Contains(c.CREATED_BY) ||
+                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                  input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
+                }
+                else
+                    queryFilter =
+                        queryFilter.And(
+                            c =>
+                                (c.CREATED_BY == input.UserId ||
+                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                  input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
+
+            }
             if (!string.IsNullOrEmpty(input.FaCode))
             {
                 queryFilter = queryFilter.And(c => c.CK5_MATERIAL.Any(x=>x.BRAND == input.FaCode));
@@ -5855,7 +5859,29 @@ namespace Sampoerna.EMS.BLL
             dbData.INVOICE_DATE = input.INVOICE_DATE;
 
             dbData.MODIFIED_DATE = DateTime.Now;
-            
+
+
+            string oldValue = "";
+            string newValue = "";
+
+            //ck5 material
+            foreach (var ck5Material in input.Ck5MaterialDtos)
+            {
+                var dbCk5Material = _repositoryCK5Material.GetByID(ck5Material.CK5_MATERIAL_ID);
+                if (dbCk5Material != null)
+                {
+                    //change log
+                    oldValue = dbCk5Material.NOTE;
+                    newValue = ck5Material.NOTE;
+                    if (oldValue != newValue)
+                        SetChangeHistory(oldValue, newValue, "CK5_MATERIAL_NOTE", input.UserId, dbData.CK5_ID.ToString());
+
+                    dbCk5Material.NOTE = ck5Material.NOTE;
+
+                    _repositoryCK5Material.InsertOrUpdate(dbCk5Material);
+                }
+            }
+
             _uow.SaveChanges();
         }
     }

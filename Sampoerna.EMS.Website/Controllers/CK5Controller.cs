@@ -109,6 +109,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 input = new CK5GetByParamInput();
                 input.UserId = CurrentUser.USER_ID;
                 input.ListUserPlant = CurrentUser.ListUserPlants;
+                input.UserRole = CurrentUser.UserRole;
 
                 dbData = _ck5Bll.GetCK5MarketReturnCompletedByParam(input);
                 return Mapper.Map<List<CK5Item>>(dbData);
@@ -119,6 +120,7 @@ namespace Sampoerna.EMS.Website.Controllers
             input = Mapper.Map<CK5GetByParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
             input.ListUserPlant = CurrentUser.ListUserPlants;
+            input.UserRole = CurrentUser.UserRole;
 
             dbData = _ck5Bll.GetCK5MarketReturnCompletedByParam(input);
             return Mapper.Map<List<CK5Item>>(dbData);
@@ -4802,6 +4804,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = new CK5MarketReturnGetSummaryReportByParamInput();
             input.UserId = CurrentUser.USER_ID;
             input.ListUserPlant = CurrentUser.ListUserPlants;
+            input.UserRole = CurrentUser.UserRole;
 
             var listCk5 = _ck5Bll.GetSummaryReportsMarketReturnByParam(input);
 
@@ -4828,6 +4831,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 input = new CK5MarketReturnGetSummaryReportByParamInput();
                 input.UserId = CurrentUser.USER_ID;
                 input.ListUserPlant = CurrentUser.ListUserPlants;
+                input.UserRole = CurrentUser.UserRole;
 
                 dbData = _ck5Bll.GetSummaryReportsMarketReturnByParam(input);
                 return Mapper.Map<List<CK5MarketReturnSummaryReportsItem>>(dbData);
@@ -4838,6 +4842,7 @@ namespace Sampoerna.EMS.Website.Controllers
             input = Mapper.Map<CK5MarketReturnGetSummaryReportByParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
             input.ListUserPlant = CurrentUser.ListUserPlants;
+            input.UserRole = CurrentUser.UserRole;
 
             dbData = _ck5Bll.GetSummaryReportsMarketReturnByParam(input);
             return Mapper.Map<List<CK5MarketReturnSummaryReportsItem>>(dbData);
@@ -5184,6 +5189,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.CARRIAGE_METHOD_ID = model.CarriageMethod;
                 input.INVOICE_NUMBER = model.InvoiceNumber;
                 input.INVOICE_DATE = model.InvoiceDate;
+                input.Ck5MaterialDtos = Mapper.Map<List<CK5MaterialDto>>(model.UploadItemModels);
 
                 input.Ck5FileUploadList = Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList);
 

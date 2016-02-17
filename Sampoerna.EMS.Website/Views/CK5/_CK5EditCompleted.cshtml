@@ -437,19 +437,6 @@
 
                             }
 
-                            @*@if (Model.IsTriggerSto)
-                                {
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <label class="col-md-4">Flaging Lack-1</label>
-                                                <div class="col-md-8">
-                                                    @Html.CheckBoxFor(model => model.FLAG_FOR_LACK1, new { @class = "checkbox", @disabled="disabled" })
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }*@
                         </div>
 
                     </div>
@@ -620,32 +607,36 @@
 
                                     @if (Model != null)
                                     {
-                                        foreach (var row in Model.UploadItemModels)
+                                        for (int i = 0; i < Model.UploadItemModels.Count(); i++)
                                         {
+                                             @Html.HiddenFor(model => model.UploadItemModels[i].CK5_MATERIAL_ID)
                                             <tr>
-                                                <td>@row.Brand</td>
-                                                <td>@row.Qty</td>
-                                                <td>@row.Uom</td>
-                                                <td>@row.Convertion</td>
-                                                <td>@row.ConvertedQty</td>
-                                                <td>@row.ConvertedUom</td>
-                                                <td>@row.Hje</td>
-                                                <td>@row.Tariff</td>
-                                                <td>@row.ExciseValue</td>
-                                                <td>@row.UsdValue</td>
-                                                <td>@row.Note</td>
+                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].Brand)</td>
+                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].Qty)</td>
+                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].Uom)</td>
+                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].Convertion)</td>
+                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].ConvertedQty)</td>
+                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].ConvertedUom)</td>
+                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].Hje)</td>
+                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].Tariff)</td>
+                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].ExciseValue)</td>
+                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].UsdValue)</td>
+                                                <td>@Html.TextBoxFor(model => model.UploadItemModels[i].Note, new { @class = "form-control", @style = "width : 100px" })</td>
                                                 @if (Model.IsCk5Waste)
                                                 {
-                                                    <td>@row.WasteStock</td>
+                                                    <td>@Html.DisplayFor(model => model.UploadItemModels[i].WasteStock)</td>
                                                 }
                                                 else
                                                 {
-                                                    <td>@row.Message</td>
+                                                    <td>@Html.DisplayFor(model => model.UploadItemModels[i].Message)</td>
                                                 }
 
-
-
                                             </tr>
+                                        }
+
+                                        foreach (var row in Model.UploadItemModels)
+                                        {
+
                                         }
                                     }
 
@@ -871,28 +862,28 @@
                                         </div>
                                     </div>
                                 </div>
-                               
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            @Html.Partial("_CK5UploadDocumentFileButton")
-                                        </div>
-                                    </div>
-                                
-                               
-                            </div>
-                         
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            @Html.Partial("_CK5UploadDocumentFileList")
-                                        </div>
+
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        @Html.Partial("_CK5UploadDocumentFileButton")
                                     </div>
                                 </div>
-                          
+
+
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        @Html.Partial("_CK5UploadDocumentFileList")
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>

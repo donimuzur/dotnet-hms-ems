@@ -168,6 +168,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public List<string> ListUserPlant { get; set; }
 
         public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
     }
 
     public class EditCompletedDocumentCk5Input
@@ -188,5 +189,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public string INVOICE_NUMBER { get; set; }
         public DateTime? INVOICE_DATE { get; set; }
+
+        public List<CK5MaterialDto> Ck5MaterialDtos { get; set; }
     }
 }
