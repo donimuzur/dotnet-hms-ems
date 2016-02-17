@@ -100,7 +100,7 @@ namespace Sampoerna.EMS.BLL
 
             var reversalList = GetReversalData(x => x.ZAAP_SHIFT_RPT_ID == reversalInput.ZaapShiftId, null);
 
-            var remainingQty = (zaapData == null ? 0 : (zaapData.QTY.HasValue ? zaapData.QTY.Value : 0)) - 
+            var remainingQty = (zaapData == null ? 0 : (zaapData.QTY.HasValue ? (zaapData.QTY.Value * -1) : 0)) - 
                 (reversalList.Sum(x => x.REVERSAL_QTY.HasValue ? x.REVERSAL_QTY.Value : 0));
 
             var reversalListByPlantFacodeDate = GetReversalData(x => x.WERKS == reversalInput.Werks && x.FA_CODE == reversalInput.FaCode
@@ -117,6 +117,8 @@ namespace Sampoerna.EMS.BLL
                 var existsReversal = GetById(reversalInput.ReversalId);
 
                 remainingQty = remainingQty + existsReversal.ReversalQty;
+
+                totalReversal = reversalListByPlantFacodeDate.Where(x => x.REVERSAL_ID != reversalInput.ReversalId).Sum(x => x.REVERSAL_QTY.HasValue ? x.REVERSAL_QTY.Value : 0) + reversalInput.ReversalQty;
             }
 
             if (reversalInput.ProductionDate.HasValue)
