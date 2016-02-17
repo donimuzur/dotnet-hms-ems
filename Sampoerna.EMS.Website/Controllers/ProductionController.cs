@@ -552,7 +552,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var newListPlant = new SelectList(filterPlant, "Value", "Text");
 
-            if (CurrentUser.UserRole == Enums.UserRole.User)
+            if (CurrentUser.UserRole != Enums.UserRole.SuperAdmin)
             {
                 var newFilterPlant = listPlant.Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
 

@@ -56,20 +56,28 @@ namespace Sampoerna.EMS.Website.Controllers
         private WasteViewModel InitIndexViewModel(WasteViewModel model)
         {
             var company = GlobalFunctions.GetCompanyList(_companyBll);
-            var userPlantCompany = _userPlantMapBll.GetCompanyByUserId(CurrentUser.USER_ID);
-            var poaMapCompany = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
-            var distinctCompany = company.Where(x => userPlantCompany.Contains(x.Value));
-            if (CurrentUser.UserRole == Enums.UserRole.POA) distinctCompany = company.Where(x => poaMapCompany.Contains(x.Value));
-            var getCompany = new SelectList(distinctCompany, "Value", "Text");
+            var listPlant = GlobalFunctions.GetPlantAll();
 
-            var listPlant = GlobalFunctions.GetPlantAll().Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
+            if (CurrentUser.UserRole != Enums.UserRole.SuperAdmin)
+            {
+                var userPlantCompany = _userPlantMapBll.GetCompanyByUserId(CurrentUser.USER_ID);
+                var poaMapCompany = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+                var distinctCompany = company.Where(x => userPlantCompany.Contains(x.Value));
+                if (CurrentUser.UserRole == Enums.UserRole.POA) distinctCompany = company.Where(x => poaMapCompany.Contains(x.Value));
+                var getCompany = new SelectList(distinctCompany, "Value", "Text");
+                company = getCompany;
 
-            model.CompanyCodeList = getCompany;
-            model.PlantWerksList = new SelectList(listPlant, "Value", "Text");
+                var itemPlant = GlobalFunctions.GetPlantAll().Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
+                listPlant = new SelectList(itemPlant, "Value", "Text");
+            }
+
+            model.CompanyCodeList = company;
+            model.PlantWerksList = listPlant;
 
             var input = Mapper.Map<WasteGetByParamInput>(model);
             input.WasteProductionDate = null;
             input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
             input.ListUserPlants = CurrentUser.ListUserPlants;
 
             var dbData = _wasteBll.GetAllByParam(input);
@@ -91,7 +99,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.DailyProduction,
                 WasteProductionDate = DateTime.Today.ToString("dd MMM yyyy"),
-                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
+                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer,
+                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.SuperAdmin
             });
 
             return View("Index", data);
@@ -122,7 +131,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.SuperAdmin)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
@@ -201,13 +210,18 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             var company = GlobalFunctions.GetCompanyList(_companyBll);
-            var userPlantCompany = _userPlantMapBll.GetCompanyByUserId(CurrentUser.USER_ID);
-            var poaMapCompany = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
-            var distinctCompany = company.Where(x => userPlantCompany.Contains(x.Value));
-            if (CurrentUser.UserRole == Enums.UserRole.POA) distinctCompany = company.Where(x => poaMapCompany.Contains(x.Value));
-            var getCompany = new SelectList(distinctCompany, "Value", "Text");
 
-            model.CompanyCodeList = getCompany;
+            if (CurrentUser.UserRole != Enums.UserRole.SuperAdmin)
+            {
+                var userPlantCompany = _userPlantMapBll.GetCompanyByUserId(CurrentUser.USER_ID);
+                var poaMapCompany = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+                var distinctCompany = company.Where(x => userPlantCompany.Contains(x.Value));
+                if (CurrentUser.UserRole == Enums.UserRole.POA) distinctCompany = company.Where(x => poaMapCompany.Contains(x.Value));
+                var getCompany = new SelectList(distinctCompany, "Value", "Text");
+                company = getCompany;
+            }
+
+            model.CompanyCodeList = company;
             model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId("");
             model.FacodeList = GlobalFunctions.GetFaCodeByPlant("");
 
@@ -487,12 +501,16 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult CompanyListPartialProduction(string companyId)
         {
             var listPlant = GlobalFunctions.GetPlantByCompanyId(companyId);
-            var userPlantMap = _userPlantMapBll.GetPlantByUserId(CurrentUser.USER_ID);
-            var poaMap = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
-            var distinctPlant = listPlant.Where(x => userPlantMap.Contains(x.Value) || poaMap.Contains(x.Value));
-            var listPlantNew = new SelectList(distinctPlant, "Value", "Text");
 
-            var model = new WasteDetail() { PlantWerkList = listPlantNew };
+            if (CurrentUser.UserRole != Enums.UserRole.SuperAdmin) { 
+                var userPlantMap = _userPlantMapBll.GetPlantByUserId(CurrentUser.USER_ID);
+                var poaMap = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+                var distinctPlant = listPlant.Where(x => userPlantMap.Contains(x.Value) || poaMap.Contains(x.Value));
+                var listPlantNew = new SelectList(distinctPlant, "Value", "Text");
+                listPlant = listPlantNew;
+            }
+
+            var model = new WasteDetail() { PlantWerkList = listPlant };
 
             return Json(model);
         }
