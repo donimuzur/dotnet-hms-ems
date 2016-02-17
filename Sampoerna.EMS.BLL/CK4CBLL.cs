@@ -149,7 +149,7 @@ namespace Sampoerna.EMS.BLL
                 if (item.Ck4CId > 0)
                 {
                     //update
-                    model = _repository.Get(c => c.CK4C_ID == item.Ck4CId, null, includeTables).FirstOrDefault();
+                    model = _repository.Get(c => c.CK4C_ID == item.Ck4CId).FirstOrDefault();
 
                     if (model == null)
                         throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
