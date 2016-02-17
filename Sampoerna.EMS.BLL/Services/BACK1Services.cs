@@ -111,5 +111,25 @@ namespace Sampoerna.EMS.BLL.Services
                 }
             }
         }
+
+        public void UpdateBack1ByPbck7Id(SaveBack1ByPbck7IdInput input)
+        {
+            var dbBack1 = _repository.Get(c=>c.PBCK7_ID == input.Pbck7Id).FirstOrDefault();
+            if (dbBack1 != null)
+            {
+                dbBack1.PBCK7_ID = input.Pbck7Id;
+                dbBack1.BACK1_NUMBER = input.Back1Number;
+                dbBack1.BACK1_DATE = input.Back1Date;
+
+                _repository.InsertOrUpdate(dbBack1);
+            }
+            
+
+        }
+
+        public BACK1_DOCUMENT GetBack1DocumentById(long id)
+        {
+            return _repositoryBac1Documents.GetByID(id);
+        }
     }
 }

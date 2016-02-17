@@ -45,5 +45,7 @@ namespace Sampoerna.EMS.Website.Models.Reversal
         [Required]
         public Decimal ReversalQty { get; set; }
         public string ProductionDateDisplay { get; set; }
+        public Decimal ReversalRemaining { get; set; }
+        public Decimal PackedQty { get; set; }
     }
 }

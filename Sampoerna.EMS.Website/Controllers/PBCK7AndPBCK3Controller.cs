@@ -547,11 +547,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Ck2Dto = existingData.Ck2Dto;
 
                 model.WorkflowHistoryPbck7 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
-                //model.WorkflowHistoryPbck3 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck3);
-
-
-                model = InitListPbck7(model);
-
+              
+                //model = InitListPbck7(model);
+                model.MainMenu = _mainMenu;
+                model.CurrentMenu = PageInfo;
+                model.PoaList = GetPoaListByPlant(model.PlantId);
 
                 model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(existingData.ListPrintHistorys);
 
@@ -587,8 +587,14 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
 
+                if (model.Pbck7Status == Enums.DocumentStatus.Completed
+                   && CurrentUser.UserRole == Enums.UserRole.SuperAdmin)
+                    model.AllowEditCompletedDocument = true;
+
                 if (model.AllowGovApproveAndReject)
                     model.ActionType = "GovApproveDocument";
+                else if (model.AllowEditCompletedDocument)
+                    model.ActionType = "EditCompletedDocument";
                 else if (model.Pbck7Status == Enums.DocumentStatus.Completed)
                     model.ActionType = "UpdateUploadedFilefterCompletedPbck7";
             }
@@ -633,11 +639,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Ck2Dto = existingData.Ck2Dto;
 
                 model.WorkflowHistoryPbck7 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
-                //model.WorkflowHistoryPbck3 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck3);
-
-
-                model = InitListPbck7(model);
-
+              
+                //model = InitListPbck7(model);
+                model.MainMenu = _mainMenu;
+                model.CurrentMenu = PageInfo;
+                model.PoaList = GetPoaListByPlant(model.PlantId);
 
                 model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(existingData.ListPrintHistorys);
 
@@ -927,8 +933,6 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult GovApproveDocument(Pbck7Pbck3CreateViewModel model)
         {
-           
-
             try
             {
                 var currentUserId = CurrentUser.USER_ID;
@@ -1175,6 +1179,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = new Pbck7SummaryInput();
             input.ListUserPlant = CurrentUser.ListUserPlants;
             input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
 
             model.ReportItems = Mapper.Map<List<Pbck7SummaryReportItem>>(_pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input));
         }
@@ -1192,6 +1197,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = new Pbck3SummaryInput();
             input.ListUserPlant = CurrentUser.ListUserPlants;
             input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
 
             model.ReportItems = Mapper.Map<List<Pbck3SummaryReportItem>>(_pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(input));
         }
@@ -1216,6 +1222,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = Mapper.Map<Pbck7SummaryInput>(model);
             input.ListUserPlant = CurrentUser.ListUserPlants;
             input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
 
             var result = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input);
             model.ReportItems = Mapper.Map<List<Pbck7SummaryReportItem>>(result);
@@ -1228,6 +1235,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = Mapper.Map<Pbck3SummaryInput>(model);
             input.ListUserPlant = CurrentUser.ListUserPlants;
             input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
 
             var result = _pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(input);
             model.ReportItems = Mapper.Map<List<Pbck3SummaryReportItem>>(result);
@@ -1269,6 +1277,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = Mapper.Map<Pbck7SummaryInput>(model.ExportModel);
             input.ListUserPlant = CurrentUser.ListUserPlants;
             input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
 
             var result = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input);
            
@@ -1685,6 +1694,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = Mapper.Map<Pbck3SummaryInput>(model.ExportModel);
             input.ListUserPlant = CurrentUser.ListUserPlants;
             input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
 
             var result = _pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(input);
             //var src = (from b in result
@@ -2305,9 +2315,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
+                
+                if (model.Pbck3Status == Enums.DocumentStatus.Completed
+                   && CurrentUser.UserRole == Enums.UserRole.SuperAdmin)
+                    model.AllowEditCompletedDocument = true;
 
                 if (model.AllowGovApproveAndReject)
                     model.ActionType = "GovApproveDocumentPbck3";
+                else if (model.AllowEditCompletedDocument)
+                    model.ActionType = "EditCompletedDocumentPbck3";
                 else if (model.Pbck3Status == Enums.DocumentStatus.Completed)
                     model.ActionType = "UpdateUploadedFilefterCompletedPbck3";
             }
@@ -3148,6 +3164,215 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
+
+
+        [HttpPost]
+        public ActionResult EditCompletedDocument(Pbck7Pbck3CreateViewModel model)
+        {
+            try
+            {
+
+                if (model.Back1Dto.Documents == null)
+                    model.Back1Dto.Documents = new List<BACK1_DOCUMENTDto>();
+
+                if (model.DocumentsPostBack != null)
+                {
+                    foreach (var item in model.DocumentsPostBack)
+                    {
+                        if (item != null)
+                        {
+                            var filenameCk5Check = item.FileName;
+                            if (filenameCk5Check.Contains("\\"))
+                                filenameCk5Check = filenameCk5Check.Split('\\')[filenameCk5Check.Split('\\').Length - 1];
+
+                            var pbck4UploadFile = new BACK1_DOCUMENTDto
+                            {
+                                FILE_NAME = filenameCk5Check,
+                                FILE_PATH = SaveUploadedFile(item, model.Pbck7Number),
+                                BACK1 = model.Back1Dto.Back1Id,
+                                IsDeleted = false
+
+                            };
+                            model.Back1Dto.Documents.Add(pbck4UploadFile);
+                        }
+
+                    }
+                }
+                else
+                {
+                    AddMessageInfo("Empty File BACK-1 Doc", Enums.MessageInfoType.Error);
+                    RedirectToAction("Details", new { id = model.Id });
+                }
+
+                bool ExistDocument = false;
+
+                foreach (var uploadModelList in model.Back1Dto.Documents)
+                {
+                    if (uploadModelList.IsDeleted == false)
+                    {
+                        ExistDocument = true;
+                        break;
+                    }
+                }
+                if (!ExistDocument)
+                {
+                    AddMessageInfo("Empty File BACK-1 Doc", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Detail", new { id = model.Id });
+                }
+
+
+                var input = new EditCompletedDocumentPbck7Input();
+                input.DocumentId = model.Id;
+                input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
+                input.ListFile = model.Back1Dto.Documents;
+
+                input.Pbck7Date = model.Pbck7Date;
+                input.Lampiran = model.Lampiran;
+                input.DocumentType = model.DocumentType;
+                input.ExecDateFrom = model.ExecDateFrom;
+                input.ExecDateTo = model.ExecDateTo;
+                input.Pbck7ItemsDto = Mapper.Map<List<PBCK7_ITEMDto>>(model.UploadItems);
+
+                input.Back1Number = model.Back1Dto.Back1Number;
+                input.Back1Date = model.Back1Dto.Back1Date;
+
+                _pbck7Pbck3Bll.EditCompletedDocumentPbck7(input);
+
+                AddMessageInfo("Success Update Document PBCK-7", Enums.MessageInfoType.Success);
+
+
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Detail", new { id = model.Id });
+        }
+
+        [HttpPost]
+        public ActionResult EditCompletedDocumentPbck3(Pbck3ViewModel model)
+        {
+            try
+            {
+                var currentUserId = CurrentUser.USER_ID;
+                if (model.Back3Documents == null)
+                    model.Back3Documents = new List<BACK3_DOCUMENTDto>();
+
+                if (model.Pbck3Back3FileUploadFileList != null)
+                {
+                    foreach (var item in model.Pbck3Back3FileUploadFileList)
+                    {
+                        if (item != null)
+                        {
+                            var filenameCk5Check = item.FileName;
+                            if (filenameCk5Check.Contains("\\"))
+                                filenameCk5Check = filenameCk5Check.Split('\\')[filenameCk5Check.Split('\\').Length - 1];
+
+                            var pbck4UploadFile = new BACK3_DOCUMENTDto
+                            {
+                                FILE_NAME = filenameCk5Check,
+                                FILE_PATH = SaveUploadedFile(item, model.Pbck3Number),
+                                BACK3_ID = model.Back3Id,
+                                IsDeleted = false
+                            };
+                            model.Back3Documents.Add(pbck4UploadFile);
+                        }
+
+                    }
+                }
+               
+
+                bool ExistDocument = false;
+
+                foreach (var uploadModelList in model.Back3Documents)
+                {
+                    if (uploadModelList.IsDeleted == false)
+                    {
+                        ExistDocument = true;
+                        break;
+                    }
+                }
+                if (!ExistDocument)
+                {
+                    AddMessageInfo("Empty File BACK-3 Doc", Enums.MessageInfoType.Error);
+                    return RedirectToAction("DetailPbck3", new { id = model.Pbck3Id });
+                }
+
+                if (model.Ck2Documents == null)
+                    model.Ck2Documents = new List<CK2_DOCUMENTDto>();
+
+                if (model.Pbck3Ck2FileUploadFileList != null)
+                {
+                    foreach (var item in model.Pbck3Ck2FileUploadFileList)
+                    {
+                        if (item != null)
+                        {
+                            var filenameCk5Check = item.FileName;
+                            if (filenameCk5Check.Contains("\\"))
+                                filenameCk5Check = filenameCk5Check.Split('\\')[filenameCk5Check.Split('\\').Length - 1];
+
+                            var pbck4UploadFile = new CK2_DOCUMENTDto
+                            {
+                                FILE_NAME = filenameCk5Check,
+                                FILE_PATH = SaveUploadedFile(item, model.Pbck3Number),
+                                CK2_ID = model.Ck2Id,
+                                IsDeleted = false
+                            };
+                            model.Ck2Documents.Add(pbck4UploadFile);
+                        }
+
+                    }
+                }
+
+                ExistDocument = false;
+
+                foreach (var uploadModelList in model.Ck2Documents)
+                {
+                    if (uploadModelList.IsDeleted == false)
+                    {
+                        ExistDocument = true;
+                        break;
+                    }
+                }
+
+                if (!ExistDocument)
+                {
+                    AddMessageInfo("Empty File CK-2 Doc", Enums.MessageInfoType.Error);
+                    return RedirectToAction("DetailPbck3", new { id = model.Pbck3Id });
+                }
+
+             
+                var input = new EditCompletedDocumentPbck3Input();
+                input.DocumentId = model.Pbck3Id;
+                input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
+                
+                input.Pbck3Date = model.PBCK3_DATE;
+                input.ExecDateFrom = model.EXEC_DATE_FROM;
+                input.ExecDateTo = model.EXEC_DATE_TO;
+                input.Back3FileUploadList = model.Back3Documents;
+
+                input.Back3No = model.Back3Number;
+                input.Back3Date = model.Back3Date;
+
+                input.Ck2No = model.Ck2Number;
+                input.Ck2Date = model.Ck2Date;
+                input.Ck2Value = model.Ck2Value;
+                input.Ck2FileUploadList = model.Ck2Documents;
+
+                _pbck7Pbck3Bll.EditCompletedDocumentPbck3(input);
+
+                AddMessageInfo("Success Update Document PBCK-3", Enums.MessageInfoType.Success);
+
+
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("DetailPbck3", new { id = model.Pbck3Id });
+        }
     }
 
 }

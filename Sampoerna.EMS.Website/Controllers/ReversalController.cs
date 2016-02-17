@@ -38,8 +38,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.Reversal,
-                ProductionDate = DateTime.Today.ToString("dd MMM yyyy"),
-                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
+                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.SuperAdmin ? true : false),
                 IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
             });
 
@@ -49,9 +48,16 @@ namespace Sampoerna.EMS.Website.Controllers
         private ReversalIndexViewModel InitIndexViewModel(
             ReversalIndexViewModel model)
         {
-            var listPlant = GlobalFunctions.GetPlantAll().Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
+            var listPlant = GlobalFunctions.GetPlantAll();
 
-            model.PlantWerksList = new SelectList(listPlant, "Value", "Text");
+            if (CurrentUser.UserRole != Enums.UserRole.SuperAdmin)
+            {
+                var itemPlant = GlobalFunctions.GetPlantAll().Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
+
+                listPlant = new SelectList(itemPlant, "Value", "Text");
+            }
+
+            model.PlantWerksList = listPlant;
 
             model.Detail = GetListDocument(model);
 
@@ -70,6 +76,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //getbyparams
             var input = Mapper.Map<ReversalGetByParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
             input.ListUserPlants = CurrentUser.ListUserPlants;
 
             var dbData = _reversalBll.GetListDocumentByParam(input).OrderByDescending(c => c.ProductionDate);
@@ -91,7 +98,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.SuperAdmin)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
@@ -115,12 +122,17 @@ namespace Sampoerna.EMS.Website.Controllers
         private ReversalIndexViewModel InitialModel(ReversalIndexViewModel model)
         {
             var plantList = GlobalFunctions.GetPlantAll();
-            var distinctPlant = plantList.Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
-            var getPlant = new SelectList(distinctPlant, "Value", "Text");
+
+            if (CurrentUser.UserRole != Enums.UserRole.SuperAdmin)
+            {
+                var distinctPlant = plantList.Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
+                var getPlant = new SelectList(distinctPlant, "Value", "Text");
+                plantList = getPlant;
+            }
 
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.PlantWerksList = getPlant;
+            model.PlantWerksList = plantList;
             model.FaCodeList = GlobalFunctions.GetFaCodeByPlant(model.Details.Werks);
             model.ZaapShiftList = GlobalFunctions.GetReversalData("", "");
 
@@ -159,6 +171,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (checkData.IsMoreThanQuota)
                 {
                     AddMessageInfo("Can't create reversal data, quota exceed", Enums.MessageInfoType.Info);
+                    model = InitialModel(model);
+                    return View(model);
+                }
+
+                if (checkData.IsMoreThanPacked)
+                {
+                    AddMessageInfo("Can't create reversal data, reversal more than packed", Enums.MessageInfoType.Info);
                     model = InitialModel(model);
                     return View(model);
                 }
@@ -249,6 +268,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     return View(model);
                 }
 
+                if (checkData.IsMoreThanPacked)
+                {
+                    AddMessageInfo("Can't create reversal data, reversal more than packed", Enums.MessageInfoType.Info);
+                    model = InitialModel(model);
+                    return View(model);
+                }
+
                 var reversalData = _reversalBll.Save(item, CurrentUser.USER_ID);
                 AddMessageInfo("Save Successfully", Enums.MessageInfoType.Success);
                 return RedirectToAction("Edit", new { id = model.Details.ReversalId });
@@ -333,6 +359,22 @@ namespace Sampoerna.EMS.Website.Controllers
             var checkData = _reversalBll.CheckData(paramInput);
 
             return Json(checkData.RemainingQuota);
+        }
+
+        [HttpPost]
+        public JsonResult GetPackedData(string plantWerk, string faCode, DateTime prodDate)
+        {
+            var paramInput = new ReversalCreateParamInput();
+            paramInput.ZaapShiftId = 0;
+            paramInput.ReversalQty = 0;
+            paramInput.ReversalId = 0;
+            paramInput.Werks = plantWerk;
+            paramInput.FaCode = faCode;
+            paramInput.ProductionDate = prodDate;
+
+            var checkData = _reversalBll.CheckData(paramInput);
+
+            return Json(checkData.PackedQty);
         }
 
         #endregion

@@ -56,17 +56,19 @@ namespace Sampoerna.EMS.BLL
 
         public bool AllowEditDocumentPbck1(WorkflowAllowEditAndSubmitInput input)
         {
-            bool isEditable = false;
-
-            if ((input.DocumentStatus == Enums.DocumentStatus.Rejected || input.DocumentStatus == Enums.DocumentStatus.Draft  
-                || input.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval || input.DocumentStatus == Enums.DocumentStatus.GovRejected) && input.CreatedUser == input.CurrentUser)
-                isEditable = true;
-            else
-                isEditable = false;
-
+            bool allowUser = true;
+            if (input.CreatedUser != input.CurrentUser)
+            {
+                allowUser = _poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
+                    DateTime.Now);
+            }
             
+            if ((input.DocumentStatus == Enums.DocumentStatus.Rejected || input.DocumentStatus == Enums.DocumentStatus.Draft
+                || input.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval || input.DocumentStatus == Enums.DocumentStatus.GovRejected) 
+                && allowUser)
+                return true;
 
-            return isEditable;
+            return false;
         }
 
         /// <summary>
@@ -685,8 +687,12 @@ namespace Sampoerna.EMS.BLL
 
         public bool AllowAccessData(WorkflowAllowAccessDataInput input)
         {
-            if (input.UserRole == Enums.UserRole.Administrator) return true;
+            if (input.UserRole == Enums.UserRole.SuperAdmin) return true;
             if (input.UserPlant.Contains(input.DataPlant))
+                return true;
+
+            //only for edit document
+            if (_poaDelegationServices.IsDelegatedUserByUserAndDate(input.DataUser, input.UserId, DateTime.Now))
                 return true;
 
             return false;
