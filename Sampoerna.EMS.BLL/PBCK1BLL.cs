@@ -2670,6 +2670,25 @@ namespace Sampoerna.EMS.BLL
             PBCK1 dbData = _repository.Get(c => c.PBCK1_ID == input.Id, null, includeTables).FirstOrDefault();
             dbData.REPORTED_ON = input.ReportedOn;
 
+            if (input.SupplierPortId.HasValue) dbData.SUPPLIER_PORT_ID = input.SupplierPortId.Value;
+            if (input.SupplierPlant != null) dbData.SUPPLIER_PLANT = input.SupplierPlant;
+            if (input.SupplierPlantWerks != null) dbData.SUPPLIER_PLANT_WERKS = input.SupplierPlantWerks;
+            if (input.SupplierAddress != null) dbData.SUPPLIER_ADDRESS = input.SupplierAddress;
+            if (input.SupplierCompany != null) dbData.SUPPLIER_COMPANY = input.SupplierCompany;
+            if (input.SupplierNppbkcId != null) dbData.SUPPLIER_NPPBKC_ID = input.SupplierNppbkcId;
+            if (input.SupplierKppbcId != null) dbData.SUPPLIER_KPPBC_ID = input.SupplierKppbcId;
+            if (input.SupplierKppbcName != null) dbData.SUPPLIER_KPPBC_NAME = input.SupplierKppbcName;
+            if (input.SupplierPhone != null) dbData.SUPPLIER_PHONE = input.SupplierPhone;
+            if (input.GoodType != null) dbData.EXC_GOOD_TYP = input.GoodType;
+            if (input.GoodTypeDesc != null) dbData.EXC_TYP_DESC = input.GoodTypeDesc;
+            if (input.PlanProdFrom.HasValue) dbData.PLAN_PROD_FROM = input.PlanProdFrom.Value;
+            if (input.PlanProdTo.HasValue) dbData.PLAN_PROD_TO = input.PlanProdTo.Value;
+            if (input.Lack1FromMonthId != null) dbData.LACK1_FROM_MONTH = input.Lack1FromMonthId;
+            if (input.Lack1FormYear != null) dbData.LACK1_FROM_YEAR = input.Lack1FormYear;
+            if (input.Lack1ToMonthId != null) dbData.LACK1_TO_MONTH = input.Lack1ToMonthId;
+            if (input.Lack1ToYear != null) dbData.LACK1_TO_YEAR = input.Lack1ToYear;
+            if (input.DecreeDate.HasValue) dbData.DECREE_DATE = input.DecreeDate.Value;
+
             ChangeDocNumberByReportedOn(dbData);
 
             _uow.SaveChanges();

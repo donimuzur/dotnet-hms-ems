@@ -6,7 +6,7 @@
     ViewBag.Title = "Edit PBCK-1";
 }
 
-@using (Html.BeginForm(Model.ActionType, "PBCK1", FormMethod.Post, new { @id = "EditForm", enctype = "multipart/form-data" }))
+@using (Html.BeginForm("ChangeCompletedDocumentSuperAdmin", "PBCK1", FormMethod.Post, new { @id = "EditForm", enctype = "multipart/form-data" }))
 {
     <div class="container-wrap title-page">
         <div class="row">
@@ -40,12 +40,12 @@
                         @Html.HiddenFor(model => model.Detail.Pbck1Id)
                         @Html.HiddenFor(model => model.Detail.Status)
                         @Html.HiddenFor(model => model.Detail.CreatedById)
-
                         @Html.HiddenFor(model => model.Detail.Pbck1Reference)
                         @Html.HiddenFor(model => model.Detail.Pbck1Type)
                         @Html.HiddenFor(model => model.Detail.PeriodFrom)
                         @Html.HiddenFor(model => model.Detail.PeriodTo)
                         @Html.HiddenFor(model => model.Detail.NppbkcId)
+                        @Html.HiddenFor(model => model.Detail.QtyApproved)
                         @Html.HiddenFor(model => model.Detail.RequestQty)
                         @Html.HiddenFor(model => model.Detail.RequestQtyUomId)
                         @Html.HiddenFor(model => model.Detail.GovApprovalActionType)

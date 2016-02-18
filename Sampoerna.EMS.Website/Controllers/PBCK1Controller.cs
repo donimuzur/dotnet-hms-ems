@@ -626,7 +626,6 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var model = new Pbck1ItemViewModel();
-            var isCurrManager = false;
             try
             {
                 model.Detail = Mapper.Map<Pbck1Item>(pbck1Data);
@@ -670,7 +669,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.Detail.Status == Enums.DocumentStatus.Completed)
                 {
-                    model.ActionType = "ChangeCompletedDocument";
+                    model.ActionType = "ChangeCompletedDocumentSuperAdmin";
                 }
 
             }
@@ -1461,6 +1460,109 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (!isSuccess) return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
             AddMessageInfo("Document " + EnumHelper.GetDescription(model.Detail.StatusGov), Enums.MessageInfoType.Success);
+            return RedirectToAction("CompletedDocument");
+        }
+
+        [HttpPost]
+        public ActionResult ChangeCompletedDocumentSuperAdmin(Pbck1ItemViewModel model)
+        {
+            var oldDoc = _pbck1Bll.GetById(model.Detail.Pbck1Id).Pbck1DecreeDoc.Select(c => c.PBCK1_DECREE_DOC_ID);
+
+            model.Detail.QtyApproved = _pbck1Bll.GetById(model.Detail.Pbck1Id).QtyApproved.Value;
+
+            if (model.Detail.Pbck1DecreeFiles == null)
+            {
+                AddMessageInfo("Decree Doc is required.", Enums.MessageInfoType.Error);
+                return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
+            }
+
+
+            bool isSuccess = false;
+            bool validDoc = true;
+            var currentUserId = CurrentUser;
+            try
+            {
+                model.Detail.Pbck1DecreeDoc = new List<Pbck1DecreeDocModel>();
+
+                if (model.Detail.Pbck1DecreeFiles != null)
+                {
+                    foreach (var item in model.Detail.Pbck1DecreeFiles)
+                    {
+                        if (item != null && validDoc)
+                        {
+                            var filenamecheck = item.FileName;
+
+                            if (filenamecheck.Contains("\\"))
+                            {
+                                filenamecheck = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                            }
+
+                            var decreeDoc = new Pbck1DecreeDocModel()
+                            {
+                                FILE_NAME = filenamecheck,
+                                FILE_PATH = SaveUploadedFile(item, model.Detail.Pbck1Id),
+                                CREATED_BY = currentUserId.USER_ID,
+                                CREATED_DATE = DateTime.Now
+                            };
+                            model.Detail.Pbck1DecreeDoc.Add(decreeDoc);
+                        }
+                        else
+                        {
+                            validDoc = false;
+                        }
+                    }
+                }
+
+                if (!validDoc && model.Pbck1OldDecreeFilesID == null)
+                {
+                    AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
+                }
+
+                foreach (var item in oldDoc)
+                {
+                    if ((model.Pbck1OldDecreeFilesID != null && !model.Pbck1OldDecreeFilesID.Contains(item)) || model.Pbck1OldDecreeFilesID == null)
+                    {
+                        _pbck1DecreeDocBll.RemoveDoc(item);
+                    }
+                }
+
+                var input = new Pbck1UpdateReportedOn()
+                {
+                    Id = model.Detail.Pbck1Id,
+                    ReportedOn = model.Detail.ReportedOn,
+                    SupplierPortId = model.Detail.SupplierPortId,
+                    SupplierPlant = model.Detail.SupplierPlant,
+                    SupplierPlantWerks = model.Detail.SupplierPlantWerks,
+                    SupplierAddress = model.Detail.SupplierAddress,
+                    SupplierCompany = model.Detail.SupplierCompany,
+                    SupplierNppbkcId = model.Detail.SupplierNppbkcId,
+                    SupplierKppbcId = model.Detail.SupplierKppbcId,
+                    SupplierKppbcName = model.Detail.SupplierKppbcName,
+                    SupplierPhone = model.Detail.SupplierPhone,
+                    GoodType = model.Detail.GoodType,
+                    GoodTypeDesc = model.Detail.GoodTypeDesc,
+                    PlanProdFrom = model.Detail.PlanProdFrom,
+                    PlanProdTo = model.Detail.PlanProdTo,
+                    Lack1FromMonthId = model.Detail.Lack1FromMonthId,
+                    Lack1FormYear = model.Detail.Lack1FormYear,
+                    Lack1ToMonthId = model.Detail.Lack1ToMonthId,
+                    Lack1ToYear = model.Detail.Lack1ToYear,
+                    DecreeDate = model.Detail.DecreeDate
+                };
+                
+                _pbck1Bll.UpdateReportedOn(input);
+
+                Pbck1WorkflowCompletedEdit(model.Detail, model.Detail.GovApprovalActionType, string.Empty);
+                isSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+
+            if (!isSuccess) return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
+            AddMessageInfo("Document is saved", Enums.MessageInfoType.Success);
             return RedirectToAction("CompletedDocument");
         }
 
