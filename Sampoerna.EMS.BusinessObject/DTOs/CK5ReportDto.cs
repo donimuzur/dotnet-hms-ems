@@ -103,6 +103,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string MaterialDescription { get; set; }
 
+        public string PLANT_ID { get; set; }
+        public string BRAND { get; set; }
     }
 
     public class CK5ReportMaterialGroupUomDto
