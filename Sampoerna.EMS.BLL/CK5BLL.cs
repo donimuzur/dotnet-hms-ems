@@ -1135,6 +1135,17 @@ namespace Sampoerna.EMS.BLL
                     messageList.Add("Material Number Not Exist");
                 else
                 {
+                    if (ck5MaterialInput.Ck5Type == Enums.CK5Type.Export.ToString())
+                    {
+                        //check to brand registration
+                        var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand);
+                        if (dbBrand == null)
+                        {
+                            messageList.Add("Material Number Not Exist in Brand Registration");
+                        }
+                    }
+
+
                     output.MaterialDesc = dbMaterial.MATERIAL_DESC;
                     if (string.IsNullOrEmpty(dbMaterial.EXC_GOOD_TYP))
                         messageList.Add("Material is not Excisable goods");
