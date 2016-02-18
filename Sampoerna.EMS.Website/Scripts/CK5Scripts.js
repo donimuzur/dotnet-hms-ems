@@ -230,6 +230,7 @@ function GenerateXlsCk5Material(url, ck5Type) {
 
     }
 
+
     var goodTypeGroupId = $("#GoodType").val();
     if (goodTypeGroupId == "") {
         $('#modalBodyMessage').text('Please fill the excisable good types for this CK-5 document');
@@ -238,6 +239,8 @@ function GenerateXlsCk5Material(url, ck5Type) {
         formData.append("groupType", $('#GoodType').val());
     }
 
+    formData.append("ck5Type", ck5Type);
+    
     $.ajax({
         type: "POST",
         url: url,
