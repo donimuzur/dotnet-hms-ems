@@ -33,5 +33,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public string WasteStock { get; set; }
         public string EditUrlFunction { get; set; }
+
+        public string Ck5Type { get; set; }
     }
 }
