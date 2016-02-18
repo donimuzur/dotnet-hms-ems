@@ -253,6 +253,11 @@ namespace Sampoerna.EMS.BLL
 
             //Set Company Detail
             var companyData = _t001Service.GetById(input.CompanyCode);
+
+            //if (dbData.STATUS == Enums.DocumentStatus.Completed)
+            //{
+            //    companyData = _t001Service.GetById(dbData.BUKRS);
+            //}
             if (companyData != null)
             {
                 input.CompanyCode = companyData.BUKRS;
@@ -261,6 +266,10 @@ namespace Sampoerna.EMS.BLL
 
             //set plant detail
             var plantData = _t001WService.GetById(input.SourcePlantId);
+            //if (dbData.STATUS == Enums.DocumentStatus.Completed)
+            //{
+            //    plantData = _t001WService.GetById(dbData.LEVEL_PLANT_ID);
+            //}
             if (plantData != null)
             {
                 input.SourcePlantCity = plantData.ORT01;
@@ -269,6 +278,10 @@ namespace Sampoerna.EMS.BLL
 
             //set excisable goods type
             var excisableGoodsTypeData = _excisableGoodsTypeService.GetById(input.ExcisableGoodsType);
+            //if (dbData.STATUS == Enums.DocumentStatus.Completed)
+            //{
+            //    excisableGoodsTypeData = _excisableGoodsTypeService.GetById(dbData.EX_GOOD_TYP);
+            //}
             if (excisableGoodsTypeData != null)
             {
                 input.ExcisableGoodsType = excisableGoodsTypeData.EXC_GOOD_TYP;
@@ -319,25 +332,36 @@ namespace Sampoerna.EMS.BLL
                 var destination = Mapper.Map<Lack2Dto>(input);
                 isModified = SetChangesHistory(origin, destination, input.UserId);
             }
-            
-            dbData.SUBMISSION_DATE = input.SubmissionDate;
-            dbData.LEVEL_PLANT_ID = input.SourcePlantId;
-            dbData.NPPBKC_ID = input.NppbkcId;
-            dbData.PERIOD_MONTH = input.PeriodMonth;
-            dbData.PERIOD_YEAR = input.PeriodYear;
+
+            if (dbData.STATUS != Enums.DocumentStatus.Completed)
+            {
+                dbData.SUBMISSION_DATE = input.SubmissionDate;
+                dbData.LEVEL_PLANT_ID = input.SourcePlantId;
+                dbData.NPPBKC_ID = input.NppbkcId;
+                dbData.PERIOD_MONTH = input.PeriodMonth;
+                dbData.PERIOD_YEAR = input.PeriodYear;
+
+                dbData.BUKRS = input.CompanyCode;
+                dbData.BUTXT = input.CompanyName;
+                dbData.LEVEL_PLANT_CITY = input.SourcePlantCity;
+                dbData.LEVEL_PLANT_NAME = input.SourcePlantName;
+                dbData.EX_GOOD_TYP = input.ExcisableGoodsType;
+                dbData.EX_TYP_DESC = input.ExcisableGoodsTypeDesc;
+            }
+            else
+            {
+                dbData.DECREE_DATE = input.DecreeDate;
+                var documents = Mapper.Map<List<LACK2_DOCUMENT>>(input.Documents);
+                _lack2DocumentService.InsertDocumentByLack2Id(dbData.LACK2_ID,documents);
+            }
+
             dbData.MODIFIED_BY = input.UserId;
             dbData.MODIFIED_DATE = DateTime.Now;
-            dbData.BUKRS = input.CompanyCode;
-            dbData.BUTXT = input.CompanyName;
-            dbData.LEVEL_PLANT_CITY = input.SourcePlantCity;
-            dbData.LEVEL_PLANT_NAME = input.SourcePlantName;
-            dbData.EX_GOOD_TYP = input.ExcisableGoodsType;
-            dbData.EX_TYP_DESC = input.ExcisableGoodsTypeDesc;
 
             if (dbData.STATUS == Enums.DocumentStatus.Rejected)
             {
                 //add history for changes status from rejected to draft
-                WorkflowStatusAddChanges(new Lack2WorkflowDocumentInput(){ DocumentId = dbData.LACK2_ID, UserId = input.UserId }, dbData.STATUS, Enums.DocumentStatus.Draft);
+                WorkflowStatusAddChanges(new Lack2WorkflowDocumentInput(){ DocumentId = dbData.LACK2_ID, UserId = input.UserId, }, dbData.STATUS, Enums.DocumentStatus.Draft);
                 dbData.STATUS = Enums.DocumentStatus.Draft;
             }
             

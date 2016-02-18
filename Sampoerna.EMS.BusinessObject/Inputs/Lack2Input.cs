@@ -92,6 +92,10 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string UserId { get; set; }
         public Enums.ActionType WorkflowActionType { get; set; }
 
+        public List<Lack2DocumentDto> Documents { get; set; }
+
+        public DateTime? DecreeDate { get; set; }
+
         #region Additional property
 
         public string CompanyName { get; set; }
