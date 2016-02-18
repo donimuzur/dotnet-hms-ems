@@ -29,5 +29,6 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public decimal ExciseQty { get; set; }
         public string ExciseUom { get; set; }
         public string WasteStock { get; set; }
+        public string Ck5Type { get; set; }
     }
 }
