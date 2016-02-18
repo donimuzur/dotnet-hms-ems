@@ -1051,6 +1051,16 @@ namespace Sampoerna.EMS.BLL
                     messageList.Add("Material Number Not Exist");
                 else
                 {
+                    if (ck5MaterialInput.Ck5Type == Enums.CK5Type.Export.ToString())
+                    {
+                        //check to brand registration
+                        var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand);
+                        if (dbBrand == null)
+                        {
+                            messageList.Add("Material Number Not Exist in Brand Registration");
+                        }
+                    }
+
                     if (string.IsNullOrEmpty(dbMaterial.EXC_GOOD_TYP))
                         messageList.Add("Material is not Excisable goods");
                     else
@@ -1183,6 +1193,15 @@ namespace Sampoerna.EMS.BLL
                 messageList.Add("Material Number Not Exist");
             else
             {
+                if (input.Ck5Type == Enums.CK5Type.Export.ToString())
+                {
+                    //check to brand registration
+                    var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(input.Plant, input.Brand);
+                    if (dbBrand == null)
+                    {
+                        messageList.Add("Material Number Not Exist in Brand Registration");
+                    }
+                }
                 if (string.IsNullOrEmpty(dbMaterial.EXC_GOOD_TYP))
                     messageList.Add("Material is not Excisable goods");
                 else
@@ -1264,6 +1283,17 @@ namespace Sampoerna.EMS.BLL
                     messageList.Add("Material Number Not Exist");
                 else
                 {
+                    if (ck5MaterialInput.Ck5Type == Enums.CK5Type.Export.ToString())
+                    {
+                        //check to brand registration
+                        var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand);
+                        if (dbBrand == null)
+                        {
+                            messageList.Add("Material Number Not Exist in Brand Registration");
+                        }
+                    }
+
+
                     output.MaterialDesc = dbMaterial.MATERIAL_DESC;
                     if (string.IsNullOrEmpty(dbMaterial.EXC_GOOD_TYP))
                         messageList.Add("Material is not Excisable goods");
@@ -1390,9 +1420,23 @@ namespace Sampoerna.EMS.BLL
                         input.ExciseUom = "L";
                         break;
                 }
+
             }
 
             input.ExciseValue = input.ConvertedQty * input.Tariff;
+
+            if (input.Ck5Type == Enums.CK5Type.Export.ToString())
+            {
+                if (input.MaterialDesc.ToUpper().Contains("HASIL TEMBAKAU"))
+                {
+                    //check to brand registration
+                    var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(input.Plant, input.Brand);
+                    if (dbBrand != null)
+                    {
+                        input.MaterialDesc = dbBrand.BRAND_CE;
+                    }
+                }
+            }
 
             return input;
         }
@@ -4272,6 +4316,23 @@ namespace Sampoerna.EMS.BLL
                 result.ReportDetails.FinalPort = dtData.FINAL_PORT;
                 result.ReportDetails.FinalPortName = dtData.FINAL_PORT_NAME;
                 result.ReportDetails.FinalPortId = dtData.FINAL_PORT_ID;
+
+                foreach (var material in result.ListMaterials)
+                {
+                    if (material.MaterialDescription.ToUpper().Contains("HASIL TEMBAKAU"))
+                    {
+                        //UPDATE FOR PRINT OUT ONLY
+                        material.MaterialDescription = "";
+
+                        var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(material.PLANT_ID, material.BRAND);
+                        if (dbBrand != null)
+                        {
+                            material.MaterialDescription = dbBrand.BRAND_CE;
+                        }
+                    }
+
+                    
+                }
             }
             else
             {

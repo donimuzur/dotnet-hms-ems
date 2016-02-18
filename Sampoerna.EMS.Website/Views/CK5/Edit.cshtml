@@ -686,6 +686,8 @@
             materialInput.Note = $('#uploadNote').val();
             materialInput.ExGoodsType = goodTypeGroupId;
           
+            materialInput.Ck5Type = '@Model.Ck5Type.ToString()';
+            
             if ('@Model.Ck5Type.ToString()' == "Waste") {
                 materialInput.WasteStock = $('#uploadWasteStock').val();
 
@@ -726,6 +728,8 @@
 
                     if ('@Model.Ck5Type.ToString()' == "Waste") {
                         ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariffWaste", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
+                    } else if ('@Model.Ck5Type.ToString()' == '@Enums.CK5Type.Export.ToString()') {
+                        ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariffExport", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
                     } else {
                         ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariff", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
                     }
@@ -764,7 +768,9 @@
             materialInput.UsdValue = $('#uploadUsdValue').val();
             materialInput.Note = $('#uploadNote').val();
             materialInput.ExGoodsType = goodTypeGroupId;
-          
+            
+            materialInput.Ck5Type = '@Model.Ck5Type.ToString()';
+            
             if ('@Model.Ck5Type.ToString()' == "Waste") {
                 //materialInput.WasteStock = $('#uploadWasteStock').val() + $('#uploadQtyOri').val();
                 var tempCount = parseFloat($('#uploadWasteStock').val().replace(/\,/g, ''));

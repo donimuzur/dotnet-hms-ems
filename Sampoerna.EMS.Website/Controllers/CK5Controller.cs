@@ -860,7 +860,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
         [HttpPost]
-        public PartialViewResult UploadFile(HttpPostedFileBase itemExcelFile, string plantId, Enums.ExGoodsType groupType)
+        public PartialViewResult UploadFile(HttpPostedFileBase itemExcelFile, string plantId, Enums.ExGoodsType groupType, string ck5Type)
         {
             var data = (new ExcelReader()).ReadExcel(itemExcelFile);
             var model = new CK5FormViewModel();
@@ -883,7 +883,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             uploadItem.Note = datarow[6];
                         //uploadItem.ExGoodsType = groupType;
                         uploadItem.Plant = plantId;
-
+                        uploadItem.Ck5Type = ck5Type;
                         model.UploadItemModels.Add(uploadItem);
 
                     }
@@ -4654,6 +4654,24 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(model);
         }
 
+
+        [HttpPost]
+        public JsonResult GetMaterialHjeAndTariffExport(string plantId, string materialNumber)
+        {
+
+            var dbMaterial = _materialBll.GetMaterialByPlantIdAndMaterialNumber(plantId, materialNumber);
+            var model = Mapper.Map<CK5InputManualViewModel>(dbMaterial);
+
+            if (model.MaterialDesc.ToUpper().Contains("HASIL TEMBAKAU"))
+            {
+                var dbBrand = _ck5Bll.GetBrandByPlantAndMaterialNumber(plantId, materialNumber);
+                if (dbBrand != null && !string.IsNullOrEmpty(dbBrand.MaterialDesc))
+                {
+                    model.MaterialDesc = dbBrand.MaterialDesc;
+                }
+            }
+            return Json(model);
+        }
 
         [HttpPost]
         public JsonResult GetMaterialHjeAndTariffMarketReturn(string plantId, string materialNumber)
