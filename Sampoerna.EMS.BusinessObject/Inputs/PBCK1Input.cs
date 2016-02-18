@@ -45,6 +45,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string SortOrderColumn { get; set; }
 
         public string pbck1Number { get; set; }
+        public Enums.UserRole UserRole { get; set; }
         public List<string> ListNppbkc { get; set; }
     }
 
@@ -64,6 +65,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         /// optional if want to sorting from query
         /// </summary>
         public string SortOrderColumn { get; set; }
+        public Enums.UserRole UserRole { get; set; }
         public List<string> ListNppbkc { get; set; }
     }
 
@@ -98,6 +100,24 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     {
         public long Id { get; set; }
         public DateTime? ReportedOn { get; set; }
+        public int? SupplierPortId { get; set; }
+        public string SupplierPlant { get; set; }
+        public string SupplierPlantWerks { get; set; }
+        public string SupplierAddress { get; set; }
+        public string SupplierCompany { get; set; }
+        public string SupplierNppbkcId { get; set; }
+        public string SupplierKppbcId { get; set; }
+        public string SupplierKppbcName { get; set; }
+        public string SupplierPhone { get; set; }
+        public string GoodType { get; set; }
+        public string GoodTypeDesc { get; set; }
+        public DateTime? PlanProdFrom { get; set; }
+        public DateTime? PlanProdTo { get; set; }
+        public int Lack1FromMonthId { get; set; }
+        public int Lack1FormYear { get; set; }
+        public int Lack1ToMonthId { get; set; }
+        public int Lack1ToYear { get; set; }
+        public DateTime? DecreeDate { get; set; }
     }
 
     public class Pbck1GetDataForLack1ParamInput
@@ -142,6 +162,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string oriKppbc { get; set; }
         public string poa { get; set; }
         public string creator { get; set; }
+        public Enums.UserRole UserRole { get; set; }
         public List<string> ListNppbkc { get; set; }
     }
 

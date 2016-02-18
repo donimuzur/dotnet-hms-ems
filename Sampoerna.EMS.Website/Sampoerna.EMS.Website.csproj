@@ -1308,6 +1308,8 @@
     <Content Include="Views\CK5\_CK5EditCompleted.cshtml" />
     <Content Include="Views\CK4C\Edits.cshtml" />
     <Content Include="Views\CK4C\_HomeCompletedSuperAdmin.cshtml" />
+    <Content Include="Views\PBCK1\Edits.cshtml" />
+    <Content Include="Views\PBCK1\_HomeGovApprovalSuperAdmin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
