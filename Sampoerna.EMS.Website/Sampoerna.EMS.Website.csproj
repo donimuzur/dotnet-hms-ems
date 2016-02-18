@@ -1307,6 +1307,8 @@
     <Content Include="Views\PBCK7AndPBCK3\_Pbck3EditCompleted.cshtml" />
     <Content Include="Views\CK4C\Edits.cshtml" />
     <Content Include="Views\CK4C\_HomeCompletedSuperAdmin.cshtml" />
+    <Content Include="Views\PBCK1\Edits.cshtml" />
+    <Content Include="Views\PBCK1\_HomeGovApprovalSuperAdmin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
