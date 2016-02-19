@@ -50,7 +50,8 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public string MenuLack2CompletedDocument { get; set; }
         public string Comment { get; set; }
         public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
-
+        public Enums.DocumentStatus DocumentStatus { get; set; }
+        public bool AllowEditCompletedDocument { get; set; }
         #endregion
 
     }

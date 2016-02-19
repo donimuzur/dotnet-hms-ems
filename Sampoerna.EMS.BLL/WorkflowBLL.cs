@@ -606,6 +606,10 @@ namespace Sampoerna.EMS.BLL
 
         public bool IsAllowEditLack1(string createdUser, string currentUserId,Enums.DocumentStatus status)
         {
+            if (_poabll.GetUserRole(currentUserId) == Enums.UserRole.Administrator)
+            {
+                return true;
+            }
             if (createdUser != currentUserId)
                 if (
                     !_poaDelegationServices.IsDelegatedUserByUserAndDate(createdUser, currentUserId,

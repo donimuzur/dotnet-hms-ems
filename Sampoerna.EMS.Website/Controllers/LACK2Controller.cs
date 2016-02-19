@@ -342,7 +342,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model = InitEditList(model);
             model.IsCreateNew = false;
 
-            model.ControllerAction = model.Status == Enums.DocumentStatus.WaitingGovApproval || model.Status == Enums.DocumentStatus.Completed ? "GovApproveDocument" : "Edit";
+            model.ControllerAction = model.Status == Enums.DocumentStatus.WaitingGovApproval 
+                //|| model.Status == Enums.DocumentStatus.Completed 
+                ? "GovApproveDocument" : "Edit";
 
             return View(model);
         }
@@ -375,9 +377,38 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 bool isSubmit = model.IsSaveSubmit == "submit";
 
+                if (model.Status == Enums.DocumentStatus.Completed)
+                {
+                    model.Documents = new List<Lack2DocumentDto>();
+                    foreach (var item in model.DecreeFiles)
+                    {
+                        if (item != null)
+                        {
+                            var filenamecheck = item.FileName;
+
+                            if (filenamecheck.Contains("\\"))
+                            {
+                                filenamecheck = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                            }
+
+                            var decreeDoc = new Lack2DocumentDto()
+                            {
+                                LACK2_ID = model.Lack2Id,
+                                FILE_NAME = filenamecheck,
+                                FILE_PATH = SaveUploadedFile(item, model.Lack2Id)
+                            };
+                            model.Documents.Add(decreeDoc);
+                        }
+
+                    }
+                }
+
                 var input = Mapper.Map<Lack2SaveEditInput>(model);
                 input.UserId = CurrentUser.USER_ID;
                 input.WorkflowActionType = Enums.ActionType.Modified;
+
+                
+                
 
                 var saveResult = _lack2Bll.SaveEdit(input);
 
@@ -506,7 +537,9 @@ namespace Sampoerna.EMS.Website.Controllers
             //}
 
             //return isAllow;
-            return _workflowBll.IsAllowEditLack1(userId, CurrentUser.USER_ID, status);
+            var allowEditAsUser = _workflowBll.IsAllowEditLack1(userId, CurrentUser.USER_ID, status);
+            var allowEditAsAdmin = _poabll.GetUserRole(CurrentUser.USER_ID) == Enums.UserRole.Administrator;
+            return allowEditAsAdmin || allowEditAsUser;
         }
 
         private string GetPoaListByNppbkcId(string nppbkcId)
@@ -560,6 +593,10 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var model = InitDetailModel(lack1Data);
+
+            if (model.DocumentStatus == Enums.DocumentStatus.Completed
+                    && CurrentUser.UserRole == Enums.UserRole.Administrator)
+                model.AllowEditCompletedDocument = true;
 
             return View(model);
         }
