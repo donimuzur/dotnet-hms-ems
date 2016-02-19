@@ -117,7 +117,7 @@ namespace Sampoerna.EMS.BLL
         {
             Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
 
-            if (input.UserRole != Enums.UserRole.SuperAdmin)
+            if (input.UserRole != Enums.UserRole.Administrator)
             {
                 //delegate 
                 var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
@@ -286,7 +286,7 @@ namespace Sampoerna.EMS.BLL
         public List<Pbck3SummaryReportDto> GetPbck3SummaryReportsByParam(Pbck3SummaryInput input)
         {
             Expression<Func<PBCK3, bool>> queryFilter = PredicateHelper.True<PBCK3>();
-            if (input.UserRole != Enums.UserRole.SuperAdmin)
+            if (input.UserRole != Enums.UserRole.Administrator)
             {
                 //delegate 
                 var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
@@ -389,7 +389,7 @@ namespace Sampoerna.EMS.BLL
         {
             Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
 
-            if (user.UserRole != Enums.UserRole.SuperAdmin)
+            if (user.UserRole != Enums.UserRole.Administrator)
             {
                 //delegate 
                 var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(user.USER_ID, DateTime.Now);
@@ -495,7 +495,7 @@ namespace Sampoerna.EMS.BLL
         {
             Expression<Func<PBCK3, bool>> queryFilter = PredicateHelper.True<PBCK3>();
 
-            if (user.UserRole != Enums.UserRole.SuperAdmin)
+            if (user.UserRole != Enums.UserRole.Administrator)
             {
                 //delegate 
                 var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(user.USER_ID, DateTime.Now);
@@ -3681,7 +3681,7 @@ namespace Sampoerna.EMS.BLL
             //{
             //    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId) || c.STATUS == Enums.DocumentStatus.Completed);
             //}
-            if (input.UserRole != Enums.UserRole.SuperAdmin)
+            if (input.UserRole != Enums.UserRole.Administrator)
                 queryFilter = queryFilter.And(c => input.ListUserPlants.Contains(c.PLANT_ID));
 
             var data = _repositoryPbck7.Get(queryFilter).ToList();
@@ -3721,7 +3721,7 @@ namespace Sampoerna.EMS.BLL
             //{
             //    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId) || c.STATUS == Enums.DocumentStatus.Completed);
             //}
-            if (input.UserRole != Enums.UserRole.SuperAdmin)
+            if (input.UserRole != Enums.UserRole.Administrator)
             {
                 queryFilter =
                     queryFilter.And(
@@ -3749,7 +3749,7 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             if (dbData.STATUS != Enums.DocumentStatus.Completed
-                && input.UserRole != Enums.UserRole.SuperAdmin)
+                && input.UserRole != Enums.UserRole.Administrator)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
             
             //prepare for set changes history
@@ -3881,7 +3881,7 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             if (dbData.STATUS != Enums.DocumentStatus.Completed
-                && input.UserRole != Enums.UserRole.SuperAdmin)
+                && input.UserRole != Enums.UserRole.Administrator)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //prepare for set changes history

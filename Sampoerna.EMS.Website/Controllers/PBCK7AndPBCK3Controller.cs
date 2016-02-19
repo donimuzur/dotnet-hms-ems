@@ -588,7 +588,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
 
                 if (model.Pbck7Status == Enums.DocumentStatus.Completed
-                   && CurrentUser.UserRole == Enums.UserRole.SuperAdmin)
+                   && CurrentUser.UserRole == Enums.UserRole.Administrator)
                     model.AllowEditCompletedDocument = true;
 
                 if (model.AllowGovApproveAndReject)
@@ -2317,7 +2317,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
                 
                 if (model.Pbck3Status == Enums.DocumentStatus.Completed
-                   && CurrentUser.UserRole == Enums.UserRole.SuperAdmin)
+                   && CurrentUser.UserRole == Enums.UserRole.Administrator)
                     model.AllowEditCompletedDocument = true;
 
                 if (model.AllowGovApproveAndReject)

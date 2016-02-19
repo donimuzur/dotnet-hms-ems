@@ -196,7 +196,7 @@ namespace Sampoerna.EMS.BLL
            
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
-            if (input.UserRole != Enums.UserRole.SuperAdmin)
+            if (input.UserRole != Enums.UserRole.Administrator)
             {
                 //delegate 
                 var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
@@ -602,7 +602,7 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
-            if (input.UserRole != Enums.UserRole.SuperAdmin)
+            if (input.UserRole != Enums.UserRole.Administrator)
             {
                 //delegate 
                 var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
@@ -3712,7 +3712,7 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
-            if (input.UserRole != Enums.UserRole.SuperAdmin)
+            if (input.UserRole != Enums.UserRole.Administrator)
             {
                 //delegate 
                 var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
@@ -3900,7 +3900,7 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
-            if (input.UserRole != Enums.UserRole.SuperAdmin)
+            if (input.UserRole != Enums.UserRole.Administrator)
             {
                 //delegate 
                 var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
@@ -5706,7 +5706,7 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
-            if (input.UserRole != Enums.UserRole.SuperAdmin)
+            if (input.UserRole != Enums.UserRole.Administrator)
             {
                 //delegate 
                 var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
@@ -5874,7 +5874,7 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             if (dbData.STATUS_ID != Enums.DocumentStatus.Completed
-               && input.UserRole != Enums.UserRole.SuperAdmin)
+               && input.UserRole != Enums.UserRole.Administrator)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             if (input.Ck5FileUploadList.Count > 0)

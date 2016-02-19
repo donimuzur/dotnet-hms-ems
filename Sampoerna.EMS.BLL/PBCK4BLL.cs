@@ -82,7 +82,7 @@ namespace Sampoerna.EMS.BLL
         {
             Expression<Func<PBCK4, bool>> queryFilter = PredicateHelper.True<PBCK4>();
 
-            if (input.UserRole != Enums.UserRole.SuperAdmin)
+            if (input.UserRole != Enums.UserRole.Administrator)
             {
                 //delegate 
                 var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
@@ -1665,7 +1665,7 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<PBCK4, bool>> queryFilter = PredicateHelper.True<PBCK4>();
 
-            if (input.UserRole != Enums.UserRole.SuperAdmin)
+            if (input.UserRole != Enums.UserRole.Administrator)
             {
                 //delegate 
                 var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
@@ -2085,7 +2085,7 @@ namespace Sampoerna.EMS.BLL
             //{
             //    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId) || c.STATUS == Enums.DocumentStatus.Completed);
             //}
-            if (input.UserRole != Enums.UserRole.SuperAdmin)
+            if (input.UserRole != Enums.UserRole.Administrator)
                 queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID));
 
             Func<IQueryable<PBCK4>, IOrderedQueryable<PBCK4>> orderBy = null;
@@ -2115,7 +2115,7 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             if (dbData.STATUS != Enums.DocumentStatus.Completed
-                && input.UserRole != Enums.UserRole.SuperAdmin)
+                && input.UserRole != Enums.UserRole.Administrator)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
 
