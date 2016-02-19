@@ -537,7 +537,9 @@ namespace Sampoerna.EMS.Website.Controllers
             //}
 
             //return isAllow;
-            return _workflowBll.IsAllowEditLack1(userId, CurrentUser.USER_ID, status);
+            var allowEditAsUser = _workflowBll.IsAllowEditLack1(userId, CurrentUser.USER_ID, status);
+            var allowEditAsAdmin = _poabll.GetUserRole(CurrentUser.USER_ID) == Enums.UserRole.Administrator;
+            return allowEditAsAdmin || allowEditAsUser;
         }
 
         private string GetPoaListByNppbkcId(string nppbkcId)

@@ -329,7 +329,17 @@ namespace Sampoerna.EMS.BLL
             else
             {
                 var origin = Mapper.Map<Lack2Dto>(dbData);
-                var destination = Mapper.Map<Lack2Dto>(input);
+                var destination = new Lack2Dto(); 
+                if (dbData.STATUS != Enums.DocumentStatus.Completed)
+                {
+                    destination = Mapper.Map<Lack2Dto>(input);
+                    
+                }
+                else
+                {
+                    destination = Mapper.Map<Lack2Dto>(dbData);
+                    destination.DecreeDate = input.DecreeDate;
+                }
                 isModified = SetChangesHistory(origin, destination, input.UserId);
             }
 
