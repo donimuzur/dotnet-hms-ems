@@ -1654,7 +1654,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 if (model.DocumentStatus == Enums.DocumentStatus.Completed
-                 && CurrentUser.UserRole == Enums.UserRole.SuperAdmin)
+                 && CurrentUser.UserRole == Enums.UserRole.Administrator)
                     model.AllowEditCompletedDocument = true;
           
 
