@@ -114,6 +114,10 @@ namespace Sampoerna.EMS.BLL
 
             //    queryFilter = queryFilter.And(c => (c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.NUMBER)) || c.STATUS == Enums.DocumentStatus.Completed);
             //}
+            else if (input.UserRole == Enums.UserRole.SuperAdmin)
+            {
+                queryFilter = queryFilter.And(c => c.COMPANY_ID != null);
+            }
             else
             {
                 queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID) ||

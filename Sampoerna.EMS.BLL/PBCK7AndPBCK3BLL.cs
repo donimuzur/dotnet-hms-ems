@@ -3681,7 +3681,8 @@ namespace Sampoerna.EMS.BLL
             //{
             //    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId) || c.STATUS == Enums.DocumentStatus.Completed);
             //}
-            queryFilter = queryFilter.And(c => input.ListUserPlants.Contains(c.PLANT_ID));
+            if (input.UserRole != Enums.UserRole.SuperAdmin)
+                queryFilter = queryFilter.And(c => input.ListUserPlants.Contains(c.PLANT_ID));
 
             var data = _repositoryPbck7.Get(queryFilter).ToList();
             return Mapper.Map<List<Pbck7AndPbck3Dto>>(data);
@@ -3720,17 +3721,19 @@ namespace Sampoerna.EMS.BLL
             //{
             //    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId) || c.STATUS == Enums.DocumentStatus.Completed);
             //}
-            queryFilter =
-                   queryFilter.And(
-                       c => (input.ListUserPlants.Contains(c.PBCK7.PLANT_ID)
-                             ||
-                             (c.CK5.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
-                             input.ListUserPlants.Contains(c.CK5.DEST_PLANT_ID))
-                             ||
-                             input.ListUserPlants.Contains(c.CK5.SOURCE_PLANT_ID)
-                             )
-                             );
-
+            if (input.UserRole != Enums.UserRole.SuperAdmin)
+            {
+                queryFilter =
+                    queryFilter.And(
+                        c => (input.ListUserPlants.Contains(c.PBCK7.PLANT_ID)
+                              ||
+                              (c.CK5.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
+                               input.ListUserPlants.Contains(c.CK5.DEST_PLANT_ID))
+                              ||
+                              input.ListUserPlants.Contains(c.CK5.SOURCE_PLANT_ID)
+                            )
+                        );
+            }
 
             var data = _repositoryPbck3.Get(queryFilter).ToList();
             return Mapper.Map<List<Pbck3Dto>>(data);

@@ -2053,19 +2053,17 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private List<Pbck4Dto> GetAllDocument(Pbck4DashBoardViewModel filter = null)
         {
-            if (filter == null)
-            {
-                var inputAll = new Pbck4DasboardParamInput();
-                inputAll.ListUserPlant = CurrentUser.ListUserPlants;
-
-                var pbck4 = _pbck4Bll.GetAllByParam(inputAll);
-                return pbck4;
-            }
-
             var input = Mapper.Map<Pbck4DasboardParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
             input.UserRole = CurrentUser.UserRole;
             input.ListUserPlant = CurrentUser.ListUserPlants;
+
+            if (filter == null)
+            {
+               var pbck4 = _pbck4Bll.GetAllByParam(input);
+                return pbck4;
+            }
+
             var dbData = _pbck4Bll.GetAllByParam(input);
             return dbData;
         }
