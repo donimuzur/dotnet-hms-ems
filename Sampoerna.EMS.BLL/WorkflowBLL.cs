@@ -113,7 +113,7 @@ namespace Sampoerna.EMS.BLL
 
             //return data != null;
         }
-
+     
         /// <summary>
         /// allow to approve and rejected
         /// </summary>
@@ -526,18 +526,10 @@ namespace Sampoerna.EMS.BLL
 
         public bool AllowWasteGoodReceive(WorkflowAllowApproveAndRejectInput input)
         {
-            //if (input.CreatedUser != input.CurrentUser)
-            //    return false;
-
+          
             if (input.DocumentStatus != Enums.DocumentStatus.GoodReceive)
                 return false;
-
-            //if (input.CreatedUser == input.CurrentUser)
-            //    return true;
-
-            //if (_poaDelegationServices.IsDelegatedUserByUserAndDate(input.CreatedUser, input.CurrentUser,
-            //           DateTime.Now))
-            //    return false;
+          
             if (!IsUserUnsealing(input))
                 return false;
 
@@ -672,7 +664,8 @@ namespace Sampoerna.EMS.BLL
             listUser.AddRange(listUserPlantMap);
 
             //list poa
-            var listPoa = _poabll.GetPoaActiveByNppbkcId(input.DestNppbkcId);
+            //var listPoa = _poabll.GetPoaActiveByNppbkcId(input.DestNppbkcId);
+            var listPoa = _poabll.GetPoaActiveByPlantId(input.DestPlant);
 
             listUser.AddRange(listPoa.Select(c => c.POA_ID));
 
