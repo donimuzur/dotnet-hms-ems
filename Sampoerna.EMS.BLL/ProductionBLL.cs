@@ -77,7 +77,7 @@ namespace Sampoerna.EMS.BLL
                 var dt = Convert.ToDateTime(input.ProoductionDate);
                 queryFilter = queryFilter.And(c => c.PRODUCTION_DATE == dt);
             }
-            if (input.UserRole != Core.Enums.UserRole.SuperAdmin)
+            if (input.UserRole != Core.Enums.UserRole.Administrator)
             {
                 queryFilter = queryFilter.And(c => input.ListUserPlants.Contains(c.WERKS));
             }

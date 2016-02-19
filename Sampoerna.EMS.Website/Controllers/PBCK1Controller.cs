@@ -164,7 +164,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Details = GetOpenDocument(model.SearchInput);
             //first code when manager exists
             //model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
-            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.SuperAdmin ? true : false);
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false);
 
             return PartialView("_Pbck1Table", model);
         }
@@ -429,10 +429,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     DocumentType = Enums.Pbck1DocumentType.OpenDocument
 
                 },
-                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.SuperAdmin ? true : false),
+                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false),
                 //first code when manager exists
                 //IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
-                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.SuperAdmin ? true : false)
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false)
             });
             return View("Index", model);
         }
@@ -441,7 +441,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var nppbkc = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
 
-            if (CurrentUser.UserRole != Enums.UserRole.SuperAdmin)
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
             {
                 var filterNppbkc = nppbkc.Where(x => CurrentUser.ListUserNppbkc.Contains(x.Value));
                 nppbkc = new SelectList(filterNppbkc, "Value", "Text");
@@ -484,7 +484,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            if (CurrentUser.UserRole == Enums.UserRole.SuperAdmin)
+            if (CurrentUser.UserRole == Enums.UserRole.Administrator)
             {
                 return RedirectToAction("Edits", new { id });
             }
@@ -620,7 +620,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            if (CurrentUser.UserRole != Enums.UserRole.SuperAdmin)
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
             {
                 return RedirectToAction("Details", new { id });
             }
@@ -965,7 +965,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.SuperAdmin)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Administrator)
             {
                 //can't create PBCK1 Document
                 AddMessageInfo("Can't create PBCK-1 Document for User with " + EnumHelper.GetDescription(CurrentUser.UserRole) + " Role", Enums.MessageInfoType.Error);
@@ -1619,7 +1619,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var comp = GlobalFunctions.GetCompanyList(_companyBll);
                 var nppbkc = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
 
-                if (CurrentUser.UserRole != Enums.UserRole.SuperAdmin)
+                if (CurrentUser.UserRole != Enums.UserRole.Administrator)
                 {
                     var userComp = _userPlantBll.GetCompanyByUserId(CurrentUser.USER_ID);
                     var poaComp = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
@@ -2139,7 +2139,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var comp = GlobalFunctions.GetCompanyList(_companyBll);
                 var nppbkc = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
 
-                if (CurrentUser.UserRole != Enums.UserRole.SuperAdmin)
+                if (CurrentUser.UserRole != Enums.UserRole.Administrator)
                 {
                     var userComp = _userPlantBll.GetCompanyByUserId(CurrentUser.USER_ID);
                     var poaComp = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
@@ -2390,7 +2390,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 //GET All NPPBKC
                 var NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll).ToList();
 
-                if (CurrentUser.UserRole != Enums.UserRole.SuperAdmin)
+                if (CurrentUser.UserRole != Enums.UserRole.Administrator)
                 {
                     NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll).Where(x => CurrentUser.ListUserNppbkc.Contains(x.Value)).ToList();
                 }
@@ -2401,7 +2401,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var data = _nppbkcbll.GetNppbkcsByCompany(companyId);
 
-                if (CurrentUser.UserRole != Enums.UserRole.SuperAdmin)
+                if (CurrentUser.UserRole != Enums.UserRole.Administrator)
                 {
                     data = data.Where(x => CurrentUser.ListUserNppbkc.Contains(x.NPPBKC_ID)).ToList();
                 }                
@@ -3089,7 +3089,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var nppbkc = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
 
-            if (CurrentUser.UserRole != Enums.UserRole.SuperAdmin)
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
             {
                 var filterNppbkc = nppbkc.Where(x => CurrentUser.ListUserNppbkc.Contains(x.Value));
                 nppbkc = new SelectList(filterNppbkc, "Value", "Text");
