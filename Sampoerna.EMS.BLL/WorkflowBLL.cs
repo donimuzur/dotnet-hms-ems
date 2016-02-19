@@ -666,9 +666,8 @@ namespace Sampoerna.EMS.BLL
             listUser.AddRange(listUserPlantMap);
 
             //list poa
-            //var listPoa = _poabll.GetPoaActiveByNppbkcId(input.DestNppbkcId);
-            var listPoa = _poabll.GetPoaActiveByPlantId(input.DestPlant);
-
+            var listPoa = _poabll.GetPoaActiveByNppbkcId(input.DestNppbkcId);
+            
             listUser.AddRange(listPoa.Select(c => c.POA_ID));
 
             if (listUser.Contains(input.CurrentUser))
