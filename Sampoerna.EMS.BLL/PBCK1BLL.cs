@@ -115,7 +115,8 @@ namespace Sampoerna.EMS.BLL
 
             //    queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.NUMBER));
             //}
-            else if (input.UserRole == Enums.UserRole.SuperAdmin) {
+            else if (input.UserRole == Enums.UserRole.Administrator)
+            {
                 queryFilter = queryFilter.And(c => c.NUMBER != null);
             }
             else
@@ -210,7 +211,7 @@ namespace Sampoerna.EMS.BLL
                                     c.STATUS == Enums.DocumentStatus.Completed));
                     }
                 }
-                else if (input.UserRole == Enums.UserRole.SuperAdmin)
+                else if (input.UserRole == Enums.UserRole.Administrator)
                 {
                     queryFilter =
                             queryFilter.And(
@@ -1814,7 +1815,7 @@ namespace Sampoerna.EMS.BLL
             if (!string.IsNullOrEmpty(input.pbck1Number))
                 queryFilter = queryFilter.And(c => c.NUMBER == input.pbck1Number);
 
-            if (input.UserRole != Enums.UserRole.SuperAdmin)
+            if (input.UserRole != Enums.UserRole.Administrator)
             {
                 queryFilter =
                     queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID));
@@ -1857,7 +1858,7 @@ namespace Sampoerna.EMS.BLL
             queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed
                 && c.PBCK1_TYPE == Enums.PBCK1Type.New);
 
-            if (input.UserRole != Enums.UserRole.SuperAdmin)
+            if (input.UserRole != Enums.UserRole.Administrator)
             {
                 queryFilter = queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID));
             }
@@ -2887,7 +2888,7 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.CREATED_BY == input.creator);
             }
 
-            if(input.UserRole != Enums.UserRole.SuperAdmin) queryFilter = queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID));
+            if (input.UserRole != Enums.UserRole.Administrator) queryFilter = queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID));
 
             Func<IQueryable<PBCK1>, IOrderedQueryable<PBCK1>> orderBy = null;
             {

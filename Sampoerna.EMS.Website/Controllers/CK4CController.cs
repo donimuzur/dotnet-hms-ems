@@ -87,10 +87,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.Ck4CDocument,
-                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.SuperAdmin ? true : false),
+                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false),
                 //first code when manager exists
                 //IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
-                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.SuperAdmin ? true : false)
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false)
             });
 
             return View("DocumentList", data);
@@ -102,7 +102,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var comp = GlobalFunctions.GetCompanyList(_companyBll);
             var nppbkc = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
 
-            if (CurrentUser.UserRole != Enums.UserRole.SuperAdmin)
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
             {
                 var userComp = _userPlantBll.GetCompanyByUserId(CurrentUser.USER_ID);
                 var poaComp = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
@@ -184,7 +184,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Detail = GetOpenDocument(model);
             //first code when manager exists
             //model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
-            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.SuperAdmin ? true : false);
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false);
             return PartialView("_CK4CTableDocumentList", model);
         }
 
@@ -305,7 +305,7 @@ namespace Sampoerna.EMS.Website.Controllers
         #region create Document List
         public ActionResult Ck4CCreateDocumentList()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.SuperAdmin)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Administrator)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction("DocumentList");
@@ -537,7 +537,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            if (CurrentUser.UserRole == Enums.UserRole.SuperAdmin)
+            if (CurrentUser.UserRole == Enums.UserRole.Administrator)
             {
                 return RedirectToAction("Edits", new { id });
             }
@@ -642,7 +642,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            if (CurrentUser.UserRole != Enums.UserRole.SuperAdmin)
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
             {
                 return RedirectToAction("Detail", new { id });
             }

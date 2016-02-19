@@ -86,6 +86,10 @@ namespace Sampoerna.EMS.BLL.Services
             {
                 queryFilter = queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID));
             }
+            else if (input.UserRole == Enums.UserRole.Administrator)
+            {
+                queryFilter = queryFilter.And(c => c.LACK1_LEVEL != null);
+            }
             else
             {
                 queryFilter = queryFilter.And(c => (input.ListUserPlant.Contains(c.LACK1_PLANT.FirstOrDefault().PLANT_ID) && c.LACK1_LEVEL == Enums.Lack1Level.Plant) ||
@@ -247,6 +251,9 @@ namespace Sampoerna.EMS.BLL.Services
                 case Enums.UserRole.POA:
                     queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && input.ListNppbkc.Contains(c.NPPBKC_ID))));
                     break;
+                case Enums.UserRole.Administrator:
+                    queryFilter = queryFilter.And(c => c.LACK1_LEVEL != null);
+                    break;
                 default:
                     queryFilter = queryFilter.And(c => (input.ListUserPlant.Contains(c.LACK1_PLANT.FirstOrDefault().PLANT_ID) && c.LACK1_LEVEL == Enums.Lack1Level.Plant) ||
                                                     (input.ListNppbkc.Contains(c.NPPBKC_ID) && c.LACK1_LEVEL == Enums.Lack1Level.Nppbkc));
@@ -356,6 +363,10 @@ namespace Sampoerna.EMS.BLL.Services
             {
                 queryFilter = queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID));
             }
+            else if (input.UserRole == Enums.UserRole.Administrator)
+            {
+                queryFilter = queryFilter.And(c => c.LACK1_LEVEL != null);
+            }
             else
             {
                 queryFilter = queryFilter.And(c => (input.ListUserPlant.Contains(c.LACK1_PLANT.FirstOrDefault().PLANT_ID) && c.LACK1_LEVEL == Enums.Lack1Level.Plant) ||
@@ -412,6 +423,10 @@ namespace Sampoerna.EMS.BLL.Services
             {
                 queryFilter = queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID));
             }
+            else if (input.UserRole == Enums.UserRole.Administrator)
+            {
+                queryFilter = queryFilter.And(c => c.LACK1_LEVEL != null);
+            }
             else
             {
                 queryFilter = queryFilter.And(c => (input.ListUserPlant.Contains(c.LACK1_PLANT.FirstOrDefault().PLANT_ID) && c.LACK1_LEVEL == Enums.Lack1Level.Plant) ||
@@ -445,6 +460,10 @@ namespace Sampoerna.EMS.BLL.Services
                 queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft
                        && input.ListNppbkc.Contains(c.NPPBKC_ID))));
             }
+            else if (input.UserRole == Enums.UserRole.Administrator)
+            {
+                queryFilter = queryFilter.And(c => c.LACK1_LEVEL != null);
+            }
             else
             {
                 queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId) ||
@@ -476,6 +495,10 @@ namespace Sampoerna.EMS.BLL.Services
             if (input.UserRole == Enums.UserRole.POA)
             {
                 queryFilter = queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID));
+            }
+            else if (input.UserRole == Enums.UserRole.Administrator)
+            {
+                queryFilter = queryFilter.And(c => c.LACK1_LEVEL != null);
             }
             else
             {

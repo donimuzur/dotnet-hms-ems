@@ -1310,6 +1310,8 @@
     <Content Include="Views\CK4C\_HomeCompletedSuperAdmin.cshtml" />
     <Content Include="Views\PBCK1\Edits.cshtml" />
     <Content Include="Views\PBCK1\_HomeGovApprovalSuperAdmin.cshtml" />
+    <Content Include="Views\LACK1\Edits.cshtml" />
+    <Content Include="Views\LACK1\_HomeCompleted.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -114,7 +114,7 @@ namespace Sampoerna.EMS.BLL
 
             //    queryFilter = queryFilter.And(c => (c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.NUMBER)) || c.STATUS == Enums.DocumentStatus.Completed);
             //}
-            else if (input.UserRole == Enums.UserRole.SuperAdmin)
+            else if (input.UserRole == Enums.UserRole.Administrator)
             {
                 queryFilter = queryFilter.And(c => c.COMPANY_ID != null);
             }
@@ -778,7 +778,7 @@ namespace Sampoerna.EMS.BLL
             //delegate
             if (dbData.CREATED_BY != input.UserId)
             {
-                if (input.UserRole != Enums.UserRole.SuperAdmin) { 
+                if (input.UserRole != Enums.UserRole.Administrator) { 
                     var workflowHistoryDto =
                         _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
                     input.Comment = _poaDelegationServices.CommentDelegatedByHistory(workflowHistoryDto.COMMENT,
@@ -902,7 +902,7 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID));
             }
-            else if (input.UserRole == Enums.UserRole.SuperAdmin)
+            else if (input.UserRole == Enums.UserRole.Administrator)
             {
                 queryFilter = queryFilter.And(c => c.GOV_STATUS == Enums.StatusGovCk4c.Approved);
             }
@@ -944,7 +944,7 @@ namespace Sampoerna.EMS.BLL
 
             //    queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.NUMBER));
             //}
-            else if (input.UserRole == Enums.UserRole.SuperAdmin)
+            else if (input.UserRole == Enums.UserRole.Administrator)
             {
                 queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
             }
@@ -1553,7 +1553,7 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID));
             }
-            else if (input.UserRole == Enums.UserRole.SuperAdmin)
+            else if (input.UserRole == Enums.UserRole.Administrator)
             {
                 queryFilter = queryFilter.And(c => c.COMPANY_ID != null);
             }

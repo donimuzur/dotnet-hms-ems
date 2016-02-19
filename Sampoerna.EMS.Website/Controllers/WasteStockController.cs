@@ -39,7 +39,7 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /WasteStock/
         public ActionResult Index()
         {
-            var isSuperAdmin = CurrentUser.UserRole == Enums.UserRole.SuperAdmin;
+            var isSuperAdmin = CurrentUser.UserRole == Enums.UserRole.Administrator;
             var model = new WasteStockIndexViewModel();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;

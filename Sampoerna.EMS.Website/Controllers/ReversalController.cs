@@ -38,7 +38,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.Reversal,
-                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.SuperAdmin ? true : false),
+                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false),
                 IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
             });
 
@@ -50,7 +50,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var listPlant = GlobalFunctions.GetPlantAll();
 
-            if (CurrentUser.UserRole != Enums.UserRole.SuperAdmin)
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
             {
                 var itemPlant = GlobalFunctions.GetPlantAll().Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
 
@@ -98,7 +98,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.SuperAdmin)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Administrator)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
@@ -123,7 +123,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var plantList = GlobalFunctions.GetPlantAll();
 
-            if (CurrentUser.UserRole != Enums.UserRole.SuperAdmin)
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
             {
                 var distinctPlant = plantList.Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
                 var getPlant = new SelectList(distinctPlant, "Value", "Text");
