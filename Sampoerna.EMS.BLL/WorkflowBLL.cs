@@ -688,10 +688,14 @@ namespace Sampoerna.EMS.BLL
             if (input.UserRole == Enums.UserRole.Administrator) return true;
             if (input.UserPlant.Contains(input.DataPlant))
                 return true;
-
+            
             //only for edit document
             if (_poaDelegationServices.IsDelegatedUserByUserAndDate(input.DataUser, input.UserId, DateTime.Now))
-                return true;
+            {
+                if (input.UserPlant.Contains(input.DataPlant))
+                    return true;
+            }
+
 
             return false;
         }
