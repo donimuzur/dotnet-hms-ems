@@ -3446,6 +3446,7 @@ namespace Sampoerna.EMS.BLL
                     .ToList()
                     .Contains(all.INVENTORY_MOVEMENT_ID))).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
+            var usageProportionalListTest = CalculateInvMovementUsageProportional(usageReceivingList, movementUsageAll, usageParamInput);
             var usageProportionalList = CalculateInvMovementUsageProportional(usageReceivingList, movementUsageAll);
 
             var rc = new InvMovementGetForLack1UsageMovementByParamOutput
@@ -3463,10 +3464,19 @@ namespace Sampoerna.EMS.BLL
         }
 
         private List<InvMovementUsageProportional> CalculateInvMovementUsageProportional(
-            IEnumerable<INVENTORY_MOVEMENT> usageReceivingAll, IEnumerable<INVENTORY_MOVEMENT> usageAll)
+            IEnumerable<INVENTORY_MOVEMENT> usageReceivingAll, IEnumerable<INVENTORY_MOVEMENT> usageAll,InvMovementGetUsageByParamInput inputParam = null)
         {
             var inventoryMovements = usageReceivingAll as INVENTORY_MOVEMENT[] ?? usageReceivingAll.ToArray();
             var inventoryMovementUsageAll = usageAll as INVENTORY_MOVEMENT[] ?? usageAll.ToArray();
+
+            if (inputParam != null)
+            {
+                var testUsageReceiving =
+                    inventoryMovements.Where(x => x.POSTING_DATE.Value.Month > inputParam.PeriodMonth).ToList();
+                var testUsageReceivingAll =
+                    inventoryMovementUsageAll.Where(x => x.POSTING_DATE.Value.Month > inputParam.PeriodMonth).ToList();
+            }
+            
 
             if (usageReceivingAll == null || inventoryMovements.Length == 0) return new List<InvMovementUsageProportional>();
 
@@ -3480,7 +3490,9 @@ namespace Sampoerna.EMS.BLL
             }).ToList();
 
             //grouped by MAT_DOC, MVT, MATERIAL_ID, PLANT_ID, BATCH and ORDR
-            var groupedInventoryMovements = inventoryMovements.GroupBy(p => new
+            var groupedInventoryMovements = inventoryMovements
+                //.Where(x => (x.POSTING_DATE.HasValue && x.POSTING_DATE.Value == ))
+                .GroupBy(p => new
             {
                 //p.MAT_DOC,
                 //p.MVT,
