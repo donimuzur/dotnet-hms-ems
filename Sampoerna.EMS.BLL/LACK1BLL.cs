@@ -2501,18 +2501,23 @@ namespace Sampoerna.EMS.BLL
                     UomDesc = item.UOM_DESC
                 };
 
-                var groupUsageProporsional = invMovementOutput.UsageProportionalList.GroupBy(x => new { x.Order, x.Batch })
+                var groupUsageProporsional = invMovementOutput.UsageProportionalList
+                    //.GroupBy(x => new { x.Order, x.Batch })
                     .Select(p => new InvMovementUsageProportional()
                     {
-                        //MaterialId = p.FirstOrDefault().MaterialId,
-                        Order = p.FirstOrDefault().Order,
-                        Batch = p.FirstOrDefault().Batch,
-                        Qty = p.Sum(x => x.Qty),
-                        TotalQtyPerMaterialId = p.FirstOrDefault().TotalQtyPerMaterialId
+                        
+                        //Order = p.FirstOrDefault().Order,
+                        //Batch = p.FirstOrDefault().Batch,
+                        //Qty = p.Sum(x => x.Qty),
+                        //TotalQtyPerMaterialId = p.FirstOrDefault().TotalQtyPerMaterialId
+                        Order = p.Order,
+                        Batch = p.Batch,
+                        Qty = p.Qty,
+                        TotalQtyPerMaterialId = p.TotalQtyPerMaterialId
                     });
 
                 var rec = groupUsageProporsional.ToList().FirstOrDefault(c =>
-                    c.Order == item.ORDR);
+                    c.Order == item.ORDR && c.Batch == item.BATCH);
 
                 if (rec != null)
                 {
@@ -2527,7 +2532,7 @@ namespace Sampoerna.EMS.BLL
                     {
                         var chk =
                             prevInventoryMovementByParam.UsageProportionalList.FirstOrDefault(
-                                c => c.Order == item.ORDR);
+                               c=> c.Order == item.ORDR && c.Batch == item.BATCH);
                         if (chk != null)
                         {
                             //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
@@ -3433,11 +3438,23 @@ namespace Sampoerna.EMS.BLL
             //there is records on receiving Data
             //normal case
             var receivingList = (from rec in receivingAllWithConvertion
-                                 join a in movementUsaheAllWithConvertion.DistinctBy(d => new { d.MAT_DOC, d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR }) on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
+                                 join a in movementUsaheAllWithConvertion.DistinctBy(d => new { d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR }) on 
+                                 new { rec.BATCH
+                                     , rec.MATERIAL_ID 
+                                 } equals 
+                                    new { a.BATCH
+                                        , a.MATERIAL_ID 
+                                    }
                                  select rec).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
-            var usageReceivingList = (from rec in receivingAllWithConvertion.DistinctBy(d => new { d.MAT_DOC, d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR })
-                                      join a in movementUsaheAllWithConvertion on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
+            var usageReceivingList = (from rec in receivingAllWithConvertion.DistinctBy(d => new { d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR })
+                                      join a in movementUsaheAllWithConvertion on 
+                                      new { rec.BATCH
+                                          , rec.MATERIAL_ID 
+                                      } equals 
+                                      new { a.BATCH
+                                          , a.MATERIAL_ID 
+                                      }
                                       select a).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
             //get exclude in receiving data
@@ -3446,7 +3463,8 @@ namespace Sampoerna.EMS.BLL
                     .ToList()
                     .Contains(all.INVENTORY_MOVEMENT_ID))).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
-            var usageProportionalListTest = CalculateInvMovementUsageProportional(usageReceivingList, movementUsageAll, usageParamInput);
+            
+            //var usageProportionalListTest = CalculateInvMovementUsageProportional(usageReceivingList, movementUsageAll, usageParamInput);
             var usageProportionalList = CalculateInvMovementUsageProportional(usageReceivingList, movementUsageAll);
 
             var rc = new InvMovementGetForLack1UsageMovementByParamOutput
@@ -3464,18 +3482,12 @@ namespace Sampoerna.EMS.BLL
         }
 
         private List<InvMovementUsageProportional> CalculateInvMovementUsageProportional(
-            IEnumerable<INVENTORY_MOVEMENT> usageReceivingAll, IEnumerable<INVENTORY_MOVEMENT> usageAll,InvMovementGetUsageByParamInput inputParam = null)
+            IEnumerable<INVENTORY_MOVEMENT> usageReceivingAll, IEnumerable<INVENTORY_MOVEMENT> usageAll)
         {
             var inventoryMovements = usageReceivingAll as INVENTORY_MOVEMENT[] ?? usageReceivingAll.ToArray();
             var inventoryMovementUsageAll = usageAll as INVENTORY_MOVEMENT[] ?? usageAll.ToArray();
 
-            if (inputParam != null)
-            {
-                var testUsageReceiving =
-                    inventoryMovements.Where(x => x.POSTING_DATE.Value.Month > inputParam.PeriodMonth).ToList();
-                var testUsageReceivingAll =
-                    inventoryMovementUsageAll.Where(x => x.POSTING_DATE.Value.Month > inputParam.PeriodMonth).ToList();
-            }
+            
             
 
             if (usageReceivingAll == null || inventoryMovements.Length == 0) return new List<InvMovementUsageProportional>();
@@ -3497,7 +3509,7 @@ namespace Sampoerna.EMS.BLL
                 //p.MAT_DOC,
                 //p.MVT,
                 //p.MATERIAL_ID,
-                p.PLANT_ID,
+                //p.PLANT_ID,
                 p.BATCH,
                 p.ORDR
             }).Select(g => new
@@ -3505,7 +3517,7 @@ namespace Sampoerna.EMS.BLL
                 //MatDoc = g.Key.MAT_DOC,
                 //Mvt = g.Key.MVT,
                 //MaterialId = g.Key.MATERIAL_ID,
-                PlantId = g.Key.PLANT_ID,
+                //PlantId = g.Key.PLANT_ID,
                 Batch = g.Key.BATCH,
                 Ordr = g.Key.ORDR,
                 TotalQty = g.Sum(p => p.QTY.HasValue ? p.QTY.Value : 0)
@@ -3516,6 +3528,7 @@ namespace Sampoerna.EMS.BLL
                       select new InvMovementUsageProportional()
                       {
                           //MaterialId = x.MaterialId,
+                          Batch = x.Batch,
                           Qty = x.TotalQty,
                           TotalQtyPerMaterialId = y.TotalQty,
                           Order = x.Ordr
