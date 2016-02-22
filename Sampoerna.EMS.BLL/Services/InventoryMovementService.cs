@@ -55,13 +55,13 @@ namespace Sampoerna.EMS.BLL.Services
 
             var allOrderInZaapShiftRpt = _zaapShiftRptRepository.Get().Select(d => d.ORDR).Distinct().ToList();
 
-            Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter2 = queryFilter; 
+            //Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter2 = queryFilter; 
 
             queryFilter = input.IsTisToTis ? queryFilter.And(c => !allOrderInZaapShiftRpt.Contains(c.ORDR)) : queryFilter.And(c => allOrderInZaapShiftRpt.Contains(c.ORDR));
 
-            queryFilter2 = queryFilter2.Or(queryFilter);
+            //queryFilter2 = queryFilter2.Or(queryFilter);
 
-            return _repository.Get(queryFilter2).ToList();
+            return _repository.Get(queryFilter).ToList();
 
         }
 
