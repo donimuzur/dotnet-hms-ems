@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.PoaDelegation.PoaDelegationFormViewModel
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.PoaDelegation.PoaDelegationFormViewModel
 
 
 @using (Html.BeginForm("Create", "PoaDelegation", FormMethod.Post, new { @class = "form-excise", @id = "SavePoaDelegationForms" }))
@@ -128,10 +129,10 @@
                         </div>
 
                         <div class="col-md-12" id="divUser">
-                            <span class="red">*</span> ) <label>Take From User Plant Map</label>
+                            Take From User Plant Map
                         </div>
                         <div class="col-md-12" id="divPoa">
-                            <span class="red">*</span> ) <label>Take From POA Map</label>
+                            Take From POA Map
                         </div>
                     </div>
                 </div>
@@ -165,14 +166,14 @@
 
     <script type="text/javascript" language="javascript">
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#MenuPoaDelegation').addClass('active');
 
-            $('#btnBack').click(function (e) {
+            $('#btnBack').click(function(e) {
                 location.href = '@Url.Action("Index", "PoaDelegation")';
             });
 
-            $("#btnSave").click(function () {
+            $("#btnSave").click(function() {
                 if (ValidatePoaDelegationForm()) {
                     $('#SavePoaDelegationForms').submit();
                 }
@@ -180,7 +181,7 @@
 
             $("#divUser").hide();
             $("#divPoa").hide();
-            
+
             OnChangeUserFrom();
         });
 
@@ -256,7 +257,7 @@
 
 
         function OnChangeUserFrom() {
-            $("#PoaFrom").change(function () {
+            $("#PoaFrom").change(function() {
                 if ($("#PoaFrom").length) {
                     var userFrom = $(this).find("option:selected").val();
 
@@ -269,6 +270,7 @@
                     } else {
 
                         ajaxGetListUser('@Url.Action("GetListUsersRole", "PoaDelegation")', { userId: userFrom });
+                        ajaxGetUserRole('@Url.Action("GetUserRole", "PoaDelegation")', { userId: userFrom });
                     }
                 }
             });
@@ -280,7 +282,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function (data) {
+                    success: function(data) {
 
                         if (data != null) {
 
@@ -296,6 +298,34 @@
                             listTo.html(list);
 
                             listTo.selectpicker('refresh');
+                        }
+
+
+                    }
+                });
+            }
+        }
+
+        function ajaxGetUserRole(url, formData) {
+            if (formData.userId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function(data) {
+
+                        if (data != null) {
+                            if (data == '@Enums.UserRole.POA.ToString()') {
+                                $("#divPoa").show();
+                                $("#divUser").hide();
+                            } else if (data == '@Enums.UserRole.User.ToString()') {
+                                $("#divPoa").hide();
+                                $("#divUser").show();
+                            } else {
+                                $("#divUser").hide();
+                                $("#divPoa").hide();
+                            }
+
                         }
 
 
