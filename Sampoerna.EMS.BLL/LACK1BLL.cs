@@ -2546,6 +2546,9 @@ namespace Sampoerna.EMS.BLL
                 productionList.Add(itemToInsert);
             }
 
+            var nonZaapProd = SetProductionListNonZaap(ck4CItemData, zaapShiftRpt, productionList,prodTypeData,uomData);
+            productionList.AddRange(nonZaapProd);
+
             //set to Normal Data
             rc.InventoryProductionTisToFa.ProductionData = new Lack1GeneratedProductionDto
             {
@@ -2564,6 +2567,124 @@ namespace Sampoerna.EMS.BLL
                 Data = rc
             };
         }
+
+
+        private List<Lack1GeneratedProductionDataDto> SetProductionListNonZaap(List<CK4C_ITEM> ck4CItemData, 
+            List<ZAAP_SHIFT_RPT> zaapShiftRpt, 
+            List<Lack1GeneratedProductionDataDto> currentProductionList,
+            List<ZAIDM_EX_PRODTYP> prodTypeData,
+            List<UOM> uomData)
+        {
+            var zaapItemKeyList = (from zaap in zaapShiftRpt
+                                   select new
+                                   {
+                                       key = zaap.FA_CODE + "-" + zaap.PRODUCTION_DATE.ToString("yyyMMdd"),
+
+                                   }).ToList();
+
+            var ck4CItemNonZaap = (from item in ck4CItemData
+                                   where !(from zaap in zaapItemKeyList
+                                           select zaap.key).Contains(item.FA_CODE + "-" + item.PROD_DATE.ToString("yyyyMMdd"))
+                                   select item).ToList();
+
+
+            var joinedData = (from ck4CItem in ck4CItemNonZaap
+                              join prod in prodTypeData on new { ck4CItem.PROD_CODE } equals new { prod.PROD_CODE }
+                              select new
+                              {
+                                  ck4CItem.FA_CODE,
+                                  ck4CItem.WERKS,
+                                  //ck4CItem.COMPANY_CODE,
+                                  ck4CItem.UOM_PROD_QTY,
+                                  ck4CItem.PROD_DATE,
+                                  //zaap.BATCH,
+                                  ck4CItem.PROD_QTY,
+                                  //zaap.ORDR,
+                                  ck4CItem.PROD_CODE,
+                                  prod.PRODUCT_ALIAS,
+                                  prod.PRODUCT_TYPE
+                              }).Distinct().ToList();
+
+            
+
+            //var productionList = new List<Lack1GeneratedProductionDataDto>();
+            
+
+            var joinedWithUomData = (from j in joinedData
+                                     join u in uomData on j.UOM_PROD_QTY equals u.UOM_ID
+                                     select new
+                                     {
+                                         j.FA_CODE,
+                                         j.WERKS,
+                                         //j.COMPANY_CODE,
+                                         j.UOM_PROD_QTY,
+                                         j.PROD_DATE,
+                                         //j.BATCH,
+                                         j.PROD_QTY,
+                                         //j.ORDR,
+                                         j.PROD_CODE,
+                                         j.PRODUCT_ALIAS,
+                                         j.PRODUCT_TYPE,
+                                         u.UOM_DESC
+
+                                     }).Distinct().ToList();
+
+
+            var groupedOrderProductionList = currentProductionList.GroupBy(p => new { p.FaCode })
+                .Select(x => new { Fa_Code = x.Key.FaCode, QtyTotal = x.Sum(y => y.Amount) }).ToList();
+
+            var res = new List<Lack1GeneratedProductionDataDto>();
+            foreach (var nonzaapItem in joinedWithUomData)
+            {
+                
+                var zaapshiftRptByOrder = currentProductionList.Where(x => x.FaCode == nonzaapItem.FA_CODE).ToList();
+
+                foreach (var shiftRpt in zaapshiftRptByOrder)
+                {
+                    var itemToInsert = new Lack1GeneratedProductionDataDto()
+                    {
+                        FaCode = nonzaapItem.FA_CODE,
+                        //Ordr = nonzaapItem.ORDR,
+                        ProdCode = nonzaapItem.PROD_CODE,
+                        ProductType = nonzaapItem.PRODUCT_TYPE,
+                        ProductAlias = nonzaapItem.PRODUCT_ALIAS,
+                        Amount = nonzaapItem.PROD_QTY,
+                        UomId = nonzaapItem.UOM_PROD_QTY,
+                        UomDesc = nonzaapItem.UOM_DESC
+                    };
+
+                    var totalProductionOrder = groupedOrderProductionList.FirstOrDefault(x => x.Fa_Code == nonzaapItem.FA_CODE);
+                    if (totalProductionOrder != null)
+                    {
+                        var proportional = new Lack1FACodeProportional()
+                        {
+                            Fa_Code = nonzaapItem.FA_CODE,
+                            Order = shiftRpt.Ordr,
+                            QtyOrder = shiftRpt.Amount,
+                            QtyAllOrder = totalProductionOrder.QtyTotal
+                        };
+
+
+                        itemToInsert.Amount = Math.Round((proportional.QtyOrder / proportional.QtyAllOrder) * nonzaapItem.PROD_QTY, 3);
+
+                        res.Add(itemToInsert);
+                    }
+                }
+
+
+                //var data = itemToInsert;
+                //data.Amount = nonzaapItem.PROD_QTY;
+
+                //res.Add(data);
+                
+            }
+
+            return res;
+
+        }
+
+        
+
 
         /// <summary>
         /// for Tis To Fa Data
