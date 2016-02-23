@@ -56,7 +56,7 @@ namespace Sampoerna.EMS.XMLReader
                             item.CK1_SAP_NUMBER = ck1SapNumber;
                         }
                         
-                        item.CK1_DATE = Convert.ToDateTime(_xmlMapper.GetDate(_xmlMapper.GetElementValue(xElement.Element("AEDAT"))));
+                        item.CK1_DATE = Convert.ToDateTime(_xmlMapper.GetDate(_xmlMapper.GetElementValue(xElement.Element("ORDER_DATE"))));
                         item.PLANT_ID = _xmlMapper.GetElementValue(xElement.Element("WERKS"));
                         item.CREATED_BY = Constans.PI;
                         item.COMPANY_ID = _xmlMapper.GetElementValue(xElement.Element("BUKRS"));
