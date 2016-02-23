@@ -209,6 +209,7 @@ namespace Sampoerna.EMS.BLL
                 {
                     if (delegateUser.Count > 0)
                     {
+                        delegateUser.Add(input.UserId);
                         queryFilter =
                        queryFilter.And(
                            c =>
@@ -228,6 +229,7 @@ namespace Sampoerna.EMS.BLL
                 {
                     if (delegateUser.Count > 0)
                     {
+                        delegateUser.Add(input.UserId);
                         queryFilter =
                         queryFilter.And(
                             c =>
@@ -267,6 +269,7 @@ namespace Sampoerna.EMS.BLL
 
                     if (delegateUser.Count > 0)
                     {
+                        delegateUser.Add(input.UserId);
                         queryFilter =
                        queryFilter.And(
                            c =>
@@ -296,6 +299,7 @@ namespace Sampoerna.EMS.BLL
                 {
                     if (delegateUser.Count > 0)
                     {
+                        delegateUser.Add(input.UserId);
                         queryFilter =
                         queryFilter.And(
                             c =>
@@ -304,12 +308,13 @@ namespace Sampoerna.EMS.BLL
                                   nppbkc.Contains(c.SOURCE_PLANT_NPPBKC_ID))));
                     }
                     else
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                (c.CREATED_BY == input.UserId ||
-                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
-                                  nppbkc.Contains(c.SOURCE_PLANT_NPPBKC_ID))));
+                        queryFilter =
+                            queryFilter.And(
+                                c =>
+                                    (c.CREATED_BY == input.UserId ||
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                      nppbkc.Contains(c.SOURCE_PLANT_NPPBKC_ID))));
+                     
                 }
 
             }
