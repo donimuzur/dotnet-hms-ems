@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
 using CrystalDecisions.Shared;
+using DocumentFormat.OpenXml.Office.MetaAttributes;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
@@ -2737,7 +2738,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (pbckData == null)
                 HttpNotFound();
 
-            Stream stream = GetReport(pbckData, "Preview PBCK-7");
+            Stream stream = GetReport(pbckData, "Preview PBCK-7", true);
 
             return File(stream, "application/pdf");
         }
@@ -2754,7 +2755,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (pbckData == null)
                 HttpNotFound();
 
-            Stream stream = GetReport(pbckData, "Preview PBCK-3");
+            Stream stream = GetReport(pbckData, "Preview PBCK-3", false);
 
             return File(stream, "application/pdf");
         }
@@ -2771,7 +2772,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (pbckData == null)
                 HttpNotFound();
 
-            Stream stream = GetReport(pbckData, "PBCK-7");
+            Stream stream = GetReport(pbckData, "PBCK-7", true);
 
             return File(stream, "application/pdf");
         }
@@ -2788,14 +2789,14 @@ namespace Sampoerna.EMS.Website.Controllers
             if (pbckData == null)
                 HttpNotFound();
 
-            Stream stream = GetReport(pbckData, "PBCK-3");
+            Stream stream = GetReport(pbckData, "PBCK-3", false);
 
             return File(stream, "application/pdf");
         }
         
-        private Stream GetReport(Pbck73PrintOutDto data, string printTitle)
+        private Stream GetReport(Pbck73PrintOutDto data, string printTitle, bool isPbck7)
         {
-            var dataSet = SetDataSetReport(data, printTitle);
+            var dataSet = SetDataSetReport(data, printTitle, isPbck7);
 
             var rpt = new ReportClass
             {
@@ -2808,7 +2809,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return stream;
         }
 
-        private DataSet SetDataSetReport(Pbck73PrintOutDto data, string printTitle)
+        private DataSet SetDataSetReport(Pbck73PrintOutDto data, string printTitle, bool isPbck7)
         {
             var dsReport = new dsPbck7();
 
@@ -2819,8 +2820,19 @@ namespace Sampoerna.EMS.Website.Controllers
             dMasterRow.CompanyName = data.CompanyName;
             dMasterRow.CompanyAddress = data.CompanyAddress;
             dMasterRow.Nppbkc = data.NppbkcId;
-            if (!string.IsNullOrEmpty(data.HeaderFooter.HEADER_IMAGE_PATH)) dMasterRow.Header = GetHeader(data.HeaderFooter.HEADER_IMAGE_PATH);
-            dMasterRow.Footer = data.HeaderFooter.FOOTER_CONTENT;
+
+            if (data.HeaderFooter != null)
+            {
+                if (!string.IsNullOrEmpty(data.HeaderFooter.HEADER_IMAGE_PATH))
+                    dMasterRow.Header = GetHeader(data.HeaderFooter.HEADER_IMAGE_PATH);
+                dMasterRow.Footer = data.HeaderFooter.FOOTER_CONTENT;
+            }
+            else
+            {
+                dMasterRow.Header = null;
+                dMasterRow.Footer = " ";
+            }
+            
             dMasterRow.Preview = printTitle;
             dMasterRow.Nomor = data.PbckNumber;
             dMasterRow.Lampiran = data.Lampiran;
@@ -2831,7 +2843,9 @@ namespace Sampoerna.EMS.Website.Controllers
             dMasterRow.ExecutionDate = data.ExecDateDisplayString;
             dMasterRow.NppbkcDate = data.NppbkcStartDate;
             dMasterRow.ReportingDate = data.PrintedDate;
-            dMasterRow.ConditionPbck7Or3 = data.HeaderFooter.FORM_TYPE_ID == Enums.FormType.PBCK7 ? true : false;
+            dMasterRow.ConditionPbck7Or3 = isPbck7;
+
+            //dMasterRow.ConditionPbck7Or3 = data.HeaderFooter.FORM_TYPE_ID == Enums.FormType.PBCK7 ? true : false;
             dMasterRow.CompanyNameAndAddress = data.CompanyName + "-" + data.CompanyAddress;
             dMasterRow.AddressParagraft = Regex.Replace(data.CompanyAddress, "\r\n", " ");
             
@@ -2857,7 +2871,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     detailRow.JmlCukai = item.ExciseValue.HasValue ? item.ExciseValue.Value.ToString("N2") : "-";
                     detailRow.SumJmlCukai = totalExciseValue.ToString("N2");
                     detailRow.SumJmlKemasan = totalQty.ToString("N2");
-                    detailRow.SymbolStar = data.HeaderFooter.FORM_TYPE_ID == Enums.FormType.PBCK7 ? true : false;
+                    detailRow.SymbolStar = isPbck7;
+                    //detailRow.SymbolStar = data.HeaderFooter.FORM_TYPE_ID == Enums.FormType.PBCK7 ? true : false;
 
                     dsReport.Detail.AddDetailRow(detailRow);
                 }
