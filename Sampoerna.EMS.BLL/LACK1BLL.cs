@@ -2522,9 +2522,11 @@ namespace Sampoerna.EMS.BLL
                 if (rec != null)
                 {
                     //calculate proporsional
-                    itemToInsert.Amount =
-                        Math.Round(
-                            ((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount), 3);
+                    //itemToInsert.Amount =
+                    //    Math.Round(
+                    //        ((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount), 3);
+                    itemToInsert.Amount = Math.Round((rec.Qty/rec.TotalQtyPerMaterialId),2) * itemToInsert.Amount;
+                        
                 }
                 else
                 {
@@ -2536,15 +2538,19 @@ namespace Sampoerna.EMS.BLL
                         if (chk != null)
                         {
                             //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
-                            itemToInsert.Amount =
-                        Math.Round(
-                            ((chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount), 3);
+                        //    itemToInsert.Amount =
+                        //Math.Round(
+                        //    ((chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount), 3);
+                            itemToInsert.Amount = Math.Round((chk.Qty / chk.TotalQtyPerMaterialId),2) * itemToInsert.Amount;
                         }
                     }
                 }
 
                 productionList.Add(itemToInsert);
             }
+
+            var nonZaapProd = SetProductionListNonZaap(ck4CItemData, zaapShiftRpt, productionList);
+            productionList.AddRange(nonZaapProd);
 
             //set to Normal Data
             rc.InventoryProductionTisToFa.ProductionData = new Lack1GeneratedProductionDto
@@ -2564,6 +2570,65 @@ namespace Sampoerna.EMS.BLL
                 Data = rc
             };
         }
+
+        private List<Lack1GeneratedProductionDataDto> SetProductionListNonZaap(List<CK4C_ITEM> ck4CItemData, List<ZAAP_SHIFT_RPT> zaapShiftRpt,List<Lack1GeneratedProductionDataDto> currentProductionList)
+        {
+            var zaapItemKeyList = (from zaap in zaapShiftRpt
+                                   select new
+                                   {
+                                       key = zaap.FA_CODE + "-" + zaap.PRODUCTION_DATE.ToString("yyyMMdd"),
+
+                                   }).ToList();
+
+            var ck4CItemNonZaap = (from item in ck4CItemData
+                                   where !(from zaap in zaapItemKeyList
+                                           select zaap.key).Contains(item.FA_CODE + "-" + item.PROD_DATE.ToString("yyyyMMdd"))
+                                   select item).ToList();
+
+
+            var groupedOrderProductionList = currentProductionList.GroupBy(p=> new { p.FaCode })
+                .Select(x=> new {Fa_Code = x.Key.FaCode, QtyTotal = x.Sum(y=> y.Amount)}).ToList();
+
+            List<Lack1GeneratedProductionDataDto> res = new List<Lack1GeneratedProductionDataDto>();
+            foreach (var nonzaapItem in ck4CItemNonZaap)
+            {
+                var zaapshiftRptByOrder = currentProductionList.Where(x => x.FaCode == nonzaapItem.FA_CODE).ToList();
+
+                //foreach (var shiftRpt in zaapshiftRptByOrder)
+                //{
+                //    var totalProductionOrder = groupedOrderProductionList.FirstOrDefault(x=> x.Fa_Code == nonzaapItem.FA_CODE);
+                //    if (totalProductionOrder != null)
+                //    {
+                //        Lack1FACodeProportional proportional = new Lack1FACodeProportional()
+                //        {
+                //            Fa_Code = nonzaapItem.FA_CODE,
+                //            Order = shiftRpt.Ordr,
+                //            QtyOrder = shiftRpt.Amount,
+                //            QtyAllOrder = totalProductionOrder.QtyTotal
+                //        };
+
+                //        var productionData = shiftRpt;
+                //        productionData.Amount = Math.Round((proportional.QtyOrder/proportional.QtyAllOrder)*nonzaapItem.PROD_QTY,3);
+
+                //        res.Add(productionData);
+                //    }
+                //}
+
+                var zaapshiftRptByOrderSingle = currentProductionList.FirstOrDefault(x => x.FaCode == nonzaapItem.FA_CODE);
+                if (zaapshiftRptByOrderSingle != null)
+                {
+                    var data = zaapshiftRptByOrderSingle;
+                    data.Amount = nonzaapItem.PROD_QTY;
+
+                    res.Add(data);
+                }
+            }
+
+            return res;
+
+        }
+
+        
 
         /// <summary>
         /// for Tis To Fa Data

@@ -190,4 +190,17 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ConvertedUomDesc { get; set; }
     }
 
+
+    public class Lack1FACodeProportional
+    {
+        
+        public string Fa_Code { get; set; }
+
+        public string Order { get; set; }
+
+        public decimal QtyOrder { get; set; }
+
+        public decimal QtyAllOrder { get; set; }
+    }
+
 }
