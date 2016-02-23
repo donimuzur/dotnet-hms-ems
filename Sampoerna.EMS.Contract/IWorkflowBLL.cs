@@ -44,13 +44,15 @@ namespace Sampoerna.EMS.Contract
 
         bool AllowWasteDisposal(WorkflowAllowApproveAndRejectInput input);
 
-        bool AllowWasteApproval(WorkflowAllowApproveAndRejectInput input);
+        //bool AllowWasteApproval(WorkflowAllowApproveAndRejectInput input);
 
         bool AllowWasteGoodIssue(WorkflowAllowApproveAndRejectInput input);
 
         bool AllowWasteGoodReceive(WorkflowAllowApproveAndRejectInput input);
-        
-                bool AllowAttachment(WorkflowAllowApproveAndRejectInput input);
+
+        bool AllowAttachment(WorkflowAllowApproveAndRejectInput input);
+
+        bool IsAllowEditLack1(string createdUser, string currentUserId, Enums.DocumentStatus status);
 
 
     }

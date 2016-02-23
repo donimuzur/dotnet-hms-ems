@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
@@ -20,7 +21,7 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<USER> _repository;
-        
+        private POABLL _poabll;
 
         public UserBLL(IUnitOfWork uow, ILogger logger)
         {
@@ -28,7 +29,7 @@ namespace Sampoerna.EMS.BLL
             _uow = uow;
             _repository = _uow.GetGenericRepository<USER>();
 
-           
+           _poabll = new POABLL(_uow, _logger);
         }
 
         public List<USER> GetUsers(UserInput input)
@@ -92,16 +93,13 @@ namespace Sampoerna.EMS.BLL
         public Login GetLogin(string userName)
         {
             return Mapper.Map<Login>(_repository.Get(x=> x.USER_ID == userName && (!x.IS_ACTIVE.HasValue || x.IS_ACTIVE != 0)).FirstOrDefault());
-        } 
-
+        }
 
 
         public USER GetUserById(string id)
         {
             return _repository.GetByID(id);
         }
-
-
 
 
         public List<USER> GetUsersByListId(List<string> useridlist)
@@ -111,6 +109,24 @@ namespace Sampoerna.EMS.BLL
             return data;
         }
 
-        
+
+        public List<UserDto> GetListUserRoleByUserId(string userId)
+        {
+            var userRole = _poabll.GetUserRole(userId);
+
+            var listUser = _repository.Get();
+
+            var filterResult = new List<USER>();
+
+            foreach (var user in listUser)
+            {
+                var role = _poabll.GetUserRole(user.USER_ID);
+
+                if (userRole == role)
+                    filterResult.Add(user);
+            }
+
+            return Mapper.Map<List<UserDto>>(filterResult);
+        }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
+using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
 
@@ -172,5 +173,15 @@ namespace Sampoerna.EMS.BLL
             var poaList = dbData.ToList().Select(d => d.POA);
             return Mapper.Map<List<POADto>>(poaList.ToList());
         }
+
+        public List<POADto> GetAllPoaActive()
+        {
+            var dbData = _repository.Get(c => c.IS_ACTIVE.Value).ToList();
+            return Mapper.Map<List<POADto>>(dbData);
+        }
+
+
+      
+
     }
 }

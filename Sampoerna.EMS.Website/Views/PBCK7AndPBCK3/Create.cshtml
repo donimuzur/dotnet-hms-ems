@@ -100,9 +100,24 @@
                 var nppbkc = $(this).find("option:selected").val();
 
                 $('#PlantId').html('');
+                $('#displayPoaList').html('');
                 if (nppbkc != '') {
                     ajaxGetPlantByNppbkc(nppbkc, '@Url.Action("GetPlantByNppbkcId", "PBCK7AndPBCK3")');
-                    ajaxGetPoaByNppbkc(nppbkc, '@Url.Action("GetPoaByNppbkcId", "PBCK7AndPBCK3")');
+                    @*ajaxGetPoaByPlant(nppbkc, '@Url.Action("GetPoaByPlantId", "PBCK7AndPBCK3")');*@
+                    //ajaxGetPoaByPlant($('#PlantId').find("option:selected").val(), '@Url.Action("GetPoaByPlantId", "PBCK7AndPBCK3")');
+                }
+            }
+
+        });
+        
+        $('#PlantId').change(function () {
+
+            if ($(this).length) {
+                var plant = $(this).find("option:selected").val();
+
+                $('#displayPoaList').html('');
+                if (plant != '') {
+                    ajaxGetPoaByPlant(plant, '@Url.Action("GetPoaByPlantId", "PBCK7AndPBCK3")');
                 }
             }
 

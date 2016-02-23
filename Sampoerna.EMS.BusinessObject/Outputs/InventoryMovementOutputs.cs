@@ -10,11 +10,14 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
             ExcludeFromCk5List = new List<InvMovementItemWithConvertion>();
             ReceivingList = new List<InvMovementItemWithConvertion>();
             AllUsageList = new List<InvMovementItemWithConvertion>();
+            Mvt201List = new List<InvMovementItemWithConvertion>();
         }
         public List<InvMovementItemWithConvertion> IncludeInCk5List { get; set; }
         public List<InvMovementItemWithConvertion> ExcludeFromCk5List { get; set; }
         public List<InvMovementItemWithConvertion> ReceivingList { get; set; }
         public List<InvMovementItemWithConvertion> AllUsageList { get; set; }
+        public List<InvMovementItemWithConvertion> Mvt201List { get; set; }
+        public List<InvMovementItemWithConvertion> Mvt201Assigned { get; set; }
         public List<InvMovementUsageProportional> UsageProportionalList { get; set; }
     }
 
@@ -43,9 +46,11 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
 
     public class InvMovementUsageProportional
     {
-        public string MaterialId { get; set; }
+        //public string MaterialId { get; set; }
         public string Order { get; set; }
         public decimal Qty { get; set; }
         public decimal TotalQtyPerMaterialId { get; set; }
+
+        public string Batch { get; set; }
     }
 }

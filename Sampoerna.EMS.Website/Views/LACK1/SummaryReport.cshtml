@@ -289,6 +289,11 @@
                                                         @Html.CheckBoxFor(model => model.ExportModel.BApprover, new { @class = "checkbox checkexport", @datacolumn = "18" })Approver
                                                     </label>
                                                 </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.CompletedDate, new { @class = "checkbox checkexport", @datacolumn = "19" })Completed Date
+                                                    </label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -510,7 +515,7 @@
                 column.visible(!column.visible());
             });
 
-            for (var i = 6; i < 19; i++) {
+            for (var i = 6; i < 20; i++) {
                 table.column(i).visible(false);
             }
 

@@ -28,10 +28,11 @@ function characterControl(value) {
     var len = value.length;
     for (i = 0; i < len; i++) {
         var chr = value.substr(i, 1);
-        if ((chr < '0' || chr > '9') && chr != '.' && chr != ',') {
+        if ((chr < '0' || chr > '9') && chr != '.' && chr != ',' && chr != '-') {
             chr = '';
         }
-
+        else if (chr == '-' && i > 0)
+            chr = '';
         tempValue = tempValue + chr;
     }
     return tempValue;
@@ -55,6 +56,7 @@ function ThausandSeperator(value, digit) {
         devValue = decimalSepCh + devValue;
         if (devValue.length > 3) {
             devValue = devValue.substr(0, 3);
+
         }
     } else {
         tempValue = realValue;
@@ -63,11 +65,23 @@ function ThausandSeperator(value, digit) {
 
     var result = "";
     var len = tempValue.length;
+    var isMinus = false;
+    
+    if (len > 3) {
+        if (tempValue.substr(0, 1) == '-') {
+            len = len - 1;
+            tempValue = tempValue.substr(1, len);
+            isMinus = true;
+        }
+    }
     while (len > 3) {
         result = thausandSepCh + tempValue.substr(len - 3, 3) + result;
         len -= 3;
     }
     result = tempValue.substr(0, len) + result;
+    if (isMinus)
+        result = "-" + result;
+    
     return result + devValue;
 }
 

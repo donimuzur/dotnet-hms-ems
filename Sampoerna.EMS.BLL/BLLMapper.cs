@@ -138,7 +138,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.MENGETAHUI, opt => opt.MapFrom(src => src.MENGETAHUI))
                 .ForMember(dest => dest.MENGETAHUI_DETAIL, opt => opt.MapFrom(src => src.MENGETAHUI_DETAIL))
                 .ForMember(dest => dest.CK1_KEP_HEADER, opt => opt.MapFrom(src => src.CK1_KEP_HEADER))
-                .ForMember(dest => dest.CK1_KEP_FOOTER, opt => opt.MapFrom(src => src.CK1_KEP_FOOTER));
+                .ForMember(dest => dest.CK1_KEP_FOOTER, opt => opt.MapFrom(src => src.CK1_KEP_FOOTER))
+                .ForMember(dest => dest.IS_DELETED, opt => opt.MapFrom(src => src.IS_DELETED));
 
 
             Mapper.CreateMap<LFA1, LFA1Dto>().IgnoreAllNonExisting()
@@ -479,6 +480,36 @@ namespace Sampoerna.EMS.BLL
                 ;
 
             Mapper.CreateMap<XML_LOGS_DETAILS, XML_LOGS_DETAILSDto>().IgnoreAllNonExisting();
+
+            #endregion
+
+            #region Poa Delegation
+
+            Mapper.CreateMap<POA_DELEGATION, POA_DELEGATIONDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<POA_DELEGATIONDto, POA_DELEGATION>().IgnoreAllNonExisting();
+
+            #endregion
+
+            #region Reversal
+
+            Mapper.CreateMap<REVERSAL, ReversalDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ReversalId, opt => opt.MapFrom(src => src.REVERSAL_ID))
+                .ForMember(dest => dest.ZaapShiftId, opt => opt.MapFrom(src => src.ZAAP_SHIFT_RPT_ID))
+                .ForMember(dest => dest.ProductionDate, opt => opt.MapFrom(src => src.PRODUCTION_DATE))
+                .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
+                .ForMember(dest => dest.Werks, opt => opt.MapFrom(src => src.WERKS))
+                .ForMember(dest => dest.ReversalQty, opt => opt.MapFrom(src => src.REVERSAL_QTY))
+                ;
+
+            Mapper.CreateMap<ReversalDto, REVERSAL>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.REVERSAL_ID, opt => opt.MapFrom(src => src.ReversalId))
+                .ForMember(dest => dest.ZAAP_SHIFT_RPT_ID, opt => opt.MapFrom(src => src.ZaapShiftId))
+                .ForMember(dest => dest.PRODUCTION_DATE, opt => opt.MapFrom(src => src.ProductionDate))
+                .ForMember(dest => dest.FA_CODE, opt => opt.MapFrom(src => src.FaCode))
+                .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.Werks))
+                .ForMember(dest => dest.REVERSAL_QTY, opt => opt.MapFrom(src => src.ReversalQty))
+                ;
 
             #endregion
         }

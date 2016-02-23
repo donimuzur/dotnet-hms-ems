@@ -60,6 +60,7 @@ namespace Sampoerna.EMS.BLL
         private IZaidmExMaterialService _materialService;
         private IGoodProdTypeService _goodProdTypeService;
         private IMaterialUomService _materialUomService;
+        private IPoaDelegationServices _poaDelegationServices;
         private IMaterialBalanceService _materialBalanceService;
         private IBrandRegistrationService _brandRegService;
 
@@ -102,11 +103,13 @@ namespace Sampoerna.EMS.BLL
             _goodProdTypeService = new GoodProdTypeService(_uow, _logger);
             _brandRegService = new BrandRegistrationService(_uow, _logger);
             _materialUomService = new MaterialUomService(_uow, _logger);
+            _poaDelegationServices = new PoaDelegationServices(_uow, _logger);
             _materialBalanceService = new MaterialBalanceService(_uow, _logger);
         }
 
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
         {
+
             if (input.UserRole == Enums.UserRole.POA)
             {
                 var nppbkc = _nppbkcService.GetNppbkcsByPoa(input.UserId);
@@ -534,6 +537,10 @@ namespace Sampoerna.EMS.BLL
                 UserRole = getUserRole
             };
 
+            //delegate user
+            inputAddWorkflowHistory.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY,
+                input.UserId, DateTime.Now);
+
             AddWorkflowHistory(inputAddWorkflowHistory);
 
             _uow.SaveChanges();
@@ -662,6 +669,17 @@ namespace Sampoerna.EMS.BLL
                 WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, null);
                 dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
                 dbData.GOV_STATUS = null;
+
+                //delegate
+                if (dbData.CREATED_BY != input.UserId)
+                {
+                    var workflowHistoryDto =
+                        _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
+                    input.Comment = _poaDelegationServices.CommentDelegatedByHistory(workflowHistoryDto.COMMENT,
+                        workflowHistoryDto.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+                }
+                //end delegate
+
             }
             else
             {
@@ -718,7 +736,13 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 input.DocumentNumber = dbData.LACK1_NUMBER;
+
+                //delegate
+                input.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY, input.UserId,
+                    DateTime.Now);
             }
+
+           
 
             AddWorkflowHistory(input);
 
@@ -774,10 +798,49 @@ namespace Sampoerna.EMS.BLL
                 //}
 
                 input.DocumentNumber = dbData.LACK1_NUMBER;
+
+                //delegate
+                input.Comment = CommentDelegateUser(dbData, input);
+                //end delegate
             }
 
             AddWorkflowHistory(input);
 
+        }
+
+        private string CommentDelegateUser(LACK1 dbData, Lack1WorkflowDocumentInput input)
+        {
+            string comment = "";
+
+            var inputHistory = new GetByFormTypeAndFormIdInput();
+            inputHistory.FormId = dbData.LACK1_ID;
+            inputHistory.FormType = Enums.FormType.LACK1;
+
+            var rejectedPoa = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(inputHistory);
+            if (rejectedPoa != null)
+            {
+                comment = _poaDelegationServices.CommentDelegatedByHistory(rejectedPoa.COMMENT,
+                    rejectedPoa.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+            }
+            else
+            {
+                //var isPoaCreatedUser = _poaBll.GetActivePoaById(dbData.CREATED_BY);
+                //List<string> listPoa;
+                //if (isPoaCreatedUser != null) //if creator = poa
+                //{
+                //    listPoa = _poaBll.GetPoaActiveByNppbkcId(dbData.NPPBKC_ID).Select(c => c.POA_ID).ToList();
+                //}
+                //else
+                //{
+                //    listPoa = _poaBll.GetPoaActiveByPlantId(dbData.PLANT_ID).Select(c => c.POA_ID).ToList();
+                //}
+
+                var listPoa = _poaBll.GetPoaActiveByPlantId(dbData.NPPBKC_ID).Select(c => c.POA_ID).ToList();
+                comment = _poaDelegationServices.CommentDelegatedUserApproval(listPoa, input.UserId, DateTime.Now);
+
+            }
+
+            return comment;
         }
 
         private void RejectDocument(Lack1WorkflowDocumentInput input)
@@ -808,6 +871,14 @@ namespace Sampoerna.EMS.BLL
                 dbData.APPROVED_DATE_POA = null;
 
                 input.DocumentNumber = dbData.LACK1_NUMBER;
+
+                //delegate
+                string commentReject = CommentDelegateUser(dbData, input);
+
+                if (!string.IsNullOrEmpty(commentReject))
+                    input.Comment += " [" + commentReject + "]";
+                //end delegate
+
             }
 
             AddWorkflowHistory(input);
@@ -837,8 +908,20 @@ namespace Sampoerna.EMS.BLL
                 dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
                 dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
                 dbData.GOV_STATUS = Enums.DocumentStatusGovType2.Approved;
+                dbData.MODIFIED_DATE = DateTime.Now;
 
                 input.DocumentNumber = dbData.LACK1_NUMBER;
+
+                //delegate
+                if (dbData.CREATED_BY != input.UserId)
+                {
+                    var workflowHistoryDto =
+                        _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
+                    input.Comment = _poaDelegationServices.CommentDelegatedByHistory(workflowHistoryDto.COMMENT,
+                        workflowHistoryDto.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+                }
+                //end delegate
+
             }
 
             AddWorkflowHistory(input);
@@ -876,6 +959,20 @@ namespace Sampoerna.EMS.BLL
                 dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
 
                 input.DocumentNumber = dbData.LACK1_NUMBER;
+
+                //delegate
+                if (dbData.CREATED_BY != input.UserId)
+                {
+                    var workflowHistoryDto =
+                        _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
+                    var commentReject = _poaDelegationServices.CommentDelegatedByHistory(workflowHistoryDto.COMMENT,
+                        workflowHistoryDto.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+
+                    if (!string.IsNullOrEmpty(commentReject))
+                        input.Comment += " [" + commentReject + "]";
+
+                }
+                //end delegate
             }
 
             AddWorkflowHistory(input);
@@ -1190,6 +1287,29 @@ namespace Sampoerna.EMS.BLL
                     break;
 
             }
+            //delegatemail
+            var inputDelegate = new GetEmailDelegateUserInput();
+            inputDelegate.FormType = Enums.FormType.LACK1;
+            inputDelegate.FormId = lack1Data.Lack1Id;
+            inputDelegate.FormNumber = lack1Data.Lack1Number;
+            inputDelegate.ActionType = input.ActionType;
+
+            inputDelegate.CurrentUser = input.UserId;
+            inputDelegate.CreatedUser = lack1Data.CreateBy;
+            inputDelegate.Date = DateTime.Now;
+
+            inputDelegate.WorkflowHistoryDto = rejected;
+            inputDelegate.UserApprovedPoa = poaList.Select(c => c.POA_ID).ToList();
+            string emailResult = "";
+            emailResult = _poaDelegationServices.GetEmailDelegateOrOriginalUserByAction(inputDelegate);
+
+            if (!string.IsNullOrEmpty(emailResult))
+            {
+                rc.IsCCExist = true;
+                rc.CC.Add(emailResult);
+            }
+            //end delegate
+
             rc.Body = bodyMail.ToString();
             return rc;
         }
@@ -1666,8 +1786,7 @@ namespace Sampoerna.EMS.BLL
                 BeginingBalance = 0 //set default
             };
 
-            //set begining balance
-            rc = SetBeginingBalanceBySelectionCritera(rc, input);
+            
 
             //set Pbck-1 Data by selection criteria
             rc = SetPbck1DataBySelectionCriteria(rc, input);
@@ -1746,6 +1865,10 @@ namespace Sampoerna.EMS.BLL
             }
 
             rc.PeriodYear = input.PeriodYear;
+
+            //set begining balance
+            rc = SetBeginingBalanceBySelectionCritera(rc, input);
+
             //format for noted
             //LOGS POINT 19 : replace with new logic for remark
             //var noteTemp = new List<string>();
@@ -1886,38 +2009,32 @@ namespace Sampoerna.EMS.BLL
 
             var productionList = new List<Lack1GeneratedProductionDataDto>();
 
+            //Get product type info
+            var prodType = _goodProdTypeService.GetProdCodeByGoodTypeId(rc.ExcisableGoodsType);
+            if (prodType == null)
+            {
+                return new Lack1GeneratedOutput()
+                {
+                    Data = null,
+                    ErrorCode = ExceptionCodes.BLLExceptions.GoodsProdTypeMappingNotFound.ToString(),
+                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.GoodsProdTypeMappingNotFound),
+                    Success = false
+                };
+            }
+
             foreach (var item in finalGoodsList)
             {
                 var itemToInsert = new Lack1GeneratedProductionDataDto()
                 {
                     FaCode = item.MaterialId,
                     Ordr = item.Ordr,
-                    ProdCode = "", //from ?
-                    ProductType = "",//from ?
-                    ProductAlias = "",//from?
+                    ProdCode = prodType.PROD_CODE,
+                    ProductType = prodType.PRODUCT_ALIAS,
+                    ProductAlias = prodType.PRODUCT_TYPE,
                     Amount = item.ProductionQty,
                     UomId = item.UomId,
                     UomDesc = item.UomDesc
                 };
-
-                //Get product type info
-                var prodType = _goodProdTypeService.GetProdCodeByGoodTypeId(item.ExGoodsTypeId);
-                if (prodType != null)
-                {
-                    itemToInsert.ProdCode = prodType.PROD_CODE;
-                    itemToInsert.ProductAlias = prodType.PRODUCT_ALIAS;
-                    itemToInsert.ProductType = prodType.PRODUCT_TYPE;
-                }
-                else
-                {
-                    return new Lack1GeneratedOutput()
-                    {
-                        Data = null,
-                        ErrorCode = ExceptionCodes.BLLExceptions.GoodsProdTypeMappingNotFound.ToString(),
-                        ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.GoodsProdTypeMappingNotFound),
-                        Success = false
-                    };
-                }
 
                 var rec = invMovementOutput.UsageProportionalList.FirstOrDefault(c =>
                     c.Order == item.ParentOrdr);
@@ -1944,8 +2061,10 @@ namespace Sampoerna.EMS.BLL
                     }
                 }
 
-                productionList.Add(itemToInsert);
-
+                if (itemToInsert.UomId != null)
+                {
+                    productionList.Add(itemToInsert);
+                }
             }
 
             rc.AlcoholTrackingList = allTrackingList;
@@ -2288,8 +2407,8 @@ namespace Sampoerna.EMS.BLL
 
             //join data ck4cItem and ZaapShiftRpt
             var joinedData = (from zaap in zaapShiftRpt
-                              join ck4CItem in ck4CItemData on new { zaap.WERKS, zaap.FA_CODE } equals
-                                   new { ck4CItem.WERKS, ck4CItem.FA_CODE }
+                              join ck4CItem in ck4CItemData on new {zaap.WERKS, zaap.FA_CODE, PRODUCTION_DATE = zaap.PRODUCTION_DATE } equals
+                                   new { ck4CItem.WERKS, ck4CItem.FA_CODE, PRODUCTION_DATE = ck4CItem.PROD_DATE }
                               join prod in prodTypeData on new { ck4CItem.PROD_CODE } equals new { prod.PROD_CODE }
                               select new
                               {
@@ -2299,7 +2418,7 @@ namespace Sampoerna.EMS.BLL
                                   zaap.UOM,
                                   zaap.PRODUCTION_DATE,
                                   zaap.BATCH,
-                                  zaap.QTY,
+                                  ck4CItem.PROD_QTY,
                                   zaap.ORDR,
                                   ck4CItem.PROD_CODE,
                                   prod.PRODUCT_ALIAS,
@@ -2331,12 +2450,13 @@ namespace Sampoerna.EMS.BLL
                                          j.UOM,
                                          j.PRODUCTION_DATE,
                                          j.BATCH,
-                                         j.QTY,
+                                         j.PROD_QTY,
                                          j.ORDR,
                                          j.PROD_CODE,
                                          j.PRODUCT_ALIAS,
                                          j.PRODUCT_TYPE,
                                          u.UOM_DESC
+                                         
                                      }).Distinct().ToList();
 
             //Get Prev Inventory Movement
@@ -2376,13 +2496,28 @@ namespace Sampoerna.EMS.BLL
                     ProdCode = item.PROD_CODE,
                     ProductType = item.PRODUCT_TYPE,
                     ProductAlias = item.PRODUCT_ALIAS,
-                    Amount = item.QTY.HasValue ? item.QTY.Value : 0,
+                    Amount = item.PROD_QTY,
                     UomId = item.UOM,
                     UomDesc = item.UOM_DESC
                 };
 
-                var rec = invMovementOutput.UsageProportionalList.FirstOrDefault(c =>
-                    c.Order == item.ORDR);
+                var groupUsageProporsional = invMovementOutput.UsageProportionalList
+                    //.GroupBy(x => new { x.Order, x.Batch })
+                    .Select(p => new InvMovementUsageProportional()
+                    {
+                        
+                        //Order = p.FirstOrDefault().Order,
+                        //Batch = p.FirstOrDefault().Batch,
+                        //Qty = p.Sum(x => x.Qty),
+                        //TotalQtyPerMaterialId = p.FirstOrDefault().TotalQtyPerMaterialId
+                        Order = p.Order,
+                        Batch = p.Batch,
+                        Qty = p.Qty,
+                        TotalQtyPerMaterialId = p.TotalQtyPerMaterialId
+                    });
+
+                var rec = groupUsageProporsional.ToList().FirstOrDefault(c =>
+                    c.Order == item.ORDR && c.Batch == item.BATCH);
 
                 if (rec != null)
                 {
@@ -2397,7 +2532,7 @@ namespace Sampoerna.EMS.BLL
                     {
                         var chk =
                             prevInventoryMovementByParam.UsageProportionalList.FirstOrDefault(
-                                c => c.Order == item.ORDR);
+                               c=> c.Order == item.ORDR && c.Batch == item.BATCH);
                         if (chk != null)
                         {
                             //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
@@ -2906,10 +3041,7 @@ namespace Sampoerna.EMS.BLL
             if (input.Lack1Level == Enums.Lack1Level.Nppbkc)
             {
                 var plantListFromMaster = _t001WServices.GetByNppbkcId(input.NppbkcId);
-                foreach (var item in plantListFromMaster)
-                {
-                    plantList.Add(item.WERKS);
-                }
+                plantList.AddRange(plantListFromMaster.Select(item => item.WERKS));
             }
             else
             {
@@ -2919,14 +3051,14 @@ namespace Sampoerna.EMS.BLL
             var listMaterial = _materialService.GetByPlantIdAndExGoodType(plantList, input.ExcisableGoodsType);
             var listSticker = listMaterial.Select(x => x.STICKER_CODE).Distinct().ToList();
 
-            var listMaterialBalance = _materialBalanceService.GetByPlantAndMaterialList(plantList, listSticker, input.PeriodMonth, input.PeriodYear);
+            var listMaterialBalance = _materialBalanceService.GetByPlantAndMaterialList(plantList, listSticker, input.PeriodMonth, input.PeriodYear, rc.Lack1UomId);
 
             rc.BeginingBalance = 0;
             if (listMaterialBalance.Count > 0)
             {
                 //rc.BeginingBalance = selected.BEGINING_BALANCE + selected.TOTAL_INCOME - selected.USAGE;
-                rc.BeginingBalance = listMaterialBalance.Sum(x => x.OPEN_BALANCE.Value);
-                rc.CloseBalance = listMaterialBalance.Sum(x => x.CLOSE_BALANCE.Value);
+                rc.BeginingBalance = listMaterialBalance.Sum(x => x.OPEN_BALANCE != null ? x.OPEN_BALANCE.Value : 0);
+                rc.CloseBalance = listMaterialBalance.Sum(x => x.CLOSE_BALANCE != null ? x.CLOSE_BALANCE.Value : 0);
             }
 
             return rc;
@@ -3039,6 +3171,26 @@ namespace Sampoerna.EMS.BLL
                 totalUsage = (-1) * getInventoryMovementByParamOutput.IncludeInCk5List.Sum(d => d.ConvertedQty);
             }
 
+            decimal mvt201;
+            if (getInventoryMovementByParamOutput.Mvt201List.Count == 0)
+            {
+                mvt201 = 0;
+            }
+            else
+            {
+                mvt201 = (-1) * getInventoryMovementByParamOutput.Mvt201List.Sum(d => d.ConvertedQty);
+            }
+
+            decimal mvt201Asigned;
+            if (getInventoryMovementByParamOutput.Mvt201Assigned.Count == 0)
+            {
+                mvt201Asigned = 0;
+            }
+            else
+            {
+                mvt201Asigned = (-1) * getInventoryMovementByParamOutput.Mvt201Assigned.Sum(d => d.ConvertedQty);
+            }
+
             //nebeng in tis to fa field
             //set to tis to fa
             rc.InventoryProductionTisToFa.InvetoryMovementData = new Lack1GeneratedInventoryMovementDto
@@ -3050,12 +3202,15 @@ namespace Sampoerna.EMS.BLL
                 InvMovementAllList =
                     Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.AllUsageList)
             };
-            rc.TotalUsage = totalUsage;
+            rc.TotalUsage = totalUsage + mvt201 - mvt201Asigned;
 
             invMovementOutput = getInventoryMovementByParamOutput;
 
             return oRet;
         }
+
+
+        
 
         private List<InvMovementItemWithConvertion> InvMovementConvertionProcess(List<INVENTORY_MOVEMENT> invMovements, string bkcUomId)
         {
@@ -3160,6 +3315,29 @@ namespace Sampoerna.EMS.BLL
                 //var totalUsageIncludeCk5 = (-1) * getInventoryMovementByParamOutput.IncludeInCk5List.Sum(d => d.QTY.HasValue ? (!string.IsNullOrEmpty(d.BUN) && d.BUN.ToLower() == "kg" ? d.QTY.Value * 1000 : d.QTY.Value) : 0);
                 //totalUsage = totalUsageIncludeCk5;
             }
+
+            decimal mvt201;
+            if (getInventoryMovementByParamOutput.Mvt201List.Count == 0)
+            {
+                mvt201 = 0;
+            }
+            else
+            {
+                mvt201 = (-1) * getInventoryMovementByParamOutput.Mvt201List.Sum(d => d.ConvertedQty);
+            }
+
+            decimal mvt201Asigned;
+            if (getInventoryMovementByParamOutput.Mvt201Assigned.Count == 0)
+            {
+                mvt201Asigned = 0;
+            }
+            else
+            {
+                mvt201Asigned = (-1) * getInventoryMovementByParamOutput.Mvt201Assigned.Sum(d => d.ConvertedQty);
+            }
+
+            totalUsage = totalUsage - mvt201 + mvt201Asigned;
+
             if (isForTisToTis)
             {
                 //set to tis to tis
@@ -3239,6 +3417,16 @@ namespace Sampoerna.EMS.BLL
 
             var movementUsageAll = _inventoryMovementService.GetUsageByParam(usageParamInput);
             var movementUsaheAllWithConvertion = InvMovementConvertionProcess(movementUsageAll, bkcUomId);
+            var originMovement201 = _inventoryMovementService.GetMvt201(usageParamInput);
+            var matDocCk5List = _ck5Service.GetCk5AssignedMatdoc();
+            var movement201 = originMovement201;
+            var assignedMovement201 = originMovement201.Where(x => matDocCk5List.Contains(x.MAT_DOC)).ToList();
+            var assignedMovement201WithConvertion = InvMovementConvertionProcess(assignedMovement201, bkcUomId);
+            var movement201WithConvertion = InvMovementConvertionProcess(movement201, bkcUomId);
+
+            
+            
+
             var receiving = _inventoryMovementService.GetReceivingByParam(receivingParamInput);
             //get prev receiving for CASE 2 : prev Receiving, Current Receiving, Current Usage
             var prevReceiving = _inventoryMovementService.GetReceivingByParam(prevReceivingParamInput);
@@ -3250,11 +3438,23 @@ namespace Sampoerna.EMS.BLL
             //there is records on receiving Data
             //normal case
             var receivingList = (from rec in receivingAllWithConvertion
-                                 join a in movementUsaheAllWithConvertion.DistinctBy(d => new { d.MAT_DOC, d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR }) on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
+                                 join a in movementUsaheAllWithConvertion.DistinctBy(d => new { d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR }) on 
+                                 new { rec.BATCH
+                                     , rec.MATERIAL_ID 
+                                 } equals 
+                                    new { a.BATCH
+                                        , a.MATERIAL_ID 
+                                    }
                                  select rec).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
-            var usageReceivingList = (from rec in receivingAllWithConvertion.DistinctBy(d => new { d.MAT_DOC, d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR })
-                                      join a in movementUsaheAllWithConvertion on new { rec.BATCH, rec.MATERIAL_ID } equals new { a.BATCH, a.MATERIAL_ID }
+            var usageReceivingList = (from rec in receivingAllWithConvertion.DistinctBy(d => new { d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR })
+                                      join a in movementUsaheAllWithConvertion on 
+                                      new { rec.BATCH
+                                          , rec.MATERIAL_ID 
+                                      } equals 
+                                      new { a.BATCH
+                                          , a.MATERIAL_ID 
+                                      }
                                       select a).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
             //get exclude in receiving data
@@ -3263,6 +3463,8 @@ namespace Sampoerna.EMS.BLL
                     .ToList()
                     .Contains(all.INVENTORY_MOVEMENT_ID))).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
+            
+            //var usageProportionalListTest = CalculateInvMovementUsageProportional(usageReceivingList, movementUsageAll, usageParamInput);
             var usageProportionalList = CalculateInvMovementUsageProportional(usageReceivingList, movementUsageAll);
 
             var rc = new InvMovementGetForLack1UsageMovementByParamOutput
@@ -3271,7 +3473,9 @@ namespace Sampoerna.EMS.BLL
                 ReceivingList = receivingList,
                 AllUsageList = movementUsaheAllWithConvertion,
                 ExcludeFromCk5List = movementExclueInCk5List,
-                UsageProportionalList = usageProportionalList
+                UsageProportionalList = usageProportionalList,
+                Mvt201List = movement201WithConvertion,
+                Mvt201Assigned = assignedMovement201WithConvertion,
             };
 
             return rc;
@@ -3283,42 +3487,48 @@ namespace Sampoerna.EMS.BLL
             var inventoryMovements = usageReceivingAll as INVENTORY_MOVEMENT[] ?? usageReceivingAll.ToArray();
             var inventoryMovementUsageAll = usageAll as INVENTORY_MOVEMENT[] ?? usageAll.ToArray();
 
+            
+            
+
             if (usageReceivingAll == null || inventoryMovements.Length == 0) return new List<InvMovementUsageProportional>();
 
             var listTotalPerMaterialId = inventoryMovementUsageAll.GroupBy(p => new
             {
-                p.MATERIAL_ID
+                p.ORDR
             }).Select(g => new
             {
-                MaterialId = g.Key.MATERIAL_ID,
+                Order = g.Key.ORDR,
                 TotalQty = g.Sum(p => p.QTY.HasValue ? p.QTY.Value : 0)
             }).ToList();
 
             //grouped by MAT_DOC, MVT, MATERIAL_ID, PLANT_ID, BATCH and ORDR
-            var groupedInventoryMovements = inventoryMovements.GroupBy(p => new
+            var groupedInventoryMovements = inventoryMovements
+                //.Where(x => (x.POSTING_DATE.HasValue && x.POSTING_DATE.Value == ))
+                .GroupBy(p => new
             {
-                p.MAT_DOC,
-                p.MVT,
-                p.MATERIAL_ID,
-                p.PLANT_ID,
+                //p.MAT_DOC,
+                //p.MVT,
+                //p.MATERIAL_ID,
+                //p.PLANT_ID,
                 p.BATCH,
                 p.ORDR
             }).Select(g => new
             {
-                MatDoc = g.Key.MAT_DOC,
-                Mvt = g.Key.MVT,
-                MaterialId = g.Key.MATERIAL_ID,
-                PlantId = g.Key.PLANT_ID,
+                //MatDoc = g.Key.MAT_DOC,
+                //Mvt = g.Key.MVT,
+                //MaterialId = g.Key.MATERIAL_ID,
+                //PlantId = g.Key.PLANT_ID,
                 Batch = g.Key.BATCH,
                 Ordr = g.Key.ORDR,
                 TotalQty = g.Sum(p => p.QTY.HasValue ? p.QTY.Value : 0)
             }).ToList();
 
             var rc = (from x in groupedInventoryMovements
-                      join y in listTotalPerMaterialId on x.MaterialId equals y.MaterialId
+                      join y in listTotalPerMaterialId on x.Ordr equals y.Order
                       select new InvMovementUsageProportional()
                       {
-                          MaterialId = x.MaterialId,
+                          //MaterialId = x.MaterialId,
+                          Batch = x.Batch,
                           Qty = x.TotalQty,
                           TotalQtyPerMaterialId = y.TotalQty,
                           Order = x.Ordr
@@ -3326,6 +3536,7 @@ namespace Sampoerna.EMS.BLL
 
             return rc;
         }
+
 
         #endregion
 

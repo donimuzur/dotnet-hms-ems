@@ -73,6 +73,24 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public string NppbkcId { get; set; }
         public SelectList NppbkcIdList { get; set; }
+
+        public string SupNppbkc { get; set; }
+        public SelectList SupNppbkcList { get; set; }
+
+        public string SupKppbc { get; set; }
+        public SelectList SupKppbcList { get; set; }
+
+        public string SupPlant { get; set; }
+        public SelectList SupPlantList { get; set; }
+
+        public string SupCompany { get; set; }
+        public SelectList SupCompanyList { get; set; }
+
+        public string Poa { get; set; }
+        public SelectList PoaList { get; set; }
+
+        public string Creator { get; set; }
+        public SelectList CreatorList { get; set; }
     }
 
     public class Pbck1ExportMonitoringUsageViewModel
@@ -93,6 +111,12 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public int? YearFrom { get; set; }
         public int? YearTo { get; set; }
         public string NppbkcId { get; set; }
+        public string SupNppbkc { get; set; }
+        public string SupKppbc { get; set; }
+        public string SupPlant { get; set; }
+        public string SupCompany { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
     }
 
 }

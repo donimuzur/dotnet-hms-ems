@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using AutoMapper;
 using Sampoerna.EMS.AutoMapperExtensions;
 using Sampoerna.EMS.BusinessObject;
@@ -11,6 +12,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Utils;
+using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.CK5;
 
 namespace Sampoerna.EMS.Website
@@ -377,6 +379,19 @@ namespace Sampoerna.EMS.Website
 
                 Mapper.CreateMap<GetBrandByPlantAndMaterialNumberOutput, CK5InputManualViewModel>().IgnoreAllNonExisting()
                     ;
+
+
+
+                Mapper.CreateMap<Ck5MarketReturnSummaryReportDto, CK5MarketReturnSummaryReportsItem>().IgnoreAllNonExisting()
+                   ;
+
+                Mapper.CreateMap<CK5MarketReturnSearchSummaryReportsViewModel, CK5MarketReturnSummaryReportsItem>().IgnoreAllNonExisting();
+
+                Mapper.CreateMap<CK5MarketReturnSearchSummaryReportsViewModel, CK5MarketReturnGetSummaryReportByParamInput>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Ck5MatdocDto, SelectItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.TextField,opt => opt.MapFrom(src => string.Format("{0} - {1} - {2}", src.MatDoc, src.Qty, src.PostingDate)))
+                .ForMember(dest => dest.ValueField, opt=> opt.MapFrom(src => src.MatDoc));
         }
     }
 }

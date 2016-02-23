@@ -206,6 +206,7 @@
                 <input id="uploadMaterialId" type="hidden" value="">
                 <input id="uploadMaterialRow" type="hidden" value="">
                 <input id="uploadMaterialDesc" type="hidden" value="">
+                <input id="uploadQtyOri" type="hidden" value="0">
                 <div class="row">
                     <div class="col-md-6">
                         <label>Plant</label>
@@ -656,6 +657,7 @@
         });
 
         $("#btnSaveMaterial").click(function () {
+            
             var materialInput = {};
             var materialNumber = $('#uploadMaterialNumber').val();
             var sourcePlant = $("#SourcePlantId").find("option:selected").val();
@@ -684,6 +686,8 @@
             materialInput.Note = $('#uploadNote').val();
             materialInput.ExGoodsType = goodTypeGroupId;
           
+            materialInput.Ck5Type = '@Model.Ck5Type.ToString()';
+            
             if ('@Model.Ck5Type.ToString()' == "Waste") {
                 materialInput.WasteStock = $('#uploadWasteStock').val();
 
@@ -702,6 +706,7 @@
         });
 
         $("#uploadMaterialNumber").change(function () {
+            
             if ($("#uploadMaterialNumber").length) {
                 var materialNumber = $(this).find("option:selected").val();
 
@@ -713,8 +718,18 @@
                 } else {
                     var sourcePlant = $("#SourcePlantId").find("option:selected").val();
 
+                    if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
+                        sourcePlant = $("#DestPlantId").find("option:selected").val();
+                    } else if ('@Model.Ck5Type.ToString()' == '@Enums.CK5Type.Manual.ToString()') {
+                        if ($('#IsFreeTextSource').is(':checked')) {
+                            sourcePlant = $("#DestPlantId").find("option:selected").val();
+                        }
+                    }
+
                     if ('@Model.Ck5Type.ToString()' == "Waste") {
                         ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariffWaste", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
+                    } else if ('@Model.Ck5Type.ToString()' == '@Enums.CK5Type.Export.ToString()') {
+                        ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariffExport", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
                     } else {
                         ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariff", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
                     }
@@ -753,10 +768,14 @@
             materialInput.UsdValue = $('#uploadUsdValue').val();
             materialInput.Note = $('#uploadNote').val();
             materialInput.ExGoodsType = goodTypeGroupId;
-          
+            
+            materialInput.Ck5Type = '@Model.Ck5Type.ToString()';
+            
             if ('@Model.Ck5Type.ToString()' == "Waste") {
-                materialInput.WasteStock = $('#uploadWasteStock').val();
-
+                //materialInput.WasteStock = $('#uploadWasteStock').val() + $('#uploadQtyOri').val();
+                var tempCount = parseFloat($('#uploadWasteStock').val().replace(/\,/g, ''));
+                tempCount = tempCount + parseFloat($('#uploadQtyOri').val().replace(/\,/g, ''));
+                materialInput.WasteStock = tempCount.toString();
                 ajaxValidateMaterial('@Url.Action("ValidateManualCk5Waste", "CK5")', { input: materialInput }, function (data) {
                     UpdateRowWaste(data);
 
@@ -809,7 +828,8 @@
 
             $('#uploadMaterialNumber').val(materialnumber);
             $('#uploadMaterialQty').val(nRow.find("td").eq(3).html());
-
+            $('#uploadQtyOri').val(nRow.find("td").eq(3).html());
+            
             $('#uploadMaterialUom').val(nRow.find("td").eq(4).html());
             $('#uploadMaterialConvertion').val(nRow.find("td").eq(5).html());
 
@@ -831,6 +851,7 @@
             $('#uploadMaterialId').val(nRow.find("td").eq(18).html());
 
             $('#uploadWasteStock').val(nRow.find("td").eq(20).html());
+           
             
             ClearValidation();
 

@@ -35,8 +35,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Ck5FileUploadDtos, opt => opt.MapFrom(src => Mapper.Map<List<CK5_FILE_UPLOADDto>>(src.CK5_FILE_UPLOAD)))
                 .ForMember(dest => dest.Ck5MaterialDtos, opt => opt.MapFrom(src=> Mapper.Map<List<CK5MaterialDto>>(src.CK5_MATERIAL)))
                 .ForMember(dest => dest.GIDateStr, opt => opt.MapFrom(src => src.SUBMISSION_DATE == null ?string.Empty : Convert.ToDateTime(src.SUBMISSION_DATE).ToString("dd MMM yyyy")))
-                .ForMember(dest => dest.NoDateWithFormat, opt => opt.MapFrom(src => src.REGISTRATION_DATE == null ? src.REGISTRATION_NUMBER : src.REGISTRATION_NUMBER + "-" + Convert.ToDateTime(src.REGISTRATION_DATE).ToString("dd.MM.yyyy")));
-                
+                .ForMember(dest => dest.NoDateWithFormat, opt => opt.MapFrom(src => src.REGISTRATION_DATE == null ? src.REGISTRATION_NUMBER : src.REGISTRATION_NUMBER + "-" + Convert.ToDateTime(src.REGISTRATION_DATE).ToString("dd.MM.yyyy")))
+                .ForMember(dest => dest.MatDoc, opt => opt.MapFrom(src => src.MATDOC))
                 ;
 
 
@@ -172,6 +172,11 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.GiDate, opt => opt.MapFrom(src => src.GI_DATE.HasValue ? src.GI_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
                 .ForMember(dest => dest.GrDate, opt => opt.MapFrom(src => src.GR_DATE.HasValue ? src.GR_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS_ID)))
+                .ForMember(dest => dest.CompanySource, opt => opt.MapFrom(src => src.SOURCE_PLANT_COMPANY_CODE + "-" + src.SOURCE_PLANT_COMPANY_NAME))
+                .ForMember(dest => dest.CompanyDestination, opt => opt.MapFrom(src => src.DEST_PLANT_COMPANY_CODE + "-" + src.DEST_PLANT_COMPANY_NAME))
+                .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.APPROVED_BY_POA))
+                .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.CREATED_BY))
+                .ForMember(dest => dest.CompletedDate, opt => opt.MapFrom(src => src.STATUS_ID == Enums.DocumentStatus.Completed ? (src.MODIFIED_DATE.HasValue ? src.MODIFIED_DATE.Value.ToString("dd MMM yyyy") : string.Empty):string.Empty))
                 ;
 
             Mapper.CreateMap<ZAIDM_EX_BRAND, GetListMaterialMarketReturnOutput>().IgnoreAllNonExisting()
@@ -180,7 +185,12 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<WASTE_STOCK, GetListMaterialMarketReturnOutput>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.MaterialNumber, opt => opt.MapFrom(src => src.MATERIAL_NUMBER))
                 ;
-          
+
+            Mapper.CreateMap<INVENTORY_MOVEMENT, Ck5MatdocDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PostingDate, opt => opt.MapFrom(src => src.POSTING_DATE.HasValue ? src.POSTING_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
+                .ForMember(dest => dest.MatDoc, opt => opt.MapFrom(src => src.MAT_DOC))
+                ;
+
         }
     }
 }

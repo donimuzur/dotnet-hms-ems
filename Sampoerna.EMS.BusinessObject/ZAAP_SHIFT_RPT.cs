@@ -14,6 +14,11 @@ namespace Sampoerna.EMS.BusinessObject
     
     public partial class ZAAP_SHIFT_RPT
     {
+        public ZAAP_SHIFT_RPT()
+        {
+            this.REVERSAL = new HashSet<REVERSAL>();
+        }
+    
         public string COMPANY_CODE { get; set; }
         public string WERKS { get; set; }
         public string FA_CODE { get; set; }
@@ -37,5 +42,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> ENTERED_DATE { get; set; }
         public string MVT { get; set; }
         public long ZAAP_SHIFT_RPT_ID { get; set; }
+    
+        public virtual ICollection<REVERSAL> REVERSAL { get; set; }
     }
 }

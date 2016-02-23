@@ -43,7 +43,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                Details = Mapper.Map<List<VirtualNppbckDetails>>(_nppbkcBll.GetAll())
+                Details = Mapper.Map<List<VirtualNppbckDetails>>(_nppbkcBll.GetAll()),
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
             };
 
             //ViewBag.Message = TempData["message"];
@@ -53,6 +54,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Edit(string id)
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Detail", new { id });
+            }
+
             var nppbkc = _nppbkcBll.GetById(id);
 
             if (nppbkc == null)
@@ -181,6 +187,12 @@ namespace Sampoerna.EMS.Website.Controllers
         }
         public ActionResult Delete(string id)
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
             try
             {
                 _nppbkcBll.Delete(id);

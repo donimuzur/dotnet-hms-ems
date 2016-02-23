@@ -109,6 +109,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.DocNumberCk5, opt => opt.MapFrom(src => String.Join("<br />", src.CK5List.Select(c => String.Format("'{0}", c.DocumentNumber)).ToArray())))
                 .ForMember(dest => dest.StatusDocCk5, opt => opt.MapFrom(src => String.Join("<br />", src.CK5List.Select(c => c.Status).ToArray())))
                 .ForMember(dest => dest.GrandTotalExcisableCk5, opt => opt.MapFrom(src => String.Join("<br />", src.CK5List.Select(c => c.Qty).ToArray())))
+                .ForMember(dest => dest.CompletedDate, opt => opt.MapFrom(src => src.CompletedDate == null ? "" : src.CompletedDate.Value.ToString("dd MMMM yyyy")))
                 ;
 
             Mapper.CreateMap<Pbck1DashboardModel, Pbck1GetByParamInput>().IgnoreAllNonExisting();

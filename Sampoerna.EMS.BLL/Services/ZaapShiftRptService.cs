@@ -9,6 +9,7 @@ using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 using System.Linq;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL.Services
 {
@@ -49,13 +50,67 @@ namespace Sampoerna.EMS.BLL.Services
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
 
-            return dbData.ToList();
+            var retData = dbData.GroupBy(x => new {x.ORDR, x.COMPANY_CODE,x.WERKS,x.FA_CODE,x.PRODUCTION_DATE})
+                .Select(x=>
+                {
+                    var zaapShiftRpt = x.FirstOrDefault();
+                    return zaapShiftRpt != null ? new ZAAP_SHIFT_RPT()
+                                {
+                                    ORDR = zaapShiftRpt.ORDR,
+                                    COMPANY_CODE = zaapShiftRpt.COMPANY_CODE,
+                                    WERKS = zaapShiftRpt.WERKS,
+                                    FA_CODE = zaapShiftRpt.FA_CODE,
+                                    PRODUCTION_DATE = zaapShiftRpt.PRODUCTION_DATE,
+                                    UOM = zaapShiftRpt.UOM
+                                } : null;
+                }).ToList();
+                //(from data in dbData
+                //           group new {}
+                //           select new ZAAP_SHIFT_RPT()
+                //           {
+                //               ORDR = data.ORDR,
+                //               COMPANY_CODE = data.COMPANY_CODE,
+                //               WERKS = data.WERKS,
+                //               FA_CODE = data.FA_CODE,
+                //               PRODUCTION_DATE = data.PRODUCTION_DATE
+                //           }).Distinct().ToList();
+            return retData;
 
         }
 
         public List<ZAAP_SHIFT_RPT> GetAll()
         {
             return _repository.Get().ToList();
+        }
+
+        public List<ZAAP_SHIFT_RPT> GetReversalData(string plant, string facode)
+        {
+            Expression<Func<ZAAP_SHIFT_RPT, bool>> queryFilter = PredicateHelper.True<ZAAP_SHIFT_RPT>();
+
+            string receiving102 = EnumHelper.GetDescription(Enums.MovementTypeCode.Receiving102);
+
+            queryFilter = queryFilter.And(c => c.MVT == receiving102);
+
+            if (plant != null)
+            {
+                queryFilter = queryFilter.And(c => c.WERKS == plant);
+            }
+
+            if (facode != null)
+            {
+                queryFilter = queryFilter.And(c => c.FA_CODE == facode);
+            }
+
+            var dbData = _repository.Get(queryFilter);
+
+            return dbData.ToList();
+        }
+
+        public ZAAP_SHIFT_RPT GetById(int id)
+        {
+            var data = _repository.GetQuery(x => x.ZAAP_SHIFT_RPT_ID == id).FirstOrDefault();
+
+            return data;
         }
     }
 }

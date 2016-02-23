@@ -7,6 +7,7 @@ namespace Sampoerna.EMS.Contract.Services
 {
     public interface ICK5Service
     {
+        CK5 GetById(long id);
         List<CK5> GetForLack1ByParam(Ck5GetForLack1ByParamInput input);
         List<CK5> GetForLack2ByParam(Ck5GetForLack2ByParamInput input);
 
@@ -15,5 +16,7 @@ namespace Sampoerna.EMS.Contract.Services
         List<CK5> GetByStoNumberList(List<string> stoNumberList);
 
         List<CK5> GetReconciliationLack1();
+
+        List<string> GetCk5AssignedMatdoc();
     }
 }
