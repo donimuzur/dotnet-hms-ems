@@ -1187,6 +1187,21 @@ namespace Sampoerna.EMS.BLL
 
             input.DocumentNumber = dbData.PBCK4_NUMBER;
 
+            //delegate
+
+            if (dbData.CREATED_BY != input.UserId)
+            {
+
+                string commentReject = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY, input.UserId,
+                DateTime.Now);
+
+                if (!string.IsNullOrEmpty(commentReject))
+                    input.Comment += " [" + commentReject + "]";
+
+
+            }
+            //end delegate
+
             AddWorkflowHistory(input);
         }
 
