@@ -7,5 +7,7 @@ namespace Sampoerna.EMS.Contract.Services
     public interface ICK5MaterialService
     {
         List<CK5_MATERIAL> GetForLack1ByParam(Ck5MaterialGetForLackByParamInput input);
+
+        List<CK5_MATERIAL> GetForBeginningEndBalance(List<string> receivedPlant, string supplierPlant);
     }
 }
