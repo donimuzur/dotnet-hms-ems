@@ -64,6 +64,7 @@ namespace Sampoerna.EMS.BLL
         private IPoaDelegationServices _poaDelegationServices;
         private IMaterialBalanceService _materialBalanceService;
         private IBrandRegistrationService _brandRegService;
+        private ICK5MaterialService _ck5MaterialService;
 
         public LACK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -106,6 +107,7 @@ namespace Sampoerna.EMS.BLL
             _materialUomService = new MaterialUomService(_uow, _logger);
             _poaDelegationServices = new PoaDelegationServices(_uow, _logger);
             _materialBalanceService = new MaterialBalanceService(_uow, _logger);
+            _ck5MaterialService = new CK5MaterialService(_uow, _logger);
         }
 
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
@@ -3199,8 +3201,8 @@ namespace Sampoerna.EMS.BLL
                 plantList.Add(input.ReceivedPlantId);
             }
 
-            var listMaterial = _materialService.GetByPlantIdAndExGoodType(plantList, input.ExcisableGoodsType);
-            var listSticker = listMaterial.Select(x => x.STICKER_CODE).Distinct().ToList();
+            var listMaterial = _ck5MaterialService.GetForBeginningEndBalance(plantList, input.SupplierPlantId);
+            var listSticker = listMaterial.Select(x => x.BRAND).Distinct().ToList();
 
             var listMaterialBalance = _materialBalanceService.GetByPlantAndMaterialList(plantList, listSticker, input.PeriodMonth, input.PeriodYear, rc.Lack1UomId);
 
