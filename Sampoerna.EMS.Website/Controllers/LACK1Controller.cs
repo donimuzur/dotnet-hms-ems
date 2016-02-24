@@ -308,7 +308,10 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var input = Mapper.Map<Lack1GenerateDataParamInput>(param);
             var outGeneratedData = _lack1Bll.GenerateLack1DataByParam(input);
-            return Json(outGeneratedData);
+
+            var result = Json(outGeneratedData);
+            result.MaxJsonLength = Int32.MaxValue;
+            return result;
         }
 
         #endregion
