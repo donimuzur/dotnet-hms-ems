@@ -1668,19 +1668,19 @@ namespace Sampoerna.EMS.BLL
             if (input.UserRole != Enums.UserRole.Administrator)
             {
                 //delegate 
-                var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
+                //var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
 
                 if (input.ListUserPlant == null)
                     throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
 
-                if (delegateUser.Count > 0)
-                {
-                    delegateUser.Add(input.UserId);
-                    queryFilter =
-                        queryFilter.And(
-                            c => input.ListUserPlant.Contains(c.PLANT_ID) || delegateUser.Contains(c.CREATED_BY));
-                }
-                else
+                //if (delegateUser.Count > 0)
+                //{
+                //    delegateUser.Add(input.UserId);
+                //    queryFilter =
+                //        queryFilter.And(
+                //            c => input.ListUserPlant.Contains(c.PLANT_ID) || delegateUser.Contains(c.CREATED_BY));
+                //}
+                //else
                     queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID));
             }
 
