@@ -908,7 +908,7 @@ namespace Sampoerna.EMS.BLL
                     messageList.Add("Material Number Not Exist");
                 else
                 {
-                    if (ck5MaterialInput.Ck5Type == Enums.CK5Type.Export.ToString())
+                    if (ck5MaterialInput.Ck5Type == Enums.CK5Type.Export.ToString() && groupType == Enums.ExGoodsType.HasilTembakau)
                     {
                         //check to brand registration
                         var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand);
@@ -1050,7 +1050,7 @@ namespace Sampoerna.EMS.BLL
                 messageList.Add("Material Number Not Exist");
             else
             {
-                if (input.Ck5Type == Enums.CK5Type.Export.ToString())
+                if (input.Ck5Type == Enums.CK5Type.Export.ToString() && groupType == Enums.ExGoodsType.HasilTembakau)
                 {
                     //check to brand registration
                     var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(input.Plant, input.Brand);
@@ -1140,7 +1140,8 @@ namespace Sampoerna.EMS.BLL
                     messageList.Add("Material Number Not Exist");
                 else
                 {
-                    if (ck5MaterialInput.Ck5Type == Enums.CK5Type.Export.ToString())
+                    if (ck5MaterialInput.Ck5Type == Enums.CK5Type.Export.ToString()
+                        && ck5MaterialInput.ExGoodsType == Enums.ExGoodsType.HasilTembakau)
                     {
                         //check to brand registration
                         var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand);
