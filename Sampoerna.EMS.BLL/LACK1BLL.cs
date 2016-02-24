@@ -2654,7 +2654,7 @@ namespace Sampoerna.EMS.BLL
                     };
 
                     var totalProductionOrder = groupedOrderProductionList.FirstOrDefault(x => x.Fa_Code == nonzaapItem.FA_CODE);
-                    if (totalProductionOrder != null)
+                    if (totalProductionOrder != null && totalProductionOrder.QtyTotal > 0)
                     {
                         var proportional = new Lack1FACodeProportional()
                         {
@@ -3457,7 +3457,7 @@ namespace Sampoerna.EMS.BLL
                 mvt201Asigned = (-1) * getInventoryMovementByParamOutput.Mvt201Assigned.Sum(d => d.ConvertedQty);
             }
 
-            totalUsage = totalUsage - mvt201 + mvt201Asigned;
+            totalUsage = totalUsage + mvt201 - mvt201Asigned;
 
             if (isForTisToTis)
             {
@@ -3591,6 +3591,7 @@ namespace Sampoerna.EMS.BLL
             var rc = new InvMovementGetForLack1UsageMovementByParamOutput
             {
                 IncludeInCk5List = usageReceivingList,
+                //IncludeInCk5List = movementUsaheAllWithConvertion,
                 ReceivingList = receivingList,
                 AllUsageList = movementUsaheAllWithConvertion,
                 ExcludeFromCk5List = movementExclueInCk5List,
