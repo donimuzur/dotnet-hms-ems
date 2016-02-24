@@ -4051,7 +4051,7 @@ namespace Sampoerna.EMS.Website.Controllers
         #region print
 
 
-        private dsCK5Print AddDataCk5Row(dsCK5Print dsCk5, CK5ReportDetailsDto ck5ReportDetails, int totalMaterial, string printTitle)
+        private dsCK5Print  AddDataCk5Row(dsCK5Print dsCk5, CK5ReportDetailsDto ck5ReportDetails, int totalMaterial, string printTitle)
         {
             var detailRow = dsCk5.dtCk5.NewdtCk5Row();
 
