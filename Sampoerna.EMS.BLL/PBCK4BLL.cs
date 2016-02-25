@@ -84,20 +84,20 @@ namespace Sampoerna.EMS.BLL
 
             if (input.UserRole != Enums.UserRole.Administrator)
             {
-                //delegate 
-                var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
+                ////delegate 
+                //var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
 
                 if (input.ListUserPlant == null)
                     throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
 
-                if (delegateUser.Count > 0)
-                {
-                    delegateUser.Add(input.UserId);
-                    queryFilter =
-                        queryFilter.And(
-                            c => input.ListUserPlant.Contains(c.PLANT_ID) || delegateUser.Contains(c.CREATED_BY));
-                }
-                else
+                //if (delegateUser.Count > 0)
+                //{
+                //    delegateUser.Add(input.UserId);
+                //    queryFilter =
+                //        queryFilter.And(
+                //            c => input.ListUserPlant.Contains(c.PLANT_ID) && delegateUser.Contains(c.CREATED_BY));
+                //}
+                //else
                     queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID));
             }
 
@@ -1683,19 +1683,19 @@ namespace Sampoerna.EMS.BLL
             if (input.UserRole != Enums.UserRole.Administrator)
             {
                 //delegate 
-                var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
+                //var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
 
                 if (input.ListUserPlant == null)
                     throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
 
-                if (delegateUser.Count > 0)
-                {
-                    delegateUser.Add(input.UserId);
-                    queryFilter =
-                        queryFilter.And(
-                            c => input.ListUserPlant.Contains(c.PLANT_ID) || delegateUser.Contains(c.CREATED_BY));
-                }
-                else
+                //if (delegateUser.Count > 0)
+                //{
+                //    delegateUser.Add(input.UserId);
+                //    queryFilter =
+                //        queryFilter.And(
+                //            c => input.ListUserPlant.Contains(c.PLANT_ID) || delegateUser.Contains(c.CREATED_BY));
+                //}
+                //else
                     queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID));
             }
 
@@ -2087,19 +2087,7 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.APPROVED_BY_POA.Contains(input.Poa));
             }
-
-            //if (input.UserRole == Enums.UserRole.POA)
-            //{
-            //    var nppbkc = _nppbkcBll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
-               
-            //    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))) || c.STATUS == Enums.DocumentStatus.Completed);
-                
-            //}
-           
-            //else
-            //{
-            //    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId) || c.STATUS == Enums.DocumentStatus.Completed);
-            //}
+        
             if (input.UserRole != Enums.UserRole.Administrator)
                 queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID));
 
