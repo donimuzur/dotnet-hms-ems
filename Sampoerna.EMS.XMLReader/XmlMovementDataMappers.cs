@@ -55,7 +55,8 @@ namespace Sampoerna.EMS.XMLReader
                         item.MVT = _xmlMapper.GetElementValue(xElement.Element("MvT"));
                         item.MATERIAL_ID = _xmlMapper.GetElementValue(xElement.Element("Material"));
                         item.PLANT_ID = _xmlMapper.GetElementValue(xElement.Element("Plnt"));
-                        item.QTY = Convert.ToDecimal(_xmlMapper.GetElementValue(xElement.Element("Quantity")));
+                        var dblQty = Convert.ToDouble(_xmlMapper.GetElementValue(xElement.Element("Quantity")));
+                        item.QTY = Convert.ToDecimal(dblQty);
                         item.VENDOR = _xmlMapper.GetElementValue(xElement.Element("Vendor"));
                         item.BATCH = _xmlMapper.GetElementValue(xElement.Element("Batch"));
                         item.BUN = _xmlMapper.GetElementValue(xElement.Element("BUn"));

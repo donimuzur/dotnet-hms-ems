@@ -46,6 +46,8 @@ namespace Sampoerna.EMS.BLL
 
             var data = _repository.Get(queryFilter, null, includeTables).ToList();
 
+            data = data.OrderBy(c => c.PROD_DATE).ToList();
+
             return Mapper.Map<List<Ck4cItem>>(data);
         }
     }

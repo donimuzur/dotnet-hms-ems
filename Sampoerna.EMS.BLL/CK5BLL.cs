@@ -852,7 +852,7 @@ namespace Sampoerna.EMS.BLL
                     messageList.Add("Material Number Not Exist");
                 else
                 {
-                    if (ck5MaterialInput.Ck5Type == Enums.CK5Type.Export.ToString())
+                    if (ck5MaterialInput.Ck5Type == Enums.CK5Type.Export.ToString() && groupType == Enums.ExGoodsType.HasilTembakau)
                     {
                         //check to brand registration
                         var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand);
@@ -994,7 +994,7 @@ namespace Sampoerna.EMS.BLL
                 messageList.Add("Material Number Not Exist");
             else
             {
-                if (input.Ck5Type == Enums.CK5Type.Export.ToString())
+                if (input.Ck5Type == Enums.CK5Type.Export.ToString() && groupType == Enums.ExGoodsType.HasilTembakau)
                 {
                     //check to brand registration
                     var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(input.Plant, input.Brand);
@@ -1084,7 +1084,8 @@ namespace Sampoerna.EMS.BLL
                     messageList.Add("Material Number Not Exist");
                 else
                 {
-                    if (ck5MaterialInput.Ck5Type == Enums.CK5Type.Export.ToString())
+                    if (ck5MaterialInput.Ck5Type == Enums.CK5Type.Export.ToString()
+                        && ck5MaterialInput.ExGoodsType == Enums.ExGoodsType.HasilTembakau)
                     {
                         //check to brand registration
                         var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand);
@@ -1731,9 +1732,9 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.GovCancel:
                     GovCancelledDocument(input);
                     break;
-                //case Enums.ActionType.Cancel:
-                //    CancelledDocument(input);
-                //    break;
+                case Enums.ActionType.Cancel:
+                    CancelledDocument(input);
+                    break;
                 case Enums.ActionType.POCreated:
                     PoCreatedDocument(input);
                     break;
@@ -2856,30 +2857,45 @@ namespace Sampoerna.EMS.BLL
             AddWorkflowHistory(input);
         }
 
-        //private void CancelledDocument(CK5WorkflowDocumentInput input)
-        //{
-        //    var dbData = _repository.GetByID(input.DocumentId);
+        private void CancelledDocument(CK5WorkflowDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
 
-        //    if (dbData == null)
-        //        throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
-        //    if (dbData.STATUS_ID != Enums.DocumentStatus.Draft)
-        //        throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+            if (dbData.STATUS_ID != Enums.DocumentStatus.Draft)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-        //    string oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
-        //    string newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Cancelled); ;
-        //    //set change history
-        //    if (oldValue != newValue)
-        //        SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
-
-
-        //    dbData.STATUS_ID = Enums.DocumentStatus.Cancelled;
+            string oldValue = EnumHelper.GetDescription(dbData.STATUS_ID);
+            string newValue = EnumHelper.GetDescription(Enums.DocumentStatus.Cancelled); ;
+            //set change history
+            if (oldValue != newValue)
+                SetChangeHistory(oldValue, newValue, "STATUS", input.UserId, dbData.CK5_ID.ToString());
 
 
-        //    input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+            dbData.STATUS_ID = Enums.DocumentStatus.Cancelled;
+            dbData.MODIFIED_DATE = DateTime.Now;
 
-        //    AddWorkflowHistory(input);
-        //}
+            input.DocumentNumber = dbData.SUBMISSION_NUMBER;
+
+            //delegate
+            
+            if (dbData.CREATED_BY != input.UserId)
+            {
+              
+                string commentReject = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY, input.UserId,
+                DateTime.Now);
+
+                if (!string.IsNullOrEmpty(commentReject))
+                    input.Comment += " [" + commentReject + "]";
+
+
+            }
+            //end delegate
+
+            AddWorkflowHistory(input);
+        }
 
         private void GoodIssueDocument(CK5WorkflowDocumentInput input)
         {

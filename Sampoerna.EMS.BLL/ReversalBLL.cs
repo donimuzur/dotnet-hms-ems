@@ -132,7 +132,7 @@ namespace Sampoerna.EMS.BLL
 
                 if (reversalInput.ProductionDate.Value.Day > 14) period = 2;
 
-                var ck4cData = _repositoryCk4c.Get(x => x.NPPBKC_ID == plant.NPPBKC_ID && x.REPORTED_PERIOD == period
+                var ck4cData = _repositoryCk4c.Get(x => x.NPPBKC_ID == plant.NPPBKC_ID && x.PLANT_ID == reversalInput.Werks && x.REPORTED_PERIOD == period
                                                         && x.REPORTED_MONTH == month && x.REPORTED_YEAR == year
                                                         && x.STATUS == Enums.DocumentStatus.Completed);
 

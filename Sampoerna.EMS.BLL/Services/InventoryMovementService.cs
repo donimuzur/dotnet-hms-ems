@@ -31,14 +31,14 @@ namespace Sampoerna.EMS.BLL.Services
         {
             var usageMvtType = new List<string>()
             {
-                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage201),
-                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage202),
+                //EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage201),
+                //EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage202),
                 EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage261),
                 EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage262),
-                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage901),
-                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage902),
-                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.UsageZ01),
-                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.UsageZ02)
+                //EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage901),
+                //EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage902),
+                //EnumHelper.GetDescription(Core.Enums.MovementTypeCode.UsageZ01),
+                //EnumHelper.GetDescription(Core.Enums.MovementTypeCode.UsageZ02)
             };
 
             Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue
@@ -55,13 +55,14 @@ namespace Sampoerna.EMS.BLL.Services
 
             var allOrderInZaapShiftRpt = _zaapShiftRptRepository.Get().Select(d => d.ORDR).Distinct().ToList();
 
-            Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter2 = queryFilter; 
+            //Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter2 = queryFilter; 
 
-            queryFilter = input.IsTisToTis ? queryFilter.And(c => !allOrderInZaapShiftRpt.Contains(c.ORDR)) : queryFilter.And(c => allOrderInZaapShiftRpt.Contains(c.ORDR));
+            queryFilter = input.IsTisToTis ? queryFilter.And(c => !allOrderInZaapShiftRpt.Contains(c.ORDR)) : 
+                queryFilter.And(c => allOrderInZaapShiftRpt.Contains(c.ORDR));
 
-            queryFilter2 = queryFilter2.Or(queryFilter);
+            //queryFilter2 = queryFilter2.Or(queryFilter);
 
-            return _repository.Get(queryFilter2).ToList();
+            return _repository.Get(queryFilter).ToList();
 
         }
 

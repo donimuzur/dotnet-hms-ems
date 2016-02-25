@@ -56,7 +56,7 @@ namespace Sampoerna.EMS.XMLReader
                             item.CK1_SAP_NUMBER = ck1SapNumber;
                         }
                         
-                        item.CK1_DATE = Convert.ToDateTime(_xmlMapper.GetDate(_xmlMapper.GetElementValue(xElement.Element("AEDAT"))));
+                        item.CK1_DATE = Convert.ToDateTime(_xmlMapper.GetDate(_xmlMapper.GetElementValue(xElement.Element("ORDER_DATE"))));
                         item.PLANT_ID = _xmlMapper.GetElementValue(xElement.Element("WERKS"));
                         item.CREATED_BY = Constans.PI;
                         item.COMPANY_ID = _xmlMapper.GetElementValue(xElement.Element("BUKRS"));
@@ -85,6 +85,7 @@ namespace Sampoerna.EMS.XMLReader
                         if (existingData != null)
                         {
                             item.CK1_ITEM = existingData.CK1_ITEM;
+                            item.CK1_ID = existingData.CK1_ID;
                         }
                         else
                         {
@@ -94,8 +95,12 @@ namespace Sampoerna.EMS.XMLReader
                         foreach (var xElementItem in xmlItems)
                         {
                             var detail = new CK1_ITEM();
-                            
-                            
+
+                            if (existingData != null)
+                            {
+                                detail.CK1_ID = existingData.CK1_ID;
+                                
+                            }
 
                             detail.FA_CODE = _xmlMapper.GetElementValue(xElementItem.Element("FA_CODE"));
                             detail.MATERIAL_ID = _xmlMapper.GetElementValue(xElementItem.Element("MATNR"));
@@ -123,9 +128,12 @@ namespace Sampoerna.EMS.XMLReader
                             }
                             
                             //detail.MENGE = lembaran;
-                            
-                            
-                            item.CK1_ITEM.Add(detail);
+                            if (existingData != null)
+                            {
+                                InsertCk1Item(detail);
+                            }
+
+                            //item.CK1_ITEM.Add(detail);
                         }
                         
 
@@ -181,6 +189,25 @@ namespace Sampoerna.EMS.XMLReader
                 .Get(x => x.NPPBKC_ID == nppbkcId).FirstOrDefault();
 
             return existingData;
+        }
+
+        public void InsertCk1Item(CK1_ITEM item)
+        {
+            if (item.CK1_ID != 0)
+            {
+                var repock1Item = _xmlMapper.uow.GetGenericRepository<CK1_ITEM>();
+                //var existingData = repock1Item.Get(
+                //    x =>
+                //        x.CK1_ID == item.CK1_ID && x.FA_CODE == item.FA_CODE && x.MATERIAL_ID == item.MATERIAL_ID &&
+                //        item.WERKS == x.WERKS).FirstOrDefault();
+                //if (existingData != null)
+                //{
+                   // item.CK1_ITEM_ID = existingData.CK1_ITEM_ID;
+                  repock1Item.InsertOrUpdate(item);
+                //}
+            }
+            
+
         }
 
         public ZAIDM_EX_BRAND getBrand(string stickerCode,string brand, string werks)
