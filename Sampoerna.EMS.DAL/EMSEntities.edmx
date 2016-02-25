@@ -417,7 +417,7 @@
           <Property Name="MVT" Type="nvarchar" MaxLength="3" Nullable="false" />
           <Property Name="MATERIAL_ID" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="QTY" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="QTY" Type="decimal" Precision="18" Scale="5" />
           <Property Name="SLOC" Type="nvarchar" MaxLength="4" />
           <Property Name="VENDOR" Type="nvarchar" MaxLength="10" />
           <Property Name="BUN" Type="nvarchar" MaxLength="5" />
@@ -1330,7 +1330,7 @@
           <Property Name="UOM" Type="nvarchar" MaxLength="5" />
           <Property Name="PRODUCTION_DATE" Type="datetime" Nullable="false" />
           <Property Name="BATCH" Type="nvarchar" MaxLength="35" Nullable="false" />
-          <Property Name="QTY" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="QTY" Type="decimal" Precision="18" Scale="3" />
           <Property Name="BUNDLE" Type="decimal" Precision="18" Scale="3" />
           <Property Name="MARKET" Type="nvarchar" MaxLength="30" />
           <Property Name="DOCGMVTER" Type="nvarchar" MaxLength="35" />
@@ -1341,7 +1341,7 @@
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="SHIFT" Type="nvarchar" MaxLength="10" />
-          <Property Name="ORIGINAL_QTY" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="ORIGINAL_QTY" Type="decimal" Precision="18" Scale="3" />
           <Property Name="ORIGINAL_UOM" Type="nvarchar" MaxLength="5" />
           <Property Name="POSTING_DATE" Type="datetime" />
           <Property Name="ENTERED_DATE" Type="datetime" />
@@ -7308,7 +7308,7 @@
           <Property Name="MVT" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="true" />
           <Property Name="MATERIAL_ID" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_ID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="QTY" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="QTY" Type="Decimal" Precision="18" Scale="5" />
           <Property Name="SLOC" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="VENDOR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="BUN" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
@@ -8762,7 +8762,7 @@
           <Property Name="UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="PRODUCTION_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="BATCH" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="QTY" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="QTY" Type="Decimal" Precision="18" Scale="3" />
           <Property Name="BUNDLE" Type="Decimal" Precision="18" Scale="3" />
           <Property Name="MARKET" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="DOCGMVTER" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
@@ -8773,7 +8773,7 @@
           <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SHIFT" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="ORIGINAL_QTY" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="ORIGINAL_QTY" Type="Decimal" Precision="18" Scale="3" />
           <Property Name="ORIGINAL_UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="POSTING_DATE" Type="DateTime" Precision="3" />
           <Property Name="ENTERED_DATE" Type="DateTime" Precision="3" />
