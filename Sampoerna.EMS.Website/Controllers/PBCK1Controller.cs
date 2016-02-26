@@ -1642,7 +1642,8 @@ namespace Sampoerna.EMS.Website.Controllers
                         CompanyCodeList = comp,
                         YearFromList = GetYearListPbck1(true),
                         YearToList = GetYearListPbck1(false),
-                        NppbkcIdList = nppbkc
+                        NppbkcIdList = nppbkc,
+                        CreatorList = GlobalFunctions.GetCreatorList()
                     },
                     //view all data pbck1 completed document
                     DetailsList = SearchSummaryReports().OrderBy(c => c.NppbkcId).ToList()

@@ -47,6 +47,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string pbck1Number { get; set; }
         public Enums.UserRole UserRole { get; set; }
         public List<string> ListNppbkc { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
     }
 
     public class Pbck1GetMonitoringUsageByParamInput
