@@ -4573,7 +4573,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var dbMaterial = _materialBll.GetMaterialByPlantIdAndMaterialNumber(plantId, materialNumber);
             var model = Mapper.Map<CK5InputManualViewModel>(dbMaterial);
 
-            if (model.MaterialDesc.ToUpper().Contains("HASIL TEMBAKAU"))
+            if (dbMaterial.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau))
             {
                 var dbBrand = _ck5Bll.GetBrandByPlantAndMaterialNumber(plantId, materialNumber);
                 if (dbBrand != null && !string.IsNullOrEmpty(dbBrand.MaterialDesc))

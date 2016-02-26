@@ -1050,7 +1050,7 @@ namespace Sampoerna.EMS.BLL
                 messageList.Add("Material Number Not Exist");
             else
             {
-                if (input.Ck5Type == Enums.CK5Type.Export.ToString() && groupType == Enums.ExGoodsType.HasilTembakau)
+                if (input.Ck5Type == Enums.CK5Type.Export.ToString() && dbMaterial.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau))
                 {
                     //check to brand registration
                     var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(input.Plant, input.Brand);
@@ -3937,7 +3937,8 @@ namespace Sampoerna.EMS.BLL
 
                 foreach (var material in result.ListMaterials)
                 {
-                    if (material.MaterialDescription.ToUpper().Contains("HASIL TEMBAKAU"))
+                    var mat = _materialBll.GetByPlantIdAndStickerCode(material.PLANT_ID, material.BRAND);
+                    if (mat.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau))
                     {
                         //UPDATE FOR PRINT OUT ONLY
                         material.MaterialDescription = "";
