@@ -46,6 +46,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string SortOrderColumn { get; set; }
 
         public string pbck1Number { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
     }
 
     public class Pbck1GetMonitoringUsageByParamInput

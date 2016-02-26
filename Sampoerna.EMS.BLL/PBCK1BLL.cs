@@ -1810,6 +1810,11 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbkcId);
             if (!string.IsNullOrEmpty(input.pbck1Number))
                 queryFilter = queryFilter.And(c => c.NUMBER == input.pbck1Number);
+            if (!string.IsNullOrEmpty(input.Poa))
+                queryFilter = queryFilter.And(c => c.APPROVED_BY_POA == input.Poa);
+
+            if (!string.IsNullOrEmpty(input.Creator))
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
 
             var pbck1Data = GetPbck1Data(queryFilter, input.SortOrderColumn);
 
