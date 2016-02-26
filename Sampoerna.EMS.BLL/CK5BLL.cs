@@ -3937,7 +3937,8 @@ namespace Sampoerna.EMS.BLL
 
                 foreach (var material in result.ListMaterials)
                 {
-                    if (material.MaterialDescription.ToUpper().Contains("HASIL TEMBAKAU"))
+                    var mat = _materialBll.GetByPlantIdAndStickerCode(material.PLANT_ID, material.BRAND);
+                    if (mat.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau))
                     {
                         //UPDATE FOR PRINT OUT ONLY
                         material.MaterialDescription = "";
