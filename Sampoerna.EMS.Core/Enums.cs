@@ -531,6 +531,23 @@ namespace Sampoerna.EMS.Core
             Lainnya = 4
         }
 
+        public enum GoodsType
+        {
+            [Description("01")]
+            HasilTembakau = 1,
+            [Description("02")]
+            TembakauIris = 2,
+            [Description("03")]
+            TembakauIrisReject = 3,
+            [Description("04")]
+            EtilAlkohol = 4,
+            [Description("05")]
+            MinumanMengandungAlkohol = 5,
+            [Description("06")]
+            MinumanMengandungEtilAlkohol = 6
+
+        }
+
         public enum Lack1Level
         {
             [Description("NPPBKC")]
