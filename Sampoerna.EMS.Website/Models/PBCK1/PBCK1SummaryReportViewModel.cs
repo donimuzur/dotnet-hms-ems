@@ -151,6 +151,12 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         public string pbck1Number { get; set; }
         public SelectList pbck1NumberList { get; set; }
+
+        public string Poa { get; set; }
+        public SelectList PoaList { get; set; }
+
+        public string Creator { get; set; }
+        public SelectList CreatorList { get; set; }
     }
 
     public class ExportSummaryDataModel
