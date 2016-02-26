@@ -1131,7 +1131,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         var ck5DetailsPortToImporter = _ck5Bll.GetDetailsCK5(refId);
                         var portToImporterModel = new CK5FormViewModel();
-                        Mapper.Map(ck5Details.Ck5Dto, portToImporterModel);
+                        Mapper.Map(ck5DetailsPortToImporter.Ck5Dto, portToImporterModel);
 
                         //var dbdata = _ck5Bll.GetById(idPortToImporter);
 
@@ -1163,6 +1163,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         model.GoodType = portToImporterModel.GoodType;
                         model.GoodTypeName = portToImporterModel.GoodTypeName;
                         model.GrandTotalEx = portToImporterModel.GrandTotalEx;
+                        model.GrandTotalExDisplay = portToImporterModel.GrandTotalExDisplay;
                     }
                 }
                 else if (model.Ck5Type == Enums.CK5Type.DomesticAlcohol)
@@ -4051,7 +4052,7 @@ namespace Sampoerna.EMS.Website.Controllers
         #region print
 
 
-        private dsCK5Print AddDataCk5Row(dsCK5Print dsCk5, CK5ReportDetailsDto ck5ReportDetails, int totalMaterial, string printTitle)
+        private dsCK5Print  AddDataCk5Row(dsCK5Print dsCk5, CK5ReportDetailsDto ck5ReportDetails, int totalMaterial, string printTitle)
         {
             var detailRow = dsCk5.dtCk5.NewdtCk5Row();
 
@@ -4468,6 +4469,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.GoodType = portToImporterModel.GoodType;
                 model.GoodTypeName = portToImporterModel.GoodTypeName;
                 model.GrandTotalEx = portToImporterModel.GrandTotalEx;
+                model.GrandTotalExDisplay = portToImporterModel.GrandTotalExDisplay;
             }
             model.IsCk5ImporterToPlant = true;
 

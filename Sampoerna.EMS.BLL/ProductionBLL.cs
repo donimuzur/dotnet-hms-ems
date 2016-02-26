@@ -427,13 +427,15 @@ namespace Sampoerna.EMS.BLL
 
                 if (unpacked == 0)
                 {
+                    var lastUnpacked = list.Where(x => x.PlantWerks == item.PlantWerks && x.FaCode == item.FaCode && x.ProductionDate < item.ProductionDate).LastOrDefault();
+
                     var unpackedCk4cItem = _ck4cItemBll.GetDataByPlantAndFacode(item.PlantWerks, item.FaCode, item.LevelPlant).Where(c => c.ProdDate < item.ProductionDate).LastOrDefault();
 
                     var oldData = GetOldSaldo(item.CompanyCode, item.PlantWerks, item.FaCode, item.ProductionDate).LastOrDefault();
 
                     var unpackedOld = oldData == null ? 0 : oldData.QtyUnpacked.Value;
 
-                    unpacked = unpackedCk4cItem == null ? unpackedOld : unpackedCk4cItem.UnpackedQty;
+                    unpacked = lastUnpacked != null ? lastUnpacked.QtyUnpacked.Value : (unpackedCk4cItem == null ? unpackedOld : unpackedCk4cItem.UnpackedQty);
 
                     plant = item.PlantWerks;
 
