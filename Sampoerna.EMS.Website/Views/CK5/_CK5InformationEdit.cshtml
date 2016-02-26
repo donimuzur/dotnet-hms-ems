@@ -47,8 +47,8 @@
                                 }
 
                             </div>
-                            
-                            @if (Model.IsCk5Manual && Model.Ck5ManualType == Enums.Ck5ManualType.Trial )
+
+                            @if (Model.IsCk5Manual && Model.Ck5ManualType == Enums.Ck5ManualType.Trial)
                             {
                                 <div class="row" id="idFlagNppbkc">
                                     <div class="col-md-6">
@@ -202,7 +202,7 @@
 
 
 
-                                   
+
                                 </div>
 
 
@@ -348,7 +348,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="col-md-6">
                                         <div class="row" id="ck5TrialPbck1Reduce">
                                             <label class="col-md-4">Reduce PBCK-1</label>
@@ -360,20 +360,20 @@
 
                                 </div>
                             }
-                            
+
                             @*@if (Model.IsTriggerSto)
-                            {
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="row">
-                                            <label class="col-md-4">Flaging Lack-1</label>
-                                            <div class="col-md-8">
-                                                @Html.CheckBoxFor(model => model.FLAG_FOR_LACK1, new { @class = "checkbox" })
+                                {
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-4">Flaging Lack-1</label>
+                                                <div class="col-md-8">
+                                                    @Html.CheckBoxFor(model => model.FLAG_FOR_LACK1, new { @class = "checkbox" })
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            }*@
+                                }*@
                         </div>
 
                     </div>
@@ -480,7 +480,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Grand Total Exciseable</label>
                                         <div class="col-md-4">
-                                            @Html.HiddenFor(model=>model.GrandTotalEx)
+                                            @Html.HiddenFor(model => model.GrandTotalEx)
                                             @Html.TextBoxFor(model => model.GrandTotalExDisplay, new { @class = "form-control", @readonly = "readonly" })
                                         </div>
                                         <div class="col-md-4">
@@ -508,9 +508,10 @@
                 </div>
                 <div id="collapse5" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading5">
                     <div class="panel-body">
-
-                        <input type="button" class="btn btn-blue" id="btnUploadInfo" value="Upload" disabled />
-
+                        @if (!Model.IsCk5ImporterToPlant)
+                        {
+                            <input type="button" class="btn btn-blue" id="btnUploadInfo" value="Upload" disabled />
+                        }
                         <div class="table-container" id="ck5EditMaterialTable">
                             <table id="ck5TableItem" class="table table-bordered table-striped js-options-table">
                                 <thead>
@@ -553,10 +554,10 @@
                                         @Html.HiddenFor(model => model.UploadItemModels[i].Note)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].MaterialDesc)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].CK5_MATERIAL_ID)
-                                         if (Model.IsCk5Waste)
-                                         {
-                                             @Html.HiddenFor(model => model.UploadItemModels[i].WasteStock)
-                                         }
+                                        if (Model.IsCk5Waste)
+                                        {
+                                            @Html.HiddenFor(model => model.UploadItemModels[i].WasteStock)
+                                        }
                                         <tr>
                                             @*<td style="display: none"></td>*@
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].Brand)</td>
@@ -570,14 +571,14 @@
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].ExciseValue)</td>
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].UsdValue)</td>
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].Note)</td>
-                                           
+
                                             @if (Model.IsCk5Waste)
                                             {
-                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].WasteStock)</td>
+                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].WasteStock)</td>
                                             }
                                             else
                                             {
-                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].Message)</td>
+                                                <td>@Html.DisplayFor(model => model.UploadItemModels[i].Message)</td>
                                             }
                                             <td style="display: none">@Html.DisplayFor(model => model.UploadItemModels[i].Total)</td>
 
@@ -676,9 +677,9 @@
                                 </div>
 
                             }
-                            
-                            
-                            
+
+
+
 
                             <div class="row">
                                 <div class="col-md-6">
