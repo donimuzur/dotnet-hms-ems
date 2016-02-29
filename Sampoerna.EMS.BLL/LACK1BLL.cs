@@ -613,7 +613,58 @@ namespace Sampoerna.EMS.BLL
                     c =>
                         !(c.CK5_TYPE == Enums.CK5Type.Waste)).ToList();
 
+
+            rc.CloseBalance = GetClosingBalanceSap(rc);
+
             return rc;
+        }
+
+        public decimal GetClosingBalanceSap(Lack1DetailsDto input)
+        {
+            if (input.PeriodMonth < 1 || input.PeriodMonth > 12)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.InvalidData);
+            }
+
+            //valid input
+            //var dtTo = new DateTime(input.PeriodYear, input.PeriodMonth, 1);
+            //var selected = _lack1Service.GetLatestLack1ByParam(new Lack1GetLatestLack1ByParamInput()
+            //{
+            //    CompanyCode = input.CompanyCode,
+            //    Lack1Level = input.Lack1Level,
+            //    NppbkcId = input.NppbkcId,
+            //    ExcisableGoodsType = input.ExcisableGoodsType,
+            //    SupplierPlantId = input.SupplierPlantId,
+            //    ReceivedPlantId = input.ReceivedPlantId,
+            //    PeriodTo = dtTo,
+            //    ExcludeLack1Id = input.Lack1Id
+            //});
+
+            var plantList = new List<string>();
+
+            if (input.Lack1Level == Enums.Lack1Level.Nppbkc)
+            {
+                var plantListFromMaster = _t001WServices.GetByNppbkcId(input.NppbkcId);
+                plantList.AddRange(plantListFromMaster.Select(item => item.WERKS));
+            }
+            else
+            {
+                plantList.Add(input.LevelPlantId);
+            }
+
+            var listMaterial = _ck5MaterialService.GetForBeginningEndBalance(plantList, input.SupplierPlantId);
+            var listSticker = listMaterial.Select(x => x.BRAND).Distinct().ToList();
+
+            var listMaterialBalance = _materialBalanceService.GetByPlantAndMaterialList(plantList, listSticker, input.PeriodMonth.Value, input.PeriodYears.Value, input.Lack1UomId);
+
+            //input.BeginingBalance = 0;
+            if (listMaterialBalance.Count > 0)
+            {
+                
+                return listMaterialBalance.Sum(x => x.CloseBalance);
+            }
+
+            return 0;
         }
 
         public decimal GetLatestSaldoPerPeriod(Lack1GetLatestSaldoPerPeriodInput input)
@@ -3180,8 +3231,8 @@ namespace Sampoerna.EMS.BLL
             if (listMaterialBalance.Count > 0)
             {
                 //rc.BeginingBalance = selected.BEGINING_BALANCE + selected.TOTAL_INCOME - selected.USAGE;
-                rc.BeginingBalance = listMaterialBalance.Sum(x => x.OPEN_BALANCE != null ? x.OPEN_BALANCE.Value : 0);
-                rc.CloseBalance = listMaterialBalance.Sum(x => x.CLOSE_BALANCE != null ? x.CLOSE_BALANCE.Value : 0);
+                rc.BeginingBalance = listMaterialBalance.Sum(x => x.OpenBalance);
+                rc.CloseBalance = listMaterialBalance.Sum(x => x.CloseBalance);
             }
 
             return rc;
@@ -3243,7 +3294,7 @@ namespace Sampoerna.EMS.BLL
                 ProductType = g.Key.PRODUCT_TYPE,
                 UomId = g.Key.UOM_ID,
                 UomDesc = g.Key.UOM_DESC,
-                TotalAmount = g.Sum(p => p.AMOUNT)
+                TotalAmount = Math.Round(g.Sum(p => p.AMOUNT),0)
             });
 
             return groupedData.ToList();
