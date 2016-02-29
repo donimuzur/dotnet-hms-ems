@@ -1457,6 +1457,8 @@ namespace Sampoerna.EMS.BLL
                     var summaryDto = new Lack2DetailReportDto();
 
                     summaryDto.Lack2Number = dtData.LACK2_NUMBER;
+                    summaryDto.Poa = dtData.APPROVED_BY;
+                    summaryDto.Creator = dtData.CREATED_BY;
 
                     if (lack2Item.CK5 != null)
                     {
