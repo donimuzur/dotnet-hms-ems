@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
 using Voxteneo.WebComponents.Logger;
@@ -22,35 +23,45 @@ namespace Sampoerna.EMS.BLL.Services
             _repository = _uow.GetGenericRepository<ZAIDM_EX_MATERIAL_BALANCE>();
         }
 
-        public List<ZAIDM_EX_MATERIAL_BALANCE> GetByPlantAndMaterialList(List<string> plantId, List<string> materialList, int month, int year,string uomId)
+        public List<MaterialBalanceDto> GetByPlantAndMaterialList(List<string> plantId, List<string> materialList, int month, int year,string uomId)
         {
             Expression<Func<ZAIDM_EX_MATERIAL_BALANCE, bool>> queryFilter =
                 c => plantId.Contains(c.WERKS) && materialList.Contains(c.MATERIAL_ID)
                     && c.PERIOD_MONTH == month && c.PERIOD_YEAR == year;
 
             var data = _repository.Get(queryFilter, null, "ZAIDM_EX_MATERIAL,ZAIDM_EX_MATERIAL.MATERIAL_UOM").ToList();
-            data = ProcessConvertionMaterialbalance(data, uomId);
-            return data;
+            var result = ProcessConvertionMaterialbalance(data, uomId);
+            return result;
         }
 
-        private List<ZAIDM_EX_MATERIAL_BALANCE> ProcessConvertionMaterialbalance(List<ZAIDM_EX_MATERIAL_BALANCE> data,string uomId)
+        private List<MaterialBalanceDto> ProcessConvertionMaterialbalance(List<ZAIDM_EX_MATERIAL_BALANCE> data, string uomId)
         {
-            var result = new List<ZAIDM_EX_MATERIAL_BALANCE>();
+            var result = new List<MaterialBalanceDto>();
             foreach (var zaidmExMaterialBalance in data)
             {
-                var resultData = zaidmExMaterialBalance;
+                var resultData = new MaterialBalanceDto();
+                resultData.Werks = zaidmExMaterialBalance.WERKS;
+                resultData.MaterialId = zaidmExMaterialBalance.MATERIAL_ID;
+                resultData.StorLoc = zaidmExMaterialBalance.LGORT;
+                if (zaidmExMaterialBalance.PERIOD_MONTH != null)
+                    resultData.Month = zaidmExMaterialBalance.PERIOD_MONTH.Value;
+                if (zaidmExMaterialBalance.PERIOD_YEAR != null)
+                    resultData.Year = zaidmExMaterialBalance.PERIOD_YEAR.Value;
+
                 var materialUom =
                     zaidmExMaterialBalance.ZAIDM_EX_MATERIAL.MATERIAL_UOM.FirstOrDefault(x => x.MEINH == uomId);
 
                 if (materialUom != null)
                 {
-                    resultData.OPEN_BALANCE = zaidmExMaterialBalance.OPEN_BALANCE / materialUom.UMREN;
-                    resultData.CLOSE_BALANCE = zaidmExMaterialBalance.CLOSE_BALANCE / materialUom.UMREN;
+                    resultData.OpenBalance = (decimal) (zaidmExMaterialBalance.OPEN_BALANCE / materialUom.UMREN);
+                    resultData.CloseBalance = (decimal) (zaidmExMaterialBalance.CLOSE_BALANCE / materialUom.UMREN);
                 }
                 else
                 {
-                    resultData.OPEN_BALANCE = zaidmExMaterialBalance.OPEN_BALANCE;
-                    resultData.CLOSE_BALANCE = zaidmExMaterialBalance.CLOSE_BALANCE;
+                    if (zaidmExMaterialBalance.OPEN_BALANCE != null)
+                        resultData.OpenBalance = zaidmExMaterialBalance.OPEN_BALANCE.Value;
+                    if (zaidmExMaterialBalance.CLOSE_BALANCE != null)
+                        resultData.CloseBalance = zaidmExMaterialBalance.CLOSE_BALANCE.Value;
                 }
 
                 result.Add(resultData);
