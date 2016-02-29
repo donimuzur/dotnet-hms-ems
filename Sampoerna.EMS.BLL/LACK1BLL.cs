@@ -3798,7 +3798,9 @@ namespace Sampoerna.EMS.BLL
                     Lack1Level = data.LACK1_LEVEL,
                     BeginingBalance = data.BEGINING_BALANCE,
                     EndingBalance = data.BEGINING_BALANCE + data.TOTAL_INCOME - (data.USAGE + (data.USAGE_TISTOTIS.HasValue ? data.USAGE_TISTOTIS.Value : 0)) - (data.RETURN_QTY.HasValue ? data.RETURN_QTY.Value : 0),
-                    TrackingConsolidations = new List<Lack1TrackingConsolidationDetailReportDto>()
+                    TrackingConsolidations = new List<Lack1TrackingConsolidationDetailReportDto>(),
+                    Poa = data.APPROVED_BY_POA,
+                    Creator = data.CREATED_BY
                 };
 
                 var incomeListExcludeManual =

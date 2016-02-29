@@ -394,6 +394,16 @@ namespace Sampoerna.EMS.BLL.Services
                 queryFilter = queryFilter.And(c => c.LACK1_LEVEL == input.Lack1Level.Value);
             }
 
+            if (!string.IsNullOrEmpty(input.Poa))
+            {
+                queryFilter = queryFilter.And(c => c.APPROVED_BY_POA == input.Poa);
+            }
+
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
+
             return _repository.Get(queryFilter, null, incTables).ToList();
         }
 
