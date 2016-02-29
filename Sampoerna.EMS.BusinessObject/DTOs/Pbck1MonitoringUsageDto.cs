@@ -31,5 +31,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal ReceivedAdditional { get; set; }
         public string Poa { get; set; }
         public string Creator { get; set; }
+        public string SupNppbkc { get; set; }
+        public string SupKppbc { get; set; }
+        public string SupPlant { get; set; }
+        public string SupCompany { get; set; }
     }
 }

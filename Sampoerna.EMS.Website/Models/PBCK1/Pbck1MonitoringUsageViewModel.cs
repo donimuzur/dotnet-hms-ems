@@ -60,6 +60,10 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public decimal TotalPbck1Quota { get; set; }
         public string Poa { get; set; }
         public string Creator { get; set; }
+        public string SupNppbkc { get; set; }
+        public string SupKppbc { get; set; }
+        public string SupPlant { get; set; }
+        public string SupCompany { get; set; }
     }
 
     public class Pbck1FilterMonitoringUsageViewModel
@@ -110,6 +114,10 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public bool QuotaRemaining { get; set; }
         public bool PoaCheck { get; set; }
         public bool CreatorCheck { get; set; }
+        public bool SupNppbkcCheck { get; set; }
+        public bool SupKppbcCheck { get; set; }
+        public bool SupPlantCheck { get; set; }
+        public bool SupCompanyCheck { get; set; }
 
         public string CompanyCode { get; set; }
         public int? YearFrom { get; set; }

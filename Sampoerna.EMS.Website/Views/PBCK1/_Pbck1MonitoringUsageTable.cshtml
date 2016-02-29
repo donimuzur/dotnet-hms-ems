@@ -18,6 +18,10 @@
             <th>Quota Remaining</th>
             <th>POA Approved</th>
             <th>Creator</th>
+            <th>Supplier NPPBKC</th>
+            <th>Supplier KPPBC</th>
+            <th>Supplier Plant</th>
+            <th>Supplier Company</th>
         </tr>
     </thead>
     <tbody>
@@ -56,6 +60,10 @@
                     <td align="right">@String.Format("{0:n}", @item.QuotaRemaining)</td>
                     <td>@item.Poa</td>
                     <td>@item.Creator</td>
+                    <td>@item.SupNppbkc</td>
+                    <td>@item.SupKppbc</td>
+                    <td>@item.SupPlant</td>
+                    <td>@item.SupCompany</td>
                 </tr>
                 row = row + 1;
             }

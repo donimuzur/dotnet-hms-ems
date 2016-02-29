@@ -284,6 +284,26 @@
                                                         @Html.CheckBoxFor(model => model.ExportModel.CreatorCheck, new { @id = "checkboxDefault13", @class = "checkbox checkexport", @datacolumn = "13" })Creator
                                                     </label>
                                                 </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.SupNppbkcCheck, new { @id = "checkboxDefault14", @class = "checkbox checkexport", @datacolumn = "14" })Supplier NPPBKC
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.SupKppbcCheck, new { @id = "checkboxDefault15", @class = "checkbox checkexport", @datacolumn = "15" })Supplier KPPBC
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.SupPlantCheck, new { @id = "checkboxDefault16", @class = "checkbox checkexport", @datacolumn = "16" })Supplier Plant
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.SupCompanyCheck, new { @id = "checkboxDefault17", @class = "checkbox checkexport", @datacolumn = "17" })Supplier Company
+                                                    </label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -368,7 +388,7 @@
                     // Show a column
                     $('#pbckTable').parents('div.dataTables_wrapper').first().show();
                     var table = $('#pbckTable').DataTable();
-                    for (var i = 0; i < 14; i++) {
+                    for (var i = 0; i < 18; i++) {
                         table.column(i).visible(true);
 
                     }
@@ -382,7 +402,7 @@
 
                     });
                     var table = $('#pbckTable').DataTable();
-                    for (var i = 0; i < 14; i++) {
+                    for (var i = 0; i < 18; i++) {
                         table.column(i).visible(false);
 
                     }
