@@ -14,6 +14,10 @@
                 <th>UoM</th>
                 <th>POA Approved</th>
                 <th>Creator</th>
+                <th>Supplier Plant</th>
+                <th>Supplier Company</th>
+                <th>Original Nppbkc</th>
+                <th>Original Kppbc</th>
                 @*<th>CK5-Type</th>*@
             </tr>
         </thead>
@@ -86,6 +90,18 @@
                          </td>
                          <td>
                              @Html.DisplayFor(model => item.Creator)
+                         </td>
+                         <td>
+                             @Html.DisplayFor(model => item.SupPlant)
+                         </td>
+                         <td>
+                             @Html.DisplayFor(model => item.SupComp)
+                         </td>
+                         <td>
+                             @Html.DisplayFor(model => item.OriNppbkc)
+                         </td>
+                         <td>
+                             @Html.DisplayFor(model => item.OriKppbc)
                          </td>
                      </tr>
                      row = row + 1;

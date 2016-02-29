@@ -55,6 +55,10 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public decimal Received { get; set; }
         public string Poa { get; set; }
         public string Creator { get; set; }
+        public string SupPlant { get; set; }
+        public string SupComp { get; set; }
+        public string OriNppbkc { get; set; }
+        public string OriKppbc { get; set; }
 
     }
 
@@ -79,6 +83,10 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public bool Received { get; set; }
         public bool PoaCheck { get; set; }
         public bool CreatorCheck { get; set; }
+        public bool SupPlantCheck { get; set; }
+        public bool SupCompCheck { get; set; }
+        public bool OriNppbkcCheck { get; set; }
+        public bool OriKppbcCheck { get; set; }
 
     }
 
@@ -93,5 +101,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string Received { get; set; }
         public string Poa { get; set; }
         public string Creator { get; set; }
+        public string SupPlant { get; set; }
+        public string SupComp { get; set; }
+        public string OriNppbkc { get; set; }
+        public string OriKppbc { get; set; }
     }
 }

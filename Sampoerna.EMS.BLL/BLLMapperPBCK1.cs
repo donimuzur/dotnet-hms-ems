@@ -274,6 +274,10 @@ namespace Sampoerna.EMS.BLL
                     src.CK5.Where(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled).Sum(s => s.GRAND_TOTAL_EX) : 0))
                 .ForMember(dest => dest.Pbck1Type, opt => opt.MapFrom(src => src.PBCK1_TYPE))
                 .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.APPROVED_BY_POA != null ? "-" : src.APPROVED_BY_POA))
+                .ForMember(dest => dest.SupNppbkc, opt => opt.MapFrom(src => src.SUPPLIER_NPPBKC_ID))
+                .ForMember(dest => dest.SupKppbc, opt => opt.MapFrom(src => src.SUPPLIER_KPPBC_ID))
+                .ForMember(dest => dest.SupPlant, opt => opt.MapFrom(src => src.SUPPLIER_PLANT_WERKS == null ? src.SUPPLIER_PLANT : src.SUPPLIER_PLANT_WERKS + "-" + src.SUPPLIER_PLANT))
+                .ForMember(dest => dest.SupCompany, opt => opt.MapFrom(src => src.SUPPLIER_COMPANY))
                 .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.CREATED_BY))
                 ;
 
@@ -329,6 +333,10 @@ namespace Sampoerna.EMS.BLL
                  .ForMember(dest => dest.Ck5List, opt => opt.MapFrom(src => src.CK5.Where(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled)))
                  .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.APPROVED_BY_POA == null ? "-" : src.APPROVED_BY_POA))
                  .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.CREATED_BY))
+                 .ForMember(dest => dest.SupPlant, opt => opt.MapFrom(src => src.SUPPLIER_PLANT_WERKS == null ? src.SUPPLIER_PLANT : src.SUPPLIER_PLANT_WERKS + "-" + src.SUPPLIER_PLANT))
+                 .ForMember(dest => dest.SupComp, opt => opt.MapFrom(src => src.SUPPLIER_COMPANY))
+                 .ForMember(dest => dest.OriNppbkc, opt => opt.MapFrom(src => src.NPPBKC_ID))
+                 .ForMember(dest => dest.OriKppbc, opt => opt.MapFrom(src => src.NPPBKC_KPPBC_ID))
                  ; 
 
 
