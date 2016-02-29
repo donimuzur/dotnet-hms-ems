@@ -97,6 +97,24 @@
                                         </div>
                                     </div>
                                 </div>
+                                 <div class="col-md-6">
+                                     <div class="row">
+                                         <label class="col-md-4">POA</label>
+                                         <div class="col-md-8">
+                                             @Html.DropDownListFor(model => model.SearchView.Poa, Model.SearchView.PoaList, "All", new { @class = "form-control selectreset" })
+                                         </div>
+                                     </div>
+                                 </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Creator</label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.SearchView.Creator, Model.SearchView.CreatorList, "All", new { @class = "form-control selectreset" })
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-2 col-md-offset-8">
@@ -120,6 +138,8 @@
                 @Html.HiddenFor(model => model.ExportSearchView.PeriodTo)
                 @Html.HiddenFor(model => model.ExportSearchView.ExcisableGoodsType)
                 @Html.HiddenFor(model => model.ExportSearchView.Lack1Level)
+                @Html.HiddenFor(model => model.ExportSearchView.Poa)
+                @Html.HiddenFor(model => model.ExportSearchView.Creator)
             }
         </div>
     </div>
@@ -317,6 +337,8 @@
             $('#ExportSearchView_PeriodFrom').val($('#SearchView_PeriodFrom').find("option:selected").val());
             $('#ExportSearchView_PeriodTo').val($('#SearchView_PeriodTo').find("option:selected").val());
             $('#ExportSearchView_Lack1Level').val($('#SearchView_Lack1Level').find("option:selected").val());
+            $('#ExportSearchView_Poa').val($('#SearchView_Poa').find("option:selected").val());
+            $('#ExportSearchView_Creator').val($('#SearchView_Creator').find("option:selected").val());
             $('#ExportXlsDetailReports').submit();
         }
 
