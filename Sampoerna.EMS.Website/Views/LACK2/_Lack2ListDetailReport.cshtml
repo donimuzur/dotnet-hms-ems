@@ -19,6 +19,8 @@
             <th>Company Name</th>
             <th>NPPBKC ID</th>
             <th>Type of Excisable Goods</th>
+            <th>POA</th>
+            <th>Creator</th>
         </tr>
     </thead>
 
@@ -45,6 +47,8 @@
                     <td>@Html.DisplayFor(model => item.CompanyName)</td>
                     <td>@Html.DisplayFor(model => item.NppbkcId)</td>
                     <td class="last">@Html.DisplayFor(model => item.TypeExcisableGoodsDesc)</td>
+                    <td>@Html.DisplayFor(model => item.Poa)</td>
+                    <td>@Html.DisplayFor(model => item.Creator)</td>
                 </tr>
                 row = row + 1;
             }
