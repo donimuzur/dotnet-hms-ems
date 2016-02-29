@@ -1530,6 +1530,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchView.YearTo = model.ExportModel.YearTo;
             model.SearchView.NppbkcId = model.ExportModel.NppbkcId;
             model.SearchView.pbck1Number = model.ExportModel.pbck1NumberCode;
+            model.SearchView.Poa = model.ExportModel.PoaSearch;
+            model.SearchView.Creator = model.ExportModel.CreatorSearch;
             var dataSummaryReport = SearchSummaryReports(model.SearchView);
 
             var exportModel = Mapper.Map<List<ExportSummaryDataModel>>(dataSummaryReport);
@@ -1871,6 +1873,15 @@ namespace Sampoerna.EMS.Website.Controllers
                     HtmlEncode = false
                 });
             }
+            if (model.ExportModel.Creator)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Creator",
+                    HeaderText = "Creator",
+                    HtmlEncode = false
+                });
+            }
 
             if (exportModel.Count == 0)
             {
@@ -2101,6 +2112,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     DataField = "QuotaRemaining",
                     HeaderText = "Quota Remaining"
+                });
+            }
+            if (model.ExportModel.PoaCheck)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Poa",
+                    HeaderText = "POA Approved"
+                });
+            }
+            if (model.ExportModel.CreatorCheck)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Creator",
+                    HeaderText = "Creator"
                 });
             }
 
@@ -2953,7 +2980,24 @@ namespace Sampoerna.EMS.Website.Controllers
                     HtmlEncode = false
                 });
             }
-
+            if (model.PoaCheck)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Poa",
+                    HeaderText = "POA Approved",
+                    HtmlEncode = false
+                });
+            }
+            if (model.CreatorCheck)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Creator",
+                    HeaderText = "Creator",
+                    HtmlEncode = false
+                });
+            }
 
             if (dataToExport.Count == 0)
             {

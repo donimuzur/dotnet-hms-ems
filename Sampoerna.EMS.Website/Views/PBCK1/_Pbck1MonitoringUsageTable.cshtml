@@ -16,6 +16,8 @@
             <th>Total PBCK-1 Quota</th>
             <th>Received</th>
             <th>Quota Remaining</th>
+            <th>POA Approved</th>
+            <th>Creator</th>
         </tr>
     </thead>
     <tbody>
@@ -52,6 +54,8 @@
                     <td align="right">@String.Format("{0:n}", @item.TotalPbck1Quota)</td>
                     <td align="right">@String.Format("{0:n}", @item.Received)</td>
                     <td align="right">@String.Format("{0:n}", @item.QuotaRemaining)</td>
+                    <td>@item.Poa</td>
+                    <td>@item.Creator</td>
                 </tr>
                 row = row + 1;
             }
