@@ -433,6 +433,16 @@ namespace Sampoerna.EMS.BLL.Services
                                                     (input.ListNppbkc.Contains(c.NPPBKC_ID) && c.LACK1_LEVEL == Enums.Lack1Level.Nppbkc));
             }
 
+            if (!string.IsNullOrEmpty(input.Poa))
+            {
+                queryFilter = queryFilter.And(c => c.APPROVED_BY_POA == input.Poa);
+            }
+
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
+
             return _repository.Get(queryFilter, null, incTables).ToList();
         }
 

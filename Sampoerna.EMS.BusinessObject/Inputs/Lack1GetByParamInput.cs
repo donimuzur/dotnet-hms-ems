@@ -180,6 +180,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string ReceivingPlantId { get; set; }
         public string ExcisableGoodsType { get; set; }
         public string SupplierPlantId { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
         public int? PeriodMonthFrom { get; set; }
         public int? PeriodYearFrom { get; set; }
         public int? PeriodMonthTo { get; set; }

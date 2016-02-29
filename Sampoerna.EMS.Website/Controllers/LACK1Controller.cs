@@ -2023,6 +2023,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchView.SupplierPlantIdList = GetSupplierPlantListByParam(model.SearchView.NppbkcId, model.SearchView.ExcisableGoodsType);
             model.SearchView.PeriodFromList = GetPeriodList();
             model.SearchView.PeriodToList = GetPeriodList();
+            model.SearchView.PoaList = GlobalFunctions.GetPoaAll(_poabll);
+            model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
             return model;
         }
 
@@ -2153,6 +2155,14 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     slDocument.SetCellValue(iRow, iColumn, item.EndingBalance.ToString("N2"));
                     slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.Poa);
+                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.Creator);
+                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     
                     for (int i = 1; i < item.TrackingConsolidations.Count; i++)
                     {
@@ -2269,6 +2279,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
 
                     slDocument.SetCellValue(iRow, iColumn, item.EndingBalance.ToString("N2"));
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.Poa);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.Creator);
                     
                 }
                 iRow++;
@@ -2306,6 +2322,14 @@ namespace Sampoerna.EMS.Website.Controllers
             iColumn = iColumn + 5;
 
             slDocument.SetCellValue(1, iColumn, "Ending Balance");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "POA");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Creator");
             slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan 2
             iColumn = iColumn + 1;
             
