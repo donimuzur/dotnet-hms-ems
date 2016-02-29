@@ -58,6 +58,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         /// </summary>
         [UIHint("FormatQty")]
         public decimal TotalPbck1Quota { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
     }
 
     public class Pbck1FilterMonitoringUsageViewModel
@@ -106,6 +108,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public bool TotalPbck1Quota { get; set; }
         public bool Received { get; set; }
         public bool QuotaRemaining { get; set; }
+        public bool PoaCheck { get; set; }
+        public bool CreatorCheck { get; set; }
 
         public string CompanyCode { get; set; }
         public int? YearFrom { get; set; }

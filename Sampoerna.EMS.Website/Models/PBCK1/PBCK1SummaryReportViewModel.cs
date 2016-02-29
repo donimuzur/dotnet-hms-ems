@@ -99,6 +99,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public int? YearFrom { get; set; }
         public int? YearTo { get; set; }
         public string NppbkcId { get; set; }
+        public string PoaSearch { get; set; }
+        public string CreatorSearch { get; set; }
 
         public bool Pbck1Type { get; set; }
         public bool PoaList { get; set; }
@@ -130,6 +132,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public bool StatusDoc { get; set; }
         public bool GrandTotalExciseable { get; set; }
         public bool CompletedDate { get; set; }
+        public bool Creator { get; set; }
 
         public string pbck1NumberCode { get; set; }
     }
@@ -200,6 +203,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string StatusDocCk5 { get; set; }
         public string GrandTotalExcisableCk5 { get; set; }
         public string CompletedDate { get; set; }
+        public string Creator { get; set; }
     }
 
 }

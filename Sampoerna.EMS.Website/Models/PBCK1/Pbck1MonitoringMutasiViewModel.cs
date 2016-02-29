@@ -53,6 +53,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
 
         [UIHint("FormatQty")]
         public decimal Received { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
 
     }
 
@@ -75,6 +77,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public bool UoM { get; set; }
         public bool Ck5Type { get; set; }
         public bool Received { get; set; }
+        public bool PoaCheck { get; set; }
+        public bool CreatorCheck { get; set; }
 
     }
 
@@ -87,5 +91,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string GrandTotalExciseable { get; set; }
         public string UoM { get; set; }
         public string Received { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
     }
 }

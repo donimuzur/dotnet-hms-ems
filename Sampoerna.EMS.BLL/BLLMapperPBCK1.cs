@@ -273,6 +273,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Received, opt => opt.MapFrom(src => src.CK5 != null ?
                     src.CK5.Where(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled).Sum(s => s.GRAND_TOTAL_EX) : 0))
                 .ForMember(dest => dest.Pbck1Type, opt => opt.MapFrom(src => src.PBCK1_TYPE))
+                .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.APPROVED_BY_POA != null ? "-" : src.APPROVED_BY_POA))
+                .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.CREATED_BY))
                 ;
 
             Mapper.CreateMap<PBCK1_PROD_PLAN, Pbck1ReportProdPlanDto>().IgnoreAllNonExisting()
@@ -324,7 +326,10 @@ namespace Sampoerna.EMS.BLL
                     ? src.CK5.Where(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled).Sum(s => s.GRAND_TOTAL_EX)
                     : 0))
                 .ForMember(dest => dest.Pbck1Type, opt => opt.MapFrom(src => src.PBCK1_TYPE))
-                 .ForMember(dest => dest.Ck5List, opt => opt.MapFrom(src => src.CK5.Where(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled))); 
+                 .ForMember(dest => dest.Ck5List, opt => opt.MapFrom(src => src.CK5.Where(c => c.STATUS_ID != Enums.DocumentStatus.Cancelled)))
+                 .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.APPROVED_BY_POA == null ? "-" : src.APPROVED_BY_POA))
+                 .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.CREATED_BY))
+                 ; 
 
 
             #endregion

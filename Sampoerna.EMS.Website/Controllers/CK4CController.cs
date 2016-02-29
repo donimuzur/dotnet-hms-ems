@@ -1353,7 +1353,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.SearchView.Ck4CNoList = GetCk4CNumberList(listCk4C);
             model.SearchView.PlantIdList = GetPlantList(listCk4C);
-
+            model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
+            model.SearchView.PoaList = GlobalFunctions.GetPoaAll(_poabll);
 
             var filter = new Ck4CSearchSummaryReportsViewModel();
 
@@ -1442,6 +1443,8 @@ namespace Sampoerna.EMS.Website.Controllers
             var filterModel = new Ck4CSearchSummaryReportsViewModel();
             filterModel.Ck4CNo = modelExport.Ck4CNumber;
             filterModel.PlantId = modelExport.Plant;
+            filterModel.Poa = modelExport.PoaSearch;
+            filterModel.Creator = modelExport.CreatorSearch;
             filterModel.isForExport = true;
 
             var dataSummaryReport = SearchDataSummaryReports(filterModel);
@@ -1611,6 +1614,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (modelExport.CompletedDate)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.CompletedDate);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.Creator)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Creator);
                     iColumn = iColumn + 1;
                 }
 
@@ -1787,6 +1796,12 @@ namespace Sampoerna.EMS.Website.Controllers
             if (modelExport.CompletedDate)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Completed Date");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Creator)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Creator");
                 iColumn = iColumn + 1;
             }
 

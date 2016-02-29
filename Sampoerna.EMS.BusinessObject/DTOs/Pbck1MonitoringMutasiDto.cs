@@ -26,6 +26,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal Received { get; set; }
         public decimal ReceivedAdditional { get; set; }
         public List<CK5Dto> Ck5List { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
      
     }
 }

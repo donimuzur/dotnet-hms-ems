@@ -174,6 +174,8 @@
                                         @Html.HiddenFor(model => model.ExportModel.YearTo)
                                         @Html.HiddenFor(model => model.ExportModel.NppbkcId)
                                         @Html.HiddenFor(model => model.ExportModel.pbck1NumberCode)
+                                        @Html.HiddenFor(model => model.ExportModel.PoaSearch)
+                                        @Html.HiddenFor(model => model.ExportModel.CreatorSearch)
                                        
                                         <div class="row toggle">
                                             <div class="toggle-title">
@@ -386,6 +388,11 @@
                                                         @Html.CheckBoxFor(model => model.ExportModel.CompletedDate, new { @class = "checkbox checkexport", @datacolumn = "39" })Completed Date
                                                     </label>
                                                 </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Creator, new { @class = "checkbox checkexport", @datacolumn = "40" })Creator
+                                                    </label>
+                                                </div>
                                             </div>
 
 
@@ -521,7 +528,7 @@
                 $('#pbckTable').parents('div.dataTables_wrapper').first().show();
             });
 
-            for (var i = 6; i < 40; i++) {
+            for (var i = 6; i < 41; i++) {
                 table.column(i).visible(false);
 
             }
@@ -532,7 +539,7 @@
                     // Show a column
                     $('#pbckTable').parents('div.dataTables_wrapper').first().show();
                     var table = $('#pbckTable').DataTable();
-                    for (var i = 0; i < 40; i++) {
+                    for (var i = 0; i < 41; i++) {
                         table.column(i).visible(true);
 
                     }
@@ -547,7 +554,7 @@
 
                     });
                     var table = $('#pbckTable').DataTable();
-                    for (var i = 0; i < 40; i++) {
+                    for (var i = 0; i < 41; i++) {
                         table.column(i).visible(false);
 
                     }
@@ -571,6 +578,8 @@
             $('#ExportModel_YearTo').val($('#SearchView_YearTo').find("option:selected").val());
             $('#ExportModel_NppbkcId').val($('#SearchView_NppbkcId').find("option:selected").val());
             $('#ExportModel_pbck1NumberCode').val($('#SearchView_pbck1Number').find("option:selected").val());
+            $('#ExportModel_PoaSearch').val($('#SearchInput_POA').find("option:selected").val());
+            $('#ExportModel_CreatorSearch').val($('#SearchView_Creator').find("option:selected").val());
             $('#ExportSummaryReportsForms').submit();
         });
 
