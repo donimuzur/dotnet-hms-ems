@@ -134,6 +134,36 @@
                                 </div>
                             </div>
 
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">POA</label>
+                                        <div class="col-md-8">
+                                           
+                                                @(Model.SearchView.PoaList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                              : Html.DropDownListFor(model => model.SearchView.Poa, Model.SearchView.PoaList, "All", new { @class = "form-control selectreset" }))
+                                                
+                                           
+                                        </div>
+                                    </div>
+
+                                </div>
+                               
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Creator</label>
+                                        <div class="col-md-8">
+                                         
+                                                @(Model.SearchView.CreatorList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                              : Html.DropDownListFor(model => model.SearchView.Creator, Model.SearchView.CreatorList, "All", new { @class = "form-control selectreset" }))
+
+
+                                           
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
                            
 
                             <div class="col-md-2 col-md-offset-8">
@@ -168,6 +198,8 @@
                                         @Html.HiddenFor(model => model.ExportModel.PeriodYear)
                                         @Html.HiddenFor(model => model.ExportModel.DateFrom)
                                         @Html.HiddenFor(model => model.ExportModel.DateTo)
+                                        @Html.HiddenFor(model => model.ExportModel.Poa)
+                                        @Html.HiddenFor(model => model.ExportModel.Creator)
                                         
                                         <div class="row toggle">
 
@@ -253,7 +285,16 @@
                                                         @Html.CheckBoxFor(model => model.ExportModel.BTypeExcisableGoods, new { @class = "checkbox checkexport", @datacolumn = "15" })Type of Excisable Goods
                                                     </label>
                                                 </div>
-                                               
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.PoaCheck, new { @class = "checkbox checkexport", @datacolumn = "16" })POA
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.CreatorCheck, new { @class = "checkbox checkexport", @datacolumn = "17" })Creator
+                                                    </label>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -328,7 +369,7 @@
             });
 
             if (blFirst) {
-                for (var i = 1; i < 16; i++) {
+                for (var i = 1; i < 18; i++) {
                     table.column(i).visible(false);
                 }
 
@@ -378,7 +419,8 @@
             $('#ExportModel_PeriodYear').val($('#SearchView_PeriodYear').find("option:selected").val());
             $('#ExportModel_DateFrom').val($('#SearchView_DateFrom').find("option:selected").val());
             $('#ExportModel_DateTo').val($('#SearchView_DateTo').find("option:selected").val());
-
+            $('#ExportModel_Poa').val($('#SearchView_Poa').find("option:selected").val());
+            $('#ExportModel_Creator').val($('#SearchView_Creator').find("option:selected").val());
         }
         
     </script>
