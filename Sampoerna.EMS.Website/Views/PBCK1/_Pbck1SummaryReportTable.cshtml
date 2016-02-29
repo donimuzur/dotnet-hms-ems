@@ -47,6 +47,7 @@
             <th>Status Doc</th>
             <th>Grand Total Exciseable</th>
             <th>Completed Date</th>
+            <th>Creator</th>
         </tr>
     </thead>
     <tbody>
@@ -287,6 +288,9 @@
                             {
                                 @item.CompletedDate.Value.ToString("dd-MMMM-yyyy")
                             }
+                        </td>
+                        <td>
+                            @item.CreatedById
                         </td>
                     </tr>
                             row = row + 1;

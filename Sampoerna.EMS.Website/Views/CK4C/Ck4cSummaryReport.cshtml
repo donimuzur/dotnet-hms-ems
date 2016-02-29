@@ -38,14 +38,30 @@
 
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <label class="col-md-4">POA</label>
+                                    <div class="col-md-8">
+                                        @(Model.SearchView.PoaList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                              : Html.DropDownListFor(model => model.SearchView.Poa, Model.SearchView.PoaList, "All", new { @class = "form-control selectreset" }))
+
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="row">
                                     <label class="col-md-4">Plant</label>
                                     <div class="col-md-8">
+                                        <select id="SearchInput_POA" name="SearchInput.POA" class="form-control selectreset">
+                                            <option value="">All</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label class="col-md-4">Creator</label>
+                                    <div class="col-md-8">
 
-                                        @(Model.SearchView.PlantIdList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                                              : Html.DropDownListFor(model => model.SearchView.PlantId, Model.SearchView.PlantIdList, "All", new { @class = "form-control selectreset" }))
+                                        @(Model.SearchView.CreatorList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                              : Html.DropDownListFor(model => model.SearchView.Creator, Model.SearchView.CreatorList, "All", new { @class = "form-control selectreset" }))
 
                                     </div>
                                 </div>
@@ -78,6 +94,8 @@
 
                                         @Html.HiddenFor(model => model.ExportModel.Ck4CNumber)
                                         @Html.HiddenFor(model => model.ExportModel.Plant)
+                                        @Html.HiddenFor(model => model.ExportModel.PoaSearch)
+                                        @Html.HiddenFor(model => model.ExportModel.CreatorSearch)
 
                                         <div class="row toggle">
 
@@ -227,6 +245,11 @@
                                                         @Html.CheckBoxFor(model => model.ExportModel.CompletedDate, new { @class = "checkbox checkexport", @datacolumn = "26" })Completed Date
                                                     </label>
                                                 </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Creator, new { @class = "checkbox checkexport", @datacolumn = "27" })Creator
+                                                    </label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -308,7 +331,7 @@
                 $('#ck4CTable').parents('div.dataTables_wrapper').first().show();
             });
 
-            for (var i = 1; i < 27; i++) {
+            for (var i = 1; i < 28; i++) {
                 table.column(i).visible(false);
             }
 
@@ -329,7 +352,7 @@
                     // Show a column
                     $('#ck4CTable').parents('div.dataTables_wrapper').first().show();
                     var table = $('#ck4CTable').DataTable();
-                    for (var i = 0; i < 27; i++) {
+                    for (var i = 0; i < 28; i++) {
                         table.column(i).visible(true);
 
                     }
@@ -343,7 +366,7 @@
 
                     });
                     var table = $('#ck4CTable').DataTable();
-                    for (var i = 0; i < 27; i++) {
+                    for (var i = 0; i < 28; i++) {
                         table.column(i).visible(false);
 
                     }
@@ -370,6 +393,8 @@
         function GetSearchSummaryReports() {
             $('#ExportModel_Ck4CNumber').val($('#SearchView_Ck4CNo').find("option:selected").val());
             $('#ExportModel_Plant').val($('#SearchView_PlantId').find("option:selected").val());
+            $('#ExportModel_PoaSearch').val($('#SearchView_Poa').find("option:selected").val());
+            $('#ExportModel_CreatorSearch').val($('#SearchView_Creator').find("option:selected").val());
         }
 
         $("#btnConfirm").click(function () {

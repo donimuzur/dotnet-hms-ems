@@ -101,6 +101,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.QtyApproved, opt => opt.MapFrom(src => src.QtyApproved == null ? "" : String.Format("{0:n}", src.QtyApproved.Value)))
                 .ForMember(dest => dest.DecreeDate, opt => opt.MapFrom(src => src.DecreeDate == null ? "" : src.DecreeDate.Value.ToString("dd MMMM yyyy")))
                 .ForMember(dest => dest.IsNppbkcImport, opt => opt.MapFrom(src => src.IsNppbkcImport ? "Yes" : "No"))
+                .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.CreatedById))
                 .ForMember(dest => dest.ApprovedByPoaId, opt => opt.MapFrom(src => String.IsNullOrEmpty(src.ApprovedByPoaId) ? "-" : src.ApprovedByPoaId))
                 .ForMember(dest => dest.ApprovedByManagerId, opt => opt.MapFrom(src => String.IsNullOrEmpty(src.ApprovedByManagerId) ? "-" : src.ApprovedByManagerId))
                 .ForMember(dest => dest.LatestSaldoUomName, opt => opt.MapFrom(src => String.IsNullOrEmpty(src.LatestSaldoUomName) ? "-" : src.LatestSaldoUomName))

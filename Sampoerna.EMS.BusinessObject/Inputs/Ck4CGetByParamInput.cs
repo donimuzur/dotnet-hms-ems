@@ -74,6 +74,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public List<string> ListNppbkc { get; set; }
         public List<string> ListUserPlant { get; set; }
         public Enums.UserRole UserRole { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
     }
 
     public class Ck4CDashboardParamInput
