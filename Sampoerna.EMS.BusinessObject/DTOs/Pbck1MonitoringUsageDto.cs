@@ -29,5 +29,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         /// </summary>
         public decimal Received { get; set; }
         public decimal ReceivedAdditional { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
     }
 }
