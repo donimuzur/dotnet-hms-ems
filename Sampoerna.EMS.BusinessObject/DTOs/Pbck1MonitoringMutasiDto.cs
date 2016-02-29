@@ -28,6 +28,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public List<CK5Dto> Ck5List { get; set; }
         public string Poa { get; set; }
         public string Creator { get; set; }
+        public string SupPlant { get; set; }
+        public string SupComp { get; set; }
+        public string OriNppbkc { get; set; }
+        public string OriKppbc { get; set; }
      
     }
 }
