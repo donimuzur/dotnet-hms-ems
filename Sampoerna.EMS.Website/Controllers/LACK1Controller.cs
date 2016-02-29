@@ -449,6 +449,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     Amount = g.Sum(p => p.TotalAmount)
                 });
 
+                //foreach (var item in groupedData)
+                //{
+                //    item.Amount = Math.Round(item.Amount, 0);
+                //}
                 return groupedData.ToList();
 
             }

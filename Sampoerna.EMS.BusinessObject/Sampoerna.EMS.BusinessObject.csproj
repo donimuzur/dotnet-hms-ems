@@ -165,6 +165,7 @@
     <Compile Include="DTOs\Lack2SummaryReportDto.cs" />
     <Compile Include="DTOs\LFA1Dto.cs" />
     <Compile Include="DTOs\Lack1DocumentDto.cs" />
+    <Compile Include="DTOs\MaterialBalanceDto.cs" />
     <Compile Include="DTOs\MaterialDto.cs" />
     <Compile Include="DTOs\NlogDto.cs" />
     <Compile Include="DTOs\NppbkcPlantDto.cs" />
