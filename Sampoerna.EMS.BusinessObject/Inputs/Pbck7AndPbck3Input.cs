@@ -36,6 +36,20 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public List<string> ListUserPlant { get; set; }
         public string UserId { get; set; }
         public Enums.UserRole UserRole { get; set; }
+        public string FaCode { get; set; }
+        public string Brand { get; set; }
+        public string Content { get; set; }
+        public string Hje { get; set; }
+        public string Tariff { get; set; }
+        public string Pbck7Qty { get; set; }
+        public string FiscalYear { get; set; }
+        public string ExciseValue { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
+        public string Pbck3No { get; set; }
+        public string Pbck3Status { get; set; }
+        public string Ck2No { get; set; }
+        public string Ck2Value { get; set; }
 
     }
     public class Pbck3SummaryInput
@@ -49,6 +63,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public List<string> ListUserPlant { get; set; }
         public string UserId { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
         public Enums.UserRole UserRole { get; set; }
     }
 
