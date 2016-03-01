@@ -2026,6 +2026,13 @@ namespace Sampoerna.EMS.BLL
 
             }
 
+            result = result.GroupBy(x => new { x.Ck1Date, x.Ck1Id, x.Ck1No }).Select(p => new GetListCk1ByNppbkcOutput()
+                                {
+                                    Ck1No = p.FirstOrDefault().Ck1No,
+                                    Ck1Id = p.FirstOrDefault().Ck1Id,
+                                    Ck1Date = p.FirstOrDefault().Ck1Date
+                                }).ToList();
+
             return result;
         }
 
