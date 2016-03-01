@@ -4819,7 +4819,7 @@ namespace Sampoerna.EMS.Website.Controllers
             switch (type)
             {
                 case 1: //facode
-                    query = from x in listCk5
+                    query = from x in listCk5.OrderBy(c=>c.FaCode)
                             select new SelectItemModel()
                             {
                                 ValueField = x.FaCode,
@@ -4828,7 +4828,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     break;
 
                 case 2: //POA
-                    query = from x in listCk5
+                    query = from x in listCk5.OrderBy(c => c.Poa)
                             select new SelectItemModel()
                             {
                                 ValueField = x.Poa,
@@ -4837,7 +4837,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     break;
 
                 case 3: //creator
-                    query = from x in listCk5
+                    query = from x in listCk5.OrderBy(c => c.Creator)
                             select new SelectItemModel()
                             {
                                 ValueField = x.Creator,
@@ -4846,7 +4846,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     break;
 
                 case 4: //pbck3 no
-                    query = from x in listCk5
+                    query = from x in listCk5.OrderBy(c => c.Pbck3No)
                             select new SelectItemModel()
                             {
                                 ValueField = x.Pbck3No,
@@ -4855,11 +4855,83 @@ namespace Sampoerna.EMS.Website.Controllers
                     break;
 
                 case 5: //ck2 no
-                    query = from x in listCk5
+                    query = from x in listCk5.OrderBy(c => c.Ck2Number)
                             select new SelectItemModel()
                             {
                                 ValueField = x.Ck2Number,
                                 TextField = x.Ck2Number
+                            };
+                    break;
+                case 6: //Brand
+                    query = from x in listCk5.OrderBy(c => c.Brand)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Brand,
+                                TextField = x.Brand
+                            };
+                    break;
+                case 7: //Content
+                    query = from x in listCk5.OrderBy(c => c.Content)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Content,
+                                TextField = x.Content
+                            };
+                    break;
+                case 8: //Hje
+                    query = from x in listCk5.OrderBy(c => c.Hje)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Hje,
+                                TextField = x.Hje
+                            };
+                    break;
+                case 9: //Tariff
+                    query = from x in listCk5.OrderBy(c => c.Tariff)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Tariff,
+                                TextField = x.Tariff
+                            };
+                    break;
+                case 10: //ck5 market return qty
+                    query = from x in listCk5.OrderBy(c => c.Ck5MarketReturnQty)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Ck5MarketReturnQty,
+                                TextField = x.Ck5MarketReturnQty
+                            };
+                    break;
+                case 11: //fiscal year
+                    query = from x in listCk5.OrderBy(c => c.FiscalYear)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.FiscalYear,
+                                TextField = x.FiscalYear
+                            };
+                    break;
+                case 12:  //excise value
+                    query = from x in listCk5.OrderBy(c => c.ExciseValue)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.ExciseValue,
+                                TextField = x.ExciseValue
+                            };
+                    break;
+                case 13: //pbck3 status
+                    query = from x in listCk5
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Pbck3Status,
+                                TextField = x.Pbck3Status
+                            };
+                    break;
+                case 14: //ck2 value
+                    query = from x in listCk5.OrderBy(c => c.Ck2Value)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Ck2Value,
+                                TextField = x.Ck2Value
                             };
                     break;
             }
@@ -4886,6 +4958,16 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchView.CreatorList = GetCk5MarketReturnSummaryList(listCk5, 3);
             model.SearchView.Pbck3NoList = GetCk5MarketReturnSummaryList(listCk5, 4);
             model.SearchView.Ck2NoList = GetCk5MarketReturnSummaryList(listCk5, 5);
+
+            model.SearchView.BrandList = GetCk5MarketReturnSummaryList(listCk5, 6);
+            model.SearchView.ContentList = GetCk5MarketReturnSummaryList(listCk5, 7);
+            model.SearchView.HjeList = GetCk5MarketReturnSummaryList(listCk5, 8);
+            model.SearchView.TariffList = GetCk5MarketReturnSummaryList(listCk5, 9);
+            model.SearchView.Ck5MarketReturnQtyList = GetCk5MarketReturnSummaryList(listCk5, 10);
+            model.SearchView.FiscalYearList = GetCk5MarketReturnSummaryList(listCk5, 11);
+            model.SearchView.ExciseValueList = GetCk5MarketReturnSummaryList(listCk5, 12);
+            model.SearchView.Pbck3StatusList = GetCk5MarketReturnSummaryList(listCk5, 13);
+            model.SearchView.Ck2ValueList = GetCk5MarketReturnSummaryList(listCk5, 14);
 
             var filter = new CK5MarketReturnSearchSummaryReportsViewModel();
 
@@ -4965,88 +5047,88 @@ namespace Sampoerna.EMS.Website.Controllers
             {
 
                 iColumn = 1;
-                if (modelExport.FaCode)
+                if (modelExport.IsSelectFaCode)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.FaCode);
                     iColumn = iColumn + 1;
                 }
-                if (modelExport.Brand)
+                if (modelExport.IsSelectBrand)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Brand);
                     iColumn = iColumn + 1;
                 }
 
-                if (modelExport.Content)
+                if (modelExport.IsSelectContent)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Content);
                     iColumn = iColumn + 1;
                 }
 
-                if (modelExport.Hje)
+                if (modelExport.IsSelectHje)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Hje);
                     iColumn = iColumn + 1;
                 }
-                if (modelExport.Tariff)
+                if (modelExport.IsSelectTariff)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Tariff);
                     iColumn = iColumn + 1;
                 }
-                if (modelExport.Ck5MarketReturnQty)
+                if (modelExport.IsSelectCk5MarketReturnQty)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Ck5MarketReturnQty);
                     iColumn = iColumn + 1;
                 }
 
-                if (modelExport.FiscalYear)
+                if (modelExport.IsSelectFiscalYear)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.FiscalYear);
                     iColumn = iColumn + 1;
                 }
 
-                if (modelExport.ExciseValue)
+                if (modelExport.IsSelectExciseValue)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.ExciseValue);
                     iColumn = iColumn + 1;
                 }
 
-                if (modelExport.Poa)
+                if (modelExport.IsSelectPoa)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Poa);
                     iColumn = iColumn + 1;
                 }
 
-                if (modelExport.Creator)
+                if (modelExport.IsSelectCreator)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Creator);
                     iColumn = iColumn + 1;
                 }
 
-                if (modelExport.Pbck3No)
+                if (modelExport.IsSelectPbck3No)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Pbck3No);
                     iColumn = iColumn + 1;
                 }
 
-                if (modelExport.Pbck3Status)
+                if (modelExport.IsSelectPbck3Status)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Pbck3Status);
                     iColumn = iColumn + 1;
                 }
 
                 //start
-                if (modelExport.Ck2Number)
+                if (modelExport.IsSelectCk2Number)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Ck2Number);
                     iColumn = iColumn + 1;
                 }
-                if (modelExport.Ck2Value)
+                if (modelExport.IsSelectCk2Value)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Ck2Value);
                     iColumn = iColumn + 1;
                 }
 
-                if (modelExport.CompletedDate)
+                if (modelExport.IsSelectCompletedDate)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.CompletedDate);
                     iColumn = iColumn + 1;
@@ -5064,88 +5146,88 @@ namespace Sampoerna.EMS.Website.Controllers
             int iColumn = 1;
             int iRow = 1;
 
-            if (modelExport.FaCode)
+            if (modelExport.IsSelectFaCode)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Fa Code");
                 iColumn = iColumn + 1;
             }
-            if (modelExport.Brand)
+            if (modelExport.IsSelectBrand)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Brand");
                 iColumn = iColumn + 1;
             }
 
-            if (modelExport.Content)
+            if (modelExport.IsSelectContent)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Content");
                 iColumn = iColumn + 1;
             }
 
-            if (modelExport.Hje)
+            if (modelExport.IsSelectHje)
             {
                 slDocument.SetCellValue(iRow, iColumn, "HJE");
                 iColumn = iColumn + 1;
             }
-            if (modelExport.Tariff)
+            if (modelExport.IsSelectTariff)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Tariff");
                 iColumn = iColumn + 1;
             }
-            if (modelExport.Ck5MarketReturnQty)
+            if (modelExport.IsSelectCk5MarketReturnQty)
             {
                 slDocument.SetCellValue(iRow, iColumn, "CK-5 Market Return Qty");
                 iColumn = iColumn + 1;
             }
 
-            if (modelExport.FiscalYear)
+            if (modelExport.IsSelectFiscalYear)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Fiscal Year");
                 iColumn = iColumn + 1;
             }
 
-            if (modelExport.ExciseValue)
+            if (modelExport.IsSelectExciseValue)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Excise Value");
                 iColumn = iColumn + 1;
             }
 
-            if (modelExport.Poa)
+            if (modelExport.IsSelectPoa)
             {
                 slDocument.SetCellValue(iRow, iColumn, "POA");
                 iColumn = iColumn + 1;
             }
 
-            if (modelExport.Creator)
+            if (modelExport.IsSelectCreator)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Creator");
                 iColumn = iColumn + 1;
             }
 
-            if (modelExport.Pbck3No)
+            if (modelExport.IsSelectPbck3No)
             {
                 slDocument.SetCellValue(iRow, iColumn, "PBCK-3 No.");
                 iColumn = iColumn + 1;
             }
 
-            if (modelExport.Pbck3Status)
+            if (modelExport.IsSelectPbck3Status)
             {
                 slDocument.SetCellValue(iRow, iColumn, "PBCK-3 Status");
                 iColumn = iColumn + 1;
             }
 
             //start
-            if (modelExport.Ck2Number)
+            if (modelExport.IsSelectCk2Number)
             {
                 slDocument.SetCellValue(iRow, iColumn, "CK-2 No.");
                 iColumn = iColumn + 1;
             }
-            if (modelExport.Ck2Value)
+            if (modelExport.IsSelectCk2Value)
             {
                 slDocument.SetCellValue(iRow, iColumn, "CK-2 Value");
                 iColumn = iColumn + 1;
             }
 
-            if (modelExport.CompletedDate)
+            if (modelExport.IsSelectCompletedDate)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Completed Date");
                 iColumn = iColumn + 1;

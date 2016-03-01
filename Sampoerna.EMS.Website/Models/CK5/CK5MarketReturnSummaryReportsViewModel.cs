@@ -37,6 +37,26 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string Ck2No { get; set; }
         public SelectList Ck2NoList { get; set; }
 
+        public string Brand { get; set; }
+        public string Content { get; set; }
+        public string Hje { get; set; }
+        public string Tariff { get; set; }
+        public string Ck5MarketReturnQty { get; set; }
+        public string FiscalYear { get; set; }
+        public string ExciseValue { get; set; }
+        public string Pbck3Status { get; set; }
+        public string Ck2Value { get; set; }
+
+
+        public SelectList BrandList { get; set; }
+        public SelectList ContentList { get; set; }
+        public SelectList HjeList { get; set; }
+        public SelectList TariffList { get; set; }
+        public SelectList Ck5MarketReturnQtyList { get; set; }
+        public SelectList FiscalYearList { get; set; }
+        public SelectList ExciseValueList { get; set; }
+        public SelectList Pbck3StatusList { get; set; }
+        public SelectList Ck2ValueList { get; set; }
     }
 
     public class CK5MarketReturnSummaryReportsItem
@@ -65,22 +85,22 @@ namespace Sampoerna.EMS.Website.Models.CK5
     public class CK5MarketReturnExportSummaryReportsViewModel : CK5MarketReturnSearchSummaryReportsViewModel
     {
         public bool NoRow { get; set; }
-        public bool FaCode { get; set; }
-        public bool Brand { get; set; }
-        public bool Content { get; set; }
-        public bool Hje { get; set; }
-        public bool Tariff { get; set; }
-        public bool Ck5MarketReturnQty { get; set; }
-        public bool FiscalYear { get; set; }
-        public bool ExciseValue { get; set; }
-        public bool Poa { get; set; }
-        public bool Creator { get; set; }
-        public bool Pbck3No { get; set; }
-        public bool Pbck3Status { get; set; }
-        public bool Ck2Number { get; set; }
-        public bool Ck2Value { get; set; }
-        public bool Status { get; set; }
-        public bool CompletedDate { get; set; }
+        public bool IsSelectFaCode { get; set; }
+        public bool IsSelectBrand { get; set; }
+        public bool IsSelectContent { get; set; }
+        public bool IsSelectHje { get; set; }
+        public bool IsSelectTariff { get; set; }
+        public bool IsSelectCk5MarketReturnQty { get; set; }
+        public bool IsSelectFiscalYear { get; set; }
+        public bool IsSelectExciseValue { get; set; }
+        public bool IsSelectPoa { get; set; }
+        public bool IsSelectCreator { get; set; }
+        public bool IsSelectPbck3No { get; set; }
+        public bool IsSelectPbck3Status { get; set; }
+        public bool IsSelectCk2Number { get; set; }
+        public bool IsSelectCk2Value { get; set; }
+        public bool IsSelectStatus { get; set; }
+        public bool IsSelectCompletedDate { get; set; }
     }
 
 }

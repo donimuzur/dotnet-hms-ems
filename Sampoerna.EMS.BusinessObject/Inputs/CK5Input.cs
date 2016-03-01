@@ -169,6 +169,16 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string Pbck3No { get; set; }
         public string Ck2No { get; set; }
 
+        public string Brand { get; set; }
+        public string Content { get; set; }
+        public string Hje { get; set; }
+        public string Tariff { get; set; }
+        public string Ck5MarketReturnQty { get; set; }
+        public string FiscalYear { get; set; }
+        public string ExciseValue { get; set; }
+        public string Pbck3Status { get; set; }
+        public string Ck2Value { get; set; }
+
         public List<string> ListUserPlant { get; set; }
 
         public string UserId { get; set; }
@@ -178,6 +188,15 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     public class EditCompletedDocumentCk5Input
     {
         public long DocumentId { get; set; }
+        public string Brand { get; set; }
+        public string Content { get; set; }
+        public string Hje { get; set; }
+        public string Tariff { get; set; }
+        public string Ck5MarketReturnQty { get; set; }
+        public string FiscalYear { get; set; }
+        public string ExciseValue { get; set; }
+        public string Pbck3Status { get; set; }
+        public string Ck2Value { get; set; }
         public string UserId { get; set; }
         public Enums.UserRole UserRole { get; set; }
 
