@@ -3049,27 +3049,27 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region CK5 Summary Report Forms
 
-        private SelectList GetCompanyList(bool isSource, List<CK5Dto> listCk5)
+        private SelectList GetCompanyList(bool isSource, List<CK5SummaryReportsItem> listCk5)
         {
             //  var listCk5 = _ck5Bll.GetAll();
 
             IEnumerable<SelectItemModel> query;
             if (isSource)
             {
-                query = from x in listCk5
+                query = from x in listCk5.OrderBy(c => c.SOURCE_PLANT_COMPANY_CODE)
                         select new SelectItemModel()
                         {
                             ValueField = x.SOURCE_PLANT_COMPANY_CODE,
-                            TextField = x.SOURCE_PLANT_COMPANY_CODE
+                            TextField = x.CompanySource
                         };
             }
             else
             {
-                query = from x in listCk5
+                query = from x in listCk5.OrderBy(c => c.DEST_PLANT_COMPANY_CODE)
                         select new SelectItemModel()
                         {
                             ValueField = x.DEST_PLANT_COMPANY_CODE,
-                            TextField = x.DEST_PLANT_COMPANY_CODE
+                            TextField = x.CompanyDestination
                         };
             }
 
@@ -3077,27 +3077,27 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        private SelectList GetNppbkcList(bool isSource, List<CK5Dto> listCk5)
+        private SelectList GetNppbkcList(bool isSource, List<CK5SummaryReportsItem> listCk5)
         {
             //  var listCk5 = _ck5Bll.GetAll();
 
             IEnumerable<SelectItemModel> query;
             if (isSource)
             {
-                query = from x in listCk5
+                query = from x in listCk5.OrderBy(c => c.OriginCompanyNppbkc)
                         select new Models.SelectItemModel()
                         {
-                            ValueField = x.SOURCE_PLANT_NPPBKC_ID,
-                            TextField = x.SOURCE_PLANT_NPPBKC_ID
+                            ValueField = x.OriginCompanyNppbkc,
+                            TextField = x.OriginCompanyNppbkc
                         };
             }
             else
             {
-                query = from x in listCk5
+                query = from x in listCk5.OrderBy(c => c.DestCompanyNppbkc)
                         select new Models.SelectItemModel()
                         {
-                            ValueField = x.DEST_PLANT_NPPBKC_ID,
-                            TextField = x.DEST_PLANT_NPPBKC_ID
+                            ValueField = x.DestCompanyNppbkc,
+                            TextField = x.DestCompanyNppbkc
                         };
             }
 
@@ -3105,27 +3105,27 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        private SelectList GetPlantList(bool isSource, List<CK5Dto> listCk5)
+        private SelectList GetPlantList(bool isSource, List<CK5SummaryReportsItem> listCk5)
         {
             //  var listCk5 = _ck5Bll.GetAll();
 
             IEnumerable<SelectItemModel> query;
             if (isSource)
             {
-                query = from x in listCk5
+                query = from x in listCk5.OrderBy(c => c.SOURCE_PLANT_ID)
                         select new Models.SelectItemModel()
                         {
                             ValueField = x.SOURCE_PLANT_ID,
-                            TextField = x.SOURCE_PLANT_ID + " - " + x.SOURCE_PLANT_NAME
+                            TextField = x.SourcePlant
                         };
             }
             else
             {
-                query = from x in listCk5
+                query = from x in listCk5.OrderBy(c => c.DEST_PLANT_ID)
                         select new Models.SelectItemModel()
                         {
                             ValueField = x.DEST_PLANT_ID,
-                            TextField = x.DEST_PLANT_ID + " - " + x.DEST_PLANT_NAME
+                            TextField = x.DestinationPlant
                         };
             }
 
@@ -3133,51 +3133,103 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        private SelectList GetSubmissionDateListCK5(bool isFrom, List<CK5Dto> listCk5)
+        private SelectList GetSubmissionDateListCK5(bool isFrom, List<CK5SummaryReportsItem> listCk5)
         {
 
             IEnumerable<SelectItemModel> query;
             if (isFrom)
-                query = from x in listCk5.Where(c => c.SUBMISSION_DATE != null)
+                query = from x in listCk5.Where(c => c.SUBMISSION_DATE != null).OrderBy(c => c.SUBMISSION_DATE)
                         select new Models.SelectItemModel()
                         {
                             ValueField = x.SUBMISSION_DATE,
-                            TextField = x.SUBMISSION_DATE.Value.ToString("dd MMM yyyy")
+                            TextField = x.SubmissionDate
                         };
             else
                 query = from x in listCk5.Where(c => c.SUBMISSION_DATE != null).OrderByDescending(c => c.SUBMISSION_DATE)
                         select new Models.SelectItemModel()
                         {
                             ValueField = x.SUBMISSION_DATE,
-                            TextField = x.SUBMISSION_DATE.Value.ToString("dd MMM yyyy")
+                            TextField = x.SubmissionDate
                         };
 
             return new SelectList(query.DistinctBy(c => c.TextField), "ValueField", "TextField");
 
         }
 
+        private SelectList GetListForSummaryReports(List<CK5SummaryReportsItem> listCk5, string type)
+        {
+            //  var listCk5 = _ck5Bll.GetAll();
+
+            IEnumerable<SelectItemModel> query = null;
+
+            switch (type)
+            {
+                case "materialnumber":
+                    query = from x in listCk5.OrderBy(c => c.MaterialNumber)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.MaterialNumber,
+                                TextField = x.MaterialNumber
+                            };
+                    break;
+                case "materialdescription":
+                    query = from x in listCk5.OrderBy(c => c.MaterialDescription)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.MaterialDescription,
+                                TextField = x.MaterialDescription
+                            };
+                    break;
+
+                default:
+                     query = from x in listCk5.OrderBy(c => c.MaterialNumber)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.MaterialNumber,
+                                TextField = x.MaterialNumber
+                            };
+                    break;
+
+            }
+          
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+        
         private CK5SummaryReportsViewModel InitSummaryReports(CK5SummaryReportsViewModel model)
         {
             model.MainMenu = Enums.MenuList.CK5;
             model.CurrentMenu = PageInfo;
 
-            //_ck5Bll.GetSummaryReportsByParam(input);
-            //var listCk5 = _ck5Bll.GetCk5CompletedByCk5Type(model.Ck5Type);
-            var listCk5 = _ck5Bll.GetSummaryReportsByParam(new CK5GetSummaryReportByParamInput());
-
-            model.SearchView.CompanyCodeSourceList = GetCompanyList(true, listCk5);
-            model.SearchView.CompanyCodeDestList = GetCompanyList(false, listCk5);
-            model.SearchView.NppbkcIdSourceList = GetNppbkcList(true, listCk5);
-            model.SearchView.NppbkcIdDestList = GetNppbkcList(false, listCk5);
-            model.SearchView.PlantSourceList = GetPlantList(true, listCk5);
-            model.SearchView.PlantDestList = GetPlantList(false, listCk5);
-            model.SearchView.DateFromList = GetSubmissionDateListCK5(true, listCk5);
-            model.SearchView.DateToList = GetSubmissionDateListCK5(false, listCk5);
-
+            //var listCk5 = _ck5Bll.GetSummaryReportsByParam(new CK5GetSummaryReportByParamInput());
+            
+            //model.SearchView.CompanyCodeSourceList = GetCompanyList(true, listCk5);
+            //model.SearchView.CompanyCodeDestList = GetCompanyList(false, listCk5);
+            //model.SearchView.NppbkcIdSourceList = GetNppbkcList(true, listCk5);
+            //model.SearchView.NppbkcIdDestList = GetNppbkcList(false, listCk5);
+            //model.SearchView.PlantSourceList = GetPlantList(true, listCk5);
+            //model.SearchView.PlantDestList = GetPlantList(false, listCk5);
+            //model.SearchView.DateFromList = GetSubmissionDateListCK5(true, listCk5);
+            //model.SearchView.DateToList = GetSubmissionDateListCK5(false, listCk5);
+            
             var filter = new CK5SearchSummaryReportsViewModel();
-            filter.Ck5Type = model.Ck5Type;
-            //view all data ck5 completed document
             model.DetailsList = SearchDataSummaryReports(filter);
+
+            model.SearchView.CompanyCodeSourceList = GetCompanyList(true, model.DetailsList);
+            model.SearchView.CompanyCodeDestList = GetCompanyList(false, model.DetailsList);
+            model.SearchView.NppbkcIdSourceList = GetNppbkcList(true, model.DetailsList);
+            model.SearchView.NppbkcIdDestList = GetNppbkcList(false, model.DetailsList);
+            model.SearchView.PlantSourceList = GetPlantList(true, model.DetailsList);
+            model.SearchView.PlantDestList = GetPlantList(false, model.DetailsList);
+            model.SearchView.DateFromList = GetSubmissionDateListCK5(true, model.DetailsList);
+            model.SearchView.DateToList = GetSubmissionDateListCK5(false, model.DetailsList);
+
+            model.SearchView.MaterialNumberList = GetListForSummaryReports(model.DetailsList, "materialnumber");
+            model.SearchView.MaterialDescriptionList = GetListForSummaryReports(model.DetailsList, "materialdescription");
+
+            model.SearchView.PoaList = GlobalFunctions.GetPoaAll(_poabll);
+            model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
 
             return model;
         }
@@ -3670,13 +3722,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     iColumn = iColumn + 1;
                 }
 
-                if (modelExport.MaterialNumber)
+                if (modelExport.IsSelectMaterialNumber)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.MaterialNumber);
                     iColumn = iColumn + 1;
                 }
 
-                if (modelExport.MaterialDescription)
+                if (modelExport.IsSelectMaterialDescription)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.MaterialDescription);
                     iColumn = iColumn + 1;
@@ -3694,13 +3746,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     iColumn = iColumn + 1;
                 }
 
-                if (modelExport.Poa)
+                if (modelExport.IsSelectPoa)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Poa);
                     iColumn = iColumn + 1;
                 }
 
-                if (modelExport.Creator)
+                if (modelExport.IsSelectCreator)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Creator);
                     iColumn = iColumn + 1;
@@ -3967,13 +4019,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 iColumn = iColumn + 1;
             }
 
-            if (modelExport.MaterialNumber)
+            if (modelExport.IsSelectMaterialNumber)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Material Number");
                 iColumn = iColumn + 1;
             }
 
-            if (modelExport.MaterialDescription)
+            if (modelExport.IsSelectMaterialDescription)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Material Description");
                 iColumn = iColumn + 1;
@@ -3991,13 +4043,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 iColumn = iColumn + 1;
             }
 
-            if (modelExport.Poa)
+            if (modelExport.IsSelectPoa)
             {
                 slDocument.SetCellValue(iRow, iColumn, "POA");
                 iColumn = iColumn + 1;
             }
 
-            if (modelExport.Creator)
+            if (modelExport.IsSelectCreator)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Creator");
                 iColumn = iColumn + 1;

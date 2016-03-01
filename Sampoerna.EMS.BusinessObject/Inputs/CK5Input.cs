@@ -112,6 +112,11 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime? DateTo { get; set; }
 
         public Enums.CK5Type Ck5Type { get; set; }
+
+        public string MaterialNumber { get; set; }
+        public string MaterialDescription { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
     }
 
     public class Ck5GetForLack1ByParamInput
