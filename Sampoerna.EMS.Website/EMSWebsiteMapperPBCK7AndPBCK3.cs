@@ -85,6 +85,8 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.Pbck3Number, opt => opt.MapFrom(src => src.SelectedNumber))
             .ForMember(dest => dest.From, opt => opt.MapFrom(src => src.From))
             .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.To))
+            .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.SelectedPoa))
+            .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.SelectedCreator))
             ;
 
             Mapper.CreateMap<Pbck3ExportModel, Pbck3SummaryInput>().IgnoreAllNonExisting()
