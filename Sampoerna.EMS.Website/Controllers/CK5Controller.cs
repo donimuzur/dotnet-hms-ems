@@ -3049,7 +3049,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region CK5 Summary Report Forms
 
-        private SelectList GetCompanyList(bool isSource, List<CK5Dto> listCk5)
+        private SelectList GetCompanyList(bool isSource, List<Ck5SummaryReportDto> listCk5)
         {
             //  var listCk5 = _ck5Bll.GetAll();
 
@@ -3059,7 +3059,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 query = from x in listCk5
                         select new SelectItemModel()
                         {
-                            ValueField = x.SOURCE_PLANT_COMPANY_CODE,
+                            ValueField = x.SourcePlant,
                             TextField = x.SOURCE_PLANT_COMPANY_CODE
                         };
             }
@@ -3156,15 +3156,53 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+        private SelectList GetListForSummaryReports(List<CK5Dto> listCk5, string type)
+        {
+            //  var listCk5 = _ck5Bll.GetAll();
+
+            IEnumerable<SelectItemModel> query = null;
+
+            switch (type)
+            {
+                case "materialnumber":
+                    query = from x in listCk5.OrderBy(c => c.ma)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.FaCode,
+                                TextField = x.FaCode
+                            };
+                    break;
+            }
+            if (isSource)
+            {
+                query = from x in listCk5
+                        select new Models.SelectItemModel()
+                        {
+                            ValueField = x.SOURCE_PLANT_ID,
+                            TextField = x.SOURCE_PLANT_ID + " - " + x.SOURCE_PLANT_NAME
+                        };
+            }
+            else
+            {
+                query = from x in listCk5
+                        select new Models.SelectItemModel()
+                        {
+                            ValueField = x.DEST_PLANT_ID,
+                            TextField = x.DEST_PLANT_ID + " - " + x.DEST_PLANT_NAME
+                        };
+            }
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
         private CK5SummaryReportsViewModel InitSummaryReports(CK5SummaryReportsViewModel model)
         {
             model.MainMenu = Enums.MenuList.CK5;
             model.CurrentMenu = PageInfo;
 
-            //_ck5Bll.GetSummaryReportsByParam(input);
-            //var listCk5 = _ck5Bll.GetCk5CompletedByCk5Type(model.Ck5Type);
-            var listCk5 = _ck5Bll.GetSummaryReportsByParam(new CK5GetSummaryReportByParamInput());
-
+            //var listCk5 = _ck5Bll.GetSummaryReportsByParam(new CK5GetSummaryReportByParamInput());
+            var listCk5 = _ck5Bll.GetSummaryReportsViewByParam(new CK5GetSummaryReportByParamInput());
+            
             model.SearchView.CompanyCodeSourceList = GetCompanyList(true, listCk5);
             model.SearchView.CompanyCodeDestList = GetCompanyList(false, listCk5);
             model.SearchView.NppbkcIdSourceList = GetNppbkcList(true, listCk5);

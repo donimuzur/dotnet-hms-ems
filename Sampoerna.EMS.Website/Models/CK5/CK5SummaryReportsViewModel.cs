@@ -57,8 +57,15 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public DateTime? DateTo { get; set; }
         public SelectList DateToList { get; set; }
 
-       
-      
+        public string MaterialNumber { get; set; }
+        public string MaterialDescription { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
+
+        public SelectList MaterialNumberList { get; set; }
+        public SelectList MaterialDescriptionList { get; set; }
+        public SelectList PoaList { get; set; }
+        public SelectList CreatorList { get; set; }
 
     }
 
