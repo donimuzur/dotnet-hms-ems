@@ -119,6 +119,10 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public string UserId { get; set; }
 
+        public string MaterialNumber { get; set; }
+        public string MaterialDescription { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
         public Enums.UserRole UserRole { get; set; }
     }
 

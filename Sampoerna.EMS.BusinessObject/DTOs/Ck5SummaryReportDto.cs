@@ -68,5 +68,13 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string MaterialDescription { get; set; }
 
         public string CompletedDate { get; set; }
+
+        public string SOURCE_PLANT_COMPANY_CODE { get; set; }
+        public string DEST_PLANT_COMPANY_CODE { get; set; }
+
+        public string SOURCE_PLANT_ID { get; set; }
+        public string DEST_PLANT_ID { get; set; }
+        public DateTime? SUBMISSION_DATE { get; set; }
+
     }
 }
