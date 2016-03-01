@@ -5384,11 +5384,47 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
 
-            //var mapResult = Mapper.Map<List<CK5Dto>>(rc.ToList());
+          
+            //return SetDataSummaryReportMarketReturn(rc.ToList());
+            var result = SetDataSummaryReportMarketReturn(rc.ToList());
 
-            //return mapResult;
-            return SetDataSummaryReportMarketReturn(rc.ToList());
-
+            if (!string.IsNullOrEmpty(input.Brand))
+            {
+                result = result.Where(c => c.Brand == input.Brand).ToList();
+            }
+            if (!string.IsNullOrEmpty(input.Content))
+            {
+                result = result.Where(c => c.Content == input.Content).ToList();
+            }
+            if (!string.IsNullOrEmpty(input.Hje))
+            {
+                result = result.Where(c => c.Hje == input.Hje).ToList();
+            }
+            if (!string.IsNullOrEmpty(input.Tariff))
+            {
+                result = result.Where(c => c.Tariff == input.Tariff).ToList();
+            }
+            if (!string.IsNullOrEmpty(input.Ck5MarketReturnQty))
+            {
+                result = result.Where(c => c.Ck5MarketReturnQty == input.Ck5MarketReturnQty).ToList();
+            }
+            if (!string.IsNullOrEmpty(input.FiscalYear))
+            {
+                result = result.Where(c => c.FiscalYear == input.FiscalYear).ToList();
+            }
+            if (!string.IsNullOrEmpty(input.ExciseValue))
+            {
+                result = result.Where(c => c.ExciseValue == input.ExciseValue).ToList();
+            }
+            if (!string.IsNullOrEmpty(input.Pbck3Status))
+            {
+                result = result.Where(c => c.Pbck3Status == input.Pbck3Status).ToList();
+            }
+            if (!string.IsNullOrEmpty(input.Ck2Value))
+            {
+                result = result.Where(c => c.Ck2Value == input.Ck2Value).ToList();
+            }
+            return result;
 
         }
 
