@@ -1261,6 +1261,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model.FromYear = GlobalFunctions.GetYearList();
             model.ToYear = model.FromYear;
 
+            model.PoaList = GlobalFunctions.GetPoaAll(_poaBll);
+            model.CreatorList = GlobalFunctions.GetCreatorList();
+
             var listPbck7 = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(new Pbck7SummaryInput());
 
             model.FaCodeList = GetListPbck7Items(listPbck7, "facode");
@@ -1271,8 +1274,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Pbck7QtyList = GetListPbck7Items(listPbck7, "pbck7qty");
             model.FiscalYearList = GetListPbck7Items(listPbck7, "fiscalyear");
             model.ExciseValueList = GetListPbck7Items(listPbck7, "excisevalue");
-            model.PoaList = GetListPbck7Items(listPbck7, "poa");
-            model.CreatorList = GetListPbck7Items(listPbck7, "creator");
+            //model.PoaList = GetListPbck7Items(listPbck7, "poa");
+            //model.CreatorList = GetListPbck7Items(listPbck7, "creator");
             model.Pbck3NoList = GetListPbck7Items(listPbck7, "pbck3no");
             model.Pbck3StatusList = GetListPbck7Items(listPbck7, "pbck3status");
             model.Ck2NoList = GetListPbck7Items(listPbck7, "ck2no");
