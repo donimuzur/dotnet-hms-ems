@@ -25,14 +25,20 @@
         public string CompensatedCk1Number { get; set; }
         public string PaymentDate { get; set; }
         public string Status { get; set; }
-        public string StickerCode { get; set; }
-        public string FaCode { get; set; }
-        public string Ck1No { get; set; }
-
+        
         public int? ReportedOn { get; set; }
 
+        public string CompletedDate { get; set; }
+
+        public string StickerCode { get; set; }
+        public string FaCode { get; set; }
+        public string Nppbkc { get; set; }
         public string PlantId { get; set; }
         public string PlantDescription { get; set; }
-        public string CompletedDate { get; set; }
+        public string CompanyName { get; set; }
+        public string Poa { get; set; }
+        public string Ck1No { get; set; }
+        public string Creator { get; set; }
+
     }
 }
