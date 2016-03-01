@@ -77,7 +77,7 @@
                             <div class="col-md-6">
                                 <div class="row">
                                     <label class="col-md-4">Plant Source</label>
-                                    <div class="col-md-8 year-from">
+                                    <div class="col-md-8">
                                         @(Model.SearchView.PlantSourceList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
                                               : Html.DropDownListFor(model => model.SearchView.PlantSource, Model.SearchView.PlantSourceList, "All", new { @class = "form-control selectreset" }))
 
@@ -89,7 +89,7 @@
                             <div class="col-md-6">
                                 <div class="row">
                                     <label class="col-md-4">Plant Destination</label>
-                                    <div class="col-md-8 year-from">
+                                    <div class="col-md-8">
                                        
                                         @(Model.SearchView.PlantDestList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
                                               : Html.DropDownListFor(model => model.SearchView.PlantDest, Model.SearchView.PlantDestList, "All", new { @class = "form-control selectreset" }))
@@ -102,7 +102,7 @@
                             <div class="col-md-6">
                                 <div class="row">
                                     <label class="col-md-4">Date From </label>
-                                    <div class="col-md-8 year-from">
+                                    <div class="col-md-8">
                                         @(Model.SearchView.DateFromList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
                                               : Html.DropDownListFor(model => model.SearchView.DateFrom, Model.SearchView.DateFromList, "All", new { @class = "form-control selectreset" }))
 
@@ -113,7 +113,7 @@
                             <div class="col-md-6">
                                 <div class="row">
                                     <label class="col-md-4">Date To</label>
-                                    <div class="col-md-8 year-from">
+                                    <div class="col-md-8">
                                      
                                         @(Model.SearchView.DateToList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
                                               : Html.DropDownListFor(model => model.SearchView.DateTo, Model.SearchView.DateToList, "All", new { @class = "form-control selectreset" }))
@@ -126,7 +126,7 @@
                              <div class="col-md-6">
                                 <div class="row">
                                     <label class="col-md-4">Material Number</label>
-                                    <div class="col-md-8 year-from">
+                                    <div class="col-md-8">
                                         @(Model.SearchView.MaterialNumberList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
                                               : Html.DropDownListFor(model => model.SearchView.MaterialNumber, Model.SearchView.MaterialNumberList, "All", new { @class = "form-control selectreset" }))
 
@@ -138,7 +138,7 @@
                             <div class="col-md-6">
                                 <div class="row">
                                     <label class="col-md-4">Material Description</label>
-                                    <div class="col-md-8 year-from">
+                                    <div class="col-md-8">
                                         @(Model.SearchView.MaterialDescriptionList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
                                               : Html.DropDownListFor(model => model.SearchView.MaterialDescription, Model.SearchView.MaterialDescriptionList, "All", new { @class = "form-control selectreset" }))
 
@@ -150,7 +150,7 @@
                             <div class="col-md-6">
                                 <div class="row">
                                     <label class="col-md-4">POA</label>
-                                    <div class="col-md-8 year-from">
+                                    <div class="col-md-8">
                                      
                                         @(Model.SearchView.PoaList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
                                               : Html.DropDownListFor(model => model.SearchView.Poa, Model.SearchView.PoaList, "All", new { @class = "form-control selectreset" }))
@@ -163,7 +163,7 @@
                             <div class="col-md-6">
                                 <div class="row">
                                     <label class="col-md-4">Creator</label>
-                                    <div class="col-md-8 year-from">
+                                    <div class="col-md-8">
                                      
                                         @(Model.SearchView.CreatorList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
                                               : Html.DropDownListFor(model => model.SearchView.Creator, Model.SearchView.CreatorList, "All", new { @class = "form-control selectreset" }))
@@ -205,6 +205,11 @@
                                         @Html.HiddenFor(model => model.ExportModel.PlantDest)
                                         @Html.HiddenFor(model => model.ExportModel.DateFrom)
                                         @Html.HiddenFor(model => model.ExportModel.DateTo)
+                                        
+                                        @Html.HiddenFor(model => model.ExportModel.MaterialNumber)
+                                        @Html.HiddenFor(model => model.ExportModel.MaterialDescription)
+                                        @Html.HiddenFor(model => model.ExportModel.Poa)
+                                        @Html.HiddenFor(model => model.ExportModel.Creator)
 
                                         <div class="row toggle">
 
@@ -453,13 +458,13 @@
                                                 
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.MaterialNumber, new { @class = "checkbox checkexport", @datacolumn = "47" })Material Number
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectMaterialNumber, new { @class = "checkbox checkexport", @datacolumn = "47" })Material Number
                                                     </label>
                                                 </div>
 
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.MaterialDescription, new { @class = "checkbox checkexport", @datacolumn = "48" })Material Description
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectMaterialDescription, new { @class = "checkbox checkexport", @datacolumn = "48" })Material Description
                                                     </label>
                                                 </div>
 
@@ -477,13 +482,13 @@
                                                 
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.Poa, new { @class = "checkbox checkexport", @datacolumn = "51" })POA
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPoa, new { @class = "checkbox checkexport", @datacolumn = "51" })POA
                                                     </label>
                                                 </div>
                                                 
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.Creator, new { @class = "checkbox checkexport", @datacolumn = "52" })Creator
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCreator, new { @class = "checkbox checkexport", @datacolumn = "52" })Creator
                                                     </label>
                                                 </div>
                                                 
@@ -659,6 +664,11 @@
             $('#ExportModel_PlantDest').val($('#SearchView_PlantDest').find("option:selected").val());
             $('#ExportModel_DateFrom').val($('#SearchView_DateFrom').find("option:selected").val());
             $('#ExportModel_DateTo').val($('#SearchView_DateTo').find("option:selected").val());
+            
+            $('#ExportModel_MaterialNumber').val($('#SearchView_MaterialNumber').find("option:selected").val());
+            $('#ExportModel_MaterialDescription').val($('#SearchView_MaterialDescription').find("option:selected").val());
+            $('#ExportModel_Poa').val($('#SearchView_Poa').find("option:selected").val());
+            $('#ExportModel_Creator').val($('#SearchView_Creator').find("option:selected").val());
 
         }
 

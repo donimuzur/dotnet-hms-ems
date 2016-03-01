@@ -130,6 +130,13 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string MaterialNumber { get; set; }
         public string MaterialDescription { get; set; }
         public string CompletedDate { get; set; }
+
+        public string SOURCE_PLANT_COMPANY_CODE { get; set; }
+        public string DEST_PLANT_COMPANY_CODE { get; set; }
+
+        public string SOURCE_PLANT_ID { get; set; }
+        public string DEST_PLANT_ID { get; set; }
+        public DateTime? SUBMISSION_DATE { get; set; }
     }
 
     public class CK5ExportSummaryReportsViewModel : CK5SearchSummaryReportsViewModel
@@ -186,11 +193,11 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public bool CompanySource { get; set; }
         public bool CompanyDestination { get; set; }
-        public bool Poa { get; set; }
-        public bool Creator { get; set; }
+        public bool IsSelectPoa { get; set; }
+        public bool IsSelectCreator { get; set; }
 
-        public bool MaterialNumber { get; set; }
-        public bool MaterialDescription { get; set; }
+        public bool IsSelectMaterialNumber { get; set; }
+        public bool IsSelectMaterialDescription { get; set; }
         public bool CompletedDate { get; set; }
     }
 

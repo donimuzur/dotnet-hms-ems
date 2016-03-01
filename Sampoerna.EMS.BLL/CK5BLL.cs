@@ -3564,74 +3564,74 @@ namespace Sampoerna.EMS.BLL
         }
         #endregion
 
-        public List<CK5Dto> GetSummaryReportsByParam(CK5GetSummaryReportByParamInput input)
-        {
+        //public List<CK5Dto> GetSummaryReportsByParam(CK5GetSummaryReportByParamInput input)
+        //{
 
-            Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
+        //    Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
-            if (!string.IsNullOrEmpty(input.CompanyCodeSource))
-            {
-                queryFilter = queryFilter.And(c => c.SOURCE_PLANT_COMPANY_CODE.Contains(input.CompanyCodeSource));
-            }
+        //    if (!string.IsNullOrEmpty(input.CompanyCodeSource))
+        //    {
+        //        queryFilter = queryFilter.And(c => c.SOURCE_PLANT_COMPANY_CODE.Contains(input.CompanyCodeSource));
+        //    }
 
-            if (!string.IsNullOrEmpty(input.CompanyCodeDest))
-            {
-                queryFilter = queryFilter.And(c => c.DEST_PLANT_COMPANY_CODE.Contains(input.CompanyCodeDest));
-            }
+        //    if (!string.IsNullOrEmpty(input.CompanyCodeDest))
+        //    {
+        //        queryFilter = queryFilter.And(c => c.DEST_PLANT_COMPANY_CODE.Contains(input.CompanyCodeDest));
+        //    }
 
-            if (!string.IsNullOrEmpty(input.NppbkcIdSource))
-            {
-                queryFilter = queryFilter.And(c => c.SOURCE_PLANT_NPPBKC_ID.Contains(input.NppbkcIdSource));
-            }
+        //    if (!string.IsNullOrEmpty(input.NppbkcIdSource))
+        //    {
+        //        queryFilter = queryFilter.And(c => c.SOURCE_PLANT_NPPBKC_ID.Contains(input.NppbkcIdSource));
+        //    }
 
-            if (!string.IsNullOrEmpty(input.NppbkcIdDest))
-            {
-                queryFilter = queryFilter.And(c => c.DEST_PLANT_NPPBKC_ID.Contains(input.NppbkcIdDest));
+        //    if (!string.IsNullOrEmpty(input.NppbkcIdDest))
+        //    {
+        //        queryFilter = queryFilter.And(c => c.DEST_PLANT_NPPBKC_ID.Contains(input.NppbkcIdDest));
 
-            }
+        //    }
 
-            if (!string.IsNullOrEmpty(input.PlantSource))
-            {
-                queryFilter = queryFilter.And(c => c.SOURCE_PLANT_ID.Contains(input.PlantSource));
+        //    if (!string.IsNullOrEmpty(input.PlantSource))
+        //    {
+        //        queryFilter = queryFilter.And(c => c.SOURCE_PLANT_ID.Contains(input.PlantSource));
 
-            }
+        //    }
 
-            if (!string.IsNullOrEmpty(input.PlantDest))
-            {
-                queryFilter = queryFilter.And(c => c.DEST_PLANT_ID.Contains(input.PlantDest));
+        //    if (!string.IsNullOrEmpty(input.PlantDest))
+        //    {
+        //        queryFilter = queryFilter.And(c => c.DEST_PLANT_ID.Contains(input.PlantDest));
 
-            }
+        //    }
 
-            if (input.DateFrom.HasValue)
-            {
-                input.DateFrom = new DateTime(input.DateFrom.Value.Year, input.DateFrom.Value.Month, input.DateFrom.Value.Day, 0, 0, 0);
-                queryFilter = queryFilter.And(c => c.SUBMISSION_DATE >= input.DateFrom);
-            }
+        //    if (input.DateFrom.HasValue)
+        //    {
+        //        input.DateFrom = new DateTime(input.DateFrom.Value.Year, input.DateFrom.Value.Month, input.DateFrom.Value.Day, 0, 0, 0);
+        //        queryFilter = queryFilter.And(c => c.SUBMISSION_DATE >= input.DateFrom);
+        //    }
 
-            if (input.DateTo.HasValue)
-            {
-                input.DateFrom = new DateTime(input.DateTo.Value.Year, input.DateTo.Value.Month, input.DateTo.Value.Day, 23, 59, 59);
-                queryFilter = queryFilter.And(c => c.SUBMISSION_DATE <= input.DateTo);
-            }
-
-
-            //queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type);
-
-            //queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed);
+        //    if (input.DateTo.HasValue)
+        //    {
+        //        input.DateFrom = new DateTime(input.DateTo.Value.Year, input.DateTo.Value.Month, input.DateTo.Value.Day, 23, 59, 59);
+        //        queryFilter = queryFilter.And(c => c.SUBMISSION_DATE <= input.DateTo);
+        //    }
 
 
-            var rc = _repository.Get(queryFilter, null, includeTables);
-            if (rc == null)
-            {
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-            }
+        //    //queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type);
 
-            var mapResult = Mapper.Map<List<CK5Dto>>(rc.ToList());
-
-            return mapResult;
+        //    //queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed);
 
 
-        }
+        //    var rc = _repository.Get(queryFilter, null, includeTables);
+        //    if (rc == null)
+        //    {
+        //        throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+        //    }
+
+        //    var mapResult = Mapper.Map<List<CK5Dto>>(rc.ToList());
+
+        //    return mapResult;
+
+
+        //}
 
         public List<Ck5SummaryReportDto> GetSummaryReportsViewByParam(CK5GetSummaryReportByParamInput input)
         {
@@ -3682,8 +3682,19 @@ namespace Sampoerna.EMS.BLL
                 input.DateTo = new DateTime(input.DateTo.Value.Year, input.DateTo.Value.Month, input.DateTo.Value.Day, 23, 59, 59);
                 queryFilter = queryFilter.And(c => c.SUBMISSION_DATE <= input.DateTo);
             }
+            
 
+            if (!string.IsNullOrEmpty(input.Poa))
+            {
+                queryFilter = queryFilter.And(c => c.APPROVED_BY_POA.Contains(input.Poa));
 
+            }
+
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY.Contains(input.Creator));
+
+            }
             //queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type);
 
             //queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed);
@@ -3743,6 +3754,18 @@ namespace Sampoerna.EMS.BLL
 
                     mapResult.Add(summaryReport);
                 }
+            }
+
+            if (!string.IsNullOrEmpty(input.MaterialNumber))
+            {
+                mapResult = mapResult.Where(c => c.MaterialNumber == input.MaterialNumber).ToList();
+
+            }
+
+            if (!string.IsNullOrEmpty(input.MaterialDescription))
+            {
+                mapResult = mapResult.Where(c => c.MaterialDescription == input.MaterialDescription).ToList();
+
             }
 
             return mapResult;
