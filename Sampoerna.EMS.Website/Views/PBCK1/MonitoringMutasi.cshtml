@@ -183,6 +183,36 @@
                                                         @Html.CheckBox("UoM", new { @id = "checkboxDefault7", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "7" })UoM
                                                     </label>
                                                 </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("PoaCheck", new { @id = "checkboxDefault8", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "8" })Poa Approved
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("CreatorCheck", new { @id = "checkboxDefault9", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "9" })Creator
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("SupPlantCheck", new { @id = "checkboxDefault10", @class = "checkbox checkexport", @datacolumn = "10" })Supplier Plant
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("SupCompCheck", new { @id = "checkboxDefault11", @class = "checkbox checkexport", @datacolumn = "11" })Supplier Company
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("OriNppbkcCheck", new { @id = "checkboxDefault12", @class = "checkbox checkexport", @datacolumn = "12" })Original Nppbkc
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("OriKppbcCheck", new { @id = "checkboxDefault13", @class = "checkbox checkexport", @datacolumn = "13" })Original Kppbc
+                                                    </label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -224,7 +254,8 @@
             $('#checkboxDefault5').prop('checked', true);
             $('#checkboxDefault6').prop('checked', true);
             $('#checkboxDefault7').prop('checked', true);
-
+            $('#checkboxDefault8').prop('checked', true);
+            $('#checkboxDefault9').prop('checked', true);
         });
 
         function setupDataTables() {
@@ -256,6 +287,8 @@
                 $('#checkboxDefault5').prop('checked', true);
                 $('#checkboxDefault6').prop('checked', true);
                 $('#checkboxDefault7').prop('checked', true);
+                $('#checkboxDefault8').prop('checked', true);
+                $('#checkboxDefault9').prop('checked', true);
             });
 
             $('.checkexport').on('click', function (e) {
@@ -275,6 +308,10 @@
 
             //}
             table.column(4).visible(false);
+            table.column(10).visible(false);
+            table.column(11).visible(false);
+            table.column(12).visible(false);
+            table.column(13).visible(false);
           
             $('#selecctall').change(function () {
                 if ($(this).is(':checked')) {
@@ -282,7 +319,7 @@
                     // Show a column
                     $('#monitoringMutasi').parents('div.dataTables_wrapper').first().show();
                     var table = $('#monitoringMutasi').DataTable();
-                    for (var i = 0; i < 8; i++) {
+                    for (var i = 0; i < 14; i++) {
                         table.column(i).visible(true);
 
                     }
@@ -296,7 +333,7 @@
 
                     });
                     var table = $('#monitoringMutasi').DataTable();
-                    for (var i = 0; i < 8; i++) {
+                    for (var i = 0; i < 14; i++) {
                         table.column(i).visible(false);
 
                     }
@@ -311,6 +348,14 @@
 
         $("#btnExport").click(function () {
             $('#FilterPbck1Number').val($('#pbck1Number').find("option:selected").val());
+            $('#FilterYearFrom').val($('#yearFrom').find("option:selected").val());
+            $('#FilterYearTo').val($('#yearTo').find("option:selected").val());
+            $('#FilterSupPlant').val($('#supPlant').find("option:selected").val());
+            $('#FilterSupComp').val($('#supComp').find("option:selected").val());
+            $('#FilterOriNppbkc').val($('#oriNppbkc').find("option:selected").val());
+            $('#FilterOriKppbc').val($('#oriKppbc').find("option:selected").val());
+            $('#FilterPoa').val($('#poa').find("option:selected").val());
+            $('#FilterCreator').val($('#creator').find("option:selected").val());
             $('#ExportMonitoringMutasi').submit();
         });
 

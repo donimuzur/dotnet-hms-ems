@@ -1539,6 +1539,16 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.PLANT_ID.Contains(input.PlantId));
             }
+
+            if (!string.IsNullOrEmpty(input.Poa))
+            {
+                queryFilter = queryFilter.And(c => c.APPROVED_BY_POA == input.Poa);
+            }
+
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
             
             var rc = _repository.Get(queryFilter, null, includeTables).ToList();
             if (rc == null)
@@ -1581,6 +1591,7 @@ namespace Sampoerna.EMS.BLL
                 summaryDto.CompletedDate = dtData.STATUS == Enums.DocumentStatus.Completed ?
                     (dtData.MODIFIED_DATE == null ? ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.DECREE_DATE) :
                     ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.MODIFIED_DATE)) : "-";
+                summaryDto.Creator = dtData.CREATED_BY;
 
                 var prodDate = new List<string>();
                 var faCode = new List<string>();
@@ -1672,6 +1683,7 @@ namespace Sampoerna.EMS.BLL
                     summaryDto.CompletedDate = dtData.STATUS == Enums.DocumentStatus.Completed ?
                         (dtData.MODIFIED_DATE == null ? ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.DECREE_DATE) :
                         ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.MODIFIED_DATE)) : "-";
+                    summaryDto.Creator = dtData.CREATED_BY;
 
                     var prodDate = new List<string>();
                     var faCode = new List<string>();

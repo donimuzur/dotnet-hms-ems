@@ -16,6 +16,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal BeginingBalance { get; set; }
         public decimal EndingBalance { get; set; }
         public List<Lack1TrackingConsolidationDetailReportDto> TrackingConsolidations { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
     }
 
     public class Lack1TrackingConsolidationDetailReportDto
@@ -115,6 +117,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public ICollection<LACK1_INCOME_DETAIL> LACK1_INCOME_DETAIL { get; set; }
         public ICollection<LACK1_TRACKING> LACK1_TRACKING { get; set; }
         public DateTime PeriodDate { get; set; }
+        public string CREATED_BY { get; set; }
+        public string APPROVED_BY_POA { get; set; }
     }
     
 }

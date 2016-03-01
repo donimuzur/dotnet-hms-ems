@@ -67,6 +67,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string PlantId { get; set; }
 
         public bool isForExport { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
     }
 
     public class Ck4CDashboardParamInput

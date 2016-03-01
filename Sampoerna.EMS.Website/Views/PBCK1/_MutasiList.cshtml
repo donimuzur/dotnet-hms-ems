@@ -12,6 +12,12 @@
                 <th>CK-5 Number</th>
                 <th>Total Ex Good Type</th>
                 <th>UoM</th>
+                <th>POA Approved</th>
+                <th>Creator</th>
+                <th>Supplier Plant</th>
+                <th>Supplier Company</th>
+                <th>Original Nppbkc</th>
+                <th>Original Kppbc</th>
                 @*<th>CK5-Type</th>*@
             </tr>
         </thead>
@@ -78,6 +84,24 @@
                                  <text>-</text>
                              }
 
+                         </td>
+                         <td>
+                             @Html.DisplayFor(model => item.Poa)
+                         </td>
+                         <td>
+                             @Html.DisplayFor(model => item.Creator)
+                         </td>
+                         <td>
+                             @Html.DisplayFor(model => item.SupPlant)
+                         </td>
+                         <td>
+                             @Html.DisplayFor(model => item.SupComp)
+                         </td>
+                         <td>
+                             @Html.DisplayFor(model => item.OriNppbkc)
+                         </td>
+                         <td>
+                             @Html.DisplayFor(model => item.OriKppbc)
                          </td>
                      </tr>
                      row = row + 1;

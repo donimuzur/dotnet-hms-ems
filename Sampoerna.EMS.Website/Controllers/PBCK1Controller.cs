@@ -1422,7 +1422,8 @@ namespace Sampoerna.EMS.Website.Controllers
                         CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll),
                         YearFromList = GetYearListPbck1(true),
                         YearToList = GetYearListPbck1(false),
-                        NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll)
+                        NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll),
+                        CreatorList = GlobalFunctions.GetCreatorList()
                     },
                     //view all data pbck1 completed document
                     DetailsList = SearchSummaryReports().OrderBy(c => c.NppbkcId).ToList()
@@ -1529,6 +1530,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchView.YearTo = model.ExportModel.YearTo;
             model.SearchView.NppbkcId = model.ExportModel.NppbkcId;
             model.SearchView.pbck1Number = model.ExportModel.pbck1NumberCode;
+            model.SearchView.Poa = model.ExportModel.PoaSearch;
+            model.SearchView.Creator = model.ExportModel.CreatorSearch;
             var dataSummaryReport = SearchSummaryReports(model.SearchView);
 
             var exportModel = Mapper.Map<List<ExportSummaryDataModel>>(dataSummaryReport);
@@ -1870,6 +1873,15 @@ namespace Sampoerna.EMS.Website.Controllers
                     HtmlEncode = false
                 });
             }
+            if (model.ExportModel.Creator)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Creator",
+                    HeaderText = "Creator",
+                    HtmlEncode = false
+                });
+            }
 
             if (exportModel.Count == 0)
             {
@@ -2100,6 +2112,54 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     DataField = "QuotaRemaining",
                     HeaderText = "Quota Remaining"
+                });
+            }
+            if (model.ExportModel.PoaCheck)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Poa",
+                    HeaderText = "POA Approved"
+                });
+            }
+            if (model.ExportModel.CreatorCheck)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Creator",
+                    HeaderText = "Creator"
+                });
+            }
+            if (model.ExportModel.SupNppbkcCheck)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupNppbkc",
+                    HeaderText = "Supplier NPPBKC"
+                });
+            }
+            if (model.ExportModel.SupKppbcCheck)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupKppbc",
+                    HeaderText = "Supplier KPPBC"
+                });
+            }
+            if (model.ExportModel.SupPlantCheck)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupPlant",
+                    HeaderText = "Supplier Plant"
+                });
+            }
+            if (model.ExportModel.SupCompanyCheck)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupCompany",
+                    HeaderText = "Supplier Company"
                 });
             }
 
@@ -2952,7 +3012,60 @@ namespace Sampoerna.EMS.Website.Controllers
                     HtmlEncode = false
                 });
             }
-
+            if (model.PoaCheck)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Poa",
+                    HeaderText = "POA Approved",
+                    HtmlEncode = false
+                });
+            }
+            if (model.CreatorCheck)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Creator",
+                    HeaderText = "Creator",
+                    HtmlEncode = false
+                });
+            }
+            if (model.SupPlantCheck)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupPlant",
+                    HeaderText = "Supplier Plant",
+                    HtmlEncode = false
+                });
+            }
+            if (model.SupCompCheck)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupComp",
+                    HeaderText = "Supplier Company",
+                    HtmlEncode = false
+                });
+            }
+            if (model.OriNppbkcCheck)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "OriNppbkc",
+                    HeaderText = "Original Nppbkc",
+                    HtmlEncode = false
+                });
+            }
+            if (model.OriKppbcCheck)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "OriKppbc",
+                    HeaderText = "Original Kppbc",
+                    HtmlEncode = false
+                });
+            }
 
             if (dataToExport.Count == 0)
             {

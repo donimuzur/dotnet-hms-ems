@@ -180,7 +180,7 @@
             });
             
             $('#generated-data-container').html('');
-
+            
             var jsonData = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model)));
             //console.log(jsonData);
             if (jsonData.IsEtilAlcohol) {
