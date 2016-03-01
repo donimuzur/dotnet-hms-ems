@@ -1438,6 +1438,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchView.NppbkcIdList = GetLack2NppbkcIdList(listLack2);
             model.SearchView.SendingPlantIdList = GetLack2SendingPlantList(listLack2);
             model.SearchView.GoodTypeList = GetLack2GoodTypeList(listLack2);
+            model.SearchView.PoaList = GlobalFunctions.GetPoaAll(_poabll);
+            model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
 
             model.SearchView.PeriodMonthList = GlobalFunctions.GetMonthList(_monthBll);
             model.SearchView.PeriodYearList = GetLack2PeriodYearList(listLack2);
@@ -1605,6 +1607,16 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, data.TypeExcisableGoodsDesc);
                     iColumn = iColumn + 1;
                 }
+                if (modelExport.PoaCheck)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Poa);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.CreatorCheck)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Creator);
+                    iColumn = iColumn + 1;
+                }
 
                 iRow++;
             }
@@ -1703,7 +1715,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 slDocument.SetCellValue(iRow, iColumn, "Type of Excisable Goods");
                 iColumn = iColumn + 1;
             }
-
+            if (modelExport.PoaCheck)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "POA");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.CreatorCheck)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Creator");
+                iColumn = iColumn + 1;
+            }
 
             return slDocument;
 

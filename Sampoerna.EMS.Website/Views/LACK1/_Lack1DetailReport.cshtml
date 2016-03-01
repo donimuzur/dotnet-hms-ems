@@ -11,6 +11,8 @@
             <th colspan="6">Receiving</th>
             <th colspan="5">Usage</th>
             <th rowspan="2">Ending Balance</th>
+            <th rowspan="2">POA</th>
+            <th rowspan="2">Creator</th>
         </tr>
         <tr>
             <th>CK-5 Number</th>
@@ -71,6 +73,8 @@
                         }
                     }
                     <td rowspan="@trackingConsolidationCount">@item.EndingBalance.ToString("N2")</td>
+                    <td rowspan="@trackingConsolidationCount">@item.Poa</td>
+                    <td rowspan="@trackingConsolidationCount">@item.Creator</td>
                 </tr>
                 for (int i = 1; i < item.TrackingConsolidations.Count; i++)
                 {
@@ -154,6 +158,8 @@
                     <td>-</td>
                     <td>-</td>
                     <td>@item.EndingBalance.ToString("N2")</td>
+                    <td>@item.Poa</td>
+                    <td>@item.Creator</td>
                 </tr>
             }
         }

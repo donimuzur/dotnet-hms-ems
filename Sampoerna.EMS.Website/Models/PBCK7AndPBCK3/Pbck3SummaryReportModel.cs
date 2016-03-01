@@ -34,6 +34,12 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public int? To { get; set; }
 
+        public string SelectedPoa { get; set; }
+        public string SelectedCreator { get; set; }
+
+        public SelectList PoaList { get; set; }
+        public SelectList CreatorList { get; set; }
+
         public List<Pbck3SummaryReportItem> ReportItems { get; set; }
 
         public Pbck3ExportModel ExportModel { get; set; }
@@ -58,6 +64,9 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public int? FromYear { get; set; }
 
         public int? ToYear { get; set; }
+
+        public string Poa { get; set; }
+        public string Creator { get; set; }
 
         public bool IsSelectNppbkc { get; set; }
 

@@ -29,6 +29,11 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public SelectList PlantIdList { get; set; }
         public bool isForExport { get; set; }
 
+        public string Poa { get; set; }
+        public SelectList PoaList { get; set; }
+
+        public string Creator { get; set; }
+        public SelectList CreatorList { get; set; }
     }
 
     public class Ck4CSummaryReportsItem
@@ -49,6 +54,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public string ManagerApproved { get; set; }
         public string Status { get; set; }
         public string CompletedDate { get; set; }
+        public string Creator { get; set; }
 
         public List<string> ProductionDate { get; set; }
         public List<string> FaCode { get; set; }
@@ -69,6 +75,8 @@ namespace Sampoerna.EMS.Website.Models.CK4C
     {
         public string Ck4CNumber { get; set; }
         public string Plant { get; set; }
+        public string PoaSearch { get; set; }
+        public string CreatorSearch { get; set; }
         public bool NoRow { get; set; }
         public bool Ck4CNo { get; set; }
         public bool CeOffice { get; set; }
@@ -84,6 +92,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public bool ManagerApproved { get; set; }
         public bool Status { get; set; }
         public bool CompletedDate { get; set; }
+        public bool Creator { get; set; }
 
         public bool ProductionDate { get; set; }
         public bool FaCode { get; set; }

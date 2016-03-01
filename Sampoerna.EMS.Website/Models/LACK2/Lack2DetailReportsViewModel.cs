@@ -27,6 +27,8 @@ namespace Sampoerna.EMS.Website.Models.LACK2
             public string NppbkcId { get; set; }
             public string SendingPlantId { get; set; }
             public string GoodType { get; set; }
+            public string Poa { get; set; }
+            public string Creator { get; set; }
             public int? PeriodMonth { get; set; }
             public int? PeriodYear { get; set; }
             public DateTime? DateFrom { get; set; }
@@ -39,6 +41,8 @@ namespace Sampoerna.EMS.Website.Models.LACK2
             public SelectList NppbkcIdList { get; set; }
             public SelectList SendingPlantIdList { get; set; }
             public SelectList GoodTypeList { get; set; }
+            public SelectList CreatorList { get; set; }
+            public SelectList PoaList { get; set; }
             
             public SelectList PeriodMonthList { get; set; }
             public SelectList PeriodYearList { get; set; }
@@ -57,6 +61,8 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public string ReceivingCompanyName { get; set; }
         public string ReceivingNppbkc { get; set; }
         public string ReceivingAddress { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
 
         public string Ck5SendingPlant { get; set; }
         public string SendingPlantAddress { get; set; }
@@ -78,6 +84,8 @@ namespace Sampoerna.EMS.Website.Models.LACK2
             public bool BReceivingCompanyName { get; set; }
             public bool BReceivingNppbkc { get; set; }
             public bool BReceivingAddress { get; set; }
+            public bool PoaCheck { get; set; }
+            public bool CreatorCheck { get; set; }
 
             public bool BCk5SendingPlant { get; set; }
             public bool BSendingPlantAddress { get; set; }

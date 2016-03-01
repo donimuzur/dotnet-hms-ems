@@ -10,7 +10,9 @@ using System.Web.Mvc;
 using AutoMapper;
 using CrystalDecisions.CrystalReports.Engine;
 using CrystalDecisions.Shared;
+using DocumentFormat.OpenXml.Office.MetaAttributes;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
@@ -1116,6 +1118,138 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Pbck3SummaryReport", model);
         }
 
+        private SelectList GetListPbck7Items(List<Pbck7SummaryReportDto> listPbck7, string listName)
+        {
+            IEnumerable<SelectItemModel> query = null;
+            switch (listName)
+            {
+                case "facode":
+                    query = from x in listPbck7.OrderBy(c => c.FaCode)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.FaCode,
+                                TextField = x.FaCode
+                            };
+                    break;
+                case "brand":
+                    query = from x in listPbck7.OrderBy(c => c.Brand)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Brand,
+                                TextField = x.Brand
+                            };
+                    break;
+                case "content":
+                    query = from x in listPbck7.OrderBy(c => c.Content)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Content,
+                                TextField = x.Content
+                            };
+                    break;
+                case "hje":
+                    query = from x in listPbck7.OrderBy(c => c.Hje)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Hje,
+                                TextField = x.Hje
+                            };
+                    break;
+                case "tariff":
+                    query = from x in listPbck7.OrderBy(c => c.Tariff)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Tariff,
+                                TextField = x.Tariff
+                            };
+                    break;
+                case "pbck7qty":
+                    query = from x in listPbck7.OrderBy(c => c.Pbck7Qty)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Pbck7Qty,
+                                TextField = x.Pbck7Qty
+                            };
+                    break;
+                case "fiscalyear":
+                    query = from x in listPbck7.OrderBy(c => c.FiscalYear)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.FiscalYear,
+                                TextField = x.FiscalYear
+                            };
+                    break;
+                case "excisevalue":
+                    query = from x in listPbck7.OrderBy(c => c.ExciseValue)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.ExciseValue,
+                                TextField = x.ExciseValue
+                            };
+                    break;
+                case "poa":
+                    query = from x in listPbck7.OrderBy(c => c.Poa)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Poa,
+                                TextField = x.Poa
+                            };
+                    break;
+                case "creator":
+                    query = from x in listPbck7.OrderBy(c => c.Creator)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Creator,
+                                TextField = x.Creator
+                            };
+                    break;
+                case "pbck3no":
+                    query = from x in listPbck7.OrderBy(c => c.Pbck3No)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Pbck3No,
+                                TextField = x.Pbck3No
+                            };
+                    break;
+                case "pbck3status":
+                    query = from x in listPbck7.OrderBy(c => c.Pbck3Status)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Pbck3Status,
+                                TextField = x.Pbck3Status
+                            };
+                    break;
+                case "ck2no":
+                    query = from x in listPbck7.OrderBy(c => c.Ck2No)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Ck2No,
+                                TextField = x.Ck2No
+                            };
+                    break;
+                case "ck2value":
+                    query = from x in listPbck7.OrderBy(c => c.Ck2Value)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Ck2Value,
+                                TextField = x.Ck2Value
+                            };
+                    break;
+                default:
+                     query = from x in listPbck7.OrderBy(c => c.Pbck7Number)
+                            select new SelectItemModel()
+                            {
+                                ValueField = x.Pbck7Number,
+                                TextField = x.Pbck7Number
+                            };
+                    break;
+            }
+          
+
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+
+        }
+
         private void InitSummaryReports(Pbck7SummaryReportModel model)
         {
             model.MainMenu = Enums.MenuList.PBCK7;
@@ -1126,6 +1260,27 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Pbck7List = GetAllPbck7No();
             model.FromYear = GlobalFunctions.GetYearList();
             model.ToYear = model.FromYear;
+
+            model.PoaList = GlobalFunctions.GetPoaAll(_poaBll);
+            model.CreatorList = GlobalFunctions.GetCreatorList();
+
+            var listPbck7 = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(new Pbck7SummaryInput());
+
+            model.FaCodeList = GetListPbck7Items(listPbck7, "facode");
+            model.BrandList = GetListPbck7Items(listPbck7, "brand");
+            model.ContentList = GetListPbck7Items(listPbck7, "content");
+            model.HjeList = GetListPbck7Items(listPbck7, "hje");
+            model.TariffList = GetListPbck7Items(listPbck7, "tariff");
+            model.Pbck7QtyList = GetListPbck7Items(listPbck7, "pbck7qty");
+            model.FiscalYearList = GetListPbck7Items(listPbck7, "fiscalyear");
+            model.ExciseValueList = GetListPbck7Items(listPbck7, "excisevalue");
+            //model.PoaList = GetListPbck7Items(listPbck7, "poa");
+            //model.CreatorList = GetListPbck7Items(listPbck7, "creator");
+            model.Pbck3NoList = GetListPbck7Items(listPbck7, "pbck3no");
+            model.Pbck3StatusList = GetListPbck7Items(listPbck7, "pbck3status");
+            model.Ck2NoList = GetListPbck7Items(listPbck7, "ck2no");
+            model.Ck2ValueList = GetListPbck7Items(listPbck7, "ck2value");
+
             model.ReportItems = Mapper.Map<List<Pbck7SummaryReportItem>>(_pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(new Pbck7SummaryInput()));
         }
 
@@ -1139,6 +1294,10 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Pbck3List = GetAllPbck3No();
             model.FromYear = GlobalFunctions.GetYearList();
             model.ToYear = model.FromYear;
+
+            model.PoaList = GlobalFunctions.GetPoaAll(_poaBll);
+            model.CreatorList = GlobalFunctions.GetCreatorList();
+
             model.ReportItems = Mapper.Map<List<Pbck3SummaryReportItem>>(_pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(new Pbck3SummaryInput()));
         }
 
@@ -2737,7 +2896,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (pbckData == null)
                 HttpNotFound();
 
-            Stream stream = GetReport(pbckData, "Preview PBCK-7");
+            Stream stream = GetReport(pbckData, "Preview PBCK-7", true);
 
             return File(stream, "application/pdf");
         }
@@ -2754,7 +2913,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (pbckData == null)
                 HttpNotFound();
 
-            Stream stream = GetReport(pbckData, "Preview PBCK-3");
+            Stream stream = GetReport(pbckData, "Preview PBCK-3", false);
 
             return File(stream, "application/pdf");
         }
@@ -2771,7 +2930,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (pbckData == null)
                 HttpNotFound();
 
-            Stream stream = GetReport(pbckData, "PBCK-7");
+            Stream stream = GetReport(pbckData, "PBCK-7", true);
 
             return File(stream, "application/pdf");
         }
@@ -2788,14 +2947,14 @@ namespace Sampoerna.EMS.Website.Controllers
             if (pbckData == null)
                 HttpNotFound();
 
-            Stream stream = GetReport(pbckData, "PBCK-3");
+            Stream stream = GetReport(pbckData, "PBCK-3", false);
 
             return File(stream, "application/pdf");
         }
         
-        private Stream GetReport(Pbck73PrintOutDto data, string printTitle)
+        private Stream GetReport(Pbck73PrintOutDto data, string printTitle, bool isPbck7)
         {
-            var dataSet = SetDataSetReport(data, printTitle);
+            var dataSet = SetDataSetReport(data, printTitle, isPbck7);
 
             var rpt = new ReportClass
             {
@@ -2808,7 +2967,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return stream;
         }
 
-        private DataSet SetDataSetReport(Pbck73PrintOutDto data, string printTitle)
+        private DataSet SetDataSetReport(Pbck73PrintOutDto data, string printTitle, bool isPbck7)
         {
             var dsReport = new dsPbck7();
 
@@ -2819,8 +2978,19 @@ namespace Sampoerna.EMS.Website.Controllers
             dMasterRow.CompanyName = data.CompanyName;
             dMasterRow.CompanyAddress = data.CompanyAddress;
             dMasterRow.Nppbkc = data.NppbkcId;
-            if (!string.IsNullOrEmpty(data.HeaderFooter.HEADER_IMAGE_PATH)) dMasterRow.Header = GetHeader(data.HeaderFooter.HEADER_IMAGE_PATH);
-            dMasterRow.Footer = data.HeaderFooter.FOOTER_CONTENT;
+
+            if (data.HeaderFooter != null)
+            {
+                if (!string.IsNullOrEmpty(data.HeaderFooter.HEADER_IMAGE_PATH))
+                    dMasterRow.Header = GetHeader(data.HeaderFooter.HEADER_IMAGE_PATH);
+                dMasterRow.Footer = data.HeaderFooter.FOOTER_CONTENT;
+            }
+            else
+            {
+                dMasterRow.Header = null;
+                dMasterRow.Footer = " ";
+            }
+            
             dMasterRow.Preview = printTitle;
             dMasterRow.Nomor = data.PbckNumber;
             dMasterRow.Lampiran = data.Lampiran;
@@ -2831,7 +3001,9 @@ namespace Sampoerna.EMS.Website.Controllers
             dMasterRow.ExecutionDate = data.ExecDateDisplayString;
             dMasterRow.NppbkcDate = data.NppbkcStartDate;
             dMasterRow.ReportingDate = data.PrintedDate;
-            dMasterRow.ConditionPbck7Or3 = data.HeaderFooter.FORM_TYPE_ID == Enums.FormType.PBCK7 ? true : false;
+            dMasterRow.ConditionPbck7Or3 = isPbck7;
+
+            //dMasterRow.ConditionPbck7Or3 = data.HeaderFooter.FORM_TYPE_ID == Enums.FormType.PBCK7 ? true : false;
             dMasterRow.CompanyNameAndAddress = data.CompanyName + "-" + data.CompanyAddress;
             dMasterRow.AddressParagraft = Regex.Replace(data.CompanyAddress, "\r\n", " ");
             
@@ -2857,7 +3029,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     detailRow.JmlCukai = item.ExciseValue.HasValue ? item.ExciseValue.Value.ToString("N2") : "-";
                     detailRow.SumJmlCukai = totalExciseValue.ToString("N2");
                     detailRow.SumJmlKemasan = totalQty.ToString("N2");
-                    detailRow.SymbolStar = data.HeaderFooter.FORM_TYPE_ID == Enums.FormType.PBCK7 ? true : false;
+                    detailRow.SymbolStar = isPbck7;
+                    //detailRow.SymbolStar = data.HeaderFooter.FORM_TYPE_ID == Enums.FormType.PBCK7 ? true : false;
 
                     dsReport.Detail.AddDetailRow(detailRow);
                 }
