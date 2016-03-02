@@ -176,11 +176,11 @@ namespace Sampoerna.EMS.BLL.Services
             }
         }
 
-        public List<INVENTORY_MOVEMENT> GetMvt201NotUsed(List<string> usedList)
+        public List<INVENTORY_MOVEMENT> GetMvt201NotUsed(List<long> usedList)
         {
-           
 
-            List<INVENTORY_MOVEMENT> data = _repository.Get(x => usedList.Contains(x.MAT_DOC)).ToList();    
+            var usage201 = EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage201);
+            List<INVENTORY_MOVEMENT> data = _repository.Get(x => (!usedList.Contains(x.INVENTORY_MOVEMENT_ID)) && x.MVT == usage201).ToList();    
             
 
             return data;
