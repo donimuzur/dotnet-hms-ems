@@ -2685,9 +2685,11 @@ namespace Sampoerna.EMS.BLL
 
         public List<ZAIDM_EX_GOODTYPCompositeDto> GetGoodsTypeByNppbkcId(string nppbkcId)
         {
+            var nppbkcListFromImport = _plantBll.GetAll().Where(x => x.NPPBKC_IMPORT_ID == nppbkcId).Select(x => x.NPPBKC_ID).ToList();
+
             includeTables = "";
             var dbData =
-                _repository.Get(c => !string.IsNullOrEmpty(c.NPPBKC_ID) && c.NPPBKC_ID == nppbkcId, null,
+                _repository.Get(c => !string.IsNullOrEmpty(c.NPPBKC_ID) && (c.NPPBKC_ID == nppbkcId || nppbkcListFromImport.Contains(c.NPPBKC_ID)), null,
                     includeTables);
             if (dbData == null)
                 return null;

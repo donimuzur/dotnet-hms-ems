@@ -36,7 +36,7 @@ namespace Sampoerna.EMS.Contract
 
        void CK5Workflow(CK5WorkflowDocumentInput input);
 
-       List<CK5Dto> GetSummaryReportsByParam(CK5GetSummaryReportByParamInput input);
+      // List<CK5Dto> GetSummaryReportsByParam(CK5GetSummaryReportByParamInput input);
 
        List<Ck5SummaryReportDto> GetSummaryReportsViewByParam(CK5GetSummaryReportByParamInput input);
 

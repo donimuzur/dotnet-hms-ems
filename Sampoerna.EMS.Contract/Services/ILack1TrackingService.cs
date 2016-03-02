@@ -8,6 +8,6 @@ namespace Sampoerna.EMS.Contract.Services
         void DeleteByLack1Id(int lack1Id);
         void DeleteDataList(IEnumerable<LACK1_TRACKING> listToDelete);
 
-        List<string> GetMovement201FromTracking();
+        List<long> GetMovement201FromTracking();
     }
 }

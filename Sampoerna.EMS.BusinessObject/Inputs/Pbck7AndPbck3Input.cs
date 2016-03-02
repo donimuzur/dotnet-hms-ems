@@ -32,8 +32,21 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public int? To { get; set; }
         public string Pbck7Number { get; set; }
         public string ShortOrderColum { get; set; }
-       
 
+        public string FaCode { get; set; }
+        public string Brand { get; set; }
+        public string Content { get; set; }
+        public string Hje { get; set; }
+        public string Tariff { get; set; }
+        public string Pbck7Qty { get; set; }
+        public string FiscalYear { get; set; }
+        public string ExciseValue { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
+        public string Pbck3No { get; set; }
+        public string Pbck3Status { get; set; }
+        public string Ck2No { get; set; }
+        public string Ck2Value { get; set; }
 
 
 
@@ -47,6 +60,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string Pbck3Number { get; set; }
         public string ShortOrderColum { get; set; }
 
+        public string Poa { get; set; }
+        public string Creator { get; set; }
     }
 
     public class InsertPbck3FromCk5MarketReturnInput

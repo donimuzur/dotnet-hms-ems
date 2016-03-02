@@ -17,6 +17,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ReceivingCompanyName { get; set; }
         public string ReceivingNppbkc { get; set; }
         public string ReceivingAddress { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
 
         public string Ck5SendingPlant { get; set; }
         public string SendingPlantAddress { get; set; }
