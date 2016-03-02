@@ -198,6 +198,11 @@ namespace Sampoerna.EMS.XMLReader
 
                         production.BRAND_DESC = existingBrand.BRAND_CE;
                     }
+                    else
+                    {
+                        _xmlMapper.Errors.Add(string.Format("no brand fa_code {0} - werks {1}", production.FA_CODE,
+                            production.WERKS));
+                    }
 
                     var company = GetCompanyByPlant(production.WERKS);
                     if (company != null)

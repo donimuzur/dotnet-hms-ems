@@ -3,6 +3,7 @@ using System.Linq;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
+using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL.Services
@@ -42,10 +43,11 @@ namespace Sampoerna.EMS.BLL.Services
             }
         }
 
-        public List<string> GetMovement201FromTracking()
+        public List<long> GetMovement201FromTracking()
         {
-            var data = _repository.Get(x => x.INVENTORY_MOVEMENT.MVT == Core.Enums.MovementTypeCode.Usage201.ToString(), null,
-                "INVENTORY_MOVEMENT").Select(x => x.INVENTORY_MOVEMENT.MAT_DOC).ToList();
+            var usage201 = EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage201);
+            var data = _repository.Get(x => x.INVENTORY_MOVEMENT.MVT == usage201, null,
+                "INVENTORY_MOVEMENT").Select(x => x.INVENTORY_MOVEMENT_ID != null ? x.INVENTORY_MOVEMENT_ID.Value : 0).ToList();
             return data;
         }   
     }
