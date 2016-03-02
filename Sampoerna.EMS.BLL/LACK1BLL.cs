@@ -3207,6 +3207,8 @@ namespace Sampoerna.EMS.BLL
 
             rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
 
+            rc.Lack1UomId = ck5Data.FirstOrDefault().PACKAGE_UOM_ID;
+
             return rc;
         }
 
