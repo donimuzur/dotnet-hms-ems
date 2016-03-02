@@ -1733,6 +1733,51 @@ namespace Sampoerna.EMS.Website.Controllers
                     iColumn = iColumn + 1;
                 }
 
+                if (modelExport.IsSelectStickerCode)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.StickerCode);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.IsSelectFaCode)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.FaCode);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.IsSelectNppbkc)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Nppbkc);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.IsSelectPlantId)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.PlantId);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.IsSelectPlantDescription)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.PlantDescription);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.IsSelectCompanyName)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CompanyName);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.IsSelectPoa)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Poa);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.IsSelectCk1No)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck1No);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.IsSelectCreator)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Creator);
+                    iColumn = iColumn + 1;
+                }
                 iRow++;
             }
 
@@ -1876,7 +1921,58 @@ namespace Sampoerna.EMS.Website.Controllers
                 slDocument.SetCellValue(iRow, iColumn, "Completed Date");
                 iColumn = iColumn + 1;
             }
-          
+
+            if (modelExport.IsSelectStickerCode)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Sticker Code");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectFaCode)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "FA Code");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectNppbkc)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "NPPBKC");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectPlantId)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Plant");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectPlantDescription)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Plant Description");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectCompanyName)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Company Name");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.IsSelectPoa)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "POA");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.IsSelectCk1No)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-1 Number");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.IsSelectCreator)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Creator");
+                iColumn = iColumn + 1;
+            }
+
             return slDocument;
 
         }
