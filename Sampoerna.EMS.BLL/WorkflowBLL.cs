@@ -530,13 +530,14 @@ namespace Sampoerna.EMS.BLL
             if (input.DocumentStatus != Enums.DocumentStatus.GoodReceive)
                 return false;
           
-            if (!IsUserUnsealing(input))
-                return false;
+            //if (!IsUserUnsealing(input))
+            //    return false;
 
-            if (input.CreatedUser == input.CurrentUser) return true;
+            //if (input.CreatedUser == input.CurrentUser) return true;
 
-            return IsOnePlant(input.DestPlant, input.CurrentUser);
+            //return IsOnePlant(input.DestPlant, input.CurrentUser);
 
+            return IsUserUnsealing(input);
         }
 
         public bool AllowWasteDisposal(WorkflowAllowApproveAndRejectInput input)
