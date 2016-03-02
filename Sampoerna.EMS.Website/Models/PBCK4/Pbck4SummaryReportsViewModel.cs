@@ -82,6 +82,16 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
         public string PaymentDate { get; set; }
         public string Status { get; set; }
         public string CompletedDate { get; set; }
+
+        public string StickerCode { get; set; }
+        public string FaCode { get; set; }
+        public string Nppbkc { get; set; }
+        public string PlantId { get; set; }
+        public string PlantDescription { get; set; }
+        public string CompanyName { get; set; }
+        public string Poa { get; set; }
+        public string Ck1No { get; set; }
+        public string Creator { get; set; }
     }
 
     public class Pbck4ExportSummaryReportsViewModel : Pbck4SearchSummaryReportsViewModel
@@ -111,6 +121,16 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
         public bool PaymentDate { get; set; }
         public bool Status { get; set; }
         public bool CompletedDate { get; set; }
+
+        public bool IsSelectStickerCode { get; set; }
+        public bool IsSelectFaCode { get; set; }
+        public bool IsSelectNppbkc { get; set; }
+        public bool IsSelectPlantId { get; set; }
+        public bool IsSelectPlantDescription { get; set; }
+        public bool IsSelectCompanyName { get; set; }
+        public bool IsSelectPoa { get; set; }
+        public bool IsSelectCk1No { get; set; }
+        public bool IsSelectCreator { get; set; }
     }
 
   
