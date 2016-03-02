@@ -27,6 +27,6 @@ namespace Sampoerna.EMS.Contract.Services
 
 
 
-        List<INVENTORY_MOVEMENT> GetMvt201NotUsed(List<string> usedList);
+        List<INVENTORY_MOVEMENT> GetMvt201NotUsed(List<long> usedList);
     }
 }
