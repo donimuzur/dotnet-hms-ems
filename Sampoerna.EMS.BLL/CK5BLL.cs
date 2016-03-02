@@ -5501,9 +5501,15 @@ namespace Sampoerna.EMS.BLL
             var ck5 = _ck5Service.GetById(ck5Id);
             if (ck5 != null)
             {
+                var matdocassigned = _ck5Service.GetCk5AssignedMatdoc();
+                if (!string.IsNullOrEmpty(ck5.MATDOC))
+                {
+                    matdocassigned.Remove(ck5.MATDOC);
+                }
                 var listUsed201 = _lack1TrackingService.GetMovement201FromTracking();
                 
                 tempData = _movementService.GetMvt201NotUsed(listUsed201);
+                tempData = tempData.Where(x => !matdocassigned.Contains(x.MAT_DOC)).ToList();
             }
             
 
