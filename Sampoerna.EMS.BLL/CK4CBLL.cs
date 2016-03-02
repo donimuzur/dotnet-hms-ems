@@ -400,7 +400,7 @@ namespace Sampoerna.EMS.BLL
                 case Enums.ActionType.Reject:
                     //send notification to creator
                     var userDetail = _userBll.GetUserById(ck4cData.CreatedBy);
-                    var poaApprove = _userBll.GetUserById(approveRejectedPoa.ACTION_BY);
+                    var poaApprove = approveRejectedPoa == null ? null : _userBll.GetUserById(approveRejectedPoa.ACTION_BY);
                     //var poaId = approveRejectedPoa == null ? ck4cData.CreatedBy : approveRejectedPoa.ACTION_BY;
                   
                     rc.To.Add(userDetail.EMAIL);
