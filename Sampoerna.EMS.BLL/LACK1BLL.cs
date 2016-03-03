@@ -1524,6 +1524,15 @@ namespace Sampoerna.EMS.BLL
                 dtToReturn.IsEtilAlcohol = true;
             }
 
+            if (!string.IsNullOrEmpty(dbData.APPROVED_BY_POA))
+            {
+                var poa = _poaBll.GetDetailsById(dbData.APPROVED_BY_POA);
+                if (poa != null)
+                {
+                    dtToReturn.PoaPrintedName = poa.PRINTED_NAME;
+                }
+            }
+
             return dtToReturn;
         }
 
@@ -3176,6 +3185,8 @@ namespace Sampoerna.EMS.BLL
                 !(c.Ck5Type == Enums.CK5Type.Waste)).ToList();
 
             rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
+
+            rc.Lack1UomId = ck5Data.FirstOrDefault().PACKAGE_UOM_ID;
 
             return rc;
         }
