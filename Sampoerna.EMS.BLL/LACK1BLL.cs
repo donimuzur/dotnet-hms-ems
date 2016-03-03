@@ -1524,6 +1524,15 @@ namespace Sampoerna.EMS.BLL
                 dtToReturn.IsEtilAlcohol = true;
             }
 
+            if (!string.IsNullOrEmpty(dbData.APPROVED_BY_POA))
+            {
+                var poa = _poaBll.GetDetailsById(dbData.APPROVED_BY_POA);
+                if (poa != null)
+                {
+                    dtToReturn.PoaPrintedName = poa.PRINTED_NAME;
+                }
+            }
+
             return dtToReturn;
         }
 
