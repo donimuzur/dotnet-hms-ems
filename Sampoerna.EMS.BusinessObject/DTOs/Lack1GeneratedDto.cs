@@ -46,6 +46,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         /// for display only
         /// </summary>
         public List<Lack1GeneratedIncomeDataDto> IncomeList { get; set; }
+
+        public List<Lack1GeneratedIncomeDataDto> AllCk5List { get; set; }
+
         public decimal TotalIncome { get; set; }
         public decimal TotalUsage { get; set; }
         public decimal? TotalUsageTisToTis { get; set; }
