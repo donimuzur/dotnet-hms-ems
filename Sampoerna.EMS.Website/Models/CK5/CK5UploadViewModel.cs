@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models.CK5
@@ -35,5 +37,10 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string EditUrlFunction { get; set; }
 
         public string Ck5Type { get; set; }
+
+        public SelectList MatdocList { get; set; }
+
+        [Display(Name = "MatDoc")]
+        public string MatDoc { get; set; }
     }
 }

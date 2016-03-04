@@ -5519,6 +5519,36 @@ namespace Sampoerna.EMS.BLL
             return data;
         }
 
-        
+
+        public List<CK5MaterialDto> GetCk5MaterialMatdocList(List<CK5MaterialDto> listMaterial, long ck5Id)
+        {
+
+            var tempData = new List<INVENTORY_MOVEMENT>();
+
+            var ck5 = _ck5Service.GetById(ck5Id);
+            if (ck5 != null)
+            {
+                var matdocassigned = _ck5Service.GetCk5AssignedMatdoc();
+                if (!string.IsNullOrEmpty(ck5.MATDOC))
+                {
+                    matdocassigned.Remove(ck5.MATDOC);
+                }
+                var listUsed201 = _lack1TrackingService.GetMovement201FromTracking();
+
+                tempData = _movementService.GetMvt201NotUsed(listUsed201);
+                tempData = tempData.Where(x => !matdocassigned.Contains(x.MAT_DOC)).ToList();
+            }
+
+
+
+            //var data = Mapper.Map<List<Ck5MatdocDto>>(tempData);
+
+            foreach (var ck5MaterialDto in listMaterial)
+            {
+                var materialMatDoc = tempData.Where(c => c.PLANT_ID == ck5MaterialDto.PLANT_ID && c.MATERIAL_ID == ck5MaterialDto.BRAND).ToList();
+                
+            }
+            return listMaterial;
+        }
     }
 }
