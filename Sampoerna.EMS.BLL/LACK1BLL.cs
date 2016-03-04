@@ -3190,6 +3190,10 @@ namespace Sampoerna.EMS.BLL
 
             var ck5Data = _ck5Service.GetForLack1ByParam(ck5Input);
             rc.AllIncomeList = Mapper.Map<List<Lack1GeneratedIncomeDataDto>>(ck5Data);
+
+            var ck5AllPrevData = _ck5Service.GetAllPreviousForLack1(ck5Input);
+            rc.AllCk5List = Mapper.Map<List<Lack1GeneratedIncomeDataDto>>(ck5AllPrevData);
+
             if (ck5Data.Count <= 0) return rc;
 
             rc.Ck5RemarkData = new Lack1GeneratedRemarkDto()
@@ -3486,7 +3490,9 @@ namespace Sampoerna.EMS.BLL
                 Data = rc
             };
 
-            var stoReceiverNumberList = rc.IncomeList.Where(c => c.Ck5Type != Enums.CK5Type.Manual).Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
+            //original by irman
+            //var stoReceiverNumberList = rc.IncomeList.Where(c => c.Ck5Type != Enums.CK5Type.Manual).Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
+            var stoReceiverNumberList = rc.AllCk5List.Where(c => c.Ck5Type != Enums.CK5Type.Manual).Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
 
             var getInventoryMovementByParamOutput = GetInventoryMovementByParam(new InvMovementGetUsageByParamInput()
             {
@@ -3636,9 +3642,13 @@ namespace Sampoerna.EMS.BLL
 
             var receiving = _inventoryMovementService.GetReceivingByParam(receivingParamInput);
             //get prev receiving for CASE 2 : prev Receiving, Current Receiving, Current Usage
-            var prevReceiving = _inventoryMovementService.GetReceivingByParam(prevReceivingParamInput);
+            
+            //original by irman
+            //var prevReceiving = _inventoryMovementService.GetReceivingByParam(prevReceivingParamInput);
+            //var receivingAll = receiving.Where(c => stoReceiverNumberList.Contains(c.PURCH_DOC)).ToList();
+            //receivingAll.AddRange(prevReceiving);
+
             var receivingAll = receiving.Where(c => stoReceiverNumberList.Contains(c.PURCH_DOC)).ToList();
-            receivingAll.AddRange(prevReceiving);
 
             var receivingAllWithConvertion = InvMovementConvertionProcess(receivingAll, bkcUomId);
 

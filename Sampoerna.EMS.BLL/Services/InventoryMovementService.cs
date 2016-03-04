@@ -41,16 +41,25 @@ namespace Sampoerna.EMS.BLL.Services
                 //EnumHelper.GetDescription(Core.Enums.MovementTypeCode.UsageZ02)
             };
 
-            Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue 
-                //&& c.POSTING_DATE < new DateTime(input.PeriodYear,input.PeriodMonth + 1,1);
-                && c.POSTING_DATE.Value.Year == input.PeriodYear && c.POSTING_DATE.Value.Month == input.PeriodMonth;
+            //original irman
+            //Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue
+            //    && c.POSTING_DATE.Value.Year == input.PeriodYear && c.POSTING_DATE.Value.Month == input.PeriodMonth;
+
+            var tempyear = input.PeriodMonth == 12 ? input.PeriodYear + 1 : input.PeriodYear;
+            var tempmonth = input.PeriodMonth == 12 ? 1 : input.PeriodMonth + 1;
+
+
+            Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue && c.POSTING_DATE.Value < new DateTime(tempyear, tempmonth, 1);
+
 
             if (input.PlantIdList.Count > 0)
             {
                 queryFilter = queryFilter.And(c => input.PlantIdList.Contains(c.PLANT_ID));
             }
-
+            
             queryFilter = queryFilter.And(c => usageMvtType.Contains(c.MVT));
+
+            
 
             if (input.IsEtilAlcohol) return _repository.Get(queryFilter).ToList();
 
@@ -58,11 +67,13 @@ namespace Sampoerna.EMS.BLL.Services
 
             //Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter2 = queryFilter; 
 
-            queryFilter = input.IsTisToTis ? queryFilter.And(c => !allOrderInZaapShiftRpt.Contains(c.ORDR)) : 
+            queryFilter = input.IsTisToTis
+                ? queryFilter.And(c => !allOrderInZaapShiftRpt.Contains(c.ORDR))
+                : //queryFilter;
                 queryFilter.And(c => allOrderInZaapShiftRpt.Contains(c.ORDR));
 
             //queryFilter2 = queryFilter2.Or(queryFilter);
-
+            var sum = _repository.Get(queryFilter).Select(x => x.QTY).Sum(x => x.Value);
             return _repository.Get(queryFilter).ToList();
 
         }
@@ -75,8 +86,15 @@ namespace Sampoerna.EMS.BLL.Services
                 EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving102)
             };
 
-            Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue
-                && c.POSTING_DATE.Value.Year == input.PeriodYear && c.POSTING_DATE.Value.Month == input.PeriodMonth;
+            //original by irman
+            //Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue
+            //    && c.POSTING_DATE.Value.Year == input.PeriodYear && c.POSTING_DATE.Value.Month == input.PeriodMonth;
+
+            var tempyear = input.PeriodMonth == 12 ? input.PeriodYear + 1 : input.PeriodYear;
+            var tempmonth = input.PeriodMonth == 12 ? 1 : input.PeriodMonth + 1;
+
+
+            Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue && c.POSTING_DATE.Value < new DateTime(tempyear,tempmonth, 1);
 
             if (input.PlantIdList.Count > 0)
             {
