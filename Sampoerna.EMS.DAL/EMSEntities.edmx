@@ -315,6 +315,7 @@
           <Property Name="NOTE" Type="varchar" MaxLength="100" />
           <Property Name="CONVERTED_UOM" Type="varchar" MaxLength="50" />
           <Property Name="MATERIAL_DESC" Type="nvarchar" MaxLength="65" />
+          <Property Name="MATDOC" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="COUNTRY">
           <Key>
@@ -417,7 +418,7 @@
           <Property Name="MVT" Type="nvarchar" MaxLength="3" Nullable="false" />
           <Property Name="MATERIAL_ID" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="QTY" Type="decimal" Precision="18" Scale="5" />
+          <Property Name="QTY" Type="decimal" Precision="18" Scale="3" />
           <Property Name="SLOC" Type="nvarchar" MaxLength="4" />
           <Property Name="VENDOR" Type="nvarchar" MaxLength="10" />
           <Property Name="BUN" Type="nvarchar" MaxLength="5" />
@@ -5333,6 +5334,7 @@
           <Property Name="CONVERTED_UOM" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_MATERIAL_CK5" FromRole="CK5_MATERIAL" ToRole="CK5" />
           <Property Name="MATERIAL_DESC" Type="String" MaxLength="65" FixedLength="false" Unicode="true" />
+          <Property Name="MATDOC" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="DOC_NUMBER_SEQ">
           <Key>
@@ -7308,7 +7310,7 @@
           <Property Name="MVT" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="true" />
           <Property Name="MATERIAL_ID" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_ID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="QTY" Type="Decimal" Precision="18" Scale="5" />
+          <Property Name="QTY" Type="Decimal" Precision="18" Scale="3" />
           <Property Name="SLOC" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="VENDOR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="BUN" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
@@ -9100,7 +9102,8 @@
     <EntitySetMapping Name="CK5_MATERIAL">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.CK5_MATERIAL)">
         <MappingFragment StoreEntitySet="CK5_MATERIAL">
-          <ScalarProperty Name="MATERIAL_DESC" ColumnName="MATERIAL_DESC" />
+          <ScalarProperty Name="MATDOC" ColumnName="MATDOC" />
+                <ScalarProperty Name="MATERIAL_DESC" ColumnName="MATERIAL_DESC" />
                 <ScalarProperty Name="CK5_MATERIAL_ID" ColumnName="CK5_MATERIAL_ID" />
           <ScalarProperty Name="CK5_ID" ColumnName="CK5_ID" />
           <ScalarProperty Name="MATERIAL_ID" ColumnName="MATERIAL_ID" />
