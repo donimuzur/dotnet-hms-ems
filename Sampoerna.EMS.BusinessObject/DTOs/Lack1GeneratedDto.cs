@@ -154,7 +154,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public bool IsTisToTisData { get; set; }
 
         public decimal ProportionalOrder { get; set; }
-        
+        public DateTime ProductionDate { get; set; } 
     }
 
     public class Lack1GeneratedTrackingDto : INVENTORY_MOVEMENT
