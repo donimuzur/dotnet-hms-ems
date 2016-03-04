@@ -42,14 +42,14 @@ namespace Sampoerna.EMS.BLL.Services
             };
 
             //original irman
-            //Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue
-            //    && c.POSTING_DATE.Value.Year == input.PeriodYear && c.POSTING_DATE.Value.Month == input.PeriodMonth;
+            Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue
+                && c.POSTING_DATE.Value.Year == input.PeriodYear && c.POSTING_DATE.Value.Month == input.PeriodMonth;
 
-            var tempyear = input.PeriodMonth == 12 ? input.PeriodYear + 1 : input.PeriodYear;
-            var tempmonth = input.PeriodMonth == 12 ? 1 : input.PeriodMonth + 1;
+            //var tempyear = input.PeriodMonth == 12 ? input.PeriodYear + 1 : input.PeriodYear;
+            //var tempmonth = input.PeriodMonth == 12 ? 1 : input.PeriodMonth + 1;
 
 
-            Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue && c.POSTING_DATE.Value < new DateTime(tempyear, tempmonth, 1);
+            //Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue && c.POSTING_DATE.Value < new DateTime(tempyear, tempmonth, 1);
 
 
             if (input.PlantIdList.Count > 0)
