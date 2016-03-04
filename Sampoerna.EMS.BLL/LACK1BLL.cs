@@ -2443,6 +2443,29 @@ namespace Sampoerna.EMS.BLL
 
             //get zaap_shift_rpt
             var zaapShiftRpt = _zaapShiftRptService.GetForLack1ByParam(zaapShiftReportInput);
+            var completeZaapData = _zaapShiftRptService.GetCompleteData(zaapShiftReportInput);
+            var totalFaZaapShiftRpt = completeZaapData.GroupBy(x => new { x.FA_CODE }).Select(y => new
+            {
+                FaCode = y.Key.FA_CODE,
+                TotalQtyFa = y.Sum(x=> x.QTY.HasValue? x.QTY.Value : 0) 
+            }).ToList();
+
+            var totalOrderZaapShiftRpt = completeZaapData.GroupBy(x => new { x.ORDR, x.FA_CODE }).Select(y => new
+            {
+                FaCode = y.Key.FA_CODE,
+                Ordr = y.Key.ORDR,
+                TotalQtyOrdr = y.Sum(x => x.QTY.HasValue ? x.QTY.Value : 0)
+            }).ToList();
+
+            var proportionalOrderPerFa = (from faZaap in totalFaZaapShiftRpt join 
+                                          orderZaap in totalOrderZaapShiftRpt on new {faZaap.FaCode} equals new { orderZaap.FaCode} 
+                                          where faZaap.TotalQtyFa > 0
+                                         select new Lack1GeneratedProductionDataDto()
+                                         {
+                                             FaCode = faZaap.FaCode,
+                                             Ordr = orderZaap.Ordr,
+                                             ProportionalOrder = orderZaap.TotalQtyOrdr / faZaap.TotalQtyFa
+                                         });
 
             //bypass http://192.168.62.216/TargetProcess/entity/1465
             //if (zaapShiftRpt.Count == 0)
@@ -2495,6 +2518,7 @@ namespace Sampoerna.EMS.BLL
 
             var joinedWithUomData = (from j in joinedData
                                      join u in uomData on j.UOM equals u.UOM_ID
+                                     join p in proportionalOrderPerFa on new { j.FA_CODE, j.ORDR } equals new { FA_CODE = p.FaCode, ORDR = p.Ordr }
                                      select new
                                      {
                                          j.FA_CODE,
@@ -2508,7 +2532,8 @@ namespace Sampoerna.EMS.BLL
                                          j.PROD_CODE,
                                          j.PRODUCT_ALIAS,
                                          j.PRODUCT_TYPE,
-                                         u.UOM_DESC
+                                         u.UOM_DESC,
+                                         p.ProportionalOrder
                                          
                                      }).Distinct().ToList();
 
@@ -2551,7 +2576,8 @@ namespace Sampoerna.EMS.BLL
                     ProductAlias = item.PRODUCT_ALIAS,
                     Amount = item.PROD_QTY,
                     UomId = item.UOM,
-                    UomDesc = item.UOM_DESC
+                    UomDesc = item.UOM_DESC,
+                    ProportionalOrder = item.ProportionalOrder,
                 };
 
                 var groupUsageProporsional = invMovementOutput.UsageProportionalList
@@ -2570,14 +2596,16 @@ namespace Sampoerna.EMS.BLL
                     });
 
                 var rec = groupUsageProporsional.ToList().FirstOrDefault(c =>
-                    c.Order == item.ORDR && c.Batch == item.BATCH);
-
+                    c.Order == item.ORDR 
+                    //&& c.Batch == item.BATCH
+                    );
+                
                 if (rec != null)
                 {
                     //calculate proporsional
                     itemToInsert.Amount =
-                        Math.Round(
-                            ((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount), 3);
+                        Math.Round(((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount ), 3);
+                            //((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount * itemToInsert.ProportionalOrder), 3);
                 }
                 else
                 {
@@ -2585,13 +2613,15 @@ namespace Sampoerna.EMS.BLL
                     {
                         var chk =
                             prevInventoryMovementByParam.UsageProportionalList.FirstOrDefault(
-                               c=> c.Order == item.ORDR && c.Batch == item.BATCH);
+                               c=> c.Order == item.ORDR 
+                                   //&& c.Batch == item.BATCH
+                                   );
                         if (chk != null)
                         {
                             //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
                             itemToInsert.Amount =
-                        Math.Round(
-                            ((chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount), 3);
+                        Math.Round(((chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount ), 3);
+                            //((chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount * itemToInsert.ProportionalOrder), 3);
                         }
                     }
                 }
@@ -2703,7 +2733,8 @@ namespace Sampoerna.EMS.BLL
                         ProductAlias = nonzaapItem.PRODUCT_ALIAS,
                         Amount = nonzaapItem.PROD_QTY,
                         UomId = nonzaapItem.UOM_PROD_QTY,
-                        UomDesc = nonzaapItem.UOM_DESC
+                        UomDesc = nonzaapItem.UOM_DESC,
+                        //ProportionalOrder = 
                     };
 
                     var totalProductionOrder = groupedOrderProductionList.FirstOrDefault(x => x.Fa_Code == nonzaapItem.FA_CODE);
