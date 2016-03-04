@@ -2452,6 +2452,32 @@ namespace Sampoerna.EMS.BLL
 
             //get zaap_shift_rpt
             var zaapShiftRpt = _zaapShiftRptService.GetForLack1ByParam(zaapShiftReportInput);
+            var completeZaapData = _zaapShiftRptService.GetCompleteData(zaapShiftReportInput);
+            var totalFaZaapShiftRpt = completeZaapData.GroupBy(x => new { x.FA_CODE, x.PRODUCTION_DATE }).Select(y => new
+            {
+                FaCode = y.Key.FA_CODE,
+                ProductionDate = y.Key.PRODUCTION_DATE,
+                TotalQtyFa = y.Sum(x=> x.QTY.HasValue? x.QTY.Value : 0) 
+            }).ToList();
+
+            var totalOrderZaapShiftRpt = completeZaapData.GroupBy(x => new { x.ORDR, x.FA_CODE,x.PRODUCTION_DATE }).Select(y => new
+            {
+                FaCode = y.Key.FA_CODE,
+                ProductionDate = y.Key.PRODUCTION_DATE,
+                Ordr = y.Key.ORDR,
+                TotalQtyOrdr = y.Sum(x => x.QTY.HasValue ? x.QTY.Value : 0)
+            }).ToList();
+
+            var proportionalOrderPerFa = (from faZaap in totalFaZaapShiftRpt join 
+                                          orderZaap in totalOrderZaapShiftRpt on new {faZaap.FaCode, faZaap.ProductionDate} equals new { orderZaap.FaCode, orderZaap.ProductionDate} 
+                                          where faZaap.TotalQtyFa > 0
+                                         select new Lack1GeneratedProductionDataDto()
+                                         {
+                                             FaCode = faZaap.FaCode,
+                                             ProductionDate = orderZaap.ProductionDate,
+                                             Ordr = orderZaap.Ordr,
+                                             ProportionalOrder = orderZaap.TotalQtyOrdr / faZaap.TotalQtyFa
+                                         }).ToList();
 
             //bypass http://192.168.62.216/TargetProcess/entity/1465
             //if (zaapShiftRpt.Count == 0)
@@ -2504,6 +2530,7 @@ namespace Sampoerna.EMS.BLL
 
             var joinedWithUomData = (from j in joinedData
                                      join u in uomData on j.UOM equals u.UOM_ID
+                                     join p in proportionalOrderPerFa on new { j.FA_CODE, j.ORDR, j.PRODUCTION_DATE } equals new { FA_CODE = p.FaCode, ORDR = p.Ordr, PRODUCTION_DATE = p.ProductionDate }
                                      select new
                                      {
                                          j.FA_CODE,
@@ -2517,7 +2544,8 @@ namespace Sampoerna.EMS.BLL
                                          j.PROD_CODE,
                                          j.PRODUCT_ALIAS,
                                          j.PRODUCT_TYPE,
-                                         u.UOM_DESC
+                                         u.UOM_DESC,
+                                         p.ProportionalOrder
                                          
                                      }).Distinct().ToList();
 
@@ -2558,9 +2586,11 @@ namespace Sampoerna.EMS.BLL
                     ProdCode = item.PROD_CODE,
                     ProductType = item.PRODUCT_TYPE,
                     ProductAlias = item.PRODUCT_ALIAS,
-                    Amount = item.PROD_QTY,
+                    Amount = Math.Round(item.PROD_QTY * item.ProportionalOrder,3),
                     UomId = item.UOM,
-                    UomDesc = item.UOM_DESC
+                    UomDesc = item.UOM_DESC,
+                    ProductionDate = item.PRODUCTION_DATE
+                    //ProportionalOrder = item.ProportionalOrder,
                 };
 
                 var groupUsageProporsional = invMovementOutput.UsageProportionalList
@@ -2579,14 +2609,16 @@ namespace Sampoerna.EMS.BLL
                     });
 
                 var rec = groupUsageProporsional.ToList().FirstOrDefault(c =>
-                    c.Order == item.ORDR && c.Batch == item.BATCH);
-
+                    c.Order == item.ORDR
+                    && c.Batch == item.BATCH
+                    );
+                
                 if (rec != null)
                 {
                     //calculate proporsional
                     itemToInsert.Amount =
-                        Math.Round(
-                            ((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount), 3);
+                        Math.Round(((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount ), 3);
+                            //((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount * itemToInsert.ProportionalOrder), 3);
                 }
                 else
                 {
@@ -2594,13 +2626,15 @@ namespace Sampoerna.EMS.BLL
                     {
                         var chk =
                             prevInventoryMovementByParam.UsageProportionalList.FirstOrDefault(
-                               c=> c.Order == item.ORDR && c.Batch == item.BATCH);
+                               c=> c.Order == item.ORDR 
+                                   && c.Batch == item.BATCH
+                                   );
                         if (chk != null)
                         {
                             //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
                             itemToInsert.Amount =
-                        Math.Round(
-                            ((chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount), 3);
+                        Math.Round(((chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount ), 3);
+                            //((chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount * itemToInsert.ProportionalOrder), 3);
                         }
                     }
                 }
@@ -2608,8 +2642,8 @@ namespace Sampoerna.EMS.BLL
                 productionList.Add(itemToInsert);
             }
 
-            var nonZaapProd = SetProductionListNonZaap(ck4CItemData, zaapShiftRpt, productionList,prodTypeData,uomData);
-            productionList.AddRange(nonZaapProd);
+            //var nonZaapProd = SetProductionListNonZaap(ck4CItemData, zaapShiftRpt, productionList,prodTypeData,uomData);
+            //productionList.AddRange(nonZaapProd);
 
             //set to Normal Data
             rc.InventoryProductionTisToFa.ProductionData = new Lack1GeneratedProductionDto
@@ -2712,7 +2746,8 @@ namespace Sampoerna.EMS.BLL
                         ProductAlias = nonzaapItem.PRODUCT_ALIAS,
                         Amount = nonzaapItem.PROD_QTY,
                         UomId = nonzaapItem.UOM_PROD_QTY,
-                        UomDesc = nonzaapItem.UOM_DESC
+                        UomDesc = nonzaapItem.UOM_DESC,
+                        //ProportionalOrder = 
                     };
 
                     var totalProductionOrder = groupedOrderProductionList.FirstOrDefault(x => x.Fa_Code == nonzaapItem.FA_CODE);
@@ -3168,6 +3203,10 @@ namespace Sampoerna.EMS.BLL
 
             var ck5Data = _ck5Service.GetForLack1ByParam(ck5Input);
             rc.AllIncomeList = Mapper.Map<List<Lack1GeneratedIncomeDataDto>>(ck5Data);
+
+            var ck5AllPrevData = _ck5Service.GetAllPreviousForLack1(ck5Input);
+            rc.AllCk5List = Mapper.Map<List<Lack1GeneratedIncomeDataDto>>(ck5AllPrevData);
+
             if (ck5Data.Count <= 0) return rc;
 
             rc.Ck5RemarkData = new Lack1GeneratedRemarkDto()
@@ -3464,7 +3503,9 @@ namespace Sampoerna.EMS.BLL
                 Data = rc
             };
 
-            var stoReceiverNumberList = rc.IncomeList.Where(c => c.Ck5Type != Enums.CK5Type.Manual).Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
+            //original by irman
+            //var stoReceiverNumberList = rc.IncomeList.Where(c => c.Ck5Type != Enums.CK5Type.Manual).Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
+            var stoReceiverNumberList = rc.AllCk5List.Where(c => c.Ck5Type != Enums.CK5Type.Manual).Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
 
             var getInventoryMovementByParamOutput = GetInventoryMovementByParam(new InvMovementGetUsageByParamInput()
             {
@@ -3614,9 +3655,13 @@ namespace Sampoerna.EMS.BLL
 
             var receiving = _inventoryMovementService.GetReceivingByParam(receivingParamInput);
             //get prev receiving for CASE 2 : prev Receiving, Current Receiving, Current Usage
-            var prevReceiving = _inventoryMovementService.GetReceivingByParam(prevReceivingParamInput);
+            
+            //original by irman
+            //var prevReceiving = _inventoryMovementService.GetReceivingByParam(prevReceivingParamInput);
+            //var receivingAll = receiving.Where(c => stoReceiverNumberList.Contains(c.PURCH_DOC)).ToList();
+            //receivingAll.AddRange(prevReceiving);
+
             var receivingAll = receiving.Where(c => stoReceiverNumberList.Contains(c.PURCH_DOC)).ToList();
-            receivingAll.AddRange(prevReceiving);
 
             var receivingAllWithConvertion = InvMovementConvertionProcess(receivingAll, bkcUomId);
 
