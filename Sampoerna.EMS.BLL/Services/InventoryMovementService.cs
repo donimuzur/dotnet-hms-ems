@@ -41,7 +41,8 @@ namespace Sampoerna.EMS.BLL.Services
                 //EnumHelper.GetDescription(Core.Enums.MovementTypeCode.UsageZ02)
             };
 
-            Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue
+            Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue 
+                //&& c.POSTING_DATE < new DateTime(input.PeriodYear,input.PeriodMonth + 1,1);
                 && c.POSTING_DATE.Value.Year == input.PeriodYear && c.POSTING_DATE.Value.Month == input.PeriodMonth;
 
             if (input.PlantIdList.Count > 0)

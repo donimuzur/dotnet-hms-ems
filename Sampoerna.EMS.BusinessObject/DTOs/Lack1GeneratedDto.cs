@@ -149,6 +149,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string UomId { get; set; }
         public string UomDesc { get; set; }
         public bool IsTisToTisData { get; set; }
+
+        public decimal ProportionalOrder { get; set; }
+        
     }
 
     public class Lack1GeneratedTrackingDto : INVENTORY_MOVEMENT

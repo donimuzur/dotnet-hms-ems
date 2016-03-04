@@ -10,5 +10,7 @@ namespace Sampoerna.EMS.Contract.Services
         List<ZAAP_SHIFT_RPT> GetAll();
         List<ZAAP_SHIFT_RPT> GetReversalData(string plant, string facode);
         ZAAP_SHIFT_RPT GetById(int id);
+
+        List<ZAAP_SHIFT_RPT> GetCompleteData(ZaapShiftRptGetForLack1ByParamInput input);
     }
 }
