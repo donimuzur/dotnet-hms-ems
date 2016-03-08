@@ -607,6 +607,9 @@ namespace Sampoerna.EMS.BLL
                 Ck5WasteData = rc.AllLack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Waste).ToList()
             };
 
+            rc.HasWasteData = false;
+            if (rc.Ck5RemarkData.Ck5WasteData.Count > 0) rc.HasWasteData = true;
+
             //set Lack1IncomeDetail
             rc.Lack1IncomeDetail =
                 rc.AllLack1IncomeDetail.Where(
@@ -1833,7 +1836,8 @@ namespace Sampoerna.EMS.BLL
                 Success = true,
                 ErrorCode = string.Empty,
                 ErrorMessage = string.Empty,
-                IsWithTisToTisReport = isWithTisToTisReport
+                IsWithTisToTisReport = isWithTisToTisReport,
+                HasWasteData = false
             };
 
             var rc = new Lack1GeneratedDto
@@ -1881,6 +1885,9 @@ namespace Sampoerna.EMS.BLL
                     ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingIncomeListItem),
                     Data = null
                 };
+
+            //check waste data
+            if (rc.AllIncomeList.Where(x => x.Ck5Type == Enums.CK5Type.Waste).ToList().Count > 0) oReturn.HasWasteData = true;
 
             var bkcUomId = rc.AllIncomeList.Select(d => d.PackageUomId).First(c => !string.IsNullOrEmpty(c));
             if (string.IsNullOrEmpty(bkcUomId))
