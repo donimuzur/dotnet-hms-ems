@@ -33,6 +33,8 @@
         param.Lack1Id = $('#Lack1Id').val();
     }
     
+    $('#WasteQty').prop('disabled', true);
+    $('#WasteUom').prop('disabled', true);
     var plantAttr = $('#LevelPlantId').attr('disabled');
     /* For some browsers, `attr` is undefined; for others,
      `attr` is false.  Check for both.
@@ -69,6 +71,11 @@
                         /*console.log(tableGenerated2);*/
                         $('#generated-data-container').append(tableGenerated2);
                     }
+                }
+
+                if (response.HasWasteData) {
+                    $('#WasteQty').prop('disabled', false);
+                    $('#WasteUom').prop('disabled', false);
                 }
                 
             } else {
