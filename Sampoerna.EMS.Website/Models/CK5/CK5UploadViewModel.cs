@@ -39,8 +39,8 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string Ck5Type { get; set; }
 
         public SelectList MatdocList { get; set; }
-
-        [Display(Name = "MatDoc")]
+        
         public string MatDoc { get; set; }
+
     }
 }
