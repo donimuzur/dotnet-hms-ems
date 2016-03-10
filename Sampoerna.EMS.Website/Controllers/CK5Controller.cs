@@ -1586,13 +1586,27 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     model.AllowAttachmentCompleted = _workflowBll.AllowAttachmentCompleted(input);
 
-                    if (model.Ck5Type == Enums.CK5Type.Manual)
-                    {
-                        var dataList = _ck5Bll.GetMatdocList(model.Ck5Id);
-                        var selectItems = Mapper.Map<List<SelectItemModel>>(dataList);
-                        model.MatdocList = new SelectList(selectItems, "ValueField", "TextField");
-                    }
+                    if (model.Ck5Type == Enums.CK5Type.Manual) 
+                        model.IsViewMatDoc = true;
 
+                    if (model.AllowAttachmentCompleted)
+                    {
+                        if (model.Ck5Type == Enums.CK5Type.Manual)
+                        {
+                            model.IsUpdateMatDoc = true;
+                            var inputMatDocList = new GetMatdocListInput();
+                            inputMatDocList.Ck5Id = model.Ck5Id;
+                            foreach (var ck5UploadViewModel in model.UploadItemModels)
+                            {
+                                inputMatDocList.PlantId = ck5UploadViewModel.Plant;
+                                inputMatDocList.MaterialId = ck5UploadViewModel.Brand;
+
+                                var dataList = _ck5Bll.GetMatdocList(inputMatDocList);
+                                var selectItems = Mapper.Map<List<SelectItemModel>>(dataList);
+                                ck5UploadViewModel.MatdocList = new SelectList(selectItems, "ValueField", "TextField", ck5UploadViewModel.MatDoc);
+                            }
+                        }
+                    }
                 }
                 else
                 {
@@ -2760,10 +2774,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     UserId = CurrentUser.USER_ID,
                     Ck5Type = model.Ck5Type,
                     MatDoc = model.MatDoc,
+                    Ck5Material = Mapper.Map<List<CK5MaterialDto>>(model.UploadItemModels),
                     AdditionalDocumentData = new CK5WorkflowDocumentData()
                     {
                         Ck5FileUploadList = new List<CK5_FILE_UPLOADDto>()
                     }
+
 
                 };
 
