@@ -2017,7 +2017,7 @@ namespace Sampoerna.EMS.BLL
                 prevInventoryMovementByParamInput.PeriodMonth = input.PeriodMonth - 1;
             }
 
-            var stoReceiverNumberList = rc.IncomeList.Select(d => d.DnNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
+            var stoReceiverNumberList = rc.AllCk5List.Select(d => d.DnNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
 
             var prevInventoryMovementByParam = GetInventoryMovementByParam(prevInventoryMovementByParamInput,
                 stoReceiverNumberList, bkcUomId);
@@ -3369,7 +3369,7 @@ namespace Sampoerna.EMS.BLL
                 Data = rc
             };
 
-            var stoReceiverNumberList = rc.IncomeList.Select(d => d.DnNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
+            var stoReceiverNumberList = rc.AllCk5List.Select(d => d.DnNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
 
             var getInventoryMovementByParamOutput = GetInventoryMovementByParam(new InvMovementGetUsageByParamInput()
             {
@@ -3402,6 +3402,8 @@ namespace Sampoerna.EMS.BLL
                 totalUsage = (-1) * getInventoryMovementByParamOutput.IncludeInCk5List.Sum(d => d.ConvertedQty);
             }
 
+
+            var batchList = getInventoryMovementByParamOutput.IncludeInCk5List.Select(x => x.BATCH).Distinct().ToList();
             decimal mvt201;
             if (getInventoryMovementByParamOutput.Mvt201List.Count == 0)
             {
@@ -3409,7 +3411,7 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                mvt201 = (-1) * getInventoryMovementByParamOutput.Mvt201List.Sum(d => d.ConvertedQty);
+                mvt201 = (-1) * getInventoryMovementByParamOutput.Mvt201List.Where(x => batchList.Contains(x.BATCH)).Sum(d => d.ConvertedQty);
             }
 
             decimal mvt201Asigned;
@@ -3419,7 +3421,7 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                mvt201Asigned = (-1) * getInventoryMovementByParamOutput.Mvt201Assigned.Sum(d => d.ConvertedQty);
+                mvt201Asigned = (-1) * getInventoryMovementByParamOutput.Mvt201Assigned.Where(x => batchList.Contains(x.BATCH)).Sum(d => d.ConvertedQty);
             }
 
             //nebeng in tis to fa field
@@ -3549,6 +3551,7 @@ namespace Sampoerna.EMS.BLL
                 //totalUsage = totalUsageIncludeCk5;
             }
 
+            var batchList = getInventoryMovementByParamOutput.IncludeInCk5List.Select(x => x.BATCH).Distinct().ToList();
             decimal mvt201;
             if (getInventoryMovementByParamOutput.Mvt201List.Count == 0)
             {
@@ -3556,7 +3559,7 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                mvt201 = (-1) * getInventoryMovementByParamOutput.Mvt201List.Sum(d => d.ConvertedQty);
+                mvt201 = (-1) * getInventoryMovementByParamOutput.Mvt201List.Where(x => batchList.Contains(x.BATCH)).Sum(d => d.ConvertedQty);
             }
 
             decimal mvt201Asigned;
@@ -3566,7 +3569,7 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                mvt201Asigned = (-1) * getInventoryMovementByParamOutput.Mvt201Assigned.Sum(d => d.ConvertedQty);
+                mvt201Asigned = (-1) * getInventoryMovementByParamOutput.Mvt201Assigned.Where(x => batchList.Contains(x.BATCH)).Sum(d => d.ConvertedQty);
             }
 
             totalUsage = totalUsage + mvt201 - mvt201Asigned;
