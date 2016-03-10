@@ -325,5 +325,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string MatDoc { get; set; }
 
         public bool IsViewMatDoc { get; set; }
+
+        public bool IsUpdateMatDoc { get; set; }
     }
 }

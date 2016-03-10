@@ -134,6 +134,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public bool IsTisToTis { get; set; }
         public Lack1RemarkDto Ck5RemarkData { get; set; }
         public bool IsEtilAlcohol { get; set; }
+        public bool HasWasteData { get; set; }
     }
 
     public class Lack1RemarkDto
