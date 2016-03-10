@@ -46,6 +46,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         /// for display only
         /// </summary>
         public List<Lack1GeneratedIncomeDataDto> IncomeList { get; set; }
+
+        public List<Lack1GeneratedIncomeDataDto> AllCk5List { get; set; }
+
         public decimal TotalIncome { get; set; }
         public decimal TotalUsage { get; set; }
         public decimal? TotalUsageTisToTis { get; set; }
@@ -149,6 +152,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string UomId { get; set; }
         public string UomDesc { get; set; }
         public bool IsTisToTisData { get; set; }
+
+        public decimal ProportionalOrder { get; set; }
+        public DateTime ProductionDate { get; set; } 
     }
 
     public class Lack1GeneratedTrackingDto : INVENTORY_MOVEMENT
