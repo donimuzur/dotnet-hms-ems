@@ -16,7 +16,9 @@ namespace Sampoerna.EMS.BusinessObject.Business
         public List<int?> AuthorizePages { get; set; }
 
         
-        public List<NppbkcPlantDto> NppbckPlants { get; set; } 
+        public List<NppbkcPlantDto> NppbckPlants { get; set; }
+        public List<string> ListUserPlants { get; set; }
+        public List<string> ListUserNppbkc { get; set; } 
     }
 
 }

@@ -59,9 +59,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IT001KBLL _t001kBll;
         private IPOABLL _poabll;
         private IZaidmExKPPBCBLL _kppbcbll;
+        private IUserPlantMapBLL _userPlantBll;
+        private IPOAMapBLL _poaMapBll;
 
         public PBCK1Controller(IPageBLL pageBLL, IUnitOfMeasurementBLL uomBll, ICompanyBLL companyBll, IMasterDataBLL masterDataBll, IMonthBLL monthbll, IZaidmExGoodTypeBLL goodTypeBll, ISupplierPortBLL supplierPortBll, IZaidmExNPPBKCBLL nppbkcbll, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll,
-            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll, ILFA1BLL lfa1Bll, IT001KBLL t001kBll, IPbck1DecreeDocBLL pbck1DecreeDocBll, ICK5BLL ck5Bll, IPOABLL poabll, IZaidmExKPPBCBLL kppbcbll)
+            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll, ILFA1BLL lfa1Bll, IT001KBLL t001kBll, IPbck1DecreeDocBLL pbck1DecreeDocBll, ICK5BLL ck5Bll, IPOABLL poabll, IZaidmExKPPBCBLL kppbcbll, IUserPlantMapBLL userPlantBll, IPOAMapBLL poaMapBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
@@ -85,6 +87,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _ck5Bll = ck5Bll;
             _poabll = poabll;
             _kppbcbll = kppbcbll;
+            _userPlantBll = userPlantBll;
+            _poaMapBll = poaMapBll;
         }
 
         private List<Pbck1Item> GetOpenDocument(Pbck1FilterViewModel filter = null)
@@ -100,6 +104,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = Mapper.Map<Pbck1GetOpenDocumentByParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
             input.UserRole = CurrentUser.UserRole;
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
 
             var dbData = _pbck1Bll.GetOpenDocumentByParam(input).OrderByDescending(c => c.Pbck1Number);
             return Mapper.Map<List<Pbck1Item>>(dbData);
@@ -116,6 +121,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //getbyparams
             var input = Mapper.Map<Pbck1GetCompletedDocumentByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
+
             var dbData = _pbck1Bll.GetCompletedDocumentByParam(input);
             return Mapper.Map<List<Pbck1Item>>(dbData);
         }
@@ -155,7 +164,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Details = GetOpenDocument(model.SearchInput);
             //first code when manager exists
             //model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
-            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false);
 
             return PartialView("_Pbck1Table", model);
         }
@@ -257,10 +266,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private Pbck1ItemViewModel ModelInitial(Pbck1ItemViewModel model)
         {
+            var nppbkc = GlobalFunctions.GetNppbkcByFlagDeletionList(false);
+            var filterNppbkc = nppbkc.Where(c => CurrentUser.ListUserNppbkc.Contains(c.Value));
 
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.NppbkcList = GlobalFunctions.GetNppbkcByFlagDeletionList(false);
+            model.NppbkcList = new SelectList(filterNppbkc, "Value", "Text");
             model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
             model.SupplierPortList = GlobalFunctions.GetSupplierPortList(_supplierPortBll);
             //model.SupplierPlantList = GlobalFunctions.GetSupplierPlantList();
@@ -418,17 +429,25 @@ namespace Sampoerna.EMS.Website.Controllers
                     DocumentType = Enums.Pbck1DocumentType.OpenDocument
 
                 },
-                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
+                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false),
                 //first code when manager exists
                 //IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
-                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false)
             });
             return View("Index", model);
         }
 
         public Pbck1ViewModel InitPbck1ViewModel(Pbck1ViewModel model)
         {
-            model.SearchInput.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            var nppbkc = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
+            {
+                var filterNppbkc = nppbkc.Where(x => CurrentUser.ListUserNppbkc.Contains(x.Value));
+                nppbkc = new SelectList(filterNppbkc, "Value", "Text");
+            }
+
+            model.SearchInput.NppbkcIdList = nppbkc;
             model.SearchInput.CreatorList = GlobalFunctions.GetCreatorList();
             model.SearchInput.PoaList = new SelectList(new List<SelectItemModel>(), "ValueField", "TextField");
             switch (model.SearchInput.DocumentType)
@@ -463,6 +482,11 @@ namespace Sampoerna.EMS.Website.Controllers
             if (pbck1Data == null)
             {
                 return HttpNotFound();
+            }
+
+            if (CurrentUser.UserRole == Enums.UserRole.Administrator)
+            {
+                return RedirectToAction("Edits", new { id });
             }
 
             //first code when manager exists
@@ -569,6 +593,83 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     if (!isCurrManager)
                         return RedirectToAction("Details", new { id });
+                }
+
+            }
+            catch (Exception exception)
+            {
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
+            return View(model);
+        }
+
+        public ActionResult Edits(int? id)
+        {
+
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var pbck1Data = _pbck1Bll.GetById(id.Value);
+
+            if (pbck1Data == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
+            {
+                return RedirectToAction("Details", new { id });
+            }
+
+            var model = new Pbck1ItemViewModel();
+            try
+            {
+                model.Detail = Mapper.Map<Pbck1Item>(pbck1Data);
+
+                model = ModelInitial(model);
+
+                foreach (var item in model.Detail.Pbck1ProdConverter)
+                {
+                    item.ConverterOutput = ConvertHelper.ConvertDecimalFiveToString(Convert.ToDecimal(item.ConverterOutput));
+                }
+
+                var changeHistory =
+                Mapper.Map<List<ChangesHistoryItemModel>>(
+                    _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.PBCK1, id.Value.ToString()));
+
+                //workflow history
+                var workflowInput = new GetByFormNumberInput();
+                workflowInput.FormNumber = pbck1Data.Pbck1Number;
+                workflowInput.DocumentStatus = pbck1Data.Status;
+                workflowInput.NppbkcId = pbck1Data.NppbkcId;
+                workflowInput.FormType = Enums.FormType.PBCK1;
+                workflowInput.DocumentCreator = pbck1Data.CreatedById;
+
+                var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+                model.WorkflowHistory = workflowHistory;
+                model.ChangesHistoryList = changeHistory;
+
+                var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(pbck1Data.Pbck1Number));
+                model.PrintHistoryList = printHistory;
+
+                model.DocStatus = model.Detail.Status;
+
+                model.SupInfo.SupplierPlantWerks = model.Detail.SupplierPlantWerks;
+                model.SupInfo.SupplierAddress = model.Detail.SupplierAddress;
+                model.SupInfo.SupplierNppkbc = model.Detail.SupplierNppbkcId;
+                model.SupInfo.SupplierKppkbc = model.Detail.SupplierKppbcName;
+                model.SupInfo.SupplierPlantName = model.Detail.SupplierPlant;
+                model.SupInfo.SupplierPhone = model.Detail.SupplierPhone;
+
+                model.AllowPrintDocument = _workflowBll.AllowPrint(model.Detail.Status);
+
+                if (model.Detail.Status == Enums.DocumentStatus.Completed)
+                {
+                    model.ActionType = "ChangeCompletedDocumentSuperAdmin";
                 }
 
             }
@@ -864,7 +965,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Administrator)
             {
                 //can't create PBCK1 Document
                 AddMessageInfo("Can't create PBCK-1 Document for User with " + EnumHelper.GetDescription(CurrentUser.UserRole) + " Role", Enums.MessageInfoType.Error);
@@ -1362,6 +1463,109 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("CompletedDocument");
         }
 
+        [HttpPost]
+        public ActionResult ChangeCompletedDocumentSuperAdmin(Pbck1ItemViewModel model)
+        {
+            var oldDoc = _pbck1Bll.GetById(model.Detail.Pbck1Id).Pbck1DecreeDoc.Select(c => c.PBCK1_DECREE_DOC_ID);
+
+            model.Detail.QtyApproved = _pbck1Bll.GetById(model.Detail.Pbck1Id).QtyApproved.Value;
+
+            if (model.Detail.Pbck1DecreeFiles == null)
+            {
+                AddMessageInfo("Decree Doc is required.", Enums.MessageInfoType.Error);
+                return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
+            }
+
+
+            bool isSuccess = false;
+            bool validDoc = true;
+            var currentUserId = CurrentUser;
+            try
+            {
+                model.Detail.Pbck1DecreeDoc = new List<Pbck1DecreeDocModel>();
+
+                if (model.Detail.Pbck1DecreeFiles != null)
+                {
+                    foreach (var item in model.Detail.Pbck1DecreeFiles)
+                    {
+                        if (item != null && validDoc)
+                        {
+                            var filenamecheck = item.FileName;
+
+                            if (filenamecheck.Contains("\\"))
+                            {
+                                filenamecheck = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                            }
+
+                            var decreeDoc = new Pbck1DecreeDocModel()
+                            {
+                                FILE_NAME = filenamecheck,
+                                FILE_PATH = SaveUploadedFile(item, model.Detail.Pbck1Id),
+                                CREATED_BY = currentUserId.USER_ID,
+                                CREATED_DATE = DateTime.Now
+                            };
+                            model.Detail.Pbck1DecreeDoc.Add(decreeDoc);
+                        }
+                        else
+                        {
+                            validDoc = false;
+                        }
+                    }
+                }
+
+                if (!validDoc && model.Pbck1OldDecreeFilesID == null)
+                {
+                    AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
+                }
+
+                foreach (var item in oldDoc)
+                {
+                    if ((model.Pbck1OldDecreeFilesID != null && !model.Pbck1OldDecreeFilesID.Contains(item)) || model.Pbck1OldDecreeFilesID == null)
+                    {
+                        _pbck1DecreeDocBll.RemoveDoc(item);
+                    }
+                }
+
+                var input = new Pbck1UpdateReportedOn()
+                {
+                    Id = model.Detail.Pbck1Id,
+                    ReportedOn = model.Detail.ReportedOn,
+                    SupplierPortId = model.Detail.SupplierPortId,
+                    SupplierPlant = model.Detail.SupplierPlant,
+                    SupplierPlantWerks = model.Detail.SupplierPlantWerks,
+                    SupplierAddress = model.Detail.SupplierAddress,
+                    SupplierCompany = model.Detail.SupplierCompany,
+                    SupplierNppbkcId = model.Detail.SupplierNppbkcId,
+                    SupplierKppbcId = model.Detail.SupplierKppbcId,
+                    SupplierKppbcName = model.Detail.SupplierKppbcName,
+                    SupplierPhone = model.Detail.SupplierPhone,
+                    GoodType = model.Detail.GoodType,
+                    GoodTypeDesc = model.Detail.GoodTypeDesc,
+                    PlanProdFrom = model.Detail.PlanProdFrom,
+                    PlanProdTo = model.Detail.PlanProdTo,
+                    Lack1FromMonthId = model.Detail.Lack1FromMonthId,
+                    Lack1FormYear = model.Detail.Lack1FormYear,
+                    Lack1ToMonthId = model.Detail.Lack1ToMonthId,
+                    Lack1ToYear = model.Detail.Lack1ToYear,
+                    DecreeDate = model.Detail.DecreeDate
+                };
+                
+                _pbck1Bll.UpdateReportedOn(input);
+
+                Pbck1WorkflowCompletedEdit(model.Detail, model.Detail.GovApprovalActionType, string.Empty);
+                isSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+
+            if (!isSuccess) return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
+            AddMessageInfo("Document is saved", Enums.MessageInfoType.Success);
+            return RedirectToAction("CompletedDocument");
+        }
+
         public ActionResult GovRejectDocument(Pbck1ItemViewModel model)
         {
             bool isSuccess = false;
@@ -1412,6 +1616,22 @@ namespace Sampoerna.EMS.Website.Controllers
             Pbck1SummaryReportViewModel model;
             try
             {
+                var comp = GlobalFunctions.GetCompanyList(_companyBll);
+                var nppbkc = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+
+                if (CurrentUser.UserRole != Enums.UserRole.Administrator)
+                {
+                    var userComp = _userPlantBll.GetCompanyByUserId(CurrentUser.USER_ID);
+                    var poaComp = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+                    var distinctComp = comp.Where(x => userComp.Contains(x.Value));
+                    if (CurrentUser.UserRole == Enums.UserRole.POA) distinctComp = comp.Where(x => poaComp.Contains(x.Value));
+                    var getComp = new SelectList(distinctComp, "Value", "Text");
+
+                    var filterNppbkc = nppbkc.Where(x => CurrentUser.ListUserNppbkc.Contains(x.Value));
+
+                    comp = getComp;
+                    nppbkc = new SelectList(filterNppbkc, "Value", "Text");
+                }
 
                 model = new Pbck1SummaryReportViewModel
                 {
@@ -1419,10 +1639,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     CurrentMenu = PageInfo,
                     SearchView =
                     {
-                        CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll),
+                        CompanyCodeList = comp,
                         YearFromList = GetYearListPbck1(true),
                         YearToList = GetYearListPbck1(false),
-                        NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll),
+                        NppbkcIdList = nppbkc,
                         CreatorList = GlobalFunctions.GetCreatorList()
                     },
                     //view all data pbck1 completed document
@@ -1453,7 +1673,10 @@ namespace Sampoerna.EMS.Website.Controllers
             if (filter == null)
             {
                 //Get All
-                var pbck1Data = _pbck1Bll.GetSummaryReportByParam(new Pbck1GetSummaryReportByParamInput());
+                var pbck1Data = _pbck1Bll.GetSummaryReportByParam(new Pbck1GetSummaryReportByParamInput() { 
+                    ListNppbkc = CurrentUser.ListUserNppbkc,
+                    UserRole = CurrentUser.UserRole
+                });
                 foreach (var item in pbck1Data)
                 {
                     var Kppbc = _lfa1Bll.GetById(item.NppbkcKppbcId);
@@ -1466,6 +1689,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //getbyparams
             var input = Mapper.Map<Pbck1GetSummaryReportByParamInput>(filter);
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
+            input.UserRole = CurrentUser.UserRole;
+
             var dbData = _pbck1Bll.GetSummaryReportByParam(input);
             foreach (var item in dbData)
             {
@@ -1479,7 +1705,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private SelectList GetYearListPbck1(bool isFrom)
         {
-            var pbck1List = _pbck1Bll.GetAllByParam(new Pbck1GetByParamInput());
+            var pbck1List = _pbck1Bll.GetAllByParam(new Pbck1GetByParamInput() { 
+                ListNppbkc = CurrentUser.ListUserNppbkc
+            });
 
             IEnumerable<SelectItemModel> query;
             if (isFrom)
@@ -1920,6 +2148,22 @@ namespace Sampoerna.EMS.Website.Controllers
             Pbck1MonitoringUsageViewModel model;
             try
             {
+                var comp = GlobalFunctions.GetCompanyList(_companyBll);
+                var nppbkc = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+
+                if (CurrentUser.UserRole != Enums.UserRole.Administrator)
+                {
+                    var userComp = _userPlantBll.GetCompanyByUserId(CurrentUser.USER_ID);
+                    var poaComp = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+                    var distinctComp = comp.Where(x => userComp.Contains(x.Value));
+                    if (CurrentUser.UserRole == Enums.UserRole.POA) distinctComp = comp.Where(x => poaComp.Contains(x.Value));
+                    var getComp = new SelectList(distinctComp, "Value", "Text");
+
+                    var filterNppbkc = nppbkc.Where(x => CurrentUser.ListUserNppbkc.Contains(x.Value));
+
+                    comp = getComp;
+                    nppbkc = new SelectList(filterNppbkc, "Value", "Text");
+                }
 
                 model = new Pbck1MonitoringUsageViewModel
                 {
@@ -1927,10 +2171,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     CurrentMenu = PageInfo,
                     SearchView =
                     {
-                        CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll),
+                        CompanyCodeList = comp,
                         YearFromList = GetYearListPbck1(true),
                         YearToList = GetYearListPbck1(false),
-                        NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll),
+                        NppbkcIdList = nppbkc,
                         SupNppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcbll),
                         SupKppbcList = GlobalFunctions.GetKppbcAll(_kppbcbll),
                         SupPlantList = GlobalFunctions.GetPlantAll(),
@@ -1959,7 +2203,10 @@ namespace Sampoerna.EMS.Website.Controllers
             if (filter == null)
             {
                 //Get All
-                var pbck1Data = _pbck1Bll.GetMonitoringUsageByParam(new Pbck1GetMonitoringUsageByParamInput());
+                var pbck1Data = _pbck1Bll.GetMonitoringUsageByParam(new Pbck1GetMonitoringUsageByParamInput() {
+                    ListNppbkc = CurrentUser.ListUserNppbkc,
+                    UserRole = CurrentUser.UserRole
+                });
                 foreach (var item in pbck1Data)
                 {
                     var Kppbc = _lfa1Bll.GetById(item.NppbkcKppbcId);
@@ -1971,6 +2218,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //getbyparams
             var input = Mapper.Map<Pbck1GetMonitoringUsageByParamInput>(filter);
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
+            input.UserRole = CurrentUser.UserRole;
+
             var dbData = _pbck1Bll.GetMonitoringUsageByParam(input);
             foreach (var item in dbData)
             {
@@ -2199,11 +2449,25 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 //GET All NPPBKC
                 var NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll).ToList();
+
+                if (CurrentUser.UserRole != Enums.UserRole.Administrator)
+                {
+                    NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll).Where(x => CurrentUser.ListUserNppbkc.Contains(x.Value)).ToList();
+                }
+
                 return Json(NppbkcIdList.Select(c => c.Text).ToList(), JsonRequestBehavior.AllowGet);
             }
             else
             {
-                var NppbkcIdList = _t001kBll.GetNPPBKCIDByCompany(companyId);
+                var data = _nppbkcbll.GetNppbkcsByCompany(companyId);
+
+                if (CurrentUser.UserRole != Enums.UserRole.Administrator)
+                {
+                    data = data.Where(x => CurrentUser.ListUserNppbkc.Contains(x.NPPBKC_ID)).ToList();
+                }                
+
+                var NppbkcIdList = data.Select(x => x.NPPBKC_ID).ToList();
+
                 return Json(NppbkcIdList, JsonRequestBehavior.AllowGet);
             }
         }
@@ -2878,17 +3142,31 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private Pbck1MonitoringMutasiViewModel InitMonitoringMutasi(Pbck1MonitoringMutasiViewModel model)
         {
-            var monitoringDtos = _pbck1Bll.GetMonitoringMutasiByParam(new Pbck1GetMonitoringMutasiByParamInput());
+            var monitoringDtos = _pbck1Bll.GetMonitoringMutasiByParam(new Pbck1GetMonitoringMutasiByParamInput() {
+                ListNppbkc = CurrentUser.ListUserNppbkc,
+                UserRole = CurrentUser.UserRole
+            });
+
+            var nppbkc = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
+            {
+                var filterNppbkc = nppbkc.Where(x => CurrentUser.ListUserNppbkc.Contains(x.Value));
+                nppbkc = new SelectList(filterNppbkc, "Value", "Text");
+            }
+
             model.pbck1NumberList = new SelectList(monitoringDtos, "Pbck1Number", "Pbck1Number");
             model.yearFromList = GetYearListPbck1(true);
             model.yearToList = GetYearListPbck1(false);
             model.supPlantList = GlobalFunctions.GetPlantAll();
             model.supCompList = GlobalFunctions.GetCompanyListIdText(_companyBll);
-            model.oriNppbkcList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.oriNppbkcList = nppbkc;
             model.oriKppbcList = GlobalFunctions.GetKppbcAll(_kppbcbll);
             model.creatorList = GlobalFunctions.GetCreatorList();
 
             var input = Mapper.Map<Pbck1GetMonitoringMutasiByParamInput>(model);
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
+            input.UserRole = CurrentUser.UserRole;
 
             var dbData = _pbck1Bll.GetMonitoringMutasiByParam(input);
             model.DetailsList = Mapper.Map<List<Pbck1MonitoringMutasiItem>>(dbData);
@@ -3142,6 +3420,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = Mapper.Map<Pbck1GetByParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
             input.UserRole = CurrentUser.UserRole;
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
 
             var dbData = _pbck1Bll.GetAllByParam(input);
             return dbData;

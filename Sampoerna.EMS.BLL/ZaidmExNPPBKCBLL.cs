@@ -191,7 +191,19 @@ namespace Sampoerna.EMS.BLL
             return isImport;
         }
 
-       
+        public List<ZAIDM_EX_NPPBKCCompositeDto> GetNppbkcList(List<string> nppbkcList,string companyId = null)
+        {
+            Expression<Func<ZAIDM_EX_NPPBKC, bool>> queryFilter = c => nppbkcList.Contains(c.NPPBKC_ID);
+
+            if (companyId != null)
+            {
+               queryFilter = queryFilter.And(c => c.T001W.FirstOrDefault().T001K.BUKRS == companyId);
+            }
+
+            var data = _repository.Get(queryFilter,null,"T001W,T001W.T001K");
+
+            return Mapper.Map<List<ZAIDM_EX_NPPBKCCompositeDto>>(data);
+        }
 
     }
 }

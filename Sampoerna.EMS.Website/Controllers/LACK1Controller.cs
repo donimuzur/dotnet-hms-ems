@@ -50,11 +50,13 @@ namespace Sampoerna.EMS.Website.Controllers
         private IChangesHistoryBLL _changesHistoryBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IPrintHistoryBLL _printHistoryBll;
+        private IUserPlantMapBLL _userPlantBll;
+        private IPOAMapBLL _poaMapBll;
 
         public LACK1Controller(IPageBLL pageBll, IPOABLL poabll, ICompanyBLL companyBll,
             IZaidmExGoodTypeBLL goodTypeBll, IZaidmExNPPBKCBLL nppbkcbll, ILACK1BLL lack1Bll, IMonthBLL monthBll,
             IUnitOfMeasurementBLL uomBll, IPBCK1BLL pbck1Bll, IPlantBLL plantBll, IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll,
-            IChangesHistoryBLL changesHistoryBll, IPrintHistoryBLL printHistoryBll)
+            IChangesHistoryBLL changesHistoryBll, IPrintHistoryBLL printHistoryBll, IUserPlantMapBLL userPlantBll, IPOAMapBLL poaMapBll)
             : base(pageBll, Enums.MenuList.LACK1)
         {
             _lack1Bll = lack1Bll;
@@ -67,6 +69,8 @@ namespace Sampoerna.EMS.Website.Controllers
             _companyBll = companyBll;
             _pbck1Bll = pbck1Bll;
             _plantBll = plantBll;
+            _userPlantBll = userPlantBll;
+            _poaMapBll = poaMapBll;
 
             _workflowHistoryBll = workflowHistoryBll;
             _workflowBll = workflowBll;
@@ -94,12 +98,14 @@ namespace Sampoerna.EMS.Website.Controllers
                     Lack1Level = Enums.Lack1Level.Nppbkc,
                     IsOpenDocumentOnly = true,
                     UserRole = curUser.UserRole,
-                    UserId = curUser.USER_ID
+                    UserId = curUser.USER_ID,
+                    ListNppbkc = curUser.ListUserNppbkc,
+                    ListUserPlant = curUser.ListUserPlants
                 })),
-                IsShowNewButton = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer ? true : false),
+                IsShowNewButton = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer && curUser.UserRole != Enums.UserRole.Administrator ? true : false),
                 //first code when manager exists
                 //IsNotViewer = curUser.UserRole != Enums.UserRole.Viewer
-                IsNotViewer = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer ? true : false)
+                IsNotViewer = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer && curUser.UserRole != Enums.UserRole.Administrator ? true : false)
             });
 
             return View("Index", data);
@@ -112,7 +118,15 @@ namespace Sampoerna.EMS.Website.Controllers
         /// <returns></returns>
         private Lack1IndexViewModel InitLack1ViewModel(Lack1IndexViewModel model)
         {
-            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            var nppbkc = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
+            {
+                var nppbkcList = nppbkc.Where(x => CurrentUser.ListUserNppbkc.Contains(x.Value));
+                nppbkc = new SelectList(nppbkcList, "Value", "Text");
+            }
+
+            model.NppbkcIdList = nppbkc;
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             model.CreatorList = GlobalFunctions.GetCreatorList();
             return model;
@@ -135,7 +149,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var viewModel = new Lack1IndexViewModel { Details = result };
             //first code when manager exists
             //viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
-            viewModel.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            viewModel.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false);
 
             return PartialView("_Lack1Table", viewModel);
         }
@@ -157,12 +171,14 @@ namespace Sampoerna.EMS.Website.Controllers
                     Lack1Level = Enums.Lack1Level.Plant,
                     IsOpenDocumentOnly = true,
                     UserRole = curUser.UserRole,
-                    UserId = curUser.USER_ID
+                    UserId = curUser.USER_ID,
+                    ListNppbkc = curUser.ListUserNppbkc,
+                    ListUserPlant = curUser.ListUserPlants
                 })),
-                IsShowNewButton = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer ? true : false),
+                IsShowNewButton = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer && curUser.UserRole != Enums.UserRole.Administrator ? true : false),
                 //first code when manager exists
                 //IsNotViewer = curUser.UserRole != Enums.UserRole.Viewer
-                IsNotViewer = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer ? true : false)
+                IsNotViewer = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer && curUser.UserRole != Enums.UserRole.Administrator ? true : false)
             });
 
             return View("ListByPlant", data);
@@ -170,7 +186,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private Lack1IndexPlantViewModel InitLack1LiistByPlant(Lack1IndexPlantViewModel model)
         {
-            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            var nppbkc = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
+            {
+                var nppbkcList = nppbkc.Where(x => CurrentUser.ListUserNppbkc.Contains(x.Value));
+                nppbkc = new SelectList(nppbkcList, "Value", "Text");
+            }
+
+            model.NppbkcIdList = nppbkc;
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             model.PlantIdList = GlobalFunctions.GetPlantAll();
             model.CreatorList = GlobalFunctions.GetCreatorList();
@@ -195,7 +219,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var viewModel = new Lack1IndexPlantViewModel { Details = resultPlant };
             //first code when manager exists
             //viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
-            viewModel.IsNotViewer = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            viewModel.IsNotViewer = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer && curUser.UserRole != Enums.UserRole.Administrator ? true : false);
 
             return PartialView("_Lack1ListByPlantTable", viewModel);
 
@@ -207,8 +231,16 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public JsonResult PoaAndPlantListPartial(string nppbkcId)
         {
+            var plant = GlobalFunctions.GetPlantByNppbkcId(_plantBll, nppbkcId);
+
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
+            {
+                var distinctPlant = plant.Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
+                plant = new SelectList(distinctPlant, "Value", "Text");
+            }
+            
             var listPoa = GlobalFunctions.GetPoaByNppbkcId(nppbkcId);
-            var listPlant = GlobalFunctions.GetPlantByNppbkcId(_plantBll, nppbkcId);
+            var listPlant = plant;
             var model = new Lack1IndexViewModel() { PoaList = listPoa, PlantIdList = listPlant };
             return Json(model);
         }
@@ -217,6 +249,12 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetNppbkcListByCompanyCode(string companyCode)
         {
             var data = _pbck1Bll.GetNppbkByCompanyCode(companyCode);
+
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
+            {
+                data = data.Where(x => CurrentUser.ListUserNppbkc.Contains(x.NPPBKC_ID)).ToList();
+            }
+
             return Json(data);
         }
 
@@ -235,7 +273,20 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetPlantListByNppbkcId(string nppbkcId)
         {
             var listPlant = GlobalFunctions.GetPlantByNppbkcId(_plantBll, nppbkcId);
-            var model = new Lack1CreateViewModel() { ReceivePlantList = listPlant };
+
+            var filterPlant = listPlant;
+
+            var newListPlant = new SelectList(filterPlant, "Value", "Text");
+
+            if (CurrentUser.UserRole == Enums.UserRole.User)
+            {
+                var newFilterPlant = listPlant.Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
+
+                newListPlant = new SelectList(newFilterPlant, "Value", "Text");
+            }
+
+            var model = new Lack1CreateViewModel() { ReceivePlantList = newListPlant };
+
             return Json(model);
         }
 
@@ -275,7 +326,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Administrator)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction(lack1Level.Value == Enums.Lack1Level.Nppbkc ? "Index" : "ListByPlant");
@@ -310,7 +361,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     return CreateInitial(model);
                 }
 
-                if (CurrentUser.UserRole == Enums.UserRole.Manager)
+                if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.Viewer)
                 {
                     AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                     return RedirectToAction(model.Lack1Level == Enums.Lack1Level.Nppbkc ? "Index" : "ListByPlant");
@@ -445,10 +496,17 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private Lack1CreateViewModel InitialModel(Lack1CreateViewModel model)
         {
+            var comp = GlobalFunctions.GetCompanyList(_companyBll);
+            var userComp = _userPlantBll.GetCompanyByUserId(CurrentUser.USER_ID);
+            var poaComp = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+            var distinctComp = comp.Where(x => userComp.Contains(x.Value));
+            if (CurrentUser.UserRole == Enums.UserRole.POA) distinctComp = comp.Where(x => poaComp.Contains(x.Value));
+            var getComp = new SelectList(distinctComp, "Value", "Text");
+
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
-            model.BukrList = GlobalFunctions.GetCompanyList(_companyBll);
+            model.BukrList = getComp;
             model.MontList = GlobalFunctions.GetMonthList(_monthBll);
             model.YearsList = CreateYearList();
             model.NppbkcList = GetNppbkcListOnPbck1ByCompanyCode(model.Bukrs);
@@ -487,7 +545,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                Details = Mapper.Map<List<Lack1CompletedDocumentData>>(_lack1Bll.GetCompletedDocumentByParam(new Lack1GetByParamInput())),
+                Details = Mapper.Map<List<Lack1CompletedDocumentData>>(_lack1Bll.GetCompletedDocumentByParam(new Lack1GetByParamInput() { 
+                    ListNppbkc = CurrentUser.ListUserNppbkc,
+                    ListUserPlant = CurrentUser.ListUserPlants,
+                    UserRole = CurrentUser.UserRole
+                })),
                 //first code when manager exists
                 //IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
                 IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
@@ -498,7 +560,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private Lack1IndexCompletedDocumentViewModel InitListCompletedDocument(Lack1IndexCompletedDocumentViewModel model)
         {
-            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            var nppbkc = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
+            {
+                var nppbkcList = nppbkc.Where(x => CurrentUser.ListUserNppbkc.Contains(x.Value));
+                nppbkc = new SelectList(nppbkcList, "Value", "Text");
+            }
+
+            model.NppbkcIdList = nppbkc;
             model.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             model.PlantIdList = GlobalFunctions.GetPlantAll();
             model.CreatorList = GlobalFunctions.GetCreatorList();
@@ -511,6 +581,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var inputPlant = Mapper.Map<Lack1GetByParamInput>(model);
             inputPlant.IsOpenDocumentOnly = false;
+            inputPlant.UserRole = CurrentUser.UserRole;
 
             var dbDataPlant = _lack1Bll.GetCompletedDocumentByParam(inputPlant);
 
@@ -802,6 +873,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
+            if (CurrentUser.UserRole == Enums.UserRole.Administrator)
+            {
+                return RedirectToAction("Edits", new { id });
+            }
+
             //first code when manager exists
             //if (CurrentUser.UserRole == Enums.UserRole.Viewer)
             if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
@@ -992,11 +1068,30 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private Lack1EditViewModel InitEditList(Lack1EditViewModel model)
         {
-            model.BukrList = GlobalFunctions.GetCompanyList(_companyBll);
+            var comp = GlobalFunctions.GetCompanyList(_companyBll);
+            var userComp = _userPlantBll.GetCompanyByUserId(CurrentUser.USER_ID);
+            var poaComp = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+            var distinctComp = comp.Where(x => userComp.Contains(x.Value));
+            if (CurrentUser.UserRole == Enums.UserRole.POA) distinctComp = comp.Where(x => poaComp.Contains(x.Value));
+            var getComp = new SelectList(distinctComp, "Value", "Text");
+
+            var nppbkc = GetNppbkcListOnPbck1ByCompanyCode(model.Bukrs);
+            var filterNppbkc = nppbkc.Where(x => CurrentUser.ListUserNppbkc.Contains(x.Value));
+
+            var listPlant = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.NppbkcId);
+            var filterPlant = listPlant;
+            var newListPlant = new SelectList(filterPlant, "Value", "Text");
+            if (CurrentUser.UserRole == Enums.UserRole.User)
+            {
+                var newFilterPlant = listPlant.Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
+                newListPlant = new SelectList(newFilterPlant, "Value", "Text");
+            }
+
+            model.BukrList = getComp;
             model.MontList = GlobalFunctions.GetMonthList(_monthBll);
             model.YearsList = CreateYearList();
-            model.NppbkcList = GetNppbkcListOnPbck1ByCompanyCode(model.Bukrs);
-            model.ReceivePlantList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.NppbkcId);
+            model.NppbkcList = new SelectList(filterNppbkc, "Value", "Text");
+            model.ReceivePlantList = newListPlant;
             model.ExGoodTypeList = GetExciseGoodsTypeList(model.NppbkcId);
             model.SupplierList = GetSupplierPlantListByParam(model.NppbkcId, model.ExGoodsTypeId);
             model.WasteUomList = GetWasteAndReturnUomList();
@@ -1074,6 +1169,39 @@ namespace Sampoerna.EMS.Website.Controllers
             model.AllowPrintDocument = _workflowBll.AllowPrint(model.Status);
 
             return model;
+        }
+
+        #endregion
+
+        #region ----------------- Edit Completed Document -----------
+
+        public ActionResult Edits(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var lack1Data = _lack1Bll.GetDetailsById(id.Value);
+
+            if (lack1Data == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
+            {
+                return RetDetails(lack1Data, true);
+            }
+            
+            var model = InitEditModel(lack1Data);
+            model = InitEditList(model);
+            model.IsCreateNew = false;
+
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+
+            return View(model);
         }
 
         #endregion
@@ -1321,6 +1449,84 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction(model.Lack1Level == Enums.Lack1Level.Plant ? "ListByPlant" : "Index");
         }
 
+        [HttpPost]
+        public ActionResult GovCompletedDocument(Lack1EditViewModel model)
+        {
+            var oldDoc = _lack1Bll.GetDetailsById(model.Lack1Id).Lack1Document;
+
+            if (model.GovApprovalActionType != Enums.ActionType.BackToGovApprovalAfterCompleted && model.DecreeFiles == null && oldDoc.Count == 0)
+            {
+                AddMessageInfo("Decree Doc is required.", Enums.MessageInfoType.Error);
+                return RedirectToAction("Edits", "Lack1", new { id = model.Lack1Id });
+            }
+
+            bool isSuccess = false;
+            string err = string.Empty;
+            try
+            {
+                model.Lack1Document = new List<Lack1DocumentItemModel>();
+                if (model.DecreeFiles != null)
+                {
+                    foreach (var item in model.DecreeFiles)
+                    {
+                        if (item != null)
+                        {
+                            var filenamecheck = item.FileName;
+
+                            if (filenamecheck.Contains("\\"))
+                            {
+                                filenamecheck = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                            }
+
+                            var decreeDoc = new Lack1DocumentItemModel()
+                            {
+                                FILE_NAME = filenamecheck,
+                                FILE_PATH = SaveUploadedFile(item, model.Lack1Id)
+                            };
+                            model.Lack1Document.Add(decreeDoc);
+                        }
+                        else
+                        {
+                            if (oldDoc.Count > 0)
+                                continue;
+                            AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
+                            return RedirectToAction("Edit", "Lack1", new { id = model.Lack1Id });
+                        }
+                    }
+                }
+
+                var input = new Lack1UpdateSomeField()
+                {
+                    Id = model.Lack1Id,
+                    SubmissionDate = model.SubmissionDate,
+                    WasteQty = model.WasteQty,
+                    WasteUom = model.WasteUom,
+                    ReturnQty = model.ReturnQty,
+                    ReturnUom = model.ReturnUom,
+                    Noted = model.Noted
+                };
+
+                _lack1Bll.UpdateSomeField(input);
+
+                Lack1WorkflowGovApprove(model, Enums.ActionType.Completed, string.Empty);
+                isSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                err = ex.Message;
+            }
+
+            if (!isSuccess)
+            {
+                AddMessageInfo(err, Enums.MessageInfoType.Error);
+                return RedirectToAction("Edits", "Lack1", new { id = model.Lack1Id });
+            }
+
+            AddMessageInfo("Document is saved", Enums.MessageInfoType.Success);
+
+            return RedirectToAction("ListCompletedDocument");
+        }
+
         #endregion
 
         [HttpPost]
@@ -1426,12 +1632,25 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private Lack1SummaryReportViewModel InitSearchSummaryReportViewModel(Lack1SummaryReportViewModel model)
         {
+            var comp = GlobalFunctions.GetCompanyList(_companyBll);
+
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
+            {
+                var userComp = _userPlantBll.GetCompanyByUserId(CurrentUser.USER_ID);
+                var poaComp = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+                var distinctComp = comp.Where(x => userComp.Contains(x.Value));
+                if (CurrentUser.UserRole == Enums.UserRole.POA) distinctComp = comp.Where(x => poaComp.Contains(x.Value));
+                var getComp = new SelectList(distinctComp, "Value", "Text");
+                comp = getComp;
+            }
+
             model.SearchView = new Lack1SearchSummaryReportViewModel
             {
-                CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll),
+                CompanyCodeList = comp,
                 PeriodMonthList = GlobalFunctions.GetMonthList(_monthBll),
                 PeriodYearList = GetYearListInLack1Data()
             };
+
             model.SearchView.NppbkcIdList = GetNppbkcIdListOnLack1Data(model.SearchView.CompanyCode);
             model.SearchView.ReceivingPlantIdList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.SearchView.NppbkcId);
             model.SearchView.ExcisableGoodsTypeList = GetExciseGoodsTypeList(model.SearchView.NppbkcId);
@@ -1468,12 +1687,20 @@ namespace Sampoerna.EMS.Website.Controllers
             if (filter == null)
             {
                 //Get All
-                var lack1Data = _lack1Bll.GetSummaryReportByParam(new Lack1GetSummaryReportByParamInput());
+                var lack1Data = _lack1Bll.GetSummaryReportByParam(new Lack1GetSummaryReportByParamInput() { 
+                     ListUserPlant = CurrentUser.ListUserPlants,
+                     ListNppbkc = CurrentUser.ListUserNppbkc,
+                     UserRole = CurrentUser.UserRole
+                });
                 return Mapper.Map<List<Lack1SummaryReportItemModel>>(lack1Data);
             }
 
             //getbyparams
             var input = Mapper.Map<Lack1GetSummaryReportByParamInput>(filter);
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
+            input.ListUserPlant = CurrentUser.ListUserPlants;
+            input.UserRole = CurrentUser.UserRole;
+
             var dbData = _lack1Bll.GetSummaryReportByParam(input);
 
             return Mapper.Map<List<Lack1SummaryReportItemModel>>(dbData);
@@ -1741,11 +1968,18 @@ namespace Sampoerna.EMS.Website.Controllers
             if (filter == null)
             {
                 //Get All
-                var data = _lack1Bll.GetDetailReportByParam(new Lack1GetDetailReportByParamInput());
+                var data = _lack1Bll.GetDetailReportByParam(new Lack1GetDetailReportByParamInput() { 
+                    ListNppbkc = CurrentUser.ListUserNppbkc,
+                    ListUserPlant = CurrentUser.ListUserPlants,
+                    UserRole = CurrentUser.UserRole
+                });
                 return Mapper.Map<List<Lack1DetailReportItemModel>>(data);
             }
             //getbyparams
             var input = Mapper.Map<Lack1GetDetailReportByParamInput>(filter);
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
+            input.ListUserPlant = CurrentUser.ListUserPlants;
+            input.UserRole = CurrentUser.UserRole;
 
             if (!string.IsNullOrEmpty(filter.PeriodFrom))
             {
@@ -1767,9 +2001,21 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private Lack1DetailReportViewModel InitSearchDetilReportViewModel(Lack1DetailReportViewModel model)
         {
+            var comp = GlobalFunctions.GetCompanyList(_companyBll);
+
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
+            {
+                var userComp = _userPlantBll.GetCompanyByUserId(CurrentUser.USER_ID);
+                var poaComp = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+                var distinctComp = comp.Where(x => userComp.Contains(x.Value));
+                if (CurrentUser.UserRole == Enums.UserRole.POA) distinctComp = comp.Where(x => poaComp.Contains(x.Value));
+                var getComp = new SelectList(distinctComp, "Value", "Text");
+                comp = getComp;
+            }
+
             model.SearchView = new Lack1SearchDetailReportViewModel()
             {
-                CompanyCodeList = GlobalFunctions.GetCompanyList(_companyBll)
+                CompanyCodeList = comp
             };
             model.SearchView.NppbkcIdList = GetNppbkcIdListOnLack1Data(model.SearchView.CompanyCode);
             model.SearchView.ReceivingPlantIdList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.SearchView.NppbkcId);
@@ -2258,6 +2504,9 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = Mapper.Map<Lack1GetDashboardDataByParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
             input.UserRole = CurrentUser.UserRole;
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
+            input.ListUserPlant = CurrentUser.ListUserPlants;
+
             return _lack1Bll.GetDashboardDataByParam(input);
         }
 
@@ -2310,8 +2559,16 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private Lack1ReconciliationModel InitSearchReconciliationModel(Lack1ReconciliationModel model)
         {
+            var nppbkc = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
+            {
+                var filterNppbkc = nppbkc.Where(x => CurrentUser.ListUserNppbkc.Contains(x.Value));
+                nppbkc = new SelectList(filterNppbkc, "Value", "Text");
+            }
+
             model.SearchView = new Lack1SearchReconciliationModel();
-            model.SearchView.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            model.SearchView.NppbkcIdList = nppbkc;
             model.SearchView.PlantIdList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.SearchView.NppbkcId);
             model.SearchView.ExGoodTypeList = GetExciseGoodsTypeList(model.SearchView.NppbkcId);
             return model;
@@ -2323,11 +2580,18 @@ namespace Sampoerna.EMS.Website.Controllers
             if (filter == null)
             {
                 //Get All
-                var data = _lack1Bll.GetReconciliationByParam(new Lack1GetReconciliationByParamInput());
+                var data = _lack1Bll.GetReconciliationByParam(new Lack1GetReconciliationByParamInput() { 
+                    ListNppbkc = CurrentUser.ListUserNppbkc,
+                    ListUserPlant = CurrentUser.ListUserPlants,
+                    UserRole = CurrentUser.UserRole
+                });
                 return Mapper.Map<List<DataReconciliation>>(data);
             }
             //getbyparams
             var input = Mapper.Map<Lack1GetReconciliationByParamInput>(filter);
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
+            input.ListUserPlant = CurrentUser.ListUserPlants;
+            input.UserRole = CurrentUser.UserRole;
 
             var dbData = _lack1Bll.GetReconciliationByParam(input);
             return Mapper.Map<List<DataReconciliation>>(dbData);

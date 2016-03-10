@@ -336,14 +336,14 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return View("Create", model);
         }
-
+       
 
         private Pbck7Pbck3CreateViewModel InitListPbck7(Pbck7Pbck3CreateViewModel model)
         {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.NppbkIdList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
-            model.PlantList = GlobalFunctions.GetPlantAll();
+            model.NppbkIdList = new SelectList(CurrentUser.ListUserNppbkc);//GlobalFunctions.GetNppbkcAll(_nppbkcBll);
+            model.PlantList = GlobalFunctions.GetPlantByListUserPlant(CurrentUser.ListUserPlants);// GlobalFunctions.GetPlantAll();
             model.PoaList = GetPoaListByPlant(model.PlantId); //;GetPoaList(model.NppbkcId);
             model.Pbck7Date = DateTime.Now;
 
@@ -449,6 +449,21 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var existingData = _pbck7Pbck3Bll.GetDetailsPbck7ById(id);
 
+                var inputEdit = new WorkflowAllowAccessDataInput
+                {
+                    UserId = CurrentUser.USER_ID,
+                    UserRole = CurrentUser.UserRole,
+                    UserPlant = CurrentUser.ListUserPlants,
+                    DataPlant = existingData.Pbck7Dto.PlantId,
+                    DataUser = existingData.Pbck7Dto.CreatedBy
+                };
+
+                if (!_workflowBll.AllowAccessData(inputEdit))
+                {
+                    AddMessageInfo("No Access to Edit/View the data", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Index");
+                }
+
                 model = Mapper.Map<Pbck7Pbck3CreateViewModel>(existingData.Pbck7Dto);
 
                 var input = new WorkflowAllowEditAndSubmitInput();
@@ -458,7 +473,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (!_workflowBll.AllowEditDocument(input))
                     return RedirectToAction("Detail", new { @id = existingData.Pbck7Dto.Pbck7Id });
 
-                model = InitialModel(model);
+                model = InitListPbck7(model);
 
                 model.Back1Dto = existingData.Back1Dto;
                 model.Pbck3Dto = existingData.Pbck3Dto;
@@ -486,12 +501,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.WorkflowHistoryPbck3 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck3);
 
 
-                return View("Edit", InitialModel(model));
+                return View("Edit", InitListPbck7(model));
             }
             catch (Exception ex)
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
-                model = InitialModel(model);
+                model = InitListPbck7(model);
             }
 
             return View(model);
@@ -512,6 +527,21 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var existingData = _pbck7Pbck3Bll.GetDetailsPbck7ById(id);
 
+                var inputEdit = new WorkflowAllowAccessDataInput
+                {
+                    UserId = CurrentUser.USER_ID,
+                    UserRole = CurrentUser.UserRole,
+                    UserPlant = CurrentUser.ListUserPlants,
+                    DataPlant = existingData.Pbck7Dto.PlantId,
+                    DataUser = existingData.Pbck7Dto.CreatedBy
+                };
+
+                if (!_workflowBll.AllowAccessData(inputEdit))
+                {
+                    AddMessageInfo("No Access to Edit/View the data", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Index");
+                }
+
                 model = Mapper.Map<Pbck7Pbck3CreateViewModel>(existingData.Pbck7Dto);
                 model.Back1Dto = existingData.Back1Dto;
                 model.Pbck3Dto = existingData.Pbck3Dto;
@@ -519,11 +549,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Ck2Dto = existingData.Ck2Dto;
 
                 model.WorkflowHistoryPbck7 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
-                //model.WorkflowHistoryPbck3 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck3);
-
-
-                model = InitialModel(model);
-
+              
+                //model = InitListPbck7(model);
+                model.MainMenu = _mainMenu;
+                model.CurrentMenu = PageInfo;
+                model.PoaList = GetPoaListByPlant(model.PlantId);
 
                 model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(existingData.ListPrintHistorys);
 
@@ -559,8 +589,14 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
 
+                if (model.Pbck7Status == Enums.DocumentStatus.Completed
+                   && CurrentUser.UserRole == Enums.UserRole.Administrator)
+                    model.AllowEditCompletedDocument = true;
+
                 if (model.AllowGovApproveAndReject)
                     model.ActionType = "GovApproveDocument";
+                else if (model.AllowEditCompletedDocument)
+                    model.ActionType = "EditCompletedDocument";
                 else if (model.Pbck7Status == Enums.DocumentStatus.Completed)
                     model.ActionType = "UpdateUploadedFilefterCompletedPbck7";
             }
@@ -583,6 +619,21 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var existingData = _pbck7Pbck3Bll.GetDetailsPbck7ById(id);
 
+                var inputEdit = new WorkflowAllowAccessDataInput
+                {
+                    UserId = CurrentUser.USER_ID,
+                    UserRole = CurrentUser.UserRole,
+                    UserPlant = CurrentUser.ListUserPlants,
+                    DataPlant = existingData.Pbck7Dto.PlantId,
+                    DataUser = existingData.Pbck7Dto.CreatedBy
+                };
+
+                if (!_workflowBll.AllowAccessData(inputEdit))
+                {
+                    AddMessageInfo("No Access to Edit/View the data", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Index");
+                }
+
                 model = Mapper.Map<Pbck7Pbck3CreateViewModel>(existingData.Pbck7Dto);
                 model.Back1Dto = existingData.Back1Dto;
                 model.Pbck3Dto = existingData.Pbck3Dto;
@@ -590,11 +641,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Ck2Dto = existingData.Ck2Dto;
 
                 model.WorkflowHistoryPbck7 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck7);
-                //model.WorkflowHistoryPbck3 = Mapper.Map<List<WorkflowHistoryViewModel>>(existingData.WorkflowHistoryPbck3);
-
-
-                model = InitialModel(model);
-
+              
+                //model = InitListPbck7(model);
+                model.MainMenu = _mainMenu;
+                model.CurrentMenu = PageInfo;
+                model.PoaList = GetPoaListByPlant(model.PlantId);
 
                 model.PrintHistoryList = Mapper.Map<List<PrintHistoryItemModel>>(existingData.ListPrintHistorys);
 
@@ -701,7 +752,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 else
                     AddMessageInfo("Not Valid Model", Enums.MessageInfoType.Error);
 
-                model = InitialModel(model);
+                model = InitListPbck7(model);
                 model = GetHistorys(model);
 
                 return View(model);
@@ -710,7 +761,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
 
-                model = InitialModel(model);
+                model = InitListPbck7(model);
                 model = GetHistorys(model);
 
                 return View(model);
@@ -773,16 +824,16 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        private Pbck7Pbck3CreateViewModel InitialModel(Pbck7Pbck3CreateViewModel model)
-        {
-            model.MainMenu = _mainMenu;
-            model.CurrentMenu = PageInfo;
-            model.NppbkIdList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
-            model.PlantList = GlobalFunctions.GetPlantAll();
-            model.PoaList = GetPoaListByPlant(model.PlantId);//GetPoaList(model.NppbkcId);
+        //private Pbck7Pbck3CreateViewModel InitialModel(Pbck7Pbck3CreateViewModel model)
+        //{
+        //    model.MainMenu = _mainMenu;
+        //    model.CurrentMenu = PageInfo;
+        //    model.NppbkIdList = GlobalFunctions.GetNppbkcAll(_nppbkcBll);
+        //    model.PlantList = GlobalFunctions.GetPlantAll();
+        //    model.PoaList = GetPoaListByPlant(model.PlantId);//GetPoaList(model.NppbkcId);
 
-            return (model);
-        }
+        //    return (model);
+        //}
 
 
 
@@ -884,8 +935,6 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult GovApproveDocument(Pbck7Pbck3CreateViewModel model)
         {
-           
-
             try
             {
                 var currentUserId = CurrentUser.USER_ID;
@@ -1261,11 +1310,16 @@ namespace Sampoerna.EMS.Website.Controllers
             model.FromYear = GlobalFunctions.GetYearList();
             model.ToYear = model.FromYear;
 
+            var input = new Pbck7SummaryInput();
+            input.ListUserPlant = CurrentUser.ListUserPlants;
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
             model.PoaList = GlobalFunctions.GetPoaAll(_poaBll);
             model.CreatorList = GlobalFunctions.GetCreatorList();
 
             var listPbck7 = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(new Pbck7SummaryInput());
 
+            model.ReportItems = Mapper.Map<List<Pbck7SummaryReportItem>>(_pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input));
             model.FaCodeList = GetListPbck7Items(listPbck7, "facode");
             model.BrandList = GetListPbck7Items(listPbck7, "brand");
             model.ContentList = GetListPbck7Items(listPbck7, "content");
@@ -1281,7 +1335,6 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Ck2NoList = GetListPbck7Items(listPbck7, "ck2no");
             model.Ck2ValueList = GetListPbck7Items(listPbck7, "ck2value");
 
-            model.ReportItems = Mapper.Map<List<Pbck7SummaryReportItem>>(_pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(new Pbck7SummaryInput()));
         }
 
         private void InitSummaryReportsPbck3(Pbck3SummaryReportModel model)
@@ -1294,11 +1347,16 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Pbck3List = GetAllPbck3No();
             model.FromYear = GlobalFunctions.GetYearList();
             model.ToYear = model.FromYear;
+            var input = new Pbck3SummaryInput();
+            input.ListUserPlant = CurrentUser.ListUserPlants;
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
 
             model.PoaList = GlobalFunctions.GetPoaAll(_poaBll);
             model.CreatorList = GlobalFunctions.GetCreatorList();
 
-            model.ReportItems = Mapper.Map<List<Pbck3SummaryReportItem>>(_pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(new Pbck3SummaryInput()));
+
+            model.ReportItems = Mapper.Map<List<Pbck3SummaryReportItem>>(_pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(input));
         }
 
         private SelectList GetAllPbck7No()
@@ -1319,6 +1377,9 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterPbck7SummaryReport(Pbck7SummaryReportModel model)
         {
             var input = Mapper.Map<Pbck7SummaryInput>(model);
+            input.ListUserPlant = CurrentUser.ListUserPlants;
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
 
             var result = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input);
             model.ReportItems = Mapper.Map<List<Pbck7SummaryReportItem>>(result);
@@ -1329,6 +1390,10 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterPbck3SummaryReport(Pbck3SummaryReportModel model)
         {
             var input = Mapper.Map<Pbck3SummaryInput>(model);
+            input.ListUserPlant = CurrentUser.ListUserPlants;
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
+
             var result = _pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(input);
             model.ReportItems = Mapper.Map<List<Pbck3SummaryReportItem>>(result);
 
@@ -1367,6 +1432,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private string CreateXlsSummaryReportsPbck7(Pbck7SummaryReportModel model)
         {
             var input = Mapper.Map<Pbck7SummaryInput>(model.ExportModel);
+            input.ListUserPlant = CurrentUser.ListUserPlants;
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
+
             var result = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input);
            
             var dataSummaryReport = Mapper.Map<List<Pbck7SummaryReportItem>>(result.OrderBy(c => c.Pbck7Number));
@@ -1780,6 +1849,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private string CreateXlsSummaryReportsPbck3(Pbck3SummaryReportModel model)
         {
             var input = Mapper.Map<Pbck3SummaryInput>(model.ExportModel);
+            input.ListUserPlant = CurrentUser.ListUserPlants;
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
+
             var result = _pbck7Pbck3Bll.GetPbck3SummaryReportsByParam(input);
             //var src = (from b in result
             //           select new Pbck3SummaryReportItem()
@@ -2126,6 +2199,27 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var existingData = _pbck7Pbck3Bll.GetPbck3DetailsById(id);
 
+                string plantId = "";
+                if (existingData.Pbck3CompositeDto.FromPbck7)
+                    plantId = existingData.Pbck3CompositeDto.Pbck7Composite.PlantId;
+                else
+                    plantId = existingData.Pbck3CompositeDto.Ck5Composite.Ck5Dto.SOURCE_PLANT_ID;
+
+                var inputEdit = new WorkflowAllowAccessDataInput
+                {
+                    UserId = CurrentUser.USER_ID,
+                    UserRole = CurrentUser.UserRole,
+                    UserPlant = CurrentUser.ListUserPlants,
+                    DataPlant = plantId,
+                    DataUser = existingData.Pbck3CompositeDto.CREATED_BY
+                };
+
+                if (!_workflowBll.AllowAccessData(inputEdit))
+                {
+                    AddMessageInfo("No Access to Edit/View the data", Enums.MessageInfoType.Error);
+                    return RedirectToAction("ListPbck3Index");
+                }
+
                 model = Mapper.Map<Pbck3ViewModel>(existingData.Pbck3CompositeDto);
 
                 var input = new WorkflowAllowEditAndSubmitInput();
@@ -2287,6 +2381,27 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var existingData = _pbck7Pbck3Bll.GetPbck3DetailsById(id);
 
+                string plantId = "";
+                if (existingData.Pbck3CompositeDto.FromPbck7)
+                    plantId = existingData.Pbck3CompositeDto.Pbck7Composite.PlantId;
+                else
+                    plantId = existingData.Pbck3CompositeDto.Ck5Composite.Ck5Dto.SOURCE_PLANT_ID;
+
+                var inputEdit = new WorkflowAllowAccessDataInput
+                {
+                    UserId = CurrentUser.USER_ID,
+                    UserRole = CurrentUser.UserRole,
+                    UserPlant = CurrentUser.ListUserPlants,
+                    DataPlant = plantId,
+                    DataUser = existingData.Pbck3CompositeDto.CREATED_BY
+                };
+
+                if (!_workflowBll.AllowAccessData(inputEdit))
+                {
+                    AddMessageInfo("No Access to Edit/View the data", Enums.MessageInfoType.Error);
+                    return RedirectToAction("ListPbck3Index");
+                }
+
                 model = Mapper.Map<Pbck3ViewModel>(existingData.Pbck3CompositeDto);
 
 
@@ -2357,9 +2472,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
+                
+                if (model.Pbck3Status == Enums.DocumentStatus.Completed
+                   && CurrentUser.UserRole == Enums.UserRole.Administrator)
+                    model.AllowEditCompletedDocument = true;
 
                 if (model.AllowGovApproveAndReject)
                     model.ActionType = "GovApproveDocumentPbck3";
+                else if (model.AllowEditCompletedDocument)
+                    model.ActionType = "EditCompletedDocumentPbck3";
                 else if (model.Pbck3Status == Enums.DocumentStatus.Completed)
                     model.ActionType = "UpdateUploadedFilefterCompletedPbck3";
             }
@@ -2380,7 +2501,29 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
+                string plantId = "";
+               
+
                 var existingData = _pbck7Pbck3Bll.GetPbck3DetailsById(id);
+                if (existingData.Pbck3CompositeDto.FromPbck7)
+                    plantId = existingData.Pbck3CompositeDto.Pbck7Composite.PlantId;
+                else
+                    plantId = existingData.Pbck3CompositeDto.Ck5Composite.Ck5Dto.SOURCE_PLANT_ID;
+                
+                var inputEdit = new WorkflowAllowAccessDataInput
+                {
+                    UserId = CurrentUser.USER_ID,
+                    UserRole = CurrentUser.UserRole,
+                    UserPlant = CurrentUser.ListUserPlants,
+                    DataPlant = plantId,
+                    DataUser = existingData.Pbck3CompositeDto.CREATED_BY
+                };
+
+                if (!_workflowBll.AllowAccessData(inputEdit))
+                {
+                    AddMessageInfo("No Access to Edit/View the data", Enums.MessageInfoType.Error);
+                    return RedirectToAction("ListPbck3Index");
+                }
 
                 model = Mapper.Map<Pbck3ViewModel>(existingData.Pbck3CompositeDto);
 
@@ -3143,31 +3286,37 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private List<Pbck7AndPbck3Dto> GetDashboardPbck7Data(Pbck7Pbck3DashboardSearchViewModel filter = null)
         {
-            if (filter == null)
-            {
-                //get All Data
-                var data = _pbck7Pbck3Bll.GetDashboardPbck7ByParam(new GetDashboardPbck7ByParamInput());
-                return data;
-            }
-
             var input = Mapper.Map<GetDashboardPbck7ByParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
             input.UserRole = CurrentUser.UserRole;
+            input.ListUserPlants = CurrentUser.ListUserPlants;
+
+            if (filter == null)
+            {
+                //get All Data
+                
+                var data = _pbck7Pbck3Bll.GetDashboardPbck7ByParam(input);
+                return data;
+            }
+
+           
             return _pbck7Pbck3Bll.GetDashboardPbck7ByParam(input);
         }
 
         private List<Pbck3Dto> GetDashboardPbck3Data(Pbck7Pbck3DashboardSearchViewModel filter = null)
         {
-            if (filter == null)
-            {
-                //get All Data
-                var data = _pbck7Pbck3Bll.GetDashboardPbck3ByParam(new GetDashboardPbck3ByParamInput());
-                return data;
-            }
-
             var input = Mapper.Map<GetDashboardPbck3ByParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
             input.UserRole = CurrentUser.UserRole;
+            input.ListUserPlants = CurrentUser.ListUserPlants;
+
+            if (filter == null)
+            {
+                //get All Data
+                var data = _pbck7Pbck3Bll.GetDashboardPbck3ByParam(input);
+                return data;
+            }
+
             return _pbck7Pbck3Bll.GetDashboardPbck3ByParam(input);
         }
 
@@ -3189,6 +3338,215 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
+
+
+        [HttpPost]
+        public ActionResult EditCompletedDocument(Pbck7Pbck3CreateViewModel model)
+        {
+            try
+            {
+
+                if (model.Back1Dto.Documents == null)
+                    model.Back1Dto.Documents = new List<BACK1_DOCUMENTDto>();
+
+                if (model.DocumentsPostBack != null)
+                {
+                    foreach (var item in model.DocumentsPostBack)
+                    {
+                        if (item != null)
+                        {
+                            var filenameCk5Check = item.FileName;
+                            if (filenameCk5Check.Contains("\\"))
+                                filenameCk5Check = filenameCk5Check.Split('\\')[filenameCk5Check.Split('\\').Length - 1];
+
+                            var pbck4UploadFile = new BACK1_DOCUMENTDto
+                            {
+                                FILE_NAME = filenameCk5Check,
+                                FILE_PATH = SaveUploadedFile(item, model.Pbck7Number),
+                                BACK1 = model.Back1Dto.Back1Id,
+                                IsDeleted = false
+
+                            };
+                            model.Back1Dto.Documents.Add(pbck4UploadFile);
+                        }
+
+                    }
+                }
+                else
+                {
+                    AddMessageInfo("Empty File BACK-1 Doc", Enums.MessageInfoType.Error);
+                    RedirectToAction("Details", new { id = model.Id });
+                }
+
+                bool ExistDocument = false;
+
+                foreach (var uploadModelList in model.Back1Dto.Documents)
+                {
+                    if (uploadModelList.IsDeleted == false)
+                    {
+                        ExistDocument = true;
+                        break;
+                    }
+                }
+                if (!ExistDocument)
+                {
+                    AddMessageInfo("Empty File BACK-1 Doc", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Detail", new { id = model.Id });
+                }
+
+
+                var input = new EditCompletedDocumentPbck7Input();
+                input.DocumentId = model.Id;
+                input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
+                input.ListFile = model.Back1Dto.Documents;
+
+                input.Pbck7Date = model.Pbck7Date;
+                input.Lampiran = model.Lampiran;
+                input.DocumentType = model.DocumentType;
+                input.ExecDateFrom = model.ExecDateFrom;
+                input.ExecDateTo = model.ExecDateTo;
+                input.Pbck7ItemsDto = Mapper.Map<List<PBCK7_ITEMDto>>(model.UploadItems);
+
+                input.Back1Number = model.Back1Dto.Back1Number;
+                input.Back1Date = model.Back1Dto.Back1Date;
+
+                _pbck7Pbck3Bll.EditCompletedDocumentPbck7(input);
+
+                AddMessageInfo("Success Update Document PBCK-7", Enums.MessageInfoType.Success);
+
+
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("Detail", new { id = model.Id });
+        }
+
+        [HttpPost]
+        public ActionResult EditCompletedDocumentPbck3(Pbck3ViewModel model)
+        {
+            try
+            {
+                var currentUserId = CurrentUser.USER_ID;
+                if (model.Back3Documents == null)
+                    model.Back3Documents = new List<BACK3_DOCUMENTDto>();
+
+                if (model.Pbck3Back3FileUploadFileList != null)
+                {
+                    foreach (var item in model.Pbck3Back3FileUploadFileList)
+                    {
+                        if (item != null)
+                        {
+                            var filenameCk5Check = item.FileName;
+                            if (filenameCk5Check.Contains("\\"))
+                                filenameCk5Check = filenameCk5Check.Split('\\')[filenameCk5Check.Split('\\').Length - 1];
+
+                            var pbck4UploadFile = new BACK3_DOCUMENTDto
+                            {
+                                FILE_NAME = filenameCk5Check,
+                                FILE_PATH = SaveUploadedFile(item, model.Pbck3Number),
+                                BACK3_ID = model.Back3Id,
+                                IsDeleted = false
+                            };
+                            model.Back3Documents.Add(pbck4UploadFile);
+                        }
+
+                    }
+                }
+               
+
+                bool ExistDocument = false;
+
+                foreach (var uploadModelList in model.Back3Documents)
+                {
+                    if (uploadModelList.IsDeleted == false)
+                    {
+                        ExistDocument = true;
+                        break;
+                    }
+                }
+                if (!ExistDocument)
+                {
+                    AddMessageInfo("Empty File BACK-3 Doc", Enums.MessageInfoType.Error);
+                    return RedirectToAction("DetailPbck3", new { id = model.Pbck3Id });
+                }
+
+                if (model.Ck2Documents == null)
+                    model.Ck2Documents = new List<CK2_DOCUMENTDto>();
+
+                if (model.Pbck3Ck2FileUploadFileList != null)
+                {
+                    foreach (var item in model.Pbck3Ck2FileUploadFileList)
+                    {
+                        if (item != null)
+                        {
+                            var filenameCk5Check = item.FileName;
+                            if (filenameCk5Check.Contains("\\"))
+                                filenameCk5Check = filenameCk5Check.Split('\\')[filenameCk5Check.Split('\\').Length - 1];
+
+                            var pbck4UploadFile = new CK2_DOCUMENTDto
+                            {
+                                FILE_NAME = filenameCk5Check,
+                                FILE_PATH = SaveUploadedFile(item, model.Pbck3Number),
+                                CK2_ID = model.Ck2Id,
+                                IsDeleted = false
+                            };
+                            model.Ck2Documents.Add(pbck4UploadFile);
+                        }
+
+                    }
+                }
+
+                ExistDocument = false;
+
+                foreach (var uploadModelList in model.Ck2Documents)
+                {
+                    if (uploadModelList.IsDeleted == false)
+                    {
+                        ExistDocument = true;
+                        break;
+                    }
+                }
+
+                if (!ExistDocument)
+                {
+                    AddMessageInfo("Empty File CK-2 Doc", Enums.MessageInfoType.Error);
+                    return RedirectToAction("DetailPbck3", new { id = model.Pbck3Id });
+                }
+
+             
+                var input = new EditCompletedDocumentPbck3Input();
+                input.DocumentId = model.Pbck3Id;
+                input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
+                
+                input.Pbck3Date = model.PBCK3_DATE;
+                input.ExecDateFrom = model.EXEC_DATE_FROM;
+                input.ExecDateTo = model.EXEC_DATE_TO;
+                input.Back3FileUploadList = model.Back3Documents;
+
+                input.Back3No = model.Back3Number;
+                input.Back3Date = model.Back3Date;
+
+                input.Ck2No = model.Ck2Number;
+                input.Ck2Date = model.Ck2Date;
+                input.Ck2Value = model.Ck2Value;
+                input.Ck2FileUploadList = model.Ck2Documents;
+
+                _pbck7Pbck3Bll.EditCompletedDocumentPbck3(input);
+
+                AddMessageInfo("Success Update Document PBCK-3", Enums.MessageInfoType.Success);
+
+
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("DetailPbck3", new { id = model.Pbck3Id });
+        }
     }
 
 }

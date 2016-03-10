@@ -26,6 +26,7 @@
                     <input type="button" value="Back" class="btn btn-blue" id="btnBack" />
                     <input type="button" class="btn btn-grey" value="Print Preview PBCK-3" onclick="printPreview('@Url.EncryptedAction("PrintPreviewPbck3", "Pbck7AndPbck3", new { id = @Model.Pbck3Id })')" />
                 </div>
+
             </div>
         </div>
     </div>
@@ -61,6 +62,7 @@
                         {
                             @Html.Partial("_HomeEditPbck3Pbck7")
                         }
+
                         @if (Model.Pbck3Status >= Enums.DocumentStatus.WaitingGovApproval && (Model.Pbck3Status != Enums.DocumentStatus.Cancelled && Model.Pbck3Status != Enums.DocumentStatus.GovRejected))
                         {
                             @Html.Partial("_PrintOutPbck3")

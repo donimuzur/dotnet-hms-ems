@@ -116,6 +116,16 @@ namespace Sampoerna.EMS.BLL
         public List<Pbck7SummaryReportDto> GetPbck7SummaryReportsByParam(Pbck7SummaryInput input)
         {
             Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
+
+            if (input.UserRole != Enums.UserRole.Administrator)
+            {
+                if (input.ListUserPlant == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
+
+                queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID));
+
+            }
+
             if (!string.IsNullOrEmpty(input.NppbkcId))
             {
                 queryFilter = queryFilter.And(c => c.NPPBKC == input.NppbkcId);
@@ -155,13 +165,13 @@ namespace Sampoerna.EMS.BLL
             //var mapResult = Mapper.Map<List<Pbck7SummaryReportDto>>(dbData.ToList());
 
             var result = new List<Pbck7SummaryReportDto>();
-           
+
             foreach (var pbck7 in dbData)
             {
 
                 PBCK7 pbck8 = pbck7;
                 var pbck7Item = _repositoryPbck7Item.Get(c => c.PBCK7_ID == pbck8.PBCK7_ID).ToList();
-               
+
                 foreach (var item in pbck7Item)
                 {
                     var summaryReport = new Pbck7SummaryReportDto();
@@ -224,11 +234,7 @@ namespace Sampoerna.EMS.BLL
                     }
 
                     result.Add(summaryReport);
-
-                 
                 }
-                
-
             }
 
             if (!string.IsNullOrEmpty(input.FaCode))
@@ -302,12 +308,27 @@ namespace Sampoerna.EMS.BLL
             }
 
             return result;
-
         }
 
         public List<Pbck3SummaryReportDto> GetPbck3SummaryReportsByParam(Pbck3SummaryInput input)
         {
             Expression<Func<PBCK3, bool>> queryFilter = PredicateHelper.True<PBCK3>();
+            if (input.UserRole != Enums.UserRole.Administrator)
+            {
+                if (input.ListUserPlant == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
+
+                queryFilter =
+                    queryFilter.And(
+                        c => (input.ListUserPlant.Contains(c.PBCK7.PLANT_ID)
+                              ||
+                              (c.CK5.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
+                               input.ListUserPlant.Contains(c.CK5.DEST_PLANT_ID))
+                              ||
+                              input.ListUserPlant.Contains(c.CK5.SOURCE_PLANT_ID)
+                            )
+                        );
+            }
             if (!string.IsNullOrEmpty(input.NppbkcId))
             {
                 queryFilter = queryFilter.And(c => c.PBCK7.NPPBKC == input.NppbkcId);
@@ -383,45 +404,14 @@ namespace Sampoerna.EMS.BLL
         {
             Expression<Func<PBCK7, bool>> queryFilter = PredicateHelper.True<PBCK7>();
 
-            //delegate 
-            var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(user.USER_ID, DateTime.Now);
-
-
-            if (user.UserRole == Enums.UserRole.POA)
+            if (user.UserRole != Enums.UserRole.Administrator)
             {
-                var nppbkc = _nppbkcbll.GetNppbkcsByPOA(user.USER_ID).Select(d => d.NPPBKC_ID).ToList();
+                if (user.ListUserPlants == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
 
-                //delegate
-                if (delegateUser.Count > 0)
-                {
-                    delegateUser.Add(user.USER_ID);
-                    queryFilter = queryFilter.And(c => (delegateUser.Contains(c.CREATED_BY) || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC))));
-                }
-                else
-                    queryFilter = queryFilter.And(c => (c.CREATED_BY == user.USER_ID || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC))));
-                
-
+                queryFilter = queryFilter.And(c => user.ListUserPlants.Contains(c.PLANT_ID));
             }
-            //first code when manager exists
-            //else if (user.UserRole == Enums.UserRole.Manager)
-            //{
-            //    var poaList = _poabll.GetPOAIdByManagerId(user.USER_ID);
-            //    var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
 
-            //    queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.PBCK7_NUMBER));
-            //}
-            else
-            {
-                //delegate 
-                if (delegateUser.Count > 0)
-                {
-                    delegateUser.Add(user.USER_ID);
-                    queryFilter = queryFilter.And(c => delegateUser.Contains(c.CREATED_BY));
-                }
-                else
-                    queryFilter = queryFilter.And(c => c.CREATED_BY == user.USER_ID);
-                
-            }
             if (IsComplete)
             {
                 queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed || c.STATUS == Enums.DocumentStatus.GovRejected);
@@ -454,15 +444,7 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.PBCK7_DATE == dt);
             }
 
-
-            //Func<IQueryable<PBCK7>, IOrderedQueryable<PBCK7>> orderBy = null;
-            //if (!string.IsNullOrEmpty(input.ShortOrderColum))
-            //{
-            //    orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK7>(input.ShortOrderColum));
-            //}
             Func<IQueryable<PBCK7>, IOrderedQueryable<PBCK7>> orderBy = n => n.OrderByDescending(z => z.CREATED_DATE);
-
-
 
             var dbData = _repositoryPbck7.Get(queryFilter, orderBy, includeTable);
             if (dbData == null)
@@ -478,76 +460,23 @@ namespace Sampoerna.EMS.BLL
         {
             Expression<Func<PBCK3, bool>> queryFilter = PredicateHelper.True<PBCK3>();
 
-            //delegate 
-            var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(user.USER_ID, DateTime.Now);
-
-
-            if (user.UserRole == Enums.UserRole.POA)
+            if (user.UserRole != Enums.UserRole.Administrator)
             {
-                var nppbkc = _nppbkcbll.GetNppbkcsByPOA(user.USER_ID).Select(d => d.NPPBKC_ID).ToList();
+                if (user.ListUserPlants == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
 
-                //delegate
-                if (delegateUser.Count > 0)
-                {
-                    delegateUser.Add(user.USER_ID);
-                    queryFilter =
+                queryFilter =
                     queryFilter.And(
-                        c =>
-                            (delegateUser.Contains(c.CREATED_BY) ||
-                             (c.STATUS != Enums.DocumentStatus.Draft &&
-                              (nppbkc.Contains(c.PBCK7.NPPBKC)
+                        c => (user.ListUserPlants.Contains(c.PBCK7.PLANT_ID)
                               ||
                               (c.CK5.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
-                              nppbkc.Contains(c.CK5.DEST_PLANT_NPPBKC_ID))
+                               user.ListUserPlants.Contains(c.CK5.DEST_PLANT_ID))
                               ||
-                              nppbkc.Contains(c.CK5.SOURCE_PLANT_NPPBKC_ID)
-                              )
-                              )
-                              )
-                              );
-                }
-                else
-                    queryFilter =
-                    queryFilter.And(
-                        c =>
-                            (c.CREATED_BY == user.USER_ID ||
-                             (c.STATUS != Enums.DocumentStatus.Draft &&
-                              (nppbkc.Contains(c.PBCK7.NPPBKC)
-                              ||
-                              (c.CK5.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
-                              nppbkc.Contains(c.CK5.DEST_PLANT_NPPBKC_ID))
-                              ||
-                              nppbkc.Contains(c.CK5.SOURCE_PLANT_NPPBKC_ID)
-                              )
-                              )
-                              )
-                              );
-
-
-                
-
-
+                              user.ListUserPlants.Contains(c.CK5.SOURCE_PLANT_ID)
+                            )
+                        );
             }
-            //first code when manager exists
-            //else if (user.UserRole == Enums.UserRole.Manager)
-            //{
-            //    var poaList = _poabll.GetPOAIdByManagerId(user.USER_ID);
-            //    var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
 
-            //    queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.PBCK3_NUMBER));
-            //}
-            else
-            {
-                //delegate 
-                if (delegateUser.Count > 0)
-                {
-                    delegateUser.Add(user.USER_ID);
-                    queryFilter = queryFilter.And(c => delegateUser.Contains(c.CREATED_BY) );
-                }
-                else
-                    queryFilter = queryFilter.And(c => c.CREATED_BY == user.USER_ID);
-                
-            }
             if (!string.IsNullOrEmpty(input.NppbkcId))
             {
                 queryFilter = queryFilter.And(c => (c.PBCK7.NPPBKC == input.NppbkcId || c.CK5.SOURCE_PLANT_NPPBKC_ID == input.NppbkcId));
@@ -580,13 +509,8 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed && c.STATUS != Enums.DocumentStatus.Cancelled
                     && c.STATUS != Enums.DocumentStatus.GovRejected);
             }
-            //Func<IQueryable<PBCK3>, IOrderedQueryable<PBCK3>> orderBy = null;
-            //if (!string.IsNullOrEmpty(input.ShortOrderColum))
-            //{
-            //    orderBy = c => c.OrderBy(OrderByHelper.GetOrderByFunction<PBCK3>(input.ShortOrderColum));
-            //}
-            Func<IQueryable<PBCK3>, IOrderedQueryable<PBCK3>> orderBy = n => n.OrderByDescending(z => z.CREATED_DATE);
 
+            Func<IQueryable<PBCK3>, IOrderedQueryable<PBCK3>> orderBy = n => n.OrderByDescending(z => z.CREATED_DATE);
 
             var dbData = _repositoryPbck3.Get(queryFilter, orderBy, "PBCK7, CK5");
             if (dbData == null)
@@ -1629,7 +1553,7 @@ namespace Sampoerna.EMS.BLL
 
 
             }
-            
+
             //delegatemail
             var inputDelegate = new GetEmailDelegateUserInput();
             inputDelegate.FormType = Enums.FormType.PBCK7;
@@ -1652,7 +1576,7 @@ namespace Sampoerna.EMS.BLL
                 rc.CC.Add(emailResult);
             }
             //end delegate
-          
+
             rc.Body = bodyMail.ToString();
             return rc;
         }
@@ -2075,7 +1999,7 @@ namespace Sampoerna.EMS.BLL
                         inputPbck3.UserId = originalUser;
                     }
                 }
-              
+
 
                 inputPbck3.Pbck7ExecFrom = dbData.EXEC_DATE_FROM;
                 inputPbck3.Pbck7ExecTo = dbData.EXEC_DATE_TO;
@@ -2236,7 +2160,7 @@ namespace Sampoerna.EMS.BLL
             workflowInput.FormType = Enums.FormType.PBCK3;
             workflowInput.DocumentCreator = output.Pbck3CompositeDto.CREATED_BY;
 
-           
+
 
             if (result.FromPbck7)
             {
@@ -2610,7 +2534,7 @@ namespace Sampoerna.EMS.BLL
                         var dbCk5 = _ck5Service.GetById(dbData.CK5_ID.Value);
                         if (dbCk5 != null)
                         {
-                             nppbkc = dbCk5.SOURCE_PLANT_NPPBKC_ID;
+                            nppbkc = dbCk5.SOURCE_PLANT_NPPBKC_ID;
                             plantId = dbCk5.SOURCE_PLANT_ID;
                         }
                     }
@@ -3615,26 +3539,9 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.CREATED_BY == input.Poa || c.APPROVED_BY == input.Poa);
             }
-
-            if (input.UserRole == Enums.UserRole.POA)
-            {
-                var nppbkc = _nppbkcbll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
-
-                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC))) || c.STATUS == Enums.DocumentStatus.Completed);
-
-            }
-            //first code when manager exists
-            //else if (input.UserRole == Enums.UserRole.Manager)
-            //{
-            //    var poaList = _poabll.GetPOAIdByManagerId(input.UserId);
-            //    var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
-
-            //    queryFilter = queryFilter.And(c => (c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.PBCK7_NUMBER)) || c.STATUS == Enums.DocumentStatus.Completed);
-            //}
-            else
-            {
-                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId) || c.STATUS == Enums.DocumentStatus.Completed);
-            }
+           
+            if (input.UserRole != Enums.UserRole.Administrator)
+                queryFilter = queryFilter.And(c => input.ListUserPlants.Contains(c.PLANT_ID));
 
             var data = _repositoryPbck7.Get(queryFilter).ToList();
             return Mapper.Map<List<Pbck7AndPbck3Dto>>(data);
@@ -3661,25 +3568,19 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.CREATED_BY == input.Poa || c.APPROVED_BY == input.Poa);
             }
-
-            if (input.UserRole == Enums.UserRole.POA)
+          
+            if (input.UserRole != Enums.UserRole.Administrator)
             {
-                var nppbkc = _nppbkcbll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
-
-                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.PBCK7.NPPBKC))) || c.STATUS == Enums.DocumentStatus.Completed);
-
-            }
-            //first code when manager exists
-            //else if (input.UserRole == Enums.UserRole.Manager)
-            //{
-            //    var poaList = _poabll.GetPOAIdByManagerId(input.UserId);
-            //    var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
-
-            //    queryFilter = queryFilter.And(c => (c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.PBCK3_NUMBER)) || c.STATUS == Enums.DocumentStatus.Completed);
-            //}
-            else
-            {
-                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId) || c.STATUS == Enums.DocumentStatus.Completed);
+                queryFilter =
+                    queryFilter.And(
+                        c => (input.ListUserPlants.Contains(c.PBCK7.PLANT_ID)
+                              ||
+                              (c.CK5.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
+                               input.ListUserPlants.Contains(c.CK5.DEST_PLANT_ID))
+                              ||
+                              input.ListUserPlants.Contains(c.CK5.SOURCE_PLANT_ID)
+                            )
+                        );
             }
 
             var data = _repositoryPbck3.Get(queryFilter).ToList();
@@ -3688,6 +3589,295 @@ namespace Sampoerna.EMS.BLL
 
         #endregion
 
+        public void EditCompletedDocumentPbck7(EditCompletedDocumentPbck7Input input)
+        {
+            var dbData = _repositoryPbck7.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS != Enums.DocumentStatus.Completed
+                && input.UserRole != Enums.UserRole.Administrator)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            //prepare for set changes history
+            var origin = Mapper.Map<Pbck7AndPbck3Dto>(dbData);
+
+            var inputChangeLogs = new Pbck7AndPbck3Dto();
+            inputChangeLogs.Pbck7Date = input.Pbck7Date.HasValue ? input.Pbck7Date.Value : DateTime.Now;
+            inputChangeLogs.ExecDateFrom = input.ExecDateFrom;
+            inputChangeLogs.ExecDateTo = input.ExecDateTo;
+            inputChangeLogs.Lampiran = input.Lampiran;
+            inputChangeLogs.DocumentType = input.DocumentType;
+
+            //add to change log
+            SetChangesHistory(origin, inputChangeLogs, input.UserId);
+
+            //update data
+            dbData.PBCK7_DATE = input.Pbck7Date.HasValue ? input.Pbck7Date.Value : DateTime.Now;
+            dbData.EXEC_DATE_FROM = input.ExecDateFrom.HasValue ? input.ExecDateFrom.Value : DateTime.Now;
+            dbData.EXEC_DATE_TO = input.ExecDateTo.HasValue ? input.ExecDateTo.Value : DateTime.Now;
+            dbData.LAMPIRAN = input.Lampiran;
+            dbData.DOCUMENT_TYPE = input.DocumentType;
+
+
+            dbData.MODIFIED_DATE = DateTime.Now;
+            dbData.MODIFIED_BY = input.UserId;
+
+            if (input.ListFile.Any())
+                CheckFileUploadChange(input);
+
+            _back1Services.InsertOrDeleteBack1Documents(input.ListFile);
+
+            string oldValue = "";
+            string newValue = "";
+
+            //pbck4 item
+            foreach (var pbck7ItemDto in input.Pbck7ItemsDto)
+            {
+                var dbPbck7Item = _repositoryPbck7Item.GetByID(pbck7ItemDto.PBCK7_ITEM_ID);
+                if (dbPbck7Item != null)
+                {
+                    //change log
+                    oldValue = ConvertHelper.ConvertInt32ToString(dbPbck7Item.FISCAL_YEAR);
+                    newValue = ConvertHelper.ConvertInt32ToString(pbck7ItemDto.FISCAL_YEAR);
+                    if (oldValue != newValue)
+                        SetChangeHistory(oldValue, newValue, "PBCK7_ITEM_FISCAL_YEAR", input.UserId, dbData.PBCK7_ID.ToString());
+
+
+
+                    dbPbck7Item.FISCAL_YEAR = pbck7ItemDto.FISCAL_YEAR;
+
+                    _repositoryPbck7Item.InsertOrUpdate(dbPbck7Item);
+                }
+            }
+
+            //back1
+            var dbBack1 = _back1Services.GetBack1ByPbck7Id(input.DocumentId);
+            if (dbBack1 != null)
+            {
+                //change log
+                oldValue = dbBack1.BACK1_NUMBER;
+                newValue = input.Back1Number;
+                if (oldValue != newValue)
+                    SetChangeHistory(oldValue, newValue, "BACK1_NUMBER", input.UserId, dbData.PBCK7_ID.ToString());
+
+                //change log
+                oldValue = ConvertHelper.ConvertDateToStringddMMMyyyy(dbBack1.BACK1_DATE);
+                newValue = ConvertHelper.ConvertDateToStringddMMMyyyy(input.Back1Date);
+                if (oldValue != newValue)
+                    SetChangeHistory(oldValue, newValue, "BACK1_DATE", input.UserId, dbData.PBCK7_ID.ToString());
+
+
+
+                var inputBack1 = new SaveBack1ByPbck7IdInput();
+                inputBack1.Pbck7Id = input.DocumentId;
+                inputBack1.Back1Number = input.Back1Number;
+                inputBack1.Back1Date = input.Back1Date.HasValue ? input.Back1Date.Value : DateTime.Now;
+
+                _back1Services.UpdateBack1ByPbck7Id(inputBack1);
+            }
+
+
+            _uow.SaveChanges();
+        }
+
+        public void CheckFileUploadChange(EditCompletedDocumentPbck7Input input)
+        {
+            var dbBack1 = _back1Services.GetBack1ByPbck7Id(input.DocumentId);
+            if (dbBack1 == null) return;
+            if (dbBack1.BACK1_DOCUMENT == null) return;
+
+            var dataOld = dbBack1.BACK1_DOCUMENT.Select(c => c.FILE_NAME).ToList();
+            var dataNew = new List<string>();
+            foreach (var pbck7DocumentDto in input.ListFile)
+            {
+                if (!pbck7DocumentDto.IsDeleted)
+                {
+                    if (string.IsNullOrEmpty(pbck7DocumentDto.FILE_NAME))
+                    {
+                        var dbDocument = _back1Services.GetBack1DocumentById(pbck7DocumentDto.BACK1_DOCUMENT_ID);
+                        if (dbDocument != null)
+                            dataNew.Add(dbDocument.FILE_NAME);
+                    }
+                    else
+                    {
+                        dataNew.Add(pbck7DocumentDto.FILE_NAME);
+                    }
+
+                }
+
+            }
+
+            var StringDataOld = String.Join(", ", dataOld.OrderBy(c => c));
+            var StringDataNew = String.Join(", ", dataNew.OrderBy(c => c));
+
+            //if (dataOld.Count > 0)
+            //{
+            //    StringDataNew = StringDataOld + ", " + StringDataNew;
+            //}
+            if (StringDataOld != StringDataNew)
+                SetChangeHistory(StringDataOld, StringDataNew, "PBCK7_BACK1_DOCUMENTS", input.UserId, input.DocumentId.ToString());
+        }
+
+
+        public void EditCompletedDocumentPbck3(EditCompletedDocumentPbck3Input input)
+        {
+            var dbData = _repositoryPbck3.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS != Enums.DocumentStatus.Completed
+                && input.UserRole != Enums.UserRole.Administrator)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            //prepare for set changes history
+            var origin = Mapper.Map<Pbck3Dto>(dbData);
+
+            var inputChangeLogs = new Pbck3Dto();
+            inputChangeLogs.Pbck3Date = input.Pbck3Date;
+            inputChangeLogs.EXEC_DATE_FROM = input.ExecDateFrom;
+            inputChangeLogs.EXEC_DATE_TO = input.ExecDateTo;
+
+            //add to change log
+            SetChangesHistoryPbck3(origin, inputChangeLogs, input.UserId);
+
+            //update data
+            dbData.PBCK3_DATE = input.Pbck3Date;
+            dbData.EXEC_DATE_FROM = input.ExecDateFrom;
+            dbData.EXEC_DATE_TO = input.ExecDateTo;
+
+            dbData.MODIFIED_DATE = DateTime.Now;
+            dbData.MODIFIED_BY = input.UserId;
+
+            //LIST FILE
+            if (input.Back3FileUploadList.Any())
+                CheckFileUploadChangePbck3Back3(input);
+
+            if (input.Ck2FileUploadList.Any())
+                CheckFileUploadChangePbck3Ck2(input);
+
+            //prepare for set changes history
+            //get origin data
+            var originBack3 = _back3Services.GetBack3ByPbck3Id(input.DocumentId);
+            if (originBack3 == null)
+                originBack3 = new BACK3();
+            //var modifiedBack3 = Mapper.Map<Back3Dto>(input.AdditionalDocumentData);
+            var modifiedBack3 = new Back3Dto();
+            modifiedBack3.Back3Number = input.Back3No;
+            modifiedBack3.Back3Date = input.Back3Date;
+
+            //add to change log
+            SetChangesHistoryBack3(Mapper.Map<Back3Dto>(originBack3), modifiedBack3, input.UserId, input.DocumentId.ToString());
+
+            //insert/update back3
+            var inputBack3 = new SaveBack3ByPbck3IdInput();
+            inputBack3.Back3Number = input.Back3No;
+            inputBack3.Back3Date = input.Back3Date;
+            inputBack3.Pbck3Id = dbData.PBCK3_ID;
+            inputBack3.Back3Documents = input.Back3FileUploadList;
+            _back3Services.SaveBack3ByPbck3Id(inputBack3);
+
+
+            //prepare for set changes history
+            //get origin data
+            var originCk2 = _ck2Services.GetCk2ByPbck3Id(input.DocumentId);
+            if (originCk2 == null)
+                originCk2 = new CK2();
+            //var modifiedCk2 = Mapper.Map<Ck2Dto>(input.AdditionalDocumentData);
+            var modifiedCk2 = new Ck2Dto();
+            modifiedCk2.Ck2Number = input.Ck2No;
+            modifiedCk2.Ck2Date = input.Ck2Date;
+            modifiedCk2.Ck2Value = input.Ck2Value;
+
+            //add to change log
+            SetChangesHistoryCk2(Mapper.Map<Ck2Dto>(originCk2), modifiedCk2, input.UserId, input.DocumentId.ToString());
+
+
+            //insert/update ck2
+            var inputCk2 = new SaveCk2ByPbck3IdInput();
+            inputCk2.Ck2Number = input.Ck2No;
+            inputCk2.Ck2Date = input.Ck2Date;
+            inputCk2.Ck2Value = input.Ck2Value;
+            inputCk2.Pbck3Id = dbData.PBCK3_ID;
+            inputCk2.Ck2Documents = input.Ck2FileUploadList;
+            _ck2Services.SaveCk2ByPbck3Id(inputCk2);
+
+            _uow.SaveChanges();
+        }
+
+        public void CheckFileUploadChangePbck3Back3(EditCompletedDocumentPbck3Input input)
+        {
+            var dbBack3 = _back3Services.GetBack3ByPbck3Id(input.DocumentId);
+            if (dbBack3 == null) return;
+            if (dbBack3.BACK3_DOCUMENT == null) return;
+
+            var dataOld = dbBack3.BACK3_DOCUMENT.Select(c => c.FILE_NAME).ToList();
+            var dataNew = new List<string>();
+            foreach (var pbck7DocumentDto in input.Back3FileUploadList)
+            {
+                if (!pbck7DocumentDto.IsDeleted)
+                {
+                    if (string.IsNullOrEmpty(pbck7DocumentDto.FILE_NAME))
+                    {
+                        var dbDocument = _back3Services.GetBack3DocumentById(pbck7DocumentDto.BACK3_DOC_ID);
+                        if (dbDocument != null)
+                            dataNew.Add(dbDocument.FILE_NAME);
+                    }
+                    else
+                    {
+                        dataNew.Add(pbck7DocumentDto.FILE_NAME);
+                    }
+
+                }
+
+            }
+
+            var StringDataOld = String.Join(", ", dataOld.OrderBy(c => c));
+            var StringDataNew = String.Join(", ", dataNew.OrderBy(c => c));
+
+            if (StringDataOld != StringDataNew)
+                SetChangeHistoryPbck3(StringDataOld, StringDataNew, "PBCK3_BACK3_DOCUMENTS", input.UserId, input.DocumentId.ToString());
+
+
+        }
+
+        public void CheckFileUploadChangePbck3Ck2(EditCompletedDocumentPbck3Input input)
+        {
+            var dbCk2 = _ck2Services.GetCk2ByPbck3Id(input.DocumentId);
+            if (dbCk2 == null) return;
+            if (dbCk2.CK2_DOCUMENT == null) return;
+
+            var dataOld = dbCk2.CK2_DOCUMENT.Select(c => c.FILE_NAME).ToList();
+            var dataNew = new List<string>();
+            foreach (var pbck7DocumentDto in input.Ck2FileUploadList)
+            {
+                if (!pbck7DocumentDto.IsDeleted)
+                {
+                    if (string.IsNullOrEmpty(pbck7DocumentDto.FILE_NAME))
+                    {
+                        var dbDocument = _ck2Services.GetCk2DocumentById(pbck7DocumentDto.CK2_DOC_ID);
+                        if (dbDocument != null)
+                            dataNew.Add(dbDocument.FILE_NAME);
+                    }
+                    else
+                    {
+                        dataNew.Add(pbck7DocumentDto.FILE_NAME);
+                    }
+
+                }
+
+            }
+
+            var StringDataOld = String.Join(", ", dataOld.OrderBy(c => c));
+            var StringDataNew = String.Join(", ", dataNew.OrderBy(c => c));
+
+            if (StringDataOld != StringDataNew)
+                SetChangeHistoryPbck3(StringDataOld, StringDataNew, "PBCK3_CK2_DOCUMENTS", input.UserId, input.DocumentId.ToString());
+
+
+        }
     }
 
 
