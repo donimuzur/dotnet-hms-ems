@@ -327,5 +327,6 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool IsViewMatDoc { get; set; }
 
         public bool AllowEditCompletedDocument { get; set; }
+        public bool IsUpdateMatDoc { get; set; }
     }
 }

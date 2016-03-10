@@ -72,6 +72,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime? GrDate { get; set; }
         public string DnNumber { get; set; }
         public string MatDoc { get; set; }
+
+        public List<CK5MaterialDto> Ck5Material { get; set; } 
     }
 
     public class CK5WorkflowDocumentData
@@ -214,5 +216,13 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime? INVOICE_DATE { get; set; }
 
         public List<CK5MaterialDto> Ck5MaterialDtos { get; set; }
+    }
+
+    public class GetMatdocListInput
+    {
+        public long Ck5Id { get; set; }
+        public string PlantId { get; set; }
+        public string MaterialId { get; set; }
+
     }
 }

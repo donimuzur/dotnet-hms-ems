@@ -5210,6 +5210,28 @@ namespace Sampoerna.EMS.BLL
             return result;
         }
 
+        private void UpdateMaterialMatDoc(CK5WorkflowDocumentInput input)
+        {
+
+            foreach (var ck5MaterialDto in input.Ck5Material)
+            {
+                var dbMaterial = _repositoryCK5Material.GetByID(ck5MaterialDto.CK5_MATERIAL_ID);
+                if (dbMaterial != null)
+                {
+                    string oldValue = dbMaterial.MATDOC;
+                    string newValue = ck5MaterialDto.MATDOC;
+                    if (oldValue != newValue)
+                    {
+                        SetChangeHistory(oldValue, newValue, "CK5_MATERIAL_MATDOC", input.UserId,
+                            input.DocumentId.ToString());
+                        dbMaterial.MATDOC = ck5MaterialDto.MATDOC;
+                        _repositoryCK5Material.Update(dbMaterial);
+                    }
+                }
+            }
+
+        }
+
         public void CK5CompletedAttachment(CK5WorkflowDocumentInput input)
         {
 
@@ -5228,16 +5250,15 @@ namespace Sampoerna.EMS.BLL
             }
 
 
-            string oldValue = dbData.MATDOC;
-            string newValue = input.MatDoc;
-            if (oldValue != newValue)
-                SetChangeHistory(oldValue, newValue, "MATDOC", input.UserId, dbData.CK5_ID.ToString());
+            //string oldValue = dbData.MATDOC;
+            //string newValue = input.MatDoc;
+            //if (oldValue != newValue)
+            //    SetChangeHistory(oldValue, newValue, "MATDOC", input.UserId, dbData.CK5_ID.ToString());
 
-            dbData.MATDOC = input.MatDoc;
-
-            //if (input.AdditionalDocumentData.Ck5FileUploadList.Count() > 0)
-            //    CheckFileUploadChange(input);
-
+            //dbData.MATDOC = input.MatDoc;
+            if (input.Ck5Type == Enums.CK5Type.Manual)
+                UpdateMaterialMatDoc(input);
+         
             //add workflow history
             input.ActionType = Enums.ActionType.Modified;
 
@@ -5685,5 +5706,37 @@ namespace Sampoerna.EMS.BLL
 
             _uow.SaveChanges();
         }
+        
+        public List<Ck5MatdocDto> GetMatdocList(GetMatdocListInput input)
+        {
+
+            var tempData = new List<INVENTORY_MOVEMENT>();
+
+            var ck5 = _ck5Service.GetById(input.Ck5Id);
+            if (ck5 != null)
+            {
+                var matdocassigned = _ck5Service.GetCk5AssignedMatdoc();
+                if (!string.IsNullOrEmpty(ck5.MATDOC))
+                {
+                    matdocassigned.Remove(ck5.MATDOC);
+                }
+                var listUsed201 = _lack1TrackingService.GetMovement201FromTracking();
+
+                tempData = _movementService.GetMvt201NotUsed(listUsed201);
+                tempData =
+                    tempData.Where(
+                        x =>
+                            !matdocassigned.Contains(x.MAT_DOC) && x.PLANT_ID == input.PlantId &&
+                            x.MATERIAL_ID == input.MaterialId).ToList();
+            }
+
+
+
+            var data = Mapper.Map<List<Ck5MatdocDto>>(tempData);
+
+            return data;
+        }
+    
+        
     }
 }
