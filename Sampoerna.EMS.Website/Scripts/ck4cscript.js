@@ -185,6 +185,8 @@ function ajaxGetNppbkcByCompany(urlFunction, company, nppbkc) {
 }
 
 function getProductionData(urlFunction) {
+    $('.loading').show();
+
     var comp = $('#Details_CompanyId').find("option:selected").val();
     var plant = $('#Details_PlantId').find("option:selected").val();
     var nppbkc = $('#Details_NppbkcId').find("option:selected").val();
@@ -202,6 +204,7 @@ function getProductionData(urlFunction) {
     $('#YearId').val(year);
 
     if (comp == "" || (plant == "" && isPlant) || (nppbkc == "" && isNppbkc) || period == "" || month == "" || year == "") {
+        $('.loading').hide();
         $('#tb-body-ck4c').html("");
         $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="15">no data<td></tr>');
     }
@@ -211,6 +214,7 @@ function getProductionData(urlFunction) {
             url: urlFunction,
             data: { comp: comp, plant: plant, nppbkc: nppbkc, period: period, month: month, year: year, isNppbkc: isNppbkc },
             success: function (data) {
+                $('.loading').hide();
                 if (data.length > 0) {
                     $('#tb-body-ck4c').html("");
                     for (var i = 0; i < data.length; i++) {
