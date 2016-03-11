@@ -78,6 +78,35 @@ namespace Sampoerna.EMS.BLL.Services
 
         }
 
+        public List<ZAAP_SHIFT_RPT> GetCompleteData(ZaapShiftRptGetForLack1ByParamInput input)
+        {
+            Expression<Func<ZAAP_SHIFT_RPT, bool>> queryFilter = c => c.COMPANY_CODE == input.CompanyCode
+                && c.PRODUCTION_DATE.Year == input.PeriodYear && c.PRODUCTION_DATE.Month == input.PeriodMonth;
+
+            queryFilter = queryFilter.And(c => input.Werks.Contains(c.WERKS));
+
+            if (input.FaCodeList != null && input.FaCodeList.Count > 0)
+            {
+                queryFilter = queryFilter.And(c => input.FaCodeList.Contains(c.FA_CODE));
+            }
+
+            if (input.Werks.Count > 0)
+            {
+                queryFilter = queryFilter.And(c => input.Werks.Contains(c.WERKS));
+            }
+
+            var dbData = _repository.Get(queryFilter);
+
+            if (dbData == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+
+            
+            return dbData.ToList();
+
+        }
+
         public List<ZAAP_SHIFT_RPT> GetAll()
         {
             return _repository.Get().ToList();
