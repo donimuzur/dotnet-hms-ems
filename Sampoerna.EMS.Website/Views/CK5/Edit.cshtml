@@ -834,7 +834,10 @@
 
             $('#uploadMaterialNumber').val(materialnumber);
             $('#uploadMaterialQty').val(nRow.find("td").eq(3).html());
-            $('#uploadQtyOri').val(nRow.find("td").eq(3).html());
+            
+            if ($('#uploadQtyOri').val() == '' || $('#uploadQtyOri').val() == '0') {
+                $('#uploadQtyOri').val(nRow.find("td").eq(3).html());
+            }
 
             $('#uploadMaterialUom').val(nRow.find("td").eq(4).html());
             $('#uploadMaterialConvertion').val(nRow.find("td").eq(5).html());
