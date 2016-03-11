@@ -295,6 +295,8 @@
     </div>
 </div>
 
+<div class="loading"><img src="assets/images/loader.gif" alt=""></div>
+
 @section Scripts {
     
     <script type="text/javascript">
@@ -501,8 +503,10 @@
         }
 
         function GenerateCk5Items() {
+            $('.loading').show();
 
             if (!generateInputValidation()) {
+                $('.loading').hide();
                 $('#ModalValidation').modal('show');
                 return;
             }
@@ -521,7 +525,8 @@
                 type: "POST",
                 contentType: "application/json",
                 data: JSON.stringify({ param: param }),
-                success: function(response) {
+                success: function (response) {
+                    $('.loading').hide();
                     if (response.Success) {
                         console.log(response);
                         generateTable(response.Data.Ck5Items);
