@@ -1,5 +1,8 @@
 ﻿function generateDataClick(lackLevel, url) {
+    $('.loading').show();
+
     if (!generateInputValidation()) {
+        $('.loading').hide();
         $('#ModalValidation').modal('show');
         return;
     }
@@ -52,6 +55,7 @@
         contentType: "application/json",
         data: JSON.stringify({ param: param }),
         success: function (response) {
+            $('.loading').hide();
             if (response.Success) {
                 $('#generated-data-container').html("");
                 var data = response.Data;
