@@ -2075,11 +2075,12 @@ namespace Sampoerna.EMS.BLL
 
             //process the production list got from previous process
             var finalGoodsList = allTrackingList.Where(c => c.IsFinalGoodsType).ToList();
+            var productionTypeId = finalGoodsList.Any() ? finalGoodsList.FirstOrDefault().ExGoodsTypeId : null;
 
             var productionList = new List<Lack1GeneratedProductionDataDto>();
 
             //Get product type info
-            var prodType = _goodProdTypeService.GetProdCodeByGoodTypeId(rc.ExcisableGoodsType);
+            var prodType = _goodProdTypeService.GetProdCodeByGoodTypeId(productionTypeId);
             if (prodType == null)
             {
                 return new Lack1GeneratedOutput()
@@ -2090,7 +2091,7 @@ namespace Sampoerna.EMS.BLL
                     Success = false
                 };
             }
-
+            //var test = finalGoodsList.Select(x => x.Ordr).Distinct();
             foreach (var item in finalGoodsList)
             {
                 var itemToInsert = new Lack1GeneratedProductionDataDto()
@@ -2105,30 +2106,33 @@ namespace Sampoerna.EMS.BLL
                     UomDesc = item.UomDesc
                 };
 
-                var rec = invMovementOutput.UsageProportionalList.FirstOrDefault(c =>
-                    c.Order == item.ParentOrdr);
-                if (rec != null)
-                {
-                    //calculate proporsional
-                    itemToInsert.Amount =
-                        Math.Round(
-                            ((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount), 5);
-                }
-                else
-                {
-                    //check in prev data inventory_movement
-                    rec =
-                        prevInventoryMovementByParam.UsageProportionalList.FirstOrDefault(
-                            c => c.Order == item.ParentOrdr);
+                //no need proportional 
+                //temp solution
+                //var rec = invMovementOutput.UsageProportionalList.FirstOrDefault(c =>
+                //    c.Order == item.ParentOrdr);
+                
+                //if (rec != null)
+                //{
+                //    //calculate proporsional
+                //    itemToInsert.Amount =
+                //        Math.Round(
+                //            ((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount), 5);
+                //}
+                //else
+                //{
+                //    //check in prev data inventory_movement
+                //    rec =
+                //        prevInventoryMovementByParam.UsageProportionalList.FirstOrDefault(
+                //            c => c.Order == item.ParentOrdr);
 
-                    if (rec != null)
-                    {
-                        //calculate proporsional from prev inventory movement
-                        itemToInsert.Amount =
-                            Math.Round(
-                                ((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount), 5);
-                    }
-                }
+                //    if (rec != null)
+                //    {
+                //        //calculate proporsional from prev inventory movement
+                //        itemToInsert.Amount =
+                //            Math.Round(
+                //                ((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount), 5);
+                //    }
+                //}
 
                 if (itemToInsert.UomId != null)
                 {
@@ -3705,7 +3709,7 @@ namespace Sampoerna.EMS.BLL
 
             
             //var usageProportionalListTest = CalculateInvMovementUsageProportional(usageReceivingList, movementUsageAll, usageParamInput);
-            var usageProportionalList = CalculateInvMovementUsageProportional(usageReceivingList, movementUsageAll);
+            var usageProportionalList = CalculateInvMovementUsageProportional(usageReceivingList, movementUsageAll, movement201);
 
             var rc = new InvMovementGetForLack1UsageMovementByParamOutput
             {
@@ -3723,16 +3727,20 @@ namespace Sampoerna.EMS.BLL
         }
 
         private List<InvMovementUsageProportional> CalculateInvMovementUsageProportional(
-            IEnumerable<INVENTORY_MOVEMENT> usageReceivingAll, IEnumerable<INVENTORY_MOVEMENT> usageAll)
+            IEnumerable<INVENTORY_MOVEMENT> usageReceivingAll, IEnumerable<INVENTORY_MOVEMENT> usageAll, IEnumerable<INVENTORY_MOVEMENT> usage201)
         {
-            var inventoryMovements = usageReceivingAll as INVENTORY_MOVEMENT[] ?? usageReceivingAll.ToArray();
-            var inventoryMovementUsageAll = usageAll as INVENTORY_MOVEMENT[] ?? usageAll.ToArray();
-
+            var inventoryMovements = usageReceivingAll.ToList();// as INVENTORY_MOVEMENT[] ?? usageReceivingAll.ToArray();
+            var inventoryMovementUsageAll = usageAll.ToList();// as INVENTORY_MOVEMENT[] ?? usageAll.ToArray();
             
-            
+            //check hasil produksi
+            var invUsage201 = usage201.ToList();
 
-            if (usageReceivingAll == null || inventoryMovements.Length == 0) return new List<InvMovementUsageProportional>();
 
+
+            if (!inventoryMovements.Any()) return new List<InvMovementUsageProportional>();
+
+            //check hasil produksi
+            inventoryMovementUsageAll.AddRange(invUsage201);
             var listTotalPerMaterialId = inventoryMovementUsageAll.GroupBy(p => new
             {
                 p.ORDR
