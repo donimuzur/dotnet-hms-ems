@@ -34,11 +34,11 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Index(LoginFormModel model)
         {
             
-            //var loginResult = _userBll.GetLogin(model.Login.UserId);
+            var loginResult = _userBll.GetLogin(model.Login.UserId);
 
             if (loginResult != null)
             {
-                CurrentUser = loginResult;
+                //CurrentUser = loginResult;
                 CurrentUser.UserRole = _poabll.GetUserRole(loginResult.USER_ID);
                 CurrentUser.AuthorizePages = _userAuthorizationBll.GetAuthPages(loginResult.USER_ID);
                 CurrentUser.NppbckPlants = _userAuthorizationBll.GetNppbckPlants(loginResult.USER_ID);
