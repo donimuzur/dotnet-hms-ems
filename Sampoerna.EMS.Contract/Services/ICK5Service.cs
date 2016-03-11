@@ -18,5 +18,7 @@ namespace Sampoerna.EMS.Contract.Services
         List<CK5> GetReconciliationLack1();
 
         List<string> GetCk5AssignedMatdoc();
+
+        List<CK5> GetAllPreviousForLack1(Ck5GetForLack1ByParamInput input);
     }
 }
