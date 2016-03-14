@@ -104,6 +104,7 @@ namespace Sampoerna.EMS.XMLReader
                         else if (role.BROLE_DESC.ToUpper().Contains("VIEWER"))
                         {
                             roleMap.ROLEID = Enums.UserRole.Viewer;
+                            AddAllPlantToViewer(user.USER_ID);
                         }
                         else if(role.BROLE_DESC.ToUpper().Contains("CREATOR"))
                         {
@@ -289,6 +290,38 @@ namespace Sampoerna.EMS.XMLReader
                 _xmlMapper.uow.GetGenericRepository<BROLE_MAP>().Delete(broleMap);
             }
             _xmlMapper.uow.SaveChanges();
+        }
+
+        private void AddAllPlantToViewer(string userId)
+        {
+            //first, delete existing data
+            DeleteUserPlantMapByUser(userId);
+
+            var plantList = _xmlMapper.uow.GetGenericRepository<T001W>()
+                .Get(x => x.IS_DELETED == null || x.IS_DELETED == false).ToList();
+
+            //add user plant map
+            foreach(var plant in plantList)
+            {
+                var userPlantMap = new USER_PLANT_MAP();
+                userPlantMap.USER_ID = userId;
+                userPlantMap.PLANT_ID = plant.WERKS;
+                userPlantMap.IS_ACTIVE = true;
+                userPlantMap.NPPBKC_ID = plant.NPPBKC_ID;
+
+                _xmlMapper.InsertOrUpdate(userPlantMap);
+            }
+        }
+
+        private void DeleteUserPlantMapByUser(string userId)
+        {
+            var existingUserPlantMap = _xmlMapper.uow.GetGenericRepository<USER_PLANT_MAP>()
+                .Get(x => x.USER_ID == userId).ToList();
+
+            foreach (var userPlantMap in existingUserPlantMap)
+            {
+                _xmlMapper.uow.GetGenericRepository<USER_PLANT_MAP>().Delete(userPlantMap);
+            }
         }
     }
 }
