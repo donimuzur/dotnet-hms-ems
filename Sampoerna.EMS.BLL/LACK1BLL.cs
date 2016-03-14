@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
+using CrystalDecisions.Shared.Json;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
@@ -18,6 +19,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using AutoMapper;
 using Enums = Sampoerna.EMS.Core.Enums;
+using System.Reflection;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -2068,13 +2070,56 @@ namespace Sampoerna.EMS.BLL
                     item.IsFinalGoodsType = true;
                     itemToInsert.InvMovementProductionStepTracing.Add(item);
                 }
-
+                
                 productionTraceList.Add(itemToInsert);
                 allTrackingList.AddRange(itemToInsert.InvMovementProductionStepTracing);
             }
-
+            //var json = new JavaScriptSerializer().Serialize(allTrackingList);
+            
             //process the production list got from previous process
+            var mvtType = new List<string>()
+            {
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving101),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving102)
+            };
+            var finalgoodlistGrouped = allTrackingList.Where(c => c.IsFinalGoodsType && mvtType.Contains(c.Mvt))
+                .GroupBy(x=> new
+                {
+                    x.Mvt, 
+                    x.MaterialId, 
+                    x.MatDoc, 
+                    x.Ordr, 
+                    x.Batch, 
+                    x.ParentOrdr, 
+                    x.Qty, 
+                    x.ConvertedQty, 
+                    x.PostingDate,
+                    x.UomDesc,
+                    x.UomId,
+                    x.ProductionQty
+                }).Select(x=> new Lack1GeneratedInvMovementProductionStepTracingItem()
+                {
+                    //Batch = x.Key.Batch,
+                    //ConvertedQty = x.Key.ConvertedQty,
+                    ProductionQty = x.Key.ProductionQty,
+                    Mvt = x.Key.Mvt,
+                    MaterialId = x.Key.MaterialId,
+                    MatDoc = x.Key.MatDoc,
+                    Ordr = x.Key.Ordr,
+                    Batch = x.Key.Batch,
+                    ParentOrdr = x.Key.ParentOrdr,
+                    Qty = x.Key.Qty,
+                    ConvertedQty = x.Key.ConvertedQty,
+                    PostingDate = x.Key.PostingDate,
+                    UomDesc = x.Key.UomDesc,
+                    UomId = x.Key.UomId
+                }) .ToList();
             var finalGoodsList = allTrackingList.Where(c => c.IsFinalGoodsType).ToList();
+            //var strCsv = "";
+            //foreach (var data in finalGoodsList)
+            //{
+            //    strCsv += ObjectToCsvData(data) + "\r\n";
+            //}
             var productionTypeId = finalGoodsList.Any() ? finalGoodsList.FirstOrDefault().ExGoodsTypeId : null;
 
             var productionList = new List<Lack1GeneratedProductionDataDto>();
@@ -2092,7 +2137,7 @@ namespace Sampoerna.EMS.BLL
                 };
             }
             //var test = finalGoodsList.Select(x => x.Ordr).Distinct();
-            foreach (var item in finalGoodsList)
+            foreach (var item in finalgoodlistGrouped)
             {
                 var itemToInsert = new Lack1GeneratedProductionDataDto()
                 {
@@ -4472,5 +4517,28 @@ namespace Sampoerna.EMS.BLL
         }
 
         #endregion
+        public static string ObjectToCsvData(object obj)
+        {
+            if (obj == null)
+            {
+                throw new ArgumentNullException("obj", "Value can not be null or Nothing!");
+            }
+
+            StringBuilder sb = new StringBuilder();
+            Type t = obj.GetType();
+            PropertyInfo[] pi = t.GetProperties();
+
+            for (int index = 0; index < pi.Length; index++)
+            {
+                sb.Append(pi[index].GetValue(obj, null));
+
+                if (index < pi.Length - 1)
+                {
+                    sb.Append(",");
+                }
+            }
+
+            return sb.ToString();
+        }
     }
 }
