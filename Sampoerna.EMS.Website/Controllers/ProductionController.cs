@@ -78,7 +78,7 @@ namespace Sampoerna.EMS.Website.Controllers
             input.ProoductionDate = null;
             input.UserId = CurrentUser.USER_ID;
 
-            var dbData = _productionBll.GetAllByParam(input);
+            var dbData = _productionBll.GetFactAllByParam(input).OrderByDescending(x => x.PRODUCTION_DATE).ToList();
 
             model.Details = Mapper.Map<List<ProductionDetail>>(dbData);
 
@@ -95,7 +95,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             input.UserId = CurrentUser.USER_ID;
 
-            var dbData = _productionBll.GetAllByParam(input);
+            var dbData = _productionBll.GetFactAllByParam(input).OrderByDescending(x => x.PRODUCTION_DATE).ToList();
             var result = Mapper.Map<List<ProductionDetail>>(dbData);
             var viewModel = new ProductionViewModel();
             viewModel.Details = result;
