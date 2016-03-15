@@ -2135,6 +2135,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.Ck5FileUploadFileList != null)
                 {
+                    int counter = 0;
                     foreach (var item in model.Ck5FileUploadFileList)
                     {
                         if (item != null)
@@ -2146,11 +2147,12 @@ namespace Sampoerna.EMS.Website.Controllers
                             var ck5UploadFile = new CK5FileUploadViewModel
                             {
                                 FILE_NAME = filenameCk5Check,
-                                FILE_PATH = SaveUploadedFile(item, model.Ck5Id),
+                                FILE_PATH = SaveUploadedFile(item, model.Ck5Id, counter),
                                 CREATED_DATE = DateTime.Now,
                                 CREATED_BY = currentUserId
                             };
                             model.Ck5FileUploadModelList.Add(ck5UploadFile);
+                            counter += 1;
                         }
 
                     }
@@ -2331,8 +2333,10 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             model.Ck5FileUploadModelList = new List<CK5FileUploadViewModel>();
 
+            int counter = 0;
             foreach (var item in model.Ck5FileUploadFileList)
             {
+
                 if (item != null)
                 {
                     var filenameCk5Check = item.FileName;
@@ -2342,11 +2346,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     var ck5UploadFile = new CK5FileUploadViewModel
                     {
                         FILE_NAME = filenameCk5Check,
-                        FILE_PATH = SaveUploadedFile(item, model.Ck5Id),
+                        FILE_PATH = SaveUploadedFile(item, model.Ck5Id, counter),
                         CREATED_DATE = DateTime.Now,
                         CREATED_BY = CurrentUser.USER_ID
                     };
                     model.Ck5FileUploadModelList.Add(ck5UploadFile);
+                    counter += 1;
                 }
 
             }
@@ -2597,6 +2602,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Ck5FileUploadModelList = new List<CK5FileUploadViewModel>();
                 if (model.Ck5FileUploadFileList != null)
                 {
+                    int counter = 0;
                     foreach (var item in model.Ck5FileUploadFileList)
                     {
                         if (item != null)
@@ -2608,11 +2614,12 @@ namespace Sampoerna.EMS.Website.Controllers
                             var ck5UploadFile = new CK5FileUploadViewModel
                             {
                                 FILE_NAME = filenameCk5Check,
-                                FILE_PATH = SaveUploadedFile(item, model.Ck5Id),
+                                FILE_PATH = SaveUploadedFile(item, model.Ck5Id, counter),
                                 CREATED_DATE = DateTime.Now,
                                 CREATED_BY = CurrentUser.USER_ID
                             };
                             model.Ck5FileUploadModelList.Add(ck5UploadFile);
+                            counter += 1;
                         }
 
                     }
@@ -2740,6 +2747,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Ck5FileUploadModelList = new List<CK5FileUploadViewModel>();
                 if (model.Ck5FileUploadFileList != null)
                 {
+                    int counter = 0;
                     foreach (var item in model.Ck5FileUploadFileList)
                     {
                         if (item != null)
@@ -2751,11 +2759,12 @@ namespace Sampoerna.EMS.Website.Controllers
                             var ck5UploadFile = new CK5FileUploadViewModel
                             {
                                 FILE_NAME = filenameCk5Check,
-                                FILE_PATH = SaveUploadedFile(item, model.Ck5Id),
+                                FILE_PATH = SaveUploadedFile(item, model.Ck5Id, counter),
                                 CREATED_DATE = DateTime.Now,
                                 CREATED_BY = currentUserId
                             };
                             model.Ck5FileUploadModelList.Add(ck5UploadFile);
+                            counter += 1;
                         }
 
                     }
@@ -2877,7 +2886,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        private string SaveUploadedFile(HttpPostedFileBase file, long ck5Id)
+        private string SaveUploadedFile(HttpPostedFileBase file, long ck5Id, int counter)
         {
             if (file == null || file.FileName == "")
                 return "";
@@ -2888,7 +2897,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!Directory.Exists(Server.MapPath(Constans.CK5FolderPath)))
                 Directory.CreateDirectory(Server.MapPath(Constans.CK5FolderPath));
 
-            sFileName = Constans.CK5FolderPath + Path.GetFileName(ck5Id.ToString("'ID'-##") + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
+            sFileName = Constans.CK5FolderPath + Path.GetFileName(ck5Id.ToString("'ID'-##") + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + counter + "_" + Path.GetExtension(file.FileName));
             string path = Server.MapPath(sFileName);
 
             // file is uploaded
