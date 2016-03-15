@@ -5308,6 +5308,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Ck5FileUploadModelList = new List<CK5FileUploadViewModel>();
                 if (model.Ck5FileUploadFileList != null)
                 {
+                    int counter = 0;
                     foreach (var item in model.Ck5FileUploadFileList)
                     {
                         if (item != null)
@@ -5319,11 +5320,12 @@ namespace Sampoerna.EMS.Website.Controllers
                             var ck5UploadFile = new CK5FileUploadViewModel
                             {
                                 FILE_NAME = filenameCk5Check,
-                                FILE_PATH = SaveUploadedFile(item, model.Ck5Id),
+                                FILE_PATH = SaveUploadedFile(item, model.Ck5Id, counter),
                                 CREATED_DATE = DateTime.Now,
                                 CREATED_BY = currentUserId
                             };
                             model.Ck5FileUploadModelList.Add(ck5UploadFile);
+                            counter += 1;
                         }
 
                     }
