@@ -1050,7 +1050,7 @@ namespace Sampoerna.EMS.BLL
                 messageList.Add("Material Number Not Exist");
             else
             {
-                if (input.Ck5Type == Enums.CK5Type.Export.ToString() && groupType == Enums.ExGoodsType.HasilTembakau)
+                if (input.Ck5Type == Enums.CK5Type.Export.ToString() && dbMaterial.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau))
                 {
                     //check to brand registration
                     var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(input.Plant, input.Brand);
@@ -3564,74 +3564,74 @@ namespace Sampoerna.EMS.BLL
         }
         #endregion
 
-        public List<CK5Dto> GetSummaryReportsByParam(CK5GetSummaryReportByParamInput input)
-        {
+        //public List<CK5Dto> GetSummaryReportsByParam(CK5GetSummaryReportByParamInput input)
+        //{
 
-            Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
+        //    Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
-            if (!string.IsNullOrEmpty(input.CompanyCodeSource))
-            {
-                queryFilter = queryFilter.And(c => c.SOURCE_PLANT_COMPANY_CODE.Contains(input.CompanyCodeSource));
-            }
+        //    if (!string.IsNullOrEmpty(input.CompanyCodeSource))
+        //    {
+        //        queryFilter = queryFilter.And(c => c.SOURCE_PLANT_COMPANY_CODE.Contains(input.CompanyCodeSource));
+        //    }
 
-            if (!string.IsNullOrEmpty(input.CompanyCodeDest))
-            {
-                queryFilter = queryFilter.And(c => c.DEST_PLANT_COMPANY_CODE.Contains(input.CompanyCodeDest));
-            }
+        //    if (!string.IsNullOrEmpty(input.CompanyCodeDest))
+        //    {
+        //        queryFilter = queryFilter.And(c => c.DEST_PLANT_COMPANY_CODE.Contains(input.CompanyCodeDest));
+        //    }
 
-            if (!string.IsNullOrEmpty(input.NppbkcIdSource))
-            {
-                queryFilter = queryFilter.And(c => c.SOURCE_PLANT_NPPBKC_ID.Contains(input.NppbkcIdSource));
-            }
+        //    if (!string.IsNullOrEmpty(input.NppbkcIdSource))
+        //    {
+        //        queryFilter = queryFilter.And(c => c.SOURCE_PLANT_NPPBKC_ID.Contains(input.NppbkcIdSource));
+        //    }
 
-            if (!string.IsNullOrEmpty(input.NppbkcIdDest))
-            {
-                queryFilter = queryFilter.And(c => c.DEST_PLANT_NPPBKC_ID.Contains(input.NppbkcIdDest));
+        //    if (!string.IsNullOrEmpty(input.NppbkcIdDest))
+        //    {
+        //        queryFilter = queryFilter.And(c => c.DEST_PLANT_NPPBKC_ID.Contains(input.NppbkcIdDest));
 
-            }
+        //    }
 
-            if (!string.IsNullOrEmpty(input.PlantSource))
-            {
-                queryFilter = queryFilter.And(c => c.SOURCE_PLANT_ID.Contains(input.PlantSource));
+        //    if (!string.IsNullOrEmpty(input.PlantSource))
+        //    {
+        //        queryFilter = queryFilter.And(c => c.SOURCE_PLANT_ID.Contains(input.PlantSource));
 
-            }
+        //    }
 
-            if (!string.IsNullOrEmpty(input.PlantDest))
-            {
-                queryFilter = queryFilter.And(c => c.DEST_PLANT_ID.Contains(input.PlantDest));
+        //    if (!string.IsNullOrEmpty(input.PlantDest))
+        //    {
+        //        queryFilter = queryFilter.And(c => c.DEST_PLANT_ID.Contains(input.PlantDest));
 
-            }
+        //    }
 
-            if (input.DateFrom.HasValue)
-            {
-                input.DateFrom = new DateTime(input.DateFrom.Value.Year, input.DateFrom.Value.Month, input.DateFrom.Value.Day, 0, 0, 0);
-                queryFilter = queryFilter.And(c => c.SUBMISSION_DATE >= input.DateFrom);
-            }
+        //    if (input.DateFrom.HasValue)
+        //    {
+        //        input.DateFrom = new DateTime(input.DateFrom.Value.Year, input.DateFrom.Value.Month, input.DateFrom.Value.Day, 0, 0, 0);
+        //        queryFilter = queryFilter.And(c => c.SUBMISSION_DATE >= input.DateFrom);
+        //    }
 
-            if (input.DateTo.HasValue)
-            {
-                input.DateFrom = new DateTime(input.DateTo.Value.Year, input.DateTo.Value.Month, input.DateTo.Value.Day, 23, 59, 59);
-                queryFilter = queryFilter.And(c => c.SUBMISSION_DATE <= input.DateTo);
-            }
-
-
-            //queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type);
-
-            //queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed);
+        //    if (input.DateTo.HasValue)
+        //    {
+        //        input.DateFrom = new DateTime(input.DateTo.Value.Year, input.DateTo.Value.Month, input.DateTo.Value.Day, 23, 59, 59);
+        //        queryFilter = queryFilter.And(c => c.SUBMISSION_DATE <= input.DateTo);
+        //    }
 
 
-            var rc = _repository.Get(queryFilter, null, includeTables);
-            if (rc == null)
-            {
-                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
-            }
+        //    //queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type);
 
-            var mapResult = Mapper.Map<List<CK5Dto>>(rc.ToList());
-
-            return mapResult;
+        //    //queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed);
 
 
-        }
+        //    var rc = _repository.Get(queryFilter, null, includeTables);
+        //    if (rc == null)
+        //    {
+        //        throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+        //    }
+
+        //    var mapResult = Mapper.Map<List<CK5Dto>>(rc.ToList());
+
+        //    return mapResult;
+
+
+        //}
 
         public List<Ck5SummaryReportDto> GetSummaryReportsViewByParam(CK5GetSummaryReportByParamInput input)
         {
@@ -3682,8 +3682,19 @@ namespace Sampoerna.EMS.BLL
                 input.DateTo = new DateTime(input.DateTo.Value.Year, input.DateTo.Value.Month, input.DateTo.Value.Day, 23, 59, 59);
                 queryFilter = queryFilter.And(c => c.SUBMISSION_DATE <= input.DateTo);
             }
+            
 
+            if (!string.IsNullOrEmpty(input.Poa))
+            {
+                queryFilter = queryFilter.And(c => c.APPROVED_BY_POA.Contains(input.Poa));
 
+            }
+
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY.Contains(input.Creator));
+
+            }
             //queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type);
 
             //queryFilter = queryFilter.And(c => c.STATUS_ID == Enums.DocumentStatus.Completed);
@@ -3743,6 +3754,18 @@ namespace Sampoerna.EMS.BLL
 
                     mapResult.Add(summaryReport);
                 }
+            }
+
+            if (!string.IsNullOrEmpty(input.MaterialNumber))
+            {
+                mapResult = mapResult.Where(c => c.MaterialNumber == input.MaterialNumber).ToList();
+
+            }
+
+            if (!string.IsNullOrEmpty(input.MaterialDescription))
+            {
+                mapResult = mapResult.Where(c => c.MaterialDescription == input.MaterialDescription).ToList();
+
             }
 
             return mapResult;
@@ -3937,7 +3960,8 @@ namespace Sampoerna.EMS.BLL
 
                 foreach (var material in result.ListMaterials)
                 {
-                    if (material.MaterialDescription.ToUpper().Contains("HASIL TEMBAKAU"))
+                    var mat = _materialBll.GetByPlantIdAndStickerCode(material.PLANT_ID, material.BRAND);
+                    if (mat.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau))
                     {
                         //UPDATE FOR PRINT OUT ONLY
                         material.MaterialDescription = "";
@@ -5110,6 +5134,28 @@ namespace Sampoerna.EMS.BLL
             return result;
         }
 
+        private void UpdateMaterialMatDoc(CK5WorkflowDocumentInput input)
+        {
+
+            foreach (var ck5MaterialDto in input.Ck5Material)
+            {
+                var dbMaterial = _repositoryCK5Material.GetByID(ck5MaterialDto.CK5_MATERIAL_ID);
+                if (dbMaterial != null)
+                {
+                    string oldValue = dbMaterial.MATDOC;
+                    string newValue = ck5MaterialDto.MATDOC;
+                    if (oldValue != newValue)
+                    {
+                        SetChangeHistory(oldValue, newValue, "CK5_MATERIAL_MATDOC", input.UserId,
+                            input.DocumentId.ToString());
+                        dbMaterial.MATDOC = ck5MaterialDto.MATDOC;
+                        _repositoryCK5Material.Update(dbMaterial);
+                    }
+                }
+            }
+
+        }
+
         public void CK5CompletedAttachment(CK5WorkflowDocumentInput input)
         {
             
@@ -5128,16 +5174,15 @@ namespace Sampoerna.EMS.BLL
             }
 
           
-            string oldValue = dbData.MATDOC;
-            string newValue = input.MatDoc;
-            if (oldValue != newValue)
-                SetChangeHistory(oldValue, newValue, "MATDOC", input.UserId, dbData.CK5_ID.ToString());
+            //string oldValue = dbData.MATDOC;
+            //string newValue = input.MatDoc;
+            //if (oldValue != newValue)
+            //    SetChangeHistory(oldValue, newValue, "MATDOC", input.UserId, dbData.CK5_ID.ToString());
 
-            dbData.MATDOC = input.MatDoc;
-
-            //if (input.AdditionalDocumentData.Ck5FileUploadList.Count() > 0)
-            //    CheckFileUploadChange(input);
-
+            //dbData.MATDOC = input.MatDoc;
+            if (input.Ck5Type == Enums.CK5Type.Manual)
+                UpdateMaterialMatDoc(input);
+         
             //add workflow history
             input.ActionType = Enums.ActionType.Modified;
 
@@ -5360,11 +5405,47 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
 
-            //var mapResult = Mapper.Map<List<CK5Dto>>(rc.ToList());
+          
+            //return SetDataSummaryReportMarketReturn(rc.ToList());
+            var result = SetDataSummaryReportMarketReturn(rc.ToList());
 
-            //return mapResult;
-            return SetDataSummaryReportMarketReturn(rc.ToList());
-
+            if (!string.IsNullOrEmpty(input.Brand))
+            {
+                result = result.Where(c => c.Brand == input.Brand).ToList();
+            }
+            if (!string.IsNullOrEmpty(input.Content))
+            {
+                result = result.Where(c => c.Content == input.Content).ToList();
+            }
+            if (!string.IsNullOrEmpty(input.Hje))
+            {
+                result = result.Where(c => c.Hje == input.Hje).ToList();
+            }
+            if (!string.IsNullOrEmpty(input.Tariff))
+            {
+                result = result.Where(c => c.Tariff == input.Tariff).ToList();
+            }
+            if (!string.IsNullOrEmpty(input.Ck5MarketReturnQty))
+            {
+                result = result.Where(c => c.Ck5MarketReturnQty == input.Ck5MarketReturnQty).ToList();
+            }
+            if (!string.IsNullOrEmpty(input.FiscalYear))
+            {
+                result = result.Where(c => c.FiscalYear == input.FiscalYear).ToList();
+            }
+            if (!string.IsNullOrEmpty(input.ExciseValue))
+            {
+                result = result.Where(c => c.ExciseValue == input.ExciseValue).ToList();
+            }
+            if (!string.IsNullOrEmpty(input.Pbck3Status))
+            {
+                result = result.Where(c => c.Pbck3Status == input.Pbck3Status).ToList();
+            }
+            if (!string.IsNullOrEmpty(input.Ck2Value))
+            {
+                result = result.Where(c => c.Ck2Value == input.Ck2Value).ToList();
+            }
+            return result;
 
         }
 
@@ -5459,6 +5540,66 @@ namespace Sampoerna.EMS.BLL
             return data;
         }
 
-        
+
+        public List<CK5MaterialDto> GetCk5MaterialMatdocList(List<CK5MaterialDto> listMaterial, long ck5Id)
+        {
+
+            var tempData = new List<INVENTORY_MOVEMENT>();
+
+            var ck5 = _ck5Service.GetById(ck5Id);
+            if (ck5 != null)
+            {
+                var matdocassigned = _ck5Service.GetCk5AssignedMatdoc();
+                if (!string.IsNullOrEmpty(ck5.MATDOC))
+                {
+                    matdocassigned.Remove(ck5.MATDOC);
+                }
+                var listUsed201 = _lack1TrackingService.GetMovement201FromTracking();
+
+                tempData = _movementService.GetMvt201NotUsed(listUsed201);
+                tempData = tempData.Where(x => !matdocassigned.Contains(x.MAT_DOC)).ToList();
+            }
+
+
+
+            //var data = Mapper.Map<List<Ck5MatdocDto>>(tempData);
+
+            foreach (var ck5MaterialDto in listMaterial)
+            {
+                var materialMatDoc = tempData.Where(c => c.PLANT_ID == ck5MaterialDto.PLANT_ID && c.MATERIAL_ID == ck5MaterialDto.BRAND).ToList();
+                
+            }
+            return listMaterial;
+        }
+
+        public List<Ck5MatdocDto> GetMatdocList(GetMatdocListInput input)
+        {
+
+            var tempData = new List<INVENTORY_MOVEMENT>();
+
+            var ck5 = _ck5Service.GetById(input.Ck5Id);
+            if (ck5 != null)
+            {
+                var matdocassigned = _ck5Service.GetCk5AssignedMatdoc();
+                if (!string.IsNullOrEmpty(ck5.MATDOC))
+                {
+                    matdocassigned.Remove(ck5.MATDOC);
+                }
+                var listUsed201 = _lack1TrackingService.GetMovement201FromTracking();
+
+                tempData = _movementService.GetMvt201NotUsed(listUsed201);
+                tempData =
+                    tempData.Where(
+                        x =>
+                            !matdocassigned.Contains(x.MAT_DOC) && x.PLANT_ID == input.PlantId &&
+                            x.MATERIAL_ID == input.MaterialId).ToList();
+            }
+
+
+
+            var data = Mapper.Map<List<Ck5MatdocDto>>(tempData);
+
+            return data;
+        }
     }
 }

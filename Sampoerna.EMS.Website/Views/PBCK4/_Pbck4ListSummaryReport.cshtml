@@ -29,7 +29,15 @@
             <th>Payment Date</th>
             <th>Status</th>
             <th>Completed Date</th>
-
+            <th>Sticker Code</th>
+            <th>Fa Code</th>
+            <th>Nppbkc</th>
+            <th>Plant</th>
+            <th>Plant Description</th>
+            <th>Company Name</th>
+            <th>POA</th>
+            <th>CK-1 Number</th>
+            <th>Creator</th>
         </tr>
     </thead>
 
@@ -64,7 +72,16 @@
                     <td>@Html.DisplayFor(model => item.CompensatedCk1Number)</td>
                     <td>@Html.DisplayFor(model => item.PaymentDate)</td>
                     <td>@Html.DisplayFor(model => item.Status)</td>
-                    <td class="last">@Html.DisplayFor(model => item.CompletedDate)</td>
+                    <td>@Html.DisplayFor(model => item.CompletedDate)</td>
+                    <td>@Html.DisplayFor(model => item.StickerCode)</td>
+                    <td>@Html.DisplayFor(model => item.FaCode)</td>
+                    <td>@Html.DisplayFor(model => item.Nppbkc)</td>
+                    <td>@Html.DisplayFor(model => item.PlantId)</td>
+                    <td>@Html.DisplayFor(model => item.PlantDescription)</td>
+                    <td>@Html.DisplayFor(model => item.CompanyName)</td>
+                    <td>@Html.DisplayFor(model => item.Poa)</td>
+                    <td>@Html.DisplayFor(model => item.Ck1No)</td>
+                    <td class="last">@Html.DisplayFor(model => item.Creator)</td>
                 </tr>
                 row = row + 1;
             }

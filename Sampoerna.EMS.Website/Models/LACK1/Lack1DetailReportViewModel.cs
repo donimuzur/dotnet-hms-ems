@@ -27,6 +27,8 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string SupplierPlantId { get; set; }
         public string PeriodFrom { get; set; }
         public string PeriodTo { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
         public DateTime? GrDateFrom { get; set; }
         public DateTime? GrDateTo { get; set; }
         public DateTime? GiDateFrom { get; set; }
@@ -40,6 +42,8 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public SelectList SupplierPlantIdList { get; set; }
         public SelectList PeriodFromList { get; set; }
         public SelectList PeriodToList { get; set; }
+        public SelectList PoaList { get; set; }
+        public SelectList CreatorList { get; set; }
         public Enums.Lack1Level Lack1LevelList { get; set; }
     }
 
@@ -56,6 +60,8 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public decimal BeginingBalance { get; set; }
         public decimal EndingBalance { get; set; }
         public List<Lack1TrackingConsolidationDetailReportItemModel> TrackingConsolidations { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
     }
 
     public class Lack1TrackingConsolidationDetailReportItemModel

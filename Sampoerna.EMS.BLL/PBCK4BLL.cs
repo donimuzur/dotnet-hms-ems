@@ -1718,15 +1718,15 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.PLANT_ID.Contains(input.PlantId));
             }
 
-            if (!string.IsNullOrEmpty(input.StickerCode))
-            {
-                queryFilter = queryFilter.And(c => c.PBCK4_ITEM.Select(x => x.STICKER_CODE).ToList().Contains(input.StickerCode));
-            }
+            //if (!string.IsNullOrEmpty(input.StickerCode))
+            //{
+            //    queryFilter = queryFilter.And(c => c.PBCK4_ITEM.Select(x => x.STICKER_CODE).ToList().Contains(input.StickerCode));
+            //}
 
-            if (!string.IsNullOrEmpty(input.FaCode))
-            {
-                queryFilter = queryFilter.And(c => c.PBCK4_ITEM.Select(x => x.FA_CODE).ToList().Contains(input.FaCode));
-            }
+            //if (!string.IsNullOrEmpty(input.FaCode))
+            //{
+            //    queryFilter = queryFilter.And(c => c.PBCK4_ITEM.Select(x => x.FA_CODE).ToList().Contains(input.FaCode));
+            //}
 
             if (!string.IsNullOrEmpty(input.Nppbkc))
             {
@@ -1761,15 +1761,20 @@ namespace Sampoerna.EMS.BLL
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
+            
+            var result =  SetDataSummaryReport(rc);
 
-            //var mapResult = Mapper.Map<List<Pbck4Dto>>(rc.ToList());
+            if (!string.IsNullOrEmpty(input.StickerCode))
+            {
+                result = result.Where(c => c.StickerCode == input.StickerCode).ToList();
+            }
 
-            //return mapResult;
+            if (!string.IsNullOrEmpty(input.FaCode))
+            {
+                result = result.Where(c => c.FaCode == input.FaCode).ToList();
+            }
 
-            return SetDataSummaryReport(rc);
-
-            //return mapResult;
-
+            return result;
         }
 
         private List<Pbck4SummaryReportDto> SetDataSummaryReport(List<PBCK4> listPbck4)
@@ -1857,6 +1862,11 @@ namespace Sampoerna.EMS.BLL
                     {
                         summaryDto.CompletedDate = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.MODIFIED_DATE);
                     }
+
+                    summaryDto.Nppbkc = dtData.NPPBKC_ID;
+                    summaryDto.CompanyName = dtData.COMPANY_NAME;
+                    summaryDto.Poa = dtData.APPROVED_BY_POA;
+                    summaryDto.Creator = dtData.CREATED_BY;
 
                     result.Add(summaryDto);
                 }
@@ -2025,6 +2035,13 @@ namespace Sampoerna.EMS.BLL
                 }
 
             }
+
+            result = result.GroupBy(x => new { x.Ck1Date, x.Ck1Id, x.Ck1No }).Select(p => new GetListCk1ByNppbkcOutput()
+                                {
+                                    Ck1No = p.FirstOrDefault().Ck1No,
+                                    Ck1Id = p.FirstOrDefault().Ck1Id,
+                                    Ck1Date = p.FirstOrDefault().Ck1Date
+                                }).ToList();
 
             return result;
         }

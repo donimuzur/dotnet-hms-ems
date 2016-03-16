@@ -140,7 +140,6 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.PBCK7_DATE.Year <= input.To);
             }
 
-
             Func<IQueryable<PBCK7>, IOrderedQueryable<PBCK7>> orderBy = null;
             if (!string.IsNullOrEmpty(input.ShortOrderColum))
             {
@@ -159,32 +158,6 @@ namespace Sampoerna.EMS.BLL
            
             foreach (var pbck7 in dbData)
             {
-                //pbck7SummaryReportDto.Back1No = "";
-                //pbck7SummaryReportDto.Back1Date = "";
-                //var back1Dto = GetBack1ByPbck7(pbck7SummaryReportDto.Pbck7Id);
-                //if (back1Dto != null)
-                //{
-                //    pbck7SummaryReportDto.Back1No = back1Dto.Back1Number;
-                //    pbck7SummaryReportDto.Back1Date = ConvertHelper.ConvertDateToStringddMMMyyyy(back1Dto.Back1Date);
-                //}
-
-                //pbck7SummaryReportDto.Pbck3No = "";
-                //pbck7SummaryReportDto.Pbck3Status = "";
-                //pbck7SummaryReportDto.Ck2No = "";
-                //pbck7SummaryReportDto.Ck2Value = "";
-                //var pbck3Data = _pbck3Services.GetPbck3ByPbck7Id(pbck7SummaryReportDto.Pbck7Id);
-                //if (pbck3Data != null)
-                //{
-                //    pbck7SummaryReportDto.Pbck3No = pbck3Data.PBCK3_NUMBER;
-                //    pbck7SummaryReportDto.Pbck3Status = EnumHelper.GetDescription(pbck3Data.STATUS);
-                //    var ck2Data = pbck3Data.CK2.FirstOrDefault();
-
-                //    if (ck2Data != null)
-                //    {
-                //        pbck7SummaryReportDto.Ck2No = ck2Data.CK2_NUMBER;
-                //        pbck7SummaryReportDto.Ck2Value = ConvertHelper.ConvertDecimalToStringMoneyFormat(ck2Data.CK2_VALUE);
-                //    }
-                //}
 
                 PBCK7 pbck8 = pbck7;
                 var pbck7Item = _repositoryPbck7Item.Get(c => c.PBCK7_ID == pbck8.PBCK7_ID).ToList();
@@ -258,6 +231,76 @@ namespace Sampoerna.EMS.BLL
 
             }
 
+            if (!string.IsNullOrEmpty(input.FaCode))
+            {
+                result = result.Where(c => c.FaCode == input.FaCode).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(input.Brand))
+            {
+                result = result.Where(c => c.Brand == input.Brand).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(input.Content))
+            {
+                result = result.Where(c => c.Content == input.Content).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(input.Hje))
+            {
+                result = result.Where(c => c.Hje == input.Hje).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(input.Tariff))
+            {
+                result = result.Where(c => c.Tariff == input.Tariff).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(input.Pbck7Qty))
+            {
+                result = result.Where(c => c.Pbck7Qty == input.Pbck7Qty).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(input.FiscalYear))
+            {
+                result = result.Where(c => c.FiscalYear == input.FiscalYear).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(input.ExciseValue))
+            {
+                result = result.Where(c => c.ExciseValue == input.ExciseValue).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(input.Poa))
+            {
+                result = result.Where(c => c.Poa == input.Poa).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                result = result.Where(c => c.Creator == input.Creator).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(input.Pbck3No))
+            {
+                result = result.Where(c => c.Pbck3No == input.Pbck3No).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(input.Pbck3Status))
+            {
+                result = result.Where(c => c.Pbck3Status == input.Pbck3Status).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(input.Ck2No))
+            {
+                result = result.Where(c => c.Ck2No == input.Ck2No).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(input.Ck2Value))
+            {
+                result = result.Where(c => c.Ck2Value == input.Ck2Value).ToList();
+            }
+
             return result;
 
         }
@@ -289,6 +332,15 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.PBCK3_DATE.Year <= input.To);
             }
 
+            if (!string.IsNullOrEmpty(input.Poa))
+            {
+                queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
+            }
+
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
 
             Func<IQueryable<PBCK3>, IOrderedQueryable<PBCK3>> orderBy = null;
             if (!string.IsNullOrEmpty(input.ShortOrderColum))

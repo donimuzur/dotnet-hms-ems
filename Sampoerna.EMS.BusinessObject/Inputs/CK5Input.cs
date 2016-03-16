@@ -70,6 +70,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime? GrDate { get; set; }
         public string DnNumber { get; set; }
         public string MatDoc { get; set; }
+
+        public List<CK5MaterialDto> Ck5Material { get; set; } 
     }
 
     public class CK5WorkflowDocumentData
@@ -112,6 +114,11 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime? DateTo { get; set; }
 
         public Enums.CK5Type Ck5Type { get; set; }
+
+        public string MaterialNumber { get; set; }
+        public string MaterialDescription { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
     }
 
     public class Ck5GetForLack1ByParamInput
@@ -156,6 +163,23 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string Creator { get; set; }
         public string Pbck3No { get; set; }
         public string Ck2No { get; set; }
-        
+
+        public string Brand { get; set; }
+        public string Content { get; set; }
+        public string Hje { get; set; }
+        public string Tariff { get; set; }
+        public string Ck5MarketReturnQty { get; set; }
+        public string FiscalYear { get; set; }
+        public string ExciseValue { get; set; }
+        public string Pbck3Status { get; set; }
+        public string Ck2Value { get; set; }
+    }
+
+    public class GetMatdocListInput
+    {
+        public long Ck5Id { get; set; }
+        public string PlantId { get; set; }
+        public string MaterialId { get; set; }
+
     }
 }
