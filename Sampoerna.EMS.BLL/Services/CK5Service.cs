@@ -39,8 +39,9 @@ namespace Sampoerna.EMS.BLL.Services
                 c => c.DEST_PLANT_NPPBKC_ID == input.NppbkcId && c.DEST_PLANT_COMPANY_CODE == input.CompanyCode
                      && (int) c.EX_GOODS_TYPE == input.ExGroupTypeId && c.SOURCE_PLANT_ID == input.SupplierPlantId
                      &&
-                     (c.GR_DATE.HasValue && c.GR_DATE.Value.Month == input.PeriodMonth &&
-                      c.GR_DATE.Value.Year == input.PeriodYear)
+                     (c.GR_DATE.HasValue 
+                     && c.GR_DATE.Value.Month == input.PeriodMonth 
+                     && c.GR_DATE.Value.Year == input.PeriodYear)
                      && c.STATUS_ID == Enums.DocumentStatus.Completed
                 ;
 
@@ -147,7 +148,45 @@ namespace Sampoerna.EMS.BLL.Services
         {
             Expression<Func<CK5, bool>> queryFilter = c => !string.IsNullOrEmpty(c.MATDOC);
             return _repository.Get(queryFilter).Select(x => x.MATDOC).ToList();
-        } 
+        }
+
+
+        public List<CK5> GetAllPreviousForLack1(Ck5GetForLack1ByParamInput input)
+        {
+            var tempyear = input.PeriodMonth == 12 ? input.PeriodYear + 1 : input.PeriodYear;
+            var tempmonth = input.PeriodMonth == 12 ? 1 : input.PeriodMonth + 1;
+
+            
+            Expression<Func<CK5, bool>> queryFilterCk5 =
+                c => c.DEST_PLANT_NPPBKC_ID == input.NppbkcId && c.DEST_PLANT_COMPANY_CODE == input.CompanyCode
+                     && (int)c.EX_GOODS_TYPE == input.ExGroupTypeId && c.SOURCE_PLANT_ID == input.SupplierPlantId
+                     && (c.GR_DATE.HasValue && c.GR_DATE.Value < new DateTime(tempyear, tempmonth, 1))
+                     //original irman
+                     //(c.GR_DATE.HasValue && c.GR_DATE.Value.Month == input.PeriodMonth &&
+                     // c.GR_DATE.Value.Year == input.PeriodYear)
+                     && c.STATUS_ID == Enums.DocumentStatus.Completed
+                ;
+
+            if (input.Lack1Level == Enums.Lack1Level.Plant)
+            {
+                queryFilterCk5 = queryFilterCk5.And(c => (c.DEST_PLANT_ID == input.ReceivedPlantId
+                    && (c.CK5_TYPE != Enums.CK5Type.Waste))
+                    || (c.SOURCE_PLANT_ID == input.ReceivedPlantId
+                    && (c.CK5_TYPE == Enums.CK5Type.Waste)));
+            }
+
+            if (input.IsExcludeSameNppbkcId)
+            {
+                queryFilterCk5 = queryFilterCk5.And(c => c.SOURCE_PLANT_NPPBKC_ID != c.DEST_PLANT_NPPBKC_ID);
+            }
+
+            
+
+            /* story : http://192.168.62.216/TargetProcess/entity/1637 */
+            queryFilterCk5 = queryFilterCk5.And(c => (c.CK5_TYPE != Enums.CK5Type.Manual || (c.CK5_TYPE == Enums.CK5Type.Manual && c.REDUCE_TRIAL.HasValue && c.REDUCE_TRIAL.Value)));
+
+            return _repository.Get(queryFilterCk5, null, "UOM").ToList();
+        }
     }
 
 }
