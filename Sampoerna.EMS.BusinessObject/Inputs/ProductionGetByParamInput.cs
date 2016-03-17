@@ -15,5 +15,6 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string ShortOrderColumn { get; set; }
         public Enums.UserRole UserRole { get; set; }
         public List<string> ListUserPlants { get; set; }
+        public string UserId { get; set; }
     }
 }

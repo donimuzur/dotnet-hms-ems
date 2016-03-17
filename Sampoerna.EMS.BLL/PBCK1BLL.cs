@@ -230,7 +230,7 @@ namespace Sampoerna.EMS.BLL
                     //{
                         queryFilter =
                             queryFilter.And(
-                                c => c.CREATED_BY == input.UserId || c.STATUS == Enums.DocumentStatus.Completed);
+                                c => input.ListNppbkc.Contains(c.NPPBKC_ID));
                     //}
                 }
             }
