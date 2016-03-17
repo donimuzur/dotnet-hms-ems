@@ -870,6 +870,21 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<ProductionUploadItemsOutput, ProductionUploadItems>().IgnoreAllNonExisting();
             //Mapper.CreateMap<ProductionUploadViewModel, ProductionUploadItemsOutput>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<PRODUCTION, ProductionDetail>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ProductionDate,
+                    opt => opt.MapFrom(src => src.PRODUCTION_DATE.ToString("dd MMM yyyy")))
+                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.WERKS + " - " + src.PLANT_NAME))
+                .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.QTY))
+                .ForMember(dest => dest.CompanyCode, opt => opt.MapFrom(src => src.COMPANY_CODE))
+                .ForMember(dest => dest.PlantWerks, opt => opt.MapFrom(src => src.WERKS))
+                .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
+                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.COMPANY_NAME))
+                .ForMember(dest => dest.BrandDescription, opt => opt.MapFrom(src => src.BRAND_DESC))
+                .ForMember(dest => dest.QtyPacked, opt => opt.MapFrom(src => src.QTY_PACKED))
+                .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UOM))
+                .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CREATED_BY))
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE));
+
             #endregion
 
             Mapper.CreateMap<ZAIDM_EX_BRAND, SelectItemModel>().IgnoreAllNonExisting()
