@@ -448,5 +448,12 @@ namespace Sampoerna.EMS.BLL
         {
             return _repositoryUoM.Get(c => c.WERKS == plant).ToList();
         }
+
+        public List<ZAIDM_EX_MATERIAL> getAllMaterial()
+        {
+            var data = _repository.Get(null, null, includeTables).ToList();
+
+            return data.ToList();
+        }
     }
 }
