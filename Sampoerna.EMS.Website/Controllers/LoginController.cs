@@ -11,7 +11,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPOABLL _poabll;
         private IUserAuthorizationBLL _userAuthorizationBll;
         public LoginController(IUserBLL userBll, IPageBLL pageBll, IPOABLL poabll, IUserAuthorizationBLL userAuthorizationBll)
-            : base(pageBll, Enums.MenuList.USER)
+            : base(pageBll, Enums.MenuList.LOGIN)
         {
             _userBll = userBll;
             _poabll = poabll;
