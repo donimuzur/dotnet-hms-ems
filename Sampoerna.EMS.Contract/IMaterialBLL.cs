@@ -36,5 +36,7 @@ namespace Sampoerna.EMS.Contract
         List<MaterialDto> GetMaterialByPlantIdAndGoodType(string plantId, int goodTypeGroup);
 
         List<MATERIAL_UOM> GetMaterialUomByPlant(string plant);
+
+        List<ZAIDM_EX_MATERIAL> getAllMaterial();
     }
 }

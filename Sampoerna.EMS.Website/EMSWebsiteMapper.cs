@@ -533,7 +533,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.MaterialNumber, opt => opt.MapFrom(src => src.STICKER_CODE))
                 .ForMember(dest => dest.MaterialDesc, opt => opt.MapFrom(src => src.MATERIAL_DESC))
                 .ForMember(dest => dest.PlantDeletion, opt => opt.MapFrom(src => src.PLANT_DELETION.HasValue && src.PLANT_DELETION.Value ? "yes" : "No"))
-                .ForMember(dest => dest.ClientDeletion, opt => opt.MapFrom(src => src.CLIENT_DELETION.HasValue && src.CLIENT_DELETION.Value ? "yes" : "No")); ;
+                .ForMember(dest => dest.ClientDeletion, opt => opt.MapFrom(src => src.CLIENT_DELETION.HasValue && src.CLIENT_DELETION.Value ? "yes" : "No"));
 
             Mapper.CreateMap<MaterialDto, MaterialCreateViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.UomId, opt => opt.MapFrom(src => src.BASE_UOM_ID))
@@ -576,8 +576,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.IsFromSap, opt => opt.MapFrom(src => src.IS_FROM_SAP))
                 .ForMember(dest => dest.IsPlantDelete, opt => opt.MapFrom(src => src.PLANT_DELETION))
                 .ForMember(dest => dest.IsClientDelete, opt => opt.MapFrom(src => src.CLIENT_DELETION))
-
-             .ForMember(dest => dest.MaterialUom, opt => opt.MapFrom(src => src.MATERIAL_UOM));
+                .ForMember(dest => dest.MaterialUom, opt => opt.MapFrom(src => src.MATERIAL_UOM));
 
             Mapper.CreateMap<MaterialEditViewModel, MaterialDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.BASE_UOM_ID, opt => opt.MapFrom(src => src.UomId))
@@ -666,6 +665,17 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.UMREN, opt => opt.MapFrom(src => src.Umren))
                .ForMember(dest => dest.UMREZ, opt => opt.MapFrom(src => src.Umrez));
 
+            Mapper.CreateMap<ZAIDM_EX_MATERIAL, MaterialDetails>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.BaseUom, opt => opt.MapFrom(src => src.BASE_UOM_ID))
+                .ForMember(dest => dest.UomName, opt => opt.MapFrom(src => src.UOM.UOM_DESC))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.WERKS))
+                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.T001W.NAME1))
+                .ForMember(dest => dest.GoodtypId, opt => opt.MapFrom(src => src.EXC_GOOD_TYP))
+                .ForMember(dest => dest.GoodTypeName, opt => opt.MapFrom(src => src.ZAIDM_EX_GOODTYP.EXT_TYP_DESC))
+                .ForMember(dest => dest.MaterialNumber, opt => opt.MapFrom(src => src.STICKER_CODE))
+                .ForMember(dest => dest.MaterialDesc, opt => opt.MapFrom(src => src.MATERIAL_DESC))
+                .ForMember(dest => dest.PlantDeletion, opt => opt.MapFrom(src => src.PLANT_DELETION.HasValue && src.PLANT_DELETION.Value ? "yes" : "No"))
+                .ForMember(dest => dest.ClientDeletion, opt => opt.MapFrom(src => src.CLIENT_DELETION.HasValue && src.CLIENT_DELETION.Value ? "yes" : "No"));
             #endregion
 
             #region UOM
