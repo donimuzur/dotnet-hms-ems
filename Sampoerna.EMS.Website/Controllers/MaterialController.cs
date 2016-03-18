@@ -52,7 +52,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
-            var data = _materialBll.getAll();
+            var data = _materialBll.getAllMaterial();
             model.Details = AutoMapper.Mapper.Map<List<MaterialDetails>>(data);
             model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             ViewBag.Message = TempData["message"];
