@@ -639,8 +639,9 @@ namespace Sampoerna.EMS.XMLReader
                 x.ORDR,
                 x.POSTING_DATE,
                 x.PRODUCTION_DATE,
-                x.ENTERED_DATE, 
+                x.ENTERED_DATE,
                 x.MATDOC,
+                x.SHIFT,
                 x.MVT
             }).Select(x => new ZAAP_SHIFT_RPT()
             {
@@ -653,7 +654,8 @@ namespace Sampoerna.EMS.XMLReader
                 ENTERED_DATE = x.Key.ENTERED_DATE,
                 MATDOC = x.Key.MATDOC,
                 MVT = x.Key.MVT,
-                QTY = x.Sum(y=> y.QTY),
+                QTY = x.Sum(y => y.QTY),
+                SHIFT = x.Key.SHIFT,
                 ORIGINAL_QTY = x.Sum(y => y.ORIGINAL_QTY)
 
             }).ToList();
@@ -669,12 +671,12 @@ namespace Sampoerna.EMS.XMLReader
                                                                 && x.MVT == item.MVT
                                                                 && x.ORDR == item.ORDR
                                                                 && x.SHIFT == item.SHIFT
-                    
-                                                                && x.PRODUCTION_DATE  == item.PRODUCTION_DATE
+
+                                                                && x.PRODUCTION_DATE == item.PRODUCTION_DATE
                                                                 && x.POSTING_DATE == item.POSTING_DATE
                                                                 && x.ENTERED_DATE == item.ENTERED_DATE);
 
-                
+
                 if (tempExisting != null)
                 {
                     var tempItem = tempExisting;
@@ -682,6 +684,7 @@ namespace Sampoerna.EMS.XMLReader
                     tempItem.ORIGINAL_QTY = item.ORIGINAL_QTY;
                     itemsTobeAdded.Add(tempItem);
                 }
+                
             }
 
             return itemsTobeAdded;
