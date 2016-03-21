@@ -1541,7 +1541,11 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.CK4C;
             model.CurrentMenu = PageInfo;
 
-            var listCk4C = _ck4CBll.GetSummaryReportsByParam(new Ck4CGetSummaryReportByParamInput());
+            var listCk4C = _ck4CBll.GetSummaryReportsByParam(new Ck4CGetSummaryReportByParamInput() { 
+                UserRole = CurrentUser.UserRole,
+                ListNppbkc = CurrentUser.ListUserNppbkc,
+                ListUserPlant = CurrentUser.ListUserPlants
+            });
 
             model.SearchView.Ck4CNoList = GetCk4CNumberList(listCk4C);
             model.SearchView.PlantIdList = GetPlantList(listCk4C);

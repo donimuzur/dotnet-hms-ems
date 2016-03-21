@@ -1317,7 +1317,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PoaList = GlobalFunctions.GetPoaAll(_poaBll);
             model.CreatorList = GlobalFunctions.GetCreatorList();
 
-            var listPbck7 = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(new Pbck7SummaryInput());
+            var listPbck7 = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input);
 
             model.ReportItems = Mapper.Map<List<Pbck7SummaryReportItem>>(_pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input));
             model.FaCodeList = GetListPbck7Items(listPbck7, "facode");

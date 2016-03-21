@@ -30,7 +30,14 @@
                                 <div class="row">
                                     <label class="col-md-4">PBCK No</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(x => x.SelectedNumber, Model.Pbck7List, "All", new { @class = "form-control" })
+                                        @if (Model.Pbck7List == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(x => x.SelectedNumber, Model.Pbck7List, "All", new { @class = "form-control" })
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -38,7 +45,14 @@
                                 <div class="row">
                                     <label class="col-md-4">NPPBKC</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(x => x.SelectedNppbkc, Model.NppbkcList, "All", new { @class = "form-control" })
+                                        @if (Model.NppbkcList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(x => x.SelectedNppbkc, Model.NppbkcList, "All", new { @class = "form-control" })
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -50,10 +64,24 @@
                                 <div class="row">
                                     <label class="col-md-4">From-To</label>
                                     <div class="col-md-8 year-from">
-                                        @Html.DropDownListFor(x => x.From, Model.FromYear, "All", new { @class = "form-control selectreset" })
-                                        @Html.DropDownListFor(x => x.To, Model.ToYear, "All", new { @class = "form-control selectreset" })
-
-
+                                        @if (Model.FromYear == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(x => x.From, Model.FromYear, "All", new { @class = "form-control selectreset" })
+                                        }
+                                        
+                                        @if (Model.ToYear == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(x => x.To, Model.ToYear, "All", new { @class = "form-control selectreset" })
+                                        }
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -62,9 +90,15 @@
                                 <div class="row">
                                     <label class="col-md-4 long">Plant</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(x => x.SelectedPlant, Model.PlantList, "All", new { @class = "form-control" })
-
-
+                                        @if (Model.PlantList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(x => x.SelectedPlant, Model.PlantList, "All", new { @class = "form-control" })
+                                        }
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -75,7 +109,15 @@
                                 <div class="row">
                                     <label class="col-md-4">FA Code</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(x => x.FaCode, Model.FaCodeList, "All", new { @class = "form-control" })
+                                        @if (Model.FaCodeList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(x => x.FaCode, Model.FaCodeList, "All", new { @class = "form-control" })
+                                        }
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -83,7 +125,15 @@
                                 <div class="row">
                                     <label class="col-md-4">Brand</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(x => x.Brand, Model.BrandList, "All", new { @class = "form-control" })
+                                        @if (Model.BrandList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(x => x.Brand, Model.BrandList, "All", new { @class = "form-control" })
+                                        }
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -94,7 +144,15 @@
                                 <div class="row">
                                     <label class="col-md-4">Content</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(x => x.Content, Model.ContentList, "All", new { @class = "form-control" })
+                                        @if (Model.ContentList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(x => x.Content, Model.ContentList, "All", new { @class = "form-control" })
+                                        }
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -102,7 +160,15 @@
                                 <div class="row">
                                     <label class="col-md-4">HJE</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(x => x.Hje, Model.HjeList, "All", new { @class = "form-control" })
+                                        @if (Model.HjeList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(x => x.Hje, Model.HjeList, "All", new { @class = "form-control" })
+                                        }
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -113,7 +179,15 @@
                                 <div class="row">
                                     <label class="col-md-4">Tariff</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(x => x.Tariff, Model.TariffList, "All", new { @class = "form-control" })
+                                        @if (Model.TariffList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(x => x.Tariff, Model.TariffList, "All", new { @class = "form-control" })
+                                        }
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -121,7 +195,15 @@
                                 <div class="row">
                                     <label class="col-md-4">PBCK-7 Qty</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(x => x.Pbck7Qty, Model.Pbck7QtyList, "All", new { @class = "form-control" })
+                                        @if (Model.Pbck7QtyList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(x => x.Pbck7Qty, Model.Pbck7QtyList, "All", new { @class = "form-control" })
+                                        }
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -132,7 +214,15 @@
                                 <div class="row">
                                     <label class="col-md-4">Fiscal Year</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(x => x.FiscalYear, Model.FiscalYearList, "All", new { @class = "form-control" })
+                                        @if (Model.FiscalYearList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(x => x.FiscalYear, Model.FiscalYearList, "All", new { @class = "form-control" })
+                                        }
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -140,7 +230,15 @@
                                 <div class="row">
                                     <label class="col-md-4">Excise Value</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(x => x.ExciseValue, Model.ExciseValueList, "All", new { @class = "form-control" })
+                                        @if (Model.ExciseValueList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(x => x.ExciseValue, Model.ExciseValueList, "All", new { @class = "form-control" })
+                                        }
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -151,7 +249,15 @@
                                 <div class="row">
                                     <label class="col-md-4">POA</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(x => x.Poa, Model.PoaList, "All", new { @class = "form-control" })
+                                        @if (Model.PoaList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(x => x.Poa, Model.PoaList, "All", new { @class = "form-control" })
+                                        }
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -159,7 +265,15 @@
                                 <div class="row">
                                     <label class="col-md-4">Creator</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(x => x.Creator, Model.CreatorList, "All", new { @class = "form-control" })
+                                        @if (Model.CreatorList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(x => x.Creator, Model.CreatorList, "All", new { @class = "form-control" })
+                                        }
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -170,7 +284,15 @@
                                 <div class="row">
                                     <label class="col-md-4">PBCK-3 No</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(x => x.Pbck3No, Model.Pbck3NoList, "All", new { @class = "form-control" })
+                                        @if (Model.Pbck3NoList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(x => x.Pbck3No, Model.Pbck3NoList, "All", new { @class = "form-control" })
+                                        }
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -178,7 +300,15 @@
                                 <div class="row">
                                     <label class="col-md-4">PBCK-3 Status</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(x => x.Pbck3Status, Model.Pbck3StatusList, "All", new { @class = "form-control" })
+                                        @if (Model.Pbck3StatusList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(x => x.Pbck3Status, Model.Pbck3StatusList, "All", new { @class = "form-control" })
+                                        }
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -189,7 +319,15 @@
                                 <div class="row">
                                     <label class="col-md-4">CK-2 No</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(x => x.Ck2No, Model.Ck2NoList, "All", new { @class = "form-control" })
+                                        @if (Model.Ck2NoList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(x => x.Ck2No, Model.Ck2NoList, "All", new { @class = "form-control" })
+                                        }
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -197,7 +335,15 @@
                                 <div class="row">
                                     <label class="col-md-4">CK-2 Value</label>
                                     <div class="col-md-8">
-                                        @Html.DropDownListFor(x => x.Ck2Value, Model.Ck2ValueList, "All", new { @class = "form-control" })
+                                        @if (Model.Ck2ValueList == null)
+                                        {
+                                            @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(x => x.Ck2Value, Model.Ck2ValueList, "All", new { @class = "form-control" })
+                                        }
+                                        
                                     </div>
                                 </div>
                             </div>
