@@ -113,13 +113,21 @@
                 $("input[name='Month']").val($('#Month').find("option:selected").val());
 
                 $('#XmlLogBackupForms').submit();
+                $('#xmlLogModal').modal('hide');
+                @*window.location.href = '@Url.Action("Index", "XmlLog")';*@
+                ReloadPage();
             });
 
             OnChangeFileName();
             OnChangeMonth();
         });
 
-
+        function ReloadPage() {
+            setTimeout(function () {
+                window.location.reload(1);
+            }, 1000);
+        }
+        
         function setupDataTables() {
 
             // DataTable

@@ -8,6 +8,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
+using Sampoerna.EMS.LinqExtensions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 
@@ -83,6 +84,41 @@ namespace Sampoerna.EMS.BLL
                     _repository.Delete(data);
                 }
             }
+
+           
+            _uow.SaveChanges();
+        }
+
+        public void BackupXmlLog(BackupXmlLogInput input)
+        {
+            var inputParam = new NlogGetByParamInput();
+            inputParam.FileName = input.FileName;
+            inputParam.Month = input.Month;
+
+            var listData = GetNlogByParam(inputParam);
+
+            foreach (var nlogDto in listData)
+            {
+                //get data 
+                var data = _repository.GetByID(nlogDto.Nlog_Id);
+                if (data != null)
+                {
+                    _repository.Delete(data);
+                }
+            }
+
+            //ZipHelper.CreateZip();
+            //backup to zip file
+            var listFile = listData.DistinctBy(c => c.FileName).Select(x => x.FileName).ToList();
+
+            //check file
+            foreach (var file in listFile)
+            {
+                if (!System.IO.File.Exists(input.FolderPath + file))
+                    throw new BLLException(ExceptionCodes.BLLExceptions.LogXmlNotFound);
+            }
+            
+            ZipHelper.CreateZip(listFile,input.FolderPath, input.FileZipName);
 
             _uow.SaveChanges();
         }

@@ -13,5 +13,7 @@ namespace Sampoerna.EMS.Contract
         List<NlogDto> GetAllData();
 
         void DeleteDataByParam(NlogGetByParamInput input);
+
+        void BackupXmlLog(BackupXmlLogInput input);
     }
 }

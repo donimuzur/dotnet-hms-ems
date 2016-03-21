@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -117,18 +118,50 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult BackupXml(XmlLogIndexViewModel model)
         {
 
-            var input = new NlogGetByParamInput()
-            {
-                FileName = model.FileName,
-                Month = model.Month
-            };
+            //var input = new NlogGetByParamInput()
+            //{
+            //    FileName = model.FileName,
+            //    Month = model.Month
+            //};
 
-            _nLogBll.DeleteDataByParam(input);
+            //_nLogBll.DeleteDataByParam(input);
 
-            AddMessageInfo("Success backup data", Enums.MessageInfoType.Success);
-
-            return RedirectToAction("Index");
+            //AddMessageInfo("Success backup data", Enums.MessageInfoType.Success);
             
+            //return RedirectToAction("Index");
+
+            try
+            {
+                string folderPath = @"D:\Temp\EMS\zipFolder\\";
+                string zipName = "XmlLogZip" + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + CurrentUser.USER_ID + ".zip";
+
+                var input = new BackupXmlLogInput();
+                input.FolderPath = folderPath;
+                input.FileZipName = folderPath + zipName;
+
+                input.FileName = model.FileName;
+                input.Month = model.Month;
+
+                _nLogBll.BackupXmlLog(input);
+
+                // Read bytes from disk
+                //byte[] fileBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/Directories/hello/sample.zip"));
+                byte[] fileBytes = System.IO.File.ReadAllBytes(folderPath + zipName);
+
+                // Return bytes as stream for download
+                return File(fileBytes, "application/zip", zipName);
+            }
+            catch (Exception ex)
+            {
+
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+
+                return RedirectToAction("Index");
+            }
+          
+
         }
+
+      
 	}
 }
