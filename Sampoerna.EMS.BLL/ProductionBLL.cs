@@ -865,6 +865,14 @@ namespace Sampoerna.EMS.BLL
                 var dt = Convert.ToDateTime(input.ProoductionDate);
                 queryFilter = queryFilter.And(c => c.PRODUCTION_DATE == dt);
             }
+            if (input.Month != null && input.Month > 0)
+            {
+                queryFilter = queryFilter.And(c => c.PRODUCTION_DATE.Month == input.Month);
+            }
+            if (input.Year != null && input.Year > 0)
+            {
+                queryFilter = queryFilter.And(c => c.PRODUCTION_DATE.Year == input.Year);
+            }
             if (!string.IsNullOrEmpty(input.UserId))
             {
                 var listUserPlant = _userPlantBll.GetPlantByUserId(input.UserId);

@@ -25,14 +25,16 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         public string FaCode { get; set; }
         public string Uom { get; set; }
         public string ProductionDate { get; set; }
-
-       
+        public string Month { get; set; }
+        public string Year { get; set; }
 
         //selecList
         public SelectList CompanyCodeList { get; set; }
         public SelectList PlantWerkList { get; set; }
         public SelectList FaCodeList { get; set; }
         public SelectList UomList { get; set; }
+        public SelectList MonthList { get; set; }
+        public SelectList YearList { get; set; }
         public Enums.CK4CType Ck4CType { get; set; }
         public List<ProductionDetail> Details { get; set; }
         public ProductionDto ProductionDtos { get; set; }

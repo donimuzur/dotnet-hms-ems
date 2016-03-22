@@ -35,9 +35,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IChangesHistoryBLL _changeHistoryBll;
         private IUserPlantMapBLL _userPlantMapBll;
         private IPOAMapBLL _poaMapBll;
+        private IMonthBLL _monthBll;
 
         public ProductionController(IPageBLL pageBll, IProductionBLL productionBll, ICompanyBLL companyBll, IPlantBLL plantBll, IUnitOfMeasurementBLL uomBll,
-            IBrandRegistrationBLL brandRegistrationBll, IChangesHistoryBLL changeHistorybll, IUserPlantMapBLL userPlantMapBll, IPOAMapBLL poaMapBll)
+            IBrandRegistrationBLL brandRegistrationBll, IChangesHistoryBLL changeHistorybll, IUserPlantMapBLL userPlantMapBll, IPOAMapBLL poaMapBll, IMonthBLL monthBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _productionBll = productionBll;
@@ -49,6 +50,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _changeHistoryBll = changeHistorybll;
             _userPlantMapBll = userPlantMapBll;
             _poaMapBll = poaMapBll;
+            _monthBll = monthBll;
         }
 
         #region Index
@@ -87,6 +89,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.CompanyCodeList = company;
             model.PlantWerkList = new SelectList(listPlant, "Value", "Text");
+            model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.YearList = ProductionYearList();
+            model.Month = DateTime.Now.Month.ToString();
+            model.Year = DateTime.Now.Year.ToString();
 
             var input = Mapper.Map<ProductionGetByParamInput>(model);
             input.ProoductionDate = null;
@@ -601,6 +607,16 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 _changeHistoryBll.MoveHistoryToNewData(data, oldFormId);
             }
+        }
+
+        private SelectList ProductionYearList()
+        {
+            var years = new List<SelectItemModel>();
+            var currentYear = DateTime.Now.Year;
+            years.Add(new SelectItemModel() { ValueField = currentYear + 1, TextField = (currentYear + 1).ToString() });
+            years.Add(new SelectItemModel() { ValueField = currentYear, TextField = currentYear.ToString() });
+            years.Add(new SelectItemModel() { ValueField = currentYear - 1, TextField = (currentYear - 1).ToString() });
+            return new SelectList(years, "ValueField", "TextField");
         }
     }
 }
