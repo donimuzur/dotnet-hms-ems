@@ -87,6 +87,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
         public string NoPengawas { get; set; }
         public string Remarks { get; set; }
         public string Ck1Date { get; set; }
+
+        public bool AllowEditCompletedDocument { get; set; }
     }
 
 

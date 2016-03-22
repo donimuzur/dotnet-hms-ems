@@ -136,6 +136,8 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<Ck4CSummaryReportDto, Ck4CSummaryReportsItem>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<Ck4CSummaryReportsItem, Ck4CSummaryReportDto>().IgnoreAllNonExisting();
+
             Mapper.CreateMap<Ck4CSearchSummaryReportsViewModel, Ck4CGetSummaryReportByParamInput>().IgnoreAllNonExisting()
                 .ForMember(src => src.Ck4CNo, opt => opt.MapFrom(dest => dest.Ck4CNo))
                 .ForMember(src => src.PlantId, opt => opt.MapFrom(dest => dest.PlantId))

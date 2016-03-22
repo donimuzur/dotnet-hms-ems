@@ -1295,6 +1295,7 @@
     <Content Include="Views\CK5\_CK5MarketReturnListSummaryReport.cshtml" />
     <Content Include="Views\XmlFileManagement\Detail.cshtml" />
     <Content Include="Views\Reversal\Index.cshtml" />
+    <Content Include="Views\PBCK4\_Pbck4EditCompleted.cshtml" />
     <Content Include="Views\Reversal\_ReversalList.cshtml" />
     <Content Include="Views\Reversal\Create.cshtml" />
     <Content Include="Views\Reversal\_HomeCreate.cshtml" />
@@ -1302,6 +1303,15 @@
     <Content Include="Views\Reversal\_HomeEdit.cshtml" />
     <Content Include="Views\Reversal\Detail.cshtml" />
     <Content Include="Views\Reversal\_HomeDetail.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck7EditCompleted.cshtml" />
+    <Content Include="Views\PBCK7AndPBCK3\_Pbck3EditCompleted.cshtml" />
+    <Content Include="Views\CK5\_CK5EditCompleted.cshtml" />
+    <Content Include="Views\CK4C\Edits.cshtml" />
+    <Content Include="Views\CK4C\_HomeCompletedSuperAdmin.cshtml" />
+    <Content Include="Views\PBCK1\Edits.cshtml" />
+    <Content Include="Views\PBCK1\_HomeGovApprovalSuperAdmin.cshtml" />
+    <Content Include="Views\LACK1\Edits.cshtml" />
+    <Content Include="Views\LACK1\_HomeCompleted.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

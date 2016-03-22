@@ -1,4 +1,5 @@
-﻿@model Sampoerna.EMS.Website.Models.PoaDelegation.PoaDelegationFormViewModel
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.PoaDelegation.PoaDelegationFormViewModel
 
 @using (Html.BeginForm("Edit", "PoaDelegation", FormMethod.Post, new { @class = "form-excise", @id = "SavePoaDelegationForms" }))
 {
@@ -126,7 +127,19 @@
 
                                     </div>
 
+                                    <div class="row">
 
+                                        <div class="col-md-12">
+                                            <span class="red">*</span> ) This Field Required
+                                        </div>
+
+                                        <div class="col-md-12" id="divUser">
+                                            Take From User Plant Map
+                                        </div>
+                                        <div class="col-md-12" id="divPoa">
+                                            Take From POA Map
+                                        </div>
+                                    </div>
 
                                 </div>
 
@@ -186,6 +199,11 @@
                 }
             });
 
+            $("#divUser").hide();
+            $("#divPoa").hide();
+            var userFrom = $('#PoaFrom').find("option:selected").val();
+            ajaxGetUserRole('@Url.Action("GetUserRole", "PoaDelegation")', { userId: userFrom });
+            
             OnChangeUserFrom();
 
         });
@@ -274,6 +292,7 @@
                     } else {
 
                         ajaxGetListUser('@Url.Action("GetListUsersRole", "PoaDelegation")', { userId: userFrom });
+                        ajaxGetUserRole('@Url.Action("GetUserRole", "PoaDelegation")', { userId: userFrom });
                     }
                 }
             });
@@ -301,6 +320,34 @@
                             listTo.html(list);
 
                             listTo.selectpicker('refresh');
+                        }
+
+
+                    }
+                });
+            }
+        }
+        
+        function ajaxGetUserRole(url, formData) {
+            if (formData.userId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+
+                        if (data != null) {
+                            if (data == '@Enums.UserRole.POA.ToString()') {
+                                $("#divPoa").show();
+                                $("#divUser").hide();
+                            } else if (data == '@Enums.UserRole.User.ToString()') {
+                                $("#divPoa").hide();
+                                $("#divUser").show();
+                            } else {
+                                $("#divUser").hide();
+                                $("#divPoa").hide();
+                            }
+
                         }
 
 

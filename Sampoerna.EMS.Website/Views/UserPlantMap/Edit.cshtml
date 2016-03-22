@@ -131,8 +131,12 @@
     <script src="~/Scripts/chosen.jquery.min.js"></script>
     <script type="text/javascript" language="javascript">
         var plantlist = [];
-        var selectedPlant = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Plants)));
-        var selectedNppbkc = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SelectedNppbkc)));
+        var selectedPlant = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Plants, Newtonsoft.Json.Formatting.Indented, new Newtonsoft.Json.JsonSerializerSettings { 
+                           ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Serialize
+                       })));
+    var selectedNppbkc = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SelectedNppbkc, Newtonsoft.Json.Formatting.Indented, new Newtonsoft.Json.JsonSerializerSettings { 
+                           ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Serialize
+                       })));
         $(document).ready(function() {
             $('#MenuUserPlantMap').addClass('active');
 

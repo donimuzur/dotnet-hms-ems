@@ -77,13 +77,9 @@ namespace Sampoerna.EMS.BLL
                 var dt = Convert.ToDateTime(input.ProoductionDate);
                 queryFilter = queryFilter.And(c => c.PRODUCTION_DATE == dt);
             }
-            if (!string.IsNullOrEmpty(input.UserId))
+            if (input.UserRole != Core.Enums.UserRole.Administrator)
             {
-                var listUserPlant = _userPlantBll.GetPlantByUserId(input.UserId);
-
-                var listPoaPlant = _poaMapBll.GetPlantByPoaId(input.UserId);
-
-                queryFilter = queryFilter.And(c => listUserPlant.Contains(c.WERKS) || listPoaPlant.Contains(c.WERKS));
+                queryFilter = queryFilter.And(c => input.ListUserPlants.Contains(c.WERKS));
             }
 
             Func<IQueryable<PRODUCTION>, IOrderedQueryable<PRODUCTION>> orderBy = null;

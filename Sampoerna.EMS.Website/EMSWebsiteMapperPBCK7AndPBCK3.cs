@@ -217,6 +217,7 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.PBCK7_ITEM_ID, opt => opt.MapFrom(src => src.Id))
               .ForMember(dest => dest.PBCK7_QTY, opt => opt.MapFrom(src => ConvertHelper.ConvertToDecimalOrZero(src.Pbck7Qty)))
               .ForMember(dest => dest.BACK1_QTY, opt => opt.MapFrom(src => ConvertHelper.ConvertToDecimalOrZero(src.Back1Qty)))
+              .ForMember(dest => dest.FISCAL_YEAR, opt => opt.MapFrom(src => src.FiscalYear))
               ;
 
             #region ------------ Dashboard ----------------

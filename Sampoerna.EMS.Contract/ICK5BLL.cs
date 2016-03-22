@@ -106,6 +106,8 @@ namespace Sampoerna.EMS.Contract
 
        List<Ck5MatdocDto> GetMatdocList(long ck5Id = 0);
 
+       void EditCompletedDocument(EditCompletedDocumentCk5Input input);
+
        List<Ck5MatdocDto> GetMatdocList(GetMatdocListInput input);
    }
 }

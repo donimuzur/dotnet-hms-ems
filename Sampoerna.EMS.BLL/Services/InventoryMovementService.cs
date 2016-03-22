@@ -96,6 +96,12 @@ namespace Sampoerna.EMS.BLL.Services
 
             Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue && c.POSTING_DATE.Value < new DateTime(tempyear,tempmonth, 1);
 
+            //if (input.IsEtilAlcohol)
+            //{
+            //    queryFilter = c => c.POSTING_DATE.HasValue
+            //    && c.POSTING_DATE.Value.Year == input.PeriodYear && c.POSTING_DATE.Value.Month == input.PeriodMonth;
+            //}
+
             if (input.PlantIdList.Count > 0)
             {
                 queryFilter = queryFilter.And(c => input.PlantIdList.Contains(c.PLANT_ID));
@@ -146,13 +152,17 @@ namespace Sampoerna.EMS.BLL.Services
         public List<INVENTORY_MOVEMENT> GetReceivingByOrderAndPlantIdInPeriod(GetReceivingByOrderAndPlantIdInPeriodParamInput input)
         {
 
-            var mvtReceiving = EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving101);
+            var mvtReceiving = new List<string>()
+            {
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving101),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving102)
+            };
 
             var data =
                 _repository.Get(
                     c =>
                         c.ORDR == input.Ordr && c.PLANT_ID == input.PlantId &&
-                        c.MVT == mvtReceiving && c.POSTING_DATE.HasValue &&
+                        mvtReceiving.Contains(c.MVT) && c.POSTING_DATE.HasValue &&
                         c.POSTING_DATE.Value.Year == input.PeriodYear && c.POSTING_DATE.Value.Month == input.PeriodMonth);
 
             return data.ToList();

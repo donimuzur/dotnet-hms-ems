@@ -85,5 +85,8 @@ namespace Sampoerna.EMS.Contract
 
         decimal GetCurrentReqQtyByPbck7IdAndFaCode(int pbck7Id, string faCode);
 
+        void EditCompletedDocumentPbck7(EditCompletedDocumentPbck7Input input);
+
+        void EditCompletedDocumentPbck3(EditCompletedDocumentPbck3Input input);
     }
 }

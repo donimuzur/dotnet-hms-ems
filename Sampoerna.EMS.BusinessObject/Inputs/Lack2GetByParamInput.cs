@@ -26,6 +26,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public List<string> NppbkcList { get; set; }
 
+        public List<string> PlantList { get; set; } 
+
         public List<string> DocumentNumberList { get; set; }
 
     }

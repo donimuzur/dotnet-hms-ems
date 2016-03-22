@@ -57,7 +57,11 @@
                             <input type="button" class="btn btn-danger" value="Cancel" id="btnCancelSAP" />
                         }
 
-                        if (Model.AllowAttachmentCompleted)
+                        if (Model.AllowEditCompletedDocument)
+                        {
+                            <input type="button" class="btn btn-blue" value="Save" id="btnSaveEditCompleted" />
+                        }
+                        else if (Model.AllowAttachmentCompleted)
                         {
                             <input type="button" class="btn btn-blue" value="Save" id="btnSaveAttachment" />
                         }
@@ -141,6 +145,11 @@
 
 
                             @Html.Partial("_CK5POReceive")
+                        }
+                         else if (Model.AllowEditCompletedDocument)
+                        {
+                          
+                            @Html.Partial("_CK5EditCompleted")
                         }
                         else
                         {
@@ -331,8 +340,12 @@
     <script type="text/javascript">
         $(document).ready(function() {
 
-       
-
+            $("select#RequestType option[value='Dibayar']").replaceWith("<optgroup label='Dibayar'>");
+            $("select#RequestType option[value='TidakDipungut']").replaceWith("<optgroup label='Tidak Dipungut'>");
+            $("select#RequestType option[value='Dibebaskan']").replaceWith("<optgroup label='Dibebaskan'>");
+            $("select#RequestType option[value='Lainnya']").replaceWith("<optgroup label='Lainnya'>");
+            $("#RequestType").find("option").eq(0).remove();
+            
             if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()' || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()') {
                 OnReadyFunction('@Model.DocumentStatus');
                 if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()') {
@@ -349,25 +362,6 @@
             });
 
             $('#btnBack').click(function(e) {
-
-                @*if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()' || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()')
-                    if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()') {
-                        location.href = '@Url.Action("CK5MarketReturnCompleted", "CK5")';
-                    } else {
-                        location.href = '@Url.Action("CK5Completed", "CK5")';
-                    }
-                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Domestic.ToString()')
-                    location.href = '@Url.Action("Index", "CK5")';
-                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Intercompany.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.DomesticAlcohol.ToString()')
-                    location.href = '@Url.Action("Index", "CK5")';
-                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Export.ToString()')
-                    location.href = '@Url.Action("CK5Export", "CK5")';
-                else if ('@Model.Ck5Type' == '@Enums.CK5Type.PortToImporter.ToString()' || '@Model.Ck5Type' == '@Enums.CK5Type.ImporterToPlant.ToString()')
-                    location.href = '@Url.Action("CK5Import", "CK5")';
-                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()')
-                    location.href = '@Url.Action("CK5Manual", "CK5")';
-                else if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()')
-                    location.href = '@Url.Action("CK5MarketReturn", "CK5")';*@
                 
                 if ('@Model.DocumentStatus' == '@Enums.DocumentStatus.Completed.ToString()' || '@Model.DocumentStatus' == '@Enums.DocumentStatus.Cancelled.ToString()')
                     if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()') {
@@ -625,6 +619,10 @@
         });
         
         $("#btnAllowAttachment").click(function () {
+            $('#GovApproveForm').submit();
+        });
+        
+        $("#btnSaveEditCompleted").click(function () {
             $('#GovApproveForm').submit();
         });
     </script>

@@ -233,6 +233,13 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(dbUser);
         }
 
+        [HttpPost]
+        public JsonResult GetUserRole(string userId)
+        {
+            var dbUser = _poabll.GetUserRole(userId);
+
+            return Json(dbUser.ToString());
+        }
 
     }
 }
