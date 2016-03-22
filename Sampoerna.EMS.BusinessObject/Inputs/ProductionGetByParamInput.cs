@@ -16,5 +16,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Enums.UserRole UserRole { get; set; }
         public List<string> ListUserPlants { get; set; }
         public string UserId { get; set; }
+        public int Month { get; set; }
+        public int Year { get; set; }
     }
 }
