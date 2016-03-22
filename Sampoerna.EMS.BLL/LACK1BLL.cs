@@ -2116,7 +2116,9 @@ namespace Sampoerna.EMS.BLL
                 .GroupBy(x=> new
                 {
                     x.Mvt, 
+                    //x.Bun,
                     x.MaterialId, 
+                    x.PlantId,
                     x.MatDoc, 
                     x.Ordr, 
                     x.Batch, 
@@ -2131,6 +2133,8 @@ namespace Sampoerna.EMS.BLL
                 {
                     //Batch = x.Key.Batch,
                     //ConvertedQty = x.Key.ConvertedQty,
+                    //Bun = x.Key.Bun,
+                    PlantId = x.Key.PlantId,
                     ProductionQty = x.Key.ProductionQty,
                     Mvt = x.Key.Mvt,
                     MaterialId = x.Key.MaterialId,
@@ -2144,6 +2148,8 @@ namespace Sampoerna.EMS.BLL
                     UomDesc = x.Key.UomDesc,
                     UomId = x.Key.UomId
                 }) .ToList();
+
+            //finalgoodlistGrouped = AlcoholProductionConvertionProcess(finalgoodlistGrouped,"G");
             var finalGoodsList = allTrackingList.Where(c => c.IsFinalGoodsType).ToList();
             //var strCsv = "";
             //foreach (var data in finalGoodsList)
@@ -2153,6 +2159,7 @@ namespace Sampoerna.EMS.BLL
             var productionTypeId = finalGoodsList.Any() ? finalGoodsList.FirstOrDefault().ExGoodsTypeId : null;
 
             var productionList = new List<Lack1GeneratedProductionDataDto>();
+            
 
             //Get product type info
             var prodType = _goodProdTypeService.GetProdCodeByGoodTypeId(productionTypeId);
@@ -3572,6 +3579,64 @@ namespace Sampoerna.EMS.BLL
                                    ConvertedUomId = subM != null ? subM.MEINH : string.Empty,
                                    ConvertedUomDesc = subM != null ? subM.ConvertedUomDesc : string.Empty,
                                    ConvertedQty = subM != null ? (x.QTY.HasValue && subM.UMREN.HasValue ? (x.QTY.Value / subM.UMREN.Value) : 0) : 0
+                               };
+
+            return dataToReturn.ToList();
+
+        }
+
+        private List<Lack1GeneratedInvMovementProductionStepTracingItem> AlcoholProductionConvertionProcess(List<Lack1GeneratedInvMovementProductionStepTracingItem> invMovements, string bkcUomId)
+        {
+            var materialIdList = invMovements.Select(d => d.MaterialId).Distinct().ToList();
+            var plantIdList = invMovements.Select(d => d.PlantId).Distinct().ToList();
+            var materialUomList = _materialUomService.GetByMaterialListAndPlantIdListSpecificBkcUom(materialIdList, plantIdList, bkcUomId);
+
+            var uomData = _uomBll.GetAll().Distinct().ToList();
+
+            //join material_uom and uom
+            var joinedMaterialUomData = from x in materialUomList
+                                        join y in uomData on x.MEINH equals y.UOM_ID into gj
+                                        from subY in gj.DefaultIfEmpty()
+                                        select new
+                                        {
+                                            x.STICKER_CODE,
+                                            x.WERKS,
+                                            x.ZAIDM_EX_MATERIAL.BASE_UOM_ID,
+                                            x.MEINH,
+                                            x.UMREN,
+                                            ConvertedUomDesc = subY != null ? subY.UOM_DESC : string.Empty
+                                        };
+
+            //left join
+            var dataToReturn = from x in invMovements
+                               join m in joinedMaterialUomData on new { MATERIAL_ID = x.MaterialId, PLANT_ID = x.PlantId, BUN = x.Bun }
+                    equals new { MATERIAL_ID = m.STICKER_CODE, PLANT_ID = m.WERKS, BUN = m.BASE_UOM_ID } into gj
+                               from subM in gj.DefaultIfEmpty()
+                               select new Lack1GeneratedInvMovementProductionStepTracingItem()
+                               {
+                                   //In = x.,
+                                   Mvt = x.Mvt,
+                                   MaterialId = x.MaterialId,
+                                   PlantId = x.PlantId,
+                                   //Qty = x.ConvertedQty.HasValue? x.ConvertedQty.Value : 0,
+                                   // = x.SLOC,
+                                   //VENDOR = x.VENDOR,
+                                   Bun = x.Bun,
+                                   PurchDoc = x.PurchDoc,
+                                   PostingDate = x.PostingDate,
+                                   //Entry = x.ENTRY_DATE,
+                                   //TIME = x.TIME,
+                                   //CREATED_USER = x.CREATED_USER,
+                                   MatDoc = x.MatDoc,
+                                   //MAT_DOC = x.MAT_DOC,
+                                   Batch = x.Batch,
+                                   //BATCH = x.BATCH,
+                                   //ORDR = x.ORDR,
+                                   Ordr = x.Ordr,
+                                   ParentOrdr = x.ParentOrdr,
+                                   ConvertedUomId = subM != null ? subM.MEINH : string.Empty,
+                                   ConvertedUomDesc = subM != null ? subM.ConvertedUomDesc : string.Empty,
+                                   ProductionQty = subM != null ? (subM.UMREN.HasValue ? (x.ProductionQty / subM.UMREN.Value) : 0) : 0
                                };
 
             return dataToReturn.ToList();
