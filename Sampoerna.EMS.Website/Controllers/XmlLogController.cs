@@ -1,6 +1,6 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
@@ -45,14 +45,34 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+        private SelectList GetListMont()
+        {
+            var data = _monthBll.GetAll();
+            //var listMonth = new List<MONTH>();
+            //foreach (var nlogDto in data)
+            //{
+            //    if (!nlogDto.Timestamp.HasValue) continue;
+            //    var month = _monthBll.GetMonth(nlogDto.Timestamp.Value.Month);
+            //    if (month != null)
+            //        listMonth.Add(month);
+            //}
+
+            return new SelectList(data, "MONTH_ID", "MONTH_NAME_ENG");
+
+        }
+
         private XmlLogIndexViewModel SetListIndex(XmlLogIndexViewModel model)
         {
-            var listData = _nLogBll.GetAllData();
-            var result = listData.DistinctBy(c=>c.FileName).ToList();
-            model.FileNameList = new SelectList(result, "FileName", "FileName");
-            //model.MonthList = new SelectList(listData.Select(c => c.Timestamp != null ? c.Timestamp.Value.Month : 0).Distinct().ToList(), "FileName", "FileName");
-            //model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
-            model.MonthList = GetListMont(listData);
+            //var listData = _nLogBll.GetAllData();
+            //result = listData.DistinctBy(c=>c.FileName).ToList();
+
+            var listData = _nLogBll.GetAllDataFileName();
+            //model.FileNameList = new SelectList(listData, "FileName", "FileName");
+            model.FileNameList = new SelectList(listData);
+            model.MonthList = GetListMont();
+
+            if (listData.Any())
+                model.FileName = listData.First();
 
             return model;
         }
@@ -63,7 +83,13 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new XmlLogIndexViewModel();
             model.MainMenu = Enums.MenuList.Settings;
             model.CurrentMenu = PageInfo;
-            var dataXml = _nLogBll.GetNlogByParam(new NlogGetByParamInput());
+            model = SetListIndex(model);
+
+            var input = new NlogGetByParamInput();
+            input.FileName = model.FileName;
+
+
+            var dataXml = _nLogBll.GetNlogByParam(input);
             model.ListXmlLogs = Mapper.Map<List<XmlLogFormViewModel>>(dataXml);
             foreach (var xmlLogFormViewModel in model.ListXmlLogs)
             {
@@ -75,7 +101,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
 
-            model = SetListIndex(model);
+            
 
             return View(model);
         }
@@ -132,7 +158,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
-                string folderPath = @"D:\Temp\EMS\zipFolder\\";
+                
+                //string folderPath = @"D:\Temp\EMS\zipFolder\";
+                string folderPath = ConfigurationManager.AppSettings["XmlLogPath"];
                 string zipName = "XmlLogZip" + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + CurrentUser.USER_ID + ".zip";
 
                 var input = new BackupXmlLogInput();
@@ -147,7 +175,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 // Read bytes from disk
                 //byte[] fileBytes = System.IO.File.ReadAllBytes(Server.MapPath("~/Directories/hello/sample.zip"));
                 byte[] fileBytes = System.IO.File.ReadAllBytes(folderPath + zipName);
-
+                
                 // Return bytes as stream for download
                 return File(fileBytes, "application/zip", zipName);
             }
@@ -162,6 +190,45 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-      
+
+        [HttpPost]
+        public ActionResult GenerateData(XmlLogIndexViewModel model)
+        {
+
+            try
+            {
+
+                //string folderPath = @"D:\Temp\EMS\zipFolder\";
+                string folderPath = ConfigurationManager.AppSettings["XmlLogPath"];
+                string zipName = "XmlLogZip" + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + CurrentUser.USER_ID + ".zip";
+
+                var input = new BackupXmlLogInput();
+                input.FolderPath = folderPath;
+                input.FileZipName = folderPath + zipName;
+
+                input.FileName = model.FileName;
+                input.Month = model.Month;
+
+                _nLogBll.BackupXmlLog(input);
+           
+                return Json(new { success = true, zipName }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+                return Json(new { success = false, message }, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+
+        public ActionResult DownloadData(string fName)
+         {
+             //string folderPath = @"D:\Temp\EMS\zipFolder\";
+             string folderPath = ConfigurationManager.AppSettings["XmlLogPath"];
+             byte[] fileBytes = System.IO.File.ReadAllBytes(folderPath + fName);
+
+             // Return bytes as stream for download
+             return File(fileBytes, "application/zip", fName);
+        }
 	}
 }

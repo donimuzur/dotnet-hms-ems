@@ -97,6 +97,15 @@ namespace Sampoerna.EMS.BLL
 
             var listData = GetNlogByParam(inputParam);
 
+            var listFile = listData.DistinctBy(c => c.FileName).Select(x => x.FileName).ToList();
+
+            //check file
+            foreach (var file in listFile)
+            {
+                if (!System.IO.File.Exists(input.FolderPath + file))
+                    throw new BLLException(ExceptionCodes.BLLExceptions.LogXmlNotFound);
+            }
+
             foreach (var nlogDto in listData)
             {
                 //get data 
@@ -109,18 +118,19 @@ namespace Sampoerna.EMS.BLL
 
             //ZipHelper.CreateZip();
             //backup to zip file
-            var listFile = listData.DistinctBy(c => c.FileName).Select(x => x.FileName).ToList();
-
-            //check file
-            foreach (var file in listFile)
-            {
-                if (!System.IO.File.Exists(input.FolderPath + file))
-                    throw new BLLException(ExceptionCodes.BLLExceptions.LogXmlNotFound);
-            }
+          
             
             ZipHelper.CreateZip(listFile,input.FolderPath, input.FileZipName);
 
             _uow.SaveChanges();
+        }
+
+        public List<string> GetAllDataFileName()
+        {
+            var dbData = _repository.Get().DistinctBy(c=>c.FileName).Select(c=>c.FileName).ToList();
+
+            return dbData;
+
         }
     }
 }

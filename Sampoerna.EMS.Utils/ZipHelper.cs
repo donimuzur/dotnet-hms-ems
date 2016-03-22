@@ -27,9 +27,6 @@ namespace Sampoerna.EMS.Utils
 
             using (ZipArchive newFile = ZipFile.Open(zipFileName, ZipArchiveMode.Create))
             {
-                //Here are two hard-coded files that we will be adding to the zip
-                //file.  If you don't have these files in your system, this will
-                //fail.  Either create them or change the file names.
                 foreach (var fileName in listFile)
                 {
                     newFile.CreateEntryFromFile(folderPath + fileName, fileName, CompressionLevel.Fastest);
