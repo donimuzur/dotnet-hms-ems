@@ -10,9 +10,11 @@
         <div class="col-sm-12">
             <h3>User Plant Map</h3>
             <div class="action-button new">
-                <a href="@Url.Action("Create", "UserPlantMap")">
-                    <button class="btn btn-blue">NEW</button>
-                </a>
+                @if (Model.IsNotViewer) { 
+                    <a href="@Url.Action("Create", "UserPlantMap")">
+                        <button class="btn btn-blue">NEW</button>
+                    </a>
+                }
             </div>
         </div>
     </div>
@@ -52,7 +54,9 @@
 
                                 <td class="action">
                                     <a href="@Url.Action("Detail", "UserPlantMap", new { id = Model.UserPlantList[i].UserId })" data-toggle=" tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
-                                    <a href="@Url.Action("Edit", "UserPlantMap", new { id = Model.UserPlantList[i].UserId })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                                    @if (Model.IsNotViewer) { 
+                                        <a href="@Url.Action("Edit", "UserPlantMap", new { id = Model.UserPlantList[i].UserId })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                                    }
                                 </td>
                                 <td>
                                     @Html.DisplayFor(model => model.UserPlantList[i].UserId)
