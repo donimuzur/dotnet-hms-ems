@@ -40,7 +40,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                Detail = Mapper.Map<List<DetailIndexUserAuthorization>>(_userAuthorizationBll.GetAll())
+                Detail = Mapper.Map<List<DetailIndexUserAuthorization>>(_userAuthorizationBll.GetAll()),
+                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
             };
             
             return View("Index", model);
@@ -69,6 +70,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Edit(string id)
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Detail", new { id });
+            }
+
             var model = SetDetailModel(id);
             return View("Edit", model);
         }

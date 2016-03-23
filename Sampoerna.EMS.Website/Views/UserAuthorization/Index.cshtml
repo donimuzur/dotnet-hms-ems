@@ -39,7 +39,9 @@
                             <tr>
                                 <td class="action">
                                     <a href="@Url.Action("Detail", "UserAuthorization",new {id = item.Brole})" data-toggle=" tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    @if (Model.IsNotViewer) {
                                     <a href="@Url.Action("Edit", "UserAuthorization",new {id = item.Brole})" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                                    }
                                 </td>
                                 <td>
                                     @Html.DisplayFor(model => item.Brole)
