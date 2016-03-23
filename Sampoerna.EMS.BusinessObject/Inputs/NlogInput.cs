@@ -14,4 +14,14 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         
     }
 
+    public class BackupXmlLogInput
+    {
+        public string FileName { get; set; }
+
+        public int? Month { get; set; }
+        
+        public string FolderPath { get; set; }
+
+        public string FileZipName { get; set; }
+    }
 }

@@ -32,6 +32,7 @@ namespace Sampoerna.EMS.XMLReader
                 var xmlRoot = _xmlMapper.GetElement("PRDOUTPUTDetails");
                 var xmlItems = xmlRoot.Elements("row");
                 var items = new List<PRODUCTION>();
+                var itemTemp = new List<ZAAP_SHIFT_RPT>();
                 foreach (var xElement in xmlItems)
                 {
                     var zaapShftRptItem = new ZAAP_SHIFT_RPT();
@@ -156,9 +157,16 @@ namespace Sampoerna.EMS.XMLReader
                         zaapShftRptItem.CREATED_BY = "PI";
                         zaapShftRptItem.CREATED_DATE = DateTime.Now;
                     }
+                    itemTemp.Add(zaapShftRptItem);
+                    
 
-                    _xmlMapper.InsertOrUpdate(zaapShftRptItem);
+                }
 
+                var itemsGrouped = ReconsoleZaap(itemTemp);
+
+                foreach (var zaapShiftRpt in itemsGrouped)
+                {
+                    _xmlMapper.InsertOrUpdate(zaapShiftRpt);
                 }
 
                 var newData = RecalculateZaapShftRpt();
@@ -619,6 +627,67 @@ namespace Sampoerna.EMS.XMLReader
                 }
             }
             
+        }
+
+        private List<ZAAP_SHIFT_RPT> ReconsoleZaap(List<ZAAP_SHIFT_RPT> itemTemp)
+        {
+            var itemreconsole = itemTemp.GroupBy(x => new
+            {
+                x.BATCH,
+                x.FA_CODE,
+                x.WERKS,
+                x.ORDR,
+                x.POSTING_DATE,
+                x.PRODUCTION_DATE,
+                x.ENTERED_DATE,
+                x.MATDOC,
+                x.SHIFT,
+                x.MVT
+            }).Select(x => new ZAAP_SHIFT_RPT()
+            {
+                BATCH = x.Key.BATCH,
+                FA_CODE = x.Key.FA_CODE,
+                WERKS = x.Key.WERKS,
+                ORDR = x.Key.ORDR,
+                POSTING_DATE = x.Key.POSTING_DATE,
+                PRODUCTION_DATE = x.Key.PRODUCTION_DATE,
+                ENTERED_DATE = x.Key.ENTERED_DATE,
+                MATDOC = x.Key.MATDOC,
+                MVT = x.Key.MVT,
+                QTY = x.Sum(y => y.QTY),
+                SHIFT = x.Key.SHIFT,
+                ORIGINAL_QTY = x.Sum(y => y.ORIGINAL_QTY)
+
+            }).ToList();
+
+            var itemsTobeAdded = new List<ZAAP_SHIFT_RPT>();
+
+            foreach (var item in itemreconsole)
+            {
+                var tempExisting = itemTemp.FirstOrDefault(x => x.BATCH == item.BATCH
+                                                                && x.FA_CODE == item.FA_CODE
+                                                                && x.WERKS == item.WERKS
+                                                                && x.MATDOC == item.MATDOC
+                                                                && x.MVT == item.MVT
+                                                                && x.ORDR == item.ORDR
+                                                                && x.SHIFT == item.SHIFT
+
+                                                                && x.PRODUCTION_DATE == item.PRODUCTION_DATE
+                                                                && x.POSTING_DATE == item.POSTING_DATE
+                                                                && x.ENTERED_DATE == item.ENTERED_DATE);
+
+
+                if (tempExisting != null)
+                {
+                    var tempItem = tempExisting;
+                    tempItem.QTY = item.QTY;
+                    tempItem.ORIGINAL_QTY = item.ORIGINAL_QTY;
+                    itemsTobeAdded.Add(tempItem);
+                }
+                
+            }
+
+            return itemsTobeAdded;
         }
 
         private List<PRODUCTION> RecalculateZaapShftRpt()
