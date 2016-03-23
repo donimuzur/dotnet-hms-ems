@@ -1568,6 +1568,8 @@ namespace Sampoerna.EMS.BLL
                 }
             }
 
+            dtToReturn.CloseBalance = GetClosingBalanceSap(dtToReturn);
+
             return dtToReturn;
         }
 
