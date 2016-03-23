@@ -2085,16 +2085,17 @@ namespace Sampoerna.EMS.BLL
             var finalgoodlistGrouped = allTrackingList.Where(c => c.IsFinalGoodsType && mvtType.Contains(c.Mvt))
                 .GroupBy(x=> new
                 {
+                    x.ExGoodsTypeId,
                     x.Mvt, 
                     //x.Bun,
                     x.MaterialId, 
                     x.PlantId,
                     x.MatDoc, 
                     x.Ordr, 
-                    x.Batch, 
-                    x.ParentOrdr, 
+                    //x.Batch, 
+                    //x.ParentOrdr, 
                     x.Qty, 
-                    x.ConvertedQty, 
+                    //x.ConvertedQty, 
                     x.PostingDate,
                     x.UomDesc,
                     x.UomId,
@@ -2104,29 +2105,30 @@ namespace Sampoerna.EMS.BLL
                     //Batch = x.Key.Batch,
                     //ConvertedQty = x.Key.ConvertedQty,
                     //Bun = x.Key.Bun,
+                    ExGoodsTypeId = x.Key.ExGoodsTypeId,
                     PlantId = x.Key.PlantId,
                     ProductionQty = x.Key.ProductionQty,
                     Mvt = x.Key.Mvt,
                     MaterialId = x.Key.MaterialId,
                     MatDoc = x.Key.MatDoc,
                     Ordr = x.Key.Ordr,
-                    Batch = x.Key.Batch,
-                    ParentOrdr = x.Key.ParentOrdr,
+                    //Batch = x.Key.Batch,
+                    //ParentOrdr = x.Key.ParentOrdr,
                     Qty = x.Key.Qty,
-                    ConvertedQty = x.Key.ConvertedQty,
+                    //ConvertedQty = x.Key.ConvertedQty,
                     PostingDate = x.Key.PostingDate,
                     UomDesc = x.Key.UomDesc,
                     UomId = x.Key.UomId
                 }) .ToList();
 
-            //finalgoodlistGrouped = AlcoholProductionConvertionProcess(finalgoodlistGrouped,"G");
-            var finalGoodsList = allTrackingList.Where(c => c.IsFinalGoodsType).ToList();
+            var finalgoodlistGroupedConverted = AlcoholProductionConvertionProcess(finalgoodlistGrouped,"G");
+           // var finalGoodsList = allTrackingList.Where(c => c.IsFinalGoodsType).ToList();
             //var strCsv = "";
             //foreach (var data in finalGoodsList)
             //{
             //    strCsv += ObjectToCsvData(data) + "\r\n";
             //}
-            var productionTypeId = finalGoodsList.Any() ? finalGoodsList.FirstOrDefault().ExGoodsTypeId : null;
+            var productionTypeId = finalgoodlistGrouped.Any() ? finalgoodlistGrouped.FirstOrDefault().ExGoodsTypeId : null;
 
             var productionList = new List<Lack1GeneratedProductionDataDto>();
             
@@ -2144,7 +2146,7 @@ namespace Sampoerna.EMS.BLL
                 };
             }
             //var test = finalGoodsList.Select(x => x.Ordr).Distinct();
-            foreach (var item in finalgoodlistGrouped)
+            foreach (var item in finalgoodlistGroupedConverted)
             {
                 var itemToInsert = new Lack1GeneratedProductionDataDto()
                 {
@@ -2154,8 +2156,8 @@ namespace Sampoerna.EMS.BLL
                     ProductType = prodType.PRODUCT_ALIAS,
                     ProductAlias = prodType.PRODUCT_TYPE,
                     Amount = item.ProductionQty,
-                    UomId = item.UomId,
-                    UomDesc = item.UomDesc
+                    UomId = item.ConvertedUomId,
+                    UomDesc = item.ConvertedUomDesc
                 };
 
                 //no need proportional 
@@ -2297,6 +2299,8 @@ namespace Sampoerna.EMS.BLL
                     item.ExGoodsTypeId = chkMaterial.EXC_GOOD_TYP;
                     item.UomId = chkMaterial.BASE_UOM_ID;
                     item.UomDesc = chkMaterial.UOM != null ? chkMaterial.UOM.UOM_DESC : string.Empty;
+                    if(item.PostingDate.HasValue &&
+                        item.PostingDate.Value.Year == periodYear && item.PostingDate.Value.Month == periodMonth)
                     traceItems.Add(item);
                 }
                 else
@@ -3579,7 +3583,7 @@ namespace Sampoerna.EMS.BLL
 
             //left join
             var dataToReturn = from x in invMovements
-                               join m in joinedMaterialUomData on new { MATERIAL_ID = x.MaterialId, PLANT_ID = x.PlantId, BUN = x.Bun }
+                               join m in joinedMaterialUomData on new { MATERIAL_ID = x.MaterialId, PLANT_ID = x.PlantId, BUN = x.UomId }
                     equals new { MATERIAL_ID = m.STICKER_CODE, PLANT_ID = m.WERKS, BUN = m.BASE_UOM_ID } into gj
                                from subM in gj.DefaultIfEmpty()
                                select new Lack1GeneratedInvMovementProductionStepTracingItem()
@@ -3605,7 +3609,7 @@ namespace Sampoerna.EMS.BLL
                                    Ordr = x.Ordr,
                                    ParentOrdr = x.ParentOrdr,
                                    ConvertedUomId = subM != null ? subM.MEINH : string.Empty,
-                                   ConvertedUomDesc = subM != null ? subM.ConvertedUomDesc : string.Empty,
+                                   ConvertedUomDesc =  subM != null ? subM.ConvertedUomDesc : string.Empty,
                                    ProductionQty = subM != null ? (subM.UMREN.HasValue ? (x.ProductionQty / subM.UMREN.Value) : 0) : 0
                                };
 
