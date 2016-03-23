@@ -150,7 +150,10 @@ namespace Sampoerna.EMS.Core.Exceptions
             Ck5PackageUomNullOrEmpty,
 
             [Description("The scheduler settings not found for this job.")]
-            SchedulerSetingCronNotFound
+            SchedulerSetingCronNotFound,
+
+            [Description("Log XML File not found")]
+            LogXmlNotFound,
         }
 
         /// <summary>
