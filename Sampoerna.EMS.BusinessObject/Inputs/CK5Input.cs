@@ -28,6 +28,10 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Enums.UserRole UserRole { get; set; }
 
         public List<string> ListUserPlant { get; set; }
+
+        public int Month { get; set; }
+
+        public int Year { get; set; }
     }
 
     public class CK5SaveInput

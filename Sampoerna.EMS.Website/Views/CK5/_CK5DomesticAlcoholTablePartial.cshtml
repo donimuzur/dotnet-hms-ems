@@ -12,11 +12,13 @@
             <th>Source Plant</th>
             <th>Destination Plant</th>
             <th>Status</th>
+            <th>Created Date</th>
         </tr>
     </thead>
     <thead class="filters3">
         <tr>
             <th> Action</th>
+            <th></th>
             <th></th>
             <th></th>
             <th></th>
@@ -50,7 +52,8 @@
                 </td>
                 <td>@Html.DisplayFor(model => item.SourcePlant)</td>
                 <td>@Html.DisplayFor(model => item.DestinationPlant)</td>
-                <td class="last">@Html.DisplayFor(model => item.Status)</td>
+                <td>@Html.DisplayFor(model => item.Status)</td>
+                <td class="last">@Html.DisplayFor(model => item.DocumentCreatedDate)</td>
             </tr>
 
         }

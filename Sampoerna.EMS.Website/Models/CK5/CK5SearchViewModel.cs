@@ -31,6 +31,13 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         [Display(Name = "Creator")]
         public string Creator { get; set; }
+
+        [Display(Name = "Month")]
+        public string Month { get; set; }
+
+        [Display(Name = "Year")]
+        public string Year { get; set; }
+
         /// <summary>
         /// optional if want to sorting from query
         /// </summary>
@@ -41,6 +48,8 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public SelectList NPPBKCOriginList { get; set; }
         public SelectList NPPBKCDestinationList { get; set; }
         public SelectList CreatorList { get; set; }
+        public SelectList MonthList { get; set; }
+        public SelectList YearList { get; set; }
 
         public Enums.CK5Type Ck5Type { get; set; }
 

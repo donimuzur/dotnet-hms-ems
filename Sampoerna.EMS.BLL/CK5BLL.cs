@@ -286,6 +286,15 @@ namespace Sampoerna.EMS.BLL
 
             }
 
+            if (input.Month > 0)
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_DATE.Month == input.Month);
+            }
+            if (input.Year > 0)
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_DATE.Year == input.Year);
+            }
+
             if (input.Ck5Type == Enums.CK5Type.Completed)
                 queryFilter = queryFilter.And(c => (c.STATUS_ID == Enums.DocumentStatus.Completed || c.STATUS_ID == Enums.DocumentStatus.Cancelled) && c.CK5_TYPE != Enums.CK5Type.MarketReturn);
             else

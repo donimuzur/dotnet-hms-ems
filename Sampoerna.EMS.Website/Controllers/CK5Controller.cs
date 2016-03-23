@@ -48,10 +48,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExNPPBKCBLL _nppbkcbll;
         private IUnitOfMeasurementBLL _uomBll;
         private IMaterialBLL _materialBll;
+        private IMonthBLL _monthBll;
 
         public CK5Controller(IPageBLL pageBLL, IUnitOfMeasurementBLL uomBll, IPOABLL poabll, IZaidmExNPPBKCBLL nppbckbll, ICK5BLL ck5Bll, IPBCK1BLL pbckBll,
             IWorkflowHistoryBLL workflowHistoryBll, IChangesHistoryBLL changesHistoryBll, IMaterialBLL materialBll,
-            IWorkflowBLL workflowBll, IPlantBLL plantBll, IPrintHistoryBLL printHistoryBll)
+            IWorkflowBLL workflowBll, IPlantBLL plantBll, IPrintHistoryBLL printHistoryBll, IMonthBLL monthBll)
             : base(pageBLL, Enums.MenuList.CK5)
         {
             _ck5Bll = ck5Bll;
@@ -65,27 +66,27 @@ namespace Sampoerna.EMS.Website.Controllers
             _nppbkcbll = nppbckbll;
             _uomBll = uomBll;
             _materialBll = materialBll;
+            _monthBll = monthBll;
         }
 
         #region View Documents
 
-        private List<CK5Item> GetCk5Items(Enums.CK5Type ck5Type, CK5SearchViewModel filter = null)
+        private List<CK5Item> GetCk5Items(Enums.CK5Type ck5Type, CK5SearchViewModel filter)
         {
             CK5GetByParamInput input;
-            List<CK5Dto> dbData;
-            if (filter == null)
-            {
-                //Get All
-                //input = new CK5Input { Ck5Type = ck5Type };
-                input = new CK5GetByParamInput();
-                input.Ck5Type = ck5Type;
-                input.UserId = CurrentUser.USER_ID;
-                input.UserRole = CurrentUser.UserRole;
-                input.ListUserPlant = CurrentUser.ListUserPlants;
+            //if (filter == null)
+            //{
+            //    //Get All
+            //    //input = new CK5Input { Ck5Type = ck5Type };
+            //    input = new CK5GetByParamInput();
+            //    input.Ck5Type = ck5Type;
+            //    input.UserId = CurrentUser.USER_ID;
+            //    input.UserRole = CurrentUser.UserRole;
+            //    input.ListUserPlant = CurrentUser.ListUserPlants;
                 
-                dbData = _ck5Bll.GetCK5ByParam(input);
-                return Mapper.Map<List<CK5Item>>(dbData);
-            }
+            //    dbData = _ck5Bll.GetCK5ByParam(input);
+            //    return Mapper.Map<List<CK5Item>>(dbData);
+            //}
 
             //getbyparams
 
@@ -95,7 +96,7 @@ namespace Sampoerna.EMS.Website.Controllers
             input.UserRole = CurrentUser.UserRole;
             input.ListUserPlant = CurrentUser.ListUserPlants;
 
-            dbData = _ck5Bll.GetCK5ByParam(input);
+            var dbData = _ck5Bll.GetCK5ByParam(input);
             return Mapper.Map<List<CK5Item>>(dbData);
         }
 
@@ -150,6 +151,14 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchView.NPPBKCOriginList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
             model.SearchView.NPPBKCDestinationList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
 
+            model.SearchView.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.SearchView.YearList = GlobalFunctions.GetYearList();
+            model.SearchView.Month = DateTime.Now.Month.ToString();
+            model.SearchView.Year = DateTime.Now.Year.ToString();
+
+            var input = new CK5SearchViewModel();
+            input.Month = model.SearchView.Month;
+            input.Year = model.SearchView.Year;
 
             //list table
             //todo refactor
@@ -159,16 +168,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 case Enums.CK5Type.DomesticAlcohol:
                 case Enums.CK5Type.Intercompany:
                 case Enums.CK5Type.Domestic:
-                    model.DetailsList = GetCk5Items(Enums.CK5Type.Domestic);
-                    model.DetailList2 = GetCk5Items(Enums.CK5Type.Intercompany);
-                    model.DetailList3 = GetCk5Items(Enums.CK5Type.DomesticAlcohol);
+                    model.DetailsList = GetCk5Items(Enums.CK5Type.Domestic, input);
+                    model.DetailList2 = GetCk5Items(Enums.CK5Type.Intercompany, input);
+                    model.DetailList3 = GetCk5Items(Enums.CK5Type.DomesticAlcohol, input);
                     break;
                 case Enums.CK5Type.PortToImporter:
-                    model.DetailsList = GetCk5Items(Enums.CK5Type.PortToImporter);
-                    model.DetailList2 = GetCk5Items(Enums.CK5Type.ImporterToPlant);
+                    model.DetailsList = GetCk5Items(Enums.CK5Type.PortToImporter, input);
+                    model.DetailList2 = GetCk5Items(Enums.CK5Type.ImporterToPlant, input);
                     break;
                 default:
-                    model.DetailsList = GetCk5Items(ck5Type);
+                    model.DetailsList = GetCk5Items(ck5Type, input);
                     break;
             }
 
