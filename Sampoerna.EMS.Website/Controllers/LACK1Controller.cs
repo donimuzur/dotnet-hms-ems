@@ -766,7 +766,8 @@ namespace Sampoerna.EMS.Website.Controllers
             if (data.Lack1IncomeDetail.Count <= 0) return dsReport;
 
             var totalAmount = data.Lack1IncomeDetail.Sum(d => d.AMOUNT);
-            var endingBalance = (data.BeginingBalance - (data.Usage + (data.UsageTisToTis.HasValue ? data.UsageTisToTis.Value  : 0)) + data.TotalIncome - data.ReturnQty);
+            //var endingBalance = (data.BeginingBalance - (data.Usage + (data.UsageTisToTis.HasValue ? data.UsageTisToTis.Value  : 0)) + data.TotalIncome - data.ReturnQty);
+            var endingBalance = data.CloseBalance;
             var noted = !string.IsNullOrEmpty(data.Noted) ? data.Noted.Replace("<br />", Environment.NewLine) : string.Empty;
             //var docNoted = !string.IsNullOrEmpty(data.DocumentNoted) ? data.DocumentNoted.Replace("<br />", Environment.NewLine) : string.Empty;
 
