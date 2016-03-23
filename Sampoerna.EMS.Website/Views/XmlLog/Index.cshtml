@@ -74,6 +74,7 @@
                     <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
                 </div>*@
             @using (Html.BeginForm("BackupXml", "XmlLog", FormMethod.Post, new { @id = "XmlLogBackupForms" }))
+
             {
                 <div class="modal-body">
                     @Html.HiddenFor(model => model.FileName)
@@ -92,33 +93,65 @@
     </div>
 </div>
 
+<div id="ModalNlog" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"> Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span id="modalBodyMessage">Error</span>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="loading"></div>
 
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script type="text/javascript" language="javascript">
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#MenuXmlLog').addClass('active');
 
             setupDataTables();
 
-            $("#btnBackup").click(function () {
+            $("#btnBackup").click(function() {
                 $('#xmlLogModal').modal('show');
 
             });
 
-            $("#btnConfirmBackup").click(function () {
+            $("#btnConfirmBackup").click(function() {
 
                 $("input[name='FileName']").val($('#FileName').find("option:selected").val());
                 $("input[name='Month']").val($('#Month').find("option:selected").val());
 
-                $('#XmlLogBackupForms').submit();
+                var inputData = {};
+                inputData.FileName = $('#FileName').find("option:selected").val();
+                inputData.Month = $('#Month').find("option:selected").val();
+
+                ajaxZipData('@Url.Action("GenerateData", "XmlLog")', { model: inputData });
+                //$('#XmlLogBackupForms').submit();
+                $('#xmlLogModal').modal('hide');
+              
+                
             });
 
             OnChangeFileName();
             OnChangeMonth();
         });
 
+        function ReloadPage() {
+            setTimeout(function() {
+                window.location.reload(1);
+            }, 1000);
+        }
 
         function setupDataTables() {
 
@@ -130,30 +163,31 @@
             }
 
             table = $('#xmlLogTable').DataTable(
-                  {
-                      "sDom": "Rlfrtip",
-                      "language": {
-                          "zeroRecords": "No records found",
-                          "infoFiltered": "(filtered from _MAX_ total records)"
-                      },
-                      "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-                          switch (aData[2]) {
-                              case 'Error':
-                              case 'Fatal':
-                                  $(nRow).css('color', 'red');
-                                  break;
-                              case 'Info':
-                                  $(nRow).css('color', 'green');
-                                  break;
-                              case 'Warn':
-                                  $(nRow).css('color', 'yellow');
-                                  break;
-                          }
-                      }
-                  });
+                {
+                    "orderClasses": false,
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    },
+                    "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                        switch (aData[2]) {
+                        case 'Error':
+                        case 'Fatal':
+                            $(nRow).css('color', 'red');
+                            break;
+                        case 'Info':
+                            $(nRow).css('color', 'green');
+                            break;
+                        case 'Warn':
+                            $(nRow).css('color', 'yellow');
+                            break;
+                        }
+                    }
+                });
 
 
-            $('#xmlLogTable .filters th').each(function () {
+            $('#xmlLogTable .filters th').each(function() {
                 var idx = $(this).index();
                 if (idx != 0) {
                     $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
@@ -161,8 +195,8 @@
             });
 
 
-            table.columns().eq(0).each(function (colIdx) {
-                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+            table.columns().eq(0).each(function(colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function() {
                     table
                         .column(colIdx)
                         .search(this.value)
@@ -180,19 +214,45 @@
 
 
         function OnChangeFileName() {
-            $("#FileName").change(function () {
+            $("#FileName").change(function() {
                 $("#btnBackup").prop('disabled', true);
             });
         }
 
         function OnChangeMonth() {
-            $("#Month").change(function () {
+            $("#Month").change(function() {
                 $("#btnBackup").prop('disabled', true);
             });
         }
 
         function OnReset() {
             $(".selectreset").val($(".selectreset option:first").val());
+        }
+
+        function ajaxZipData(url, formData) {
+            $('.loading').show();
+            $.ajax({
+                dataType: 'json',
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function(data) {
+                    $('.loading').hide();
+                    if (data.success) {
+                        window.location = '@Url.Action("DownloadData", "XmlLog")' + "?fName=" + data.zipName;
+                    } else {
+                        $('#modalBodyMessage').text(data.message);
+                        $('#ModalNlog').modal('show');
+                       
+                    }
+
+                },
+                error: function (err) {
+                    $('#modalBodyMessage').text('Error');
+                    $('#ModalNlog').modal('show');
+                }
+            });
+
         }
 
     </script>
