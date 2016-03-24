@@ -80,6 +80,7 @@ namespace Sampoerna.EMS.Website.Models.LACK2
             public string Status { get; set; }
             public string LegalizeData { get; set; }
             public string CompletedDate { get; set; }
+            public string PeriodYear { get; set; }
         }
 
         public class Lack2ExportSummaryReportsViewModel : Lack2SearchSummaryReportsViewModel

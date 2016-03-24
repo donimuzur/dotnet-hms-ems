@@ -181,7 +181,11 @@ namespace Sampoerna.EMS.BLL
         }
 
 
-      
+        public List<string> GetPoaPlantByPoaId(string poaId)
+        {
+            var dbData = _poaMapRepository.Get(c => c.POA_ID == poaId && c.POA.IS_ACTIVE.Value).ToList();
+            return dbData.Select(c => c.WERKS).ToList();
+        }
 
     }
 }

@@ -9,6 +9,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
+using Sampoerna.EMS.LinqExtensions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 using Enums = Sampoerna.EMS.Core.Enums;
@@ -22,6 +23,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<USER> _repository;
         private POABLL _poabll;
+        private IUserPlantMapBLL _userPlantMapBll;
 
         public UserBLL(IUnitOfWork uow, ILogger logger)
         {
@@ -30,6 +32,7 @@ namespace Sampoerna.EMS.BLL
             _repository = _uow.GetGenericRepository<USER>();
 
            _poabll = new POABLL(_uow, _logger);
+            _userPlantMapBll = new UserPlantMapBLL(_uow, _logger);
         }
 
         public List<USER> GetUsers(UserInput input)
@@ -110,9 +113,38 @@ namespace Sampoerna.EMS.BLL
         }
 
 
+        //public List<UserDto> GetListUserRoleByUserId(string userId)
+        //{
+        //    var userRole = _poabll.GetUserRole(userId);
+
+        //    var listUser = _repository.Get();
+
+        //    var filterResult = new List<USER>();
+
+        //    foreach (var user in listUser)
+        //    {
+        //        var role = _poabll.GetUserRole(user.USER_ID);
+
+        //        if (userRole == role)
+        //            filterResult.Add(user);
+        //    }
+
+        //    return Mapper.Map<List<UserDto>>(filterResult);
+        //}
+
         public List<UserDto> GetListUserRoleByUserId(string userId)
         {
             var userRole = _poabll.GetUserRole(userId);
+
+            List<string> listPlantUserFrom;
+            List<string> listPlantUserTo;
+
+            if (userRole == Enums.UserRole.POA)
+                listPlantUserFrom = _poabll.GetPoaPlantByPoaId(userId);
+            else if (userRole == Enums.UserRole.User)
+                listPlantUserFrom = _userPlantMapBll.GetByUserId(userId).Select(c => c.PLANT_ID).ToList();
+            else
+                listPlantUserFrom = new List<string>();
 
             var listUser = _repository.Get();
 
@@ -123,8 +155,44 @@ namespace Sampoerna.EMS.BLL
                 var role = _poabll.GetUserRole(user.USER_ID);
 
                 if (userRole == role)
-                    filterResult.Add(user);
+                {
+                    if (role == Enums.UserRole.POA)
+                    {
+                        //get list plant from poa_map
+                      
+                        listPlantUserTo = _poabll.GetPoaPlantByPoaId(user.USER_ID);
+                        //foreach (var plantUserTo in listPlantUserTo)
+                        //{
+                        //    foreach (var plantUserFrom in listPlantUserFrom)
+                        //    {
+                        //        if (plantUserFrom == plantUserTo)
+                        //            filterResult.Add(user);
+                        //    }
+                        //}
+                        
+                    }
+                    else if (role == Enums.UserRole.User)
+                    {
+                        //get list plant from user_plant map
+                      
+                        listPlantUserTo = _userPlantMapBll.GetByUserId(user.USER_ID).Select(c => c.PLANT_ID).ToList();
+                     }
+                    else 
+                        listPlantUserTo = new List<string>();
+
+                    foreach (var plantUserTo in listPlantUserTo)
+                    {
+                        foreach (var plantUserFrom in listPlantUserFrom)
+                        {
+                            if (plantUserFrom == plantUserTo)
+                                filterResult.Add(user);
+                        }
+                    }
+
+                }
             }
+
+            filterResult = filterResult.Where(c=>c.USER_ID != userId).DistinctBy(c => c.USER_ID).ToList();
 
             return Mapper.Map<List<UserDto>>(filterResult);
         }

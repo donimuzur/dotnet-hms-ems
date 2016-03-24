@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models.LACK2
 {
@@ -14,4 +17,6 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public DateTime? SubmissionDate { get; set; }
 
     }
+
+    
 }

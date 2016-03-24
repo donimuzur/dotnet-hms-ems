@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
 using System.Linq;
+using System.Linq.Expressions;
 using AutoMapper;
 using CrystalDecisions.Shared.Json;
 using Sampoerna.EMS.BLL.Services;
@@ -68,12 +69,16 @@ namespace Sampoerna.EMS.BLL
             return GetById(id);
         }
 
-        public List<WasteStockDto> GetAllDataOrderByUserAndGroupRole()
+        public List<WasteStockDto> GetAllDataOrderByUserAndGroupRole(List<string> ListUserPlants, bool isSuperAdmin)
         {
             Func<IQueryable<WASTE_STOCK>, IOrderedQueryable<WASTE_STOCK>> orderByFilter =
                 n => n.OrderBy(z => z.WERKS).ThenBy(z => z.MATERIAL_NUMBER);
 
-            var listData = _repository.Get(null, orderByFilter, _includeTables).ToList();
+            Expression<Func<WASTE_STOCK, bool>> queryFilter = PredicateHelper.True<WASTE_STOCK>();
+
+            if (!isSuperAdmin) queryFilter = queryFilter.And(x => ListUserPlants.Contains(x.WERKS));
+
+            var listData = _repository.Get(queryFilter, orderByFilter, _includeTables).ToList();
             
             var result = Mapper.Map<List<WasteStockDto>>(listData);
 

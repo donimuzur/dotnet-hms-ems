@@ -39,10 +39,11 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /WasteStock/
         public ActionResult Index()
         {
+            var isSuperAdmin = CurrentUser.UserRole == Enums.UserRole.Administrator;
             var model = new WasteStockIndexViewModel();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.ListWasteStocks = Mapper.Map<List<WasteStockFormViewModel>>(_wasteStockBll.GetAllDataOrderByUserAndGroupRole());
+            model.ListWasteStocks = Mapper.Map<List<WasteStockFormViewModel>>(_wasteStockBll.GetAllDataOrderByUserAndGroupRole(CurrentUser.ListUserPlants, isSuperAdmin));
 
             foreach (var wasteStockFormViewModel in model.ListWasteStocks)
             {

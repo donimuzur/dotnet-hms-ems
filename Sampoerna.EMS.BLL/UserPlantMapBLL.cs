@@ -164,7 +164,7 @@ namespace Sampoerna.EMS.BLL
         {
             var list = new List<string>();
 
-            var data = _userPlantService.GetByUserId(id);
+            var data = _userPlantService.GetByUserId(id).Where(x => x.NPPBKC_ID != null).ToList();
 
             var company = string.Empty;
 

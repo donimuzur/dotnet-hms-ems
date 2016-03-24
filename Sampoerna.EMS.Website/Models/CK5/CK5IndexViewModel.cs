@@ -15,6 +15,8 @@ namespace Sampoerna.EMS.Website.Models.CK5
         {
             SearchView = new CK5SearchViewModel();
             DetailsList = new List<CK5Item>();
+            DetailList2 = new List<CK5Item>();
+            DetailList3 = new List<CK5Item>();
 
         }
 
@@ -64,5 +66,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string StoNumber { get; set; }
 
         public string InvoiceNumber { get; set; }
+
+        public string DocumentCreatedDate { get; set; }
     }
 }

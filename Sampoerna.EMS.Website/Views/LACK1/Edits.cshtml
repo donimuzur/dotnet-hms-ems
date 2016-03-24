@@ -1,0 +1,263 @@
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.LACK1.Lack1EditViewModel
+@{
+    ViewBag.Title = "LACK-1 Edit";
+}
+
+@section styles{
+    <link href="~/Content/css/print.css" rel="stylesheet" />
+}
+
+@using (Html.BeginForm("GovCompletedDocument", "LACK1", FormMethod.Post, new { @id = "EditLack1Form", enctype = "multipart/form-data" }))
+{
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>@ViewBag.Title</h3>
+                <label class="status">@Model.StatusDescription</label>
+                <div class="action-button">
+
+                    <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
+                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "Lack1", new { id = @Model.Lack1Id })')" />
+                    <input type="button" value="Back" class="btn btn-grey" id="btn-back-completed" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div role="tabpanel">
+                    <!-- Nav tabs -->
+                    @Html.AntiForgeryToken()
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                        <li role="presentation"><a href="#printout" aria-controls="printout" role="tab" data-toggle="tab">Print Out</a></li>
+                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.HiddenFor(model => model.Lack1Id)
+                        @Html.HiddenFor(model => model.Lack1Number)
+                        @Html.HiddenFor(model => model.Lack1Type)
+                        @Html.HiddenFor(model => model.IsSaveSubmit)
+                        @Html.HiddenFor(model => model.CreateBy)
+                        @Html.HiddenFor(model => model.CreateDate)
+                        @Html.HiddenFor(model => model.EndingBalance)
+                        @Html.HiddenFor(model => model.BeginingBalance)
+                        @Html.HiddenFor(model => model.Lack1Level)
+                        @Html.HiddenFor(model => model.Lack1UomId)
+                        @Html.HiddenFor(model => model.Lack1UomName)
+                        @Html.HiddenFor(model => model.SupplierPlant)
+                        @Html.HiddenFor(model => model.SupplierPlantAddress)
+                        @Html.HiddenFor(model => model.SupplierCompanyCode)
+                        @Html.HiddenFor(model => model.SupplierCompanyName)
+                        @Html.HiddenFor(model => model.Status)
+                        @Html.HiddenFor(model => model.StatusDescription)
+                        @Html.HiddenFor(model => model.GovApprovalActionType)
+                        @Html.Partial("_HomeCompleted")
+                        @Html.Partial("_PrintOut")
+                        @Html.Partial("_ChangeLog")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+
+    <script src="~/Scripts/thousand-separator.js"></script>
+    <script src="~/Scripts/lack1/Lack1GenerateTable.js?v=0.0.2"></script>
+    <script src="~/Scripts/lack1/Lack1Upload.js"></script>
+    <script src="~/Scripts/lack1/Lack1Scripts.js?v=0.0.2"></script>
+    <script type="text/javascript">
+
+        $('#MenuLack1CompletedDocument').addClass('@Model.MenuCompletedAddClassCss');
+        $('#MenuLack1ListByPlant').addClass('@Model.MenuPlantAddClassCss');
+        $('#Menulack1ListByNppbkc').addClass('@Model.MenuNppbkcAddClassCss');
+
+        $(document).ready(function() {
+
+            $('#divComment').hide();
+
+            $('#btn-back-completed').click(function() {
+                location.href = '@Url.Action("ListCompletedDocument", "LACK1")';
+            });
+
+            $('#generated-data-container').html('');
+
+            var jsonData = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model)));
+            //console.log(jsonData);
+            if (jsonData.IsEtilAlcohol) {
+                /*Force to use generate table without tis to tis*/
+                var generateTableEtilAlcohol = generateTable(jsonData);
+                $('#generated-data-container').append(generateTableEtilAlcohol);
+            } else {
+                if (jsonData.IsTisToTisReport) {
+                    var generateTableE = generateTableWithTisToTis(jsonData);
+                    $('#generated-data-container').append(generateTableE);
+                } else {
+                    var generateTableD = generateTable(jsonData);
+                    $('#generated-data-container').append(generateTableD);
+                }
+            }
+
+            $('#Bukrs').on('change', function () {
+                BukrsOnChange();
+            });
+            $('#NppbkcId').on('change', function () {
+                NppbkcIdOnChange();
+            });
+            $('#ExGoodsTypeId').on('change', function () {
+                ExGoodsTypeOnChange();
+            });
+
+            $('#SupplierPlantId').on('change', function() {
+                onSupplierPlantChange();
+            });
+
+            $('#btn-changelog-export-xls').click(function () {
+                location.href = '@Url.Action("ExportClientsListToExcel", "Lack1", new { id = Model.Lack1Id })';
+            });
+
+            $("#btnSaveGovStatus").click(function () {
+                $('#EditLack1Form').submit();
+            });
+
+        });
+
+        function BukrsOnChange() {
+            if ($("#Bukrs").length) {
+                var companyCode = $('#Bukrs').find("option:selected").val();
+                $('#NppbkcId option').remove();
+                console.log(companyCode);
+                if (companyCode == '' || $(this).find("option:selected").val() == '') {
+                    $('#NppbkcId').append('<option value="">Select</option>');
+                } else {
+                    $('#Butxt').val($('#Bukrs').find("option:selected").text());
+                    ajaxLoadNppbkcList('@Url.Action("GetNppbkcListByCompanyCode", "LACK1")', { companyCode: companyCode });
+                }
+            }
+        }
+
+        function ExGoodsTypeOnChange() {
+            if ($("#NppbkcId").length && $("#ExGoodsTypeId").length) {
+                var excisableGoodsType = $('#ExGoodsTypeId').find("option:selected").val();
+                var excisableGoodsTypeDesc = $('#ExGoodsTypeId').find("option:selected").text();
+                $('#ExGoodsTypeDesc').val(excisableGoodsTypeDesc);
+                var nppbkcId = $('#NppbkcId').find("option:selected").val();
+                console.log(excisableGoodsType + "," + nppbkcId);
+                /*load supplier list*/
+                $('#SupplierPlantId option').remove();
+                if (excisableGoodsType != '' && nppbkcId != '') {
+                    ajaxLoadSupplier('@Url.Action("GetSupplierListByParam", "LACK1")', { nppbkcId: nppbkcId, excisableGoodsType: excisableGoodsType });
+                } else {
+                    $('#SupplierPlantId').append('<option value="">Select</option>');
+                }
+            }
+        }
+
+        function NppbkcIdOnChange() {
+            if ($("#NppbkcId").length) {
+                var nppbkcId = $('#NppbkcId').find("option:selected").val();
+                var attr = $('#LevelPlantId').attr('disabled');
+                console.log(attr);
+                /* For some browsers, `attr` is undefined; for others,
+                 `attr` is false.  Check for both.
+                load plant if enable*/
+                if (!(typeof attr !== typeof undefined && attr !== false)) {
+                    // ...
+                    $('#LevelPlantId option').remove();
+                    console.log(nppbkcId);
+                    if (nppbkcId == '' || $(this).find("option:selected").val() == '') {
+                        $('#LevelPlantId').append('<option value="">Select</option>');
+                    } else {
+                        ajaxLoadPlantList('@Url.Action("GetPlantListByNppbkcId", "LACK1")', { nppbkcId: nppbkcId });
+                    }
+                }
+
+                /*load excisablegoodstype*/
+                ajaxLoadExcisableGoodsType('@Url.Action("GetExcisableGoodsTypeByNppbkcId", "LACK1")', { nppbkcId: nppbkcId });
+
+                /*load supplier list*/
+                ajaxLoadSupplier('@Url.Action("GetSupplierListByParam", "LACK1")', { nppbkcId: nppbkcId, excisableGoodsType: '' });
+
+            }
+        }
+
+        function printPreview(url) {
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+        }
+
+        function onSupplierPlantChange() {
+            if ($("#SupplierPlantId").length) {
+                var id = $('#SupplierPlantId').find("option:selected").val();
+                console.log(id);
+                ajaxLoadPlantDetail('@Url.Action("GetSupplierPlantDetail", "LACK1")', { werks: id });
+            }
+        }
+
+        function onGovStatusChange() {
+            if ($("#GovStatus").length) {
+                var statusGov = $('#GovStatus').find("option:selected").val();
+                console.log(statusGov);
+                $('#divComment').hide();
+                if (statusGov == '@Enums.DocumentStatusGovType2.Rejected') {
+                    $('#divComment').show();
+                    $('#GovApprovalActionType').val('@Enums.ActionType.GovReject');
+                } else if (statusGov == '@Enums.DocumentStatusGovType2.Approved') {
+                    $('#GovApprovalActionType').val('@Enums.ActionType.GovApprove');
+                }else if (statusGov == '') {
+                    $('#GovApprovalActionType').val('@Enums.ActionType.BackToGovApprovalAfterCompleted');
+                }
+            }
+        }
+
+        function ValidateGovInput() {
+            var result = true;
+            var govStatus = $('#GovStatus').find("option:selected").val();
+            var status = $('#Status').val();
+
+            if (status == '@Enums.DocumentStatus.Completed' && govStatus == '') {
+                return true;
+            }
+
+            if (govStatus == '') {
+                AddValidationClass(false, 'GovStatus');
+                result = false;
+            }
+
+            if ($('#DecreeDate').val() == '') {
+                AddValidationClass(false, 'DecreeDate');
+                result = false;
+            }
+
+            if ($('#GovStatus').val() == 'Rejected') {
+                if ($('#Comment').val() == '') {
+                    AddValidationClass(false, 'Comment');
+                    result = false;
+                }
+            }
+
+            return result;
+        }
+
+        function AddValidationClass(isValid, objName) {
+            if (isValid) {
+                $('#' + objName).removeClass('input-validation-error');
+                $('#' + objName).addClass('valid');
+            } else {
+                $('#' + objName).removeClass('valid');
+                $('#' + objName).addClass('input-validation-error');
+            }
+        }
+
+        function openAttachment(url) {
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes');
+        }
+
+    </script>
+}

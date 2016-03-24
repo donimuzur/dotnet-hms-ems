@@ -104,5 +104,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public string Comment { get; set; }
 
         public CK5FormViewModel Ck5FormViewModel { get; set; }
+
+        public bool AllowEditCompletedDocument { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Sampoerna.EMS.BusinessObject.DTOs;
+﻿using Sampoerna.EMS.BusinessObject.Business;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject.Outputs;

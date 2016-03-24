@@ -16,5 +16,7 @@ namespace Sampoerna.EMS.Contract
         bool IsExistBack3DocumentByPbck3(int pbck3Id);
 
         void InsertOrDeleteBack3Item(List<BACK3_DOCUMENTDto> input);
+
+        BACK3_DOCUMENT GetBack3DocumentById(long id);
     }
 }
