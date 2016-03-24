@@ -17,8 +17,8 @@ namespace Sampoerna.EMS.Contract
         Lack2GeneratedOutput GenerateLack2DataByParam(Lack2GenerateDataParamInput input);
         Lack2SaveEditOutput SaveEdit(Lack2SaveEditInput input);
         void Lack2Workflow(Lack2WorkflowDocumentInput input);
-        List<Lack2SummaryReportDto> GetSummaryReportsByParam(Lack2GetSummaryReportByParamInput input, Login loginInfo);
-        List<Lack2DetailReportDto> GetDetailReportsByParam(Lack2GetDetailReportByParamInput input, Login loginInfo);
-        List<Lack2Dto> GetDashboardDataByParam(Lack2GetDashboardDataByParamInput input, Login loginInfo);
+        List<Lack2SummaryReportDto> GetSummaryReportsByParam(Lack2GetSummaryReportByParamInput input);
+        List<Lack2DetailReportDto> GetDetailReportsByParam(Lack2GetDetailReportByParamInput input);
+        List<Lack2Dto> GetDashboardDataByParam(Lack2GetDashboardDataByParamInput input);
     }
 }

@@ -1329,9 +1329,9 @@ namespace Sampoerna.EMS.BLL
 
         #region Summary Report 
 
-        public List<Lack2SummaryReportDto> GetSummaryReportsByParam(Lack2GetSummaryReportByParamInput input, Login loginInfo)
+        public List<Lack2SummaryReportDto> GetSummaryReportsByParam(Lack2GetSummaryReportByParamInput input)
         {
-            var rc = _lack2Service.GetSummaryReportsByParam(input,loginInfo);
+            var rc = _lack2Service.GetSummaryReportsByParam(input);
 
             rc = rc.OrderBy(x => x.LEVEL_PLANT_ID).ToList();
 
@@ -1417,10 +1417,10 @@ namespace Sampoerna.EMS.BLL
 
         #region Detail Report Summary
 
-        public List<Lack2DetailReportDto> GetDetailReportsByParam(Lack2GetDetailReportByParamInput input, Login loginInfo)
+        public List<Lack2DetailReportDto> GetDetailReportsByParam(Lack2GetDetailReportByParamInput input)
         {
 
-            var rc = _lack2Service.GetDetailReportsByParam(input,loginInfo);
+            var rc = _lack2Service.GetDetailReportsByParam(input);
 
             rc = rc.OrderBy(x => x.LEVEL_PLANT_ID).ToList();
 
@@ -1498,28 +1498,9 @@ namespace Sampoerna.EMS.BLL
 
         #region -------------- Dashboard ------------
 
-        public List<Lack2Dto> GetDashboardDataByParam(Lack2GetDashboardDataByParamInput input, Login loginInfo)
+        public List<Lack2Dto> GetDashboardDataByParam(Lack2GetDashboardDataByParamInput input)
         {
-            if (input.UserRole == Enums.UserRole.POA)
-            {
-                var nppbkc = _nppbkcService.GetNppbkcsByPoa(input.UserId);
-                if (nppbkc != null && nppbkc.Count > 0)
-                {
-                    input.NppbkcList = nppbkc.Select(c => c.NPPBKC_ID).ToList();
-                }
-                else
-                {
-                    input.NppbkcList = new List<string>();
-                }
-            }
-            else if (input.UserRole == Enums.UserRole.Manager)
-            {
-                var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
-                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
-                input.DocumentNumberList = document;
-            }
-
-            var data = _lack2Service.GetDashboardDataByParam(input,loginInfo);
+            var data = _lack2Service.GetDashboardDataByParam(input);
             return Mapper.Map<List<Lack2Dto>>(data);
         }
 
