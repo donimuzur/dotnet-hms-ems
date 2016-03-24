@@ -11,8 +11,8 @@ namespace Sampoerna.EMS.Website.Models.XmlLog
         }
 
         public string FileName { get; set; }
-
         public int? Month { get; set; }
+        public string LogDate { get; set; }
 
         public SelectList FileNameList { get; set; }
         public SelectList MonthList { get; set; }
