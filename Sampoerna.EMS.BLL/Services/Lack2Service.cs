@@ -174,7 +174,7 @@ namespace Sampoerna.EMS.BLL.Services
             return dataExist;
         }
 
-        public List<LACK2> GetSummaryReportsByParam(Lack2GetSummaryReportByParamInput input, Login loginInfo)
+        public List<LACK2> GetSummaryReportsByParam(Lack2GetSummaryReportByParamInput input)
         {
             Expression<Func<LACK2, bool>> queryFilter = PredicateHelper.True<LACK2>();
 
@@ -248,16 +248,16 @@ namespace Sampoerna.EMS.BLL.Services
             }
 
 
-            if (loginInfo.UserRole != Enums.UserRole.Administrator)
+            if (input.UserRole != Enums.UserRole.Administrator)
             {
-                queryFilter = queryFilter.And(c => loginInfo.ListUserPlants.Contains(c.LEVEL_PLANT_ID));
+                queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.LEVEL_PLANT_ID));
             }
 
             return _repository.Get(queryFilter, null, "LACK2_ITEM, LACK2_ITEM.CK5").ToList();
 
         }
 
-        public List<LACK2> GetDetailReportsByParam(Lack2GetDetailReportByParamInput input, Login loginInfo)
+        public List<LACK2> GetDetailReportsByParam(Lack2GetDetailReportByParamInput input)
         {
             Expression<Func<LACK2, bool>> queryFilter = PredicateHelper.True<LACK2>();
 
@@ -300,16 +300,16 @@ namespace Sampoerna.EMS.BLL.Services
                 queryFilter =
                     queryFilter.And(c => c.PERIOD_YEAR == input.PeriodYear.Value);
 
-            if (loginInfo.UserRole != Enums.UserRole.Administrator)
+            if (input.UserRole != Enums.UserRole.Administrator)
             {
-                queryFilter = queryFilter.And(c => loginInfo.ListUserPlants.Contains(c.LEVEL_PLANT_ID));
+                queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.LEVEL_PLANT_ID));
             }
 
             var rc = _repository.Get(queryFilter, null, "LACK2_ITEM, LACK2_ITEM.CK5").ToList();
             return rc;
         }
 
-        public List<LACK2> GetDashboardDataByParam(Lack2GetDashboardDataByParamInput input, Login loginInfo)
+        public List<LACK2> GetDashboardDataByParam(Lack2GetDashboardDataByParamInput input)
         {
             var queryFilter = PredicateHelper.True<LACK2>();
 
@@ -333,23 +333,9 @@ namespace Sampoerna.EMS.BLL.Services
                 queryFilter = queryFilter.And(c => c.PERIOD_YEAR == input.PeriodYear.Value);
             }
 
-            if (input.UserRole == Enums.UserRole.POA)
+            if (input.UserRole != Enums.UserRole.Administrator)
             {
-                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft
-                       && input.NppbkcList.Contains(c.NPPBKC_ID))) || c.STATUS == Enums.DocumentStatus.Completed);
-            }
-            else if (input.UserRole == Enums.UserRole.Manager)
-            {
-                queryFilter = queryFilter.And(c => (c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && input.DocumentNumberList.Contains(c.LACK2_NUMBER)) || c.STATUS == Enums.DocumentStatus.Completed);
-            }
-            else
-            {
-                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId) || c.STATUS == Enums.DocumentStatus.Completed);
-            }
-
-            if (loginInfo.UserRole != Enums.UserRole.Administrator)
-            {
-                queryFilter = queryFilter.And(c => loginInfo.ListUserPlants.Contains(c.LEVEL_PLANT_ID));
+                queryFilter = queryFilter.And(c => input.ListUserPlants.Contains(c.LEVEL_PLANT_ID));
             }
 
             return _repository.Get(queryFilter).ToList();
