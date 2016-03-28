@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using Sampoerna.EMS.BusinessObject;
 
 namespace Sampoerna.EMS.Website.Models.Material
@@ -13,8 +14,8 @@ namespace Sampoerna.EMS.Website.Models.Material
             Details = new List<MaterialDetails>();
         }
         public List<MaterialDetails> Details { get; set; }
-
-
+        public string GoodType { get; set; }
+        public SelectList GoodTypeList { get; set; }
     }
 
     public class MaterialUomDetails

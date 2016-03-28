@@ -1312,6 +1312,7 @@
     <Content Include="Views\PBCK1\_HomeGovApprovalSuperAdmin.cshtml" />
     <Content Include="Views\LACK1\Edits.cshtml" />
     <Content Include="Views\LACK1\_HomeCompleted.cshtml" />
+    <Content Include="Views\Material\_MaterialList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

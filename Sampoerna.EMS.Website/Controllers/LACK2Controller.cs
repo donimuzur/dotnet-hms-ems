@@ -851,7 +851,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region Summary Reports
 
-        private SelectList GetLack2CompanyCodeList(List<Lack2SummaryReportDto> listPbck2)
+        private SelectList GetLack2CompanyCodeList(List<Lack2SummaryReportsItem> listPbck2)
         {
             IEnumerable<SelectItemModel> query;
 
@@ -866,7 +866,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        private SelectList GetLack2NppbkcIdList(List<Lack2SummaryReportDto> listPbck2)
+        private SelectList GetLack2NppbkcIdList(List<Lack2SummaryReportsItem> listPbck2)
         {
             IEnumerable<SelectItemModel> query;
 
@@ -881,7 +881,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        private SelectList GetLack2SendingPlantList(List<Lack2SummaryReportDto> listPbck2)
+        private SelectList GetLack2SendingPlantList(List<Lack2SummaryReportsItem> listPbck2)
         {
             IEnumerable<SelectItemModel> query;
 
@@ -896,7 +896,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        private SelectList GetLack2GoodTypeList(List<Lack2SummaryReportDto> listPbck2)
+        private SelectList GetLack2GoodTypeList(List<Lack2SummaryReportsItem> listPbck2)
         {
             IEnumerable<SelectItemModel> query;
 
@@ -911,7 +911,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        private SelectList GetLack2PeriodYearList(List<Lack2SummaryReportDto> listPbck2)
+        private SelectList GetLack2PeriodYearList(List<Lack2SummaryReportsItem> listPbck2)
         {
             IEnumerable<SelectItemModel> query;
 
@@ -934,16 +934,20 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 //Get All
                 input = new Lack2GetSummaryReportByParamInput();
+                input.UserRole = CurrentUser.UserRole;
+                input.ListUserPlant = CurrentUser.ListUserPlants;
 
-                dbData = _lack2Bll.GetSummaryReportsByParam(input,CurrentUser);
+                dbData = _lack2Bll.GetSummaryReportsByParam(input);
                 return Mapper.Map<List<Lack2SummaryReportsItem>>(dbData);
             }
 
             //getbyparams
 
             input = Mapper.Map<Lack2GetSummaryReportByParamInput>(filter);
+            input.UserRole = CurrentUser.UserRole;
+            input.ListUserPlant = CurrentUser.ListUserPlants;
 
-            dbData = _lack2Bll.GetSummaryReportsByParam(input,CurrentUser);
+            dbData = _lack2Bll.GetSummaryReportsByParam(input);
             return Mapper.Map<List<Lack2SummaryReportsItem>>(dbData);
         }
 
@@ -952,7 +956,10 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.LACK2;
             model.CurrentMenu = PageInfo;
 
-            var listLack2 = _lack2Bll.GetSummaryReportsByParam(new Lack2GetSummaryReportByParamInput(),CurrentUser);
+            var filter = new Lack2SearchSummaryReportsViewModel();
+
+            var listLack2 = SearchDataSummaryReports(filter);
+            model.DetailsList = listLack2;
 
             model.SearchView.CompanyCodeList = GetLack2CompanyCodeList(listLack2);
             model.SearchView.NppbkcIdList = GetLack2NppbkcIdList(listLack2);
@@ -967,9 +974,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
             model.SearchView.ApproverList = GlobalFunctions.GetPoaAll(_poabll);
 
-            var filter = new Lack2SearchSummaryReportsViewModel();
-
-            model.DetailsList = SearchDataSummaryReports(filter);
+            
 
             return model;
         }
@@ -1364,7 +1369,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region Detail Reports
 
-        private SelectList GetLack2CompanyCodeList(List<Lack2DetailReportDto> listPbck2)
+        private SelectList GetLack2CompanyCodeList(List<Lack2DetailReportsItem> listPbck2)
         {
             IEnumerable<SelectItemModel> query;
 
@@ -1379,7 +1384,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        private SelectList GetLack2NppbkcIdList(List<Lack2DetailReportDto> listPbck2)
+        private SelectList GetLack2NppbkcIdList(List<Lack2DetailReportsItem> listPbck2)
         {
             IEnumerable<SelectItemModel> query;
 
@@ -1394,7 +1399,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        private SelectList GetLack2SendingPlantList(List<Lack2DetailReportDto> listPbck2)
+        private SelectList GetLack2SendingPlantList(List<Lack2DetailReportsItem> listPbck2)
         {
             IEnumerable<SelectItemModel> query;
 
@@ -1409,7 +1414,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        private SelectList GetLack2GoodTypeList(List<Lack2DetailReportDto> listPbck2)
+        private SelectList GetLack2GoodTypeList(List<Lack2DetailReportsItem> listPbck2)
         {
             IEnumerable<SelectItemModel> query;
 
@@ -1424,7 +1429,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        private SelectList GetLack2PeriodYearList(List<Lack2DetailReportDto> listPbck2)
+        private SelectList GetLack2PeriodYearList(List<Lack2DetailReportsItem> listPbck2)
         {
             IEnumerable<SelectItemModel> query = from x in listPbck2
                                                  select new SelectItemModel()
@@ -1436,7 +1441,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
         }
 
-        private SelectList GetGiDateList(bool isFrom, List<Lack2DetailReportDto> listLack2)
+        private SelectList GetGiDateList(bool isFrom, List<Lack2DetailReportsItem> listLack2)
         {
 
             IEnumerable<SelectItemModel> query;
@@ -1466,15 +1471,19 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 //Get All
                 input = new Lack2GetDetailReportByParamInput();
+                input.UserRole = CurrentUser.UserRole;
+                input.ListUserPlant = CurrentUser.ListUserPlants;
 
-                dbData = _lack2Bll.GetDetailReportsByParam(input,CurrentUser);
+                dbData = _lack2Bll.GetDetailReportsByParam(input);
                 return Mapper.Map<List<Lack2DetailReportsItem>>(dbData);
             }
 
             //getbyparams
             input = Mapper.Map<Lack2GetDetailReportByParamInput>(filter);
+            input.UserRole = CurrentUser.UserRole;
+            input.ListUserPlant = CurrentUser.ListUserPlants;
 
-            dbData = _lack2Bll.GetDetailReportsByParam(input,CurrentUser);
+            dbData = _lack2Bll.GetDetailReportsByParam(input);
             return Mapper.Map<List<Lack2DetailReportsItem>>(dbData);
         }
 
@@ -1483,7 +1492,9 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.LACK2;
             model.CurrentMenu = PageInfo;
 
-            var listLack2 = _lack2Bll.GetDetailReportsByParam(new Lack2GetDetailReportByParamInput(),CurrentUser);
+            var filter = new Lack2SearchDetailReportsViewModel();
+            var listLack2 = SearchDataDetailReports(filter);
+            model.DetailsList = listLack2;
 
             model.SearchView.CompanyCodeList = GetLack2CompanyCodeList(listLack2);
             model.SearchView.NppbkcIdList = GetLack2NppbkcIdList(listLack2);
@@ -1498,9 +1509,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchView.DateFromList = GetGiDateList(true, listLack2);
             model.SearchView.DateToList = GetGiDateList(false, listLack2);
 
-            var filter = new Lack2SearchDetailReportsViewModel();
-
-            model.DetailsList = SearchDataDetailReports(filter);
+            
 
             return model;
         }
@@ -2256,16 +2265,15 @@ namespace Sampoerna.EMS.Website.Controllers
             if (filter == null)
             {
                 //get All Data
-                var data = _lack2Bll.GetDashboardDataByParam(new Lack2GetDashboardDataByParamInput(),CurrentUser);
+                var data = _lack2Bll.GetDashboardDataByParam(new Lack2GetDashboardDataByParamInput());
                 return data;
             }
 
             var input = Mapper.Map<Lack2GetDashboardDataByParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
             input.UserRole = CurrentUser.UserRole;
-            
 
-            return _lack2Bll.GetDashboardDataByParam(input,CurrentUser);
+            return _lack2Bll.GetDashboardDataByParam(input);
         }
 
         private SelectList GetDashboardYear()
