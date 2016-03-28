@@ -68,5 +68,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string InvoiceNumber { get; set; }
 
         public string DocumentCreatedDate { get; set; }
+
+        public string SubmissionDate { get; set; }
     }
 }
