@@ -288,11 +288,11 @@ namespace Sampoerna.EMS.BLL
 
             if (input.Month > 0)
             {
-                queryFilter = queryFilter.And(c => c.CREATED_DATE.Month == input.Month);
+                queryFilter = queryFilter.And(c => c.SUBMISSION_DATE.Value.Month == input.Month);
             }
             if (input.Year > 0)
             {
-                queryFilter = queryFilter.And(c => c.CREATED_DATE.Year == input.Year);
+                queryFilter = queryFilter.And(c => c.SUBMISSION_DATE.Value.Year == input.Year);
             }
 
             if (input.Ck5Type == Enums.CK5Type.Completed)

@@ -10,6 +10,7 @@ using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.BusinessObject.DTOs;
+using Sampoerna.EMS.Utils;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -51,8 +52,10 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new MaterialListViewModel();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
+            model.GoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
+            model.GoodType = EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau);
 
-            var data = _materialBll.getAllMaterial();
+            var data = _materialBll.getAllMaterial(model.GoodType);
             model.Details = AutoMapper.Mapper.Map<List<MaterialDetails>>(data);
             model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             ViewBag.Message = TempData["message"];
@@ -330,6 +333,16 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult RemoveMaterialUom(int materialUomId, string materialnumber, string plant)
         {
             return Json(_materialBll.DeleteMaterialUom(materialUomId, CurrentUser.USER_ID, materialnumber, plant));
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterMaterialIndex(MaterialListViewModel model)
+        {
+            var data = _materialBll.getAllMaterial(model.GoodType);
+            model.Details = AutoMapper.Mapper.Map<List<MaterialDetails>>(data);
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+
+            return PartialView("_MaterialList", model);
         }
     }
 }

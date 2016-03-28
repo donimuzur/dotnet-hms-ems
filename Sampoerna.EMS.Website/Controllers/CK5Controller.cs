@@ -4720,12 +4720,15 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetMaterialHjeAndTariff(string plantId, string materialNumber)
+        public JsonResult GetMaterialHjeAndTariff(string plantId, string materialNumber, Enums.CK5Type ck5Type)
         {
 
             var dbMaterial = _materialBll.GetMaterialByPlantIdAndMaterialNumber(plantId, materialNumber);
             var model = Mapper.Map<CK5InputManualViewModel>(dbMaterial);
-
+            if (ck5Type == Enums.CK5Type.Manual &&
+               dbMaterial.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau))
+                model.MaterialDesc = dbMaterial.MATERIAL_DESC;
+        
         
             return Json(model);
         }
