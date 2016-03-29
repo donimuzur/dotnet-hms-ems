@@ -2741,8 +2741,8 @@ namespace Sampoerna.EMS.BLL
                 productionList.Add(itemToInsert);
             }
 
-            //var nonZaapProd = SetProductionListNonZaap(ck4CItemData, zaapShiftRpt, productionList,prodTypeData,uomData);
-            //productionList.AddRange(nonZaapProd);
+            var nonZaapProd = SetProductionListNonZaap(ck4CItemData, zaapShiftRpt, productionList,prodTypeData,uomData);
+            productionList.AddRange(nonZaapProd);
 
             //set to Normal Data
             rc.InventoryProductionTisToFa.ProductionData = new Lack1GeneratedProductionDto
@@ -2861,7 +2861,7 @@ namespace Sampoerna.EMS.BLL
                         };
 
 
-                        itemToInsert.Amount = Math.Round((proportional.QtyOrder / proportional.QtyAllOrder) * nonzaapItem.PROD_QTY, 3);
+                        itemToInsert.Amount = Math.Round((proportional.QtyOrder / proportional.QtyAllOrder),2, MidpointRounding.AwayFromZero) * nonzaapItem.PROD_QTY;
 
                         res.Add(itemToInsert);
                     }
