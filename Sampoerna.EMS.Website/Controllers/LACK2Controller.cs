@@ -1807,6 +1807,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Documents = new List<Lack2DocumentDto>();
                 if (model.DecreeFiles != null)
                 {
+                    int counter = 0;
                     foreach (var item in model.DecreeFiles)
                     {
                         if (item != null)
@@ -1821,9 +1822,10 @@ namespace Sampoerna.EMS.Website.Controllers
                             var decreeDoc = new Lack2DocumentDto()
                             {
                                 FILE_NAME = filenamecheck,
-                                FILE_PATH = SaveUploadedFile(item, model.Lack2Id)
+                                FILE_PATH = SaveUploadedFile(item, model.Lack2Id, counter)
                             };
                             model.Documents.Add(decreeDoc);
+                            counter += 1;
                         }
                         else
                         {
@@ -1939,14 +1941,14 @@ namespace Sampoerna.EMS.Website.Controllers
             return model;
         }
 
-        private string SaveUploadedFile(HttpPostedFileBase file, int lack2Id)
+        private string SaveUploadedFile(HttpPostedFileBase file, int lack2Id, int counter)
         {
             if (file == null || file.FileName == "")
                 return "";
 
             string sFileName = "";
 
-            sFileName = Constans.Lack2FolderPaht + Path.GetFileName("LACK2_" + lack2Id + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
+            sFileName = Constans.Lack2FolderPaht + Path.GetFileName("LACK2_" + lack2Id + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + counter + "_" + Path.GetExtension(file.FileName));
             string path = Server.MapPath(sFileName);
 
             // file is uploaded
