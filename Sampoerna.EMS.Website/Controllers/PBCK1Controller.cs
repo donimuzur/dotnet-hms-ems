@@ -1217,6 +1217,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Detail.Pbck1DecreeDoc = new List<Pbck1DecreeDocModel>();
                 if (model.Detail.Pbck1DecreeFiles != null)
                 {
+                    int counter = 0;
                     foreach (var item in model.Detail.Pbck1DecreeFiles)
                     {
                         if (item != null)
@@ -1231,11 +1232,12 @@ namespace Sampoerna.EMS.Website.Controllers
                             var decreeDoc = new Pbck1DecreeDocModel()
                             {
                                 FILE_NAME = filenamecheck,
-                                FILE_PATH = SaveUploadedFile(item, model.Detail.Pbck1Id),
+                                FILE_PATH = SaveUploadedFile(item, model.Detail.Pbck1Id, counter),
                                 CREATED_BY = currentUserId.USER_ID,
                                 CREATED_DATE = DateTime.Now
                             };
                             model.Detail.Pbck1DecreeDoc.Add(decreeDoc);
+                            counter += 1;
                         }
                         else
                         {
@@ -1300,6 +1302,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.Detail.Pbck1DecreeFiles != null)
                 {
+                    int counter = 0;
                     foreach (var item in model.Detail.Pbck1DecreeFiles)
                     {
                         if (item != null && validDoc)
@@ -1314,11 +1317,12 @@ namespace Sampoerna.EMS.Website.Controllers
                             var decreeDoc = new Pbck1DecreeDocModel()
                             {
                                 FILE_NAME = filenamecheck,
-                                FILE_PATH = SaveUploadedFile(item, model.Detail.Pbck1Id),
+                                FILE_PATH = SaveUploadedFile(item, model.Detail.Pbck1Id, counter),
                                 CREATED_BY = currentUserId.USER_ID,
                                 CREATED_DATE = DateTime.Now
                             };
                             model.Detail.Pbck1DecreeDoc.Add(decreeDoc);
+                            counter += 1;
                         }
                         else
                         {
@@ -1383,7 +1387,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Index");
         }
 
-        private string SaveUploadedFile(HttpPostedFileBase file, int pbck1Id)
+        private string SaveUploadedFile(HttpPostedFileBase file, int pbck1Id, int counter)
         {
             if (file == null || file.FileName == "")
                 return "";
@@ -1394,7 +1398,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!Directory.Exists(Server.MapPath(Constans.Pbck1DecreeDocFolderPath)))
                 Directory.CreateDirectory(Server.MapPath(Constans.Pbck1DecreeDocFolderPath));
 
-            sFileName = Constans.Pbck1DecreeDocFolderPath + Path.GetFileName(pbck1Id.ToString("'ID'-##") + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
+            sFileName = Constans.Pbck1DecreeDocFolderPath + Path.GetFileName(pbck1Id.ToString("'ID'-##") + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + counter + "_" + Path.GetExtension(file.FileName));
             string path = Server.MapPath(sFileName);
 
             // file is uploaded
