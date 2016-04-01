@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -28,5 +29,7 @@ namespace Sampoerna.EMS.Contract
         void Detach(TEntity entity);
 
         IQueryable<TEntity> GetQuery(Expression<Func<TEntity, bool>> predicate = null);
+
+        void ExecuteSql(string sql);
     }
 }
