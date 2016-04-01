@@ -979,6 +979,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.Details.Ck4cDecreeDoc = new List<Ck4cDecreeDocModel>();
                     if (model.Details.Ck4cDecreeFiles != null)
                     {
+                        int counter = 0;
                         foreach (var item in model.Details.Ck4cDecreeFiles)
                         {
                             if (item != null)
@@ -993,11 +994,12 @@ namespace Sampoerna.EMS.Website.Controllers
                                 var decreeDoc = new Ck4cDecreeDocModel()
                                 {
                                     FILE_NAME = filenamecheck,
-                                    FILE_PATH = SaveUploadedFile(item, model.Details.Ck4CId),
+                                    FILE_PATH = SaveUploadedFile(item, model.Details.Ck4CId, counter),
                                     CREATED_BY = currentUserId.USER_ID,
                                     CREATED_DATE = DateTime.Now
                                 };
                                 model.Details.Ck4cDecreeDoc.Add(decreeDoc);
+                                counter += 1;
                             }
                         }
                     }
@@ -1044,6 +1046,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     if (model.Details.Ck4cDecreeFiles != null)
                     {
+                        int counter = 0;
                         foreach (var item in model.Details.Ck4cDecreeFiles)
                         {
                             if (item != null)
@@ -1058,11 +1061,12 @@ namespace Sampoerna.EMS.Website.Controllers
                                 var decreeDoc = new Ck4cDecreeDocModel()
                                 {
                                     FILE_NAME = filenamecheck,
-                                    FILE_PATH = SaveUploadedFile(item, model.Details.Ck4CId),
+                                    FILE_PATH = SaveUploadedFile(item, model.Details.Ck4CId, counter),
                                     CREATED_BY = currentUserId.USER_ID,
                                     CREATED_DATE = DateTime.Now
                                 };
                                 model.Details.Ck4cDecreeDoc.Add(decreeDoc);
+                                counter += 1;
                             }
                         }
 
@@ -1113,6 +1117,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction(actionResult);
         }
 
+
         [HttpPost]
         public ActionResult GovCompletedDocumentSuperAdmin(Ck4CIndexDocumentListViewModel model)
         {
@@ -1129,6 +1134,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     if (model.Details.Ck4cDecreeFiles != null)
                     {
+                        int counter = 0;
                         foreach (var item in model.Details.Ck4cDecreeFiles)
                         {
                             if (item != null)
@@ -1143,11 +1149,12 @@ namespace Sampoerna.EMS.Website.Controllers
                                 var decreeDoc = new Ck4cDecreeDocModel()
                                 {
                                     FILE_NAME = filenamecheck,
-                                    FILE_PATH = SaveUploadedFile(item, model.Details.Ck4CId),
+                                    FILE_PATH = SaveUploadedFile(item, model.Details.Ck4CId, counter),
                                     CREATED_BY = currentUserId.USER_ID,
                                     CREATED_DATE = DateTime.Now
                                 };
                                 model.Details.Ck4cDecreeDoc.Add(decreeDoc);
+                                counter += 1;
                             }
                         }
                     }
@@ -1197,7 +1204,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction(actionResult);
         }
 
-        private string SaveUploadedFile(HttpPostedFileBase file, int ck4cId)
+        private string SaveUploadedFile(HttpPostedFileBase file, int ck4cId, int counter)
         {
             if (file == null || file.FileName == "")
                 return "";
@@ -1208,7 +1215,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (!Directory.Exists(Server.MapPath(Constans.Ck4cDecreeDocFolderPath)))
                 Directory.CreateDirectory(Server.MapPath(Constans.Ck4cDecreeDocFolderPath));
 
-            sFileName = Constans.Ck4cDecreeDocFolderPath + Path.GetFileName(ck4cId.ToString("'ID'-##") + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
+            sFileName = Constans.Ck4cDecreeDocFolderPath + Path.GetFileName(ck4cId.ToString("'ID'-##") + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + counter + "_" + Path.GetExtension(file.FileName));
             string path = Server.MapPath(sFileName);
 
             // file is uploaded
