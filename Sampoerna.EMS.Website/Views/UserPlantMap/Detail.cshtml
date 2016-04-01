@@ -100,10 +100,10 @@
     <script type="text/javascript" language="javascript">
         var plantlist = [];
         var selectedPlant = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Plants, Newtonsoft.Json.Formatting.Indented, new Newtonsoft.Json.JsonSerializerSettings { 
-                           ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Serialize
+                           ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
                        })));
     var selectedNppbkc = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.SelectedNppbkc, Newtonsoft.Json.Formatting.Indented, new Newtonsoft.Json.JsonSerializerSettings { 
-                           ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Serialize
+                           ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
                        })));
         $(document).ready(function() {
             $('#MenuUserPlantMap').addClass('active');
