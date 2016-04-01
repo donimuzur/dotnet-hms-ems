@@ -219,7 +219,7 @@
             $('#generated-data-container').html('');
 
             var jsonData = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model, Newtonsoft.Json.Formatting.Indented, new Newtonsoft.Json.JsonSerializerSettings { 
-                           ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Serialize
+                           ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
                        })));
             //console.log(jsonData);
             if (jsonData.IsEtilAlcohol) {

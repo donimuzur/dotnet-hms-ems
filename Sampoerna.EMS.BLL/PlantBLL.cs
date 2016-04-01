@@ -326,6 +326,26 @@ namespace Sampoerna.EMS.BLL
             }
             return Mapper.Map<List<T001WCompositeDto>>(dbData);
         }
+
+        public List<T001WCompositeDto> GetCompositeListByNppbkcId(string nppbkcId,string companyId)
+        {
+            Expression<Func<T001W, bool>> queryFilter = PredicateHelper.True<T001W>();
+            //if (!string.IsNullOrEmpty(nppbkcId))
+            //{
+
+            //}
+
+            queryFilter = queryFilter.And(c => !string.IsNullOrEmpty(c.NPPBKC_ID) && (c.NPPBKC_ID.Contains(nppbkcId) || c.NPPBKC_IMPORT_ID.Contains(nppbkcId)));
+
+            queryFilter = queryFilter.And(c => c.T001K.BUKRS == companyId);
+
+            var dbData = _repository.Get(queryFilter, null, includeTables);
+            if (dbData == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+            return Mapper.Map<List<T001WCompositeDto>>(dbData);
+        }
         
         public List<Plant> GetActivePlant()
         {

@@ -159,7 +159,10 @@
 @section scripts{
     <script src="~/Scripts/thousand-separator.js"></script>
     <script type="text/javascript">
-    var mainmodel = JSON.parse(@(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model))));
+    var mainmodel = JSON.parse(@(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model, Newtonsoft.Json.Formatting.Indented, new Newtonsoft.Json.JsonSerializerSettings
+                           {
+                               ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                           }))));
     var worflowmappingdata = {};
     var workflowuserdata = [];
 

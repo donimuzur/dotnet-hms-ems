@@ -16,5 +16,9 @@ namespace Sampoerna.EMS.Contract
         BACK1 GetBack1ByPbck7Id(int pbck7Id);
 
         void InsertOrDeleteBack1Documents(List<BACK1_DOCUMENTDto> input);
+
+        void UpdateBack1ByPbck7Id(SaveBack1ByPbck7IdInput input);
+
+        BACK1_DOCUMENT GetBack1DocumentById(long id);
     }
 }

@@ -11,7 +11,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string Poa { get; set; }
         public string UserId { get; set; }
         public Enums.UserRole UserRole { get; set; }
-        public List<string> NppbkcList { get; set; }
+        public List<string> ListUserPlants { get; set; }
         public List<string> DocumentNumberList { get; set; }
         public bool IsOpenDocList { get; set; }
     }

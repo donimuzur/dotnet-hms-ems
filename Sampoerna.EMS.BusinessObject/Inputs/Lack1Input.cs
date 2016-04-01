@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Core;
 
@@ -22,6 +23,19 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Enums.UserRole UserRole { get; set; }
         public List<string> NppbkcList { get; set; }
         public List<string> DocumentNumberList { get; set; }
+        public List<string> ListNppbkc { get; set; }
+        public List<string> ListUserPlant { get; set; }
 
+    }
+
+    public class Lack1UpdateSomeField
+    {
+        public long Id { get; set; }
+        public DateTime? SubmissionDate { get; set; }
+        public decimal? WasteQty { get; set; }
+        public string WasteUom { get; set; }
+        public decimal? ReturnQty { get; set; }
+        public string ReturnUom { get; set; }
+        public string Noted { get; set; }
     }
 }

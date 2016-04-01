@@ -20,7 +20,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string ApprovedBy { get; set; }
         public string Creator { get; set; }
         public string Approver { get; set; }
-
+        public Enums.UserRole UserRole { get; set; }
+        public List<string> ListUserPlant { get; set; }
     }
 
     public class Lack2GetDetailReportByParamInput
@@ -36,6 +37,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public int? PeriodYear { get; set; }
         public DateTime? DateFrom { get; set; }
         public DateTime? DateTo { get; set; }
+        public Enums.UserRole UserRole { get; set; }
+        public List<string> ListUserPlant { get; set; }
      
     }
 
@@ -94,6 +97,10 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string UserId { get; set; }
         public Enums.ActionType WorkflowActionType { get; set; }
 
+        public List<Lack2DocumentDto> Documents { get; set; }
+
+        public DateTime? DecreeDate { get; set; }
+
         #region Additional property
 
         public string CompanyName { get; set; }
@@ -103,6 +110,16 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         #endregion
 
+    }
+
+    public class Lack2EditCompletedDocumentInput
+    {
+        public int DocumentId { get; set; }
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
+        public List<LACK2_DOCUMENT> ListFile { get; set; }
+
+        public DateTime? SubmissionDate { get; set; }
     }
 
 }

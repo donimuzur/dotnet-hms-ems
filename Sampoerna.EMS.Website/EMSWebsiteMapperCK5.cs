@@ -36,9 +36,14 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS_ID)))
                 .ForMember(dest => dest.StoNumber, opt => opt.MapFrom(src => src.STOB_NUMBER))
                 .ForMember(dest => dest.InvoiceNumber, opt => opt.MapFrom(src => src.INVOICE_NUMBER))
+                .ForMember(dest => dest.DocumentCreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE.ToString("dd MMM yyyy")))
+                .ForMember(dest => dest.SubmissionDate, opt => opt.MapFrom(src => src.SUBMISSION_DATE.HasValue ? src.SUBMISSION_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
                 ;
 
-            Mapper.CreateMap<CK5SearchViewModel, CK5GetByParamInput>().IgnoreAllNonExisting();
+            Mapper.CreateMap<CK5SearchViewModel, CK5GetByParamInput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Month, opt => opt.ResolveUsing<StringToIntResolver>().FromMember(src => src.Month))
+                .ForMember(dest => dest.Year, opt => opt.ResolveUsing<StringToIntResolver>().FromMember(src => src.Year))
+                ;
 
 
             Mapper.CreateMap<T001WDto, CK5PlantModel>().IgnoreAllNonExisting()

@@ -19,12 +19,14 @@ namespace Sampoerna.EMS.DAL
         internal DbSet<TEntity> _dbSet;
 
         private ILogger _logger;
+        
 
         public SqlGenericRepository(EMSEntities context, ILogger logger)
         {
            _context = context;
             _logger = logger;
            _dbSet = context.Set<TEntity>();
+            
         }
 
         public virtual IEnumerable<TEntity> Get(
@@ -102,7 +104,10 @@ namespace Sampoerna.EMS.DAL
                 _dbSet.Attach(entityToDelete);
             }
             _dbSet.Remove(entityToDelete);
+            
         }
+
+        
 
         public virtual void Update(TEntity entity)
         {
@@ -166,6 +171,13 @@ namespace Sampoerna.EMS.DAL
             return _dbSet;
 
         }
+
+        public void ExecuteSql(string sql)
+        {
+            _dbSet.SqlQuery(sql);
+            
+        }
+
     }
     
 

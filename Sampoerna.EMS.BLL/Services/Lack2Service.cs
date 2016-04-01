@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
@@ -64,25 +66,31 @@ namespace Sampoerna.EMS.BLL.Services
 
             queryFilter = input.IsOpenDocList ? queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed) : queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
 
-            switch (input.UserRole)
+            //switch (input.UserRole)
+            //{
+                //case Enums.UserRole.POA:
+                //    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId
+                //        || (c.STATUS != Enums.DocumentStatus.Draft
+                //        && input.NppbkcList.Contains(c.NPPBKC_ID))));
+                //    break;
+                //case Enums.UserRole.Manager:
+                //    queryFilter =
+                //        queryFilter.And(
+                //            c =>
+                //                c.STATUS != Enums.DocumentStatus.Draft &&
+                //                c.STATUS != Enums.DocumentStatus.WaitingForApproval &&
+                //                input.DocumentNumberList.Contains(c.LACK2_NUMBER));
+                //    break;
+            //    default:
+            //        queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);
+            //        break;
+            //}
+
+            if (input.UserRole != Enums.UserRole.Administrator)
             {
-                case Enums.UserRole.POA:
-                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId
-                        || (c.STATUS != Enums.DocumentStatus.Draft
-                        && input.NppbkcList.Contains(c.NPPBKC_ID))));
-                    break;
-                case Enums.UserRole.Manager:
-                    queryFilter =
-                        queryFilter.And(
-                            c =>
-                                c.STATUS != Enums.DocumentStatus.Draft &&
-                                c.STATUS != Enums.DocumentStatus.WaitingForApproval &&
-                                input.DocumentNumberList.Contains(c.LACK2_NUMBER));
-                    break;
-                default:
-                    queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);
-                    break;
+                queryFilter = queryFilter.And(c => input.PlantList.Contains(c.LEVEL_PLANT_ID));    
             }
+            
 
             Func<IQueryable<LACK2>, IOrderedQueryable<LACK2>> orderBy = null;
 
@@ -111,6 +119,11 @@ namespace Sampoerna.EMS.BLL.Services
             if (!string.IsNullOrEmpty((input.Poa)))
             {
                 queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
+            }
+
+            if (input.UserRole != Enums.UserRole.Administrator)
+            {
+                queryFilter = queryFilter.And(c => input.PlantList.Contains(c.LEVEL_PLANT_ID));
             }
 
             Func<IQueryable<LACK2>, IOrderedQueryable<LACK2>> orderBy = null;
@@ -142,13 +155,20 @@ namespace Sampoerna.EMS.BLL.Services
             _repository.Insert(data);
         }
 
-        public LACK2 GetBySelectionCriteria(Lack2GetBySelectionCriteriaParamInput input)
+        public LACK2 GetBySelectionCriteria(Lack2GetBySelectionCriteriaParamInput input, Login loginInfo = null)
         {
             Expression<Func<LACK2, bool>> queryFilter =
                 c => c.BUKRS == input.CompanyCode && c.NPPBKC_ID == input.NppbkcId
                      && c.EX_GOOD_TYP == input.ExGoodTypeId
                      && c.LEVEL_PLANT_ID == input.SourcePlantId
                      && c.PERIOD_MONTH == input.PeriodMonth && c.PERIOD_YEAR == input.PeriodYear;
+
+            if (loginInfo.UserRole != Enums.UserRole.Administrator)
+            {
+                queryFilter = queryFilter.And(c => loginInfo.ListUserPlants.Contains(c.LEVEL_PLANT_ID));
+            }
+            
+            
 
             var dataExist = _repository.Get(queryFilter).FirstOrDefault();
             return dataExist;
@@ -227,6 +247,12 @@ namespace Sampoerna.EMS.BLL.Services
                 queryFilter = queryFilter.And(c => c.APPROVED_BY_MANAGER == input.Approver);
             }
 
+
+            if (input.UserRole != Enums.UserRole.Administrator)
+            {
+                queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.LEVEL_PLANT_ID));
+            }
+
             return _repository.Get(queryFilter, null, "LACK2_ITEM, LACK2_ITEM.CK5").ToList();
 
         }
@@ -274,6 +300,11 @@ namespace Sampoerna.EMS.BLL.Services
                 queryFilter =
                     queryFilter.And(c => c.PERIOD_YEAR == input.PeriodYear.Value);
 
+            if (input.UserRole != Enums.UserRole.Administrator)
+            {
+                queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.LEVEL_PLANT_ID));
+            }
+
             var rc = _repository.Get(queryFilter, null, "LACK2_ITEM, LACK2_ITEM.CK5").ToList();
             return rc;
         }
@@ -302,18 +333,9 @@ namespace Sampoerna.EMS.BLL.Services
                 queryFilter = queryFilter.And(c => c.PERIOD_YEAR == input.PeriodYear.Value);
             }
 
-            if (input.UserRole == Enums.UserRole.POA)
+            if (input.UserRole != Enums.UserRole.Administrator)
             {
-                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft
-                       && input.NppbkcList.Contains(c.NPPBKC_ID))) || c.STATUS == Enums.DocumentStatus.Completed);
-            }
-            else if (input.UserRole == Enums.UserRole.Manager)
-            {
-                queryFilter = queryFilter.And(c => (c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && input.DocumentNumberList.Contains(c.LACK2_NUMBER)) || c.STATUS == Enums.DocumentStatus.Completed);
-            }
-            else
-            {
-                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId) || c.STATUS == Enums.DocumentStatus.Completed);
+                queryFilter = queryFilter.And(c => input.ListUserPlants.Contains(c.LEVEL_PLANT_ID));
             }
 
             return _repository.Get(queryFilter).ToList();

@@ -115,6 +115,8 @@
     </div>
 </div>
 
+<div class="loading"></div>
+
 @section Scripts {
     
     <script src="~/Scripts/lack2/form.js"></script>
@@ -391,8 +393,10 @@
         }
 
         function GenerateCk5Items() {
+            $('.loading').show();
 
             if (!generateInputValidation()) {
+                $('.loading').hide();
                 $('#ModalValidation').modal('show');
                 return;
             }
@@ -410,7 +414,8 @@
                 type: "POST",
                 contentType: "application/json",
                 data: JSON.stringify({ param: param }),
-                success: function(response) {
+                success: function (response) {
+                    $('.loading').hide();
                     if (response.Success) {
                         console.log(response);
                         generateTable(response.Data.Ck5Items);

@@ -27,6 +27,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string UserId { get; set; }
 
         public Enums.UserRole UserRole { get; set; }
+
+        public List<string> ListUserPlant { get; set; }
     }
 
     public class Pbck4SaveInput
@@ -105,6 +107,10 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string Ck1No { get; set; }
 
         public string Creator { get; set; }
+
+        public List<string> ListUserPlant { get; set; }
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
     }
 
     public class GetListCk1ByPlantAndFaCodeInput
@@ -130,6 +136,24 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public Enums.UserRole UserRole { get; set; }
         public string UserId { get; set; }
+        public List<string> ListUserPlant { get; set; }
     }
 
+    public class EditCompletedDocumentInput
+    {
+        public long DocumentId { get; set; }
+        public string UserId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
+        public List<PBCK4_DOCUMENTDto> ListFile { get; set; }
+
+        public DateTime? ReportedOn { get; set; }
+
+        public string BACK1_NO { get; set; }
+        public Nullable<System.DateTime> BACK1_DATE { get; set; }
+        public string CK3_NO { get; set; }
+        public Nullable<System.DateTime> CK3_DATE { get; set; }
+        public string Ck3OfficeValue { get; set; }
+
+        public List<Pbck4ItemDto> Pbck4ItemsDto { get; set; }
+    }
 }

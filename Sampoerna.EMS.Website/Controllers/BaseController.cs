@@ -82,12 +82,38 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     if (loginResult != null)
                     {
-
+                        //CurrentUser = loginResult;
                         loginResult.UserRole = poabll.GetUserRole(loginResult.USER_ID);
                         loginResult.AuthorizePages = userAuthorizationBll.GetAuthPages(loginResult.USER_ID);
                         loginResult.NppbckPlants = userAuthorizationBll.GetNppbckPlants(loginResult.USER_ID);
-                        Session[Core.Constans.SessionKey.CurrentUser] = loginResult;
+                        loginResult.ListUserPlants = new List<string>();
+                        loginResult.ListUserNppbkc = new List<string>();
+                        switch (loginResult.UserRole)
+                        {
+                            case Enums.UserRole.User:
+                            case Enums.UserRole.Viewer:
+                                loginResult.ListUserPlants =
+                                    userAuthorizationBll.GetListPlantByUserId(loginResult.USER_ID);
+                                loginResult.ListUserNppbkc =
+                                    userAuthorizationBll.GetListNppbkcByUserId(loginResult.USER_ID);
+                                break;
+                            case Enums.UserRole.POA:
+                                loginResult.ListUserPlants = new List<string>();
+                                foreach (var nppbkcPlantDto in loginResult.NppbckPlants)
+                                {
+                                    foreach (var plantDto in nppbkcPlantDto.Plants)
+                                    {
+                                        loginResult.ListUserPlants.Add(plantDto.WERKS);
+                                    }
+                                }
+                                loginResult.ListUserNppbkc = loginResult.NppbckPlants.Select(c => c.NppbckId).ToList();
+                                break;
+                        }
+                        
+
+
                     }
+                    Session[Core.Constans.SessionKey.CurrentUser] = loginResult;
                 }
                 return (Login)Session[Core.Constans.SessionKey.CurrentUser];
             }

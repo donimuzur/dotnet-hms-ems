@@ -1,0 +1,69 @@
+﻿@model Sampoerna.EMS.Website.Models.Material.MaterialListViewModel
+
+<table id="mydata" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> Filter </th>
+            <th> Plant </th>
+            <th> Material Number </th>
+            <th> Material Desc</th>
+            <th> Good Type</th>
+            <th> UOM</th>
+            <th> Plant Deletion </th>
+            <th> Client Deletion </th>
+        </tr>
+
+    </thead>
+    <thead class="filters">
+        <tr>
+            <th> Action </th>
+            <th> Plant </th>
+            <th> Material Number </th>
+            <th> Material Desc</th>
+            <th> Good Type</th>
+            <th> UOM</th>
+
+            <th> Plant Deletion </th>
+            <th> Client Deletion </th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model.Details)
+        {
+            <tr>
+                <td class="action">
+                    <a href="@Url.Action("Details", "Material", new { mn = item.MaterialNumber, p= item.PlantId })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                    @if (Model.IsNotViewer)
+                    {
+                        <a href="@Url.Action("Edit", "Material", new { mn = item.MaterialNumber, p = item.PlantId })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlantName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MaterialNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MaterialDesc)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GoodTypeName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UomName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlantDeletion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClientDeletion)
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+

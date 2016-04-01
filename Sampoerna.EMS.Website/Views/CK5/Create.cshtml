@@ -3,7 +3,6 @@
 @{
     ViewBag.Title = "Create";
 }
-
 @using (Html.BeginForm("SaveCK5", "CK5", FormMethod.Post, new { @id = "SaveCk5Forms" }))
 {
     @Html.AntiForgeryToken()
@@ -36,12 +35,9 @@
                     <!-- Tab panes -->
                     <div class="tab-content">
                         @Html.HiddenFor(model => model.Ck5Type)
-
                         @Html.HiddenFor(model => model.KppBcCity)
                         @Html.HiddenFor(model => model.CeOfficeCode)
-
                         @Html.HiddenFor(model => model.SubmissionNumber)
-
                         @if (Model.IsDomesticAlcohol)
                         {
                             @Html.HiddenFor(model => model.SourceNppbkcId)
@@ -69,42 +65,34 @@
                         }
 
 
-
-
                         @Html.HiddenFor(model => model.DestNpwp)
                         @Html.HiddenFor(model => model.DestNppbkcId)
                         @Html.HiddenFor(model => model.DestCompanyCode)
-
                         @Html.HiddenFor(model => model.DestKppbcName)
                         @Html.HiddenFor(model => model.DestPlantName)
-
                         @if (!Model.IsCk5Export)
                         {
                             @Html.HiddenFor(model => model.DestCompanyName)
                             @Html.HiddenFor(model => model.DestAddress)
                         }
-
                         @Html.HiddenFor(model => model.PbckDecreeId)
                         @Html.HiddenFor(model => model.PbckDecreeNumber)
                         @Html.HiddenFor(model => model.Pbck1QtyApproved)
                         @Html.HiddenFor(model => model.Ck5TotalExciseable)
                         @Html.HiddenFor(model => model.RemainQuota)
                         @Html.HiddenFor(model => model.PbckUom)
-
                         @Html.HiddenFor(model => model.IsCk5Export)
                         @Html.HiddenFor(model => model.IsCk5PortToImporter)
                         @Html.HiddenFor(model => model.IsDomesticAlcohol)
                         @Html.HiddenFor(model => model.IsCk5Manual)
                         @Html.HiddenFor(model => model.IsCk5ImporterToPlant)
 
-                   
                         @Html.Partial("_CK5InformationCreate")
                         @Html.Partial("_CK5Printout")
                         @if (!Model.IsCk5ImporterToPlant)
                         {
                             @Html.Partial("_CK5UploadCreate")
                         }
-
                     </div>
                 </div>
             </div>
@@ -112,7 +100,6 @@
     </div>
 
 }
-
 <div id="ModalCk5Material" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -123,7 +110,6 @@
                 <p>
                     <span id="modalBodyMessage">Missing CK5 Materials</span>
                 </p>
-
             </div>
             <div class="modal-footer">
                 <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
@@ -131,7 +117,6 @@
         </div>
     </div>
 </div>
-
 <div id="ModalCk5PBCK1Quota" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -142,7 +127,6 @@
                 <p>
                     <span id="modalBodyMessage">Please fill Source and Destination plant</span>
                 </p>
-
             </div>
             <div class="modal-footer">
                 <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
@@ -150,7 +134,6 @@
         </div>
     </div>
 </div>
-
 
 <div id="Ck5UploadModal" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog modal-lg">
@@ -168,7 +151,6 @@
                         <label>Plant</label>
                         <input class="form-control" id="uploadMaterialPlant" type="text" value="" disabled>
                     </div>
-
                 </div>
                 <div class="row">
                     <div class="col-md-6">
@@ -176,15 +158,12 @@
                         <select class="form-control selectpicker" id="uploadMaterialNumber">
                             <option value="">Select</option>
                         </select>
-
                     </div>
                     <div class="col-md-6">
                         <label>Qty<span class="red">*</span></label>
                         @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control decimal", @id = "uploadMaterialQty" })
-
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-6">
                         <label>HJE</label>
@@ -193,15 +172,12 @@
                     <div class="col-md-6">
                         <label class="col-md-4">Tariff</label>
                         @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadMaterialTariff", @disabled = "disabled" })
-
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-6">
                         <label>UOM<span class="red">*</span></label>
                         @Html.DropDownListFor(model => model.PackageUomName, Model.PackageUomList, "Select", new { @class = "form-control", @id = "uploadMaterialUom" })
-
                     </div>
                     <div class="col-md-6">
                         <label>Convertion<span class="red">*</span></label>
@@ -210,7 +186,6 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-
                         @if (Model.IsCk5Waste)
                         {
                             <label>Converted UOM</label>
@@ -225,18 +200,13 @@
                             @Html.DropDownListFor(model => model.PackageUomName, Model.PackageConvertedUomList, "Select", new { @class = "form-control", @id = "uploadConvertedUom" })
                         }
 
-
                     </div>
-
                     <div class="col-md-6">
                         <label>USD Value</label>
                         @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control decimal", @id = "uploadUsdValue" })
-
                     </div>
 
-
                 </div>
-
                 <div class="row">
                     <div class="col-md-6">
                         <label>Note</label>
@@ -247,7 +217,6 @@
                         <div class="col-md-6">
                             <label class="col-md-4">Stock</label>
                             @Html.TextBoxFor(model => model.MaterialQty, new { @class = "form-control", @id = "uploadWasteStock", @disabled = "disabled" })
-
                         </div>
                     }
                 </div>
@@ -260,7 +229,6 @@
         </div>
     </div>
 </div>
-
 <!-- modal placeholder-->
 <div id='emsModal' class='modal fade in'>
     <div class="modal-dialog">
@@ -269,7 +237,6 @@
         </div>
     </div>
 </div>
-
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
@@ -602,7 +569,7 @@
                     } else if ('@Model.Ck5Type.ToString()' == '@Enums.CK5Type.Export.ToString()') {
                         ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariffExport", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
                     } else {
-                        ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariff", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
+                        ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariff", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber, ck5Type: '@Model.Ck5Type' });
                     }
 
                 }
