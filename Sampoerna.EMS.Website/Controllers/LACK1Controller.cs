@@ -417,14 +417,14 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region -------------- Private Method --------
 
-        private string SaveUploadedFile(HttpPostedFileBase file, int lack1Id)
+        private string SaveUploadedFile(HttpPostedFileBase file, int lack1Id, int counter)
         {
             if (file == null || file.FileName == "")
                 return "";
 
             string sFileName = "";
 
-            sFileName = Constans.Lack1UploadFolderPath + Path.GetFileName("LACK1_" + lack1Id + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
+            sFileName = Constans.Lack1UploadFolderPath + Path.GetFileName("LACK1_" + lack1Id + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + counter + "_" + Path.GetExtension(file.FileName));
             string path = Server.MapPath(sFileName);
 
             // file is uploaded
@@ -1397,6 +1397,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Lack1Document = new List<Lack1DocumentItemModel>();
                 if (model.DecreeFiles != null)
                 {
+                    int counter = 0;
                     foreach (var item in model.DecreeFiles)
                     {
                         if (item != null)
@@ -1411,9 +1412,10 @@ namespace Sampoerna.EMS.Website.Controllers
                             var decreeDoc = new Lack1DocumentItemModel()
                             {
                                 FILE_NAME = filenamecheck,
-                                FILE_PATH = SaveUploadedFile(item, model.Lack1Id)
+                                FILE_PATH = SaveUploadedFile(item, model.Lack1Id, counter)
                             };
                             model.Lack1Document.Add(decreeDoc);
+                            counter += 1;
                         }
                         else
                         {
@@ -1468,6 +1470,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.Lack1Document = new List<Lack1DocumentItemModel>();
                 if (model.DecreeFiles != null)
                 {
+                    int counter = 0;
                     foreach (var item in model.DecreeFiles)
                     {
                         if (item != null)
@@ -1482,9 +1485,10 @@ namespace Sampoerna.EMS.Website.Controllers
                             var decreeDoc = new Lack1DocumentItemModel()
                             {
                                 FILE_NAME = filenamecheck,
-                                FILE_PATH = SaveUploadedFile(item, model.Lack1Id)
+                                FILE_PATH = SaveUploadedFile(item, model.Lack1Id, counter)
                             };
                             model.Lack1Document.Add(decreeDoc);
+                            counter += 1;
                         }
                         else
                         {

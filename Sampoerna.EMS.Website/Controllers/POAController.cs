@@ -83,6 +83,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 poa.IS_ACTIVE = true;
                 if (model.Detail.PoaSKFile != null)
                 {
+                    int counter = 0;
                     foreach (var sk in model.Detail.PoaSKFile)
                     {
                         if (sk != null)
@@ -98,9 +99,9 @@ namespace Sampoerna.EMS.Website.Controllers
                                 poa_sk.FILE_NAME = sk.FileName;
                             }
 
-                            poa_sk.FILE_PATH = SaveUploadedFile(sk, poa.ID_CARD);
+                            poa_sk.FILE_PATH = SaveUploadedFile(sk, poa.ID_CARD, counter);
                             poa.POA_SK.Add(poa_sk);
-
+                            counter += 1;
                         }
                     }
                 }
@@ -240,6 +241,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var poa = _poaBll.GetById(poaId);
                 if (model.Detail.PoaSKFile != null)
                 {
+                    int counter = 0;
                     foreach (var sk in model.Detail.PoaSKFile)
                     {
                         if (sk != null)
@@ -254,9 +256,10 @@ namespace Sampoerna.EMS.Website.Controllers
                             {
                                 poa_sk.FILE_NAME = sk.FileName;
                             }
-                            poa_sk.FILE_PATH = SaveUploadedFile(sk, poa.ID_CARD);
+                            poa_sk.FILE_PATH = SaveUploadedFile(sk, poa.ID_CARD, counter);
                             poa_sk.POA_ID = poaId;
                             _poaskbll.Save(poa_sk);
+                            counter += 1;
                         }
                     }
                 }
@@ -349,7 +352,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(_poaskbll.RemovePoaSk(skid));
         }
 
-        private string SaveUploadedFile(HttpPostedFileBase file, string PoaIdCard)
+        private string SaveUploadedFile(HttpPostedFileBase file, string PoaIdCard, int counter)
         {
             if (file == null || file.FileName == "")
                 return "";
@@ -360,7 +363,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //if (!Directory.Exists(Server.MapPath(Constans.PoaSK)))
             //    Directory.CreateDirectory(Server.MapPath(Constans.PoaSK));
 
-            sFileName = Constans.UploadPath + Path.GetFileName(PoaIdCard + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
+            sFileName = Constans.UploadPath + Path.GetFileName(PoaIdCard + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + counter + "_" + Path.GetExtension(file.FileName));
             string path = Server.MapPath(sFileName);
 
             // file is uploaded
