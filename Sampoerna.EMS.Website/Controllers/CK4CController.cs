@@ -87,10 +87,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.Ck4CDocument,
-                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
+                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false),
                 //first code when manager exists
                 //IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
-                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false)
             });
 
             return View("DocumentList", data);
@@ -99,8 +99,27 @@ namespace Sampoerna.EMS.Website.Controllers
         private Ck4CIndexDocumentListViewModel InitIndexDocumentListViewModel(
             Ck4CIndexDocumentListViewModel model)
         {
-            model.CompanyNameList = GlobalFunctions.GetCompanyList(_companyBll); ;
-            model.NppbkcIdList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+            var comp = GlobalFunctions.GetCompanyList(_companyBll);
+            var nppbkc = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
+            {
+                var userComp = _userPlantBll.GetCompanyByUserId(CurrentUser.USER_ID);
+                var poaComp = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
+                var distinctComp = comp.Where(x => userComp.Contains(x.Value));
+                if (CurrentUser.UserRole == Enums.UserRole.POA) distinctComp = comp.Where(x => poaComp.Contains(x.Value));
+                var getComp = new SelectList(distinctComp, "Value", "Text");
+
+                comp = getComp;
+
+                var filterNppbkc = nppbkc.Where(x => CurrentUser.ListUserNppbkc.Contains(x.Value));
+                var distinctNppbkc = new SelectList(filterNppbkc, "Value", "Text");
+
+                nppbkc = distinctNppbkc;
+            }
+
+            model.CompanyNameList = comp;
+            model.NppbkcIdList = nppbkc;
 
             switch (model.Ck4CType)
             {
@@ -132,6 +151,8 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = Mapper.Map<Ck4cGetOpenDocumentByParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
             input.UserRole = CurrentUser.UserRole;
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
+            input.ListUserPlant = CurrentUser.ListUserPlants;
 
             var dbData = _ck4CBll.GetOpenDocumentByParam(input).OrderByDescending(c => c.Number);
             return Mapper.Map<List<DataDocumentList>>(dbData);
@@ -148,6 +169,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //getbyparams
             var input = Mapper.Map<Ck4cGetCompletedDocumentByParamInput>(filter);
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
+            input.ListUserPlant = CurrentUser.ListUserPlants;
+
             var dbData = _ck4CBll.GetCompletedDocumentByParam(input).OrderByDescending(d => d.Number);
             return Mapper.Map<List<DataDocumentList>>(dbData);
         }
@@ -158,7 +184,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Detail = GetOpenDocument(model);
             //first code when manager exists
             //model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
-            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false);
             return PartialView("_CK4CTableDocumentList", model);
         }
 
@@ -199,13 +225,16 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var listPlant = GlobalFunctions.GetPlantByCompanyId(companyId);
 
-            var userPlant = _userPlantBll.GetPlantByUserId(CurrentUser.USER_ID);
-
-            var poaMap = _poaMapBll.GetPlantByPoaId(CurrentUser.USER_ID);
-
-            var filterPlant = listPlant.Where(x => userPlant.Contains(x.Value) || poaMap.Contains(x.Value));
+            var filterPlant = listPlant;
 
             var newListPlant = new SelectList(filterPlant, "Value", "Text");
+
+            if (CurrentUser.UserRole == Enums.UserRole.User)
+            {
+                var newFilterPlant = listPlant.Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
+
+                newListPlant = new SelectList(newFilterPlant, "Value", "Text");
+            }
 
             var model = new Ck4CIndexDocumentListViewModel() { PlanList = newListPlant };
 
@@ -216,6 +245,8 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetNppbkcByCompanyId(string companyId)
         {
             var data = _nppbkcbll.GetNppbkcsByCompany(companyId);
+
+            data = data.Where(x => CurrentUser.ListUserNppbkc.Contains(x.NPPBKC_ID)).ToList();
 
             return Json(data);
         }
@@ -274,7 +305,7 @@ namespace Sampoerna.EMS.Website.Controllers
         #region create Document List
         public ActionResult Ck4CCreateDocumentList()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Administrator)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction("DocumentList");
@@ -300,7 +331,8 @@ namespace Sampoerna.EMS.Website.Controllers
             var comp = GlobalFunctions.GetCompanyList(_companyBll);
             var userComp = _userPlantBll.GetCompanyByUserId(CurrentUser.USER_ID);
             var poaComp = _poaMapBll.GetCompanyByPoaId(CurrentUser.USER_ID);
-            var distinctComp = comp.Where(x => userComp.Contains(x.Value) || poaComp.Contains(x.Value));
+            var distinctComp = comp.Where(x => userComp.Contains(x.Value));
+            if (CurrentUser.UserRole == Enums.UserRole.POA) distinctComp = comp.Where(x => poaComp.Contains(x.Value));
             var getComp = new SelectList(distinctComp, "Value", "Text");
 
             model.MainMenu = _mainMenu;
@@ -505,6 +537,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
+            if (CurrentUser.UserRole == Enums.UserRole.Administrator)
+            {
+                return RedirectToAction("Edits", new { id });
+            }
+
             //first code when manager exists
             //if (CurrentUser.UserRole == Enums.UserRole.Viewer)
             if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
@@ -577,6 +614,77 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
 
                 model.AllowEditCompleted = _ck4CBll.AllowEditCompletedDocument(ck4cData, CurrentUser.USER_ID);
+
+                return View(model);
+            }
+            catch (Exception exception)
+            {
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+                return RedirectToAction("DocumentList");
+            }
+        }
+
+        #endregion
+
+        #region Edit Super Admin
+
+        public ActionResult Edits(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var ck4cData = _ck4CBll.GetById(id.Value);
+
+            if (ck4cData == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
+            {
+                return RedirectToAction("Detail", new { id });
+            }
+
+            try
+            {
+                var plant = _plantBll.GetT001WById(ck4cData.PlantId);
+                var nppbkcId = ck4cData.NppbkcId;
+
+                //workflow history
+                var workflowInput = new GetByFormNumberInput();
+                workflowInput.FormNumber = ck4cData.Number;
+                workflowInput.DocumentStatus = ck4cData.Status;
+                workflowInput.NppbkcId = nppbkcId;
+                workflowInput.DocumentCreator = ck4cData.CreatedBy;
+                if (plant != null)
+                {
+                    workflowInput.PlantId = ck4cData.PlantId;
+                }
+
+                var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+
+                var changesHistory =
+                    Mapper.Map<List<ChangesHistoryItemModel>>(
+                        _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.CK4C,
+                        id.Value.ToString()));
+
+                var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(ck4cData.Number));
+
+                var model = new Ck4CIndexDocumentListViewModel()
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo,
+                    Details = Mapper.Map<DataDocumentList>(ck4cData),
+                    WorkflowHistory = workflowHistory,
+                    ChangesHistoryList = changesHistory,
+                    PrintHistoryList = printHistory
+                };
+
+                model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData);
+
+                model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
 
                 return View(model);
             }
@@ -1009,6 +1117,93 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction(actionResult);
         }
 
+
+        [HttpPost]
+        public ActionResult GovCompletedDocumentSuperAdmin(Ck4CIndexDocumentListViewModel model)
+        {
+            bool isSuccess = false;
+            var currentUserId = CurrentUser;
+            var message = "Document has been saved";
+            var actionResult = "CompletedDocument";
+
+            try
+            {
+                if (model.Details.Status == Enums.DocumentStatus.Completed)
+                {
+                    model.Details.Ck4cDecreeDoc = new List<Ck4cDecreeDocModel>();
+
+                    if (model.Details.Ck4cDecreeFiles != null)
+                    {
+                        int counter = 0;
+                        foreach (var item in model.Details.Ck4cDecreeFiles)
+                        {
+                            if (item != null)
+                            {
+                                var filenamecheck = item.FileName;
+
+                                if (filenamecheck.Contains("\\"))
+                                {
+                                    filenamecheck = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                                }
+
+                                var decreeDoc = new Ck4cDecreeDocModel()
+                                {
+                                    FILE_NAME = filenamecheck,
+                                    FILE_PATH = SaveUploadedFile(item, model.Details.Ck4CId, counter),
+                                    CREATED_BY = currentUserId.USER_ID,
+                                    CREATED_DATE = DateTime.Now
+                                };
+                                model.Details.Ck4cDecreeDoc.Add(decreeDoc);
+                                counter += 1;
+                            }
+                        }
+                    }
+
+                    if (model.Details.Ck4cUploadedDoc != null)
+                    {
+                        foreach (var item in model.Details.Ck4cUploadedDoc)
+                        {
+                            if (item != null)
+                            {
+                                var valueDoc = item.Split('|').ToArray();
+
+                                var decreeDoc = new Ck4cDecreeDocModel()
+                                {
+                                    FILE_NAME = valueDoc[1],
+                                    FILE_PATH = valueDoc[0],
+                                    CREATED_BY = currentUserId.USER_ID,
+                                    CREATED_DATE = DateTime.Now
+                                };
+                                model.Details.Ck4cDecreeDoc.Add(decreeDoc);
+                            }
+                        }
+                    }
+
+                    var input = new Ck4cUpdateReportedOn()
+                    {
+                        Id = model.Details.Ck4CId,
+                        ReportedOn = model.Details.ReportedOn,
+                        DecreeDate = model.Details.DecreeDate
+                    };
+
+                    _ck4CBll.UpdateReportedOn(input);
+                }
+
+                Ck4cWorkflowCompleted(model.Details, model.Details.GovApprovalActionType, string.Empty);
+                isSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+
+            if (!isSuccess) return RedirectToAction("Edits", "CK4C", new { id = model.Details.Ck4CId });
+
+            AddMessageInfo(message, Enums.MessageInfoType.Success);
+
+            return RedirectToAction(actionResult);
+        }
+
         private string SaveUploadedFile(HttpPostedFileBase file, int ck4cId, int counter)
         {
             if (file == null || file.FileName == "")
@@ -1353,7 +1548,11 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.CK4C;
             model.CurrentMenu = PageInfo;
 
-            var listCk4C = _ck4CBll.GetSummaryReportsByParam(new Ck4CGetSummaryReportByParamInput());
+            var listCk4C = _ck4CBll.GetSummaryReportsByParam(new Ck4CGetSummaryReportByParamInput() { 
+                UserRole = CurrentUser.UserRole,
+                ListNppbkc = CurrentUser.ListUserNppbkc,
+                ListUserPlant = CurrentUser.ListUserPlants
+            });
 
             model.SearchView.Ck4CNoList = GetCk4CNumberList(listCk4C);
             model.SearchView.PlantIdList = GetPlantList(listCk4C);
@@ -1363,6 +1562,11 @@ namespace Sampoerna.EMS.Website.Controllers
             var filter = new Ck4CSearchSummaryReportsViewModel();
 
             model.DetailsList = SearchDataSummaryReports(filter);
+
+            var listCk4c = Mapper.Map<List<Ck4CSummaryReportDto>>(model.DetailsList);
+
+            model.SearchView.Ck4CNoList = GetCk4CNumberList(listCk4c);
+            model.SearchView.PlantIdList = GetPlantList(listCk4c);
 
             return model;
         }
@@ -1383,6 +1587,9 @@ namespace Sampoerna.EMS.Website.Controllers
             //getbyparams
 
             input = Mapper.Map<Ck4CGetSummaryReportByParamInput>(filter);
+            input.UserRole = CurrentUser.UserRole;
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
+            input.ListUserPlant = CurrentUser.ListUserPlants;
 
             dbData = _ck4CBll.GetSummaryReportsByParam(input);
             return Mapper.Map<List<Ck4CSummaryReportsItem>>(dbData);
@@ -2033,6 +2240,8 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = Mapper.Map<Ck4CDashboardParamInput>(filter);
             input.UserId = CurrentUser.USER_ID;
             input.UserRole = CurrentUser.UserRole;
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
+            input.ListUserPlant = CurrentUser.ListUserPlants;
 
             var dbData = _ck4CBll.GetAllByParam(input);
             return dbData;

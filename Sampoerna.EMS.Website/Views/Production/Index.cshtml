@@ -7,7 +7,8 @@
         <div class="col-sm-12">
             <h3>Daily Production List</h3>
             <div class="action-button new">
-                @if (Model.IsNotViewer){
+                @if (Model.IsShowNewButton)
+                {
                     <a href="@Url.Action("Create", "Production")"><button class="btn btn-blue">NEW</button></a>
                     <a href="@Url.Action("UploadManualProduction", "Production")"><button class="btn btn-blue">UPLOAD</button></a>
                 }
@@ -58,6 +59,24 @@
                                 <label class="col-md-4">Plant ID</label>
                                 <div class="col-md-8">
                                     @Html.DropDownListFor(model => model.PlantWerks, Model.PlantWerkList, "Select", new { @class = "form-control  selectreset ", id = "SearchInput_PlantId" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-3 long">Month</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.Month, Model.MonthList, "All", new { @class = " form-control selectreset", id = "SearchInput_Month" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">Year</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.Year, Model.YearList, "All", new { @class = " form-control selectreset", id = "SearchInput_Year" })
                                 </div>
                             </div>
                         </div>
@@ -148,6 +167,8 @@
 
         $(document).ready(function () {
             setupDataTables();
+            $('#SearchInput_Month').addClass('input-validation-error');
+            $('#SearchInput_Year').addClass('input-validation-error');
         });
 
         function ajaxSelectCompany(url, formData) {
@@ -178,6 +199,8 @@
 
                 });
             });
+            $('#SearchInput_Month').removeClass('input-validation-error');
+            $('#SearchInput_Year').removeClass('input-validation-error');
             setupDataTables();
         }
 

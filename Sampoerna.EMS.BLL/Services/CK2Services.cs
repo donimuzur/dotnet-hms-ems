@@ -84,5 +84,10 @@ namespace Sampoerna.EMS.BLL.Services
 
             return dbCk2.Any(back3 => back3.CK2_DOCUMENT.Count > 0);
         }
+
+        public CK2_DOCUMENT GetCk2DocumentById(long id)
+        {
+            return _repositoryCk2Documents.GetByID(id);
+        }
     }
 }

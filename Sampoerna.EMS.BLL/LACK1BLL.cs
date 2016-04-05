@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using CrystalDecisions.Shared.Json;
 using Sampoerna.EMS.BLL.Services;
@@ -113,25 +114,6 @@ namespace Sampoerna.EMS.BLL
 
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
         {
-
-            if (input.UserRole == Enums.UserRole.POA)
-            {
-                var nppbkc = _nppbkcService.GetNppbkcsByPoa(input.UserId);
-                if (nppbkc != null && nppbkc.Count > 0)
-                {
-                    input.NppbkcList = nppbkc.Select(c => c.NPPBKC_ID).ToList();
-                }
-                else
-                {
-                    input.NppbkcList = new List<string>();
-                }
-            }
-            else if (input.UserRole == Enums.UserRole.Manager)
-            {
-                var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
-                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
-                input.DocumentNumberList = document;
-            }
             return Mapper.Map<List<Lack1Dto>>(_lack1Service.GetAllByParam(input));
         }
 
@@ -697,6 +679,10 @@ namespace Sampoerna.EMS.BLL
                     GovApproveDocument(input);
                     //isNeedSendNotif = false;
                     break;
+                case Enums.ActionType.Completed:
+                    CompletedDocument(input);
+                    isNeedSendNotif = false;
+                    break;
                 case Enums.ActionType.GovReject:
                     GovRejectedDocument(input);
                     isNeedSendNotif = false;
@@ -1031,6 +1017,50 @@ namespace Sampoerna.EMS.BLL
 
                 }
                 //end delegate
+            }
+
+            AddWorkflowHistory(input);
+
+        }
+
+        private void CompletedDocument(Lack1WorkflowDocumentInput input)
+        {
+            if (input.DocumentId != null)
+            {
+                var dbData = _lack1Service.GetById(input.DocumentId.Value);
+
+                if (dbData == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+                if (dbData.STATUS != Enums.DocumentStatus.Completed)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+                //Add Changes
+                WorkflowDecreeDateAddChanges(input.DocumentId, input.UserId, dbData.DECREE_DATE,
+                    input.AdditionalDocumentData.DecreeDate);
+
+                dbData.LACK1_DOCUMENT = null;
+                dbData.STATUS = Enums.DocumentStatus.Completed;
+                dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
+                dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
+                dbData.GOV_STATUS = Enums.DocumentStatusGovType2.Approved;
+                dbData.MODIFIED_DATE = DateTime.Now;
+
+                input.DocumentNumber = dbData.LACK1_NUMBER;
+
+                //delegate
+                if (dbData.CREATED_BY != input.UserId)
+                {
+                    if (input.UserRole != Enums.UserRole.Administrator)
+                    {
+                        var workflowHistoryDto =
+                        _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(input.DocumentNumber);
+                        input.Comment = _poaDelegationServices.CommentDelegatedByHistory(workflowHistoryDto.COMMENT,
+                            workflowHistoryDto.ACTION_BY, input.UserId, input.UserRole, dbData.CREATED_BY, DateTime.Now);
+                    }
+                }
+                //end delegate
+
             }
 
             AddWorkflowHistory(input);
@@ -1506,6 +1536,7 @@ namespace Sampoerna.EMS.BLL
 
             if (dtToReturn.AllLack1IncomeDetail == null || dtToReturn.AllLack1IncomeDetail.Count <= 0)
                 return dtToReturn;
+            
             dtToReturn.Ck5RemarkData = new Lack1RemarkDto()
             {
                 //Ck5ReturnData = dtToReturn.AllLack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Return && c.FLAG_FOR_LACK1).ToList(),
@@ -3273,6 +3304,14 @@ namespace Sampoerna.EMS.BLL
             var ck5Data = _ck5Service.GetForLack1ByParam(ck5Input);
             rc.AllIncomeList = Mapper.Map<List<Lack1GeneratedIncomeDataDto>>(ck5Data);
 
+            var ck5WasteData = _ck5Service.GetCk5WasteByParam(ck5Input);
+            var listCk5Waste = Mapper.Map<List<Lack1GeneratedIncomeDataDto>>(ck5WasteData);
+
+            foreach (var item in listCk5Waste)
+            {
+                rc.AllIncomeList.Add(item);
+            }
+
             var ck5AllPrevData = _ck5Service.GetAllPreviousForLack1(ck5Input);
             rc.AllCk5List = Mapper.Map<List<Lack1GeneratedIncomeDataDto>>(ck5AllPrevData);
 
@@ -4385,26 +4424,8 @@ namespace Sampoerna.EMS.BLL
 
         public List<Lack1Dto> GetDashboardDataByParam(Lack1GetDashboardDataByParamInput input)
         {
-            if (input.UserRole == Enums.UserRole.POA)
-            {
-                var nppbkc = _nppbkcService.GetNppbkcsByPoa(input.UserId);
-                if (nppbkc != null && nppbkc.Count > 0)
-                {
-                    input.NppbkcList = nppbkc.Select(c => c.NPPBKC_ID).ToList();
-                }
-                else
-                {
-                    input.NppbkcList = new List<string>();
-                }
-            }
-            else if (input.UserRole == Enums.UserRole.Manager)
-            {
-                var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
-                var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
-                input.DocumentNumberList = document;
-            }
-
             var data = _lack1Service.GetDashboardDataByParam(input);
+
             return Mapper.Map<List<Lack1Dto>>(data);
         }
 
@@ -4454,14 +4475,14 @@ namespace Sampoerna.EMS.BLL
                 reconciliationList.Add(item);
             }
 
-            reconciliationList = GetUnReconciliation(reconciliationList);
+            reconciliationList = GetUnReconciliation(reconciliationList, input);
 
             reconciliationList = reconciliationList.OrderBy(x => x.MonthNumber).OrderBy(x => x.Year).ToList();
 
             return reconciliationList;
         }
 
-        private List<Lack1ReconciliationDto> GetUnReconciliation(List<Lack1ReconciliationDto> list)
+        private List<Lack1ReconciliationDto> GetUnReconciliation(List<Lack1ReconciliationDto> list, Lack1GetReconciliationByParamInput input)
         {
             var monthList = from m in _ck5Service.GetReconciliationLack1()
                             select new Lack1MonthReconciliation()
@@ -4488,13 +4509,42 @@ namespace Sampoerna.EMS.BLL
                                 MonthNumber = r.Month
                             };
 
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                reconData = reconData.Where(c => input.ListNppbkc.Contains(c.NppbkcId)); 
+            }
+            else if (input.UserRole == Enums.UserRole.Administrator)
+            {
+                reconData = reconData.Where(c => c.NppbkcId != null);
+            }
+
+            if (!string.IsNullOrEmpty(input.NppbkcId))
+            {
+                reconData = reconData.Where(c => c.NppbkcId == input.NppbkcId);
+            }
+
             foreach (var data in reconData)
             {
                 var ck5List = _ck5Service.GetReconciliationLack1()
                     .Where(x => x.DEST_PLANT_NPPBKC_ID == data.NppbkcId && x.GR_DATE.Value.Month == data.MonthNumber && x.GR_DATE.Value.Year == data.Year);
-                var plantList = ck5List.Select(x => x.DEST_PLANT_ID).Distinct();
+
+                var ck5ListPlant = ck5List;
+
+                if (!string.IsNullOrEmpty(input.PlantId))
+                {
+                    ck5ListPlant = ck5List.Where(x => x.DEST_PLANT_ID == input.PlantId);
+                }
+
+                if (input.UserRole == Enums.UserRole.User)
+                {
+                    ck5ListPlant = ck5List.Where(x => input.ListUserPlant.Contains(x.DEST_PLANT_ID));
+                }
+
+                var brandItem = ck5List.Select(x => x.CK5_MATERIAL.Select(c => c.BRAND).Distinct().ToList());
+
+                var plantList = ck5ListPlant.Select(x => x.DEST_PLANT_ID).Distinct();
                 var supPlantList = ck5List.Select(x => x.SOURCE_PLANT_ID).Distinct();
-                var brandList = ck5List.Select(x => x.CK5_MATERIAL.Select(c => c.BRAND).Distinct().ToList());
+                var brandList = brandItem;
                 var stickerList = _brandRegService.GetByPlantAndFaCode(plantList.ToList(), brandList.FirstOrDefault()).Select(b => b.STICKER_CODE).Distinct();
                 var ck4cList = _ck4cItemService.GetByPlant(plantList.ToList(), data.MonthNumber, data.Year);
                 var wasteList = _wasteBll.GetAllByPlant(plantList.ToList(), data.MonthNumber, data.Year);
@@ -4588,6 +4638,19 @@ namespace Sampoerna.EMS.BLL
         }
 
         #endregion
+
+        public void UpdateSomeField(Lack1UpdateSomeField input)
+        {
+            LACK1 dbData = _lack1Service.GetDetailsById(Convert.ToInt32(input.Id));
+            dbData.SUBMISSION_DATE = input.SubmissionDate;
+            dbData.WASTE_QTY = input.WasteQty;
+            dbData.WASTE_UOM = input.WasteUom;
+            dbData.RETURN_QTY = input.ReturnQty;
+            dbData.RETURN_UOM = input.ReturnUom;
+            dbData.NOTED = input.Noted;
+
+            _uow.SaveChanges();
+        }
         public static string ObjectToCsvData(object obj)
         {
             if (obj == null)

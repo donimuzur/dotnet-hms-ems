@@ -71,8 +71,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.FileNameList = new SelectList(listData);
             model.MonthList = GetListMont();
 
-            if (listData.Any())
-                model.FileName = listData.First();
+            //if (listData.Any())
+            //    model.FileName = listData.First();
 
             return model;
         }
@@ -83,11 +83,12 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new XmlLogIndexViewModel();
             model.MainMenu = Enums.MenuList.Settings;
             model.CurrentMenu = PageInfo;
+            model.LogDate = DateTime.Now.ToString("dd MMM yyyy");
             model = SetListIndex(model);
 
             var input = new NlogGetByParamInput();
             input.FileName = model.FileName;
-
+            input.LogDate = model.LogDate;
 
             var dataXml = _nLogBll.GetNlogByParam(input);
             model.ListXmlLogs = Mapper.Map<List<XmlLogFormViewModel>>(dataXml);
@@ -122,7 +123,8 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = new NlogGetByParamInput()
             {
                 FileName = model.FileName,
-                Month = model.Month
+                Month = model.Month,
+                LogDate = model.LogDate
             };
 
             var dataXml = _nLogBll.GetNlogByParam(input);

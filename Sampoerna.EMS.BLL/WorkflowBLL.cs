@@ -607,6 +607,10 @@ namespace Sampoerna.EMS.BLL
 
         public bool IsAllowEditLack1(string createdUser, string currentUserId,Enums.DocumentStatus status)
         {
+            if (_poabll.GetUserRole(currentUserId) == Enums.UserRole.Administrator)
+            {
+                return true;
+            }
             if (createdUser != currentUserId)
                 if (
                     !_poaDelegationServices.IsDelegatedUserByUserAndDate(createdUser, currentUserId,
@@ -678,6 +682,23 @@ namespace Sampoerna.EMS.BLL
             var listUserDelegate = _poaDelegationServices.GetListPoaDelegateByDate(listUser, DateTime.Now);
             return listUserDelegate.Contains(input.CurrentUser);
 
+        }
+
+        public bool AllowAccessData(WorkflowAllowAccessDataInput input)
+        {
+            if (input.UserRole == Enums.UserRole.Administrator) return true;
+            if (input.UserPlant.Contains(input.DataPlant))
+                return true;
+            
+            //only for edit document
+            if (_poaDelegationServices.IsDelegatedUserByUserAndDate(input.DataUser, input.UserId, DateTime.Now))
+            {
+                if (input.UserPlant.Contains(input.DataPlant))
+                    return true;
+            }
+
+
+            return false;
         }
     }
 }

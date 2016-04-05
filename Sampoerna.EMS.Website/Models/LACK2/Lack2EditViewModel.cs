@@ -43,6 +43,8 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public bool AllowGovApproveAndReject { get; set; }
         public bool AllowApproveAndReject { get; set; }
         public bool AllowManagerReject { get; set; }
+
+        public bool AllowAdminEditDocument { get; set; }
         
         public string Comment { get; set; }
 

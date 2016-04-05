@@ -14,5 +14,7 @@ namespace Sampoerna.EMS.Contract
        bool IsExistCk2DocumentByPbck3(int pbck3Id);
 
        void InsertOrDeleteCk2Item(List<CK2_DOCUMENTDto> input);
+
+       CK2_DOCUMENT GetCk2DocumentById(long id);
    }
 }

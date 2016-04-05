@@ -71,6 +71,9 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public string NppbkcId { get; set; }
         public string TypeExcisableGoods { get; set; }
         public string TypeExcisableGoodsDesc { get; set; }
+
+        public string PeriodYear { get; set; }
+        public DateTime? GiDate { get; set; }
     }
 
     public class Lack2ExportDetailReportsViewModel : Lack2SearchDetailReportsViewModel

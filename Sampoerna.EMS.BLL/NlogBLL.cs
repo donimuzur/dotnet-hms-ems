@@ -60,6 +60,11 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.Timestamp.Value.Month == input.Month);
             }
 
+            if (!string.IsNullOrEmpty(input.LogDate))
+            {
+                var dt = Convert.ToDateTime(input.LogDate);
+                queryFilter = queryFilter.And(c => c.Timestamp.Value.Day == dt.Day && c.Timestamp.Value.Month == dt.Month && c.Timestamp.Value.Year == dt.Year);
+            }
 
             Func<IQueryable<NlogLogs>, IOrderedQueryable<NlogLogs>> orderByFilter = n => n.OrderByDescending(z => z.Timestamp);
           

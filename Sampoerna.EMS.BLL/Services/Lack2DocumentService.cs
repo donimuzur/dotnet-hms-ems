@@ -39,5 +39,14 @@ namespace Sampoerna.EMS.BLL.Services
                 _repository.Delete(item);
             }
         }
+
+
+        public void InsertDocumentByLack2Id(int lack2Id, List<LACK2_DOCUMENT> documents)
+        {
+            foreach (var lack2Document in documents)
+            {
+                _repository.Insert(lack2Document);
+            }
+        }
     }
 }

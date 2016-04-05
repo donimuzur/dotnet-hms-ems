@@ -28,9 +28,9 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string UserId { get; set; }
         public Enums.UserRole UserRole { get; set; }
 
-        public List<string> NppbkcList { get; set; }
-
         public List<string> DocumentNumberList { get; set; }
+        public List<string> ListNppbkc { get; set; }
+        public List<string> ListUserPlant { get; set; }
 
     }
     
@@ -168,6 +168,9 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string ApprovedBy { get; set; }
         public string Creator { get; set; }
         public string Approver { get; set; }
+        public List<string> ListNppbkc { get; set; }
+        public List<string> ListUserPlant { get; set; }
+        public Enums.UserRole UserRole { get; set; }
     }
 
     public class Lack1GetDetailReportByParamInput
@@ -184,6 +187,9 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public int? PeriodMonthTo { get; set; }
         public int? PeriodYearTo { get; set; }
         public Enums.Lack1Level? Lack1Level { get; set; }
+        public List<string> ListNppbkc { get; set; }
+        public List<string> ListUserPlant { get; set; }
+        public Enums.UserRole UserRole { get; set; }
     }
 
     public class Lack1GetPbck1RealizationListParamInput
@@ -201,5 +207,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string NppbkcId { get; set; }
         public string PlantId { get; set; }
         public string ExGoodType { get; set; }
+        public List<string> ListNppbkc { get; set; }
+        public List<string> ListUserPlant { get; set; }
+        public Enums.UserRole UserRole { get; set; }
     }
 }

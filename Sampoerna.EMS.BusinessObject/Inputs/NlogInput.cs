@@ -9,9 +9,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     public class NlogGetByParamInput
     {
         public string FileName { get; set; }
-
         public int? Month { get; set; }
-        
+        public string LogDate { get; set; }
     }
 
     public class BackupXmlLogInput

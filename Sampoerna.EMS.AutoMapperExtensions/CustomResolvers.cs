@@ -408,4 +408,21 @@ namespace Sampoerna.EMS.AutoMapperExtensions
 
         }
     }
+
+    public class StringToIntResolver : ValueResolver<string, int>
+    {
+        protected override int ResolveCore(string value)
+        {
+            try
+            {
+                return Convert.ToInt32(value);
+            }
+            catch (Exception ex)
+            {
+
+                return -1;
+            }
+
+        }
+    }
 }

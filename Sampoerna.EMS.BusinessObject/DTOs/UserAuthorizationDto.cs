@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
@@ -47,6 +48,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string UserLastName { get; set; }
 
         public string UserEmail { get; set; }
+
+        public Enums.UserRole UserRole { get; set; }
     }
 
     public class PageMapDto

@@ -80,46 +80,25 @@ namespace Sampoerna.EMS.BLL
 
         public List<Pbck4Dto> GetPbck4ByParam(Pbck4GetByParamInput input)
         {
-
             Expression<Func<PBCK4, bool>> queryFilter = PredicateHelper.True<PBCK4>();
 
-            //delegate 
-            var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
-
-
-            if (input.UserRole == Enums.UserRole.POA)
+            if (input.UserRole != Enums.UserRole.Administrator)
             {
-                var nppbkc = _nppbkcBll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
-                
-                //delegate
-                if (delegateUser.Count > 0)
-                {
-                    delegateUser.Add(input.UserId);
-                    queryFilter = queryFilter.And(c => (delegateUser.Contains(c.CREATED_BY) || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))));
-                }
-                else
-                    queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))));
+                ////delegate 
+                //var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
 
+                if (input.ListUserPlant == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
 
-            }
-            //first code when manager exists
-            //else if (input.UserRole == Enums.UserRole.Manager)
-            //{
-            //    var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
-            //    var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
-
-            //    queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.PBCK4_NUMBER));
-            //}
-            else
-            {
-                //delegate 
-                if (delegateUser.Count > 0)
-                {
-                    delegateUser.Add(input.UserId);
-                    queryFilter = queryFilter.And(c => delegateUser.Contains(c.CREATED_BY));
-                }
-                else 
-                    queryFilter = queryFilter.And(c => c.CREATED_BY == input.UserId);
+                //if (delegateUser.Count > 0)
+                //{
+                //    delegateUser.Add(input.UserId);
+                //    queryFilter =
+                //        queryFilter.And(
+                //            c => input.ListUserPlant.Contains(c.PLANT_ID) && delegateUser.Contains(c.CREATED_BY));
+                //}
+                //else
+                    queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID));
             }
 
             if (!string.IsNullOrEmpty(input.NppbkcId))
@@ -1701,6 +1680,25 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<PBCK4, bool>> queryFilter = PredicateHelper.True<PBCK4>();
 
+            if (input.UserRole != Enums.UserRole.Administrator)
+            {
+                //delegate 
+                //var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
+
+                if (input.ListUserPlant == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
+
+                //if (delegateUser.Count > 0)
+                //{
+                //    delegateUser.Add(input.UserId);
+                //    queryFilter =
+                //        queryFilter.And(
+                //            c => input.ListUserPlant.Contains(c.PLANT_ID) || delegateUser.Contains(c.CREATED_BY));
+                //}
+                //else
+                    queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID));
+            }
+
             if (!string.IsNullOrEmpty(input.Pbck4No))
             {
                 queryFilter = queryFilter.And(c => c.PBCK4_NUMBER.Contains(input.Pbck4No));
@@ -2106,26 +2104,9 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.APPROVED_BY_POA.Contains(input.Poa));
             }
-
-            if (input.UserRole == Enums.UserRole.POA)
-            {
-                var nppbkc = _nppbkcBll.GetNppbkcsByPOA(input.UserId).Select(d => d.NPPBKC_ID).ToList();
-               
-                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId || (c.STATUS != Enums.DocumentStatus.Draft && nppbkc.Contains(c.NPPBKC_ID))) || c.STATUS == Enums.DocumentStatus.Completed);
-                
-            }
-            //first code when manager exists
-            //else if (input.UserRole == Enums.UserRole.Manager)
-            //{
-            //    var poaList = _poaBll.GetPOAIdByManagerId(input.UserId);
-            //    var document = _workflowHistoryBll.GetDocumentByListPOAId(poaList);
-
-            //    queryFilter = queryFilter.And(c => (c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.PBCK4_NUMBER)) || c.STATUS == Enums.DocumentStatus.Completed);
-            //}
-            else
-            {
-                queryFilter = queryFilter.And(c => (c.CREATED_BY == input.UserId) || c.STATUS == Enums.DocumentStatus.Completed);
-            }
+        
+            if (input.UserRole != Enums.UserRole.Administrator)
+                queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID));
 
             Func<IQueryable<PBCK4>, IOrderedQueryable<PBCK4>> orderBy = null;
             {
@@ -2146,6 +2127,126 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
-      
+        public void EditCompletedDocument(EditCompletedDocumentInput input)
+        {
+            var dbData = _repository.GetByID(input.DocumentId);
+
+            if (dbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (dbData.STATUS != Enums.DocumentStatus.Completed
+                && input.UserRole != Enums.UserRole.Administrator)
+                throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+
+            if (!string.IsNullOrEmpty(input.Ck3OfficeValue))
+            {
+                if (ConvertHelper.ConvertToDecimalOrZero(input.Ck3OfficeValue) <= 0)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.Pbck4ErrorCk3OfficeValue);
+            }
+
+            //prepare for set changes history
+            var origin = Mapper.Map<Pbck4Dto>(dbData);
+
+            var inputChangeLogs = new Pbck4Dto();
+            inputChangeLogs.PlantId = dbData.PLANT_ID;
+            inputChangeLogs.ReportedOn = input.ReportedOn;
+            inputChangeLogs.BACK1_NO = input.BACK1_NO;
+            inputChangeLogs.BACK1_DATE = input.BACK1_DATE;
+            inputChangeLogs.CK3_NO = input.CK3_NO;
+            inputChangeLogs.CK3_DATE = input.CK3_DATE;
+            inputChangeLogs.CK3_OFFICE_VALUE =ConvertHelper.ConvertToDecimalOrZero(input.Ck3OfficeValue);
+
+            //add to change log
+            SetChangesHistory(origin, inputChangeLogs, input.UserId);
+           
+            //update data
+            dbData.REPORTED_ON = input.ReportedOn;
+            dbData.BACK1_NO = input.BACK1_NO;
+            dbData.BACK1_DATE = input.BACK1_DATE;
+            dbData.CK3_NO = input.CK3_NO;
+            dbData.CK3_DATE = input.CK3_DATE;
+            dbData.CK3_OFFICE_VALUE = ConvertHelper.ConvertToDecimalOrZero(input.Ck3OfficeValue);
+
+            dbData.MODIFIED_DATE = DateTime.Now;
+            dbData.MODIFIED_BY = input.UserId;
+
+            if (input.ListFile.Any())
+                CheckFileUploadChange(input);
+
+            InsertOrDeletePbck4Item(input.ListFile);
+
+            string oldValue = "";
+            string newValue = "";
+
+            //pbck4 item
+            foreach (var pbck4ItemDto in input.Pbck4ItemsDto)
+            {
+                var dbPbck4Item = _repositoryPbck4Items.GetByID(pbck4ItemDto.PBCK4_ITEM_ID);
+                if (dbPbck4Item != null)
+                {
+                    //change log
+                    oldValue = dbPbck4Item.NO_PENGAWAS;
+                    newValue = pbck4ItemDto.NO_PENGAWAS;
+                    if (oldValue != newValue)
+                        SetChangeHistory(oldValue, newValue, "PBCK4_ITEM_NO_PENGAWAS", input.UserId, dbData.PBCK4_ID.ToString());
+
+                    oldValue = dbPbck4Item.REMARKS;
+                    newValue = pbck4ItemDto.REMARKS;
+                    if (oldValue != newValue)
+                        SetChangeHistory(oldValue, newValue, "PBCK4_ITEM_REMARKS", input.UserId, dbData.PBCK4_ID.ToString());
+
+
+                    dbPbck4Item.NO_PENGAWAS = pbck4ItemDto.NO_PENGAWAS;
+                    dbPbck4Item.REMARKS = pbck4ItemDto.REMARKS;
+                    _repositoryPbck4Items.InsertOrUpdate(dbPbck4Item);
+                }
+            }
+
+
+            _uow.SaveChanges();
+        }
+
+        public void CheckFileUploadChange(EditCompletedDocumentInput input)
+        {
+            var dataOld = GetPbck4FileUploadByPbck4Id(input.DocumentId).Select(c => c.FILE_NAME).ToList();
+            var dataNew = new List<string>();
+            foreach (var pbck4DocumentDto in input.ListFile)
+            {
+                if (!pbck4DocumentDto.IsDeleted)
+                {
+                    if (string.IsNullOrEmpty(pbck4DocumentDto.FILE_NAME))
+                    {
+                        var dbDocument = _repositoryPbck4Documents.GetByID(pbck4DocumentDto.PBCK4_DOCUMENT_ID);
+                        if (dbDocument != null)
+                            dataNew.Add(dbDocument.FILE_NAME);
+                    }
+                    else
+                    {
+                        dataNew.Add(pbck4DocumentDto.FILE_NAME);
+                    }
+                    
+                }
+
+            }
+
+            var StringDataOld = String.Join(", ", dataOld.OrderBy(c => c));
+            var StringDataNew = String.Join(", ", dataNew.OrderBy(c => c));
+
+            //if (dataOld.Count > 0)
+            //{
+            //    StringDataNew = StringDataOld + ", " + StringDataNew;
+            //}
+            if (StringDataOld != StringDataNew)
+                SetChangeHistory(StringDataOld, StringDataNew, "PBCK4_FILE_UPLOAD", input.UserId, input.DocumentId.ToString());
+        }
+
+        private List<PBCK4_DOCUMENT> GetPbck4FileUploadByPbck4Id(long pbck4Id)
+        {
+            var dbData = _repositoryPbck4Documents.Get(c => c.PBCK4_ID == pbck4Id);
+            return dbData.ToList();
+        }
+
+
     }
 }
