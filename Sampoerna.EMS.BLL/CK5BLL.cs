@@ -3795,7 +3795,7 @@ namespace Sampoerna.EMS.BLL
                 var lack1 = "";
                 var lack2 = "";
                 //get from lack1_income_detail
-                var dbLack1 = _lack1IncomeDetailService.GetLack1IncomeDetailByCk5Id(ck5.CK5_ID);
+                var dbLack1 = _lack1IncomeDetailService.GetLack1IncomeDetailByCk5Id(ck5.CK5_ID).Where(x => x.LACK1_ID != null);
                 var lack1Result = dbLack1.FirstOrDefault(a => a.LACK1.STATUS == Enums.DocumentStatus.Completed);
                 if (lack1Result != null)
                 {

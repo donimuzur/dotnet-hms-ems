@@ -88,7 +88,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (originPageMap.PageMaps != null)
                 {
                     var pageMaps = originPageMap.PageMaps;
-                    foreach (var pageMap in pageMaps)
+                    var listPageMaps = pageMaps.Where(x => x.Page.Id != Convert.ToInt32(Enums.MenuList.LOGIN)).ToList();
+                    foreach (var pageMap in listPageMaps)
                     {
                         _pageBll.DeletePageMap(pageMap.Id);
 
