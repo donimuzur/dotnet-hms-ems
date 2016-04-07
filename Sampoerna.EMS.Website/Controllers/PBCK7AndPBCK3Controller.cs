@@ -900,7 +900,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(outputResult);
         }
 
-        private string SaveUploadedFile(HttpPostedFileBase file, string back1Num)
+        private string SaveUploadedFile(HttpPostedFileBase file, string back1Num, int counter)
         {
             if (file == null || file.FileName == "")
                 return "";
@@ -908,7 +908,7 @@ namespace Sampoerna.EMS.Website.Controllers
             string sFileName = "";
 
 
-            sFileName = Constans.UploadPath + Path.GetFileName("BACK1_" + back1Num + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + "_" + Path.GetExtension(file.FileName));
+            sFileName = Constans.UploadPath + Path.GetFileName("BACK1_" + back1Num + "_" + DateTime.Now.ToString("ddMMyyyyHHmmss") + counter + "_" + Path.GetExtension(file.FileName));
             string path = Server.MapPath(sFileName);
 
             // file is uploaded
@@ -943,6 +943,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.DocumentsPostBack != null)
                 {
+                    int counter = 0;
                     foreach (var item in model.DocumentsPostBack)
                     {
                         if (item != null)
@@ -954,12 +955,13 @@ namespace Sampoerna.EMS.Website.Controllers
                             var pbck4UploadFile = new BACK1_DOCUMENTDto
                             {
                                 FILE_NAME = filenameCk5Check,
-                                FILE_PATH = SaveUploadedFile(item, model.Pbck7Number),
+                                FILE_PATH = SaveUploadedFile(item, model.Pbck7Number, counter),
                                 BACK1 = model.Back1Dto.Back1Id,
                                 IsDeleted = false
 
                             };
                             model.Back1Dto.Documents.Add(pbck4UploadFile);
+                            counter += 1;
                         }
 
                     }
@@ -998,6 +1000,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.DocumentsPostBack != null)
                 {
+                    int counter = 0;
                     foreach (var item in model.DocumentsPostBack)
                     {
                         if (item != null)
@@ -1009,12 +1012,13 @@ namespace Sampoerna.EMS.Website.Controllers
                             var pbck4UploadFile = new BACK1_DOCUMENTDto
                             {
                                 FILE_NAME = filenameCk5Check,
-                                FILE_PATH = SaveUploadedFile(item, model.Pbck7Number),
+                                FILE_PATH = SaveUploadedFile(item, model.Pbck7Number, counter),
                                 BACK1 = model.Back1Dto.Back1Id,
                                 IsDeleted = false
 
                             };
                             model.Back1Dto.Documents.Add(pbck4UploadFile);
+                            counter += 1;
                         }
 
                     }
@@ -2624,6 +2628,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.Pbck3Back3FileUploadFileList != null)
                 {
+                    int counter = 0;
                     foreach (var item in model.Pbck3Back3FileUploadFileList)
                     {
                         if (item != null)
@@ -2635,12 +2640,13 @@ namespace Sampoerna.EMS.Website.Controllers
                             var pbck3UploadFile = new BACK3_DOCUMENTDto
                             {
                                 FILE_NAME = filenameCk5Check,
-                                FILE_PATH = SaveUploadedFile(item, model.Pbck3Number),
+                                FILE_PATH = SaveUploadedFile(item, model.Pbck3Number, counter),
                                 BACK3_ID = model.Back3Id,
                                 IsDeleted = false
 
                             };
                             model.Back3Documents.Add(pbck3UploadFile);
+                            counter += 1;
                         }
 
                     }
@@ -2651,6 +2657,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.Pbck3Ck2FileUploadFileList != null)
                 {
+                    int counter = 0;
                     foreach (var item in model.Pbck3Ck2FileUploadFileList)
                     {
                         if (item != null)
@@ -2662,12 +2669,13 @@ namespace Sampoerna.EMS.Website.Controllers
                             var pbck3UploadFile = new CK2_DOCUMENTDto
                             {
                                 FILE_NAME = filenameCk5Check,
-                                FILE_PATH = SaveUploadedFile(item, model.Pbck3Number),
+                                FILE_PATH = SaveUploadedFile(item, model.Pbck3Number, counter),
                                 CK2_ID = model.Ck2Id,
                                 IsDeleted = false
 
                             };
                             model.Ck2Documents.Add(pbck3UploadFile);
+                            counter += 1;
                         }
 
                     }
@@ -2700,6 +2708,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.Pbck3Back3FileUploadFileList != null)
                 {
+                    int counter = 0;
                     foreach (var item in model.Pbck3Back3FileUploadFileList)
                     {
                         if (item != null)
@@ -2711,12 +2720,13 @@ namespace Sampoerna.EMS.Website.Controllers
                             var pbck3UploadFile = new BACK3_DOCUMENTDto
                             {
                                 FILE_NAME = filenameCk5Check,
-                                FILE_PATH = SaveUploadedFile(item, model.Pbck3Number),
+                                FILE_PATH = SaveUploadedFile(item, model.Pbck3Number, counter),
                                 BACK3_ID = model.Back3Id,
                                 IsDeleted = false
 
                             };
                             model.Back3Documents.Add(pbck3UploadFile);
+                            counter += 1;
                         }
 
                     }
@@ -2744,6 +2754,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.Pbck3Ck2FileUploadFileList != null)
                 {
+                    int counter = 0;
                     foreach (var item in model.Pbck3Ck2FileUploadFileList)
                     {
                         if (item != null)
@@ -2755,12 +2766,13 @@ namespace Sampoerna.EMS.Website.Controllers
                             var pbck3UploadFile = new CK2_DOCUMENTDto
                             {
                                 FILE_NAME = filenameCk5Check,
-                                FILE_PATH = SaveUploadedFile(item, model.Pbck3Number),
+                                FILE_PATH = SaveUploadedFile(item, model.Pbck3Number, counter),
                                 CK2_ID = model.Ck2Id,
                                 IsDeleted = false
 
                             };
                             model.Ck2Documents.Add(pbck3UploadFile);
+                            counter += 1;
                         }
 
                     }
@@ -3351,6 +3363,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.DocumentsPostBack != null)
                 {
+                    int counter = 0;
                     foreach (var item in model.DocumentsPostBack)
                     {
                         if (item != null)
@@ -3362,12 +3375,13 @@ namespace Sampoerna.EMS.Website.Controllers
                             var pbck4UploadFile = new BACK1_DOCUMENTDto
                             {
                                 FILE_NAME = filenameCk5Check,
-                                FILE_PATH = SaveUploadedFile(item, model.Pbck7Number),
+                                FILE_PATH = SaveUploadedFile(item, model.Pbck7Number, counter),
                                 BACK1 = model.Back1Dto.Back1Id,
                                 IsDeleted = false
 
                             };
                             model.Back1Dto.Documents.Add(pbck4UploadFile);
+                            counter += 1;
                         }
 
                     }
@@ -3435,6 +3449,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.Pbck3Back3FileUploadFileList != null)
                 {
+                    int counter = 0;
                     foreach (var item in model.Pbck3Back3FileUploadFileList)
                     {
                         if (item != null)
@@ -3446,11 +3461,12 @@ namespace Sampoerna.EMS.Website.Controllers
                             var pbck4UploadFile = new BACK3_DOCUMENTDto
                             {
                                 FILE_NAME = filenameCk5Check,
-                                FILE_PATH = SaveUploadedFile(item, model.Pbck3Number),
+                                FILE_PATH = SaveUploadedFile(item, model.Pbck3Number, counter),
                                 BACK3_ID = model.Back3Id,
                                 IsDeleted = false
                             };
                             model.Back3Documents.Add(pbck4UploadFile);
+                            counter += 1;
                         }
 
                     }
@@ -3478,6 +3494,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.Pbck3Ck2FileUploadFileList != null)
                 {
+                    int counter = 0;
                     foreach (var item in model.Pbck3Ck2FileUploadFileList)
                     {
                         if (item != null)
@@ -3489,11 +3506,12 @@ namespace Sampoerna.EMS.Website.Controllers
                             var pbck4UploadFile = new CK2_DOCUMENTDto
                             {
                                 FILE_NAME = filenameCk5Check,
-                                FILE_PATH = SaveUploadedFile(item, model.Pbck3Number),
+                                FILE_PATH = SaveUploadedFile(item, model.Pbck3Number, counter),
                                 CK2_ID = model.Ck2Id,
                                 IsDeleted = false
                             };
                             model.Ck2Documents.Add(pbck4UploadFile);
+                            counter += 1;
                         }
 
                     }

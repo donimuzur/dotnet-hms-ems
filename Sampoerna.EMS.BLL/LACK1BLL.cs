@@ -1536,6 +1536,7 @@ namespace Sampoerna.EMS.BLL
 
             if (dtToReturn.AllLack1IncomeDetail == null || dtToReturn.AllLack1IncomeDetail.Count <= 0)
                 return dtToReturn;
+            
             dtToReturn.Ck5RemarkData = new Lack1RemarkDto()
             {
                 //Ck5ReturnData = dtToReturn.AllLack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Return && c.FLAG_FOR_LACK1).ToList(),
@@ -3302,6 +3303,14 @@ namespace Sampoerna.EMS.BLL
 
             var ck5Data = _ck5Service.GetForLack1ByParam(ck5Input);
             rc.AllIncomeList = Mapper.Map<List<Lack1GeneratedIncomeDataDto>>(ck5Data);
+
+            var ck5WasteData = _ck5Service.GetCk5WasteByParam(ck5Input);
+            var listCk5Waste = Mapper.Map<List<Lack1GeneratedIncomeDataDto>>(ck5WasteData);
+
+            foreach (var item in listCk5Waste)
+            {
+                rc.AllIncomeList.Add(item);
+            }
 
             var ck5AllPrevData = _ck5Service.GetAllPreviousForLack1(ck5Input);
             rc.AllCk5List = Mapper.Map<List<Lack1GeneratedIncomeDataDto>>(ck5AllPrevData);
