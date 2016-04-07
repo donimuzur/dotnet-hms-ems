@@ -74,7 +74,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 if (Session[Core.Constans.SessionKey.CurrentUser] == null)
                 {
-                    var userId =  User.Identity.Name.Remove(0,4);
+                    var userId = User.Identity.Name.Split('\\')[User.Identity.Name.Split('\\').Length - 1]; //User.Identity.Name.Remove(0,4);
                     IUserBLL userBll = MvcApplication.GetInstance<UserBLL>();
                     IPOABLL poabll = MvcApplication.GetInstance<POABLL>();
                     IUserAuthorizationBLL userAuthorizationBll = MvcApplication.GetInstance<UserAuthorizationBLL>();
