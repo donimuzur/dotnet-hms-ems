@@ -2686,7 +2686,7 @@ namespace Sampoerna.EMS.BLL
                     ProdCode = item.PROD_CODE,
                     ProductType = item.PRODUCT_TYPE,
                     ProductAlias = item.PRODUCT_ALIAS,
-                    Amount = Math.Round(item.PROD_QTY * item.ProportionalOrder,3),
+                    Amount = Math.Round(item.PROD_QTY * item.ProportionalOrder,0,MidpointRounding.AwayFromZero),//Math.Round(item.ProportionalOrder, 2,MidpointRounding.AwayFromZero),
                     UomId = item.UOM,
                     UomDesc = item.UOM_DESC,
                     ProductionDate = item.PRODUCTION_DATE
@@ -2862,7 +2862,8 @@ namespace Sampoerna.EMS.BLL
                         };
 
 
-                        itemToInsert.Amount = Math.Round((proportional.QtyOrder / proportional.QtyAllOrder),2, MidpointRounding.AwayFromZero) * nonzaapItem.PROD_QTY;
+                        itemToInsert.Amount = Math.Round((proportional.QtyOrder / proportional.QtyAllOrder) * nonzaapItem.PROD_QTY, 0, MidpointRounding.AwayFromZero);
+                        //itemToInsert.Amount = nonzaapItem.PROD_QTY;
 
                         res.Add(itemToInsert);
                     }
