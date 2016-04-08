@@ -3334,6 +3334,9 @@ namespace Sampoerna.EMS.Website.Controllers
             //model.SearchView.DateToList = GetSubmissionDateListCK5(false, listCk5);
             
             var filter = new CK5SearchSummaryReportsViewModel();
+            filter.Month = DateTime.Now.Month.ToString();
+            filter.Year = DateTime.Now.Year.ToString();
+
             model.DetailsList = SearchDataSummaryReports(filter);
 
             model.SearchView.CompanyCodeSourceList = GetCompanyList(true, model.DetailsList);
@@ -3350,6 +3353,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.SearchView.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
+            model.SearchView.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.SearchView.YearList = GlobalFunctions.GetYearList();
+            model.SearchView.Month = DateTime.Now.Month.ToString();
+            model.SearchView.Year = DateTime.Now.Year.ToString();
 
             return model;
         }

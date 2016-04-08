@@ -173,6 +173,32 @@
                                 </div>
                             </div>
                             
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">Month</label>
+                                    <div class="col-md-8">
+                                     
+                                        @(Model.SearchView.MonthList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                              : Html.DropDownListFor(model => model.SearchView.Month, Model.SearchView.MonthList, "All", new { @class = "form-control selectreset" }))
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-4">Year</label>
+                                    <div class="col-md-8">
+                                     
+                                        @(Model.SearchView.YearList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                              : Html.DropDownListFor(model => model.SearchView.Year, Model.SearchView.YearList, "All", new { @class = "form-control selectreset" }))
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <div class="col-md-2 col-md-offset-8">
                                 <button class="btn btn-blue full">FILTER</button>
                             </div>
@@ -531,7 +557,9 @@
 
         //$("#SearchView_Ck5Type option[value='7']").remove();
 
-        $(document).ready(function() {
+        $(document).ready(function () {
+            $('#SearchView_Month').addClass('input-validation-error');
+            $('#SearchView_Year').addClass('input-validation-error');
 
             setupDataTables(true);
             //$('#MenuCK5SummaryReports').addClass('active');
@@ -641,6 +669,9 @@
 
         function ReloadDataTables() {
             setupDataTables(false);
+
+            $('#SearchView_Month').removeClass('input-validation-error');
+            $('#SearchView_Year').removeClass('input-validation-error');
         }
 
         function OnReset() {
