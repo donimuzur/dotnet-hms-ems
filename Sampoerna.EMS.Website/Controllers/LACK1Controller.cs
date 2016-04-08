@@ -1653,6 +1653,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 CompanyCodeList = comp,
                 PeriodMonthList = GlobalFunctions.GetMonthList(_monthBll),
+                PeriodMonth = DateTime.Now.Month,
                 PeriodYearList = GetYearListInLack1Data()
             };
 
@@ -1695,7 +1696,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 var lack1Data = _lack1Bll.GetSummaryReportByParam(new Lack1GetSummaryReportByParamInput() { 
                      ListUserPlant = CurrentUser.ListUserPlants,
                      ListNppbkc = CurrentUser.ListUserNppbkc,
-                     UserRole = CurrentUser.UserRole
+                     UserRole = CurrentUser.UserRole,
+                     PeriodMonth = DateTime.Now.Month,
+                     PeriodYear = DateTime.Now.Year
                 });
                 return Mapper.Map<List<Lack1SummaryReportItemModel>>(lack1Data);
             }
@@ -1976,7 +1979,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 var data = _lack1Bll.GetDetailReportByParam(new Lack1GetDetailReportByParamInput() { 
                     ListNppbkc = CurrentUser.ListUserNppbkc,
                     ListUserPlant = CurrentUser.ListUserPlants,
-                    UserRole = CurrentUser.UserRole
+                    UserRole = CurrentUser.UserRole,
+                    PeriodMonthFrom = DateTime.Now.Month,
+                    PeriodMonthTo = DateTime.Now.Month,
+                    PeriodYearFrom = DateTime.Now.Year,
+                    PeriodYearTo = DateTime.Now.Year
                 });
                 return Mapper.Map<List<Lack1DetailReportItemModel>>(data);
             }
@@ -2030,6 +2037,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchView.PeriodToList = GetPeriodList();
             model.SearchView.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
+            model.SearchView.PeriodFrom = string.Format("{0}-{1}", DateTime.Now.Month > 9 ? DateTime.Now.Month.ToString() : "0" + DateTime.Now.Month.ToString(), DateTime.Now.Year.ToString());
+            model.SearchView.PeriodTo = string.Format("{0}-{1}", DateTime.Now.Month > 9 ? DateTime.Now.Month.ToString() : "0" + DateTime.Now.Month.ToString(), DateTime.Now.Year.ToString());
             return model;
         }
 
