@@ -301,7 +301,10 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<CK5FileUploadViewModel, CK5_FILE_UPLOADDto>().IgnoreAllNonExisting();
 
-            Mapper.CreateMap<CK5SearchSummaryReportsViewModel, CK5GetSummaryReportByParamInput>().IgnoreAllNonExisting();
+            Mapper.CreateMap<CK5SearchSummaryReportsViewModel, CK5GetSummaryReportByParamInput>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Month, opt => opt.ResolveUsing<StringToIntResolver>().FromMember(src => src.Month))
+                .ForMember(dest => dest.Year, opt => opt.ResolveUsing<StringToIntResolver>().FromMember(src => src.Year))
+                ;
 
             Mapper.CreateMap<CK5FileDocumentItems, CK5UploadFileDocumentsInput>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PackageUomName, opt => opt.MapFrom(src => src.Uom))

@@ -3781,6 +3781,16 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.CREATED_BY.Contains(input.Creator));
 
             }
+
+            if (input.Month > 0)
+            {
+                queryFilter = queryFilter.And(c => c.SUBMISSION_DATE.Value.Month == input.Month);
+            }
+            if (input.Year > 0)
+            {
+                queryFilter = queryFilter.And(c => c.SUBMISSION_DATE.Value.Year == input.Year);
+            }
+
             var rc = _repository.Get(queryFilter, null, includeTables);
             if (rc == null)
             {
