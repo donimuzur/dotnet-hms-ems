@@ -34,6 +34,12 @@ namespace Sampoerna.EMS.Website.Models.CK4C
 
         public string Creator { get; set; }
         public SelectList CreatorList { get; set; }
+
+        public string Month { get; set; }
+        public SelectList MonthList { get; set; }
+
+        public string Year { get; set; }
+        public SelectList YearList { get; set; }
     }
 
     public class Ck4CSummaryReportsItem
