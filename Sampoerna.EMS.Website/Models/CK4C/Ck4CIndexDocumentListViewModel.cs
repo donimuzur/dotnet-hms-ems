@@ -20,6 +20,8 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public string CompanyCode { get; set; }
         public string CompanyName { get; set; }
         public string NppbkcId { get; set; }
+        public string Month { get; set; }
+        public string Year { get; set; }
         public string PlantId { get; set; }
         public bool AllowApproveAndReject { get; set; }
         public bool AllowManagerReject { get; set; }
