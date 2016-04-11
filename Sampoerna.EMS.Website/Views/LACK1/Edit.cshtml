@@ -182,8 +182,8 @@
             });
             
             $('#generated-data-container').html('');
-            $('#WasteQty').prop('disabled', true);
-            $('#WasteUom').prop('disabled', true);
+            $('#WasteQty').prop('readonly', true);
+            $('#WasteUom').prop('readonly', true);
             
             var jsonData = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model, Newtonsoft.Json.Formatting.Indented, new Newtonsoft.Json.JsonSerializerSettings { 
                            ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
@@ -204,8 +204,8 @@
             }
 
             if (jsonData.HasWasteData) {
-                $('#WasteQty').prop('disabled', false);
-                $('#WasteUom').prop('disabled', false);
+                $('#WasteQty').prop('readonly', false);
+                $('#WasteUom').prop('readonly', false);
             }
             
             $('#Bukrs').on('change', function () {
