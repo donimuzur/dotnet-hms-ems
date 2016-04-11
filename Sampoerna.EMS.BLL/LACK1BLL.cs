@@ -2690,8 +2690,8 @@ namespace Sampoerna.EMS.BLL
                         //Qty = p.Qty,
                         //TotalQtyPerMaterialId = p.TotalQtyPerMaterialId
                     });
-            var jsonusage = new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(groupUsageProporsional);
-            var jsonProd = new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(joinedWithUomData);
+            //var jsonusage = new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(groupUsageProporsional);
+            //var jsonProd = new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(joinedWithUomData);
             //calculation proccess
             foreach (var item in joinedWithUomData)
             {
