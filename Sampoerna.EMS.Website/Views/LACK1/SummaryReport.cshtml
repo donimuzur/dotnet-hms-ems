@@ -317,6 +317,9 @@
         $(document).ready(function () {
             setupDataTables();
 
+            $('#SearchView_PeriodMonth').addClass('input-validation-error');
+            $('#SearchView_PeriodYear').addClass('input-validation-error');
+
             $('#MenuLack1OpenDocument').removeClass('open');
             $('#MenuLack1Report').addClass('open');
             $('#MenuLack1SummaryReport').addClass('active');
@@ -523,6 +526,9 @@
 
         function ReloadDataTables() {
             setupDataTables();
+
+            $('#SearchView_PeriodMonth').removeClass('input-validation-error');
+            $('#SearchView_PeriodYear').removeClass('input-validation-error');
         }
 
         function OnReset() {

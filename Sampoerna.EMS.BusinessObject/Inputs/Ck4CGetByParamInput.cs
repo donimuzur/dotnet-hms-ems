@@ -22,6 +22,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public List<string> ListUserPlant { get; set; }
         public string UserId { get; set; }
         public Enums.UserRole UserRole { get; set; }
+        public int Month { get; set; }
+        public int Year { get; set; }
 
     }
 
@@ -76,6 +78,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Enums.UserRole UserRole { get; set; }
         public string Poa { get; set; }
         public string Creator { get; set; }
+        public int Month { get; set; }
+        public int Year { get; set; }
     }
 
     public class Ck4CDashboardParamInput
