@@ -985,6 +985,14 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbkcId);
             }
+            if (input.Month > 0)
+            {
+                queryFilter = queryFilter.And(c => c.REPORTED_MONTH == input.Month);
+            }
+            if (input.Year > 0)
+            {
+                queryFilter = queryFilter.And(c => c.REPORTED_YEAR == input.Year);
+            }
 
             return queryFilter;
         }
@@ -1582,6 +1590,14 @@ namespace Sampoerna.EMS.BLL
             if (!string.IsNullOrEmpty(input.Creator))
             {
                 queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
+            if (input.Month > 0)
+            {
+                queryFilter = queryFilter.And(c => c.REPORTED_MONTH == input.Month);
+            }
+            if (input.Year > 0)
+            {
+                queryFilter = queryFilter.And(c => c.REPORTED_YEAR == input.Year);
             }
             
             var rc = _repository.Get(queryFilter, null, includeTables).ToList();

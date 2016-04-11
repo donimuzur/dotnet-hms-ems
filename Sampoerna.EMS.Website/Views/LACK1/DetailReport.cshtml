@@ -157,7 +157,10 @@
         $('#MenuLack1Report').addClass('open');
         $('#MenuLack1DetailReport').addClass('active');
 
-        $(document).ready(function() {
+        $(document).ready(function () {
+
+            $('#SearchView_PeriodFrom').addClass('input-validation-error');
+            $('#SearchView_PeriodTo').addClass('input-validation-error');
         
             $('#SearchView_CompanyCode').on('change', function() {
                 OnCompanyCodeChange();

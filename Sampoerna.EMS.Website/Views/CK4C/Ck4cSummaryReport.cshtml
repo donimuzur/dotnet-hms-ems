@@ -46,6 +46,14 @@
 
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <label class="col-md-4">Month</label>
+                                    <div class="col-md-8">
+                                        @(Model.SearchView.MonthList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                      : Html.DropDownListFor(model => model.SearchView.Month, Model.SearchView.MonthList, "All", new { @class = "form-control selectreset", id = "SearchInput_Month" }))
+
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="row">
@@ -62,6 +70,14 @@
 
                                         @(Model.SearchView.CreatorList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
                               : Html.DropDownListFor(model => model.SearchView.Creator, Model.SearchView.CreatorList, "All", new { @class = "form-control selectreset" }))
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label class="col-md-4">Year</label>
+                                    <div class="col-md-8">
+                                        @(Model.SearchView.YearList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+      : Html.DropDownListFor(model => model.SearchView.Year, Model.SearchView.YearList, "All", new { @class = "form-control selectreset", id = "SearchInput_Year" }))
 
                                     </div>
                                 </div>
@@ -275,6 +291,8 @@
 
             setupDataTables();
 
+            $('#SearchInput_Month').addClass('input-validation-error');
+            $('#SearchInput_Year').addClass('input-validation-error');
 
             $('#menuCk4COpenDocuments').removeClass('open');
 
@@ -378,6 +396,8 @@
 
         function ReloadDataTables() {
             setupDataTables();
+            $('#SearchInput_Month').removeClass('input-validation-error');
+            $('#SearchInput_Year').removeClass('input-validation-error');
         }
 
         function OnReset() {

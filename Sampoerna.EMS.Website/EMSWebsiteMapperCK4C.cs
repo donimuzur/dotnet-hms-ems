@@ -72,7 +72,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.Ck4cNumber))
                 .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.CompanyName))
                 .ForMember(dest => dest.NppbkcId, opt => opt.MapFrom(src => src.NppbkcId))
-                .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.CompanyCode));
+                .ForMember(dest => dest.CompanyId, opt => opt.MapFrom(src => src.CompanyCode))
+                .ForMember(dest => dest.Month, opt => opt.ResolveUsing<StringToIntResolver>().FromMember(src => src.Month))
+                .ForMember(dest => dest.Year, opt => opt.ResolveUsing<StringToIntResolver>().FromMember(src => src.Year));
 
             Mapper.CreateMap<Ck4CIndexDocumentListViewModel, Ck4cGetCompletedDocumentByParamInput>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.DocumentNumber, opt => opt.MapFrom(src => src.Ck4cNumber))
@@ -141,7 +143,9 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<Ck4CSearchSummaryReportsViewModel, Ck4CGetSummaryReportByParamInput>().IgnoreAllNonExisting()
                 .ForMember(src => src.Ck4CNo, opt => opt.MapFrom(dest => dest.Ck4CNo))
                 .ForMember(src => src.PlantId, opt => opt.MapFrom(dest => dest.PlantId))
-                .ForMember(src => src.isForExport, opt => opt.MapFrom(dest => dest.isForExport));
+                .ForMember(src => src.isForExport, opt => opt.MapFrom(dest => dest.isForExport))
+                .ForMember(src => src.Month, opt => opt.ResolveUsing<StringToIntResolver>().FromMember(dest => dest.Month))
+                .ForMember(src => src.Year, opt => opt.ResolveUsing<StringToIntResolver>().FromMember(dest => dest.Year));
 
             #endregion
 
