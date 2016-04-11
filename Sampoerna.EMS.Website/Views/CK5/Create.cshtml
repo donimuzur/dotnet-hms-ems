@@ -452,8 +452,8 @@
 
 
                     } else {
-
-                        ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant, ck5type: '@Model.Ck5Type' });
+                        var isnppbkcImport = $("input[name='FLAG_NPPBKC_IMPORT']").is(":checked");
+                        ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant, ck5type: '@Model.Ck5Type', isNppbkcImport: isnppbkcImport });
                     }
                 }
             });
