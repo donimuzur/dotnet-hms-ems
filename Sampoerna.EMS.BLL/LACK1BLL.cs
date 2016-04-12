@@ -3843,20 +3843,20 @@ namespace Sampoerna.EMS.BLL
             var receivingList = (from rec in receivingAllWithConvertion
                                  join a in movementUsaheAllWithConvertion.DistinctBy(d => new { d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR }) on 
                                  new { rec.BATCH
-                                     , rec.MATERIAL_ID 
+                                     //, rec.MATERIAL_ID 
                                  } equals 
                                     new { a.BATCH
-                                        , a.MATERIAL_ID 
+                                       // , a.MATERIAL_ID 
                                     }
                                  select rec).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
             var usageReceivingList = (from rec in receivingAllWithConvertion.DistinctBy(d => new { d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR })
                                       join a in movementUsaheAllWithConvertion on 
                                       new { rec.BATCH
-                                          , rec.MATERIAL_ID 
+                                        //  , rec.MATERIAL_ID 
                                       } equals 
                                       new { a.BATCH
-                                          , a.MATERIAL_ID 
+                                         // , a.MATERIAL_ID 
                                       }
                                       select a).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
