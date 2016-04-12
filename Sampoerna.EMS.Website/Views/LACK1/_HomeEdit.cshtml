@@ -180,10 +180,10 @@
                                         <div class="col-md-8">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    @Html.TextBoxFor(model => model.WasteQty, new { @class = "form-control", maxlength = "12" })
+                                                    @Html.TextBoxFor(model => model.WasteQty, new { @class = "form-control", maxlength = "12", @readonly = "readonly" })
                                                 </div>
                                                 <div class="col-md-6">
-                                                    @Html.DropDownListFor(model => model.WasteUom, Model.WasteUomList, "Select", new { @class = "form-control" })
+                                                    @Html.DropDownListFor(model => model.WasteUom, Model.WasteUomList, "Select", new { @class = "form-control", @readonly = "readonly" })
                                                 </div>
                                             </div>
                                         </div>
