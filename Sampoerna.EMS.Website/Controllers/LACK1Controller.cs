@@ -737,7 +737,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 prodTisToFa.ProductionSummaryByProdTypeList.Select(d => d.TotalAmount.ToString("N2") + " " + d.UomDesc).ToList());
 
             int loopCountForUsage = prodTisToFa.ProductionSummaryByProdTypeList.Count;
-            var usage = data.Usage.ToString("N2");
+            var usage = data.Usage;
 
             /*skip this logic for etil alcohol, although IsTisToTis flag is checked*/
             if (data.IsTisToTis && !data.IsEtilAlcohol)
@@ -753,12 +753,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 summaryProductionJenis = summaryProductionJenis + Environment.NewLine + (!string.IsNullOrEmpty(summaryProductionJenisTisToTis) ? summaryProductionJenisTisToTis : "-");
                 summaryProductionAmount = summaryProductionAmount + Environment.NewLine + (!string.IsNullOrEmpty(summaryProductionAmountTisToTis) ? summaryProductionAmountTisToTis : "-");
 
-                for (var i = 0; i < loopCountForUsage; i++)
-                {
-                    usage = usage + Environment.NewLine;
-                }
+                //for (var i = 0; i < loopCountForUsage; i++)
+                //{
+                //    usage = usage + Environment.NewLine;
+                //}
 
-                usage = usage + (data.UsageTisToTis.HasValue ? data.UsageTisToTis.Value.ToString("N2") : "-");
+                usage = usage + (data.UsageTisToTis.HasValue ? data.UsageTisToTis.Value : 0);
 
             }
 
@@ -789,7 +789,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 detailRow.Ck5RegNumber = item.REGISTRATION_NUMBER;
                 detailRow.Ck5RegDate = item.REGISTRATION_DATE.HasValue ? item.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy") : string.Empty;
                 detailRow.Ck5Amount = item.AMOUNT.ToString("N2");
-                detailRow.Usage = usage;
+                detailRow.Usage = usage.ToString("N2");
                 detailRow.ListJenisBKC = summaryProductionJenis;
                 detailRow.ListJumlahBKC = summaryProductionAmount;
                 detailRow.EndingBalance = endingBalance.ToString("N2");
