@@ -2003,6 +2003,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - (rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0)) - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
+            rc.WasteAmountUom = bkcUomId;
 
             oReturn.Data = rc;
             oReturn.IsEtilAlcohol = outProcess.IsEtilAlcohol;
@@ -3339,6 +3340,8 @@ namespace Sampoerna.EMS.BLL
 
             rc.Lack1UomId = ck5Data.FirstOrDefault().PACKAGE_UOM_ID;
 
+            rc.TotalWaste = rc.Ck5RemarkData.Ck5WasteData.Sum(x => x.Amount);
+
             return rc;
         }
 
@@ -3843,20 +3846,20 @@ namespace Sampoerna.EMS.BLL
             var receivingList = (from rec in receivingAllWithConvertion
                                  join a in movementUsaheAllWithConvertion.DistinctBy(d => new { d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR }) on 
                                  new { rec.BATCH
-                                     , rec.MATERIAL_ID 
+                                     //, rec.MATERIAL_ID 
                                  } equals 
                                     new { a.BATCH
-                                        , a.MATERIAL_ID 
+                                       // , a.MATERIAL_ID 
                                     }
                                  select rec).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
             var usageReceivingList = (from rec in receivingAllWithConvertion.DistinctBy(d => new { d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR })
                                       join a in movementUsaheAllWithConvertion on 
                                       new { rec.BATCH
-                                          , rec.MATERIAL_ID 
+                                        //  , rec.MATERIAL_ID 
                                       } equals 
                                       new { a.BATCH
-                                          , a.MATERIAL_ID 
+                                         // , a.MATERIAL_ID 
                                       }
                                       select a).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 

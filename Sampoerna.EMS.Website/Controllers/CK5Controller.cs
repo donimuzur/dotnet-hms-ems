@@ -257,6 +257,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 ck5Type = Enums.CK5Type.ImporterToPlant;
 
             model.DetailList2 = GetCk5Items(ck5Type, model.SearchView);
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
             return PartialView("_CK5IntercompanyTablePartial", model);
         }
 
@@ -270,6 +271,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 ck5Type = Enums.CK5Type.DomesticAlcohol;
 
             model.DetailList3 = GetCk5Items(ck5Type, model.SearchView);
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
             return PartialView("_CK5DomesticAlcoholTablePartial", model);
         }
 
