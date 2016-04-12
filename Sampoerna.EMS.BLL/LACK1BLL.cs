@@ -2003,6 +2003,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - (rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0)) - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
+            rc.WasteAmountUom = bkcUomId;
 
             oReturn.Data = rc;
             oReturn.IsEtilAlcohol = outProcess.IsEtilAlcohol;
@@ -3338,6 +3339,8 @@ namespace Sampoerna.EMS.BLL
             rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
 
             rc.Lack1UomId = ck5Data.FirstOrDefault().PACKAGE_UOM_ID;
+
+            rc.TotalWaste = rc.Ck5RemarkData.Ck5WasteData.Sum(x => x.Amount);
 
             return rc;
         }
