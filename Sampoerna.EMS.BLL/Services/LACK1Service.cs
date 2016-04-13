@@ -37,7 +37,7 @@ namespace Sampoerna.EMS.BLL.Services
 
             queryFilter = queryFilter.And(ProcessQueryFilter(input));
 
-            Func<IQueryable<LACK1>, IOrderedQueryable<LACK1>> orderBy = null;
+            Func<IQueryable<LACK1>, IOrderedQueryable<LACK1>> orderBy = c => c.OrderByDescending(l => l.LACK1_ID);
 
             if (!string.IsNullOrEmpty(input.SortOrderColumn))
             {
