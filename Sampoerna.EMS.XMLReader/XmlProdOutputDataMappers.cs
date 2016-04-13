@@ -184,6 +184,31 @@ namespace Sampoerna.EMS.XMLReader
                         production.CREATED_BY = existingProd.CREATED_BY;
                         production.CREATED_DATE = existingProd.CREATED_DATE;
                         production.QTY = existingProd.QTY;
+                        production.BRAND_DESC = existingProd.BRAND_DESC;
+                        production.COMPANY_CODE = existingProd.COMPANY_CODE;
+                        production.COMPANY_NAME = existingProd.COMPANY_NAME;
+                        production.PLANT_NAME = existingProd.PLANT_NAME;
+
+                        switch (production.UOM)
+                        {
+                            case "Btg":
+                                production.QTY_PACKED = production.QTY_PACKED * 1000;
+
+
+
+                                break;
+                            case "G":
+                                production.QTY_PACKED = production.QTY_PACKED * 1000;
+
+
+                                break;
+
+                        }
+
+                        if (production.QTY_PACKED == existingProd.QTY_PACKED)
+                        {
+                            continue;
+                        }
                     }
                     else
                     {
@@ -191,50 +216,53 @@ namespace Sampoerna.EMS.XMLReader
                         production.CREATED_DATE = DateTime.Now;
 
                         production.QTY = 0;
-                        
-                    }
 
-                    var existingBrand = GetMaterialBrand(production.FA_CODE, production.WERKS);
-                    if (existingBrand != null)
-                    {
-                        if (existingBrand.BRAND_CONTENT == null)
+                        var existingBrand = GetMaterialBrand(production.FA_CODE, production.WERKS);
+                        if (existingBrand != null)
                         {
-                            throw new Exception(String.Format(
-                                "Brand {0} - {2} in plant {1} has null CONTENT value", existingBrand.FA_CODE,
-                                existingBrand.WERKS, existingBrand.STICKER_CODE));
+                            if (existingBrand.BRAND_CONTENT == null)
+                            {
+                                throw new Exception(String.Format(
+                                    "Brand {0} - {2} in plant {1} has null CONTENT value", existingBrand.FA_CODE,
+                                    existingBrand.WERKS, existingBrand.STICKER_CODE));
+                            }
+
+                            production.BRAND_DESC = existingBrand.BRAND_CE;
+                        }
+                        else
+                        {
+                            _xmlMapper.Errors.Add(string.Format("no brand fa_code {0} - werks {1}", production.FA_CODE,
+                                production.WERKS));
                         }
 
-                        production.BRAND_DESC = existingBrand.BRAND_CE;
+                        var company = GetCompanyByPlant(production.WERKS);
+                        if (company != null)
+                        {
+                            production.COMPANY_CODE = company.BUKRS;
+                            production.COMPANY_NAME = company.T001.BUTXT;
+                            production.PLANT_NAME = company.T001W.NAME1;
+                        }
+
+                        switch (production.UOM)
+                        {
+                            case "Btg":
+                                production.QTY_PACKED = production.QTY_PACKED * 1000;
+
+
+
+                                break;
+                            case "G":
+                                production.QTY_PACKED = production.QTY_PACKED * 1000;
+
+
+                                break;
+
+                        }
                     }
-                    else
-                    {
-                        _xmlMapper.Errors.Add(string.Format("no brand fa_code {0} - werks {1}", production.FA_CODE,
-                            production.WERKS));
-                    }
 
-                    var company = GetCompanyByPlant(production.WERKS);
-                    if (company != null)
-                    {
-                        production.COMPANY_CODE = company.BUKRS;
-                        production.COMPANY_NAME = company.T001.BUTXT;
-                        production.PLANT_NAME = company.T001W.NAME1;
-                    }
+                    
 
-                    switch (production.UOM)
-                    {
-                        case "Btg":
-                            production.QTY_PACKED = production.QTY_PACKED * 1000;
-                            
-
-
-                            break;
-                        case "G":
-                            production.QTY_PACKED = production.QTY_PACKED * 1000;
-                            
-
-                            break;
-                        
-                    }
+                    
 
                     items.Add(production);
                 }
