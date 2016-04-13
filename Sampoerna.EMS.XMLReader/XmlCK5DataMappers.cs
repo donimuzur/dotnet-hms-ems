@@ -163,7 +163,7 @@ namespace Sampoerna.EMS.XMLReader
                                     if (typeCk5 == Enums.CK5Type.Intercompany)
                                     {
                                         //_xmlMapper.Errors.Add("Ck 5 type intercompany with status GI Completed(16) is not processed by EMS in this build.");
-                                        //continue;
+                                        continue;
                                     }
                                     else
                                     {
