@@ -1661,8 +1661,6 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchView.ReceivingPlantIdList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.SearchView.NppbkcId);
             model.SearchView.ExcisableGoodsTypeList = GetExciseGoodsTypeList(model.SearchView.NppbkcId);
             model.SearchView.SupplierPlantIdList = GetSupplierPlantListByParam(model.SearchView.NppbkcId, model.SearchView.ExcisableGoodsType);
-            model.SearchView.CreatedByList = GlobalFunctions.GetCreatorList();
-            model.SearchView.ApprovedByList = GlobalFunctions.GetPoaAll(_poabll);
             model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
             model.SearchView.ApproverList = GlobalFunctions.GetPoaAll(_poabll);
             return model;
@@ -1793,6 +1791,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 });
             }
 
+            if (model.ExportModel.BReceivingPlantName)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "ReceivingPlantName",
+                    HeaderText = "Receiving Plant Name"
+                });
+            }
+
             if (model.ExportModel.BExcisableGoodsTypeId)
             {
                 grid.Columns.Add(new BoundField()
@@ -1856,30 +1863,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 });
             }
 
-            if (model.ExportModel.BCreatedBy)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "CreatedBy",
-                    HeaderText = "Created By"
-                });
-            }
-
             if (model.ExportModel.BApprovedDate)
             {
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "ApprovedDate",
                     HeaderText = "Approved Date"
-                });
-            }
-
-            if (model.ExportModel.BApprovedBy)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "ApprovedBy",
-                    HeaderText = "Approved By"
                 });
             }
 
@@ -1897,7 +1886,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "Approver",
-                    HeaderText = "Approver"
+                    HeaderText = "POA Approver"
                 });
             }
 
