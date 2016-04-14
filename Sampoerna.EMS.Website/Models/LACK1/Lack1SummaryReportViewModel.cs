@@ -30,9 +30,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
 
         public Enums.DocumentStatus? DocumentStatus { get; set; }
         public DateTime? CreatedDate { get; set; }
-        public string CreatedBy { get; set; }
         public DateTime? ApprovedDate { get; set; }
-        public string ApprovedBy { get; set; }
         public string Creator { get; set; }
         public string Approver { get; set; }
 
@@ -44,8 +42,6 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public SelectList PeriodMonthList { get; set; }
         public SelectList PeriodYearList { get; set; }
         public Enums.DocumentStatus DocumentStatusList { get; set; }
-        public SelectList CreatedByList { get; set; }
-        public SelectList ApprovedByList { get; set; }
         public SelectList CreatorList { get; set; }
         public SelectList ApproverList { get; set; }
     }
@@ -88,9 +84,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public bool BPeriod { get; set; }
         public bool BDocumentStatus { get; set; }
         public bool BCreatedDate { get; set; }
-        public bool BCreatedBy { get; set; }
         public bool BApprovedDate { get; set; }
-        public bool BApprovedBy { get; set; }
         public bool BCreator { get; set; }
         public bool BApprover { get; set; }
         public bool CompletedDate { get; set; }
@@ -111,9 +105,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string Period { get; set; }
         public string DocumentStatus { get; set; }
         public string CreatedDate { get; set; }
-        public string CreatedBy { get; set; }
         public string ApprovedDate { get; set; }
-        public string ApprovedBy { get; set; }
         public string Creator { get; set; }
         public string Approver { get; set; }
         public string CompletedDate { get; set; }
