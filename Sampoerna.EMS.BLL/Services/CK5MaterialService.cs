@@ -53,7 +53,8 @@ namespace Sampoerna.EMS.BLL.Services
 
         public List<CK5_MATERIAL> GetForBeginningEndBalance(List<string> receivedPlant, string supplierPlant)
         {
-            Expression<Func<CK5_MATERIAL, bool>> queryFilterCk5 = c => c.CK5.SOURCE_PLANT_ID == supplierPlant && receivedPlant.Contains(c.CK5.DEST_PLANT_ID);
+            Expression<Func<CK5_MATERIAL, bool>> queryFilterCk5 = c => c.CK5.SOURCE_PLANT_ID == supplierPlant 
+                && receivedPlant.Contains(c.CK5.DEST_PLANT_ID);
 
             queryFilterCk5 =
                 queryFilterCk5.And(c => c.CK5.CK5_TYPE != Enums.CK5Type.Return);
