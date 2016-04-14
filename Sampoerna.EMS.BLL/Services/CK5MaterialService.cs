@@ -55,6 +55,9 @@ namespace Sampoerna.EMS.BLL.Services
         {
             Expression<Func<CK5_MATERIAL, bool>> queryFilterCk5 = c => c.CK5.SOURCE_PLANT_ID == supplierPlant && receivedPlant.Contains(c.CK5.DEST_PLANT_ID);
 
+            queryFilterCk5 =
+                queryFilterCk5.And(c => c.CK5.CK5_TYPE != Enums.CK5Type.Return);
+
             return _repository.Get(queryFilterCk5, null, includeTables).ToList();
         }
     }
