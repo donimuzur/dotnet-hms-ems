@@ -75,21 +75,23 @@
     <script src="~/Scripts/lack1/Lack1Scripts.js?v=0.0.2"></script>
     <script type="text/javascript">
 
-        $('#MenuLack1CompletedDocument').addClass('@Model.MenuCompletedAddClassCss');
-        $('#MenuLack1ListByPlant').addClass('@Model.MenuPlantAddClassCss');
-        $('#Menulack1ListByNppbkc').addClass('@Model.MenuNppbkcAddClassCss');
+    $('#MenuLack1CompletedDocument').addClass('@Model.MenuCompletedAddClassCss');
+    $('#MenuLack1ListByPlant').addClass('@Model.MenuPlantAddClassCss');
+    $('#Menulack1ListByNppbkc').addClass('@Model.MenuNppbkcAddClassCss');
 
-        $(document).ready(function() {
+    $(document).ready(function() {
 
-            $('#divComment').hide();
+        $('#divComment').hide();
 
-            $('#btn-back-completed').click(function() {
-                location.href = '@Url.Action("ListCompletedDocument", "LACK1")';
+        $('#btn-back-completed').click(function() {
+            location.href = '@Url.Action("ListCompletedDocument", "LACK1")';
             });
 
             $('#generated-data-container').html('');
 
-            var jsonData = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model)));
+            var jsonData = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model, Newtonsoft.Json.Formatting.Indented, new Newtonsoft.Json.JsonSerializerSettings {
+                           ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                       })));
             //console.log(jsonData);
             if (jsonData.IsEtilAlcohol) {
                 /*Force to use generate table without tis to tis*/
@@ -121,143 +123,143 @@
 
             $('#btn-changelog-export-xls').click(function () {
                 location.href = '@Url.Action("ExportClientsListToExcel", "Lack1", new { id = Model.Lack1Id })';
-            });
+    });
 
-            $("#btnSaveGovStatus").click(function () {
-                $('#EditLack1Form').submit();
-            });
+    $("#btnSaveGovStatus").click(function () {
+        $('#EditLack1Form').submit();
+    });
 
-        });
+    });
 
-        function BukrsOnChange() {
-            if ($("#Bukrs").length) {
-                var companyCode = $('#Bukrs').find("option:selected").val();
-                $('#NppbkcId option').remove();
-                console.log(companyCode);
-                if (companyCode == '' || $(this).find("option:selected").val() == '') {
-                    $('#NppbkcId').append('<option value="">Select</option>');
-                } else {
-                    $('#Butxt').val($('#Bukrs').find("option:selected").text());
-                    ajaxLoadNppbkcList('@Url.Action("GetNppbkcListByCompanyCode", "LACK1")', { companyCode: companyCode });
-                }
-            }
-        }
-
-        function ExGoodsTypeOnChange() {
-            if ($("#NppbkcId").length && $("#ExGoodsTypeId").length) {
-                var excisableGoodsType = $('#ExGoodsTypeId').find("option:selected").val();
-                var excisableGoodsTypeDesc = $('#ExGoodsTypeId').find("option:selected").text();
-                $('#ExGoodsTypeDesc').val(excisableGoodsTypeDesc);
-                var nppbkcId = $('#NppbkcId').find("option:selected").val();
-                console.log(excisableGoodsType + "," + nppbkcId);
-                /*load supplier list*/
-                $('#SupplierPlantId option').remove();
-                if (excisableGoodsType != '' && nppbkcId != '') {
-                    ajaxLoadSupplier('@Url.Action("GetSupplierListByParam", "LACK1")', { nppbkcId: nppbkcId, excisableGoodsType: excisableGoodsType });
-                } else {
-                    $('#SupplierPlantId').append('<option value="">Select</option>');
-                }
-            }
-        }
-
-        function NppbkcIdOnChange() {
-            if ($("#NppbkcId").length) {
-                var nppbkcId = $('#NppbkcId').find("option:selected").val();
-                var attr = $('#LevelPlantId').attr('disabled');
-                console.log(attr);
-                /* For some browsers, `attr` is undefined; for others,
-                 `attr` is false.  Check for both.
-                load plant if enable*/
-                if (!(typeof attr !== typeof undefined && attr !== false)) {
-                    // ...
-                    $('#LevelPlantId option').remove();
-                    console.log(nppbkcId);
-                    if (nppbkcId == '' || $(this).find("option:selected").val() == '') {
-                        $('#LevelPlantId').append('<option value="">Select</option>');
-                    } else {
-                        ajaxLoadPlantList('@Url.Action("GetPlantListByNppbkcId", "LACK1")', { nppbkcId: nppbkcId });
-                    }
-                }
-
-                /*load excisablegoodstype*/
-                ajaxLoadExcisableGoodsType('@Url.Action("GetExcisableGoodsTypeByNppbkcId", "LACK1")', { nppbkcId: nppbkcId });
-
-                /*load supplier list*/
-                ajaxLoadSupplier('@Url.Action("GetSupplierListByParam", "LACK1")', { nppbkcId: nppbkcId, excisableGoodsType: '' });
-
-            }
-        }
-
-        function printPreview(url) {
-            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
-        }
-
-        function onSupplierPlantChange() {
-            if ($("#SupplierPlantId").length) {
-                var id = $('#SupplierPlantId').find("option:selected").val();
-                console.log(id);
-                ajaxLoadPlantDetail('@Url.Action("GetSupplierPlantDetail", "LACK1")', { werks: id });
-            }
-        }
-
-        function onGovStatusChange() {
-            if ($("#GovStatus").length) {
-                var statusGov = $('#GovStatus').find("option:selected").val();
-                console.log(statusGov);
-                $('#divComment').hide();
-                if (statusGov == '@Enums.DocumentStatusGovType2.Rejected') {
-                    $('#divComment').show();
-                    $('#GovApprovalActionType').val('@Enums.ActionType.GovReject');
-                } else if (statusGov == '@Enums.DocumentStatusGovType2.Approved') {
-                    $('#GovApprovalActionType').val('@Enums.ActionType.GovApprove');
-                }else if (statusGov == '') {
-                    $('#GovApprovalActionType').val('@Enums.ActionType.BackToGovApprovalAfterCompleted');
-                }
-            }
-        }
-
-        function ValidateGovInput() {
-            var result = true;
-            var govStatus = $('#GovStatus').find("option:selected").val();
-            var status = $('#Status').val();
-
-            if (status == '@Enums.DocumentStatus.Completed' && govStatus == '') {
-                return true;
-            }
-
-            if (govStatus == '') {
-                AddValidationClass(false, 'GovStatus');
-                result = false;
-            }
-
-            if ($('#DecreeDate').val() == '') {
-                AddValidationClass(false, 'DecreeDate');
-                result = false;
-            }
-
-            if ($('#GovStatus').val() == 'Rejected') {
-                if ($('#Comment').val() == '') {
-                    AddValidationClass(false, 'Comment');
-                    result = false;
-                }
-            }
-
-            return result;
-        }
-
-        function AddValidationClass(isValid, objName) {
-            if (isValid) {
-                $('#' + objName).removeClass('input-validation-error');
-                $('#' + objName).addClass('valid');
+    function BukrsOnChange() {
+        if ($("#Bukrs").length) {
+            var companyCode = $('#Bukrs').find("option:selected").val();
+            $('#NppbkcId option').remove();
+            console.log(companyCode);
+            if (companyCode == '' || $(this).find("option:selected").val() == '') {
+                $('#NppbkcId').append('<option value="">Select</option>');
             } else {
-                $('#' + objName).removeClass('valid');
-                $('#' + objName).addClass('input-validation-error');
+                $('#Butxt').val($('#Bukrs').find("option:selected").text());
+                ajaxLoadNppbkcList('@Url.Action("GetNppbkcListByCompanyCode", "LACK1")', { companyCode: companyCode });
+            }
+        }
+    }
+
+    function ExGoodsTypeOnChange() {
+        if ($("#NppbkcId").length && $("#ExGoodsTypeId").length) {
+            var excisableGoodsType = $('#ExGoodsTypeId').find("option:selected").val();
+            var excisableGoodsTypeDesc = $('#ExGoodsTypeId').find("option:selected").text();
+            $('#ExGoodsTypeDesc').val(excisableGoodsTypeDesc);
+            var nppbkcId = $('#NppbkcId').find("option:selected").val();
+            console.log(excisableGoodsType + "," + nppbkcId);
+            /*load supplier list*/
+            $('#SupplierPlantId option').remove();
+            if (excisableGoodsType != '' && nppbkcId != '') {
+                ajaxLoadSupplier('@Url.Action("GetSupplierListByParam", "LACK1")', { nppbkcId: nppbkcId, excisableGoodsType: excisableGoodsType });
+            } else {
+                $('#SupplierPlantId').append('<option value="">Select</option>');
+            }
+        }
+    }
+
+    function NppbkcIdOnChange() {
+        if ($("#NppbkcId").length) {
+            var nppbkcId = $('#NppbkcId').find("option:selected").val();
+            var attr = $('#LevelPlantId').attr('disabled');
+            console.log(attr);
+            /* For some browsers, `attr` is undefined; for others,
+             `attr` is false.  Check for both.
+            load plant if enable*/
+            if (!(typeof attr !== typeof undefined && attr !== false)) {
+                // ...
+                $('#LevelPlantId option').remove();
+                console.log(nppbkcId);
+                if (nppbkcId == '' || $(this).find("option:selected").val() == '') {
+                    $('#LevelPlantId').append('<option value="">Select</option>');
+                } else {
+                    ajaxLoadPlantList('@Url.Action("GetPlantListByNppbkcId", "LACK1")', { nppbkcId: nppbkcId });
+                }
+            }
+
+            /*load excisablegoodstype*/
+            ajaxLoadExcisableGoodsType('@Url.Action("GetExcisableGoodsTypeByNppbkcId", "LACK1")', { nppbkcId: nppbkcId });
+
+            /*load supplier list*/
+            ajaxLoadSupplier('@Url.Action("GetSupplierListByParam", "LACK1")', { nppbkcId: nppbkcId, excisableGoodsType: '' });
+
+        }
+    }
+
+    function printPreview(url) {
+        window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+    }
+
+    function onSupplierPlantChange() {
+        if ($("#SupplierPlantId").length) {
+            var id = $('#SupplierPlantId').find("option:selected").val();
+            console.log(id);
+            ajaxLoadPlantDetail('@Url.Action("GetSupplierPlantDetail", "LACK1")', { werks: id });
+        }
+    }
+
+    function onGovStatusChange() {
+        if ($("#GovStatus").length) {
+            var statusGov = $('#GovStatus').find("option:selected").val();
+            console.log(statusGov);
+            $('#divComment').hide();
+            if (statusGov == '@Enums.DocumentStatusGovType2.Rejected') {
+                $('#divComment').show();
+                $('#GovApprovalActionType').val('@Enums.ActionType.GovReject');
+            } else if (statusGov == '@Enums.DocumentStatusGovType2.Approved') {
+                $('#GovApprovalActionType').val('@Enums.ActionType.GovApprove');
+            }else if (statusGov == '') {
+                $('#GovApprovalActionType').val('@Enums.ActionType.BackToGovApprovalAfterCompleted');
+            }
+        }
+    }
+
+    function ValidateGovInput() {
+        var result = true;
+        var govStatus = $('#GovStatus').find("option:selected").val();
+        var status = $('#Status').val();
+
+        if (status == '@Enums.DocumentStatus.Completed' && govStatus == '') {
+            return true;
+        }
+
+        if (govStatus == '') {
+            AddValidationClass(false, 'GovStatus');
+            result = false;
+        }
+
+        if ($('#DecreeDate').val() == '') {
+            AddValidationClass(false, 'DecreeDate');
+            result = false;
+        }
+
+        if ($('#GovStatus').val() == 'Rejected') {
+            if ($('#Comment').val() == '') {
+                AddValidationClass(false, 'Comment');
+                result = false;
             }
         }
 
-        function openAttachment(url) {
-            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes');
+        return result;
+    }
+
+    function AddValidationClass(isValid, objName) {
+        if (isValid) {
+            $('#' + objName).removeClass('input-validation-error');
+            $('#' + objName).addClass('valid');
+        } else {
+            $('#' + objName).removeClass('valid');
+            $('#' + objName).addClass('input-validation-error');
         }
+    }
+
+    function openAttachment(url) {
+        window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes');
+    }
 
     </script>
 }
