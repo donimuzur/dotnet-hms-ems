@@ -17,11 +17,9 @@
             <th>Period</th>
             <th>Document Status</th>
             <th>Created Date</th>
-            <th>Created By</th>
             <th>Approved Date</th>
-            <th>Approved By</th>
             <th>Creator</th>
-            <th>Approver</th>
+            <th>POA Approver</th>
             <th>Completed Date</th>
         </tr>
     </thead>
@@ -45,12 +43,9 @@
                     <td>@Html.DisplayFor(model => item.SupplierPlantId)</td>
                     <td>@Html.DisplayFor(model => item.SupplierPlantName)</td>
                     <td>@Html.DisplayFor(model => item.Period)</td>
-
                     <td>@Html.DisplayFor(model => item.DocumentStatus)</td>
                     <td>@Html.DisplayFor(model => item.CreatedDate)</td>
-                    <td>@Html.DisplayFor(model => item.CreatedBy)</td>
                     <td>@Html.DisplayFor(model => item.ApprovedDate)</td>
-                    <td>@Html.DisplayFor(model => item.ApprovedBy)</td>
                     <td>@Html.DisplayFor(model => item.Creator)</td>
                     <td class="last">@Html.DisplayFor(model => item.Approver)</td>
                     <td>@Html.DisplayFor(model => item.CompletedDate)</td>
