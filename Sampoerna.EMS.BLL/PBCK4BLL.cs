@@ -1911,7 +1911,7 @@ namespace Sampoerna.EMS.BLL
         {
             var output = new List<GetListBrandByPlantOutput>();
 
-            var dbBrand = _brandRegistrationServices.GetBrandByPlant(plantId);
+            var dbBrand = _brandRegistrationServices.GetBrandByPlant(plantId).Where(x=> !x.BRAND_CE.ToLower().Contains("laboratorium")).ToList();
             foreach (var zaidmExBrand in dbBrand)
             {
                 var blockStock = GetBlockedStockQuota(plantId, zaidmExBrand.FA_CODE);
