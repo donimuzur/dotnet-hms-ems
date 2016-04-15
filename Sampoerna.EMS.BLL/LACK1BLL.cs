@@ -2003,6 +2003,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - (rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0)) - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
+            rc.WasteAmountUom = bkcUomId;
 
             oReturn.Data = rc;
             oReturn.IsEtilAlcohol = outProcess.IsEtilAlcohol;
@@ -2676,6 +2677,22 @@ namespace Sampoerna.EMS.BLL
             var prevInventoryMovementByParam = GetInventoryMovementByParam(prevInventoryMovementByParamInput,
                 stoReceiverNumberList, bkcUomId);
 
+            var groupUsageProporsional = invMovementOutput.UsageProportionalList
+                    .GroupBy(x => new { x.Order, x.Batch })
+                    .Select(p => new InvMovementUsageProportional()
+                    {
+
+                        Order = p.Key.Order,
+                        Batch = p.Key.Batch,
+                        Qty = p.Sum(x => x.Qty),
+                        TotalQtyPerMaterialId = p.FirstOrDefault().TotalQtyPerMaterialId
+                        //Order = p.Order,
+                        //Batch = p.Batch,
+                        //Qty = p.Qty,
+                        //TotalQtyPerMaterialId = p.TotalQtyPerMaterialId
+                    });
+            //var jsonusage = new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(groupUsageProporsional);
+            //var jsonProd = new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(joinedWithUomData);
             //calculation proccess
             foreach (var item in joinedWithUomData)
             {
@@ -2686,27 +2703,14 @@ namespace Sampoerna.EMS.BLL
                     ProdCode = item.PROD_CODE,
                     ProductType = item.PRODUCT_TYPE,
                     ProductAlias = item.PRODUCT_ALIAS,
-                    Amount = Math.Round(item.PROD_QTY * item.ProportionalOrder,3),
+                    Amount = item.ProportionalOrder * item.PROD_QTY,//Convert.ToDecimal(ROUNDUP(((double)item.ProportionalOrder), 3) * (double)item.PROD_QTY),//Math.Round(item.PROD_QTY * item.ProportionalOrder,0,MidpointRounding.ToEven),
                     UomId = item.UOM,
                     UomDesc = item.UOM_DESC,
                     ProductionDate = item.PRODUCTION_DATE
                     //ProportionalOrder = item.ProportionalOrder,
                 };
 
-                var groupUsageProporsional = invMovementOutput.UsageProportionalList
-                    //.GroupBy(x => new { x.Order, x.Batch })
-                    .Select(p => new InvMovementUsageProportional()
-                    {
-                        
-                        //Order = p.FirstOrDefault().Order,
-                        //Batch = p.FirstOrDefault().Batch,
-                        //Qty = p.Sum(x => x.Qty),
-                        //TotalQtyPerMaterialId = p.FirstOrDefault().TotalQtyPerMaterialId
-                        Order = p.Order,
-                        Batch = p.Batch,
-                        Qty = p.Qty,
-                        TotalQtyPerMaterialId = p.TotalQtyPerMaterialId
-                    });
+                
 
                 var rec = groupUsageProporsional.ToList().FirstOrDefault(c =>
                     c.Order == item.ORDR
@@ -2861,8 +2865,9 @@ namespace Sampoerna.EMS.BLL
                             QtyAllOrder = totalProductionOrder.QtyTotal
                         };
 
-
-                        itemToInsert.Amount = Math.Round((proportional.QtyOrder / proportional.QtyAllOrder),2, MidpointRounding.AwayFromZero) * nonzaapItem.PROD_QTY;
+                        //var value = proportional.QtyOrder / proportional.QtyAllOrder * nonzaapItem.PROD_QTY;
+                        //itemToInsert.Amount = Convert.ToDecimal(ROUNDUP((double)value,0)); //Math.Round((proportional.QtyOrder / proportional.QtyAllOrder) * nonzaapItem.PROD_QTY, 0, MidpointRounding.AwayFromZero);
+                        itemToInsert.Amount = (proportional.QtyOrder / proportional.QtyAllOrder) * nonzaapItem.PROD_QTY;
 
                         res.Add(itemToInsert);
                     }
@@ -3334,6 +3339,8 @@ namespace Sampoerna.EMS.BLL
             rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
 
             rc.Lack1UomId = ck5Data.FirstOrDefault().PACKAGE_UOM_ID;
+
+            rc.TotalWaste = rc.Ck5RemarkData.Ck5WasteData.Sum(x => x.Amount);
 
             return rc;
         }
@@ -3839,20 +3846,20 @@ namespace Sampoerna.EMS.BLL
             var receivingList = (from rec in receivingAllWithConvertion
                                  join a in movementUsaheAllWithConvertion.DistinctBy(d => new { d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR }) on 
                                  new { rec.BATCH
-                                     , rec.MATERIAL_ID 
+                                     //, rec.MATERIAL_ID 
                                  } equals 
                                     new { a.BATCH
-                                        , a.MATERIAL_ID 
+                                       // , a.MATERIAL_ID 
                                     }
                                  select rec).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
             var usageReceivingList = (from rec in receivingAllWithConvertion.DistinctBy(d => new { d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR })
                                       join a in movementUsaheAllWithConvertion on 
                                       new { rec.BATCH
-                                          , rec.MATERIAL_ID 
+                                        //  , rec.MATERIAL_ID 
                                       } equals 
                                       new { a.BATCH
-                                          , a.MATERIAL_ID 
+                                         // , a.MATERIAL_ID 
                                       }
                                       select a).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
@@ -4673,6 +4680,12 @@ namespace Sampoerna.EMS.BLL
             }
 
             return sb.ToString();
+        }
+
+
+        private double ROUNDUP(double number, int digits)
+        {
+            return Math.Ceiling(number * Math.Pow(10, digits)) / Math.Pow(10, digits);
         }
     }
 }

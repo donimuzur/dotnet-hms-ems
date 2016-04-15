@@ -118,6 +118,10 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime? DateFrom { get; set; }
         
         public DateTime? DateTo { get; set; }
+        
+        public int Month { get; set; }
+        
+        public int Year { get; set; }
 
         public Enums.CK5Type Ck5Type { get; set; }
 

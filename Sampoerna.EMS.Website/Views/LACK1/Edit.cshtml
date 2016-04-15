@@ -182,8 +182,6 @@
             });
             
             $('#generated-data-container').html('');
-            $('#WasteQty').prop('disabled', true);
-            $('#WasteUom').prop('disabled', true);
             
             var jsonData = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model, Newtonsoft.Json.Formatting.Indented, new Newtonsoft.Json.JsonSerializerSettings { 
                            ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
@@ -201,11 +199,6 @@
                     var generateTableD = generateTable(jsonData);
                     $('#generated-data-container').append(generateTableD);
                 }
-            }
-
-            if (jsonData.HasWasteData) {
-                $('#WasteQty').prop('disabled', false);
-                $('#WasteUom').prop('disabled', false);
             }
             
             $('#Bukrs').on('change', function () {

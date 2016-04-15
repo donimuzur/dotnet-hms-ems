@@ -120,6 +120,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.CompanyNameList = comp;
             model.NppbkcIdList = nppbkc;
+            model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.YearList = Ck4cYearList();
+            model.Month = DateTime.Now.Month.ToString();
+            model.Year = DateTime.Now.Year.ToString();
 
             switch (model.Ck4CType)
             {
@@ -1510,7 +1514,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region Summary Reports
 
-        private SelectList GetCk4CNumberList(List<Ck4CSummaryReportDto> listCk4C)
+        private SelectList GetCk4CNumberList(List<Ck4CSummaryReportsItem> listCk4C)
         {
             IEnumerable<SelectItemModel> query;
 
@@ -1525,7 +1529,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        private SelectList GetPlantList(List<Ck4CSummaryReportDto> listCk4C)
+        private SelectList GetPlantList(List<Ck4CSummaryReportsItem> listCk4C)
         {
 
             IEnumerable<SelectItemModel> query;
@@ -1547,26 +1551,21 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             model.MainMenu = Enums.MenuList.CK4C;
             model.CurrentMenu = PageInfo;
-
-            var listCk4C = _ck4CBll.GetSummaryReportsByParam(new Ck4CGetSummaryReportByParamInput() { 
-                UserRole = CurrentUser.UserRole,
-                ListNppbkc = CurrentUser.ListUserNppbkc,
-                ListUserPlant = CurrentUser.ListUserPlants
-            });
-
-            model.SearchView.Ck4CNoList = GetCk4CNumberList(listCk4C);
-            model.SearchView.PlantIdList = GetPlantList(listCk4C);
-            model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
-            model.SearchView.PoaList = GlobalFunctions.GetPoaAll(_poabll);
+            model.SearchView.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.SearchView.YearList = Ck4cYearList();
+            model.SearchView.Month = DateTime.Now.Month.ToString();
+            model.SearchView.Year = DateTime.Now.Year.ToString();
 
             var filter = new Ck4CSearchSummaryReportsViewModel();
+            filter.Month = model.SearchView.Month;
+            filter.Year = model.SearchView.Year;
 
             model.DetailsList = SearchDataSummaryReports(filter);
 
-            var listCk4c = Mapper.Map<List<Ck4CSummaryReportDto>>(model.DetailsList);
-
-            model.SearchView.Ck4CNoList = GetCk4CNumberList(listCk4c);
-            model.SearchView.PlantIdList = GetPlantList(listCk4c);
+            model.SearchView.Ck4CNoList = GetCk4CNumberList(model.DetailsList);
+            model.SearchView.PlantIdList = GetPlantList(model.DetailsList);
+            model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
+            model.SearchView.PoaList = GlobalFunctions.GetPoaAll(_poabll);
 
             return model;
         }

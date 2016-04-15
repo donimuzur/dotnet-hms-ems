@@ -257,6 +257,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 ck5Type = Enums.CK5Type.ImporterToPlant;
 
             model.DetailList2 = GetCk5Items(ck5Type, model.SearchView);
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
             return PartialView("_CK5IntercompanyTablePartial", model);
         }
 
@@ -270,6 +271,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 ck5Type = Enums.CK5Type.DomesticAlcohol;
 
             model.DetailList3 = GetCk5Items(ck5Type, model.SearchView);
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
             return PartialView("_CK5DomesticAlcoholTablePartial", model);
         }
 
@@ -731,7 +733,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetSourcePlantDetails(string plantId, Enums.CK5Type ck5Type)
+        public JsonResult GetSourcePlantDetails(string plantId, Enums.CK5Type ck5Type,bool isNppbkcImport)
         {
             CK5PlantModel model = new CK5PlantModel();
 
@@ -748,7 +750,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var dbPlant = _plantBll.GetT001WById(plantId);
                 model = Mapper.Map<CK5PlantModel>(dbPlant);
 
-                if (ck5Type == Enums.CK5Type.ImporterToPlant)
+                if (ck5Type == Enums.CK5Type.ImporterToPlant || isNppbkcImport)
                 {
                     model.NPPBCK_ID = dbPlant.NPPBKC_IMPORT_ID;
 
@@ -3334,6 +3336,9 @@ namespace Sampoerna.EMS.Website.Controllers
             //model.SearchView.DateToList = GetSubmissionDateListCK5(false, listCk5);
             
             var filter = new CK5SearchSummaryReportsViewModel();
+            filter.Month = DateTime.Now.Month.ToString();
+            filter.Year = DateTime.Now.Year.ToString();
+
             model.DetailsList = SearchDataSummaryReports(filter);
 
             model.SearchView.CompanyCodeSourceList = GetCompanyList(true, model.DetailsList);
@@ -3350,6 +3355,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.SearchView.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
+            model.SearchView.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.SearchView.YearList = GlobalFunctions.GetYearList();
+            model.SearchView.Month = DateTime.Now.Month.ToString();
+            model.SearchView.Year = DateTime.Now.Year.ToString();
 
             return model;
         }

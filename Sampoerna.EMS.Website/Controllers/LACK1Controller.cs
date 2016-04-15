@@ -737,7 +737,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 prodTisToFa.ProductionSummaryByProdTypeList.Select(d => d.TotalAmount.ToString("N2") + " " + d.UomDesc).ToList());
 
             int loopCountForUsage = prodTisToFa.ProductionSummaryByProdTypeList.Count;
-            var usage = data.Usage.ToString("N2");
+            var usage = data.Usage;
 
             /*skip this logic for etil alcohol, although IsTisToTis flag is checked*/
             if (data.IsTisToTis && !data.IsEtilAlcohol)
@@ -753,12 +753,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 summaryProductionJenis = summaryProductionJenis + Environment.NewLine + (!string.IsNullOrEmpty(summaryProductionJenisTisToTis) ? summaryProductionJenisTisToTis : "-");
                 summaryProductionAmount = summaryProductionAmount + Environment.NewLine + (!string.IsNullOrEmpty(summaryProductionAmountTisToTis) ? summaryProductionAmountTisToTis : "-");
 
-                for (var i = 0; i < loopCountForUsage; i++)
-                {
-                    usage = usage + Environment.NewLine;
-                }
+                //for (var i = 0; i < loopCountForUsage; i++)
+                //{
+                //    usage = usage + Environment.NewLine;
+                //}
 
-                usage = usage + (data.UsageTisToTis.HasValue ? data.UsageTisToTis.Value.ToString("N2") : "-");
+                usage = usage + (data.UsageTisToTis.HasValue ? data.UsageTisToTis.Value : 0);
 
             }
 
@@ -789,7 +789,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 detailRow.Ck5RegNumber = item.REGISTRATION_NUMBER;
                 detailRow.Ck5RegDate = item.REGISTRATION_DATE.HasValue ? item.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy") : string.Empty;
                 detailRow.Ck5Amount = item.AMOUNT.ToString("N2");
-                detailRow.Usage = usage;
+                detailRow.Usage = usage.ToString("N2");
                 detailRow.ListJenisBKC = summaryProductionJenis;
                 detailRow.ListJumlahBKC = summaryProductionAmount;
                 detailRow.EndingBalance = endingBalance.ToString("N2");
@@ -1653,6 +1653,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 CompanyCodeList = comp,
                 PeriodMonthList = GlobalFunctions.GetMonthList(_monthBll),
+                PeriodMonth = DateTime.Now.Month,
                 PeriodYearList = GetYearListInLack1Data()
             };
 
@@ -1660,8 +1661,6 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchView.ReceivingPlantIdList = GlobalFunctions.GetPlantByNppbkcId(_plantBll, model.SearchView.NppbkcId);
             model.SearchView.ExcisableGoodsTypeList = GetExciseGoodsTypeList(model.SearchView.NppbkcId);
             model.SearchView.SupplierPlantIdList = GetSupplierPlantListByParam(model.SearchView.NppbkcId, model.SearchView.ExcisableGoodsType);
-            model.SearchView.CreatedByList = GlobalFunctions.GetCreatorList();
-            model.SearchView.ApprovedByList = GlobalFunctions.GetPoaAll(_poabll);
             model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
             model.SearchView.ApproverList = GlobalFunctions.GetPoaAll(_poabll);
             return model;
@@ -1695,7 +1694,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 var lack1Data = _lack1Bll.GetSummaryReportByParam(new Lack1GetSummaryReportByParamInput() { 
                      ListUserPlant = CurrentUser.ListUserPlants,
                      ListNppbkc = CurrentUser.ListUserNppbkc,
-                     UserRole = CurrentUser.UserRole
+                     UserRole = CurrentUser.UserRole,
+                     PeriodMonth = DateTime.Now.Month,
+                     PeriodYear = DateTime.Now.Year
                 });
                 return Mapper.Map<List<Lack1SummaryReportItemModel>>(lack1Data);
             }
@@ -1790,6 +1791,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 });
             }
 
+            if (model.ExportModel.BReceivingPlantName)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "ReceivingPlantName",
+                    HeaderText = "Receiving Plant Name"
+                });
+            }
+
             if (model.ExportModel.BExcisableGoodsTypeId)
             {
                 grid.Columns.Add(new BoundField()
@@ -1853,30 +1863,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 });
             }
 
-            if (model.ExportModel.BCreatedBy)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "CreatedBy",
-                    HeaderText = "Created By"
-                });
-            }
-
             if (model.ExportModel.BApprovedDate)
             {
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "ApprovedDate",
                     HeaderText = "Approved Date"
-                });
-            }
-
-            if (model.ExportModel.BApprovedBy)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "ApprovedBy",
-                    HeaderText = "Approved By"
                 });
             }
 
@@ -1894,7 +1886,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "Approver",
-                    HeaderText = "Approver"
+                    HeaderText = "POA Approver"
                 });
             }
 
@@ -1976,7 +1968,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 var data = _lack1Bll.GetDetailReportByParam(new Lack1GetDetailReportByParamInput() { 
                     ListNppbkc = CurrentUser.ListUserNppbkc,
                     ListUserPlant = CurrentUser.ListUserPlants,
-                    UserRole = CurrentUser.UserRole
+                    UserRole = CurrentUser.UserRole,
+                    PeriodMonthFrom = DateTime.Now.Month,
+                    PeriodMonthTo = DateTime.Now.Month,
+                    PeriodYearFrom = DateTime.Now.Year,
+                    PeriodYearTo = DateTime.Now.Year
                 });
                 return Mapper.Map<List<Lack1DetailReportItemModel>>(data);
             }
@@ -2030,6 +2026,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchView.PeriodToList = GetPeriodList();
             model.SearchView.PoaList = GlobalFunctions.GetPoaAll(_poabll);
             model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
+            model.SearchView.PeriodFrom = string.Format("{0}-{1}", DateTime.Now.Month > 9 ? DateTime.Now.Month.ToString() : "0" + DateTime.Now.Month.ToString(), DateTime.Now.Year.ToString());
+            model.SearchView.PeriodTo = string.Format("{0}-{1}", DateTime.Now.Month > 9 ? DateTime.Now.Month.ToString() : "0" + DateTime.Now.Month.ToString(), DateTime.Now.Year.ToString());
             return model;
         }
 

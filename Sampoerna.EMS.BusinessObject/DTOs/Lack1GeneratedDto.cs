@@ -54,10 +54,12 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal? TotalUsageTisToTis { get; set; }
         public decimal TotalProduction { get; set; }
         public decimal EndingBalance { get; set; }
+        public decimal TotalWaste { get; set; }
         
         public string Noted { get; set; }
         public string DocumentNoted { get; set; }
         public string Lack1UomId { get; set; }
+        public string WasteAmountUom { get; set; }
         public Lack1GeneratedInventoryAndProductionDto InventoryProductionTisToFa { get; set; }
         public Lack1GeneratedInventoryAndProductionDto InventoryProductionTisToTis { get; set; }
         public List<Lack1GeneratedSummaryProductionDataDto> FusionSummaryProductionList { get; set; }
