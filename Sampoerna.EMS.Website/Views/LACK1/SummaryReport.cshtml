@@ -144,7 +144,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-2 col-md-offset-8">
-                                    <button class="btn btn-blue full">FILTER</button>
+                                    <button id="btnFILTER" class="btn btn-blue full">FILTER</button>
                                 </div>
                                 <div class="col-md-2">
                                     <input id="btnExport" type="button" class="btn btn-blue full" value="EXPORT" />
@@ -186,27 +186,27 @@
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BLack1Number, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "1" })Lack1 Number
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BLack1Number, new { @id = "checkboxDefault1", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "1" })Lack1 Number
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BCompanyCode, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2" })Company Code
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BCompanyCode, new { @id = "checkboxDefault2", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2" })Company Code
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BCompanyName, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3" })Company Name
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BCompanyName, new { @id = "checkboxDefault3", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3" })Company Name
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BNppbkcId, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "4" })Nppbkc ID
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BNppbkcId, new { @id = "checkboxDefault4", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "4" })Nppbkc ID
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BReceivingPlantId, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "5" })Receiving Plant Id
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BReceivingPlantId, new { @id = "checkboxDefault5", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "5" })Receiving Plant Id
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
@@ -493,6 +493,18 @@
 
                 // Toggle the visibility
                 column.visible(!column.visible());
+            });
+
+            $('#btnFILTER').on('click', function (e) {
+                $('#selecctall').prop('checked', false);
+                $('.checkexport').each(function () {
+                    this.checked = false;
+                });
+                $('#checkboxDefault1').prop('checked', true);
+                $('#checkboxDefault2').prop('checked', true);
+                $('#checkboxDefault3').prop('checked', true);
+                $('#checkboxDefault4').prop('checked', true);
+                $('#checkboxDefault5').prop('checked', true);
             });
 
             for (var i = 6; i < 18; i++) {
