@@ -155,7 +155,7 @@ namespace Sampoerna.EMS.BLL.Services
             _repository.Insert(data);
         }
 
-        public LACK2 GetBySelectionCriteria(Lack2GetBySelectionCriteriaParamInput input, Login loginInfo = null)
+        public LACK2 GetBySelectionCriteria(Lack2GetBySelectionCriteriaParamInput input)
         {
             Expression<Func<LACK2, bool>> queryFilter =
                 c => c.BUKRS == input.CompanyCode && c.NPPBKC_ID == input.NppbkcId
@@ -163,9 +163,9 @@ namespace Sampoerna.EMS.BLL.Services
                      && c.LEVEL_PLANT_ID == input.SourcePlantId
                      && c.PERIOD_MONTH == input.PeriodMonth && c.PERIOD_YEAR == input.PeriodYear;
 
-            if (loginInfo.UserRole != Enums.UserRole.Administrator)
+            if (input.UserRole != Enums.UserRole.Administrator)
             {
-                queryFilter = queryFilter.And(c => loginInfo.ListUserPlants.Contains(c.LEVEL_PLANT_ID));
+                queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.LEVEL_PLANT_ID));
             }
             
             

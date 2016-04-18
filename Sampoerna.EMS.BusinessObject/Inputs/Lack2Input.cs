@@ -72,6 +72,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string NppbkcId { get; set; }
         public int ExGroupTypeId { get; set; }
         public bool IsCreateNew { get; set; }
+        public Enums.UserRole UserRole { get; set; }
+        public List<string> ListUserPlant { get; set; }
     }
 
     public class Lack2GetBySelectionCriteriaParamInput
@@ -82,6 +84,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string ExGoodTypeId { get; set; }
         public string CompanyCode { get; set; }
         public string NppbkcId { get; set; }
+        public Enums.UserRole UserRole { get; set; }
+        public List<string> ListUserPlant { get; set; }
     }
 
     public class Lack2CreateParamInput : Lack2GenerateDataParamInput
