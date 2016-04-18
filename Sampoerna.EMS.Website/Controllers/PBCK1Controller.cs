@@ -1983,14 +1983,6 @@ namespace Sampoerna.EMS.Website.Controllers
                     HeaderText = "ReportedOn"
                 });
             }
-            if (model.ExportModel.PeriodFrom)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "PeriodFrom",
-                    HeaderText = "PeriodFrom"
-                });
-            }
             if (model.ExportModel.RequestQty)
             {
                 grid.Columns.Add(new BoundField()
@@ -3185,7 +3177,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterMutasiIndex(Pbck1MonitoringMutasiViewModel model)
         {
             var input = Mapper.Map<Pbck1GetMonitoringMutasiByParamInput>(model);
-
+            input.ListNppbkc = CurrentUser.ListUserNppbkc;
 
             var dbData = _pbck1Bll.GetMonitoringMutasiByParam(input);
             var result = Mapper.Map<List<Pbck1MonitoringMutasiItem>>(dbData);
@@ -3221,7 +3213,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 oriNppbkc = model.FilterOriNppbkc,
                 oriKppbc = model.FilterOriKppbc,
                 poa = model.FilterPoa,
-                creator = model.FilterCreator
+                creator = model.FilterCreator,
+                ListNppbkc = CurrentUser.ListUserNppbkc
             });
 
             //todo refactor mapper

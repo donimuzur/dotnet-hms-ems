@@ -80,8 +80,8 @@
                 if (response.HasWasteData) {
                     //$('#WasteQty').prop('disabled', false);
                     //$('#WasteUom').prop('disabled', false);
-                    $('#WasteQty').val(data.TotalWaste);
-                    $('#WasteUom').val(data.WasteAmountUom);
+                    //$('#WasteQty').val(data.TotalWaste);
+                    //$('#WasteUom').val(data.WasteAmountUom);
                 }
                 
             } else {
