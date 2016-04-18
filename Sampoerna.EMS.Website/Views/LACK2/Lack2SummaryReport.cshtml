@@ -230,7 +230,11 @@
                                             </div>
 
                                             <div class="toggle-component">
-
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" id="selecctall" /><b>Select All</b>
+                                                    </label>
+                                                </div>
                                                 <div class="checkbox">
                                                     <label>
                                                         @Html.CheckBoxFor(model => model.ExportModel.BLack2Number, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "1" })LACK-2 Number
@@ -398,7 +402,7 @@
             $('#MenuLack2Report').addClass('open');
             $('#MenuLack2SummaryReport').addClass('active');
 
-
+            $('#selecctall').prop('checked', false);
         });
 
 
@@ -456,6 +460,33 @@
                 });
             }
 
+            $('#selecctall').change(function () {
+                if ($(this).is(':checked')) {
+                    $('.checkexport').prop('checked', this.checked);
+                    // Show a column
+                    $('#lack2Table').parents('div.dataTables_wrapper').first().show();
+                    var table = $('#lack2Table').DataTable();
+                    for (var i = 0; i < 25; i++) {
+                        table.column(i).visible(true);
+
+                    }
+                    table.column(0).visible(true);
+                    // Show a column
+                    $('#lack2Table').parents('div.dataTables_wrapper').first().show();
+
+                } else {
+                    $('.checkexport').each(function () {
+                        this.checked = false;
+
+                    });
+                    var table = $('#lack2Table').DataTable();
+                    for (var i = 0; i < 25; i++) {
+                        table.column(i).visible(false);
+
+                    }
+                    $('#lack2Table').parents('div.dataTables_wrapper').first().hide();
+                }
+            });
         }
 
         function ReloadDataTables() {
