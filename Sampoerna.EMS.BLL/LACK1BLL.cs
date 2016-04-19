@@ -529,6 +529,10 @@ namespace Sampoerna.EMS.BLL
 
             AddWorkflowHistory(inputAddWorkflowHistory);
 
+            _lack1TrackingService.DeleteByLack1Id(null);
+            _lack1IncomeDetailService.DeleteByLack1Id(null);
+            _lack1ProductionDetailService.DeleteByLack1Id(null);
+
             _uow.SaveChanges();
 
             return rc;
