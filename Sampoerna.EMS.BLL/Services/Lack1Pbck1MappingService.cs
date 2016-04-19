@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.BLL.Services
             _repository = _uow.GetGenericRepository<LACK1_PBCK1_MAPPING>();
         }
 
-        public void DeleteByLack1Id(int lack1Id)
+        public void DeleteByLack1Id(int? lack1Id)
         {
             var dataToDelete = _repository.Get(c => c.LACK1_ID == lack1Id);
             if (dataToDelete != null)

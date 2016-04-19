@@ -529,6 +529,10 @@ namespace Sampoerna.EMS.BLL
 
             AddWorkflowHistory(inputAddWorkflowHistory);
 
+            _lack1TrackingService.DeleteByLack1Id(null);
+            _lack1IncomeDetailService.DeleteByLack1Id(null);
+            _lack1ProductionDetailService.DeleteByLack1Id(null);
+
             _uow.SaveChanges();
 
             return rc;
@@ -3459,7 +3463,8 @@ namespace Sampoerna.EMS.BLL
                 ProductType = g.Key.PRODUCT_TYPE,
                 UomId = g.Key.UOM_ID,
                 UomDesc = g.Key.UOM_DESC,
-                TotalAmount = Math.Round(g.Sum(p => p.AMOUNT),0)
+                //TotalAmount = Math.Round(g.Sum(p => p.AMOUNT),0)
+                TotalAmount = Math.Ceiling(g.Sum(p => p.AMOUNT))
             });
 
             return groupedData.ToList();
