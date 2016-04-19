@@ -241,6 +241,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 var input = Mapper.Map<Lack2CreateParamInput>(model);
                 input.UserId = CurrentUser.USER_ID;
+                input.UserRole = CurrentUser.UserRole;
+                input.ListUserPlant = CurrentUser.ListUserPlants;
                 var saveOutput = _lack2Bll.Create(input);
                 if (saveOutput.Success)
                 {

@@ -775,8 +775,7 @@ namespace Sampoerna.EMS.Website.Controllers
             
             if (data.Ck5RemarkData != null)
             {
-                //request email from Re: FW: [Request] Disable Link LACK-1 NPPBKC Level + Remove waste (auto calculate) display on print preview & form | 18 Apr 2016, 14:50
-                //docNoted = GenerateRemarkContent(data.Ck5RemarkData.Ck5WasteData, "Waste");
+                docNoted = GenerateRemarkContent(data.Ck5RemarkData.Ck5WasteData, "Waste");
                 //docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.Ck5RemarkData.Ck5ReturnData, "Return");
                 docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.Ck5RemarkData.Ck5TrialData, "Trial");
             }
