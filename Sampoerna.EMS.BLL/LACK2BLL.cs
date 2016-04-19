@@ -1194,7 +1194,9 @@ namespace Sampoerna.EMS.BLL
                 SourcePlantId = input.SourcePlantId,
                 ExGoodTypeId = input.ExcisableGoodsType,
                 PeriodMonth = input.PeriodMonth,
-                PeriodYear = input.PeriodYear
+                PeriodYear = input.PeriodYear,
+                UserRole = input.UserRole,
+                ListUserPlant = input.ListUserPlant
             });
 
             if (input.IsCreateNew)

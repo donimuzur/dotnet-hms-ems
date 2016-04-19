@@ -329,8 +329,7 @@ function generateRemark(data) {
     var rc = '';
     if (data.Ck5RemarkData) {
         rc = '<div id="lack1-generated-remark">';
-        //var contentTable = generateRemarkContentTable(data.Ck5RemarkData.Ck5WasteData, "Waste");
-        var contentTable = '';
+        var contentTable = generateRemarkContentTable(data.Ck5RemarkData.Ck5WasteData, "Waste");
         contentTable += generateRemarkContentTable(data.Ck5RemarkData.Ck5ReturnData, "Return");
         contentTable += generateRemarkContentTable(data.Ck5RemarkData.Ck5TrialData, "Trial");
         if (contentTable.trim().length > 0) {
