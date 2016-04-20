@@ -3698,7 +3698,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 if (modelExport.UnSealingNotificationDate)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.UnSealingNotificationNumber);
+                    slDocument.SetCellValue(iRow, iColumn, data.UnSealingNotificationDate);
                     iColumn = iColumn + 1;
                 }
                 if (modelExport.UnSealingNotificationNumber)
