@@ -21,12 +21,25 @@ namespace Sampoerna.EMS.BLL.Services
         }
         public void DeleteByLack1Id(int? lack1Id)
         {
-            var sql = "delete from LACK1_INCOME_DETAIL where LACK1_ID = "+ lack1Id;
+            
             if (!lack1Id.HasValue)
             {
-                sql = "delete from LACK1_INCOME_DETAIL where LACK_ID is NULL";
+                var dataToDelete = _repository.Get(c => !c.LACK1_ID.HasValue).Select(x=> x.LACK1_INCOME_ID).ToList();
+                if (dataToDelete.Any())
+                {
+                    foreach (var item in dataToDelete)
+                    {
+                        _repository.Delete(item);
+                    }
+                }
             }
-            _repository.ExecuteSql(sql);
+            else
+            {
+                var sql = "delete from LACK1_INCOME_DETAIL where LACK1_ID = " + lack1Id;
+                _repository.ExecuteSql(sql);
+            }
+
+           
             //var dataToDelete = _repository.Get(c => c.LACK1_ID == lack1Id);
             //if (dataToDelete != null)
             //{

@@ -776,7 +776,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (data.Ck5RemarkData != null)
             {
                 docNoted = GenerateRemarkContent(data.Ck5RemarkData.Ck5WasteData, "Waste");
-                //docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.Ck5RemarkData.Ck5ReturnData, "Return");
+                docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.Ck5RemarkData.Ck5ReturnData, "Return");
                 docNoted = docNoted + (docNoted.Trim() == string.Empty ? string.Empty : Environment.NewLine) + GenerateRemarkContent(data.Ck5RemarkData.Ck5TrialData, "Trial");
             }
 
@@ -1018,8 +1018,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 AddMessageInfo(saveResult.ErrorMessage, Enums.MessageInfoType.Error);
             }
-            //catch (Exception ex)//just for debugging, uncomment this line
-            catch (Exception)
+            catch (Exception ex)//just for debugging, uncomment this line
+            //catch (Exception)
             {
                 model = InitEditList(model);
                 model = SetEditHistory(model);

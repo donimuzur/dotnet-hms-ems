@@ -8,5 +8,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public bool IsWithTisToTisReport { get; set; }
         public bool IsEtilAlcohol { get; set; }
         public bool HasWasteData { get; set; }
+
+        public bool HasReturnData { get; set; }
     }
 }
