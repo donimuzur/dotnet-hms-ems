@@ -107,7 +107,10 @@ namespace Sampoerna.EMS.DAL
             
         }
 
-        
+        public virtual void DeleteRange(IEnumerable<TEntity> entities)
+        {
+            _dbSet.RemoveRange(entities);
+        }
 
         public virtual void Update(TEntity entity)
         {
@@ -174,7 +177,8 @@ namespace Sampoerna.EMS.DAL
 
         public void ExecuteSql(string sql)
         {
-            _dbSet.SqlQuery(sql);
+            _context.Database.ExecuteSqlCommand(sql);
+            
             
         }
 
