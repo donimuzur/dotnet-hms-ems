@@ -318,13 +318,14 @@ namespace Sampoerna.EMS.BLL
             var dbData = _lack1Service.GetDetailsById(input.Detail.Lack1Id);
 
             //check if need to regenerate
-            var isNeedToRegenerate = dbData.STATUS == Enums.DocumentStatus.Draft || dbData.STATUS == Enums.DocumentStatus.Rejected;
+            //radit 2016-04-20 always false
+            var isNeedToRegenerate = false;//dbData.STATUS == Enums.DocumentStatus.Draft || dbData.STATUS == Enums.DocumentStatus.Rejected;
             var generateInput = Mapper.Map<Lack1GenerateDataParamInput>(input);
             //if (!isNeedToRegenerate)
             //{
             //    isNeedToRegenerate = IsNeedToRegenerate(generateInput, dbData);
             //}
-
+            
             if (isNeedToRegenerate)
             {
                 //do regenerate data
@@ -504,7 +505,8 @@ namespace Sampoerna.EMS.BLL
                 dbData.GOV_STATUS = null;
             }
 
-            _uow.SaveChanges();
+            //radit 2016-04-20 due to always false isneedregenerate
+            //_uow.SaveChanges();
 
             rc.Success = true;
             rc.Id = dbData.LACK1_ID;
