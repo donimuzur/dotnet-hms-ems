@@ -111,9 +111,9 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 filterContext.Result = new RedirectToRouteResult(
                    new RouteValueDictionary { { "controller", "Login" }, { "action", "Index" } });
-                
-             
-                
+
+
+                return;
             }
             var isUsePageAuth = ConfigurationManager.AppSettings["UsePageAuth"] != null && Convert.ToBoolean(ConfigurationManager.AppSettings["UsePageAuth"]);
             if (isUsePageAuth)

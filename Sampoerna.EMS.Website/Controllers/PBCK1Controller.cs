@@ -2278,16 +2278,23 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "Pbck1Number",
-                    HeaderText = "Pbck-1 Decree"
+                    HeaderText = "PBCK-1 Number"
                 });
             }
-
-            if (model.ExportModel.Nppbkc)
+            if (model.ExportModel.IsNppbkcImport)
             {
                 grid.Columns.Add(new BoundField()
                 {
-                    DataField = "NppbkcId",
-                    HeaderText = "Nppbkc"
+                    DataField = "IsNppbkcImport",
+                    HeaderText = "Import"
+                });
+            }
+            if (model.ExportModel.ExcGoodsType)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "ExcGoodsType",
+                    HeaderText = "Excisable Goods Type"
                 });
             }
             if (model.ExportModel.Company)
@@ -2295,7 +2302,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "NppbkcCompanyName",
-                    HeaderText = "Company"
+                    HeaderText = "Receiver Company"
+                });
+            }
+            if (model.ExportModel.Nppbkc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "NppbkcId",
+                    HeaderText = "Receiver NPPBKC"
                 });
             }
             if (model.ExportModel.Kppbc)
@@ -2303,79 +2318,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "NppbkcKppbcName",
-                    HeaderText = "Kppbc"
+                    HeaderText = "Receiver KPPBC"
                 });
             }
-            if (model.ExportModel.Pbck1Period)
+            if (model.ExportModel.SupCompanyCheck)
             {
                 grid.Columns.Add(new BoundField()
                 {
-                    DataField = "Pbck1PeriodDisplay",
-                    HeaderText = "Pbck-1 Period"
-                });
-            }
-            if (model.ExportModel.ExcGoodsQuota)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "ExGoodsQuota",
-                    HeaderText = "Excisable Goods Quota"
-                });
-            }
-            if (model.ExportModel.AdditionalExcGoodsQuota)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "AdditionalExGoodsQuota",
-                    HeaderText = "Additional Excisable Goods Quota"
-                });
-            }
-            if (model.ExportModel.AdditionalExcGoodsQuota)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "PreviousFinalBalance",
-                    HeaderText = "Prev Years Final Balance"
-                });
-            }
-            if (model.ExportModel.TotalPbck1Quota)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "TotalPbck1Quota",
-                    HeaderText = "Total Pbck-1 Quota"
-                });
-            }
-            if (model.ExportModel.Received)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "Received",
-                    HeaderText = "Received"
-                });
-            }
-            if (model.ExportModel.QuotaRemaining)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "QuotaRemaining",
-                    HeaderText = "Quota Remaining"
-                });
-            }
-            if (model.ExportModel.PoaCheck)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "Poa",
-                    HeaderText = "POA Approved"
-                });
-            }
-            if (model.ExportModel.CreatorCheck)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "Creator",
-                    HeaderText = "Creator"
+                    DataField = "SupCompany",
+                    HeaderText = "Supplier Company"
                 });
             }
             if (model.ExportModel.SupNppbkcCheck)
@@ -2399,18 +2350,97 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "SupPlant",
-                    HeaderText = "Supplier Plant"
+                    HeaderText = "Supplier Plant ID"
                 });
             }
-            if (model.ExportModel.SupCompanyCheck)
+            if (model.ExportModel.SupPlantDescCheck)
             {
                 grid.Columns.Add(new BoundField()
                 {
-                    DataField = "SupCompany",
-                    HeaderText = "Supplier Company"
+                    DataField = "SupPlantDesc",
+                    HeaderText = "Supplier Plant Desc"
                 });
             }
-
+            if (model.ExportModel.Pbck1Period)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck1PeriodDisplay",
+                    HeaderText = "PBCK-1 Period"
+                });
+            }            
+            if (model.ExportModel.QtyUom)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "QtyUom",
+                    HeaderText = "Qty UOM"
+                });
+            }
+            if (model.ExportModel.ExcGoodsQuota)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "ExGoodsQuota",
+                    HeaderText = "Excisable Goods Quota"
+                });
+            }
+            if (model.ExportModel.AdditionalExcGoodsQuota)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "AdditionalExGoodsQuota",
+                    HeaderText = "Additional Excisable Goods Quota"
+                });
+            }
+            if (model.ExportModel.AdditionalExcGoodsQuota)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "PreviousFinalBalance",
+                    HeaderText = "Latest Saldo"
+                });
+            }
+            if (model.ExportModel.TotalPbck1Quota)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "TotalPbck1Quota",
+                    HeaderText = "Total PBCK-1 Quota"
+                });
+            }
+            if (model.ExportModel.Received)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Received",
+                    HeaderText = "Received Quantity"
+                });
+            }
+            if (model.ExportModel.QuotaRemaining)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "QuotaRemaining",
+                    HeaderText = "Remaining Quota"
+                });
+            }
+            if (model.ExportModel.PoaCheck)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Poa",
+                    HeaderText = "POA Approved by"
+                });
+            }
+            if (model.ExportModel.CreatorCheck)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Creator",
+                    HeaderText = "Creator"
+                });
+            }
             if (dataToExport.Count == 0)
             {
                 grid.ShowHeaderWhenEmpty = true;
@@ -3214,7 +3244,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 oriKppbc = model.FilterOriKppbc,
                 poa = model.FilterPoa,
                 creator = model.FilterCreator,
-                ListNppbkc = CurrentUser.ListUserNppbkc
+                ListNppbkc = CurrentUser.ListUserNppbkc,
+                UserRole = CurrentUser.UserRole
             });
 
             //todo refactor mapper
@@ -3352,7 +3383,7 @@ namespace Sampoerna.EMS.Website.Controllers
             grid.DataBind();
 
 
-            var fileName = "PBCK1MonitoringMutasi" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            var fileName = "PBCK1MonitoringDetail" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
             Response.ClearContent();
             Response.Buffer = true;
             Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
