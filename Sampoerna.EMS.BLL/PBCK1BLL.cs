@@ -2936,6 +2936,7 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 item.ReceivedAdditional = receivedAdditional;
+                item.RecKppbc = _lfaBll.GetById(item.RecKppbc).NAME1;
             }
 
             return list;
