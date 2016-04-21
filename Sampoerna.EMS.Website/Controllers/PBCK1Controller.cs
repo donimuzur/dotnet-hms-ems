@@ -3280,7 +3280,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "QuotaRemaining",
-                    HeaderText = "PBCK-1 Quota remaining"
+                    HeaderText = "Remaining PBCK-1 Quota"
                 });
 
 
@@ -3289,7 +3289,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "Received",
-                    HeaderText = "Total CK-5 Used"
+                    HeaderText = "Total Qty of CK-5"
                 });
             }
 
@@ -3298,7 +3298,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "DocNumberCk5",
-                    HeaderText = "CK-5 Number",
+                    HeaderText = "Detail CK-5 Number",
                     HtmlEncode = false
                 });
             }
@@ -3307,7 +3307,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "GrandTotalExciseable",
-                    HeaderText = "Total Ex Good Type",
+                    HeaderText = "Detail Qty of CK-5",
                     HtmlEncode = false
                 });
             }
@@ -3316,7 +3316,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "UoM",
-                    HeaderText = "UoM",
+                    HeaderText = "Qty UOM",
                     HtmlEncode = false
                 });
             }
@@ -3325,7 +3325,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "Poa",
-                    HeaderText = "POA Approved",
+                    HeaderText = "POA Approved by",
                     HtmlEncode = false
                 });
             }
@@ -3343,7 +3343,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "SupPlant",
-                    HeaderText = "Supplier Plant",
+                    HeaderText = "Supplier Plant ID",
                     HtmlEncode = false
                 });
             }
@@ -3361,7 +3361,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "OriNppbkc",
-                    HeaderText = "Original Nppbkc",
+                    HeaderText = "Supplier NPPBKC",
                     HtmlEncode = false
                 });
             }
@@ -3370,7 +3370,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "OriKppbc",
-                    HeaderText = "Original Kppbc",
+                    HeaderText = "Supplier KPPBC",
                     HtmlEncode = false
                 });
             }
