@@ -16,6 +16,7 @@ namespace Sampoerna.EMS.BLL.Services
     public class CK5Service : ICK5Service
     {
         private IGenericRepository<CK5> _repository;
+        private IGenericRepository<CK5_MATERIAL> _repositoryMaterial;
         private ILogger _logger;
         private IUnitOfWork _uow;
 
@@ -24,7 +25,7 @@ namespace Sampoerna.EMS.BLL.Services
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<CK5>();
-
+            _repositoryMaterial = _uow.GetGenericRepository<CK5_MATERIAL>();
         }
 
         public CK5 GetById(long id)
@@ -144,8 +145,9 @@ namespace Sampoerna.EMS.BLL.Services
 
         public List<string> GetCk5AssignedMatdoc()
         {
-            Expression<Func<CK5, bool>> queryFilter = c => !string.IsNullOrEmpty(c.MATDOC);
-            return _repository.Get(queryFilter).Select(x => x.MATDOC).ToList();
+            Expression<Func<CK5, bool>> queryFilterMaterial = c => !string.IsNullOrEmpty(c.MATDOC);
+
+            return _repositoryMaterial.Get(queryFilterMaterial).Select(x => x.MATDOC).ToList();
         }
 
 
