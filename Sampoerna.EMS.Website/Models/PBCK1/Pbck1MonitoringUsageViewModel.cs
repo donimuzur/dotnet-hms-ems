@@ -63,7 +63,11 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string SupNppbkc { get; set; }
         public string SupKppbc { get; set; }
         public string SupPlant { get; set; }
+        public string SupPlantDesc { get; set; }
         public string SupCompany { get; set; }
+        public string IsNppbkcImport { get; set; }
+        public string ExcGoodsType { get; set; }
+        public string QtyUom { get; set; }
     }
 
     public class Pbck1FilterMonitoringUsageViewModel
@@ -117,7 +121,11 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public bool SupNppbkcCheck { get; set; }
         public bool SupKppbcCheck { get; set; }
         public bool SupPlantCheck { get; set; }
+        public bool SupPlantDescCheck { get; set; }
         public bool SupCompanyCheck { get; set; }
+        public bool IsNppbkcImport { get; set; }
+        public bool ExcGoodsType { get; set; }
+        public bool QtyUom { get; set; }
 
         public string CompanyCode { get; set; }
         public int? YearFrom { get; set; }

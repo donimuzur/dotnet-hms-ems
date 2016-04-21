@@ -275,10 +275,14 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Pbck1Type, opt => opt.MapFrom(src => src.PBCK1_TYPE))
                 .ForMember(dest => dest.Poa, opt => opt.MapFrom(src => src.APPROVED_BY_POA != null ? "-" : src.APPROVED_BY_POA))
                 .ForMember(dest => dest.SupNppbkc, opt => opt.MapFrom(src => src.SUPPLIER_NPPBKC_ID))
-                .ForMember(dest => dest.SupKppbc, opt => opt.MapFrom(src => src.SUPPLIER_KPPBC_ID))
-                .ForMember(dest => dest.SupPlant, opt => opt.MapFrom(src => src.SUPPLIER_PLANT_WERKS == null ? src.SUPPLIER_PLANT : src.SUPPLIER_PLANT_WERKS + "-" + src.SUPPLIER_PLANT))
+                .ForMember(dest => dest.SupKppbc, opt => opt.MapFrom(src => src.SUPPLIER_KPPBC_NAME))
+                .ForMember(dest => dest.SupPlant, opt => opt.MapFrom(src => src.SUPPLIER_PLANT_WERKS == null ? "" : src.SUPPLIER_PLANT_WERKS))
+                .ForMember(dest => dest.SupPlantDesc, opt => opt.MapFrom(src => src.SUPPLIER_PLANT))
                 .ForMember(dest => dest.SupCompany, opt => opt.MapFrom(src => src.SUPPLIER_COMPANY))
                 .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => src.CREATED_BY))
+                .ForMember(dest => dest.IsNppbkcImport, opt => opt.MapFrom(src => src.IS_NPPBKC_IMPORT))
+                .ForMember(dest => dest.ExcGoodsType, opt => opt.MapFrom(src => src.EXC_TYP_DESC))
+                .ForMember(dest => dest.QtyUom, opt => opt.MapFrom(src => src.REQUEST_QTY_UOM))
                 ;
 
             Mapper.CreateMap<PBCK1_PROD_PLAN, Pbck1ReportProdPlanDto>().IgnoreAllNonExisting()

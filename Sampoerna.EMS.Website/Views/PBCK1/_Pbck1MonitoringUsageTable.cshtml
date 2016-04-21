@@ -5,23 +5,27 @@
     <thead>
         <tr>
             <th class="toggle-row"> No </th>
-            <th>PBCK-1 Decree</th>
-            <th>Company</th>
-            <th>NPPBKC</th>
-            <th>KPPBC</th>
-            <th>PBCK-1 Period</th>
-            <th>Excisable Goods Quota</th>
-            <th>Additional Excisable Goods Quota</th>
-            <th>Previous Years Final Balance</th>
-            <th>Total PBCK-1 Quota</th>
-            <th>Received</th>
-            <th>Quota Remaining</th>
-            <th>POA Approved</th>
-            <th>Creator</th>
+            <th>PBCK-1 Number</th>
+            <th>Import</th>
+            <th>Excisable Goods Type</th>
+            <th>Receiver Company</th>
+            <th>Receiver NPPBKC</th>
+            <th>Receiver KPPBC</th>
+            <th>Supplier Company</th>
             <th>Supplier NPPBKC</th>
             <th>Supplier KPPBC</th>
-            <th>Supplier Plant</th>
-            <th>Supplier Company</th>
+            <th>Supplier Plant ID</th>
+            <th>Supplier Plant Desc</th>
+            <th>PBCK-1 Period</th>
+            <th>Qty UOM</th>
+            <th>Excisable Goods Quota</th>
+            <th>Additional Excisable Goods Quota</th>
+            <th>Latest Saldo</th>
+            <th>Total PBCK-1 Quota</th>
+            <th>Received Quantity</th>
+            <th>Remaining Quota</th>
+            <th>POA Approved by</th>
+            <th>Creator</th>
         </tr>
     </thead>
     <tbody>
@@ -33,10 +37,18 @@
                 <tr>
                     <td align="center">@row</td>
                     <td>@item.Pbck1Number</td>
+                    <td align="center">@item.IsNppbkcImport</td>
+                    <td>@item.ExcGoodsType</td>
                     <td>@item.NppbkcCompanyName</td>
                     <td>@item.NppbkcId</td>
                     <td>@item.NppbkcKppbcName</td>
+                    <td>@item.SupCompany</td>
+                    <td>@item.SupNppbkc</td>
+                    <td>@item.SupKppbc</td>
+                    <td>@item.SupPlant</td>
+                    <td>@item.SupPlantDesc</td>
                     <td>@item.PeriodFrom.ToString("dd MMM yyyy") - @item.PeriodTo.Value.ToString("dd MMM yyyy")</td>
+                    <td>@item.QtyUom</td>
                     @if (item.ExGoodsQuota == null)
                     {
                         <td align="right"></td>
@@ -60,10 +72,6 @@
                     <td align="right">@String.Format("{0:n}", @item.QuotaRemaining)</td>
                     <td>@item.Poa</td>
                     <td>@item.Creator</td>
-                    <td>@item.SupNppbkc</td>
-                    <td>@item.SupKppbc</td>
-                    <td>@item.SupPlant</td>
-                    <td>@item.SupCompany</td>
                 </tr>
                 row = row + 1;
             }
