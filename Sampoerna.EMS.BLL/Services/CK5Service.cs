@@ -145,7 +145,7 @@ namespace Sampoerna.EMS.BLL.Services
 
         public List<string> GetCk5AssignedMatdoc()
         {
-            Expression<Func<CK5, bool>> queryFilterMaterial = c => !string.IsNullOrEmpty(c.MATDOC);
+            Expression<Func<CK5_MATERIAL, bool>> queryFilterMaterial = c => !string.IsNullOrEmpty(c.MATDOC);
 
             return _repositoryMaterial.Get(queryFilterMaterial).Select(x => x.MATDOC).ToList();
         }

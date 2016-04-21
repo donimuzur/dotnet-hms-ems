@@ -31,5 +31,7 @@ namespace Sampoerna.EMS.Contract
         IQueryable<TEntity> GetQuery(Expression<Func<TEntity, bool>> predicate = null);
 
         void ExecuteSql(string sql);
+
+        void ExecuteQuery(string sql);
     }
 }
