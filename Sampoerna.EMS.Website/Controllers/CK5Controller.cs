@@ -49,10 +49,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IUnitOfMeasurementBLL _uomBll;
         private IMaterialBLL _materialBll;
         private IMonthBLL _monthBll;
+        private ILFA1BLL _lfa1Bll;
 
         public CK5Controller(IPageBLL pageBLL, IUnitOfMeasurementBLL uomBll, IPOABLL poabll, IZaidmExNPPBKCBLL nppbckbll, ICK5BLL ck5Bll, IPBCK1BLL pbckBll,
             IWorkflowHistoryBLL workflowHistoryBll, IChangesHistoryBLL changesHistoryBll, IMaterialBLL materialBll,
-            IWorkflowBLL workflowBll, IPlantBLL plantBll, IPrintHistoryBLL printHistoryBll, IMonthBLL monthBll)
+            IWorkflowBLL workflowBll, IPlantBLL plantBll, IPrintHistoryBLL printHistoryBll, IMonthBLL monthBll, ILFA1BLL lfa1Bll)
             : base(pageBLL, Enums.MenuList.CK5)
         {
             _ck5Bll = ck5Bll;
@@ -67,6 +68,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _uomBll = uomBll;
             _materialBll = materialBll;
             _monthBll = monthBll;
+            _lfa1Bll = lfa1Bll;
         }
 
         #region View Documents
@@ -645,6 +647,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.NPPBCK_ID = destNppbkcId;
             }
 
+            
+            var vendorInfo = _lfa1Bll.GetById(model.KppbcNo);
+            model.KppBcName = vendorInfo.NAME2 + "-" + model.KppbcNo;
+
             if (string.IsNullOrEmpty(goodTypeGroupId))
             {
                 goodtypeenum = null;
@@ -755,6 +761,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.NPPBCK_ID = dbPlant.NPPBKC_IMPORT_ID;
 
                 }
+
+                var vendorInfo = _lfa1Bll.GetById(model.KppbcNo);
+                model.KppBcName = vendorInfo.NAME2 + "-" + model.KppbcNo;
+
                 model.CorrespondingPlantList = GetCorrespondingPlantList(plantId, ck5Type);
             }
 
@@ -777,6 +787,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.NPPBCK_ID = dbPlant.NPPBKC_IMPORT_ID;
 
             }
+            var vendorInfo = _lfa1Bll.GetById(model.KppbcNo);
+            model.KppBcName = vendorInfo.NAME2 + "-" + model.KppbcNo;
+
             model.CorrespondingPlantList = GetCorrespondingPlantList(plantId, ck5Type);
 
 
