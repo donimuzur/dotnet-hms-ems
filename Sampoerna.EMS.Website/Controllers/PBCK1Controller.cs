@@ -3267,57 +3267,20 @@ namespace Sampoerna.EMS.Website.Controllers
                     HeaderText = "PBCK-1 Number"
                 });
             }
-            if (model.TotalPbck1Quota)
+            if (model.IsNppbkcImport)
             {
                 grid.Columns.Add(new BoundField()
                 {
-                    DataField = "TotalPbck1Quota",
-                    HeaderText = "Total PBCK-1 Quota"
+                    DataField = "IsNppbkcImport",
+                    HeaderText = "Import"
                 });
             }
-            if (model.QuotaRemaining)
+            if (model.ExcGoodsType)
             {
                 grid.Columns.Add(new BoundField()
                 {
-                    DataField = "QuotaRemaining",
-                    HeaderText = "PBCK-1 Quota remaining"
-                });
-
-
-            } if (model.Received)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "Received",
-                    HeaderText = "Total CK-5 Used"
-                });
-            }
-
-            if (model.DocNumberCk5)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "DocNumberCk5",
-                    HeaderText = "CK-5 Number",
-                    HtmlEncode = false
-                });
-            }
-            if (model.GrandTotalExciseable)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "GrandTotalExciseable",
-                    HeaderText = "Total Ex Good Type",
-                    HtmlEncode = false
-                });
-            }
-            if (model.UoM)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "UoM",
-                    HeaderText = "UoM",
-                    HtmlEncode = false
+                    DataField = "ExcGoodsType",
+                    HeaderText = "Excisable Goods Type"
                 });
             }
             if (model.PoaCheck)
@@ -3325,7 +3288,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "Poa",
-                    HeaderText = "POA Approved",
+                    HeaderText = "POA Approved by",
                     HtmlEncode = false
                 });
             }
@@ -3338,12 +3301,30 @@ namespace Sampoerna.EMS.Website.Controllers
                     HtmlEncode = false
                 });
             }
-            if (model.SupPlantCheck)
+            if (model.RecComp)
             {
                 grid.Columns.Add(new BoundField()
                 {
-                    DataField = "SupPlant",
-                    HeaderText = "Supplier Plant",
+                    DataField = "RecComp",
+                    HeaderText = "Receiver Company",
+                    HtmlEncode = false
+                });
+            }
+            if (model.RecNppbkc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "RecNppbkc",
+                    HeaderText = "Receiver NPPBKC",
+                    HtmlEncode = false
+                });
+            }
+            if (model.RecKppbc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "RecKppbc",
+                    HeaderText = "Receiver KPPBC",
                     HtmlEncode = false
                 });
             }
@@ -3361,7 +3342,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "OriNppbkc",
-                    HeaderText = "Original Nppbkc",
+                    HeaderText = "Supplier NPPBKC",
                     HtmlEncode = false
                 });
             }
@@ -3370,11 +3351,99 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "OriKppbc",
-                    HeaderText = "Original Kppbc",
+                    HeaderText = "Supplier KPPBC",
                     HtmlEncode = false
                 });
             }
+            if (model.SupPlantCheck)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupPlant",
+                    HeaderText = "Supplier Plant ID",
+                    HtmlEncode = false
+                });
+            }
+            if (model.SupPlantDescCheck)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupPlantDesc",
+                    HeaderText = "Supplier Plant Desc",
+                    HtmlEncode = false
+                });
+            }
+            if (model.UoM)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "UoM",
+                    HeaderText = "Qty UOM",
+                    HtmlEncode = false
+                });
+            }
+            if (model.TotalPbck1Quota)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "TotalPbck1Quota",
+                    HeaderText = "Total PBCK-1 Quota"
+                });
+            }
+            if (model.QuotaRemaining)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "QuotaRemaining",
+                    HeaderText = "Remaining PBCK-1 Quota"
+                });
 
+
+            } if (model.Received)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Received",
+                    HeaderText = "Total Qty of CK-5"
+                });
+            }
+
+            if (model.DocNumberCk5)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "DocNumberCk5",
+                    HeaderText = "Detail CK-5 Number",
+                    HtmlEncode = false
+                });
+            }
+            if (model.GrandTotalExciseable)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "GrandTotalExciseable",
+                    HeaderText = "Detail Qty of CK-5",
+                    HtmlEncode = false
+                });
+            }
+            if (model.DetailCk5Plant)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "DetailCk5Plant",
+                    HeaderText = "Detail CK-5 Receiver Plant ID",
+                    HtmlEncode = false
+                });
+            }
+            if (model.DetailCk5PlantDesc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "DetailCk5PlantDesc",
+                    HeaderText = "Detail CK-5 Receiver Plant Desc",
+                    HtmlEncode = false
+                });
+            }
             if (dataToExport.Count == 0)
             {
                 grid.ShowHeaderWhenEmpty = true;

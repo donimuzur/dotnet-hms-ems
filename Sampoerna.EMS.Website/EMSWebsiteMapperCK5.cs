@@ -38,6 +38,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.InvoiceNumber, opt => opt.MapFrom(src => src.INVOICE_NUMBER))
                 .ForMember(dest => dest.DocumentCreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE.ToString("dd MMM yyyy")))
                 .ForMember(dest => dest.SubmissionDate, opt => opt.MapFrom(src => src.SUBMISSION_DATE.HasValue ? src.SUBMISSION_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
+                .ForMember(dest => dest.DestinationPlantId, opt => opt.MapFrom(src => src.DEST_PLANT_ID))
+                .ForMember(dest => dest.DestinationPlantDesc, opt => opt.MapFrom(src => src.DEST_PLANT_NAME))
                 ;
 
             Mapper.CreateMap<CK5SearchViewModel, CK5GetByParamInput>().IgnoreAllNonExisting()

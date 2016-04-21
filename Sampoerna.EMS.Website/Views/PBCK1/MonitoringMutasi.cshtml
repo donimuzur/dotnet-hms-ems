@@ -155,62 +155,102 @@
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBox("TotalPbck1Quota", new { @id = "checkboxDefault2", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2" })Total PBCK-1 Quota
+                                                        @Html.CheckBox("IsNppbkcImport", new { id = "checkboxDefault2", @class = "checkbox checkexport", datacolumn = "2" })Import
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBox("QuotaRemaining", new { @id = "checkboxDefault3", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3" })PBCK-1 Quota remaining
+                                                        @Html.CheckBox("ExcGoodsType", new { id = "checkboxDefault3", @class = "checkbox checkexport", datacolumn = "3" })Excisable Goods Type
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBox("Received", new { @id = "checkboxDefault4", @class = "checkbox checkexport", @datacolumn = "4" })Total CK-5 Used
+                                                        @Html.CheckBox("PoaCheck", new { @id = "checkboxDefault4", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "4" })POA Approved by
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBox("DocNumberCk5", new { @id = "checkboxDefault5", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "5" })CK-5 number
+                                                        @Html.CheckBox("CreatorCheck", new { @id = "checkboxDefault5", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "5" })Creator
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBox("GrandTotalExciseable", new { @id = "checkboxDefault6", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "6" })Total Ex Good Type
+                                                        @Html.CheckBox("RecComp", new { @id = "checkboxDefault6", @class = "checkbox checkexport", @datacolumn = "6" })Receiver Company
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBox("UoM", new { @id = "checkboxDefault7", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "7" })UoM
+                                                        @Html.CheckBox("RecNppbkc", new { @id = "checkboxDefault7", @class = "checkbox checkexport", @datacolumn = "7" })Receiver NPPBKC
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBox("PoaCheck", new { @id = "checkboxDefault8", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "8" })Poa Approved
+                                                        @Html.CheckBox("RecKppbc", new { @id = "checkboxDefault8", @class = "checkbox checkexport", @datacolumn = "8" })Receiver KPPBC
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBox("CreatorCheck", new { @id = "checkboxDefault9", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "9" })Creator
+                                                        @Html.CheckBox("SupCompCheck", new { @id = "checkboxDefault9", @class = "checkbox checkexport", @datacolumn = "9" })Supplier Company
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBox("SupPlantCheck", new { @id = "checkboxDefault10", @class = "checkbox checkexport", @datacolumn = "10" })Supplier Plant
+                                                        @Html.CheckBox("OriNppbkcCheck", new { @id = "checkboxDefault10", @class = "checkbox checkexport", @datacolumn = "10" })Supplier NPPBKC
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBox("SupCompCheck", new { @id = "checkboxDefault11", @class = "checkbox checkexport", @datacolumn = "11" })Supplier Company
+                                                        @Html.CheckBox("OriKppbcCheck", new { @id = "checkboxDefault11", @class = "checkbox checkexport", @datacolumn = "11" })Supplier KPPBC
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBox("OriNppbkcCheck", new { @id = "checkboxDefault12", @class = "checkbox checkexport", @datacolumn = "12" })Original Nppbkc
+                                                        @Html.CheckBox("SupPlantCheck", new { @id = "checkboxDefault12", @class = "checkbox checkexport", @datacolumn = "12" })Supplier Plant ID
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBox("OriKppbcCheck", new { @id = "checkboxDefault13", @class = "checkbox checkexport", @datacolumn = "13" })Original Kppbc
+                                                        @Html.CheckBox("SupPlantDescCheck", new { @id = "checkboxDefault13", @class = "checkbox checkexport", @datacolumn = "13" })Supplier Plant Desc
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("UoM", new { @id = "checkboxDefault14", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "14" })Qty UOM
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("TotalPbck1Quota", new { @id = "checkboxDefault15", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "15" })Total PBCK-1 Quota
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("QuotaRemaining", new { @id = "checkboxDefault16", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "16" })Remaining PBCK-1 Quota
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("Received", new { @id = "checkboxDefault17", @class = "checkbox checkexport", @datacolumn = "17" })Total Qty of CK-5
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("DocNumberCk5", new { @id = "checkboxDefault18", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "18" })Detail CK-5 Number
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("GrandTotalExciseable", new { @id = "checkboxDefault19", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "19" })Detail Qty of CK-5
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("DetailCk5Plant", new { @id = "checkboxDefault20", @class = "checkbox checkexport", @datacolumn = "20" })Detail CK-5 Receiver Plant ID
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("DetailCk5PlantDesc", new { @id = "checkboxDefault21", @class = "checkbox checkexport", @datacolumn = "21" })Detail CK-5 Receiver Plant Desc
                                                     </label>
                                                 </div>
                                             </div>
@@ -249,13 +289,13 @@
             });
            
             $('#checkboxDefault1').prop('checked', true);
-            $('#checkboxDefault2').prop('checked', true);
-            $('#checkboxDefault3').prop('checked', true);
+            $('#checkboxDefault4').prop('checked', true);
             $('#checkboxDefault5').prop('checked', true);
-            $('#checkboxDefault6').prop('checked', true);
-            $('#checkboxDefault7').prop('checked', true);
-            $('#checkboxDefault8').prop('checked', true);
-            $('#checkboxDefault9').prop('checked', true);
+            $('#checkboxDefault14').prop('checked', true);
+            $('#checkboxDefault15').prop('checked', true);
+            $('#checkboxDefault16').prop('checked', true);
+            $('#checkboxDefault18').prop('checked', true);
+            $('#checkboxDefault19').prop('checked', true);
         });
 
         function setupDataTables() {
@@ -282,13 +322,13 @@
                     this.checked = false;
                 });
                 $('#checkboxDefault1').prop('checked', true);
-                $('#checkboxDefault2').prop('checked', true);
-                $('#checkboxDefault3').prop('checked', true);
+                $('#checkboxDefault4').prop('checked', true);
                 $('#checkboxDefault5').prop('checked', true);
-                $('#checkboxDefault6').prop('checked', true);
-                $('#checkboxDefault7').prop('checked', true);
-                $('#checkboxDefault8').prop('checked', true);
-                $('#checkboxDefault9').prop('checked', true);
+                $('#checkboxDefault14').prop('checked', true);
+                $('#checkboxDefault15').prop('checked', true);
+                $('#checkboxDefault16').prop('checked', true);
+                $('#checkboxDefault18').prop('checked', true);
+                $('#checkboxDefault19').prop('checked', true);
             });
 
             $('.checkexport').on('click', function (e) {
@@ -303,15 +343,16 @@
                 column.visible(!column.visible());
                 $('#monitoringMutasi').parents('div.dataTables_wrapper').first().show();
             });
-            //for (var i = 1; i < 4; i++) {
-            //    table.column(i).visible(false);
 
-            //}
-            table.column(4).visible(false);
-            table.column(10).visible(false);
-            table.column(11).visible(false);
-            table.column(12).visible(false);
-            table.column(13).visible(false);
+            for (var i = 6; i < 14; i++) {
+                table.column(i).visible(false);
+            }
+
+            table.column(2).visible(false);
+            table.column(3).visible(false);
+            table.column(17).visible(false);
+            table.column(20).visible(false);
+            table.column(21).visible(false);
           
             $('#selecctall').change(function () {
                 if ($(this).is(':checked')) {
@@ -319,7 +360,7 @@
                     // Show a column
                     $('#monitoringMutasi').parents('div.dataTables_wrapper').first().show();
                     var table = $('#monitoringMutasi').DataTable();
-                    for (var i = 0; i < 14; i++) {
+                    for (var i = 0; i < 22; i++) {
                         table.column(i).visible(true);
 
                     }
@@ -333,7 +374,7 @@
 
                     });
                     var table = $('#monitoringMutasi').DataTable();
-                    for (var i = 0; i < 14; i++) {
+                    for (var i = 0; i < 22; i++) {
                         table.column(i).visible(false);
 
                     }

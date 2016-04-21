@@ -56,10 +56,15 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string Poa { get; set; }
         public string Creator { get; set; }
         public string SupPlant { get; set; }
+        public string SupPlantDesc { get; set; }
         public string SupComp { get; set; }
         public string OriNppbkc { get; set; }
         public string OriKppbc { get; set; }
-
+        public string IsNppbkcImport { get; set; }
+        public string ExcGoodsType { get; set; }
+        public string RecComp { get; set; }
+        public string RecNppbkc { get; set; }
+        public string RecKppbc { get; set; }
     }
 
     public class Pbck1ExportMonitoringMutasiViewModel
@@ -84,10 +89,17 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public bool PoaCheck { get; set; }
         public bool CreatorCheck { get; set; }
         public bool SupPlantCheck { get; set; }
+        public bool SupPlantDescCheck { get; set; }
         public bool SupCompCheck { get; set; }
         public bool OriNppbkcCheck { get; set; }
         public bool OriKppbcCheck { get; set; }
-
+        public bool IsNppbkcImport { get; set; }
+        public bool ExcGoodsType { get; set; }
+        public bool RecComp { get; set; }
+        public bool RecNppbkc { get; set; }
+        public bool RecKppbc { get; set; }
+        public bool DetailCk5Plant { get; set; }
+        public bool DetailCk5PlantDesc { get; set; }
     }
 
     public class ExportMonitoringMutasiDataModel
@@ -102,8 +114,16 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string Poa { get; set; }
         public string Creator { get; set; }
         public string SupPlant { get; set; }
+        public string SupPlantDesc { get; set; }
         public string SupComp { get; set; }
         public string OriNppbkc { get; set; }
         public string OriKppbc { get; set; }
+        public string IsNppbkcImport { get; set; }
+        public string ExcGoodsType { get; set; }
+        public string RecComp { get; set; }
+        public string RecNppbkc { get; set; }
+        public string RecKppbc { get; set; }
+        public string DetailCk5Plant { get; set; }
+        public string DetailCk5PlantDesc { get; set; }
     }
 }
