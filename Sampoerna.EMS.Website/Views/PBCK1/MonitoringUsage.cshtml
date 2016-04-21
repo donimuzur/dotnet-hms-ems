@@ -221,87 +221,107 @@
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.Pbck1Decree, new { @id = "checkboxDefault1", @class = "checkbox checkexport", @datacolumn = "1" })Pbck-1 Decree
-                                                    </label>
-                                                </div>
-                                                <div class="checkbox">
-                                                        <label>
-                                                            @Html.CheckBoxFor(model => model.ExportModel.Company, new { @id = "checkboxDefault2", @class = "checkbox checkexport", @datacolumn = "2" })Company
-                                                        </label>
-                                                    </div>
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            @Html.CheckBoxFor(model => model.ExportModel.Nppbkc, new { @id = "checkboxDefault3", @class = "checkbox checkexport", @datacolumn = "3" })NPPBKC
-                                                        </label>
-                                                    </div>
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            @Html.CheckBoxFor(model => model.ExportModel.Kppbc, new { @id = "checkboxDefault4", @class = "checkbox checkexport", @datacolumn = "4" })KPPBC
-                                                        </label>
-                                                    </div>
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            @Html.CheckBoxFor(model => model.ExportModel.Pbck1Period, new { @id = "checkboxDefault5", @class = "checkbox checkexport", @datacolumn = "5" })PBCK-1 Period
-                                                        </label>
-                                                    </div>
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            @Html.CheckBoxFor(model => model.ExportModel.ExcGoodsQuota, new { @id = "checkboxDefault6", @class = "checkbox checkexport", @datacolumn = "6" })Excisable Goods Quota
-                                                        </label>
-                                                    </div>
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            @Html.CheckBoxFor(model => model.ExportModel.AdditionalExcGoodsQuota, new { @id = "checkboxDefault7", @class = "checkbox checkexport", @datacolumn = "7" })Additional Excisable Goods Quota
-                                                        </label>
-                                                    </div>
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            @Html.CheckBoxFor(model => model.ExportModel.PrevYearsFinalBalance, new { @id = "checkboxDefault8", @class = "checkbox checkexport", @datacolumn = "8" })Previous Years Final Balance
-                                                        </label>
-                                                    </div>
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            @Html.CheckBoxFor(model => model.ExportModel.TotalPbck1Quota, new { @id = "checkboxDefault9", @class = "checkbox checkexport", @datacolumn = "9" })Total Pbck-1 Quota
-                                                        </label>
-                                                    </div>
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            @Html.CheckBoxFor(model => model.ExportModel.Received, new { @id = "checkboxDefault10", @class = "checkbox checkexport", @datacolumn = "10" })Received
-                                                        </label>
-                                                    </div>
-                                                    <div class="checkbox">
-                                                        <label>
-                                                            @Html.CheckBoxFor(model => model.ExportModel.QuotaRemaining, new { @id = "checkboxDefault11", @class = "checkbox checkexport", @datacolumn = "11" })Quota Remaining
-                                                        </label>
-                                                    </div>
-                                                <div class="checkbox">
-                                                    <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.PoaCheck, new { @id = "checkboxDefault12", @class = "checkbox checkexport", @datacolumn = "12" })Poa Approved
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Pbck1Decree, new { @id = "checkboxDefault1", @class = "checkbox checkexport", @datacolumn = "1" })PBCK-1 Number
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.CreatorCheck, new { @id = "checkboxDefault13", @class = "checkbox checkexport", @datacolumn = "13" })Creator
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsNppbkcImport, new { @id = "checkboxDefault2", @class = "checkbox checkexport", @datacolumn = "2" })Import
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.SupNppbkcCheck, new { @id = "checkboxDefault14", @class = "checkbox checkexport", @datacolumn = "14" })Supplier NPPBKC
+                                                        @Html.CheckBoxFor(model => model.ExportModel.ExcGoodsType, new { @id = "checkboxDefault3", @class = "checkbox checkexport", @datacolumn = "3" })Excisable Goods Type
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.Company, new { @id = "checkboxDefault4", @class = "checkbox checkexport", @datacolumn = "4" })Receiver Company
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.Nppbkc, new { @id = "checkboxDefault5", @class = "checkbox checkexport", @datacolumn = "5" })Receiver NPPBKC
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.Kppbc, new { @id = "checkboxDefault6", @class = "checkbox checkexport", @datacolumn = "6" })Receiver KPPBC
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.SupCompanyCheck, new { @id = "checkboxDefault7", @class = "checkbox checkexport", @datacolumn = "7" })Supplier Company
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.SupNppbkcCheck, new { @id = "checkboxDefault8", @class = "checkbox checkexport", @datacolumn = "8" })Supplier NPPBKC
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.SupKppbcCheck, new { @id = "checkboxDefault9", @class = "checkbox checkexport", @datacolumn = "9" })Supplier KPPBC
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.SupPlantCheck, new { @id = "checkboxDefault10", @class = "checkbox checkexport", @datacolumn = "10" })Supplier Plant ID
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.SupPlantDescCheck, new { @id = "checkboxDefault11", @class = "checkbox checkexport", @datacolumn = "11" })Supplier Plant Desc
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.Pbck1Period, new { @id = "checkboxDefault12", @class = "checkbox checkexport", @datacolumn = "12" })PBCK-1 Period
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.QtyUom, new { @id = "checkboxDefault13", @class = "checkbox checkexport", @datacolumn = "13" })Qty UOM
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.ExcGoodsQuota, new { @id = "checkboxDefault14", @class = "checkbox checkexport", @datacolumn = "14" })Excisable Goods Quota
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.AdditionalExcGoodsQuota, new { @id = "checkboxDefault15", @class = "checkbox checkexport", @datacolumn = "15" })Additional Excisable Goods Quota
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.PrevYearsFinalBalance, new { @id = "checkboxDefault16", @class = "checkbox checkexport", @datacolumn = "16" })Latest Saldo
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.TotalPbck1Quota, new { @id = "checkboxDefault17", @class = "checkbox checkexport", @datacolumn = "17" })Total PBCK-1 Quota
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.Received, new { @id = "checkboxDefault18", @class = "checkbox checkexport", @datacolumn = "18" })Received Quantity
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.QuotaRemaining, new { @id = "checkboxDefault19", @class = "checkbox checkexport", @datacolumn = "19" })Remaining Quota
+                                                        </label>
+                                                    </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.PoaCheck, new { @id = "checkboxDefault20", @class = "checkbox checkexport", @datacolumn = "20" })POA Approved by
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.SupKppbcCheck, new { @id = "checkboxDefault15", @class = "checkbox checkexport", @datacolumn = "15" })Supplier KPPBC
-                                                    </label>
-                                                </div>
-                                                <div class="checkbox">
-                                                    <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.SupPlantCheck, new { @id = "checkboxDefault16", @class = "checkbox checkexport", @datacolumn = "16" })Supplier Plant
-                                                    </label>
-                                                </div>
-                                                <div class="checkbox">
-                                                    <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.SupCompanyCheck, new { @id = "checkboxDefault17", @class = "checkbox checkexport", @datacolumn = "17" })Supplier Company
+                                                        @Html.CheckBoxFor(model => model.ExportModel.CreatorCheck, new { @id = "checkboxDefault21", @class = "checkbox checkexport", @datacolumn = "21" })Creator
                                                     </label>
                                                 </div>
                                             </div>
@@ -388,7 +408,7 @@
                     // Show a column
                     $('#pbckTable').parents('div.dataTables_wrapper').first().show();
                     var table = $('#pbckTable').DataTable();
-                    for (var i = 0; i < 18; i++) {
+                    for (var i = 0; i < 22; i++) {
                         table.column(i).visible(true);
 
                     }
@@ -402,7 +422,7 @@
 
                     });
                     var table = $('#pbckTable').DataTable();
-                    for (var i = 0; i < 18; i++) {
+                    for (var i = 0; i < 22; i++) {
                         table.column(i).visible(false);
 
                     }
