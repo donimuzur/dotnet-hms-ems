@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
 using System.Linq.Expressions;
@@ -319,7 +320,7 @@ namespace Sampoerna.EMS.BLL
 
             //check if need to regenerate
             //radit 2016-04-20 always false
-            var isNeedToRegenerate = false;//dbData.STATUS == Enums.DocumentStatus.Draft || dbData.STATUS == Enums.DocumentStatus.Rejected;
+            var isNeedToRegenerate = dbData.STATUS == Enums.DocumentStatus.Draft || dbData.STATUS == Enums.DocumentStatus.Rejected;
             var generateInput = Mapper.Map<Lack1GenerateDataParamInput>(input);
             //if (!isNeedToRegenerate)
             //{
@@ -328,6 +329,8 @@ namespace Sampoerna.EMS.BLL
             
             if (isNeedToRegenerate)
             {
+                
+
                 //do regenerate data
                 generateInput.IsCreateNew = false;
                 var generatedData = GenerateLack1Data(generateInput);
@@ -340,6 +343,17 @@ namespace Sampoerna.EMS.BLL
                         ErrorMessage = generatedData.ErrorMessage
                     };
                 }
+
+                //delete first
+                _lack1TrackingService.DeleteByLack1Id(dbData.LACK1_ID);
+                _lack1IncomeDetailService.DeleteByLack1Id(dbData.LACK1_ID);
+                _lack1Pbck1MappingService.DeleteByLack1Id(dbData.LACK1_ID);
+                _lack1PlantService.DeleteByLack1Id(dbData.LACK1_ID);
+                _lack1ProductionDetailService.DeleteByLack1Id(dbData.LACK1_ID);
+                _uow.SaveChanges();
+                
+
+                dbData = _lack1Service.GetDetailsById(input.Detail.Lack1Id);
 
                 var origin = Mapper.Map<Lack1DetailsDto>(dbData);
                 var destination = Mapper.Map<Lack1DetailsDto>(generatedData.Data);
@@ -364,12 +378,7 @@ namespace Sampoerna.EMS.BLL
                 isModified = SetChangesHistory(origin, destination, input.UserId);
                 destination.IsTisToTis = input.IsTisToTis;
 
-                //delete first
-                _lack1TrackingService.DeleteByLack1Id(dbData.LACK1_ID);
-                _lack1IncomeDetailService.DeleteByLack1Id(dbData.LACK1_ID);
-                _lack1Pbck1MappingService.DeleteByLack1Id(dbData.LACK1_ID);
-                _lack1PlantService.DeleteByLack1Id(dbData.LACK1_ID);
-                _lack1ProductionDetailService.DeleteByLack1Id(dbData.LACK1_ID);
+                
 
                 //regenerate
                 Mapper.Map<Lack1GeneratedDto, LACK1>(generatedData.Data, dbData);
@@ -535,6 +544,13 @@ namespace Sampoerna.EMS.BLL
             //_lack1IncomeDetailService.DeleteByLack1Id(null);
             //_lack1ProductionDetailService.DeleteByLack1Id(null);
 
+            _uow.SaveChanges();
+
+            _lack1TrackingService.DeleteByLack1Id(null);
+            _lack1IncomeDetailService.DeleteByLack1Id(null);
+            _lack1Pbck1MappingService.DeleteByLack1Id(null);
+            _lack1PlantService.DeleteByLack1Id(null);
+            _lack1ProductionDetailService.DeleteByLack1Id(null);
             _uow.SaveChanges();
 
             return rc;
@@ -3735,7 +3751,7 @@ namespace Sampoerna.EMS.BLL
                 //totalUsage = totalUsageIncludeCk5;
             }
 
-            var batchList = getInventoryMovementByParamOutput.IncludeInCk5List.Select(x => x.BATCH).Distinct().ToList();
+            //var batchList = getInventoryMovementByParamOutput.IncludeInCk5List.Select(x => x.BATCH).Distinct().ToList();
             decimal mvt201;
             if (getInventoryMovementByParamOutput.Mvt201List.Count == 0)
             {
@@ -3743,7 +3759,7 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                mvt201 = (-1) * getInventoryMovementByParamOutput.Mvt201List.Where(x => batchList.Contains(x.BATCH)).Sum(d => d.ConvertedQty);
+                mvt201 = (-1) * getInventoryMovementByParamOutput.Mvt201List.Sum(d => d.ConvertedQty);
             }
 
             decimal mvt201Asigned;
@@ -3753,7 +3769,7 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                mvt201Asigned = (-1) * getInventoryMovementByParamOutput.Mvt201Assigned.Where(x => batchList.Contains(x.BATCH)).Sum(d => d.ConvertedQty);
+                mvt201Asigned = (-1) * getInventoryMovementByParamOutput.Mvt201Assigned.Sum(d => d.ConvertedQty);
             }
 
             totalUsage = totalUsage + mvt201 - mvt201Asigned;
@@ -3835,21 +3851,9 @@ namespace Sampoerna.EMS.BLL
                 prevReceivingParamInput.PeriodYear = input.PeriodYear;
             }
 
-            var movementUsageAll = _inventoryMovementService.GetUsageByParam(usageParamInput);
-            var movementUsaheAllWithConvertion = InvMovementConvertionProcess(movementUsageAll, bkcUomId);
-            var originMovement201 = _inventoryMovementService.GetMvt201(usageParamInput);
-            var matDocCk5List = _ck5Service.GetCk5AssignedMatdoc();
-            var movement201 = originMovement201;
-            var assignedMovement201 = originMovement201.Where(x => matDocCk5List.Contains(x.MAT_DOC)).ToList();
-            var assignedMovement201WithConvertion = InvMovementConvertionProcess(assignedMovement201, bkcUomId);
-            var movement201WithConvertion = InvMovementConvertionProcess(movement201, bkcUomId);
-
-            
-            
-
             var receiving = _inventoryMovementService.GetReceivingByParam(receivingParamInput);
             //get prev receiving for CASE 2 : prev Receiving, Current Receiving, Current Usage
-            
+
             //original by irman
             //var prevReceiving = _inventoryMovementService.GetReceivingByParam(prevReceivingParamInput);
             //var receivingAll = receiving.Where(c => stoReceiverNumberList.Contains(c.PURCH_DOC)).ToList();
@@ -3858,6 +3862,19 @@ namespace Sampoerna.EMS.BLL
             var receivingAll = receiving.Where(c => stoReceiverNumberList.Contains(c.PURCH_DOC)).ToList();
 
             var receivingAllWithConvertion = InvMovementConvertionProcess(receivingAll, bkcUomId);
+
+            var movementUsageAll = _inventoryMovementService.GetUsageByParam(usageParamInput);
+            var movementUsaheAllWithConvertion = InvMovementConvertionProcess(movementUsageAll, bkcUomId);
+            var originMovement201 = _inventoryMovementService.GetMvt201(usageParamInput);
+            var matDocCk5List = _ck5Service.GetCk5AssignedMatdoc();
+            var movement201 = originMovement201.Where(x=> receivingAll.Select(y => y.BATCH).Contains(x.BATCH)).ToList();
+            var assignedMovement201 = originMovement201.Where(x => matDocCk5List.Contains(x.MAT_DOC)).ToList();
+            var assignedMovement201WithConvertion = InvMovementConvertionProcess(assignedMovement201, bkcUomId);
+            var movement201WithConvertion = InvMovementConvertionProcess(movement201, bkcUomId);
+
+
+            
+            
 
             //there is records on receiving Data
             //normal case
