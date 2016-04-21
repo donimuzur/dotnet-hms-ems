@@ -3214,7 +3214,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 oriKppbc = model.FilterOriKppbc,
                 poa = model.FilterPoa,
                 creator = model.FilterCreator,
-                ListNppbkc = CurrentUser.ListUserNppbkc
+                ListNppbkc = CurrentUser.ListUserNppbkc,
+                UserRole = CurrentUser.UserRole
             });
 
             //todo refactor mapper
