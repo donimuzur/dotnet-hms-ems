@@ -6,18 +6,26 @@
             <tr>
                 <th>No</th>
                 <th>PBCK-1 Number</th>
+                <th>Import</th>
+                <th>Excisable Goods Type</th>
+                <th>POA Approved by</th>
+                <th>Creator</th>
+                <th>Receiver Company</th>
+                <th>Receiver NPPBKC</th>
+                <th>Receiver KPPBC</th>
+                <th>Supplier Company</th>
+                <th>Supplier NPPBKC</th>
+                <th>Supplier KPPBC</th>
+                <th>Supplier Plant ID</th>
+                <th>Supplier Plant Desc</th>
+                <th>Qty UOM</th>
                 <th>Total PBCK-1 Quota</th>
                 <th>Remaining PBCK-1 Quota</th>
                 <th>Total Qty of CK-5</th>
                 <th>Detail CK-5 Number</th>
                 <th>Detail Qty of CK-5</th>
-                <th>Qty UOM</th>
-                <th>POA Approved by</th>
-                <th>Creator</th>
-                <th>Supplier Plant ID</th>
-                <th>Supplier Company</th>
-                <th>Supplier NPPBKC</th>
-                <th>Supplier KPPBC</th>
+                <th>Detail CK-5 Receiver Plant ID</th>
+                <th>Detail CK-5 Receiver Plant Desc</th>
                 @*<th>CK5-Type</th>*@
             </tr>
         </thead>
@@ -33,6 +41,46 @@
                          </td>
                          <td>
                              @Html.DisplayFor(model => item.Pbck1Number)
+                         </td>
+                         <td align="center">@item.IsNppbkcImport</td>
+                         <td>@item.ExcGoodsType</td>
+                         <td>
+                             @Html.DisplayFor(model => item.Poa)
+                         </td>
+                         <td>
+                             @Html.DisplayFor(model => item.Creator)
+                         </td>
+                         <td>@item.RecComp</td>
+                         <td>@item.RecNppbkc</td>
+                         <td>@item.RecKppbc</td>
+                         <td>
+                             @Html.DisplayFor(model => item.SupComp)
+                         </td>
+                         <td>
+                             @Html.DisplayFor(model => item.OriNppbkc)
+                         </td>
+                         <td>
+                             @Html.DisplayFor(model => item.OriKppbc)
+                         </td>
+                         <td>
+                             @Html.DisplayFor(model => item.SupPlant)
+                         </td>
+                         <td>
+                             @Html.DisplayFor(model => item.SupPlantDesc)
+                         </td>
+                         <td align="center">
+                             @if (item.Ck5List.Any())
+                             {
+                                 foreach (var ck5 in item.Ck5List)
+                                 {
+                                     @ck5.PACKAGE_UOM_ID <br />
+                                 }
+                             }
+                             else
+                             {
+                                 <text>-</text>
+                             }
+
                          </td>
                          <td class ="number">
                              @String.Format("{0:n}", @item.TotalPbck1Quota)
@@ -76,7 +124,7 @@
                              {
                                  foreach (var ck5 in item.Ck5List)
                                  {
-                                     @ck5.PACKAGE_UOM_ID <br />
+                                     @ck5.DestinationPlantId <br />
                                  }
                              }
                              else
@@ -85,23 +133,19 @@
                              }
 
                          </td>
-                         <td>
-                             @Html.DisplayFor(model => item.Poa)
-                         </td>
-                         <td>
-                             @Html.DisplayFor(model => item.Creator)
-                         </td>
-                         <td>
-                             @Html.DisplayFor(model => item.SupPlant)
-                         </td>
-                         <td>
-                             @Html.DisplayFor(model => item.SupComp)
-                         </td>
-                         <td>
-                             @Html.DisplayFor(model => item.OriNppbkc)
-                         </td>
-                         <td>
-                             @Html.DisplayFor(model => item.OriKppbc)
+                         <td align="center">
+                             @if (item.Ck5List.Any())
+                             {
+                                 foreach (var ck5 in item.Ck5List)
+                                 {
+                                     @ck5.DestinationPlantDesc <br />
+                                 }
+                             }
+                             else
+                             {
+                                 <text>-</text>
+                             }
+
                          </td>
                      </tr>
                      row = row + 1;
