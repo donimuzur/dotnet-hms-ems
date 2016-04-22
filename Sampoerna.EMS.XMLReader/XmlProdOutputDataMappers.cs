@@ -169,7 +169,9 @@ namespace Sampoerna.EMS.XMLReader
                     _xmlMapper.InsertOrUpdate(zaapShiftRpt);
                 }
 
-                var newData = RecalculateZaapShftRpt();
+                var prodDateList = itemsGrouped.GroupBy(x => x.PRODUCTION_DATE).Select(y => y.Key).ToList();
+
+                var newData = RecalculateZaapShftRpt(prodDateList);
 
                 foreach (var production in newData)
                 {
@@ -718,9 +720,9 @@ namespace Sampoerna.EMS.XMLReader
             return itemsTobeAdded;
         }
 
-        private List<PRODUCTION> RecalculateZaapShftRpt()
+        private List<PRODUCTION> RecalculateZaapShftRpt(List<DateTime> prodDateList)
         {
-            var tempProdList = _xmlMapper.uow.GetGenericRepository<ZAAP_SHIFT_RPT>().Get(x => x.MVT == "101").GroupBy(x => new
+            var tempProdList = _xmlMapper.uow.GetGenericRepository<ZAAP_SHIFT_RPT>().Get(x => x.MVT == "101" && prodDateList.Contains(x.PRODUCTION_DATE)).GroupBy(x => new
             {
                 FA_CODE = x.FA_CODE,
                 WERKS = x.WERKS,
