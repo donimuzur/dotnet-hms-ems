@@ -182,6 +182,11 @@ namespace Sampoerna.EMS.DAL
             
         }
 
+        public void ExecuteQuery(string sql)
+        {
+            _dbSet.SqlQuery(sql);
+        }
+
     }
     
 
