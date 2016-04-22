@@ -5,15 +5,16 @@
         <tr>
             <th class="toggle-row"> No </th>
             <th style="min-width: 220px">CK-4C No</th>
+            <th style="min-width: 150px">Status</th>
+            <th style="min-width: 80px">CK-4C Type</th>
             <th style="min-width: 80px">Company</th>
-            <th style="min-width: 80px">Based On</th>
-            <th style="min-width: 120px">Nppbkc</th>
-            <th style="min-width: 55px">Plant</th>
-            <th style="min-width: 170px">Plant Description</th>
+            <th style="min-width: 120px">NPPBKC</th>
+            <th style="min-width: 120px">KPPBC</th>
+            <th style="min-width: 55px">Plant ID</th>
+            <th style="min-width: 170px">Plant Desc</th>
             <th style="min-width: 55px">Period</th>
             <th style="min-width: 55px">Month</th>
             <th style="min-width: 55px">Year</th>
-            <th style="min-width: 120px">Reported On</th>
             <th style="min-width: 130px">Production Date</th>
             <th style="min-width: 130px">FA Code</th>
             <th style="min-width: 180px">Tobacco Product Type</th>
@@ -22,17 +23,15 @@
             <th style="min-width: 100px">Tariff</th>
             <th style="min-width: 130px">Content Per Pack</th>
             <th style="min-width: 120px">Packed QTY</th>
-            <th style="min-width: 120px">Packed QTY In Pack</th>
             <th style="min-width: 120px">Unpacked QTY</th>
             <th style="min-width: 120px">Produced QTY</th>
             <th style="min-width: 120px">UoM Produced QTY</th>
             <th style="min-width: 120px">Remarks</th>
-            <th style="min-width: 150px">POA Approved</th>
-            @*first code when manager exists
-            @*<th style="min-width: 150px">Manager Approved</th>*@
-            <th style="min-width: 150px">Status</th>
-            <th style="min-width: 150px">Completed Date</th>
             <th style="min-width: 150px">Creator</th>
+            <th style="min-width: 150px">POA Approved by</th>
+            <th style="min-width: 120px">Reported On</th>
+            <th style="min-width: 150px">Completed Date</th>
+            
         </tr>
     </thead>
     <tbody>
@@ -44,15 +43,17 @@
                 <tr>
                     <td>@row</td>
                     <td>@Html.DisplayFor(model => item.Ck4CNo)</td>
-                    <td>@Html.DisplayFor(model => item.CeOffice)</td>
+                    <td class="last">@Html.DisplayFor(model => item.Status)</td>
                     <td>@Html.DisplayFor(model => item.BasedOn)</td>
+                    <td>@Html.DisplayFor(model => item.CeOffice)</td>
                     <td>@Html.DisplayFor(model => item.LicenseNumber)</td>
+                    <td>@Html.DisplayFor(model => item.Kppbc)</td>
                     <td>@Html.DisplayFor(model => item.PlantId)</td>
                     <td>@Html.DisplayFor(model => item.PlantDescription)</td>
                     <td>@Html.DisplayFor(model => item.Period)</td>
                     <td>@Html.DisplayFor(model => item.Month)</td>
                     <td>@Html.DisplayFor(model => item.Year)</td>
-                    <td>@Html.DisplayFor(model => item.ReportPeriod)</td>
+                    
                     <td>
                         <ol>
                             @foreach (var data in item.ProductionDate)
@@ -119,14 +120,6 @@
                     </td>
                     <td class="number">
                         <ol>
-                            @foreach (var data in item.PackedQtyInPack)
-                            {
-                                <li>@string.Format("{0:N2}", data)</li>
-                            }
-                        </ol>
-                    </td>
-                    <td class="number">
-                        <ol>
                             @foreach (var data in item.UnPackQty)
                             {
                                 <li>@string.Format("{0:N2}", data)</li>
@@ -157,12 +150,11 @@
                             }
                         </ol>
                     </td>
-                    <td>@Html.DisplayFor(model => item.PoaApproved)</td>
-                    @*first code when manager exists
-                    @*<td>@Html.DisplayFor(model => item.ManagerApproved)</td>*@
-                    <td class="last">@Html.DisplayFor(model => item.Status)</td>
-                    <td class="last">@Html.DisplayFor(model => item.CompletedDate)</td>
                     <td class="last">@Html.DisplayFor(model => item.Creator)</td>
+                    <td>@Html.DisplayFor(model => item.PoaApproved)</td>
+                    <td>@Html.DisplayFor(model => item.ReportPeriod)</td>
+                    <td class="last">@Html.DisplayFor(model => item.CompletedDate)</td>
+                    
                 </tr>
                 row = row + 1;
             }

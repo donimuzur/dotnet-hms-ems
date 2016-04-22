@@ -52,6 +52,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public string PlantId { get; set; }
         public string PlantDescription { get; set; }
         public string LicenseNumber { get; set; }
+        public string Kppbc { get; set; }
         public string ReportPeriod { get; set; }
         public string Period { get; set; }
         public string Month { get; set; }
@@ -90,6 +91,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public bool PlantId { get; set; }
         public bool PlantDescription { get; set; }
         public bool LicenseNumber { get; set; }
+        public bool Kppbc { get; set; }
         public bool ReportPeriod { get; set; }
         public bool Period { get; set; }
         public bool Month { get; set; }

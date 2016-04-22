@@ -14,6 +14,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string PlantId { get; set; }
         public string PlantDescription { get; set; }
         public string LicenseNumber { get; set; }
+        public string Kppbc { get; set; }
         public string ReportPeriod { get; set; }
         public string Period { get; set; }
         public string Month { get; set; }
