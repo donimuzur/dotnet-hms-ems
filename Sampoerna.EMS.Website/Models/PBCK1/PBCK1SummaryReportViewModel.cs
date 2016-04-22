@@ -105,6 +105,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public bool Pbck1Type { get; set; }
         public bool PoaList { get; set; }
         public bool SupplierPortName { get; set; }
+        public bool SupplierPlantId { get; set; }
         public bool SupplierPlant { get; set; }
         public bool GoodTypeDesc { get; set; }
         public bool PlanProdFrom { get; set; }
@@ -176,6 +177,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string Status { get; set; }
         public string Pbck1Type { get; set; }
         public string SupplierPortName { get; set; }
+        public string SupplierPlantWerks { get; set; }
         public string SupplierPlant { get; set; }
         public string GoodTypeDesc { get; set; }
         public string PlanProdFrom { get; set; }
