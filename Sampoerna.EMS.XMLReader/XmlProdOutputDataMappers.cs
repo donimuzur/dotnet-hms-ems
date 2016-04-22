@@ -725,7 +725,8 @@ namespace Sampoerna.EMS.XMLReader
                 FA_CODE = x.FA_CODE,
                 WERKS = x.WERKS,
                 PRODUCTION_DATE = x.PRODUCTION_DATE,
-                MATDOC = x.MATDOC
+                //MATDOC = x.MATDOC,
+                //BATCH = x.BATCH
             }).Select(x =>
             {
                 var zaapShiftRpt = x.FirstOrDefault();
@@ -738,41 +739,41 @@ namespace Sampoerna.EMS.XMLReader
                     QTY_PACKED = zaapShiftRpt.ORIGINAL_QTY,
                     PROD_QTY_STICK = x.Sum(y=> y.QTY),
                     //COMPANY_CODE = zaapShiftRpt.COMPANY_CODE,
-                    BUNDLE = zaapShiftRpt.BUNDLE,
-                    ORDR = zaapShiftRpt.ORDR,
-                    DOCGMVTER = zaapShiftRpt.DOCGMVTER,
+                    //BUNDLE = zaapShiftRpt.BUNDLE,
+                    //ORDR = zaapShiftRpt.ORDR,
+                    //DOCGMVTER = zaapShiftRpt.DOCGMVTER,
                     UOM = zaapShiftRpt.UOM
                 } : null;
             });
 
 
-            var prodList = tempProdList.GroupBy(x => new
-            {
-                FA_CODE = x.FA_CODE,
-                WERKS = x.WERKS,
-                PRODUCTION_DATE = x.PRODUCTION_DATE
-                //MATDOC = x.MATDOC
-            }).Select(x=>
-            {
-                var production = x.FirstOrDefault();
-                return production != null ? new PRODUCTION()
-                              {
+            //var prodList = tempProdList.GroupBy(x => new
+            //{
+            //    FA_CODE = x.FA_CODE,
+            //    WERKS = x.WERKS,
+            //    PRODUCTION_DATE = x.PRODUCTION_DATE
+            //    //MATDOC = x.MATDOC
+            //}).Select(x=>
+            //{
+            //    var production = x.FirstOrDefault();
+            //    return production != null ? new PRODUCTION()
+            //                  {
 
-                                  FA_CODE = production.FA_CODE,
-                                  WERKS = production.WERKS,
-                                  PRODUCTION_DATE = production.PRODUCTION_DATE,
-                                  QTY_PACKED = x.Sum(y => y.QTY_PACKED),// production.QTY_PACKED,
-                                  //COMPANY_CODE = zaapShiftRpt.COMPANY_CODE,
-                                  PROD_QTY_STICK = x.Sum(y => y.PROD_QTY_STICK),
-                                  BUNDLE = production.BUNDLE,
-                                  ORDR = production.ORDR,
-                                  DOCGMVTER = production.DOCGMVTER,
-                                  UOM = production.UOM
-                              } : null;
-            });
+            //                      FA_CODE = production.FA_CODE,
+            //                      WERKS = production.WERKS,
+            //                      PRODUCTION_DATE = production.PRODUCTION_DATE,
+            //                      QTY_PACKED = x.Sum(y => y.QTY_PACKED),// production.QTY_PACKED,
+            //                      //COMPANY_CODE = zaapShiftRpt.COMPANY_CODE,
+            //                      PROD_QTY_STICK = x.Sum(y => y.PROD_QTY_STICK),
+            //                      //BUNDLE = production.BUNDLE,
+            //                      //ORDR = production.ORDR,
+            //                      //DOCGMVTER = production.DOCGMVTER,
+            //                      UOM = production.UOM
+            //                  } : null;
+            //});
 
 
-            return prodList.ToList();
+            return tempProdList.ToList();
         }
     }
 }
