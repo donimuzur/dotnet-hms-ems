@@ -57,18 +57,24 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public string Ck5RegistrationNumber { get; set; }
         public string Ck5RegistrationDate { get; set; }
         public string Ck5Total { get; set; }
+        public string Ck5ConvertedUom { get; set; }
         public string ReceivingCompanyCode { get; set; }
         public string ReceivingCompanyName { get; set; }
+        public string ReceivingPlantId { get; set; }
         public string ReceivingNppbkc { get; set; }
+        public string ReceivingKppbc { get; set; }
         public string ReceivingAddress { get; set; }
         public string Poa { get; set; }
         public string Creator { get; set; }
+        public string Status { get; set; }
 
         public string Ck5SendingPlant { get; set; }
+        public string Ck5SendingPlantDesc { get; set; }
         public string SendingPlantAddress { get; set; }
         public string CompanyCode { get; set; }
         public string CompanyName { get; set; }
         public string NppbkcId { get; set; }
+        public string KppbcId { get; set; }
         public string TypeExcisableGoods { get; set; }
         public string TypeExcisableGoodsDesc { get; set; }
 
@@ -83,18 +89,24 @@ namespace Sampoerna.EMS.Website.Models.LACK2
             public bool BCk5RegistrationNumber { get; set; }
             public bool BCk5RegistrationDate { get; set; }
             public bool BCk5Total { get; set; }
+            public bool BCk5ConvertedUom { get; set; }
             public bool BReceivingCompanyCode { get; set; }
             public bool BReceivingCompanyName { get; set; }
+            public bool BReceivingPlantId { get; set; }
             public bool BReceivingNppbkc { get; set; }
+            public bool BReceivingKppbc { get; set; }
             public bool BReceivingAddress { get; set; }
             public bool PoaCheck { get; set; }
             public bool CreatorCheck { get; set; }
+            public bool BStatus { get; set; }
 
             public bool BCk5SendingPlant { get; set; }
+            public bool BCk5SendingPlantDesc { get; set; }
             public bool BSendingPlantAddress { get; set; }
             public bool BCompanyCode { get; set; }
             public bool BCompanyName { get; set; }
             public bool BNppbkcId { get; set; }
+            public bool BKppbcId { get; set; }
             public bool BTypeExcisableGoods { get; set; }
         }
 }
