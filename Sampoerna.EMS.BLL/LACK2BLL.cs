@@ -34,6 +34,7 @@ namespace Sampoerna.EMS.BLL
         private IMessageService _messageService;
         private IWorkflowBLL _workflowBll;
         private IMonthBLL _monthBll;
+        private ILFA1BLL _lfaBll;
 
         private ILack2Service _lack2Service;
         private ILack2ItemService _lack2ItemService;
@@ -68,6 +69,7 @@ namespace Sampoerna.EMS.BLL
             _poaBll = new POABLL(_uow, _logger);
             _userBll = new UserBLL(_uow, _logger);
             _monthBll = new MonthBLL(_uow,_logger);
+            _lfaBll = new LFA1BLL(_uow, _logger);
             _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
             _poaDelegationServices = new PoaDelegationServices(_uow, _logger);
         }
@@ -1461,6 +1463,7 @@ namespace Sampoerna.EMS.BLL
                     summaryDto.Lack2Number = dtData.LACK2_NUMBER;
                     summaryDto.Poa = dtData.APPROVED_BY;
                     summaryDto.Creator = dtData.CREATED_BY;
+                    summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
 
                     if (lack2Item.CK5 != null)
                     {
@@ -1469,14 +1472,18 @@ namespace Sampoerna.EMS.BLL
                         summaryDto.Ck5RegistrationNumber = lack2Item.CK5.REGISTRATION_NUMBER;
                         summaryDto.Ck5RegistrationDate = ConvertHelper.ConvertDateToStringddMMMyyyy(lack2Item.CK5.REGISTRATION_DATE);
                         summaryDto.Ck5Total = ConvertHelper.ConvertDecimalToStringMoneyFormat(lack2Item.CK5.GRAND_TOTAL_EX);
+                        summaryDto.Ck5ConvertedUom = lack2Item.CK5.PACKAGE_UOM_ID;
 
                         summaryDto.ReceivingCompanyCode = lack2Item.CK5.DEST_PLANT_COMPANY_CODE;
                         summaryDto.ReceivingCompanyName = lack2Item.CK5.DEST_PLANT_COMPANY_NAME;
+                        summaryDto.ReceivingPlantId = lack2Item.CK5.DEST_PLANT_ID;
                         summaryDto.ReceivingNppbkc = lack2Item.CK5.DEST_PLANT_NPPBKC_ID;
+                        summaryDto.ReceivingKppbc = lack2Item.CK5.DEST_PLANT_KPPBC_NAME_OFFICE;
                         summaryDto.ReceivingAddress = lack2Item.CK5.DEST_PLANT_ADDRESS;
                     }
 
                     summaryDto.Ck5SendingPlant = dtData.LEVEL_PLANT_ID;
+                    summaryDto.Ck5SendingPlantDesc = dtData.LEVEL_PLANT_NAME;
                     var dbPlant = _t001WService.GetById(dtData.LEVEL_PLANT_ID);
                     if (dbPlant != null)
                     {
@@ -1485,6 +1492,7 @@ namespace Sampoerna.EMS.BLL
                     summaryDto.CompanyCode = dtData.BUKRS;
                     summaryDto.CompanyName = dtData.BUTXT;
                     summaryDto.NppbkcId = dtData.NPPBKC_ID;
+                    summaryDto.KppbcId =  _lfaBll.GetById(_nppbkcService.GetById(dtData.NPPBKC_ID).KPPBC_ID).NAME1;
                     summaryDto.TypeExcisableGoods = dtData.EX_GOOD_TYP;
                     summaryDto.TypeExcisableGoodsDesc = dtData.EX_TYP_DESC;
 
