@@ -178,7 +178,9 @@ namespace Sampoerna.EMS.BLL
 
                     summaryReport.Pbck7Number = pbck7.PBCK7_NUMBER;
                     summaryReport.Nppbkc = pbck7.NPPBKC;
-                    summaryReport.PlantName = pbck7.PLANT_ID + "-" + pbck7.PLANT_NAME;
+                    summaryReport.Kppbc = _lfaBll.GetById(_nppbkcbll.GetById(pbck7.NPPBKC).KPPBC_ID).NAME1;
+                    summaryReport.PlantId = pbck7.PLANT_ID;
+                    summaryReport.PlantName = pbck7.PLANT_NAME;
 
                     summaryReport.Pbck7Date = ConvertHelper.ConvertDateToStringddMMMyyyy(pbck7.PBCK7_DATE);
                     summaryReport.DocumentType = EnumHelper.GetDescription(pbck7.DOCUMENT_TYPE);

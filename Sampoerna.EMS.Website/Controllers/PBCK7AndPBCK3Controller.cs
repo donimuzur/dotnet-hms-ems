@@ -1323,7 +1323,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var listPbck7 = _pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input);
 
-            model.ReportItems = Mapper.Map<List<Pbck7SummaryReportItem>>(_pbck7Pbck3Bll.GetPbck7SummaryReportsByParam(input));
+            model.ReportItems = Mapper.Map<List<Pbck7SummaryReportItem>>(listPbck7);
             model.FaCodeList = GetListPbck7Items(listPbck7, "facode");
             model.BrandList = GetListPbck7Items(listPbck7, "brand");
             model.ContentList = GetListPbck7Items(listPbck7, "content");
@@ -1466,15 +1466,28 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, data.Pbck7Number);
                     iColumn = iColumn + 1;
                 }
-                if (model.ExportModel.IsSelectNppbkc)
+
+                if (model.ExportModel.IsSelectPlantId)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.Nppbkc);
+                    slDocument.SetCellValue(iRow, iColumn, data.PlantId);
                     iColumn = iColumn + 1;
                 }
 
                 if (model.ExportModel.IsSelectPlant)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.PlantName);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectNppbkc)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Nppbkc);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectKppbc)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Kppbc);
                     iColumn = iColumn + 1;
                 }
 
@@ -1485,18 +1498,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn,data.Pbck7Date);
                     iColumn = iColumn + 1;
                 }
+
                 if (model.ExportModel.IsSelectDocType)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.DocumentType);
                     iColumn = iColumn + 1;
                 }
-
-                if (model.ExportModel.IsSelectStatus)
-                {
-                    slDocument.SetCellValue(iRow, iColumn, data.Pbck7Status);
-                    iColumn = iColumn + 1;
-                }
-
 
                 if (model.ExportModel.IsSelectExecFrom)
                 {
@@ -1504,22 +1511,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     
                     iColumn = iColumn + 1;
                 }
+
                 if (model.ExportModel.IsSelectExecTo)
                 {
                     slDocument.SetCellValue(iRow, iColumn,data.ExecTo);
 
-                    iColumn = iColumn + 1;
-                }
-
-                if (model.ExportModel.IsSelectBack1No)
-                {
-                    slDocument.SetCellValue(iRow, iColumn, data.Back1No);
-                    iColumn = iColumn + 1;
-                }
-
-                if (model.ExportModel.IsSelectBack1Date)
-                {
-                    slDocument.SetCellValue(iRow, iColumn,data.Back1Date);
                     iColumn = iColumn + 1;
                 }
 
@@ -1542,7 +1538,6 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, data.Content);
                     iColumn = iColumn + 1;
                 }
-
 
                 if (model.ExportModel.IsSelectHje)
                 {
@@ -1574,15 +1569,15 @@ namespace Sampoerna.EMS.Website.Controllers
                     iColumn = iColumn + 1;
                 }
 
-                if (model.ExportModel.IsSelectPoa)
+                if (model.ExportModel.IsSelectBack1No)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.Poa);
+                    slDocument.SetCellValue(iRow, iColumn, data.Back1No);
                     iColumn = iColumn + 1;
                 }
 
-                if (model.ExportModel.IsSelectCreator)
+                if (model.ExportModel.IsSelectBack1Date)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.Creator);
+                    slDocument.SetCellValue(iRow, iColumn, data.Back1Date);
                     iColumn = iColumn + 1;
                 }
 
@@ -1616,6 +1611,24 @@ namespace Sampoerna.EMS.Website.Controllers
                     iColumn = iColumn + 1;
                 }
 
+                if (model.ExportModel.IsSelectPoa)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Poa);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectCreator)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Creator);
+                    iColumn = iColumn + 1;
+                }                
+
+                if (model.ExportModel.IsSelectStatus)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Pbck7Status);
+                    iColumn = iColumn + 1;
+                }
+
                 iRow++;
             }
 
@@ -1630,21 +1643,29 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (modelExport.IsSelectPbck7No)
             {
-                slDocument.SetCellValue(iRow, iColumn, "Number");
+                slDocument.SetCellValue(iRow, iColumn, "PBCK-7 Number");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.IsSelectPlantId)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Plant ID");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.IsSelectPlant)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Plant Desc");
                 iColumn = iColumn + 1;
             }
             if (modelExport.IsSelectNppbkc)
             {
-                slDocument.SetCellValue(iRow, iColumn, "Nppbkc");
+                slDocument.SetCellValue(iRow, iColumn, "NPPBKC");
                 iColumn = iColumn + 1;
             }
-
-            if (modelExport.IsSelectPlant)
+            if (modelExport.IsSelectKppbc)
             {
-                slDocument.SetCellValue(iRow, iColumn, "Plant");
+                slDocument.SetCellValue(iRow, iColumn, "KPPBC");
                 iColumn = iColumn + 1;
             }
-
             if (modelExport.IsSelectDate)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Date");
@@ -1656,12 +1677,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 slDocument.SetCellValue(iRow, iColumn, "Document Type");
                 iColumn = iColumn + 1;
             }
-            if (modelExport.IsSelectStatus)
-            {
-                slDocument.SetCellValue(iRow, iColumn, "Status");
-                iColumn = iColumn + 1;
-            }
-
+            
             if (modelExport.IsSelectExecFrom)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Exec Date From");
@@ -1670,18 +1686,6 @@ namespace Sampoerna.EMS.Website.Controllers
             if (modelExport.IsSelectExecTo)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Exec Date To");
-                iColumn = iColumn + 1;
-            }
-
-            if (modelExport.IsSelectBack1No)
-            {
-                slDocument.SetCellValue(iRow, iColumn, "Back-1 No");
-                iColumn = iColumn + 1;
-            }
-
-            if (modelExport.IsSelectBack1Date)
-            {
-                slDocument.SetCellValue(iRow, iColumn, "Back-1 Date");
                 iColumn = iColumn + 1;
             }
 
@@ -1717,7 +1721,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (modelExport.IsSelectPbck7Qty)
             {
-                slDocument.SetCellValue(iRow, iColumn, "PBCK-7 Qty");
+                slDocument.SetCellValue(iRow, iColumn, "PBCK-7 Pack Qty");
                 iColumn = iColumn + 1;
             }
 
@@ -1733,15 +1737,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 iColumn = iColumn + 1;
             }
 
-            if (modelExport.IsSelectPoa)
+            if (modelExport.IsSelectBack1No)
             {
-                slDocument.SetCellValue(iRow, iColumn, "POA");
+                slDocument.SetCellValue(iRow, iColumn, "BACK-1 No");
                 iColumn = iColumn + 1;
             }
 
-            if (modelExport.IsSelectCreator)
+            if (modelExport.IsSelectBack1Date)
             {
-                slDocument.SetCellValue(iRow, iColumn, "Creator");
+                slDocument.SetCellValue(iRow, iColumn, "BACK-1 Date");
                 iColumn = iColumn + 1;
             }
 
@@ -1772,6 +1776,24 @@ namespace Sampoerna.EMS.Website.Controllers
             if (modelExport.IsSelectCompletedDate)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Completed Date");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectPoa)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "POA Approved by");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectCreator)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Creator");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectStatus)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Status");
                 iColumn = iColumn + 1;
             }
            

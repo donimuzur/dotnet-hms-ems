@@ -5,6 +5,8 @@
         public int Pbck7Id { get; set; }
         public string Pbck7Number { get; set; }
         public string Nppbkc { get; set; }
+        public string Kppbc { get; set; }
+        public string PlantId { get; set; }
         public string PlantName { get; set; }
         public string Pbck7Date { get; set; }
         public string DocumentType { get; set; }
