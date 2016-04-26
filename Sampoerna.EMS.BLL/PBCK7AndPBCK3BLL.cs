@@ -381,6 +381,7 @@ namespace Sampoerna.EMS.BLL
             {
                 pbck3Dto.Back3No = "";
                 pbck3Dto.Back3Date = "";
+                pbck3Dto.Kppbc = _lfaBll.GetById(_nppbkcbll.GetById(pbck3Dto.Nppbkc).KPPBC_ID).NAME1;
                 var back3Data = GetBack3ByPbck3Id(pbck3Dto.Pbck3Id);
                 if (back3Data != null)
                 {

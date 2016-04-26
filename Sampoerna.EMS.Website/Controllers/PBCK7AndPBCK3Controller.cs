@@ -1933,6 +1933,18 @@ namespace Sampoerna.EMS.Website.Controllers
                     iColumn = iColumn + 1;
                 }
 
+                if (model.ExportModel.IsSelectKppbc)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Kppbc);
+                    iColumn = iColumn + 1;
+                }
+
+                if (model.ExportModel.IsSelectPlantId)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.PlantId);
+                    iColumn = iColumn + 1;
+                }
+
                 if (model.ExportModel.IsSelectPlant)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.PlantName);
@@ -1945,14 +1957,6 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     iColumn = iColumn + 1;
                 }
-               
-                if (model.ExportModel.IsSelectStatus)
-                {
-                    slDocument.SetCellValue(iRow, iColumn, data.Pbck3Status);
-                    iColumn = iColumn + 1;
-                }
-
-
 
                 if (model.ExportModel.IsSelectBack3No)
                 {
@@ -1982,6 +1986,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, data.Ck2Value);
                     iColumn = iColumn + 1;
                 }
+                if (model.ExportModel.IsSelectStatus)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Pbck3Status);
+                    iColumn = iColumn + 1;
+                }
 
                 iRow++;
             }
@@ -1997,18 +2006,18 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (modelExport.IsSelectPbck3No)
             {
-                slDocument.SetCellValue(iRow, iColumn, "PBCK-3 NO");
+                slDocument.SetCellValue(iRow, iColumn, "PBCK-3 Number");
                 iColumn = iColumn + 1;
             }
             if (modelExport.IsSelectPbck7)
             {
-                slDocument.SetCellValue(iRow, iColumn, "PBCK-7 NO");
+                slDocument.SetCellValue(iRow, iColumn, "PBCK-7 Number");
                 iColumn = iColumn + 1;
             }
 
             if (modelExport.IsSelectCk5No)
             {
-                slDocument.SetCellValue(iRow, iColumn, "CK-5 NO");
+                slDocument.SetCellValue(iRow, iColumn, "CK-5 Number");
                 iColumn = iColumn + 1;
             }
 
@@ -2018,9 +2027,21 @@ namespace Sampoerna.EMS.Website.Controllers
                 iColumn = iColumn + 1;
             }
 
+            if (modelExport.IsSelectKppbc)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "KPPBC");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectPlantId)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Plant ID");
+                iColumn = iColumn + 1;
+            }
+
             if (modelExport.IsSelectPlant)
             {
-                slDocument.SetCellValue(iRow, iColumn, "Plant");
+                slDocument.SetCellValue(iRow, iColumn, "Plant Desc");
                 iColumn = iColumn + 1;
             }
             if (modelExport.IsSelectDate)
@@ -2028,16 +2049,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 slDocument.SetCellValue(iRow, iColumn, "Date");
                 iColumn = iColumn + 1;
             }
-            if (modelExport.IsSelectStatus)
-            {
-                slDocument.SetCellValue(iRow, iColumn, "Status");
-                iColumn = iColumn + 1;
-            }
-
 
             if (modelExport.IsSelectBack3No)
             {
-                slDocument.SetCellValue(iRow, iColumn, "BACK-3 NO");
+                slDocument.SetCellValue(iRow, iColumn, "BACK-3 Number");
                 iColumn = iColumn + 1;
             }
             if (modelExport.IsSelectBack3Date)
@@ -2048,7 +2063,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (modelExport.IsSelectCk2No)
             {
-                slDocument.SetCellValue(iRow, iColumn, "CK-2 NO");
+                slDocument.SetCellValue(iRow, iColumn, "CK-2 Number");
                 iColumn = iColumn + 1;
             }
 
@@ -2063,7 +2078,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 slDocument.SetCellValue(iRow, iColumn, "CK-2 Value");
                 iColumn = iColumn + 1;
             }
-
+            if (modelExport.IsSelectStatus)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Status");
+                iColumn = iColumn + 1;
+            }
 
             return slDocument;
 
