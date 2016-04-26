@@ -137,17 +137,17 @@
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPbck3No, new {@id = "checkboxDefault1", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "0"})PBCK-3
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPbck3No, new { @id = "checkboxDefault1", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "0" })PBCK-3 Number
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPbck7, new { @id = "checkboxDefault2", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "1" })PBCK-7
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPbck7, new { @id = "checkboxDefault2", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "1" })PBCK-7 Number
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCk5No, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2" })CK-5 No
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCk5No, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2" })CK-5 Number
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
@@ -157,43 +157,52 @@
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPlant, new { @id = "checkboxDefault4", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "4" })Plant
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectKppbc, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "4" })KPPBC
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectDate, new { @class = "checkbox checkexport", @datacolumn = "5" })Date
-                                                    </label>
-                                                </div>
-                                                
-                                                <div class="checkbox">
-                                                    <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectStatus, new { @class = "checkbox checkexport", @datacolumn = "6" })Status
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPlantId, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "5" })Plant ID
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectBack3No, new { @class = "checkbox checkexport", @datacolumn = "7" })BACK-3 No
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPlant, new { @id = "checkboxDefault4", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "6" })Plant Desc
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectBack3Date, new { @class = "checkbox checkexport", @datacolumn = "8" })BACK-3 Date
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectDate, new { @class = "checkbox checkexport", @datacolumn = "7" })Date
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCk2No, new { @class = "checkbox checkexport", @datacolumn = "9" })CK-2 No
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectBack3No, new { @class = "checkbox checkexport", @datacolumn = "8" })BACK-3 Number
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCk2Date, new { @class = "checkbox checkexport", @datacolumn = "10" })CK-2 Date
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectBack3Date, new { @class = "checkbox checkexport", @datacolumn = "9" })BACK-3 Date
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCk2Value, new { @class = "checkbox checkexport", @datacolumn = "11" })CK-2 Value
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCk2No, new { @class = "checkbox checkexport", @datacolumn = "10" })CK-2 Number
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCk2Date, new { @class = "checkbox checkexport", @datacolumn = "11" })CK-2 Date
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCk2Value, new { @class = "checkbox checkexport", @datacolumn = "12" })CK-2 Value
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectStatus, new { @class = "checkbox checkexport", @datacolumn = "13" })Status
                                                     </label>
                                                 </div>
                                             </div>
@@ -260,7 +269,7 @@
 
                                 $('#pbck3-summary').parents('div.dataTables_wrapper').first().show();
 
-                                for (var i = 0; i < 12; i++) {
+                                for (var i = 0; i < 14; i++) {
                                     table.column(i).visible(true);
                                 }
                             } else {
@@ -268,7 +277,7 @@
                                     this.checked = false;
                                 });
 
-                                for (var i = 0; i < 12; i++) {
+                                for (var i = 0; i < 14; i++) {
                                     table.column(i).visible(false);
                                 }
                                 $('#pbck3-summary').parents('div.dataTables_wrapper').first().hide();
@@ -284,7 +293,7 @@
                          
                             $('#pbck3-summary').parents('div.dataTables_wrapper').first().hide();
 
-                            for (var i = 0; i < 12; i++) {
+                            for (var i = 0; i < 14; i++) {
                                 if (table.column(i).visible()) {
                                     $('#pbck3-summary').parents('div.dataTables_wrapper').first().show();
                                     return;
@@ -297,7 +306,7 @@
 
 
                         if (blFirst) {
-                            for (var i = 5; i < 12; i++) {
+                            for (var i = 7; i < 14; i++) {
                                 table.column(i).visible(false);
                             }
                         } else {
