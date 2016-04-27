@@ -18,7 +18,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ExciseSettlement { get; set; }
         public string ExciseStatus { get; set; }
         public string RequestType { get; set; }
+        public string SourcePlantId { get; set; }
         public string SourcePlant { get; set; }
+        public string DestinationPlantId { get; set; }
         public string DestinationPlant { get; set; }
 
         public string UnpaidExciseFacilityNumber { get; set; }
@@ -41,6 +43,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string DestinationCountry { get; set; }
         public string NumberBox { get; set; }
         public string ContainPerBox { get; set; }
+        public string ConvertedQty { get; set; }
+        public string ConvertedUom { get; set; }
         public string TotalOfExcisableGoods { get; set; }
         public string BanderolPrice { get; set; }
         public string ExciseTariff { get; set; }
