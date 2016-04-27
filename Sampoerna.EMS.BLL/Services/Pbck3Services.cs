@@ -89,7 +89,7 @@ namespace Sampoerna.EMS.BLL.Services
 
         public PBCK3 GetPbck3ByCk5Id(long ck5Id)
         {
-            return _repository.Get(c => c.CK5_ID == ck5Id, null, "CK2").FirstOrDefault();
+            return _repository.Get(c => c.CK5_ID == ck5Id, null, "CK2, PBCK7, PBCK7.BACK1").FirstOrDefault();
         }
 
         public PBCK3 GetPbck3ByPbck7Id(int pbck7Id)

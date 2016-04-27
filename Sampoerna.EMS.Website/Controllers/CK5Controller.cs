@@ -5145,6 +5145,52 @@ namespace Sampoerna.EMS.Website.Controllers
             {
 
                 iColumn = 1;
+                if (modelExport.IsSelectCk5Number)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck5Number);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.IsSelectPlantId)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.PlantId);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.IsSelectPlantDesc)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.PlantDesc);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.IsSelectNppbkc)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Nppbkc);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.IsSelectKppbc)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Kppbc);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.IsSelectDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Date);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.IsSelectReqType)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ReqType);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.IsSelectExecDateFrom)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ExecDateFrom);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.IsSelectExecDateTo)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ExecDateTo);
+                    iColumn = iColumn + 1;
+                }
+                
                 if (modelExport.IsSelectFaCode)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.FaCode);
@@ -5190,15 +5236,14 @@ namespace Sampoerna.EMS.Website.Controllers
                     iColumn = iColumn + 1;
                 }
 
-                if (modelExport.IsSelectPoa)
+                if (modelExport.IsSelectBack1No)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.Poa);
+                    slDocument.SetCellValue(iRow, iColumn, data.Back1No);
                     iColumn = iColumn + 1;
                 }
-
-                if (modelExport.IsSelectCreator)
+                if (modelExport.IsSelectBack1Date)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.Creator);
+                    slDocument.SetCellValue(iRow, iColumn, data.Back1Date);
                     iColumn = iColumn + 1;
                 }
 
@@ -5232,6 +5277,24 @@ namespace Sampoerna.EMS.Website.Controllers
                     iColumn = iColumn + 1;
                 }
 
+                if (modelExport.IsSelectPoa)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Poa);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.IsSelectCreator)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Creator);
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.IsSelectStatus)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Status);
+                    iColumn = iColumn + 1;
+                }
+
                 iRow++;
             }
 
@@ -5244,9 +5307,55 @@ namespace Sampoerna.EMS.Website.Controllers
             int iColumn = 1;
             int iRow = 1;
 
+            if (modelExport.IsSelectCk5Number)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-5 Number");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.IsSelectPlantId)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Plant ID");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.IsSelectPlantDesc)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Plant Desc");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.IsSelectNppbkc)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "NPPBKC");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.IsSelectKppbc)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "KPPBC");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.IsSelectDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Date");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.IsSelectReqType)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Request Type");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.IsSelectExecDateFrom)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Exec Date From");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.IsSelectExecDateTo)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Exec Date To");
+                iColumn = iColumn + 1;
+            }
+            
             if (modelExport.IsSelectFaCode)
             {
-                slDocument.SetCellValue(iRow, iColumn, "Fa Code");
+                slDocument.SetCellValue(iRow, iColumn, "FA Code");
                 iColumn = iColumn + 1;
             }
             if (modelExport.IsSelectBrand)
@@ -5273,7 +5382,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             if (modelExport.IsSelectCk5MarketReturnQty)
             {
-                slDocument.SetCellValue(iRow, iColumn, "CK-5 Market Return Qty");
+                slDocument.SetCellValue(iRow, iColumn, "CK-5 Market Return Pack Qty");
                 iColumn = iColumn + 1;
             }
 
@@ -5289,15 +5398,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 iColumn = iColumn + 1;
             }
 
-            if (modelExport.IsSelectPoa)
+            if (modelExport.IsSelectBack1No)
             {
-                slDocument.SetCellValue(iRow, iColumn, "POA");
+                slDocument.SetCellValue(iRow, iColumn, "BACK-1 No");
                 iColumn = iColumn + 1;
             }
-
-            if (modelExport.IsSelectCreator)
+            if (modelExport.IsSelectBack1Date)
             {
-                slDocument.SetCellValue(iRow, iColumn, "Creator");
+                slDocument.SetCellValue(iRow, iColumn, "BACK-1 Date");
                 iColumn = iColumn + 1;
             }
 
@@ -5328,6 +5436,24 @@ namespace Sampoerna.EMS.Website.Controllers
             if (modelExport.IsSelectCompletedDate)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Completed Date");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectPoa)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "POA Approved by");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectCreator)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Creator");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectStatus)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Status");
                 iColumn = iColumn + 1;
             }
            
