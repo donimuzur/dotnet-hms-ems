@@ -41,6 +41,7 @@ namespace Sampoerna.EMS.BLL
         private IUserBLL _userBll;
         private IWasteBLL _wasteBll;
         private IProductionBLL _prodBll;
+        private ILFA1BLL _lfaBll;
         
         //services
         private ICK4CItemService _ck4cItemService;
@@ -85,6 +86,7 @@ namespace Sampoerna.EMS.BLL
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
             _wasteBll = new WasteBLL(_logger, _uow);
             _prodBll = new ProductionBLL(_logger, _uow);
+            _lfaBll = new LFA1BLL(_uow, _logger);
 
             _ck4cItemService = new CK4CItemService(_uow, _logger);
             _ck5Service = new CK5Service(_uow, _logger);
@@ -3991,7 +3993,17 @@ namespace Sampoerna.EMS.BLL
         public List<Lack1SummaryReportDto> GetSummaryReportByParam(Lack1GetSummaryReportByParamInput input)
         {
             var lack1Data = _lack1Service.GetSummaryReportByParam(input);
-            return Mapper.Map<List<Lack1SummaryReportDto>>(lack1Data);
+            var mapResult = Mapper.Map<List<Lack1SummaryReportDto>>(lack1Data);
+
+            foreach (var lack1Dto in mapResult)
+            {
+                var supNppbkc = _t001WServices.GetById(lack1Dto.SupplierPlantId) == null ? "" : _t001WServices.GetById(lack1Dto.SupplierPlantId).NPPBKC_ID;
+                lack1Dto.KppbcId = _lfaBll.GetById(_nppbkcService.GetById(lack1Dto.NppbkcId).KPPBC_ID).NAME1;
+                lack1Dto.SupplierNppbkc = supNppbkc;
+                lack1Dto.SupplierKppbc = supNppbkc == "" ? "" : _lfaBll.GetById(_nppbkcService.GetById(supNppbkc).KPPBC_ID).NAME1;
+            }
+
+            return mapResult;
         }
 
         public List<int> GetYearList()

@@ -5,22 +5,25 @@
         <tr>
             <th class="toggle-row"> No </th>
             <th>LACK-1 Number</th>
-            <th>Company Code</th>
-            <th>Company Name</th>
-            <th>Nppbkc Id</th>
-            <th>Plant Id</th>
-            <th>Plant Name</th>
             <th>Excisable Goods Type Id</th>
             <th>Excisable Goods Type Desc</th>
-            <th>Supplier Plant Id</th>
-            <th>Supplier Plant Name</th>
+            <th>Receiver Company</th>
+            <th>Receiver NPPBKC</th>
+            <th>Receiver KPPBC</th>
+            <th>Receiver Plant ID</th>
+            <th>Receiver Plant Desc</th>
+            <th>Supplier Company</th>
+            <th>Supplier NPPBKC</th>
+            <th>Supplier KPPBC</th>
+            <th>Supplier Plant ID</th>
+            <th>Supplier Plant Desc</th>
             <th>Period</th>
-            <th>Document Status</th>
             <th>Created Date</th>
             <th>Approved Date</th>
-            <th>Creator</th>
-            <th>POA Approver</th>
             <th>Completed Date</th>
+            <th>POA Approved by</th>
+            <th>Creator</th>
+            <th>Status</th>
         </tr>
     </thead>
 
@@ -33,22 +36,25 @@
                 <tr>
                     <td align="center">@row</td>
                     <td>@Html.DisplayFor(model => item.Lack1Number)</td>
-                    <td>@Html.DisplayFor(model => item.CompanyCode)</td>
-                    <td>@Html.DisplayFor(model => item.CompanyName)</td>
-                    <td>@Html.DisplayFor(model => item.NppbkcId)</td>
-                    <td>@Html.DisplayFor(model => item.ReceivingPlantId)</td>
-                    <td>@Html.DisplayFor(model => item.ReceivingPlantName)</td>
                     <td>@Html.DisplayFor(model => item.ExcisableGoodsTypeId)</td>
                     <td>@Html.DisplayFor(model => item.ExcisableGoodsTypeDesc)</td>
+                    <td>@Html.DisplayFor(model => item.CompanyName)</td>
+                    <td>@Html.DisplayFor(model => item.NppbkcId)</td>
+                    <td>@Html.DisplayFor(model => item.KppbcId)</td>
+                    <td>@Html.DisplayFor(model => item.ReceivingPlantId)</td>
+                    <td>@Html.DisplayFor(model => item.ReceivingPlantName)</td>
+                    <td>@Html.DisplayFor(model => item.SupplierCompany)</td>
+                    <td>@Html.DisplayFor(model => item.SupplierNppbkc)</td>
+                    <td>@Html.DisplayFor(model => item.SupplierKppbc)</td>
                     <td>@Html.DisplayFor(model => item.SupplierPlantId)</td>
                     <td>@Html.DisplayFor(model => item.SupplierPlantName)</td>
                     <td>@Html.DisplayFor(model => item.Period)</td>
-                    <td>@Html.DisplayFor(model => item.DocumentStatus)</td>
                     <td>@Html.DisplayFor(model => item.CreatedDate)</td>
                     <td>@Html.DisplayFor(model => item.ApprovedDate)</td>
-                    <td>@Html.DisplayFor(model => item.Creator)</td>
-                    <td class="last">@Html.DisplayFor(model => item.Approver)</td>
                     <td>@Html.DisplayFor(model => item.CompletedDate)</td>
+                    <td class="last">@Html.DisplayFor(model => item.Approver)</td>
+                    <td>@Html.DisplayFor(model => item.Creator)</td>
+                    <td>@Html.DisplayFor(model => item.DocumentStatus)</td>
                 </tr>
                 row = row + 1;
             }
