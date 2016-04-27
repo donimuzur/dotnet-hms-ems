@@ -5568,6 +5568,17 @@ namespace Sampoerna.EMS.BLL
                     var summaryDto = new Ck5MarketReturnSummaryReportDto();
 
                     summaryDto.Ck5Id = dtData.CK5_ID;
+                    summaryDto.Ck5Number = dtData.SUBMISSION_NUMBER;
+                    summaryDto.PlantId = dtData.DEST_PLANT_ID;
+                    summaryDto.PlantDesc = dtData.DEST_PLANT_NAME;
+                    summaryDto.Nppbkc = dtData.DEST_PLANT_NPPBKC_ID;
+                    summaryDto.Kppbc = dtData.DEST_PLANT_KPPBC_NAME_OFFICE;
+                    summaryDto.Date = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.SUBMISSION_DATE);
+                    summaryDto.ReqType = EnumHelper.GetDescription(dtData.REQUEST_TYPE_ID);
+                    summaryDto.ExecDateFrom = "";
+                    summaryDto.ExecDateTo = "";
+                    summaryDto.Back1No = "";
+                    summaryDto.Back1Date = "";
 
                     summaryDto.FaCode = ck5Item.BRAND;
                     summaryDto.Brand = "";
@@ -5605,6 +5616,18 @@ namespace Sampoerna.EMS.BLL
                         {
                             summaryDto.Ck2Number = ck2Data.CK2_NUMBER;
                             summaryDto.Ck2Value = ConvertHelper.ConvertDecimalToStringMoneyFormat(ck2Data.CK2_VALUE);
+                        }
+
+                        if (pbck3Data.PBCK7 != null)
+                        {
+                            summaryDto.ExecDateFrom = ConvertHelper.ConvertDateToStringddMMMyyyy(pbck3Data.PBCK7.EXEC_DATE_FROM);
+                            summaryDto.ExecDateTo = ConvertHelper.ConvertDateToStringddMMMyyyy(pbck3Data.PBCK7.EXEC_DATE_TO);
+
+                            if(pbck3Data.PBCK7.BACK1 != null)
+                            {
+                                summaryDto.Back1No = pbck3Data.PBCK7.BACK1.FirstOrDefault().BACK1_NUMBER;
+                                summaryDto.Back1Date = ConvertHelper.ConvertDateToStringddMMMyyyy(pbck3Data.PBCK7.BACK1.FirstOrDefault().BACK1_DATE);
+                            }
                         }
                     }
 
