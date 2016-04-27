@@ -5688,6 +5688,10 @@ namespace Sampoerna.EMS.BLL
             inputChangeLogs.SUBMISSION_DATE = origin.SUBMISSION_DATE;
             inputChangeLogs.CK5_TYPE = origin.CK5_TYPE;
             inputChangeLogs.SOURCE_PLANT_ADDRESS = origin.SOURCE_PLANT_ADDRESS;
+            inputChangeLogs.SEALING_NOTIF_NUMBER = input.SEALING_NOTIF_NUMBER;
+            inputChangeLogs.SEALING_NOTIF_DATE = input.SEALING_NOTIF_DATE;
+            inputChangeLogs.UNSEALING_NOTIF_NUMBER = input.UNSEALING_NOTIF_NUMBER;
+            inputChangeLogs.UNSEALING_NOTIF_DATE = input.UNSEALING_NOTIF_DATE;
 
             //add to change log
             SetChangesHistory(origin, inputChangeLogs, input.UserId);
@@ -5701,6 +5705,10 @@ namespace Sampoerna.EMS.BLL
             dbData.CARRIAGE_METHOD_ID = input.CARRIAGE_METHOD_ID;
             dbData.INVOICE_NUMBER = input.INVOICE_NUMBER;
             dbData.INVOICE_DATE = input.INVOICE_DATE;
+            dbData.SEALING_NOTIF_NUMBER = input.SEALING_NOTIF_NUMBER;
+            dbData.SEALING_NOTIF_DATE = input.SEALING_NOTIF_DATE;
+            dbData.UNSEALING_NOTIF_NUMBER = input.UNSEALING_NOTIF_NUMBER;
+            dbData.UNSEALING_NOTIF_DATE = input.UNSEALING_NOTIF_DATE;
 
             dbData.MODIFIED_DATE = DateTime.Now;
 

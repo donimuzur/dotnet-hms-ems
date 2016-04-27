@@ -5444,6 +5444,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.CARRIAGE_METHOD_ID = model.CarriageMethod;
                 input.INVOICE_NUMBER = model.InvoiceNumber;
                 input.INVOICE_DATE = model.InvoiceDate;
+                input.SEALING_NOTIF_NUMBER = model.SealingNotifNumber;
+                input.SEALING_NOTIF_DATE = model.SealingNotifDate;
+                input.UNSEALING_NOTIF_NUMBER = model.UnSealingNotifNumber;
+                input.UNSEALING_NOTIF_DATE = model.UnsealingNotifDate;
                 input.Ck5MaterialDtos = Mapper.Map<List<CK5MaterialDto>>(model.UploadItemModels);
 
                 input.Ck5FileUploadList = Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList);
