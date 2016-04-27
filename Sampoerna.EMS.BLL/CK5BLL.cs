@@ -3842,6 +3842,9 @@ namespace Sampoerna.EMS.BLL
                         summaryReport.MaterialDescription = material.MATERIAL_DESC;
                     }
 
+                    summaryReport.ConvertedQty = String.Format("{0:n}", ck5Material.CONVERTED_QTY.Value);
+                    summaryReport.ConvertedUom = ck5Material.CONVERTED_UOM;
+
                     mapResult.Add(summaryReport);
                 }
             }
