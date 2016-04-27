@@ -52,10 +52,14 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string CompanyCode { get; set; }
         public string CompanyName { get; set; }
         public string NppbkcId { get; set; }
+        public string KppbcId { get; set; }
         public string ReceivingPlantId { get; set; }
         public string ReceivingPlantName { get; set; }
         public string ExcisableGoodsTypeId { get; set; }
         public string ExcisableGoodsTypeDesc { get; set; }
+        public string SupplierCompany { get; set; }
+        public string SupplierNppbkc { get; set; }
+        public string SupplierKppbc { get; set; }
         public string SupplierPlantId { get; set; }
         public string SupplierPlantName { get; set; }
         public string Period { get; set; }
@@ -75,10 +79,14 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public bool BCompanyCode { get; set; }
         public bool BCompanyName { get; set; }
         public bool BNppbkcId { get; set; }
+        public bool BKppbcId { get; set; }
         public bool BReceivingPlantId { get; set; }
         public bool BReceivingPlantName { get; set; }
         public bool BExcisableGoodsTypeId { get; set; }
         public bool BExcisableGoodsTypeDesc { get; set; }
+        public bool BSupplierCompany { get; set; }
+        public bool BSupplierNppbkc { get; set; }
+        public bool BSupplierKppbc { get; set; }
         public bool BSupplierPlantId { get; set; }
         public bool BSupplierPlantName { get; set; }
         public bool BPeriod { get; set; }
@@ -96,10 +104,14 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string CompanyCode { get; set; }
         public string CompanyName { get; set; }
         public string NppbkcId { get; set; }
+        public string KppbcId { get; set; }
         public string ReceivingPlantId { get; set; }
         public string ReceivingPlantName { get; set; }
         public string ExcisableGoodsTypeId { get; set; }
         public string ExcisableGoodsTypeDesc { get; set; }
+        public string SupplierCompany { get; set; }
+        public string SupplierNppbkc { get; set; }
+        public string SupplierKppbc { get; set; }
         public string SupplierPlantId { get; set; }
         public string SupplierPlantName { get; set; }
         public string Period { get; set; }

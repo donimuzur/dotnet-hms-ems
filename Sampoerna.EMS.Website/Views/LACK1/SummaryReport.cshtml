@@ -29,7 +29,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Company Code</label>
+                                        <label class="col-md-4">Receiver Company</label>
                                         <div class="col-md-6">
                                             @Html.DropDownListFor(model => model.SearchView.CompanyCode, Model.SearchView.CompanyCodeList, "All", new { @class = "form-control selectreset" })
                                         </div>
@@ -37,7 +37,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">NPPBKC ID</label>
+                                        <label class="col-md-4">Receiver NPPBKC</label>
                                         <div class="col-md-6">
                                             @Html.DropDownListFor(model => model.SearchView.NppbkcId, Model.SearchView.NppbkcIdList, "All", new { @class = "form-control selectreset" })
                                         </div>
@@ -47,7 +47,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Receiving Plant Id</label>
+                                        <label class="col-md-4">Receiver Plant ID</label>
                                         <div class="col-md-6">
                                             @Html.DropDownListFor(model => model.SearchView.ReceivingPlantId, Model.SearchView.ReceivingPlantIdList, "All", new { @class = "form-control selectreset" })
                                         </div>
@@ -91,7 +91,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Document Status</label>
+                                        <label class="col-md-4">Status</label>
                                         <div class="col-md-6">
                                             @Html.EnumDropDownListFor(model => model.SearchView.DocumentStatus, Model.SearchView.DocumentStatusList, "All", new { @class = "form-control selectreset" })
                                         </div>
@@ -135,7 +135,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">POA Approver</label>
+                                        <label class="col-md-4">POA Approved by</label>
                                         <div class="col-md-6">
                                             @Html.DropDownListFor(model => model.SearchView.Approver, Model.SearchView.ApproverList, "All", new { @class = "form-control selectreset" })
                                         </div>
@@ -191,82 +191,97 @@
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BCompanyCode, new { @id = "checkboxDefault2", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2" })Company Code
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BExcisableGoodsTypeId, new { @id = "checkboxDefault6", @class = "checkbox checkexport", @checked = "checked", @datacolumn = "2" })Excisable Goods Type Id
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BCompanyName, new { @id = "checkboxDefault3", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3" })Company Name
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BExcisableGoodsTypeDesc, new { @id = "checkboxDefault7", @class = "checkbox checkexport", @checked = "checked", @datacolumn = "3" })Excisable Goods Type Desc
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BNppbkcId, new { @id = "checkboxDefault4", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "4" })Nppbkc ID
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BCompanyName, new { @id = "checkboxDefault3", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "4" })Receiver Company
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BReceivingPlantId, new { @id = "checkboxDefault5", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "5" })Receiving Plant Id
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BNppbkcId, new { @id = "checkboxDefault4", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "5" })Receiver NPPBKC
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BReceivingPlantName, new { @class = "checkbox checkexport", @datacolumn = "6" })Receiving Plant Name
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BKppbcId, new { @id = "checkboxDefault8", @class = "checkbox checkexport", @checked = "checked", @datacolumn = "6" })Receiver KPPBC
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BExcisableGoodsTypeId, new { @class = "checkbox checkexport", @datacolumn = "7" })Excisable Goods Type Id
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BReceivingPlantId, new { @id = "checkboxDefault5", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "7" })Receiver Plant ID
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BExcisableGoodsTypeDesc, new { @class = "checkbox checkexport", @datacolumn = "8" })Excisable Goods Type Desc
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BReceivingPlantName, new { @class = "checkbox checkexport", @datacolumn = "8" })Receiving Plant Desc
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BSupplierPlantId, new { @class = "checkbox checkexport", @datacolumn = "9" })Supplier Plant Id
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BSupplierCompany, new { @class = "checkbox checkexport", @datacolumn = "9" })Supplier Company
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BSupplierPlantName, new { @class = "checkbox checkexport", @datacolumn = "10" })Supplier Plant Name
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BSupplierNppbkc, new { @class = "checkbox checkexport", @datacolumn = "10" })Supplier NPPBKC
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BPeriod, new { @class = "checkbox checkexport", @datacolumn = "11" })Period
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BSupplierKppbc, new { @class = "checkbox checkexport", @datacolumn = "11" })Supplier KPPBC
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BDocumentStatus, new { @class = "checkbox checkexport", @datacolumn = "12" })Document Status
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BSupplierPlantId, new { @class = "checkbox checkexport", @datacolumn = "12" })Supplier Plant ID
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BCreatedDate, new { @class = "checkbox checkexport", @datacolumn = "13" })Created Date
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BSupplierPlantName, new { @class = "checkbox checkexport", @datacolumn = "13" })Supplier Plant Desc
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BApprovedDate, new { @class = "checkbox checkexport", @datacolumn = "14" })Approved Date
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BPeriod, new { @class = "checkbox checkexport", @datacolumn = "14" })Period
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BCreator, new { @class = "checkbox checkexport", @datacolumn = "15" })Creator
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BCreatedDate, new { @class = "checkbox checkexport", @datacolumn = "15" })Created Date
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BApprover, new { @class = "checkbox checkexport", @datacolumn = "16" })POA Approver
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BApprovedDate, new { @class = "checkbox checkexport", @datacolumn = "16" })Approved Date
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
                                                         @Html.CheckBoxFor(model => model.ExportModel.CompletedDate, new { @class = "checkbox checkexport", @datacolumn = "17" })Completed Date
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BApprover, new { @class = "checkbox checkexport", @datacolumn = "18" })POA Approved by
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BCreator, new { @class = "checkbox checkexport", @datacolumn = "19" })Creator
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BDocumentStatus, new { @class = "checkbox checkexport", @datacolumn = "20" })Status
                                                     </label>
                                                 </div>
                                             </div>
@@ -505,9 +520,12 @@
                 $('#checkboxDefault3').prop('checked', true);
                 $('#checkboxDefault4').prop('checked', true);
                 $('#checkboxDefault5').prop('checked', true);
+                $('#checkboxDefault6').prop('checked', true);
+                $('#checkboxDefault7').prop('checked', true);
+                $('#checkboxDefault8').prop('checked', true);
             });
 
-            for (var i = 6; i < 18; i++) {
+            for (var i = 8; i < 21; i++) {
                 table.column(i).visible(false);
             }
 
@@ -517,7 +535,7 @@
                     // Show a column
                     $('#lack1Table').parents('div.dataTables_wrapper').first().show();
                     var table = $('#lack1Table').DataTable();
-                    for (var i = 0; i < 18; i++) {
+                    for (var i = 0; i < 21; i++) {
                         table.column(i).visible(true);
 
                     }
@@ -531,7 +549,7 @@
 
                     });
                     var table = $('#lack1Table').DataTable();
-                    for (var i = 0; i < 18; i++) {
+                    for (var i = 0; i < 21; i++) {
                         table.column(i).visible(false);
 
                     }
