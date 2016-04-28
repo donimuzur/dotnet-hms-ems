@@ -1591,74 +1591,20 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, data.Lack2Number);
                     iColumn = iColumn + 1;
                 }
-                if (modelExport.BCk5GiDate)
+                if (modelExport.BTypeExcisableGoods)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.Ck5GiDate);
+                    slDocument.SetCellValue(iRow, iColumn, data.TypeExcisableGoodsDesc);
                     iColumn = iColumn + 1;
                 }
-
-                if (modelExport.BCk5RegistrationNumber)
-                {
-                    slDocument.SetCellValue(iRow, iColumn, data.Ck5RegistrationNumber);
-                    iColumn = iColumn + 1;
-                }
-
-                if (modelExport.BCk5RegistrationDate)
-                {
-                    slDocument.SetCellValue(iRow, iColumn, data.Ck5RegistrationDate);
-                    iColumn = iColumn + 1;
-                }
-                if (modelExport.BCk5Total)
-                {
-                    slDocument.SetCellValue(iRow, iColumn, data.Ck5Total);
-                    iColumn = iColumn + 1;
-                }
-                if (modelExport.BReceivingCompanyCode)
-                {
-                    slDocument.SetCellValue(iRow, iColumn, data.ReceivingCompanyCode);
-                    iColumn = iColumn + 1;
-                }
-
-                if (modelExport.BReceivingCompanyName)
-                {
-                    slDocument.SetCellValue(iRow, iColumn, data.ReceivingCompanyName);
-                    iColumn = iColumn + 1;
-                }
-
-                if (modelExport.BReceivingNppbkc)
-                {
-                    slDocument.SetCellValue(iRow, iColumn, data.ReceivingNppbkc);
-                    iColumn = iColumn + 1;
-                }
-
-                if (modelExport.BReceivingAddress)
-                {
-                    slDocument.SetCellValue(iRow, iColumn, data.ReceivingAddress);
-                    iColumn = iColumn + 1;
-                }
-
                 if (modelExport.BCk5SendingPlant)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Ck5SendingPlant);
                     iColumn = iColumn + 1;
                 }
 
-                if (modelExport.BSendingPlantAddress)
+                if (modelExport.BCk5SendingPlantDesc)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.SendingPlantAddress);
-                    iColumn = iColumn + 1;
-                }
-
-                if (modelExport.BCompanyCode)
-                {
-                    slDocument.SetCellValue(iRow, iColumn, data.CompanyCode);
-                    iColumn = iColumn + 1;
-                }
-
-                //start
-                if (modelExport.BCompanyName)
-                {
-                    slDocument.SetCellValue(iRow, iColumn, data.CompanyName);
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck5SendingPlantDesc);
                     iColumn = iColumn + 1;
                 }
                 if (modelExport.BNppbkcId)
@@ -1666,11 +1612,71 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, data.NppbkcId);
                     iColumn = iColumn + 1;
                 }
-                if (modelExport.BTypeExcisableGoods)
+                if (modelExport.BKppbcId)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.TypeExcisableGoodsDesc);
+                    slDocument.SetCellValue(iRow, iColumn, data.KppbcId);
                     iColumn = iColumn + 1;
                 }
+                if (modelExport.BCompanyName)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CompanyName);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BSendingPlantAddress)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.SendingPlantAddress);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BCk5RegistrationNumber)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck5RegistrationNumber);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BCk5RegistrationDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck5RegistrationDate);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BCk5GiDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck5GiDate);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BCk5Total)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck5Total);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BCk5ConvertedUom)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck5ConvertedUom);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BReceivingPlantId)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ReceivingPlantId);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BReceivingNppbkc)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ReceivingNppbkc);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BReceivingKppbc)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ReceivingKppbc);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BReceivingCompanyName)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ReceivingCompanyName);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BReceivingAddress)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ReceivingAddress);
+                    iColumn = iColumn + 1;
+                }                
                 if (modelExport.PoaCheck)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Poa);
@@ -1679,6 +1685,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (modelExport.CreatorCheck)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Creator);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BStatus)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Status);
                     iColumn = iColumn + 1;
                 }
 
@@ -1699,94 +1710,105 @@ namespace Sampoerna.EMS.Website.Controllers
                 slDocument.SetCellValue(iRow, iColumn, "LACK-2 Number");
                 iColumn = iColumn + 1;
             }
-            if (modelExport.BCk5GiDate)
+            if (modelExport.BTypeExcisableGoods)
             {
-                slDocument.SetCellValue(iRow, iColumn, "CK-5 GI Date");
+                slDocument.SetCellValue(iRow, iColumn, "Excisable Goods Type");
                 iColumn = iColumn + 1;
             }
-
+            if (modelExport.BCk5SendingPlant)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Supplier Plant ID");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BCk5SendingPlantDesc)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Supplier Plant Desc");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BNppbkcId)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Supplier NPPBKC");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BKppbcId)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Supplier KPPBC");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BCompanyName)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Supplier Company");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BSendingPlantAddress)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Supplier Plant Address");
+                iColumn = iColumn + 1;
+            }
             if (modelExport.BCk5RegistrationNumber)
             {
                 slDocument.SetCellValue(iRow, iColumn, "CK-5 Registration Number");
                 iColumn = iColumn + 1;
             }
-
             if (modelExport.BCk5RegistrationDate)
             {
                 slDocument.SetCellValue(iRow, iColumn, "CK-5 Registration Date");
                 iColumn = iColumn + 1;
             }
+            if (modelExport.BCk5GiDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-5 GI Date");
+                iColumn = iColumn + 1;
+            }
             if (modelExport.BCk5Total)
             {
-                slDocument.SetCellValue(iRow, iColumn, "CK-5 Total");
+                slDocument.SetCellValue(iRow, iColumn, "CK-5 Total of Excisable Goods");
                 iColumn = iColumn + 1;
             }
-            if (modelExport.BReceivingCompanyCode)
+            if (modelExport.BCk5ConvertedUom)
             {
-                slDocument.SetCellValue(iRow, iColumn, "Receiving Company Code");
+                slDocument.SetCellValue(iRow, iColumn, "Converted UOM");
                 iColumn = iColumn + 1;
             }
-
-            if (modelExport.BReceivingCompanyName)
+            if (modelExport.BReceivingPlantId)
             {
-                slDocument.SetCellValue(iRow, iColumn, "Receiving Company Name");
+                slDocument.SetCellValue(iRow, iColumn, "Receiver Plant ID");
                 iColumn = iColumn + 1;
             }
-
             if (modelExport.BReceivingNppbkc)
             {
-                slDocument.SetCellValue(iRow, iColumn, "Receiving NPPBKC");
+                slDocument.SetCellValue(iRow, iColumn, "Receiver NPPBKC");
                 iColumn = iColumn + 1;
             }
-
+            if (modelExport.BReceivingKppbc)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Receiver KPPBC");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BReceivingCompanyName)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Receiver Company");
+                iColumn = iColumn + 1;
+            }
             if (modelExport.BReceivingAddress)
             {
-                slDocument.SetCellValue(iRow, iColumn, "Receiving Address");
+                slDocument.SetCellValue(iRow, iColumn, "Receiver Plant Address");
                 iColumn = iColumn + 1;
             }
-
-            if (modelExport.BCk5SendingPlant)
-            {
-                slDocument.SetCellValue(iRow, iColumn, "CK-5 Sending Plant");
-                iColumn = iColumn + 1;
-            }
-
-            if (modelExport.BSendingPlantAddress)
-            {
-                slDocument.SetCellValue(iRow, iColumn, "Sending Plant Address");
-                iColumn = iColumn + 1;
-            }
-
-            if (modelExport.BCompanyCode)
-            {
-                slDocument.SetCellValue(iRow, iColumn, "Company Code");
-                iColumn = iColumn + 1;
-            }
-
-            //start
-            if (modelExport.BCompanyName)
-            {
-                slDocument.SetCellValue(iRow, iColumn, "Company Name");
-                iColumn = iColumn + 1;
-            }
-            if (modelExport.BNppbkcId)
-            {
-                slDocument.SetCellValue(iRow, iColumn, "NPPBKC ID");
-                iColumn = iColumn + 1;
-            }
-            if (modelExport.BTypeExcisableGoods)
-            {
-                slDocument.SetCellValue(iRow, iColumn, "Type of Excisable Goods");
-                iColumn = iColumn + 1;
-            }
+            
             if (modelExport.PoaCheck)
             {
-                slDocument.SetCellValue(iRow, iColumn, "POA");
+                slDocument.SetCellValue(iRow, iColumn, "POA Approved by");
                 iColumn = iColumn + 1;
             }
             if (modelExport.CreatorCheck)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Creator");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BStatus)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Status");
                 iColumn = iColumn + 1;
             }
 

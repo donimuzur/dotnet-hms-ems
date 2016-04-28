@@ -91,6 +91,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
         public string CompanyName { get; set; }
         public string Poa { get; set; }
         public string Ck1No { get; set; }
+        public string Ck1Date { get; set; }
         public string Creator { get; set; }
     }
 
@@ -130,6 +131,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
         public bool IsSelectCompanyName { get; set; }
         public bool IsSelectPoa { get; set; }
         public bool IsSelectCk1No { get; set; }
+        public bool IsSelectCk1Date { get; set; }
         public bool IsSelectCreator { get; set; }
     }
 

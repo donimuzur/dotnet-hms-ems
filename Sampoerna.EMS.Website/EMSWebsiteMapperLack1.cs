@@ -260,6 +260,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ReceivingPlantName, opt => opt.MapFrom(src => src.LevelPlantName))
                 .ForMember(dest => dest.ExcisableGoodsTypeId, opt => opt.MapFrom(src => src.ExGoodsType))
                 .ForMember(dest => dest.ExcisableGoodsTypeDesc, opt => opt.MapFrom(src => src.ExTypDesc))
+                .ForMember(dest => dest.SupplierCompany, opt => opt.MapFrom(src => src.SupplierCompanyName))
                 .ForMember(dest => dest.SupplierPlantId, opt => opt.MapFrom(src => src.SupplierPlantId))
                 .ForMember(dest => dest.SupplierPlantName, opt => opt.MapFrom(src => src.SupplierPlant))
                 .ForMember(dest => dest.Period, opt => opt.MapFrom(src => src.PerionNameEng + " " + src.PeriodYears))

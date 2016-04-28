@@ -8,9 +8,11 @@
         public string Ck5Number { get; set; }
 
         public string Pbck3Date { get; set; }
+        public string PlantId { get; set; }
         public string PlantName { get; set; }
         //public string DocumentType { get; set; }
         public string Nppbkc { get; set; }
+        public string Kppbc { get; set; }
         public string Pbck3Status { get; set; }
         public string Back3No { get; set; }
         public string Back3Date { get; set; }

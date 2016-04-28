@@ -1756,51 +1756,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 });
             }
 
-            if (model.ExportModel.BCompanyCode)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "CompanyCode",
-                    HeaderText = "Company Code"
-                });
-            }
-
-            if (model.ExportModel.BCompanyName)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "CompanyName",
-                    HeaderText = "Company Name"
-                });
-            }
-
-            if (model.ExportModel.BNppbkcId)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "NppbkcId",
-                    HeaderText = "Nppbkc ID"
-                });
-            }
-
-            if (model.ExportModel.BReceivingPlantId)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "ReceivingPlantId",
-                    HeaderText = "Receiving Plant ID"
-                });
-            }
-
-            if (model.ExportModel.BReceivingPlantName)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "ReceivingPlantName",
-                    HeaderText = "Receiving Plant Name"
-                });
-            }
-
             if (model.ExportModel.BExcisableGoodsTypeId)
             {
                 grid.Columns.Add(new BoundField()
@@ -1819,12 +1774,84 @@ namespace Sampoerna.EMS.Website.Controllers
                 });
             }
 
+            if (model.ExportModel.BCompanyName)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "CompanyName",
+                    HeaderText = "Receiver Company"
+                });
+            }
+
+            if (model.ExportModel.BNppbkcId)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "NppbkcId",
+                    HeaderText = "Receiver NPPBKC"
+                });
+            }
+
+            if (model.ExportModel.BKppbcId)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "KppbcId",
+                    HeaderText = "Receiver KPPBC"
+                });
+            }
+
+            if (model.ExportModel.BReceivingPlantId)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "ReceivingPlantId",
+                    HeaderText = "Receiver Plant ID"
+                });
+            }
+
+            if (model.ExportModel.BReceivingPlantName)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "ReceivingPlantName",
+                    HeaderText = "Receiver Plant Desc"
+                });
+            }
+
+            if (model.ExportModel.BSupplierCompany)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupplierCompany",
+                    HeaderText = "Supplier Company"
+                });
+            }
+
+            if (model.ExportModel.BSupplierNppbkc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupplierNppbkc",
+                    HeaderText = "Supplier NPPBKC"
+                });
+            }
+
+            if (model.ExportModel.BSupplierKppbc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupplierKppbc",
+                    HeaderText = "Supplier KPPBC"
+                });
+            }
+
             if (model.ExportModel.BSupplierPlantId)
             {
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "SupplierPlantId",
-                    HeaderText = "Supplier Plant Id"
+                    HeaderText = "Supplier Plant ID"
                 });
             }
 
@@ -1833,7 +1860,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "SupplierPlantName",
-                    HeaderText = "Supplier Plant Name"
+                    HeaderText = "Supplier Plant Desc"
                 });
             }
 
@@ -1845,16 +1872,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     HeaderText = "Period"
                 });
             }
-
-            if (model.ExportModel.BDocumentStatus)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "DocumentStatus",
-                    HeaderText = "Document Status"
-                });
-            }
-
+            
             if (model.ExportModel.BCreatedDate)
             {
                 grid.Columns.Add(new BoundField()
@@ -1873,6 +1891,24 @@ namespace Sampoerna.EMS.Website.Controllers
                 });
             }
 
+            if (model.ExportModel.CompletedDate)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "CompletedDate",
+                    HeaderText = "CompletedDate"
+                });
+            }
+
+            if (model.ExportModel.BApprover)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Approver",
+                    HeaderText = "POA Approved by"
+                });
+            }
+
             if (model.ExportModel.BCreator)
             {
                 grid.Columns.Add(new BoundField()
@@ -1882,21 +1918,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 });
             }
 
-            if (model.ExportModel.BApprover)
+            if (model.ExportModel.BDocumentStatus)
             {
                 grid.Columns.Add(new BoundField()
                 {
-                    DataField = "Approver",
-                    HeaderText = "POA Approver"
-                });
-            }
-
-            if (model.ExportModel.CompletedDate)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "CompletedDate",
-                    HeaderText = "CompletedDate"
+                    DataField = "DocumentStatus",
+                    HeaderText = "Status"
                 });
             }
 

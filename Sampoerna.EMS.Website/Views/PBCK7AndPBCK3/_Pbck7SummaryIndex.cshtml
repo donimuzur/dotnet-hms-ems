@@ -5,32 +5,33 @@
     <thead>
         <tr>
 
-            <th class="toggle-row">Number</th>
+            <th class="toggle-row">PBCK-7 Number</th>
+            <th>Plant ID</th>
+            <th>Plant Desc</th>
             <th>NPPBKC</th>
-            <th>Plant</th>
+            <th>KPPBC</th>
             <th>Date</th>
-            <th>Doc.Type</th>
-            <th>Status</th>
-            <th>Exec From</th>
-            <th>Exec To</th>
-            <th>Back-1 No</th>
-            <th>Back-1 Date</th>
-
+            <th>Document Type</th>
+            <th>Exec Date From</th>
+            <th>Exec Date To</th>
             <th>FA Code</th>
             <th>Brand</th>
             <th>Content</th>
             <th>Hje</th>
             <th>Tariff</th>
-            <th>PBCK-7 Qty</th>
+            <th>PBCK-7 Pack Qty</th>
             <th>Fiscal Year</th>
             <th>Excise Value</th>
-            <th>POA</th>
-            <th>Creator</th>
+            <th>BACK-1 No</th>
+            <th>BACK-1 Date</th>
             <th>PBCK-3 No</th>
             <th>PBCK-3 Status</th>
             <th>CK-2 No</th>
             <th>CK-2 Value</th>
             <th>Completed Date</th>
+            <th>POA Approved by</th>
+            <th>Creator</th>
+            <th>Status</th>
         </tr>
     </thead>
 
@@ -43,16 +44,14 @@
             {
                 <tr>
                     <td>@Html.DisplayFor(model => item.Pbck7Number)</td>
-                    <td>@Html.DisplayFor(model => item.Nppbkc)</td>
+                    <td>@Html.DisplayFor(model => item.PlantId)</td>
                     <td>@Html.DisplayFor(model => item.PlantName)</td>
+                    <td>@Html.DisplayFor(model => item.Nppbkc)</td>
+                    <td>@Html.DisplayFor(model => item.Kppbc)</td>
                     <td>@Html.DisplayFor(model => item.Pbck7Date)</td>
                     <td>@Html.DisplayFor(model => item.DocumentType)</td>
-                    <td>@Html.DisplayFor(model => item.Pbck7Status)</td>
                     <td>@Html.DisplayFor(model => item.ExecFrom)</td>
                     <td>@Html.DisplayFor(model => item.ExecTo)</td>
-                    <td>@Html.DisplayFor(model => item.Back1No)</td>
-                    <td>@Html.DisplayFor(model => item.Back1Date)</td>
-
                     <td>@Html.Raw(item.FaCode)</td>
                     <td>@Html.Raw(item.Brand)</td>
                     <td>@Html.Raw(item.Content)</td>
@@ -61,14 +60,16 @@
                     <td>@Html.Raw(item.Pbck7Qty)</td>
                     <td>@Html.Raw(item.FiscalYear)</td>
                     <td>@Html.Raw(item.ExciseValue)</td>
-                    <td>@Html.DisplayFor(model => item.Poa)</td>
-                    <td>@Html.DisplayFor(model => item.Creator)</td>
+                    <td>@Html.DisplayFor(model => item.Back1No)</td>
+                    <td>@Html.DisplayFor(model => item.Back1Date)</td>
                     <td>@Html.DisplayFor(model => item.Pbck3No)</td>
                     <td>@Html.DisplayFor(model => item.Pbck3Status)</td>
                     <td>@Html.DisplayFor(model => item.Ck2No)</td>
                     <td>@Html.DisplayFor(model => item.Ck2Value)</td>
                     <td>@Html.DisplayFor(model => item.CompletedDate)</td>
-
+                    <td>@Html.DisplayFor(model => item.Poa)</td>
+                    <td>@Html.DisplayFor(model => item.Creator)</td>
+                    <td>@Html.DisplayFor(model => item.Pbck7Status)</td>
                     @*<td>@item.Pbck7Number</td>
                         <td>@item.NppbkcId</td>
                         <td>@(item.PlantId + "-" + item.PlantName)</td>
