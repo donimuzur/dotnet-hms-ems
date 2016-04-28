@@ -4079,7 +4079,7 @@ namespace Sampoerna.EMS.BLL
 
 
                 result.ReportDetails.DestOfficeCode = dtData.DEST_PLANT_NPPBKC_ID;
-                if (dtData.DEST_PLANT_NPPBKC_ID.Length >= 4)
+                if (!string.IsNullOrEmpty(dtData.DEST_PLANT_NPPBKC_ID) && dtData.DEST_PLANT_NPPBKC_ID.Length >= 4)
                     result.ReportDetails.DestOfficeCode = dtData.DEST_PLANT_NPPBKC_ID.Substring(0, 4) + "00";
 
                 var dbNppbkcDest = _nppbkcBll.GetById(dtData.DEST_PLANT_NPPBKC_ID);
