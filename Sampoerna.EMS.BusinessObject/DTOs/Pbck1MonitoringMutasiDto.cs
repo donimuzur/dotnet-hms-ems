@@ -29,9 +29,15 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Poa { get; set; }
         public string Creator { get; set; }
         public string SupPlant { get; set; }
+        public string SupPlantDesc { get; set; }
         public string SupComp { get; set; }
         public string OriNppbkc { get; set; }
         public string OriKppbc { get; set; }
+        public bool IsNppbkcImport { get; set; }
+        public string ExcGoodsType { get; set; }
+        public string RecComp { get; set; }
+        public string RecNppbkc { get; set; }
+        public string RecKppbc { get; set; }
      
     }
 }

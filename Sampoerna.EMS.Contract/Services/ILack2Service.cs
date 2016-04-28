@@ -13,7 +13,7 @@ namespace Sampoerna.EMS.Contract.Services
         LACK2 GetById(int id);
         LACK2 GetDetailsById(int id);
         void Insert(LACK2 data);
-        LACK2 GetBySelectionCriteria(Lack2GetBySelectionCriteriaParamInput input, Login loginInfo = null);
+        LACK2 GetBySelectionCriteria(Lack2GetBySelectionCriteriaParamInput input);
         List<LACK2> GetSummaryReportsByParam(Lack2GetSummaryReportByParamInput input);
         List<LACK2> GetDetailReportsByParam(Lack2GetDetailReportByParamInput input);
         List<LACK2> GetDashboardDataByParam(Lack2GetDashboardDataByParamInput input);

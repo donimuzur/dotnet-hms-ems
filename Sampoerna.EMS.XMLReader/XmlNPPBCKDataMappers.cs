@@ -66,6 +66,7 @@ namespace Sampoerna.EMS.XMLReader
                                 item.MODIFIED_DATE = DateTime.Now;
                                 item.MODIFIED_BY = Constans.PI;
                                 item.CREATED_BY = exisitingNppbkc.CREATED_BY;
+                                item.FLAG_FOR_LACK1 = exisitingNppbkc.FLAG_FOR_LACK1;
                                 items.Add(item);
 
                             }

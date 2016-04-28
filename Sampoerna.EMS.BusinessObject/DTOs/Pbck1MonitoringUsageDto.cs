@@ -34,6 +34,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string SupNppbkc { get; set; }
         public string SupKppbc { get; set; }
         public string SupPlant { get; set; }
+        public string SupPlantDesc { get; set; }
         public string SupCompany { get; set; }
+        public bool IsNppbkcImport { get; set; }
+        public string ExcGoodsType { get; set; }
+        public string QtyUom { get; set; }
     }
 }

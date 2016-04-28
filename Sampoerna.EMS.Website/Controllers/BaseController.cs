@@ -72,52 +72,57 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             get
             {
-                if (Session[Core.Constans.SessionKey.CurrentUser] == null)
-                {
-                    var userId = User.Identity.Name.Split('\\')[User.Identity.Name.Split('\\').Length - 1]; //User.Identity.Name.Remove(0,4);
-                    IUserBLL userBll = MvcApplication.GetInstance<UserBLL>();
-                    IPOABLL poabll = MvcApplication.GetInstance<POABLL>();
-                    IUserAuthorizationBLL userAuthorizationBll = MvcApplication.GetInstance<UserAuthorizationBLL>();
-                    var loginResult = userBll.GetLogin(userId);
-
-                    if (loginResult != null)
-                    {
-                        //CurrentUser = loginResult;
-                        loginResult.UserRole = poabll.GetUserRole(loginResult.USER_ID);
-                        loginResult.AuthorizePages = userAuthorizationBll.GetAuthPages(loginResult.USER_ID);
-                        loginResult.NppbckPlants = userAuthorizationBll.GetNppbckPlants(loginResult.USER_ID);
-                        loginResult.ListUserPlants = new List<string>();
-                        loginResult.ListUserNppbkc = new List<string>();
-                        switch (loginResult.UserRole)
-                        {
-                            case Enums.UserRole.User:
-                            case Enums.UserRole.Viewer:
-                                loginResult.ListUserPlants =
-                                    userAuthorizationBll.GetListPlantByUserId(loginResult.USER_ID);
-                                loginResult.ListUserNppbkc =
-                                    userAuthorizationBll.GetListNppbkcByUserId(loginResult.USER_ID);
-                                break;
-                            case Enums.UserRole.POA:
-                                loginResult.ListUserPlants = new List<string>();
-                                foreach (var nppbkcPlantDto in loginResult.NppbckPlants)
-                                {
-                                    foreach (var plantDto in nppbkcPlantDto.Plants)
-                                    {
-                                        loginResult.ListUserPlants.Add(plantDto.WERKS);
-                                    }
-                                }
-                                loginResult.ListUserNppbkc = loginResult.NppbckPlants.Select(c => c.NppbckId).ToList();
-                                break;
-                        }
-                        
-
-
-                    }
-                    Session[Core.Constans.SessionKey.CurrentUser] = loginResult;
-                }
+                SetLoginSession();
                 return (Login)Session[Core.Constans.SessionKey.CurrentUser];
             }
             
+        }
+
+        public void SetLoginSession()
+        {
+            if (Session[Core.Constans.SessionKey.CurrentUser] == null)
+            {
+                var userId = User.Identity.Name.Split('\\')[User.Identity.Name.Split('\\').Length - 1]; //User.Identity.Name.Remove(0, 4);
+                IUserBLL userBll = MvcApplication.GetInstance<UserBLL>();
+                IPOABLL poabll = MvcApplication.GetInstance<POABLL>();
+                IUserAuthorizationBLL userAuthorizationBll = MvcApplication.GetInstance<UserAuthorizationBLL>();
+                var loginResult = userBll.GetLogin(userId);
+
+                if (loginResult != null)
+                {
+                    //CurrentUser = loginResult;
+                    loginResult.UserRole = poabll.GetUserRole(loginResult.USER_ID);
+                    loginResult.AuthorizePages = userAuthorizationBll.GetAuthPages(loginResult.USER_ID);
+                    loginResult.NppbckPlants = userAuthorizationBll.GetNppbckPlants(loginResult.USER_ID);
+                    loginResult.ListUserPlants = new List<string>();
+                    loginResult.ListUserNppbkc = new List<string>();
+                    switch (loginResult.UserRole)
+                    {
+                        case Enums.UserRole.User:
+                        case Enums.UserRole.Viewer:
+                            loginResult.ListUserPlants =
+                                userAuthorizationBll.GetListPlantByUserId(loginResult.USER_ID);
+                            loginResult.ListUserNppbkc =
+                                userAuthorizationBll.GetListNppbkcByUserId(loginResult.USER_ID);
+                            break;
+                        case Enums.UserRole.POA:
+                            loginResult.ListUserPlants = new List<string>();
+                            foreach (var nppbkcPlantDto in loginResult.NppbckPlants)
+                            {
+                                foreach (var plantDto in nppbkcPlantDto.Plants)
+                                {
+                                    loginResult.ListUserPlants.Add(plantDto.WERKS);
+                                }
+                            }
+                            loginResult.ListUserNppbkc = loginResult.NppbckPlants.Select(c => c.NppbckId).ToList();
+                            break;
+                    }
+
+
+
+                }
+                Session[Core.Constans.SessionKey.CurrentUser] = loginResult;
+            }
         }
 
         protected PAGE PageInfo
@@ -152,10 +157,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (CurrentUser == null )
             {
-                filterContext.Result = new RedirectToRouteResult(
-                                new RouteValueDictionary { { "controller", "Error" }, { "action", "Unauthorized" } });
-             
-                
+
+                RedirectToAction("VerifyLogin", "Login", new { filterContext = filterContext});
+                return;
             }
             var isUsePageAuth = ConfigurationManager.AppSettings["UsePageAuth"] != null && Convert.ToBoolean(ConfigurationManager.AppSettings["UsePageAuth"]);
             if (isUsePageAuth)

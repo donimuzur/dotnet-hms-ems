@@ -55,6 +55,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal TotalProduction { get; set; }
         public decimal EndingBalance { get; set; }
         public decimal TotalWaste { get; set; }
+
+        public decimal TotalReturn { get; set; }
         
         public string Noted { get; set; }
         public string DocumentNoted { get; set; }

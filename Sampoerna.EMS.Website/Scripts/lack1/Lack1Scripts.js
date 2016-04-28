@@ -36,8 +36,12 @@
         param.Lack1Id = $('#Lack1Id').val();
     }
     
-    $('#WasteQty').prop('readonly', true);
+    $('#WasteQty').prop('readonly', true); 
     $('#WasteUom').prop('readonly', true);
+    
+    $('#ReturnQty').prop('readonly', true);
+    $('#ReturnUom').prop('readonly', true);
+    
     var plantAttr = $('#LevelPlantId').attr('disabled');
     /* For some browsers, `attr` is undefined; for others,
      `attr` is false.  Check for both.
@@ -57,6 +61,7 @@
         success: function (response) {
             $('.loading').hide();
             if (response.Success) {
+                debugger;
                 $('#generated-data-container').html("");
                 var data = response.Data;
                 //console.log(response.IsWithTisToTisReport);
@@ -83,7 +88,12 @@
                     $('#WasteQty').val(data.TotalWaste);
                     $('#WasteUom').val(data.WasteAmountUom);
                 }
-                
+
+                if (response.HasReturnData) {
+                    $('#ReturnQty').val(data.TotalReturn);
+                    $('#ReturnUom').val(data.WasteAmountUom);
+                }
+
             } else {
                 /*alert(response.ErrorMessage);*/
                 $('#modalBodyMessage').text(response.ErrorMessage);

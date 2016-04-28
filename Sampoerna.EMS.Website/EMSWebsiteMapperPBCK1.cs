@@ -143,6 +143,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.TotalPbck1Quota, opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota)))
                 .ForMember(dest => dest.QuotaRemaining, opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota - src.Received - src.ReceivedAdditional)))
                 .ForMember(dest => dest.Pbck1PeriodDisplay, opt => opt.MapFrom(src => (src.PeriodFrom.ToString("dd MMM yyyy") + " - " + src.PeriodTo.Value.ToString("dd MMM yyyy"))))
+                .ForMember(dest => dest.IsNppbkcImport, opt => opt.MapFrom(src => src.IsNppbkcImport ? "Yes" : "No"))
                 ;
 
             #region Monitoring Mutasi
@@ -153,7 +154,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Received, opt => opt.MapFrom(src => (src.Received + src.ReceivedAdditional)))
                 .ForMember(dest => dest.TotalPbck1Quota, opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota)))
                 .ForMember(dest => dest.QuotaRemaining, opt => opt.MapFrom(src => (src.ExGoodsQuota + src.AdditionalExGoodsQuota - src.Received - src.ReceivedAdditional)))
-                .ForMember(dest => dest.Pbck1Number, opt => opt.MapFrom(src => src.Pbck1Number));
+                .ForMember(dest => dest.Pbck1Number, opt => opt.MapFrom(src => src.Pbck1Number))
+                .ForMember(dest => dest.IsNppbkcImport, opt => opt.MapFrom(src => src.IsNppbkcImport ? "Yes" : "No"));
 
             Mapper.CreateMap<Pbck1MonitoringMutasiItem, ExportMonitoringMutasiDataModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Received, opt => opt.MapFrom(src => src.Received))
@@ -166,7 +168,12 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.GrandTotalExciseable,
                     opt => opt.MapFrom(src => String.Join("<br />", src.Ck5List.Select(p => p.GRAND_TOTAL_EX).ToArray())))
                 .ForMember(dest => dest.UoM,
-                    opt => opt.MapFrom(src => String.Join("<br />", src.Ck5List.Select(p => p.PACKAGE_UOM_ID).ToArray())));
+                    opt => opt.MapFrom(src => String.Join("<br />", src.Ck5List.Select(p => p.PACKAGE_UOM_ID).ToArray())))
+                .ForMember(dest => dest.DetailCk5Plant,
+                    opt => opt.MapFrom(src => String.Join("<br />", src.Ck5List.Select(p => p.DestinationPlantId).ToArray())))
+                .ForMember(dest => dest.DetailCk5PlantDesc,
+                    opt => opt.MapFrom(src => String.Join("<br />", src.Ck5List.Select(p => p.DestinationPlantDesc).ToArray())))
+                    ;
 
             #endregion
 
