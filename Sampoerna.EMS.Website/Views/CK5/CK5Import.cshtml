@@ -203,16 +203,53 @@
 
         function ChangeTitle(title) {
             $('#lblTitle').text(title);
+            
+            var ck5Type = '@Enums.CK5Type.PortToImporter';
+            var listDocumentNumber = $('#domestic').find('#SearchView_DocumentNumber');
+            
+            var rowCount = 0;
+            
             if (title == 'Port To Importer') {
                 $('#newPortToImporter').show();
                 $('#newImporterToPlant').hide();
-
+                ck5Type = '@Enums.CK5Type.PortToImporter';
+                
+                rowCount = $('#ck5Table >tbody >tr').length;
+                if (rowCount <= 1) {
+                    $('#form0').submit();
+                }
+                
             } else if (title == 'Importer To Plant') {
                 $('#newPortToImporter').hide();
                 $('#newImporterToPlant').show();
-
-
+                ck5Type = '@Enums.CK5Type.ImporterToPlant';
+                listDocumentNumber = $('#intercompany').find('#SearchView_DocumentNumber');
+                
+                rowCount = $('#ck5TableIntercompany >tbody >tr').length;
+                if (rowCount <= 1) {
+                    $('#form1').submit();
+                }
             }
+            
+            var formData = { ck5Type: ck5Type };
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetDocumentNo", "CK5")',
+                data: formData,
+                success: function (data) {
+                    listDocumentNumber.empty();
+                    var list = '<option value>All</option>';
+
+                    if (data != null) {
+                        for (var i = 0; i < data.length; i++) {
+
+                            list += "<option value='" + data[i].Value + "'>" + data[i].Text + "</option>";
+                        }
+                    }
+                    listDocumentNumber.html(list);
+                }
+            });
+            
         }
 
         function OnReset() {
