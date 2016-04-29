@@ -4051,23 +4051,23 @@ namespace Sampoerna.EMS.BLL
                 result.ReportDetails.FinalPortName = dtData.FINAL_PORT_NAME;
                 result.ReportDetails.FinalPortId = dtData.FINAL_PORT_ID;
 
-                foreach (var material in result.ListMaterials)
-                {
-                    var mat = _materialBll.GetByPlantIdAndStickerCode(material.PLANT_ID, material.BRAND);
-                    if (mat.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau))
-                    {
-                        //UPDATE FOR PRINT OUT ONLY
-                        material.MaterialDescription = "";
+                //foreach (var material in result.ListMaterials)
+                //{
+                //    var mat = _materialBll.GetByPlantIdAndStickerCode(material.PLANT_ID, material.BRAND);
+                //    if (mat.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau))
+                //    {
+                //        //UPDATE FOR PRINT OUT ONLY
+                //        material.MaterialDescription = "";
 
-                        var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(material.PLANT_ID, material.BRAND);
-                        if (dbBrand != null)
-                        {
-                            material.MaterialDescription = dbBrand.BRAND_CE;
-                        }
-                    }
+                //        var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(material.PLANT_ID, material.BRAND);
+                //        if (dbBrand != null)
+                //        {
+                //            material.MaterialDescription = dbBrand.BRAND_CE;
+                //        }
+                //    }
 
 
-                }
+                //}
             }
             else
             {
@@ -4107,6 +4107,27 @@ namespace Sampoerna.EMS.BLL
                 result.ReportDetails.FinalPort = "-";
                 result.ReportDetails.FinalPortName = "-";
                 result.ReportDetails.FinalPortId = "-";
+            }
+
+            if (dtData.CK5_TYPE == Enums.CK5Type.Export
+                || dtData.CK5_TYPE == Enums.CK5Type.Manual)
+            {
+                foreach (var material in result.ListMaterials)
+                {
+                    var mat = _materialBll.GetByPlantIdAndStickerCode(material.PLANT_ID, material.BRAND);
+                    if (mat.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau))
+                    {
+                        //UPDATE FOR PRINT OUT ONLY
+                        material.MaterialDescription = "";
+                        var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(material.PLANT_ID, material.BRAND);
+                        if (dbBrand != null)
+                        {
+                            material.MaterialDescription = dbBrand.BRAND_CE;
+                        }
+                    }
+
+
+                }
             }
 
             result.ReportDetails.CK5Type = dtData.CK5_TYPE.ToString();
