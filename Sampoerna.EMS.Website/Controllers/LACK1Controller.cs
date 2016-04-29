@@ -1756,21 +1756,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 });
             }
 
-            if (model.ExportModel.BExcisableGoodsTypeId)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "ExcisableGoodsTypeId",
-                    HeaderText = "Excisable Goods Type ID"
-                });
-            }
-
             if (model.ExportModel.BExcisableGoodsTypeDesc)
             {
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "ExcisableGoodsTypeDesc",
-                    HeaderText = "Excisable Goods Type Desc"
+                    HeaderText = "Excisable Goods Type"
                 });
             }
 
@@ -1870,33 +1861,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     DataField = "Period",
                     HeaderText = "Period"
-                });
-            }
-            
-            if (model.ExportModel.BCreatedDate)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "CreatedDate",
-                    HeaderText = "Created Date"
-                });
-            }
-
-            if (model.ExportModel.BApprovedDate)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "ApprovedDate",
-                    HeaderText = "Approved Date"
-                });
-            }
-
-            if (model.ExportModel.CompletedDate)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "CompletedDate",
-                    HeaderText = "CompletedDate"
                 });
             }
 

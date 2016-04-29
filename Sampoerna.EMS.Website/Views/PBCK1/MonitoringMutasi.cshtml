@@ -240,17 +240,27 @@
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBox("GrandTotalExciseable", new { @id = "checkboxDefault19", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "19" })Detail Qty of CK-5
+                                                        @Html.CheckBox("GrDateCk5", new { @id = "checkboxDefault19", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "19" })Detail CK-5 Gr Date
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBox("DetailCk5Plant", new { @id = "checkboxDefault20", @class = "checkbox checkexport", @datacolumn = "20" })Detail CK-5 Receiver Plant ID
+                                                        @Html.CheckBox("RegDateCk5", new { @id = "checkboxDefault20", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "20" })Detail CK-5 Reg Date
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBox("DetailCk5PlantDesc", new { @id = "checkboxDefault21", @class = "checkbox checkexport", @datacolumn = "21" })Detail CK-5 Receiver Plant Desc
+                                                        @Html.CheckBox("GrandTotalExciseable", new { @id = "checkboxDefault21", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "21" })Detail Qty of CK-5
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("DetailCk5Plant", new { @id = "checkboxDefault22", @class = "checkbox checkexport", @datacolumn = "22" })Detail CK-5 Receiver Plant ID
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBox("DetailCk5PlantDesc", new { @id = "checkboxDefault23", @class = "checkbox checkexport", @datacolumn = "23" })Detail CK-5 Receiver Plant Desc
                                                     </label>
                                                 </div>
                                             </div>
@@ -295,7 +305,7 @@
             $('#checkboxDefault15').prop('checked', true);
             $('#checkboxDefault16').prop('checked', true);
             $('#checkboxDefault18').prop('checked', true);
-            $('#checkboxDefault19').prop('checked', true);
+            $('#checkboxDefault21').prop('checked', true);
         });
 
         function setupDataTables() {
@@ -328,7 +338,7 @@
                 $('#checkboxDefault15').prop('checked', true);
                 $('#checkboxDefault16').prop('checked', true);
                 $('#checkboxDefault18').prop('checked', true);
-                $('#checkboxDefault19').prop('checked', true);
+                $('#checkboxDefault21').prop('checked', true);
             });
 
             $('.checkexport').on('click', function (e) {
@@ -351,8 +361,10 @@
             table.column(2).visible(false);
             table.column(3).visible(false);
             table.column(17).visible(false);
+            table.column(19).visible(false);
             table.column(20).visible(false);
-            table.column(21).visible(false);
+            table.column(22).visible(false);
+            table.column(23).visible(false);
           
             $('#selecctall').change(function () {
                 if ($(this).is(':checked')) {
@@ -360,7 +372,7 @@
                     // Show a column
                     $('#monitoringMutasi').parents('div.dataTables_wrapper').first().show();
                     var table = $('#monitoringMutasi').DataTable();
-                    for (var i = 0; i < 22; i++) {
+                    for (var i = 0; i < 24; i++) {
                         table.column(i).visible(true);
 
                     }
@@ -374,7 +386,7 @@
 
                     });
                     var table = $('#monitoringMutasi').DataTable();
-                    for (var i = 0; i < 22; i++) {
+                    for (var i = 0; i < 24; i++) {
                         table.column(i).visible(false);
 
                     }
