@@ -4786,45 +4786,60 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var dbMaterial = _materialBll.GetMaterialByPlantIdAndMaterialNumber(plantId, materialNumber);
             var model = Mapper.Map<CK5InputManualViewModel>(dbMaterial);
-            if (ck5Type == Enums.CK5Type.Manual &&
-               dbMaterial.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau))
-                model.MaterialDesc = dbMaterial.MATERIAL_DESC;
-        
-        
-            return Json(model);
-        }
+            //if (ck5Type == Enums.CK5Type.Manual &&
+            //   dbMaterial.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau))
+            //    model.MaterialDesc = dbMaterial.MATERIAL_DESC;
 
-        [HttpPost]
-        public JsonResult GetMaterialHjeAndTariffWaste(string plantId, string materialNumber)
-        {
-
-            var dbMaterial = _materialBll.GetMaterialByPlantIdAndMaterialNumber(plantId, materialNumber);
-            var model = Mapper.Map<CK5InputManualViewModel>(dbMaterial);
-
-            var wasteStock = _ck5Bll.GetWasteStockQuota(plantId, materialNumber);
-            model.StockRemaining = wasteStock.WasteStockRemaining;
-
-            return Json(model);
-        }
-
-
-        [HttpPost]
-        public JsonResult GetMaterialHjeAndTariffExport(string plantId, string materialNumber)
-        {
-
-            var dbMaterial = _materialBll.GetMaterialByPlantIdAndMaterialNumber(plantId, materialNumber);
-            var model = Mapper.Map<CK5InputManualViewModel>(dbMaterial);
-
-            if (dbMaterial.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau))
+            if (ck5Type == Enums.CK5Type.Export || ck5Type == Enums.CK5Type.Manual)
             {
-                var dbBrand = _ck5Bll.GetBrandByPlantAndMaterialNumber(plantId, materialNumber);
-                if (dbBrand != null && !string.IsNullOrEmpty(dbBrand.MaterialDesc))
+                if (dbMaterial.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau))
                 {
-                    model.MaterialDesc = dbBrand.MaterialDesc;
+                    var dbBrand = _ck5Bll.GetBrandByPlantAndMaterialNumber(plantId, materialNumber);
+                    if (dbBrand != null && !string.IsNullOrEmpty(dbBrand.MaterialDesc))
+                    {
+                        model.MaterialDesc = dbBrand.MaterialDesc;
+                    }
                 }
+            }
+            else if (ck5Type == Enums.CK5Type.Waste)
+            {
+                var wasteStock = _ck5Bll.GetWasteStockQuota(plantId, materialNumber);
+                model.StockRemaining = wasteStock.WasteStockRemaining;
             }
             return Json(model);
         }
+
+        //[HttpPost]
+        //public JsonResult GetMaterialHjeAndTariffWaste(string plantId, string materialNumber)
+        //{
+
+        //    var dbMaterial = _materialBll.GetMaterialByPlantIdAndMaterialNumber(plantId, materialNumber);
+        //    var model = Mapper.Map<CK5InputManualViewModel>(dbMaterial);
+
+        //    var wasteStock = _ck5Bll.GetWasteStockQuota(plantId, materialNumber);
+        //    model.StockRemaining = wasteStock.WasteStockRemaining;
+
+        //    return Json(model);
+        //}
+
+
+        //[HttpPost]
+        //public JsonResult GetMaterialHjeAndTariffExport(string plantId, string materialNumber)
+        //{
+
+        //    var dbMaterial = _materialBll.GetMaterialByPlantIdAndMaterialNumber(plantId, materialNumber);
+        //    var model = Mapper.Map<CK5InputManualViewModel>(dbMaterial);
+
+        //    if (dbMaterial.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau))
+        //    {
+        //        var dbBrand = _ck5Bll.GetBrandByPlantAndMaterialNumber(plantId, materialNumber);
+        //        if (dbBrand != null && !string.IsNullOrEmpty(dbBrand.MaterialDesc))
+        //        {
+        //            model.MaterialDesc = dbBrand.MaterialDesc;
+        //        }
+        //    }
+        //    return Json(model);
+        //}
 
         [HttpPost]
         public JsonResult GetMaterialHjeAndTariffMarketReturn(string plantId, string materialNumber)
