@@ -139,13 +139,23 @@ namespace Sampoerna.EMS.Website.Controllers
             model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
 
-            List<CK5Dto> listCk5Dto;
-            if (ck5Type == Enums.CK5Type.MarketReturn)
-                listCk5Dto = _ck5Bll.GetCk5ByType(ck5Type); //only get based on the type
-            else
-                listCk5Dto = _ck5Bll.GetAll();
+            //List<CK5Dto> listCk5Dto;
+            //if (ck5Type == Enums.CK5Type.MarketReturn)
+            //    listCk5Dto = _ck5Bll.GetCk5ByType(ck5Type); //only get based on the type
+            //else
+            //    listCk5Dto = _ck5Bll.GetAll();
 
-            model.SearchView.DocumentNumberList = new SelectList(listCk5Dto, "SUBMISSION_NUMBER", "SUBMISSION_NUMBER");
+            var inputGetDocumentNumber = new CK5GetByParamInput();
+            inputGetDocumentNumber.UserId = CurrentUser.USER_ID;
+            inputGetDocumentNumber.UserRole = CurrentUser.UserRole;
+            inputGetDocumentNumber.ListUserPlant = CurrentUser.ListUserPlants;
+            inputGetDocumentNumber.Ck5Type = ck5Type;
+
+            var listCk5Dto = _ck5Bll.GetCk5DocumentNumberByType(inputGetDocumentNumber);
+
+            
+            //model.SearchView.DocumentNumberList = new SelectList(listCk5Dto, "SUBMISSION_NUMBER", "SUBMISSION_NUMBER");
+            model.SearchView.DocumentNumberList = new SelectList(listCk5Dto.Select(x => new KeyValuePair<string, string>(x, x)), "Key", "Value");
 
             model.SearchView.POAList = GlobalFunctions.GetPoaAll(_poabll);
             model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
@@ -171,12 +181,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 case Enums.CK5Type.Intercompany:
                 case Enums.CK5Type.Domestic:
                     model.DetailsList = GetCk5Items(Enums.CK5Type.Domestic, input);
-                    model.DetailList2 = GetCk5Items(Enums.CK5Type.Intercompany, input);
-                    model.DetailList3 = GetCk5Items(Enums.CK5Type.DomesticAlcohol, input);
+                    model.DetailList2 = new List<CK5Item>();// GetCk5Items(Enums.CK5Type.Intercompany, input);
+                    model.DetailList3 = new List<CK5Item>();//GetCk5Items(Enums.CK5Type.DomesticAlcohol, input);
                     break;
                 case Enums.CK5Type.PortToImporter:
                     model.DetailsList = GetCk5Items(Enums.CK5Type.PortToImporter, input);
-                    model.DetailList2 = GetCk5Items(Enums.CK5Type.ImporterToPlant, input);
+                    model.DetailList2 = new List<CK5Item>();//GetCk5Items(Enums.CK5Type.ImporterToPlant, input);
                     break;
                 default:
                     model.DetailsList = GetCk5Items(ck5Type, input);
@@ -5604,5 +5614,24 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             return RedirectToAction("Details", "CK5", new { id = model.Ck5Id });
         }
+
+        [HttpPost]
+        public JsonResult GetDocumentNo(Enums.CK5Type ck5Type)
+        {
+
+            var input = new CK5GetByParamInput();
+            input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
+            input.ListUserPlant = CurrentUser.ListUserPlants;
+            input.Ck5Type = ck5Type;
+
+            var listCk5Dto = _ck5Bll.GetCk5DocumentNumberByType(input);
+
+            //var model = new SelectList(listCk5Dto, "SUBMISSION_NUMBER", "SUBMISSION_NUMBER");
+            var model = listCk5Dto.Select(x => new SelectListItem() {Value = x, Text = x}).ToList();
+
+            return Json(model);
+        }
+
     }
 }
