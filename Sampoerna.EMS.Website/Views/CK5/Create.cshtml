@@ -564,13 +564,17 @@
                         }
                     }
 
-                    if ('@Model.Ck5Type.ToString()' == "Waste") {
+                    @*if ('@Model.Ck5Type.ToString()' == "Waste") {
                         ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariffWaste", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
                     } else if ('@Model.Ck5Type.ToString()' == '@Enums.CK5Type.Export.ToString()') {
                         ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariffExport", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
                     } else {
                         ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariff", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber, ck5Type: '@Model.Ck5Type' });
-                    }
+                    }*@
+                    
+                   
+                   ajaxGetMaterialHjeAndTariff('@Url.Action("GetMaterialHjeAndTariff", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber, ck5Type: '@Model.Ck5Type' });
+                   
 
                 }
             }
