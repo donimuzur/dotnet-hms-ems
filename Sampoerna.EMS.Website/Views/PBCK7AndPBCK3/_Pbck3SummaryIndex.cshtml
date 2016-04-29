@@ -5,18 +5,20 @@
 <table id="pbck3-summary" class="display" cellspacing="0" width="100%">
     <thead>
         <tr>
-            <th class="toggle-row">Pbck-3 No</th>
-            <th>Pbck-7 No</th>
-            <th>CK-5 No</th>
+            <th class="toggle-row">PBCK-3 Number</th>
+            <th>PBCK-7 Number</th>
+            <th>CK-5 Number</th>
             <th>NPPBKC</th>
-            <th>Plant</th>
+            <th>KPPBC</th>
+            <th>Plant ID</th>
+            <th>Plant Desc</th>
             <th>Date</th>
-            <th>Status</th>
-            <th>Back-3 No</th>
+            <th>BACK-3 Number</th>
             <th>Back-3 Date</th>
-            <th>CK-2 No</th>
+            <th>CK-2 Number</th>
             <th>CK-2 Date</th>
             <th>CK-2 Value</th>
+            <th>Status</th>
         </tr>
     </thead>
 
@@ -31,15 +33,16 @@
                     <td>@Html.DisplayFor(model => item.Pbck7Number)</td>
                     <td>@Html.DisplayFor(model => item.Ck5Number)</td>
                     <td>@Html.DisplayFor(model => item.Nppbkc)</td>
+                    <td>@Html.DisplayFor(model => item.Kppbc)</td>
+                    <td>@Html.DisplayFor(model => item.PlantId)</td>
                     <td>@Html.DisplayFor(model => item.PlantName)</td>
                     <td>@Html.DisplayFor(model => item.Pbck3Date)</td>
-                    <td>@Html.DisplayFor(model => item.Pbck3Status)</td>
                     <td>@Html.DisplayFor(model => item.Back3No)</td>
                     <td>@Html.DisplayFor(model => item.Back3Date)</td>
                     <td>@Html.DisplayFor(model => item.Ck2No)</td>
                     <td>@Html.DisplayFor(model => item.Ck2Date)</td>
                     <td>@Html.DisplayFor(model => item.Ck2Value)</td>
-                    
+                    <td>@Html.DisplayFor(model => item.Pbck3Status)</td>
                     @*<td>@item.Pbck3Number</td>
                     <td>@item.Pbck7Number</td>
                     <td>@item.Ck5Number</td>

@@ -87,7 +87,9 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string ExciseSettlement { get; set; }
         public string ExciseStatus { get; set; }
         public string RequestType { get; set; }
+        public string SourcePlantId { get; set; }
         public string SourcePlant { get; set; }
+        public string DestinationPlantId { get; set; }
         public string DestinationPlant { get; set; }
         
         public string UnpaidExciseFacilityNumber { get; set; }
@@ -110,6 +112,8 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string DestinationCountry { get; set; }
         public string NumberBox { get; set; }
         public string ContainPerBox { get; set; }
+        public string ConvertedUom { get; set; }
+        public string ConvertedQty { get; set; }
         public string TotalOfExcisableGoods { get; set; }
         public string BanderolPrice { get; set; }
         public string ExciseTariff { get; set; }
@@ -156,7 +160,9 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool ExciseSettlement { get; set; }
         public bool ExciseStatus { get; set; }
         public bool RequestType { get; set; }
+        public bool SourcePlantId { get; set; }
         public bool SourcePlant { get; set; }
+        public bool DestinationPlantId { get; set; }
         public bool DestinationPlant { get; set; }
 
         public bool UnpaidExciseFacilityNumber { get; set; }
@@ -179,6 +185,8 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool DestinationCountry { get; set; }
         public bool NumberBox { get; set; }
         public bool ContainPerBox { get; set; }
+        public bool ConvertedUom { get; set; }
+        public bool ConvertedQty { get; set; }
         public bool TotalOfExcisableGoods { get; set; }
         public bool BanderolPrice { get; set; }
         public bool ExciseTariff { get; set; }

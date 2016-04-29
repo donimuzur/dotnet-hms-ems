@@ -77,8 +77,11 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
     public  class Pbck7ExportModel
     {
         public string NppbkcId { get; set; }
+        public string KppbcId { get; set; }
 
         public string Pbck7No { get; set; }
+
+        public string PlantId { get; set; }
 
         public string Plant { get; set; }
 
@@ -107,7 +110,11 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 
         public bool IsSelectNppbkc { get; set; }
 
+        public bool IsSelectKppbc { get; set; }
+
         public bool IsSelectPbck7No { get; set; }
+
+        public bool IsSelectPlantId { get; set; }
 
         public bool IsSelectPlant { get; set; }
 
@@ -143,9 +150,11 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
     {
         public string Pbck7Number { get; set; }
         public string Pbck7Date { get; set; }
+        public string PlantId { get; set; }
         public string PlantName { get; set; }
         public string DocumentType { get; set; }
         public string Nppbkc { get; set; }
+        public string Kppbc { get; set; }
         public string ExecFrom { get; set; }
         public string ExecTo { get; set; }
         public string Back1No { get; set; }

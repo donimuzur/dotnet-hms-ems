@@ -1780,39 +1780,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 DataSource = exportModel.OrderBy(c => c.Nppbkc).ToList(),
                 AutoGenerateColumns = false
             };
-            if (model.ExportModel.Company)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "Company",
-                    HeaderText = "Original Company"
-                });
-            }
-            if (model.ExportModel.Nppbkc)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "Nppbkc",
-                    HeaderText = "Original NPPBKC"
-                });
-            }
-            if (model.ExportModel.Address)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "Address",
-                    HeaderText = "Original Address",
-                    HtmlEncode = false
-                });
-            }
-            if (model.ExportModel.Kppbc)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "Kppbc",
-                    HeaderText = "Original KPPBC"
-                });
-            }
             if (model.ExportModel.Pbck1Number)
             {
                 grid.Columns.Add(new BoundField()
@@ -1821,7 +1788,79 @@ namespace Sampoerna.EMS.Website.Controllers
                     HeaderText = "PBCK-1 Number"
                 });
             }
-
+            if (model.ExportModel.DecreeDate)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "DecreeDate",
+                    HeaderText = "Decree Date"
+                });
+            }
+            if (model.ExportModel.Status)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Status",
+                    HeaderText = "Status"
+                });
+            }
+            if (model.ExportModel.IsNppbkcImport)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "IsNppbkcImport",
+                    HeaderText = "Import"
+                });
+            }
+            if (model.ExportModel.Pbck1Type)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck1Type",
+                    HeaderText = "PBCK-1 Type"
+                });
+            }
+            if (model.ExportModel.Company)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Company",
+                    HeaderText = "Receiver Company"
+                });
+            }
+            if (model.ExportModel.Nppbkc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Nppbkc",
+                    HeaderText = "Receiver NPPBKC"
+                });
+            }
+            if (model.ExportModel.Address)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Address",
+                    HeaderText = "Receiver Address",
+                    HtmlEncode = false
+                });
+            }
+            if (model.ExportModel.Kppbc)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Kppbc",
+                    HeaderText = "Receiver KPPBC"
+                });
+            }
+            if (model.ExportModel.SupplierCompany)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "SupplierCompany",
+                    HeaderText = "Supplier Company"
+                });
+            }
             if (model.ExportModel.OriginalNppbkc)
             {
                 grid.Columns.Add(new BoundField()
@@ -1846,36 +1885,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     HeaderText = "Supplier Address"
                 });
             }
-            if (model.ExportModel.ExcGoodsAmount)
+            if (model.ExportModel.SupplierPlantId)
             {
                 grid.Columns.Add(new BoundField()
                 {
-                    DataField = "ExcGoodsAmount",
-                    HeaderText = "ExcGoodsAmount"
-                });
-            }
-            if (model.ExportModel.Status)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "Status",
-                    HeaderText = "Status"
-                });
-            }
-            if (model.ExportModel.Pbck1Type)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "Pbck1Type",
-                    HeaderText = "Pbck1Type"
-                });
-            }
-            if (model.ExportModel.SupplierPortName)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "SupplierPortName",
-                    HeaderText = "SupplierPortName"
+                    DataField = "SupplierPlantWerks",
+                    HeaderText = "Supplier Plant ID"
                 });
             }
             if (model.ExportModel.SupplierPlant)
@@ -1883,7 +1898,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "SupplierPlant",
-                    HeaderText = "SupplierPlant"
+                    HeaderText = "Supplier Plant Desc"
                 });
             }
             if (model.ExportModel.GoodTypeDesc)
@@ -1891,7 +1906,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "GoodTypeDesc",
-                    HeaderText = "GoodTypeDesc"
+                    HeaderText = "Excisable Goods Type"
+                });
+            }
+            if (model.ExportModel.RequestQtyUomName)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "RequestQtyUomName",
+                    HeaderText = "Qty UOM"
                 });
             }
             if (model.ExportModel.PlanProdFrom)
@@ -1899,7 +1922,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "PlanProdFrom",
-                    HeaderText = "PlanProdFrom"
+                    HeaderText = "Plan Prod From"
                 });
             }
             if (model.ExportModel.PlanProdTo)
@@ -1907,56 +1930,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "PlanProdTo",
-                    HeaderText = "PlanProdTo"
-                });
-            }
-            if (model.ExportModel.SupplierPhone)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "SupplierPhone",
-                    HeaderText = "SupplierPhone"
-                });
-            }
-            if (model.ExportModel.PoaList)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "PoaList",
-                    HeaderText = "PoaList",
-                    HtmlEncode = false
-                });
-            }
-            if (model.ExportModel.Reference)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "Reference",
-                    HeaderText = "Reference"
-                });
-            }
-            if (model.ExportModel.LACKFrom)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "LACKFrom",
-                    HeaderText = "LACKFrom"
-                });
-            }
-            if (model.ExportModel.LACKTo)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "LACKTo",
-                    HeaderText = "LACKTo"
-                });
-            }
-            if (model.ExportModel.LatestSaldo)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "LatestSaldo",
-                    HeaderText = "LatestSaldo"
+                    HeaderText = "Plan Prod To"
                 });
             }
             if (model.ExportModel.PeriodFrom)
@@ -1980,7 +1954,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "ReportedOn",
-                    HeaderText = "ReportedOn"
+                    HeaderText = "Reported On"
+                });
+            }
+            if (model.ExportModel.LatestSaldo)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "LatestSaldo",
+                    HeaderText = "Latest Saldo"
                 });
             }
             if (model.ExportModel.RequestQty)
@@ -1988,7 +1970,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "RequestQty",
-                    HeaderText = "RequestQty"
+                    HeaderText = "Requested Qty"
                 });
             }
             if (model.ExportModel.StatusGov)
@@ -1996,7 +1978,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "StatusGov",
-                    HeaderText = "StatusGov"
+                    HeaderText = "Status Gov"
                 });
             }
             if (model.ExportModel.QtyApproved)
@@ -2004,89 +1986,23 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "QtyApproved",
-                    HeaderText = "QtyApproved"
+                    HeaderText = "Approved Qty"
                 });
-            }
-            if (model.ExportModel.DecreeDate)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "DecreeDate",
-                    HeaderText = "DecreeDate"
-                });
-            }
-            if (model.ExportModel.IsNppbkcImport)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "IsNppbkcImport",
-                    HeaderText = "IsNppbkcImport"
-                });
-            }
-            if (model.ExportModel.SupplierCompany)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "SupplierCompany",
-                    HeaderText = "SupplierCompany"
-                });
-            }
+            }           
             if (model.ExportModel.ApprovedByPoaId)
             {
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "ApprovedByPoaId",
-                    HeaderText = "POA Approve"
+                    HeaderText = "POA Approved by"
                 });
             }
-            if (model.ExportModel.ApprovedByManagerId)
+            if (model.ExportModel.Creator)
             {
                 grid.Columns.Add(new BoundField()
                 {
-                    DataField = "ApprovedByManagerId",
-                    HeaderText = "Manager Approve"
-                });
-            }
-            if (model.ExportModel.LatestSaldoUomName)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "LatestSaldoUomName",
-                    HeaderText = "LatestSaldoUomName"
-                });
-            }
-            if (model.ExportModel.RequestQtyUomName)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "RequestQtyUomName",
-                    HeaderText = "RequestQtyUomName"
-                });
-            }
-            if (model.ExportModel.DocNumberCk5)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "DocNumberCk5",
-                    HeaderText = "Doc Number CK-5",
-                    HtmlEncode = false
-                });
-            }
-            if (model.ExportModel.StatusDoc)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "StatusDocCk5",
-                    HeaderText = "Status Doc CK-5",
-                    HtmlEncode = false
-                });
-            }
-            if (model.ExportModel.GrandTotalExciseable)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "GrandTotalExcisableCk5",
-                    HeaderText = "Grand Total Exciseable",
+                    DataField = "Creator",
+                    HeaderText = "Creator",
                     HtmlEncode = false
                 });
             }
@@ -2096,15 +2012,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     DataField = "CompletedDate",
                     HeaderText = "Completed Date",
-                    HtmlEncode = false
-                });
-            }
-            if (model.ExportModel.Creator)
-            {
-                grid.Columns.Add(new BoundField()
-                {
-                    DataField = "Creator",
-                    HeaderText = "Creator",
                     HtmlEncode = false
                 });
             }

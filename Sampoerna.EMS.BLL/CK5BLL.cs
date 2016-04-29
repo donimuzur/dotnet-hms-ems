@@ -3842,6 +3842,9 @@ namespace Sampoerna.EMS.BLL
                         summaryReport.MaterialDescription = material.MATERIAL_DESC;
                     }
 
+                    summaryReport.ConvertedQty = String.Format("{0:n}", ck5Material.CONVERTED_QTY.Value);
+                    summaryReport.ConvertedUom = ck5Material.CONVERTED_UOM;
+
                     mapResult.Add(summaryReport);
                 }
             }
@@ -4076,7 +4079,7 @@ namespace Sampoerna.EMS.BLL
 
 
                 result.ReportDetails.DestOfficeCode = dtData.DEST_PLANT_NPPBKC_ID;
-                if (dtData.DEST_PLANT_NPPBKC_ID.Length >= 4)
+                if (!string.IsNullOrEmpty(dtData.DEST_PLANT_NPPBKC_ID) && dtData.DEST_PLANT_NPPBKC_ID.Length >= 4)
                     result.ReportDetails.DestOfficeCode = dtData.DEST_PLANT_NPPBKC_ID.Substring(0, 4) + "00";
 
                 var dbNppbkcDest = _nppbkcBll.GetById(dtData.DEST_PLANT_NPPBKC_ID);
@@ -5565,6 +5568,17 @@ namespace Sampoerna.EMS.BLL
                     var summaryDto = new Ck5MarketReturnSummaryReportDto();
 
                     summaryDto.Ck5Id = dtData.CK5_ID;
+                    summaryDto.Ck5Number = dtData.SUBMISSION_NUMBER;
+                    summaryDto.PlantId = dtData.DEST_PLANT_ID;
+                    summaryDto.PlantDesc = dtData.DEST_PLANT_NAME;
+                    summaryDto.Nppbkc = dtData.DEST_PLANT_NPPBKC_ID;
+                    summaryDto.Kppbc = dtData.DEST_PLANT_KPPBC_NAME_OFFICE;
+                    summaryDto.Date = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.SUBMISSION_DATE);
+                    summaryDto.ReqType = EnumHelper.GetDescription(dtData.REQUEST_TYPE_ID);
+                    summaryDto.ExecDateFrom = "";
+                    summaryDto.ExecDateTo = "";
+                    summaryDto.Back1No = "";
+                    summaryDto.Back1Date = "";
 
                     summaryDto.FaCode = ck5Item.BRAND;
                     summaryDto.Brand = "";
@@ -5602,6 +5616,18 @@ namespace Sampoerna.EMS.BLL
                         {
                             summaryDto.Ck2Number = ck2Data.CK2_NUMBER;
                             summaryDto.Ck2Value = ConvertHelper.ConvertDecimalToStringMoneyFormat(ck2Data.CK2_VALUE);
+                        }
+
+                        if (pbck3Data.PBCK7 != null)
+                        {
+                            summaryDto.ExecDateFrom = ConvertHelper.ConvertDateToStringddMMMyyyy(pbck3Data.PBCK7.EXEC_DATE_FROM);
+                            summaryDto.ExecDateTo = ConvertHelper.ConvertDateToStringddMMMyyyy(pbck3Data.PBCK7.EXEC_DATE_TO);
+
+                            if(pbck3Data.PBCK7.BACK1 != null)
+                            {
+                                summaryDto.Back1No = pbck3Data.PBCK7.BACK1.FirstOrDefault().BACK1_NUMBER;
+                                summaryDto.Back1Date = ConvertHelper.ConvertDateToStringddMMMyyyy(pbck3Data.PBCK7.BACK1.FirstOrDefault().BACK1_DATE);
+                            }
                         }
                     }
 
@@ -5685,6 +5711,10 @@ namespace Sampoerna.EMS.BLL
             inputChangeLogs.SUBMISSION_DATE = origin.SUBMISSION_DATE;
             inputChangeLogs.CK5_TYPE = origin.CK5_TYPE;
             inputChangeLogs.SOURCE_PLANT_ADDRESS = origin.SOURCE_PLANT_ADDRESS;
+            inputChangeLogs.SEALING_NOTIF_NUMBER = input.SEALING_NOTIF_NUMBER;
+            inputChangeLogs.SEALING_NOTIF_DATE = input.SEALING_NOTIF_DATE;
+            inputChangeLogs.UNSEALING_NOTIF_NUMBER = input.UNSEALING_NOTIF_NUMBER;
+            inputChangeLogs.UNSEALING_NOTIF_DATE = input.UNSEALING_NOTIF_DATE;
 
             //add to change log
             SetChangesHistory(origin, inputChangeLogs, input.UserId);
@@ -5698,6 +5728,10 @@ namespace Sampoerna.EMS.BLL
             dbData.CARRIAGE_METHOD_ID = input.CARRIAGE_METHOD_ID;
             dbData.INVOICE_NUMBER = input.INVOICE_NUMBER;
             dbData.INVOICE_DATE = input.INVOICE_DATE;
+            dbData.SEALING_NOTIF_NUMBER = input.SEALING_NOTIF_NUMBER;
+            dbData.SEALING_NOTIF_DATE = input.SEALING_NOTIF_DATE;
+            dbData.UNSEALING_NOTIF_NUMBER = input.UNSEALING_NOTIF_NUMBER;
+            dbData.UNSEALING_NOTIF_DATE = input.UNSEALING_NOTIF_DATE;
 
             dbData.MODIFIED_DATE = DateTime.Now;
 

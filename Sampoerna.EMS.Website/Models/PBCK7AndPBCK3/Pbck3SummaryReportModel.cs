@@ -69,10 +69,10 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public string Creator { get; set; }
 
         public bool IsSelectNppbkc { get; set; }
-
+        public bool IsSelectKppbc { get; set; }
         public bool IsSelectPbck3No { get; set; }
 
-     
+        public bool IsSelectPlantId { get; set; }
         public bool IsSelectPlant { get; set; }
 
         public bool IsSelectDocType { get; set; }
@@ -97,9 +97,11 @@ namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
         public string Ck5Number { get; set; }
 
         public string Pbck3Date { get; set; }
+        public string PlantId { get; set; }
         public string PlantName { get; set; }
         public string DocumentType { get; set; }
         public string Nppbkc { get; set; }
+        public string Kppbc { get; set; }
         public string Pbck3Status { get; set; }
         public string Back3No { get; set; }
         public string Back3Date { get; set; }

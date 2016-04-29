@@ -45,6 +45,7 @@ namespace Sampoerna.EMS.BLL
         private IPOAMapBLL _poaMapBll;
         private IUserPlantMapBLL _userPlantBll;
         private IDocumentSequenceNumberBLL _documentSequenceNumberBll;
+        private ILFA1BLL _lfaBll;
 
         private string includeTables = "MONTH, CK4C_ITEM, CK4C_DECREE_DOC";
 
@@ -76,6 +77,7 @@ namespace Sampoerna.EMS.BLL
             _userPlantBll = new UserPlantMapBLL(_uow, _logger);
             _documentSequenceNumberBll = new DocumentSequenceNumberBLL(_uow, _logger);
             _poaDelegationServices = new PoaDelegationServices(_uow, _logger);
+            _lfaBll = new LFA1BLL(_uow, _logger);
         }
 
         public List<Ck4CDto> GetAllByParam(Ck4CDashboardParamInput input)
@@ -1630,6 +1632,7 @@ namespace Sampoerna.EMS.BLL
                 summaryDto.PlantId = dtData.PLANT_ID;
                 summaryDto.PlantDescription = dtData.PLANT_NAME;
                 summaryDto.LicenseNumber = dtData.NPPBKC_ID;
+                summaryDto.Kppbc = _lfaBll.GetById(_nppbkcbll.GetDetailsById(dtData.NPPBKC_ID).KPPBC_ID).NAME1;
                 summaryDto.ReportPeriod = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.REPORTED_ON);
                 summaryDto.Period = dtData.REPORTED_PERIOD.ToString();
                 summaryDto.Month = dtData.MONTH.MONTH_NAME_ENG;
@@ -1722,6 +1725,7 @@ namespace Sampoerna.EMS.BLL
                     summaryDto.PlantId = dtData.PLANT_ID;
                     summaryDto.PlantDescription = dtData.PLANT_NAME;
                     summaryDto.LicenseNumber = dtData.NPPBKC_ID;
+                    summaryDto.Kppbc = _lfaBll.GetById(_nppbkcbll.GetDetailsById(dtData.NPPBKC_ID).KPPBC_ID).NAME1;
                     summaryDto.ReportPeriod = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.REPORTED_ON);
                     summaryDto.Period = dtData.REPORTED_PERIOD.ToString();
                     summaryDto.Month = dtData.MONTH.MONTH_NAME_ENG;

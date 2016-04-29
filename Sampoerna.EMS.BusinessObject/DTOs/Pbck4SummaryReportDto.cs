@@ -38,6 +38,7 @@
         public string CompanyName { get; set; }
         public string Poa { get; set; }
         public string Ck1No { get; set; }
+        public string Ck1Date { get; set; }
         public string Creator { get; set; }
 
     }

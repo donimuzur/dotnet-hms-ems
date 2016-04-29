@@ -63,6 +63,18 @@ namespace Sampoerna.EMS.Website.Models.CK5
     {
         public long Ck5Id { get; set; }
 
+        public string Ck5Number { get; set; }
+        public string PlantId { get; set; }
+        public string PlantDesc { get; set; }
+        public string Nppbkc { get; set; }
+        public string Kppbc { get; set; }
+        public string Date { get; set; }
+        public string ReqType { get; set; }
+        public string ExecDateFrom { get; set; }
+        public string ExecDateTo { get; set; }
+        public string Back1No { get; set; }
+        public string Back1Date { get; set; }
+        public string Status { get; set; }
         public string FaCode { get; set; }
         public string Brand { get; set; }
         public string Content { get; set; }
@@ -77,7 +89,6 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string Pbck3Status { get; set; }
         public string Ck2Number { get; set; }
         public string Ck2Value { get; set; }
-        public string Status { get; set; }
         public string CompletedDate { get; set; }
 
     }
@@ -85,6 +96,18 @@ namespace Sampoerna.EMS.Website.Models.CK5
     public class CK5MarketReturnExportSummaryReportsViewModel : CK5MarketReturnSearchSummaryReportsViewModel
     {
         public bool NoRow { get; set; }
+        public bool IsSelectCk5Number { get; set; }
+        public bool IsSelectPlantId { get; set; }
+        public bool IsSelectPlantDesc { get; set; }
+        public bool IsSelectNppbkc { get; set; }
+        public bool IsSelectKppbc { get; set; }
+        public bool IsSelectDate { get; set; }
+        public bool IsSelectReqType { get; set; }
+        public bool IsSelectExecDateFrom { get; set; }
+        public bool IsSelectExecDateTo { get; set; }
+        public bool IsSelectBack1No { get; set; }
+        public bool IsSelectBack1Date { get; set; }
+        public bool IsSelectStatus { get; set; }
         public bool IsSelectFaCode { get; set; }
         public bool IsSelectBrand { get; set; }
         public bool IsSelectContent { get; set; }
@@ -99,7 +122,6 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool IsSelectPbck3Status { get; set; }
         public bool IsSelectCk2Number { get; set; }
         public bool IsSelectCk2Value { get; set; }
-        public bool IsSelectStatus { get; set; }
         public bool IsSelectCompletedDate { get; set; }
     }
 

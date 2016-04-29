@@ -21,6 +21,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string SupplierPlantAddress { get; set; }
         public string SupplierCompanyName { get; set; }
         public string SupplierCompanyCode { get; set; }
+        public string SupplierNppbkc { get; set; }
+        public string SupplierKppbc { get; set; }
         public string ExGoodsType { get; set; }
         public decimal? WasteQty { get; set; }
         public string WasteUom { get; set; }
@@ -34,6 +36,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ApprovedBy { get; set; }
         public DateTime? ApprovedDate { get; set; }
         public string NppbkcId { get; set; }
+        public string KppbcId { get; set; }
         public string ExTypDesc { get; set; }
         public DateTime? CompletedDate { get; set; }
         

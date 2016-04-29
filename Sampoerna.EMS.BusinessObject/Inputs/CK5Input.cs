@@ -223,6 +223,12 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string INVOICE_NUMBER { get; set; }
         public DateTime? INVOICE_DATE { get; set; }
 
+        public string SEALING_NOTIF_NUMBER { get; set; }
+        public DateTime? SEALING_NOTIF_DATE { get; set; }
+
+        public string UNSEALING_NOTIF_NUMBER { get; set; }
+        public DateTime? UNSEALING_NOTIF_DATE { get; set; }
+
         public List<CK5MaterialDto> Ck5MaterialDtos { get; set; }
     }
 

@@ -1804,6 +1804,7 @@ namespace Sampoerna.EMS.BLL
                     summaryDto.StickerCode = pbck4Item.STICKER_CODE;
                     summaryDto.FaCode = pbck4Item.FA_CODE;
                     summaryDto.Ck1No = pbck4Item.CK1 != null ? pbck4Item.CK1.CK1_NUMBER : null;
+                    summaryDto.Ck1Date = pbck4Item.CK1 != null ? pbck4Item.CK1.CK1_DATE.ToString("dd MMM yyyy") : null;
                     summaryDto.SeriesCode = pbck4Item.SERIES_CODE;
                     summaryDto.RequestedQty = ConvertHelper.ConvertDecimalToString(pbck4Item.REQUESTED_QTY);
 
