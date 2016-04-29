@@ -2881,5 +2881,35 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
+
+        #region --------------- Detail TIS -------------
+
+        public ActionResult DetailTis()
+        {
+
+            Lack1DetailTisViewModel model;
+            try
+            {
+                model = new Lack1DetailTisViewModel()
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo,
+                    //DetailList = SearchDetailReport()
+                };
+                //model = InitSearchDetilReportViewModel(model);
+            }
+            catch (Exception ex)
+            {
+                model = new Lack1DetailTisViewModel()
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo
+                };
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return View("DetailTis", model);
+        }
+
+        #endregion
     }
 }

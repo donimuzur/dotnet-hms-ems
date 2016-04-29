@@ -7,6 +7,26 @@ namespace Sampoerna.EMS.Website.Models.LACK1
 {
     public class Lack1DetailTisViewModel : BaseModel
     {
+        public Lack1DetailTisViewModel()
+        {
+            DetailList = new List<Lack1DetailTisItemModel>();
+            SearchView = new Lack1SearchDetailTisViewModel();
+        }
+        public List<Lack1DetailTisItemModel> DetailList { get; set; }
+        public Lack1SearchDetailTisViewModel SearchView { get; set; }
+
+        public Lack1SearchDetailTisViewModel ExportSearchView { get; set; }
+    }
+
+    public class Lack1SearchDetailTisViewModel
+    {
+        public DateTime? DateFrom { get; set; }
+        public DateTime? DateTo { get; set; }
+        public string PlantReceiverFrom { get; set; }
+        public string PlantReceiverTo { get; set; }
+
+        public SelectList PlantReceiverFromList { get; set; }
+        public SelectList PlantReceiverToList { get; set; }
     }
 
     public class Lack1DetailTisItemModel
