@@ -23,6 +23,8 @@
                 <th>Remaining PBCK-1 Quota</th>
                 <th>Total Qty of CK-5</th>
                 <th>Detail CK-5 Number</th>
+                <th>Detail CK-5 GR Date</th>
+                <th>Detail CK-5 Reg Date</th>
                 <th>Detail Qty of CK-5</th>
                 <th>Detail CK-5 Receiver Plant ID</th>
                 <th>Detail CK-5 Receiver Plant Desc</th>
@@ -104,6 +106,34 @@
                                  <text>-</text>
                              }
                             
+                         </td>
+                         <td>
+                             @if (item.Ck5List.Any())
+                             {
+                                 foreach (var ck5 in item.Ck5List)
+                                 {
+                                     @ck5.GrDate <br />
+                                 }
+                             }
+                             else
+                             {
+                                 <text>-</text>
+                             }
+
+                         </td>
+                         <td>
+                             @if (item.Ck5List.Any())
+                             {
+                                 foreach (var ck5 in item.Ck5List)
+                                 {
+                                     @ck5.RegDate <br />
+                                 }
+                             }
+                             else
+                             {
+                                 <text>-</text>
+                             }
+
                          </td>
                          <td class="number">
                              @if (item.Ck5List.Any())

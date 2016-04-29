@@ -5280,6 +5280,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, data.Ck2Number);
                     iColumn = iColumn + 1;
                 }
+                if (modelExport.IsSelectCk2Date)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck2Date);
+                    iColumn = iColumn + 1;
+                }
                 if (modelExport.IsSelectCk2Value)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Ck2Value);
@@ -5440,6 +5445,11 @@ namespace Sampoerna.EMS.Website.Controllers
             if (modelExport.IsSelectCk2Number)
             {
                 slDocument.SetCellValue(iRow, iColumn, "CK-2 No.");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.IsSelectCk2Date)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-2 Date");
                 iColumn = iColumn + 1;
             }
             if (modelExport.IsSelectCk2Value)

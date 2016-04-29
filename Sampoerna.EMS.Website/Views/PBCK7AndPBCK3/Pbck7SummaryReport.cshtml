@@ -523,27 +523,32 @@
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCk2Value, new { @class = "checkbox checkexport", @datacolumn = "22" })CK-2 Value
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCk2Date, new { @class = "checkbox checkexport", @datacolumn = "22" })CK-2 Date
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCompletedDate, new { @class = "checkbox checkexport", @datacolumn = "23" })Completed Date
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCk2Value, new { @class = "checkbox checkexport", @datacolumn = "23" })CK-2 Value
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPoa, new { @class = "checkbox checkexport", @datacolumn = "24" })POA Approved by
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCompletedDate, new { @class = "checkbox checkexport", @datacolumn = "24" })Completed Date
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCreator, new { @class = "checkbox checkexport", @datacolumn = "25" })Creator
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectPoa, new { @class = "checkbox checkexport", @datacolumn = "25" })POA Approved by
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectStatus, new { @class = "checkbox checkexport", @datacolumn = "26" })Status
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectCreator, new { @class = "checkbox checkexport", @datacolumn = "26" })Creator
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.IsSelectStatus, new { @class = "checkbox checkexport", @datacolumn = "27" })Status
                                                     </label>
                                                 </div>
                                             </div>
@@ -606,7 +611,7 @@
                                 $('.checkexport').each(function () {
                                     this.checked = true;
                                 });
-                                for (var i = 0; i < 27; i++) {
+                                for (var i = 0; i < 28; i++) {
                                     table.column(i).visible(true);
                                 }
                                 $('#pbck7-summary').parents('div.dataTables_wrapper').first().show();
@@ -616,7 +621,7 @@
                                 $('.checkexport').each(function() {
                                     this.checked = false;
                                 });
-                                for (var i = 0; i < 27; i++) {
+                                for (var i = 0; i < 28; i++) {
                                     table.column(i).visible(false);
                                 }
                                 $('#pbck7-summary').parents('div.dataTables_wrapper').first().hide();
@@ -630,7 +635,7 @@
 
                             $('#pbck7-summary').parents('div.dataTables_wrapper').first().hide();
 
-                            for (var i = 0; i < 27; i++) {
+                            for (var i = 0; i < 28; i++) {
                                 if (table.column(i).visible()) {
                                     $('#pbck7-summary').parents('div.dataTables_wrapper').first().show();
                                     return;
@@ -641,7 +646,7 @@
 
                         if (blFirst) {
 
-                            for (var i = 5; i < 27; i++) {
+                            for (var i = 5; i < 28; i++) {
                                 table.column(i).visible(false);
                             }
 
