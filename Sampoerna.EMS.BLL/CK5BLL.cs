@@ -4051,23 +4051,23 @@ namespace Sampoerna.EMS.BLL
                 result.ReportDetails.FinalPortName = dtData.FINAL_PORT_NAME;
                 result.ReportDetails.FinalPortId = dtData.FINAL_PORT_ID;
 
-                foreach (var material in result.ListMaterials)
-                {
-                    var mat = _materialBll.GetByPlantIdAndStickerCode(material.PLANT_ID, material.BRAND);
-                    if (mat.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau))
-                    {
-                        //UPDATE FOR PRINT OUT ONLY
-                        material.MaterialDescription = "";
+                //foreach (var material in result.ListMaterials)
+                //{
+                //    var mat = _materialBll.GetByPlantIdAndStickerCode(material.PLANT_ID, material.BRAND);
+                //    if (mat.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau))
+                //    {
+                //        //UPDATE FOR PRINT OUT ONLY
+                //        material.MaterialDescription = "";
 
-                        var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(material.PLANT_ID, material.BRAND);
-                        if (dbBrand != null)
-                        {
-                            material.MaterialDescription = dbBrand.BRAND_CE;
-                        }
-                    }
+                //        var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(material.PLANT_ID, material.BRAND);
+                //        if (dbBrand != null)
+                //        {
+                //            material.MaterialDescription = dbBrand.BRAND_CE;
+                //        }
+                //    }
 
 
-                }
+                //}
             }
             else
             {
@@ -4079,7 +4079,7 @@ namespace Sampoerna.EMS.BLL
 
 
                 result.ReportDetails.DestOfficeCode = dtData.DEST_PLANT_NPPBKC_ID;
-                if (dtData.DEST_PLANT_NPPBKC_ID.Length >= 4)
+                if (!string.IsNullOrEmpty(dtData.DEST_PLANT_NPPBKC_ID) && dtData.DEST_PLANT_NPPBKC_ID.Length >= 4)
                     result.ReportDetails.DestOfficeCode = dtData.DEST_PLANT_NPPBKC_ID.Substring(0, 4) + "00";
 
                 var dbNppbkcDest = _nppbkcBll.GetById(dtData.DEST_PLANT_NPPBKC_ID);
@@ -4107,6 +4107,27 @@ namespace Sampoerna.EMS.BLL
                 result.ReportDetails.FinalPort = "-";
                 result.ReportDetails.FinalPortName = "-";
                 result.ReportDetails.FinalPortId = "-";
+            }
+
+            if (dtData.CK5_TYPE == Enums.CK5Type.Export
+                || dtData.CK5_TYPE == Enums.CK5Type.Manual)
+            {
+                foreach (var material in result.ListMaterials)
+                {
+                    var mat = _materialBll.GetByPlantIdAndStickerCode(material.PLANT_ID, material.BRAND);
+                    if (mat.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau))
+                    {
+                        //UPDATE FOR PRINT OUT ONLY
+                        material.MaterialDescription = "";
+                        var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(material.PLANT_ID, material.BRAND);
+                        if (dbBrand != null)
+                        {
+                            material.MaterialDescription = dbBrand.BRAND_CE;
+                        }
+                    }
+
+
+                }
             }
 
             result.ReportDetails.CK5Type = dtData.CK5_TYPE.ToString();
@@ -5603,6 +5624,7 @@ namespace Sampoerna.EMS.BLL
                     summaryDto.Pbck3No = "";
                     summaryDto.Pbck3Status = "";
                     summaryDto.Ck2Number = "";
+                    summaryDto.Ck2Date = "";
                     summaryDto.Ck2Value = "";
 
                     var pbck3Data = _pbck3Services.GetPbck3ByCk5Id(dtData.CK5_ID);
@@ -5615,6 +5637,7 @@ namespace Sampoerna.EMS.BLL
                         if (ck2Data != null)
                         {
                             summaryDto.Ck2Number = ck2Data.CK2_NUMBER;
+                            summaryDto.Ck2Date = ConvertHelper.ConvertDateToStringddMMMyyyy(ck2Data.CK2_DATE);
                             summaryDto.Ck2Value = ConvertHelper.ConvertDecimalToStringMoneyFormat(ck2Data.CK2_VALUE);
                         }
 
