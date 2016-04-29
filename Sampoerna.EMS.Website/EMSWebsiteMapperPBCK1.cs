@@ -79,9 +79,9 @@ namespace Sampoerna.EMS.Website
                     ;
             Mapper.CreateMap<Pbck1SummaryReportsItem, ExportSummaryDataModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Company, opt => opt.MapFrom(src => src.NppbkcCompanyName))
-                .ForMember(dest => dest.Nppbkc, opt => opt.MapFrom(src => ("'" + src.NppbkcId)))
+                .ForMember(dest => dest.Nppbkc, opt => opt.MapFrom(src => (src.NppbkcId)))
                 .ForMember(dest => dest.Kppbc, opt => opt.MapFrom(src => src.NppbkcKppbcName))
-                .ForMember(dest => dest.Pbck1Number, opt => opt.MapFrom(src => ("'" + src.Pbck1Number)))
+                .ForMember(dest => dest.Pbck1Number, opt => opt.MapFrom(src => (src.Pbck1Number)))
                 .ForMember(dest => dest.OriginalNppbkc, opt => opt.MapFrom(src => src.SupplierNppbkcId))
                 .ForMember(dest => dest.OriginalKppbc, opt => opt.MapFrom(src => src.SupplierKppbcName))
                 .ForMember(dest => dest.OriginalAddress, opt => opt.MapFrom(src => src.SupplierAddress))
@@ -173,6 +173,10 @@ namespace Sampoerna.EMS.Website
                     opt => opt.MapFrom(src => String.Join("<br />", src.Ck5List.Select(p => p.DestinationPlantId).ToArray())))
                 .ForMember(dest => dest.DetailCk5PlantDesc,
                     opt => opt.MapFrom(src => String.Join("<br />", src.Ck5List.Select(p => p.DestinationPlantDesc).ToArray())))
+                .ForMember(dest => dest.GrDateCk5,
+                    opt => opt.MapFrom(src => String.Join("<br />", src.Ck5List.Select(p => p.GrDate).ToArray())))
+                .ForMember(dest => dest.RegDateCk5,
+                    opt => opt.MapFrom(src => String.Join("<br />", src.Ck5List.Select(p => p.RegDate).ToArray())))
                     ;
 
             #endregion

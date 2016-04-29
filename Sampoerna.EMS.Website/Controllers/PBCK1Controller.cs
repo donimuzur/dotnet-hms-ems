@@ -1938,7 +1938,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "PeriodFrom",
-                    HeaderText = "PeriodFrom"
+                    HeaderText = "Period From"
                 });
             }
             if (model.ExportModel.PeriodTo)
@@ -1946,7 +1946,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 grid.Columns.Add(new BoundField()
                 {
                     DataField = "PeriodTo",
-                    HeaderText = "PeriodTo"
+                    HeaderText = "Period To"
                 });
             }
             if (model.ExportModel.ReportedOn)
@@ -3321,6 +3321,24 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     DataField = "DocNumberCk5",
                     HeaderText = "Detail CK-5 Number",
+                    HtmlEncode = false
+                });
+            }
+            if (model.GrDateCk5)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "GrDateCk5",
+                    HeaderText = "Detail CK-5 GR Date",
+                    HtmlEncode = false
+                });
+            }
+            if (model.RegDateCk5)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "RegDateCk5",
+                    HeaderText = "Detail CK-5 Reg Date",
                     HtmlEncode = false
                 });
             }
