@@ -82,6 +82,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public bool QuotaRemaining { get; set; }
         public bool TotalPbck1Quota { get; set; }
         public bool DocNumberCk5 { get; set; }
+        public bool GrDateCk5 { get; set; }
+        public bool RegDateCk5 { get; set; }
         public bool GrandTotalExciseable { get; set; }
         public bool UoM { get; set; }
         public bool Ck5Type { get; set; }
@@ -108,6 +110,8 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public string QuotaRemaining { get; set; }
         public string TotalPbck1Quota { get; set; }
         public string DocNumberCk5 { get; set; }
+        public string GrDateCk5 { get; set; }
+        public string RegDateCk5 { get; set; }
         public string GrandTotalExciseable { get; set; }
         public string UoM { get; set; }
         public string Received { get; set; }
