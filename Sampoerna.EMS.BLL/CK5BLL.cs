@@ -5603,6 +5603,7 @@ namespace Sampoerna.EMS.BLL
                     summaryDto.Pbck3No = "";
                     summaryDto.Pbck3Status = "";
                     summaryDto.Ck2Number = "";
+                    summaryDto.Ck2Date = "";
                     summaryDto.Ck2Value = "";
 
                     var pbck3Data = _pbck3Services.GetPbck3ByCk5Id(dtData.CK5_ID);
@@ -5615,6 +5616,7 @@ namespace Sampoerna.EMS.BLL
                         if (ck2Data != null)
                         {
                             summaryDto.Ck2Number = ck2Data.CK2_NUMBER;
+                            summaryDto.Ck2Date = ConvertHelper.ConvertDateToStringddMMMyyyy(ck2Data.CK2_DATE);
                             summaryDto.Ck2Value = ConvertHelper.ConvertDecimalToStringMoneyFormat(ck2Data.CK2_VALUE);
                         }
 
