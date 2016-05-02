@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Sampoerna.EMS.BusinessObject.Inputs
 {
@@ -49,4 +50,25 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public int PeriodYear { get; set; }
     }
 
+    public class GetLack1DailyProdInput
+    {
+        public DateTime DateFrom { get; set; }
+        public DateTime DateTo { get; set; }
+        public string PlantFrom { get; set; }
+        public string PlantTo { get; set; }
+
+        public List<string> ListOrdrZaapShiftReport { get; set; }
+        public List<string> ListBatch { get; set; }
+    }
+
+    public class GetLack1PrimaryResultsInput
+    {
+        public DateTime DateFrom { get; set; }
+        public DateTime DateTo { get; set; }
+        public string PlantFrom { get; set; }
+        public string PlantTo { get; set; }
+
+        public List<string> ListOrdrZaapShiftReport { get; set; }
+        public List<string> ListBatch { get; set; }
+    }
 }

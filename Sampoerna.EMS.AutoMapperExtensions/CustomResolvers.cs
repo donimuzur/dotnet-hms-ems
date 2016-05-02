@@ -425,4 +425,40 @@ namespace Sampoerna.EMS.AutoMapperExtensions
 
         }
     }
+
+    public class DoubleToStringMoneyResolver : ValueResolver<double?, string>
+    {
+        protected override string ResolveCore(double? value)
+        {
+            if (!value.HasValue)
+                return "0";
+
+            return ((double)value).ToString("n2", CultureInfo.InvariantCulture);
+
+        }
+
+    }
+    public class DateToStringDDMMMYYYYResolver : ValueResolver<object, string>
+    {
+        protected override string ResolveCore(object value)
+        {
+            if (value == null)
+                return null;
+
+            return ((DateTime)value).ToString("dd-MMM-yyyy");
+        }
+    }
+
+    public class DecimalToStringMoneyResolver2 : ValueResolver<decimal?, string>
+    {
+        protected override string ResolveCore(decimal? value)
+        {
+            if (!value.HasValue)
+                return "0";
+
+            return ((decimal)value).ToString("n2", CultureInfo.InvariantCulture);
+
+        }
+
+    }
 }

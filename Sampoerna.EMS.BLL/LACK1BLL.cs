@@ -4734,5 +4734,122 @@ namespace Sampoerna.EMS.BLL
         {
             return Math.Ceiling(number * Math.Pow(10, digits)) / Math.Pow(10, digits);
         }
+
+        #region Primary Results
+
+        public List<Lack1PrimaryResultsDto> GetPrimaryResultsByParam(Lack1GetPrimaryResultsByParamInput input)
+        {
+            //var listDailyProd = new List<Lack1DailyProdDto>();
+
+            var listOrdrZaapSiftRpt = _zaapShiftRptService.GetAll().Select(c => c.ORDR).Distinct().ToList();
+
+            var inputMvt = new GetLack1PrimaryResultsInput();
+            inputMvt.DateFrom = input.DateFrom;
+            inputMvt.DateTo = input.DateTo;
+            inputMvt.PlantFrom = input.PlantFrom;
+            inputMvt.PlantTo = input.PlantTo;
+            inputMvt.ListOrdrZaapShiftReport = listOrdrZaapSiftRpt;
+
+            var listCf = _inventoryMovementService.GetLack1PrimaryResultsCfProduced(inputMvt);
+
+            var listBatch = listCf.Select(c => c.BATCH).Distinct().ToList();
+
+            var listMaterial = _materialService.GetAll();
+
+            var listMaterialUom = _materialUomService.GetByMeinh("Gram");
+
+            var listPlant = _t001WServices.GetBAll();
+            inputMvt.ListBatch = listBatch;
+
+            var listBkc = _inventoryMovementService.GetLack1PrimaryResultsBkc(inputMvt);
+
+            var listDailyProd = (from Cf in listCf join
+                                     bkc in listBkc on new { Cf.PLANT_ID, Cf.ORDR } equals new { bkc.PLANT_ID, bkc.ORDR }
+                                 select new Lack1PrimaryResultsDto()
+                                          {
+                                              PlantId = Cf.PLANT_ID,
+                                              CfProducedProcessOrder = Cf.ORDR,
+                                              CfCodeProduced = Cf.MATERIAL_ID,
+                                              CfProducedDescription = "", //get from zaid ex material
+                                              CfProdDate = Cf.POSTING_DATE,
+                                              CfProdQty = Cf.QTY,
+                                              CfProdUom = "Gram",
+
+                                              BkcUsed = bkc.MATERIAL_ID,
+                                              BkcIssueQty = bkc.QTY,
+                                              BkcDescription = "",
+                                              BkcIssueUom = "Gram",
+                                              BkcOrdr = bkc.ORDR,
+                                          }).ToList();
+
+           
+            foreach (var lack1DailyProdDto in listDailyProd)
+            {
+                //get plant dec
+                var plantMaster = listPlant.Where(c => c.WERKS == lack1DailyProdDto.PlantId).FirstOrDefault();
+                if (plantMaster != null)
+                    lack1DailyProdDto.PlantDescription = plantMaster.NAME1;
+                //get material desc 
+                var materialMaster = listMaterial.FirstOrDefault(c => c.STICKER_CODE == lack1DailyProdDto.CfCodeProduced && c.WERKS == lack1DailyProdDto.PlantId);
+                if (materialMaster != null)
+                    lack1DailyProdDto.CfProducedDescription = materialMaster.MATERIAL_DESC;
+
+                //bkc
+                materialMaster = listMaterial.FirstOrDefault(c => c.STICKER_CODE == lack1DailyProdDto.BkcUsed && c.WERKS == lack1DailyProdDto.PlantId);
+                if (materialMaster != null)
+                    lack1DailyProdDto.BkcDescription = materialMaster.MATERIAL_DESC;
+
+                //get uom conversion Cf
+                var uomConversion =
+                    listMaterialUom.FirstOrDefault(
+                        c => c.STICKER_CODE == lack1DailyProdDto.CfCodeProduced 
+                            && c.WERKS == lack1DailyProdDto.PlantId
+                            && c.MEINH == "G");
+                if (uomConversion == null)
+                {
+                    //throw new Exception("Convertion Material Uom (Gram) in Material Master not exist, Werks :" +
+                    //                    lack1DailyProdDto.PlantId + ", Sticker_Code : " +
+                    //                    lack1DailyProdDto.CfCodeProduced);
+                    uomConversion = new MATERIAL_UOM();
+                    uomConversion.UMREN = 1;
+                }
+
+
+                if (uomConversion.UMREN == 0)
+                    throw new Exception("Convertion Material Uom (Gram) in Material Master Zero Divided, Werks :" +
+                                        lack1DailyProdDto.PlantId + ", Sticker_Code : " +
+                                        lack1DailyProdDto.CfCodeProduced);
+
+                lack1DailyProdDto.CfProdQty = lack1DailyProdDto.CfProdQty/uomConversion.UMREN;
+
+                //get uom conversion bkc
+                uomConversion =
+                    listMaterialUom.FirstOrDefault(
+                        c => c.STICKER_CODE == lack1DailyProdDto.BkcUsed 
+                            && c.WERKS == lack1DailyProdDto.PlantId
+                            && c.MEINH == "G");
+                if (uomConversion == null)
+                {
+                    //throw new Exception("Convertion Material Uom (Gram) in Material Master not exist, Werks :" +
+                    //                    lack1DailyProdDto.PlantId + ", Sticker_Code : " +
+                    //                    lack1DailyProdDto.BkcUsed);
+                    uomConversion = new MATERIAL_UOM();
+                    uomConversion.UMREN = 1;
+                }
+
+                if (uomConversion.UMREN == 0)
+                    throw new Exception("Convertion Material Uom (Gram) in Material Master Zero Divided, Werks :" +
+                                        lack1DailyProdDto.PlantId + ", Sticker_Code : " +
+                                        lack1DailyProdDto.BkcUsed);
+
+                lack1DailyProdDto.BkcIssueQty = lack1DailyProdDto.BkcIssueQty / uomConversion.UMREN;
+
+            }
+
+            return listDailyProd;
+        }
+
+
+        #endregion
     }
 }

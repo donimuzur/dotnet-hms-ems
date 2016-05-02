@@ -38,5 +38,10 @@ namespace Sampoerna.EMS.BLL.Services
                         !string.IsNullOrEmpty(c.NPPBKC_ID) && c.NPPBKC_ID == nppbkcId && c.IS_MAIN_PLANT.HasValue &&
                         c.IS_MAIN_PLANT.Value).FirstOrDefault();
         }
+
+        public List<T001W> GetBAll()
+        {
+            return _repository.Get().ToList();
+        }
     }
 }

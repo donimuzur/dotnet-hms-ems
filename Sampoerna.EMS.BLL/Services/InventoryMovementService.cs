@@ -216,5 +216,37 @@ namespace Sampoerna.EMS.BLL.Services
 
             return data;
         }
+
+        public List<INVENTORY_MOVEMENT> GetLack1PrimaryResultsCfProduced(GetLack1PrimaryResultsInput input)
+        {
+
+            var receiving101 = EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving101);
+
+
+            var data = _repository.Get(x => x.MVT == receiving101 && (!input.ListOrdrZaapShiftReport.Contains(x.ORDR)) 
+                    && x.POSTING_DATE >= input.DateFrom && x.POSTING_DATE <= input.DateTo
+                    && string.Compare(x.PLANT_ID, input.PlantFrom) >= 0 
+                    && string.Compare(x.PLANT_ID, input.PlantTo)  <= 0).ToList();
+
+
+            return data;
+        }
+
+        public List<INVENTORY_MOVEMENT> GetLack1PrimaryResultsBkc(GetLack1PrimaryResultsInput input)
+        {
+
+            var listMvt = new List<string>();
+            listMvt.Add(EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage261));
+            listMvt.Add(EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage262));
+
+            var data = _repository.Get(x=> input.ListBatch.Contains(x.BATCH)
+                    && x.POSTING_DATE >= input.DateFrom && x.POSTING_DATE <= input.DateTo
+                    && string.Compare(x.PLANT_ID, input.PlantFrom) >= 0 && 
+                        string.Compare(x.PLANT_ID, input.PlantTo) <= 0
+                    && listMvt.Contains(x.MVT)).ToList();
+
+
+            return data;
+        }
     }
 }

@@ -1,0 +1,55 @@
+﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1PrimaryResultsViewModel
+
+<table id="lack1Table" border="0" class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Plant ID</th>
+            <th>Plant Desc</th>
+            <th>CF Produced Process Order</th>
+            <th>CF Code Produced</th>
+            <th>CF Produced Description</th>
+            <th>CF Prod Date</th>
+            <th>CF Prod Qty</th>
+            <th>CF Produced UOM</th>
+            <th>BKC Used</th>
+            <th>BKC Desc</th>
+            <th>BKC Issue Qty</th>
+            <th>BKC Issue UOM</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @if (string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            foreach (var item in Model.Detail)
+            {
+                <tr>
+                    <td>@item.PlantId</td>
+                    <td>@item.PlantDescription</td>
+                    <td>@item.CfProducedProcessOrder</td>
+                    <td>@item.CfCodeProduced</td>
+                    <td>@item.CfProducedDescription</td>
+                    <td>@item.CfProdDate</td>
+                    <td>@item.CfProdQty</td>
+                    <td>@item.CfProdQty</td>
+                    <td>@item.BkcUsed</td>
+                    <td>@item.BkcDescription</td>
+                    <td>@item.BkcIssueQty</td>
+                    <td>@item.BkcIssueUom</td>
+
+                </tr>
+            }
+        }
+       
+    </tbody>
+</table>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <span hidden id="errorMessage">@Model.ErrorMessage</span>
+
+}
+else
+{
+   <span hidden id="errorMessage"></span>
+}
