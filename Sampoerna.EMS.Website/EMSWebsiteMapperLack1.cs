@@ -317,9 +317,9 @@ namespace Sampoerna.EMS.Website
             #region Daily Prod
 
             Mapper.CreateMap<Lack1DailyProdDto, Lack1DailyProdDetail>().IgnoreAllNonExisting()
-            //.ForMember(dest => dest.CfProdDate, opt => opt.MapFrom(src => src.CfProdDate.ToString("dd-MMM-yyyy")))
-            //.ForMember(dest => dest.CfProdQty, opt => opt.ResolveUsing<DoubleToStringMoneyResolver>().FromMember(src => src.CfProdQty))
-            //.ForMember(dest => dest.BkcIssueQty, opt => opt.ResolveUsing<DoubleToStringMoneyResolver>().FromMember(src => src.BkcIssueQty))
+            .ForMember(dest => dest.ProductionDate, opt => opt.MapFrom(src => src.ProductionDate.ToString("dd-MMM-yyyy")))
+            .ForMember(dest => dest.ProdQty, opt => opt.ResolveUsing<DecimalToStringMoneyResolver2>().FromMember(src => src.ProdQty))
+            .ForMember(dest => dest.RejectParkerQty, opt => opt.ResolveUsing<DecimalToStringMoneyResolver2>().FromMember(src => src.RejectParkerQty))
                 ;
 
             #endregion

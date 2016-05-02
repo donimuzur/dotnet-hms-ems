@@ -69,6 +69,8 @@ namespace Sampoerna.EMS.BLL
         private IMaterialBalanceService _materialBalanceService;
         private IBrandRegistrationService _brandRegService;
         private ICK5MaterialService _ck5MaterialService;
+        private IProductionServices _productionServices;
+        private IWasteServices _wasteServices;
 
         public LACK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -113,6 +115,8 @@ namespace Sampoerna.EMS.BLL
             _poaDelegationServices = new PoaDelegationServices(_uow, _logger);
             _materialBalanceService = new MaterialBalanceService(_uow, _logger);
             _ck5MaterialService = new CK5MaterialService(_uow, _logger);
+            _productionServices = new ProductionServices(_uow, _logger);
+            _wasteServices = new WasteServices(_uow, _logger);
         }
 
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
@@ -4782,7 +4786,9 @@ namespace Sampoerna.EMS.BLL
                                               BkcOrdr = bkc.ORDR,
                                           }).ToList();
 
+
            
+
             foreach (var lack1DailyProdDto in listDailyProd)
             {
                 //get plant dec
@@ -4805,22 +4811,43 @@ namespace Sampoerna.EMS.BLL
                         c => c.STICKER_CODE == lack1DailyProdDto.CfCodeProduced 
                             && c.WERKS == lack1DailyProdDto.PlantId
                             && c.MEINH == "G");
+
+                bool isError = false;
+
                 if (uomConversion == null)
                 {
+                    isError = true;
+                    lack1DailyProdDto.Message =
+                        "Convertion Material Uom (Gram) in Material Master not exist, Sticker_Code : " +
+                        lack1DailyProdDto.CfCodeProduced;
+
+
                     //throw new Exception("Convertion Material Uom (Gram) in Material Master not exist, Werks :" +
                     //                    lack1DailyProdDto.PlantId + ", Sticker_Code : " +
                     //                    lack1DailyProdDto.CfCodeProduced);
-                    uomConversion = new MATERIAL_UOM();
-                    uomConversion.UMREN = 1;
+                    //uomConversion = new MATERIAL_UOM();
+                    //uomConversion.UMREN = 1;
+                }
+                else
+                {
+
+                    if (uomConversion.UMREN == 0)
+                    {
+                        //throw new Exception("Convertion Material Uom (Gram) in Material Master Zero Divided, Werks :" +
+                        //                    lack1DailyProdDto.PlantId + ", Sticker_Code : " +
+                        //                    lack1DailyProdDto.CfCodeProduced);
+                        isError = true;
+                        lack1DailyProdDto.Message =
+                            "Convertion Material Uom (Gram) in Material Master Zero Divided, Sticker_Code : " +
+                            lack1DailyProdDto.CfCodeProduced;
+                    }
+
                 }
 
-
-                if (uomConversion.UMREN == 0)
-                    throw new Exception("Convertion Material Uom (Gram) in Material Master Zero Divided, Werks :" +
-                                        lack1DailyProdDto.PlantId + ", Sticker_Code : " +
-                                        lack1DailyProdDto.CfCodeProduced);
-
-                lack1DailyProdDto.CfProdQty = lack1DailyProdDto.CfProdQty/uomConversion.UMREN;
+                if (isError)
+                    lack1DailyProdDto.CfProdQty = 0;
+                else 
+                    lack1DailyProdDto.CfProdQty = lack1DailyProdDto.CfProdQty/uomConversion.UMREN;
 
                 //get uom conversion bkc
                 uomConversion =
@@ -4828,21 +4855,44 @@ namespace Sampoerna.EMS.BLL
                         c => c.STICKER_CODE == lack1DailyProdDto.BkcUsed 
                             && c.WERKS == lack1DailyProdDto.PlantId
                             && c.MEINH == "G");
+
+                isError = false;
+
                 if (uomConversion == null)
                 {
-                    //throw new Exception("Convertion Material Uom (Gram) in Material Master not exist, Werks :" +
-                    //                    lack1DailyProdDto.PlantId + ", Sticker_Code : " +
-                    //                    lack1DailyProdDto.BkcUsed);
-                    uomConversion = new MATERIAL_UOM();
-                    uomConversion.UMREN = 1;
+                    isError = true;
+                    lack1DailyProdDto.Message =
+                        "Convertion Material Uom (Gram) in Material Master not exist, Sticker_Code : " +
+                        lack1DailyProdDto.BkcUsed;
+
+                    ////throw new Exception("Convertion Material Uom (Gram) in Material Master not exist, Werks :" +
+                    ////                    lack1DailyProdDto.PlantId + ", Sticker_Code : " +
+                    ////                    lack1DailyProdDto.BkcUsed);
+                    //uomConversion = new MATERIAL_UOM();
+                    //uomConversion.UMREN = 1;
+                }
+                else
+                {
+                    //if (uomConversion.UMREN == 0)
+                    //    throw new Exception("Convertion Material Uom (Gram) in Material Master Zero Divided, Werks :" +
+                    //                        lack1DailyProdDto.PlantId + ", Sticker_Code : " +
+                    //                        lack1DailyProdDto.BkcUsed);
+                    if (uomConversion.UMREN == 0)
+                    {
+                        isError = true;
+                        lack1DailyProdDto.Message =
+                            "Convertion Material Uom (Gram) in Material Master Zero Divided, Sticker_Code : " +
+                            lack1DailyProdDto.BkcUsed;
+                    }
+
                 }
 
-                if (uomConversion.UMREN == 0)
-                    throw new Exception("Convertion Material Uom (Gram) in Material Master Zero Divided, Werks :" +
-                                        lack1DailyProdDto.PlantId + ", Sticker_Code : " +
-                                        lack1DailyProdDto.BkcUsed);
+                if (isError)
+                    lack1DailyProdDto.BkcIssueQty = 0;
+                else
+                    lack1DailyProdDto.BkcIssueQty = lack1DailyProdDto.BkcIssueQty / uomConversion.UMREN;
 
-                lack1DailyProdDto.BkcIssueQty = lack1DailyProdDto.BkcIssueQty / uomConversion.UMREN;
+                
 
             }
 
@@ -4851,5 +4901,60 @@ namespace Sampoerna.EMS.BLL
 
 
         #endregion
+        
+        #region Daily Prod
+
+        public List<Lack1DailyProdDto> GetDailyProdByParam(Lack1GetDailyProdByParamInput input)
+        {
+
+            var inputProduction = new GetProductionDailyProdByParamInput();
+            inputProduction.DateFrom = input.DateFrom;
+            inputProduction.DateTo = input.DateTo;
+            inputProduction.PlantFrom = input.PlantFrom;
+            inputProduction.PlantTo = input.PlantTo;
+
+            var listProduction = _productionServices.GetProductionByParam(inputProduction);
+
+
+            var inputWaste = new GetWasteDailyProdByParamInput();
+            inputWaste.DateFrom = input.DateFrom;
+            inputWaste.DateTo = input.DateTo;
+            inputWaste.PlantFrom = input.PlantFrom;
+            inputWaste.PlantTo = input.PlantTo;
+
+            var listWaste = _wasteServices.GetWasteDailyProdByParam(inputWaste);
+
+            //join
+
+            var listDailyProd = (from production in listProduction
+                                 join
+                                     waste in listWaste
+                                     on new { production.FA_CODE, production.PRODUCTION_DATE, production.WERKS }
+                                     equals new { waste.FA_CODE, PRODUCTION_DATE = waste.WASTE_PROD_DATE, waste.WERKS }
+                                 select new Lack1DailyProdDto()
+                                 {
+                                     PlantId = production.WERKS,
+                                     PlantDescription = "",
+                                     FaCode = production.FA_CODE,
+                                     FaCodeDescription = "",
+                                     ProductionDate = production.PRODUCTION_DATE,
+                                     ProdQty = production.QTY,
+                                     ProdUom = production.UOM,
+
+                                     RejectParkerQty = waste.PACKER_REJECT_STICK_QTY,
+                                     RejectParkerUom = "",//ask
+
+                                 }).ToList();
+
+          
+
+
+            return listDailyProd;
+
+        }
+
+
+        #endregion
+
     }
 }

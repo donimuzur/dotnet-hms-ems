@@ -145,7 +145,7 @@
         
         function OnFailure(xhr, status) {
             $('#btnFilter').addClass("btn-blue");
-            alert('Error: ' + xhr.statusText);
+           // alert('Error: ' + xhr.statusText);
            
         }
 
@@ -165,7 +165,7 @@
         
         function ReloadDataTables() {
             setupDataTables();
-            ShowAlert();
+            //ShowAlert();
         }
         
         function setupDataTables() {
@@ -191,8 +191,8 @@
         }
 
         function exportReconciliation() {
-            $('#ExportSearchView_DateFrom').val($('#SearchView_DateFrom').find("option:selected").val());
-            $('#ExportSearchView_DateTo').val($('#SearchView_DateTo').find("option:selected").val());
+            $('#ExportSearchView_DateFrom').val($('#SearchView_DateFrom').val());
+            $('#ExportSearchView_DateTo').val($('#SearchView_DateTo').val());
             $('#ExportSearchView_PlantFrom').val($('#SearchView_PlantFrom').find("option:selected").val());
             $('#ExportSearchView_PlantTo').val($('#SearchView_PlantTo').find("option:selected").val());
             $('#ExportXlsPrimaryResults').submit();

@@ -52,6 +52,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string BkcDescription { get; set; }
         public string BkcIssueQty { get; set; }
         public string BkcIssueUom { get; set; }
+        public string Message { get; set; }
     }
 
 }

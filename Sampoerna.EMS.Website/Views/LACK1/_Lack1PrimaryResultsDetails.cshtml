@@ -15,7 +15,7 @@
             <th>BKC Desc</th>
             <th>BKC Issue Qty</th>
             <th>BKC Issue UOM</th>
-
+            <th>Message</th>
         </tr>
     </thead>
     <tbody>
@@ -36,7 +36,7 @@
                     <td>@item.BkcDescription</td>
                     <td>@item.BkcIssueQty</td>
                     <td>@item.BkcIssueUom</td>
-
+                    <td>@item.Message</td>
                 </tr>
             }
         }
@@ -44,7 +44,7 @@
     </tbody>
 </table>
 
-@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+@*@if (!string.IsNullOrEmpty(Model.ErrorMessage))
 {
     <span hidden id="errorMessage">@Model.ErrorMessage</span>
 
@@ -52,4 +52,4 @@
 else
 {
    <span hidden id="errorMessage"></span>
-}
+}*@

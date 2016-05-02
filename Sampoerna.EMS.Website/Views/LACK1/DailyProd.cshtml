@@ -19,7 +19,10 @@
                             {
                                 HttpMethod = "POST",
                                 InsertionMode = InsertionMode.Replace,
-                                UpdateTargetId = "contenttable"
+                                //UpdateTargetId = "contenttable"
+                                OnSuccess = "OnSuccess",
+                                OnFailure = "OnFailure",
+                                OnComplete = "ReloadDataTables"
 
                             }))
                         {
@@ -72,7 +75,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-2 col-md-offset-8">
-                                    <button class="btn btn-blue full">FILTER</button>
+                                    <input type="button" onclick="OnFilter();" id="btnFilter" class="btn btn-blue full" value="FILTER" />
                                 </div>
                                 <div class="col-md-2">
                                     <input id="btn-export-to-excel" type="button" class="btn btn-blue full" value="EXPORT" />
@@ -105,7 +108,7 @@
         $('#MenuLack1DailyProdReport').addClass('active');
 
         $(document).ready(function() {
-
+            setupDataTables();
            
             $('#btn-export-to-excel').click(function() {
                 exportReconciliation();
@@ -113,11 +116,51 @@
 
         });
 
-       
+
+        function OnSuccess(data) {
+            $('#btnFilter').addClass("btn-blue");
+            $("#contenttable").html(data);
+
+        }
+
+        function OnFailure(xhr, status) {
+            $('#btnFilter').addClass("btn-blue");
+            // alert('Error: ' + xhr.statusText);
+
+        }
+
+        function OnFilter() {
+            $('#btnFilter').removeClass("btn-blue");
+            $('#ajaxForm').submit();
+        }
+        
+        function setupDataTables() {
+
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#lack1Table')) {
+                table = $('#lack1Table').DataTable();
+                table.destroy();
+            }
+
+            table = $('#lack1Table').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+            //   table.ext.errMode = 'none';
+
+
+        }
+        
         function exportReconciliation() {
-            $('#ExportSearchView_NppbkcId').val($('#SearchView_NppbkcId').find("option:selected").val());
-            $('#ExportSearchView_PlantId').val($('#SearchView_PlantId').find("option:selected").val());
-            $('#ExportSearchView_ExGoodType').val($('#SearchView_ExGoodType').find("option:selected").val());
+            $('#ExportSearchView_DateFrom').val($('#SearchView_DateFrom').val());
+            $('#ExportSearchView_DateTo').val($('#SearchView_DateTo').val());
+            $('#ExportSearchView_PlantFrom').val($('#SearchView_PlantFrom').find("option:selected").val());
+            $('#ExportSearchView_PlantTo').val($('#SearchView_PlantTo').find("option:selected").val());
             $('#ExportXlsDailyProd').submit();
         }
 

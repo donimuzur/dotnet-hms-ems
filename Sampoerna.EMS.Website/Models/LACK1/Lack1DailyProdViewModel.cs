@@ -43,15 +43,13 @@ namespace Sampoerna.EMS.Website.Models.LACK1
     {
         public string PlantId { get; set; }
         public string PlantDescription { get; set; }
-        public string CfProducedProcessOrder { get; set; }
-        public string CfCodeProduced { get; set; }
-        public string CfProducedDescription { get; set; }
-        public string CfProdDate { get; set; }
-        public string CfProdQty { get; set; }
-        public string CfProdUom { get; set; }
-        public string BkcUsed { get; set; }
-        public string BkcDescription { get; set; }
-        public string BkcIssueQty { get; set; }
-        public string BkcIssueUom { get; set; }
+        public string FaCode { get; set; }
+        public string FaCodeDescription { get; set; }
+        public string ProductionDate { get; set; }
+        public string ProdQty { get; set; }
+        public string ProdUom { get; set; }
+        public string RejectParkerQty { get; set; }
+        public string RejectParkerUom { get; set; }
+        
     }
 }

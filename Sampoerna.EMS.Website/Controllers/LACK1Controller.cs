@@ -2934,9 +2934,9 @@ namespace Sampoerna.EMS.Website.Controllers
             input.PlantFrom = filter.PlantFrom;
             input.PlantTo = filter.PlantTo;
 
-            //var dbData = _lack1Bll.GetDailyProdByParam(input);
-            //return Mapper.Map<List<Lack1DailyProdDetail>>(dbData);
-            return new List<Lack1DailyProdDetail>();
+            var dbData = _lack1Bll.GetDailyProdByParam(input);
+            return Mapper.Map<List<Lack1DailyProdDetail>>(dbData);
+            
         }
 
         [HttpPost]
@@ -3051,7 +3051,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //create header
             slDocument = CreateHeaderExcelPrimaryResults(slDocument);
 
-            int iRow = 3; //starting row data
+            int iRow = 2; //starting row data
             int iColumn = 1;
             foreach (var data in dataPrimaryResults)
             {
@@ -3110,11 +3110,23 @@ namespace Sampoerna.EMS.Website.Controllers
             valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
             valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
             //valueStyle.Alignment.Vertical = VerticalAlignmentValues.Center;
-            //valueStyle.SetWrapText(true);
-
+            valueStyle.SetWrapText(true);
+            //set header style
+            
+            SLStyle headerStyle = slDocument.CreateStyle();
+            headerStyle.Alignment.Horizontal = HorizontalAlignmentValues.Center;
+            headerStyle.Font.Bold = true;
+            headerStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Fill.SetPattern(PatternValues.Solid, System.Drawing.Color.LightGray, System.Drawing.Color.LightGray);
 
             slDocument.AutoFitColumn(1, iColumn - 1);
-            slDocument.SetCellStyle(1, 1, iRow - 1, iColumn - 1, valueStyle);
+            slDocument.SetCellStyle(2, 1, iRow - 1, iColumn - 1, valueStyle);
+
+            slDocument.SetCellStyle(1, 1, 1, iColumn - 1, headerStyle);
+
 
             var fileName = "lack1_primaryresults" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
             var path = Path.Combine(Server.MapPath(Constans.Lack1UploadFolderPath), fileName);
@@ -3128,45 +3140,42 @@ namespace Sampoerna.EMS.Website.Controllers
         private SLDocument CreateHeaderExcelPrimaryResults(SLDocument slDocument)
         {
             int iColumn = 1;
-            int iRow = 3;
+            int iRow = 1;
 
             slDocument.SetCellValue(iRow, iColumn, "PlantId");
             iColumn = iColumn + 1;
 
-            slDocument.SetCellValue(iRow, iColumn, "PlantId");
+            slDocument.SetCellValue(iRow, iColumn, "Plant Desc");
             iColumn = iColumn + 1;
 
-            slDocument.SetCellValue(iRow, iColumn, "PlantDescription");
+            slDocument.SetCellValue(iRow, iColumn, "CF Produced Process Order");
             iColumn = iColumn + 1;
 
-            slDocument.SetCellValue(iRow, iColumn, "CfProducedProcessOrder");
+            slDocument.SetCellValue(iRow, iColumn, "CF Code Produced");
             iColumn = iColumn + 1;
 
-            slDocument.SetCellValue(iRow, iColumn, "CfCodeProduced");
+            slDocument.SetCellValue(iRow, iColumn, "CF Produced Description");
             iColumn = iColumn + 1;
 
-            slDocument.SetCellValue(iRow, iColumn, "CfProducedDescription");
+            slDocument.SetCellValue(iRow, iColumn, "CF Prod Date");
             iColumn = iColumn + 1;
 
-            slDocument.SetCellValue(iRow, iColumn, "CfProdDate");
+            slDocument.SetCellValue(iRow, iColumn, "CF Prod Qty");
             iColumn = iColumn + 1;
 
-            slDocument.SetCellValue(iRow, iColumn, "CfProdQty");
+            slDocument.SetCellValue(iRow, iColumn, "CF Produced UOM");
             iColumn = iColumn + 1;
 
-            slDocument.SetCellValue(iRow, iColumn, "CfProdUom");
+            slDocument.SetCellValue(iRow, iColumn, "BKC Used");
             iColumn = iColumn + 1;
 
-            slDocument.SetCellValue(iRow, iColumn, "BkcUsed");
+            slDocument.SetCellValue(iRow, iColumn, "BKC Desc");
             iColumn = iColumn + 1;
 
-            slDocument.SetCellValue(iRow, iColumn, "BkcDescription");
+            slDocument.SetCellValue(iRow, iColumn, "BKC Issue Qty");
             iColumn = iColumn + 1;
 
-            slDocument.SetCellValue(iRow, iColumn, "BkcIssueQty");
-            iColumn = iColumn + 1;
-
-            slDocument.SetCellValue(iRow, iColumn, "BkcIssueUom");
+            slDocument.SetCellValue(iRow, iColumn, "BKC Issue UOM");
             iColumn = iColumn + 1;
 
             return slDocument;

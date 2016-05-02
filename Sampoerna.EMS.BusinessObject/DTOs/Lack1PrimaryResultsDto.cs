@@ -19,5 +19,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal? BkcIssueQty { get; set; }
         public string BkcIssueUom { get; set; }
         public string BkcOrdr { get; set; }
+
+        public string Message { get; set; }
     }
 }
