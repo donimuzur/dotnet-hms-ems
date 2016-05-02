@@ -1598,6 +1598,20 @@ namespace Sampoerna.EMS.BLL
             return dtToReturn;
         }
 
+        public List<Lack1CFUsagevsFaDetailDto> GetCfUsagevsFaDetailData()
+        {
+            var begining = "ID01";
+            var end = "ID04";
+            var werks = _t001WServices.GetByRange(begining,end).Select(c=> c.WERKS).ToList();
+            var input = new ZaapShiftRptGetForLack1ReportByParamInput()
+            {
+                Werks = werks,
+                
+            };
+
+            return null;
+        }
+
         public List<Lack1DetailsDto> GetPbck1RealizationList(Lack1GetPbck1RealizationListParamInput input)
         {
             return Mapper.Map<List<Lack1DetailsDto>>(_lack1Service.GetPbck1RealizationList(input));
