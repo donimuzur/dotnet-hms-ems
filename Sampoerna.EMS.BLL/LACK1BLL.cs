@@ -4734,5 +4734,17 @@ namespace Sampoerna.EMS.BLL
         {
             return Math.Ceiling(number * Math.Pow(10, digits)) / Math.Pow(10, digits);
         }
+
+
+        #region --------------------- Detail TIS ----------------
+
+        public List<Lack1DetailTisDto> GetDetailTisByParam(Lack1GetDetailTisByParamInput input)
+        {
+            var rc = new List<Lack1DetailTisDto>();
+
+            return rc;
+        }
+
+        #endregion
     }
 }

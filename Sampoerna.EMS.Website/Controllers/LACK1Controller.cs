@@ -2894,7 +2894,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     MainMenu = _mainMenu,
                     CurrentMenu = PageInfo,
-                    //DetailList = SearchDetailReport()
+                    DetailList = SearchDetailTis()
                 };
                 //model = InitSearchDetilReportViewModel(model);
             }
@@ -2908,6 +2908,29 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
             return View("DetailTis", model);
+        }
+
+        [HttpPost]
+        public ActionResult SearchDetailTis(Lack1DetailTisViewModel model)
+        {
+            model.DetailList = SearchDetailTis(model.SearchView);
+            return PartialView("_Lack1DetailTis", model);
+        }
+
+        private List<Lack1DetailTisItemModel> SearchDetailTis(Lack1SearchDetailTisViewModel filter = null)
+        {
+            //Get All
+            if (filter == null)
+            {
+                //Get All
+                var data = _lack1Bll.GetDetailTisByParam(new Lack1GetDetailTisByParamInput());
+                return Mapper.Map<List<Lack1DetailTisItemModel>>(data);
+            }
+            //getbyparams
+            var input = Mapper.Map<Lack1GetDetailTisByParamInput>(filter);
+
+            var dbData = _lack1Bll.GetDetailTisByParam(input);
+            return Mapper.Map<List<Lack1DetailTisItemModel>>(dbData);
         }
 
         #endregion

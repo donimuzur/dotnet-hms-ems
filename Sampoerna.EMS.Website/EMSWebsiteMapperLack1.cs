@@ -314,6 +314,12 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
+            #region ----------------- Detail Report ---------
+
+            Mapper.CreateMap<Lack1SearchDetailTisViewModel, Lack1GetDetailTisByParamInput>()
+                .IgnoreAllNonExisting();
+
+            #endregion
         }
     }
 }

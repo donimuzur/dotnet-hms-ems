@@ -40,5 +40,7 @@ namespace Sampoerna.EMS.Contract
         List<Lack1ReconciliationDto> GetReconciliationByParam(Lack1GetReconciliationByParamInput input);
 
         void UpdateSomeField(Lack1UpdateSomeField input);
+
+        List<Lack1DetailTisDto> GetDetailTisByParam(Lack1GetDetailTisByParamInput input);
     }
 }
