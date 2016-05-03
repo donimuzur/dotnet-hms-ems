@@ -2947,6 +2947,182 @@ namespace Sampoerna.EMS.Website.Controllers
             return PartialView("_Lack1DailyProdDetails", model);
         }
 
+        public void ExportDailyProd(Lack1DailyProdViewModel model)
+        {
+            string pathFile = "";
+
+            pathFile = CreateXlsDailyProd(model.ExportSearchView);
+
+            var newFile = new FileInfo(pathFile);
+
+            var fileName = Path.GetFileName(pathFile);
+
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+        }
+
+        private string CreateXlsDailyProd(Lack1SearchDailyProdViewModel model)
+        {
+            var dataDailyProd = SearchDailyProd(model);
+
+            var slDocument = new SLDocument();
+
+            //create filter
+            slDocument.SetCellValue(1, 1, "Posting Date From");
+            slDocument.SetCellValue(1, 2, ": " + model.DateFrom.ToString("dd-MMM-yyyy"));
+
+            slDocument.SetCellValue(2, 1, "Posting Date To");
+            slDocument.SetCellValue(2, 2, ": " + model.DateTo.ToString("dd-MMM-yyyy"));
+
+            slDocument.SetCellValue(3, 1, "Plant From");
+            slDocument.SetCellValue(3, 2, ": " + model.PlantFrom);
+
+            slDocument.SetCellValue(4, 1, "Plant To");
+            slDocument.SetCellValue(4, 2, ": " + model.PlantTo);
+
+            //title
+            slDocument.SetCellValue(5, 1, "Daily Production");
+            slDocument.MergeWorksheetCells(5, 1, 5, 12);
+            //create style
+            SLStyle valueStyle = slDocument.CreateStyle();
+            valueStyle.SetHorizontalAlignment(HorizontalAlignmentValues.Center);
+            valueStyle.Font.Bold = true;
+            valueStyle.Font.FontSize = 18;
+            slDocument.SetCellStyle(5, 1, valueStyle);
+           
+
+            //create header
+            slDocument = CreateHeaderExcelDailyProd(slDocument);
+
+            int iRow = 7; //starting row data
+            int iColumn = 1;
+            foreach (var data in dataDailyProd)
+            {
+                iColumn = 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.PlantId);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.PlantDescription);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.FaCode);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.FaCodeDescription);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.ProductionDate);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.ProdQty);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.ProdUom);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.RejectParkerQty);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.RejectParkerUom);
+                iColumn = iColumn + 1;
+
+                iRow++;
+            }
+
+            return CreateXlsFileDailyProd(slDocument, iColumn, iRow);
+
+        }
+
+        private string CreateXlsFileDailyProd(SLDocument slDocument, int iColumn, int iRow)
+        {
+
+            //create style
+            SLStyle valueStyle = slDocument.CreateStyle();
+            valueStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            //valueStyle.Alignment.Vertical = VerticalAlignmentValues.Center;
+            //valueStyle.SetWrapText(true);
+            //set header style
+
+            SLStyle headerStyle = slDocument.CreateStyle();
+            headerStyle.Alignment.Horizontal = HorizontalAlignmentValues.Center;
+            headerStyle.Font.Bold = true;
+            headerStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Fill.SetPattern(PatternValues.Solid, System.Drawing.Color.LightGray, System.Drawing.Color.LightGray);
+
+            slDocument.AutoFitColumn(1, iColumn - 1);
+            slDocument.SetCellStyle(7, 1, iRow - 1, iColumn - 1, valueStyle);
+
+            slDocument.SetCellStyle(6, 1, 6, iColumn - 1, headerStyle);
+
+            SLStyle numericStyle = slDocument.CreateStyle();
+            numericStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            numericStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            numericStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            numericStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            numericStyle.Alignment.Horizontal = HorizontalAlignmentValues.Right;
+
+            slDocument.SetCellStyle(7, 6, iRow - 1, 6 - 1, numericStyle);
+            slDocument.SetCellStyle(7, 8, iRow - 1, 8 - 1, numericStyle);
+
+
+            var fileName = "lack1_dailyprod" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+            var path = Path.Combine(Server.MapPath(Constans.Lack1UploadFolderPath), fileName);
+
+            //var outpu = new 
+            slDocument.SaveAs(path);
+
+            return path;
+        }
+
+        private SLDocument CreateHeaderExcelDailyProd(SLDocument slDocument)
+        {
+            int iColumn = 1;
+            int iRow = 6;
+
+            slDocument.SetCellValue(iRow, iColumn, "PlantId");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Plant Desc");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "FA Code");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "FA Code Desc");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Production Date");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Prod Qty");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Prod UOM");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Reject Packer Qty");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Reject Packer UOM");
+            iColumn = iColumn + 1;
+
+            return slDocument;
+
+        }
+
         #endregion
 
         #region Primary Results
@@ -3011,6 +3187,14 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 model.Detail = SearchPrimaryResults(model.SearchView);
+                foreach (var lack1PrimaryResultsDetail in model.Detail)
+                {
+                    if (!string.IsNullOrEmpty(lack1PrimaryResultsDetail.Message))
+                    {
+                        model.ErrorMessage = "Error";
+                        break;
+                    }
+                }
 
             }
             catch (Exception ex)
@@ -3047,11 +3231,34 @@ namespace Sampoerna.EMS.Website.Controllers
             var dataPrimaryResults = SearchPrimaryResults(model);
 
             var slDocument = new SLDocument();
-          
+
+            //create filter
+            slDocument.SetCellValue(1, 1, "Posting Date From");
+            slDocument.SetCellValue(1, 2, ": " + model.DateFrom.ToString("dd-MMM-yyyy"));
+
+            slDocument.SetCellValue(2, 1, "Posting Date To");
+            slDocument.SetCellValue(2, 2, ": " + model.DateTo.ToString("dd-MMM-yyyy"));
+
+            slDocument.SetCellValue(3, 1, "Plant From");
+            slDocument.SetCellValue(3, 2, ": " + model.PlantFrom);
+
+            slDocument.SetCellValue(4, 1, "Plant To");
+            slDocument.SetCellValue(4, 2, ": " + model.PlantTo);
+
+            //title
+            slDocument.SetCellValue(5, 1, "Primary Results");
+            slDocument.MergeWorksheetCells(5, 1, 5, 12);
+            //create style
+            SLStyle valueStyle = slDocument.CreateStyle();
+            valueStyle.SetHorizontalAlignment(HorizontalAlignmentValues.Center);
+            valueStyle.Font.Bold = true;
+            valueStyle.Font.FontSize = 18;
+            slDocument.SetCellStyle(5, 1, valueStyle);
+
             //create header
             slDocument = CreateHeaderExcelPrimaryResults(slDocument);
 
-            int iRow = 2; //starting row data
+            int iRow = 7; //starting row data
             int iColumn = 1;
             foreach (var data in dataPrimaryResults)
             {
@@ -3109,8 +3316,7 @@ namespace Sampoerna.EMS.Website.Controllers
             valueStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
             valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
             valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
-            //valueStyle.Alignment.Vertical = VerticalAlignmentValues.Center;
-            valueStyle.SetWrapText(true);
+            
             //set header style
             
             SLStyle headerStyle = slDocument.CreateStyle();
@@ -3123,10 +3329,19 @@ namespace Sampoerna.EMS.Website.Controllers
             headerStyle.Fill.SetPattern(PatternValues.Solid, System.Drawing.Color.LightGray, System.Drawing.Color.LightGray);
 
             slDocument.AutoFitColumn(1, iColumn - 1);
-            slDocument.SetCellStyle(2, 1, iRow - 1, iColumn - 1, valueStyle);
+            slDocument.SetCellStyle(7, 1, iRow - 1, iColumn - 1, valueStyle);
 
-            slDocument.SetCellStyle(1, 1, 1, iColumn - 1, headerStyle);
+            slDocument.SetCellStyle(6, 1, 6, iColumn - 1, headerStyle);
 
+            SLStyle numericStyle = slDocument.CreateStyle();
+            numericStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            numericStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            numericStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            numericStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            numericStyle.Alignment.Horizontal = HorizontalAlignmentValues.Right;
+
+            slDocument.SetCellStyle(7, 7, iRow - 1, 7 - 1, numericStyle);
+            slDocument.SetCellStyle(7, 11, iRow - 1, 11 - 1, numericStyle);
 
             var fileName = "lack1_primaryresults" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
             var path = Path.Combine(Server.MapPath(Constans.Lack1UploadFolderPath), fileName);
@@ -3140,7 +3355,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private SLDocument CreateHeaderExcelPrimaryResults(SLDocument slDocument)
         {
             int iColumn = 1;
-            int iRow = 1;
+            int iRow = 6;
 
             slDocument.SetCellValue(iRow, iColumn, "PlantId");
             iColumn = iColumn + 1;

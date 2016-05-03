@@ -39,7 +39,7 @@ namespace Sampoerna.EMS.BLL.Services
                         c.IS_MAIN_PLANT.Value).FirstOrDefault();
         }
 
-        public List<T001W> GetBAll()
+        public List<T001W> GetAll()
         {
             return _repository.Get().ToList();
         }

@@ -224,11 +224,13 @@ namespace Sampoerna.EMS.BLL.Services
 
 
             var data = _repository.Get(x => x.MVT == receiving101 && (!input.ListOrdrZaapShiftReport.Contains(x.ORDR)) 
-                    && x.POSTING_DATE >= input.DateFrom && x.POSTING_DATE <= input.DateTo
+                    && x.POSTING_DATE >= input.DateFrom && x.POSTING_DATE < input.DateTo
                     && string.Compare(x.PLANT_ID, input.PlantFrom) >= 0 
                     && string.Compare(x.PLANT_ID, input.PlantTo)  <= 0).ToList();
 
 
+            data = data.Where(x => !string.IsNullOrEmpty(x.ORDR)).ToList();
+           
             return data;
         }
 
@@ -239,8 +241,8 @@ namespace Sampoerna.EMS.BLL.Services
             listMvt.Add(EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage261));
             listMvt.Add(EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage262));
 
-            var data = _repository.Get(x=> input.ListBatch.Contains(x.BATCH)
-                    && x.POSTING_DATE >= input.DateFrom && x.POSTING_DATE <= input.DateTo
+            var data = _repository.Get(x=> input.ListOrder.Contains(x.ORDR)
+                    && x.POSTING_DATE >= input.DateFrom && x.POSTING_DATE < input.DateTo
                     && string.Compare(x.PLANT_ID, input.PlantFrom) >= 0 && 
                         string.Compare(x.PLANT_ID, input.PlantTo) <= 0
                     && listMvt.Contains(x.MVT)).ToList();

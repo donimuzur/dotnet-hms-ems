@@ -24,7 +24,7 @@
                                 OnFailure = "OnFailure",
                                 OnComplete = "ReloadDataTables"
 
-                            }))
+                            }, new { id = "ajaxForm" }))
                         {
                             <div class="row">
                                 <div class="col-md-6">
@@ -154,6 +154,10 @@
             //   table.ext.errMode = 'none';
 
 
+        }
+        function ReloadDataTables() {
+            setupDataTables();
+            //ShowAlert();
         }
         
         function exportReconciliation() {

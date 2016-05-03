@@ -69,6 +69,6 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string PlantTo { get; set; }
 
         public List<string> ListOrdrZaapShiftReport { get; set; }
-        public List<string> ListBatch { get; set; }
+        public List<string> ListOrder { get; set; }
     }
 }

@@ -15,41 +15,46 @@
             <th>BKC Desc</th>
             <th>BKC Issue Qty</th>
             <th>BKC Issue UOM</th>
-            <th>Message</th>
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <th>Message</th>
+            }
         </tr>
     </thead>
     <tbody>
-        @if (string.IsNullOrEmpty(Model.ErrorMessage))
+
+        @foreach (var item in Model.Detail)
         {
-            foreach (var item in Model.Detail)
-            {
-                <tr>
-                    <td>@item.PlantId</td>
-                    <td>@item.PlantDescription</td>
-                    <td>@item.CfProducedProcessOrder</td>
-                    <td>@item.CfCodeProduced</td>
-                    <td>@item.CfProducedDescription</td>
-                    <td>@item.CfProdDate</td>
-                    <td>@item.CfProdQty</td>
-                    <td>@item.CfProdQty</td>
-                    <td>@item.BkcUsed</td>
-                    <td>@item.BkcDescription</td>
-                    <td>@item.BkcIssueQty</td>
-                    <td>@item.BkcIssueUom</td>
+            <tr>
+                <td>@item.PlantId</td>
+                <td>@item.PlantDescription</td>
+                <td>@item.CfProducedProcessOrder</td>
+                <td>@item.CfCodeProduced</td>
+                <td>@item.CfProducedDescription</td>
+                <td>@item.CfProdDate</td>
+                <td>@item.CfProdQty</td>
+                <td>@item.CfProdUom</td>
+                <td>@item.BkcUsed</td>
+                <td>@item.BkcDescription</td>
+                <td>@item.BkcIssueQty</td>
+                <td>@item.BkcIssueUom</td>
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
                     <td>@item.Message</td>
-                </tr>
-            }
+                }
+            </tr>
+
         }
-       
+
     </tbody>
 </table>
 
 @*@if (!string.IsNullOrEmpty(Model.ErrorMessage))
-{
-    <span hidden id="errorMessage">@Model.ErrorMessage</span>
+    {
+        <span hidden id="errorMessage">@Model.ErrorMessage</span>
 
-}
-else
-{
-   <span hidden id="errorMessage"></span>
-}*@
+    }
+    else
+    {
+       <span hidden id="errorMessage"></span>
+    }*@
