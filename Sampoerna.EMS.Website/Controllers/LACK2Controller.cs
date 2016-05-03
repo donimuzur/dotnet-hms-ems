@@ -1632,6 +1632,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, data.Ck5RegistrationNumber);
                     iColumn = iColumn + 1;
                 }
+                if (modelExport.BCk5UnpaidExcise)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck5UnpaidExcise);
+                    iColumn = iColumn + 1;
+                }
                 if (modelExport.BCk5RegistrationDate)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Ck5RegistrationDate);
@@ -1655,6 +1660,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (modelExport.BReceivingPlantId)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.ReceivingPlantId);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.BReceivingPlantDesc)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ReceivingPlantDesc);
                     iColumn = iColumn + 1;
                 }
                 if (modelExport.BReceivingNppbkc)
@@ -1750,6 +1760,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 slDocument.SetCellValue(iRow, iColumn, "CK-5 Registration Number");
                 iColumn = iColumn + 1;
             }
+            if (modelExport.BCk5UnpaidExcise)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-5 Unpaid Excise Facility Number");
+                iColumn = iColumn + 1;
+            }
             if (modelExport.BCk5RegistrationDate)
             {
                 slDocument.SetCellValue(iRow, iColumn, "CK-5 Registration Date");
@@ -1773,6 +1788,11 @@ namespace Sampoerna.EMS.Website.Controllers
             if (modelExport.BReceivingPlantId)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Receiver Plant ID");
+                iColumn = iColumn + 1;
+            }
+            if (modelExport.BReceivingPlantDesc)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Receiver Plant Desc");
                 iColumn = iColumn + 1;
             }
             if (modelExport.BReceivingNppbkc)

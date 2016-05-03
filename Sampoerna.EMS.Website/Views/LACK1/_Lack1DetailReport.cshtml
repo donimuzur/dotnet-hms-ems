@@ -10,6 +10,7 @@
             <th rowspan="2">Begining Balance</th>
             <th colspan="6">Receiving</th>
             <th colspan="5">Usage</th>
+            <th rowspan="2">Production Qty</th>
             <th rowspan="2">Ending Balance</th>
             <th rowspan="2">POA</th>
             <th rowspan="2">Creator</th>
@@ -72,6 +73,7 @@
                             <td rowspan="@item.TrackingConsolidations[0].MaterialCodeUsageRecCount">@item.TrackingConsolidations[0].ConvertedUomDesc</td>
                         }
                     }
+                    <td rowspan="@trackingConsolidationCount">@item.ProdQty.ToString("N2")</td>
                     <td rowspan="@trackingConsolidationCount">@item.EndingBalance.ToString("N2")</td>
                     <td rowspan="@trackingConsolidationCount">@item.Poa</td>
                     <td rowspan="@trackingConsolidationCount">@item.Creator</td>
@@ -157,6 +159,7 @@
                     <td>-</td>
                     <td>-</td>
                     <td>-</td>
+                    <td>@item.ProdQty.ToString("N2")</td>
                     <td>@item.EndingBalance.ToString("N2")</td>
                     <td>@item.Poa</td>
                     <td>@item.Creator</td>

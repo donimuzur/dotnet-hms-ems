@@ -13,11 +13,13 @@
             <th>Supplier Company</th>
             <th>Supplier Plant Address</th>
             <th>CK-5 Registration Number</th>
+            <th>CK-5 Unpaid Excise Facility Number</th>
             <th>CK-5 Registration Date</th>
             <th>CK-5 GI Date</th>
             <th>CK-5 Total of Excisable Goods</th>
             <th>Converted UOM</th>
             <th>Receiver Plant ID</th>
+            <th>Receiver Plant Desc</th>
             <th>Receiver NPPBKC</th>
             <th>Receiver KPPBC</th>
             <th>Receiver Company</th>
@@ -45,11 +47,13 @@
                     <td>@Html.DisplayFor(model => item.CompanyName)</td>
                     <td>@Html.DisplayFor(model => item.SendingPlantAddress)</td>
                     <td>@Html.DisplayFor(model => item.Ck5RegistrationNumber)</td>
+                    <td>@Html.DisplayFor(model => item.Ck5UnpaidExcise)</td>
                     <td>@Html.DisplayFor(model => item.Ck5RegistrationDate)</td>
                     <td>@Html.DisplayFor(model => item.Ck5GiDate)</td>
                     <td>@Html.DisplayFor(model => item.Ck5Total)</td>
                     <td>@Html.DisplayFor(model => item.Ck5ConvertedUom)</td>
                     <td>@Html.DisplayFor(model => item.ReceivingPlantId)</td>
+                    <td>@Html.DisplayFor(model => item.ReceivingPlantDesc)</td>
                     <td>@Html.DisplayFor(model => item.ReceivingNppbkc)</td>
                     <td>@Html.DisplayFor(model => item.ReceivingKppbc)</td>
                     <td>@Html.DisplayFor(model => item.ReceivingCompanyName)</td>
