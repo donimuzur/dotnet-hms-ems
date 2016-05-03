@@ -1456,6 +1456,9 @@ namespace Sampoerna.EMS.BLL
 
             foreach (var dtData in listLack2)
             {
+                var dbPlant = _t001WService.GetById(dtData.LEVEL_PLANT_ID);
+                var kppbcName = _lfaBll.GetById(_nppbkcService.GetById(dtData.NPPBKC_ID).KPPBC_ID).NAME1;
+
                 foreach (var lack2Item in dtData.LACK2_ITEM)
                 {
                     var summaryDto = new Lack2DetailReportDto();
@@ -1470,6 +1473,7 @@ namespace Sampoerna.EMS.BLL
                         summaryDto.GiDate = lack2Item.CK5.GI_DATE;
                         summaryDto.Ck5GiDate = ConvertHelper.ConvertDateToStringddMMMyyyy(lack2Item.CK5.GI_DATE);
                         summaryDto.Ck5RegistrationNumber = lack2Item.CK5.REGISTRATION_NUMBER;
+                        summaryDto.Ck5UnpaidExcise = lack2Item.CK5.PBCK1 == null ? "" : lack2Item.CK5.PBCK1.NUMBER;
                         summaryDto.Ck5RegistrationDate = ConvertHelper.ConvertDateToStringddMMMyyyy(lack2Item.CK5.REGISTRATION_DATE);
                         summaryDto.Ck5Total = ConvertHelper.ConvertDecimalToStringMoneyFormat(lack2Item.CK5.GRAND_TOTAL_EX);
                         summaryDto.Ck5ConvertedUom = lack2Item.CK5.PACKAGE_UOM_ID;
@@ -1477,6 +1481,7 @@ namespace Sampoerna.EMS.BLL
                         summaryDto.ReceivingCompanyCode = lack2Item.CK5.DEST_PLANT_COMPANY_CODE;
                         summaryDto.ReceivingCompanyName = lack2Item.CK5.DEST_PLANT_COMPANY_NAME;
                         summaryDto.ReceivingPlantId = lack2Item.CK5.DEST_PLANT_ID;
+                        summaryDto.ReceivingPlantDesc = lack2Item.CK5.DEST_PLANT_NAME;
                         summaryDto.ReceivingNppbkc = lack2Item.CK5.DEST_PLANT_NPPBKC_ID;
                         summaryDto.ReceivingKppbc = lack2Item.CK5.DEST_PLANT_KPPBC_NAME_OFFICE;
                         summaryDto.ReceivingAddress = lack2Item.CK5.DEST_PLANT_ADDRESS;
@@ -1484,7 +1489,7 @@ namespace Sampoerna.EMS.BLL
 
                     summaryDto.Ck5SendingPlant = dtData.LEVEL_PLANT_ID;
                     summaryDto.Ck5SendingPlantDesc = dtData.LEVEL_PLANT_NAME;
-                    var dbPlant = _t001WService.GetById(dtData.LEVEL_PLANT_ID);
+                    
                     if (dbPlant != null)
                     {
                         summaryDto.SendingPlantAddress = dbPlant.ADDRESS;
@@ -1492,7 +1497,7 @@ namespace Sampoerna.EMS.BLL
                     summaryDto.CompanyCode = dtData.BUKRS;
                     summaryDto.CompanyName = dtData.BUTXT;
                     summaryDto.NppbkcId = dtData.NPPBKC_ID;
-                    summaryDto.KppbcId =  _lfaBll.GetById(_nppbkcService.GetById(dtData.NPPBKC_ID).KPPBC_ID).NAME1;
+                    summaryDto.KppbcId = kppbcName;
                     summaryDto.TypeExcisableGoods = dtData.EX_GOOD_TYP;
                     summaryDto.TypeExcisableGoodsDesc = dtData.EX_TYP_DESC;
 

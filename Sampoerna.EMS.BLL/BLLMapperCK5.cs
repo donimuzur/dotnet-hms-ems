@@ -161,7 +161,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.BanderolPrice, opt => opt.ResolveUsing<Ck5MaterialHjeSummaryReportsResolver>().FromMember(src => src))
                 .ForMember(dest => dest.ExciseTariff, opt => opt.ResolveUsing<Ck5MaterialTariffSummaryReportsResolver>().FromMember(src => src))
                 .ForMember(dest => dest.ExciseValue, opt => opt.ResolveUsing<Ck5MaterialExciseValueSummaryReportsResolver>().FromMember(src => src))
-                .ForMember(dest => dest.DestinationCeOffice, opt => opt.MapFrom(src => src.DEST_PLANT_KPPBC_NAME_OFFICE))
+                .ForMember(dest => dest.DestinationCeOffice, opt => opt.MapFrom(src => src.DEST_PLANT_KPPBC_NAME_OFFICE.Split('-')[0].ToString()))
                 .ForMember(dest => dest.DestCompanyAddress, opt => opt.MapFrom(src => src.DEST_PLANT_ADDRESS))
                 .ForMember(dest => dest.DestCompanyNppbkc, opt => opt.MapFrom(src => src.DEST_PLANT_NPPBKC_ID))
                 .ForMember(dest => dest.DestCompanyName, opt => opt.MapFrom(src => src.DEST_PLANT_NAME))

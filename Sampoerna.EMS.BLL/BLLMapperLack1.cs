@@ -434,6 +434,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.WasteUom, opt => opt.MapFrom(src => src.WASTE_UOM))
                 .ForMember(dest => dest.ReturnQty, opt => opt.MapFrom(src => src.RETURN_QTY))
                 .ForMember(dest => dest.ReturnUom, opt => opt.MapFrom(src => src.RETURN_UOM))
+                .ForMember(dest => dest.Pbck1Number, opt => opt.MapFrom(src => src.LACK1_PBCK1_MAPPING.FirstOrDefault().PBCK1.NUMBER))
+                .ForMember(dest => dest.Pbck1Date, opt => opt.MapFrom(src => src.LACK1_PBCK1_MAPPING.FirstOrDefault().PBCK1.DECREE_DATE))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.STATUS))
                 .ForMember(dest => dest.GovStatus, opt => opt.MapFrom(src => src.GOV_STATUS))
                 .ForMember(dest => dest.DecreeDate, opt => opt.MapFrom(src => src.DECREE_DATE))

@@ -305,7 +305,7 @@ namespace Sampoerna.EMS.BLL.Services
                 queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.LEVEL_PLANT_ID));
             }
 
-            var rc = _repository.Get(queryFilter, null, "LACK2_ITEM, LACK2_ITEM.CK5").ToList();
+            var rc = _repository.Get(queryFilter, null, "LACK2_ITEM, LACK2_ITEM.CK5, LACK2_ITEM.CK5.PBCK1").ToList();
             return rc;
         }
 

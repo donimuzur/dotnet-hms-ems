@@ -170,7 +170,8 @@ namespace Sampoerna.EMS.BLL
         public List<CK5Dto> GetCk5ByType(Enums.CK5Type ck5Type)
         {
 
-            var dtData = _repository.Get(c => c.CK5_TYPE == ck5Type, null, includeTables).ToList();
+            //var dtData = _repository.Get(c => c.CK5_TYPE == ck5Type, null, includeTables).ToList();
+            var dtData = _repository.Get(c => c.CK5_TYPE == ck5Type).ToList();
 
             return Mapper.Map<List<CK5Dto>>(dtData);
         }
@@ -193,6 +194,7 @@ namespace Sampoerna.EMS.BLL
 
         public List<CK5Dto> GetCK5ByParam(CK5GetByParamInput input)
         {
+            string includeTablesParam = "CK5_MATERIAL, CK5_FILE_UPLOAD";
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
@@ -312,7 +314,7 @@ namespace Sampoerna.EMS.BLL
             //Func<IQueryable<CK5>, IOrderedQueryable<CK5>> orderByFilter = n => n.OrderByDescending(z => z.STATUS_ID).ThenBy(z=>z.APPROVED_BY_MANAGER);
 
 
-            var rc = _repository.Get(queryFilter, orderByFilter, includeTables).ToList();
+            var rc = _repository.Get(queryFilter, orderByFilter, includeTablesParam).ToList();
             if (rc == null)
             {
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
@@ -5624,6 +5626,7 @@ namespace Sampoerna.EMS.BLL
                     summaryDto.Pbck3No = "";
                     summaryDto.Pbck3Status = "";
                     summaryDto.Ck2Number = "";
+                    summaryDto.Ck2Date = "";
                     summaryDto.Ck2Value = "";
 
                     var pbck3Data = _pbck3Services.GetPbck3ByCk5Id(dtData.CK5_ID);
@@ -5636,6 +5639,7 @@ namespace Sampoerna.EMS.BLL
                         if (ck2Data != null)
                         {
                             summaryDto.Ck2Number = ck2Data.CK2_NUMBER;
+                            summaryDto.Ck2Date = ConvertHelper.ConvertDateToStringddMMMyyyy(ck2Data.CK2_DATE);
                             summaryDto.Ck2Value = ConvertHelper.ConvertDecimalToStringMoneyFormat(ck2Data.CK2_VALUE);
                         }
 
@@ -5810,7 +5814,88 @@ namespace Sampoerna.EMS.BLL
 
             return data;
         }
-    
-        
+
+        public List<string> GetCk5DocumentNumberByType(CK5GetByParamInput input)
+        {
+
+            //var dtData = _repository.Get(c => c.CK5_TYPE == ck5Type, null, includeTables).ToList();
+           
+
+
+            Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
+
+            if (input.UserRole != Enums.UserRole.Administrator)
+            {
+
+                if (input.ListUserPlant == null)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
+
+                if (input.Ck5Type == Enums.CK5Type.PortToImporter || input.Ck5Type == Enums.CK5Type.DomesticAlcohol)
+                {
+                    queryFilter =
+                        queryFilter.And(
+                            c =>
+                                (c.CREATED_BY == input.UserId ||
+                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                  input.ListUserPlant.Contains(c.DEST_PLANT_ID))));
+                }
+                else if (input.Ck5Type == Enums.CK5Type.Manual || input.Ck5Type == Enums.CK5Type.MarketReturn)
+                {
+
+                    queryFilter =
+                        queryFilter.And(
+                            c =>
+                                (c.CREATED_BY == input.UserId ||
+                                 (
+                                     (c.STATUS_ID != Enums.DocumentStatus.Draft) &&
+                                     ((c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText &&
+                                       input.ListUserPlant.Contains(c.DEST_PLANT_ID)
+                                         ) ||
+                                      input.ListUserPlant.Contains(c.SOURCE_PLANT_ID)
+                                         )
+                                     )
+
+                                    )
+                            );
+                }
+                else if (input.Ck5Type == Enums.CK5Type.Waste)
+                {
+                    var plantDest = _poaMapBll.GetByPoaId(input.UserId).Select(d => d.WERKS).ToList();
+
+                    queryFilter =
+                        queryFilter.And(
+                            c =>
+                                (c.CREATED_BY == input.UserId ||
+                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                  input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))
+                                 ||
+                                 (c.STATUS_ID == Enums.DocumentStatus.GoodReceive &&
+                                  plantDest.Contains(c.DEST_PLANT_ID)
+                                     )
+                                    ));
+                }
+                else
+                {
+
+                    queryFilter =
+                        queryFilter.And(
+                            c =>
+                                (c.CREATED_BY == input.UserId ||
+                                 (c.STATUS_ID != Enums.DocumentStatus.Draft &&
+                                  input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
+                }
+
+            }
+
+            if (input.Ck5Type == Enums.CK5Type.Completed)
+                queryFilter = queryFilter.And(c => (c.STATUS_ID == Enums.DocumentStatus.Completed || c.STATUS_ID == Enums.DocumentStatus.Cancelled) && c.CK5_TYPE != Enums.CK5Type.MarketReturn);
+            else
+                queryFilter = queryFilter.And(c => c.CK5_TYPE == input.Ck5Type
+                                  && (c.STATUS_ID != Enums.DocumentStatus.Completed && c.STATUS_ID != Enums.DocumentStatus.Cancelled));
+
+            var dtData = _repository.Get(queryFilter).Select(c => c.SUBMISSION_NUMBER).ToList();
+
+            return dtData;
+        }
     }
 }
