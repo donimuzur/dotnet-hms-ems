@@ -57,6 +57,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string Lack1Number { get; set; }
         public string Lack1LevelName { get; set; }
         public Enums.Lack1Level Lack1Level { get; set; }
+        public decimal ProdQty { get; set; }
         public decimal BeginingBalance { get; set; }
         public decimal EndingBalance { get; set; }
         public List<Lack1TrackingConsolidationDetailReportItemModel> TrackingConsolidations { get; set; }
