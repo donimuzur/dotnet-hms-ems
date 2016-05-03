@@ -78,7 +78,7 @@
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    @Html.DropDownListFor(model => model.SearchView.PeriodMonth, Model.SearchView.PeriodMonthList, "", new { @class = "form-control" })
+                                                    @Html.DropDownListFor(model => model.SearchView.PeriodMonth, Model.SearchView.PeriodMonthList, "All", new { @class = "form-control" })
                                                 </div>
                                                 <div class="col-md-6">
                                                     @Html.DropDownListFor(model => model.SearchView.PeriodYear, Model.SearchView.PeriodYearList, new { @class = "form-control" })
@@ -186,7 +186,7 @@
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BLack1Number, new { @id = "checkboxDefault1", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "1" })Lack1 Number
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BLack1Number, new { @id = "checkboxDefault1", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "1" })LACK-1 Number
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
@@ -261,7 +261,17 @@
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.BDocumentStatus, new { @class = "checkbox checkexport", @datacolumn = "16" })Status
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BPbck1Number, new { @class = "checkbox checkexport", @datacolumn = "16" })PBCK-1 Number
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BPbck1Date, new { @class = "checkbox checkexport", @datacolumn = "17" })PBCK-1 Date
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.BDocumentStatus, new { @class = "checkbox checkexport", @datacolumn = "18" })Status
                                                     </label>
                                                 </div>
                                             </div>
@@ -505,7 +515,7 @@
                 $('#checkboxDefault8').prop('checked', true);
             });
 
-            for (var i = 7; i < 17; i++) {
+            for (var i = 7; i < 19; i++) {
                 table.column(i).visible(false);
             }
 
@@ -515,7 +525,7 @@
                     // Show a column
                     $('#lack1Table').parents('div.dataTables_wrapper').first().show();
                     var table = $('#lack1Table').DataTable();
-                    for (var i = 0; i < 17; i++) {
+                    for (var i = 0; i < 19; i++) {
                         table.column(i).visible(true);
 
                     }
@@ -529,7 +539,7 @@
 
                     });
                     var table = $('#lack1Table').DataTable();
-                    for (var i = 0; i < 17; i++) {
+                    for (var i = 0; i < 19; i++) {
                         table.column(i).visible(false);
 
                     }

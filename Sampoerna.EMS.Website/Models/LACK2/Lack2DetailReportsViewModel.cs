@@ -55,12 +55,14 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public string Lack2Number { get; set; }
         public string Ck5GiDate { get; set; }
         public string Ck5RegistrationNumber { get; set; }
+        public string Ck5UnpaidExcise { get; set; }
         public string Ck5RegistrationDate { get; set; }
         public string Ck5Total { get; set; }
         public string Ck5ConvertedUom { get; set; }
         public string ReceivingCompanyCode { get; set; }
         public string ReceivingCompanyName { get; set; }
         public string ReceivingPlantId { get; set; }
+        public string ReceivingPlantDesc { get; set; }
         public string ReceivingNppbkc { get; set; }
         public string ReceivingKppbc { get; set; }
         public string ReceivingAddress { get; set; }
@@ -87,12 +89,14 @@ namespace Sampoerna.EMS.Website.Models.LACK2
             public bool BLack2Number { get; set; }
             public bool BCk5GiDate { get; set; }
             public bool BCk5RegistrationNumber { get; set; }
+            public bool BCk5UnpaidExcise { get; set; }
             public bool BCk5RegistrationDate { get; set; }
             public bool BCk5Total { get; set; }
             public bool BCk5ConvertedUom { get; set; }
             public bool BReceivingCompanyCode { get; set; }
             public bool BReceivingCompanyName { get; set; }
             public bool BReceivingPlantId { get; set; }
+            public bool BReceivingPlantDesc { get; set; }
             public bool BReceivingNppbkc { get; set; }
             public bool BReceivingKppbc { get; set; }
             public bool BReceivingAddress { get; set; }

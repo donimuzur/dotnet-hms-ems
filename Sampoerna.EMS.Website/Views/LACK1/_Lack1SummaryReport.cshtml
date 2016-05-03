@@ -19,6 +19,8 @@
             <th>Period</th>
             <th>POA Approved by</th>
             <th>Creator</th>
+            <th>PBCK-1 Number</th>
+            <th>PBCK-1 Date</th>
             <th>Status</th>
         </tr>
     </thead>
@@ -46,6 +48,8 @@
                     <td>@Html.DisplayFor(model => item.Period)</td>
                     <td class="last">@Html.DisplayFor(model => item.Approver)</td>
                     <td>@Html.DisplayFor(model => item.Creator)</td>
+                    <td>@Html.DisplayFor(model => item.Pbck1Number)</td>
+                    <td>@Html.DisplayFor(model => item.Pbck1Date)</td>
                     <td>@Html.DisplayFor(model => item.DocumentStatus)</td>
                 </tr>
                 row = row + 1;
