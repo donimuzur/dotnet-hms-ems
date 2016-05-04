@@ -118,6 +118,8 @@
     </div>
 </div>
 
+<div class="loading"></div>
+
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/js/vendors/jquery.table2excel.js"></script>
@@ -138,20 +140,20 @@
         });
 
         function OnSuccess(data) {
-            $('#btnFilter').addClass("btn-blue");
+            $('.loading').hide();
             $("#contenttable").html(data);
            
             
         }
         
         function OnFailure(xhr, status) {
-            $('#btnFilter').addClass("btn-blue");
+            $('.loading').hide();
            // alert('Error: ' + xhr.statusText);
            
         }
 
         function OnFilter() {
-            $('#btnFilter').removeClass("btn-blue");
+            $('.loading').show();
             $('#ajaxForm').submit();
         }
 
