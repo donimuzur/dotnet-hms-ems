@@ -32,7 +32,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.FileSizeType = FileSizeType.KB;
             model.SizeType = fillSizeTypeList();
             model.UploadFileSize = section.MaxRequestLength;
-            
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+
             //model.SizeType
             return View(model);
         }
@@ -40,6 +41,9 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult Index(GlobalSettingModel model)
         {
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+                return RedirectToAction("Index");
+
             Configuration config =  WebConfigurationManager.OpenWebConfiguration("~");
             config.AppSettings.Settings["UseBackdate"].Value = model.UseBackDate.ToString();
             //model.UseBackDate = (bool.TrueString.ToLower() == config.AppSettings.Settings["UseBackdate"].Value.ToLower());
