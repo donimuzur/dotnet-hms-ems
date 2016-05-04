@@ -514,6 +514,23 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.FLAG_FOR_LACK1, opt => opt.MapFrom(src => src.FlagForLack1))
                 ;
 
+            #region LACK1 Detail TIS
+
+            Mapper.CreateMap<Lack1GetDetailTisByParamInput, Ck5GetForLack1DetailTis>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<CK5, Lack1DetailTisDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PlantIdReceiver, opt => opt.MapFrom(src => src.DEST_PLANT_ID))
+                .ForMember(dest => dest.PlantDescReceiver, opt => opt.MapFrom(src => src.DEST_PLANT_NAME))
+                .ForMember(dest => dest.PlantIdSupplier, opt => opt.MapFrom(src => src.SOURCE_PLANT_ID))
+                .ForMember(dest => dest.PlantDescSupplier, opt => opt.MapFrom(src => src.SOURCE_PLANT_NAME))
+                .ForMember(dest => dest.Ck5EmsNo, opt => opt.MapFrom(src => src.SUBMISSION_NUMBER))
+                .ForMember(dest => dest.Ck5RegNo, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
+                .ForMember(dest => dest.Ck5RegDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE.HasValue ? src.REGISTRATION_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
+                .ForMember(dest => dest.Ck5GrDate, opt => opt.MapFrom(src => src.GR_DATE.HasValue ? src.GR_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
+                .ForMember(dest => dest.Ck5Qty, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX.Value))
+                ;
+
+            #endregion
         }
 
     }

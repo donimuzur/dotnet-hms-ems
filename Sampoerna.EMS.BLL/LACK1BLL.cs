@@ -4740,6 +4740,23 @@ namespace Sampoerna.EMS.BLL
             return Math.Ceiling(number * Math.Pow(10, digits)) / Math.Pow(10, digits);
         }
 
+
+
+        #region --------------------- Detail TIS ----------------
+
+        public List<Lack1DetailTisDto> GetDetailTisByParam(Lack1GetDetailTisByParamInput input)
+        {
+            var ck5Input = Mapper.Map<Ck5GetForLack1DetailTis>(input);
+
+            var ck5Data = _ck5Service.GetCk5ForLack1DetailTis(ck5Input);
+
+            var rc = Mapper.Map<List<Lack1DetailTisDto>>(ck5Data);
+
+            return rc.OrderBy(x => x.PlantIdReceiver).ToList();
+        }
+
+        #endregion
+
         #region Primary Results
 
         public List<Lack1PrimaryResultsDto> GetPrimaryResultsByParam(Lack1GetPrimaryResultsByParamInput input)

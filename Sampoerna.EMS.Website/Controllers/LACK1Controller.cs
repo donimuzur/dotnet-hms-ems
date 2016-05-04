@@ -2907,6 +2907,82 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #endregion
 
+
+        #region --------------- Detail TIS -------------
+
+        public ActionResult DetailTis()
+        {
+
+            Lack1DetailTisViewModel model;
+            try
+            {
+                model = new Lack1DetailTisViewModel()
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo,
+                    DetailList = SearchDetailTis()
+                };
+                model = InitSearchDetilTisViewModel(model);
+            }
+            catch (Exception ex)
+            {
+                model = new Lack1DetailTisViewModel()
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo
+                };
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return View("DetailTis", model);
+        }
+
+        [HttpPost]
+        public ActionResult SearchDetailTis(Lack1DetailTisViewModel model)
+        {
+            model.DetailList = SearchDetailTis(model.SearchView);
+            return PartialView("_Lack1DetailTis", model);
+        }
+
+        private List<Lack1DetailTisItemModel> SearchDetailTis(Lack1SearchDetailTisViewModel filter = null)
+        {
+            //Get All
+            if (filter == null)
+            {
+                //Get All
+                var data = _lack1Bll.GetDetailTisByParam(new Lack1GetDetailTisByParamInput() { 
+                    PlantReceiverFrom = string.Empty,
+                    PlantReceiverTo = string.Empty,
+                    DateFrom = DateTime.Now,
+                    DateTo = DateTime.Now
+                });
+                return Mapper.Map<List<Lack1DetailTisItemModel>>(data);
+            }
+            //getbyparams
+            var input = Mapper.Map<Lack1GetDetailTisByParamInput>(filter);
+
+            var dbData = _lack1Bll.GetDetailTisByParam(input);
+            return Mapper.Map<List<Lack1DetailTisItemModel>>(dbData);
+        }
+
+        private Lack1DetailTisViewModel InitSearchDetilTisViewModel(Lack1DetailTisViewModel model)
+        {
+            var plantList = GlobalFunctions.GetPlantAll();
+
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
+            {
+                var distinctPlant = plantList.Where(x => CurrentUser.ListUserPlants.Contains(x.Value));
+                var getPlant = new SelectList(distinctPlant, "Value", "Text");
+                plantList = getPlant;
+            }
+
+            model.SearchView.PlantReceiverFromList = plantList;
+            model.SearchView.PlantReceiverToList = plantList;
+
+            return model;
+        }
+
+        #endregion
+
         #region Daily Prod
 
         public ActionResult DailyProd()
@@ -3174,6 +3250,8 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("PrimaryResults", model);
         }
 
+        
+
         private Lack1PrimaryResultsViewModel InitLack1PrimaryResults(Lack1PrimaryResultsViewModel model)
         {
             model.MainMenu = _mainMenu;
@@ -3419,7 +3497,6 @@ namespace Sampoerna.EMS.Website.Controllers
             iColumn = iColumn + 1;
 
             return slDocument;
-
         }
 
         #endregion

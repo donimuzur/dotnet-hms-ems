@@ -212,6 +212,15 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Enums.UserRole UserRole { get; set; }
     }
 
+
+    public class Lack1GetDetailTisByParamInput
+    {
+        public DateTime? DateFrom { get; set; }
+        public DateTime? DateTo { get; set; }
+        public string PlantReceiverFrom { get; set; }
+        public string PlantReceiverTo { get; set; }
+    }
+
     public class Lack1GetDailyProdByParamInput
     {
         public DateTime DateFrom { get; set; }
