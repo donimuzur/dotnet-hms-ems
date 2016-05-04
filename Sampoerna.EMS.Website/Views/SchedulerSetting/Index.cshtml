@@ -8,7 +8,7 @@
 
 @section scripts {
     <script type="text/javascript" language="javascript">
-        $('#MenuGlobalSetting').addClass('active');
+        $('#MenuScheduler').addClass('active');
         
 
     </script>
@@ -21,8 +21,12 @@
             <div class="col-sm-12">
                 <h3>Scheduler Settings</h3>
                 <div class="action-button">
-                    <button class="btn btn-blue">Save</button>
-                    <input type="button" value="Cancel" class="btn btn-grey" id="btnCancel" />
+                    @if (Model.IsNotViewer)
+                    {
+                        <button class="btn btn-blue">Save</button>
+                    }
+                   
+                    @*<input type="button" value="Cancel" class="btn btn-grey" id="btnCancel" />*@
                 </div>
             </div>
         </div>
@@ -51,8 +55,15 @@
                                                     <div class="row">
                                                         <label class="col-md-2">Daily Scheduler</label>
                                                         <div class="col-md-2">
-                                                            @*@Html.TextBoxFor(model => model.StickerCode, new { @class = "form-control", @maxlength = "18" })*@
-                                                            @Html.TextBoxFor(model => model.DailyMinutes, new { @class = "form-control" })
+                                                            @if (Model.IsNotViewer)
+                                                            {
+                                                                @Html.TextBoxFor(model => model.DailyMinutes, new { @class = "form-control" })
+                                                            }
+                                                            else
+                                                            {
+                                                                 @Html.TextBoxFor(model => model.DailyMinutes, new { @class = "form-control btn-grey", @disabled="disabled" })
+                                                            }
+                                                           
                                                         </div>
                                                         <div class="col-md-2">
                                                             <label class="col-md-2">Minutes</label>
@@ -74,8 +85,15 @@
                                                     <div class="row">
                                                         <label class="col-md-2">Monthly Scheduler</label>
                                                         <div class="col-md-2">
-                                                            @*@Html.TextBoxFor(model => model.StickerCode, new { @class = "form-control", @maxlength = "18" })*@
-                                                            @Html.TextBoxFor(model => model.MonthlyMinutes, new { @class = "form-control" })
+                                                            @if (Model.IsNotViewer)
+                                                            {
+                                                                @Html.TextBoxFor(model => model.MonthlyMinutes, new { @class = "form-control" })
+                                                            }
+                                                            else
+                                                            {
+                                                                @Html.TextBoxFor(model => model.MonthlyMinutes, new { @class = "form-control btn-grey", @disabled = "disabled" })
+                                                            }
+                                                            
                                                         </div>
                                                         <div class="col-md-2">
                                                             <label class="col-md-2">Minutes</label>
