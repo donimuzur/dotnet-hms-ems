@@ -1864,6 +1864,24 @@ namespace Sampoerna.EMS.Website.Controllers
                 });
             }
 
+            if (model.ExportModel.BPbck1Number)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck1Number",
+                    HeaderText = "PBCK-1 Number"
+                });
+            }
+
+            if (model.ExportModel.BPbck1Date)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck1Date",
+                    HeaderText = "PBCK-1 Date"
+                });
+            }
+
             if (model.ExportModel.BApprover)
             {
                 grid.Columns.Add(new BoundField()
@@ -2148,6 +2166,10 @@ namespace Sampoerna.EMS.Website.Controllers
                         iColumn++;
                     }
 
+                    slDocument.SetCellValue(iRow, iColumn, item.ProdQty.ToString("N2"));
+                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
+                    iColumn++;
+
                     slDocument.SetCellValue(iRow, iColumn, item.EndingBalance.ToString("N2"));
                     slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
@@ -2272,6 +2294,9 @@ namespace Sampoerna.EMS.Website.Controllers
                         slDocument.SetCellValue(iRow, iColumn, "-");
                         iColumn++;
                     }
+
+                    slDocument.SetCellValue(iRow, iColumn, item.ProdQty.ToString("N2"));
+                    iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.EndingBalance.ToString("N2"));
                     iColumn++;

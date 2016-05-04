@@ -264,6 +264,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.SupplierPlantId, opt => opt.MapFrom(src => src.SupplierPlantId))
                 .ForMember(dest => dest.SupplierPlantName, opt => opt.MapFrom(src => src.SupplierPlant))
                 .ForMember(dest => dest.Period, opt => opt.MapFrom(src => src.PerionNameEng + " " + src.PeriodYears))
+                .ForMember(dest => dest.Pbck1Number, opt => opt.MapFrom(src => src.Pbck1Number))
+                .ForMember(dest => dest.Pbck1Date, opt => opt.MapFrom(src => src.Pbck1Date.HasValue ? src.Pbck1Date.Value.ToString("dd MMM yyyy") : string.Empty))
                 .ForMember(dest => dest.DocumentStatus, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.Status)))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CreateDate.ToString("dd MMM yyyy HH:mm:ss")))
                 .ForMember(dest => dest.ApprovedDate, opt => opt.MapFrom(src => src.ApprovedDate.HasValue ? src.ApprovedDate.Value.ToString("dd MMM yyyy HH:mm:ss") : string.Empty))

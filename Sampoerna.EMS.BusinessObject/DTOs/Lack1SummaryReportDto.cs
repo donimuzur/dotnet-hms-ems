@@ -28,6 +28,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string WasteUom { get; set; }
         public decimal ReturnQty { get; set; }
         public string ReturnUom { get; set; }
+        public string Pbck1Number { get; set; }
+        public DateTime? Pbck1Date { get; set; }
         public Enums.DocumentStatus Status { get; set; }
         public Enums.DocumentStatusGovType2? GovStatus { get; set; }
         public DateTime? DecreeDate { get; set; }
