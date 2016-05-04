@@ -21,7 +21,7 @@ namespace Sampoerna.EMS.BLL.Services
             _repository = _uow.GetGenericRepository<PRODUCTION>();
         }
 
-        public List<PRODUCTION> GetProductionByParam(GetProductionDailyProdByParamInput input)
+        public List<PRODUCTION> GetProductionDailyProdByParam(GetProductionDailyProdByParamInput input)
         {
             var data = _repository.Get(x => x.PRODUCTION_DATE >= input.DateFrom && x.PRODUCTION_DATE <= input.DateTo
                  && string.Compare(x.WERKS, input.PlantFrom) >= 0 &&

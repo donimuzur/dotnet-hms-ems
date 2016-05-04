@@ -4820,10 +4820,7 @@ namespace Sampoerna.EMS.BLL
                 if (plantMaster != null)
                     lack1DailyProdDto.PlantDescription = plantMaster.NAME1;
                 //get material desc 
-                //var materialMaster = listMaterial.FirstOrDefault(c => c.STICKER_CODE == lack1DailyProdDto.CfCodeProduced && c.WERKS == lack1DailyProdDto.PlantId);
-                //if (materialMaster != null)
-                //    lack1DailyProdDto.CfProducedDescription = materialMaster.MATERIAL_DESC;
-
+             
                 //bkc
                var  materialMaster = listMaterial.FirstOrDefault(c => c.STICKER_CODE == lack1DailyProdDto.BkcUsed && c.WERKS == lack1DailyProdDto.PlantId);
                 if (materialMaster != null)
@@ -4918,7 +4915,7 @@ namespace Sampoerna.EMS.BLL
             inputProduction.PlantFrom = input.PlantFrom;
             inputProduction.PlantTo = input.PlantTo;
 
-            var listProduction = _productionServices.GetProductionByParam(inputProduction);
+            var listProduction = _productionServices.GetProductionDailyProdByParam(inputProduction);
 
 
             var inputWaste = new GetWasteDailyProdByParamInput();
