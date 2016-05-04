@@ -314,6 +314,16 @@ namespace Sampoerna.EMS.Website.Controllers
             return result;
         }
 
+
+        public JsonResult GenerateCFVsFaReport(Lack1CFUsageVsFAByParamInput param)
+        {
+            var outGeneratedData = _lack1Bll.GetCfUsagevsFaDetailData(param);
+
+            var result = Json(outGeneratedData);
+            result.MaxJsonLength = Int32.MaxValue;
+            return result;
+        }
+
         #endregion
 
         #region ----- create -----

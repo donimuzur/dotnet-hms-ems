@@ -135,6 +135,19 @@ namespace Sampoerna.EMS.BLL.Services
             return dbData.ToList();
         }
 
+        public List<ZAAP_SHIFT_RPT> GetForCFVsFa(ZaapShiftRptGetForLack1ReportByParamInput input)
+        {
+            Expression<Func<ZAAP_SHIFT_RPT, bool>> queryFilter = PredicateHelper.True<ZAAP_SHIFT_RPT>();
+
+            queryFilter = queryFilter.And(c => input.Werks.Distinct().Contains(c.WERKS));
+
+            queryFilter = queryFilter.And(x => x.POSTING_DATE >= input.BeginingDate && x.POSTING_DATE <= input.EndDate);
+
+            var data = _repository.Get(queryFilter);
+
+            return data.ToList();
+        }
+
         public ZAAP_SHIFT_RPT GetById(int id)
         {
             var data = _repository.GetQuery(x => x.ZAAP_SHIFT_RPT_ID == id).FirstOrDefault();

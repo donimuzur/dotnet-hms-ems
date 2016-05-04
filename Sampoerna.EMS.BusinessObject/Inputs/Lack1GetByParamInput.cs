@@ -211,4 +211,14 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public List<string> ListUserPlant { get; set; }
         public Enums.UserRole UserRole { get; set; }
     }
+
+    public class Lack1CFUsageVsFAByParamInput
+    {
+        public string BeginingPlant { get; set; }
+    
+        public string EndPlant {get; set;}
+        public DateTime BeginingPostingDate { get; set; }
+    
+        public DateTime EndPostingDate { get; set; }
+    }
 }

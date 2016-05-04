@@ -224,7 +224,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public List<Lack1CFUsagevsFaDetailDtoMvt> Lack1CFUsagevsFaDetailDtoMvt101 { get; set; }
         public List<Lack1CFUsagevsFaDetailDtoMvt> Lack1CFUsagevsFaDetailDtoMvt261 { get; set; }
-        public List<Lack1CFUsagevsFaDetailDtoWaste> Lack1CFUsagevsFaDetailDtoMvtWaste { get; set; }
+        public List<WasteDto> Lack1CFUsagevsFaDetailDtoMvtWaste { get; set; }
     }
 
     public class Lack1CFUsagevsFaDetailDtoMvt
@@ -244,32 +244,32 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Converted_Uom { get; set; }
     }
 
-    public class Lack1CFUsagevsFaDetailDtoWaste
-    {
+    //public class Lack1CFUsagevsFaDetailDtoWaste
+    //{
         
-        public string PlantId { get; set; }
-        public string Fa_Code { get; set; }
+    //    public string PlantId { get; set; }
+    //    public string Fa_Code { get; set; }
 
-        public DateTime ProductionDate { get; set; }
+    //    public DateTime ProductionDate { get; set; }
         
-        public decimal Reject_Maker_Qty { get; set; }
+    //    public decimal Reject_Maker_Qty { get; set; }
 
-        public string Reject_Maker_Uom { get; set; }
+    //    public string Reject_Maker_Uom { get; set; }
 
-        public decimal Reject_Packer_Qty { get; set; }
+    //    public decimal Reject_Packer_Qty { get; set; }
 
-        public string Reject_Packer_Uom { get; set; }
+    //    public string Reject_Packer_Uom { get; set; }
 
-        public decimal Dust_Qty { get; set; }
+    //    public decimal Dust_Qty { get; set; }
 
-        public string Dust_Uom { get; set; }
+    //    public string Dust_Uom { get; set; }
 
-        public decimal Floor_Qty { get; set; }
+    //    public decimal Floor_Qty { get; set; }
 
-        public string Floor_Uom { get; set; }
+    //    public string Floor_Uom { get; set; }
 
-        public decimal Stem_Qty { get; set; }
+    //    public decimal Stem_Qty { get; set; }
 
-        public string Stem_Uom { get; set; }
-    }
+    //    public string Stem_Uom { get; set; }
+    //}
 }

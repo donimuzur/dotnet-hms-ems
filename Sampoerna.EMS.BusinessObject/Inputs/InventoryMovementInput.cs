@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Sampoerna.EMS.BusinessObject.Inputs
 {
@@ -47,6 +48,17 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string PlantId { get; set; }
         public int PeriodMonth { get; set; }
         public int PeriodYear { get; set; }
+    }
+
+    public class InvGetReceivingByParamZaapShiftRptInput
+    {
+        public string Ordr { get; set; }
+        public string PlantId { get; set; }
+
+        public string FaCode { get; set; }
+
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
     }
 
 }
