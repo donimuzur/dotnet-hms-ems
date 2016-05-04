@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.Contract;
@@ -10,6 +12,7 @@ using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.PLANT;
 using Sampoerna.EMS.Website.Models.PlantReceiveMaterial;
+using SpreadsheetLight;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -216,6 +219,120 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+        #region export xls
 
+        public void ExportXlsFile()
+        {
+            string pathFile = "";
+
+            pathFile = CreateXlsFile();
+
+            var newFile = new FileInfo(pathFile);
+
+            var fileName = Path.GetFileName(pathFile);
+
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+        }
+
+        private string CreateXlsFile()
+        {
+            //get data
+            var listData = Mapper.Map<List<DetailPlantT1001W>>(_plantBll.GetAllPlant());
+
+            var slDocument = new SLDocument();
+
+            //title
+            slDocument.SetCellValue(1, 1, "Master Plant");
+            slDocument.MergeWorksheetCells(1, 1, 1, 8);
+            //create style
+            SLStyle valueStyle = slDocument.CreateStyle();
+            valueStyle.SetHorizontalAlignment(HorizontalAlignmentValues.Center);
+            valueStyle.Font.Bold = true;
+            valueStyle.Font.FontSize = 18;
+            slDocument.SetCellStyle(1, 1, valueStyle);
+
+            //create header
+            slDocument = CreateHeaderExcel(slDocument);
+
+            //create data
+            slDocument = CreateDataExcel(slDocument, listData);
+
+            var fileName = "MasterData_MasterPlant" + DateTime.Now.ToString("_yyyyMMddHHmmss") + ".xlsx";
+            var path = Path.Combine(Server.MapPath(Constans.UploadPath), fileName);
+
+            slDocument.SaveAs(path);
+
+            return path;
+
+        }
+
+        private SLDocument CreateHeaderExcel(SLDocument slDocument)
+        {
+            int iRow = 2;
+
+            slDocument.SetCellValue(iRow, 1, "NPPBKC ID");
+            slDocument.SetCellValue(iRow, 2, "NPPBKC ID Import");
+            slDocument.SetCellValue(iRow, 3, "Plant ID");
+            slDocument.SetCellValue(iRow, 4, "Plant Description");
+            slDocument.SetCellValue(iRow, 5, "Main Plant");
+            slDocument.SetCellValue(iRow, 6, "Plant Address");
+            slDocument.SetCellValue(iRow, 7, "Plant City");
+            slDocument.SetCellValue(iRow, 8, "Deletion");
+
+
+            SLStyle headerStyle = slDocument.CreateStyle();
+            headerStyle.Alignment.Horizontal = HorizontalAlignmentValues.Center;
+            headerStyle.Font.Bold = true;
+            headerStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Fill.SetPattern(PatternValues.Solid, System.Drawing.Color.LightGray, System.Drawing.Color.LightGray);
+
+            slDocument.SetCellStyle(iRow, 1, iRow, 8, headerStyle);
+
+            return slDocument;
+
+        }
+
+        private SLDocument CreateDataExcel(SLDocument slDocument, List<DetailPlantT1001W> listData)
+        {
+            int iRow = 3; //starting row data
+
+            foreach (var data in listData)
+            {
+                slDocument.SetCellValue(iRow, 1, data.NPPBKC_ID);
+                slDocument.SetCellValue(iRow, 2, data.NPPBKC_IMPORT_ID);
+                slDocument.SetCellValue(iRow, 3, data.Werks);
+                slDocument.SetCellValue(iRow, 4, data.Ort01 + "," + data.Name1);
+                slDocument.SetCellValue(iRow, 5, data.IsMainPlant ? "Yes" : "No");
+                slDocument.SetCellValue(iRow, 6, data.Address);
+                slDocument.SetCellValue(iRow, 7, data.Ort01);
+                slDocument.SetCellValue(iRow, 8, data.IsDeletedString);
+
+                iRow++;
+            }
+
+            //create style
+            SLStyle valueStyle = slDocument.CreateStyle();
+            valueStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+
+            slDocument.AutoFitColumn(1, 8);
+            slDocument.SetCellStyle(3, 1, iRow - 1, 8, valueStyle);
+
+            return slDocument;
+        }
+
+        #endregion
     }
 }
