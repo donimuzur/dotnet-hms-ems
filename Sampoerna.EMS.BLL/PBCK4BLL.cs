@@ -1751,7 +1751,7 @@ namespace Sampoerna.EMS.BLL
                 queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
             }
 
-            queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+            //queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
 
 
             var rc = _repository.Get(queryFilter, null, includeTables).ToList();

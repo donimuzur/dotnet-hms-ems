@@ -1,0 +1,35 @@
+﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1DailyProdViewModel
+
+<table id="lack1Table" border="0" class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Plant ID</th>
+            <th>Plant Desc</th>
+            <th>FA Code</th>
+            <th>FA Code Desc</th>
+            <th>Production Date</th>
+            <th>Prod Qty</th>
+            <th>Prod UOM</th>
+            <th>Reject Packer Qty</th>
+            <th>Reject Packer UOM</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Detail)
+        {
+            <tr>
+                <td>@item.PlantId</td>
+                <td>@item.PlantDescription</td>
+                <td>@item.FaCode</td>
+                <td>@item.FaCodeDescription</td>
+                <td>@item.ProductionDate</td>
+                <td>@item.ProdQty</td>
+                <td>@item.ProdUom</td>
+                <td>@item.RejectParkerQty</td>
+                <td>@item.RejectParkerUom</td>
+                
+            </tr>
+        }
+    </tbody>
+</table>

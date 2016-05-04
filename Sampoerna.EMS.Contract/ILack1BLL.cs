@@ -42,5 +42,9 @@ namespace Sampoerna.EMS.Contract
         void UpdateSomeField(Lack1UpdateSomeField input);
 
         List<Lack1DetailTisDto> GetDetailTisByParam(Lack1GetDetailTisByParamInput input);
+
+        List<Lack1PrimaryResultsDto> GetPrimaryResultsByParam(Lack1GetPrimaryResultsByParamInput input);
+
+        List<Lack1DailyProdDto> GetDailyProdByParam(Lack1GetDailyProdByParamInput input);
     }
 }

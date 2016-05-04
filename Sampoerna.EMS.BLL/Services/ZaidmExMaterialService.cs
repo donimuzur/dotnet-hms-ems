@@ -44,5 +44,9 @@ namespace Sampoerna.EMS.BLL.Services
             return _repository.Get(c => plantId.Contains(c.WERKS) && c.EXC_GOOD_TYP == exGoodType).ToList();
         }
 
+        public List<ZAIDM_EX_MATERIAL> GetAll()
+        {
+            return _repository.Get().ToList();
+        }
     }
 }

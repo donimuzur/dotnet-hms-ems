@@ -69,6 +69,8 @@ namespace Sampoerna.EMS.BLL
         private IMaterialBalanceService _materialBalanceService;
         private IBrandRegistrationService _brandRegService;
         private ICK5MaterialService _ck5MaterialService;
+        private IProductionServices _productionServices;
+        private IWasteServices _wasteServices;
 
         public LACK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -113,6 +115,8 @@ namespace Sampoerna.EMS.BLL
             _poaDelegationServices = new PoaDelegationServices(_uow, _logger);
             _materialBalanceService = new MaterialBalanceService(_uow, _logger);
             _ck5MaterialService = new CK5MaterialService(_uow, _logger);
+            _productionServices = new ProductionServices(_uow, _logger);
+            _wasteServices = new WasteServices(_uow, _logger);
         }
 
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
@@ -4081,6 +4085,7 @@ namespace Sampoerna.EMS.BLL
                     Lack1Level = data.LACK1_LEVEL,
                     BeginingBalance = data.BEGINING_BALANCE,
                     EndingBalance = data.BEGINING_BALANCE + data.TOTAL_INCOME - (data.USAGE + (data.USAGE_TISTOTIS.HasValue ? data.USAGE_TISTOTIS.Value : 0)) - (data.RETURN_QTY.HasValue ? data.RETURN_QTY.Value : 0),
+                    ProdQty = data.LACK1_PRODUCTION_DETAIL.Sum(x => x.AMOUNT),
                     TrackingConsolidations = new List<Lack1TrackingConsolidationDetailReportDto>(),
                     Poa = data.APPROVED_BY_POA,
                     Creator = data.CREATED_BY
@@ -4736,15 +4741,253 @@ namespace Sampoerna.EMS.BLL
         }
 
 
+
         #region --------------------- Detail TIS ----------------
 
         public List<Lack1DetailTisDto> GetDetailTisByParam(Lack1GetDetailTisByParamInput input)
         {
-            var rc = new List<Lack1DetailTisDto>();
+            var ck5Input = Mapper.Map<Ck5GetForLack1DetailTis>(input);
 
-            return rc;
+            var ck5Data = _ck5Service.GetCk5ForLack1DetailTis(ck5Input);
+
+            var rc = Mapper.Map<List<Lack1DetailTisDto>>(ck5Data);
+
+            return rc.OrderBy(x => x.PlantIdReceiver).ToList();
         }
 
         #endregion
+
+        #region Primary Results
+
+        public List<Lack1PrimaryResultsDto> GetPrimaryResultsByParam(Lack1GetPrimaryResultsByParamInput input)
+        {
+            //var listDailyProd = new List<Lack1DailyProdDto>();
+
+            var listOrdrZaapSiftRpt = _zaapShiftRptService.GetAll().Select(c => c.ORDR).Distinct().ToList();
+
+            var inputMvt = new GetLack1PrimaryResultsInput();
+            inputMvt.DateFrom = input.DateFrom;
+            inputMvt.DateTo = input.DateTo;
+            inputMvt.PlantFrom = input.PlantFrom;
+            inputMvt.PlantTo = input.PlantTo;
+            inputMvt.ListOrdrZaapShiftReport = listOrdrZaapSiftRpt;
+
+            var listCf = _inventoryMovementService.GetLack1PrimaryResultsCfProduced(inputMvt);
+
+            var listOrder = listCf.Select(c => c.ORDR).Distinct().ToList();
+
+            var listMaterial = _materialService.GetAll();
+
+            //good type tembakauiris
+            var tembakauIris = EnumHelper.GetDescription(Enums.GoodsType.TembakauIris);
+            listMaterial = listMaterial.Where(x => x.EXC_GOOD_TYP == tembakauIris).ToList();
+
+            //join inventory movement dan material master
+
+            var listJoinMovMaster = (from mov in listCf
+                join
+                    materialmaster in listMaterial on new {mov.MATERIAL_ID, mov.PLANT_ID}
+                    equals new {MATERIAL_ID = materialmaster.STICKER_CODE, PLANT_ID = materialmaster.WERKS}
+                select new Lack1PrimaryResultsDto()
+                {
+                    PlantId = mov.PLANT_ID,
+                    CfProducedProcessOrder = mov.ORDR,
+                    CfCodeProduced = mov.MATERIAL_ID,
+                    CfProducedDescription = materialmaster.MATERIAL_DESC,
+                    CfProdDate = mov.POSTING_DATE,
+                    CfProdQty = mov.QTY,
+                    CfProdUom = "Gram",
+                });
+
+
+            var listMaterialUom = _materialUomService.GetByMeinh("G");
+
+            var listPlant = _t001WServices.GetAll();
+            inputMvt.ListOrder = listOrder;
+
+            var listBkc = _inventoryMovementService.GetLack1PrimaryResultsBkc(inputMvt);
+
+            var listDailyProd = (from Cf in listJoinMovMaster join
+                                     bkc in listBkc on new { Cf.PlantId, Cf.CfProducedProcessOrder }
+                                 equals new { PlantId = bkc.PLANT_ID, CfProducedProcessOrder = bkc.ORDR }
+                                 select new Lack1PrimaryResultsDto()
+                                          {
+                                              PlantId = Cf.PlantId,
+                                              CfProducedProcessOrder = Cf.CfProducedProcessOrder,
+                                              CfCodeProduced = Cf.CfCodeProduced,
+                                              CfProducedDescription = Cf.CfProducedDescription,
+                                              CfProdDate = Cf.CfProdDate,
+                                              CfProdQty = Cf.CfProdQty,
+                                              CfProdUom = "Gram",
+
+                                              BkcUsed = bkc.MATERIAL_ID,
+                                              BkcIssueQty = bkc.QTY,
+                                              BkcDescription = "",
+                                              BkcIssueUom = "Gram",
+                                              BkcOrdr = bkc.ORDR,
+                                          }).ToList();
+
+           
+
+            foreach (var lack1DailyProdDto in listDailyProd)
+            {
+                lack1DailyProdDto.Message = "";
+
+                //get plant dec
+                var plantMaster = listPlant.FirstOrDefault(c => c.WERKS == lack1DailyProdDto.PlantId);
+                if (plantMaster != null)
+                    lack1DailyProdDto.PlantDescription = plantMaster.NAME1;
+                //get material desc 
+             
+                //bkc
+               var  materialMaster = listMaterial.FirstOrDefault(c => c.STICKER_CODE == lack1DailyProdDto.BkcUsed && c.WERKS == lack1DailyProdDto.PlantId);
+                if (materialMaster != null)
+                    lack1DailyProdDto.BkcDescription = materialMaster.MATERIAL_DESC;
+
+                //get uom conversion Cf
+                var uomConversion =
+                    listMaterialUom.FirstOrDefault(
+                        c => c.STICKER_CODE == lack1DailyProdDto.CfCodeProduced 
+                            && c.WERKS == lack1DailyProdDto.PlantId
+                            && c.MEINH == "G");
+
+                bool isError = false;
+
+                if (uomConversion == null)
+                {
+                    isError = true;
+                    lack1DailyProdDto.Message +=
+                        "Convertion Material Uom (Gram) in Material Master not exist, Sticker_Code : " +
+                        lack1DailyProdDto.CfCodeProduced + ";";
+                }
+                else
+                {
+
+                    if (uomConversion.UMREN == 0)
+                    {
+                       
+                        isError = true;
+                        lack1DailyProdDto.Message +=
+                            "Convertion Material Uom (Gram) in Material Master Zero Divided, Sticker_Code : " +
+                            lack1DailyProdDto.CfCodeProduced + ";";
+                    }
+
+                }
+
+                if (isError)
+                    lack1DailyProdDto.CfProdQty = 0;
+                else 
+                    lack1DailyProdDto.CfProdQty = lack1DailyProdDto.CfProdQty/uomConversion.UMREN;
+
+                //get uom conversion bkc
+                uomConversion =
+                    listMaterialUom.FirstOrDefault(
+                        c => c.STICKER_CODE == lack1DailyProdDto.BkcUsed 
+                            && c.WERKS == lack1DailyProdDto.PlantId
+                            && c.MEINH == "G");
+
+                isError = false;
+
+                if (uomConversion == null)
+                {
+                    isError = true;
+                    lack1DailyProdDto.Message +=
+                        "Convertion Material Uom (Gram) in Material Master not exist, Sticker_Code : " +
+                        lack1DailyProdDto.BkcUsed + ";";
+                 
+                }
+                else
+                {
+                    if (uomConversion.UMREN == 0)
+                    {
+                        isError = true;
+                        lack1DailyProdDto.Message +=
+                            "Convertion Material Uom (Gram) in Material Master Zero Divided, Sticker_Code : " +
+                            lack1DailyProdDto.BkcUsed + ";";
+                    }
+
+                }
+
+                if (isError)
+                    lack1DailyProdDto.BkcIssueQty = 0;
+                else
+                    lack1DailyProdDto.BkcIssueQty = lack1DailyProdDto.BkcIssueQty / uomConversion.UMREN;
+                
+            }
+
+            return listDailyProd;
+        }
+
+
+        #endregion
+        
+        #region Daily Prod
+
+        public List<Lack1DailyProdDto> GetDailyProdByParam(Lack1GetDailyProdByParamInput input)
+        {
+            input.DateTo = input.DateTo.AddDays(1);
+
+            var inputProduction = new GetProductionDailyProdByParamInput();
+            inputProduction.DateFrom = input.DateFrom;
+            inputProduction.DateTo = input.DateTo;
+            inputProduction.PlantFrom = input.PlantFrom;
+            inputProduction.PlantTo = input.PlantTo;
+
+            var listProduction = _productionServices.GetProductionDailyProdByParam(inputProduction);
+
+
+            var inputWaste = new GetWasteDailyProdByParamInput();
+            inputWaste.DateFrom = input.DateFrom;
+            inputWaste.DateTo = input.DateTo;
+            inputWaste.PlantFrom = input.PlantFrom;
+            inputWaste.PlantTo = input.PlantTo;
+
+            var listWaste = _wasteServices.GetWasteDailyProdByParam(inputWaste);
+           
+            //join
+
+            var listDailyProd = (from production in listProduction
+                                 join
+                                     waste in listWaste
+                                     on new { production.FA_CODE, production.PRODUCTION_DATE, production.WERKS }
+                                     equals new { waste.FA_CODE, PRODUCTION_DATE = waste.WASTE_PROD_DATE, waste.WERKS }
+                                 select new Lack1DailyProdDto()
+                                 {
+                                     PlantId = production.WERKS,
+                                     PlantDescription = "",
+                                     FaCode = production.FA_CODE,
+                                     FaCodeDescription = production.BRAND_DESC,
+                                     ProductionDate = production.PRODUCTION_DATE,
+                                     ProdQty = production.QTY,
+                                     ProdUom = production.UOM,
+
+                                     RejectParkerQty = waste.PACKER_REJECT_STICK_QTY,
+                                     RejectParkerUom = "Batang"
+
+                                 }).ToList();
+
+
+            var listUom = _uomBll.GetAll();
+
+            var listPlant = _t001WServices.GetAll();
+
+            foreach (var lack1DailyProdDto in listDailyProd)
+            {
+                //get plant dec
+                var plantMaster = listPlant.FirstOrDefault(c => c.WERKS == lack1DailyProdDto.PlantId);
+                if (plantMaster != null)
+                    lack1DailyProdDto.PlantDescription = plantMaster.NAME1;
+
+                var uomMaster = listUom.FirstOrDefault(c => c.UOM_ID == lack1DailyProdDto.ProdUom);
+                if (uomMaster != null)
+                    lack1DailyProdDto.ProdUom = uomMaster.UOM_DESC;
+            }
+            return listDailyProd;
+
+        }
+
+
+        #endregion
+
     }
 }

@@ -17,4 +17,12 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public Enums.UserRole UserRole { get; set; }
         public List<string> ListUserPlants { get; set; }
     }
+
+    public class GetWasteDailyProdByParamInput
+    {
+        public DateTime DateFrom { get; set; }
+        public DateTime DateTo { get; set; }
+        public string PlantFrom { get; set; }
+        public string PlantTo { get; set; }
+    }
 }
