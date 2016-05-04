@@ -24,9 +24,10 @@ namespace Sampoerna.EMS.Contract.Services
 
         List<INVENTORY_MOVEMENT> GetMvt201(InvMovementGetUsageByParamInput input, bool isAssigned = false);
 
-
-
-
         List<INVENTORY_MOVEMENT> GetMvt201NotUsed(List<long> usedList);
+
+        List<INVENTORY_MOVEMENT> GetLack1PrimaryResultsCfProduced(GetLack1PrimaryResultsInput input);
+
+        List<INVENTORY_MOVEMENT> GetLack1PrimaryResultsBkc(GetLack1PrimaryResultsInput input);
     }
 }

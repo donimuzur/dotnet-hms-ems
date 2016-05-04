@@ -316,6 +316,25 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
+            #region Daily Prod
+
+            Mapper.CreateMap<Lack1DailyProdDto, Lack1DailyProdDetail>().IgnoreAllNonExisting()
+            .ForMember(dest => dest.ProductionDate, opt => opt.MapFrom(src => src.ProductionDate.ToString("dd-MMM-yyyy")))
+            .ForMember(dest => dest.ProdQty, opt => opt.ResolveUsing<DecimalToStringMoneyResolver2>().FromMember(src => src.ProdQty))
+            .ForMember(dest => dest.RejectParkerQty, opt => opt.ResolveUsing<DecimalToStringMoneyResolver2>().FromMember(src => src.RejectParkerQty))
+                ;
+
+            #endregion
+
+            #region PrimaryResults
+
+            Mapper.CreateMap<Lack1PrimaryResultsDto, Lack1PrimaryResultsDetail>().IgnoreAllNonExisting()
+            .ForMember(dest => dest.CfProdDate, opt => opt.ResolveUsing<DateToStringDDMMMYYYYResolver>().FromMember(src => src.CfProdDate))
+            .ForMember(dest => dest.CfProdQty, opt => opt.ResolveUsing<DecimalToStringMoneyResolver2>().FromMember(src => src.CfProdQty))
+            .ForMember(dest => dest.BkcIssueQty, opt => opt.ResolveUsing<DecimalToStringMoneyResolver2>().FromMember(src => src.BkcIssueQty))
+                ;
+
+            #endregion
         }
     }
 }
