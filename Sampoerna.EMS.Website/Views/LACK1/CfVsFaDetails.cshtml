@@ -1,0 +1,88 @@
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.LACK1.Lack1CFUsageVsFAViewModel
+@{
+    ViewBag.Title = "Cut Filler vs FA Details";
+}
+
+@section styles{
+    <link href="~/Content/css/print.css" rel="stylesheet" />
+}
+
+<div role="tabpanel" class="tab-pane active" id="information">
+    <div class="tab-wrapper">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingOne">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Filter
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        <div class="form-excise" role="form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Tanggal Awal (Posting Date)</label>
+                                        <div class="input-group date">
+                                            @Html.TextBoxFor(model => model.BeginingPostingDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Tanggal Akhir (Posting Date)</label>
+                                        <div class="input-group date">
+                                            @Html.TextBoxFor(model => model.EndPostingDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Received Plant (Start)</label>
+                                        <div class="col-md-8">
+                                            
+                                            @Html.DropDownListFor(model => model.LevelPlantId, Model.ReceivePlantList, "Select", new { @class = "form-control", @disabled = "disabled" })
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Tanggal Akhir (Posting Date)</label>
+                                        <div class="input-group date">
+                                            @Html.TextBoxFor(model => model.EndPostingDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="loading"></div>
+
+@section scripts {
+    <script src="~/Scripts/thousand-separator.js"></script>
+    <script src="~/Scripts/lack1/Lack1Scripts.js?v=0.0.3"></script>
+    <script src="~/Scripts/lack1/Lack1GenerateTable.js?v=0.0.2"></script>
+    <script type="text/javascript"></script>
+}
