@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
@@ -373,9 +374,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private string CreateXlsFile(MaterialListViewModel model)
         {
-            var data = _materialBll.getAllMaterial(model.GoodType);
+            //var data = _materialBll.getByID(mn, p);
+            ////Mapper.Map(data,model);
+            //model = Mapper.Map<MaterialDetailViewModel>(data);
+
+            var data = _materialBll.getAll().Where(c=>c.EXC_GOOD_TYP == model.GoodType);
             //get data
-            var listData = Mapper.Map<List<MaterialDetails>>(data);
+            var listData = Mapper.Map<List<MaterialDetailViewModel>>(data);
 
             var slDocument = new SLDocument();
 
@@ -390,7 +395,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //title
             slDocument.SetCellValue(2, 1, "Material Master");
-            slDocument.MergeWorksheetCells(2, 1, 2, 7);
+            slDocument.MergeWorksheetCells(2, 1, 2, 15);
             //create style
             SLStyle valueStyle = slDocument.CreateStyle();
             valueStyle.SetHorizontalAlignment(HorizontalAlignmentValues.Center);
@@ -419,11 +424,22 @@ namespace Sampoerna.EMS.Website.Controllers
 
             slDocument.SetCellValue(iRow, 1, "Plant");
             slDocument.SetCellValue(iRow, 2, "Material Number");
-            slDocument.SetCellValue(iRow, 3, "Material Desc");
-            slDocument.SetCellValue(iRow, 4, "Good Type");
-            slDocument.SetCellValue(iRow, 5, "UOM");
-            slDocument.SetCellValue(iRow, 6, "Plant Deletion");
-            slDocument.SetCellValue(iRow, 7, "Client Deletion");
+            slDocument.SetCellValue(iRow, 3, "Material Group");
+            slDocument.SetCellValue(iRow, 4, "Material Desc");
+            slDocument.SetCellValue(iRow, 5, "Purchasing Group");
+            slDocument.SetCellValue(iRow, 6, "Base UOM (SAP)");
+            slDocument.SetCellValue(iRow, 7, "Excisable Good Type");
+    
+            slDocument.SetCellValue(iRow, 8, "Issue Storage Loc");
+            slDocument.SetCellValue(iRow, 9, "Tariff");
+            slDocument.SetCellValue(iRow, 10, "Tariff Currency");
+            slDocument.SetCellValue(iRow, 11, "HJE");
+            slDocument.SetCellValue(iRow, 12, "HJE Currency");
+            slDocument.SetCellValue(iRow, 13, "Converted UOM - Conversion");
+            
+          
+            slDocument.SetCellValue(iRow, 14, "Plant Deletion");
+            slDocument.SetCellValue(iRow, 15, "Client Deletion");
             
 
 
@@ -436,25 +452,38 @@ namespace Sampoerna.EMS.Website.Controllers
             headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
             headerStyle.Fill.SetPattern(PatternValues.Solid, System.Drawing.Color.LightGray, System.Drawing.Color.LightGray);
 
-            slDocument.SetCellStyle(iRow, 1, iRow, 7, headerStyle);
+            slDocument.SetCellStyle(iRow, 1, iRow, 15, headerStyle);
 
             return slDocument;
 
         }
 
-        private SLDocument CreateDataExcel(SLDocument slDocument, List<MaterialDetails> listData)
+        private SLDocument CreateDataExcel(SLDocument slDocument, List<MaterialDetailViewModel> listData)
         {
             int iRow = 4; //starting row data
 
             foreach (var data in listData)
             {
+                string materialUom = "";
+                foreach (var materialUomDetailse in data.MaterialUom)
+                {
+                    materialUom += materialUomDetailse.Meinh + " - " + materialUomDetailse.UmrenStr + Environment.NewLine;
+                }
                 slDocument.SetCellValue(iRow, 1, data.PlantName);
                 slDocument.SetCellValue(iRow, 2, data.MaterialNumber);
-                slDocument.SetCellValue(iRow, 3, data.MaterialDesc);
-                slDocument.SetCellValue(iRow, 4, data.GoodTypeName);
-                slDocument.SetCellValue(iRow, 5, data.UomName);
-                slDocument.SetCellValue(iRow, 6, data.PlantDeletion);
-                slDocument.SetCellValue(iRow, 7, data.ClientDeletion);
+                slDocument.SetCellValue(iRow, 3, data.MaterialGroup);
+                slDocument.SetCellValue(iRow, 4, data.MaterialDesc);
+                slDocument.SetCellValue(iRow, 5, data.PurchasingGroup);
+                slDocument.SetCellValue(iRow, 6, data.UomName);
+                slDocument.SetCellValue(iRow, 7, data.GoodTypeName);
+                slDocument.SetCellValue(iRow, 8, data.IssueStorageLoc);
+                slDocument.SetCellValue(iRow, 9, data.TariffStr);
+                slDocument.SetCellValue(iRow, 10, data.Tariff_Curr);
+                slDocument.SetCellValue(iRow, 11, data.HjeStr);
+                slDocument.SetCellValue(iRow, 12, data.Hje_Curr);
+                slDocument.SetCellValue(iRow, 13, materialUom);
+                slDocument.SetCellValue(iRow, 14, data.IsPlantDelete ? "Yes" : "No");
+                slDocument.SetCellValue(iRow, 15, data.IsClientDelete ? "Yes" : "No");
                 
                 iRow++;
             }
@@ -465,9 +494,10 @@ namespace Sampoerna.EMS.Website.Controllers
             valueStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
             valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
             valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.SetWrapText(true);
 
-            slDocument.AutoFitColumn(1, 7);
-            slDocument.SetCellStyle(4, 1, iRow - 1, 7, valueStyle);
+            slDocument.AutoFitColumn(1, 15);
+            slDocument.SetCellStyle(4, 1, iRow - 1, 15, valueStyle);
 
             return slDocument;
         }

@@ -531,13 +531,13 @@ namespace Sampoerna.EMS.Website.Controllers
         private string CreateXlsFile()
         {
             //get data
-            var listData = Mapper.Map<List<BrandRegistrationDetail>>(_brandRegistrationBll.GetAllBrands());
+            var listData = Mapper.Map<List<BrandRegistrationDetailsViewModel>>(_brandRegistrationBll.GetAllBrands());
 
             var slDocument = new SLDocument();
 
             //title
             slDocument.SetCellValue(1, 1, "Master Brand Registration");
-            slDocument.MergeWorksheetCells(1, 1, 1, 11);
+            slDocument.MergeWorksheetCells(1, 1, 1, 25);
             //create style
             SLStyle valueStyle = slDocument.CreateStyle();
             valueStyle.SetHorizontalAlignment(HorizontalAlignmentValues.Center);
@@ -567,15 +567,31 @@ namespace Sampoerna.EMS.Website.Controllers
             slDocument.SetCellValue(iRow, 1, "Sticker Code");
             slDocument.SetCellValue(iRow, 2, "Plant");
             slDocument.SetCellValue(iRow, 3, "FA Code");
-            slDocument.SetCellValue(iRow, 4, "Brand Name Registration by KPPBC");
-            slDocument.SetCellValue(iRow, 5, "Series Value");
-            slDocument.SetCellValue(iRow, 6, "Conversion");
-            slDocument.SetCellValue(iRow, 7, "Printing Price");
-            slDocument.SetCellValue(iRow, 8, "Cut Filler Code");
-            slDocument.SetCellValue(iRow, 9, "Active");
-            slDocument.SetCellValue(iRow, 10, "Created By - Date");
-            slDocument.SetCellValue(iRow, 11, "Deleted");
-
+            slDocument.SetCellValue(iRow, 4, "Personalization Code");
+            slDocument.SetCellValue(iRow, 5, "Product Code");
+            slDocument.SetCellValue(iRow, 6, "Brand Name Registration by KPPBC");
+            slDocument.SetCellValue(iRow, 7, "SKEP No");
+            slDocument.SetCellValue(iRow, 8, "SKEP Date");
+            slDocument.SetCellValue(iRow, 9, "Series Code");
+            slDocument.SetCellValue(iRow, 10, "Content");
+            slDocument.SetCellValue(iRow, 11, "Market Code");
+            slDocument.SetCellValue(iRow, 12, "Country");
+            slDocument.SetCellValue(iRow, 13, "HJE");
+            slDocument.SetCellValue(iRow, 14, "HJE Currency");
+            slDocument.SetCellValue(iRow, 15, "Tariff");
+            slDocument.SetCellValue(iRow, 16, "Tariff Currency");
+            slDocument.SetCellValue(iRow, 17, "Exciseable Goods Type");
+            slDocument.SetCellValue(iRow, 18, "Colour");
+            slDocument.SetCellValue(iRow, 19, "Start Date");
+            slDocument.SetCellValue(iRow, 20, "End Date");
+            slDocument.SetCellValue(iRow, 21, "Printing Price");
+            slDocument.SetCellValue(iRow, 22, "Convertion");
+            slDocument.SetCellValue(iRow, 23, "Cut Filler Code");
+            slDocument.SetCellValue(iRow, 24, "Deleted");
+            slDocument.SetCellValue(iRow, 25, "Created By - Date");
+         
+        
+        
 
             SLStyle headerStyle = slDocument.CreateStyle();
             headerStyle.Alignment.Horizontal = HorizontalAlignmentValues.Center;
@@ -586,30 +602,58 @@ namespace Sampoerna.EMS.Website.Controllers
             headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
             headerStyle.Fill.SetPattern(PatternValues.Solid, System.Drawing.Color.LightGray, System.Drawing.Color.LightGray);
 
-            slDocument.SetCellStyle(iRow, 1, iRow, 11, headerStyle);
+            slDocument.SetCellStyle(iRow, 1, iRow, 25, headerStyle);
 
             return slDocument;
 
         }
 
-        private SLDocument CreateDataExcel(SLDocument slDocument, List<BrandRegistrationDetail> listData)
+        private SLDocument CreateDataExcel(SLDocument slDocument, List<BrandRegistrationDetailsViewModel> listData)
         {
             int iRow = 3; //starting row data
 
             foreach (var data in listData)
             {
+                var personalizationCode = "";
+                if (!string.IsNullOrEmpty(data.PersonalizationCode)
+                    && !string.IsNullOrEmpty(data.PersonalizationCodeDescription))
+                {
+                    personalizationCode = data.PersonalizationCode + "-" + data.PersonalizationCodeDescription;
+                }
+
+                var productCode = "";
+                if (!string.IsNullOrEmpty(data.ProductCode)
+                    && !string.IsNullOrEmpty(data.ProductType)
+                    && !string.IsNullOrEmpty(data.ProductAlias))
+                {
+                    productCode = data.ProductCode + "-" + data.ProductType + " [" + data.ProductAlias + "]";
+                }
+
                 slDocument.SetCellValue(iRow, 1, data.StickerCode);
                 slDocument.SetCellValue(iRow, 2, data.PlantName);
                 slDocument.SetCellValue(iRow, 3, data.FaCode);
-                slDocument.SetCellValue(iRow, 4, data.BrandName);
-                slDocument.SetCellValue(iRow, 5, data.SeriesValue);
-                slDocument.SetCellValue(iRow, 6, ConvertHelper.ConvertDecimalToStringMoneyFormat(data.Conversion));
-                slDocument.SetCellValue(iRow, 7, ConvertHelper.ConvertDecimalToStringMoneyFormat(data.PrintingPrice));
-                slDocument.SetCellValue(iRow, 8, data.CutFilterCode);
-                slDocument.SetCellValue(iRow, 9, data.IsActive);
-                slDocument.SetCellValue(iRow, 10, data.CreatedBy + "-" + ConvertHelper.ConvertDateToStringddMMMyyyy(data.CreatedDate));
-                slDocument.SetCellValue(iRow, 11, data.IsDeleted);
-
+                slDocument.SetCellValue(iRow, 4, personalizationCode);
+                slDocument.SetCellValue(iRow, 5, productCode);
+                slDocument.SetCellValue(iRow, 6, data.BrandName);
+                slDocument.SetCellValue(iRow, 7, data.SkepNo);
+                slDocument.SetCellValue(iRow, 8, ConvertHelper.ConvertDateToStringddMMMyyyy(data.SkepDate));
+                slDocument.SetCellValue(iRow, 9, data.SeriesCode + "-" + data.SeriesValue);
+                slDocument.SetCellValue(iRow, 10, data.Content);
+                slDocument.SetCellValue(iRow, 11, data.MarketDescription);
+                slDocument.SetCellValue(iRow, 12, data.CountryCode);
+                slDocument.SetCellValue(iRow, 13, data.HjeValueStr);
+                slDocument.SetCellValue(iRow, 14, data.HjeCurrency);
+                slDocument.SetCellValue(iRow, 15, data.TariffValueStr);
+                slDocument.SetCellValue(iRow, 16, data.TariffCurrency);
+                slDocument.SetCellValue(iRow, 17, data.GoodType + "-" + data.GoodTypeDescription);
+                slDocument.SetCellValue(iRow, 18, data.ColourName);
+                slDocument.SetCellValue(iRow, 19, ConvertHelper.ConvertDateToStringddMMMyyyy(data.StartDate));
+                slDocument.SetCellValue(iRow, 20, ConvertHelper.ConvertDateToStringddMMMyyyy(data.EndDate));
+                slDocument.SetCellValue(iRow, 21, ConvertHelper.ConvertDecimalToStringMoneyFormat(data.PrintingPrice));
+                slDocument.SetCellValue(iRow, 22, ConvertHelper.ConvertDecimalToStringMoneyFormat(data.Conversion));
+                slDocument.SetCellValue(iRow, 23, data.CutFilterCode);
+                slDocument.SetCellValue(iRow, 24, data.IsDeleted );
+                slDocument.SetCellValue(iRow, 25, data.CREATED_BY + "-" + ConvertHelper.ConvertDateToStringddMMMyyyy(data.CREATED_DATE));
                 iRow++;
             }
 
@@ -620,8 +664,8 @@ namespace Sampoerna.EMS.Website.Controllers
             valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
             valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
 
-            slDocument.AutoFitColumn(1, 11);
-            slDocument.SetCellStyle(3, 1, iRow - 1, 11, valueStyle);
+            slDocument.AutoFitColumn(1, 25);
+            slDocument.SetCellStyle(3, 1, iRow - 1, 25, valueStyle);
 
             return slDocument;
         }
