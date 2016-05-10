@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -406,7 +407,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //title
             slDocument.SetCellValue(1, 1, "Master POA");
-            slDocument.MergeWorksheetCells(1, 1, 1, 6);
+            slDocument.MergeWorksheetCells(1, 1, 1, 9);
             //create style
             SLStyle valueStyle = slDocument.CreateStyle();
             valueStyle.SetHorizontalAlignment(HorizontalAlignmentValues.Center);
@@ -435,10 +436,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
             slDocument.SetCellValue(iRow, 1, "ID Card");
             slDocument.SetCellValue(iRow, 2, "Login As");
-            slDocument.SetCellValue(iRow, 3, "Printed Name");
-            slDocument.SetCellValue(iRow, 4, "Phone");
-            slDocument.SetCellValue(iRow, 5, "Title");
-            slDocument.SetCellValue(iRow, 6, "Active");
+            slDocument.SetCellValue(iRow, 3, "Manager");
+            slDocument.SetCellValue(iRow, 4, "Printed Name");
+            slDocument.SetCellValue(iRow, 5, "Phone");
+            slDocument.SetCellValue(iRow, 6, "Email");
+            slDocument.SetCellValue(iRow, 7, "Title");
+            slDocument.SetCellValue(iRow, 8, "Address");
+            slDocument.SetCellValue(iRow, 9, "Active");
 
             SLStyle headerStyle = slDocument.CreateStyle();
             headerStyle.Alignment.Horizontal = HorizontalAlignmentValues.Center;
@@ -449,7 +453,7 @@ namespace Sampoerna.EMS.Website.Controllers
             headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
             headerStyle.Fill.SetPattern(PatternValues.Solid, System.Drawing.Color.LightGray, System.Drawing.Color.LightGray);
 
-            slDocument.SetCellStyle(iRow, 1, iRow, 6, headerStyle);
+            slDocument.SetCellStyle(iRow, 1, iRow, 9, headerStyle);
 
             return slDocument;
 
@@ -459,14 +463,27 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             int iRow = 3; //starting row data
 
+            var listUsers = _userBll.GetUsers();
+
             foreach (var data in listData)
             {
+                string manager = "";
+                if (listUsers != null)
+                {
+                    var user = listUsers.FirstOrDefault(c => c.USER_ID == data.ManagerId);
+                    if (user != null)
+                        manager = user.FIRST_NAME + " " + user.LAST_NAME;
+                }
+               
                 slDocument.SetCellValue(iRow, 1, data.PoaIdCard);
                 slDocument.SetCellValue(iRow, 2, data.UserId);
-                slDocument.SetCellValue(iRow, 3, data.PoaPrintedName);
-                slDocument.SetCellValue(iRow, 4, data.PoaPhone);
-                slDocument.SetCellValue(iRow, 5, data.Title);
-                slDocument.SetCellValue(iRow, 6, data.Is_Active);
+                slDocument.SetCellValue(iRow, 3, manager);
+                slDocument.SetCellValue(iRow, 4, data.PoaPrintedName);
+                slDocument.SetCellValue(iRow, 5, data.PoaPhone);
+                slDocument.SetCellValue(iRow, 6, data.Email);
+                slDocument.SetCellValue(iRow, 7, data.Title);
+                slDocument.SetCellValue(iRow, 8, data.PoaAddress);
+                slDocument.SetCellValue(iRow, 9, data.Is_Active);
 
                 iRow++;
             }
@@ -478,8 +495,8 @@ namespace Sampoerna.EMS.Website.Controllers
             valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
             valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
 
-            slDocument.AutoFitColumn(1, 6);
-            slDocument.SetCellStyle(3, 1, iRow - 1, 6, valueStyle);
+            slDocument.AutoFitColumn(1, 9);
+            slDocument.SetCellStyle(3, 1, iRow - 1, 9, valueStyle);
 
             return slDocument;
         }
