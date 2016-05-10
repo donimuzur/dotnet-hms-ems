@@ -12,7 +12,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string PlantDescSupplier { get; set; }
         public string CfCode { get; set; }
         public string CfDesc { get; set; }
-        public decimal BeginingBalance { get; set; }
+        public string BeginingBalance { get; set; }
         public string BeginingBalanceUom { get; set; }
         public string Ck5EmsNo { get; set; }
         public string Ck5RegNo { get; set; }
@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Ck5GrDate { get; set; }
         public decimal Ck5Qty { get; set; }
         public string MvtType { get; set; }
-        public decimal Usage { get; set; }
+        public string Usage { get; set; }
         public string UsageUom { get; set; }
         public string UsagePostingDate { get; set; }
         public string FaCode { get; set; }
@@ -31,5 +31,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ProdDate { get; set; }
         public decimal EndingBalance { get; set; }
         public string EndingBalanceUom { get; set; }
+
+        public ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
+        public string StoReceiverNumber { get; set; }
     }
 }

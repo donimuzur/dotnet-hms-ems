@@ -29,5 +29,9 @@ namespace Sampoerna.EMS.Contract.Services
         List<INVENTORY_MOVEMENT> GetLack1PrimaryResultsCfProduced(GetLack1PrimaryResultsInput input);
 
         List<INVENTORY_MOVEMENT> GetLack1PrimaryResultsBkc(GetLack1PrimaryResultsInput input);
+
+        List<INVENTORY_MOVEMENT> GetBatchByPurchDoc(string purchDoc);
+
+        List<INVENTORY_MOVEMENT> GetLack1DetailTis(GetLack1DetailTisInput input);
     }
 }

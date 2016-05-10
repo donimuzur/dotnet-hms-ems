@@ -4752,7 +4752,35 @@ namespace Sampoerna.EMS.BLL
 
             var rc = Mapper.Map<List<Lack1DetailTisDto>>(ck5Data);
 
-            return rc.OrderBy(x => x.PlantIdReceiver).ToList();
+            rc = rc.OrderBy(x => x.PlantIdReceiver).ToList();
+
+            foreach (var item in rc)
+            {
+                var brandList = item.CK5_MATERIAL.Select(x => x.BRAND).Distinct().ToList();
+                var brandDescList = _materialService.GetByMaterialListAndPlantId(brandList, item.PlantIdReceiver);
+
+                var balanceList = _materialBalanceService.GetByMaterialListAndPlant(item.PlantIdReceiver, brandList, input.DateFrom.Value.Month, input.DateFrom.Value.Year);
+
+                var batchList = _inventoryMovementService.GetBatchByPurchDoc(item.StoReceiverNumber).Select(x => x.BATCH).ToList();
+
+                var inputMvt = new GetLack1DetailTisInput();
+                inputMvt.ListBatch = batchList;
+                inputMvt.DateFrom = input.DateFrom.Value;
+                inputMvt.DateTo = input.DateTo.Value;
+
+                var mvtList = _inventoryMovementService.GetLack1DetailTis(inputMvt);
+
+                item.CfCode = String.Join(Environment.NewLine, brandList.ToArray());
+                item.CfDesc = String.Join(Environment.NewLine, brandDescList.Select(x => x.MATERIAL_DESC).ToArray());
+                item.BeginingBalance = String.Join(Environment.NewLine, balanceList.BeginningBalance.ToArray());
+                item.BeginingBalanceUom = String.Join(Environment.NewLine, balanceList.BeginningBalanceUom.ToArray());
+                item.MvtType = String.Join(Environment.NewLine, mvtList.Select(x => x.MVT).ToArray());
+                item.Usage = String.Join(Environment.NewLine, mvtList.Select(x => (x.QTY.Value * 1000).ToString("N2")).ToArray());
+                item.UsageUom = String.Join(Environment.NewLine, mvtList.Select(x => x.BUN == "KG" ? "Gram" : string.Empty).ToArray());
+                item.UsagePostingDate = String.Join(Environment.NewLine, mvtList.Select(x => x.POSTING_DATE.Value.ToString("dd-MMM-yy")).ToArray());
+            }
+
+            return rc;
         }
 
         #endregion
