@@ -7,7 +7,11 @@
             <div class="action-button">
                 @if (Model.IsError)
                 {
-                    <input type="button" value="Re-Execute" class="btn btn-blue" id="btnExecute" />
+                    if (Model.IsNotViewer)
+                    {
+                        <input type="button" value="Re-Execute" class="btn btn-blue" id="btnExecute" />
+                    }
+                 
                 }
                 
                 <input type="button" value="Back" class="btn btn-grey" id="btnBack" />

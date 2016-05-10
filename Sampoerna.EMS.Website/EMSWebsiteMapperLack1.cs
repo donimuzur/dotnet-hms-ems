@@ -316,6 +316,16 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
+
+            #region ----------------- Detail Tis ---------
+
+            Mapper.CreateMap<Lack1SearchDetailTisViewModel, Lack1GetDetailTisByParamInput>()
+                .IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack1DetailTisDto, Lack1DetailTisItemModel>().IgnoreAllNonExisting();
+
+            #endregion
+
             #region Daily Prod
 
             Mapper.CreateMap<Lack1DailyProdDto, Lack1DailyProdDetail>().IgnoreAllNonExisting()

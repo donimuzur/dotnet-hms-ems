@@ -337,6 +337,7 @@
     <Compile Include="Models\LACK1\Lack1DailyProdViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1DashboardViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1DetailReportViewModel.cs" />
+    <Compile Include="Models\LACK1\Lack1DetailTisViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1EditViewModel.cs" />
     <Compile Include="Models\LACK1\Lack1GeneratedItemModel.cs" />
     <Compile Include="Models\LACK1\Lack1GenerateInputModel.cs" />
@@ -1319,6 +1320,8 @@
     <Content Include="Views\LACK1\_Lack1DailyProdDetails.cshtml" />
     <Content Include="Views\LACK1\PrimaryResults.cshtml" />
     <Content Include="Views\LACK1\_Lack1PrimaryResultsDetails.cshtml" />
+    <Content Include="Views\LACK1\DetailTis.cshtml" />
+    <Content Include="Views\LACK1\_Lack1DetailTis.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
