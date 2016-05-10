@@ -96,6 +96,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             if (model.XmlLogStatus == Enums.XmlLogStatus.Error)
                 model.IsError = true;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+
             return View(model);
         }
 
@@ -103,6 +105,10 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
+                if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+                    return RedirectToAction("Index");
+               
+
                 var input = new UpdateXmlFileInput();
 
                 input.XmlId = id;

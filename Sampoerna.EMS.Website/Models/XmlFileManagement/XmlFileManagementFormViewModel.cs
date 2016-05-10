@@ -23,7 +23,7 @@ namespace Sampoerna.EMS.Website.Models.XmlFileManagement
         public Enums.XmlLogStatus XmlLogStatus { get; set; }
         public string XmlLogStatusDescription { get; set; }
         public bool IsError { get; set; }
-
+        
         public List<XmlFileManagementDetailsViewModel> DetailListLogs { get; set; }
 
     }
