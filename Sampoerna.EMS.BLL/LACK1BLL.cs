@@ -4775,8 +4775,8 @@ namespace Sampoerna.EMS.BLL
                 item.BeginingBalance = String.Join(Environment.NewLine, balanceList.BeginningBalance.ToArray());
                 item.BeginingBalanceUom = String.Join(Environment.NewLine, balanceList.BeginningBalanceUom.ToArray());
                 item.MvtType = String.Join(Environment.NewLine, mvtList.Select(x => x.MVT).ToArray());
-                item.Usage = String.Join(Environment.NewLine, mvtList.Select(x => x.QTY.Value.ToString("N2")).ToArray());
-                item.UsageUom = String.Join(Environment.NewLine, mvtList.Select(x => x.BUN).ToArray());
+                item.Usage = String.Join(Environment.NewLine, mvtList.Select(x => (x.QTY.Value * 1000).ToString("N2")).ToArray());
+                item.UsageUom = String.Join(Environment.NewLine, mvtList.Select(x => x.BUN == "KG" ? "Gram" : string.Empty).ToArray());
                 item.UsagePostingDate = String.Join(Environment.NewLine, mvtList.Select(x => x.POSTING_DATE.Value.ToString("dd-MMM-yy")).ToArray());
             }
 
