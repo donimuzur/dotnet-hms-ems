@@ -75,6 +75,12 @@
             $('#SearchInput_GoodType').removeClass('input-validation-error');
             setupDataTables();
         }
+
+        function ExportXls() {
+            $('#GoodType').val($('#SearchInput_GoodType').val());
+            $('#ExportToXls').submit();
+        }
+        
     </script>
 }
 
@@ -109,7 +115,7 @@
                 {
 
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-8">
                             <div class="row">
                                 <label class="col-md-4">Excisable Goods Type</label>
                                 <div class="col-md-8">
@@ -120,13 +126,16 @@
                     </div>
                     <div class="row">
                         <div class="last-form">
-                            <div class="col-md-4 col-md-offset-8">
+                            <div class="col-md-8 col-md-offset-7">
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <input type="submit" class="btn btn-blue full" value="FILTER" />
+                                    <div class="col-md-2">
+                                        <input type="submit" class="btn btn-blue" value="FILTER" />
                                     </div>
-                                    <div class="col-md-6">
-                                        <button type="button" id="btn-reset-filter" class="btn btn-blue full">RESET</button>
+                                    <div class="col-md-2">
+                                        <button type="button" id="btn-reset-filter" class="btn btn-blue">RESET</button>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input id="btnExport" type="button" class="btn btn-blue" onclick="ExportXls();" value="EXPORT" />
                                     </div>
                                 </div>
                             </div>
@@ -134,7 +143,10 @@
                     </div>
                 }
             </div>
-
+            @using (Html.BeginForm("ExportXlsFile", "Material", FormMethod.Post, new { @id = "ExportToXls" }))
+            {
+                 @Html.HiddenFor(model => model.GoodType)
+            }
             <div id="contenttable" class="table-container">
                 @Html.Partial("_MaterialList")
             </div>

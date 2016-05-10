@@ -36,6 +36,11 @@
           
            
         });
+        
+        function ExportXls() {
+            $('#ExportToXls').submit();
+        }
+        
     </script>
 }
 
@@ -58,6 +63,13 @@
 
 <div class="container-wrap">
     <div class="row">
+        <div class="col-lg-12">
+            <input id="btnExport" type="button" class="btn btn-blue pull-right" onclick="ExportXls();" value="EXPORT" />
+        </div>
+        @using (Html.BeginForm("ExportXlsFile", "POAMap", FormMethod.Post, new { @id = "ExportToXls" }))
+        {
+
+        }
         <div class="col-sm-12">
             <div id="contenttable" class="table-container">
                 <table id="poamaptable" class="table cell-border display no-wrap" cellspacing="0" width="100%">
@@ -86,7 +98,7 @@
                                 <td class="action">
                                     <a href="@Url.Action("Details", "POAMap", new { id = item.POA_MAP_ID })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
                                     @if (Model.IsNotViewer){
-                                    <a href="@Url.Action("Edit", "POAMap", new { id = item.POA_MAP_ID })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                                        <a href="@Url.Action("Edit", "POAMap", new { id = item.POA_MAP_ID })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                                     }
                                 </td>
                                 <td>@item.NPPBKC_ID</td>

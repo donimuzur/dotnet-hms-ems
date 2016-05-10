@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Website.Models.BrandRegistration;
 using Sampoerna.EMS.Website.Models.Material;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Utils;
+using SpreadsheetLight;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -344,5 +348,130 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return PartialView("_MaterialList", model);
         }
+
+        #region export xls
+
+        public void ExportXlsFile(MaterialListViewModel model)
+        {
+            string pathFile = "";
+
+            pathFile = CreateXlsFile(model);
+
+            var newFile = new FileInfo(pathFile);
+
+            var fileName = Path.GetFileName(pathFile);
+
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+        }
+
+        private string CreateXlsFile(MaterialListViewModel model)
+        {
+            var data = _materialBll.getAllMaterial(model.GoodType);
+            //get data
+            var listData = Mapper.Map<List<MaterialDetails>>(data);
+
+            var slDocument = new SLDocument();
+
+            string goodTypeName = "";
+            if (listData.Count > 0)
+                goodTypeName = "-" + listData[0].GoodTypeName;
+             
+                
+            //create filter
+            slDocument.SetCellValue(1, 1, "Excisable Goods Type");
+            slDocument.SetCellValue(1, 2, ": " + model.GoodType + goodTypeName);
+
+            //title
+            slDocument.SetCellValue(2, 1, "Material Master");
+            slDocument.MergeWorksheetCells(2, 1, 2, 7);
+            //create style
+            SLStyle valueStyle = slDocument.CreateStyle();
+            valueStyle.SetHorizontalAlignment(HorizontalAlignmentValues.Center);
+            valueStyle.Font.Bold = true;
+            valueStyle.Font.FontSize = 18;
+            slDocument.SetCellStyle(2, 1, valueStyle);
+
+            //create header
+            slDocument = CreateHeaderExcel(slDocument);
+
+            //create data
+            slDocument = CreateDataExcel(slDocument, listData);
+
+            var fileName = "MasterData_MaterialMaster" + DateTime.Now.ToString("_yyyyMMddHHmmss") + ".xlsx";
+            var path = Path.Combine(Server.MapPath(Constans.UploadPath), fileName);
+
+            slDocument.SaveAs(path);
+
+            return path;
+
+        }
+
+        private SLDocument CreateHeaderExcel(SLDocument slDocument)
+        {
+            int iRow = 3;
+
+            slDocument.SetCellValue(iRow, 1, "Plant");
+            slDocument.SetCellValue(iRow, 2, "Material Number");
+            slDocument.SetCellValue(iRow, 3, "Material Desc");
+            slDocument.SetCellValue(iRow, 4, "Good Type");
+            slDocument.SetCellValue(iRow, 5, "UOM");
+            slDocument.SetCellValue(iRow, 6, "Plant Deletion");
+            slDocument.SetCellValue(iRow, 7, "Client Deletion");
+            
+
+
+            SLStyle headerStyle = slDocument.CreateStyle();
+            headerStyle.Alignment.Horizontal = HorizontalAlignmentValues.Center;
+            headerStyle.Font.Bold = true;
+            headerStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Fill.SetPattern(PatternValues.Solid, System.Drawing.Color.LightGray, System.Drawing.Color.LightGray);
+
+            slDocument.SetCellStyle(iRow, 1, iRow, 7, headerStyle);
+
+            return slDocument;
+
+        }
+
+        private SLDocument CreateDataExcel(SLDocument slDocument, List<MaterialDetails> listData)
+        {
+            int iRow = 4; //starting row data
+
+            foreach (var data in listData)
+            {
+                slDocument.SetCellValue(iRow, 1, data.PlantName);
+                slDocument.SetCellValue(iRow, 2, data.MaterialNumber);
+                slDocument.SetCellValue(iRow, 3, data.MaterialDesc);
+                slDocument.SetCellValue(iRow, 4, data.GoodTypeName);
+                slDocument.SetCellValue(iRow, 5, data.UomName);
+                slDocument.SetCellValue(iRow, 6, data.PlantDeletion);
+                slDocument.SetCellValue(iRow, 7, data.ClientDeletion);
+                
+                iRow++;
+            }
+
+            //create style
+            SLStyle valueStyle = slDocument.CreateStyle();
+            valueStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+
+            slDocument.AutoFitColumn(1, 7);
+            slDocument.SetCellStyle(4, 1, iRow - 1, 7, valueStyle);
+
+            return slDocument;
+        }
+
+        #endregion
     }
 }
