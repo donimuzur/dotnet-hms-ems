@@ -495,7 +495,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private Lack2EditViewModel InitEditList(Lack2EditViewModel model)
         {
             model.CompanyCodesDDL = GlobalFunctions.GetCompanyList(_companyBll);
-            model.NPPBKCDDL = new SelectList(GetNppbkcDataByCompanyId(model.CompanyCode));
+            model.NPPBKCDDL = new SelectList(GetNppbkcDataByCompanyId(model.CompanyCode), "NPPBKC_ID", "NPPBKC_ID");
             model.ExcisableGoodsTypeDDL = new SelectList(GetExciseGoodsTypeData(model.NppbkcId), "EXC_GOOD_TYP", "EXT_TYP_DESC");
             model.SendingPlantDDL = new SelectList(GetSendingPlantDataByNppbkcId(model.CompanyCode, model.NppbkcId), "WERKS", "DROPDOWNTEXTFIELD");
             model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
