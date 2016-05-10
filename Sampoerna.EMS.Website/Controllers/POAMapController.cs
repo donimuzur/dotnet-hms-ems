@@ -1,14 +1,18 @@
-﻿using AutoMapper;
+﻿using System.IO;
+using AutoMapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Models.POA;
 using Sampoerna.EMS.Website.Models.POAMap;
 using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
+using SpreadsheetLight;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -209,6 +213,110 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(new SelectList(data, "WERKS", "NAME1"));
         }
 
-        
+        #region export xls
+
+        public void ExportXlsFile()
+        {
+            string pathFile = "";
+
+            pathFile = CreateXlsFile();
+
+            var newFile = new FileInfo(pathFile);
+
+            var fileName = Path.GetFileName(pathFile);
+
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+        }
+
+        private string CreateXlsFile()
+        {
+            //get data
+            var listData = Mapper.Map<List<POA_MAPDto>>(_poaMapBLL.GetAll());
+
+            var slDocument = new SLDocument();
+
+            //title
+            slDocument.SetCellValue(1, 1, "Master POA Map");
+            slDocument.MergeWorksheetCells(1, 1, 1, 3);
+            //create style
+            SLStyle valueStyle = slDocument.CreateStyle();
+            valueStyle.SetHorizontalAlignment(HorizontalAlignmentValues.Center);
+            valueStyle.Font.Bold = true;
+            valueStyle.Font.FontSize = 18;
+            slDocument.SetCellStyle(1, 1, valueStyle);
+
+            //create header
+            slDocument = CreateHeaderExcel(slDocument);
+
+            //create data
+            slDocument = CreateDataExcel(slDocument, listData);
+
+            var fileName = "MasterData_MasterPoaMap" + DateTime.Now.ToString("_yyyyMMddHHmmss") + ".xlsx";
+            var path = Path.Combine(Server.MapPath(Constans.UploadPath), fileName);
+
+            slDocument.SaveAs(path);
+
+            return path;
+
+        }
+
+        private SLDocument CreateHeaderExcel(SLDocument slDocument)
+        {
+            int iRow = 2;
+
+            slDocument.SetCellValue(iRow, 1, "NPPBKC ID");
+            slDocument.SetCellValue(iRow, 2, "PLANT");
+            slDocument.SetCellValue(iRow, 3, "POA");
+            
+
+            SLStyle headerStyle = slDocument.CreateStyle();
+            headerStyle.Alignment.Horizontal = HorizontalAlignmentValues.Center;
+            headerStyle.Font.Bold = true;
+            headerStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Fill.SetPattern(PatternValues.Solid, System.Drawing.Color.LightGray, System.Drawing.Color.LightGray);
+
+            slDocument.SetCellStyle(iRow, 1, iRow, 3, headerStyle);
+
+            return slDocument;
+
+        }
+
+        private SLDocument CreateDataExcel(SLDocument slDocument, List<POA_MAPDto> listData)
+        {
+            int iRow = 3; //starting row data
+
+            foreach (var data in listData)
+            {
+                slDocument.SetCellValue(iRow, 1, data.NPPBKC_ID);
+                slDocument.SetCellValue(iRow, 2, data.WERKS + Constans.DelimeterSelectItem + data.PLANT_NAME);
+                slDocument.SetCellValue(iRow, 3, data.POA_ID + Constans.DelimeterSelectItem + data.POA_NAME);
+                
+                iRow++;
+            }
+
+            //create style
+            SLStyle valueStyle = slDocument.CreateStyle();
+            valueStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+
+            slDocument.AutoFitColumn(1, 3);
+            slDocument.SetCellStyle(3, 1, iRow - 1, 3, valueStyle);
+
+            return slDocument;
+        }
+
+        #endregion
     }
 }

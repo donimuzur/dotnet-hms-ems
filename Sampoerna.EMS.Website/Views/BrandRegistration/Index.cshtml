@@ -50,6 +50,9 @@
 
             $('#MenuMasterBrandRegistration').addClass('active');
         });
+        function ExportXls() {
+            $('#ExportToXls').submit();
+        }
     </script>
 }
 
@@ -74,6 +77,13 @@
 
 <div class="container-wrap">
     <div class="row">
+        <div class="col-lg-12">
+            <input id="btnExport" type="button" class="btn btn-blue pull-right" onclick="ExportXls();" value="EXPORT" />
+        </div>
+        @using (Html.BeginForm("ExportXlsFile", "BrandRegistration", FormMethod.Post, new { @id = "ExportToXls" }))
+        {
+
+        }
         <div class="col-sm-12">
 
 
@@ -122,7 +132,7 @@
                                 <td class="action">
                                     <a href="@Url.Action("Details", "BrandRegistration", new { plant = item.PlantName, facode = item.FaCode, stickercode = item.StickerCode })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
                                     @if (Model.IsNotViewer){
-                                    <a href="@Url.Action("Edit", "BrandRegistration", new { plant = item.PlantName, facode = item.FaCode, stickercode = item.StickerCode })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                                        <a href="@Url.Action("Edit", "BrandRegistration", new { plant = item.PlantName, facode = item.FaCode, stickercode = item.StickerCode })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                                     }
                                 </td>
                                 <td>

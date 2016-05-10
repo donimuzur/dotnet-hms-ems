@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Web.Mvc;
 using Antlr.Runtime.Misc;
 using AutoMapper;
 using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.NPPBKC;
+using SpreadsheetLight;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -207,5 +211,117 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Index");
         }
 
+        #region export xls
+
+        public void ExportXlsFile()
+        {
+            string pathFile = "";
+
+            pathFile = CreateXlsFile();
+
+            var newFile = new FileInfo(pathFile);
+
+            var fileName = Path.GetFileName(pathFile);
+
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+        }
+
+        private string CreateXlsFile()
+        {
+            //get data
+            var listData = Mapper.Map<List<VirtualNppbckDetails>>(_nppbkcBll.GetAll());
+
+            var slDocument = new SLDocument();
+
+            //title
+            slDocument.SetCellValue(1, 1, "Master NPPBKC");
+            slDocument.MergeWorksheetCells(1, 1, 1, 6);
+            //create style
+            SLStyle valueStyle = slDocument.CreateStyle();
+            valueStyle.SetHorizontalAlignment(HorizontalAlignmentValues.Center);
+            valueStyle.Font.Bold = true;
+            valueStyle.Font.FontSize = 18;
+            slDocument.SetCellStyle(1, 1, valueStyle);
+
+            //create header
+            slDocument = CreateHeaderExcel(slDocument);
+
+            //create data
+            slDocument = CreateDataExcel(slDocument, listData);
+
+            var fileName = "MasterData_MasterNppbkc" + DateTime.Now.ToString("_yyyyMMddHHmmss") + ".xlsx";
+            var path = Path.Combine(Server.MapPath(Constans.UploadPath), fileName);
+
+            slDocument.SaveAs(path);
+
+            return path;
+
+        }
+
+        private SLDocument CreateHeaderExcel(SLDocument slDocument)
+        {
+            int iRow = 2;
+
+            slDocument.SetCellValue(iRow, 1, "NPPBKC ID");
+            slDocument.SetCellValue(iRow, 2, "Address");
+            slDocument.SetCellValue(iRow, 3, "City Alias");
+            slDocument.SetCellValue(iRow, 4, "Region Office of DGCE");
+            slDocument.SetCellValue(iRow, 5, "Text To");
+            slDocument.SetCellValue(iRow, 6, "Deleted");
+
+
+            SLStyle headerStyle = slDocument.CreateStyle();
+            headerStyle.Alignment.Horizontal = HorizontalAlignmentValues.Center;
+            headerStyle.Font.Bold = true;
+            headerStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Fill.SetPattern(PatternValues.Solid, System.Drawing.Color.LightGray, System.Drawing.Color.LightGray);
+
+            slDocument.SetCellStyle(iRow, 1, iRow, 6, headerStyle);
+
+            return slDocument;
+
+        }
+
+        private SLDocument CreateDataExcel(SLDocument slDocument, List<VirtualNppbckDetails> listData)
+        {
+            int iRow = 3; //starting row data
+
+            foreach (var data in listData)
+            {
+                slDocument.SetCellValue(iRow, 1, data.VirtualNppbckId);
+                slDocument.SetCellValue(iRow, 2, data.Address1);
+                slDocument.SetCellValue(iRow, 3, data.CityAlias);
+                slDocument.SetCellValue(iRow, 4, data.RegionOfficeOfDGCE);
+                slDocument.SetCellValue(iRow, 5, data.TextTo);
+                slDocument.SetCellValue(iRow, 6, data.Is_Deleted);
+
+
+                iRow++;
+            }
+
+            //create style
+            SLStyle valueStyle = slDocument.CreateStyle();
+            valueStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+
+            slDocument.AutoFitColumn(1, 6);
+            slDocument.SetCellStyle(3, 1, iRow - 1, 6, valueStyle);
+
+            return slDocument;
+        }
+
+        #endregion
     }
 }
