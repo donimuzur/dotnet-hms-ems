@@ -7,5 +7,7 @@ namespace Sampoerna.EMS.Contract
     public interface IProductionServices
     {
         List<PRODUCTION> GetProductionDailyProdByParam(GetProductionDailyProdByParamInput input);
+
+        List<PRODUCTION> GetProductionForDetailTis(GetLack1DetailTisInputProduction input);
     }
 }

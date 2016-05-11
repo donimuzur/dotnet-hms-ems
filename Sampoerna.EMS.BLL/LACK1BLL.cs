@@ -4778,9 +4778,56 @@ namespace Sampoerna.EMS.BLL
                 item.Usage = String.Join(Environment.NewLine, mvtList.Select(x => (x.QTY.Value * 1000).ToString("N2")).ToArray());
                 item.UsageUom = String.Join(Environment.NewLine, mvtList.Select(x => x.BUN == "KG" ? "Gram" : string.Empty).ToArray());
                 item.UsagePostingDate = String.Join(Environment.NewLine, mvtList.Select(x => x.POSTING_DATE.Value.ToString("dd-MMM-yy")).ToArray());
+                item.EndingBalance = balanceList.TotalBeginningBalance + item.Ck5Qty - mvtList.Sum(x => (x.QTY.Value * 1000));
+                item.EndingBalanceUom = "Gram";
             }
 
-            return rc;
+            var inputProduction = new GetLack1DetailTisInputProduction();
+            inputProduction.DateFrom = input.DateFrom.Value;
+            inputProduction.DateTo = input.DateTo.Value;
+            inputProduction.PlantFrom = input.PlantReceiverFrom;
+            inputProduction.PlantTo = input.PlantReceiverTo;
+
+            var listProduction = _productionServices.GetProductionForDetailTis(inputProduction);
+
+            //join
+
+            var listDetailTis = (from production in listProduction
+                                 join
+                                     list in rc
+                                     on production.WERKS equals list.PlantIdReceiver
+                                 select new Lack1DetailTisDto()
+                                 {
+
+                                     PlantIdReceiver = list.PlantIdReceiver,
+                                     PlantDescReceiver = list.PlantDescReceiver,
+                                     PlantIdSupplier = list.PlantIdSupplier,
+                                     PlantDescSupplier = list.PlantDescSupplier,
+                                     CfCode = list.CfCode,
+                                     CfDesc = list.CfDesc,
+                                     BeginingBalance = list.BeginingBalance,
+                                     BeginingBalanceUom = list.BeginingBalanceUom,
+                                     Ck5EmsNo = list.Ck5EmsNo,
+                                     Ck5RegNo = list.Ck5RegNo,
+                                     Ck5RegDate = list.Ck5RegDate,
+                                     Ck5GrDate = list.Ck5GrDate,
+                                     Ck5Qty = list.Ck5Qty,
+                                     MvtType = list.MvtType,
+                                     Usage = list.Usage,
+                                     UsageUom = list.UsageUom,
+                                     UsagePostingDate = list.UsagePostingDate,
+                                     FaCode = production.FA_CODE,
+                                     FaCodeDesc = production.BRAND_DESC,
+                                     ProdQty = production.PROD_QTY_STICK == null ? 0 : production.PROD_QTY_STICK.Value,
+                                     ProdUom = production.UOM,
+                                     ProdPostingDate = production.PRODUCTION_DATE.ToString("dd-MMM-yy"),
+                                     ProdDate = production.PRODUCTION_DATE.ToString("dd-MMM-yy"),
+                                     EndingBalance = list.EndingBalance,
+                                     EndingBalanceUom = list.EndingBalanceUom
+
+                                 }).ToList();
+
+            return listDetailTis;
         }
 
         #endregion
