@@ -29,5 +29,7 @@ namespace Sampoerna.EMS.Contract.Services
         List<INVENTORY_MOVEMENT> GetLack1PrimaryResultsCfProduced(GetLack1PrimaryResultsInput input);
 
         List<INVENTORY_MOVEMENT> GetLack1PrimaryResultsBkc(GetLack1PrimaryResultsInput input);
+
+        List<INVENTORY_MOVEMENT> GetReceivingByParamZaapShiftRpt(InvGetReceivingByParamZaapShiftRptInput input);
     }
 }

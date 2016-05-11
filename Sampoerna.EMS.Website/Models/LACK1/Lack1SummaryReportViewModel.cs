@@ -129,4 +129,18 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string CompletedDate { get; set; }
     }
 
+    public class Lack1CFUsageVsFAViewModel : BaseModel
+    {
+        public string BeginingPlant { get; set; }
+
+        public string EndPlant { get; set; }
+        public DateTime BeginingPostingDate { get; set; }
+
+        public DateTime EndPostingDate { get; set; }
+
+        public SelectList PlantIdList { get; set; } 
+    }
+
+
+
 }

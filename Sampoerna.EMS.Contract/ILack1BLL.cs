@@ -46,5 +46,7 @@ namespace Sampoerna.EMS.Contract
         List<Lack1PrimaryResultsDto> GetPrimaryResultsByParam(Lack1GetPrimaryResultsByParamInput input);
 
         List<Lack1DailyProdDto> GetDailyProdByParam(Lack1GetDailyProdByParamInput input);
+
+        List<Lack1CFUsagevsFaDetailDto> GetCfUsagevsFaDetailData(Lack1CFUsageVsFAByParamInput input);
     }
 }

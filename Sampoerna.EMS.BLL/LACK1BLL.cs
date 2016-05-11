@@ -1602,6 +1602,79 @@ namespace Sampoerna.EMS.BLL
             return dtToReturn;
         }
 
+        public List<Lack1CFUsagevsFaDetailDto> GetCfUsagevsFaDetailData(Lack1CFUsageVsFAByParamInput input)
+        {
+
+            var werks = _t001WServices.GetByRange(input.BeginingPlant, input.EndPlant).Select(c => c.WERKS).ToList();
+            var inputParam = new ZaapShiftRptGetForLack1ReportByParamInput()
+            {
+                Werks = werks,
+                BeginingDate = input.BeginingPostingDate,
+                EndDate = input.EndPostingDate
+            };
+
+            List<Lack1CFUsagevsFaDetailDto> result = new List<Lack1CFUsagevsFaDetailDto>();
+
+            var zaapshiftrpt = _zaapShiftRptService.GetForCFVsFa(inputParam).GroupBy(x => new { x.ORDR, x.WERKS, x.FA_CODE })
+                .Select(x=> new
+                {
+                    
+                    x.Key.WERKS,
+                    x.Key.FA_CODE,
+                    x.Key.ORDR, 
+                   
+                }).OrderBy(x=> x.WERKS);
+            foreach (var zaapShiftRpt in zaapshiftrpt)
+            {
+                var data = new Lack1CFUsagevsFaDetailDto();
+
+                data.Order = zaapShiftRpt.ORDR;
+                data.PlantDesc = _t001WServices.GetById(zaapShiftRpt.WERKS).NAME1;
+                data.PlantId = zaapShiftRpt.WERKS;
+                data.Fa_Code = zaapShiftRpt.FA_CODE;
+                data.Brand_Desc = _brandRegService.GetByPlantIdAndFaCode(zaapShiftRpt.WERKS, zaapShiftRpt.FA_CODE).BRAND_CE;
+
+                var zaapInput101 = new InvGetReceivingByParamZaapShiftRptInput()
+                {
+                    EndDate = inputParam.EndDate.HasValue ? inputParam.EndDate.Value : DateTime.Today,
+                    StartDate = inputParam.BeginingDate.HasValue ? inputParam.BeginingDate.Value : DateTime.Today,
+                    FaCode = data.Fa_Code,
+                    Ordr = data.Order,
+                    PlantId = data.PlantId
+                };
+
+                var dataReceiving = _zaapShiftRptService.GetForLack1ByParam(zaapInput101);
+
+                var zaapInput261 = new InvGetReceivingByParamZaapShiftRptInput()
+                {
+                    EndDate = inputParam.EndDate.HasValue ? inputParam.EndDate.Value : DateTime.Today,
+                    StartDate = inputParam.BeginingDate.HasValue ? inputParam.BeginingDate.Value : DateTime.Today,
+                    
+                    Ordr = data.Order,
+                    PlantId = data.PlantId
+                };
+                var dataUsage = _inventoryMovementService.GetReceivingByParamZaapShiftRpt(zaapInput261);
+                
+                data.Lack1CFUsagevsFaDetailDtoMvt101 = Mapper.Map<List<Lack1CFUsagevsFaDetailDtoMvt>>(dataReceiving);
+                var dataUsageWithConv = InvMovementConvertionProcess(dataUsage, "G");
+                data.Lack1CFUsagevsFaDetailDtoMvt261 = Mapper.Map<List<Lack1CFUsagevsFaDetailDtoMvt>>(dataUsageWithConv);
+
+                data.Lack1CFUsagevsFaDetailDtoMvtWaste = _wasteBll.GetAllByParam(new WasteGetByParamInput()
+                {
+                    FaCode = data.Fa_Code,
+                    Plant = data.PlantId,
+                    BeginingProductionDate = inputParam.BeginingDate,
+                    EndProductionDate = inputParam.EndDate
+                });
+
+                result.Add(data);
+            }
+
+
+
+            return result;
+        }
+
         public List<Lack1DetailsDto> GetPbck1RealizationList(Lack1GetPbck1RealizationListParamInput input)
         {
             return Mapper.Map<List<Lack1DetailsDto>>(_lack1Service.GetPbck1RealizationList(input));

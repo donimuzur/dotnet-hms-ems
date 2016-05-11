@@ -26,6 +26,31 @@ namespace Sampoerna.EMS.BLL.Services
             _repository = _uow.GetGenericRepository<ZAAP_SHIFT_RPT>();
         }
 
+        public List<ZAAP_SHIFT_RPT> GetForLack1ByParam(InvGetReceivingByParamZaapShiftRptInput input)
+        {
+            Expression<Func<ZAAP_SHIFT_RPT, bool>> queryFilter = c => c.POSTING_DATE.HasValue && c.POSTING_DATE.Value <= input.EndDate;
+
+            queryFilter = queryFilter.And(c => c.POSTING_DATE.HasValue && c.POSTING_DATE >= input.StartDate);
+
+
+
+            queryFilter = queryFilter.And(c => c.WERKS == input.PlantId);
+            
+            queryFilter = queryFilter.And(c => c.FA_CODE == input.FaCode);
+            
+
+            queryFilter = queryFilter.And(c => c.ORDR == input.Ordr);
+
+
+            //queryFilter = queryFilter.And(c => receivingMvtType.Contains(c.MVT));
+
+
+
+
+
+            return _repository.Get(queryFilter).ToList();
+        }
+
         public List<ZAAP_SHIFT_RPT> GetForLack1ByParam(ZaapShiftRptGetForLack1ByParamInput input)
         {
             Expression<Func<ZAAP_SHIFT_RPT, bool>> queryFilter = c => c.COMPANY_CODE == input.CompanyCode 
@@ -133,6 +158,19 @@ namespace Sampoerna.EMS.BLL.Services
             var dbData = _repository.Get(queryFilter);
 
             return dbData.ToList();
+        }
+
+        public List<ZAAP_SHIFT_RPT> GetForCFVsFa(ZaapShiftRptGetForLack1ReportByParamInput input)
+        {
+            Expression<Func<ZAAP_SHIFT_RPT, bool>> queryFilter = PredicateHelper.True<ZAAP_SHIFT_RPT>();
+
+            queryFilter = queryFilter.And(c => input.Werks.Distinct().Contains(c.WERKS));
+
+            queryFilter = queryFilter.And(x => x.POSTING_DATE >= input.BeginingDate && x.POSTING_DATE <= input.EndDate);
+
+            var data = _repository.Get(queryFilter);
+
+            return data.ToList();
         }
 
         public ZAAP_SHIFT_RPT GetById(int id)

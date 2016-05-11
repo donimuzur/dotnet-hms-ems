@@ -112,6 +112,38 @@ namespace Sampoerna.EMS.BLL.Services
             return _repository.Get(queryFilter).ToList();
         }
 
+        public List<INVENTORY_MOVEMENT> GetReceivingByParamZaapShiftRpt(InvGetReceivingByParamZaapShiftRptInput input)
+        {
+            var receivingMvtType = new List<string>()
+            {
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage261),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage262)
+            };
+
+            Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue && c.POSTING_DATE.Value <= input.EndDate;
+
+            queryFilter = queryFilter.And(c => c.POSTING_DATE.HasValue && c.POSTING_DATE >= input.StartDate);
+            
+
+            
+            queryFilter = queryFilter.And(c => c.PLANT_ID == input.PlantId);
+            
+            
+            
+            
+            queryFilter = queryFilter.And(c => c.ORDR == input.Ordr);
+            
+
+            queryFilter = queryFilter.And(c => receivingMvtType.Contains(c.MVT));
+
+            
+
+            
+
+            return _repository.Get(queryFilter).ToList();
+        }
+
+
         public INVENTORY_MOVEMENT GetReceivingByProcessOrderAndPlantId(string processOrder, string plantId)
         {
             var mvtReceiving = EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving101);
