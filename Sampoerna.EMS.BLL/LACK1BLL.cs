@@ -4790,12 +4790,24 @@ namespace Sampoerna.EMS.BLL
 
             var listProduction = _productionServices.GetProductionForDetailTis(inputProduction);
 
+            var inputWaste = new GetWasteDailyProdByParamInput();
+            inputWaste.DateFrom = input.DateFrom.Value;
+            inputWaste.DateTo = input.DateTo.Value;
+            inputWaste.PlantFrom = input.PlantReceiverFrom;
+            inputWaste.PlantTo = input.PlantReceiverTo;
+
+            var listWaste = _wasteServices.GetWasteDailyProdByParam(inputWaste);
+
             //join
 
-            var listDetailTis = (from production in listProduction
+            var listDetailTis = (from list in rc
                                  join
-                                     list in rc
-                                     on production.WERKS equals list.PlantIdReceiver
+                                     production in listProduction
+                                     on list.PlantIdReceiver equals production.WERKS
+                                 join
+                                     waste in listWaste
+                                     on new { production.FA_CODE, production.PRODUCTION_DATE, production.WERKS }
+                                     equals new { waste.FA_CODE, PRODUCTION_DATE = waste.WASTE_PROD_DATE, waste.WERKS }
                                  select new Lack1DetailTisDto()
                                  {
 
@@ -4818,7 +4830,7 @@ namespace Sampoerna.EMS.BLL
                                      UsagePostingDate = list.UsagePostingDate,
                                      FaCode = production.FA_CODE,
                                      FaCodeDesc = production.BRAND_DESC,
-                                     ProdQty = production.PROD_QTY_STICK == null ? 0 : production.PROD_QTY_STICK.Value,
+                                     ProdQty = production.PROD_QTY_STICK == null ? 0 : (production.PROD_QTY_STICK.Value - waste.PACKER_REJECT_STICK_QTY.Value),
                                      ProdUom = production.UOM,
                                      ProdPostingDate = production.PRODUCTION_DATE.ToString("dd-MMM-yy"),
                                      ProdDate = production.PRODUCTION_DATE.ToString("dd-MMM-yy"),
