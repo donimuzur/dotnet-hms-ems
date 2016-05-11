@@ -1825,6 +1825,54 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        private string BuildBodyMailCk5WaitingPoaApproval(CK5Dto ck5Dto, string webRootUrl)
+        {
+            var bodyMail = new StringBuilder();
+
+            bodyMail.Append("<table><tr><td>Plant & NPPBKC Supplier </td><td>: " + ck5Dto.SOURCE_PLANT_ID + " - " +
+                            ck5Dto.SOURCE_PLANT_NAME + " - " + ck5Dto.SOURCE_PLANT_NPPBKC_ID + "</td></tr>");
+            
+            bodyMail.Append("<tr><td>Total Qty Supplied </td><td>: " +
+                            ConvertHelper.ConvertDecimalToStringMoneyFormat(ck5Dto.GRAND_TOTAL_EX) + " " + ck5Dto.PackageUomName + "</td></tr>");
+            bodyMail.Append("<tr><td>Plant & NPPBKC Receiver </td><td>: " + ck5Dto.DEST_PLANT_ID + " - " +
+                            ck5Dto.DEST_PLANT_NAME + " - " + ck5Dto.DEST_PLANT_NPPBKC_ID + "</td></tr>");
+
+            var user = _userBll.GetUserById(ck5Dto.CREATED_BY);
+            string userName = "";
+            if (user != null)
+                userName = user.LAST_NAME + ", " + user.FIRST_NAME;
+
+            bodyMail.Append("<tr><td>Creator</td><td> : " + userName + "</td></tr>");
+
+            string stoSenderNumber = "-";
+            if (!string.IsNullOrEmpty(ck5Dto.STO_SENDER_NUMBER))
+                stoSenderNumber = ck5Dto.STO_SENDER_NUMBER;
+
+            string stobNumber = "-";
+            if (!string.IsNullOrEmpty(ck5Dto.STOB_NUMBER))
+                stobNumber = ck5Dto.STOB_NUMBER;
+
+            string stoReceiverNumber = "-";
+            if (!string.IsNullOrEmpty(ck5Dto.STO_RECEIVER_NUMBER))
+                stoReceiverNumber = ck5Dto.STO_RECEIVER_NUMBER;
+
+
+            bodyMail.Append("<tr><td>STO Sender Number</td><td> : " + stoSenderNumber + "</td></tr>");
+            bodyMail.Append("<tr><td>STOB Sender Number</td><td> : " + stobNumber + "</td></tr>");
+            bodyMail.Append("<tr><td>STO Receiver Number</td><td> : " + stoReceiverNumber + "</td></tr>");
+           
+            bodyMail.Append("<tr><td>CK-5 Type</td><td> : " + EnumHelper.GetDescription(ck5Dto.CK5_TYPE) + "</td></tr>");
+
+            bodyMail.Append("<tr colspan='2'><td><i>To VIEW, Please click this <a href='" + webRootUrl + "/CK5/DetailsView/" + ck5Dto.CK5_ID + "'><u>link</u></a> to view detailed information</i></td></tr>");
+
+            bodyMail.Append("<tr colspan='2'><td><i>To APPROVE, Please click this <a href='" + webRootUrl + "/CK5/Details/" + ck5Dto.CK5_ID + "'>[link]</a> </i></td></tr>");
+        
+            bodyMail.Append("</table>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<br />Regards,<br />");
+
+            return bodyMail.ToString();
+        }
         private MailNotification ProsesMailNotificationBody(CK5Dto ck5Dto, CK5WorkflowDocumentInput input)
         {
             var bodyMail = new StringBuilder();
@@ -1853,24 +1901,34 @@ namespace Sampoerna.EMS.BLL
 
             rc.Subject = "CK-5 " + ck5Dto.SUBMISSION_NUMBER + " is " + EnumHelper.GetDescription(ck5Dto.STATUS_ID);
             bodyMail.Append("Dear Team,<br />");
-            //bodyMail.AppendLine();
+         
             bodyMail.Append("Kindly be informed, " + rc.Subject + ". <br />");
-            //bodyMail.AppendLine();
-            bodyMail.Append("<table><tr><td>Company Code </td><td>: " + ck5Dto.SOURCE_PLANT_COMPANY_CODE + "</td></tr>");
-            //bodyMail.AppendLine();
-            bodyMail.Append("<tr><td>NPPBKC </td><td>: " + ck5Dto.SOURCE_PLANT_NPPBKC_ID + "</td></tr>");
-            //bodyMail.AppendLine();
-            bodyMail.Append("<tr><td>Document Number</td><td> : " + ck5Dto.SUBMISSION_NUMBER + "</td></tr>");
-            //bodyMail.AppendLine();
-            bodyMail.Append("<tr><td>Document Type</td><td> : CK-5</td></tr>");
-            //bodyMail.AppendLine();
-            bodyMail.Append("<tr><td>CK-5 Type</td><td> : " + EnumHelper.GetDescription(ck5Dto.CK5_TYPE) + "</td></tr>");
-            //bodyMail.AppendLine();
-            bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/CK5/Details/" + ck5Dto.CK5_ID + "'>link</a> to show detailed information</i></td></tr>");
-            //bodyMail.AppendLine();
-            bodyMail.Append("</table>");
-            bodyMail.AppendLine();
-            bodyMail.Append("<br />Regards,<br />");
+
+            if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApproval)
+            {
+                bodyMail.Append(BuildBodyMailCk5WaitingPoaApproval(ck5Dto, webRootUrl));
+            }
+            else
+            {
+                bodyMail.Append("<table><tr><td>Company Code </td><td>: " + ck5Dto.SOURCE_PLANT_COMPANY_CODE +
+                                "</td></tr>");
+
+                bodyMail.Append("<tr><td>NPPBKC </td><td>: " + ck5Dto.SOURCE_PLANT_NPPBKC_ID + "</td></tr>");
+
+                bodyMail.Append("<tr><td>Document Number</td><td> : " + ck5Dto.SUBMISSION_NUMBER + "</td></tr>");
+
+                bodyMail.Append("<tr><td>Document Type</td><td> : CK-5</td></tr>");
+
+                bodyMail.Append("<tr><td>CK-5 Type</td><td> : " + EnumHelper.GetDescription(ck5Dto.CK5_TYPE) +
+                                "</td></tr>");
+
+                bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/CK5/Details/" +
+                                ck5Dto.CK5_ID + "'>link</a> to show detailed information</i></td></tr>");
+
+                bodyMail.Append("</table>");
+                bodyMail.AppendLine();
+                bodyMail.Append("<br />Regards,<br />");
+            }
 
             switch (input.ActionType)
             {
