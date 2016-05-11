@@ -96,7 +96,7 @@
                     </div>
                 </div>
             </div>
-            @using (Html.BeginForm("ExportDetailReport", "LACK1", FormMethod.Post, new { @id = "ExportXlsDetailReports" }))
+            @using (Html.BeginForm("ExportDetailTis", "LACK1", FormMethod.Post, new { @id = "ExportXlsDetailTis" }))
             {
                 @Html.HiddenFor(model => model.ExportSearchView.PlantReceiverFrom)
                 @Html.HiddenFor(model => model.ExportSearchView.PlantReceiverTo)
@@ -158,7 +158,7 @@
             $('#ExportSearchView_PlantReceiverTo').val($('#SearchView_PlantReceiverTo').find("option:selected").val());
             $('#ExportSearchView_DateFrom').val($('#SearchView_DateFrom').val());
             $('#ExportSearchView_DateTo').val($('#SearchView_DateTo').val());
-            $('#ExportXlsDetailReports').submit();
+            $('#ExportXlsDetailTis').submit();
         }
 
         function ReloadDataTables() {
