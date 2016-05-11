@@ -84,6 +84,7 @@ namespace Sampoerna.EMS.BLL.Services
             var data = new MaterialBalanceTotalDto();
             data.BeginningBalance = new List<string>();
             data.BeginningBalanceUom = new List<string>();
+            data.TotalBeginningBalance = 0; 
 
             foreach (var item in materialList)
             {
@@ -97,6 +98,7 @@ namespace Sampoerna.EMS.BLL.Services
                     var openBalance = openBalanceList.Sum(x => x.OPEN_BALANCE.Value);
                     data.BeginningBalance.Add(openBalance.ToString("N2"));
                     data.BeginningBalanceUom.Add("Gram");
+                    data.TotalBeginningBalance += openBalance;
                 }
             }
 

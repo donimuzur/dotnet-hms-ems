@@ -43,5 +43,13 @@ namespace Sampoerna.EMS.BLL.Services
         {
             return _repository.Get().ToList();
         }
+
+
+        public List<T001W> GetByRange(string begining, string end)
+        {
+            return
+                _repository.Get(c => string.Compare(c.WERKS, begining) >= 0 && string.Compare(c.WERKS, end) <= 0)
+                    .ToList();
+        }
     }
 }

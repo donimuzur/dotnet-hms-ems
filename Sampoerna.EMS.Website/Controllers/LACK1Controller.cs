@@ -314,6 +314,8 @@ namespace Sampoerna.EMS.Website.Controllers
             return result;
         }
 
+        
+
         #endregion
 
         #region ----- create -----
@@ -1598,7 +1600,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var sw = new StringWriter();
             var htw = new HtmlTextWriter(sw);
-
+            
             grid.RenderControl(htw);
 
             Response.Output.Write(sw.ToString());
@@ -2981,6 +2983,276 @@ namespace Sampoerna.EMS.Website.Controllers
             return model;
         }
 
+        public void ExportDetailTis(Lack1DetailTisViewModel model)
+        {
+            string pathFile = "";
+
+            pathFile = CreateXlsDetailTis(model.ExportSearchView);
+
+            var newFile = new FileInfo(pathFile);
+
+            var fileName = Path.GetFileName(pathFile);
+
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+        }
+
+        private string CreateXlsDetailTis(Lack1SearchDetailTisViewModel model)
+        {
+            var dataDetailTis = SearchDetailTis(model);
+
+            var slDocument = new SLDocument();
+
+            //create filter
+            slDocument.SetCellValue(1, 1, "Date From");
+            slDocument.SetCellValue(1, 2, ": " + model.DateFrom.Value.ToString("dd-MMM-yyyy"));
+
+            slDocument.SetCellValue(2, 1, "Date To");
+            slDocument.SetCellValue(2, 2, ": " + model.DateTo.Value.ToString("dd-MMM-yyyy"));
+
+            slDocument.SetCellValue(3, 1, "Plant Receiver From");
+            slDocument.SetCellValue(3, 2, ": " + model.PlantReceiverFrom);
+
+            slDocument.SetCellValue(4, 1, "Plant Receiver To");
+            slDocument.SetCellValue(4, 2, ": " + model.PlantReceiverTo);
+
+            //title
+            slDocument.SetCellValue(5, 1, "Detail Tis");
+            slDocument.MergeWorksheetCells(5, 1, 5, 25);
+            //create style
+            SLStyle valueStyle = slDocument.CreateStyle();
+            valueStyle.SetHorizontalAlignment(HorizontalAlignmentValues.Center);
+            valueStyle.Font.Bold = true;
+            valueStyle.Font.FontSize = 18;
+            slDocument.SetCellStyle(5, 1, valueStyle);
+
+
+            //create header
+            slDocument = CreateHeaderExcelDetailTis(slDocument);
+
+            int iRow = 7; //starting row data
+            int iColumn = 1;
+
+            foreach (var item in dataDetailTis)
+            {
+                iColumn = 1;
+
+                slDocument.SetCellValue(iRow, iColumn, item.PlantIdReceiver);
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.PlantDescReceiver);
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.PlantIdSupplier);
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.PlantDescSupplier);
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.CfCode);
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.CfDesc);
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.BeginingBalance);
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.BeginingBalanceUom);
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.Ck5EmsNo);
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.Ck5RegNo);
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.Ck5RegDate);
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.Ck5GrDate);
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.Ck5Qty.ToString("N2"));
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.MvtType);
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.Usage);
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.UsageUom);
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.UsagePostingDate);
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.FaCode);
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.FaCodeDesc);
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.ProdQty.ToString("N2"));
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.ProdUom);
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.ProdPostingDate);
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.ProdDate);
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.EndingBalance.ToString("N2"));
+                iColumn++;
+
+                slDocument.SetCellValue(iRow, iColumn, item.EndingBalanceUom);
+                iColumn++;
+                
+                iRow++;
+            }
+
+            return CreateXlsFileDetailTis(slDocument, iColumn, iRow);
+
+        }
+
+        private SLDocument CreateHeaderExcelDetailTis(SLDocument slDocument)
+        {
+            int iColumn = 1;
+            int iRow = 6;
+
+            slDocument.SetCellValue(iRow, iColumn, "Plant ID Receiver");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Plant Desc Receiver");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Plant Supplier ID");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Plant Supplier Description");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "CF Code");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "CF Description");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Beginning Balance 1st Date");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Beginning Balance UoM");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "CK-5 EMS No");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "CK-5 Reg No");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "CK-5 Reg Date");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "CK-5 GR Date");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "CK-5 Qty");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Mvt Type");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Usage");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Usage UOM");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Usage Posting Date");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "FA Code");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "FA Code Desc");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Production Qty");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Production UOM");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Production Posting Date");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Production Date");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Projected Ending Balance");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Projected Ending Balance UOM");
+            iColumn = iColumn + 1;
+
+            return slDocument;
+
+        }
+
+        private string CreateXlsFileDetailTis(SLDocument slDocument, int iColumn, int iRow)
+        {
+
+            //create style
+            SLStyle valueStyle = slDocument.CreateStyle();
+            valueStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+
+            SLStyle headerStyle = slDocument.CreateStyle();
+            headerStyle.Alignment.Horizontal = HorizontalAlignmentValues.Center;
+            headerStyle.Font.Bold = true;
+            headerStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Fill.SetPattern(PatternValues.Solid, System.Drawing.Color.LightGray, System.Drawing.Color.LightGray);
+
+            slDocument.AutoFitColumn(1, iColumn - 1);
+            slDocument.SetCellStyle(7, 1, iRow - 1, iColumn - 1, valueStyle);
+
+            slDocument.SetCellStyle(6, 1, 6, iColumn - 1, headerStyle);
+
+            SLStyle numericStyle = slDocument.CreateStyle();
+            numericStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            numericStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            numericStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            numericStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            numericStyle.Alignment.Horizontal = HorizontalAlignmentValues.Right;
+
+            slDocument.SetCellStyle(7, 6, iRow - 1, 6 - 1, numericStyle);
+            slDocument.SetCellStyle(7, 8, iRow - 1, 8 - 1, numericStyle);
+
+
+            var fileName = "lack1_detailTis_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+            var path = Path.Combine(Server.MapPath(Constans.Lack1UploadFolderPath), fileName);
+
+            //var outpu = new 
+            slDocument.SaveAs(path);
+
+            return path;
+        }
+
         #endregion
 
         #region Daily Prod
@@ -3497,6 +3769,221 @@ namespace Sampoerna.EMS.Website.Controllers
             iColumn = iColumn + 1;
 
             return slDocument;
+        }
+
+        #endregion
+
+        #region CFVsFA
+        [HttpPost]
+        public JsonResult GenerateCFVsFaReport(Lack1CFUsageVsFAByParamInput param)
+        {
+            var outGeneratedData = _lack1Bll.GetCfUsagevsFaDetailData(param);
+
+            var result = Json(outGeneratedData);
+            result.MaxJsonLength = Int32.MaxValue;
+            return result;
+        }
+
+        public ActionResult CfVsFaDetails()
+        {
+            Lack1CFUsageVsFAViewModel model = new Lack1CFUsageVsFAViewModel()
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                BeginingPostingDate = DateTime.Today,
+                EndPostingDate = DateTime.Today,
+                PlantIdList = GlobalFunctions.GetPlantByListUserPlant(CurrentUser.ListUserPlants)
+            };
+            if (CurrentUser.UserRole == Enums.UserRole.Administrator)
+            {
+                model.PlantIdList = GlobalFunctions.GetPlantAll();
+            }
+            return View("CfVsFaDetails", model);
+        }
+
+        
+        public ActionResult ExportCfVsFaDetails(Lack1CFUsageVsFAByParamInput param)
+        {
+            try
+            {
+                var data = _lack1Bll.GetCfUsagevsFaDetailData(param);
+                var html = generateTableDataCsVsFA(data);
+                ExportCfVsFaDetailsToExcel(html);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("CfVsFaDetails");
+        }
+
+        private void ExportCfVsFaDetailsToExcel(string html)
+        {
+            var fileName = "LACK-1 Cf Vs Fa Detail" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            //'Excel 2003 : "application/vnd.ms-excel"
+            //'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+
+
+            Response.Output.Write(html);
+
+            Response.Flush();
+
+            Response.End();
+        }
+
+        private string generateHeaderTableDataCsVsFA() {
+            var rc =  /*start header*/
+                "<thead>" +
+                    "<tr>" +
+                        "<th >PlantId</th>" +
+                        "<th >Plant Desc</th>" +
+                        "<th >Process Order</th>" +
+                        "<th >FA Code</th>" +
+                        "<th >Brand Desc</th>" +
+                        "<th >FA Prod Date</th>" +
+                        "<th >FA Posting Date</th>" +
+                        "<th >FA Produced Qty</th>" +
+                        "<th >FA Produced Uom</th>" +
+                        "<th >Mvt</th>" +
+                        "<th >Batch</th>" +
+                        "<th >CF Code</th>" +
+                        "<th >CF Description</th>" +
+                        "<th >CF Posting Date</th>" +
+                        "<th >CF Issue Qty</th>" +
+                        "<th >CF Issue Uom</th>" +
+                        "<th >Reject Maker Qty</th>" +
+                        "<th >Reject Maker UoM</th>" +
+                        "<th >Reject Packer Qty</th>" +
+                        "<th >Reject Packer UoM</th>" +
+                        "<th >Dust Qty</th>" +
+                        "<th >Dust Uom</th>" +
+                        "<th >Floor Qty</th>" +
+                        "<th >Floor Uom</th>" +
+                        "<th >Stem Qty</th>" +
+                        "<th >Stem Uom</th>" +
+                        "<th >Waste Date</th>" +
+
+                    "</tr>" +
+
+                "</thead>";
+            /*end of header*/
+            return rc;
+        }
+
+        private string generateTableDataCsVsFA(List<Lack1CFUsagevsFaDetailDto> data)
+        {
+            var rc = "<table border='1' >" + generateHeaderTableDataCsVsFA();
+            for (var i = 0; i < data.Count; i++) {
+                var item = data[i];
+                var row = generateRowDataCsVsFa(item);
+
+
+                rc = rc + row;
+            }
+            return rc;
+        }
+
+
+        private string generateRowDataCsVsFa(Lack1CFUsagevsFaDetailDto item) {
+    
+            var facode = item.Fa_Code;
+            var plantId = item.PlantId;
+            var order = item.Order;
+            var plantDesc = item.PlantDesc;
+            var brandDesc = item.Brand_Desc;
+            var mvt101 = item.Lack1CFUsagevsFaDetailDtoMvt101;
+            var mvt261 = item.Lack1CFUsagevsFaDetailDtoMvt261;
+            var waste = item.Lack1CFUsagevsFaDetailDtoMvtWaste;
+            var iswastedisplayed = false;
+            var rc = "";
+            for (var i = 0; i < mvt101.Count; i++) {
+                rc += "<tr>" +
+                    "<td>" + plantId + "</td>" +
+                    "<td>" + plantDesc + "</td>" +
+                    "<td>" + order + "</td>" +
+                    "<td>" + facode + "</td>" +
+                    "<td>" + brandDesc + "</td>" +
+                    "<td>" + mvt101[i].ProductionDateText + "</td>" +
+                    "<td>" + mvt101[i].PostingDateText + "</td>" +
+                    "<td>" + mvt101[i].Converted_Qty + "</td>" +
+                    "<td>" + mvt101[i].Converted_Uom + "</td>" +
+                    "<td>" + mvt101[i].Mvt + "</td>" +
+                    "<td>" + mvt101[i].Batch + "</td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>";
+                if (waste.Count - 1 >= i) {
+                    rc += "<td>" + (waste[i].MarkerRejectStickQty) + "</td>" +
+                        "<td>Btg</td>" +
+                        "<td>" + (waste[i].PackerRejectStickQty) + "</td>" +
+                        "<td>Btg</td>" +
+                        "<td>" + (waste[i].DustWasteGramQty) + "</td>" +
+                        "<td>G</td>" +
+                        "<td>" + (waste[i].FloorWasteGramQty) + "</td>" +
+                        "<td>G</td>" +
+                        "<td>" + (waste[i].StampWasteQty) + "</td>" +
+                        "<td>G</td>" +
+                        "<td>" + waste[i].WasteProductionDateText + "</td>" +
+                        "</tr>";
+                    iswastedisplayed = true;
+                } else {
+                    rc += "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "</tr>";
+                }
+            }
+
+            for (var j = 0; j < mvt261.Count; j++) {
+                rc += "<tr>" +
+                    "<td>" + plantId + "</td>" +
+                    "<td>" + plantDesc + "</td>" +
+                    "<td>" + order + "</td>" +
+                    "<td>" + facode + "</td>" +
+                    "<td>" + brandDesc + "</td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td>" + mvt261[j].Mvt + "</td>" +
+                    "<td>" + mvt261[j].Batch + "</td>" +
+                    "<td>" + mvt261[j].Material_Id + "</td>" +
+                    "<td>" + mvt261[j].Material_Id + "</td>" +
+                    "<td>" + mvt261[j].PostingDateText + "</td>" +
+                    "<td>" + (-1 * mvt261[j].Converted_Qty) + "</td>" +
+                    "<td>" + mvt261[j].Uom + "</td>";
+        
+                rc += "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "</tr>";
+            }
+
+            return rc;
         }
 
         #endregion

@@ -1,7 +1,173 @@
 ﻿function generateHeaderTable() {
     var rc =  /*start header*/
-        '<thead><tr><th rowspan="2">No<br>Urut</th><th rowspan="2">Saldo<br>Awal</th><th colspan="2">Pemasukan</th><th rowspan="2">Penggunaan</th><th colspan="2">Hasil Produksi BKC</th><th rowspan="2">Saldo<br>Akhir</th><th rowspan="2">Saldo Akhir<br>(SAP)</th><th rowspan="2">Keterangan</th></tr><tr><th>No. & Tgl. CK-5</th><th>Jumlah</th><th>Jenis</th><th>Jumlah</th></tr></thead>';
+        '<thead>' +
+            '<tr>' +
+                '<th rowspan="2">No<br>Urut</th>' +
+                '<th rowspan="2">Saldo<br>Awal</th>' +
+                '<th colspan="2">Pemasukan</th>' +
+                '<th rowspan="2">Penggunaan</th>' +
+                '<th colspan="2">Hasil Produksi BKC</th>' +
+                '<th rowspan="2">Saldo<br>Akhir</th>' +
+                '<th rowspan="2">Saldo Akhir<br>(SAP)</th>' +
+                '<th rowspan="2">Keterangan</th>' +
+            '</tr>' +
+            '<tr>' +
+                '<th>No. & Tgl. CK-5</th>' +
+                '<th>Jumlah</th>' +
+                '<th>Jenis</th>' +
+                '<th>Jumlah</th>' +
+            '</tr>' +
+        '</thead>';
     /*end of header*/
+    return rc;
+}
+
+function generateHeaderTableDataCsVsFA() {
+    var rc =  /*start header*/
+        '<thead>' +
+            '<tr>' +
+                '<th >PlantId</th>' +
+                '<th >Plant Desc</th>' +
+                '<th >Process Order</th>' +
+                '<th >FA Code</th>' +
+                '<th >Brand Desc</th>' +
+                '<th >FA Prod Date</th>' +
+                '<th >FA Posting Date</th>' +
+                '<th >FA Produced Qty</th>' +
+                '<th >FA Produced Uom</th>' +
+                '<th >Mvt</th>' +
+                '<th >Batch</th>' +
+                '<th >CF Code</th>' +
+                '<th >CF Description</th>' +
+                '<th >CF Posting Date</th>' +
+                '<th >CF Issue Qty</th>' +
+                '<th >CF Issue Uom</th>' +
+                '<th >Reject Maker Qty</th>' +
+                '<th >Reject Maker UoM</th>' +
+                '<th >Reject Packer Qty</th>' +
+                '<th >Reject Packer UoM</th>' +
+                '<th >Dust Qty</th>' +
+                '<th >Dust Uom</th>' +
+                '<th >Floor Qty</th>' +
+                '<th >Floor Uom</th>' +
+                '<th >Stem Qty</th>' +
+                '<th >Stem Uom</th>' +
+                '<th >Waste Date</th>' +
+
+            '</tr>' +
+
+        '</thead>';
+    /*end of header*/
+    return rc;
+}
+
+function generateTableDataCsVsFA(data)
+{
+    var rc = '<table border="0" class="table table-bordered">' + generateHeaderTableDataCsVsFA();
+    for (var i = 0; i < data.length; i++) {
+        var item = data[i];
+        var row = generateRowDataCsVsFa(item);
+
+
+        rc = rc + row;
+    }
+    return rc;
+}
+
+
+function generateRowDataCsVsFa(item) {
+    
+    var facode = item.Fa_Code;
+    var plantId = item.PlantId;
+    var order = item.Order;
+    var plantDesc = item.PlantDesc;
+    var brandDesc = item.Brand_Desc;
+    var mvt101 = item.Lack1CFUsagevsFaDetailDtoMvt101;
+    var mvt261 = item.Lack1CFUsagevsFaDetailDtoMvt261;
+    var waste = item.Lack1CFUsagevsFaDetailDtoMvtWaste;
+    var iswastedisplayed = false;
+    var rc = "";
+    for (var i = 0; i < mvt101.length; i++) {
+        rc += "<tr>" +
+            "<td>" + plantId + "</td>" +
+            "<td>" + plantDesc + "</td>" +
+            "<td>" + order + "</td>" +
+            "<td>" + facode + "</td>" +
+            "<td>" + brandDesc + "</td>" +
+            "<td>" + mvt101[i].ProductionDateText + "</td>" +
+            "<td>" + mvt101[i].PostingDateText + "</td>" +
+            "<td>" + ThausandSeperator(mvt101[i].Converted_Qty) + "</td>" +
+            "<td>" + mvt101[i].Converted_Uom + "</td>" +
+            "<td>" + mvt101[i].Mvt + "</td>" +
+            "<td>" + mvt101[i].Batch + "</td>" +
+            "<td></td>" +
+            "<td></td>" +
+            "<td></td>" +
+            "<td></td>" +
+            "<td></td>";
+        if (waste.length - 1 >= i) {
+            rc += "<td>" + ThausandSeperator(waste[i].MarkerRejectStickQty) + "</td>" +
+                "<td>Btg</td>" +
+                "<td>" + ThausandSeperator(waste[i].PackerRejectStickQty) + "</td>" +
+                "<td>Btg</td>" +
+                "<td>" + ThausandSeperator(waste[i].DustWasteGramQty) + "</td>" +
+                "<td>G</td>" +
+                "<td>" + ThausandSeperator(waste[i].FloorWasteGramQty) + "</td>" +
+                "<td>G</td>" +
+                "<td>" + ThausandSeperator(waste[i].StampWasteQty) + "</td>" +
+                "<td>G</td>" +
+                "<td>" + waste[i].WasteProductionDateText + "</td>" +
+                "</tr>";
+            iswastedisplayed = true;
+        } else {
+            rc += "<td></td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "</tr>";
+        }
+    }
+
+    for (var j = 0; j < mvt261.length; j++) {
+        rc += "<tr>" +
+            "<td>" + plantId + "</td>" +
+            "<td>" + plantDesc + "</td>" +
+            "<td>" + order + "</td>" +
+            "<td>" + facode + "</td>" +
+            "<td>" + brandDesc + "</td>" +
+            "<td></td>" +
+            "<td></td>" +
+            "<td></td>" +
+            "<td></td>" +
+            "<td>" + mvt261[j].Mvt + "</td>" +
+            "<td>" + mvt261[j].Batch + "</td>" +
+            "<td>" + mvt261[j].Material_Id + "</td>" +
+            "<td>" + mvt261[j].Material_Id + "</td>" +
+            "<td>" + mvt261[j].PostingDateText + "</td>" +
+            "<td>" + ThausandSeperator(-1 * mvt261[j].Converted_Qty) + "</td>" +
+            "<td>" + mvt261[j].Uom + "</td>";
+        
+        rc += "<td></td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "</tr>";
+    }
+
     return rc;
 }
 

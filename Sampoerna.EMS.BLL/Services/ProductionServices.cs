@@ -30,5 +30,14 @@ namespace Sampoerna.EMS.BLL.Services
             return data;
         }
 
+        public List<PRODUCTION> GetProductionForDetailTis(GetLack1DetailTisInputProduction input)
+        {
+            var data = _repository.Get(x => x.PRODUCTION_DATE >= input.DateFrom && x.PRODUCTION_DATE <= input.DateTo
+                 && string.Compare(x.WERKS, input.PlantFrom) >= 0 &&
+                     string.Compare(x.WERKS, input.PlantTo) <= 0).ToList();
+
+            return data;
+        }
+
     }
 }

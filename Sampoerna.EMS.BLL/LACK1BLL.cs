@@ -1602,6 +1602,79 @@ namespace Sampoerna.EMS.BLL
             return dtToReturn;
         }
 
+        public List<Lack1CFUsagevsFaDetailDto> GetCfUsagevsFaDetailData(Lack1CFUsageVsFAByParamInput input)
+        {
+
+            var werks = _t001WServices.GetByRange(input.BeginingPlant, input.EndPlant).Select(c => c.WERKS).ToList();
+            var inputParam = new ZaapShiftRptGetForLack1ReportByParamInput()
+            {
+                Werks = werks,
+                BeginingDate = input.BeginingPostingDate,
+                EndDate = input.EndPostingDate
+            };
+
+            List<Lack1CFUsagevsFaDetailDto> result = new List<Lack1CFUsagevsFaDetailDto>();
+
+            var zaapshiftrpt = _zaapShiftRptService.GetForCFVsFa(inputParam).GroupBy(x => new { x.ORDR, x.WERKS, x.FA_CODE })
+                .Select(x=> new
+                {
+                    
+                    x.Key.WERKS,
+                    x.Key.FA_CODE,
+                    x.Key.ORDR, 
+                   
+                }).OrderBy(x=> x.WERKS);
+            foreach (var zaapShiftRpt in zaapshiftrpt)
+            {
+                var data = new Lack1CFUsagevsFaDetailDto();
+
+                data.Order = zaapShiftRpt.ORDR;
+                data.PlantDesc = _t001WServices.GetById(zaapShiftRpt.WERKS).NAME1;
+                data.PlantId = zaapShiftRpt.WERKS;
+                data.Fa_Code = zaapShiftRpt.FA_CODE;
+                data.Brand_Desc = _brandRegService.GetByPlantIdAndFaCode(zaapShiftRpt.WERKS, zaapShiftRpt.FA_CODE).BRAND_CE;
+
+                var zaapInput101 = new InvGetReceivingByParamZaapShiftRptInput()
+                {
+                    EndDate = inputParam.EndDate.HasValue ? inputParam.EndDate.Value : DateTime.Today,
+                    StartDate = inputParam.BeginingDate.HasValue ? inputParam.BeginingDate.Value : DateTime.Today,
+                    FaCode = data.Fa_Code,
+                    Ordr = data.Order,
+                    PlantId = data.PlantId
+                };
+
+                var dataReceiving = _zaapShiftRptService.GetForLack1ByParam(zaapInput101);
+
+                var zaapInput261 = new InvGetReceivingByParamZaapShiftRptInput()
+                {
+                    EndDate = inputParam.EndDate.HasValue ? inputParam.EndDate.Value : DateTime.Today,
+                    StartDate = inputParam.BeginingDate.HasValue ? inputParam.BeginingDate.Value : DateTime.Today,
+                    
+                    Ordr = data.Order,
+                    PlantId = data.PlantId
+                };
+                var dataUsage = _inventoryMovementService.GetReceivingByParamZaapShiftRpt(zaapInput261);
+                
+                data.Lack1CFUsagevsFaDetailDtoMvt101 = Mapper.Map<List<Lack1CFUsagevsFaDetailDtoMvt>>(dataReceiving);
+                var dataUsageWithConv = InvMovementConvertionProcess(dataUsage, "G");
+                data.Lack1CFUsagevsFaDetailDtoMvt261 = Mapper.Map<List<Lack1CFUsagevsFaDetailDtoMvt>>(dataUsageWithConv);
+
+                data.Lack1CFUsagevsFaDetailDtoMvtWaste = _wasteBll.GetAllByParam(new WasteGetByParamInput()
+                {
+                    FaCode = data.Fa_Code,
+                    Plant = data.PlantId,
+                    BeginingProductionDate = inputParam.BeginingDate,
+                    EndProductionDate = inputParam.EndDate
+                });
+
+                result.Add(data);
+            }
+
+
+
+            return result;
+        }
+
         public List<Lack1DetailsDto> GetPbck1RealizationList(Lack1GetPbck1RealizationListParamInput input)
         {
             return Mapper.Map<List<Lack1DetailsDto>>(_lack1Service.GetPbck1RealizationList(input));
@@ -4778,9 +4851,68 @@ namespace Sampoerna.EMS.BLL
                 item.Usage = String.Join(Environment.NewLine, mvtList.Select(x => (x.QTY.Value * 1000).ToString("N2")).ToArray());
                 item.UsageUom = String.Join(Environment.NewLine, mvtList.Select(x => x.BUN == "KG" ? "Gram" : string.Empty).ToArray());
                 item.UsagePostingDate = String.Join(Environment.NewLine, mvtList.Select(x => x.POSTING_DATE.Value.ToString("dd-MMM-yy")).ToArray());
+                item.EndingBalance = balanceList.TotalBeginningBalance + item.Ck5Qty - mvtList.Sum(x => (x.QTY.Value * 1000));
+                item.EndingBalanceUom = "Gram";
             }
 
-            return rc;
+            var inputProduction = new GetLack1DetailTisInputProduction();
+            inputProduction.DateFrom = input.DateFrom.Value;
+            inputProduction.DateTo = input.DateTo.Value;
+            inputProduction.PlantFrom = input.PlantReceiverFrom;
+            inputProduction.PlantTo = input.PlantReceiverTo;
+
+            var listProduction = _productionServices.GetProductionForDetailTis(inputProduction);
+
+            var inputWaste = new GetWasteDailyProdByParamInput();
+            inputWaste.DateFrom = input.DateFrom.Value;
+            inputWaste.DateTo = input.DateTo.Value;
+            inputWaste.PlantFrom = input.PlantReceiverFrom;
+            inputWaste.PlantTo = input.PlantReceiverTo;
+
+            var listWaste = _wasteServices.GetWasteDailyProdByParam(inputWaste);
+
+            //join
+
+            var listDetailTis = (from list in rc
+                                 join
+                                     production in listProduction
+                                     on list.PlantIdReceiver equals production.WERKS
+                                 join
+                                     waste in listWaste
+                                     on new { production.FA_CODE, production.PRODUCTION_DATE, production.WERKS }
+                                     equals new { waste.FA_CODE, PRODUCTION_DATE = waste.WASTE_PROD_DATE, waste.WERKS }
+                                 select new Lack1DetailTisDto()
+                                 {
+
+                                     PlantIdReceiver = list.PlantIdReceiver,
+                                     PlantDescReceiver = list.PlantDescReceiver,
+                                     PlantIdSupplier = list.PlantIdSupplier,
+                                     PlantDescSupplier = list.PlantDescSupplier,
+                                     CfCode = list.CfCode,
+                                     CfDesc = list.CfDesc,
+                                     BeginingBalance = list.BeginingBalance,
+                                     BeginingBalanceUom = list.BeginingBalanceUom,
+                                     Ck5EmsNo = list.Ck5EmsNo,
+                                     Ck5RegNo = list.Ck5RegNo,
+                                     Ck5RegDate = list.Ck5RegDate,
+                                     Ck5GrDate = list.Ck5GrDate,
+                                     Ck5Qty = list.Ck5Qty,
+                                     MvtType = list.MvtType,
+                                     Usage = list.Usage,
+                                     UsageUom = list.UsageUom,
+                                     UsagePostingDate = list.UsagePostingDate,
+                                     FaCode = production.FA_CODE,
+                                     FaCodeDesc = production.BRAND_DESC,
+                                     ProdQty = production.PROD_QTY_STICK == null ? 0 : (production.PROD_QTY_STICK.Value - waste.PACKER_REJECT_STICK_QTY.Value),
+                                     ProdUom = production.UOM,
+                                     ProdPostingDate = production.PRODUCTION_DATE.ToString("dd-MMM-yy"),
+                                     ProdDate = production.PRODUCTION_DATE.ToString("dd-MMM-yy"),
+                                     EndingBalance = list.EndingBalance,
+                                     EndingBalanceUom = list.EndingBalanceUom
+
+                                 }).ToList();
+
+            return listDetailTis;
         }
 
         #endregion

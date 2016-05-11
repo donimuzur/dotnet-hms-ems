@@ -23,5 +23,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     {
         public List<string> BeginningBalance { get; set; }
         public List<string> BeginningBalanceUom { get; set; }
+        public decimal TotalBeginningBalance { get; set; }
     }
 }

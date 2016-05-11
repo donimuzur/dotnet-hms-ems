@@ -1,4 +1,49 @@
-﻿function generateDataClick(lackLevel, url) {
+﻿function generateDataCsVsFAClick(reportlevel, url) {
+    $('.loading').show();
+    if (!generateInputValidation()) {
+        $('.loading').hide();
+        $('#ModalValidation').modal('show');
+        return;
+    }
+
+    var param = {};
+    param.BeginingPlant = $("#BeginingPlant").val();
+    param.EndPlant = $("#EndPlant").val();
+    param.BeginingPostingDate = $("#BeginingPostingDate").val();
+    param.EndPostingDate = $("#EndPostingDate").val();
+    
+    $.ajax({
+        url: url,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ param: param }),
+        success: function (response) {
+            $('.loading').hide();
+            if (response.length > 0) {
+                
+                $('#generated-data-container').html("");
+                var data = response;
+                //console.log(response.IsWithTisToTisReport);
+                
+               
+                var tableGenerated2 = generateTableDataCsVsFA(data);
+                    /*console.log(tableGenerated2);*/
+                $('#generated-data-container').append(tableGenerated2);
+                
+                
+
+                
+
+            } else {
+                /*alert(response.ErrorMessage);*/
+                $('#modalBodyMessage').text("No Data Found");
+                $('#ModalValidation').modal('show');
+            }
+        }
+    });
+}
+
+function generateDataClick(lackLevel, url) {
     $('.loading').show();
 
     if (!generateInputValidation()) {
