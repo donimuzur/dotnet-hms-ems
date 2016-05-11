@@ -55,6 +55,8 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public bool IsAllowDelete { get; set; }
         public bool? IsFromSap { get; set; }
         public bool? BoolIsDeleted { get; set; }
-        
+
+        public string CREATED_BY { get; set; }
+        public System.DateTime CREATED_DATE { get; set; }
     }
 }

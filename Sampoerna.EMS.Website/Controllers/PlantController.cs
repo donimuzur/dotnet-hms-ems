@@ -250,7 +250,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //title
             slDocument.SetCellValue(1, 1, "Master Plant");
-            slDocument.MergeWorksheetCells(1, 1, 1, 8);
+            slDocument.MergeWorksheetCells(1, 1, 1, 11);
             //create style
             SLStyle valueStyle = slDocument.CreateStyle();
             valueStyle.SetHorizontalAlignment(HorizontalAlignmentValues.Center);
@@ -277,15 +277,17 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             int iRow = 2;
 
-            slDocument.SetCellValue(iRow, 1, "NPPBKC ID");
-            slDocument.SetCellValue(iRow, 2, "NPPBKC ID Import");
-            slDocument.SetCellValue(iRow, 3, "Plant ID");
-            slDocument.SetCellValue(iRow, 4, "Plant Description");
-            slDocument.SetCellValue(iRow, 5, "Main Plant");
-            slDocument.SetCellValue(iRow, 6, "Plant Address");
-            slDocument.SetCellValue(iRow, 7, "Plant City");
-            slDocument.SetCellValue(iRow, 8, "Deletion");
-
+            slDocument.SetCellValue(iRow, 1, "Plant ID");
+            slDocument.SetCellValue(iRow, 2, "NPPBKC NO");
+            slDocument.SetCellValue(iRow, 3, "Plant Description");
+            slDocument.SetCellValue(iRow, 4, "Plant Address");
+            slDocument.SetCellValue(iRow, 5, "Plant City");
+            slDocument.SetCellValue(iRow, 6, "Skeptis");
+            slDocument.SetCellValue(iRow, 7, "Main Plant");
+            slDocument.SetCellValue(iRow, 8, "Receive Material");
+            slDocument.SetCellValue(iRow, 9, "Phone");
+            slDocument.SetCellValue(iRow, 10, "NPPBKC Import");
+            slDocument.SetCellValue(iRow, 11, "Deletion");
 
             SLStyle headerStyle = slDocument.CreateStyle();
             headerStyle.Alignment.Horizontal = HorizontalAlignmentValues.Center;
@@ -296,7 +298,7 @@ namespace Sampoerna.EMS.Website.Controllers
             headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
             headerStyle.Fill.SetPattern(PatternValues.Solid, System.Drawing.Color.LightGray, System.Drawing.Color.LightGray);
 
-            slDocument.SetCellStyle(iRow, 1, iRow, 8, headerStyle);
+            slDocument.SetCellStyle(iRow, 1, iRow, 11, headerStyle);
 
             return slDocument;
 
@@ -308,14 +310,28 @@ namespace Sampoerna.EMS.Website.Controllers
 
             foreach (var data in listData)
             {
-                slDocument.SetCellValue(iRow, 1, data.NPPBKC_ID);
-                slDocument.SetCellValue(iRow, 2, data.NPPBKC_IMPORT_ID);
-                slDocument.SetCellValue(iRow, 3, data.Werks);
-                slDocument.SetCellValue(iRow, 4, data.Ort01 + "," + data.Name1);
-                slDocument.SetCellValue(iRow, 5, data.IsMainPlant ? "Yes" : "No");
-                slDocument.SetCellValue(iRow, 6, data.Address);
-                slDocument.SetCellValue(iRow, 7, data.Ort01);
-                slDocument.SetCellValue(iRow, 8, data.IsDeletedString);
+                data.ReceiveMaterials = GetPlantReceiveMaterial(data);
+
+                var receiveMaterial = "";
+                foreach (var plantReceiveMaterialItemModel in data.ReceiveMaterials)
+                {
+                    if (plantReceiveMaterialItemModel.IsChecked)
+                        receiveMaterial += plantReceiveMaterialItemModel.EXT_TYP_DESC + Environment.NewLine;
+                }
+                slDocument.SetCellValue(iRow, 1, data.Werks);
+                slDocument.SetCellValue(iRow, 2, data.NPPBKC_ID);
+                slDocument.SetCellValue(iRow, 3, data.PlantDescription);
+                slDocument.SetCellValue(iRow, 4, data.Address);
+                slDocument.SetCellValue(iRow, 5, data.Ort01);
+                slDocument.SetCellValue(iRow, 6, data.Skeptis);
+                slDocument.SetCellValue(iRow, 7, data.IsMainPlant ? "Yes" : "No");
+
+                slDocument.SetCellValue(iRow, 8, receiveMaterial);
+                
+                slDocument.SetCellValue(iRow, 9, data.Phone);
+                slDocument.SetCellValue(iRow, 10, data.NPPBKC_IMPORT_ID);
+                slDocument.SetCellValue(iRow, 11, data.IsDeletedString);
+                
 
                 iRow++;
             }
@@ -326,9 +342,10 @@ namespace Sampoerna.EMS.Website.Controllers
             valueStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
             valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
             valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.SetWrapText(true);
 
-            slDocument.AutoFitColumn(1, 8);
-            slDocument.SetCellStyle(3, 1, iRow - 1, 8, valueStyle);
+            slDocument.AutoFitColumn(1, 11);
+            slDocument.SetCellStyle(3, 1, iRow - 1, 11, valueStyle);
 
             return slDocument;
         }
