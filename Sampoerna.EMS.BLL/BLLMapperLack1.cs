@@ -512,6 +512,44 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.FLAG_FOR_LACK1, opt => opt.MapFrom(src => src.FlagForLack1))
                 ;
 
+            Mapper.CreateMap<ZAAP_SHIFT_RPT, Lack1CFUsagevsFaDetailDtoMvt>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Batch, opt => opt.MapFrom(src => src.BATCH))
+                .ForMember(dest => dest.Order, opt => opt.MapFrom(src => src.ORDR))
+                .ForMember(dest => dest.Converted_Qty, opt => opt.MapFrom(src => src.QTY))
+                .ForMember(dest => dest.Converted_Uom, opt => opt.MapFrom(src => src.UOM))
+                .ForMember(dest => dest.Material_Id, opt => opt.MapFrom(src => src.FA_CODE))
+                .ForMember(dest => dest.Mvt, opt => opt.MapFrom(src => src.MVT))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.WERKS))
+                .ForMember(dest => dest.PostingDate, opt => opt.MapFrom(src => src.POSTING_DATE))
+                .ForMember(dest => dest.ProductionDate, opt => opt.MapFrom(src => src.PRODUCTION_DATE))
+                .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.ORIGINAL_QTY))
+                .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.ORIGINAL_UOM));
+
+            Mapper.CreateMap<INVENTORY_MOVEMENT, Lack1CFUsagevsFaDetailDtoMvt>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Batch, opt => opt.MapFrom(src => src.BATCH))
+                .ForMember(dest => dest.Order, opt => opt.MapFrom(src => src.ORDR))
+                
+                
+                .ForMember(dest => dest.Material_Id, opt => opt.MapFrom(src => src.MATERIAL_ID))
+                .ForMember(dest => dest.Mvt, opt => opt.MapFrom(src => src.MVT))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
+                .ForMember(dest => dest.PostingDate, opt => opt.MapFrom(src => src.POSTING_DATE))
+                .ForMember(dest => dest.ProductionDate, opt => opt.MapFrom(src => src.POSTING_DATE))
+                .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.QTY))
+                .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.BUN));
+
+            Mapper.CreateMap<InvMovementItemWithConvertion, Lack1CFUsagevsFaDetailDtoMvt>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Batch, opt => opt.MapFrom(src => src.BATCH))
+                .ForMember(dest => dest.Order, opt => opt.MapFrom(src => src.ORDR))
+
+
+                .ForMember(dest => dest.Material_Id, opt => opt.MapFrom(src => src.MATERIAL_ID))
+                .ForMember(dest => dest.Mvt, opt => opt.MapFrom(src => src.MVT))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
+                .ForMember(dest => dest.PostingDate, opt => opt.MapFrom(src => src.POSTING_DATE))
+                .ForMember(dest => dest.ProductionDate, opt => opt.MapFrom(src => src.POSTING_DATE))
+                .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.ConvertedQty))
+                .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.ConvertedUomId));
         }
 
     }

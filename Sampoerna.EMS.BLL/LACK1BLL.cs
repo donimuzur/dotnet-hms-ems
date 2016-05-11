@@ -1614,10 +1614,12 @@ namespace Sampoerna.EMS.BLL
             var zaapshiftrpt = _zaapShiftRptService.GetForCFVsFa(inputParam).GroupBy(x => new { x.ORDR, x.WERKS, x.FA_CODE })
                 .Select(x=> new
                 {
-                    x.Key.ORDR, 
+                    
                     x.Key.WERKS,
-                    x.Key.FA_CODE
-                });
+                    x.Key.FA_CODE,
+                    x.Key.ORDR, 
+                   
+                }).OrderBy(x=> x.WERKS);
             foreach (var zaapShiftRpt in zaapshiftrpt)
             {
                 var data = new Lack1CFUsagevsFaDetailDto();
@@ -1628,7 +1630,7 @@ namespace Sampoerna.EMS.BLL
                 data.Fa_Code = zaapShiftRpt.FA_CODE;
                 data.Brand_Desc = _brandRegService.GetByPlantIdAndFaCode(zaapShiftRpt.WERKS, zaapShiftRpt.FA_CODE).BRAND_CE;
 
-                var zaapInput = new InvGetReceivingByParamZaapShiftRptInput()
+                var zaapInput101 = new InvGetReceivingByParamZaapShiftRptInput()
                 {
                     EndDate = inputParam.EndDate.HasValue ? inputParam.EndDate.Value : DateTime.Today,
                     StartDate = inputParam.BeginingDate.HasValue ? inputParam.BeginingDate.Value : DateTime.Today,
@@ -1637,12 +1639,21 @@ namespace Sampoerna.EMS.BLL
                     PlantId = data.PlantId
                 };
 
-                var dataReceiving = _inventoryMovementService.GetReceivingByParamZaapShiftRpt(zaapInput);
+                var dataReceiving = _zaapShiftRptService.GetForLack1ByParam(zaapInput101);
 
-                var dataUsage = _inventoryMovementService.GetReceivingByParamZaapShiftRpt(zaapInput,true);
-
+                var zaapInput261 = new InvGetReceivingByParamZaapShiftRptInput()
+                {
+                    EndDate = inputParam.EndDate.HasValue ? inputParam.EndDate.Value : DateTime.Today,
+                    StartDate = inputParam.BeginingDate.HasValue ? inputParam.BeginingDate.Value : DateTime.Today,
+                    
+                    Ordr = data.Order,
+                    PlantId = data.PlantId
+                };
+                var dataUsage = _inventoryMovementService.GetReceivingByParamZaapShiftRpt(zaapInput261);
+                
                 data.Lack1CFUsagevsFaDetailDtoMvt101 = Mapper.Map<List<Lack1CFUsagevsFaDetailDtoMvt>>(dataReceiving);
-                data.Lack1CFUsagevsFaDetailDtoMvt261 = Mapper.Map<List<Lack1CFUsagevsFaDetailDtoMvt>>(dataUsage);
+                var dataUsageWithConv = InvMovementConvertionProcess(dataUsage, "G");
+                data.Lack1CFUsagevsFaDetailDtoMvt261 = Mapper.Map<List<Lack1CFUsagevsFaDetailDtoMvt>>(dataUsageWithConv);
 
                 data.Lack1CFUsagevsFaDetailDtoMvtWaste = _wasteBll.GetAllByParam(new WasteGetByParamInput()
                 {

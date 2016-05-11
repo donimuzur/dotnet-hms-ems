@@ -314,15 +314,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return result;
         }
 
-
-        public JsonResult GenerateCFVsFaReport(Lack1CFUsageVsFAByParamInput param)
-        {
-            var outGeneratedData = _lack1Bll.GetCfUsagevsFaDetailData(param);
-
-            var result = Json(outGeneratedData);
-            result.MaxJsonLength = Int32.MaxValue;
-            return result;
-        }
+        
 
         #endregion
 
@@ -1608,7 +1600,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var sw = new StringWriter();
             var htw = new HtmlTextWriter(sw);
-
+            
             grid.RenderControl(htw);
 
             Response.Output.Write(sw.ToString());
@@ -2888,6 +2880,221 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return slDocument;
 
+        }
+
+        #endregion
+
+        #region CFVsFA
+        [HttpPost]
+        public JsonResult GenerateCFVsFaReport(Lack1CFUsageVsFAByParamInput param)
+        {
+            var outGeneratedData = _lack1Bll.GetCfUsagevsFaDetailData(param);
+
+            var result = Json(outGeneratedData);
+            result.MaxJsonLength = Int32.MaxValue;
+            return result;
+        }
+
+        public ActionResult CfVsFaDetails()
+        {
+            Lack1CFUsageVsFAViewModel model = new Lack1CFUsageVsFAViewModel()
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                BeginingPostingDate = DateTime.Today,
+                EndPostingDate = DateTime.Today,
+                PlantIdList = GlobalFunctions.GetPlantByListUserPlant(CurrentUser.ListUserPlants)
+            };
+            if (CurrentUser.UserRole == Enums.UserRole.Administrator)
+            {
+                model.PlantIdList = GlobalFunctions.GetPlantAll();
+            }
+            return View("CfVsFaDetails", model);
+        }
+
+        
+        public ActionResult ExportCfVsFaDetails(Lack1CFUsageVsFAByParamInput param)
+        {
+            try
+            {
+                var data = _lack1Bll.GetCfUsagevsFaDetailData(param);
+                var html = generateTableDataCsVsFA(data);
+                ExportCfVsFaDetailsToExcel(html);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            return RedirectToAction("CfVsFaDetails");
+        }
+
+        private void ExportCfVsFaDetailsToExcel(string html)
+        {
+            var fileName = "LACK-1 Cf Vs Fa Detail" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            //'Excel 2003 : "application/vnd.ms-excel"
+            //'Excel 2007 : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+
+
+            Response.Output.Write(html);
+
+            Response.Flush();
+
+            Response.End();
+        }
+
+        private string generateHeaderTableDataCsVsFA() {
+            var rc =  /*start header*/
+                "<thead>" +
+                    "<tr>" +
+                        "<th >PlantId</th>" +
+                        "<th >Plant Desc</th>" +
+                        "<th >Process Order</th>" +
+                        "<th >FA Code</th>" +
+                        "<th >Brand Desc</th>" +
+                        "<th >FA Prod Date</th>" +
+                        "<th >FA Posting Date</th>" +
+                        "<th >FA Produced Qty</th>" +
+                        "<th >FA Produced Uom</th>" +
+                        "<th >Mvt</th>" +
+                        "<th >Batch</th>" +
+                        "<th >CF Code</th>" +
+                        "<th >CF Description</th>" +
+                        "<th >CF Posting Date</th>" +
+                        "<th >CF Issue Qty</th>" +
+                        "<th >CF Issue Uom</th>" +
+                        "<th >Reject Maker Qty</th>" +
+                        "<th >Reject Maker UoM</th>" +
+                        "<th >Reject Packer Qty</th>" +
+                        "<th >Reject Packer UoM</th>" +
+                        "<th >Dust Qty</th>" +
+                        "<th >Dust Uom</th>" +
+                        "<th >Floor Qty</th>" +
+                        "<th >Floor Uom</th>" +
+                        "<th >Stem Qty</th>" +
+                        "<th >Stem Uom</th>" +
+                        "<th >Waste Date</th>" +
+
+                    "</tr>" +
+
+                "</thead>";
+            /*end of header*/
+            return rc;
+        }
+
+        private string generateTableDataCsVsFA(List<Lack1CFUsagevsFaDetailDto> data)
+        {
+            var rc = "<table border='1' >" + generateHeaderTableDataCsVsFA();
+            for (var i = 0; i < data.Count; i++) {
+                var item = data[i];
+                var row = generateRowDataCsVsFa(item);
+
+
+                rc = rc + row;
+            }
+            return rc;
+        }
+
+
+        private string generateRowDataCsVsFa(Lack1CFUsagevsFaDetailDto item) {
+    
+            var facode = item.Fa_Code;
+            var plantId = item.PlantId;
+            var order = item.Order;
+            var plantDesc = item.PlantDesc;
+            var brandDesc = item.Brand_Desc;
+            var mvt101 = item.Lack1CFUsagevsFaDetailDtoMvt101;
+            var mvt261 = item.Lack1CFUsagevsFaDetailDtoMvt261;
+            var waste = item.Lack1CFUsagevsFaDetailDtoMvtWaste;
+            var iswastedisplayed = false;
+            var rc = "";
+            for (var i = 0; i < mvt101.Count; i++) {
+                rc += "<tr>" +
+                    "<td>" + plantId + "</td>" +
+                    "<td>" + plantDesc + "</td>" +
+                    "<td>" + order + "</td>" +
+                    "<td>" + facode + "</td>" +
+                    "<td>" + brandDesc + "</td>" +
+                    "<td>" + mvt101[i].ProductionDateText + "</td>" +
+                    "<td>" + mvt101[i].PostingDateText + "</td>" +
+                    "<td>" + mvt101[i].Converted_Qty + "</td>" +
+                    "<td>" + mvt101[i].Converted_Uom + "</td>" +
+                    "<td>" + mvt101[i].Mvt + "</td>" +
+                    "<td>" + mvt101[i].Batch + "</td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>";
+                if (waste.Count - 1 >= i) {
+                    rc += "<td>" + (waste[i].MarkerRejectStickQty) + "</td>" +
+                        "<td>Btg</td>" +
+                        "<td>" + (waste[i].PackerRejectStickQty) + "</td>" +
+                        "<td>Btg</td>" +
+                        "<td>" + (waste[i].DustWasteGramQty) + "</td>" +
+                        "<td>G</td>" +
+                        "<td>" + (waste[i].FloorWasteGramQty) + "</td>" +
+                        "<td>G</td>" +
+                        "<td>" + (waste[i].StampWasteQty) + "</td>" +
+                        "<td>G</td>" +
+                        "<td>" + waste[i].WasteProductionDateText + "</td>" +
+                        "</tr>";
+                    iswastedisplayed = true;
+                } else {
+                    rc += "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "</tr>";
+                }
+            }
+
+            for (var j = 0; j < mvt261.Count; j++) {
+                rc += "<tr>" +
+                    "<td>" + plantId + "</td>" +
+                    "<td>" + plantDesc + "</td>" +
+                    "<td>" + order + "</td>" +
+                    "<td>" + facode + "</td>" +
+                    "<td>" + brandDesc + "</td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td>" + mvt261[j].Mvt + "</td>" +
+                    "<td>" + mvt261[j].Batch + "</td>" +
+                    "<td>" + mvt261[j].Material_Id + "</td>" +
+                    "<td>" + mvt261[j].Material_Id + "</td>" +
+                    "<td>" + mvt261[j].PostingDateText + "</td>" +
+                    "<td>" + (-1 * mvt261[j].Converted_Qty) + "</td>" +
+                    "<td>" + mvt261[j].Uom + "</td>";
+        
+                rc += "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "</tr>";
+            }
+
+            return rc;
         }
 
         #endregion

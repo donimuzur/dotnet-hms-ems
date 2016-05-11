@@ -112,29 +112,24 @@ namespace Sampoerna.EMS.BLL.Services
             return _repository.Get(queryFilter).ToList();
         }
 
-        public List<INVENTORY_MOVEMENT> GetReceivingByParamZaapShiftRpt(InvGetReceivingByParamZaapShiftRptInput input,bool isUsage = false)
+        public List<INVENTORY_MOVEMENT> GetReceivingByParamZaapShiftRpt(InvGetReceivingByParamZaapShiftRptInput input)
         {
-            var receivingMvtType = isUsage ? new List<string>()
-            {
-                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving101),
-                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving102)
-            } : new List<string>()
+            var receivingMvtType = new List<string>()
             {
                 EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage261),
-                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage261)
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage262)
             };
 
             Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue && c.POSTING_DATE.Value <= input.EndDate;
 
-            queryFilter = queryFilter.And(c => c.POSTING_DATE.HasValue && c.POSTING_DATE >= input.EndDate);
+            queryFilter = queryFilter.And(c => c.POSTING_DATE.HasValue && c.POSTING_DATE >= input.StartDate);
             
 
             
             queryFilter = queryFilter.And(c => c.PLANT_ID == input.PlantId);
-            if (!isUsage)
-            {
-                queryFilter = queryFilter.And(c => c.MATERIAL_ID == input.FaCode);
-            }
+            
+            
+            
             
             queryFilter = queryFilter.And(c => c.ORDR == input.Ordr);
             

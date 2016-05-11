@@ -1,82 +1,114 @@
 ﻿@using Sampoerna.EMS.Core
 @model Sampoerna.EMS.Website.Models.LACK1.Lack1CFUsageVsFAViewModel
 @{
-    ViewBag.Title = "Cut Filler vs FA Details";
+    ViewBag.Title = "Cut Filler Usage vs FA Details";
 }
 
 @section styles{
     <link href="~/Content/css/print.css" rel="stylesheet" />
 }
 
-<div role="tabpanel" class="tab-pane active" id="information">
-    <div class="tab-wrapper">
-        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
-                <div class="panel-heading" role="tab" id="headingOne">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            Filter
-                            <i class="fa fa-caret-down"></i>
-                        </a>
-                    </h4>
-                </div>
-                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                    <div class="panel-body">
-                        <div class="form-excise" role="form">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Tanggal Awal (Posting Date)</label>
-                                        <div class="input-group date">
-                                            @Html.TextBoxFor(model => model.BeginingPostingDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Tanggal Akhir (Posting Date)</label>
-                                        <div class="input-group date">
-                                            @Html.TextBoxFor(model => model.EndPostingDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                        </div>
-                                    </div>
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>@ViewBag.Title</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-md-4">Tanggal Awal (Posting Date)</label>
+                            <div class="col-md-8">
+                                <div class="input-group date">
+                                    @Html.TextBoxFor(model => model.BeginingPostingDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Received Plant (Start)</label>
-                                        <div class="col-md-8">
-                                            
-                                            @Html.DropDownListFor(model => model.LevelPlantId, Model.ReceivePlantList, "Select", new { @class = "form-control", @disabled = "disabled" })
-                                            
-                                        </div>
-                                    </div>
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-md-4">Tanggal Akhir (Posting Date)</label>
+                            <div class="col-md-8">
+                                <div class="input-group date">
+                                    @Html.TextBoxFor(model => model.EndPostingDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">Tanggal Akhir (Posting Date)</label>
-                                        <div class="input-group date">
-                                            @Html.TextBoxFor(model => model.EndPostingDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>    
+                            </div>
+                            
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-md-4">Received Plant (Start)</label>
+                            <div class="col-md-8">
+
+                                @Html.DropDownListFor(model => model.BeginingPlant, Model.PlantIdList, "Select", new { @class = "form-control" })
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-md-4">Received Plant (End)</label>
+                            <div class="col-md-8">
+
+                                @Html.DropDownListFor(model => model.EndPlant, Model.PlantIdList, "Select", new { @class = "form-control" })
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <br/>
+                </div>
+                <div class="row">
+                    <div class="last-form">
+                        
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-4 right">
+                                    <input type="button" id="btn-generate-data" class="btn btn-blue full" value="Generate" onclick="generateDataCsVsFAClick(1,'@Url.Action("GenerateCFVsFaReport", "LACK1")');" />
+                                </div>
+                                <div class="col-md-4 right">
+                                    <input type="button" id="btn-generate-data" class="btn btn-blue full" value="Export" onclick="exportToExcel();" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                    
+                </div>
+            
+            <div class="table-container lack-table" id="generated-data-container">
+
             </div>
         </div>
     </div>
 </div>
+
+@using (Html.BeginForm("ExportCfVsFaDetails", "LACK1", FormMethod.Post, new { @id = "ExportCfVsFaDetails" }))
+{
+    @Html.HiddenFor(model => model.BeginingPostingDate, new { @id = "exportBeginDate"})
+    @Html.HiddenFor(model => model.EndPostingDate, new { @id = "exportEndDate" })
+    @Html.HiddenFor(model => model.BeginingPlant, new { @id = "exportBeginPlant" })
+    @Html.HiddenFor(model => model.EndPlant, new { @id = "exportEndPlant" })
+    
+}
 
 <div class="loading"></div>
 
@@ -84,5 +116,19 @@
     <script src="~/Scripts/thousand-separator.js"></script>
     <script src="~/Scripts/lack1/Lack1Scripts.js?v=0.0.3"></script>
     <script src="~/Scripts/lack1/Lack1GenerateTable.js?v=0.0.2"></script>
-    <script type="text/javascript"></script>
+    <script type="text/javascript" language="javascript" class="init">
+
+        $('#MenuLack1OpenDocument').removeClass('open');
+        $('#MenuLack1Report').addClass('open');
+        $('#MenuLack1CFVsFaDetails').addClass('active');
+
+        function exportToExcel() {
+            $("#exportBeginDate").val($("#BeginingPostingDate").val());
+            $("#exportEndDate").val($("#EndPostingDate").val());
+            $("#exportBeginPlant").val($("#BeginingPlant").val());
+            $("#exportEndPlant").val($("#EndPlant").val());
+
+            $("#ExportCfVsFaDetails").submit();
+        }
+    </script>
 }

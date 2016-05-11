@@ -26,6 +26,31 @@ namespace Sampoerna.EMS.BLL.Services
             _repository = _uow.GetGenericRepository<ZAAP_SHIFT_RPT>();
         }
 
+        public List<ZAAP_SHIFT_RPT> GetForLack1ByParam(InvGetReceivingByParamZaapShiftRptInput input)
+        {
+            Expression<Func<ZAAP_SHIFT_RPT, bool>> queryFilter = c => c.POSTING_DATE.HasValue && c.POSTING_DATE.Value <= input.EndDate;
+
+            queryFilter = queryFilter.And(c => c.POSTING_DATE.HasValue && c.POSTING_DATE >= input.StartDate);
+
+
+
+            queryFilter = queryFilter.And(c => c.WERKS == input.PlantId);
+            
+            queryFilter = queryFilter.And(c => c.FA_CODE == input.FaCode);
+            
+
+            queryFilter = queryFilter.And(c => c.ORDR == input.Ordr);
+
+
+            //queryFilter = queryFilter.And(c => receivingMvtType.Contains(c.MVT));
+
+
+
+
+
+            return _repository.Get(queryFilter).ToList();
+        }
+
         public List<ZAAP_SHIFT_RPT> GetForLack1ByParam(ZaapShiftRptGetForLack1ByParamInput input)
         {
             Expression<Func<ZAAP_SHIFT_RPT, bool>> queryFilter = c => c.COMPANY_CODE == input.CompanyCode 

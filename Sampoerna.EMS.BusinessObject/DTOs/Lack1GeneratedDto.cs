@@ -213,6 +213,38 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal QtyAllOrder { get; set; }
     }
 
+    public class Lack1CFUsagevsFaDetailCombinedDto
+    {
+        public string PlantId { get; set; }
+        public string PlantDesc { get; set; }
+        public string Order { get; set; }
+        public string Fa_Code { get; set; }
+        public string Brand_Desc { get; set; }
+
+        public string Mvt { get; set; }
+        public string Batch { get; set; }
+        
+        public string Material_Id { get; set; }
+
+        
+        public string ProductionDateText
+        {
+            get; set;
+        }
+
+        public DateTime PostingDate { get; set; }
+
+        public string PostingDateText
+        {
+            get;set;
+        }
+
+        public decimal Qty { get; set; }
+        public decimal Converted_Qty { get; set; }
+        public string Uom { get; set; }
+        public string Converted_Uom { get; set; }
+    }
+
 
     public class Lack1CFUsagevsFaDetailDto
     {
@@ -236,7 +268,22 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Material_Id { get; set; }
 
         public DateTime ProductionDate { get; set; }
+        public string ProductionDateText {
+            get
+            {
+                return ProductionDate.ToString("dd-MMM-yyyy");
+            }
+        }
+
         public DateTime PostingDate { get; set; }
+
+        public string PostingDateText
+        {
+            get
+            {
+                return ProductionDate.ToString("dd-MMM-yyyy");
+            }
+        }
 
         public decimal Qty { get; set; }
         public decimal Converted_Qty { get; set; }
