@@ -71,6 +71,17 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public List<string> ListOrdrZaapShiftReport { get; set; }
         public List<string> ListOrder { get; set; }
     }
+    public class InvGetReceivingByParamZaapShiftRptInput
+    {
+        public string Ordr { get; set; }
+        public string PlantId { get; set; }
+
+        public string FaCode { get; set; }
+
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+    }
+
 
     public class GetLack1DetailTisInput
     {

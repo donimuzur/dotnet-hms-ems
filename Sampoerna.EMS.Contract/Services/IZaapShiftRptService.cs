@@ -12,5 +12,9 @@ namespace Sampoerna.EMS.Contract.Services
         ZAAP_SHIFT_RPT GetById(int id);
 
         List<ZAAP_SHIFT_RPT> GetCompleteData(ZaapShiftRptGetForLack1ByParamInput input);
+
+        List<ZAAP_SHIFT_RPT> GetForCFVsFa(ZaapShiftRptGetForLack1ReportByParamInput input);
+
+        List<ZAAP_SHIFT_RPT> GetForLack1ByParam(InvGetReceivingByParamZaapShiftRptInput input);
     }
 }

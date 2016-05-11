@@ -10,8 +10,14 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     public class WasteGetByParamInput
     {
         public string WasteProductionDate { get; set; }
+
+        public DateTime? BeginingProductionDate { get; set; }
+        public DateTime? EndProductionDate { get; set; }
+
         public string Company { get; set; }
         public string Plant { get; set; }
+
+        public string FaCode { get; set; }
         public string ShortOrderColumn { get; set; }
         public string UserId { get; set; }
         public Enums.UserRole UserRole { get; set; }
