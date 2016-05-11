@@ -537,7 +537,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //title
             slDocument.SetCellValue(1, 1, "Master Brand Registration");
-            slDocument.MergeWorksheetCells(1, 1, 1, 25);
+            slDocument.MergeWorksheetCells(1, 1, 1, 26);
             //create style
             SLStyle valueStyle = slDocument.CreateStyle();
             valueStyle.SetHorizontalAlignment(HorizontalAlignmentValues.Center);
@@ -586,9 +586,11 @@ namespace Sampoerna.EMS.Website.Controllers
             slDocument.SetCellValue(iRow, 20, "End Date");
             slDocument.SetCellValue(iRow, 21, "Printing Price");
             slDocument.SetCellValue(iRow, 22, "Convertion");
-            slDocument.SetCellValue(iRow, 23, "Cut Filler Code");
-            slDocument.SetCellValue(iRow, 24, "Deleted");
-            slDocument.SetCellValue(iRow, 25, "Created By - Date");
+            slDocument.SetCellValue(iRow, 23, "Active");
+            slDocument.SetCellValue(iRow, 24, "Cut Filler Code");
+            slDocument.SetCellValue(iRow, 25, "Deleted");
+            slDocument.SetCellValue(iRow, 26, "Created By - Date");
+            
          
         
         
@@ -602,7 +604,7 @@ namespace Sampoerna.EMS.Website.Controllers
             headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
             headerStyle.Fill.SetPattern(PatternValues.Solid, System.Drawing.Color.LightGray, System.Drawing.Color.LightGray);
 
-            slDocument.SetCellStyle(iRow, 1, iRow, 25, headerStyle);
+            slDocument.SetCellStyle(iRow, 1, iRow, 26, headerStyle);
 
             return slDocument;
 
@@ -651,9 +653,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 slDocument.SetCellValue(iRow, 20, ConvertHelper.ConvertDateToStringddMMMyyyy(data.EndDate));
                 slDocument.SetCellValue(iRow, 21, ConvertHelper.ConvertDecimalToStringMoneyFormat(data.PrintingPrice));
                 slDocument.SetCellValue(iRow, 22, ConvertHelper.ConvertDecimalToStringMoneyFormat(data.Conversion));
-                slDocument.SetCellValue(iRow, 23, data.CutFilterCode);
-                slDocument.SetCellValue(iRow, 24, data.IsDeleted );
-                slDocument.SetCellValue(iRow, 25, data.CREATED_BY + "-" + ConvertHelper.ConvertDateToStringddMMMyyyy(data.CREATED_DATE));
+                slDocument.SetCellValue(iRow, 23, data.IsActive ? "Yes" : "No");
+                slDocument.SetCellValue(iRow, 24, data.CutFilterCode);
+                slDocument.SetCellValue(iRow, 25, data.IsDeleted );
+                slDocument.SetCellValue(iRow, 26, data.CREATED_BY + "-" + ConvertHelper.ConvertDateToStringddMMMyyyy(data.CREATED_DATE));
                 iRow++;
             }
 
@@ -664,8 +667,8 @@ namespace Sampoerna.EMS.Website.Controllers
             valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
             valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
 
-            slDocument.AutoFitColumn(1, 25);
-            slDocument.SetCellStyle(3, 1, iRow - 1, 25, valueStyle);
+            slDocument.AutoFitColumn(1, 26);
+            slDocument.SetCellStyle(3, 1, iRow - 1, 26, valueStyle);
 
             return slDocument;
         }
