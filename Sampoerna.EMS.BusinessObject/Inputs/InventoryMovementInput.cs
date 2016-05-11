@@ -82,4 +82,20 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime EndDate { get; set; }
     }
 
+
+    public class GetLack1DetailTisInput
+    {
+        public DateTime DateFrom { get; set; }
+        public DateTime DateTo { get; set; }
+
+        public List<string> ListBatch { get; set; }
+    }
+
+    public class GetLack1DetailTisInputProduction
+    {
+        public DateTime DateFrom { get; set; }
+        public DateTime DateTo { get; set; }
+        public string PlantFrom { get; set; }
+        public string PlantTo { get; set; }
+    }
 }

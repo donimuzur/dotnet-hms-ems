@@ -323,7 +323,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Detail", new { id });
             }
 
-            if (!IsAllowEditLack1(lack2Data.CreatedBy, lack2Data.Status))
+            if (!IsAllowEditLack2(lack2Data.CreatedBy, lack2Data.Status, lack2Data.ApprovedBy))
             {
                 AddMessageInfo(
                     "Operation not allowed.",
@@ -495,7 +495,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private Lack2EditViewModel InitEditList(Lack2EditViewModel model)
         {
             model.CompanyCodesDDL = GlobalFunctions.GetCompanyList(_companyBll);
-            model.NPPBKCDDL = new SelectList(GetNppbkcDataByCompanyId(model.CompanyCode));
+            model.NPPBKCDDL = new SelectList(GetNppbkcDataByCompanyId(model.CompanyCode), "NPPBKC_ID", "NPPBKC_ID");
             model.ExcisableGoodsTypeDDL = new SelectList(GetExciseGoodsTypeData(model.NppbkcId), "EXC_GOOD_TYP", "EXT_TYP_DESC");
             model.SendingPlantDDL = new SelectList(GetSendingPlantDataByNppbkcId(model.CompanyCode, model.NppbkcId), "WERKS", "DROPDOWNTEXTFIELD");
             model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
@@ -531,7 +531,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return model;
         }
 
-        private bool IsAllowEditLack1(string userId, Enums.DocumentStatus status)
+        private bool IsAllowEditLack2(string userId, Enums.DocumentStatus status, string poaId)
         {
             //bool isAllow = CurrentUser.USER_ID == userId;
             //if (!(status == Enums.DocumentStatus.Draft || status == Enums.DocumentStatus.Rejected
@@ -543,7 +543,8 @@ namespace Sampoerna.EMS.Website.Controllers
             //return isAllow;
             var allowEditAsUser = _workflowBll.IsAllowEditLack1(userId, CurrentUser.USER_ID, status);
             var allowEditAsAdmin = _poabll.GetUserRole(CurrentUser.USER_ID) == Enums.UserRole.Administrator;
-            return allowEditAsAdmin || allowEditAsUser;
+            var allowPoaEdit = CurrentUser.USER_ID == poaId;
+            return allowEditAsAdmin || allowEditAsUser || allowPoaEdit;
         }
 
         private string GetPoaListByNppbkcId(string nppbkcId)

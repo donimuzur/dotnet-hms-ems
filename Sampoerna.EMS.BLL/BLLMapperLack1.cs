@@ -528,6 +528,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Ck5RegDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE.HasValue ? src.REGISTRATION_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
                 .ForMember(dest => dest.Ck5GrDate, opt => opt.MapFrom(src => src.GR_DATE.HasValue ? src.GR_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
                 .ForMember(dest => dest.Ck5Qty, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX.Value))
+                .ForMember(dest => dest.StoReceiverNumber, opt => opt.MapFrom(src => src.STO_RECEIVER_NUMBER))
                 ;
 
             #endregion

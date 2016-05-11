@@ -282,5 +282,27 @@ namespace Sampoerna.EMS.BLL.Services
 
             return data;
         }
+
+        public List<INVENTORY_MOVEMENT> GetBatchByPurchDoc(string purchDoc)
+        {
+            var receiving101 = EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving101);
+            List<INVENTORY_MOVEMENT> data = _repository.Get(x => x.PURCH_DOC == purchDoc && x.MVT == receiving101).ToList();
+
+            return data;
+        }
+
+        public List<INVENTORY_MOVEMENT> GetLack1DetailTis(GetLack1DetailTisInput input)
+        {
+
+            var listMvt = new List<string>();
+            listMvt.Add(EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving101));
+            listMvt.Add(EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving102));
+
+            var data = _repository.Get(x => input.ListBatch.Contains(x.BATCH)
+                    && x.POSTING_DATE >= input.DateFrom && x.POSTING_DATE < input.DateTo
+                    && !listMvt.Contains(x.MVT)).ToList();
+
+            return data;
+        }
     }
 }
