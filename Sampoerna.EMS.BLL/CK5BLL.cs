@@ -1825,6 +1825,33 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        private void BuildBodyMailCk5WaitingPoaApproval(CK5Dto ck5Dto, string webRootUrl)
+        {
+            var bodyMail = new StringBuilder();
+
+            bodyMail.Append("<table><tr><td>Plant & NPPBKC Supplier </td><td>: " + ck5Dto.SOURCE_PLANT_ID + " - " +
+                            ck5Dto.SOURCE_PLANT_NAME + " - " + ck5Dto.SOURCE_PLANT_NPPBKC_ID + "</td></tr>");
+
+            bodyMail.Append("<tr><td>Total Qty Supplied </td><td>: " +
+                            ConvertHelper.ConvertDecimalToStringMoneyFormat(ck5Dto.GRAND_TOTAL_EX) + "</td></tr>");
+            bodyMail.Append("<tr><td>Plant & NPPBKC Receiver </td><td>: " + ck5Dto.DEST_PLANT_ID + " - " +
+                            ck5Dto.DEST_PLANT_NAME + " - " + ck5Dto.DEST_PLANT_NPPBKC_ID + "</td></tr>");
+         
+            bodyMail.Append("<tr><td>Creator</td><td> : " + ck5Dto.CREATED_BY + "</td></tr>");
+
+            bodyMail.Append("<tr><td>STO Sender Number</td><td> : " + ck5Dto.STO_SENDER_NUMBER + "</td></tr>");
+            bodyMail.Append("<tr><td>STOB Sender Number</td><td> : " + ck5Dto.STOB_NUMBER + "</td></tr>");
+            bodyMail.Append("<tr><td>STO Receiver Number</td><td> : " + ck5Dto.STO_RECEIVER_NUMBER + "</td></tr>");
+           
+            bodyMail.Append("<tr><td>CK-5 Type</td><td> : " + EnumHelper.GetDescription(ck5Dto.CK5_TYPE) + "</td></tr>");
+           
+            bodyMail.Append("<tr colspan='2'><td><i>To VIEW, Please click this <a href='" + webRootUrl + "/CK5/Details/" + ck5Dto.CK5_ID + "'>link</a> to view detailed information</i></td></tr>");
+        
+            bodyMail.Append("</table>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<br />Regards,<br />");
+
+        }
         private MailNotification ProsesMailNotificationBody(CK5Dto ck5Dto, CK5WorkflowDocumentInput input)
         {
             var bodyMail = new StringBuilder();
