@@ -1844,8 +1844,10 @@ namespace Sampoerna.EMS.BLL
             bodyMail.Append("<tr><td>STO Receiver Number</td><td> : " + ck5Dto.STO_RECEIVER_NUMBER + "</td></tr>");
            
             bodyMail.Append("<tr><td>CK-5 Type</td><td> : " + EnumHelper.GetDescription(ck5Dto.CK5_TYPE) + "</td></tr>");
-           
-            bodyMail.Append("<tr colspan='2'><td><i>To VIEW, Please click this <a href='" + webRootUrl + "/CK5/Details/" + ck5Dto.CK5_ID + "'>link</a> to view detailed information</i></td></tr>");
+
+            bodyMail.Append("<tr colspan='2'><td><i>To VIEW, Please click this <a href='" + webRootUrl + "/CK5/DetailsView/" + ck5Dto.CK5_ID + "'><u>link</u></a> to view detailed information</i></td></tr>");
+
+            bodyMail.Append("<tr colspan='2'><td><i>To APPROVE, Please click this <a href='" + webRootUrl + "/CK5/Details/" + ck5Dto.CK5_ID + "'>[link]</a> </i></td></tr>");
         
             bodyMail.Append("</table>");
             bodyMail.AppendLine();
