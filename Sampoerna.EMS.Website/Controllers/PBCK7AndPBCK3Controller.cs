@@ -2967,8 +2967,8 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetListFaCode(string plantId)
         {
 
-            //var brandOutput = _pbck7Pbck3Bll.GetListFaCodeByPlant(plantId);
-            var brandOutput = _pbck7Pbck3Bll.GetListFaCodeHaveBlockStockByPlant(plantId);
+            var brandOutput = _pbck7Pbck3Bll.GetListFaCodeByPlant(plantId);
+            //var brandOutput = _pbck7Pbck3Bll.GetListFaCodeHaveBlockStockByPlant(plantId);
            
             return Json(brandOutput);
         }
