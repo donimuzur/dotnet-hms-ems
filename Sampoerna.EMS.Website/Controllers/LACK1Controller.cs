@@ -1366,6 +1366,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private void Lack1WorkflowGovApprove(Lack1EditViewModel lack1Data, Enums.ActionType actionType, string comment)
         {
+            if (lack1Data.Status == Enums.DocumentStatus.Completed) actionType = Enums.ActionType.Completed;
+
             var input = new Lack1WorkflowDocumentInput()
             {
                 DocumentId = lack1Data.Lack1Id,
