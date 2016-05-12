@@ -418,7 +418,7 @@
           <Property Name="MVT" Type="nvarchar" MaxLength="3" Nullable="false" />
           <Property Name="MATERIAL_ID" Type="nvarchar" MaxLength="18" Nullable="false" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="QTY" Type="decimal" Precision="18" Scale="3" />
+          <Property Name="QTY" Type="decimal" Precision="18" Scale="5" />
           <Property Name="SLOC" Type="nvarchar" MaxLength="4" />
           <Property Name="VENDOR" Type="nvarchar" MaxLength="10" />
           <Property Name="BUN" Type="nvarchar" MaxLength="5" />
@@ -1513,6 +1513,7 @@
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_DELETED" Type="bit" />
+          <Property Name="CK4CEDITABLE" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_SERIES">
           <Key>
@@ -6669,6 +6670,7 @@
           <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ZAIDM_EX_BRAND" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_PRODTYP" ToRole="ZAIDM_EX_BRAND" />
+          <Property Name="CK4CEDITABLE" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP">
           <End Type="EMSModel.ZAIDM_EX_PRODTYP" Role="ZAIDM_EX_PRODTYP" Multiplicity="1" />
@@ -7310,7 +7312,7 @@
           <Property Name="MVT" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="true" />
           <Property Name="MATERIAL_ID" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_ID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="QTY" Type="Decimal" Precision="18" Scale="3" />
+          <Property Name="QTY" Type="Decimal" Precision="18" Scale="5" />
           <Property Name="SLOC" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="VENDOR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="BUN" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
@@ -9571,6 +9573,7 @@
           <EntitySetMapping Name="ZAIDM_EX_PRODTYP">
             <EntityTypeMapping TypeName="EMSModel.ZAIDM_EX_PRODTYP">
               <MappingFragment StoreEntitySet="ZAIDM_EX_PRODTYP">
+                <ScalarProperty Name="CK4CEDITABLE" ColumnName="CK4CEDITABLE" />
                 <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
                 <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
                 <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
