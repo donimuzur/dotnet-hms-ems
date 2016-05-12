@@ -27,6 +27,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<bool> IS_DELETED { get; set; }
         public string CREATED_BY { get; set; }
         public string MODIFIED_BY { get; set; }
+        public bool CK4CEDITABLE { get; set; }
     
         public virtual ICollection<ZAIDM_EX_BRAND> ZAIDM_EX_BRAND { get; set; }
     }
