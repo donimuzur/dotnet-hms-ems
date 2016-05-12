@@ -474,6 +474,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.SourcePlantList = GlobalFunctions.GetPlantByNppbkcImport(true);
                 model.DestPlantList = GlobalFunctions.GetPlantAll();
             }
+            else if (model.Ck5Type == Enums.CK5Type.MarketReturn)
+            {
+                model.DestPlantList = GlobalFunctions.GetPlantByListUserPlant(CurrentUser.ListUserPlants);
+            }
             else
             {
                 model.SourcePlantList = GlobalFunctions.GetPlantByListUserPlant(CurrentUser.ListUserPlants);// GlobalFunctions.GetPlantAll();
