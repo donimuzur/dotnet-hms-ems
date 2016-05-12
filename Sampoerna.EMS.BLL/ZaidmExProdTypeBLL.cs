@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
 
@@ -37,6 +39,19 @@ namespace Sampoerna.EMS.BLL
         public ZAIDM_EX_PRODTYP GetByAlias(string aliasName)
         {
             return _repository.Get(p => p.PRODUCT_ALIAS == aliasName).OrderByDescending(x => x.CREATED_DATE).FirstOrDefault();
+        }
+
+        public void UpdateProductType(ProductTypeSaveInput input)
+        {
+            var dbData = _repository.GetByID(input.ProductType.PROD_CODE);
+            if (dbData != null)
+            {
+                dbData.MODIFIED_BY = input.UserId;
+                dbData.MODIFIED_DATE = DateTime.Now;
+
+                _uow.SaveChanges();
+            }
+
         }
     }
 }
