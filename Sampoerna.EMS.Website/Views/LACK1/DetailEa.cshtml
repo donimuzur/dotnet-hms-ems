@@ -1,10 +1,10 @@
 ﻿@using Sampoerna.EMS.Website.Helpers
-@model Sampoerna.EMS.Website.Models.LACK1.Lack1DetailTisViewModel
+@model Sampoerna.EMS.Website.Models.LACK1.Lack1DetailEaViewModel
 
 <div class="container-wrap title-page">
     <div class="row">
         <div class="col-sm-12">
-            <h3 id="lblTitle">LACK-1 Detail TIS</h3>
+            <h3 id="lblTitle">LACK-1 Detail EA</h3>
         </div>
     </div>
 </div>
@@ -15,7 +15,7 @@
             <div class="white-wrapper">
                 <div class="form-excise" role="form">
                     <div class="row">
-                        @using (Ajax.BeginForm("SearchDetailTis", "Lack1",
+                        @using (Ajax.BeginForm("SearchDetailEa", "Lack1",
                             new AjaxOptions
                             {
                                 HttpMethod = "POST",
@@ -35,7 +35,7 @@
                                             }
                                             else
                                             {
-                                               @Html.DropDownListFor(model => model.SearchView.PlantReceiverFrom, Model.SearchView.PlantReceiverFromList, "All", new { @class = "form-control selectreset" }) 
+                                                @Html.DropDownListFor(model => model.SearchView.PlantReceiverFrom, Model.SearchView.PlantReceiverFromList, "All", new { @class = "form-control selectreset" })
                                             }
                                         </div>
                                     </div>
@@ -96,7 +96,7 @@
                     </div>
                 </div>
             </div>
-            @using (Html.BeginForm("ExportDetailTis", "LACK1", FormMethod.Post, new { @id = "ExportXlsDetailTis" }))
+            @using (Html.BeginForm("ExportDetailEa", "LACK1", FormMethod.Post, new { @id = "ExportXlsDetailEa" }))
             {
                 @Html.HiddenFor(model => model.ExportSearchView.PlantReceiverFrom)
                 @Html.HiddenFor(model => model.ExportSearchView.PlantReceiverTo)
@@ -106,7 +106,7 @@
         </div>
     </div>
     <div id="contenttable" class="table-container">
-        @Html.Partial("_Lack1DetailTis")
+        @Html.Partial("_Lack1DetailEa")
     </div>
 </div>
 
@@ -119,13 +119,13 @@
 
         $('#MenuLack1OpenDocument').removeClass('open');
         $('#MenuLack1Report').addClass('open');
-        $('#MenuLack1DetailTis').addClass('active');
+        $('#MenuLack1DetailEa').addClass('active');
 
         $(document).ready(function () {
             setupDataTables();
 
-            $('#btn-export-to-excel').click(function() {
-                exportDetailTis();
+            $('#btn-export-to-excel').click(function () {
+                exportDetailEa();
             });
 
             $('#btn-filter').click(function () {
@@ -153,12 +153,12 @@
 
         }
 
-        function exportDetailTis() {
+        function exportDetailEa() {
             $('#ExportSearchView_PlantReceiverFrom').val($('#SearchView_PlantReceiverFrom').find("option:selected").val());
             $('#ExportSearchView_PlantReceiverTo').val($('#SearchView_PlantReceiverTo').find("option:selected").val());
             $('#ExportSearchView_DateFrom').val($('#SearchView_DateFrom').val());
             $('#ExportSearchView_DateTo').val($('#SearchView_DateTo').val());
-            $('#ExportXlsDetailTis').submit();
+            $('#ExportXlsDetailEa').submit();
         }
 
         function ReloadDataTables() {

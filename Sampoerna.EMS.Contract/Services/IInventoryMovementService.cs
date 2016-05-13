@@ -35,5 +35,7 @@ namespace Sampoerna.EMS.Contract.Services
         List<INVENTORY_MOVEMENT> GetBatchByPurchDoc(string purchDoc);
 
         List<INVENTORY_MOVEMENT> GetLack1DetailTis(GetLack1DetailTisInput input);
+
+        List<INVENTORY_MOVEMENT> GetLack1DetailEa(GetLack1DetailEaInput input);
     }
 }
