@@ -345,6 +345,16 @@ namespace Sampoerna.EMS.Website
                 ;
 
             #endregion
+
+
+            #region ----------------- Detail Ea ---------
+
+            Mapper.CreateMap<Lack1SearchDetailEaViewModel, Lack1GetDetailEaByParamInput>()
+                .IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack1DetailEaDto, Lack1DetailEaItemModel>().IgnoreAllNonExisting();
+
+            #endregion
         }
     }
 }

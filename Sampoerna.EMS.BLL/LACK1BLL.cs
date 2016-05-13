@@ -4850,15 +4850,22 @@ namespace Sampoerna.EMS.BLL
 
                 var mvtList = _inventoryMovementService.GetLack1DetailTis(inputMvt);
 
+                var umren = Convert.ToDecimal(1);
+                var materialUom = _materialUomService.GetByMaterialListAndPlantId(brandList, item.PlantIdReceiver);
+                if (materialUom.Count > 0)
+                {
+                    umren = materialUom.Where(x => x.MEINH == "G").FirstOrDefault().UMREN.Value;
+                }
+
                 item.CfCode = String.Join(Environment.NewLine, brandList.ToArray());
                 item.CfDesc = String.Join(Environment.NewLine, brandDescList.Select(x => x.MATERIAL_DESC).ToArray());
                 item.BeginingBalance = String.Join(Environment.NewLine, balanceList.BeginningBalance.ToArray());
                 item.BeginingBalanceUom = String.Join(Environment.NewLine, balanceList.BeginningBalanceUom.ToArray());
                 item.MvtType = String.Join(Environment.NewLine, mvtList.Select(x => x.MVT).ToArray());
-                item.Usage = String.Join(Environment.NewLine, mvtList.Select(x => (x.QTY.Value * 1000).ToString("N2")).ToArray());
+                item.Usage = String.Join(Environment.NewLine, mvtList.Select(x => (x.QTY.Value / umren).ToString("N2")).ToArray());
                 item.UsageUom = String.Join(Environment.NewLine, mvtList.Select(x => x.BUN == "KG" ? "Gram" : string.Empty).ToArray());
                 item.UsagePostingDate = String.Join(Environment.NewLine, mvtList.Select(x => x.POSTING_DATE.Value.ToString("dd-MMM-yy")).ToArray());
-                item.EndingBalance = balanceList.TotalBeginningBalance + item.Ck5Qty - mvtList.Sum(x => (x.QTY.Value * 1000));
+                item.EndingBalance = balanceList.TotalBeginningBalance + item.Ck5Qty - mvtList.Sum(x => (x.QTY.Value / umren));
                 item.EndingBalanceUom = "Gram";
             }
 
@@ -5153,6 +5160,55 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+
+        #endregion
+
+
+        #region --------------------- Detail EA ----------------
+
+        public List<Lack1DetailEaDto> GetDetailEaByParam(Lack1GetDetailEaByParamInput input)
+        {
+            var ck5Input = Mapper.Map<Ck5GetForLack1DetailEa>(input);
+
+            var ck5Data = _ck5Service.GetCk5ForLack1DetailEa(ck5Input);
+
+            var rc = Mapper.Map<List<Lack1DetailEaDto>>(ck5Data);
+
+            rc = rc.OrderBy(x => x.PlantIdReceiver).ToList();
+
+            foreach (var item in rc)
+            {
+                var brandList = item.CK5_MATERIAL.Select(x => x.BRAND).Distinct().ToList();
+                var balanceList = _materialBalanceService.GetByMaterialListAndPlantEa(item.PlantIdReceiver, brandList, input.DateFrom.Value.Month, input.DateFrom.Value.Year);
+                var batchList = _inventoryMovementService.GetBatchByPurchDoc(item.StoReceiverNumber).Select(x => x.BATCH).ToList();
+
+                var inputMvt = new GetLack1DetailEaInput();
+                inputMvt.ListBatch = batchList;
+                inputMvt.DateFrom = input.DateFrom.Value;
+                inputMvt.DateTo = input.DateTo.Value;
+
+                var mvtList = _inventoryMovementService.GetLack1DetailEa(inputMvt);
+
+                var umren = Convert.ToDecimal(1);
+                var materialUom = _materialUomService.GetByMaterialListAndPlantId(brandList, item.PlantIdReceiver);
+                if (materialUom.Count > 0)
+                {
+                    umren = materialUom.Where(x => x.MEINH == "L").FirstOrDefault().UMREN.Value;
+                }
+
+                item.EaCode = "10.2880";
+                item.EaDesc = "Etil Alkohol";
+                item.BeginingBalance = String.Join(Environment.NewLine, balanceList.BeginningBalance.ToArray());
+                item.BeginingBalanceUom = String.Join(Environment.NewLine, balanceList.BeginningBalanceUom.ToArray());
+                item.Usage = String.Join(Environment.NewLine, mvtList.Select(x => (x.QTY.Value / umren).ToString("N2")).ToArray());
+                item.UsageUom = mvtList.Count > 0 ? "Liter" : string.Empty;
+                item.UsagePostingDate = String.Join(Environment.NewLine, mvtList.Select(x => x.POSTING_DATE.Value.ToString("dd-MMM-yy")).ToArray());
+                item.EndingBalance = balanceList.TotalBeginningBalance + item.Ck5Qty - mvtList.Sum(x => (x.QTY.Value / umren));
+                item.EndingBalanceUom = "Liter";
+            }
+
+            return rc;
+        }
 
         #endregion
 
