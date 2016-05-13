@@ -63,6 +63,8 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string SupplierPlantId { get; set; }
         public string SupplierPlantName { get; set; }
         public string Period { get; set; }
+        public string Pbck1Number { get; set; }
+        public string Pbck1Date { get; set; }
         public string DocumentStatus { get; set; }
         public string CreatedDate { get; set; }
         public string CreatedBy { get; set; }
@@ -90,6 +92,8 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public bool BSupplierPlantId { get; set; }
         public bool BSupplierPlantName { get; set; }
         public bool BPeriod { get; set; }
+        public bool BPbck1Number { get; set; }
+        public bool BPbck1Date { get; set; }
         public bool BDocumentStatus { get; set; }
         public bool BCreatedDate { get; set; }
         public bool BApprovedDate { get; set; }
@@ -115,6 +119,8 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string SupplierPlantId { get; set; }
         public string SupplierPlantName { get; set; }
         public string Period { get; set; }
+        public string Pbck1Number { get; set; }
+        public string Pbck1Date { get; set; }
         public string DocumentStatus { get; set; }
         public string CreatedDate { get; set; }
         public string ApprovedDate { get; set; }

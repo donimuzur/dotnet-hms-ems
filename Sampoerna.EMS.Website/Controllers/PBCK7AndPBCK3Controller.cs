@@ -1599,6 +1599,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     iColumn = iColumn + 1;
                 }
 
+                if (model.ExportModel.IsSelectCk2Date)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.Ck2Date);
+                    iColumn = iColumn + 1;
+                }
+
                 if (model.ExportModel.IsSelectCk2Value)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Ck2Value);
@@ -1764,6 +1770,12 @@ namespace Sampoerna.EMS.Website.Controllers
             if (modelExport.IsSelectCk2No)
             {
                 slDocument.SetCellValue(iRow, iColumn, "CK-2 No.");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.IsSelectCk2Date)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "CK-2 Date");
                 iColumn = iColumn + 1;
             }
 
@@ -2955,8 +2967,8 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetListFaCode(string plantId)
         {
 
-            //var brandOutput = _pbck7Pbck3Bll.GetListFaCodeByPlant(plantId);
-            var brandOutput = _pbck7Pbck3Bll.GetListFaCodeHaveBlockStockByPlant(plantId);
+            var brandOutput = _pbck7Pbck3Bll.GetListFaCodeByPlant(plantId);
+            //var brandOutput = _pbck7Pbck3Bll.GetListFaCodeHaveBlockStockByPlant(plantId);
            
             return Json(brandOutput);
         }

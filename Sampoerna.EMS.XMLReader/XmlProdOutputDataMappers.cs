@@ -205,13 +205,13 @@ namespace Sampoerna.EMS.XMLReader
                         switch (production.UOM)
                         {
                             case "Btg":
-                                production.QTY_PACKED = production.QTY_PACKED * 1000;
+                                production.QTY_PACKED = production.QTY_PACKED;
 
 
 
                                 break;
                             case "G":
-                                production.QTY_PACKED = production.QTY_PACKED * 1000;
+                                production.QTY_PACKED = production.QTY_PACKED;
 
 
                                 break;
@@ -259,13 +259,13 @@ namespace Sampoerna.EMS.XMLReader
                         switch (production.UOM)
                         {
                             case "Btg":
-                                production.QTY_PACKED = production.QTY_PACKED * 1000;
+                                production.QTY_PACKED = production.QTY_PACKED;
 
 
 
                                 break;
                             case "G":
-                                production.QTY_PACKED = production.QTY_PACKED * 1000;
+                                production.QTY_PACKED = production.QTY_PACKED;
 
 
                                 break;

@@ -34,6 +34,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = Mapper.Map<SchedulerSettingModel>(data);
             model.MainMenu = Enums.MenuList.Settings;
             model.CurrentMenu = PageInfo;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
 
             return View(model);
         }
@@ -45,6 +46,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
+                if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+                    return RedirectToAction("Index");
+
                 _schedulerSettingBll.Save(data);
                 AddMessageInfo("Success updating scheduler setting.", Enums.MessageInfoType.Success);
             }

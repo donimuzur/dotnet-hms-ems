@@ -158,7 +158,9 @@ namespace Sampoerna.EMS.Website.Controllers
             if (CurrentUser == null )
             {
 
-                RedirectToAction("VerifyLogin", "Login", new { filterContext = filterContext});
+                //RedirectToAction("VerifyLogin", "Login", new { filterContext = filterContext});
+                filterContext.Result = new RedirectToRouteResult(
+                             new RouteValueDictionary { { "controller", "Error" }, { "action", "NotRegistered" } });
                 return;
             }
             var isUsePageAuth = ConfigurationManager.AppSettings["UsePageAuth"] != null && Convert.ToBoolean(ConfigurationManager.AppSettings["UsePageAuth"]);

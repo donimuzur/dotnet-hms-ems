@@ -88,6 +88,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string Pbck3No { get; set; }
         public string Pbck3Status { get; set; }
         public string Ck2Number { get; set; }
+        public string Ck2Date { get; set; }
         public string Ck2Value { get; set; }
         public string CompletedDate { get; set; }
 
@@ -121,6 +122,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public bool IsSelectPbck3No { get; set; }
         public bool IsSelectPbck3Status { get; set; }
         public bool IsSelectCk2Number { get; set; }
+        public bool IsSelectCk2Date { get; set; }
         public bool IsSelectCk2Value { get; set; }
         public bool IsSelectCompletedDate { get; set; }
     }

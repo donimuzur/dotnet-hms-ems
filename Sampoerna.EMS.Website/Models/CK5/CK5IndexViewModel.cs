@@ -72,5 +72,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public string SubmissionDate { get; set; }
         public string DestinationPlantId { get; set; }
         public string DestinationPlantDesc { get; set; }
+        public string GrDate { get; set; }
+        public string RegDate { get; set; }
     }
 }
