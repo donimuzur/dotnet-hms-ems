@@ -89,15 +89,22 @@
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title"><span id="lblTitleInputManual">Edit Remarks</span></h4>
+                <h4 class="modal-title"><span id="lblTitleInputManual">Edit</span></h4>
             </div>
             <div class="modal-body form-excise">
                 <p></p>
                 <input id="uploadItemRow" type="hidden" value="">
+                <input id="uploadValidate" type="hidden" value="">
                 <div class="row">
                     <div class="col-md-12">
                         <label>Remarks</label>
                         <textarea class="form-control" id="uploadRemarks" cols="20" rows="5" maxlength="100"></textarea>
+                    </div>
+                </div>
+                <div class="row" id="rowUnpack">
+                    <div class="col-md-12">
+                        <label>Unpack Qty</label>
+                        <input type="text" class="form-control decimal" id="uploadWip"  maxlength="50" />
                     </div>
                 </div>
             </div>
@@ -133,6 +140,7 @@
 {
     <script src="~/Scripts/thousand-separator.js"></script>
     <script src="~/Scripts/ck4cscript.js"></script>
+
     @if (Model.Details.Status == Enums.DocumentStatus.WaitingGovApproval && Model.AllowGovApproveAndReject)
     {
         <script src="~/Scripts/ck4c/docupload.js"></script>

@@ -20,7 +20,7 @@
                             <th>Product Code</th>
                             <th>Product Type</th>
                             <th>Product Alias</th>
-                            <th>Deleted</th>
+                            <th>CK4C Editable</th>
                         </tr>
                     </thead>
                     <thead class="filters">
@@ -47,7 +47,7 @@
                                 <td>@Html.DisplayFor(model => item.ProdCode)</td>
                                 <td>@Html.DisplayFor(model => item.ProductType)</td>
                                 <td>@Html.DisplayFor(model => item.ProductAlias)</td>
-                                <td>@Html.DisplayFor(model => item.IsDeleted)</td>
+                                <td>@Html.DisplayFor(model => item.Ck4CEditable)</td>
 
                             </tr>
 
@@ -65,7 +65,7 @@
     <script type="text/javascript" language="javascript">
 
         $(document).ready(function () {
-            $('#MenuWasteRole').addClass('active');
+            $('#MenuProductType').addClass('active');
 
             setupDataTables();
         });

@@ -95,5 +95,26 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Edit", model);
         }
 
+        public ActionResult Detail(string id)
+        {
+            var model = new ProductTypeFormViewModel();
+
+            try
+            {
+                model = Mapper.Map<ProductTypeFormViewModel>(_exProdTypeBll.GetById(id));
+                model.MainMenu = _mainMenu;
+                model.CurrentMenu = PageInfo;
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model.MainMenu = _mainMenu;
+                model.CurrentMenu = PageInfo;
+            }
+
+            return View("Detail", model);
+        }
+
+
 	}
 }

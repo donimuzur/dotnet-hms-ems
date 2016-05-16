@@ -12,5 +12,7 @@ namespace Sampoerna.EMS.Website.Models.ProductType
         public string ProductAlias { get; set; }
         public string ModifiedBy { get; set; }
         public string IsDeleted { get; set; }
+        public bool IsCk4CEditable { get; set; }
+        public string Ck4CEditable { get; set; }
     }
 }

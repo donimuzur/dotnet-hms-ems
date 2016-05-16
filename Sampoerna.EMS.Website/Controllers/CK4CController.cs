@@ -454,6 +454,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 item.BrandDescription = brand.BRAND_CE;
                 item.PlantName = item.Werks + "-" + plant.NAME1;
                 item.ProdType = prodType.PRODUCT_TYPE;
+
+                item.IsEditable = prodType.CK4CEDITABLE;
             }
 
             return listData;

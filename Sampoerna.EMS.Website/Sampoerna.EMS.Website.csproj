@@ -1318,6 +1318,7 @@
     <Content Include="Views\Material\_MaterialList.cshtml" />
     <Content Include="Views\ProductType\Index.cshtml" />
     <Content Include="Views\ProductType\Edit.cshtml" />
+    <Content Include="Views\ProductType\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

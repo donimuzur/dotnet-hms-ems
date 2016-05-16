@@ -1115,7 +1115,16 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ProductAlias, opt => opt.MapFrom(src => src.PRODUCT_ALIAS))
                 .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.MODIFIED_BY))
                .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IS_DELETED.HasValue && src.IS_DELETED.Value ? "Yes" : "No"))
+               .ForMember(dest => dest.Ck4CEditable, opt => opt.MapFrom(src => src.CK4CEDITABLE ? "Yes" : "No"))
+               .ForMember(dest => dest.IsCk4CEditable, opt => opt.MapFrom(src => src.CK4CEDITABLE))
                 ;
+
+            Mapper.CreateMap<ProductTypeFormViewModel, ZAIDM_EX_PRODTYP>().IgnoreAllNonExisting()
+              .ForMember(dest => dest.PROD_CODE, opt => opt.MapFrom(src => src.ProdCode))
+              .ForMember(dest => dest.PRODUCT_TYPE, opt => opt.MapFrom(src => src.ProductType))
+              .ForMember(dest => dest.PRODUCT_ALIAS, opt => opt.MapFrom(src => src.ProductAlias))
+              .ForMember(dest => dest.CK4CEDITABLE, opt => opt.MapFrom(src => src.IsCk4CEditable))
+              ;
 
             #endregion
 
