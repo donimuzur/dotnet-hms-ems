@@ -80,7 +80,8 @@
                                                     <div class="row">
                                                         <div class="col-sm-12">
                                                             <i class="fa fa-file"></i>
-                                                            <a onclick="openAttachment('@Url.Content(file.FILE_PATH)')">@file.FILE_NAME</a>
+                                                            @*<a onclick="openAttachment('@Url.Content(file.FILE_PATH)')">@file.FILE_NAME</a>*@
+                                                            <a href="@Url.Content(file.FILE_PATH)">@file.FILE_NAME</a>
                                                         </div>
 
                                                     </div>
@@ -415,7 +416,8 @@
 
                                                                 <div class="row">
                                                                     <div class="col-sm-10">
-                                                                        <a onclick="openAttachment('@Url.Content(Model.Back3Documents[i].FILE_PATH)')">@Model.Back3Documents[i].FILE_NAME</a>
+                                                                        @*<a onclick="openAttachment('@Url.Content(Model.Back3Documents[i].FILE_PATH)')">@Model.Back3Documents[i].FILE_NAME</a>*@
+                                                                        <a href="@Url.Content(Model.Back3Documents[i].FILE_PATH)">@Model.Back3Documents[i].FILE_NAME</a>
 
                                                                     </div>
                                                                     <div class="col-sm-2">
@@ -457,7 +459,8 @@
 
                                                                 <div class="row">
                                                                     <div class="col-sm-10">
-                                                                        <a onclick="openAttachment ('@Url.Content(Model.Ck2Documents[i].FILE_PATH)')">@Model.Ck2Documents[i].FILE_NAME</a>
+                                                                        @*<a onclick="openAttachment ('@Url.Content(Model.Ck2Documents[i].FILE_PATH)')">@Model.Ck2Documents[i].FILE_NAME</a>*@
+                                                                        <a href="@Url.Content(Model.Ck2Documents[i].FILE_PATH)">@Model.Ck2Documents[i].FILE_NAME</a>
 
                                                                     </div>
                                                                     <div class="col-sm-2">
