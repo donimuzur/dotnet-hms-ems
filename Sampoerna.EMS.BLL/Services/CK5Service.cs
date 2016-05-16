@@ -197,7 +197,8 @@ namespace Sampoerna.EMS.BLL.Services
                      (c.GR_DATE.HasValue
                      && c.GR_DATE.Value.Month == input.PeriodMonth
                      && c.GR_DATE.Value.Year == input.PeriodYear)
-                     && (c.STATUS_ID == Enums.DocumentStatus.Completed || c.STATUS_ID == Enums.DocumentStatus.GRCompleted)
+                     && (c.STATUS_ID == Enums.DocumentStatus.Completed || c.STATUS_ID == Enums.DocumentStatus.GRCompleted || 
+                     c.STATUS_ID == Enums.DocumentStatus.WasteDisposal || c.STATUS_ID == Enums.DocumentStatus.WasteApproval)
                 ;
 
             if (input.Lack1Level == Enums.Lack1Level.Plant)
