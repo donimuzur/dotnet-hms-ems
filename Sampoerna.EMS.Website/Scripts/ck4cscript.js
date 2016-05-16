@@ -248,6 +248,8 @@ function getProductionData(urlFunction) {
                             '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ProdQtyUom" name="Details.Ck4cItemData[' + i + '].ProdQtyUom" value=' + data[i].Uom + '></input><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ProdCode" name="Details.Ck4cItemData[' + i + '].ProdCode" value=' + data[i].ProdCode + '></input>' + data[i].Uom + '</td>' +
                             '<td></td>' +
                             '<td style="display: none"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_Remarks" name="Details.Ck4cItemData[' + i + '].Remarks" value="" class=' + classRemarks + '></input></td>' +
+                            '<td style="display: none">' + data[i].IsEditable + '</td>' +
+                            '<td style="display: none">' + ThausandSeperator(data[i].QtyUnpacked, 2) + '</td>' +
                             '</tr>';
                         $('#tb-body-ck4c').append(tableProdItem);
                     }
@@ -267,23 +269,61 @@ function EditRow(o) {
     $('#uploadItemRow').val(nRow.find("td").eq(1).html());
 
     $('#uploadRemarks').val(nRow.find("td").eq(15).text());
-
+    
+    $('#uploadWip').val(nRow.find("td").eq(18).text());
+    $('#uploadValidate').val('1');//need validate
+    
     $('#Ck4cUploadModal').modal('show');
+    
+    $('#uploadWip').removeClass('input-validation-error');
+    $('#uploadWip').addClass('valid');
+    
+    if (nRow.find("td").eq(17).text() == 'False'
+        || nRow.find("td").eq(17).text() == 'false')
+    {
+        $("#rowUnpack").css("visibility", "hidden");
+        $('#uploadValidate').val('0');
+    }
+    
+    
 }
 
 function UpdateRow() {
     var row = $('#uploadItemRow').val();
+    var validated = true;
+    
+   
 
-    $('#tb-body-ck4c tr').each(function () {
-        if ($(this).find('td').eq(1).text() == row) {
-            var classRemarks = "Remarks" + row;
-
-            $(this).find('td').eq(15).text($('#uploadRemarks').val());
-            $("." + classRemarks).val($('#uploadRemarks').val());
+    if ($('#uploadValidate').val() == '1') {
+        if ($('#uploadWip').val() == '') {
+           
+            $('#uploadWip').removeClass('valid');
+            $('#uploadWip').addClass('input-validation-error');
+            validated = false;
         }
-    });
+    }
 
-    $('#Ck4cUploadModal').modal('hide');
+    if (validated) {
+        $('#tb-body-ck4c tr').each(function() {
+            if ($(this).find('td').eq(1).text() == row) {
+                var classRemarks = "Remarks" + row;
+                var classUnpack = "Unpack" + row;
+
+                $(this).find('td').eq(15).text($('#uploadRemarks').val());
+                $("." + classRemarks).val($('#uploadRemarks').val());
+
+                $(this).find('td').eq(12).text($('#uploadWip').val());
+                $(this).find('td').eq(18).text($('#uploadWip').val());
+
+                var unpackValue = $('#uploadWip').val().replace(/\,/g, '');
+                $("." + classUnpack).val(unpackValue);
+
+            }
+        });
+
+
+        $('#Ck4cUploadModal').modal('hide');
+    }
 }
 
 function ajaxLoadPoa(formData, url) {

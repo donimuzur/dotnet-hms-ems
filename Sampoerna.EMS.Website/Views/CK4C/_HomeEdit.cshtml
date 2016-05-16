@@ -173,6 +173,7 @@
                                         var item = Model.Details.Ck4cItemData[i];
                                         var rowCount = (i + 1);
                                         var classRemarks = "Remarks" + rowCount;
+                                        var classUnpack = "Unpack" + rowCount;
                                         
                                         <tr>
                                             <td class="action">
@@ -194,10 +195,13 @@
                                             <td><input name="Details.Ck4cItemData[@i].ProdQtyUom" type="hidden" value="@item.ProdQtyUom" />@item.ProdQtyUom</td>
                                             <td>@item.Remarks</td>
                                             <td style="display: none"><input type="hidden" id="Details_Ck4cItemData[@i]_Remarks" name="Details.Ck4cItemData[@i].Remarks" value="@item.Remarks" class="@classRemarks" /></td>
+                                            <td style="display:none">@item.IsEditable</td>
+                                            <td style="display:none">@string.Format("{0:N2}", item.UnpackedQty)</td>
                                             <td style="display:none"><input name="Details.Ck4cItemData[@i].Ck4CItemId" type="hidden" value="@item.Ck4CItemId" /></td>
                                             <td style="display:none"><input name="Details.Ck4cItemData[@i].Ck4CId" type="hidden" value="@item.Ck4CId" /></td>
                                             <td style="display:none"><input name="Details.Ck4cItemData[@i].PackedQty" type="hidden" value="@item.PackedQty" /></td>
-                                            <td style="display:none"><input name="Details.Ck4cItemData[@i].UnpackedQty" type="hidden" value="@item.UnpackedQty" /></td>
+                                            <td style="display:none"><input name="Details.Ck4cItemData[@i].UnpackedQty" type="hidden" value="@item.UnpackedQty" class="@classUnpack" /></td>
+                                            
                                         </tr>
                                     }
                                 }

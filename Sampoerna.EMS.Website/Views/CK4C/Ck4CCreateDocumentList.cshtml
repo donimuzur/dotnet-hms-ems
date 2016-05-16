@@ -49,10 +49,17 @@
             <div class="modal-body form-excise">
                 <p></p>
                 <input id="uploadItemRow" type="hidden" value="">
+                <input id="uploadValidate" type="hidden" value="">
                 <div class="row">
                     <div class="col-md-12">
                         <label>Remarks</label>
                         <textarea class="form-control" id="uploadRemarks" cols="20" rows="5" maxlength="100"></textarea>
+                    </div>
+                </div>
+                <div class="row" id="rowUnpack">
+                    <div class="col-md-12">
+                        <label>Unpack Qty</label>
+                        <input type="text" class="form-control decimal" id="uploadWip" maxlength="50" />
                     </div>
                 </div>
             </div>
