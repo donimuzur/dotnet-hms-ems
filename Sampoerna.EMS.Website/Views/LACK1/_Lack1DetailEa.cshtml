@@ -1,0 +1,75 @@
+﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1DetailEaViewModel
+
+<table id="lack1Table" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> No </th>
+            <th>Plant ID Receiver</th>
+            <th>Plant Desc Receiver</th>
+            <th>Plant Supplier ID</th>
+            <th>Plant Supplier Description</th>
+            <th>EA Code</th>
+            <th>EA Desc</th>
+            <th>Beginning Balance</th>
+            <th>Beginning Balance UoM</th>
+            <th>CK-5 EMS No</th>
+            <th>CK-5 Reg No</th>
+            <th>CK-5 Reg Date</th>
+            <th>CK-5 Qty</th>
+            <th>Usage</th>
+            <th>Usage UOM</th>
+            <th>Usage Posting Date</th>
+            <th>Level</th>
+            <th>Flavor Code</th>
+            <th>Flavor Desc</th>
+            <th>CF Produced Code</th>
+            <th>CF Prod Desc</th>
+            <th>CF Prod Qty</th>
+            <th>CF Prod UOM</th>
+            <th>Production Posting Date</th>
+            <th>Production Date</th>
+            <th>Ending Balance</th>
+            <th>Ending Balance UOM</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @{
+            int row = 1;
+
+            foreach (var item in Model.DetailList)
+            {
+                <tr>
+                    <td align="center">@row</td>
+                    <td>@Html.DisplayFor(model => item.PlantIdReceiver)</td>
+                    <td>@Html.DisplayFor(model => item.PlantDescReceiver)</td>
+                    <td>@Html.DisplayFor(model => item.PlantIdSupplier)</td>
+                    <td>@Html.DisplayFor(model => item.PlantDescSupplier)</td>
+                    <td>@Html.DisplayFor(model => item.EaCode)</td>
+                    <td>@Html.DisplayFor(model => item.EaDesc)</td>
+                    <td>@String.Format("{0:n}", @item.BeginingBalance)</td>
+                    <td>@Html.DisplayFor(model => item.BeginingBalanceUom)</td>
+                    <td>@Html.DisplayFor(model => item.Ck5EmsNo)</td>
+                    <td>@Html.DisplayFor(model => item.Ck5RegNo)</td>
+                    <td>@Html.DisplayFor(model => item.Ck5RegDate)</td>
+                    <td>@String.Format("{0:n}", @item.Ck5Qty)</td>
+                    <td>@String.Format("{0:n}", @item.Usage)</td>
+                    <td>@Html.DisplayFor(model => item.UsageUom)</td>
+                    <td>@Html.DisplayFor(model => item.UsagePostingDate)</td>
+                    <td>@Html.DisplayFor(model => item.Level)</td>
+                    <td>@Html.DisplayFor(model => item.FlavorCode)</td>
+                    <td>@Html.DisplayFor(model => item.FlavorDesc)</td>
+                    <td>@Html.DisplayFor(model => item.CfProdCode)</td>
+                    <td>@Html.DisplayFor(model => item.CfProdDesc)</td>
+                    <td>@String.Format("{0:n}", @item.CfProdQty)</td>
+                    <td>@Html.DisplayFor(model => item.CfProdUom)</td>
+                    <td>@Html.DisplayFor(model => item.ProdPostingDate)</td>
+                    <td>@Html.DisplayFor(model => item.ProdDate)</td>
+                    <td>@String.Format("{0:n}", @item.EndingBalance)</td>
+                    <td>@Html.DisplayFor(model => item.EndingBalanceUom)</td>
+                </tr>
+                row = row + 1;
+            }
+        }
+    </tbody>
+</table>

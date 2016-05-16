@@ -256,4 +256,12 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public bool IsSummary { get; set; }
     }
+
+    public class Lack1GetDetailEaByParamInput
+    {
+        public DateTime? DateFrom { get; set; }
+        public DateTime? DateTo { get; set; }
+        public string PlantReceiverFrom { get; set; }
+        public string PlantReceiverTo { get; set; }
+    }
 }
