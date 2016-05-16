@@ -40,6 +40,7 @@ using Sampoerna.EMS.Website.Models.XmlLog;
 using Sampoerna.EMS.Website.Models.PoaDelegation;
 using Sampoerna.EMS.Website.Models.SchedulerSetting;
 using Sampoerna.EMS.Website.Models.Reversal;
+using Sampoerna.EMS.Website.Models.ProductType;
 
 namespace Sampoerna.EMS.Website
 {
@@ -1082,8 +1083,7 @@ namespace Sampoerna.EMS.Website
                ;
 
             #endregion
-
-
+            
             #region Reversal
 
             Mapper.CreateMap<ReversalDto, DataReversal>().IgnoreAllNonExisting()
@@ -1106,6 +1106,28 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<SchedulerSetting, SchedulerSettingModel>().IgnoreAllNonExisting();
             Mapper.CreateMap<SchedulerSettingModel, SchedulerSetting>().IgnoreAllNonExisting();
             #endregion
+
+            #region Product Type
+
+            Mapper.CreateMap<ZAIDM_EX_PRODTYP, ProductTypeFormViewModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ProdCode, opt => opt.MapFrom(src => src.PROD_CODE))
+                .ForMember(dest => dest.ProductType, opt => opt.MapFrom(src => src.PRODUCT_TYPE))
+                .ForMember(dest => dest.ProductAlias, opt => opt.MapFrom(src => src.PRODUCT_ALIAS))
+                .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.MODIFIED_BY))
+               .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IS_DELETED.HasValue && src.IS_DELETED.Value ? "Yes" : "No"))
+               .ForMember(dest => dest.Ck4CEditable, opt => opt.MapFrom(src => src.CK4CEDITABLE ? "Yes" : "No"))
+               .ForMember(dest => dest.IsCk4CEditable, opt => opt.MapFrom(src => src.CK4CEDITABLE))
+                ;
+
+            Mapper.CreateMap<ProductTypeFormViewModel, ZAIDM_EX_PRODTYP>().IgnoreAllNonExisting()
+              .ForMember(dest => dest.PROD_CODE, opt => opt.MapFrom(src => src.ProdCode))
+              .ForMember(dest => dest.PRODUCT_TYPE, opt => opt.MapFrom(src => src.ProductType))
+              .ForMember(dest => dest.PRODUCT_ALIAS, opt => opt.MapFrom(src => src.ProductAlias))
+              .ForMember(dest => dest.CK4CEDITABLE, opt => opt.MapFrom(src => src.IsCk4CEditable))
+              ;
+
+            #endregion
+
         }
     }
 
