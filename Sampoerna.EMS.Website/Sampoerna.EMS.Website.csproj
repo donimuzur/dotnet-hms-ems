@@ -232,6 +232,7 @@
     <Compile Include="Controllers\PoaDelegationController.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Code\PdfResult.cs" />
+    <Compile Include="Controllers\ProductTypeController.cs" />
     <Compile Include="Controllers\ReversalController.cs" />
     <Compile Include="Controllers\SchedulerSettingController.cs" />
     <Compile Include="Controllers\WasteController.cs" />
@@ -418,6 +419,8 @@
     <Compile Include="Models\PrintHistory\PrintHistoryViewModel.cs" />
     <Compile Include="Models\PRODUCTION\ProductionUploadViewModel.cs" />
     <Compile Include="Models\PRODUCTION\ProductionViewModel.cs" />
+    <Compile Include="Models\ProductType\ProductTypeIndexViewModel.cs" />
+    <Compile Include="Models\ProductType\ProductTypeFormViewModel.cs" />
     <Compile Include="Models\Reversal\ReversalIndexViewModel.cs" />
     <Compile Include="Models\SchedulerSetting\SchedulerSettingModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
@@ -1320,6 +1323,9 @@
     <Content Include="Views\LACK1\CfVsFaDetails.cshtml" />
     <Content Include="Views\LACK1\DailyProd.cshtml" />
     <Content Include="Views\LACK1\_Lack1DailyProdDetails.cshtml" />
+    <Content Include="Views\ProductType\Index.cshtml" />
+    <Content Include="Views\ProductType\Edit.cshtml" />
+    <Content Include="Views\ProductType\Detail.cshtml" />
     <Content Include="Views\LACK1\PrimaryResults.cshtml" />
     <Content Include="Views\LACK1\_Lack1PrimaryResultsDetails.cshtml" />
     <Content Include="Views\LACK1\DetailTis.cshtml" />

@@ -238,7 +238,8 @@ namespace Sampoerna.EMS.BLL
                              Uom = p.UOM,
                              ProdCode = b.PROD_CODE,
                              ContentPerPack = Convert.ToInt32(b.BRAND_CONTENT),
-                             PackedInPack = Convert.ToInt32(p.QTY_PACKED) / Convert.ToInt32(b.BRAND_CONTENT)
+                             PackedInPack = Convert.ToInt32(p.QTY_PACKED) / Convert.ToInt32(b.BRAND_CONTENT),
+                             IsEditable = g.CK4CEDITABLE
                          };
 
             if (nppbkc != string.Empty && isNppbkc)
@@ -266,7 +267,8 @@ namespace Sampoerna.EMS.BLL
                              Uom = p.UOM,
                              ProdCode = b.PROD_CODE,
                              ContentPerPack = Convert.ToInt32(b.BRAND_CONTENT),
-                             PackedInPack = Convert.ToInt32(p.QTY_PACKED) / Convert.ToInt32(b.BRAND_CONTENT)
+                             PackedInPack = Convert.ToInt32(p.QTY_PACKED) / Convert.ToInt32(b.BRAND_CONTENT),
+                             IsEditable = g.CK4CEDITABLE
                          };
             }
 
