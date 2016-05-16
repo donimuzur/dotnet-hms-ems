@@ -1,4 +1,4 @@
-﻿function generateDataCsVsFAClick(reportlevel, url) {
+﻿function generateDataCsVsFAClick(reportlevel, url,issummary) {
     $('.loading').show();
     if (!generateInputValidation()) {
         $('.loading').hide();
@@ -11,7 +11,7 @@
     param.EndPlant = $("#EndPlant").val();
     param.BeginingPostingDate = $("#BeginingPostingDate").val();
     param.EndPostingDate = $("#EndPostingDate").val();
-    
+    param.IsSummary = issummary;
     $.ajax({
         url: url,
         type: "POST",
@@ -26,7 +26,7 @@
                 //console.log(response.IsWithTisToTisReport);
                 
                
-                var tableGenerated2 = generateTableDataCsVsFA(data);
+                var tableGenerated2 = generateTableDataCsVsFA(data, issummary);
                     /*console.log(tableGenerated2);*/
                 $('#generated-data-container').append(tableGenerated2);
                 

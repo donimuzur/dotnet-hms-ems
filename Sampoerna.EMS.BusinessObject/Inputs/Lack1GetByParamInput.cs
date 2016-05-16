@@ -253,6 +253,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime BeginingPostingDate { get; set; }
     
         public DateTime EndPostingDate { get; set; }
+
+        public bool IsSummary { get; set; }
     }
 
     public class Lack1GetDetailEaByParamInput
