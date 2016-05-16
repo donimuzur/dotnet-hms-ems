@@ -1332,7 +1332,7 @@
     <Content Include="Views\LACK1\_Lack1DetailTis.cshtml" />
     <Content Include="Views\LACK1\CfVsFaSummary.cshtml" />
     <Content Include="Views\LACK1\DetailEa.cshtml" />
-    <Content Include="Views\LACK1\Lack1DetailEa.cshtml" />
+    <Content Include="Views\LACK1\_Lack1DetailEa.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
