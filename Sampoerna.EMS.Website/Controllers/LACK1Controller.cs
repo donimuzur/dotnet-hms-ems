@@ -3803,13 +3803,30 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("CfVsFaDetails", model);
         }
 
+        public ActionResult CfVsFaSummary()
+        {
+            Lack1CFUsageVsFAViewModel model = new Lack1CFUsageVsFAViewModel()
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                BeginingPostingDate = DateTime.Today,
+                EndPostingDate = DateTime.Today,
+                PlantIdList = GlobalFunctions.GetPlantByListUserPlant(CurrentUser.ListUserPlants)
+            };
+            if (CurrentUser.UserRole == Enums.UserRole.Administrator)
+            {
+                model.PlantIdList = GlobalFunctions.GetPlantAll();
+            }
+            return View("CfVsFaSummary", model);
+        }
+
         
         public ActionResult ExportCfVsFaDetails(Lack1CFUsageVsFAByParamInput param)
         {
             try
             {
                 var data = _lack1Bll.GetCfUsagevsFaDetailData(param);
-                var html = generateTableDataCsVsFA(data);
+                var html = generateTableDataCsVsFA(data,param.IsSummary);
                 ExportCfVsFaDetailsToExcel(html);
             }
             catch (Exception ex)
@@ -3839,51 +3856,67 @@ namespace Sampoerna.EMS.Website.Controllers
             Response.End();
         }
 
-        private string generateHeaderTableDataCsVsFA() {
+        private string generateHeaderTableDataCsVsFA(bool isSummary) {
             var rc =  /*start header*/
-                "<thead>" +
-                    "<tr>" +
+                    "<thead>" +
+                        "<tr>" +
                         "<th >PlantId</th>" +
                         "<th >Plant Desc</th>" +
                         "<th >Process Order</th>" +
                         "<th >FA Code</th>" +
-                        "<th >Brand Desc</th>" +
-                        "<th >FA Prod Date</th>" +
-                        "<th >FA Posting Date</th>" +
-                        "<th >FA Produced Qty</th>" +
+                        "<th >Brand Desc</th>";
+            if (isSummary)
+            {
+                rc += "<th >FA Produced Qty</th>" +
                         "<th >FA Produced Uom</th>" +
-                        "<th >Mvt</th>" +
-                        "<th >Batch</th>" +
                         "<th >CF Code</th>" +
-                        "<th >CF Description</th>" +
-                        "<th >CF Posting Date</th>" +
-                        "<th >CF Issue Qty</th>" +
-                        "<th >CF Issue Uom</th>" +
-                        "<th >Reject Maker Qty</th>" +
-                        "<th >Reject Maker UoM</th>" +
-                        "<th >Reject Packer Qty</th>" +
-                        "<th >Reject Packer UoM</th>" +
-                        "<th >Dust Qty</th>" +
-                        "<th >Dust Uom</th>" +
-                        "<th >Floor Qty</th>" +
-                        "<th >Floor Uom</th>" +
-                        "<th >Stem Qty</th>" +
-                        "<th >Stem Uom</th>" +
-                        "<th >Waste Date</th>" +
+                        "<th >CF Description</th>";
 
-                    "</tr>" +
+            }
+            else
+            {
+                rc += "<th >FA Prod Date</th>" +
+                    "<th >FA Posting Date</th>" +
+                    "<th >FA Produced Qty</th>" +
+                    "<th >FA Produced Uom</th>" +
+                    "<th >Mvt</th>" +
+                    "<th >Batch</th>" +
+                    "<th >CF Code</th>" +
+                    "<th >CF Description</th>" +
+                    "<th >CF Posting Date</th>";
 
+            }
+
+            rc += "<th >CF Issue Qty</th>" +
+                    "<th >CF Issue Uom</th>" +
+
+                    "<th >Reject Maker Qty</th>" +
+                    "<th >Reject Maker UoM</th>" +
+                    "<th >Reject Packer Qty</th>" +
+                    "<th >Reject Packer UoM</th>" +
+                    "<th >Dust Qty</th>" +
+                    "<th >Dust Uom</th>" +
+                    "<th >Floor Qty</th>" +
+                    "<th >Floor Uom</th>" +
+                    "<th >Stem Qty</th>" +
+                    "<th >Stem Uom</th>";
+            if (!isSummary) {
+                rc += "<th >Waste Date</th>";
+            }
+    
+
+            rc += "</tr>" +
                 "</thead>";
             /*end of header*/
             return rc;
         }
 
-        private string generateTableDataCsVsFA(List<Lack1CFUsagevsFaDetailDto> data)
+        private string generateTableDataCsVsFA(List<Lack1CFUsagevsFaDetailDto> data, bool isSummary)
         {
-            var rc = "<table border='1' >" + generateHeaderTableDataCsVsFA();
+            var rc = "<table border='1' >" + generateHeaderTableDataCsVsFA(isSummary);
             for (var i = 0; i < data.Count; i++) {
                 var item = data[i];
-                var row = generateRowDataCsVsFa(item);
+                var row = generateRowDataCsVsFa(item, isSummary);
 
 
                 rc = rc + row;
@@ -3892,8 +3925,8 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
 
-        private string generateRowDataCsVsFa(Lack1CFUsagevsFaDetailDto item) {
-    
+        private string generateRowDataCsVsFa(Lack1CFUsagevsFaDetailDto item,bool isSummary) {
+
             var facode = item.Fa_Code;
             var plantId = item.PlantId;
             var order = item.Order;
@@ -3904,25 +3937,46 @@ namespace Sampoerna.EMS.Website.Controllers
             var waste = item.Lack1CFUsagevsFaDetailDtoMvtWaste;
             var iswastedisplayed = false;
             var rc = "";
-            for (var i = 0; i < mvt101.Count; i++) {
+            for (var i = 0; i < mvt101.Count; i++)
+            {
                 rc += "<tr>" +
                     "<td>" + plantId + "</td>" +
                     "<td>" + plantDesc + "</td>" +
                     "<td>" + order + "</td>" +
                     "<td>" + facode + "</td>" +
-                    "<td>" + brandDesc + "</td>" +
-                    "<td>" + mvt101[i].ProductionDateText + "</td>" +
-                    "<td>" + mvt101[i].PostingDateText + "</td>" +
-                    "<td>" + mvt101[i].Converted_Qty + "</td>" +
-                    "<td>" + mvt101[i].Converted_Uom + "</td>" +
-                    "<td>" + mvt101[i].Mvt + "</td>" +
-                    "<td>" + mvt101[i].Batch + "</td>" +
-                    "<td></td>" +
-                    "<td></td>" +
-                    "<td></td>" +
-                    "<td></td>" +
-                    "<td></td>";
-                if (waste.Count - 1 >= i) {
+                    "<td>" + brandDesc + "</td>";
+                if (isSummary)
+                {
+                    rc += "<td>" + (mvt101[i].Converted_Qty) + "</td>" +
+                        "<td>" + mvt101[i].Converted_Uom + "</td>";
+
+                    rc += "<td>" + mvt261[i].Material_Id + "</td>" +
+                       "<td>" + mvt261[i].Material_Id + "</td>" +
+
+                       "<td>" + (-1 * mvt261[i].Converted_Qty) + "</td>" +
+                       "<td>" + mvt261[i].Uom + "</td>";
+
+
+                }
+                else
+                {
+                    rc += "<td>" + mvt101[i].ProductionDateText + "</td>" +
+                        "<td>" + mvt101[i].PostingDateText + "</td>" +
+                        "<td>" + (mvt101[i].Converted_Qty) + "</td>" +
+                        "<td>" + mvt101[i].Converted_Uom + "</td>" +
+                        "<td>" + mvt101[i].Mvt + "</td>" +
+                        "<td>" + mvt101[i].Batch + "</td>" +
+                        "<td></td>" +
+                        "<td></td>" +
+                        "<td></td>";
+                    rc += "<td></td>" +
+                            "<td></td>";
+                }
+
+
+
+                if (waste.Count - 1 >= i)
+                {
                     rc += "<td>" + (waste[i].MarkerRejectStickQty) + "</td>" +
                         "<td>Btg</td>" +
                         "<td>" + (waste[i].PackerRejectStickQty) + "</td>" +
@@ -3932,11 +3986,17 @@ namespace Sampoerna.EMS.Website.Controllers
                         "<td>" + (waste[i].FloorWasteGramQty) + "</td>" +
                         "<td>G</td>" +
                         "<td>" + (waste[i].StampWasteQty) + "</td>" +
-                        "<td>G</td>" +
-                        "<td>" + waste[i].WasteProductionDateText + "</td>" +
-                        "</tr>";
+                        "<td>G</td>";
+                    if (!isSummary)
+                    {
+                        rc += "<td>" + waste[i].WasteProductionDateText + "</td>";
+                    }
+
+                    rc += "</tr>";
                     iswastedisplayed = true;
-                } else {
+                }
+                else
+                {
                     rc += "<td></td>" +
                         "<td></td>" +
                         "<td></td>" +
@@ -3946,44 +4006,53 @@ namespace Sampoerna.EMS.Website.Controllers
                         "<td></td>" +
                         "<td></td>" +
                         "<td></td>" +
-                        "<td></td>" +
-                        "<td></td>" +
-                        "</tr>";
+                        "<td></td>";
+                    if (!isSummary)
+                    {
+                        rc += "<td></td>";
+                    }
+
+                    rc += "</tr>";
                 }
             }
 
-            for (var j = 0; j < mvt261.Count; j++) {
-                rc += "<tr>" +
-                    "<td>" + plantId + "</td>" +
-                    "<td>" + plantDesc + "</td>" +
-                    "<td>" + order + "</td>" +
-                    "<td>" + facode + "</td>" +
-                    "<td>" + brandDesc + "</td>" +
-                    "<td></td>" +
-                    "<td></td>" +
-                    "<td></td>" +
-                    "<td></td>" +
-                    "<td>" + mvt261[j].Mvt + "</td>" +
-                    "<td>" + mvt261[j].Batch + "</td>" +
-                    "<td>" + mvt261[j].Material_Id + "</td>" +
-                    "<td>" + mvt261[j].Material_Id + "</td>" +
-                    "<td>" + mvt261[j].PostingDateText + "</td>" +
-                    "<td>" + (-1 * mvt261[j].Converted_Qty) + "</td>" +
-                    "<td>" + mvt261[j].Uom + "</td>";
-        
-                rc += "<td></td>" +
+            if (!isSummary)
+            {
+                for (var j = 0; j < mvt261.Count; j++)
+                {
+                    rc += "<tr>" +
+                        "<td>" + plantId + "</td>" +
+                        "<td>" + plantDesc + "</td>" +
+                        "<td>" + order + "</td>" +
+                        "<td>" + facode + "</td>" +
+                        "<td>" + brandDesc + "</td>" +
                         "<td></td>" +
                         "<td></td>" +
                         "<td></td>" +
                         "<td></td>" +
-                        "<td></td>" +
-                        "<td></td>" +
-                        "<td></td>" +
-                        "<td></td>" +
-                        "<td></td>" +
-                        "<td></td>" +
-                        "</tr>";
+                        "<td>" + mvt261[j].Mvt + "</td>" +
+                        "<td>" + mvt261[j].Batch + "</td>" +
+                        "<td>" + mvt261[j].Material_Id + "</td>" +
+                        "<td>" + mvt261[j].Material_Id + "</td>" +
+                        "<td>" + mvt261[j].PostingDateText + "</td>" +
+                        "<td>" + (-1 * mvt261[j].Converted_Qty) + "</td>" +
+                        "<td>" + mvt261[j].Uom + "</td>";
+
+                    rc += "<td></td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "</tr>";
+                }
             }
+
 
             return rc;
         }

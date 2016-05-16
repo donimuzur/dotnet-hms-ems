@@ -22,51 +22,63 @@
     return rc;
 }
 
-function generateHeaderTableDataCsVsFA() {
+function generateHeaderTableDataCsVsFA(issummary) {
     var rc =  /*start header*/
         '<thead>' +
             '<tr>' +
-                '<th >PlantId</th>' +
-                '<th >Plant Desc</th>' +
-                '<th >Process Order</th>' +
-                '<th >FA Code</th>' +
-                '<th >Brand Desc</th>' +
-                '<th >FA Prod Date</th>' +
-                '<th >FA Posting Date</th>' +
-                '<th >FA Produced Qty</th>' +
-                '<th >FA Produced Uom</th>' +
-                '<th >Mvt</th>' +
-                '<th >Batch</th>' +
+            '<th >PlantId</th>' +
+            '<th >Plant Desc</th>' +
+            '<th >Process Order</th>' +
+            '<th >FA Code</th>' +
+            '<th >Brand Desc</th>';
+    if (issummary) {
+        rc +=   '<th >FA Produced Qty</th>' +
+                '<th >FA Produced Uom</th>'+
                 '<th >CF Code</th>' +
-                '<th >CF Description</th>' +
-                '<th >CF Posting Date</th>' +
-                '<th >CF Issue Qty</th>' +
-                '<th >CF Issue Uom</th>' +
-                '<th >Reject Maker Qty</th>' +
-                '<th >Reject Maker UoM</th>' +
-                '<th >Reject Packer Qty</th>' +
-                '<th >Reject Packer UoM</th>' +
-                '<th >Dust Qty</th>' +
-                '<th >Dust Uom</th>' +
-                '<th >Floor Qty</th>' +
-                '<th >Floor Uom</th>' +
-                '<th >Stem Qty</th>' +
-                '<th >Stem Uom</th>' +
-                '<th >Waste Date</th>' +
+                '<th >CF Description</th>';
 
-            '</tr>' +
+    } else {
+        rc += '<th >FA Prod Date</th>' +
+            '<th >FA Posting Date</th>' +
+            '<th >FA Produced Qty</th>' +
+            '<th >FA Produced Uom</th>' +
+            '<th >Mvt</th>' +
+            '<th >Batch</th>' +
+            '<th >CF Code</th>' +
+            '<th >CF Description</th>' +
+            '<th >CF Posting Date</th>';
 
+    }
+
+    rc += '<th >CF Issue Qty</th>' +
+        '<th >CF Issue Uom</th>' +               
+        '<th >Reject Maker Qty</th>' +
+        '<th >Reject Maker UoM</th>' +
+        '<th >Reject Packer Qty</th>' +
+        '<th >Reject Packer UoM</th>' +
+        '<th >Dust Qty</th>' +
+        '<th >Dust Uom</th>' +
+        '<th >Floor Qty</th>' +
+        '<th >Floor Uom</th>' +
+        '<th >Stem Qty</th>' +
+        '<th >Stem Uom</th>';
+    if (!issummary) {
+        rc += '<th >Waste Date</th>';
+    }
+    
+
+    rc += '</tr>' +
         '</thead>';
     /*end of header*/
     return rc;
 }
 
-function generateTableDataCsVsFA(data)
+function generateTableDataCsVsFA(data,issummary)
 {
-    var rc = '<table border="0" class="table table-bordered">' + generateHeaderTableDataCsVsFA();
+    var rc = '<table border="0" class="table table-bordered">' + generateHeaderTableDataCsVsFA(issummary);
     for (var i = 0; i < data.length; i++) {
         var item = data[i];
-        var row = generateRowDataCsVsFa(item);
+        var row = generateRowDataCsVsFa(item,issummary);
 
 
         rc = rc + row;
@@ -75,7 +87,7 @@ function generateTableDataCsVsFA(data)
 }
 
 
-function generateRowDataCsVsFa(item) {
+function generateRowDataCsVsFa(item,issummary) {
     
     var facode = item.Fa_Code;
     var plantId = item.PlantId;
@@ -93,18 +105,34 @@ function generateRowDataCsVsFa(item) {
             "<td>" + plantDesc + "</td>" +
             "<td>" + order + "</td>" +
             "<td>" + facode + "</td>" +
-            "<td>" + brandDesc + "</td>" +
-            "<td>" + mvt101[i].ProductionDateText + "</td>" +
-            "<td>" + mvt101[i].PostingDateText + "</td>" +
-            "<td>" + ThausandSeperator(mvt101[i].Converted_Qty) + "</td>" +
-            "<td>" + mvt101[i].Converted_Uom + "</td>" +
-            "<td>" + mvt101[i].Mvt + "</td>" +
-            "<td>" + mvt101[i].Batch + "</td>" +
-            "<td></td>" +
-            "<td></td>" +
-            "<td></td>" +
-            "<td></td>" +
-            "<td></td>";
+            "<td>" + brandDesc + "</td>";
+        if (issummary) {
+            rc += "<td>" + ThausandSeperator(mvt101[i].Converted_Qty) + "</td>" +
+                "<td>" + mvt101[i].Converted_Uom + "</td>";
+               
+            rc += "<td>" + mvt261[i].Material_Id + "</td>" +
+               "<td>" + mvt261[i].Material_Id + "</td>" +
+               
+               "<td>" + ThausandSeperator(-1 * mvt261[i].Converted_Qty) + "</td>" +
+               "<td>" + mvt261[i].Uom + "</td>";
+
+            
+        } else {
+            rc += "<td>" + mvt101[i].ProductionDateText + "</td>" +
+                "<td>" + mvt101[i].PostingDateText + "</td>" +
+                "<td>" + ThausandSeperator(mvt101[i].Converted_Qty) + "</td>" +
+                "<td>" + mvt101[i].Converted_Uom + "</td>" +
+                "<td>" + mvt101[i].Mvt + "</td>" +
+                "<td>" + mvt101[i].Batch + "</td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "<td></td>";
+            rc += "<td></td>" +
+                    "<td></td>";
+        }
+        
+        
+
         if (waste.length - 1 >= i) {
             rc += "<td>" + ThausandSeperator(waste[i].MarkerRejectStickQty) + "</td>" +
                 "<td>Btg</td>" +
@@ -115,9 +143,12 @@ function generateRowDataCsVsFa(item) {
                 "<td>" + ThausandSeperator(waste[i].FloorWasteGramQty) + "</td>" +
                 "<td>G</td>" +
                 "<td>" + ThausandSeperator(waste[i].StampWasteQty) + "</td>" +
-                "<td>G</td>" +
-                "<td>" + waste[i].WasteProductionDateText + "</td>" +
-                "</tr>";
+                "<td>G</td>";
+            if (!issummary) {
+                rc += "<td>" + waste[i].WasteProductionDateText + "</td>";
+            }
+
+            rc+=    "</tr>";
             iswastedisplayed = true;
         } else {
             rc += "<td></td>" +
@@ -129,44 +160,50 @@ function generateRowDataCsVsFa(item) {
                 "<td></td>" +
                 "<td></td>" +
                 "<td></td>" +
-                "<td></td>" +
-                "<td></td>" +
-                "</tr>";
+                "<td></td>";
+               if (!issummary) {
+                   rc += "<td></td>";
+               }
+
+            rc+=    "</tr>";
         }
     }
 
-    for (var j = 0; j < mvt261.length; j++) {
-        rc += "<tr>" +
-            "<td>" + plantId + "</td>" +
-            "<td>" + plantDesc + "</td>" +
-            "<td>" + order + "</td>" +
-            "<td>" + facode + "</td>" +
-            "<td>" + brandDesc + "</td>" +
-            "<td></td>" +
-            "<td></td>" +
-            "<td></td>" +
-            "<td></td>" +
-            "<td>" + mvt261[j].Mvt + "</td>" +
-            "<td>" + mvt261[j].Batch + "</td>" +
-            "<td>" + mvt261[j].Material_Id + "</td>" +
-            "<td>" + mvt261[j].Material_Id + "</td>" +
-            "<td>" + mvt261[j].PostingDateText + "</td>" +
-            "<td>" + ThausandSeperator(-1 * mvt261[j].Converted_Qty) + "</td>" +
-            "<td>" + mvt261[j].Uom + "</td>";
-        
-        rc += "<td></td>" +
+    if (!issummary) {
+        for (var j = 0; j < mvt261.length; j++) {
+            rc += "<tr>" +
+                "<td>" + plantId + "</td>" +
+                "<td>" + plantDesc + "</td>" +
+                "<td>" + order + "</td>" +
+                "<td>" + facode + "</td>" +
+                "<td>" + brandDesc + "</td>" +
                 "<td></td>" +
                 "<td></td>" +
                 "<td></td>" +
                 "<td></td>" +
-                "<td></td>" +
-                "<td></td>" +
-                "<td></td>" +
-                "<td></td>" +
-                "<td></td>" +
-                "<td></td>" +
-                "</tr>";
+                "<td>" + mvt261[j].Mvt + "</td>" +
+                "<td>" + mvt261[j].Batch + "</td>" +
+                "<td>" + mvt261[j].Material_Id + "</td>" +
+                "<td>" + mvt261[j].Material_Id + "</td>" +
+                "<td>" + mvt261[j].PostingDateText + "</td>" +
+                "<td>" + ThausandSeperator(-1 * mvt261[j].Converted_Qty) + "</td>" +
+                "<td>" + mvt261[j].Uom + "</td>";
+
+            rc += "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "</tr>";
+        }
     }
+    
 
     return rc;
 }

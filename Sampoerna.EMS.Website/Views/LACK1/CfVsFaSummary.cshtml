@@ -1,7 +1,7 @@
 ﻿@using Sampoerna.EMS.Core
 @model Sampoerna.EMS.Website.Models.LACK1.Lack1CFUsageVsFAViewModel
 @{
-    ViewBag.Title = "Cut Filler Usage vs FA Details";
+    ViewBag.Title = "Cut Filler Usage vs FA Summary";
 }
 
 @section styles{
@@ -100,7 +100,8 @@
     @Html.HiddenFor(model => model.EndPostingDate, new { @id = "exportEndDate" })
     @Html.HiddenFor(model => model.BeginingPlant, new { @id = "exportBeginPlant" })
     @Html.HiddenFor(model => model.EndPlant, new { @id = "exportEndPlant" })
-    @Html.Hidden("IsSummary",false, new { @id = "exportIsSummary" })
+    @Html.Hidden("IsSummary",true, new { @id = "exportIsSummary" })
+
 }
 
 <div class="loading"></div>
@@ -113,14 +114,14 @@
 
         $('#MenuLack1OpenDocument').removeClass('open');
         $('#MenuLack1Report').addClass('open');
-        $('#MenuLack1CFVsFaDetails').addClass('active');
+        $('#MenuLack1CFVsFaSummary').addClass('active');
 
         function exportToExcel() {
             $("#exportBeginDate").val($("#BeginingPostingDate").val());
             $("#exportEndDate").val($("#EndPostingDate").val());
             $("#exportBeginPlant").val($("#BeginingPlant").val());
             $("#exportEndPlant").val($("#EndPlant").val());
-
+            $("#exportIsSummary").val(true);
             $("#ExportCfVsFaDetails").submit();
         }
     </script>

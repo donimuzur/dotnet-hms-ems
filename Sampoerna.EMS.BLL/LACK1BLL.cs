@@ -1611,6 +1611,10 @@ namespace Sampoerna.EMS.BLL
 
         public List<Lack1CFUsagevsFaDetailDto> GetCfUsagevsFaDetailData(Lack1CFUsageVsFAByParamInput input)
         {
+            if (input.IsSummary)
+            {
+                return GetCfUsagevsFaSummaryData(input);
+            }
 
             var werks = _t001WServices.GetByRange(input.BeginingPlant, input.EndPlant).Select(c => c.WERKS).ToList();
             var inputParam = new ZaapShiftRptGetForLack1ReportByParamInput()
@@ -1674,6 +1678,123 @@ namespace Sampoerna.EMS.BLL
                     EndProductionDate = inputParam.EndDate
                 });
 
+                result.Add(data);
+            }
+
+
+
+            return result;
+        }
+
+        private List<Lack1CFUsagevsFaDetailDto> GetCfUsagevsFaSummaryData(Lack1CFUsageVsFAByParamInput input)
+        {
+
+            var werks = _t001WServices.GetByRange(input.BeginingPlant, input.EndPlant).Select(c => c.WERKS).ToList();
+            var inputParam = new ZaapShiftRptGetForLack1ReportByParamInput()
+            {
+                Werks = werks,
+                BeginingDate = input.BeginingPostingDate,
+                EndDate = input.EndPostingDate
+            };
+
+            List<Lack1CFUsagevsFaDetailDto> result = new List<Lack1CFUsagevsFaDetailDto>();
+
+            var zaapshiftrpt = _zaapShiftRptService.GetForCFVsFa(inputParam).GroupBy(x => new { x.ORDR, x.WERKS, x.FA_CODE })
+                .Select(x => new
+                {
+                    //x.Sum()
+                    x.Key.WERKS,
+                    x.Key.FA_CODE,
+                    x.Key.ORDR,
+
+                }).OrderBy(x => x.WERKS);
+            foreach (var zaapShiftRpt in zaapshiftrpt)
+            {
+                var data = new Lack1CFUsagevsFaDetailDto();
+
+                data.Order = zaapShiftRpt.ORDR;
+                data.PlantDesc = _t001WServices.GetById(zaapShiftRpt.WERKS).NAME1;
+                data.PlantId = zaapShiftRpt.WERKS;
+                data.Fa_Code = zaapShiftRpt.FA_CODE;
+                data.Brand_Desc = _brandRegService.GetByPlantIdAndFaCode(zaapShiftRpt.WERKS, zaapShiftRpt.FA_CODE).BRAND_CE;
+
+                var zaapInput101 = new InvGetReceivingByParamZaapShiftRptInput()
+                {
+                    EndDate = inputParam.EndDate.HasValue ? inputParam.EndDate.Value : DateTime.Today,
+                    StartDate = inputParam.BeginingDate.HasValue ? inputParam.BeginingDate.Value : DateTime.Today,
+                    FaCode = data.Fa_Code,
+                    Ordr = data.Order,
+                    PlantId = data.PlantId
+                };
+
+                var dataReceiving = _zaapShiftRptService.GetForLack1ByParam(zaapInput101);
+
+                var zaapInput261 = new InvGetReceivingByParamZaapShiftRptInput()
+                {
+                    EndDate = inputParam.EndDate.HasValue ? inputParam.EndDate.Value : DateTime.Today,
+                    StartDate = inputParam.BeginingDate.HasValue ? inputParam.BeginingDate.Value : DateTime.Today,
+
+                    Ordr = data.Order,
+                    PlantId = data.PlantId
+                };
+                var dataUsage = _inventoryMovementService.GetReceivingByParamZaapShiftRpt(zaapInput261);
+
+                data.Lack1CFUsagevsFaDetailDtoMvt101 = Mapper.Map<List<Lack1CFUsagevsFaDetailDtoMvt>>(dataReceiving);
+                data.Lack1CFUsagevsFaDetailDtoMvt101 =
+                    data.Lack1CFUsagevsFaDetailDtoMvt101.GroupBy(x => new {x.Material_Id, x.PlantId, x.Order, x.Converted_Uom})
+                        .Select(x =>
+                        {
+                            var lack1CFUsagevsFaDetailDtoMvt = x.FirstOrDefault();
+                            return lack1CFUsagevsFaDetailDtoMvt != null ? new Lack1CFUsagevsFaDetailDtoMvt()
+                                         {
+                                             Converted_Qty = x.Sum(y=> y.Converted_Qty),
+                                             Material_Id = x.Key.Material_Id,
+                                             PlantId = x.Key.PlantId,
+                                             Order = x.Key.Order,
+                                             Converted_Uom = lack1CFUsagevsFaDetailDtoMvt.Converted_Uom,
+                                             Qty = x.Sum(y=> y.Qty),
+                                             Uom = lack1CFUsagevsFaDetailDtoMvt.Uom
+
+                                         } : null;
+                        }).ToList();
+                var dataUsageWithConv = InvMovementConvertionProcess(dataUsage, "G");
+                data.Lack1CFUsagevsFaDetailDtoMvt261 = Mapper.Map<List<Lack1CFUsagevsFaDetailDtoMvt>>(dataUsageWithConv);
+                data.Lack1CFUsagevsFaDetailDtoMvt261 =
+                    data.Lack1CFUsagevsFaDetailDtoMvt261.GroupBy(x => new { x.Material_Id, x.PlantId, x.Order, x.Converted_Uom })
+                        .Select(x =>
+                        {
+                            var lack1CFUsagevsFaDetailDtoMvt = x.FirstOrDefault();
+                            return lack1CFUsagevsFaDetailDtoMvt != null ? new Lack1CFUsagevsFaDetailDtoMvt()
+                            {
+                                Converted_Qty = x.Sum(y => y.Converted_Qty),
+                                Material_Id = x.Key.Material_Id,
+                                PlantId = x.Key.PlantId,
+                                Order = x.Key.Order,
+                                Converted_Uom = lack1CFUsagevsFaDetailDtoMvt.Converted_Uom,
+                                Qty = x.Sum(y => y.Qty),
+                                Uom = lack1CFUsagevsFaDetailDtoMvt.Uom
+
+                            } : null;
+                        }).ToList();
+                data.Lack1CFUsagevsFaDetailDtoMvtWaste = _wasteBll.GetAllByParam(new WasteGetByParamInput()
+                {
+                    FaCode = data.Fa_Code,
+                    Plant = data.PlantId,
+                    BeginingProductionDate = inputParam.BeginingDate,
+                    EndProductionDate = inputParam.EndDate
+                });
+                data.Lack1CFUsagevsFaDetailDtoMvtWaste =
+                    data.Lack1CFUsagevsFaDetailDtoMvtWaste.GroupBy(x => new {x.FaCode, x.PlantWerks})
+                        .Select(x => new WasteDto()
+                        {
+                            FaCode = x.Key.FaCode,
+                            PlantWerks = x.Key.PlantWerks,
+                            MarkerRejectStickQty = x.Sum(y=> y.MarkerRejectStickQty),
+                            PackerRejectStickQty = x.Sum(y => y.PackerRejectStickQty),
+                            DustWasteGramQty = x.Sum(y=> y.DustWasteGramQty),
+                            FloorWasteGramQty = x.Sum(y=> y.FloorWasteGramQty),
+                            StampWasteQty = x.Sum(y => y.StampWasteQty)
+                        }).ToList();
                 result.Add(data);
             }
 
