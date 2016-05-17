@@ -61,7 +61,7 @@
         success: function (response) {
             $('.loading').hide();
             if (response.Success) {
-                debugger;
+                
                 $('#generated-data-container').html("");
                 var data = response.Data;
                 //console.log(response.IsWithTisToTisReport);
