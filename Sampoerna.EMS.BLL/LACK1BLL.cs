@@ -5301,7 +5301,7 @@ namespace Sampoerna.EMS.BLL
             {
                 var brandList = item.CK5_MATERIAL.Select(x => x.BRAND).Distinct().ToList();
                 var balanceList = _materialBalanceService.GetByMaterialListAndPlantEa(item.PlantIdReceiver, brandList, input.DateFrom.Value.Month, input.DateFrom.Value.Year);
-                var batchList = _inventoryMovementService.GetBatchByPurchDoc(item.StoReceiverNumber).Select(x => x.BATCH).ToList();
+                var batchList = _inventoryMovementService.GetBatchByPurchDoc(item.DnNumber).Select(x => x.BATCH).ToList();
 
                 var inputMvt = new GetLack1DetailEaInput();
                 inputMvt.ListBatch = batchList;
@@ -5317,6 +5317,16 @@ namespace Sampoerna.EMS.BLL
                     umren = materialUom.Where(x => x.MEINH == "L").FirstOrDefault().UMREN.Value;
                 }
 
+                var ordrList = mvtList.Select(x => x.ORDR).Distinct().ToList();
+
+                var inputLevelMvt = new GetLack1DetailLevelInput();
+                inputLevelMvt.DateFrom = input.DateFrom.Value;
+                inputLevelMvt.DateTo = input.DateTo.Value;
+                inputLevelMvt.ListOrdr = ordrList;
+                inputLevelMvt.Level = 1;
+
+                var levelList = _inventoryMovementService.GetLack1DetailLevel(inputLevelMvt).Distinct().ToList();
+
                 item.EaCode = "10.2880";
                 item.EaDesc = "Etil Alkohol";
                 item.BeginingBalance = String.Join(Environment.NewLine, balanceList.BeginningBalance.ToArray());
@@ -5326,6 +5336,8 @@ namespace Sampoerna.EMS.BLL
                 item.UsagePostingDate = String.Join(Environment.NewLine, mvtList.Select(x => x.POSTING_DATE.Value.ToString("dd-MMM-yy")).ToArray());
                 item.EndingBalance = balanceList.TotalBeginningBalance + item.Ck5Qty - mvtList.Sum(x => (x.QTY.Value / umren));
                 item.EndingBalanceUom = "Liter";
+
+                item.LevelList = Mapper.Map<List<Lack1DetailLevelDto>>(levelList);
             }
 
             return rc;

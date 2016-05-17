@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
@@ -18,6 +19,8 @@ namespace Sampoerna.EMS.BLL.Services
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<ZAAP_SHIFT_RPT> _zaapShiftRptRepository;
+        private ZaidmExMaterialService _materialService;
+        private IMaterialUomService _materialUomService;
 
         public InventoryMovementService(IUnitOfWork uow, ILogger logger)
         {
@@ -25,6 +28,8 @@ namespace Sampoerna.EMS.BLL.Services
             _uow = uow;
             _repository = _uow.GetGenericRepository<INVENTORY_MOVEMENT>();
             _zaapShiftRptRepository = _uow.GetGenericRepository<ZAAP_SHIFT_RPT>();
+            _materialService = new ZaidmExMaterialService(_uow, _logger);
+            _materialUomService = new MaterialUomService(_uow, _logger);
         }
 
         public List<INVENTORY_MOVEMENT> GetUsageByParam(InvMovementGetUsageByParamInput input)
@@ -316,6 +321,109 @@ namespace Sampoerna.EMS.BLL.Services
                     && listMvt.Contains(x.MVT)).ToList();
 
             return data;
+        }
+
+        public List<InventoryMovementLevelDto> GetLack1DetailLevel(GetLack1DetailLevelInput input)
+        {
+            var list = GetLack1DetailLevelList(input);
+
+            var groupedList = list.GroupBy(x => new { x.Level, x.FlavorCode, x.FlavorDesc, x.CfProdCode, x.CfProdDesc, x.CfProdQty, x.CfProdUom, x.ProdPostingDate, x.ProdDate })
+                .Select(x => new InventoryMovementLevelDto()
+                {
+                    Level = x.FirstOrDefault().Level,
+                    FlavorCode = x.FirstOrDefault().FlavorCode,
+                    FlavorDesc = x.FirstOrDefault().FlavorDesc,
+                    CfProdCode = x.FirstOrDefault().CfProdCode,
+                    CfProdDesc = x.FirstOrDefault().CfProdDesc,
+                    CfProdQty = x.FirstOrDefault().CfProdQty,
+                    CfProdUom = x.FirstOrDefault().CfProdUom,
+                    ProdPostingDate = x.FirstOrDefault().ProdPostingDate,
+                    ProdDate = x.FirstOrDefault().ProdDate
+                }).ToList();
+
+            return groupedList;
+        }
+
+        private List<InventoryMovementLevelDto> GetLack1DetailLevelList(GetLack1DetailLevelInput input)
+        {
+            var list = new List<InventoryMovementLevelDto>();
+
+            var mvtList101 = new List<string>();
+            mvtList101.Add(EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving101));
+
+            var data = _repository.Get(x => input.ListOrdr.Contains(x.ORDR)
+                && x.POSTING_DATE >= input.DateFrom && x.POSTING_DATE <= input.DateTo
+                && mvtList101.Contains(x.MVT)).ToList();
+
+            var batchList = data.Select(x => x.BATCH).Distinct().ToList();
+
+            var mvtList261 = new List<string>();
+            mvtList261.Add(EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage261));
+
+            var dataList = _repository.Get(x => batchList.Contains(x.BATCH)
+                && x.POSTING_DATE >= input.DateFrom && x.POSTING_DATE <= input.DateTo
+                && mvtList261.Contains(x.MVT)).ToList();
+
+            var ordrList = new List<string>();
+
+            foreach (var item in dataList)
+            {
+                var levelNew = new InventoryMovementLevelDto();
+                levelNew.Level = input.Level.ToString();
+                levelNew.FlavorCode = item.MATERIAL_ID;
+                levelNew.FlavorDesc = string.Empty;
+                levelNew.CfProdCode = string.Empty;
+                levelNew.CfProdDesc = string.Empty;
+                levelNew.CfProdQty = string.Empty;
+                levelNew.CfProdUom = string.Empty;
+                levelNew.ProdPostingDate = string.Empty;
+                levelNew.ProdDate = string.Empty;
+
+                var checkMaterial = _materialService.GetByMaterialAndPlantId(item.MATERIAL_ID, item.PLANT_ID);
+
+                if (checkMaterial == null)
+                {
+                    ordrList.Add(item.ORDR);
+                }
+                else
+                {
+                    var materialItem = new List<string>();
+                    materialItem.Add(item.MATERIAL_ID);
+
+                    var umren = Convert.ToDecimal(1);
+                    var materialUom = _materialUomService.GetByMaterialListAndPlantId(materialItem, item.PLANT_ID);
+                    if (materialUom.Count > 0)
+                    {
+                        var umrenGram = materialUom.Where(x => x.MEINH == "G").FirstOrDefault();
+                        if (umrenGram != null) umren = umrenGram.UMREN.Value;
+                    }
+
+                    levelNew.FlavorCode = string.Empty;
+                    levelNew.FlavorDesc = string.Empty;
+                    levelNew.CfProdCode = item.MATERIAL_ID;
+                    levelNew.CfProdDesc = checkMaterial.MATERIAL_DESC;
+                    levelNew.CfProdQty = (item.QTY.Value / umren).ToString("N2");
+                    levelNew.CfProdUom = "Gram";
+                    levelNew.ProdPostingDate = item.POSTING_DATE.Value.ToString("dd-MMM-yy");
+                    levelNew.ProdDate = item.POSTING_DATE.Value.ToString("dd-MMM-yy");
+                }
+
+                list.Add(levelNew);
+            }
+
+            if (ordrList.Count > 0)
+            {
+                var inputLevelMvt = new GetLack1DetailLevelInput();
+                inputLevelMvt.DateFrom = input.DateFrom;
+                inputLevelMvt.DateTo = input.DateTo;
+                inputLevelMvt.ListOrdr = ordrList;
+                inputLevelMvt.Level = input.Level + 1;
+
+                var nextLevel = GetLack1DetailLevel(inputLevelMvt);
+                list.AddRange(nextLevel);
+            }
+
+            return list;
         }
     }
 }

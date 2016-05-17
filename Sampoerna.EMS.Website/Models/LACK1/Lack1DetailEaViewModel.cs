@@ -46,16 +46,22 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string Usage { get; set; }
         public string UsageUom { get; set; }
         public string UsagePostingDate { get; set; }
+        public decimal EndingBalance { get; set; }
+        public string EndingBalanceUom { get; set; }
+
+        public List<Lack1DetailLevelItemModel> LevelList { get; set; }
+    }
+
+    public class Lack1DetailLevelItemModel
+    {
         public string Level { get; set; }
         public string FlavorCode { get; set; }
         public string FlavorDesc { get; set; }
         public string CfProdCode { get; set; }
         public string CfProdDesc { get; set; }
-        public decimal CfProdQty { get; set; }
+        public string CfProdQty { get; set; }
         public string CfProdUom { get; set; }
         public string ProdPostingDate { get; set; }
         public string ProdDate { get; set; }
-        public decimal EndingBalance { get; set; }
-        public string EndingBalanceUom { get; set; }
     }
 }
