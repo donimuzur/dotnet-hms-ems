@@ -352,7 +352,11 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<Lack1SearchDetailEaViewModel, Lack1GetDetailEaByParamInput>()
                 .IgnoreAllNonExisting();
 
-            Mapper.CreateMap<Lack1DetailEaDto, Lack1DetailEaItemModel>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Lack1DetailEaDto, Lack1DetailEaItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.LevelList,
+                    opt => opt.MapFrom(src => Mapper.Map<List<Lack1DetailLevelItemModel>>(src.LevelList)));
+
+            Mapper.CreateMap<Lack1DetailLevelDto, Lack1DetailLevelItemModel>().IgnoreAllNonExisting();
 
             #endregion
         }

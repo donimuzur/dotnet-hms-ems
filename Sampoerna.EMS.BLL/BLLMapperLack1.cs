@@ -584,8 +584,10 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Ck5RegNo, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
                 .ForMember(dest => dest.Ck5RegDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE.HasValue ? src.REGISTRATION_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
                 .ForMember(dest => dest.Ck5Qty, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX.Value))
-                .ForMember(dest => dest.StoReceiverNumber, opt => opt.MapFrom(src => src.STO_RECEIVER_NUMBER))
+                .ForMember(dest => dest.DnNumber, opt => opt.MapFrom(src => src.DN_NUMBER))
                 ;
+
+            Mapper.CreateMap<InventoryMovementLevelDto, Lack1DetailLevelDto>().IgnoreAllNonExisting();
 
             #endregion
         }
