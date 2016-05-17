@@ -75,6 +75,14 @@ namespace Sampoerna.EMS.BLL
                 var dt = Convert.ToDateTime(input.WasteProductionDate);
                 queryFilter = queryFilter.And(c => c.WASTE_PROD_DATE == dt);
             }
+            if (input.Month > 0)
+            {
+                queryFilter = queryFilter.And(c => c.WASTE_PROD_DATE.Month == input.Month);
+            }
+            if (input.Year > 0)
+            {
+                queryFilter = queryFilter.And(c => c.WASTE_PROD_DATE.Year == input.Year);
+            }
             if (!string.IsNullOrEmpty(input.UserId))
             {
                 if (input.UserRole != Core.Enums.UserRole.Administrator)

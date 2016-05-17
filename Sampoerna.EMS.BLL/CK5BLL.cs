@@ -635,12 +635,15 @@ namespace Sampoerna.EMS.BLL
             else
             {
                 dbData = ProcessInsertCk5(input);
+                
+                
             }
 
             try
             {
                 //throw (new Exception("error"));
                 _uow.SaveChanges();
+                dbData = UpdateSubmissionNumber(dbData.CK5_ID);
             }
             catch (DbEntityValidationException e)
             {
@@ -4654,6 +4657,28 @@ namespace Sampoerna.EMS.BLL
 
         //}
 
+        private CK5 UpdateSubmissionNumber(long ck5Id)
+        {
+            var dbdata = _repository.GetByID(ck5Id);
+
+            var ck5id = dbdata.CK5_ID.ToString();
+            var zerodigits = 10 - ck5id.Length;
+            var submissionNumber = "";
+            for (int i = 0; i < zerodigits; i++)
+            {
+                submissionNumber += "0";
+            }
+            submissionNumber += ck5id;
+
+            dbdata.SUBMISSION_NUMBER = submissionNumber;
+
+            _repository.Update(dbdata);
+
+            _uow.SaveChanges();
+
+            return dbdata;
+        }
+
         private CK5 ProcessInsertCk5(CK5SaveInput input)
         {
             //workflowhistory
@@ -4735,9 +4760,10 @@ namespace Sampoerna.EMS.BLL
 
                 dbData.CK5_MATERIAL.Add(ck5Material);
             }
-            input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumberByFormType(Enums.FormType.CK5);
+            //input.Ck5Dto.SUBMISSION_NUMBER = 
+                //_docSeqNumBll.GenerateNumberByFormType(Enums.FormType.CK5);
             dbData.GRAND_TOTAL_EX = tempTotal;
-            dbData.SUBMISSION_NUMBER = input.Ck5Dto.SUBMISSION_NUMBER;
+            //dbData.SUBMISSION_NUMBER = input.Ck5Dto.SUBMISSION_NUMBER;
 
             if (string.IsNullOrEmpty(dbData.EX_GOODS_TYPE_DESC))
             {

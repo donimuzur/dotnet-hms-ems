@@ -18,6 +18,8 @@ namespace Sampoerna.EMS.Website.Models.Waste
         public string PlantWerks { get; set; }
         public string FaCode { get; set; }
         public string BrandDescription { get; set; }
+        public string Month { get; set; }
+        public string Year { get; set; }
 
         //waste Reject
         public decimal? RejectCigaretteStick { get; set; }
@@ -45,7 +47,8 @@ namespace Sampoerna.EMS.Website.Models.Waste
         //SelectList
         public SelectList CompanyCodeList { get; set; }
         public SelectList PlantWerksList { get; set; }
-
+        public SelectList MonthList { get; set; }
+        public SelectList YearList { get; set; }
     }
 
     public class WasteDetail : BaseModel
