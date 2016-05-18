@@ -472,13 +472,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     var item = new WasteUploadItems();
                     var brand = _brandRegistrationBll.GetByFaCode(dataRow[1], dataRow[2]);
+                    var markerStick = dataRow[3] == "" ? 0 : Convert.ToDecimal(dataRow[3]);
+                    var parkerStick = dataRow[4] == "" ? 0 : Convert.ToDecimal(dataRow[4]);
 
                     item.CompanyCode = dataRow[0];
                     item.PlantWerks = dataRow[1];
                     item.FaCode = dataRow[2];
                     item.BrandDescription = brand == null ? string.Empty : brand.BRAND_CE;
-                    item.MarkerRejectStickQty = dataRow[3];
-                    item.PackerRejectStickQty = dataRow[4];
+                    item.MarkerRejectStickQty = Math.Round(markerStick).ToString();
+                    item.PackerRejectStickQty = Math.Round(parkerStick).ToString();
                     item.DustWasteGramQty = dataRow[5];
                     item.FloorWasteGramQty = dataRow[6];
                     //item.DustWasteStickQty = dataRow[8];
