@@ -180,12 +180,13 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var input = Mapper.Map<Pbck7AndPbck3Input>(model);
             input.Pbck7AndPvck3Type = Enums.Pbck7Type.Pbck7List;
+           
             if (input.Pbck7Date != null)
             {
                 input.Pbck7Date = Convert.ToDateTime(input.Pbck7Date).ToString();
             }
 
-            var dbData = _pbck7Pbck3Bll.GetPbck7ByParam(input, CurrentUser);
+            var dbData = _pbck7Pbck3Bll.GetPbck7ByParam(input, CurrentUser, model.IsCompletedDoc);
 
             var result = Mapper.Map<List<DataListIndexPbck7>>(dbData);
 
@@ -257,7 +258,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
 
-            var dbData = _pbck7Pbck3Bll.GetPbck3ByParam(input, CurrentUser);
+            var dbData = _pbck7Pbck3Bll.GetPbck3ByParam(input, CurrentUser, model.IsCompletedDoc);
             var result = Mapper.Map<List<DataListIndexPbck3>>(dbData);
 
             var viewModel = new Pbck3IndexViewModel();
