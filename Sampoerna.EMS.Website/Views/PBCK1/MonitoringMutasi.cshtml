@@ -279,7 +279,7 @@
     </div>
 </div>
 
-
+<div class="loading"></div>
 
 @section scripts
 {
@@ -327,6 +327,8 @@
                 });
 
             $('#btnFILTER').on('click', function (e) {
+                $('.loading').show();
+
                 $('#selecctall').prop('checked', false);
                 $('.checkexport').each(function () {
                     this.checked = false;
@@ -397,6 +399,7 @@
 
         function ReloadDataTables() {
             setupDataTables();
+            $('.loading').hide();
         }
 
         $("#btnExport").click(function () {
