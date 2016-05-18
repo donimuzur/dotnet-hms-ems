@@ -187,5 +187,9 @@ namespace Sampoerna.EMS.BLL
             return dbData.Select(c => c.WERKS).ToList();
         }
 
+        public List<POA> GetAllOnlyPoa()
+        {
+            return _repository.Get().ToList();
+        }
     }
 }

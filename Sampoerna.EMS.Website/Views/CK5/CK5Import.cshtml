@@ -43,10 +43,11 @@
                                 {
                                     HttpMethod = "POST",
                                     InsertionMode = InsertionMode.Replace,
-                                    UpdateTargetId = "contenttable",
+                                    OnSuccess = "OnSuccess",
+                                    OnFailure = "OnFailure",
                                     OnComplete = "ReloadDataTables"
 
-                                }))
+                                }, new { id = "ajaxForm" }))
                             {
                                 @Html.Partial("_CK5Search")
 
@@ -65,13 +66,14 @@
                         <div class="tab-wrapper">
                             @using (Ajax.BeginForm("Intercompany", "CK5",
                                 new AjaxOptions
-                                {
-                                    HttpMethod = "POST",
-                                    InsertionMode = InsertionMode.Replace,
-                                    UpdateTargetId = "contenttableIntercompany",
-                                    OnComplete = "ReloadDataTablesIntercompany"
+                               {
+                                   HttpMethod = "POST",
+                                   InsertionMode = InsertionMode.Replace,
+                                   OnSuccess = "OnSuccessIntercompany",
+                                   OnFailure = "OnFailure",
+                                   OnComplete = "ReloadDataTablesIntercompany"
 
-                                }))
+                               }, new { id = "ajaxForm" }))
                             {
                                 @Html.Partial("_CK5Search")
 
@@ -88,10 +90,11 @@
         </div>
     </div>
 </div>
+<div class="loading"></div>
 
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-    @*<script type="text/javascript" language="javascript" src="~/Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>*@
+    <script src="~/Scripts/CK5Scripts.js"></script>
     <script type="text/javascript" language="javascript" class="init">
 
         $(document).ready(function() {
@@ -117,7 +120,7 @@
             $('.nav-tabs a[href="#' + tab + '"]').tab('show');
         }
 
-        
+
         function setupDataTables() {
 
             // DataTable
@@ -203,40 +206,40 @@
 
         function ChangeTitle(title) {
             $('#lblTitle').text(title);
-            
+
             var ck5Type = '@Enums.CK5Type.PortToImporter';
             var listDocumentNumber = $('#domestic').find('#SearchView_DocumentNumber');
-            
+
             var rowCount = 0;
-            
+
             if (title == 'Port To Importer') {
                 $('#newPortToImporter').show();
                 $('#newImporterToPlant').hide();
                 ck5Type = '@Enums.CK5Type.PortToImporter';
-                
-                rowCount = $('#ck5Table >tbody >tr').length;
+
+                rowCount = $('#ck5Table > tbody > tr').length;
                 if (rowCount <= 1) {
                     $('#form0').submit();
                 }
-                
+
             } else if (title == 'Importer To Plant') {
                 $('#newPortToImporter').hide();
                 $('#newImporterToPlant').show();
                 ck5Type = '@Enums.CK5Type.ImporterToPlant';
                 listDocumentNumber = $('#intercompany').find('#SearchView_DocumentNumber');
-                
-                rowCount = $('#ck5TableIntercompany >tbody >tr').length;
+
+                rowCount = $('#ck5TableIntercompany > tbody > tr').length;
                 if (rowCount <= 1) {
                     $('#form1').submit();
                 }
             }
-            
+
             var formData = { ck5Type: ck5Type };
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetDocumentNo", "CK5")',
                 data: formData,
-                success: function (data) {
+                success: function(data) {
                     listDocumentNumber.empty();
                     var list = '<option value>All</option>';
 
@@ -249,13 +252,14 @@
                     listDocumentNumber.html(list);
                 }
             });
-            
+
         }
 
         function OnReset() {
 
             $(".selectreset").val($(".selectreset option:first").val());
-        }     
+        }
 
+    
     </script>
-}
+    }
