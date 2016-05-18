@@ -84,7 +84,7 @@
                             </div>
 
                             <div class="col-md-2 col-md-offset-8">
-                                <button class="btn btn-blue full">FILTER</button>
+                                <button id="btn-filter" class="btn btn-blue full">FILTER</button>
                             </div>
                             <div class="col-md-2">
                                 <input id="btnExport" type="button" class="btn btn-blue full" value="EXPORT" />
@@ -278,6 +278,8 @@
     </div>
 </div>
 
+<div class="loading"></div>
+
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script type="text/javascript" language="javascript" class="init">
@@ -312,6 +314,10 @@
 
 
         function setupDataTables(blFirst) {
+
+            $('#btn-filter').click(function () {
+                $('.loading').show();
+            });
 
             // DataTable
             var table = null;
@@ -406,6 +412,7 @@
             setupDataTables(false);
             $('#SearchInput_Month').removeClass('input-validation-error');
             $('#SearchInput_Year').removeClass('input-validation-error');
+            $('.loading').hide();
         }
 
         function OnReset() {
