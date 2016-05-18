@@ -22,14 +22,16 @@
         <div class="col-sm-12">
 
                 @using (Ajax.BeginForm("Filter", "PBCK4",
-                                new AjaxOptions
-                                {
-                                    HttpMethod = "POST",
-                                    InsertionMode = InsertionMode.Replace,
-                                    UpdateTargetId = "contenttable",
-                                    OnComplete = "ReloadDataTables"
+                               new AjaxOptions
+                               {
+                                   HttpMethod = "POST",
+                                   InsertionMode = InsertionMode.Replace,
+                                   //UpdateTargetId = "contenttable",
+                                   OnSuccess = "OnSuccess",
+                                   OnFailure = "OnFailure",
+                                   OnComplete = "ReloadDataTables"
 
-                                }))
+                               }, new { id = "ajaxForm" }))
                 {
                     @Html.Partial("_Pbck4Search")
                 }
@@ -44,7 +46,7 @@
     </div>
 </div>
 
-
+<div class="loading"></div>
 
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
@@ -106,7 +108,25 @@
             $(".selectreset").val($(".selectreset option:first").val());
             $('#SearchView_ReportedOn').val('');
         }
-             
+        
+        function OnSuccess(data) {
+            $('.loading').hide();
+            $("#contenttable").html(data);
+
+
+        }
+
+        function OnFailure(xhr, status) {
+            $('.loading').hide();
+            // alert('Error: ' + xhr.statusText);
+
+        }
+
+        function OnFilter() {
+            $('.loading').show();
+            $('#ajaxForm').submit();
+        }
+        
 
     </script>
 }
