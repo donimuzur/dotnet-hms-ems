@@ -17,13 +17,14 @@
             <div class="tab-wrapper">
                 @using (Ajax.BeginForm("FilterMarketReturn", "CK5",
                                 new AjaxOptions
-                                {
-                                    HttpMethod = "POST",
-                                    InsertionMode = InsertionMode.Replace,
-                                    UpdateTargetId = "contenttable",
-                                    OnComplete = "ReloadDataTables"
+                    {
+                        HttpMethod = "POST",
+                        InsertionMode = InsertionMode.Replace,
+                        OnSuccess = "OnSuccess",
+                        OnFailure = "OnFailure",
+                        OnComplete = "ReloadDataTables"
 
-                                }))
+                    }, new { id = "ajaxForm" }))
                 {
                     @Html.Partial("_CK5Search")
                 }
@@ -39,10 +40,11 @@
     </div>
 </div>
 
+<div class="loading"></div>
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-    
-    <script type="text/javascript" language="javascript" class="init">
+    <script src="~/Scripts/CK5Scripts.js"></script>
+    <script type="text/javascript" language="javascript">
 
         $(document).ready(function () {
             $('#liCK5MarketReturnCompleted').addClass('active');
