@@ -719,7 +719,19 @@
                                     <div class="row">
                                         @Html.LabelFor(model => model.GiDate, new { @class = "col-md-4" })
                                         <div class="col-md-8">
-                                            @Html.EditorFor(model => model.GiDate)
+                                            @if (Model.IsCk5Waste)
+                                            {
+                                                <div class="input-group date">
+                                                    @Html.TextBoxFor(model => model.GiDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                               @Html.EditorFor(model => model.GiDate) 
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -728,7 +740,19 @@
                                     <div class="row">
                                         @Html.LabelFor(model => model.GrDate, new { @class = "col-md-4" })
                                         <div class="col-md-8">
-                                            @Html.EditorFor(model => model.GrDate)
+                                            @if (Model.IsCk5Waste)
+                                            {
+                                                <div class="input-group date">
+                                                    @Html.TextBoxFor(model => model.GrDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                @Html.EditorFor(model => model.GrDate)
+                                            }
                                         </div>
                                     </div>
                                 </div>
