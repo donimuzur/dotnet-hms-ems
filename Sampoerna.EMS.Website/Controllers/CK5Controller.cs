@@ -5623,6 +5623,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 input.Ck5FileUploadList = Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList);
 
+                if (model.IsCk5Waste)
+                {
+                    input.GI_DATE = model.GiDate;
+                    input.GR_DATE = model.GrDate;
+                    input.IsCk5Waste = model.IsCk5Waste;
+                }
+
                 _ck5Bll.EditCompletedDocument(input);
 
                 AddMessageInfo("Success Update Document CK5", Enums.MessageInfoType.Success);

@@ -5824,6 +5824,11 @@ namespace Sampoerna.EMS.BLL
             inputChangeLogs.SEALING_NOTIF_DATE = input.SEALING_NOTIF_DATE;
             inputChangeLogs.UNSEALING_NOTIF_NUMBER = input.UNSEALING_NOTIF_NUMBER;
             inputChangeLogs.UNSEALING_NOTIF_DATE = input.UNSEALING_NOTIF_DATE;
+            if (input.IsCk5Waste)
+            {
+                inputChangeLogs.GI_DATE = input.GI_DATE;
+                inputChangeLogs.GR_DATE = input.GR_DATE;
+            }
 
             //add to change log
             SetChangesHistory(origin, inputChangeLogs, input.UserId);
@@ -5841,6 +5846,11 @@ namespace Sampoerna.EMS.BLL
             dbData.SEALING_NOTIF_DATE = input.SEALING_NOTIF_DATE;
             dbData.UNSEALING_NOTIF_NUMBER = input.UNSEALING_NOTIF_NUMBER;
             dbData.UNSEALING_NOTIF_DATE = input.UNSEALING_NOTIF_DATE;
+            if (input.IsCk5Waste)
+            {
+                dbData.GI_DATE = input.GI_DATE;
+                dbData.GR_DATE = input.GR_DATE;
+            }
 
             dbData.MODIFIED_DATE = DateTime.Now;
 
