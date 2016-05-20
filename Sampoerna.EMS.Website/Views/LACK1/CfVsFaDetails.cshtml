@@ -76,18 +76,11 @@
                     <br/>
                 </div>
                 <div class="row">
-                    <div class="last-form">
-                        
-                        <div class="col-md-6">
-                            <div class="row">
-                                <div class="col-md-4 right">
-                                    <input type="button" id="btn-generate-data" class="btn btn-blue full" value="Generate" onclick="generateDataCsVsFAClick(1,'@Url.Action("GenerateCFVsFaReport", "LACK1")');" />
-                                </div>
-                                <div class="col-md-4 right">
-                                    <input type="button" id="btn-generate-data" class="btn btn-blue full" value="Export" onclick="exportToExcel();" />
-                                </div>
-                            </div>
-                        </div>
+                    <div class="col-md-2 col-md-offset-8">
+                        <input type="button" id="btn-generate-data" class="btn btn-blue full" value="Generate" onclick="generateDataCsVsFAClick(1,'@Url.Action("GenerateCFVsFaReport", "LACK1")',true);" />
+                    </div>
+                    <div class="col-md-2">
+                        <input type="button" id="btn-generate-data" class="btn btn-blue full" value="Export" onclick="exportToExcel();" />
                     </div>
                 </div>
                 
@@ -107,7 +100,7 @@
     @Html.HiddenFor(model => model.EndPostingDate, new { @id = "exportEndDate" })
     @Html.HiddenFor(model => model.BeginingPlant, new { @id = "exportBeginPlant" })
     @Html.HiddenFor(model => model.EndPlant, new { @id = "exportEndPlant" })
-    
+    @Html.Hidden("IsSummary",false, new { @id = "exportIsSummary" })
 }
 
 <div class="loading"></div>

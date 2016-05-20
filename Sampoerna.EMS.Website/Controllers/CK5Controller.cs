@@ -399,6 +399,11 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchView.NPPBKCOriginList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
             model.SearchView.NPPBKCDestinationList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
 
+            model.SearchView.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.SearchView.YearList = GlobalFunctions.GetYearList();
+            model.SearchView.Month = DateTime.Now.Month.ToString();
+            model.SearchView.Year = DateTime.Now.Year.ToString();
+
             model.DetailsList = GetCk5MarketReturnCompletedItems();
 
             return View(model);
@@ -5617,6 +5622,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.Ck5MaterialDtos = Mapper.Map<List<CK5MaterialDto>>(model.UploadItemModels);
 
                 input.Ck5FileUploadList = Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList);
+
+                if (model.IsCk5Waste)
+                {
+                    input.GI_DATE = model.GiDate;
+                    input.GR_DATE = model.GrDate;
+                    input.IsCk5Waste = model.IsCk5Waste;
+                }
 
                 _ck5Bll.EditCompletedDocument(input);
 

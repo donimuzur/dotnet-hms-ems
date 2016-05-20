@@ -10,6 +10,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
+using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.PRODUCTION;
 using Sampoerna.EMS.Website.Models.Waste;
@@ -31,10 +32,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IMaterialBLL _materialBll;
         private IUserPlantMapBLL _userPlantMapBll;
         private IPOAMapBLL _poaMapBll;
+        private IMonthBLL _monthBll;
 
         public WasteController(IPageBLL pageBll, IWasteBLL wasteBll, ICompanyBLL companyBll, IPlantBLL plantBll,
-            IUnitOfMeasurementBLL uomBll, IBrandRegistrationBLL brandRegistrationBll, IChangesHistoryBLL changesHistoryBll, 
-            IWasteStockBLL wasteStockBll, IMaterialBLL materialBll, IUserPlantMapBLL userPlantMapBll, IPOAMapBLL poaMapBll)
+            IUnitOfMeasurementBLL uomBll, IBrandRegistrationBLL brandRegistrationBll, IChangesHistoryBLL changesHistoryBll,
+            IWasteStockBLL wasteStockBll, IMaterialBLL materialBll, IUserPlantMapBLL userPlantMapBll, IPOAMapBLL poaMapBll, IMonthBLL monthBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _wasteBll = wasteBll;
@@ -48,6 +50,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _materialBll = materialBll;
             _userPlantMapBll = userPlantMapBll;
             _poaMapBll = poaMapBll;
+            _monthBll = monthBll;
         }
 
 
@@ -73,6 +76,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.CompanyCodeList = company;
             model.PlantWerksList = listPlant;
+            model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.YearList = WasteYearList();
+            model.Month = DateTime.Now.Month.ToString();
+            model.Year = DateTime.Now.Year.ToString();
 
             var input = Mapper.Map<WasteGetByParamInput>(model);
             input.WasteProductionDate = null;
@@ -115,6 +122,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.WasteProductionDate = Convert.ToDateTime(input.WasteProductionDate).ToString();
             }
             input.UserId = CurrentUser.USER_ID;
+            input.UserRole = CurrentUser.UserRole;
             input.ListUserPlants = CurrentUser.ListUserPlants;
 
             var dbData = _wasteBll.GetAllByParam(input);
@@ -464,13 +472,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     var item = new WasteUploadItems();
                     var brand = _brandRegistrationBll.GetByFaCode(dataRow[1], dataRow[2]);
+                    var markerStick = dataRow[3] == "" ? 0 : Convert.ToDecimal(dataRow[3]);
+                    var parkerStick = dataRow[4] == "" ? 0 : Convert.ToDecimal(dataRow[4]);
 
                     item.CompanyCode = dataRow[0];
                     item.PlantWerks = dataRow[1];
                     item.FaCode = dataRow[2];
                     item.BrandDescription = brand == null ? string.Empty : brand.BRAND_CE;
-                    item.MarkerRejectStickQty = dataRow[3];
-                    item.PackerRejectStickQty = dataRow[4];
+                    item.MarkerRejectStickQty = Math.Round(markerStick).ToString();
+                    item.PackerRejectStickQty = Math.Round(parkerStick).ToString();
                     item.DustWasteGramQty = dataRow[5];
                     item.FloorWasteGramQty = dataRow[6];
                     //item.DustWasteStickQty = dataRow[8];
@@ -549,6 +559,16 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 _changeHistoryBll.MoveHistoryToNewData(data, oldFormId);
             }
+        }
+
+        private SelectList WasteYearList()
+        {
+            var years = new List<SelectItemModel>();
+            var currentYear = DateTime.Now.Year;
+            years.Add(new SelectItemModel() { ValueField = currentYear + 1, TextField = (currentYear + 1).ToString() });
+            years.Add(new SelectItemModel() { ValueField = currentYear, TextField = currentYear.ToString() });
+            years.Add(new SelectItemModel() { ValueField = currentYear - 1, TextField = (currentYear - 1).ToString() });
+            return new SelectList(years, "ValueField", "TextField");
         }
     }
 }

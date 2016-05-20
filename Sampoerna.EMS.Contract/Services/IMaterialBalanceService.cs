@@ -13,5 +13,8 @@ namespace Sampoerna.EMS.Contract.Services
 
         MaterialBalanceTotalDto GetByMaterialListAndPlant(string plantId, List<string> materialList, int month,
             int year);
+
+        MaterialBalanceTotalDto GetByMaterialListAndPlantEa(string plantId, List<string> materialList, int month,
+            int year);
     }
 }

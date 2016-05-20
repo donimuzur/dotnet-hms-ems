@@ -20,8 +20,8 @@
                             {
                                 HttpMethod = "POST",
                                 InsertionMode = InsertionMode.Replace,
-                                UpdateTargetId = "contenttable"
-
+                                UpdateTargetId = "contenttable",
+                                OnComplete = "ReloadDataTables"
                             }))
                         {
                             <div class="row">
@@ -118,7 +118,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-2 col-md-offset-8">
-                                    <button class="btn btn-blue full">FILTER</button>
+                                    <button id="btn-filter" class="btn btn-blue full">FILTER</button>
                                 </div>
                                 <div class="col-md-2">
                                     <input id="btn-export-to-excel" type="button" class="btn btn-blue full" value="EXPORT" />
@@ -148,6 +148,8 @@
     </div>
 </div>
 
+<div class="loading"></div>
+
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/js/vendors/jquery.table2excel.js"></script>
@@ -176,6 +178,10 @@
 
             $('#btn-export-to-excel').click(function() {
                 exportDetailReport();
+            });
+
+            $('#btn-filter').click(function () {
+                $('.loading').show();
             });
 
         });
@@ -343,6 +349,10 @@
             $('#ExportSearchView_Poa').val($('#SearchView_Poa').find("option:selected").val());
             $('#ExportSearchView_Creator').val($('#SearchView_Creator').find("option:selected").val());
             $('#ExportXlsDetailReports').submit();
+        }
+
+        function ReloadDataTables() {
+            $('.loading').hide();
         }
 
     </script>

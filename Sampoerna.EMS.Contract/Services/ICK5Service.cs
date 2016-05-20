@@ -26,5 +26,7 @@ namespace Sampoerna.EMS.Contract.Services
         List<CK5> GetCk5ReturnByParam(Ck5GetForLack1ByParamInput input);
 
         List<CK5> GetCk5ForLack1DetailTis(Ck5GetForLack1DetailTis input);
+
+        List<CK5> GetCk5ForLack1DetailEa(Ck5GetForLack1DetailEa input);
     }
 }

@@ -149,6 +149,7 @@
     <Compile Include="DTOs\HEADER_FOOTER_MAPDto.cs" />
     <Compile Include="DTOs\InventoryMovementDto.cs" />
     <Compile Include="DTOs\Lack1DailyProdDto.cs" />
+    <Compile Include="DTOs\Lack1DetailEaDto.cs" />
     <Compile Include="DTOs\Lack1DetailReportDto.cs" />
     <Compile Include="DTOs\Lack1DetailTisDto.cs" />
     <Compile Include="DTOs\Lack1GeneratedDto.cs" />
@@ -276,6 +277,7 @@
     <Compile Include="Inputs\PrintHistoryInputs.cs" />
     <Compile Include="Inputs\ProductionGetByParamInput.cs" />
     <Compile Include="Inputs\ProductionUploadItemsInput.cs" />
+    <Compile Include="Inputs\ProductTypeInput.cs" />
     <Compile Include="Inputs\ReversalGetByParamInput.cs" />
     <Compile Include="Inputs\UserInput.cs" />
     <Compile Include="Inputs\UserPlantMapInputs.cs" />

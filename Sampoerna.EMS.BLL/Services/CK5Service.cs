@@ -197,7 +197,8 @@ namespace Sampoerna.EMS.BLL.Services
                      (c.GR_DATE.HasValue
                      && c.GR_DATE.Value.Month == input.PeriodMonth
                      && c.GR_DATE.Value.Year == input.PeriodYear)
-                     && (c.STATUS_ID == Enums.DocumentStatus.Completed || c.STATUS_ID == Enums.DocumentStatus.GRCompleted)
+                     && (c.STATUS_ID == Enums.DocumentStatus.Completed || c.STATUS_ID == Enums.DocumentStatus.GRCompleted || 
+                     c.STATUS_ID == Enums.DocumentStatus.WasteDisposal || c.STATUS_ID == Enums.DocumentStatus.WasteApproval)
                 ;
 
             if (input.Lack1Level == Enums.Lack1Level.Plant)
@@ -239,6 +240,19 @@ namespace Sampoerna.EMS.BLL.Services
                     && c.GR_DATE >= input.DateFrom.Value
                     && c.GR_DATE <= input.DateTo.Value
                     && c.EX_GOODS_TYPE == Enums.ExGoodsType.HasilTembakau
+                ;
+
+            return _repository.Get(queryFilterCk5, null, "CK5_MATERIAL").ToList();
+        }
+
+        public List<CK5> GetCk5ForLack1DetailEa(Ck5GetForLack1DetailEa input)
+        {
+            Expression<Func<CK5, bool>> queryFilterCk5 =
+                c => string.Compare(c.DEST_PLANT_ID, input.PlantReceiverFrom) >= 0
+                    && string.Compare(c.DEST_PLANT_ID, input.PlantReceiverTo) <= 0
+                    && c.GR_DATE >= input.DateFrom.Value
+                    && c.GR_DATE <= input.DateTo.Value
+                    && c.EX_GOODS_TYPE == Enums.ExGoodsType.EtilAlcohol
                 ;
 
             return _repository.Get(queryFilterCk5, null, "CK5_MATERIAL").ToList();

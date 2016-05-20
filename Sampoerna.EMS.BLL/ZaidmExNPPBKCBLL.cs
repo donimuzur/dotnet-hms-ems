@@ -205,5 +205,9 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<ZAIDM_EX_NPPBKCCompositeDto>>(data);
         }
 
+        public List<ZAIDM_EX_NPPBKC> GetAllOnlyNppbkc()
+        {
+            return _repository.Get().ToList();
+        }
     }
 }

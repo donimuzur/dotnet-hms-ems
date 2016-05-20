@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Inputs;
 
 namespace Sampoerna.EMS.Contract
 {
@@ -12,5 +13,6 @@ namespace Sampoerna.EMS.Contract
 
         ZAIDM_EX_PRODTYP GetByAlias(string aliasName);
 
+        void UpdateProductType(ProductTypeSaveInput input);
     }
 }
