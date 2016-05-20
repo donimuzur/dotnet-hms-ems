@@ -3396,13 +3396,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 slDocument.SetCellValue(iRow, iColumn, data.ProductionDate);
                 iColumn = iColumn + 1;
 
-                slDocument.SetCellValue(iRow, iColumn, data.ProdQty);
+                slDocument.SetCellValue(iRow, iColumn, ConvertHelper.ConvertToDecimalOrZero(data.ProdQty));
                 iColumn = iColumn + 1;
 
                 slDocument.SetCellValue(iRow, iColumn, data.ProdUom);
                 iColumn = iColumn + 1;
 
-                slDocument.SetCellValue(iRow, iColumn, data.RejectParkerQty);
+                slDocument.SetCellValue(iRow, iColumn, ConvertHelper.ConvertToDecimalOrZero(data.RejectParkerQty));
                 iColumn = iColumn + 1;
 
                 slDocument.SetCellValue(iRow, iColumn, data.RejectParkerUom);
@@ -3437,7 +3437,7 @@ namespace Sampoerna.EMS.Website.Controllers
             headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
             headerStyle.Fill.SetPattern(PatternValues.Solid, System.Drawing.Color.LightGray, System.Drawing.Color.LightGray);
 
-            slDocument.AutoFitColumn(1, iColumn - 1);
+            //slDocument.AutoFitColumn(1, iColumn - 1);
             slDocument.SetCellStyle(7, 1, iRow - 1, iColumn - 1, valueStyle);
 
             slDocument.SetCellStyle(6, 1, 6, iColumn - 1, headerStyle);
@@ -3448,10 +3448,12 @@ namespace Sampoerna.EMS.Website.Controllers
             numericStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
             numericStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
             numericStyle.Alignment.Horizontal = HorizontalAlignmentValues.Right;
-
+            numericStyle.FormatCode = "#,##0.00";
             slDocument.SetCellStyle(7, 6, iRow - 1, 6 - 1, numericStyle);
             slDocument.SetCellStyle(7, 8, iRow - 1, 8 - 1, numericStyle);
 
+
+            slDocument.AutoFitColumn(1, iColumn - 1);
 
             var fileName = "lack1_dailyprod" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
             var path = Path.Combine(Server.MapPath(Constans.Lack1UploadFolderPath), fileName);
@@ -3659,7 +3661,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 slDocument.SetCellValue(iRow, iColumn, data.CfProdDate);
                 iColumn = iColumn + 1;
 
-                slDocument.SetCellValue(iRow, iColumn, data.CfProdQty);
+                slDocument.SetCellValue(iRow, iColumn, ConvertHelper.ConvertToDecimalOrZero(data.CfProdQty));
                 iColumn = iColumn + 1;
 
                 slDocument.SetCellValue(iRow, iColumn, data.CfProdUom);
@@ -3671,7 +3673,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 slDocument.SetCellValue(iRow, iColumn, data.BkcDescription);
                 iColumn = iColumn + 1;
 
-                slDocument.SetCellValue(iRow, iColumn, data.BkcIssueQty);
+                slDocument.SetCellValue(iRow, iColumn, ConvertHelper.ConvertToDecimalOrZero(data.BkcIssueQty));
                 iColumn = iColumn + 1;
 
                 slDocument.SetCellValue(iRow, iColumn, data.BkcIssueUom);
@@ -3705,7 +3707,7 @@ namespace Sampoerna.EMS.Website.Controllers
             headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
             headerStyle.Fill.SetPattern(PatternValues.Solid, System.Drawing.Color.LightGray, System.Drawing.Color.LightGray);
 
-            slDocument.AutoFitColumn(1, iColumn - 1);
+           
             slDocument.SetCellStyle(7, 1, iRow - 1, iColumn - 1, valueStyle);
 
             slDocument.SetCellStyle(6, 1, 6, iColumn - 1, headerStyle);
@@ -3716,9 +3718,12 @@ namespace Sampoerna.EMS.Website.Controllers
             numericStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
             numericStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
             numericStyle.Alignment.Horizontal = HorizontalAlignmentValues.Right;
+            numericStyle.FormatCode = "#,##0.00";
 
             slDocument.SetCellStyle(7, 7, iRow - 1, 7 - 1, numericStyle);
             slDocument.SetCellStyle(7, 11, iRow - 1, 11 - 1, numericStyle);
+
+            slDocument.AutoFitColumn(1, iColumn - 1);
 
             var fileName = "lack1_primaryresults" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
             var path = Path.Combine(Server.MapPath(Constans.Lack1UploadFolderPath), fileName);
