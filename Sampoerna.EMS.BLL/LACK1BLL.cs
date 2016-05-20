@@ -2195,7 +2195,7 @@ namespace Sampoerna.EMS.BLL
             //{
             //    strCsv += ObjectToCsvData(data) + "\r\n";
             //}
-            var productionTypeId = finalgoodlistGrouped.Any() ? finalgoodlistGrouped.FirstOrDefault().ExGoodsTypeId : null;
+            var productionTypeId = finalgoodlistGrouped.Any() ? finalgoodlistGrouped.FirstOrDefault().ExGoodsTypeId : EnumHelper.GetDescription(Enums.GoodsType.EtilAlkohol);
 
             var productionList = new List<Lack1GeneratedProductionDataDto>();
             
