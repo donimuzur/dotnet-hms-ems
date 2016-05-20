@@ -135,6 +135,8 @@ namespace Sampoerna.EMS.XMLReader
                     }
                     
                 }
+                var otherUsers = flagOtherUsersasInactive(items);
+                items.AddRange(otherUsers);
                 return items;
             }
              
@@ -322,6 +324,22 @@ namespace Sampoerna.EMS.XMLReader
             {
                 _xmlMapper.uow.GetGenericRepository<USER_PLANT_MAP>().Delete(userPlantMap);
             }
+        }
+
+
+        private List<USER> flagOtherUsersasInactive(List<USER> users)
+        {
+            var userList = users.Select(x => x.USER_ID).ToList();
+
+            var otherUsers = _xmlMapper.uow.GetGenericRepository<USER>()
+                .Get(x => !userList.Contains(x.USER_ID)).ToList();
+
+            foreach (var otherUser in otherUsers)
+            {
+                otherUser.IS_ACTIVE = 0;
+            }
+
+            return otherUsers;
         }
     }
 }
