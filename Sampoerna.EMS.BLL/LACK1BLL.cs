@@ -1635,15 +1635,17 @@ namespace Sampoerna.EMS.BLL
                     x.Key.ORDR, 
                    
                 }).OrderBy(x=> x.WERKS);
+            var plantList = zaapshiftrpt.Select(x => x.WERKS).ToList();
+
             foreach (var zaapShiftRpt in zaapshiftrpt)
             {
                 var data = new Lack1CFUsagevsFaDetailDto();
 
                 data.Order = zaapShiftRpt.ORDR;
-                data.PlantDesc = _t001WServices.GetById(zaapShiftRpt.WERKS).NAME1;
+                //data.PlantDesc = _t001WServices.GetById(zaapShiftRpt.WERKS).NAME1;
                 data.PlantId = zaapShiftRpt.WERKS;
                 data.Fa_Code = zaapShiftRpt.FA_CODE;
-                data.Brand_Desc = _brandRegService.GetByPlantIdAndFaCode(zaapShiftRpt.WERKS, zaapShiftRpt.FA_CODE).BRAND_CE;
+                //data.Brand_Desc = _brandRegService.GetByPlantIdAndFaCode(zaapShiftRpt.WERKS, zaapShiftRpt.FA_CODE).BRAND_CE;
 
                 var zaapInput101 = new InvGetReceivingByParamZaapShiftRptInput()
                 {
@@ -1681,7 +1683,8 @@ namespace Sampoerna.EMS.BLL
                 result.Add(data);
             }
 
-
+            
+           
 
             return result;
         }
