@@ -32,6 +32,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal EndingBalance { get; set; }
         public string EndingBalanceUom { get; set; }
 
+        public List<string> MvtTypeList { get; set; }
+        public List<string> UsageList { get; set; }
+        public List<string> UsagePostingDateList { get; set; }
+
         public ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public string StoReceiverNumber { get; set; }
     }
