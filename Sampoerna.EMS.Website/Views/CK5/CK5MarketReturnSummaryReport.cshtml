@@ -18,14 +18,15 @@
                 <div class="form-excise" role="form">
                     <div class="row">
                         @using (Ajax.BeginForm("SearchSummaryReportsMarketReturn", "CK5",
-                            new AjaxOptions
-                            {
-                                HttpMethod = "POST",
-                                InsertionMode = InsertionMode.Replace,
-                                UpdateTargetId = "contenttable",
-                                OnComplete = "ReloadDataTables"
+                          new AjaxOptions
+                    {
+                        HttpMethod = "POST",
+                        InsertionMode = InsertionMode.Replace,
+                        OnSuccess = "OnSuccess",
+                        OnFailure = "OnFailure",
+                        OnComplete = "ReloadDataTables"
 
-                            }))
+                    }, new { id = "ajaxForm" }))
                         {
                             <div class="col-md-6">
                                 <div class="row">
@@ -186,7 +187,7 @@
                             </div>
                             
                             <div class="col-md-2 col-md-offset-8">
-                                <button class="btn btn-blue full">FILTER</button>
+                                <input type="button" onclick="OnFilter();" id="btnFILTER" class="btn btn-blue full" value="FILTER" />
                             </div>
                             <div class="col-md-2">
                                 <input id="btnExport" type="button" class="btn btn-blue full" value="EXPORT" />
@@ -398,13 +399,11 @@
     </div>
 </div>
 
-
-
-
-
+<div class="loading"></div>
 
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/CK5Scripts.js"></script>
     <script type="text/javascript" language="javascript">
 
        

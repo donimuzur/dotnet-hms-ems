@@ -25,7 +25,7 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetPoaAll(IPOABLL poabll)
         {
             IPOABLL poaBll = poabll;
-            var poaList = poaBll.GetAll();
+            var poaList = poaBll.GetAllOnlyPoa();
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(poaList);
             return new SelectList(selectItemSource, "ValueField", "TextField");
 
@@ -55,7 +55,7 @@ namespace Sampoerna.EMS.Website.Code
         public static SelectList GetNppbkcAll(IZaidmExNPPBKCBLL nppbkcBll)
         {
             IZaidmExNPPBKCBLL nppbkcbll = nppbkcBll;
-            var nppbkcList = nppbkcbll.GetAll().Where(x => x.IS_DELETED != true).OrderBy(x=> x.NPPBKC_ID);
+            var nppbkcList = nppbkcbll.GetAllOnlyNppbkc().Where(x => x.IS_DELETED != true).OrderBy(x=> x.NPPBKC_ID);
             var selectItemSource = Mapper.Map<List<SelectItemModel>>(nppbkcList);
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }

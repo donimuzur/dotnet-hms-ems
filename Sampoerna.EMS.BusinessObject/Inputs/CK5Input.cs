@@ -229,6 +229,11 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string UNSEALING_NOTIF_NUMBER { get; set; }
         public DateTime? UNSEALING_NOTIF_DATE { get; set; }
 
+        public DateTime? GI_DATE { get; set; }
+        public DateTime? GR_DATE { get; set; }
+
+        public bool IsCk5Waste { get; set; }
+
         public List<CK5MaterialDto> Ck5MaterialDtos { get; set; }
     }
 
