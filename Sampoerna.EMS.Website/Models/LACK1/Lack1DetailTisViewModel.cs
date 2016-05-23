@@ -56,5 +56,9 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string ProdDate { get; set; }
         public decimal EndingBalance { get; set; }
         public string EndingBalanceUom { get; set; }
+
+        public List<string> MvtTypeList { get; set; }
+        public List<string> UsageList { get; set; }
+        public List<string> UsagePostingDateList { get; set; }
     }
 }
