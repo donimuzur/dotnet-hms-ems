@@ -4199,113 +4199,77 @@ namespace Sampoerna.EMS.Website.Controllers
 
             foreach (var item in dataDetailEa)
             {
-                iColumn = 1;
+                int levelCount = item.LevelList.Count - 1;
+                int dataCount = levelCount;
+                int usageCount = item.UsageList.Count - 1;
 
-                if (item.LevelList.Count > 0)
+                if (levelCount < usageCount) dataCount = usageCount;
+
+                for (int i = 0; i < dataCount; i++)
                 {
-                    int dataCount = item.LevelList.Count - 1;
+                    iColumn = 1;
 
-                    //first record
                     slDocument.SetCellValue(iRow, iColumn, item.PlantIdReceiver);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.PlantDescReceiver);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.PlantIdSupplier);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.PlantDescSupplier);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.EaCode);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.EaDesc);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
 
-                    slDocument.SetCellValue(iRow, iColumn, item.BeginingBalance);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
+                    slDocument.SetCellValue(iRow, iColumn, Convert.ToDecimal(item.BeginingBalance));
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.BeginingBalanceUom);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.Ck5EmsNo);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.Ck5RegNo);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.Ck5RegDate);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
 
-                    slDocument.SetCellValue(iRow, iColumn, item.Ck5Qty.ToString("N2"));
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
+                    slDocument.SetCellValue(iRow, iColumn, item.Ck5Qty);
                     iColumn++;
 
-                    slDocument.SetCellValue(iRow, iColumn, item.Usage);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.UsageUom);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.UsagePostingDate);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.LevelList[0].Level);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.LevelList[0].FlavorCode);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.LevelList[0].FlavorDesc);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.LevelList[0].CfProdCode);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.LevelList[0].CfProdDesc);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.LevelList[0].CfProdQty);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.LevelList[0].CfProdUom);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.LevelList[0].ProdPostingDate);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.LevelList[0].ProdDate);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.EndingBalance.ToString("N2"));
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.EndingBalanceUom);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
-                    iColumn++;
-
-                    for (int i = 1; i < item.LevelList.Count; i++)
+                    if (i <= usageCount)
                     {
-                        iRow++;
-                        iColumn = 16;
+                        slDocument.SetCellValue(iRow, iColumn, Convert.ToDecimal(item.UsageList[i]));
+                        iColumn++;
 
+                        slDocument.SetCellValue(iRow, iColumn, "Liter");
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.UsagePostingDateList[i]);
+                        iColumn++;
+                    }
+                    else
+                    {
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+                    }
+
+                    if (i <= levelCount)
+                    {
                         slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].Level);
                         iColumn++;
 
@@ -4333,68 +4297,44 @@ namespace Sampoerna.EMS.Website.Controllers
                         slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].ProdDate);
                         iColumn++;
                     }
-                }
-                else
-                {
-                    slDocument.SetCellValue(iRow, iColumn, item.PlantIdReceiver);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.PlantDescReceiver);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.PlantIdSupplier);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.PlantDescSupplier);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.EaCode);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.EaDesc);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.BeginingBalance);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.BeginingBalanceUom);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.Ck5EmsNo);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.Ck5RegNo);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.Ck5RegDate);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.Ck5Qty.ToString("N2"));
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.Usage);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.UsageUom);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.UsagePostingDate);
-                    iColumn++;
-
-                    for (int i = 0; i < 9; i++)
+                    else
                     {
-                        slDocument.SetCellValue(iRow, iColumn, "-");
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
                         iColumn++;
                     }
 
-                    slDocument.SetCellValue(iRow, iColumn, item.EndingBalance.ToString("N2"));
+                    slDocument.SetCellValue(iRow, iColumn, item.EndingBalance);
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.EndingBalanceUom);
                     iColumn++;
-                }                
 
-                iRow++;
+                    iRow++;
+                }
             }
 
             return CreateXlsFileDetailEa(slDocument, iColumn, iRow);
