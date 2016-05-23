@@ -5337,6 +5337,9 @@ namespace Sampoerna.EMS.BLL
                 item.EndingBalance = balanceList.TotalBeginningBalance + item.Ck5Qty - mvtList.Sum(x => (x.QTY.Value / umren));
                 item.EndingBalanceUom = "Liter";
 
+                item.UsageList = mvtList.Select(x => (x.QTY.Value / umren).ToString("N2")).ToList();
+                item.UsagePostingDateList = mvtList.Select(x => x.POSTING_DATE.Value.ToString("dd-MMM-yy")).ToList();
+
                 item.LevelList = Mapper.Map<List<Lack1DetailLevelDto>>(levelList);
             }
 
