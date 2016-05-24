@@ -3043,84 +3043,171 @@ namespace Sampoerna.EMS.Website.Controllers
 
             foreach (var item in dataDetailTis)
             {
-                iColumn = 1;
+                if (item.UsageList.Count > 0)
+                {
+                    for (int i = 0; i < item.UsageList.Count - 1; i++)
+                    {
+                        iColumn = 1;
 
-                slDocument.SetCellValue(iRow, iColumn, item.PlantIdReceiver);
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, item.PlantIdReceiver);
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.PlantDescReceiver);
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, item.PlantDescReceiver);
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.PlantIdSupplier);
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, item.PlantIdSupplier);
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.PlantDescSupplier);
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, item.PlantDescSupplier);
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.CfCode);
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, item.CfCode);
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.CfDesc);
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, item.CfDesc);
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.BeginingBalance);
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, Convert.ToDecimal(item.BeginingBalance));
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.BeginingBalanceUom);
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, item.BeginingBalanceUom);
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.Ck5EmsNo);
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, item.Ck5EmsNo);
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.Ck5RegNo);
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, item.Ck5RegNo);
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.Ck5RegDate);
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, item.Ck5RegDate);
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.Ck5GrDate);
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, item.Ck5GrDate);
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.Ck5Qty.ToString("N2"));
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, item.Ck5Qty);
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.MvtType);
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, item.MvtTypeList[i]);
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.Usage);
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, Convert.ToDecimal(item.UsageList[i]));
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.UsageUom);
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, "Gram");
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.UsagePostingDate);
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, item.UsagePostingDateList[i]);
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.FaCode);
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, item.FaCode);
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.FaCodeDesc);
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, item.FaCodeDesc);
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.ProdQty.ToString("N2"));
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, item.ProdQty);
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.ProdUom);
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, item.ProdUom);
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.ProdPostingDate);
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, item.ProdPostingDate);
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.ProdDate);
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, item.ProdDate);
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.EndingBalance.ToString("N2"));
-                iColumn++;
+                        slDocument.SetCellValue(iRow, iColumn, item.EndingBalance);
+                        iColumn++;
 
-                slDocument.SetCellValue(iRow, iColumn, item.EndingBalanceUom);
-                iColumn++;
-                
-                iRow++;
+                        slDocument.SetCellValue(iRow, iColumn, item.EndingBalanceUom);
+                        iColumn++;
+
+                        iRow++;
+                    }
+                }
+                else
+                {
+                    iColumn = 1;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.PlantIdReceiver);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.PlantDescReceiver);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.PlantIdSupplier);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.PlantDescSupplier);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.CfCode);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.CfDesc);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, Convert.ToDecimal(item.BeginingBalance));
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.BeginingBalanceUom);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.Ck5EmsNo);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.Ck5RegNo);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.Ck5RegDate);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.Ck5GrDate);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.Ck5Qty);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.FaCode);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.FaCodeDesc);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.ProdQty);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.ProdUom);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.ProdPostingDate);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.ProdDate);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.EndingBalance);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, item.EndingBalanceUom);
+                    iColumn++;
+
+                    iRow++;
+                }
             }
 
             return CreateXlsFileDetailTis(slDocument, iColumn, iRow);
@@ -3220,6 +3307,7 @@ namespace Sampoerna.EMS.Website.Controllers
             valueStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
             valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
             valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.SetWrapText(true);
 
             SLStyle headerStyle = slDocument.CreateStyle();
             headerStyle.Alignment.Horizontal = HorizontalAlignmentValues.Center;
@@ -4199,113 +4287,77 @@ namespace Sampoerna.EMS.Website.Controllers
 
             foreach (var item in dataDetailEa)
             {
-                iColumn = 1;
+                int levelCount = item.LevelList.Count - 1;
+                int dataCount = levelCount;
+                int usageCount = item.UsageList.Count - 1;
 
-                if (item.LevelList.Count > 0)
+                if (levelCount < usageCount) dataCount = usageCount;
+
+                for (int i = 0; i < dataCount; i++)
                 {
-                    int dataCount = item.LevelList.Count - 1;
+                    iColumn = 1;
 
-                    //first record
                     slDocument.SetCellValue(iRow, iColumn, item.PlantIdReceiver);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.PlantDescReceiver);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.PlantIdSupplier);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.PlantDescSupplier);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.EaCode);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.EaDesc);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
 
-                    slDocument.SetCellValue(iRow, iColumn, item.BeginingBalance);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
+                    slDocument.SetCellValue(iRow, iColumn, Convert.ToDecimal(item.BeginingBalance));
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.BeginingBalanceUom);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.Ck5EmsNo);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.Ck5RegNo);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.Ck5RegDate);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
 
-                    slDocument.SetCellValue(iRow, iColumn, item.Ck5Qty.ToString("N2"));
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
+                    slDocument.SetCellValue(iRow, iColumn, item.Ck5Qty);
                     iColumn++;
 
-                    slDocument.SetCellValue(iRow, iColumn, item.Usage);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.UsageUom);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.UsagePostingDate);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.LevelList[0].Level);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.LevelList[0].FlavorCode);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.LevelList[0].FlavorDesc);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.LevelList[0].CfProdCode);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.LevelList[0].CfProdDesc);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.LevelList[0].CfProdQty);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.LevelList[0].CfProdUom);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.LevelList[0].ProdPostingDate);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.LevelList[0].ProdDate);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.EndingBalance.ToString("N2"));
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.EndingBalanceUom);
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
-                    iColumn++;
-
-                    for (int i = 1; i < item.LevelList.Count; i++)
+                    if (i <= usageCount)
                     {
-                        iRow++;
-                        iColumn = 16;
+                        slDocument.SetCellValue(iRow, iColumn, Convert.ToDecimal(item.UsageList[i]));
+                        iColumn++;
 
+                        slDocument.SetCellValue(iRow, iColumn, "Liter");
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.UsagePostingDateList[i]);
+                        iColumn++;
+                    }
+                    else
+                    {
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+                    }
+
+                    if (i <= levelCount)
+                    {
                         slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].Level);
                         iColumn++;
 
@@ -4321,8 +4373,16 @@ namespace Sampoerna.EMS.Website.Controllers
                         slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].CfProdDesc);
                         iColumn++;
 
-                        slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].CfProdQty);
-                        iColumn++;
+                        if (string.IsNullOrEmpty(item.LevelList[i].CfProdQty))
+                        {
+                            slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                            iColumn++;
+                        }
+                        else
+                        {
+                            slDocument.SetCellValue(iRow, iColumn, Convert.ToDecimal(item.LevelList[i].CfProdQty));
+                            iColumn++;
+                        }
 
                         slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].CfProdUom);
                         iColumn++;
@@ -4333,68 +4393,44 @@ namespace Sampoerna.EMS.Website.Controllers
                         slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].ProdDate);
                         iColumn++;
                     }
-                }
-                else
-                {
-                    slDocument.SetCellValue(iRow, iColumn, item.PlantIdReceiver);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.PlantDescReceiver);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.PlantIdSupplier);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.PlantDescSupplier);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.EaCode);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.EaDesc);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.BeginingBalance);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.BeginingBalanceUom);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.Ck5EmsNo);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.Ck5RegNo);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.Ck5RegDate);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.Ck5Qty.ToString("N2"));
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.Usage);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.UsageUom);
-                    iColumn++;
-
-                    slDocument.SetCellValue(iRow, iColumn, item.UsagePostingDate);
-                    iColumn++;
-
-                    for (int i = 0; i < 9; i++)
+                    else
                     {
-                        slDocument.SetCellValue(iRow, iColumn, "-");
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
                         iColumn++;
                     }
 
-                    slDocument.SetCellValue(iRow, iColumn, item.EndingBalance.ToString("N2"));
+                    slDocument.SetCellValue(iRow, iColumn, item.EndingBalance);
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.EndingBalanceUom);
                     iColumn++;
-                }                
 
-                iRow++;
+                    iRow++;
+                }
             }
 
             return CreateXlsFileDetailEa(slDocument, iColumn, iRow);

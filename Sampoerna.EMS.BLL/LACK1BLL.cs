@@ -4991,6 +4991,10 @@ namespace Sampoerna.EMS.BLL
                 item.UsagePostingDate = String.Join(Environment.NewLine, mvtList.Select(x => x.POSTING_DATE.Value.ToString("dd-MMM-yy")).ToArray());
                 item.EndingBalance = balanceList.TotalBeginningBalance + item.Ck5Qty - mvtList.Sum(x => (x.QTY.Value / umren));
                 item.EndingBalanceUom = "Gram";
+
+                item.MvtTypeList = mvtList.Select(x => x.MVT).ToList();
+                item.UsageList = mvtList.Select(x => (x.QTY.Value / umren).ToString("N2")).ToList();
+                item.UsagePostingDateList = mvtList.Select(x => x.POSTING_DATE.Value.ToString("dd-MMM-yy")).ToList();
             }
 
             var inputProduction = new GetLack1DetailTisInputProduction();
@@ -5046,7 +5050,11 @@ namespace Sampoerna.EMS.BLL
                                      ProdPostingDate = production.PRODUCTION_DATE.ToString("dd-MMM-yy"),
                                      ProdDate = production.PRODUCTION_DATE.ToString("dd-MMM-yy"),
                                      EndingBalance = list.EndingBalance,
-                                     EndingBalanceUom = list.EndingBalanceUom
+                                     EndingBalanceUom = list.EndingBalanceUom,
+
+                                     MvtTypeList = list.MvtTypeList,
+                                     UsageList = list.UsageList,
+                                     UsagePostingDateList = list.UsagePostingDateList
 
                                  }).ToList();
 
@@ -5339,6 +5347,9 @@ namespace Sampoerna.EMS.BLL
                 item.UsagePostingDate = String.Join(Environment.NewLine, mvtList.Select(x => x.POSTING_DATE.Value.ToString("dd-MMM-yy")).ToArray());
                 item.EndingBalance = balanceList.TotalBeginningBalance + item.Ck5Qty - mvtList.Sum(x => (x.QTY.Value / umren));
                 item.EndingBalanceUom = "Liter";
+
+                item.UsageList = mvtList.Select(x => (x.QTY.Value / umren).ToString("N2")).ToList();
+                item.UsagePostingDateList = mvtList.Select(x => x.POSTING_DATE.Value.ToString("dd-MMM-yy")).ToList();
 
                 item.LevelList = Mapper.Map<List<Lack1DetailLevelDto>>(levelList);
             }

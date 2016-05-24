@@ -39,32 +39,32 @@
             foreach (var item in Model.DetailList)
             {
                 <tr>
-                    <td align="center">@row</td>
-                    <td>@Html.DisplayFor(model => item.PlantIdReceiver)</td>
-                    <td>@Html.DisplayFor(model => item.PlantDescReceiver)</td>
-                    <td>@Html.DisplayFor(model => item.PlantIdSupplier)</td>
-                    <td>@Html.DisplayFor(model => item.PlantDescSupplier)</td>
-                    <td>@Html.DisplayFor(model => item.CfCode)</td>
-                    <td>@Html.DisplayFor(model => item.CfDesc)</td>
-                    <td>@String.Format("{0:n}", @item.BeginingBalance)</td>
-                    <td>@Html.DisplayFor(model => item.BeginingBalanceUom)</td>
-                    <td>@Html.DisplayFor(model => item.Ck5EmsNo)</td>
-                    <td>@Html.DisplayFor(model => item.Ck5RegNo)</td>
-                    <td>@Html.DisplayFor(model => item.Ck5RegDate)</td>
-                    <td>@Html.DisplayFor(model => item.Ck5GrDate)</td>
-                    <td>@String.Format("{0:n}", @item.Ck5Qty)</td>
-                    <td>@Html.DisplayFor(model => item.MvtType)</td>
-                    <td>@String.Format("{0:n}", @item.Usage)</td>
-                    <td>@Html.DisplayFor(model => item.UsageUom)</td>
-                    <td>@Html.DisplayFor(model => item.UsagePostingDate)</td>
-                    <td>@Html.DisplayFor(model => item.FaCode)</td>
-                    <td>@Html.DisplayFor(model => item.FaCodeDesc)</td>
-                    <td>@String.Format("{0:n}", @item.ProdQty)</td>
-                    <td>@Html.DisplayFor(model => item.ProdUom)</td>
-                    <td>@Html.DisplayFor(model => item.ProdPostingDate)</td>
-                    <td>@Html.DisplayFor(model => item.ProdDate)</td>
-                    <td>@String.Format("{0:n}", @item.EndingBalance)</td>
-                    <td>@Html.DisplayFor(model => item.EndingBalanceUom)</td>
+                    <td style="vertical-align:top !important" align="center">@row</td>
+                    <td style="vertical-align:top !important">@Html.DisplayFor(model => item.PlantIdReceiver)</td>
+                    <td style="vertical-align:top !important">@Html.DisplayFor(model => item.PlantDescReceiver)</td>
+                    <td style="vertical-align:top !important">@Html.DisplayFor(model => item.PlantIdSupplier)</td>
+                    <td style="vertical-align:top !important">@Html.DisplayFor(model => item.PlantDescSupplier)</td>
+                    <td style="vertical-align:top !important">@Html.DisplayFor(model => item.CfCode)</td>
+                    <td style="vertical-align:top !important">@Html.DisplayFor(model => item.CfDesc)</td>
+                    <td style="vertical-align:top !important">@String.Format("{0:n}", @item.BeginingBalance)</td>
+                    <td style="vertical-align:top !important">@Html.DisplayFor(model => item.BeginingBalanceUom)</td>
+                    <td style="vertical-align:top !important">@Html.DisplayFor(model => item.Ck5EmsNo)</td>
+                    <td style="vertical-align:top !important">@Html.DisplayFor(model => item.Ck5RegNo)</td>
+                    <td style="vertical-align:top !important">@Html.DisplayFor(model => item.Ck5RegDate)</td>
+                    <td style="vertical-align:top !important">@Html.DisplayFor(model => item.Ck5GrDate)</td>
+                    <td style="vertical-align:top !important">@String.Format("{0:n}", @item.Ck5Qty)</td>
+                    <td style="vertical-align:top !important">@Html.DisplayFor(model => item.MvtType)</td>
+                    <td style="vertical-align:top !important">@String.Format("{0:n}", @item.Usage)</td>
+                    <td style="vertical-align:top !important">@Html.DisplayFor(model => item.UsageUom)</td>
+                    <td style="vertical-align:top !important">@Html.DisplayFor(model => item.UsagePostingDate)</td>
+                    <td style="vertical-align:top !important">@Html.DisplayFor(model => item.FaCode)</td>
+                    <td style="vertical-align:top !important">@Html.DisplayFor(model => item.FaCodeDesc)</td>
+                    <td style="vertical-align:top !important">@String.Format("{0:n}", @item.ProdQty)</td>
+                    <td style="vertical-align:top !important">@Html.DisplayFor(model => item.ProdUom)</td>
+                    <td style="vertical-align:top !important">@Html.DisplayFor(model => item.ProdPostingDate)</td>
+                    <td style="vertical-align:top !important">@Html.DisplayFor(model => item.ProdDate)</td>
+                    <td style="vertical-align:top !important">@String.Format("{0:n}", @item.EndingBalance)</td>
+                    <td style="vertical-align:top !important">@Html.DisplayFor(model => item.EndingBalanceUom)</td>
                 </tr>
                 row = row + 1;
             }

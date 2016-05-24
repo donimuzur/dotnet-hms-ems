@@ -20,8 +20,9 @@ namespace Sampoerna.EMS.XMLReader
         public List<MovedFileOutput> filesMoved;
         public Service()
         {
+
+            xmlfiles = new DirectoryInfo(inboundPath).GetFiles().OrderBy(x => x.LastWriteTime).Select(x => x.FullName).ToArray();
             
-            xmlfiles = Directory.GetFiles(inboundPath).OrderBy(x => x).ToArray();
             filesMoved = new List<MovedFileOutput>();
         }
 
