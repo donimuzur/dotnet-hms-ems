@@ -74,7 +74,9 @@
                 if ('@Model.Ck5Type' == '@Enums.CK5Type.MarketReturn.ToString()') {
                     $('#liCK5MarketReturnCompleted').addClass('active');
                 }
-
+                else if ('@Model.Ck5Type' == '@Enums.CK5Type.Manual.ToString()') {
+                    $('#ck5TrialPbck1Reduce').show();
+                }
             } else {
                 OnReadyFunction('@Model.Ck5Type.ToString()');
             }
