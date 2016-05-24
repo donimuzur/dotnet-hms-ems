@@ -109,12 +109,17 @@ function generateRowDataCsVsFa(item,issummary) {
         if (issummary) {
             rc += "<td>" + ThausandSeperator(mvt101[i].Converted_Qty) + "</td>" +
                 "<td>" + mvt101[i].Converted_Uom + "</td>";
-               
-            rc += "<td>" + mvt261[i].Material_Id + "</td>" +
-               "<td>" + mvt261[i].Material_Id + "</td>" +
-               
-               "<td>" + ThausandSeperator(-1 * mvt261[i].Converted_Qty) + "</td>" +
-               "<td>" + mvt261[i].Uom + "</td>";
+            if (mvt261[i] != null) {
+                rc += "<td>" + mvt261[i].Material_Id + "</td>" +
+                    "<td>" + mvt261[i].Material_Id + "</td>" +
+                    "<td>" + ThausandSeperator(-1 * mvt261[i].Converted_Qty) + "</td>" +
+                    "<td>" + mvt261[i].Uom + "</td>";
+            } else {
+                rc += "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>" +
+                    "<td></td>";
+            }
 
             
         } else {

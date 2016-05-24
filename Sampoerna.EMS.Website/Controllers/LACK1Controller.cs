@@ -3926,7 +3926,15 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
-            return RedirectToAction("CfVsFaDetails");
+
+            if (param.IsSummary)
+            {
+                return RedirectToAction("CfVsFaSummary");
+            }
+            
+                return RedirectToAction("CfVsFaDetails");
+            
+            
         }
 
         private void ExportCfVsFaDetailsToExcel(string html)
@@ -4043,11 +4051,20 @@ namespace Sampoerna.EMS.Website.Controllers
                     rc += "<td>" + (mvt101[i].Converted_Qty) + "</td>" +
                         "<td>" + mvt101[i].Converted_Uom + "</td>";
 
-                    rc += "<td>" + mvt261[i].Material_Id + "</td>" +
-                       "<td>" + mvt261[i].Material_Id + "</td>" +
-
-                       "<td>" + (-1 * mvt261[i].Converted_Qty) + "</td>" +
-                       "<td>" + mvt261[i].Uom + "</td>";
+                    if (mvt261[i] != null)
+                    {
+                        rc += "<td>" + mvt261[i].Material_Id + "</td>" +
+                            "<td>" + mvt261[i].Material_Id + "</td>" +
+                            "<td>" + (-1 * mvt261[i].Converted_Qty) + "</td>" +
+                            "<td>" + mvt261[i].Uom + "</td>";
+                    }
+                    else
+                    {
+                        rc += "<td></td>" +
+                            "<td></td>" +
+                            "<td></td>" +
+                            "<td></td>";
+                    }
 
 
                 }

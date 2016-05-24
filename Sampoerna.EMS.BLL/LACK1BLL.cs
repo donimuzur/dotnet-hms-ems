@@ -1616,10 +1616,11 @@ namespace Sampoerna.EMS.BLL
                 return GetCfUsagevsFaSummaryData(input);
             }
 
-            var werks = _t001WServices.GetByRange(input.BeginingPlant, input.EndPlant).Select(c => c.WERKS).ToList();
+            
+            var werks = _t001WServices.GetByRange(input.BeginingPlant, input.EndPlant).ToList();
             var inputParam = new ZaapShiftRptGetForLack1ReportByParamInput()
             {
-                Werks = werks,
+                Werks = werks.Select(x=>x.WERKS).ToList(),
                 BeginingDate = input.BeginingPostingDate,
                 EndDate = input.EndPostingDate
             };
@@ -1636,16 +1637,20 @@ namespace Sampoerna.EMS.BLL
                    
                 }).OrderBy(x=> x.WERKS);
             var plantList = zaapshiftrpt.Select(x => x.WERKS).ToList();
+            var brandList = zaapshiftrpt.Select(x => x.FA_CODE).ToList();
+            var brandData = _brandRegService.GetByFaCodeListAndPlantList(brandList, plantList);
 
             foreach (var zaapShiftRpt in zaapshiftrpt)
             {
                 var data = new Lack1CFUsagevsFaDetailDto();
 
                 data.Order = zaapShiftRpt.ORDR;
-                //data.PlantDesc = _t001WServices.GetById(zaapShiftRpt.WERKS).NAME1;
+                
                 data.PlantId = zaapShiftRpt.WERKS;
+                data.PlantDesc = werks.Where(x => x.WERKS == data.PlantId).Select(x => x.NAME1).Single();
                 data.Fa_Code = zaapShiftRpt.FA_CODE;
-                //data.Brand_Desc = _brandRegService.GetByPlantIdAndFaCode(zaapShiftRpt.WERKS, zaapShiftRpt.FA_CODE).BRAND_CE;
+                //brandList.Add(data.Fa_Code);
+                data.Brand_Desc = brandData.Where(x=>x.FA_CODE == data.Fa_Code && x.WERKS == data.PlantId).Select(x=> x.BRAND_CE).Single();
 
                 var zaapInput101 = new InvGetReceivingByParamZaapShiftRptInput()
                 {
@@ -1684,7 +1689,8 @@ namespace Sampoerna.EMS.BLL
             }
 
             
-           
+            
+
 
             return result;
         }
@@ -1692,10 +1698,10 @@ namespace Sampoerna.EMS.BLL
         private List<Lack1CFUsagevsFaDetailDto> GetCfUsagevsFaSummaryData(Lack1CFUsageVsFAByParamInput input)
         {
 
-            var werks = _t001WServices.GetByRange(input.BeginingPlant, input.EndPlant).Select(c => c.WERKS).ToList();
+            var werks = _t001WServices.GetByRange(input.BeginingPlant, input.EndPlant).ToList();
             var inputParam = new ZaapShiftRptGetForLack1ReportByParamInput()
             {
-                Werks = werks,
+                Werks = werks.Select(x=>x.WERKS).ToList(),
                 BeginingDate = input.BeginingPostingDate,
                 EndDate = input.EndPostingDate
             };
@@ -1711,15 +1717,20 @@ namespace Sampoerna.EMS.BLL
                     x.Key.ORDR,
 
                 }).OrderBy(x => x.WERKS);
+
+            var plantList = zaapshiftrpt.Select(x => x.WERKS).ToList();
+            var brandList = zaapshiftrpt.Select(x => x.FA_CODE).ToList();
+            var brandData = _brandRegService.GetByFaCodeListAndPlantList(brandList, plantList);
             foreach (var zaapShiftRpt in zaapshiftrpt)
             {
                 var data = new Lack1CFUsagevsFaDetailDto();
 
                 data.Order = zaapShiftRpt.ORDR;
-                data.PlantDesc = _t001WServices.GetById(zaapShiftRpt.WERKS).NAME1;
+                
                 data.PlantId = zaapShiftRpt.WERKS;
+                data.PlantDesc = werks.Where(x => x.WERKS == data.PlantId).Select(x => x.NAME1).Single();
                 data.Fa_Code = zaapShiftRpt.FA_CODE;
-                data.Brand_Desc = _brandRegService.GetByPlantIdAndFaCode(zaapShiftRpt.WERKS, zaapShiftRpt.FA_CODE).BRAND_CE;
+                data.Brand_Desc = brandData.Where(x=> x.FA_CODE == data.Fa_Code && x.WERKS == data.PlantId).Select(x=> x.BRAND_CE).Single();
 
                 var zaapInput101 = new InvGetReceivingByParamZaapShiftRptInput()
                 {
