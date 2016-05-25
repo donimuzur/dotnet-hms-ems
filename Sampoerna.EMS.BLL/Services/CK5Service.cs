@@ -194,9 +194,9 @@ namespace Sampoerna.EMS.BLL.Services
             Expression<Func<CK5, bool>> queryFilterCk5 =
                 c => c.SOURCE_PLANT_NPPBKC_ID == input.NppbkcId && c.DEST_PLANT_COMPANY_CODE == input.CompanyCode
                      &&
-                     (c.GR_DATE.HasValue
-                     && c.GR_DATE.Value.Month == input.PeriodMonth
-                     && c.GR_DATE.Value.Year == input.PeriodYear)
+                     (c.GI_DATE.HasValue
+                     && c.GI_DATE.Value.Month == input.PeriodMonth
+                     && c.GI_DATE.Value.Year == input.PeriodYear)
                      && (c.STATUS_ID == Enums.DocumentStatus.Completed || c.STATUS_ID == Enums.DocumentStatus.GRCompleted || 
                      c.STATUS_ID == Enums.DocumentStatus.WasteDisposal || c.STATUS_ID == Enums.DocumentStatus.WasteApproval
                      || c.STATUS_ID == Enums.DocumentStatus.GoodReceive)
