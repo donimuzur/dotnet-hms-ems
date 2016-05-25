@@ -29,7 +29,7 @@ namespace Sampoerna.EMS.Website.Models
 
         public string PHONE { get; set; }
 
-        
+        public string IsActive { get; set; }
     }
 
     public class UserItemViewModel : BaseModel

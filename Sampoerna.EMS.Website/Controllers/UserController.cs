@@ -95,7 +95,7 @@ namespace Sampoerna.EMS.Website.Controllers
             
             //title
             slDocument.SetCellValue(1, 1, "Master Users");
-            slDocument.MergeWorksheetCells(1, 1, 1, 5);
+            slDocument.MergeWorksheetCells(1, 1, 1, 6);
             //create style
             SLStyle valueStyle = slDocument.CreateStyle();
             valueStyle.SetHorizontalAlignment(HorizontalAlignmentValues.Center);
@@ -127,7 +127,7 @@ namespace Sampoerna.EMS.Website.Controllers
             slDocument.SetCellValue(iRow, 3, "Last Name");
             slDocument.SetCellValue(iRow, 4, "Phone");
             slDocument.SetCellValue(iRow, 5, "Email");
-
+            slDocument.SetCellValue(iRow, 6, "Active");
 
             SLStyle headerStyle = slDocument.CreateStyle();
             headerStyle.Alignment.Horizontal = HorizontalAlignmentValues.Center;
@@ -138,7 +138,7 @@ namespace Sampoerna.EMS.Website.Controllers
             headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
             headerStyle.Fill.SetPattern(PatternValues.Solid, System.Drawing.Color.LightGray, System.Drawing.Color.LightGray);
 
-            slDocument.SetCellStyle(iRow, 1, iRow, 5, headerStyle);
+            slDocument.SetCellStyle(iRow, 1, iRow, 6, headerStyle);
 
             return slDocument;
 
@@ -155,6 +155,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 slDocument.SetCellValue(iRow, 3, data.LAST_NAME);
                 slDocument.SetCellValue(iRow, 4, data.PHONE);
                 slDocument.SetCellValue(iRow, 5, data.EMAIL);
+                slDocument.SetCellValue(iRow, 6, data.IsActive);
                 
                 iRow++;
             }
@@ -166,8 +167,8 @@ namespace Sampoerna.EMS.Website.Controllers
             valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
             valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
 
-            slDocument.AutoFitColumn(1, 5);
-            slDocument.SetCellStyle(3, 1, iRow - 1, 5, valueStyle);
+            slDocument.AutoFitColumn(1, 6);
+            slDocument.SetCellStyle(3, 1, iRow - 1, 6, valueStyle);
 
             return slDocument;
         }

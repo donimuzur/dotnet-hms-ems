@@ -742,7 +742,8 @@ namespace Sampoerna.EMS.Website
             #endregion
 
 
-            Mapper.CreateMap<USER, UserItem>().IgnoreAllNonExisting();
+            Mapper.CreateMap<USER, UserItem>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IS_ACTIVE.Value == 1 ? "Yes" : "No"));
 
             Mapper.CreateMap<T001WDto, T001WModel>().IgnoreAllNonExisting();
 

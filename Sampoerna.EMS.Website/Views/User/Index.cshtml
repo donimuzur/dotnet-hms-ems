@@ -35,12 +35,14 @@
                             <th>Last Name</th>
                             <th>Phone</th>
                             <th>Email</th>
+                            <th>Active</th>
                         </tr>
                     </thead>
 
                     <thead class="filters">
                         <tr>
                             <th>Action</th>
+                            <th></th>
                             <th></th>
                             <th></th>
                             <th></th>
@@ -72,6 +74,9 @@
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.EMAIL)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.IsActive)
                                 </td>
                             </tr>
                         }
