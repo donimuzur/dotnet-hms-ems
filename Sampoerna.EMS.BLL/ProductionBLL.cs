@@ -136,9 +136,14 @@ namespace Sampoerna.EMS.BLL
 
             var originDto = Mapper.Map<ProductionDto>(origin);
 
+            
+            
+            
+
             //to do ask and to do refactor
             if (originDto != null)
             {
+                
 
                 SetChange(originDto, productionDto, userId);
                 output.isNewData = false;
@@ -147,7 +152,7 @@ namespace Sampoerna.EMS.BLL
             if (dbProduction.UOM == "TH")
             {
                 dbProduction.UOM = "Btg";
-                dbProduction.QTY_PACKED = dbProduction.QTY_PACKED * 1000;
+                //dbProduction.QTY_PACKED = dbProduction.QTY_PACKED * 1000;
                 dbProduction.QTY = dbProduction.QTY * 1000;
             }
 
@@ -164,10 +169,11 @@ namespace Sampoerna.EMS.BLL
                   dbProduction.FA_CODE != origin.FA_CODE
                   || Convert.ToDateTime(dbProduction.PRODUCTION_DATE) != Convert.ToDateTime(origin.PRODUCTION_DATE))
                 {
-                    dbProduction.BATCH = null;
+                    dbProduction.QTY_PACKED = origin.QTY_PACKED;
+                    dbProduction.PROD_QTY_STICK = origin.PROD_QTY_STICK;
                 }
 
-                if (origin.BATCH != null)
+                if (origin.QTY_PACKED.HasValue && origin.QTY_PACKED != 0)
                     output.isFromSap = true;
             }
 
@@ -400,8 +406,13 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                _repository.Delete(dbData);
-                _uow.SaveChanges();
+                if (dbData.QTY_PACKED.HasValue && dbData.QTY_PACKED.Value == 0)
+                {
+                    _repository.Delete(dbData);
+                    _uow.SaveChanges();
+                }
+                
+                
             }
         }
 
