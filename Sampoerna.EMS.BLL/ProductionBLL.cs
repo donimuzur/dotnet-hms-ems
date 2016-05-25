@@ -156,21 +156,34 @@ namespace Sampoerna.EMS.BLL
                 dbProduction.QTY = dbProduction.QTY * 1000;
             }
 
-            dbProduction.CREATED_DATE = DateTime.Now;
-            dbProduction.CREATED_BY = userId;
+            var existing = _repository.GetByID(productionDto.CompanyCode, productionDto.PlantWerks, productionDto.FaCode,
+               productionDto.ProductionDate);
+
+            if (existing != null)
+            {
+                dbProduction.MODIFIED_DATE = DateTime.Now;
+                dbProduction.MODIFIED_BY = userId;
+                dbProduction.CREATED_BY = existing.CREATED_BY;
+                dbProduction.CREATED_DATE = existing.CREATED_DATE;
+            }
+            else
+            {
+                dbProduction.CREATED_DATE = DateTime.Now;
+                dbProduction.CREATED_BY = userId;
+            }
+            
 
 
             if (origin != null)
             {
-                dbProduction.CREATED_DATE = origin.CREATED_DATE;
-                dbProduction.CREATED_BY = origin.CREATED_BY;
+                //dbProduction.CREATED_DATE = origin.CREATED_DATE;
+                //dbProduction.CREATED_BY = origin.CREATED_BY;
 
                 if (dbProduction.COMPANY_CODE != origin.COMPANY_CODE || dbProduction.WERKS != origin.WERKS ||
                   dbProduction.FA_CODE != origin.FA_CODE
                   || Convert.ToDateTime(dbProduction.PRODUCTION_DATE) != Convert.ToDateTime(origin.PRODUCTION_DATE))
                 {
-                    dbProduction.QTY_PACKED = origin.QTY_PACKED;
-                    dbProduction.PROD_QTY_STICK = origin.PROD_QTY_STICK;
+                    dbProduction.BATCH = null;
                 }
 
                 if (origin.QTY_PACKED.HasValue && origin.QTY_PACKED != 0)
