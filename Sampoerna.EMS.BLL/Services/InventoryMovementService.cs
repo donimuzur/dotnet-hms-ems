@@ -73,7 +73,7 @@ namespace Sampoerna.EMS.BLL.Services
                 queryFilter.And(c => allOrderInZaapShiftRpt.Contains(c.ORDR));
 
             //queryFilter2 = queryFilter2.Or(queryFilter);
-            var sum = _repository.Get(queryFilter).Select(x => x.QTY).Sum(x => x.Value);
+            //var sum = _repository.Get(queryFilter).Select(x => x.QTY).Sum(x => x.Value);
             return _repository.Get(queryFilter).ToList();
 
         }
