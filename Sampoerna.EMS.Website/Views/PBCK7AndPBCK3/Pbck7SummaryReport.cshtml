@@ -16,17 +16,20 @@
         <div class="col-sm-12">
             <div class="white-wrapper">
                 @using (Ajax.BeginForm("FilterPbck7SummaryReport", "PBCK3_PBCK7",
-                    new AjaxOptions
-                    {
-                        HttpMethod = "POST",
-                        InsertionMode = InsertionMode.Replace,
-                        UpdateTargetId = "contenttable",
-                        OnComplete = "ReloadDataTables",
-                    }, new { @class = "form-excise", role = "form" }))
+                     new AjaxOptions
+                     {
+                         HttpMethod = "POST",
+                         InsertionMode = InsertionMode.Replace,
+                         //UpdateTargetId = "contenttable",
+                         OnSuccess = "OnSuccess",
+                         OnFailure = "OnFailure",
+                         OnComplete = "ReloadDataTables"
+
+                     }, new { id = "ajaxForm", @class = "form-excise" }))
                 {
                     <form class="form-excise" role="form">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <div class="row">
                                     <label class="col-md-4">PBCK No</label>
                                     <div class="col-md-8">
@@ -41,7 +44,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <div class="row">
                                     <label class="col-md-4">NPPBKC</label>
                                     <div class="col-md-8">
@@ -60,7 +63,7 @@
 
                         <div class="row">
 
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <div class="row">
                                     <label class="col-md-4">From-To</label>
                                     <div class="col-md-8 year-from">
@@ -86,7 +89,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <div class="row">
                                     <label class="col-md-4 long">Plant</label>
                                     <div class="col-md-8">
@@ -105,7 +108,7 @@
                         </div>
                         
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <div class="row">
                                     <label class="col-md-4">FA Code</label>
                                     <div class="col-md-8">
@@ -121,7 +124,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <div class="row">
                                     <label class="col-md-4">Brand</label>
                                     <div class="col-md-8">
@@ -140,7 +143,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <div class="row">
                                     <label class="col-md-4">Content</label>
                                     <div class="col-md-8">
@@ -156,7 +159,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <div class="row">
                                     <label class="col-md-4">HJE</label>
                                     <div class="col-md-8">
@@ -175,7 +178,7 @@
                         </div>
                         
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <div class="row">
                                     <label class="col-md-4">Tariff</label>
                                     <div class="col-md-8">
@@ -191,7 +194,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <div class="row">
                                     <label class="col-md-4">PBCK-7 Qty</label>
                                     <div class="col-md-8">
@@ -210,7 +213,7 @@
                         </div>
                         
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <div class="row">
                                     <label class="col-md-4">Fiscal Year</label>
                                     <div class="col-md-8">
@@ -226,7 +229,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <div class="row">
                                     <label class="col-md-4">Excise Value</label>
                                     <div class="col-md-8">
@@ -245,7 +248,7 @@
                         </div>
                         
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <div class="row">
                                     <label class="col-md-4">POA</label>
                                     <div class="col-md-8">
@@ -261,7 +264,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <div class="row">
                                     <label class="col-md-4">Creator</label>
                                     <div class="col-md-8">
@@ -280,7 +283,7 @@
                         </div>
                         
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <div class="row">
                                     <label class="col-md-4">PBCK-3 No</label>
                                     <div class="col-md-8">
@@ -296,7 +299,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <div class="row">
                                     <label class="col-md-4">PBCK-3 Status</label>
                                     <div class="col-md-8">
@@ -315,7 +318,7 @@
                         </div>
                         
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <div class="row">
                                     <label class="col-md-4">CK-2 No</label>
                                     <div class="col-md-8">
@@ -331,7 +334,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <div class="row">
                                     <label class="col-md-4">CK-2 Value</label>
                                     <div class="col-md-8">
@@ -354,7 +357,7 @@
                                 <div class="col-md-4 col-md-offset-8">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <button class="btn btn-blue full" id="btnFILTER">VIEW</button>
+                                            <input type="button" onclick="OnFilter();" id="btnFILTER" class="btn btn-blue full" value="VIEW" />
                                         </div>
                                         <div class="col-md-6">
                                             <button class="btn btn-blue full" id="btnExport">EXPORT</button>
@@ -571,8 +574,9 @@
     </div>
 </div>
 
+<div class="loading"></div>
             
-            @section scripts {
+@section scripts {
                 <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
                 <script type="text/javascript">
                     // DataTable
@@ -707,5 +711,23 @@
                         $('#ExportSummaryReportsForms').submit();
                     });
 
+                    function OnSuccess(data) {
+                        $('.loading').hide();
+                        $("#contenttable").html(data);
+
+
+                    }
+
+                    function OnFailure(xhr, status) {
+                        $('.loading').hide();
+                        // alert('Error: ' + xhr.statusText);
+
+                    }
+
+                    function OnFilter() {
+                        $('.loading').show();
+                        $('#ajaxForm').submit();
+                    }
+                    
                 </script>
             }

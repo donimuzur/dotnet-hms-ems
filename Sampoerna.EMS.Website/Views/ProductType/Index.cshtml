@@ -1,0 +1,120 @@
+﻿@model Sampoerna.EMS.Website.Models.ProductType.ProductTypeIndexViewModel
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 id="lblTitle">Product Type List</h3>
+            
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="contenttable" class="table-container">
+                <table id="wasteRoleTable" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th class="toggle-row"> Filter </th>
+                            <th>Product Code</th>
+                            <th>Product Type</th>
+                            <th>Product Alias</th>
+                            <th>CK4C Editable</th>
+                        </tr>
+                    </thead>
+                    <thead class="filters">
+                        <tr>
+                            <th> Action</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.ListProductTypes)
+                        {
+                            <tr>
+                                <td class="action">
+                                    <a href="@Url.Action("Detail", "ProductType", new { id = item.ProdCode })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
+                                    @if (Model.IsNotViewer)
+                                    {
+                                        <a href="@Url.Action("Edit", "ProductType", new { id = item.ProdCode })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                                    }
+                                </td>
+                                <td>@Html.DisplayFor(model => item.ProdCode)</td>
+                                <td>@Html.DisplayFor(model => item.ProductType)</td>
+                                <td>@Html.DisplayFor(model => item.ProductAlias)</td>
+                                <td>@Html.DisplayFor(model => item.Ck4CEditable)</td>
+
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            $('#MenuProductType').addClass('active');
+
+            setupDataTables();
+        });
+
+
+        function setupDataTables() {
+
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#wasteRoleTable')) {
+                table = $('#wasteRoleTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#wasteRoleTable').DataTable(
+                  {
+                      "sDom": "Rlfrtip",
+                      "language": {
+                          "zeroRecords": "No records found",
+                          "infoFiltered": "(filtered from _MAX_ total records)"
+                      }
+                  });
+
+
+            $('#wasteRoleTable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+
+
+        }
+
+        function ReloadDataTables() {
+            setupDataTables();
+        }
+
+
+
+    </script>
+}

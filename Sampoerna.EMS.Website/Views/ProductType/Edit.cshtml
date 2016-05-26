@@ -1,0 +1,128 @@
+﻿@model Sampoerna.EMS.Website.Models.ProductType.ProductTypeFormViewModel
+@using Sampoerna.EMS.Website.Helpers
+@using (Html.BeginForm("Edit", "ProductType", FormMethod.Post, new { @class = "form-excise", @id = "SaveProductTypeForms" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Product Type</h3>
+                <div class="action-button">
+                    <input type="button" id="btnSave" class="btn btn-blue" value="Save" />
+                    <input type="button" value="Cancel" class="btn btn-grey" id="btnBack" />
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="white-wrapper">
+                  
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Update Product Type
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <form class="form-excise" role="form">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Product Code</label>
+                                                    <div class="col-md-8">
+                                                        @Html.HiddenFor(model => model.ProdCode)
+                                                        @Html.TextBoxFor(model => model.ProdCode, new { @class = "form-control", @disabled = "disabled" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Product Type</label>
+                                                    <div class="col-md-8">
+                                                        @Html.HiddenFor(model => model.ProductType)
+                                                        @Html.TextBoxFor(model => model.ProductType, new { @class = "form-control", @disabled = "disabled" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Product Alias</label>
+                                                    <div class="col-md-8">
+                                                        @Html.TextBoxFor(model => model.ProductAlias, new { @class = "form-control", @disabled = "disabled" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">CK4C Editable</label>
+                                                    <div class="col-md-8">
+                                                        @Html.CheckBoxFor(model => model.IsCk4CEditable, new { @class = "checkgroup" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                          
+                                           
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @*</div>*@
+                    @*<div class="row">
+                        <div class="col-md-12">
+                            <span class="red">*</span> ) This Field Required
+                        </div>
+
+                    </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+@section scripts {
+
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function() {
+            $('#MenuProductType').addClass('active');
+
+            $('#btnBack').click(function(e) {
+                location.href = '@Url.Action("Index", "ProductType")';
+            });
+
+            $("#btnSave").click(function() {
+                
+                    $('#SaveProductTypeForms').submit();
+                
+            });
+
+          
+
+         
+
+        });
+
+
+
+    </script>
+}

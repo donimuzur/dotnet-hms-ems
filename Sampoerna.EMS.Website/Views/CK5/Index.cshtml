@@ -34,14 +34,15 @@
                     <div role="tabpanel" class="tab-pane active" id="domestic">
                         <div class="tab-wrapper">
                             @using (Ajax.BeginForm("Filter", "CK5",
-                                new AjaxOptions
-                                {
-                                    HttpMethod = "POST",
-                                    InsertionMode = InsertionMode.Replace,
-                                    UpdateTargetId = "contenttable",
-                                    OnComplete = "ReloadDataTables"
+                               new AjaxOptions
+                    {
+                        HttpMethod = "POST",
+                        InsertionMode = InsertionMode.Replace,
+                        OnSuccess = "OnSuccess",
+                        OnFailure = "OnFailure",
+                        OnComplete = "ReloadDataTables"
 
-                                }))
+                    }, new { id = "ajaxForm"}))
                             {
                                 @Html.Partial("_CK5Search")
 
@@ -59,14 +60,15 @@
                     <div role="tabpanel" class="tab-pane" id="intercompany">
                         <div class="tab-wrapper">
                             @using (Ajax.BeginForm("Intercompany", "CK5",
-                                new AjaxOptions
-                                {
-                                    HttpMethod = "POST",
-                                    InsertionMode = InsertionMode.Replace,
-                                    UpdateTargetId = "contenttableIntercompany",
-                                    OnComplete = "ReloadDataTablesIntercompany"
+                               new AjaxOptions
+                               {
+                                   HttpMethod = "POST",
+                                   InsertionMode = InsertionMode.Replace,
+                                   OnSuccess = "OnSuccessIntercompany",
+                                   OnFailure = "OnFailure",
+                                   OnComplete = "ReloadDataTablesIntercompany"
 
-                                }))
+                               }, new { id = "ajaxForm" }))
                             {
                                 @Html.Partial("_CK5Search")
 
@@ -84,14 +86,15 @@
                     <div role="tabpanel" class="tab-pane" id="domesticAlcohol">
                         <div class="tab-wrapper">
                             @using (Ajax.BeginForm("CK5DomesticAlcohol", "CK5",
-                                new AjaxOptions
-                                {
-                                    HttpMethod = "POST",
-                                    InsertionMode = InsertionMode.Replace,
-                                    UpdateTargetId = "contenttableDomesticAlcohol",
-                                    OnComplete = "ReloadDataTablesDomesticAlcohol"
+                                 new AjaxOptions
+                                 {
+                                     HttpMethod = "POST",
+                                     InsertionMode = InsertionMode.Replace,
+                                     OnSuccess = "OnSuccessDomesticAlcohol",
+                                     OnFailure = "OnFailure",
+                                     OnComplete = "ReloadDataTablesDomesticAlcohol"
 
-                                }))
+                                 }, new { id = "ajaxForm" }))
                             {
                                 @Html.Partial("_CK5Search")
 
@@ -111,9 +114,11 @@
     </div>
 </div>
 
+<div class="loading"></div>
+
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-    @*<script type="text/javascript" language="javascript" src="~/Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>*@
+    <script src="~/Scripts/CK5Scripts.js"></script>
     <script type="text/javascript" language="javascript" class="init">
 
     $(document).ready(function () {
@@ -344,6 +349,6 @@
 
 
     }
-
+ 
     </script>
 }

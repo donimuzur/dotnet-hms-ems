@@ -63,6 +63,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public int PackedInPack { get; set; }
 
         public bool IsBrandFromSap { get; set; }
+        public bool IsEditable { get; set; }
     }
 
     public class ProductionUploadItems

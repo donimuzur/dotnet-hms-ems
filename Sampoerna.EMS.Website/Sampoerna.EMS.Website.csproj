@@ -232,6 +232,7 @@
     <Compile Include="Controllers\PoaDelegationController.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Code\PdfResult.cs" />
+    <Compile Include="Controllers\ProductTypeController.cs" />
     <Compile Include="Controllers\ReversalController.cs" />
     <Compile Include="Controllers\SchedulerSettingController.cs" />
     <Compile Include="Controllers\WasteController.cs" />
@@ -414,6 +415,8 @@
     <Compile Include="Models\PrintHistory\PrintHistoryViewModel.cs" />
     <Compile Include="Models\PRODUCTION\ProductionUploadViewModel.cs" />
     <Compile Include="Models\PRODUCTION\ProductionViewModel.cs" />
+    <Compile Include="Models\ProductType\ProductTypeIndexViewModel.cs" />
+    <Compile Include="Models\ProductType\ProductTypeFormViewModel.cs" />
     <Compile Include="Models\Reversal\ReversalIndexViewModel.cs" />
     <Compile Include="Models\SchedulerSetting\SchedulerSettingModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
@@ -1314,6 +1317,9 @@
     <Content Include="Views\LACK1\Edits.cshtml" />
     <Content Include="Views\LACK1\_HomeCompleted.cshtml" />
     <Content Include="Views\Material\_MaterialList.cshtml" />
+    <Content Include="Views\ProductType\Index.cshtml" />
+    <Content Include="Views\ProductType\Edit.cshtml" />
+    <Content Include="Views\ProductType\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

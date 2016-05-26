@@ -43,6 +43,8 @@ namespace Sampoerna.EMS.XMLReader
                             item.MODIFIED_DATE = DateTime.Now;
                             item.CREATED_BY = existingProdType.CREATED_BY;
                             item.MODIFIED_BY = Constans.PI;
+                            item.CK4CEDITABLE = existingProdType.CK4CEDITABLE;
+
                             items.Add(item);
 
                         }

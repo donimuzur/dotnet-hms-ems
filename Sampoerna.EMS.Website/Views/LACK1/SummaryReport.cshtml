@@ -290,6 +290,8 @@
     </div>
 </div>
 
+<div class="loading"></div>
+
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script type="text/javascript" language="javascript" class="init">
@@ -501,6 +503,7 @@
             });
 
             $('#btnFILTER').on('click', function (e) {
+                $('.loading').show();
                 $('#selecctall').prop('checked', false);
                 $('.checkexport').each(function () {
                     this.checked = false;
@@ -554,6 +557,7 @@
 
             $('#SearchView_PeriodMonth').removeClass('input-validation-error');
             $('#SearchView_PeriodYear').removeClass('input-validation-error');
+            $('.loading').hide();
         }
 
         function OnReset() {

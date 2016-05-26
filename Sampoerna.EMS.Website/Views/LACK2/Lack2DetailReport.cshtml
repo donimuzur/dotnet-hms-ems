@@ -167,7 +167,7 @@
                            
 
                             <div class="col-md-2 col-md-offset-8">
-                                <button class="btn btn-blue full">FILTER</button>
+                                <button id="btn-filter" class="btn btn-blue full">FILTER</button>
                             </div>
                             <div class="col-md-2">
                                 <input id="btnExport" type="button" class="btn btn-blue full" value="EXPORT" />
@@ -352,7 +352,7 @@
 </div>
 
 
-
+<div class="loading"></div>
 
 
 
@@ -373,6 +373,9 @@
 
 
         function setupDataTables(blFirst) {
+            $('#btn-filter').click(function () {
+                $('.loading').show();
+            });
 
             // DataTable
             var table = null;
@@ -457,7 +460,7 @@
 
         function ReloadDataTables() {
             setupDataTables(false);
-
+            $('.loading').hide();
         }
 
         function OnReset() {
