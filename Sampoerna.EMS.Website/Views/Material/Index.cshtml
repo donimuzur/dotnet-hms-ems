@@ -38,6 +38,10 @@
                 $(".selectreset").val($(".selectreset option:first").val());
             });
 
+            $('#btn-filter').click(function () {
+                $('.loading').show();
+            });
+
             // Setup - add a text input to each footer cell
             $('#mydata .filters th').each(function () {
                 var idx = $(this).index();
@@ -74,6 +78,7 @@
             });
             $('#SearchInput_GoodType').removeClass('input-validation-error');
             setupDataTables();
+            $('.loading').hide();
         }
 
         function ExportXls() {
@@ -124,7 +129,7 @@
                                
                                 <div class="col-md-5">
                                     <div class="col-md-3">
-                                        <input type="submit" class="btn btn-blue" value="FILTER" />
+                                        <input id ="btn-filter" type="submit" class="btn btn-blue" value="FILTER" />
                                     </div>
                                     <div class="col-md-3">
                                         <button type="button" id="btn-reset-filter" class="btn btn-blue">RESET</button>
@@ -166,3 +171,5 @@
         </div>
     </div>
 </div>
+
+<div class="loading"></div>
