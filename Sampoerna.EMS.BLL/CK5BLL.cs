@@ -536,6 +536,7 @@ namespace Sampoerna.EMS.BLL
             //ValidateCk5MaterialConvertedUom(input);
 
             bool isModified = false;
+            bool isCreate = true;
 
             //workflowhistory
             var inputWorkflowHistory = new CK5WorkflowHistoryInput();
@@ -630,7 +631,7 @@ namespace Sampoerna.EMS.BLL
 
                 AddWorkflowHistory(inputWorkflowHistory);
 
-
+                isCreate = false;
             }
             else
             {
@@ -643,7 +644,11 @@ namespace Sampoerna.EMS.BLL
             {
                 //throw (new Exception("error"));
                 _uow.SaveChanges();
-                dbData = UpdateSubmissionNumber(dbData.CK5_ID);
+                if (isCreate)
+                {
+                    dbData = UpdateSubmissionNumber(dbData.CK5_ID);
+                }
+                
             }
             catch (DbEntityValidationException e)
             {
