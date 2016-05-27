@@ -253,7 +253,7 @@
             ck5Type = '@Enums.CK5Type.Domestic';
             rowCount = $('#ck5Table >tbody >tr').length;
             if (rowCount <= 1) {
-                $('#form0').submit();
+                $('#ajaxForm').submit();
             }
         } else if (title == 'Intercompany') {
             $('#newDomestic').hide();
@@ -264,7 +264,7 @@
             listDocumentNumber = $('#intercompany').find('#SearchView_DocumentNumber');
             rowCount = $('#ck5TableIntercompany >tbody >tr').length;
             if (rowCount <= 1) {
-                $('#form1').submit();
+                $('#ajaxForm1').submit();
             }
             
         } else if (title == 'Domestic Alcohol') {
@@ -275,7 +275,7 @@
             listDocumentNumber = $('#domesticAlcohol').find('#SearchView_DocumentNumber');
             rowCount = $('#ck5TableDomesticAlcohol >tbody >tr').length;
             if (rowCount <= 1) {
-                $('#form2').submit();
+                $('#ajaxForm2').submit();
             }
            
             }
