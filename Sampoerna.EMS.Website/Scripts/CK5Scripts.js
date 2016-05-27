@@ -1284,5 +1284,17 @@ function OnFailure(xhr, status) {
 
 function OnFilter() {
     $('.loading').show();
-    $('#ajaxForm').submit();
+    //$('#ajaxForm').submit();
+    
+    var formId = $('.tab-pane.active').attr('id');
+    //console.log(formId);
+    if (formId == 'domestic') {
+        $('#ajaxForm').submit();
+    } else if (formId == 'intercompany') {
+        $('#ajaxForm1').submit();
+    } else if (formId == 'domesticAlcohol') {
+        $('#ajaxForm2').submit();
+    }
+    else
+        $('#ajaxForm').submit();
 }
