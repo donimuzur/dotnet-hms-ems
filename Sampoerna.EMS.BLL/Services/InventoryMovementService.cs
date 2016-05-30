@@ -65,16 +65,25 @@ namespace Sampoerna.EMS.BLL.Services
 
             var allOrderInZaapShiftRpt = _zaapShiftRptRepository.Get().Select(d => d.ORDR).Distinct().ToList();
 
-            //Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter2 = queryFilter; 
+            //Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter2 = queryFilter;
+ 
+            var result = _repository.Get(queryFilter).ToList();
 
-            queryFilter = input.IsTisToTis
-                ? queryFilter.And(c => !allOrderInZaapShiftRpt.Contains(c.ORDR))
-                : //queryFilter;
-                queryFilter.And(c => allOrderInZaapShiftRpt.Contains(c.ORDR));
+            //queryFilter = input.IsTisToTis
+            //    ? queryFilter.And(c => !allOrderInZaapShiftRpt.Contains(c.ORDR))
+            //    : //queryFilter;
+            //    queryFilter.And(c => allOrderInZaapShiftRpt.Contains(c.ORDR));
 
-            //queryFilter2 = queryFilter2.Or(queryFilter);
-            //var sum = _repository.Get(queryFilter).Select(x => x.QTY).Sum(x => x.Value);
-            return _repository.Get(queryFilter).ToList();
+            if(input.IsTisToTis)
+            {
+                result = result.Where(c => !allOrderInZaapShiftRpt.Contains(c.ORDR)).ToList();
+            }
+            else
+            {
+                result = result.Where(c => allOrderInZaapShiftRpt.Contains(c.ORDR)).ToList();
+            }
+
+            return result;
 
         }
 
