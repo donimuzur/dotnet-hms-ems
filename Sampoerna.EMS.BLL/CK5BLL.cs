@@ -1609,8 +1609,9 @@ namespace Sampoerna.EMS.BLL
             }
 
             output.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(input);
+            var kppbcId = _nppbkcBll.GetById(input.NppbkcId).KPPBC_ID;
 
-
+            output.Ck5Dto.KPPBC_CITY = _lfa1Bll.GetById(kppbcId).NAME2;
             output.ListPrintHistorys = _printHistoryBll.GetByFormTypeAndFormId(Enums.FormType.CK5, dtData.CK5_ID);
             return output;
         }

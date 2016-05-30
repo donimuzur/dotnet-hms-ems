@@ -670,7 +670,7 @@ namespace Sampoerna.EMS.Website.Controllers
             
             var vendorInfo = _lfa1Bll.GetById(model.KppbcNo);
             model.KppBcName = vendorInfo.NAME2 + "-" + model.KppbcNo;
-
+            model.KppbcCity = vendorInfo.NAME2;
             if (string.IsNullOrEmpty(goodTypeGroupId))
             {
                 goodtypeenum = null;
@@ -784,7 +784,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 var vendorInfo = _lfa1Bll.GetById(model.KppbcNo);
                 model.KppBcName = vendorInfo.NAME2 + "-" + model.KppbcNo;
-
+                model.KppbcCity = vendorInfo.NAME2;
                 model.CorrespondingPlantList = GetCorrespondingPlantList(plantId, ck5Type);
             }
 
@@ -809,7 +809,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             var vendorInfo = _lfa1Bll.GetById(model.KppbcNo);
             model.KppBcName = vendorInfo.NAME2 + "-" + model.KppbcNo;
-
+            model.KppbcCity = vendorInfo.NAME2;
             model.CorrespondingPlantList = GetCorrespondingPlantList(plantId, ck5Type);
 
 
