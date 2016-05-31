@@ -28,7 +28,7 @@ namespace Sampoerna.EMS.Website.Models
         public string EMAIL { get; set; }
 
         public string PHONE { get; set; }
-
+        public string IsActive { get; set; }
         
     }
 
