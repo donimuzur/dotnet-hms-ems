@@ -215,7 +215,7 @@ namespace Sampoerna.EMS.BLL.Services
         {
             //&& !string.IsNullOrEmpty(c.STO_RECEIVER_NUMBER)
             Expression<Func<CK5, bool>> queryFilterCk5 =
-                c => c.SOURCE_PLANT_NPPBKC_ID == input.NppbkcId && c.DEST_PLANT_COMPANY_CODE == input.CompanyCode
+                c => c.SOURCE_PLANT_NPPBKC_ID == input.NppbkcId //&& c.DEST_PLANT_COMPANY_CODE == input.CompanyCode
                      &&
                      (c.GR_DATE.HasValue
                      && c.GR_DATE.Value.Month == input.PeriodMonth
