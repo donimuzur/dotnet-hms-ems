@@ -648,7 +648,14 @@ namespace Sampoerna.EMS.BLL
                 {
                     dbData = UpdateSubmissionNumber(dbData.CK5_ID);
                 }
-                
+                else
+                {
+                    if (string.IsNullOrEmpty(dbData.SUBMISSION_NUMBER))
+                    {
+                        dbData = UpdateSubmissionNumber(dbData.CK5_ID);
+                    }
+                }
+
             }
             catch (DbEntityValidationException e)
             {
@@ -4739,6 +4746,7 @@ namespace Sampoerna.EMS.BLL
 
             CK5Dto ck5Dto = null;
             CK5SaveInput inputSave = null;
+            List<CK5> listInsertedCk5 = new List<CK5>();
 
             //order first
             input.ListCk5UploadDocumentDto = input.ListCk5UploadDocumentDto.OrderBy(x => x.DocSeqNumber).ToList();
@@ -4757,7 +4765,8 @@ namespace Sampoerna.EMS.BLL
                         inputSave.UserId = input.UserId;
                         inputSave.UserRole = input.UserRole;
 
-                        ProcessInsertCk5(inputSave);
+                        var insertedCk5 = ProcessInsertCk5(inputSave);
+                        listInsertedCk5.Add(insertedCk5);
                     }
 
                     //new record
@@ -4792,11 +4801,20 @@ namespace Sampoerna.EMS.BLL
             inputSave.Ck5Material = listCk5Material;
             inputSave.UserId = input.UserId;
             inputSave.UserRole = input.UserRole;
-            ProcessInsertCk5(inputSave);
+            var lastInsertedCk5 = ProcessInsertCk5(inputSave);
+            listInsertedCk5.Add(lastInsertedCk5);
 
             try
             {
                 _uow.SaveChanges();
+                foreach (var ck5 in listInsertedCk5)
+                {
+                    if (string.IsNullOrEmpty(ck5.SUBMISSION_NUMBER))
+                    {
+                        UpdateSubmissionNumber(ck5.CK5_ID);
+                    }
+                    
+                }
             }
             catch (DbEntityValidationException e)
             {
@@ -4812,7 +4830,7 @@ namespace Sampoerna.EMS.BLL
                 }
                 throw;
             }
-
+            //return listInsertedCk5;
             //return Mapper.Map<CK5Dto>(dbData);
 
 
