@@ -16,7 +16,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public int PeriodYear { get; set; }
         public List<string> FaCodeList { get; set; }
 
-       
+        public List<string> AllowedOrder { get; set; } 
     }
 
     public class ZaapShiftRptGetForLack1ReportByParamInput

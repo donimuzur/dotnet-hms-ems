@@ -2769,6 +2769,22 @@ namespace Sampoerna.EMS.BLL
         private Lack1GeneratedOutput SetProductionList(Lack1GeneratedDto rc, Lack1GenerateDataParamInput input, List<string> plantIdList,
             InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput, string bkcUomId)
         {
+            var groupUsageProporsional = invMovementOutput.UsageProportionalList
+                    .GroupBy(x => new { x.Order, x.Batch })
+                    .Select(p => new InvMovementUsageProportional()
+                    {
+
+                        Order = p.Key.Order,
+                        Batch = p.Key.Batch,
+                        Qty = p.Sum(x => x.Qty),
+                        TotalQtyPerMaterialId = p.FirstOrDefault().TotalQtyPerMaterialId
+                        //Order = p.Order,
+                        //Batch = p.Batch,
+                        //Qty = p.Qty,
+                        //TotalQtyPerMaterialId = p.TotalQtyPerMaterialId
+            });
+
+
             //get Ck4CItem
             var ck4CItemInput = Mapper.Map<CK4CItemGetByParamInput>(input);
             ck4CItemInput.IsHigherFromApproved = false;
@@ -2793,7 +2809,8 @@ namespace Sampoerna.EMS.BLL
                 Werks = plantIdList,
                 PeriodMonth = input.PeriodMonth,
                 PeriodYear = input.PeriodYear,
-                FaCodeList = ck4CItemData.Select(d => d.FA_CODE).Distinct().ToList()
+                FaCodeList = ck4CItemData.Select(d => d.FA_CODE).Distinct().ToList(),
+                AllowedOrder = groupUsageProporsional.Select( d=> d.Order).Distinct().ToList()
             };
 
             //get zaap_shift_rpt
@@ -2922,20 +2939,7 @@ namespace Sampoerna.EMS.BLL
             var prevInventoryMovementByParam = GetInventoryMovementByParam(prevInventoryMovementByParamInput,
                 stoReceiverNumberList, bkcUomId);
 
-            var groupUsageProporsional = invMovementOutput.UsageProportionalList
-                    .GroupBy(x => new { x.Order, x.Batch })
-                    .Select(p => new InvMovementUsageProportional()
-                    {
-
-                        Order = p.Key.Order,
-                        Batch = p.Key.Batch,
-                        Qty = p.Sum(x => x.Qty),
-                        TotalQtyPerMaterialId = p.FirstOrDefault().TotalQtyPerMaterialId
-                        //Order = p.Order,
-                        //Batch = p.Batch,
-                        //Qty = p.Qty,
-                        //TotalQtyPerMaterialId = p.TotalQtyPerMaterialId
-                    });
+            
             //var jsonusage = new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(groupUsageProporsional);
             //var jsonProd = new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(joinedWithUomData);
             //calculation proccess
@@ -2991,8 +2995,8 @@ namespace Sampoerna.EMS.BLL
                 productionList.Add(itemToInsert);
             }
 
-            var nonZaapProd = SetProductionListNonZaap(ck4CItemData, zaapShiftRpt, productionList,prodTypeData,uomData);
-            productionList.AddRange(nonZaapProd);
+            //var nonZaapProd = SetProductionListNonZaap(ck4CItemData, zaapShiftRpt, productionList,prodTypeData,uomData);
+            //productionList.AddRange(nonZaapProd);
 
             //set to Normal Data
             rc.InventoryProductionTisToFa.ProductionData = new Lack1GeneratedProductionDto

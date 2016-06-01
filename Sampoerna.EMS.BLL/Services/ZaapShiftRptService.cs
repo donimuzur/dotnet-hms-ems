@@ -68,6 +68,11 @@ namespace Sampoerna.EMS.BLL.Services
                 queryFilter = queryFilter.And(c => input.Werks.Contains(c.WERKS));
             }
 
+            if (input.AllowedOrder.Count > 0)
+            {
+                queryFilter = queryFilter.And(c => input.AllowedOrder.Contains(c.ORDR));
+            }
+
             var dbData = _repository.Get(queryFilter);
 
             if (dbData == null)
@@ -118,6 +123,11 @@ namespace Sampoerna.EMS.BLL.Services
             if (input.Werks.Count > 0)
             {
                 queryFilter = queryFilter.And(c => input.Werks.Contains(c.WERKS));
+            }
+
+            if (input.AllowedOrder.Count > 0)
+            {
+                queryFilter = queryFilter.And(c => input.AllowedOrder.Contains(c.ORDR));
             }
 
             var dbData = _repository.Get(queryFilter);
