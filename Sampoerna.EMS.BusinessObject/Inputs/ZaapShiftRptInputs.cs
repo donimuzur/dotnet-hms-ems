@@ -14,5 +14,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public int PeriodMonth { get; set; }
         public int PeriodYear { get; set; }
         public List<string> FaCodeList { get; set; }
+
+        public List<string> AllowedOrder { get; set; } 
     }
 }
