@@ -2156,14 +2156,14 @@ namespace Sampoerna.EMS.BLL
             //from CK5 data
             rc = SetIncomeListBySelectionCriteria(rc, input);
 
-            if (rc.AllIncomeList.Count == 0)
-                return new Lack1GeneratedOutput()
-                {
-                    Success = false,
-                    ErrorCode = ExceptionCodes.BLLExceptions.MissingIncomeListItem.ToString(),
-                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingIncomeListItem),
-                    Data = null
-                };
+            //if (rc.AllIncomeList.Count == 0)
+            //    return new Lack1GeneratedOutput()
+            //    {
+            //        Success = false,
+            //        ErrorCode = ExceptionCodes.BLLExceptions.MissingIncomeListItem.ToString(),
+            //        ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingIncomeListItem),
+            //        Data = null
+            //    };
 
             //check waste data
             if (rc.AllIncomeList.Where(x => x.Ck5Type == Enums.CK5Type.Waste).ToList().Count > 0) oReturn.HasWasteData = true;
@@ -2789,7 +2789,7 @@ namespace Sampoerna.EMS.BLL
             var ck4CItemInput = Mapper.Map<CK4CItemGetByParamInput>(input);
             ck4CItemInput.IsHigherFromApproved = false;
             ck4CItemInput.IsCompletedOnly = true;
-            var ck4CItemData = _ck4cItemService.GetByParam(ck4CItemInput);
+            var ck4CItemData = _ck4cItemService.GetByParam(ck4CItemInput); //131
 
             //by pass : http://192.168.62.216/TargetProcess/entity/1465
             //if (ck4CItemData.Count == 0)
@@ -2810,12 +2810,22 @@ namespace Sampoerna.EMS.BLL
                 PeriodMonth = input.PeriodMonth,
                 PeriodYear = input.PeriodYear,
                 FaCodeList = ck4CItemData.Select(d => d.FA_CODE).Distinct().ToList(),
-                AllowedOrder = groupUsageProporsional.Select( d=> d.Order).Distinct().ToList()
+                AllowedOrder = groupUsageProporsional.GroupBy(x=> x.Order).Select( d=> d.Key).ToList()
             };
 
+            var zaapShiftReportInput2 = new ZaapShiftRptGetForLack1ByParamInput()
+            {
+                CompanyCode = input.CompanyCode,
+                Werks = plantIdList,
+                PeriodMonth = input.PeriodMonth,
+                PeriodYear = input.PeriodYear,
+                FaCodeList = ck4CItemData.Select(d => d.FA_CODE).Distinct().ToList(),
+                AllowedOrder = new List<string>()
+            };
             //get zaap_shift_rpt
             var zaapShiftRpt = _zaapShiftRptService.GetForLack1ByParam(zaapShiftReportInput);
             var completeZaapData = _zaapShiftRptService.GetCompleteData(zaapShiftReportInput);
+            
             var totalFaZaapShiftRpt = completeZaapData.GroupBy(x => new { x.FA_CODE, x.PRODUCTION_DATE }).Select(y => new
             {
                 FaCode = y.Key.FA_CODE,
@@ -2833,13 +2843,13 @@ namespace Sampoerna.EMS.BLL
 
             var proportionalOrderPerFa = (from faZaap in totalFaZaapShiftRpt join 
                                           orderZaap in totalOrderZaapShiftRpt on new {faZaap.FaCode, faZaap.ProductionDate} equals new { orderZaap.FaCode, orderZaap.ProductionDate} 
-                                          where faZaap.TotalQtyFa > 0
+                                          //where faZaap.TotalQtyFa > 0
                                          select new Lack1GeneratedProductionDataDto()
                                          {
                                              FaCode = faZaap.FaCode,
                                              ProductionDate = orderZaap.ProductionDate,
                                              Ordr = orderZaap.Ordr,
-                                             ProportionalOrder = orderZaap.TotalQtyOrdr / faZaap.TotalQtyFa
+                                             ProportionalOrder = faZaap.TotalQtyFa > 0 ? orderZaap.TotalQtyOrdr / faZaap.TotalQtyFa : 1
                                          }).ToList();
 
             //bypass http://192.168.62.216/TargetProcess/entity/1465
@@ -2995,8 +3005,8 @@ namespace Sampoerna.EMS.BLL
                 productionList.Add(itemToInsert);
             }
 
-            //var nonZaapProd = SetProductionListNonZaap(ck4CItemData, zaapShiftRpt, productionList,prodTypeData,uomData);
-            //productionList.AddRange(nonZaapProd);
+            var nonZaapProd = SetProductionListNonZaap(ck4CItemData, zaapShiftRpt, productionList,prodTypeData,uomData);
+            productionList.AddRange(nonZaapProd);
 
             //set to Normal Data
             rc.InventoryProductionTisToFa.ProductionData = new Lack1GeneratedProductionDto
