@@ -79,7 +79,7 @@ namespace Sampoerna.EMS.BLL.Services
                      p.GI_DATE.HasValue && p.GI_DATE.Value.Month == input.PeriodMonth &&
                      p.GI_DATE.Value.Year == input.PeriodYear &&
                      p.PBCK1_DECREE_ID != null &&
-                     p.CK5_TYPE != Enums.CK5Type.Export && p.STATUS_ID == Enums.DocumentStatus.Completed &&
+                     p.CK5_TYPE != Enums.CK5Type.Export && p.STATUS_ID == Enums.DocumentStatus.Completed && p.CK5_TYPE != Enums.CK5Type.Return &&
                      p.SOURCE_PLANT_ID == input.SourcePlantId && (int) p.EX_GOODS_TYPE == input.ExGroupTypeId).ToList();
 
             return data;
