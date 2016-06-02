@@ -2169,8 +2169,8 @@ namespace Sampoerna.EMS.BLL
             if (rc.AllIncomeList.Where(x => x.Ck5Type == Enums.CK5Type.Waste).ToList().Count > 0) oReturn.HasWasteData = true;
             if (rc.AllIncomeList.Where(x => x.Ck5Type == Enums.CK5Type.Return).ToList().Count > 0) oReturn.HasReturnData = true;
 
-            var bkcUomId = rc.AllIncomeList.Select(d => d.PackageUomId).First(c => !string.IsNullOrEmpty(c));
-            if (string.IsNullOrEmpty(bkcUomId))
+            //var bkcUomId = rc.AllIncomeList.Select(d => d.PackageUomId).First(c => !string.IsNullOrEmpty(c));
+            if (string.IsNullOrEmpty(rc.Lack1UomId))
             {
                 //bkc uom is null or empty
                 return new Lack1GeneratedOutput()
@@ -2199,8 +2199,8 @@ namespace Sampoerna.EMS.BLL
 
             var outProcess = !string.IsNullOrEmpty(input.ExcisableGoodsTypeDesc) && (input.ExcisableGoodsTypeDesc.ToLower().Contains("alkohol") ||
                                               input.ExcisableGoodsTypeDesc.ToLower().Contains("alcohol"))
-                ? ProcessGenerateLack1DomesticAlcohol(rc, input, plantIdList, bkcUomId)
-                : ProcessGenerateLack1NormalExcisableGoods(rc, input, plantIdList, bkcUomId);
+                ? ProcessGenerateLack1DomesticAlcohol(rc, input, plantIdList, rc.Lack1UomId)
+                : ProcessGenerateLack1NormalExcisableGoods(rc, input, plantIdList, rc.Lack1UomId);
 
             if (!outProcess.Success) return outProcess;
             rc = outProcess.Data;
@@ -2248,7 +2248,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - (rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0)) - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
-            rc.WasteAmountUom = bkcUomId;
+            rc.WasteAmountUom = rc.Lack1UomId;
 
             oReturn.Data = rc;
             oReturn.IsEtilAlcohol = outProcess.IsEtilAlcohol;
@@ -2813,15 +2813,7 @@ namespace Sampoerna.EMS.BLL
                 AllowedOrder = groupUsageProporsional.GroupBy(x=> x.Order).Select( d=> d.Key).ToList()
             };
 
-            var zaapShiftReportInput2 = new ZaapShiftRptGetForLack1ByParamInput()
-            {
-                CompanyCode = input.CompanyCode,
-                Werks = plantIdList,
-                PeriodMonth = input.PeriodMonth,
-                PeriodYear = input.PeriodYear,
-                FaCodeList = ck4CItemData.Select(d => d.FA_CODE).Distinct().ToList(),
-                AllowedOrder = new List<string>()
-            };
+            
             //get zaap_shift_rpt
             var zaapShiftRpt = _zaapShiftRptService.GetForLack1ByParam(zaapShiftReportInput);
             var completeZaapData = _zaapShiftRptService.GetCompleteData(zaapShiftReportInput);
@@ -3700,7 +3692,8 @@ namespace Sampoerna.EMS.BLL
                     rc.Lack1UomId = latestDecreeDate.REQUEST_QTY_UOM;
                 }
                 rc.Pbck1List = Mapper.Map<List<Lack1GeneratedPbck1DataDto>>(pbck1Data);
-
+                var firstOrDefault = pbck1Data.FirstOrDefault();
+                if (firstOrDefault != null) rc.Lack1UomId = firstOrDefault.REQUEST_QTY_UOM;
             }
             else
             {

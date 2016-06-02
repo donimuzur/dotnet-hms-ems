@@ -68,7 +68,7 @@ namespace Sampoerna.EMS.BLL.Services
                 queryFilter = queryFilter.And(c => input.Werks.Contains(c.WERKS));
             }
 
-            if (input.AllowedOrder.Count > 0)
+            if (input.AllowedOrder != null && input.AllowedOrder.Count > 0)
             {
                 queryFilter = queryFilter.And(c => input.AllowedOrder.Contains(c.ORDR));
             }
@@ -125,7 +125,7 @@ namespace Sampoerna.EMS.BLL.Services
                 queryFilter = queryFilter.And(c => input.Werks.Contains(c.WERKS));
             }
 
-            if (input.AllowedOrder.Count > 0)
+            if (input.AllowedOrder != null && input.AllowedOrder.Count > 0)
             {
                 queryFilter = queryFilter.And(c => input.AllowedOrder.Contains(c.ORDR));
             }
