@@ -282,6 +282,8 @@ namespace Sampoerna.EMS.BLL
             var approveRejectedPoa = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(new GetByFormTypeAndFormIdInput() { FormId = ck4cData.Ck4CId, FormType = Enums.FormType.CK4C });
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
+            var ck4cType = "Plant";
+            if (plant == null) ck4cType = "NPPBKC";
 
             rc.Subject = "CK-4C " + ck4cData.Number + " is " + EnumHelper.GetDescription(ck4cData.Status);
             bodyMail.Append("Dear Team,<br />");
@@ -294,7 +296,7 @@ namespace Sampoerna.EMS.BLL
             bodyMail.AppendLine();
             bodyMail.Append("<tr><td>Document Number</td><td> : " + ck4cData.Number + "</td></tr>");
             bodyMail.AppendLine();
-            bodyMail.Append("<tr><td>Document Type</td><td> : CK-4C</td></tr>");
+            bodyMail.Append("<tr><td>Document Type</td><td> : CK-4C level " + ck4cType + "</td></tr>");
             bodyMail.AppendLine();
             if (input.ActionType == Enums.ActionType.Reject || input.ActionType == Enums.ActionType.GovReject)
             {
