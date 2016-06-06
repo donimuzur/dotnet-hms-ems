@@ -4568,7 +4568,8 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new CK5FileDocumentsViewModel();
             model.MainMenu = Enums.MenuList.CK5;
             model.CurrentMenu = PageInfo;
-
+            model.IsNotViewer = !(CurrentUser.UserRole == Enums.UserRole.Administrator ||
+                                 CurrentUser.UserRole == Enums.UserRole.Viewer);
             return View("CK5UploadFileDocument", model);
         }
 
