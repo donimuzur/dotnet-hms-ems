@@ -111,6 +111,8 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public Enums.ActionType GovApprovalActionType { get; set; }
         public string IsSaveSubmit { get; set; }
 
+        public string JsonData { get; set; }
+
         #endregion
 
         public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
