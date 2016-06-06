@@ -106,7 +106,7 @@ namespace Sampoerna.EMS.BLL.Services
 
         public List<string> GetUserBRoleMapByPlantIdAndUserRole(string plantId, Enums.UserRole userRole)
         {
-            var listUserMap = _repository.Get(p => p.PLANT_ID == plantId).ToList();
+            var listUserMap = _repository.Get(p => p.PLANT_ID == plantId && p.USER.IS_ACTIVE == 1, null, "USER").ToList();
             var listUser = listUserMap.Select(x => x.USER_ID).ToList();
             var listBrole =
                 _repositoryBRoleMap.Get(
