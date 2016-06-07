@@ -927,5 +927,79 @@ namespace Sampoerna.EMS.BLL
             }
 
         }
+
+        public List<ProductionDto> GetCompleteData(List<ProductionDto> listItem, GetOtherProductionByParamInput input)
+        {
+            List<ProductionDto> list = new List<ProductionDto>();
+            List<ProductionDto> newList = new List<ProductionDto>();
+
+            //search editable other brand
+            var prodCode = _repositoryProd.GetQuery().Where(x => x.CK4CEDITABLE == true).Select(x => x.PROD_CODE).ToList();
+
+            var plantList = _plantBll.GetAll().Where(x => x.WERKS == input.Plant);
+
+            if (input.IsNppbkc)
+            {
+                plantList = _plantBll.GetPlantByNppbkc(input.Nppbkc).Distinct();
+            }
+
+            DateTime firstDay = new DateTime(input.Year, input.Month, 1);
+            DateTime startDate = firstDay;
+            DateTime endDate = new DateTime(input.Year, input.Month, 14);
+
+            if (input.Period == 2)
+            {
+                startDate = new DateTime(input.Year, input.Month, 15);
+                endDate = firstDay.AddMonths(1).AddDays(-1);
+            }
+
+            for (var j = startDate.Day; j <= endDate.Day; j++)
+            {
+                foreach (var item in plantList)
+                {
+                    Int32 isInt;
+                    var activeBrand = _brandRegistrationBll.GetByPlantId(item.WERKS).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt)
+                        && x.EXC_GOOD_TYP == "01" && prodCode.Contains(x.PROD_CODE));
+
+                    foreach (var data in activeBrand.Distinct())
+                    {
+                        var newItem = new ProductionDto();
+                        newItem.CompanyCode = input.Company;
+                        newItem.ProductionDate = startDate;
+                        newItem.FaCode = data.FA_CODE;
+                        newItem.PlantWerks = item.WERKS;
+                        newItem.LevelPlant = item.WERKS;
+                        newItem.BrandDescription = data.BRAND_CE;
+                        newItem.PlantName = item.NAME1;
+                        newItem.TobaccoProductType = data.ZAIDM_EX_PRODTYP.PRODUCT_TYPE;
+                        newItem.Hje = data.HJE_IDR;
+                        newItem.Tarif = data.TARIFF;
+                        newItem.QtyPacked = 0;
+                        newItem.QtyUnpacked = 0;
+                        newItem.QtyProduced = 0;
+                        newItem.Uom = data.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS == "TIS" ? "G" : "Btg";
+                        newItem.ProdCode = data.PROD_CODE;
+                        newItem.ContentPerPack = Convert.ToInt32(data.BRAND_CONTENT);
+                        newItem.PackedInPack = 0;
+                        newItem.IsEditable = true;
+
+                        newList.Add(newItem);
+                    }
+
+                }
+                
+                startDate = startDate.AddDays(1);
+            }
+
+            var sameData = from a in newList
+                           join b in listItem on new { a.ProductionDate, a.FaCode, a.PlantWerks } equals new { b.ProductionDate, b.FaCode, b.PlantWerks }
+                           select a;
+
+            list = newList.Except(sameData).ToList();
+
+            list.AddRange(listItem);
+
+            return list.OrderBy(x => x.FaCode).OrderBy(x => x.ProductionDate).ToList();
+        }
     }
 }

@@ -190,7 +190,7 @@
                                             <td class="number"><input name="Details.Ck4cItemData[@i].ContentPerPack" type="hidden" value="@item.ContentPerPack" />@string.Format("{0:N2}", item.ContentPerPack)</td>
                                             <td class="number"><input name="Details.Ck4cItemData[@i].PackedQty" type="hidden" value="@item.PackedQty" />@string.Format("{0:N2}", item.PackedQty)</td>
                                             <td class="number"><input name="Details.Ck4cItemData[@i].PackedInPack" type="hidden" value="@item.PackedInPack" />@string.Format("{0:N2}", item.PackedInPack)</td>
-                                            <td class="number"><input name="Details.Ck4cItemData[@i].UnpackedQty" type="hidden" value="@item.UnpackedQty" />@string.Format("{0:N2}", item.UnpackedQty)</td>
+                                            <td class="number">@string.Format("{0:N2}", item.UnpackedQty)</td>
                                             <td class="number"><input name="Details.Ck4cItemData[@i].ProdQty" type="hidden" value="@item.ProdQty" />@string.Format("{0:N2}", item.ProdQty)</td>
                                             <td><input name="Details.Ck4cItemData[@i].ProdQtyUom" type="hidden" value="@item.ProdQtyUom" />@item.ProdQtyUom</td>
                                             <td>@item.Remarks</td>
@@ -200,7 +200,7 @@
                                             <td style="display:none"><input name="Details.Ck4cItemData[@i].Ck4CItemId" type="hidden" value="@item.Ck4CItemId" /></td>
                                             <td style="display:none"><input name="Details.Ck4cItemData[@i].Ck4CId" type="hidden" value="@item.Ck4CId" /></td>
                                             <td style="display:none"><input name="Details.Ck4cItemData[@i].PackedQty" type="hidden" value="@item.PackedQty" /></td>
-                                            <td style="display:none"><input name="Details.Ck4cItemData[@i].UnpackedQty" type="hidden" value="@item.UnpackedQty" class="@classUnpack" /></td>
+                                            <td style="display:none"><input id="Details_Ck4cItemData[@i]_UnpackedQty" name="Details.Ck4cItemData[@i].UnpackedQty" type="hidden" value="@item.UnpackedQty" class="@classUnpack" /></td>
                                             
                                         </tr>
                                     }

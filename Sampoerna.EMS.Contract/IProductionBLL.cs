@@ -35,5 +35,7 @@ namespace Sampoerna.EMS.Contract
         List<ProductionDto> GetOldSaldo(string company, string plant, string facode, DateTime prodDate);
 
         List<PRODUCTION> GetFactAllByParam(ProductionGetByParamInput input);
+
+        List<ProductionDto> GetCompleteData(List<ProductionDto> listItem, GetOtherProductionByParamInput input);
     }
 }

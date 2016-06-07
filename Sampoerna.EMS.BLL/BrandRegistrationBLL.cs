@@ -145,8 +145,10 @@ namespace Sampoerna.EMS.BLL
 
         public List<ZAIDM_EX_BRAND> GetByPlantId(string plantId)
         {
-            var dbData = _repository.Get(b => b.WERKS == plantId).ToList();
-            //var dbData = _repository.Get(b => b.WERKS == plantId && b.STATUS == true && b.IS_DELETED != true).ToList();
+            const string incTables = "ZAIDM_EX_PRODTYP";
+
+            var dbData = _repository.Get(b => b.WERKS == plantId && b.IS_DELETED != true && b.STATUS == true, null, incTables).ToList();
+
             return dbData;
         }
 
