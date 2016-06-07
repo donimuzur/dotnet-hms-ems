@@ -734,13 +734,23 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //for each Excisable Goods Type per tis to tis and tis to fa
             //process tis to fa first
+            string summaryProductionJenis = "";
+            string summaryProductionAmount = "0";
+            int loopCountForUsage = 0;
             var prodTisToFa = data.InventoryProductionTisToFa.ProductionData;
-            var summaryProductionJenis = string.Join(Environment.NewLine,
-                prodTisToFa.ProductionSummaryByProdTypeList.Select(d => d.ProductAlias).ToList());
-            var summaryProductionAmount = string.Join(Environment.NewLine,
-                prodTisToFa.ProductionSummaryByProdTypeList.Select(d => d.TotalAmount.ToString("N2") + " " + d.UomDesc).ToList());
+            if (prodTisToFa != null)
+            {
+                summaryProductionJenis = string.Join(Environment.NewLine,
+                    prodTisToFa.ProductionSummaryByProdTypeList.Select(d => d.ProductAlias).ToList());
+                summaryProductionAmount = string.Join(Environment.NewLine,
+                    prodTisToFa.ProductionSummaryByProdTypeList.Select(
+                        d => d.TotalAmount.ToString("N2") + " " + d.UomDesc).ToList());
 
-            int loopCountForUsage = prodTisToFa.ProductionSummaryByProdTypeList.Count;
+                loopCountForUsage = prodTisToFa.ProductionSummaryByProdTypeList.Count;
+            }
+            
+
+
             var usage = data.Usage;
 
             /*skip this logic for etil alcohol, although IsTisToTis flag is checked*/
@@ -767,7 +777,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             //set detail item
-            if (data.Lack1IncomeDetail.Count <= 0) return dsReport;
+            //if (data.Lack1IncomeDetail.Count <= 0) return dsReport;
 
             var totalAmount = data.Lack1IncomeDetail.Sum(d => d.AMOUNT);
             //var endingBalance = (data.BeginingBalance - (data.Usage + (data.UsageTisToTis.HasValue ? data.UsageTisToTis.Value  : 0)) + data.TotalIncome - data.ReturnQty);
@@ -785,7 +795,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var docToDisplay = (noted.Trim() != string.Empty ? noted.Trim() + Environment.NewLine : string.Empty) +
-                               docNoted;
+                                docNoted;
             
             foreach (var item in data.Lack1IncomeDetail)
             {
@@ -805,6 +815,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 dsReport.Lack1Items.AddLack1ItemsRow(detailRow);
 
             }
+            
 
             return dsReport;
         }
