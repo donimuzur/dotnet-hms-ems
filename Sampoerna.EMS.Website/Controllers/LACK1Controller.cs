@@ -14,6 +14,7 @@ using CrystalDecisions.Shared;
 using DocumentFormat.OpenXml.Spreadsheet;
 using iTextSharp.text.pdf;
 using Microsoft.Ajax.Utilities;
+using Newtonsoft.Json;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -621,6 +622,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult RetDetails(Lack1DetailsDto lack1Data, bool isDisplayOnly)
         {
             var model = InitDetailModel(lack1Data);
+            model.JsonData = JsonConvert.SerializeObject(model);
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model = SetActiveMenu(model, model.Lack1Type);
@@ -922,6 +924,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //}
 
             var model = InitEditModel(lack1Data);
+            model.JsonData = JsonConvert.SerializeObject(model);
             model = InitEditList(model);
             model.IsCreateNew = false;
 
@@ -1197,6 +1200,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             
             var model = InitEditModel(lack1Data);
+            model.JsonData = JsonConvert.SerializeObject(model);
             model = InitEditList(model);
             model.IsCreateNew = false;
 

@@ -89,9 +89,10 @@
 
             $('#generated-data-container').html('');
 
-            var jsonData = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model, Newtonsoft.Json.Formatting.Indented, new Newtonsoft.Json.JsonSerializerSettings {
+            @*var jsonData = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model, Newtonsoft.Json.Formatting.Indented, new Newtonsoft.Json.JsonSerializerSettings {
                            ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-                       })));
+                       })));*@
+            var jsonData = @(Html.Raw(@Model.JsonData));
             //console.log(jsonData);
             if (jsonData.IsEtilAlcohol) {
                 /*Force to use generate table without tis to tis*/
