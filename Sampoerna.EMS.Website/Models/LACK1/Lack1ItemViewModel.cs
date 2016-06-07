@@ -112,6 +112,8 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string IsSaveSubmit { get; set; }
         public bool IsDisplayOnly { get; set; }
 
+        public string JsonData { get; set; }
+
         #endregion
 
         public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
