@@ -3164,8 +3164,17 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, item.CfDesc);
                     iColumn++;
 
-                    slDocument.SetCellValue(iRow, iColumn, Convert.ToDecimal(item.BeginingBalance));
-                    iColumn++;
+                    if (string.IsNullOrEmpty(item.BeginingBalance))
+                    {
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+                    }
+                    else
+                    {
+                        slDocument.SetCellValue(iRow, iColumn, Convert.ToDecimal(item.BeginingBalance));
+                        iColumn++;
+                    }
+                    
 
                     slDocument.SetCellValue(iRow, iColumn, item.BeginingBalanceUom);
                     iColumn++;
