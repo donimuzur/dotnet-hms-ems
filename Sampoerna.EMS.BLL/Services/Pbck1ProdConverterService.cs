@@ -42,7 +42,11 @@ namespace Sampoerna.EMS.BLL.Services
                      //c.PBCK1.PERIOD_TO >= new DateTime(input.PeriodYear, input.PeriodMonth, DateTime.DaysInMonth(input.PeriodYear, input.PeriodMonth));
 
             queryFilter = queryFilter.And(c => c.PROD_CODE == "05");
-            return _repository.Get(queryFilter, null, "PBCK1").ToList();
+            var singleData =
+                _repository.Get(queryFilter, null, "PBCK1").OrderByDescending(x => x.PBCK1_ID).FirstOrDefault();
+            var dataReturn = new List<PBCK1_PROD_CONVERTER>();
+            dataReturn.Add(singleData);
+            return dataReturn;
         }
     }
 }
