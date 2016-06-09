@@ -1125,6 +1125,8 @@ namespace Sampoerna.EMS.BLL
                 ErrorMessage = string.Empty,
                 Data = new Lack2GeneratedDto()
             };
+
+            var nppbkc = _nppbkcService.GetById(input.NppbkcId);
             
             //get ck5 data
             var ck5Selected = _ck5Service.GetForLack2ByParam(new Ck5GetForLack2ByParamInput()
@@ -1134,7 +1136,8 @@ namespace Sampoerna.EMS.BLL
                 SourcePlantId = input.SourcePlantId,
                 ExGroupTypeId = input.ExGroupTypeId,
                 CompanyCode = input.CompanyCode,
-                NppbkcId = input.NppbkcId
+                NppbkcId = input.NppbkcId,
+                isSameNppbkcAllowed = nppbkc.FLAG_FOR_LACK1.HasValue && nppbkc.FLAG_FOR_LACK1.Value
             });
 
             if (ck5Selected.Count == 0)
