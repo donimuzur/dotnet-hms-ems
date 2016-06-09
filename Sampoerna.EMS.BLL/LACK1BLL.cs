@@ -3168,9 +3168,12 @@ namespace Sampoerna.EMS.BLL
             {
                 return new Lack1GeneratedOutput()
                 {
-                    Success = false,
-                    ErrorCode = ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter.ToString(),
-                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter),
+                    //Success = false,
+                    //ErrorCode = ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter.ToString(),
+                    //ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter),
+                    Success = true,
+                    ErrorCode = string.Empty,
+                    ErrorMessage = string.Empty,
                     Data = rc
                 };
             }
