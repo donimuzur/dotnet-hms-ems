@@ -15,26 +15,26 @@ function generateTable(data) {
             var rowIndex = 1;
             var rowCount = data.IncomeList.length;
             rc = rc +
-            /*First Record*/
-            '<tr><td>' + rowIndex + '</td>' +
-            '<td rowspan="' + rowCount + '">' + ThausandSeperator(data.BeginingBalance, 2) + '</td>' +
-            '<td>' + data.IncomeList[0].RegistrationNumber + ' - '
+                /*First Record*/
+                '<tr><td>' + rowIndex + '</td>' +
+                '<td rowspan="' + rowCount + '">' + ThausandSeperator(data.BeginingBalance, 2) + '</td>' +
+                '<td>' + data.IncomeList[0].RegistrationNumber + ' - '
                 + data.IncomeList[0].StringRegistrationDate + '</td>' +
-            '<td>' +
-               ThausandSeperator(data.IncomeList[0].Amount, 2) + '</td>' +
-            '<td rowspan="' + rowCount + '">' + ThausandSeperator(data.TotalUsage, 2) + '</td>' +
-            '<td rowspan="' + rowCount + '">' + generateJenisHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
-            '<td rowspan="' + rowCount + '">' + generateJumlahHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
-            '<td rowspan="' + rowCount + '">' + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
-            '<td rowspan="' + rowCount + '">' + ThausandSeperator(data.CloseBalance, 2) + '</td>' +
-            '<td rowspan="' + rowCount + '">' + generateRemark(data) + '</td></tr>';
+                '<td>' +
+                ThausandSeperator(data.IncomeList[0].Amount, 2) + '</td>' +
+                '<td rowspan="' + rowCount + '">' + ThausandSeperator(data.TotalUsage, 2) + '</td>' +
+                '<td rowspan="' + rowCount + '">' + generateJenisHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
+                '<td rowspan="' + rowCount + '">' + generateJumlahHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
+                '<td rowspan="' + rowCount + '">' + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
+                '<td rowspan="' + rowCount + '">' + ThausandSeperator(data.CloseBalance, 2) + '</td>' +
+                '<td rowspan="' + rowCount + '">' + generateRemark(data) + '</td></tr>';
             /*LOGS POINT 19 Google Doc*/
             /*'<td rowspan="' + rowCount + '">' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';*/
             /*loop record*/
             for (var i = 1; i < data.IncomeList.length; i++) {
                 rowIndex = rowIndex + 1;
                 var item = '<tr><td>' + rowIndex + '</td><td>' + data.IncomeList[i].RegistrationNumber + ' - ' + data.IncomeList[i].StringRegistrationDate + '</td>' +
-                            '<td>' + ThausandSeperator(data.IncomeList[i].Amount) + '</td></tr>';
+                    '<td>' + ThausandSeperator(data.IncomeList[i].Amount) + '</td></tr>';
                 /*rc.append(item);*/
                 rc = rc + item;
             }
@@ -43,21 +43,37 @@ function generateTable(data) {
             $('#IncomeListCount').val(rowCount);
         } else {
             rc = rc +
-            /*Only Tis To Fa Record*/
-            '<tr><td>1</td>' +
-            '<td>' + ThausandSeperator(data.BeginingBalance, 2) + '</td>' +
-            '<td></td>' +
-            '<td></td>' +
-            '<td></td>' +
-            '<td>' + generateJenisHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
-            '<td>' + generateJumlahHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
-            '<td>' + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
-            '<td>' + ThausandSeperator(data.CloseBalance, 2) + '</td>' +
-             '<td>' + generateRemark(data) + '</td></tr>';
-            /*'<td>' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>'; *//*LOGS POINT 19 Feedback Google Docs*/
-            
+                /*Only Tis To Fa Record*/
+                '<tr><td>1</td>' +
+                '<td>' + ThausandSeperator(data.BeginingBalance, 2) + '</td>' +
+                '<td></td>' +
+                '<td></td>' +
+                '<td></td>' +
+                '<td>' + generateJenisHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
+                '<td>' + generateJumlahHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
+                '<td>' + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
+                '<td>' + ThausandSeperator(data.CloseBalance, 2) + '</td>' +
+                '<td>' + generateRemark(data) + '</td></tr>';
+            /*'<td>' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>'; */ /*LOGS POINT 19 Feedback Google Docs*/
+
             $('#IncomeListCount').val(0);
         }
+    } else {
+        rc = rc +
+                /*Only Tis To Fa Record*/
+                '<tr><td>1</td>' +
+                '<td>' + ThausandSeperator(data.BeginingBalance, 2) + '</td>' +
+                '<td></td>' +
+                '<td></td>' +
+                '<td>' + ThausandSeperator(data.TotalUsage, 2) + '</td>' +
+                '<td>' + generateJenisHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
+                '<td>' + generateJumlahHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
+                '<td>' + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
+                '<td>' + ThausandSeperator(data.CloseBalance, 2) + '</td>' +
+                '<td>' + generateRemark(data) + '</td></tr>';
+        /*'<td>' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>'; */ /*LOGS POINT 19 Feedback Google Docs*/
+
+        $('#IncomeListCount').val(0);
     }
     /*footer*/
     rc = rc + '<tr><td></td><td></td><td></td><td>Total : ' + '<input name="TotalIncome" type="hidden" value = "' + data.TotalIncome + '" />'
