@@ -45,7 +45,7 @@ namespace Sampoerna.EMS.BLL.Services
             var singleData =
                 _repository.Get(queryFilter, null, "PBCK1").OrderByDescending(x => x.PBCK1_ID).FirstOrDefault();
             var dataReturn = new List<PBCK1_PROD_CONVERTER>();
-            dataReturn.Add(singleData);
+            if (singleData != null) dataReturn.Add(singleData);
             return dataReturn;
         }
     }
