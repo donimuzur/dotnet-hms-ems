@@ -262,9 +262,11 @@ namespace Sampoerna.EMS.BLL
                     var toAddRange = generatedData.Data.InventoryProductionTisToTis.ProductionData.ProductionList;
                     for (var i = 0; i < toAddRange.Count; i++)
                     {
+                        
                         toAddRange[i].IsTisToTisData = true;
+                        if (toAddRange[i].UomId != null) productionDetail.Add(toAddRange[i]);
                     }
-                    productionDetail.AddRange(toAddRange);
+                    //productionDetail.AddRange(toAddRange);
                 }
             }
 

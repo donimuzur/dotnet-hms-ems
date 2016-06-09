@@ -794,26 +794,50 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var docToDisplay = (noted.Trim() != string.Empty ? noted.Trim() + Environment.NewLine : string.Empty) +
                                 docNoted;
-            
-            foreach (var item in data.Lack1IncomeDetail)
+
+            if (data.Lack1IncomeDetail.Count > 0)
+            {
+                foreach (var item in data.Lack1IncomeDetail)
+                {
+                    var detailRow = dsReport.Lack1Items.NewLack1ItemsRow();
+                    detailRow.BeginningBalance = data.BeginingBalance.ToString("N2");
+                    detailRow.Ck5RegNumber = item.REGISTRATION_NUMBER;
+                    detailRow.Ck5RegDate = item.REGISTRATION_DATE.HasValue
+                        ? item.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy")
+                        : string.Empty;
+                    detailRow.Ck5Amount = item.AMOUNT.ToString("N2");
+                    detailRow.Usage = usage.ToString("N2");
+                    detailRow.ListJenisBKC = summaryProductionJenis;
+                    detailRow.ListJumlahBKC = summaryProductionAmount;
+                    detailRow.EndingBalance = endingBalance.ToString("N2");
+                    detailRow.Noted = docToDisplay;
+                    detailRow.Ck5TotalAmount = totalAmount.ToString("N2");
+                    detailRow.ListTotalJumlahBKC = totalSummaryProductionList;
+
+                    dsReport.Lack1Items.AddLack1ItemsRow(detailRow);
+
+                }
+            }
+            else
             {
                 var detailRow = dsReport.Lack1Items.NewLack1ItemsRow();
                 detailRow.BeginningBalance = data.BeginingBalance.ToString("N2");
-                detailRow.Ck5RegNumber = item.REGISTRATION_NUMBER;
-                detailRow.Ck5RegDate = item.REGISTRATION_DATE.HasValue ? item.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy") : string.Empty;
-                detailRow.Ck5Amount = item.AMOUNT.ToString("N2");
+                detailRow.Ck5RegNumber = string.Empty;
+                detailRow.Ck5RegDate = string.Empty;
+                detailRow.Ck5Amount = "0";
                 detailRow.Usage = usage.ToString("N2");
                 detailRow.ListJenisBKC = summaryProductionJenis;
                 detailRow.ListJumlahBKC = summaryProductionAmount;
                 detailRow.EndingBalance = endingBalance.ToString("N2");
                 detailRow.Noted = docToDisplay;
                 detailRow.Ck5TotalAmount = totalAmount.ToString("N2");
-                detailRow.ListTotalJumlahBKC = totalSummaryProductionList;
+                detailRow.ListTotalJumlahBKC = string.IsNullOrEmpty(totalSummaryProductionList) ? "0" : totalSummaryProductionList;
 
                 dsReport.Lack1Items.AddLack1ItemsRow(detailRow);
-
             }
-            
+
+
+
 
             return dsReport;
         }
