@@ -262,9 +262,11 @@ namespace Sampoerna.EMS.BLL
                     var toAddRange = generatedData.Data.InventoryProductionTisToTis.ProductionData.ProductionList;
                     for (var i = 0; i < toAddRange.Count; i++)
                     {
+                        
                         toAddRange[i].IsTisToTisData = true;
+                        if (toAddRange[i].UomId != null) productionDetail.Add(toAddRange[i]);
                     }
-                    productionDetail.AddRange(toAddRange);
+                    //productionDetail.AddRange(toAddRange);
                 }
             }
 
@@ -563,6 +565,13 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData = _lack1Service.GetDetailsById(id);
             var rc = Mapper.Map<Lack1DetailsDto>(dbData);
+
+            if (string.IsNullOrEmpty(rc.SupplierPlant))
+            {
+                var plant = _t001WServices.GetById(rc.SupplierPlantId);
+                if (plant != null) rc.SupplierPlant = plant.NAME1;
+            }
+
             if (rc.ExGoodsTypeDesc.ToLower().Contains("alcohol") || rc.ExGoodsTypeDesc.ToLower().Contains("alkohol"))
             {
                 rc.IsEtilAlcohol = true;
@@ -1937,21 +1946,21 @@ namespace Sampoerna.EMS.BLL
             //from CK5 data
             rc = SetIncomeListBySelectionCriteria(rc, input);
 
-            if (rc.AllIncomeList.Count == 0)
-                return new Lack1GeneratedOutput()
-                {
-                    Success = false,
-                    ErrorCode = ExceptionCodes.BLLExceptions.MissingIncomeListItem.ToString(),
-                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingIncomeListItem),
-                    Data = null
-                };
+            //if (rc.AllIncomeList.Count == 0)
+            //    return new Lack1GeneratedOutput()
+            //    {
+            //        Success = false,
+            //        ErrorCode = ExceptionCodes.BLLExceptions.MissingIncomeListItem.ToString(),
+            //        ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingIncomeListItem),
+            //        Data = null
+            //    };
 
             //check waste data
             if (rc.AllIncomeList.Where(x => x.Ck5Type == Enums.CK5Type.Waste).ToList().Count > 0) oReturn.HasWasteData = true;
             if (rc.AllIncomeList.Where(x => x.Ck5Type == Enums.CK5Type.Return).ToList().Count > 0) oReturn.HasReturnData = true;
 
-            var bkcUomId = rc.AllIncomeList.Select(d => d.PackageUomId).First(c => !string.IsNullOrEmpty(c));
-            if (string.IsNullOrEmpty(bkcUomId))
+            //var bkcUomId = rc.AllIncomeList.Select(d => d.PackageUomId).First(c => !string.IsNullOrEmpty(c));
+            if (string.IsNullOrEmpty(rc.Lack1UomId))
             {
                 //bkc uom is null or empty
                 return new Lack1GeneratedOutput()
@@ -1980,8 +1989,8 @@ namespace Sampoerna.EMS.BLL
 
             var outProcess = !string.IsNullOrEmpty(input.ExcisableGoodsTypeDesc) && (input.ExcisableGoodsTypeDesc.ToLower().Contains("alkohol") ||
                                               input.ExcisableGoodsTypeDesc.ToLower().Contains("alcohol"))
-                ? ProcessGenerateLack1DomesticAlcohol(rc, input, plantIdList, bkcUomId)
-                : ProcessGenerateLack1NormalExcisableGoods(rc, input, plantIdList, bkcUomId);
+                ? ProcessGenerateLack1DomesticAlcohol(rc, input, plantIdList, rc.Lack1UomId)
+                : ProcessGenerateLack1NormalExcisableGoods(rc, input, plantIdList, rc.Lack1UomId);
 
             if (!outProcess.Success) return outProcess;
             rc = outProcess.Data;
@@ -2029,7 +2038,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - (rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0)) - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
-            rc.WasteAmountUom = bkcUomId;
+            rc.WasteAmountUom = rc.Lack1UomId;
 
             oReturn.Data = rc;
             oReturn.IsEtilAlcohol = outProcess.IsEtilAlcohol;
@@ -2188,7 +2197,7 @@ namespace Sampoerna.EMS.BLL
             //{
             //    strCsv += ObjectToCsvData(data) + "\r\n";
             //}
-            var productionTypeId = finalgoodlistGrouped.Any() ? finalgoodlistGrouped.FirstOrDefault().ExGoodsTypeId : null;
+            var productionTypeId = finalgoodlistGrouped.Any() ? finalgoodlistGrouped.FirstOrDefault().ExGoodsTypeId : EnumHelper.GetDescription(Enums.GoodsType.EtilAlkohol);
 
             var productionList = new List<Lack1GeneratedProductionDataDto>();
             
@@ -2550,11 +2559,27 @@ namespace Sampoerna.EMS.BLL
         private Lack1GeneratedOutput SetProductionList(Lack1GeneratedDto rc, Lack1GenerateDataParamInput input, List<string> plantIdList,
             InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput, string bkcUomId)
         {
+            var groupUsageProporsional = invMovementOutput.UsageProportionalList
+                    .GroupBy(x => new { x.Order, x.Batch })
+                    .Select(p => new InvMovementUsageProportional()
+                    {
+
+                        Order = p.Key.Order,
+                        Batch = p.Key.Batch,
+                        Qty = p.Sum(x => x.Qty),
+                        TotalQtyPerMaterialId = p.FirstOrDefault().TotalQtyPerMaterialId
+                        //Order = p.Order,
+                        //Batch = p.Batch,
+                        //Qty = p.Qty,
+                        //TotalQtyPerMaterialId = p.TotalQtyPerMaterialId
+            });
+
+
             //get Ck4CItem
             var ck4CItemInput = Mapper.Map<CK4CItemGetByParamInput>(input);
             ck4CItemInput.IsHigherFromApproved = false;
             ck4CItemInput.IsCompletedOnly = true;
-            var ck4CItemData = _ck4cItemService.GetByParam(ck4CItemInput);
+            var ck4CItemData = _ck4cItemService.GetByParam(ck4CItemInput); //131
 
             //by pass : http://192.168.62.216/TargetProcess/entity/1465
             //if (ck4CItemData.Count == 0)
@@ -2574,12 +2599,15 @@ namespace Sampoerna.EMS.BLL
                 Werks = plantIdList,
                 PeriodMonth = input.PeriodMonth,
                 PeriodYear = input.PeriodYear,
-                FaCodeList = ck4CItemData.Select(d => d.FA_CODE).Distinct().ToList()
+                FaCodeList = ck4CItemData.Select(d => d.FA_CODE).Distinct().ToList(),
+                AllowedOrder = groupUsageProporsional.GroupBy(x=> x.Order).Select( d=> d.Key).ToList()
             };
 
+            
             //get zaap_shift_rpt
             var zaapShiftRpt = _zaapShiftRptService.GetForLack1ByParam(zaapShiftReportInput);
             var completeZaapData = _zaapShiftRptService.GetCompleteData(zaapShiftReportInput);
+            
             var totalFaZaapShiftRpt = completeZaapData.GroupBy(x => new { x.FA_CODE, x.PRODUCTION_DATE }).Select(y => new
             {
                 FaCode = y.Key.FA_CODE,
@@ -2597,13 +2625,13 @@ namespace Sampoerna.EMS.BLL
 
             var proportionalOrderPerFa = (from faZaap in totalFaZaapShiftRpt join 
                                           orderZaap in totalOrderZaapShiftRpt on new {faZaap.FaCode, faZaap.ProductionDate} equals new { orderZaap.FaCode, orderZaap.ProductionDate} 
-                                          where faZaap.TotalQtyFa > 0
+                                          //where faZaap.TotalQtyFa > 0
                                          select new Lack1GeneratedProductionDataDto()
                                          {
                                              FaCode = faZaap.FaCode,
                                              ProductionDate = orderZaap.ProductionDate,
                                              Ordr = orderZaap.Ordr,
-                                             ProportionalOrder = orderZaap.TotalQtyOrdr / faZaap.TotalQtyFa
+                                             ProportionalOrder = faZaap.TotalQtyFa > 0 ? orderZaap.TotalQtyOrdr / faZaap.TotalQtyFa : 1
                                          }).ToList();
 
             //bypass http://192.168.62.216/TargetProcess/entity/1465
@@ -2703,20 +2731,7 @@ namespace Sampoerna.EMS.BLL
             var prevInventoryMovementByParam = GetInventoryMovementByParam(prevInventoryMovementByParamInput,
                 stoReceiverNumberList, bkcUomId);
 
-            var groupUsageProporsional = invMovementOutput.UsageProportionalList
-                    .GroupBy(x => new { x.Order, x.Batch })
-                    .Select(p => new InvMovementUsageProportional()
-                    {
-
-                        Order = p.Key.Order,
-                        Batch = p.Key.Batch,
-                        Qty = p.Sum(x => x.Qty),
-                        TotalQtyPerMaterialId = p.FirstOrDefault().TotalQtyPerMaterialId
-                        //Order = p.Order,
-                        //Batch = p.Batch,
-                        //Qty = p.Qty,
-                        //TotalQtyPerMaterialId = p.TotalQtyPerMaterialId
-                    });
+            
             //var jsonusage = new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(groupUsageProporsional);
             //var jsonProd = new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(joinedWithUomData);
             //calculation proccess
@@ -3153,9 +3168,12 @@ namespace Sampoerna.EMS.BLL
             {
                 return new Lack1GeneratedOutput()
                 {
-                    Success = false,
-                    ErrorCode = ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter.ToString(),
-                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter),
+                    //Success = false,
+                    //ErrorCode = ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter.ToString(),
+                    //ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter),
+                    Success = true,
+                    ErrorCode = string.Empty,
+                    ErrorMessage = string.Empty,
                     Data = rc
                 };
             }
@@ -3467,7 +3485,8 @@ namespace Sampoerna.EMS.BLL
                     rc.Lack1UomId = latestDecreeDate.REQUEST_QTY_UOM;
                 }
                 rc.Pbck1List = Mapper.Map<List<Lack1GeneratedPbck1DataDto>>(pbck1Data);
-
+                var firstOrDefault = pbck1Data.FirstOrDefault();
+                if (firstOrDefault != null) rc.Lack1UomId = firstOrDefault.REQUEST_QTY_UOM;
             }
             else
             {
@@ -4081,6 +4100,7 @@ namespace Sampoerna.EMS.BLL
                     Lack1Level = data.LACK1_LEVEL,
                     BeginingBalance = data.BEGINING_BALANCE,
                     EndingBalance = data.BEGINING_BALANCE + data.TOTAL_INCOME - (data.USAGE + (data.USAGE_TISTOTIS.HasValue ? data.USAGE_TISTOTIS.Value : 0)) - (data.RETURN_QTY.HasValue ? data.RETURN_QTY.Value : 0),
+                    ProdQty = data.LACK1_PRODUCTION_DETAIL.Sum(x => x.AMOUNT),
                     TrackingConsolidations = new List<Lack1TrackingConsolidationDetailReportDto>(),
                     Poa = data.APPROVED_BY_POA,
                     Creator = data.CREATED_BY

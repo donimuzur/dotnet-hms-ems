@@ -14,6 +14,7 @@ using CrystalDecisions.Shared;
 using DocumentFormat.OpenXml.Spreadsheet;
 using iTextSharp.text.pdf;
 using Microsoft.Ajax.Utilities;
+using Newtonsoft.Json;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -621,6 +622,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult RetDetails(Lack1DetailsDto lack1Data, bool isDisplayOnly)
         {
             var model = InitDetailModel(lack1Data);
+            model.JsonData = JsonConvert.SerializeObject(model);
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model = SetActiveMenu(model, model.Lack1Type);
@@ -730,13 +732,23 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //for each Excisable Goods Type per tis to tis and tis to fa
             //process tis to fa first
+            string summaryProductionJenis = "";
+            string summaryProductionAmount = "0";
+            int loopCountForUsage = 0;
             var prodTisToFa = data.InventoryProductionTisToFa.ProductionData;
-            var summaryProductionJenis = string.Join(Environment.NewLine,
-                prodTisToFa.ProductionSummaryByProdTypeList.Select(d => d.ProductAlias).ToList());
-            var summaryProductionAmount = string.Join(Environment.NewLine,
-                prodTisToFa.ProductionSummaryByProdTypeList.Select(d => d.TotalAmount.ToString("N2") + " " + d.UomDesc).ToList());
+            if (prodTisToFa != null)
+            {
+                summaryProductionJenis = string.Join(Environment.NewLine,
+                    prodTisToFa.ProductionSummaryByProdTypeList.Select(d => d.ProductAlias).ToList());
+                summaryProductionAmount = string.Join(Environment.NewLine,
+                    prodTisToFa.ProductionSummaryByProdTypeList.Select(
+                        d => d.TotalAmount.ToString("N2") + " " + d.UomDesc).ToList());
 
-            int loopCountForUsage = prodTisToFa.ProductionSummaryByProdTypeList.Count;
+                loopCountForUsage = prodTisToFa.ProductionSummaryByProdTypeList.Count;
+            }
+            
+
+
             var usage = data.Usage;
 
             /*skip this logic for etil alcohol, although IsTisToTis flag is checked*/
@@ -763,7 +775,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             //set detail item
-            if (data.Lack1IncomeDetail.Count <= 0) return dsReport;
+            //if (data.Lack1IncomeDetail.Count <= 0) return dsReport;
 
             var totalAmount = data.Lack1IncomeDetail.Sum(d => d.AMOUNT);
             //var endingBalance = (data.BeginingBalance - (data.Usage + (data.UsageTisToTis.HasValue ? data.UsageTisToTis.Value  : 0)) + data.TotalIncome - data.ReturnQty);
@@ -781,26 +793,51 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var docToDisplay = (noted.Trim() != string.Empty ? noted.Trim() + Environment.NewLine : string.Empty) +
-                               docNoted;
-            
-            foreach (var item in data.Lack1IncomeDetail)
+                                docNoted;
+
+            if (data.Lack1IncomeDetail.Count > 0)
+            {
+                foreach (var item in data.Lack1IncomeDetail)
+                {
+                    var detailRow = dsReport.Lack1Items.NewLack1ItemsRow();
+                    detailRow.BeginningBalance = data.BeginingBalance.ToString("N2");
+                    detailRow.Ck5RegNumber = item.REGISTRATION_NUMBER;
+                    detailRow.Ck5RegDate = item.REGISTRATION_DATE.HasValue
+                        ? item.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy")
+                        : string.Empty;
+                    detailRow.Ck5Amount = item.AMOUNT.ToString("N2");
+                    detailRow.Usage = usage.ToString("N2");
+                    detailRow.ListJenisBKC = summaryProductionJenis;
+                    detailRow.ListJumlahBKC = summaryProductionAmount;
+                    detailRow.EndingBalance = endingBalance.ToString("N2");
+                    detailRow.Noted = docToDisplay;
+                    detailRow.Ck5TotalAmount = totalAmount.ToString("N2");
+                    detailRow.ListTotalJumlahBKC = totalSummaryProductionList;
+
+                    dsReport.Lack1Items.AddLack1ItemsRow(detailRow);
+
+                }
+            }
+            else
             {
                 var detailRow = dsReport.Lack1Items.NewLack1ItemsRow();
                 detailRow.BeginningBalance = data.BeginingBalance.ToString("N2");
-                detailRow.Ck5RegNumber = item.REGISTRATION_NUMBER;
-                detailRow.Ck5RegDate = item.REGISTRATION_DATE.HasValue ? item.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy") : string.Empty;
-                detailRow.Ck5Amount = item.AMOUNT.ToString("N2");
+                detailRow.Ck5RegNumber = string.Empty;
+                detailRow.Ck5RegDate = string.Empty;
+                detailRow.Ck5Amount = "0";
                 detailRow.Usage = usage.ToString("N2");
                 detailRow.ListJenisBKC = summaryProductionJenis;
                 detailRow.ListJumlahBKC = summaryProductionAmount;
                 detailRow.EndingBalance = endingBalance.ToString("N2");
                 detailRow.Noted = docToDisplay;
                 detailRow.Ck5TotalAmount = totalAmount.ToString("N2");
-                detailRow.ListTotalJumlahBKC = totalSummaryProductionList;
+                detailRow.ListTotalJumlahBKC = string.IsNullOrEmpty(totalSummaryProductionList) ? "0" : totalSummaryProductionList;
 
                 dsReport.Lack1Items.AddLack1ItemsRow(detailRow);
-
             }
+
+
+
 
             return dsReport;
         }
@@ -922,6 +959,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //}
 
             var model = InitEditModel(lack1Data);
+            model.JsonData = JsonConvert.SerializeObject(model);
             model = InitEditList(model);
             model.IsCreateNew = false;
 
@@ -1197,6 +1235,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             
             var model = InitEditModel(lack1Data);
+            model.JsonData = JsonConvert.SerializeObject(model);
             model = InitEditList(model);
             model.IsCreateNew = false;
 
@@ -1364,6 +1403,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private void Lack1WorkflowGovApprove(Lack1EditViewModel lack1Data, Enums.ActionType actionType, string comment)
         {
+            if (lack1Data.Status == Enums.DocumentStatus.Completed) actionType = Enums.ActionType.Completed;
+
             var input = new Lack1WorkflowDocumentInput()
             {
                 DocumentId = lack1Data.Lack1Id,
@@ -1864,6 +1905,24 @@ namespace Sampoerna.EMS.Website.Controllers
                 });
             }
 
+            if (model.ExportModel.BPbck1Number)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck1Number",
+                    HeaderText = "PBCK-1 Number"
+                });
+            }
+
+            if (model.ExportModel.BPbck1Date)
+            {
+                grid.Columns.Add(new BoundField()
+                {
+                    DataField = "Pbck1Date",
+                    HeaderText = "PBCK-1 Date"
+                });
+            }
+
             if (model.ExportModel.BApprover)
             {
                 grid.Columns.Add(new BoundField()
@@ -2148,6 +2207,10 @@ namespace Sampoerna.EMS.Website.Controllers
                         iColumn++;
                     }
 
+                    slDocument.SetCellValue(iRow, iColumn, item.ProdQty.ToString("N2"));
+                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
+                    iColumn++;
+
                     slDocument.SetCellValue(iRow, iColumn, item.EndingBalance.ToString("N2"));
                     slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
@@ -2272,6 +2335,9 @@ namespace Sampoerna.EMS.Website.Controllers
                         slDocument.SetCellValue(iRow, iColumn, "-");
                         iColumn++;
                     }
+
+                    slDocument.SetCellValue(iRow, iColumn, item.ProdQty.ToString("N2"));
+                    iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.EndingBalance.ToString("N2"));
                     iColumn++;

@@ -232,6 +232,7 @@
     <Compile Include="Controllers\PoaDelegationController.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Code\PdfResult.cs" />
+    <Compile Include="Controllers\ProductTypeController.cs" />
     <Compile Include="Controllers\ReversalController.cs" />
     <Compile Include="Controllers\SchedulerSettingController.cs" />
     <Compile Include="Controllers\WasteController.cs" />
@@ -414,6 +415,8 @@
     <Compile Include="Models\PrintHistory\PrintHistoryViewModel.cs" />
     <Compile Include="Models\PRODUCTION\ProductionUploadViewModel.cs" />
     <Compile Include="Models\PRODUCTION\ProductionViewModel.cs" />
+    <Compile Include="Models\ProductType\ProductTypeIndexViewModel.cs" />
+    <Compile Include="Models\ProductType\ProductTypeFormViewModel.cs" />
     <Compile Include="Models\Reversal\ReversalIndexViewModel.cs" />
     <Compile Include="Models\SchedulerSetting\SchedulerSettingModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
@@ -499,13 +502,6 @@
       <DependentUpon>HeaderFooterPreview.rpt</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Reports\LACK1\Lack1Items.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Lack1Items.rpt</DependentUpon>
-      <SubType>Component</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Reports\LACK1\Lack1PrintOut.cs">
       <AutoGen>True</AutoGen>
@@ -1313,6 +1309,9 @@
     <Content Include="Views\LACK1\Edits.cshtml" />
     <Content Include="Views\LACK1\_HomeCompleted.cshtml" />
     <Content Include="Views\Material\_MaterialList.cshtml" />
+    <Content Include="Views\ProductType\Index.cshtml" />
+    <Content Include="Views\ProductType\Edit.cshtml" />
+    <Content Include="Views\ProductType\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1418,11 +1417,6 @@
     <Content Include="Reports\CK4C\Preview.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Preview.cs</LastGenOutput>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Reports\LACK1\Lack1Items.rpt">
-      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>Lack1Items.cs</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Reports\LACK1\Lack1PrintOut.rpt">

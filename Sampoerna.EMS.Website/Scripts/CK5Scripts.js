@@ -1261,3 +1261,40 @@ function ajaxGetDestPlantDetailsMarketReturn(url, formData) {
         });
     }
 }
+
+function OnSuccess(data) {
+    $('.loading').hide();
+    $("#contenttable").html(data);
+}
+
+function OnSuccessIntercompany(data) {
+    $('.loading').hide();
+    $("#contenttableIntercompany").html(data);
+}
+
+function OnSuccessDomesticAlcohol(data) {
+    $('.loading').hide();
+    $("#contenttableDomesticAlcohol").html(data);
+}
+
+function OnFailure(xhr, status) {
+    $('.loading').hide();
+    // alert('Error: ' + xhr.statusText);
+}
+
+function OnFilter() {
+    $('.loading').show();
+    //$('#ajaxForm').submit();
+    
+    var formId = $('.tab-pane.active').attr('id');
+    //console.log(formId);
+    if (formId == 'domestic') {
+        $('#ajaxForm').submit();
+    } else if (formId == 'intercompany') {
+        $('#ajaxForm1').submit();
+    } else if (formId == 'domesticAlcohol') {
+        $('#ajaxForm2').submit();
+    }
+    else
+        $('#ajaxForm').submit();
+}

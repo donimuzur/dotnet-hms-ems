@@ -136,9 +136,14 @@ namespace Sampoerna.EMS.BLL
 
             var originDto = Mapper.Map<ProductionDto>(origin);
 
+            
+            
+            
+
             //to do ask and to do refactor
             if (originDto != null)
             {
+                
 
                 SetChange(originDto, productionDto, userId);
                 output.isNewData = false;
@@ -147,18 +152,32 @@ namespace Sampoerna.EMS.BLL
             if (dbProduction.UOM == "TH")
             {
                 dbProduction.UOM = "Btg";
-                dbProduction.QTY_PACKED = dbProduction.QTY_PACKED * 1000;
+                //dbProduction.QTY_PACKED = dbProduction.QTY_PACKED * 1000;
                 dbProduction.QTY = dbProduction.QTY * 1000;
             }
 
-            dbProduction.CREATED_DATE = DateTime.Now;
-            dbProduction.CREATED_BY = userId;
+            var existing = _repository.GetByID(productionDto.CompanyCode, productionDto.PlantWerks, productionDto.FaCode,
+               productionDto.ProductionDate);
+
+            if (existing != null)
+            {
+                dbProduction.MODIFIED_DATE = DateTime.Now;
+                dbProduction.MODIFIED_BY = userId;
+                dbProduction.CREATED_BY = existing.CREATED_BY;
+                dbProduction.CREATED_DATE = existing.CREATED_DATE;
+            }
+            else
+            {
+                dbProduction.CREATED_DATE = DateTime.Now;
+                dbProduction.CREATED_BY = userId;
+            }
+            
 
 
             if (origin != null)
             {
-                dbProduction.CREATED_DATE = origin.CREATED_DATE;
-                dbProduction.CREATED_BY = origin.CREATED_BY;
+                //dbProduction.CREATED_DATE = origin.CREATED_DATE;
+                //dbProduction.CREATED_BY = origin.CREATED_BY;
 
                 if (dbProduction.COMPANY_CODE != origin.COMPANY_CODE || dbProduction.WERKS != origin.WERKS ||
                   dbProduction.FA_CODE != origin.FA_CODE
@@ -167,7 +186,7 @@ namespace Sampoerna.EMS.BLL
                     dbProduction.BATCH = null;
                 }
 
-                if (origin.BATCH != null)
+                if (origin.QTY_PACKED.HasValue && origin.QTY_PACKED != 0)
                     output.isFromSap = true;
             }
 
@@ -238,7 +257,8 @@ namespace Sampoerna.EMS.BLL
                              Uom = p.UOM,
                              ProdCode = b.PROD_CODE,
                              ContentPerPack = Convert.ToInt32(b.BRAND_CONTENT),
-                             PackedInPack = Convert.ToInt32(p.QTY_PACKED) / Convert.ToInt32(b.BRAND_CONTENT)
+                             PackedInPack = Convert.ToInt32(p.QTY_PACKED) / Convert.ToInt32(b.BRAND_CONTENT),
+                             IsEditable = g.CK4CEDITABLE
                          };
 
             if (nppbkc != string.Empty && isNppbkc)
@@ -266,7 +286,8 @@ namespace Sampoerna.EMS.BLL
                              Uom = p.UOM,
                              ProdCode = b.PROD_CODE,
                              ContentPerPack = Convert.ToInt32(b.BRAND_CONTENT),
-                             PackedInPack = Convert.ToInt32(p.QTY_PACKED) / Convert.ToInt32(b.BRAND_CONTENT)
+                             PackedInPack = Convert.ToInt32(p.QTY_PACKED) / Convert.ToInt32(b.BRAND_CONTENT),
+                             IsEditable = g.CK4CEDITABLE
                          };
             }
 
@@ -398,8 +419,13 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                _repository.Delete(dbData);
-                _uow.SaveChanges();
+                if (dbData.QTY_PACKED.HasValue && dbData.QTY_PACKED.Value == 0)
+                {
+                    _repository.Delete(dbData);
+                    _uow.SaveChanges();
+                }
+                
+                
             }
         }
 

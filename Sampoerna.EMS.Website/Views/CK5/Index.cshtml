@@ -34,14 +34,15 @@
                     <div role="tabpanel" class="tab-pane active" id="domestic">
                         <div class="tab-wrapper">
                             @using (Ajax.BeginForm("Filter", "CK5",
-                                new AjaxOptions
-                                {
-                                    HttpMethod = "POST",
-                                    InsertionMode = InsertionMode.Replace,
-                                    UpdateTargetId = "contenttable",
-                                    OnComplete = "ReloadDataTables"
+                               new AjaxOptions
+                    {
+                        HttpMethod = "POST",
+                        InsertionMode = InsertionMode.Replace,
+                        OnSuccess = "OnSuccess",
+                        OnFailure = "OnFailure",
+                        OnComplete = "ReloadDataTables"
 
-                                }))
+                    }, new { id = "ajaxForm"}))
                             {
                                 @Html.Partial("_CK5Search")
 
@@ -59,14 +60,15 @@
                     <div role="tabpanel" class="tab-pane" id="intercompany">
                         <div class="tab-wrapper">
                             @using (Ajax.BeginForm("Intercompany", "CK5",
-                                new AjaxOptions
-                                {
-                                    HttpMethod = "POST",
-                                    InsertionMode = InsertionMode.Replace,
-                                    UpdateTargetId = "contenttableIntercompany",
-                                    OnComplete = "ReloadDataTablesIntercompany"
+                               new AjaxOptions
+                               {
+                                   HttpMethod = "POST",
+                                   InsertionMode = InsertionMode.Replace,
+                                   OnSuccess = "OnSuccessIntercompany",
+                                   OnFailure = "OnFailure",
+                                   OnComplete = "ReloadDataTablesIntercompany"
 
-                                }))
+                               }, new { id = "ajaxForm1" }))
                             {
                                 @Html.Partial("_CK5Search")
 
@@ -84,14 +86,15 @@
                     <div role="tabpanel" class="tab-pane" id="domesticAlcohol">
                         <div class="tab-wrapper">
                             @using (Ajax.BeginForm("CK5DomesticAlcohol", "CK5",
-                                new AjaxOptions
-                                {
-                                    HttpMethod = "POST",
-                                    InsertionMode = InsertionMode.Replace,
-                                    UpdateTargetId = "contenttableDomesticAlcohol",
-                                    OnComplete = "ReloadDataTablesDomesticAlcohol"
+                                 new AjaxOptions
+                                 {
+                                     HttpMethod = "POST",
+                                     InsertionMode = InsertionMode.Replace,
+                                     OnSuccess = "OnSuccessDomesticAlcohol",
+                                     OnFailure = "OnFailure",
+                                     OnComplete = "ReloadDataTablesDomesticAlcohol"
 
-                                }))
+                                 }, new { id = "ajaxForm2" }))
                             {
                                 @Html.Partial("_CK5Search")
 
@@ -111,9 +114,11 @@
     </div>
 </div>
 
+<div class="loading"></div>
+
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-    @*<script type="text/javascript" language="javascript" src="~/Scripts/DataTables-1.10.7/media/js/jquery.dataTables.js"></script>*@
+    <script src="~/Scripts/CK5Scripts.js"></script>
     <script type="text/javascript" language="javascript" class="init">
 
     $(document).ready(function () {
@@ -248,7 +253,7 @@
             ck5Type = '@Enums.CK5Type.Domestic';
             rowCount = $('#ck5Table >tbody >tr').length;
             if (rowCount <= 1) {
-                $('#form0').submit();
+                $('#ajaxForm').submit();
             }
         } else if (title == 'Intercompany') {
             $('#newDomestic').hide();
@@ -259,7 +264,7 @@
             listDocumentNumber = $('#intercompany').find('#SearchView_DocumentNumber');
             rowCount = $('#ck5TableIntercompany >tbody >tr').length;
             if (rowCount <= 1) {
-                $('#form1').submit();
+                $('#ajaxForm1').submit();
             }
             
         } else if (title == 'Domestic Alcohol') {
@@ -270,7 +275,7 @@
             listDocumentNumber = $('#domesticAlcohol').find('#SearchView_DocumentNumber');
             rowCount = $('#ck5TableDomesticAlcohol >tbody >tr').length;
             if (rowCount <= 1) {
-                $('#form2').submit();
+                $('#ajaxForm2').submit();
             }
            
             }
@@ -344,6 +349,6 @@
 
 
     }
-
+ 
     </script>
 }

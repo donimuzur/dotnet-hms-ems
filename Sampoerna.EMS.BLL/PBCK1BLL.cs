@@ -2689,10 +2689,10 @@ namespace Sampoerna.EMS.BLL
             if (input.GoodTypeDesc != null) dbData.EXC_TYP_DESC = input.GoodTypeDesc;
             if (input.PlanProdFrom.HasValue) dbData.PLAN_PROD_FROM = input.PlanProdFrom.Value;
             if (input.PlanProdTo.HasValue) dbData.PLAN_PROD_TO = input.PlanProdTo.Value;
-            if (input.Lack1FromMonthId != null) dbData.LACK1_FROM_MONTH = input.Lack1FromMonthId;
-            if (input.Lack1FormYear != null) dbData.LACK1_FROM_YEAR = input.Lack1FormYear;
-            if (input.Lack1ToMonthId != null) dbData.LACK1_TO_MONTH = input.Lack1ToMonthId;
-            if (input.Lack1ToYear != null) dbData.LACK1_TO_YEAR = input.Lack1ToYear;
+            if (input.Lack1FromMonthId != 0) dbData.LACK1_FROM_MONTH = input.Lack1FromMonthId;
+            if (input.Lack1FormYear != 0) dbData.LACK1_FROM_YEAR = input.Lack1FormYear;
+            if (input.Lack1ToMonthId != 0) dbData.LACK1_TO_MONTH = input.Lack1ToMonthId;
+            if (input.Lack1ToYear != 0) dbData.LACK1_TO_YEAR = input.Lack1ToYear;
             if (input.DecreeDate.HasValue) dbData.DECREE_DATE = input.DecreeDate.Value;
 
             ChangeDocNumberByReportedOn(dbData);

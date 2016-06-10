@@ -399,6 +399,11 @@ namespace Sampoerna.EMS.Website.Controllers
             model.SearchView.NPPBKCOriginList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
             model.SearchView.NPPBKCDestinationList = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
 
+            model.SearchView.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.SearchView.YearList = GlobalFunctions.GetYearList();
+            model.SearchView.Month = DateTime.Now.Month.ToString();
+            model.SearchView.Year = DateTime.Now.Year.ToString();
+
             model.DetailsList = GetCk5MarketReturnCompletedItems();
 
             return View(model);
@@ -473,6 +478,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 model.SourcePlantList = GlobalFunctions.GetPlantByNppbkcImport(true);
                 model.DestPlantList = GlobalFunctions.GetPlantAll();
+            }
+            else if (model.Ck5Type == Enums.CK5Type.MarketReturn)
+            {
+                model.DestPlantList = GlobalFunctions.GetPlantByListUserPlant(CurrentUser.ListUserPlants);
             }
             else
             {
@@ -660,7 +669,7 @@ namespace Sampoerna.EMS.Website.Controllers
             
             var vendorInfo = _lfa1Bll.GetById(model.KppbcNo);
             model.KppBcName = vendorInfo.NAME2 + "-" + model.KppbcNo;
-
+            model.KppbcCity = vendorInfo.NAME2;
             if (string.IsNullOrEmpty(goodTypeGroupId))
             {
                 goodtypeenum = null;
@@ -774,7 +783,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 var vendorInfo = _lfa1Bll.GetById(model.KppbcNo);
                 model.KppBcName = vendorInfo.NAME2 + "-" + model.KppbcNo;
-
+                model.KppbcCity = vendorInfo.NAME2;
                 model.CorrespondingPlantList = GetCorrespondingPlantList(plantId, ck5Type);
             }
 
@@ -799,7 +808,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             var vendorInfo = _lfa1Bll.GetById(model.KppbcNo);
             model.KppBcName = vendorInfo.NAME2 + "-" + model.KppbcNo;
-
+            model.KppbcCity = vendorInfo.NAME2;
             model.CorrespondingPlantList = GetCorrespondingPlantList(plantId, ck5Type);
 
 
@@ -4558,7 +4567,8 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new CK5FileDocumentsViewModel();
             model.MainMenu = Enums.MenuList.CK5;
             model.CurrentMenu = PageInfo;
-
+            model.IsNotViewer = !(CurrentUser.UserRole == Enums.UserRole.Administrator ||
+                                 CurrentUser.UserRole == Enums.UserRole.Viewer);
             return View("CK5UploadFileDocument", model);
         }
 
@@ -5612,6 +5622,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.Ck5MaterialDtos = Mapper.Map<List<CK5MaterialDto>>(model.UploadItemModels);
 
                 input.Ck5FileUploadList = Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList);
+
+                if (model.IsCk5Waste)
+                {
+                    input.GI_DATE = model.GiDate;
+                    input.GR_DATE = model.GrDate;
+                    input.IsCk5Waste = model.IsCk5Waste;
+                }
 
                 _ck5Bll.EditCompletedDocument(input);
 

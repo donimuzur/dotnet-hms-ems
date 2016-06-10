@@ -536,6 +536,7 @@ namespace Sampoerna.EMS.BLL
             //ValidateCk5MaterialConvertedUom(input);
 
             bool isModified = false;
+            bool isCreate = true;
 
             //workflowhistory
             var inputWorkflowHistory = new CK5WorkflowHistoryInput();
@@ -630,17 +631,31 @@ namespace Sampoerna.EMS.BLL
 
                 AddWorkflowHistory(inputWorkflowHistory);
 
-
+                isCreate = false;
             }
             else
             {
                 dbData = ProcessInsertCk5(input);
+                
+                
             }
 
             try
             {
                 //throw (new Exception("error"));
                 _uow.SaveChanges();
+                if (isCreate)
+                {
+                    dbData = UpdateSubmissionNumber(dbData.CK5_ID);
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(dbData.SUBMISSION_NUMBER))
+                    {
+                        dbData = UpdateSubmissionNumber(dbData.CK5_ID);
+                    }
+                }
+
             }
             catch (DbEntityValidationException e)
             {
@@ -1601,8 +1616,9 @@ namespace Sampoerna.EMS.BLL
             }
 
             output.ListWorkflowHistorys = _workflowHistoryBll.GetByFormNumber(input);
+            var kppbcId = _nppbkcBll.GetById(input.NppbkcId).KPPBC_ID;
 
-
+            output.Ck5Dto.KPPBC_CITY = _lfa1Bll.GetById(kppbcId).NAME2;
             output.ListPrintHistorys = _printHistoryBll.GetByFormTypeAndFormId(Enums.FormType.CK5, dtData.CK5_ID);
             return output;
         }
@@ -4596,6 +4612,28 @@ namespace Sampoerna.EMS.BLL
 
         //}
 
+        private CK5 UpdateSubmissionNumber(long ck5Id)
+        {
+            var dbdata = _repository.GetByID(ck5Id);
+
+            var ck5id = dbdata.CK5_ID.ToString();
+            var zerodigits = 10 - ck5id.Length;
+            var submissionNumber = "";
+            for (int i = 0; i < zerodigits; i++)
+            {
+                submissionNumber += "0";
+            }
+            submissionNumber += ck5id;
+
+            dbdata.SUBMISSION_NUMBER = submissionNumber;
+
+            _repository.Update(dbdata);
+
+            _uow.SaveChanges();
+
+            return dbdata;
+        }
+
         private CK5 ProcessInsertCk5(CK5SaveInput input)
         {
             //workflowhistory
@@ -4677,9 +4715,10 @@ namespace Sampoerna.EMS.BLL
 
                 dbData.CK5_MATERIAL.Add(ck5Material);
             }
-            input.Ck5Dto.SUBMISSION_NUMBER = _docSeqNumBll.GenerateNumberByFormType(Enums.FormType.CK5);
+            //input.Ck5Dto.SUBMISSION_NUMBER = 
+                //_docSeqNumBll.GenerateNumberByFormType(Enums.FormType.CK5);
             dbData.GRAND_TOTAL_EX = tempTotal;
-            dbData.SUBMISSION_NUMBER = input.Ck5Dto.SUBMISSION_NUMBER;
+            //dbData.SUBMISSION_NUMBER = input.Ck5Dto.SUBMISSION_NUMBER;
 
             if (string.IsNullOrEmpty(dbData.EX_GOODS_TYPE_DESC))
             {
@@ -4707,6 +4746,7 @@ namespace Sampoerna.EMS.BLL
 
             CK5Dto ck5Dto = null;
             CK5SaveInput inputSave = null;
+            List<CK5> listInsertedCk5 = new List<CK5>();
 
             //order first
             input.ListCk5UploadDocumentDto = input.ListCk5UploadDocumentDto.OrderBy(x => x.DocSeqNumber).ToList();
@@ -4725,7 +4765,8 @@ namespace Sampoerna.EMS.BLL
                         inputSave.UserId = input.UserId;
                         inputSave.UserRole = input.UserRole;
 
-                        ProcessInsertCk5(inputSave);
+                        var insertedCk5 = ProcessInsertCk5(inputSave);
+                        listInsertedCk5.Add(insertedCk5);
                     }
 
                     //new record
@@ -4760,11 +4801,20 @@ namespace Sampoerna.EMS.BLL
             inputSave.Ck5Material = listCk5Material;
             inputSave.UserId = input.UserId;
             inputSave.UserRole = input.UserRole;
-            ProcessInsertCk5(inputSave);
+            var lastInsertedCk5 = ProcessInsertCk5(inputSave);
+            listInsertedCk5.Add(lastInsertedCk5);
 
             try
             {
                 _uow.SaveChanges();
+                foreach (var ck5 in listInsertedCk5)
+                {
+                    if (string.IsNullOrEmpty(ck5.SUBMISSION_NUMBER))
+                    {
+                        UpdateSubmissionNumber(ck5.CK5_ID);
+                    }
+                    
+                }
             }
             catch (DbEntityValidationException e)
             {
@@ -4780,7 +4830,7 @@ namespace Sampoerna.EMS.BLL
                 }
                 throw;
             }
-
+            //return listInsertedCk5;
             //return Mapper.Map<CK5Dto>(dbData);
 
 
@@ -5740,6 +5790,11 @@ namespace Sampoerna.EMS.BLL
             inputChangeLogs.SEALING_NOTIF_DATE = input.SEALING_NOTIF_DATE;
             inputChangeLogs.UNSEALING_NOTIF_NUMBER = input.UNSEALING_NOTIF_NUMBER;
             inputChangeLogs.UNSEALING_NOTIF_DATE = input.UNSEALING_NOTIF_DATE;
+            if (input.IsCk5Waste)
+            {
+                inputChangeLogs.GI_DATE = input.GI_DATE;
+                inputChangeLogs.GR_DATE = input.GR_DATE;
+            }
 
             //add to change log
             SetChangesHistory(origin, inputChangeLogs, input.UserId);
@@ -5757,6 +5812,11 @@ namespace Sampoerna.EMS.BLL
             dbData.SEALING_NOTIF_DATE = input.SEALING_NOTIF_DATE;
             dbData.UNSEALING_NOTIF_NUMBER = input.UNSEALING_NOTIF_NUMBER;
             dbData.UNSEALING_NOTIF_DATE = input.UNSEALING_NOTIF_DATE;
+            if (input.IsCk5Waste)
+            {
+                dbData.GI_DATE = input.GI_DATE;
+                dbData.GR_DATE = input.GR_DATE;
+            }
 
             dbData.MODIFIED_DATE = DateTime.Now;
 

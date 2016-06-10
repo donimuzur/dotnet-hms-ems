@@ -74,7 +74,7 @@
                             <div class="col-md-4">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <input type="submit" class="btn btn-blue full" value="FILTER" />
+                                        <input id="btn-filter" type="submit" class="btn btn-blue full" value="FILTER" />
                                     </div>
                                     <div class="col-md-6">
                                         <button type="button" id="btn-reset-filter" class="btn btn-blue full">RESET</button>
@@ -92,6 +92,8 @@
     </div>
 </div>
 
+<div class="loading"></div>
+
 @section scripts {
 
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
@@ -101,6 +103,11 @@
             $('#btn-reset-filter').click(function () {
                 $(".selectreset").val($(".selectreset option:first").val());
             });
+
+            $('#btn-filter').click(function () {
+                $('.loading').show();
+            });
+
             // DataTable
             var table = null;
             if ($.fn.dataTable.isDataTable('#pbckTable')) {
@@ -183,6 +190,7 @@
 
                 });
             });
+            $('.loading').hide();
             setupDataTables();
         }
 

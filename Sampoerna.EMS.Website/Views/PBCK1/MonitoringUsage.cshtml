@@ -340,6 +340,8 @@
     </div>
 </div>
 
+<div class="loading"></div>
+
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     @* ReSharper disable UnknownCssClass *@
@@ -382,6 +384,8 @@
                 });
 
             $('#btnFILTER').on('click', function (e) {
+                $('.loading').show();
+
                 $('#selecctall').prop('checked', false);
                 $('.checkexport').each(function () {
                     this.checked = true;
@@ -433,6 +437,7 @@
 
         function ReloadDataTables() {
             setupDataTables();
+            $('.loading').hide();
         }
 
         function OnReset() {

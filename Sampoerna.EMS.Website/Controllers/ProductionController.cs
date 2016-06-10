@@ -314,6 +314,13 @@ namespace Sampoerna.EMS.Website.Controllers
                             productionDate = model.ProductionDate
                         });
                     }
+                    else
+                    {
+                        model.QtyPacked = 0;
+                        model.ProdQtyStick = 0;
+                        model.QtyPackedStr = "0";
+                        model.ProdQtyStickStr = "0";
+                    }
                 }
 
                 var dbPrductionNew = Mapper.Map<ProductionDto>(model);
