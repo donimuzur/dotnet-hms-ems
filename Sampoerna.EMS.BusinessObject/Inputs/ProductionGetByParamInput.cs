@@ -38,15 +38,4 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public int Year { get; set; }
         public bool IsNppbkc { get; set; }
     }
-
-    public class GetOtherProductionByParamInput
-    {
-        public string Company { get; set; }
-        public string Plant { get; set; }
-        public string Nppbkc { get; set; }
-        public int Period { get; set; }
-        public int Month { get; set; }
-        public int Year { get; set; }
-        public bool IsNppbkc { get; set; }
-    }
 }
