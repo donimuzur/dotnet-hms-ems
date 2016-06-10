@@ -229,6 +229,7 @@ function getProductionData(urlFunction) {
 
                         var rowCount = (i + 1);
                         var classRemarks = "Remarks" + rowCount;
+                        var classWip = "Unpack" + rowCount;
 
                         var tableProdItem = '<tr>' +
                             classAction +
@@ -237,13 +238,13 @@ function getProductionData(urlFunction) {
                             '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_FaCode" name="Details.Ck4cItemData[' + i + '].FaCode" value=' + data[i].FaCode + '></input>' + data[i].FaCode + '</td>' +
                             '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_PackedQty" name="Details.Ck4cItemData[' + i + '].PackedQty" value=' + data[i].QtyPacked + '></input>' + data[i].BrandDescription + '</td>' +
                             '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_Werks" name="Details.Ck4cItemData[' + i + '].Werks" value=' + data[i].PlantWerks + '></input>' + data[i].PlantWerks + "-" + data[i].PlantName + '</td>' +
-                            '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_UnpackedQty" name="Details.Ck4cItemData[' + i + '].UnpackedQty" value=' + data[i].QtyUnpacked + '></input>' + data[i].TobaccoProductType + '</td>' +
+                            '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_UnpackedQty" name="Details.Ck4cItemData[' + i + '].UnpackedQty" value=' + data[i].QtyUnpacked + ' class=' + classWip + '></input>' + data[i].TobaccoProductType + '</td>' +
                             '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_HjeIdr" name="Details.Ck4cItemData[' + i + '].HjeIdr" value=' + data[i].Hje + '></input>' + ThausandSeperator(data[i].Hje, 2) + '</td>' +
                             '<td class="number" class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_Tarif" name="Details.Ck4cItemData[' + i + '].Tarif" value=' + data[i].Tarif + '></input>' + ThausandSeperator(data[i].Tarif, 2) + '</td>' +
                             '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ContentPerPack" name="Details.Ck4cItemData[' + i + '].ContentPerPack" value=' + data[i].ContentPerPack + '></input>' + ThausandSeperator(data[i].ContentPerPack, 2) + '</td>' +
                             '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_PackedQty" name="Details.Ck4cItemData[' + i + '].PackedQty" value=' + data[i].QtyPacked + '></input>' + ThausandSeperator(data[i].QtyPacked, 2) + '</td>' +
                             '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_PackedInPack" name="Details.Ck4cItemData[' + i + '].PackedInPack" value=' + data[i].PackedInPack + '></input>' + ThausandSeperator(data[i].PackedInPack, 2) + '</td>' +
-                            '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_UnpackedQty" name="Details.Ck4cItemData[' + i + '].UnpackedQty" value=' + data[i].QtyUnpacked + '></input>' + ThausandSeperator(data[i].QtyUnpacked, 2) + '</td>' +
+                            '<td class="number">' + ThausandSeperator(data[i].QtyUnpacked, 2) + '</td>' +
                             '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ProdQty" name="Details.Ck4cItemData[' + i + '].ProdQty" value=' + data[i].QtyProduced + '></input>' + ThausandSeperator(data[i].QtyProduced, 2) + '</td>' +
                             '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ProdQtyUom" name="Details.Ck4cItemData[' + i + '].ProdQtyUom" value=' + data[i].Uom + '></input><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ProdCode" name="Details.Ck4cItemData[' + i + '].ProdCode" value=' + data[i].ProdCode + '></input>' + data[i].Uom + '</td>' +
                             '<td></td>' +
@@ -272,6 +273,7 @@ function EditRow(o) {
     
     $('#uploadWip').val(nRow.find("td").eq(18).text());
     $('#uploadValidate').val('1');//need validate
+    $("#rowUnpack").css("visibility", "visible");
     
     $('#Ck4cUploadModal').modal('show');
     
