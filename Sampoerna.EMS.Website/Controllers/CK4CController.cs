@@ -279,7 +279,18 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var result = _productionBll.GetExactResult(data);
 
-            return Json(data);
+            var prodInput = new GetOtherProductionByParamInput();
+            prodInput.Company = comp;
+            prodInput.Plant = plant;
+            prodInput.Nppbkc = nppbkc;
+            prodInput.Period = period;
+            prodInput.Month = month;
+            prodInput.Year = year;
+            prodInput.IsNppbkc = isNppbkc;
+
+            var completedData = _productionBll.GetCompleteData(result, prodInput);
+
+            return Json(completedData);
         }
 
         [HttpPost]
