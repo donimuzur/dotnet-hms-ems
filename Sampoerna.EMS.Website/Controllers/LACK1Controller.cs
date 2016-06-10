@@ -757,9 +757,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 //with tis to tis
                 //process tis to tis
                 var prodTisToTis = data.InventoryProductionTisToTis.ProductionData;
-                var summaryProductionJenisTisToTis = string.Join(Environment.NewLine,
+                var summaryProductionJenisTisToTis = prodTisToTis == null ? "" : string.Join(Environment.NewLine,
                     prodTisToTis.ProductionSummaryByProdTypeList.Select(d => d.ProductAlias).ToList());
-                var summaryProductionAmountTisToTis = string.Join(Environment.NewLine,
+                var summaryProductionAmountTisToTis = prodTisToTis == null ? "0" : string.Join(Environment.NewLine,
                     prodTisToTis.ProductionSummaryByProdTypeList.Select(d => d.TotalAmount.ToString("N2") + " " + d.UomDesc).ToList());
 
                 summaryProductionJenis = summaryProductionJenis + Environment.NewLine + (!string.IsNullOrEmpty(summaryProductionJenisTisToTis) ? summaryProductionJenisTisToTis : "-");

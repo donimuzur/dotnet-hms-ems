@@ -264,7 +264,7 @@ namespace Sampoerna.EMS.BLL
                     {
                         
                         toAddRange[i].IsTisToTisData = true;
-                        if (toAddRange[i].UomId != null) productionDetail.Add(toAddRange[i]);
+                        if (!string.IsNullOrEmpty(toAddRange[i].UomId)) productionDetail.Add(toAddRange[i]);
                     }
                     //productionDetail.AddRange(toAddRange);
                 }
@@ -421,8 +421,9 @@ namespace Sampoerna.EMS.BLL
                         for (var i = 0; i < toAddRange.Count; i++)
                         {
                             toAddRange[i].IsTisToTisData = true;
+                            if (!string.IsNullOrEmpty(toAddRange[i].UomId)) productionDetail.Add(toAddRange[i]);
                         }
-                        productionDetail.AddRange(toAddRange);
+                       // productionDetail.AddRange(toAddRange);
                     }
                 }
 
@@ -3168,9 +3169,12 @@ namespace Sampoerna.EMS.BLL
             {
                 return new Lack1GeneratedOutput()
                 {
-                    Success = false,
-                    ErrorCode = ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter.ToString(),
-                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter),
+                    //Success = false,
+                    //ErrorCode = ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter.ToString(),
+                    //ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.Lack1MissingPbckProdConverter),
+                    Success = true,
+                    ErrorCode = string.Empty,
+                    ErrorMessage = string.Empty,
                     Data = rc
                 };
             }

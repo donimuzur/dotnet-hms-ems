@@ -163,6 +163,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public int ExGroupTypeId { get; set; }
         public string CompanyCode { get; set; }
         public string NppbkcId { get; set; }
+
+        public bool isSameNppbkcAllowed { get; set; }
     }
 
     public class Back1DataOutput
