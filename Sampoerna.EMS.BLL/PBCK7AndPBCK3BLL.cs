@@ -3436,6 +3436,7 @@ namespace Sampoerna.EMS.BLL
                                     ? brandData.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS
                                     : "-";
                                 itemToInsert.SeriesValue = brandData.SERIES_CODE;
+                                itemToInsert.Content = Convert.ToDecimal(brandData.BRAND_CONTENT);
                             }
                             rc.Items.Add(itemToInsert);
                         }
