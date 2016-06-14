@@ -202,7 +202,22 @@ namespace Sampoerna.EMS.BLL
 
             var data = _repository.Get(queryFilter,null,"T001W,T001W.T001K");
 
-            return Mapper.Map<List<ZAIDM_EX_NPPBKCCompositeDto>>(data);
+            var nppbkcData = Mapper.Map<List<ZAIDM_EX_NPPBKCCompositeDto>>(data);
+
+            //add nppbkc import
+            var nppbkcImport = data.Select(x => x.T001W.Where(c => c.NPPBKC_IMPORT_ID != null));
+
+            foreach (var item in nppbkcImport)
+            {
+                foreach(var newItem in item){
+                    var nppbkc = new ZAIDM_EX_NPPBKCCompositeDto();
+                    nppbkc.NPPBKC_ID = newItem.NPPBKC_IMPORT_ID;
+
+                    nppbkcData.Add(nppbkc);
+                }
+            }
+
+            return nppbkcData;
         }
 
         public List<ZAIDM_EX_NPPBKC> GetAllOnlyNppbkc()
