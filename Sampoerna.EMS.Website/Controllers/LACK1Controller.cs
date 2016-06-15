@@ -3106,8 +3106,16 @@ namespace Sampoerna.EMS.Website.Controllers
                         slDocument.SetCellValue(iRow, iColumn, item.CfDesc);
                         iColumn++;
 
-                        slDocument.SetCellValue(iRow, iColumn, Convert.ToDecimal(item.BeginingBalance));
-                        iColumn++;
+                        if (string.IsNullOrEmpty(item.BeginingBalance))
+                        {
+                            slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                            iColumn++;
+                        }
+                        else
+                        {
+                            slDocument.SetCellValue(iRow, iColumn, Convert.ToDecimal(item.BeginingBalance));
+                            iColumn++;
+                        }
 
                         slDocument.SetCellValue(iRow, iColumn, item.BeginingBalanceUom);
                         iColumn++;
@@ -4358,7 +4366,156 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (levelCount < usageCount) dataCount = usageCount;
 
-                for (int i = 0; i < dataCount; i++)
+                if (item.UsageList.Count > 0)
+                {
+                    for (int i = 0; i < dataCount; i++)
+                    {
+                        iColumn = 1;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.PlantIdReceiver);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.PlantDescReceiver);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.PlantIdSupplier);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.PlantDescSupplier);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.EaCode);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.EaDesc);
+                        iColumn++;
+
+                        if (string.IsNullOrEmpty(item.BeginingBalance))
+                        {
+                            slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                            iColumn++;
+                        }
+                        else
+                        {
+                            slDocument.SetCellValue(iRow, iColumn, Convert.ToDecimal(item.BeginingBalance));
+                            iColumn++;
+                        }
+
+                        slDocument.SetCellValue(iRow, iColumn, item.BeginingBalanceUom);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.Ck5EmsNo);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.Ck5RegNo);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.Ck5RegDate);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.Ck5Qty);
+                        iColumn++;
+
+                        if (i <= usageCount)
+                        {
+                            slDocument.SetCellValue(iRow, iColumn, Convert.ToDecimal(item.UsageList[i]));
+                            iColumn++;
+
+                            slDocument.SetCellValue(iRow, iColumn, "Liter");
+                            iColumn++;
+
+                            slDocument.SetCellValue(iRow, iColumn, item.UsagePostingDateList[i]);
+                            iColumn++;
+                        }
+                        else
+                        {
+                            slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                            iColumn++;
+
+                            slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                            iColumn++;
+
+                            slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                            iColumn++;
+                        }
+
+                        if (i <= levelCount)
+                        {
+                            slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].Level);
+                            iColumn++;
+
+                            slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].FlavorCode);
+                            iColumn++;
+
+                            slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].FlavorDesc);
+                            iColumn++;
+
+                            slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].CfProdCode);
+                            iColumn++;
+
+                            slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].CfProdDesc);
+                            iColumn++;
+
+                            if (string.IsNullOrEmpty(item.LevelList[i].CfProdQty))
+                            {
+                                slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                                iColumn++;
+                            }
+                            else
+                            {
+                                slDocument.SetCellValue(iRow, iColumn, Convert.ToDecimal(item.LevelList[i].CfProdQty));
+                                iColumn++;
+                            }
+
+                            slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].CfProdUom);
+                            iColumn++;
+
+                            slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].ProdPostingDate);
+                            iColumn++;
+
+                            slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].ProdDate);
+                            iColumn++;
+                        }
+                        else
+                        {
+                            slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                            iColumn++;
+
+                            slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                            iColumn++;
+
+                            slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                            iColumn++;
+
+                            slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                            iColumn++;
+
+                            slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                            iColumn++;
+
+                            slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                            iColumn++;
+
+                            slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                            iColumn++;
+
+                            slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                            iColumn++;
+
+                            slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                            iColumn++;
+                        }
+
+                        slDocument.SetCellValue(iRow, iColumn, item.EndingBalance);
+                        iColumn++;
+
+                        slDocument.SetCellValue(iRow, iColumn, item.EndingBalanceUom);
+                        iColumn++;
+
+                        iRow++;
+                    }
+                }
+                else
                 {
                     iColumn = 1;
 
@@ -4380,8 +4537,16 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, item.EaDesc);
                     iColumn++;
 
-                    slDocument.SetCellValue(iRow, iColumn, Convert.ToDecimal(item.BeginingBalance));
-                    iColumn++;
+                    if (string.IsNullOrEmpty(item.BeginingBalance))
+                    {
+                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                        iColumn++;
+                    }
+                    else
+                    {
+                        slDocument.SetCellValue(iRow, iColumn, Convert.ToDecimal(item.BeginingBalance));
+                        iColumn++;
+                    }
 
                     slDocument.SetCellValue(iRow, iColumn, item.BeginingBalanceUom);
                     iColumn++;
@@ -4398,95 +4563,41 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, item.Ck5Qty);
                     iColumn++;
 
-                    if (i <= usageCount)
-                    {
-                        slDocument.SetCellValue(iRow, iColumn, Convert.ToDecimal(item.UsageList[i]));
-                        iColumn++;
+                    slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                    iColumn++;
 
-                        slDocument.SetCellValue(iRow, iColumn, "Liter");
-                        iColumn++;
+                    slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                    iColumn++;
 
-                        slDocument.SetCellValue(iRow, iColumn, item.UsagePostingDateList[i]);
-                        iColumn++;
-                    }
-                    else
-                    {
-                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
-                        iColumn++;
+                    slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                    iColumn++;
 
-                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
-                        iColumn++;
+                    slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                    iColumn++;
 
-                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
-                        iColumn++;
-                    }
+                    slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                    iColumn++;
 
-                    if (i <= levelCount)
-                    {
-                        slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].Level);
-                        iColumn++;
+                    slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                    iColumn++;
 
-                        slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].FlavorCode);
-                        iColumn++;
+                    slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                    iColumn++;
 
-                        slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].FlavorDesc);
-                        iColumn++;
+                    slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                    iColumn++;
 
-                        slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].CfProdCode);
-                        iColumn++;
+                    slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                    iColumn++;
 
-                        slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].CfProdDesc);
-                        iColumn++;
+                    slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                    iColumn++;
 
-                        if (string.IsNullOrEmpty(item.LevelList[i].CfProdQty))
-                        {
-                            slDocument.SetCellValue(iRow, iColumn, string.Empty);
-                            iColumn++;
-                        }
-                        else
-                        {
-                            slDocument.SetCellValue(iRow, iColumn, Convert.ToDecimal(item.LevelList[i].CfProdQty));
-                            iColumn++;
-                        }
+                    slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                    iColumn++;
 
-                        slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].CfProdUom);
-                        iColumn++;
-
-                        slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].ProdPostingDate);
-                        iColumn++;
-
-                        slDocument.SetCellValue(iRow, iColumn, item.LevelList[i].ProdDate);
-                        iColumn++;
-                    }
-                    else
-                    {
-                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
-                        iColumn++;
-
-                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
-                        iColumn++;
-
-                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
-                        iColumn++;
-
-                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
-                        iColumn++;
-
-                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
-                        iColumn++;
-
-                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
-                        iColumn++;
-
-                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
-                        iColumn++;
-
-                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
-                        iColumn++;
-
-                        slDocument.SetCellValue(iRow, iColumn, string.Empty);
-                        iColumn++;
-                    }
+                    slDocument.SetCellValue(iRow, iColumn, string.Empty);
+                    iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.EndingBalance);
                     iColumn++;
