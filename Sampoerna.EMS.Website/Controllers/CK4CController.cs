@@ -451,7 +451,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             foreach (var item in listData)
             {
-                var brand = _brandRegistrationBll.GetByFaCode(item.Werks, item.FaCode);
+                var brand = _brandRegistrationBll.GetById(item.Werks, item.FaCode);
                 var plant = _plantBll.GetT001WById(item.Werks);
                 var prodType = _prodTypeBll.GetByCode(item.ProdCode);
 
