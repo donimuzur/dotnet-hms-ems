@@ -35,6 +35,7 @@
                 
 
             } else {
+                $('#generated-data-container').html("");
                 /*alert(response.ErrorMessage);*/
                 $('#modalBodyMessage').text("No Data Found");
                 $('#ModalValidation').modal('show');

@@ -94,6 +94,24 @@
     </div>
 </div>
 
+<div id="ModalValidation" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Info</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span id="modalBodyMessage">No Data Found</span>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
 @using (Html.BeginForm("ExportCfVsFaDetails", "LACK1", FormMethod.Post, new { @id = "ExportCfVsFaDetails" }))
 {
     @Html.HiddenFor(model => model.BeginingPostingDate, new { @id = "exportBeginDate"})
