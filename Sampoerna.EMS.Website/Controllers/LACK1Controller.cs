@@ -4107,12 +4107,22 @@ namespace Sampoerna.EMS.Website.Controllers
                     rc += "<td>" + (mvt101[i].Converted_Qty) + "</td>" +
                         "<td>" + mvt101[i].Converted_Uom + "</td>";
 
-                    if (mvt261[i] != null)
+                    if (mvt261.Count > 0)
                     {
-                        rc += "<td>" + mvt261[i].Material_Id + "</td>" +
-                            "<td>" + mvt261[i].Material_Id + "</td>" +
-                            "<td>" + (-1 * mvt261[i].Converted_Qty) + "</td>" +
-                            "<td>" + mvt261[i].Uom + "</td>";
+                        if (mvt261[i] != null)
+                        {
+                            rc += "<td>" + mvt261[i].Material_Id + "</td>" +
+                                "<td>" + mvt261[i].Material_Id + "</td>" +
+                                "<td>" + (-1 * mvt261[i].Converted_Qty) + "</td>" +
+                                "<td>" + mvt261[i].Uom + "</td>";
+                        }
+                        else
+                        {
+                            rc += "<td></td>" +
+                                "<td></td>" +
+                                "<td></td>" +
+                                "<td></td>";
+                        }
                     }
                     else
                     {
