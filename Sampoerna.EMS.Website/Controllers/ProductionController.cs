@@ -527,13 +527,14 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     var item = new ProductionUploadItems();
                     var brand = _brandRegistrationBll.GetByFaCode(dataRow[1], dataRow[2]);
+                    var prodQty = dataRow[4] == "" ? 0 : Convert.ToDecimal(dataRow[4]);
 
                     item.CompanyCode = dataRow[0];
                     item.PlantWerks = dataRow[1];
                     item.FaCode = dataRow[2];
                     item.BrandDescription = brand == null ? string.Empty : brand.BRAND_CE;
                     item.QtyPacked = dataRow[3];
-                    item.Qty = dataRow[4];
+                    item.Qty = dataRow[5].ToLower() == "btg" ? Math.Round(prodQty).ToString() : dataRow[4];
                     item.Uom = dataRow[5];
                     item.ProductionDate = dataRow[6];
 
