@@ -285,12 +285,24 @@ namespace Sampoerna.EMS.BLL
             var ck4cType = "Plant";
             if (plant == null) ck4cType = "NPPBKC";
 
+            var userData = _userBll.GetUserById(ck4cData.CreatedBy);
+
             rc.Subject = "CK-4C " + ck4cData.Number + " is " + EnumHelper.GetDescription(ck4cData.Status);
             bodyMail.Append("Dear Team,<br />");
             bodyMail.AppendLine();
             bodyMail.Append("Kindly be informed, CK-4C" + firstText + " is " + EnumHelper.GetDescription(ck4cData.Status) + ". <br />");
             bodyMail.AppendLine();
-            bodyMail.Append("<table><tr><td>Company Code </td><td>: " + ck4cData.CompanyId + "</td></tr>");
+            bodyMail.Append("<table>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Creator </td><td>: " + userData.LAST_NAME + ", " + userData.FIRST_NAME + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Company Code </td><td>: " + ck4cData.CompanyId + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Plant ID </td><td>: " + ck4cData.PlantId + " - " + ck4cData.PlantName + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Period </td><td>: " + _monthBll.GetMonth(ck4cData.ReportedMonth).MONTH_NAME_ENG + " " + ck4cData.ReportedPeriod + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>KPPBC </td><td>: " + _lfaBll.GetById(_nppbkcbll.GetById(nppbkc).KPPBC_ID).NAME2 + "</td></tr>");
             bodyMail.AppendLine();
             bodyMail.Append("<tr><td>NPPBKC </td><td>: " + nppbkc + "</td></tr>");
             bodyMail.AppendLine();
@@ -303,7 +315,9 @@ namespace Sampoerna.EMS.BLL
                 bodyMail.Append("<tr><td>Comment</td><td> : " + input.Comment + "</td></tr>");
                 bodyMail.AppendLine();
             }
-            bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/CK4C/Details/" + ck4cData.Ck4CId + "'>link</a> to show detailed information</i></td></tr>");
+            bodyMail.Append("<tr colspan='2'><td><i>To VIEW, Please click this <a href='" + webRootUrl + "/CK4C/Detail/" + ck4cData.Ck4CId + "'>link</a></i></td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr colspan='2'><td><i>To APPROVE, Please click this <a href='" + webRootUrl + "/CK4C/Edit/" + ck4cData.Ck4CId + "'>link</a></i></td></tr>");
             bodyMail.AppendLine();
             bodyMail.Append("</table>");
             bodyMail.AppendLine();
@@ -344,8 +358,8 @@ namespace Sampoerna.EMS.BLL
                                 rc.To.Add(poaDto.POA_EMAIL);
                             }
                         }
-                        
-                        rc.CC.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
+
+                        rc.CC.Add(userData.EMAIL);
                     }
                     //else if (ck4cData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
                     //{
@@ -377,7 +391,6 @@ namespace Sampoerna.EMS.BLL
                         else
                         {
                             //creator is excise executive
-                            var userData = _userBll.GetUserById(ck4cData.CreatedBy);
                             var poaApproved = _userBll.GetUserById(ck4cData.ApprovedByPoa);
 
                             rc.To.Add(userData.EMAIL);
@@ -403,11 +416,10 @@ namespace Sampoerna.EMS.BLL
                     break;
                 case Enums.ActionType.Reject:
                     //send notification to creator
-                    var userDetail = _userBll.GetUserById(ck4cData.CreatedBy);
                     var poaApprove = approveRejectedPoa == null ? null : _userBll.GetUserById(approveRejectedPoa.ACTION_BY);
                     //var poaId = approveRejectedPoa == null ? ck4cData.CreatedBy : approveRejectedPoa.ACTION_BY;
-                  
-                    rc.To.Add(userDetail.EMAIL);
+
+                    rc.To.Add(userData.EMAIL);
                     if (poaApprove != null)
                         rc.CC.Add(poaApprove.EMAIL);
                     //first code when manager exists
@@ -427,7 +439,6 @@ namespace Sampoerna.EMS.BLL
                     else
                     {
                         //creator is excise executive
-                        var userData = _userBll.GetUserById(ck4cData.CreatedBy);
                         rc.To.Add(userData.EMAIL);
                         rc.CC.Add(_userBll.GetUserById(ck4cData.ApprovedByPoa).EMAIL);
                         //first code when manager exists
@@ -447,7 +458,6 @@ namespace Sampoerna.EMS.BLL
                     else
                     {
                         //creator is excise executive
-                        var userData = _userBll.GetUserById(ck4cData.CreatedBy);
                         rc.To.Add(userData.EMAIL);
                         rc.CC.Add(_userBll.GetUserById(ck4cData.ApprovedByPoa).EMAIL);
                         //first code when manager exists
