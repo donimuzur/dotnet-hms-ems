@@ -143,6 +143,11 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string PackageUomId { get; set; }
         public string PackageUomDesc { get; set; }
         public bool FlagForLack1 { get; set; }
+
+        public string SubmissionNumber { get; set; }
+        public DateTime? GrDate { get; set; }
+
+        public decimal GrandTotalEx { get; set; }
     }
 
     public class Lack1GeneratedProductionDataDto

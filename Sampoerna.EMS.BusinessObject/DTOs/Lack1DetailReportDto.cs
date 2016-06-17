@@ -15,7 +15,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Enums.Lack1Level Lack1Level { get; set; }
         public decimal BeginingBalance { get; set; }
         public decimal EndingBalance { get; set; }
-        public decimal ProdQty { get; set; }
+        public string ProdQty { get; set; }
+        public List<string> ProdQtyExcel { get; set; }
         public List<Lack1TrackingConsolidationDetailReportDto> TrackingConsolidations { get; set; }
         public string Poa { get; set; }
         public string Creator { get; set; }
