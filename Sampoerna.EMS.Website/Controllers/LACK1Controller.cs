@@ -2206,9 +2206,14 @@ namespace Sampoerna.EMS.Website.Controllers
                         slDocument.SetCellValue(iRow, iColumn, item.TrackingConsolidations[0].ConvertedUomDesc);
                         iColumn++;
                     }
-
-                    slDocument.SetCellValue(iRow, iColumn, item.ProdQty.ToString("N2"));
-                    slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
+                    var prodcount = 0;
+                    foreach (var prod in item.ProdQtyExcel)
+                    {
+                        slDocument.SetCellValue(iRow + prodcount, iColumn, prod);
+                        prodcount ++;
+                    }
+                    //slDocument.SetCellValue(iRow, iColumn, item.ProdQty);
+                    slDocument.MergeWorksheetCells(iRow + prodcount - 1, iColumn, (iRow + dataCount - prodcount), iColumn);//RowSpan sesuai dataCount
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.EndingBalance.ToString("N2"));
@@ -2336,7 +2341,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         iColumn++;
                     }
 
-                    slDocument.SetCellValue(iRow, iColumn, item.ProdQty.ToString("N2"));
+                    slDocument.SetCellValue(iRow, iColumn, item.ProdQty);
                     iColumn++;
 
                     slDocument.SetCellValue(iRow, iColumn, item.EndingBalance.ToString("N2"));
@@ -2381,6 +2386,10 @@ namespace Sampoerna.EMS.Website.Controllers
             slDocument.SetCellValue(1, iColumn, "Usage");
             slDocument.MergeWorksheetCells(1, iColumn, 1, (iColumn + 4)); //ColSpan = 5
             iColumn = iColumn + 5;
+
+            slDocument.SetCellValue(1, iColumn, "Production Qty");
+            slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan 2
+            iColumn = iColumn + 1;
 
             slDocument.SetCellValue(1, iColumn, "Ending Balance");
             slDocument.MergeWorksheetCells(1, iColumn, 2, iColumn);//RowSpan 2
