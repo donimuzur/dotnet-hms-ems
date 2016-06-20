@@ -1082,7 +1082,7 @@ namespace Sampoerna.EMS.BLL
 
             foreach(var data in addressList)
             {
-                address += "- " + _plantBll.GetT001WById(data).ADDRESS + Environment.NewLine;
+                address += "- " + _plantBll.GetT001WById(data).ADDRESS.Trim() + Environment.NewLine;
             }
 
             string prodTypeDistinct = string.Empty;
