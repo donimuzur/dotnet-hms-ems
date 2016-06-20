@@ -161,6 +161,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbBrand = Mapper.Map<ZAIDM_EX_BRAND>(model);
                 if (dbBrand.STICKER_CODE.Length > 18)
                     dbBrand.STICKER_CODE = dbBrand.STICKER_CODE.Substring(0, 17);
+                dbBrand.FA_CODE = model.FaCode.Trim();
                 dbBrand.CREATED_DATE = DateTime.Now;
                 dbBrand.CREATED_BY = CurrentUser.USER_ID;
                 dbBrand.IS_FROM_SAP = false;
@@ -266,6 +267,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dbBrand.TARIFF = model.TariffValueStr == null ? 0 : Convert.ToDecimal(model.TariffValueStr);
             dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
             dbBrand.PRINTING_PRICE = model.PrintingPriceValueStr == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
+            dbBrand.FA_CODE = model.FaCode.Trim();
             //dbBrand.CREATED_BY = CurrentUser.USER_ID;
             if (!string.IsNullOrEmpty(model.PersonalizationCodeDescription))
                 dbBrand.PER_CODE_DESC = model.PersonalizationCodeDescription;
