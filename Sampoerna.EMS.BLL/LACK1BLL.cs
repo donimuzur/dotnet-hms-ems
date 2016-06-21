@@ -5346,10 +5346,15 @@ namespace Sampoerna.EMS.BLL
 
             foreach (var item in rc)
             {
+                var plantList = new List<string>();
+                plantList.Add(item.PlantIdReceiver);
+                var listMaterial = _ck5MaterialService.GetForBeginningEndBalance(plantList, item.PlantIdSupplier);
+                var listSticker = listMaterial.Select(x => x.BRAND).Distinct().ToList();
+
                 var brandList = item.CK5_MATERIAL.Select(x => x.BRAND).Distinct().ToList();
                 var brandDescList = _materialService.GetByMaterialListAndPlantId(brandList, item.PlantIdReceiver);
 
-                var balanceList = _materialBalanceService.GetByMaterialListAndPlant(item.PlantIdReceiver, brandList, input.DateFrom.Value.Month, input.DateFrom.Value.Year);
+                var balanceList = _materialBalanceService.GetByMaterialListAndPlant(item.PlantIdReceiver, listSticker, input.DateFrom.Value.Month, input.DateFrom.Value.Year);
 
                 var batchList = _inventoryMovementService.GetBatchByPurchDoc(item.StoReceiverNumber).Select(x => x.BATCH).ToList();
 
@@ -5369,13 +5374,13 @@ namespace Sampoerna.EMS.BLL
 
                 item.CfCode = String.Join(Environment.NewLine, brandList.ToArray());
                 item.CfDesc = String.Join(Environment.NewLine, brandDescList.Select(x => x.MATERIAL_DESC).ToArray());
-                item.BeginingBalance = String.Join(Environment.NewLine, balanceList.BeginningBalance.ToArray());
-                item.BeginingBalanceUom = String.Join(Environment.NewLine, balanceList.BeginningBalanceUom.ToArray());
+                item.BeginingBalance = balanceList.BeginningBalance.ToString("N2");
+                item.BeginingBalanceUom = balanceList.BeginningBalanceUom;
                 item.MvtType = String.Join(Environment.NewLine, mvtList.Select(x => x.MVT).ToArray());
                 item.Usage = String.Join(Environment.NewLine, mvtList.Select(x => (x.QTY.Value / umren).ToString("N2")).ToArray());
                 item.UsageUom = String.Join(Environment.NewLine, mvtList.Select(x => x.BUN == "KG" ? "Gram" : string.Empty).ToArray());
                 item.UsagePostingDate = String.Join(Environment.NewLine, mvtList.Select(x => x.POSTING_DATE.Value.ToString("dd-MMM-yy")).ToArray());
-                item.EndingBalance = balanceList.TotalBeginningBalance + item.Ck5Qty - mvtList.Sum(x => (x.QTY.Value / umren));
+                item.EndingBalance = balanceList.BeginningBalance + item.Ck5Qty - mvtList.Sum(x => (x.QTY.Value / umren));
                 item.EndingBalanceUom = "Gram";
 
                 item.MvtTypeList = mvtList.Select(x => x.MVT).ToList();
@@ -5726,12 +5731,12 @@ namespace Sampoerna.EMS.BLL
 
                 item.EaCode = "10.2880";
                 item.EaDesc = "Etil Alkohol";
-                item.BeginingBalance = String.Join(Environment.NewLine, balanceList.BeginningBalance.ToArray());
-                item.BeginingBalanceUom = String.Join(Environment.NewLine, balanceList.BeginningBalanceUom.ToArray());
+                item.BeginingBalance = balanceList.BeginningBalance.ToString("N2");
+                item.BeginingBalanceUom = balanceList.BeginningBalanceUom;
                 item.Usage = String.Join(Environment.NewLine, mvtList.Select(x => (x.QTY.Value / umren).ToString("N2")).ToArray());
                 item.UsageUom = mvtList.Count > 0 ? "Liter" : string.Empty;
                 item.UsagePostingDate = String.Join(Environment.NewLine, mvtList.Select(x => x.POSTING_DATE.Value.ToString("dd-MMM-yy")).ToArray());
-                item.EndingBalance = balanceList.TotalBeginningBalance + item.Ck5Qty - mvtList.Sum(x => (x.QTY.Value / umren));
+                item.EndingBalance = balanceList.BeginningBalance + item.Ck5Qty - mvtList.Sum(x => (x.QTY.Value / umren));
                 item.EndingBalanceUom = "Liter";
 
                 item.UsageList = mvtList.Select(x => (x.QTY.Value / umren).ToString("N2")).ToList();
