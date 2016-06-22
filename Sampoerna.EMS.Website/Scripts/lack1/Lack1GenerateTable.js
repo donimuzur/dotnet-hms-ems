@@ -213,6 +213,11 @@ function generateRowDataCsVsFa(item,issummary) {
     return rc;
 }
 
+function generateRowDataCsVsFaWaste(item, issummary) {
+
+
+}
+
 function generateTable(data) {
     console.log('Only Tis To Fa');
     var rc = '<table border="0" class="table table-bordered">' + generateHeaderTable();

@@ -1681,8 +1681,9 @@ namespace Sampoerna.EMS.BLL
                     Ordr = data.Order,
                     PlantId = data.PlantId
                 };
-                var dataUsage = _inventoryMovementService.GetReceivingByParamZaapShiftRpt(zaapInput261);
-                
+                var tempdataUsage = _inventoryMovementService.GetReceivingByParamZaapShiftRpt(zaapInput261);
+                var matdoclist = _ck5Service.GetCk5AssignedMatdoc();
+                var dataUsage = tempdataUsage.Where(x => !matdoclist.Contains(x.MAT_DOC)).ToList();
                 data.Lack1CFUsagevsFaDetailDtoMvt101 = Mapper.Map<List<Lack1CFUsagevsFaDetailDtoMvt>>(dataReceiving);
                 var dataUsageWithConv = InvMovementConvertionProcess(dataUsage, "G");
                 data.Lack1CFUsagevsFaDetailDtoMvt261 = Mapper.Map<List<Lack1CFUsagevsFaDetailDtoMvt>>(dataUsageWithConv);
@@ -1761,8 +1762,10 @@ namespace Sampoerna.EMS.BLL
                     Ordr = data.Order,
                     PlantId = data.PlantId
                 };
-                var dataUsage = _inventoryMovementService.GetReceivingByParamZaapShiftRpt(zaapInput261);
-
+                //var dataUsage = _inventoryMovementService.GetReceivingByParamZaapShiftRpt(zaapInput261);
+                var tempdataUsage = _inventoryMovementService.GetReceivingByParamZaapShiftRpt(zaapInput261);
+                var matdoclist = _ck5Service.GetCk5AssignedMatdoc();
+                var dataUsage = tempdataUsage.Where(x => !matdoclist.Contains(x.MAT_DOC)).ToList();
                 data.Lack1CFUsagevsFaDetailDtoMvt101 = Mapper.Map<List<Lack1CFUsagevsFaDetailDtoMvt>>(dataReceiving);
                 data.Lack1CFUsagevsFaDetailDtoMvt101 =
                     data.Lack1CFUsagevsFaDetailDtoMvt101.GroupBy(x => new {x.Material_Id, x.PlantId, x.Order, x.Converted_Uom})
