@@ -867,6 +867,7 @@ namespace Sampoerna.EMS.BLL
             var creatorPoa = _poaBll.GetById(lackData.CreatedBy);
             var poaList = creatorPoa == null ? _poaBll.GetPoaActiveByPlantId(lackData.LevelPlantId) :
                             _poaBll.GetPoaByNppbkcIdAndMainPlant(lackData.NppbkcId).Where(x => x.POA_ID != lackData.CreatedBy).ToList();
+            var userData = _userBll.GetUserById(lackData.CreatedBy);
 
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
@@ -875,7 +876,17 @@ namespace Sampoerna.EMS.BLL
             bodyMail.AppendLine();
             bodyMail.Append("Kindly be informed, " + rc.Subject + ". <br />");
             bodyMail.AppendLine();
-            bodyMail.Append("<table><tr><td>Company Code </td><td>: " + lackData.Burks + "</td></tr>");
+            bodyMail.Append("<table>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Creator </td><td>: " + userData.LAST_NAME + ", " + userData.FIRST_NAME + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Company Code </td><td>: " + lackData.Burks + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Plant ID </td><td>: " + lackData.LevelPlantId + " - " + lackData.LevelPlantName + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Period </td><td>: " + _monthBll.GetMonth(lackData.PeriodMonth).MONTH_NAME_ENG + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>KPPBC </td><td>: " + _lfaBll.GetById(_nppbkcService.GetById(lackData.NppbkcId).KPPBC_ID).NAME2 + "</td></tr>");
             bodyMail.AppendLine();
             bodyMail.Append("<tr><td>NPPBKC </td><td>: " + lackData.NppbkcId + "</td></tr>");
             bodyMail.AppendLine();
@@ -888,7 +899,9 @@ namespace Sampoerna.EMS.BLL
                 bodyMail.Append("<tr><td>Comment</td><td> : " + input.Comment + "</td></tr>");
                 bodyMail.AppendLine();
             }
-            bodyMail.Append("<tr colspan='2'><td><i>Please click this <a href='" + webRootUrl + "/Lack2/Detail/" + lackData.Lack2Id + "'>link</a> to show detailed information</i></td></tr>");
+            bodyMail.Append("<tr colspan='2'><td><i>To VIEW, Please click this <a href='" + webRootUrl + "/Lack2/Details/" + lackData.Lack2Id + "'>link</a></i></td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr colspan='2'><td><i>To APPROVE, Please click this <a href='" + webRootUrl + "/Lack2/Edit/" + lackData.Lack2Id + "'>link</a></i></td></tr>");
             bodyMail.AppendLine();
             bodyMail.Append("</table>");
             bodyMail.AppendLine();
@@ -910,13 +923,12 @@ namespace Sampoerna.EMS.BLL
                             }
                         }
 
-                        rc.CC.Add(_userBll.GetUserById(lackData.CreatedBy).EMAIL);
+                        rc.CC.Add(userData.EMAIL);
 
                         rc.IsCCExist = true;
                     }
                     else if (lackData.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
-                        var userData = _userBll.GetUserById(lackData.CreatedBy);
                         rc.To.Add(userData.EMAIL);
 
                         rc.IsCCExist = false;
@@ -949,7 +961,6 @@ namespace Sampoerna.EMS.BLL
                         else
                         {
                             //creator is excise executive
-                            var userData = _userBll.GetUserById(lackData.CreatedBy);
 
                             rc.To.Add(userData.EMAIL);
                             rc.CC.Add(_poaBll.GetById(lackData.ApprovedBy).POA_EMAIL);
@@ -981,7 +992,6 @@ namespace Sampoerna.EMS.BLL
                     break;
                 case Enums.ActionType.Reject:
                     //send notification to creator
-                    var userDetail = _userBll.GetUserById(lackData.CreatedBy);
                     var poaData2 = _poaBll.GetActivePoaById(lackData.CreatedBy);
 
                     if (lackData.ApprovedBy != null || poaData2 != null)
@@ -989,7 +999,7 @@ namespace Sampoerna.EMS.BLL
                         if (poaData2 == null)
                         {
                             var poa = _poaBll.GetById(lackData.ApprovedBy);
-                            rc.To.Add(userDetail.EMAIL);
+                            rc.To.Add(userData.EMAIL);
                             rc.CC.Add(poa.POA_EMAIL);
                             //first code when manager exists
                             //rc.CC.Add(GetManagerEmail(lackData.ApprovedBy));
@@ -1003,7 +1013,7 @@ namespace Sampoerna.EMS.BLL
                     }
                     else
                     {
-                        rc.To.Add(userDetail.EMAIL);
+                        rc.To.Add(userData.EMAIL);
 
                         foreach (var poaDto in poaList)
                         {
@@ -1026,7 +1036,6 @@ namespace Sampoerna.EMS.BLL
                     else
                     {
                         //creator is excise executive
-                        var userData = _userBll.GetUserById(lackData.CreatedBy);
                         rc.To.Add(userData.EMAIL);
                         rc.CC.Add(_poaBll.GetById(lackData.ApprovedBy).POA_EMAIL);
                         //first code when manager exists
@@ -1050,7 +1059,6 @@ namespace Sampoerna.EMS.BLL
                         //rc.To.Add(_poaBll.GetById(lackData.ApprovedBy).POA_EMAIL);
                         //rc.To.Add(GetManagerEmail(lackData.ApprovedBy));
                         //rc.CC.Add(userData.EMAIL);
-                        var userData = _userBll.GetUserById(lackData.CreatedBy);
                         rc.To.Add(userData.EMAIL);
                         rc.CC.Add(_poaBll.GetById(lackData.ApprovedBy).POA_EMAIL);
                         //first code when manager exists
@@ -1071,7 +1079,6 @@ namespace Sampoerna.EMS.BLL
                     else
                     {
                         //creator is excise executive
-                        var userData = _userBll.GetUserById(lackData.CreatedBy);
 
                         rc.To.Add(_poaBll.GetById(lackData.ApprovedBy).POA_EMAIL);
                         //first code when manager exists
