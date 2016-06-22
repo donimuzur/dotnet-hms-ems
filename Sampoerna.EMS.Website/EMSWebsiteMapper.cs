@@ -389,6 +389,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Conversion, opt => opt.MapFrom(src => src.CONVERSION))
                 .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.BRAND_CONTENT))
                 .ForMember(dest => dest.HjeValueStr, opt => opt.MapFrom(src => src.HJE_IDR))
+                .ForMember(dest => dest.TariffValueStr, opt => opt.MapFrom(src => src.TARIFF))
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.STATUS));
 
 
