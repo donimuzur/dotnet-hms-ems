@@ -477,9 +477,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 slDocument.SetCellValue(iRow, 6, data.UomName);
                 slDocument.SetCellValue(iRow, 7, data.GoodTypeName);
                 slDocument.SetCellValue(iRow, 8, data.IssueStorageLoc);
-                slDocument.SetCellValue(iRow, 9, data.TariffStr);
+                if (data.Tariff == null) slDocument.SetCellValue(iRow, 9, string.Empty);
+                else slDocument.SetCellValue(iRow, 9, data.Tariff.Value.ToString("N2"));
                 slDocument.SetCellValue(iRow, 10, data.Tariff_Curr);
-                slDocument.SetCellValue(iRow, 11, data.HjeStr);
+                if (data.Hje == null) slDocument.SetCellValue(iRow, 11, string.Empty);
+                else slDocument.SetCellValue(iRow, 11, data.Hje.Value.ToString("N2"));
                 slDocument.SetCellValue(iRow, 12, data.Hje_Curr);
                 slDocument.SetCellValue(iRow, 13, materialUom);
                 slDocument.SetCellValue(iRow, 14, data.IsPlantDelete ? "Yes" : "No");
