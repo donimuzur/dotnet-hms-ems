@@ -3159,7 +3159,10 @@ namespace Sampoerna.EMS.BLL
         private Lack1GeneratedOutput SetProductionListForTisToTis(Lack1GeneratedDto rc, Lack1GenerateDataParamInput input)
         {
             var t001WSupplierInfo = _t001WServices.GetById(input.SupplierPlantId);
-            if (t001WSupplierInfo != null) input.SupplierPlantNppbkcId = t001WSupplierInfo.NPPBKC_ID;
+            if (t001WSupplierInfo != null) { 
+                input.SupplierPlantNppbkcId = t001WSupplierInfo.NPPBKC_ID;
+                if (input.ReceivedPlantId == input.SupplierPlantId) input.SupplierPlantNppbkcId = t001WSupplierInfo.NPPBKC_IMPORT_ID;
+            }
             var pbck1ProdConverter =
                 _pbck1ProdConverterService.GetProductionLack1TisToTis(new Pbck1GetProductionLack1TisToTisParamInput()
                 {
