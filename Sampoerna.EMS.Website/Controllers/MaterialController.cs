@@ -378,7 +378,8 @@ namespace Sampoerna.EMS.Website.Controllers
             ////Mapper.Map(data,model);
             //model = Mapper.Map<MaterialDetailViewModel>(data);
 
-            var data = _materialBll.getAll().Where(c=>c.EXC_GOOD_TYP == model.GoodType);
+            var data = _materialBll.getAll();
+            if(model.GoodType != null) data = data.Where(c=>c.EXC_GOOD_TYP == model.GoodType).ToList();
             //get data
             var listData = Mapper.Map<List<MaterialDetailViewModel>>(data);
 
