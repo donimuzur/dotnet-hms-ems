@@ -4199,7 +4199,7 @@ namespace Sampoerna.EMS.BLL
                 var paramforAllCk5 = new Ck5GetForLack1ByParamInput()
                 {
                     CompanyCode = input.CompanyCode,
-                    ExGroupTypeId = int.Parse(input.ExcisableGoodsType),
+                    ExGroupTypeId = _exGroupTypeService.GetGroupTypeByGoodsType(input.ExcisableGoodsType),
                     Lack1Level = input.Lack1Level.HasValue ? input.Lack1Level.Value : Enums.Lack1Level.Plant,
                     NppbkcId = input.NppbkcId,
                     PeriodMonth = input.PeriodMonthTo.HasValue ? input.PeriodMonthTo.Value : DateTime.Now.Month,
@@ -4231,9 +4231,11 @@ namespace Sampoerna.EMS.BLL
                     Pbck1List = Mapper.Map<List<Lack1GeneratedPbck1DataDto>>(pbck1List),
                     
                 }, paramforAllCk5);
-                var allIncomeList = lack1Dto.AllIncomeList;//_ck5Service.GetAllPreviousForLack1(paramforAllCk5);
+                var tempAllIncomeList = lack1Dto.AllIncomeList;
+                var usageOnlyList = new List<Lack1GeneratedIncomeDataDto>();
+//_ck5Service.GetAllPreviousForLack1(paramforAllCk5);
 
-                var incomeList = (from inc in allIncomeList
+                var incomeList = (from inc in usageOnlyList
                                   join uom in uomData on inc.PackageUomId.ToLower() equals uom.UOM_ID.ToLower() into gj
                                   from subUom in gj.DefaultIfEmpty()
                                   select new Lack1ReceivingDetailReportDto()
@@ -4255,7 +4257,33 @@ namespace Sampoerna.EMS.BLL
                                       Ck5TypeText = EnumHelper.GetDescription(inc.Ck5Type)
                                   }).ToList();
 
-                var usageConsolidationData = ProcessUsageConsolidationDetailReport1(data, incomeList, uomData);
+                var usageConsolidationData = ProcessUsageConsolidationDetailReport(data, incomeList, uomData);
+                var ck5Idconsolidationlist = usageConsolidationData.Select(x => x.Ck5Id).ToList();
+                var allIncomeList = tempAllIncomeList.Where(x => !ck5Idconsolidationlist.Contains(x.Ck5Id));
+
+                var allck5List = (from inc in allIncomeList
+                                  join uom in uomData on inc.PackageUomId.ToLower() equals uom.UOM_ID.ToLower() into gj
+                                  from subUom in gj.DefaultIfEmpty()
+                                  select new Lack1ReceivingDetailReportDto()
+                                  {
+                                      Ck5Id = inc.Ck5Id,
+                                      Ck5Number = inc.SubmissionNumber,
+                                      Ck5RegistrationNumber = inc.RegistrationNumber,
+                                      Ck5RegistrationDate = inc.RegistrationDate,
+                                      Ck5GrDate = inc.GrDate,
+                                      StoNumber =
+                                          inc.Ck5Type == Enums.CK5Type.Intercompany
+                                              ? inc.StoReceiverNumber
+                                              : inc.Ck5Type == Enums.CK5Type.DomesticAlcohol
+                                              ? inc.DnNumber : inc.StoSenderNumber,
+                                      Qty = inc.GrandTotalEx,
+                                      UomId = inc.PackageUomId,
+                                      UomDesc = subUom != null ? subUom.UOM_DESC : string.Empty,
+                                      Ck5Type = inc.Ck5Type,
+                                      Ck5TypeText = EnumHelper.GetDescription(inc.Ck5Type)
+                                  }).ToList();
+
+                
 
                 //add record for CK5 manual
                 //foreach (var ck5Item in incomeListCk5Manual)
@@ -4316,7 +4344,11 @@ namespace Sampoerna.EMS.BLL
                 //                          }).ToList();
                 //    usageConsolidationData.AddRange(groupedCk5Material);
                 //}
-
+                foreach (var lack1ReceivingDetailReportDto in allck5List)
+                {
+                    usageConsolidationData.Add(Mapper.Map<Lack1TrackingConsolidationDetailReportDto>(lack1ReceivingDetailReportDto));
+                }
+                
                 item.TrackingConsolidations.AddRange(usageConsolidationData.Distinct().ToList());
 
                 item.TrackingConsolidations = item.TrackingConsolidations.OrderBy(o => o.MaterialCode).ThenBy(o => o.Batch).ToList();
@@ -4620,7 +4652,7 @@ namespace Sampoerna.EMS.BLL
                 var mvtTypeForUsage = new List<string>
                     {
                         EnumHelper.GetDescription(Enums.MovementTypeCode.Usage261),
-                        EnumHelper.GetDescription(Enums.MovementTypeCode.Usage261),
+                        EnumHelper.GetDescription(Enums.MovementTypeCode.Usage262),
                         EnumHelper.GetDescription(Enums.MovementTypeCode.Usage201),
                         EnumHelper.GetDescription(Enums.MovementTypeCode.Usage202),
                         EnumHelper.GetDescription(Enums.MovementTypeCode.Usage901),
@@ -4641,7 +4673,8 @@ namespace Sampoerna.EMS.BLL
                             d.INVENTORY_MOVEMENT.BUN,
                             d.CONVERTED_UOM_ID,
                             d.CONVERTED_QTY,
-                            d.CONVERTED_UOM_DESC
+                            d.CONVERTED_UOM_DESC,
+                            d.IS_TISTOTIS_DATA
                         }).DistinctBy(ds => ds.INVENTORY_MOVEMENT_ID)
                         .ToList();
 
@@ -4651,11 +4684,12 @@ namespace Sampoerna.EMS.BLL
                 {
                     p.MATERIAL_ID,
                     p.BATCH,
-                    p.POSTING_DATE
+                    p.POSTING_DATE,
+                    p.IS_TISTOTIS_DATA
                 }).Select(g => new
                 {
                     MaterialId = g.Key.MATERIAL_ID,
-                    Qty = g.Sum(p => p.QTY.HasValue ? (-1) * p.QTY.Value : 0),
+                    Qty = g.Sum(p => p.IS_TISTOTIS_DATA.Value ? (p.QTY.HasValue ?  p.QTY.Value : 0) : (p.QTY.HasValue ? (-1) * p.QTY.Value : 0)),
                     Batch = g.Key.BATCH,
                     PostingDate = g.Key.POSTING_DATE,
                     Bun = g.First().BUN,

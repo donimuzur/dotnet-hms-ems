@@ -119,6 +119,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public ICollection<LACK1_INCOME_DETAIL> LACK1_INCOME_DETAIL { get; set; }
         public ICollection<LACK1_TRACKING> LACK1_TRACKING { get; set; }
         public ICollection<LACK1_PRODUCTION_DETAIL> LACK1_PRODUCTION_DETAIL { get; set; }
+        public ICollection<LACK1_PBCK1_MAPPING> LACK1_PBCK1_MAPPING { get; set; }
         public DateTime PeriodDate { get; set; }
         public string CREATED_BY { get; set; }
         public string APPROVED_BY_POA { get; set; }
