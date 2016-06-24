@@ -18,6 +18,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ProdQty { get; set; }
         public List<string> ProdQtyExcel { get; set; }
         public List<Lack1TrackingConsolidationDetailReportDto> TrackingConsolidations { get; set; }
+        public List<Lack1BeginingSaldoDetail> TrackingSaldoAwal { get; set; } 
         public string Poa { get; set; }
         public string Creator { get; set; }
     }
@@ -123,6 +124,15 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime PeriodDate { get; set; }
         public string CREATED_BY { get; set; }
         public string APPROVED_BY_POA { get; set; }
+    }
+
+    public class Lack1BeginingSaldoDetail
+    {
+        public string WERKS { get; set; }
+        public string MATERIAL_ID { get; set; }
+        public string PERIOD_MONTH { get; set; }
+        public string PERIOD_YEAR { get; set; }
+        public string OPEN_BALANCE { get; set; }
     }
     
 }

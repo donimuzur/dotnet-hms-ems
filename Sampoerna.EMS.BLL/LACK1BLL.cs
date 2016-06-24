@@ -4172,9 +4172,12 @@ namespace Sampoerna.EMS.BLL
                 uomGramDesc = uomGram.UOM_DESC;
                 uomGramId = uomGram.UOM_ID;
             }
-
+            var count = 0;
             foreach (var data in tempData)
             {
+                
+                var trackingSaldoAwal = new List<Lack1BeginingSaldoDetail>();
+                
                 var item = new Lack1DetailReportDto()
                 {
                     Lack1Id = data.LACK1_ID,
@@ -4183,6 +4186,7 @@ namespace Sampoerna.EMS.BLL
                     BeginingBalance = data.BEGINING_BALANCE,
                     EndingBalance = data.BEGINING_BALANCE + data.TOTAL_INCOME - (data.USAGE + (data.USAGE_TISTOTIS.HasValue ? data.USAGE_TISTOTIS.Value : 0)) - (data.RETURN_QTY.HasValue ? data.RETURN_QTY.Value : 0),
                     //ProdQty = ProductionSummaryDetailReport(data.LACK1_PRODUCTION_DETAIL.ToList()),
+                    //TrackingSaldoAwal = 
                     TrackingConsolidations = new List<Lack1TrackingConsolidationDetailReportDto>(),
                     Poa = data.APPROVED_BY_POA,
                     Creator = data.CREATED_BY
@@ -4232,6 +4236,17 @@ namespace Sampoerna.EMS.BLL
                     
                 }, paramforAllCk5);
                 var tempAllIncomeList = lack1Dto.AllIncomeList;
+                var ck5idList = tempAllIncomeList.Select(x => x.Ck5Id).ToList();
+                var materialList = _ck5Service.GetMaterialListbyCk5IdList(ck5idList);
+                var plantList = dataLack1.LACK1_PLANT.Select(x => x.PLANT_ID).ToList();
+                if (count == 0)
+                {
+                    var materialBalance = _materialBalanceService.GetByPlantListAndMaterialList(plantList, materialList).Where(x=> x.PERIOD_MONTH == lack1Dto.PeriodMonthId && x.PERIOD_YEAR == lack1Dto.PeriodYear).ToList();
+                    trackingSaldoAwal = Mapper.Map <List<Lack1BeginingSaldoDetail>>(materialBalance);
+                }
+
+                item.TrackingSaldoAwal = trackingSaldoAwal;
+
                 var usageOnlyList = new List<Lack1GeneratedIncomeDataDto>();
 //_ck5Service.GetAllPreviousForLack1(paramforAllCk5);
 
@@ -4353,6 +4368,7 @@ namespace Sampoerna.EMS.BLL
 
                 item.TrackingConsolidations = item.TrackingConsolidations.OrderBy(o => o.MaterialCode).ThenBy(o => o.Batch).ToList();
                 rc.Add(item);
+                count++;
 
             }
             return rc.OrderBy(o => o.Lack1Id).ToList();

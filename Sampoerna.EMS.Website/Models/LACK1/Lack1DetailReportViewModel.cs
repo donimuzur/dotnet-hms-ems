@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models.LACK1
@@ -62,6 +63,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public decimal BeginingBalance { get; set; }
         public decimal EndingBalance { get; set; }
         public List<Lack1TrackingConsolidationDetailReportItemModel> TrackingConsolidations { get; set; }
+        public List<Lack1BeginingSaldoDetail> TrackingSaldoAwal { get; set; }
         public string Poa { get; set; }
         public string Creator { get; set; }
     }
