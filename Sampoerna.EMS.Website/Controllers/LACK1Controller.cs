@@ -2050,6 +2050,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var dbData = _lack1Bll.GetDetailReportByParam(input);
+            
             return Mapper.Map<List<Lack1DetailReportItemModel>>(dbData);
         }
 
@@ -2123,8 +2124,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private string CreateXlsDetailReport(Lack1SearchDetailReportViewModel model)
         {
             var dataDetailReport = SearchDetailReport(model);
-
+            
             var slDocument = new SLDocument();
+            slDocument = CreateMaterialBalanceDetailReportXls(slDocument, dataDetailReport);
             int endColumnIndex;
             //create header
             slDocument = CreateHeaderExcel(slDocument, out endColumnIndex);
@@ -2359,7 +2361,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             slDocument = DetailReportDoingMerge(slDocument, needToMerge);
-
+            
             return CreateXlsFileDetailReports(slDocument, endColumnIndex,  iRow - 1);
 
         }
@@ -2474,6 +2476,9 @@ namespace Sampoerna.EMS.Website.Controllers
             //set auto fit to all column
             slDocument.AutoFitColumn(1, endColumnIndex - 1);
 
+            
+
+
             var fileName = "lack1_detreport" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
             var path = Path.Combine(Server.MapPath(Constans.Lack1UploadFolderPath), fileName);
 
@@ -2481,6 +2486,98 @@ namespace Sampoerna.EMS.Website.Controllers
             slDocument.SaveAs(path);
 
             return path;
+        }
+
+
+        private SLDocument CreateMaterialBalanceDetailReportXls(SLDocument slDocument, List<Lack1DetailReportItemModel> data)
+        {
+            var sheetName = "Begining Balance Breakdown";
+            slDocument.AddWorksheet(sheetName);
+            slDocument.SelectWorksheet(sheetName);
+
+            int iColumn = 1;
+
+            //first row
+            slDocument.SetCellValue(1, iColumn, "LACK-1 Number");
+            slDocument.MergeWorksheetCells(1, iColumn, 1, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Period Month");
+            slDocument.MergeWorksheetCells(1, iColumn, 1, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Period Year");
+            slDocument.MergeWorksheetCells(1, iColumn, 1, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Plant ID");
+            slDocument.MergeWorksheetCells(1, iColumn, 1, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Material Id");
+            slDocument.MergeWorksheetCells(1, iColumn, 1, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            
+
+            slDocument.SetCellValue(1, iColumn, "Open Balance");
+            slDocument.MergeWorksheetCells(1, iColumn, 1, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            iColumn = 1;
+            int iRow = 2; //starting row data
+            foreach (var item in data)
+            {
+                int dataCount = item.TrackingSaldoAwal.Count - 1;
+
+                //first record
+                slDocument.SetCellValue(iRow, iColumn, item.Lack1Number);
+                slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
+                iColumn++;
+
+
+                foreach (var materialBalance in item.TrackingSaldoAwal)
+                {
+                    
+                    slDocument.SetCellValue(iRow, iColumn, materialBalance.PERIOD_MONTH);
+                    slDocument.SetCellValue(iRow, iColumn + 1, materialBalance.PERIOD_YEAR);
+                    slDocument.SetCellValue(iRow, iColumn + 2, materialBalance.WERKS);
+                    slDocument.SetCellValue(iRow, iColumn + 3, materialBalance.MATERIAL_ID);
+                    slDocument.SetCellValue(iRow, iColumn + 4, materialBalance.OPEN_BALANCE);
+                    
+
+                    iRow++;
+                }
+                
+            }
+
+            SLStyle valueStyle = slDocument.CreateStyle();
+            valueStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Alignment.Vertical = VerticalAlignmentValues.Top;
+
+            //set header style
+            SLStyle headerStyle = slDocument.CreateStyle();
+            headerStyle.Alignment.Horizontal = HorizontalAlignmentValues.Center;
+            headerStyle.Font.Bold = true;
+            headerStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+
+            //set border to value cell
+            slDocument.SetCellStyle(2, 1, iRow, 6, valueStyle);
+
+            //set header style
+            slDocument.SetCellStyle(1, 1, 1, 6, headerStyle);
+
+            //set auto fit to all column
+            slDocument.AutoFitColumn(1, 6);
+
+            slDocument.SelectWorksheet("Sheet1");
+            return slDocument;
         }
 
         private SLDocument DetailReportDoingMerge(SLDocument slDocument, List<DetailReportNeedToMerge> items)

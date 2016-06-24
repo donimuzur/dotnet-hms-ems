@@ -224,6 +224,9 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<PBCK1, Lack1GeneratedPbck1DataDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Pbck1Id, opt => opt.MapFrom(src => src.PBCK1_ID));
 
+            Mapper.CreateMap<LACK1_PBCK1_MAPPING, Lack1GeneratedPbck1DataDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Pbck1Id, opt => opt.MapFrom(src => src.PBCK1_ID));
+
             Mapper.CreateMap<LACK1, Lack1DetailsDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Lack1Id, opt => opt.MapFrom(src => src.LACK1_ID))
                 .ForMember(dest => dest.Lack1Number, opt => opt.MapFrom(src => src.LACK1_NUMBER))
@@ -517,6 +520,9 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.FLAG_FOR_LACK1, opt => opt.MapFrom(src => src.FlagForLack1))
                 ;
 
+
+            Mapper.CreateMap<Lack1ReceivingDetailReportDto, Lack1TrackingConsolidationDetailReportDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<ZAIDM_EX_MATERIAL_BALANCE,Lack1BeginingSaldoDetail>().IgnoreAllNonExisting();
             #region LACK1 Detail TIS
 
             Mapper.CreateMap<Lack1GetDetailTisByParamInput, Ck5GetForLack1DetailTis>().IgnoreAllNonExisting();

@@ -6,6 +6,7 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.LinqExtensions;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 using Sampoerna.EMS.Contract.Services;
@@ -239,6 +240,12 @@ namespace Sampoerna.EMS.BLL.Services
             return _repository.Get(queryFilterCk5, null, "UOM").ToList();
         }
 
+        public List<string> GetMaterialListbyCk5IdList(List<long> ck5idList)
+        {
+            var ck5Material = _repositoryMaterial.Get(x=> ck5idList.Contains(x.CK5_ID.Value),null,"");
+
+            return ck5Material.Select(x => x.BRAND).ToList();
+        }
         public List<CK5> GetCk5ForLack1DetailTis(Ck5GetForLack1DetailTis input)
         {
             Expression<Func<CK5, bool>> queryFilterCk5 =

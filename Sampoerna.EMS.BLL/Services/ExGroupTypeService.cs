@@ -3,6 +3,7 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL.Services
 {
@@ -22,6 +23,18 @@ namespace Sampoerna.EMS.BLL.Services
         public EX_GROUP_TYPE_DETAILS GetGroupTypeDetailByGoodsType(string input)
         {
             return _groupTypeRepository.Get(c => c.GOODTYPE_ID == input, null, "ZAIDM_EX_GOODTYP").FirstOrDefault();
+        }
+
+        public int GetGroupTypeByGoodsType(string goodTypeCode)
+        {
+            var exGroupTypeDetails = _groupTypeRepository.Get(c=> c.GOODTYPE_ID == goodTypeCode,null,"EX_GROUP_TYPE").FirstOrDefault();
+            if (exGroupTypeDetails !=
+                null)
+                return exGroupTypeDetails.EX_GROUP_TYPE_ID.HasValue ? exGroupTypeDetails.EX_GROUP_TYPE_ID.Value : (int) Enums.ExGoodsType.HasilTembakau;
+            else
+            {
+                return (int)Enums.ExGoodsType.HasilTembakau;
+            }
         }
     }
 }
