@@ -393,7 +393,7 @@ namespace Sampoerna.EMS.BLL.Services
 
         public List<LACK1> GetDetailReportByParamInput(Lack1GetDetailReportByParamInput input)
         {
-            const string incTables = "LACK1_TRACKING, LACK1_TRACKING.INVENTORY_MOVEMENT, LACK1_INCOME_DETAIL, LACK1_INCOME_DETAIL.CK5, LACK1_INCOME_DETAIL.CK5.CK5_MATERIAL, LACK1_PRODUCTION_DETAIL";
+            const string incTables = "LACK1_TRACKING, LACK1_TRACKING.INVENTORY_MOVEMENT, LACK1_INCOME_DETAIL, LACK1_INCOME_DETAIL.CK5, LACK1_INCOME_DETAIL.CK5.CK5_MATERIAL, LACK1_PRODUCTION_DETAIL, LACK1_PBCK1_MAPPING, LACK1_PLANT";
             //process QueryFilter
             Expression<Func<LACK1, bool>> queryFilter = PredicateHelper.True<LACK1>();
             if (!string.IsNullOrEmpty(input.CompanyCode))
