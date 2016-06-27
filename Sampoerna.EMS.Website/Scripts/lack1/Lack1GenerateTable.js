@@ -76,18 +76,21 @@ function generateHeaderTableDataCsVsFA(issummary) {
 function generateTableDataCsVsFA(data,issummary)
 {
     var rc = '<table border="0" class="table table-bordered">' + generateHeaderTableDataCsVsFA(issummary);
+    var index = {
+        index : 0
+    };
     for (var i = 0; i < data.length; i++) {
         var item = data[i];
-        var row = generateRowDataCsVsFa(item,issummary);
+        var row = generateRowDataCsVsFa(item, issummary, index);
 
-
+        
         rc = rc + row;
     }
     return rc;
 }
 
 
-function generateRowDataCsVsFa(item,issummary) {
+function generateRowDataCsVsFa(item,issummary,indexUtama) {
     
     var facode = item.Fa_Code;
     var plantId = item.PlantId;
@@ -135,22 +138,22 @@ function generateRowDataCsVsFa(item,issummary) {
             rc += "<td></td>" +
                     "<td></td>";
         }
-        
-        
 
-        if (waste.length - 1 >= i) {
-            rc += "<td>" + ThausandSeperator(waste[i].MarkerRejectStickQty) + "</td>" +
+
+        
+        if (waste.length - 1 >= indexUtama.index) {
+            rc += "<td>" + ThausandSeperator(waste[indexUtama.index].MarkerRejectStickQty) + "</td>" +
                 "<td>Btg</td>" +
-                "<td>" + ThausandSeperator(waste[i].PackerRejectStickQty) + "</td>" +
+                "<td>" + ThausandSeperator(waste[indexUtama.index].PackerRejectStickQty) + "</td>" +
                 "<td>Btg</td>" +
-                "<td>" + ThausandSeperator(waste[i].DustWasteGramQty) + "</td>" +
+                "<td>" + ThausandSeperator(waste[indexUtama.index].DustWasteGramQty) + "</td>" +
                 "<td>G</td>" +
-                "<td>" + ThausandSeperator(waste[i].FloorWasteGramQty) + "</td>" +
+                "<td>" + ThausandSeperator(waste[indexUtama.index].FloorWasteGramQty) + "</td>" +
                 "<td>G</td>" +
-                "<td>" + ThausandSeperator(waste[i].StampWasteQty) + "</td>" +
+                "<td>" + ThausandSeperator(waste[indexUtama.index].StampWasteQty) + "</td>" +
                 "<td>G</td>";
             if (!issummary) {
-                rc += "<td>" + waste[i].WasteProductionDateText + "</td>";
+                rc += "<td>" + waste[indexUtama.index].WasteProductionDateText + "</td>";
             }
 
             rc+=    "</tr>";
@@ -172,6 +175,7 @@ function generateRowDataCsVsFa(item,issummary) {
 
             rc+=    "</tr>";
         }
+        indexUtama.index = indexUtama.index + 1;
     }
 
     if (!issummary) {
@@ -194,7 +198,25 @@ function generateRowDataCsVsFa(item,issummary) {
                 "<td>" + ThausandSeperator(-1 * mvt261[j].Converted_Qty) + "</td>" +
                 "<td>" + mvt261[j].Uom + "</td>";
 
-            rc += "<td></td>" +
+            if (waste.length - 1 >= indexUtama.index) {
+                rc += "<td>" + ThausandSeperator(waste[indexUtama.index].MarkerRejectStickQty) + "</td>" +
+                    "<td>Btg</td>" +
+                    "<td>" + ThausandSeperator(waste[indexUtama.index].PackerRejectStickQty) + "</td>" +
+                    "<td>Btg</td>" +
+                    "<td>" + ThausandSeperator(waste[indexUtama.index].DustWasteGramQty) + "</td>" +
+                    "<td>G</td>" +
+                    "<td>" + ThausandSeperator(waste[indexUtama.index].FloorWasteGramQty) + "</td>" +
+                    "<td>G</td>" +
+                    "<td>" + ThausandSeperator(waste[indexUtama.index].StampWasteQty) + "</td>" +
+                    "<td>G</td>";
+                //if (!issummary) {
+                    rc += "<td>" + waste[indexUtama.index].WasteProductionDateText + "</td>";
+                //}
+
+                rc += "</tr>";
+                iswastedisplayed = true;
+            } else {
+                rc += "<td></td>" +
                     "<td></td>" +
                     "<td></td>" +
                     "<td></td>" +
@@ -203,14 +225,26 @@ function generateRowDataCsVsFa(item,issummary) {
                     "<td></td>" +
                     "<td></td>" +
                     "<td></td>" +
-                    "<td></td>" +
-                    "<td></td>" +
-                    "</tr>";
+                    "<td></td>";
+                //if (!issummary) {
+                    rc += "<td></td>";
+                //}
+
+                rc += "</tr>";
+            }
+            
+            
+            indexUtama.index = indexUtama.index + 1;
         }
     }
     
 
     return rc;
+}
+
+function generateRowDataCsVsFaWaste(item, issummary) {
+
+
 }
 
 function generateTable(data) {

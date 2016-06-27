@@ -131,7 +131,9 @@ namespace Sampoerna.EMS.BLL.Services
             var receivingMvtType = new List<string>()
             {
                 EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage261),
-                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage262)
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage262),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage201),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage202)
             };
 
             Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue && c.POSTING_DATE.Value <= input.EndDate;
