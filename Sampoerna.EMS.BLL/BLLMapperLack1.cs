@@ -522,6 +522,7 @@ namespace Sampoerna.EMS.BLL
 
 
             Mapper.CreateMap<Lack1ReceivingDetailReportDto, Lack1TrackingConsolidationDetailReportDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<LACK1_PRODUCTION_DETAIL, Lack1ProductionBreakdownDetail>().IgnoreAllNonExisting();
             Mapper.CreateMap<ZAIDM_EX_MATERIAL_BALANCE,Lack1BeginingSaldoDetail>().IgnoreAllNonExisting();
             #region LACK1 Detail TIS
 

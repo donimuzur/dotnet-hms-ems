@@ -64,6 +64,8 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public decimal EndingBalance { get; set; }
         public List<Lack1TrackingConsolidationDetailReportItemModel> TrackingConsolidations { get; set; }
         public List<Lack1BeginingSaldoDetail> TrackingSaldoAwal { get; set; }
+
+        public List<Lack1ProductionBreakdownDetail> ProductionBreakdown { get; set; }
         public string Poa { get; set; }
         public string Creator { get; set; }
     }
