@@ -4249,7 +4249,8 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 item.TrackingSaldoAwal = trackingSaldoAwal;
-
+                item.ProductionBreakdown =
+                    Mapper.Map<List<Lack1ProductionBreakdownDetail>>(dataLack1.LACK1_PRODUCTION_DETAIL);
                 var usageOnlyList = new List<Lack1GeneratedIncomeDataDto>();
 //_ck5Service.GetAllPreviousForLack1(paramforAllCk5);
 
