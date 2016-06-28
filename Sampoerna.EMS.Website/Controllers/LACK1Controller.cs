@@ -2125,6 +2125,7 @@ namespace Sampoerna.EMS.Website.Controllers
             
             var slDocument = new SLDocument();
             slDocument = CreateMaterialBalanceDetailReportXls(slDocument, dataDetailReport);
+            slDocument = CreateProductionDetailReportXls(slDocument, dataDetailReport);
             int endColumnIndex;
             //create header
             slDocument = CreateHeaderExcel(slDocument, out endColumnIndex);
@@ -2486,7 +2487,115 @@ namespace Sampoerna.EMS.Website.Controllers
             return path;
         }
 
+        private SLDocument CreateProductionDetailReportXls(SLDocument slDocument, List<Lack1DetailReportItemModel> data)
+        {
+            var sheetName = "Production Breakdown";
+            slDocument.AddWorksheet(sheetName);
+            slDocument.SelectWorksheet(sheetName);
 
+            int iColumn = 1;
+
+            //first row
+            slDocument.SetCellValue(1, iColumn, "LACK-1 Number");
+            slDocument.MergeWorksheetCells(1, iColumn, 1, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            //slDocument.SetCellValue(1, iColumn, "Plant Id");
+            //slDocument.MergeWorksheetCells(1, iColumn, 1, iColumn);//RowSpan = 2
+            //iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "FA Code");
+            slDocument.MergeWorksheetCells(1, iColumn, 1, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Product Code");
+            slDocument.MergeWorksheetCells(1, iColumn, 1, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Process Order");
+            slDocument.MergeWorksheetCells(1, iColumn, 1, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Qty");
+            slDocument.MergeWorksheetCells(1, iColumn, 1, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Uom");
+            slDocument.MergeWorksheetCells(1, iColumn, 1, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(1, iColumn, "Is Tis to Tis");
+            slDocument.MergeWorksheetCells(1, iColumn, 1, iColumn);//RowSpan = 2
+            iColumn = iColumn + 1;
+
+
+            iColumn = 1;
+            int iRow = 2; //starting row data
+            foreach (var item in data)
+            {
+                int dataCount = item.TrackingSaldoAwal.Count - 1;
+
+                //first record
+                slDocument.SetCellValue(iRow, iColumn, item.Lack1Number);
+                slDocument.MergeWorksheetCells(iRow, iColumn, (iRow + dataCount), iColumn);//RowSpan sesuai dataCount
+                iColumn++;
+
+
+                foreach (var productionData in item.ProductionBreakdown)
+                {
+                    iColumn = 2;
+                    //slDocument.SetCellValue(iRow, iColumn, item.p);
+                    slDocument.SetCellValue(iRow, iColumn, productionData.FA_CODE);
+                    iColumn ++;
+                    
+                    slDocument.SetCellValue(iRow, iColumn, productionData.PRODUCT_ALIAS);
+                    iColumn++;
+
+                    slDocument.SetCellValue(iRow, iColumn, productionData.ORDR);
+                    iColumn++;
+                    
+                    slDocument.SetCellValue(iRow, iColumn, productionData.AMOUNT);
+                    iColumn++;
+                    
+                    slDocument.SetCellValue(iRow, iColumn, productionData.UOM_ID);
+                    iColumn++;
+                    
+                    slDocument.SetCellValue(iRow, iColumn, productionData.IS_TISTOTIS_DATA ? "Yes" : "No");
+
+
+                    iRow++;
+                }
+
+            }
+
+            SLStyle valueStyle = slDocument.CreateStyle();
+            valueStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Alignment.Vertical = VerticalAlignmentValues.Top;
+
+            //set header style
+            SLStyle headerStyle = slDocument.CreateStyle();
+            headerStyle.Alignment.Horizontal = HorizontalAlignmentValues.Center;
+            headerStyle.Font.Bold = true;
+            headerStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+
+            //set border to value cell
+            slDocument.SetCellStyle(2, 1, iRow, 7, valueStyle);
+
+            //set header style
+            slDocument.SetCellStyle(1, 1, 1, 7, headerStyle);
+
+            //set auto fit to all column
+            slDocument.AutoFitColumn(1, 7);
+
+            slDocument.SelectWorksheet("Sheet1");
+            return slDocument;
+        }
         private SLDocument CreateMaterialBalanceDetailReportXls(SLDocument slDocument, List<Lack1DetailReportItemModel> data)
         {
             var sheetName = "Begining Balance Breakdown";
