@@ -18,7 +18,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ProdQty { get; set; }
         public List<string> ProdQtyExcel { get; set; }
         public List<Lack1TrackingConsolidationDetailReportDto> TrackingConsolidations { get; set; }
-        public List<Lack1BeginingSaldoDetail> TrackingSaldoAwal { get; set; } 
+        public List<Lack1BeginingSaldoDetail> TrackingSaldoAwal { get; set; }
+        public List<Lack1ProductionBreakdownDetail> ProductionBreakdown { get; set; }
         public string Poa { get; set; }
         public string Creator { get; set; }
     }
@@ -133,6 +134,16 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string PERIOD_MONTH { get; set; }
         public string PERIOD_YEAR { get; set; }
         public string OPEN_BALANCE { get; set; }
+    }
+
+    public class Lack1ProductionBreakdownDetail
+    {
+        public string FA_CODE { get; set; }
+        public string ORDR { get; set; }
+        public decimal AMOUNT { get; set; }
+        public string UOM_ID { get; set; }
+        public string PRODUCT_ALIAS { get; set; }
+        public bool IS_TISTOTIS_DATA { get; set; }
     }
     
 }
