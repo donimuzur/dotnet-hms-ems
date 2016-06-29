@@ -323,7 +323,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Detail", new { id });
             }
 
-            if (!IsAllowEditLack2(lack2Data.CreatedBy, lack2Data.Status, lack2Data.ApprovedBy))
+            if (!IsAllowEditLack2(lack2Data.CreatedBy, lack2Data.Status, lack2Data.ApprovedBy, lack2Data.Lack2Number))
             {
                 AddMessageInfo(
                     "Operation not allowed.",
@@ -374,7 +374,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 //{
                 //    return RedirectToAction("Detail", new { id = model.Lack2Id });
                 //}
-                if (!_workflowBll.IsAllowEditLack1(model.CreatedBy, CurrentUser.USER_ID, model.Status))
+                if (!_workflowBll.IsAllowEditLack1(model.CreatedBy, CurrentUser.USER_ID, model.Status, CurrentUser.UserRole, model.Lack2Number))
                     return RedirectToAction("Detail", new { id = model.Lack2Id });
 
                 bool isSubmit = model.IsSaveSubmit == "submit";
@@ -531,7 +531,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return model;
         }
 
-        private bool IsAllowEditLack2(string userId, Enums.DocumentStatus status, string poaId)
+        private bool IsAllowEditLack2(string userId, Enums.DocumentStatus status, string poaId, string docNumber)
         {
             //bool isAllow = CurrentUser.USER_ID == userId;
             //if (!(status == Enums.DocumentStatus.Draft || status == Enums.DocumentStatus.Rejected
@@ -541,7 +541,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //}
 
             //return isAllow;
-            var allowEditAsUser = _workflowBll.IsAllowEditLack1(userId, CurrentUser.USER_ID, status);
+            var allowEditAsUser = _workflowBll.IsAllowEditLack1(userId, CurrentUser.USER_ID, status, CurrentUser.UserRole, docNumber);
             var allowEditAsAdmin = _poabll.GetUserRole(CurrentUser.USER_ID) == Enums.UserRole.Administrator;
             var allowPoaEdit = CurrentUser.USER_ID == poaId;
             return allowEditAsAdmin || allowEditAsUser || allowPoaEdit;

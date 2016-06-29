@@ -52,7 +52,7 @@ namespace Sampoerna.EMS.Contract
 
         bool AllowAttachment(WorkflowAllowApproveAndRejectInput input);
 
-        bool IsAllowEditLack1(string createdUser, string currentUserId, Enums.DocumentStatus status);
+        bool IsAllowEditLack1(string createdUser, string currentUserId, Enums.DocumentStatus status, Enums.UserRole role, string documentNumber);
 
         bool AllowAccessData(WorkflowAllowAccessDataInput input);
     }
