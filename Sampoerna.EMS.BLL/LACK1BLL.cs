@@ -2568,12 +2568,12 @@ namespace Sampoerna.EMS.BLL
             InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput, string bkcUomId)
         {
             var groupUsageProporsional = invMovementOutput.UsageProportionalList
-                    .GroupBy(x => new { x.Order, x.Batch })
+                    .GroupBy(x => new { x.Order })
                     .Select(p => new InvMovementUsageProportional()
                     {
 
                         Order = p.Key.Order,
-                        Batch = p.Key.Batch,
+                        //Batch = p.Key.Batch,
                         Qty = p.Sum(x => x.Qty),
                         TotalQtyPerMaterialId = p.FirstOrDefault().TotalQtyPerMaterialId
                         //Order = p.Order,
@@ -2753,6 +2753,7 @@ namespace Sampoerna.EMS.BLL
                     ProductType = item.PRODUCT_TYPE,
                     ProductAlias = item.PRODUCT_ALIAS,
                     Amount = item.ProportionalOrder * item.PROD_QTY,//Convert.ToDecimal(ROUNDUP(((double)item.ProportionalOrder), 3) * (double)item.PROD_QTY),//Math.Round(item.PROD_QTY * item.ProportionalOrder,0,MidpointRounding.ToEven),
+                    //Amount = item.PROD_QTY,
                     UomId = item.UOM,
                     UomDesc = item.UOM_DESC,
                     ProductionDate = item.PRODUCTION_DATE
@@ -2763,15 +2764,16 @@ namespace Sampoerna.EMS.BLL
 
                 var rec = groupUsageProporsional.ToList().FirstOrDefault(c =>
                     c.Order == item.ORDR
-                    && c.Batch == item.BATCH
+                    //&& c.Batch == item.BATCH
                     );
                 
                 if (rec != null)
                 {
                     //calculate proporsional
-                    itemToInsert.Amount =
-                        Math.Round(((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount ), 3);
-                            //((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount * itemToInsert.ProportionalOrder), 3);
+                    //itemToInsert.Amount = Math.Round((rec.Qty/rec.TotalQtyPerMaterialId)*itemToInsert.Amount);
+                    itemToInsert.Amount = (rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount;
+                    //Math.Round(((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount ), 3);
+                    //((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount * itemToInsert.ProportionalOrder), 3);
                 }
                 else
                 {
@@ -2780,13 +2782,13 @@ namespace Sampoerna.EMS.BLL
                         var chk =
                             prevInventoryMovementByParam.UsageProportionalList.FirstOrDefault(
                                c=> c.Order == item.ORDR 
-                                   && c.Batch == item.BATCH
+                                   //&& c.Batch == item.BATCH
                                    );
                         if (chk != null)
                         {
                             //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
-                            itemToInsert.Amount =
-                        Math.Round(((chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount ), 3);
+                            //itemToInsert.Amount = Math.Round((chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount);
+                            itemToInsert.Amount = (chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount;
                             //((chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount * itemToInsert.ProportionalOrder), 3);
                         }
                     }
@@ -4068,7 +4070,11 @@ namespace Sampoerna.EMS.BLL
                           TotalQtyPerMaterialId = y.TotalQty,
                           Order = x.Ordr
                       }).ToList();
-
+            var rc1 = rc;
+            foreach (var invMovementUsageProportional in rc1)
+            {
+                invMovementUsageProportional.Batch = invMovementUsageProportional.Batch.Substring(0, 2);
+            }
             return rc;
         }
 
