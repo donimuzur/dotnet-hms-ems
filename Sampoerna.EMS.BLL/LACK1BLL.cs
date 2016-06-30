@@ -2096,10 +2096,10 @@ namespace Sampoerna.EMS.BLL
                 prevInventoryMovementByParamInput.PeriodMonth = input.PeriodMonth - 1;
             }
 
-            var stoReceiverNumberList = rc.AllCk5List.Select(d => d.DnNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
+            //var stoReceiverNumberList = rc.AllCk5List.Select(d => d.DnNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
 
-            var prevInventoryMovementByParam = GetInventoryMovementByParam(prevInventoryMovementByParamInput,
-                stoReceiverNumberList, bkcUomId);
+            //var prevInventoryMovementByParam = GetInventoryMovementByParam(prevInventoryMovementByParamInput,
+            //    stoReceiverNumberList, bkcUomId);
 
             //set production List
             var productionTraceList = new List<Lack1GeneratedProductionDomesticAlcoholDto>();
@@ -3863,7 +3863,7 @@ namespace Sampoerna.EMS.BLL
                 mvt201Asigned = (-1) * getInventoryMovementByParamOutput.Mvt201Assigned.Sum(d => d.ConvertedQty);
             }
 
-            totalUsage = totalUsage + mvt201 - mvt201Asigned;
+            
 
             if (isForTisToTis)
             {
@@ -3877,6 +3877,7 @@ namespace Sampoerna.EMS.BLL
                     InvMovementAllList =
                         Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.AllUsageList)
                 };
+                totalUsage = totalUsage + mvt201 - mvt201Asigned;
                 rc.TotalUsageTisToTis = totalUsage;
             }
             else
@@ -3891,6 +3892,12 @@ namespace Sampoerna.EMS.BLL
                     InvMovementAllList =
                         Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.AllUsageList)
                 };
+
+                if (!input.IsTisToTis)
+                {
+                    totalUsage = totalUsage + mvt201 - mvt201Asigned;
+                }
+                
                 rc.TotalUsage = totalUsage;
             }
 
