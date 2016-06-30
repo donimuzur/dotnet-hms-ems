@@ -79,6 +79,7 @@
     <Compile Include="Business\Pbck1ProdConverter.cs" />
     <Compile Include="Business\Pbck1ProdPlan.cs" />
     <Compile Include="Business\Plant.cs" />
+    <Compile Include="Business\SchedulerConfigJson.cs" />
     <Compile Include="Business\SchedulerSetting.cs" />
     <Compile Include="CHANGES_HISTORY.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>

@@ -61,7 +61,7 @@
                                                             }
                                                             else
                                                             {
-                                                                 @Html.TextBoxFor(model => model.DailyMinutes, new { @class = "form-control btn-grey", @disabled="disabled" })
+                                                                @Html.TextBoxFor(model => model.DailyMinutes, new { @class = "form-control btn-grey", @disabled="disabled" })
                                                             }
                                                            
                                                         </div>
@@ -109,11 +109,396 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            
                                         </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingOne">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            Scheduler On / Off
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">Poa</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.POA, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.POA, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-4">Poa Map</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.POAMAP, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.POAMAP, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-4">Brand Registration</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.BRANDREG, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.BRANDREG, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-4">CK5</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.CK5, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.CK5, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-4">Inventory Movement</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.InvMovement, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.InvMovement, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-4">BOM Map</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.BOMMAP, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.BOMMAP, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-4">Block Stock</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.BLOCKSTOCK, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.BLOCKSTOCK, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-4">Zaap Shift Report</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.PRDOUTPUT, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.PRDOUTPUT, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-4">CK1</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.CK1, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.CK1, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-4">Payment CK1</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.PAYMENT, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.PAYMENT, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-4">User (IMDL)</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.USER, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.USER, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-4">Company (T001)</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.COY, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.COY, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-4">T001K</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.T001K, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.T001K, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-4">Uom</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.UOM, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.UOM, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-4">NPPBKC</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.NPPBKC, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.NPPBKC, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-4">KPPBC</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.KPPBC, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.KPPBC, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-4">Vendor</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.VENDOR, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.VENDOR, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-4">Market</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.MARKET, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.MARKET, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-4">Product Type</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.PRODTYP, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.PRODTYP, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-4">Product Code</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.PCODE, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.PCODE, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-4">Series</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.SERIES, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.SERIES, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-4">Plant</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.T001W, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.T001W, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-4">Good Types</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.GOODTYP, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.GOODTYP, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <label class="col-md-4">Material</label>
+                                                    <div class="col-md-2">
+                                                        @if (Model.IsNotViewer)
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.MATERIAL, new { @class = "" })
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBoxFor(model => model.ConfigJson.IsRead.MATERIAL, new { @class = " btn-grey", @disabled = "disabled" })
+                                                        }
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
             </div>

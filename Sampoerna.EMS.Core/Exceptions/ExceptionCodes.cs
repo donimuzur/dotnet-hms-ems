@@ -160,6 +160,9 @@ namespace Sampoerna.EMS.Core.Exceptions
 
             [Description("Convertion Material Uom (Gram) in Material Master Zero Divided")]
             ConvertedUomLack1ZeroDivided,
+
+            [Description("The scheduler json config failed to update.")]
+            SchedulerSetingJsonError,
         }
 
         /// <summary>

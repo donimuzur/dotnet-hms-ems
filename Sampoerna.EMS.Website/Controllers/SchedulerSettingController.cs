@@ -23,15 +23,18 @@ namespace Sampoerna.EMS.Website.Controllers
             _schedulerSettingBll = schedulerBll;
 
             var fileName = ConfigurationManager.AppSettings.Get("SchedulerPath");
+            var fileConfigjson = ConfigurationManager.AppSettings.Get("SchedulerConfigJson");
             _schedulerSettingBll.SetXmlFile(fileName);
+            _schedulerSettingBll.SetConfigJsonFile(fileConfigjson);
         }
 
         public ActionResult Index()
         {
 
             var data = _schedulerSettingBll.GetMinutesCron();
-
+            
             var model = Mapper.Map<SchedulerSettingModel>(data);
+            model.ConfigJson = _schedulerSettingBll.GetConfigJson();
             model.MainMenu = Enums.MenuList.Settings;
             model.CurrentMenu = PageInfo;
             model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;

@@ -7,8 +7,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Converters;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
+using Newtonsoft.Json;
 
 namespace Sampoerna.EMS.XMLReader
 {
@@ -16,21 +19,26 @@ namespace Sampoerna.EMS.XMLReader
     {
         private IXmlDataReader reader = null;
         private readonly string inboundPath = ConfigurationManager.AppSettings["XmlInboundPath"];
+        private readonly string schedulerjsonPath = ConfigurationManager.AppSettings["SchedulerConfigJson"];
+        private SchedulerConfigJson configjson = new SchedulerConfigJson();
         private string[] xmlfiles = null;
         public List<MovedFileOutput> filesMoved;
         public Service()
         {
-
+            
             xmlfiles = new DirectoryInfo(inboundPath).GetFiles().OrderBy(x => x.LastWriteTime).Select(x => x.FullName).ToArray();
+            
+
             
             filesMoved = new List<MovedFileOutput>();
         }
 
         private IXmlDataReader XmlReaderFactoryDaily(string xmlfile)
         {
-            if (xmlfile.Contains("POA"))
+            configjson = (SchedulerConfigJson)JsonConvert.DeserializeObject(File.ReadAllText(schedulerjsonPath), typeof(SchedulerConfigJson));
+            if (xmlfile.Contains("POA") && configjson.IsRead.POA)
             {
-                if (xmlfile.Contains("POAMAP"))
+                if (xmlfile.Contains("POAMAP") && configjson.IsRead.POAMAP)
                 {
                     return new XmlPoaMapDataMapper(xmlfile);
                 }
@@ -39,39 +47,39 @@ namespace Sampoerna.EMS.XMLReader
                 
 
             }
-            else if (xmlfile.Contains("BRANDREG"))
+            else if (xmlfile.Contains("BRANDREG") && configjson.IsRead.BRANDREG)
             {
                 return new XmlBrandDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("CK5"))
+            else if (xmlfile.Contains("CK5") && configjson.IsRead.CK5)
             {
                 return new XmlCk5DataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("InvMovement"))
+            else if (xmlfile.Contains("InvMovement") && configjson.IsRead.InvMovement)
             {
                 return new XmlMovementDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("BOMMAP"))
+            else if (xmlfile.Contains("BOMMAP") && configjson.IsRead.BOMMAP)
             {
                 return new XmlBOMDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("BLOCKSTOCK"))
+            else if (xmlfile.Contains("BLOCKSTOCK") && configjson.IsRead.BLOCKSTOCK)
             {
                 return new XmlBlockStockDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("PRDOUTPUT"))
+            else if (xmlfile.Contains("PRDOUTPUT") && configjson.IsRead.PRDOUTPUT)
             {
                 return new XmlProdOutputDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("CK1"))
+            else if (xmlfile.Contains("CK1") && configjson.IsRead.CK1)
             {
                 return new XmlCK1DataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("PAYMENT"))
+            else if (xmlfile.Contains("PAYMENT") && configjson.IsRead.PAYMENT)
             {
                 return new XmlPaymentDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("USER"))
+            else if (xmlfile.Contains("USER") && configjson.IsRead.USER)
             {
                 return new XmlUserDataMapper(xmlfile);
             }
@@ -80,56 +88,57 @@ namespace Sampoerna.EMS.XMLReader
         }
         private IXmlDataReader XmlReaderFactoryMonthly(string xmlfile)
         {
-            if (xmlfile.Contains("COY"))
+            configjson = (SchedulerConfigJson)JsonConvert.DeserializeObject(File.ReadAllText(schedulerjsonPath), typeof(SchedulerConfigJson));
+            if (xmlfile.Contains("COY") && configjson.IsRead.COY)
             {
                 return new XmlCompanyDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("PLANTV"))
+            else if (xmlfile.Contains("PLANTV") && configjson.IsRead.T001K)
             {
                 return new XmlT001KDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("UOM"))
+            else if (xmlfile.Contains("UOM") && configjson.IsRead.UOM)
             {
                 return new XmlUoMDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("NPPBKC"))
+            else if (xmlfile.Contains("NPPBKC") && configjson.IsRead.NPPBKC)
             {
                 return new XmlNPPBKCDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("KPPBC"))
+            else if (xmlfile.Contains("KPPBC") && configjson.IsRead.KPPBC)
             {
                 return new XmlKPPBCDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("VENDOR"))
+            else if (xmlfile.Contains("VENDOR") && configjson.IsRead.VENDOR)
             {
                 return new XmlVendorDataMapper(xmlfile);
             }
 
-            else if (xmlfile.Contains("MARKET"))
+            else if (xmlfile.Contains("MARKET") && configjson.IsRead.MARKET)
             {
                 return new XmlMarketDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("PRODTYP"))
+            else if (xmlfile.Contains("PRODTYP") && configjson.IsRead.PRODTYP)
             {
                 return new XmlProdTypeDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("PCODE"))
+            else if (xmlfile.Contains("PCODE") && configjson.IsRead.PCODE)
             {
                 return new XmlPCodeDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("SERIES"))
+            else if (xmlfile.Contains("SERIES") && configjson.IsRead.SERIES)
             {
                 return new XmlSeriesDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("PLANT-"))
+            else if (xmlfile.Contains("PLANT-") && configjson.IsRead.T001W)
             {
                 return new XmlPlantDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("GOODTYP"))
+            else if (xmlfile.Contains("GOODTYP") && configjson.IsRead.GOODTYP)
             {
                 return new XmlGoodsTypeDataMapper(xmlfile);
             }
-            else if (xmlfile.Contains("MATERIAL"))
+            else if (xmlfile.Contains("MATERIAL") && configjson.IsRead.MATERIAL)
             {
                 return new XmlMaterialDataMapper(xmlfile);
             }

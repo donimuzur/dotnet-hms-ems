@@ -25,7 +25,7 @@ namespace Sampoerna.EMS.XMLReader
         {
 
             Service svc = new Service();
-            svc.Run(true);
+            svc.Run(false);
             /*XmlCK5DataWriter rt= new XmlCK5DataWriter();
              var ck5 = new CK5XmlDto();
              ck5.REGISTRATION_NUMBER = "8100000011";
