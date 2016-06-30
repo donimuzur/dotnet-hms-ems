@@ -27,7 +27,7 @@ namespace Sampoerna.EMS.XMLReader
         {
             
             xmlfiles = new DirectoryInfo(inboundPath).GetFiles().OrderBy(x => x.LastWriteTime).Select(x => x.FullName).ToArray();
-            configjson = (SchedulerConfigJson)JsonConvert.DeserializeObject(File.ReadAllText(schedulerjsonPath), typeof(SchedulerConfigJson));
+            
 
             
             filesMoved = new List<MovedFileOutput>();
@@ -35,6 +35,7 @@ namespace Sampoerna.EMS.XMLReader
 
         private IXmlDataReader XmlReaderFactoryDaily(string xmlfile)
         {
+            configjson = (SchedulerConfigJson)JsonConvert.DeserializeObject(File.ReadAllText(schedulerjsonPath), typeof(SchedulerConfigJson));
             if (xmlfile.Contains("POA") && configjson.IsRead.POA)
             {
                 if (xmlfile.Contains("POAMAP") && configjson.IsRead.POAMAP)
@@ -87,6 +88,7 @@ namespace Sampoerna.EMS.XMLReader
         }
         private IXmlDataReader XmlReaderFactoryMonthly(string xmlfile)
         {
+            configjson = (SchedulerConfigJson)JsonConvert.DeserializeObject(File.ReadAllText(schedulerjsonPath), typeof(SchedulerConfigJson));
             if (xmlfile.Contains("COY") && configjson.IsRead.COY)
             {
                 return new XmlCompanyDataMapper(xmlfile);
