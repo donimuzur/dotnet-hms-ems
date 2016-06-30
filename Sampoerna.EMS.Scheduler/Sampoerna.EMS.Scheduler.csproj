@@ -109,6 +109,9 @@
     <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="quartzjobs.config" />
+    <None Include="schedulerconfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ProjectInstaller.resx">

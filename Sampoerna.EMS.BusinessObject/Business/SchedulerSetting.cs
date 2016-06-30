@@ -11,5 +11,7 @@ namespace Sampoerna.EMS.BusinessObject.Business
         public int DailyMinutes { get; set; }
 
         public int MonthlyMinutes { get; set; }
+
+        public SchedulerConfigJson ConfigJson { get; set; }
     }
 }
