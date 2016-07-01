@@ -1443,7 +1443,7 @@ namespace Sampoerna.EMS.BLL
             var groupItem = Mapper.Map<List<Ck4cGroupReportItemDto>>(list);
 
             var groupList = groupItem
-                .GroupBy(x => new { x.Ck4cItemId, x.ProdQty, x.ProdCode, x.ProdType, x.Merk, x.Hje, x.No, x.NoProd, x.ProdDate, x.Isi, x.Comment, x.CollumNo })
+                .GroupBy(x => new { x.Ck4cItemId, x.ProdQty, x.ProdCode, x.ProdType, x.Merk, x.Hje, x.No, x.NoProd, x.ProdDate, x.Isi, x.CollumNo })
                 .Select(p => new Ck4cGroupReportItemDto()
                 {
                     Ck4cItemId = p.FirstOrDefault().Ck4cItemId,
@@ -1456,7 +1456,7 @@ namespace Sampoerna.EMS.BLL
                     NoProd = p.FirstOrDefault().NoProd,
                     ProdDate = p.FirstOrDefault().ProdDate,
                     Isi = p.FirstOrDefault().Isi,
-                    Comment = p.FirstOrDefault().Comment,
+                    Comment = p.LastOrDefault().Comment,
                     CollumNo = p.FirstOrDefault().CollumNo,
                     SumBtg = p.Sum(c => c.SumBtg),
                     BtgGr = p.Sum(c => c.BtgGr),
