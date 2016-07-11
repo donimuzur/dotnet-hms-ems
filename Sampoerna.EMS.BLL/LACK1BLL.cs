@@ -3805,7 +3805,7 @@ namespace Sampoerna.EMS.BLL
 
             //original by irman
             //var stoReceiverNumberList = rc.IncomeList.Where(c => c.Ck5Type != Enums.CK5Type.Manual).Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
-            var stoReceiverNumberList = rc.AllCk5List.Where(c => c.Ck5Type != Enums.CK5Type.Manual).Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
+            var stoReceiverNumberList = rc.AllCk5List.Where(c => c.Ck5Type != Enums.CK5Type.Manual && c.Ck5Type != Enums.CK5Type.Return).Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
 
             var getInventoryMovementByParamOutput = GetInventoryMovementByParam(new InvMovementGetUsageByParamInput()
             {
