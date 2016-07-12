@@ -207,11 +207,18 @@ namespace Sampoerna.EMS.BLL
 
             if (input.FormType != Enums.FormType.CK5)
             {
+                //var t001Data =
+                //    _t001KReporRepository.Get(
+                //        c =>
+                //            (c.T001W.NPPBKC_ID == input.NppbkcId || c.T001W.NPPBKC_IMPORT_ID == input.NppbkcId) && c.T001W.IS_MAIN_PLANT.HasValue &&
+                //            c.T001W.IS_MAIN_PLANT.Value, null, "T001, T001W, T001W.ZAIDM_EX_NPPBKC").FirstOrDefault();
+                //2016-07-12
+                ////http://tp.voxteneo.co.id/entity/8347
                 var t001Data =
-                    _t001KReporRepository.Get(
+                        _t001KReporRepository.Get(
                         c =>
-                            (c.T001W.NPPBKC_ID == input.NppbkcId || c.T001W.NPPBKC_IMPORT_ID == input.NppbkcId) && c.T001W.IS_MAIN_PLANT.HasValue &&
-                            c.T001W.IS_MAIN_PLANT.Value, null, "T001, T001W, T001W.ZAIDM_EX_NPPBKC").FirstOrDefault();
+                            (c.T001W.NPPBKC_ID == input.NppbkcId || c.T001W.NPPBKC_IMPORT_ID == input.NppbkcId), null,
+                        "T001, T001W, T001W.ZAIDM_EX_NPPBKC").FirstOrDefault();
 
                 if (t001Data == null || t001Data.T001 == null)
                 {
