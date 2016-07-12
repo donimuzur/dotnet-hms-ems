@@ -75,6 +75,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.CK5_TYPE, opt => opt.MapFrom(src => src.CK5.CK5_TYPE))
                 .ForMember(dest => dest.FLAG_FOR_LACK1, opt => opt.MapFrom(src => src.CK5.FLAG_FOR_LACK1.HasValue && src.CK5.FLAG_FOR_LACK1.Value))
                 .ForMember(dest => dest.PACKAGE_UOM_DESC, opt => opt.MapFrom(src => src.CK5 != null && src.CK5.UOM != null ? src.CK5.UOM.UOM_DESC : string.Empty))
+                .ForMember(dest => dest.IS_REDUCE_TRIAL, opt => opt.MapFrom(src=> src.CK5 != null && (src.CK5.REDUCE_TRIAL.HasValue && src.CK5.REDUCE_TRIAL.Value)))
                 ;
 
             Mapper.CreateMap<LACK1_PBCK1_MAPPING, Lack1Pbck1MappingDto>().IgnoreAllNonExisting()
