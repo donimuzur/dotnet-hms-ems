@@ -250,6 +250,7 @@ namespace Sampoerna.EMS.BLL
                 for (var i = 0; i < toAddRange.Count; i++)
                 {
                     toAddRange[i].IsTisToTisData = false;
+                    
                 }
                 productionDetail.AddRange(toAddRange);
             }
@@ -264,7 +265,13 @@ namespace Sampoerna.EMS.BLL
                     {
                         
                         toAddRange[i].IsTisToTisData = true;
-                        if (!string.IsNullOrEmpty(toAddRange[i].UomId)) productionDetail.Add(toAddRange[i]);
+                        if (string.IsNullOrEmpty(toAddRange[i].UomId))
+                        {
+                            toAddRange[i].UomId = "G";
+                            toAddRange[i].UomDesc = "Gram";
+                            
+                        }
+                        productionDetail.Add(toAddRange[i]);
                     }
                     //productionDetail.AddRange(toAddRange);
                 }
@@ -421,7 +428,13 @@ namespace Sampoerna.EMS.BLL
                         for (var i = 0; i < toAddRange.Count; i++)
                         {
                             toAddRange[i].IsTisToTisData = true;
-                            if (!string.IsNullOrEmpty(toAddRange[i].UomId)) productionDetail.Add(toAddRange[i]);
+                            if (string.IsNullOrEmpty(toAddRange[i].UomId))
+                            {
+                                toAddRange[i].UomId = "G";
+                                toAddRange[i].UomDesc = "Gram";
+
+                            }
+                            productionDetail.Add(toAddRange[i]);
                         }
                        // productionDetail.AddRange(toAddRange);
                     }
@@ -1591,7 +1604,7 @@ namespace Sampoerna.EMS.BLL
             dtToReturn.Lack1IncomeDetail =
                 dtToReturn.AllLack1IncomeDetail.Where(
                     c =>
-                        (c.CK5_TYPE != Enums.CK5Type.Waste && c.CK5_TYPE != Enums.CK5Type.Return)).ToList();
+                        ((c.CK5_TYPE != Enums.CK5Type.Waste ) && c.CK5_TYPE != Enums.CK5Type.Return)).ToList();
 
             if (string.IsNullOrEmpty(dtToReturn.ExGoodsTypeDesc)) return dtToReturn;
 
@@ -2042,7 +2055,7 @@ namespace Sampoerna.EMS.BLL
                 rc.IncomeList.Where(c => c.Ck5Type == Enums.CK5Type.Manual && c.IsCk5ReduceTrial).ToList();
             if (ck5ReduceTrial.Count > 0)
             {
-                rc.TotalUsage = rc.TotalUsage + ck5ReduceTrial.Sum(d => d.Amount);
+                rc.TotalUsageTisToTis = rc.TotalUsageTisToTis + ck5ReduceTrial.Sum(d => d.Amount);
             }
 
             rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - (rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0)) - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
