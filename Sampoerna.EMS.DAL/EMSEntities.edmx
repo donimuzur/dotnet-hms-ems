@@ -520,7 +520,7 @@
           </Key>
           <Property Name="LACK1_PRODUCTION_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="LACK1_ID" Type="int" />
-          <Property Name="AMOUNT" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="AMOUNT" Type="decimal" Precision="24" Scale="6" Nullable="false" />
           <Property Name="PROD_CODE" Type="nvarchar" MaxLength="2" Nullable="false" />
           <Property Name="PRODUCT_TYPE" Type="nvarchar" MaxLength="35" Nullable="false" />
           <Property Name="PRODUCT_ALIAS" Type="nvarchar" MaxLength="35" Nullable="false" />
@@ -7584,7 +7584,7 @@
           </Key>
           <Property Name="LACK1_PRODUCTION_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="LACK1_ID" Type="Int32" />
-          <Property Name="AMOUNT" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="AMOUNT" Type="Decimal" Nullable="false" Precision="24" Scale="6" />
           <Property Name="PROD_CODE" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="PRODUCT_TYPE" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="PRODUCT_ALIAS" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
