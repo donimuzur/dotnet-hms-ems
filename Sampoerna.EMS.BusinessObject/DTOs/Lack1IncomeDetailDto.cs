@@ -14,5 +14,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string PACKAGE_UOM_ID { get; set; }
         public string PACKAGE_UOM_DESC { get; set; }
         public bool FLAG_FOR_LACK1 { get; set; }
+
+        public bool IS_REDUCE_TRIAL { get; set; }
     }
 }
