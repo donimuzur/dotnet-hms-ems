@@ -946,7 +946,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //    return RetDetails(lack1Data, true);
             //}
 
-            if (CurrentUser.USER_ID == lack1Data.CreateBy &&
+            if ((CurrentUser.USER_ID == lack1Data.CreateBy || CurrentUser.USER_ID == lack1Data.ApprovedByPoa ) &&
                 lack1Data.Status == Enums.DocumentStatus.WaitingForApproval)
             {
                 return RetDetails(lack1Data, false);
