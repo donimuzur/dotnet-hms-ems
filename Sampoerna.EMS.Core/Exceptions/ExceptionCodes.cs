@@ -154,6 +154,9 @@ namespace Sampoerna.EMS.Core.Exceptions
 
             [Description("Log XML File not found")]
             LogXmlNotFound,
+
+            [Description("The scheduler json config failed to update.")]
+            SchedulerSetingJsonError,
         }
 
         /// <summary>

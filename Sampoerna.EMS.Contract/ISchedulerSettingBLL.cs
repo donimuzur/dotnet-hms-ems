@@ -11,6 +11,10 @@ namespace Sampoerna.EMS.Contract
     {
         SchedulerSetting GetMinutesCron();
 
+        SchedulerConfigJson GetConfigJson();
+
+        void SetConfigJsonFile(string fileName);
+
         void SetXmlFile(string fileName);
 
         void Save(SchedulerSetting data);

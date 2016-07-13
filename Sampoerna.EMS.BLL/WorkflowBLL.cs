@@ -605,12 +605,72 @@ namespace Sampoerna.EMS.BLL
             return false;
         }
 
-        public bool IsAllowEditLack1(string createdUser, string currentUserId,Enums.DocumentStatus status)
+        public bool IsAllowEditLack1(string createdUser, string currentUserId,Enums.DocumentStatus status, Enums.UserRole role, string documentNumber)
         {
             if (_poabll.GetUserRole(currentUserId) == Enums.UserRole.Administrator)
             {
                 return true;
             }
+
+            if (status == Enums.DocumentStatus.WaitingGovApproval)
+            {
+                string originalPoa;
+
+                if (createdUser == currentUserId)
+                    return true;
+
+                originalPoa = createdUser;
+
+                if (role == Enums.UserRole.POA)
+                {
+                    //get poa Original that already approve or reject
+                    var workflowHistoryDto =
+                        _workflowHistoryBll.GetDtoApprovedRejectedPoaByDocumentNumber(documentNumber);
+
+                    if (workflowHistoryDto != null)
+                    {
+
+                        if (!string.IsNullOrEmpty(workflowHistoryDto.COMMENT) &&
+                            workflowHistoryDto.COMMENT.Contains(Constans.LabelDelegatedBy)) //approve by delegated
+                        {
+                            //find the original
+                            originalPoa =
+                                workflowHistoryDto.COMMENT.Substring(
+                                    workflowHistoryDto.COMMENT.IndexOf(Constans.LabelDelegatedBy,
+                                        System.StringComparison.Ordinal));
+                            originalPoa = originalPoa.Replace(Constans.LabelDelegatedBy, "");
+                            originalPoa = originalPoa.Replace("]", "");
+                        }
+                        else
+                        {
+                            originalPoa = workflowHistoryDto.ACTION_BY;
+                        }
+                    }
+                }
+
+                //get delegated user
+                var listUser = new List<string>();
+                listUser.Add(originalPoa);
+                var poaDelegate = _poaDelegationServices.GetPoaDelegationToByPoaFromAndDate(originalPoa,
+                    DateTime.Now);
+
+                listUser.AddRange(poaDelegate);
+
+                if (originalPoa != createdUser)
+                {
+                    //get delegate for created user too
+                    poaDelegate = _poaDelegationServices.GetPoaDelegationToByPoaFromAndDate(createdUser,
+                    DateTime.Now);
+
+                    listUser.AddRange(poaDelegate);
+                }
+
+                if (listUser.Contains(currentUserId))
+                    return true;
+
+
+            }
+
             if (createdUser != currentUserId)
                 if (
                     !_poaDelegationServices.IsDelegatedUserByUserAndDate(createdUser, currentUserId,

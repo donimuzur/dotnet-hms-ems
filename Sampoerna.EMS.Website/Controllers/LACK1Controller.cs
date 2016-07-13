@@ -944,7 +944,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //    return RetDetails(lack1Data, true);
             //}
 
-            if (CurrentUser.USER_ID == lack1Data.CreateBy &&
+            if ((CurrentUser.USER_ID == lack1Data.CreateBy || CurrentUser.USER_ID == lack1Data.ApprovedByPoa ) &&
                 lack1Data.Status == Enums.DocumentStatus.WaitingForApproval)
             {
                 return RetDetails(lack1Data, false);
@@ -963,7 +963,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model = InitEditList(model);
             model.IsCreateNew = false;
 
-            if (!IsAllowEditLack1(lack1Data.CreateBy, lack1Data.Status))
+            if (!IsAllowEditLack1(lack1Data.CreateBy, lack1Data.Status, lack1Data.Lack1Number))
             {
                 AddMessageInfo(
                     "Operation not allowed.",
@@ -986,7 +986,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
         }
 
-        private bool IsAllowEditLack1(string userId, Enums.DocumentStatus status)
+        private bool IsAllowEditLack1(string userId, Enums.DocumentStatus status, string docNumber)
         {
             //bool isAllow = CurrentUser.USER_ID == userId;
             //if (!(status == Enums.DocumentStatus.Draft || status == Enums.DocumentStatus.Rejected 
@@ -996,7 +996,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //}
 
             //return isAllow;
-            return _workflowBll.IsAllowEditLack1(userId, CurrentUser.USER_ID, status);
+            return _workflowBll.IsAllowEditLack1(userId, CurrentUser.USER_ID, status, CurrentUser.UserRole, docNumber);
         }
 
         [HttpPost]
@@ -1026,7 +1026,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 //{
                 //    return RedirectToAction("Detail", new { id = model.Lack1Id });
                 //}
-                if (!_workflowBll.IsAllowEditLack1(model.CreateBy, CurrentUser.USER_ID, model.Status))
+                if (!_workflowBll.IsAllowEditLack1(model.CreateBy, CurrentUser.USER_ID, model.Status, CurrentUser.UserRole, model.Lack1Number))
                     return RedirectToAction("Detail", new { id = model.Lack1Id });
 
                 bool isSubmit = model.IsSaveSubmit == "submit";

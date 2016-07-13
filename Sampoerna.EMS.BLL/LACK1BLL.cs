@@ -250,6 +250,7 @@ namespace Sampoerna.EMS.BLL
                 for (var i = 0; i < toAddRange.Count; i++)
                 {
                     toAddRange[i].IsTisToTisData = false;
+                    
                 }
                 productionDetail.AddRange(toAddRange);
             }
@@ -264,7 +265,13 @@ namespace Sampoerna.EMS.BLL
                     {
                         
                         toAddRange[i].IsTisToTisData = true;
-                        if (!string.IsNullOrEmpty(toAddRange[i].UomId)) productionDetail.Add(toAddRange[i]);
+                        if (string.IsNullOrEmpty(toAddRange[i].UomId))
+                        {
+                            toAddRange[i].UomId = "G";
+                            toAddRange[i].UomDesc = "Gram";
+                            
+                        }
+                        productionDetail.Add(toAddRange[i]);
                     }
                     //productionDetail.AddRange(toAddRange);
                 }
@@ -421,7 +428,13 @@ namespace Sampoerna.EMS.BLL
                         for (var i = 0; i < toAddRange.Count; i++)
                         {
                             toAddRange[i].IsTisToTisData = true;
-                            if (!string.IsNullOrEmpty(toAddRange[i].UomId)) productionDetail.Add(toAddRange[i]);
+                            if (string.IsNullOrEmpty(toAddRange[i].UomId))
+                            {
+                                toAddRange[i].UomId = "G";
+                                toAddRange[i].UomDesc = "Gram";
+
+                            }
+                            productionDetail.Add(toAddRange[i]);
                         }
                        // productionDetail.AddRange(toAddRange);
                     }
@@ -612,6 +625,8 @@ namespace Sampoerna.EMS.BLL
                 };
             }
 
+            rc.CloseBalance = GetClosingBalanceSap(rc);
+
             if (rc.AllLack1IncomeDetail == null || rc.AllLack1IncomeDetail.Count <= 0) return rc;
 
             //process for incomedetail remark
@@ -635,7 +650,7 @@ namespace Sampoerna.EMS.BLL
                         (c.CK5_TYPE != Enums.CK5Type.Waste && c.CK5_TYPE != Enums.CK5Type.Return)).ToList();
 
 
-            rc.CloseBalance = GetClosingBalanceSap(rc);
+            
 
             return rc;
         }
@@ -1575,23 +1590,7 @@ namespace Sampoerna.EMS.BLL
                 }
             }
 
-            if (dtToReturn.AllLack1IncomeDetail == null || dtToReturn.AllLack1IncomeDetail.Count <= 0)
-                return dtToReturn;
-            
-            dtToReturn.Ck5RemarkData = new Lack1RemarkDto()
-            {
-                Ck5ReturnData = dtToReturn.AllLack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Return).ToList(),
-                /*story : http://192.168.62.216/TargetProcess/entity/1637 
-                 * Ck5 Manual Trial don't include in remark column, 
-                 * see previous function about getting data from ck5 that only include ck5 manual trial if REDUCE_TRIAL value is TRUE
-                 */
-                Ck5WasteData = dtToReturn.AllLack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Waste).ToList()
-            };
-            //set Lack1IncomeDetail
-            dtToReturn.Lack1IncomeDetail =
-                dtToReturn.AllLack1IncomeDetail.Where(
-                    c =>
-                        (c.CK5_TYPE != Enums.CK5Type.Waste && c.CK5_TYPE != Enums.CK5Type.Return)).ToList();
+            dtToReturn.CloseBalance = GetClosingBalanceSap(dtToReturn);
 
             if (string.IsNullOrEmpty(dtToReturn.ExGoodsTypeDesc)) return dtToReturn;
 
@@ -1610,7 +1609,27 @@ namespace Sampoerna.EMS.BLL
                 }
             }
 
-            dtToReturn.CloseBalance = GetClosingBalanceSap(dtToReturn);
+            if (dtToReturn.AllLack1IncomeDetail == null || dtToReturn.AllLack1IncomeDetail.Count <= 0)
+                return dtToReturn;
+            
+            dtToReturn.Ck5RemarkData = new Lack1RemarkDto()
+            {
+                Ck5ReturnData = dtToReturn.AllLack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Return).ToList(),
+                /*story : http://192.168.62.216/TargetProcess/entity/1637 
+                 * Ck5 Manual Trial don't include in remark column, 
+                 * see previous function about getting data from ck5 that only include ck5 manual trial if REDUCE_TRIAL value is TRUE
+                 */
+                Ck5WasteData = dtToReturn.AllLack1IncomeDetail.Where(c => c.CK5_TYPE == Enums.CK5Type.Waste).ToList()
+            };
+            //set Lack1IncomeDetail
+            dtToReturn.Lack1IncomeDetail =
+                dtToReturn.AllLack1IncomeDetail.Where(
+                    c =>
+                        ((c.CK5_TYPE != Enums.CK5Type.Waste ) && c.CK5_TYPE != Enums.CK5Type.Return)).ToList();
+
+            
+
+            
 
             return dtToReturn;
         }
@@ -2037,13 +2056,8 @@ namespace Sampoerna.EMS.BLL
             //rc.DocumentNoted = string.Join(Environment.NewLine, noteTemp).Replace(Environment.NewLine, "<br />");
             rc.Noted = input.Noted;
 
-            //recalculate total usage from income list ck5 type manual and reduce trial true
-            var ck5ReduceTrial =
-                rc.IncomeList.Where(c => c.Ck5Type == Enums.CK5Type.Manual && c.IsCk5ReduceTrial).ToList();
-            if (ck5ReduceTrial.Count > 0)
-            {
-                rc.TotalUsage = rc.TotalUsage + ck5ReduceTrial.Sum(d => d.Amount);
-            }
+           
+            
 
             rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - (rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0)) - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
             rc.WasteAmountUom = rc.Lack1UomId;
@@ -2096,10 +2110,10 @@ namespace Sampoerna.EMS.BLL
                 prevInventoryMovementByParamInput.PeriodMonth = input.PeriodMonth - 1;
             }
 
-            var stoReceiverNumberList = rc.AllCk5List.Select(d => d.DnNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
+            //var stoReceiverNumberList = rc.AllCk5List.Select(d => d.DnNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
 
-            var prevInventoryMovementByParam = GetInventoryMovementByParam(prevInventoryMovementByParamInput,
-                stoReceiverNumberList, bkcUomId);
+            //var prevInventoryMovementByParam = GetInventoryMovementByParam(prevInventoryMovementByParamInput,
+            //    stoReceiverNumberList, bkcUomId);
 
             //set production List
             var productionTraceList = new List<Lack1GeneratedProductionDomesticAlcoholDto>();
@@ -2503,6 +2517,15 @@ namespace Sampoerna.EMS.BLL
                 var outGenerateLack1InventoryMovementTisToTis = SetGenerateLack1InventoryMovement(rc, input, plantIdList, true, out invMovementTisToTisOutput, bkcUomId);
                 if (!outGenerateLack1InventoryMovementTisToTis.Success) return outGenerateLack1InventoryMovementTisToTis;
 
+                //recalculate total usage from income list ck5 type manual and reduce trial true
+                var ck5ReduceTrial =
+                rc.IncomeList.Where(c => c.Ck5Type == Enums.CK5Type.Manual && c.IsCk5ReduceTrial).ToList();
+                if (ck5ReduceTrial.Count > 0)
+                {
+                    rc.TotalUsageTisToTis = rc.TotalUsageTisToTis + ck5ReduceTrial.Sum(d => d.Amount);
+                    
+                }
+
                 //set Production tis to tis
                 //tis to tis, get from PBCK-1 PROD CONVERTER
                 var prodDataOut = SetProductionListForTisToTis(rc, input);
@@ -2568,12 +2591,12 @@ namespace Sampoerna.EMS.BLL
             InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput, string bkcUomId)
         {
             var groupUsageProporsional = invMovementOutput.UsageProportionalList
-                    .GroupBy(x => new { x.Order, x.Batch })
+                    .GroupBy(x => new { x.Order })
                     .Select(p => new InvMovementUsageProportional()
                     {
 
                         Order = p.Key.Order,
-                        Batch = p.Key.Batch,
+                        //Batch = p.Key.Batch,
                         Qty = p.Sum(x => x.Qty),
                         TotalQtyPerMaterialId = p.FirstOrDefault().TotalQtyPerMaterialId
                         //Order = p.Order,
@@ -2753,6 +2776,7 @@ namespace Sampoerna.EMS.BLL
                     ProductType = item.PRODUCT_TYPE,
                     ProductAlias = item.PRODUCT_ALIAS,
                     Amount = item.ProportionalOrder * item.PROD_QTY,//Convert.ToDecimal(ROUNDUP(((double)item.ProportionalOrder), 3) * (double)item.PROD_QTY),//Math.Round(item.PROD_QTY * item.ProportionalOrder,0,MidpointRounding.ToEven),
+                    //Amount = item.PROD_QTY,
                     UomId = item.UOM,
                     UomDesc = item.UOM_DESC,
                     ProductionDate = item.PRODUCTION_DATE
@@ -2763,15 +2787,16 @@ namespace Sampoerna.EMS.BLL
 
                 var rec = groupUsageProporsional.ToList().FirstOrDefault(c =>
                     c.Order == item.ORDR
-                    && c.Batch == item.BATCH
+                    //&& c.Batch == item.BATCH
                     );
                 
                 if (rec != null)
                 {
                     //calculate proporsional
-                    itemToInsert.Amount =
-                        Math.Round(((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount ), 3);
-                            //((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount * itemToInsert.ProportionalOrder), 3);
+                    //itemToInsert.Amount = Math.Round((rec.Qty/rec.TotalQtyPerMaterialId)*itemToInsert.Amount);
+                    itemToInsert.Amount = (rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount;
+                    //Math.Round(((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount ), 3);
+                    //((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount * itemToInsert.ProportionalOrder), 3);
                 }
                 else
                 {
@@ -2780,13 +2805,13 @@ namespace Sampoerna.EMS.BLL
                         var chk =
                             prevInventoryMovementByParam.UsageProportionalList.FirstOrDefault(
                                c=> c.Order == item.ORDR 
-                                   && c.Batch == item.BATCH
+                                   //&& c.Batch == item.BATCH
                                    );
                         if (chk != null)
                         {
                             //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
-                            itemToInsert.Amount =
-                        Math.Round(((chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount ), 3);
+                            //itemToInsert.Amount = Math.Round((chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount);
+                            itemToInsert.Amount = (chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount;
                             //((chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount * itemToInsert.ProportionalOrder), 3);
                         }
                     }
@@ -3581,8 +3606,9 @@ namespace Sampoerna.EMS.BLL
                 ProductType = g.Key.PRODUCT_TYPE,
                 UomId = g.Key.UOM_ID,
                 UomDesc = g.Key.UOM_DESC,
-                //TotalAmount = Math.Round(g.Sum(p => p.AMOUNT),0)
-                TotalAmount = Math.Ceiling(g.Sum(p => p.AMOUNT))
+                TotalAmount = Math.Round(g.Sum(p => p.AMOUNT))
+                //TotalAmount = Math.Ceiling(g.Sum(p => p.AMOUNT))
+                //TotalAmount = g.Sum(p => p.AMOUNT)
             });
 
             return groupedData.ToList();
@@ -3803,7 +3829,7 @@ namespace Sampoerna.EMS.BLL
 
             //original by irman
             //var stoReceiverNumberList = rc.IncomeList.Where(c => c.Ck5Type != Enums.CK5Type.Manual).Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
-            var stoReceiverNumberList = rc.AllCk5List.Where(c => c.Ck5Type != Enums.CK5Type.Manual).Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
+            var stoReceiverNumberList = rc.AllCk5List.Where(c => c.Ck5Type != Enums.CK5Type.Manual && c.Ck5Type != Enums.CK5Type.Return).Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
 
             var getInventoryMovementByParamOutput = GetInventoryMovementByParam(new InvMovementGetUsageByParamInput()
             {
@@ -3861,7 +3887,7 @@ namespace Sampoerna.EMS.BLL
                 mvt201Asigned = (-1) * getInventoryMovementByParamOutput.Mvt201Assigned.Sum(d => d.ConvertedQty);
             }
 
-            totalUsage = totalUsage + mvt201 - mvt201Asigned;
+            
 
             if (isForTisToTis)
             {
@@ -3875,6 +3901,7 @@ namespace Sampoerna.EMS.BLL
                     InvMovementAllList =
                         Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.AllUsageList)
                 };
+                totalUsage = totalUsage + mvt201 - mvt201Asigned;
                 rc.TotalUsageTisToTis = totalUsage;
             }
             else
@@ -3889,6 +3916,12 @@ namespace Sampoerna.EMS.BLL
                     InvMovementAllList =
                         Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.AllUsageList)
                 };
+
+                if (!input.IsTisToTis)
+                {
+                    totalUsage = totalUsage + mvt201 - mvt201Asigned;
+                }
+                
                 rc.TotalUsage = totalUsage;
             }
 
@@ -4068,7 +4101,11 @@ namespace Sampoerna.EMS.BLL
                           TotalQtyPerMaterialId = y.TotalQty,
                           Order = x.Ordr
                       }).ToList();
-
+            var rc1 = rc;
+            foreach (var invMovementUsageProportional in rc1)
+            {
+                invMovementUsageProportional.Batch = invMovementUsageProportional.Batch.Substring(0, 2);
+            }
             return rc;
         }
 

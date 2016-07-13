@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Newtonsoft.Json;
 using Quartz;
 using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.Outputs;
@@ -25,6 +26,7 @@ namespace Sampoerna.EMS.BLL
 
         private XElement _xmlData = null;
         private string _xmlName;
+        private string _configjsonFile;
 
 
         public SchedulerSettingBLL(IUnitOfWork uow, ILogger logger)
@@ -37,6 +39,11 @@ namespace Sampoerna.EMS.BLL
         {
             _xmlName = fileName;
             _xmlData = ReadXMLFile();
+        }
+
+        public void SetConfigJsonFile(string fileName)
+        {
+            _configjsonFile = fileName;
         }
 
         public SchedulerSetting GetMinutesCron()
@@ -123,6 +130,20 @@ namespace Sampoerna.EMS.BLL
                     throw new BLLException(ExceptionCodes.BLLExceptions.SchedulerSetingCronNotFound);
                 }
             }
+
+            
+
+            try
+            {
+                var jsonString = JsonConvert.SerializeObject(data.ConfigJson);
+                File.WriteAllText(_configjsonFile, jsonString);
+            }
+            catch (Exception ex)
+            {
+
+                throw new BLLException(ExceptionCodes.BLLExceptions.SchedulerSetingJsonError,ex.Message);
+            }
+            
         }
 
         private string GetElementValue(XElement element)
@@ -173,6 +194,11 @@ namespace Sampoerna.EMS.BLL
             return int.Parse(minuteString);
         }
 
-        
+        public SchedulerConfigJson GetConfigJson()
+        {
+            return (SchedulerConfigJson)JsonConvert.DeserializeObject(File.ReadAllText(_configjsonFile), typeof(SchedulerConfigJson));
+        }
+
+
     }
 }
