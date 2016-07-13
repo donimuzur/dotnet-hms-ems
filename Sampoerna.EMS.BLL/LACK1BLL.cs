@@ -1596,6 +1596,23 @@ namespace Sampoerna.EMS.BLL
 
             dtToReturn.CloseBalance = GetClosingBalanceSap(dtToReturn);
 
+            if (string.IsNullOrEmpty(dtToReturn.ExGoodsTypeDesc)) return dtToReturn;
+
+            if (dtToReturn.ExGoodsTypeDesc.ToLower().Contains("alcohol") ||
+                dtToReturn.ExGoodsTypeDesc.ToLower().Contains("alkohol"))
+            {
+                dtToReturn.IsEtilAlcohol = true;
+            }
+
+            if (!string.IsNullOrEmpty(dbData.APPROVED_BY_POA))
+            {
+                var poa = _poaBll.GetDetailsById(dbData.APPROVED_BY_POA);
+                if (poa != null)
+                {
+                    dtToReturn.PoaPrintedName = poa.PRINTED_NAME;
+                }
+            }
+
             if (dtToReturn.AllLack1IncomeDetail == null || dtToReturn.AllLack1IncomeDetail.Count <= 0)
                 return dtToReturn;
             
@@ -1614,22 +1631,7 @@ namespace Sampoerna.EMS.BLL
                     c =>
                         ((c.CK5_TYPE != Enums.CK5Type.Waste ) && c.CK5_TYPE != Enums.CK5Type.Return)).ToList();
 
-            if (string.IsNullOrEmpty(dtToReturn.ExGoodsTypeDesc)) return dtToReturn;
-
-            if (dtToReturn.ExGoodsTypeDesc.ToLower().Contains("alcohol") ||
-                dtToReturn.ExGoodsTypeDesc.ToLower().Contains("alkohol"))
-            {
-                dtToReturn.IsEtilAlcohol = true;
-            }
-
-            if (!string.IsNullOrEmpty(dbData.APPROVED_BY_POA))
-            {
-                var poa = _poaBll.GetDetailsById(dbData.APPROVED_BY_POA);
-                if (poa != null)
-                {
-                    dtToReturn.PoaPrintedName = poa.PRINTED_NAME;
-                }
-            }
+            
 
             
 
