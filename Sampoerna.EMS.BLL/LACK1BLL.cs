@@ -629,6 +629,8 @@ namespace Sampoerna.EMS.BLL
                 };
             }
 
+            rc.CloseBalance = GetClosingBalanceSap(rc);
+
             if (rc.AllLack1IncomeDetail == null || rc.AllLack1IncomeDetail.Count <= 0) return rc;
 
             //process for incomedetail remark
@@ -652,7 +654,7 @@ namespace Sampoerna.EMS.BLL
                         (c.CK5_TYPE != Enums.CK5Type.Waste && c.CK5_TYPE != Enums.CK5Type.Return)).ToList();
 
 
-            rc.CloseBalance = GetClosingBalanceSap(rc);
+            
 
             return rc;
         }
