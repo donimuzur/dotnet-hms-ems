@@ -2050,13 +2050,8 @@ namespace Sampoerna.EMS.BLL
             //rc.DocumentNoted = string.Join(Environment.NewLine, noteTemp).Replace(Environment.NewLine, "<br />");
             rc.Noted = input.Noted;
 
-            //recalculate total usage from income list ck5 type manual and reduce trial true
-            var ck5ReduceTrial =
-                rc.IncomeList.Where(c => c.Ck5Type == Enums.CK5Type.Manual && c.IsCk5ReduceTrial).ToList();
-            if (ck5ReduceTrial.Count > 0)
-            {
-                rc.TotalUsageTisToTis = rc.TotalUsageTisToTis + ck5ReduceTrial.Sum(d => d.Amount);
-            }
+           
+            
 
             rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - (rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0)) - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
             rc.WasteAmountUom = rc.Lack1UomId;
@@ -2515,6 +2510,15 @@ namespace Sampoerna.EMS.BLL
                 InvMovementGetForLack1UsageMovementByParamOutput invMovementTisToTisOutput;
                 var outGenerateLack1InventoryMovementTisToTis = SetGenerateLack1InventoryMovement(rc, input, plantIdList, true, out invMovementTisToTisOutput, bkcUomId);
                 if (!outGenerateLack1InventoryMovementTisToTis.Success) return outGenerateLack1InventoryMovementTisToTis;
+
+                //recalculate total usage from income list ck5 type manual and reduce trial true
+                var ck5ReduceTrial =
+                rc.IncomeList.Where(c => c.Ck5Type == Enums.CK5Type.Manual && c.IsCk5ReduceTrial).ToList();
+                if (ck5ReduceTrial.Count > 0)
+                {
+                    rc.TotalUsageTisToTis = rc.TotalUsageTisToTis + ck5ReduceTrial.Sum(d => d.Amount);
+                    
+                }
 
                 //set Production tis to tis
                 //tis to tis, get from PBCK-1 PROD CONVERTER
@@ -3596,8 +3600,9 @@ namespace Sampoerna.EMS.BLL
                 ProductType = g.Key.PRODUCT_TYPE,
                 UomId = g.Key.UOM_ID,
                 UomDesc = g.Key.UOM_DESC,
-                //TotalAmount = Math.Round(g.Sum(p => p.AMOUNT),0)
-                TotalAmount = Math.Ceiling(g.Sum(p => p.AMOUNT))
+                TotalAmount = Math.Round(g.Sum(p => p.AMOUNT))
+                //TotalAmount = Math.Ceiling(g.Sum(p => p.AMOUNT))
+                //TotalAmount = g.Sum(p => p.AMOUNT)
             });
 
             return groupedData.ToList();
