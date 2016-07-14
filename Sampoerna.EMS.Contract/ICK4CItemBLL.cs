@@ -8,5 +8,7 @@ namespace Sampoerna.EMS.Contract
         void DeleteByCk4cId(long ck4cId);
 
         List<Ck4cItem> GetDataByPlantAndFacode(string plant, string facode, string levelPlant);
+
+        List<Ck4cItem> GetDataByParentPlant(string levelPlant);
     }
 }

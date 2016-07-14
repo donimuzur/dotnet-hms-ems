@@ -46,6 +46,7 @@ namespace Sampoerna.EMS.BLL
         private IUserPlantMapBLL _userPlantBll;
         private IDocumentSequenceNumberBLL _documentSequenceNumberBll;
         private ILFA1BLL _lfaBll;
+        private IReversalBLL _reversalBll;
 
         private string includeTables = "MONTH, CK4C_ITEM, CK4C_DECREE_DOC";
 
@@ -78,6 +79,7 @@ namespace Sampoerna.EMS.BLL
             _documentSequenceNumberBll = new DocumentSequenceNumberBLL(_uow, _logger);
             _poaDelegationServices = new PoaDelegationServices(_uow, _logger);
             _lfaBll = new LFA1BLL(_uow, _logger);
+            _reversalBll = new ReversalBLL(_logger, _uow);
         }
 
         public List<Ck4CDto> GetAllByParam(Ck4CDashboardParamInput input)
@@ -1085,6 +1087,14 @@ namespace Sampoerna.EMS.BLL
                 address += "- " + _plantBll.GetT001WById(data).ADDRESS.Trim() + Environment.NewLine;
             }
 
+            //performance
+            var listProdType = _prodTypeBll.GetAll();
+            var listBrand = _brandBll.GetAllBrandsOnly();
+            var listProduction = _productionBll.GetByCompany(dtData.COMPANY_ID);
+            var listReversal = _reversalBll.GetAllReversal();
+            var listWaste = _wasteBll.GetAllWasteObject();
+            var lisCk4cItem = _ck4cItemBll.GetDataByParentPlant(dtData.PLANT_ID);
+
             string prodTypeDistinct = string.Empty;
             string currentProdType = string.Empty;
             List<Ck4cReportItemDto> tempListck4c1 = new List<Ck4cReportItemDto>();
@@ -1092,8 +1102,17 @@ namespace Sampoerna.EMS.BLL
             foreach (var item in addressPlant)
             {
                 Int32 isInt;
-                var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt) && x.EXC_GOOD_TYP == "01").OrderBy(x => x.PROD_CODE);
+                //var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt) && x.EXC_GOOD_TYP == "01").OrderBy(x => x.PROD_CODE);
+                
+                var activeBrand =
+                    listBrand.Where(
+                        x =>
+                            x.WERKS == item && x.IS_DELETED != true && x.STATUS == true &&
+                            Int32.TryParse(x.BRAND_CONTENT, out isInt) && x.EXC_GOOD_TYP == "01")
+                        .OrderBy(x => x.PROD_CODE);
 
+
+                
                 foreach (var data in activeBrand)
                 {
                     if(currentProdType != data.PROD_CODE)
@@ -1104,9 +1123,12 @@ namespace Sampoerna.EMS.BLL
 
                     var ck4cItem = new Ck4cReportItemDto();
 
-                    var unpackedQty = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE, dtData.PLANT_ID).Where(c => c.ProdDate < saldoDate).LastOrDefault();
+                    //var unpackedQty = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE, dtData.PLANT_ID).Where(c => c.ProdDate < saldoDate).LastOrDefault();
+                    var unpackedQty = lisCk4cItem.LastOrDefault(c => c.Werks == item && c.FaCode == data.FA_CODE && c.ProdDate < saldoDate);
 
-                    var oldData = _productionBll.GetOldSaldo(dtData.COMPANY_ID, item, data.FA_CODE, saldoDate).LastOrDefault();
+                    //var oldData = _productionBll.GetOldSaldo(dtData.COMPANY_ID, item, data.FA_CODE, saldoDate).LastOrDefault();
+                    var oldData = GetOldSaldoForReport(listProduction, listReversal, listWaste, item, data.FA_CODE, saldoDate).LastOrDefault();
+
 
                     var oldUnpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
 
@@ -1117,14 +1139,16 @@ namespace Sampoerna.EMS.BLL
                     ck4cItem.NoProd = string.Empty;
                     ck4cItem.ProdDate = string.Empty;
 
-                    var prodType = _prodTypeBll.GetById(data.PROD_CODE);
+                    //var prodType = _prodTypeBll.GetById(data.PROD_CODE);
+                    var prodType = listProdType.FirstOrDefault(c => c.PROD_CODE == data.PROD_CODE);
                     ck4cItem.ProdCode = data.PROD_CODE;
                     ck4cItem.ProdType = prodType.PRODUCT_ALIAS;
 
                     ck4cItem.SumBtg = "Nihil";
                     ck4cItem.BtgGr = "Nihil";
 
-                    var brand = _brandBll.GetById(item, data.FA_CODE);
+                    //var brand = _brandBll.GetById(item, data.FA_CODE);
+                    var brand = listBrand.FirstOrDefault(c => c.WERKS == item && c.FA_CODE == data.FA_CODE);
                     ck4cItem.Merk = brand.BRAND_CE;
 
                     ck4cItem.Isi = Convert.ToInt32(brand.BRAND_CONTENT) == 0 ? "Nihil" : String.Format("{0:n}", Convert.ToInt32(brand.BRAND_CONTENT));
@@ -1136,7 +1160,9 @@ namespace Sampoerna.EMS.BLL
                     //disable quantity when ck4c level by plant
                     if (dtData.PLANT_ID != null)
                     {
-                        var CheckBrand = _brandBll.GetByFaCode(dtData.PLANT_ID, data.FA_CODE);
+                        //var CheckBrand = _brandBll.GetByFaCode(dtData.PLANT_ID, data.FA_CODE);
+                        var CheckBrand =
+                            listBrand.FirstOrDefault(c => c.WERKS == dtData.PLANT_ID && c.FA_CODE == data.FA_CODE);
 
                         if (CheckBrand == null || dtData.PLANT_ID != item)
                         {
@@ -1243,6 +1269,8 @@ namespace Sampoerna.EMS.BLL
             var i = 0;
             List<Ck4cUnpacked> unpackedList = new List<Ck4cUnpacked>();
 
+          
+            
             //add data details of current CK-4C
             for (var j = Convert.ToInt32(result.Detail.ReportedPeriodStart); j <= Convert.ToInt32(result.Detail.ReportedPeriodEnd); j++)
             {
@@ -1254,14 +1282,26 @@ namespace Sampoerna.EMS.BLL
                 List<Ck4cReportItemDto> tempListck4c2 = new List<Ck4cReportItemDto>();
                 foreach (var item in addressPlant)
                 {
+                   
                     Int32 isInt;
-                    var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt) && x.EXC_GOOD_TYP == "01");
+                    //var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt) && x.EXC_GOOD_TYP == "01");
+                    var activeBrand =
+                        listBrand.Where(
+                            x =>
+                                x.WERKS == item && x.IS_DELETED != true && x.STATUS == true &&
+                                Int32.TryParse(x.BRAND_CONTENT, out isInt) && x.EXC_GOOD_TYP == "01");
 
+                    //var listWaste = _wasteBll.GetByCompanyAndWerks(dtData.COMPANY_ID, item);
+                    
                     foreach (var data in activeBrand.Distinct())
                     {
                         var ck4cItem = new Ck4cReportItemDto();
-                        var brand = _brandBll.GetById(item, data.FA_CODE);
-                        var prodType = _prodTypeBll.GetById(data.PROD_CODE);
+                        //var brand = _brandBll.GetById(item, data.FA_CODE);
+                        var brand = listBrand.FirstOrDefault(c => c.WERKS == item && c.FA_CODE == data.FA_CODE);
+
+                        //var prodType = _prodTypeBll.GetById(data.PROD_CODE);
+                        var prodType = listProdType.FirstOrDefault(c => c.PROD_CODE == data.PROD_CODE);
+
                         var itemCk4c = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat);
                         var lastItemCk4c = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE < prodDateFormat).LastOrDefault();
                         var prodQty = itemCk4c.Sum(x => x.PROD_QTY);
@@ -1280,15 +1320,19 @@ namespace Sampoerna.EMS.BLL
                                 }
                                 else
                                 {
-                                    var wasteData = _wasteBll.GetExistDto(dtData.COMPANY_ID, item, data.FA_CODE, prodDateFormat);
+                                    //var wasteData = _wasteBll.GetExistDto(dtData.COMPANY_ID, item, data.FA_CODE, prodDateFormat);
+                                    var wasteData = listWaste.FirstOrDefault(c =>c.COMPANY_CODE == dtData.COMPANY_ID && c.WERKS == item && c.FA_CODE == data.FA_CODE && c.WASTE_PROD_DATE == prodDateFormat);
 
                                     var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
 
                                     var lastUnpacked = unpackedList.Where(c => c.PlantId == item && c.Facode == data.FA_CODE && c.ProdDate == lastProdDate).Sum(x => x.Unpacked);
 
-                                    var lastSaldo = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE, dtData.PLANT_ID).Where(c => c.ProdDate < saldoDate).LastOrDefault();
+                                    //var lastSaldo = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE, dtData.PLANT_ID).Where(c => c.ProdDate < saldoDate).LastOrDefault();
+                                    var lastSaldo = lisCk4cItem.LastOrDefault(c => c.Werks == item && c.FaCode == data.FA_CODE && c.ProdDate < saldoDate);
 
-                                    var oldData = _productionBll.GetOldSaldo(dtData.COMPANY_ID, item, data.FA_CODE, saldoDate).LastOrDefault();
+
+                                    //var oldData = _productionBll.GetOldSaldo(dtData.COMPANY_ID, item, data.FA_CODE, saldoDate).LastOrDefault();
+                                    var oldData = GetOldSaldoForReport(listProduction,listReversal,listWaste, item, data.FA_CODE, saldoDate).LastOrDefault();
 
                                     var oldUnpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
 
@@ -1317,7 +1361,8 @@ namespace Sampoerna.EMS.BLL
                         //disable quantity when ck4c level by plant
                         if (dtData.PLANT_ID != null)
                         {
-                            var CheckBrand = _brandBll.GetByFaCode(dtData.PLANT_ID, data.FA_CODE);
+                            //var CheckBrand = _brandBll.GetByFaCode(dtData.PLANT_ID, data.FA_CODE);
+                            var CheckBrand = listBrand.FirstOrDefault(c => c.WERKS == dtData.PLANT_ID && c.FA_CODE == data.FA_CODE);
 
                             if (CheckBrand == null || dtData.PLANT_ID != item)
                             {
@@ -1406,7 +1451,9 @@ namespace Sampoerna.EMS.BLL
                     var sum = dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PROD_QTY);
                     var total = dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PACKED_QTY);
 
-                    prodAlias += _prodTypeBll.GetById(data).PRODUCT_ALIAS + Environment.NewLine;
+                    //prodAlias += _prodTypeBll.GetById(data).PRODUCT_ALIAS + Environment.NewLine;
+                    prodAlias += listProdType.FirstOrDefault(c => c.PROD_CODE == data).PRODUCT_ALIAS + Environment.NewLine;
+
                     sumTotal += (sum == 0 ? "Nihil" : String.Format("{0:n}", sum)) + Environment.NewLine;
                     btgTotal += (total == 0 ? "Nihil" : String.Format("{0:n}", total)) + Environment.NewLine;
                 }
@@ -1443,7 +1490,7 @@ namespace Sampoerna.EMS.BLL
             var groupItem = Mapper.Map<List<Ck4cGroupReportItemDto>>(list);
 
             var groupList = groupItem
-                .GroupBy(x => new { x.Ck4cItemId, x.ProdQty, x.ProdCode, x.ProdType, x.Merk, x.Hje, x.No, x.NoProd, x.ProdDate, x.Isi, x.CollumNo })
+                .GroupBy(x => new { x.Ck4cItemId, x.ProdQty, x.ProdCode, x.ProdType, x.Merk, x.Hje, x.No, x.NoProd, x.ProdDate, x.Isi,x.Comment, x.CollumNo })
                 .Select(p => new Ck4cGroupReportItemDto()
                 {
                     Ck4cItemId = p.FirstOrDefault().Ck4cItemId,
@@ -1467,6 +1514,59 @@ namespace Sampoerna.EMS.BLL
             itemList = Mapper.Map<List<Ck4cReportItemDto>>(groupList.ToList());
 
             return itemList;
+        }
+
+        private List<ProductionDto> GetOldSaldoForReport(List<PRODUCTION> listProduction, List<REVERSAL> listReversal,
+            List<WASTE> listWaste, string plant, string facode, DateTime prodDate)
+        {
+            List<ProductionDto> data = new List<ProductionDto>();
+
+            var list = listProduction.Where(p => p.WERKS == plant && p.FA_CODE == facode && p.PRODUCTION_DATE < prodDate).OrderBy(p => p.PRODUCTION_DATE).ToList();
+
+            var lastUnpacked = Convert.ToDecimal(0);
+
+            foreach (var item in list)
+            {
+                var reversalData =
+                    listReversal.Where(
+                        c =>
+                            c.WERKS == item.WERKS && c.FA_CODE == item.FA_CODE &&
+                            c.PRODUCTION_DATE == item.PRODUCTION_DATE).ToList();
+                
+                var existReversal = reversalData.Sum(x => x.REVERSAL_QTY);
+
+                //var wasteData = _wasteBll.GetExistDto(item.COMPANY_CODE, item.WERKS, item.FA_CODE, item.PRODUCTION_DATE);
+              
+                var wasteData =
+                    listWaste.FirstOrDefault(
+                        c =>
+                            c.COMPANY_CODE == item.COMPANY_CODE && c.WERKS == item.WERKS && c.FA_CODE == item.FA_CODE &&
+                            c.WASTE_PROD_DATE == item.PRODUCTION_DATE);
+                
+                var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
+
+                var prodQty = item.QTY == null ? 0 : item.QTY;
+
+                var packed = item.QTY_PACKED == null ? 0 : item.QTY_PACKED;
+
+                var prodWaste = oldWaste <= prodQty ? oldWaste : 0;
+
+                var prod = new ProductionDto
+                {
+                    PlantWerks = item.WERKS,
+                    FaCode = item.FA_CODE,
+                    ProductionDate = item.PRODUCTION_DATE,
+                    QtyProduced = prodQty - prodWaste,
+                    QtyPacked = (packed - existReversal),
+                    QtyUnpacked = lastUnpacked + (prodQty - oldWaste) - (packed - existReversal)
+                };
+
+                lastUnpacked = prod.QtyUnpacked == null ? 0 : prod.QtyUnpacked.Value;
+
+                data.Add(prod);
+            }
+
+            return data;
         }
 
         private bool SetChangesHistory(CK4C origin, Ck4CDto data, string userId)

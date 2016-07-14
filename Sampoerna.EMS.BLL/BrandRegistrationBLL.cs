@@ -36,6 +36,13 @@ namespace Sampoerna.EMS.BLL
             return _repository.Get(null, null, "T001W,ZAIDM_EX_SERIES").ToList();
         }
 
+
+        public List<ZAIDM_EX_BRAND> GetAllBrandsOnly()
+        {
+            return _repository.Get().ToList();
+        }
+
+
         public ZAIDM_EX_BRAND GetBrandForProdConv(string brand, string prodCode, string nppbkc)
         {
             var plant = _plantBll.GetPlantByNppbkc(nppbkc).Select(s => s.WERKS).ToList();
