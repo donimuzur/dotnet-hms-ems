@@ -29,6 +29,8 @@ namespace Sampoerna.EMS.Contract
 
         ZAIDM_EX_BRAND GetBrandCe(string plant, string facode, string brandCe);
 
+        List<ZAIDM_EX_BRAND> GetAllBrandsOnly();
+
     }
 
 }

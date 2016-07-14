@@ -211,5 +211,11 @@ namespace Sampoerna.EMS.BLL
 
             return Mapper.Map<List<ReversalDto>>(dbData.ToList());
         }
+
+        public List<REVERSAL> GetAllReversal()
+        {
+            return _repository.Get().ToList();
+        }
+
     }
 }

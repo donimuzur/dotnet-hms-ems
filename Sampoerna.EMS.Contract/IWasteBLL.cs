@@ -31,5 +31,9 @@ namespace Sampoerna.EMS.Contract
         WasteDto CalculateWasteQuantity(List<WasteDto> wasteDtos);
 
         List<WasteDto> GetAllByPlant(List<string> plant, int month, int year);
+
+        List<WASTE> GetByCompanyAndWerks(string companyCode, string plantWerk);
+
+        List<WASTE> GetAllWasteObject();
     }
 }
