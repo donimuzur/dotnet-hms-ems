@@ -131,6 +131,12 @@ namespace Sampoerna.EMS.BLL
 
         }
 
+        public List<WASTE> GetAllWasteObject()
+        {
+            return _repository.Get().ToList();
+            
+        }
+
         public bool Save(WasteDto wasteDto, string userId)
         {
             var isNewData = true;
@@ -283,6 +289,16 @@ namespace Sampoerna.EMS.BLL
                             p.WASTE_PROD_DATE == wasteProductionDate)
                     .FirstOrDefault();
         }
+
+        public List<WASTE> GetByCompanyAndWerks(string companyCode, string plantWerk)
+        {
+            return
+                _uow.GetGenericRepository<WASTE>()
+                    .Get(
+                        p =>
+                            p.COMPANY_CODE == companyCode && p.WERKS == plantWerk).ToList();
+        }
+
 
         public WasteDto CalculateWasteQuantity(List<WasteDto> wasteDtos)
         {

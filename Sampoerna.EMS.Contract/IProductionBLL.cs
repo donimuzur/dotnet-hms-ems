@@ -37,5 +37,7 @@ namespace Sampoerna.EMS.Contract
         List<PRODUCTION> GetFactAllByParam(ProductionGetByParamInput input);
 
         List<ProductionDto> GetCompleteData(List<ProductionDto> listItem, GetOtherProductionByParamInput input);
+
+        List<PRODUCTION> GetByCompany(string company);
     }
 }

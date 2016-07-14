@@ -1001,5 +1001,11 @@ namespace Sampoerna.EMS.BLL
 
             return list.OrderBy(x => x.FaCode).OrderBy(x => x.ProductionDate).ToList();
         }
+
+        public List<PRODUCTION> GetByCompany(string company)
+        {
+            return _repository.Get(c=>c.COMPANY_CODE == company).ToList();
+        }
+
     }
 }
