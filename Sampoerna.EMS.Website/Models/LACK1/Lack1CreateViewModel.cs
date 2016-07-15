@@ -74,5 +74,6 @@ namespace Sampoerna.EMS.Website.Models.LACK1
 
         public bool IsTisToTisReport { get; set; }
 
+        public bool IsSupplierNppbkcImport { get; set; }
     }
 }
