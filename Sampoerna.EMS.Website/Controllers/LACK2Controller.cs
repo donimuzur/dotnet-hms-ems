@@ -2123,7 +2123,15 @@ namespace Sampoerna.EMS.Website.Controllers
             drow = dt.NewRow();
             drow[0] = lack2.Butxt;
             drow[1] = lack2.NppbkcId;
-            drow[2] = lack2.LevelPlantName + ", " + lack2.LevelPlantCity;
+
+            var plant = _plantBLL.GetT001WById(lack2.LevelPlantId);
+
+            string plantAddress = "";
+            if (plant != null)
+                plantAddress = plant.ADDRESS;
+
+            //drow[2] = lack2.LevelPlantName + ", " + lack2.LevelPlantCity;
+            drow[2] = plantAddress;
 
             var headerFooter = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput
             {
