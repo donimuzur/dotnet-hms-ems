@@ -1275,6 +1275,7 @@ namespace Sampoerna.EMS.BLL
             for (var j = Convert.ToInt32(result.Detail.ReportedPeriodStart); j <= Convert.ToInt32(result.Detail.ReportedPeriodEnd); j++)
             {
                 i = i + 1;
+               // j = 16;
                 var prodDate = j + "-" + result.Detail.ReportedMonth.Substring(0, 3) + "-" + result.Detail.ReportedYear;
                 var prodDateFormat = new DateTime(Convert.ToInt32(result.Detail.ReportedYear), Convert.ToInt32(dtData.REPORTED_MONTH), j);
                 var lastProdDate = prodDateFormat.AddDays(-1);
@@ -1291,10 +1292,13 @@ namespace Sampoerna.EMS.BLL
                                 x.WERKS == item && x.IS_DELETED != true && x.STATUS == true &&
                                 Int32.TryParse(x.BRAND_CONTENT, out isInt) && x.EXC_GOOD_TYP == "01");
 
-                    //var listWaste = _wasteBll.GetByCompanyAndWerks(dtData.COMPANY_ID, item);
-                    
+                   //var blFind = false;
+
                     foreach (var data in activeBrand.Distinct())
                     {
+                        //if (data.FA_CODE == "FA053162.00")
+                        //    blFind = true;
+
                         var ck4cItem = new Ck4cReportItemDto();
                         //var brand = _brandBll.GetById(item, data.FA_CODE);
                         var brand = listBrand.FirstOrDefault(c => c.WERKS == item && c.FA_CODE == data.FA_CODE);
@@ -1428,6 +1432,7 @@ namespace Sampoerna.EMS.BLL
 
                 //add to dictionary group by date
                 ck4cItemGroupByDate.Add(prodDate, newDistinctCk4cReportItemDto2);
+               // j = 100;
             }
 
              //order brand by prod alias using Dictionary<string, List<Ck4cReportItemDto>> each date
@@ -1483,14 +1488,49 @@ namespace Sampoerna.EMS.BLL
             return result;
         }
 
+        //private List<Ck4cReportItemDto> GroupListItem(List<Ck4cReportItemDto> list)
+        //{
+        //    var itemList = new List<Ck4cReportItemDto>();
+
+        //    var groupItem = Mapper.Map<List<Ck4cGroupReportItemDto>>(list);
+            
+        //    var groupList = groupItem
+        //        .GroupBy(x => new { x.Ck4cItemId, x.ProdQty, x.ProdCode, x.ProdType, x.Merk, x.Hje, x.No, x.NoProd, x.ProdDate, x.Isi, x.CollumNo })
+        //        .Select(p => new Ck4cGroupReportItemDto()
+        //        {
+        //            Ck4cItemId = p.FirstOrDefault().Ck4cItemId,
+        //            ProdQty = p.FirstOrDefault().ProdQty,
+        //            ProdCode = p.FirstOrDefault().ProdCode,
+        //            ProdType = p.FirstOrDefault().ProdType,
+        //            Merk = p.FirstOrDefault().Merk,
+        //            Hje = p.FirstOrDefault().Hje,
+        //            No = p.FirstOrDefault().No,
+        //            NoProd = p.FirstOrDefault().NoProd,
+        //            ProdDate = p.FirstOrDefault().ProdDate,
+        //            Isi = p.FirstOrDefault().Isi,
+        //            Comment = p.LastOrDefault().Comment,
+        //            CollumNo = p.FirstOrDefault().CollumNo,
+        //            SumBtg = p.Sum(c => c.SumBtg),
+        //            BtgGr = p.Sum(c => c.BtgGr),
+        //            Total = p.Sum(c => c.Total),
+        //            ProdWaste = p.Sum(c => c.ProdWaste)
+        //        });
+
+        //    itemList = Mapper.Map<List<Ck4cReportItemDto>>(groupList.ToList());
+            
+        //    return itemList;
+        //}
+
         private List<Ck4cReportItemDto> GroupListItem(List<Ck4cReportItemDto> list)
         {
             var itemList = new List<Ck4cReportItemDto>();
 
             var groupItem = Mapper.Map<List<Ck4cGroupReportItemDto>>(list);
 
+            //header
             var groupList = groupItem
-                .GroupBy(x => new { x.Ck4cItemId, x.ProdQty, x.ProdCode, x.ProdType, x.Merk, x.Hje, x.No, x.NoProd, x.ProdDate, x.Isi,x.Comment, x.CollumNo })
+                .Where(c=>string.IsNullOrEmpty(c.ProdDate))
+                .GroupBy(x => new { x.Ck4cItemId, x.ProdQty, x.ProdCode, x.ProdType, x.Merk, x.Hje, x.No, x.NoProd, x.ProdDate, x.Isi, x.CollumNo })
                 .Select(p => new Ck4cGroupReportItemDto()
                 {
                     Ck4cItemId = p.FirstOrDefault().Ck4cItemId,
@@ -1503,7 +1543,7 @@ namespace Sampoerna.EMS.BLL
                     NoProd = p.FirstOrDefault().NoProd,
                     ProdDate = p.FirstOrDefault().ProdDate,
                     Isi = p.FirstOrDefault().Isi,
-                    Comment = p.LastOrDefault().Comment,
+                    Comment = p.FirstOrDefault().Comment,
                     CollumNo = p.FirstOrDefault().CollumNo,
                     SumBtg = p.Sum(c => c.SumBtg),
                     BtgGr = p.Sum(c => c.BtgGr),
@@ -1511,7 +1551,35 @@ namespace Sampoerna.EMS.BLL
                     ProdWaste = p.Sum(c => c.ProdWaste)
                 });
 
-            itemList = Mapper.Map<List<Ck4cReportItemDto>>(groupList.ToList());
+            itemList.AddRange( Mapper.Map<List<Ck4cReportItemDto>>(groupList.ToList()));
+
+            //others
+            //different when take field remark 
+            var groupList2 = groupItem
+                .Where(c => !string.IsNullOrEmpty(c.ProdDate))
+                .GroupBy(x => new { x.Ck4cItemId, x.ProdQty, x.ProdCode, x.ProdType, x.Merk, x.Hje, x.No, x.NoProd, x.ProdDate, x.Isi, x.CollumNo })
+                .Select(p => new Ck4cGroupReportItemDto()
+                {
+                    Ck4cItemId = p.FirstOrDefault().Ck4cItemId,
+                    ProdQty = p.FirstOrDefault().ProdQty,
+                    ProdCode = p.FirstOrDefault().ProdCode,
+                    ProdType = p.FirstOrDefault().ProdType,
+                    Merk = p.FirstOrDefault().Merk,
+                    Hje = p.FirstOrDefault().Hje,
+                    No = p.FirstOrDefault().No,
+                    NoProd = p.FirstOrDefault().NoProd,
+                    ProdDate = p.FirstOrDefault().ProdDate,
+                    Isi = p.FirstOrDefault().Isi,
+                    Comment = string.Join("", p.Select(c => c.Comment)),// p.LastOrDefault().Comment,
+                    CollumNo = p.FirstOrDefault().CollumNo,
+                    SumBtg = p.Sum(c => c.SumBtg),
+                    BtgGr = p.Sum(c => c.BtgGr),
+                    Total = p.Sum(c => c.Total),
+                    ProdWaste = p.Sum(c => c.ProdWaste)
+                });
+
+            itemList.AddRange(Mapper.Map<List<Ck4cReportItemDto>>(groupList2.ToList()));
+
 
             return itemList;
         }
