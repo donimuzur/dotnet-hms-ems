@@ -62,6 +62,7 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<Lack1GenerateInputModel, Lack1GenerateDataParamInput>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Lack1Level, opt => opt.MapFrom(src => (Enums.Lack1Level)src.Lack1Level))
                 .ForMember(dest => dest.IsTisToTis, opt => opt.MapFrom(src => src.IsTisToTisReport))
+                
                 ;
             Mapper.CreateMap<Lack1GeneratedDto, Lack1GeneratedItemModel>().IgnoreAllNonExisting();
 
@@ -83,6 +84,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Lack1Level, opt => opt.MapFrom(src => src.Lack1Level))
                 .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => src.Noted))
                 .ForMember(dest => dest.IsTisToTis, opt => opt.MapFrom(src => src.IsTisToTisReport))
+                
                 ;
 
             Mapper.CreateMap<Lack1DocumentDto, Lack1DocumentItemModel>().IgnoreAllNonExisting();

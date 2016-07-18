@@ -132,6 +132,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Noted { get; set; }
         public string DocumentNoted { get; set; }
         public bool IsTisToTis { get; set; }
+        public bool IsSupplierNppbkcImport { get; set; }
         public Lack1RemarkDto Ck5RemarkData { get; set; }
         public bool IsEtilAlcohol { get; set; }
         public bool HasWasteData { get; set; }

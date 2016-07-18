@@ -107,6 +107,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         /// Set to TRUE if the report for TIS to TIS LACK-1 report
         /// </summary>
         public bool IsTisToTis { get; set; }
+
+        public bool IsSupplierNppbkcImport { get; set; }
     }
 
     public class Lack1GetLatestLack1ByParamInput
