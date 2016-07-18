@@ -214,6 +214,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.LACK1_PLANT, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PLANT>>(src.Lack1Plant))) 
                 .ForMember(dest => dest.LACK1_PRODUCTION_DETAIL, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(src.Lack1ProductionDetail)))
                 .ForMember(dest => dest.LACK1_PBCK1_MAPPING, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PBCK1_MAPPING>>(src.Lack1Pbck1Mapping)))
+                .ForMember(dest => dest.IS_SUPPLIER_IMPORT, opt => opt.MapFrom(src => src.IsSupplierNppbkcImport))
                 ;
 
             Mapper.CreateMap<T001W, LACK1_PLANT>().IgnoreAllNonExisting()
@@ -279,6 +280,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => src.NOTED))
                 .ForMember(dest => dest.DocumentNoted, opt => opt.MapFrom(src => src.DOCUMENT_NOTED))
                 .ForMember(dest => dest.IsTisToTis, opt => opt.MapFrom(src => src.IS_TIS_TO_TIS.HasValue && src.IS_TIS_TO_TIS.Value))
+                .ForMember(dest => dest.IsSupplierNppbkcImport, opt => opt.MapFrom(src => src.IS_SUPPLIER_IMPORT.HasValue && src.IS_SUPPLIER_IMPORT.Value))
                 ;
 
             Mapper.CreateMap<LACK1, Lack1PrintOutDto>().IgnoreAllNonExisting()

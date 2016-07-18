@@ -24,5 +24,6 @@
 
         public bool IsCreateNew { get; set; }
         public bool IsTisToTisReport { get; set; }
+        public bool IsSupplierNppbkcImport { get; set; }
     }
 }

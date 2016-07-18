@@ -1038,7 +1038,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     UserId = CurrentUser.USER_ID,
                     WorkflowActionType = Enums.ActionType.Modified,
                     Detail = lack1Data,
-                    IsTisToTis = model.IsTisToTisReport
+                    IsTisToTis = model.IsTisToTisReport,
+                    IsSupplierNppbkcImport = model.IsSupplierNppbkcImport
                 };
 
                 var saveResult = _lack1Bll.SaveEdit(input);

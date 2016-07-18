@@ -475,6 +475,7 @@
           <Property Name="IS_TIS_TO_TIS" Type="bit" />
           <Property Name="DOCUMENT_NOTED" Type="nvarchar" MaxLength="255" />
           <Property Name="USAGE_TISTOTIS" Type="decimal" Precision="18" Scale="5" />
+          <Property Name="IS_SUPPLIER_IMPORT" Type="bit" />
         </EntityType>
         <EntityType Name="LACK1_DOCUMENT">
           <Key>
@@ -7032,6 +7033,7 @@
           <Property Name="DOCUMENT_NOTED" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="USAGE_TISTOTIS" Type="Decimal" Precision="18" Scale="5" />
           <NavigationProperty Name="LACK1_TRACKING_ALCOHOL" Relationship="EMSModel.FK_LACK1_TRACKING_ALCOHOL_LACK1" FromRole="LACK1" ToRole="LACK1_TRACKING_ALCOHOL" />
+          <Property Name="IS_SUPPLIER_IMPORT" Type="Boolean" />
         </EntityType>
         <Association Name="FK_LACK1_MONTH">
           <End Type="EMSModel.MONTH" Role="MONTH" Multiplicity="0..1" />
@@ -9689,6 +9691,7 @@
           <EntitySetMapping Name="LACK1">
             <EntityTypeMapping TypeName="EMSModel.LACK1">
               <MappingFragment StoreEntitySet="LACK1">
+                <ScalarProperty Name="IS_SUPPLIER_IMPORT" ColumnName="IS_SUPPLIER_IMPORT" />
                 <ScalarProperty Name="USAGE_TISTOTIS" ColumnName="USAGE_TISTOTIS" />
                 <ScalarProperty Name="DOCUMENT_NOTED" ColumnName="DOCUMENT_NOTED" />
                 <ScalarProperty Name="IS_TIS_TO_TIS" ColumnName="IS_TIS_TO_TIS" />

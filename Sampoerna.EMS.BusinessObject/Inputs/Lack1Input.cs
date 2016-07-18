@@ -11,6 +11,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string UserId { get; set; }
         public Enums.ActionType WorkflowActionType { get; set; }
         public bool IsTisToTis { get; set; }
+
+        public bool IsSupplierNppbkcImport { get; set; }
     }
 
     public class Lack1GetDashboardDataByParamInput
