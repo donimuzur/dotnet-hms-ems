@@ -178,6 +178,7 @@ namespace Sampoerna.EMS.BLL
             data.STATUS = Enums.DocumentStatus.Draft;
             data.CREATED_DATE = DateTime.Now;
             data.IS_TIS_TO_TIS = input.IsTisToTis;
+            data.IS_SUPPLIER_IMPORT = input.IsSupplierNppbkcImport;
 
             //set from input, exclude on mapper
             data.CREATED_BY = input.UserId;
