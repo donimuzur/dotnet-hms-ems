@@ -72,6 +72,8 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string Noted { get; set; }
         public string DocumentNoted { get; set; }
         public bool IsTisToTisReport { get; set; }
+
+        public bool IsSupplierNppbkcImport { get; set; }
         public Lack1InventoryAndProductionModel InventoryProductionTisToFa { get; set; }
         public Lack1InventoryAndProductionModel InventoryProductionTisToTis { get; set; }
         public List<Lack1SummaryProductionItemModel> FusionSummaryProductionList { get; set; }//set by controller

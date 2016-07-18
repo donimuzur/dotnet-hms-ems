@@ -140,6 +140,12 @@ namespace Sampoerna.EMS.BLL
                 Id = null,
                 Lack1Number = string.Empty
             };
+
+            if (input.IsSupplierNppbkcImport)
+            {
+                input.SupplierPlantNppbkcId = _t001WServices.GetById(input.SupplierPlantId).NPPBKC_IMPORT_ID;
+            }
+
             var generatedData = GenerateLack1Data(input);
             if (!generatedData.Success)
             {
@@ -388,7 +394,7 @@ namespace Sampoerna.EMS.BLL
                 destination.Noted = input.Detail.Noted;
                 isModified = SetChangesHistory(origin, destination, input.UserId);
                 destination.IsTisToTis = input.IsTisToTis;
-
+                destination.IsSupplierNppbkcImport = input.IsSupplierNppbkcImport;
                 
 
                 //regenerate
@@ -514,6 +520,7 @@ namespace Sampoerna.EMS.BLL
             dbData.RETURN_QTY = input.Detail.ReturnQty;
             dbData.RETURN_UOM = input.Detail.ReturnUom;
             dbData.IS_TIS_TO_TIS = input.IsTisToTis;
+            dbData.IS_SUPPLIER_IMPORT = input.IsSupplierNppbkcImport;
 
             dbData.MODIFIED_BY = input.UserId;
             dbData.MODIFIED_DATE = DateTime.Now;
@@ -3186,7 +3193,7 @@ namespace Sampoerna.EMS.BLL
             var t001WSupplierInfo = _t001WServices.GetById(input.SupplierPlantId);
             if (t001WSupplierInfo != null) { 
                 input.SupplierPlantNppbkcId = t001WSupplierInfo.NPPBKC_ID;
-                if (input.ReceivedPlantId == input.SupplierPlantId) input.SupplierPlantNppbkcId = t001WSupplierInfo.NPPBKC_IMPORT_ID;
+                if (input.ReceivedPlantId == input.SupplierPlantId || input.IsSupplierNppbkcImport) input.SupplierPlantNppbkcId = t001WSupplierInfo.NPPBKC_IMPORT_ID;
             }
             var pbck1ProdConverter =
                 _pbck1ProdConverterService.GetProductionLack1TisToTis(new Pbck1GetProductionLack1TisToTisParamInput()
@@ -3194,7 +3201,7 @@ namespace Sampoerna.EMS.BLL
                     NppbkcId = input.NppbkcId,
                     ExcisableGoodsTypeId = input.ExcisableGoodsType,
                     SupplierPlantId = input.SupplierPlantId,
-                    SupplierPlantNppbkcId = input.SupplierPlantNppbkcId,
+                    SupplierPlantNppbkcId = input.SupplierPlantNppbkcId ,
                     PeriodMonth = input.PeriodMonth,
                     PeriodYear = input.PeriodYear
                 });
