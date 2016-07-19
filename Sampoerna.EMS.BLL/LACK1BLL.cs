@@ -2253,8 +2253,8 @@ namespace Sampoerna.EMS.BLL
                     FaCode = item.MaterialId,
                     Ordr = item.Ordr,
                     ProdCode = prodType.PROD_CODE,
-                    ProductType = prodType.PRODUCT_ALIAS,
-                    ProductAlias = prodType.PRODUCT_TYPE,
+                    ProductType = prodType.PRODUCT_TYPE,
+                    ProductAlias = prodType.PRODUCT_ALIAS,
                     Amount = item.ProductionQty,
                     UomId = item.ConvertedUomId,
                     UomDesc = item.ConvertedUomDesc
