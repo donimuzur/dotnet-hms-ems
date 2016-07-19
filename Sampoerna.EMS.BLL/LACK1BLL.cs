@@ -3819,26 +3819,26 @@ namespace Sampoerna.EMS.BLL
             }
 
 
-            //var batchList = getInventoryMovementByParamOutput.IncludeInCk5List.Select(x => x.BATCH).Distinct().ToList();
-            //decimal mvt201;
-            //if (getInventoryMovementByParamOutput.Mvt201List.Count == 0)
-            //{
-            //    mvt201 = 0;
-            //}
-            //else
-            //{
-            //    mvt201 = (-1) * getInventoryMovementByParamOutput.Mvt201List.Where(x => batchList.Contains(x.BATCH)).Sum(d => d.ConvertedQty);
-            //}
+            var batchList = getInventoryMovementByParamOutput.IncludeInCk5List.Select(x => x.BATCH).Distinct().ToList();
+            decimal mvt201;
+            if (getInventoryMovementByParamOutput.Mvt201List.Count == 0)
+            {
+                mvt201 = 0;
+            }
+            else
+            {
+                mvt201 = (-1) * getInventoryMovementByParamOutput.Mvt201List.Where(x => batchList.Contains(x.BATCH)).Sum(d => d.ConvertedQty);
+            }
 
-            //decimal mvt201Asigned;
-            //if (getInventoryMovementByParamOutput.Mvt201Assigned.Count == 0)
-            //{
-            //    mvt201Asigned = 0;
-            //}
-            //else
-            //{
-            //    mvt201Asigned = (-1) * getInventoryMovementByParamOutput.Mvt201Assigned.Where(x => batchList.Contains(x.BATCH)).Sum(d => d.ConvertedQty);
-            //}
+            decimal mvt201Asigned;
+            if (getInventoryMovementByParamOutput.Mvt201Assigned.Count == 0)
+            {
+                mvt201Asigned = 0;
+            }
+            else
+            {
+                mvt201Asigned = (-1) * getInventoryMovementByParamOutput.Mvt201Assigned.Where(x => batchList.Contains(x.BATCH)).Sum(d => d.ConvertedQty);
+            }
 
             //nebeng in tis to fa field
             //set to tis to fa
@@ -3851,8 +3851,8 @@ namespace Sampoerna.EMS.BLL
                 InvMovementAllList =
                     Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.AllUsageList)
             };
-            //rc.TotalUsage = totalUsage + mvt201 - mvt201Asigned;
-            rc.TotalUsage = totalUsage;
+            rc.TotalUsage = totalUsage + mvt201 - mvt201Asigned;
+            //rc.TotalUsage = totalUsage;
 
             invMovementOutput = getInventoryMovementByParamOutput;
 
