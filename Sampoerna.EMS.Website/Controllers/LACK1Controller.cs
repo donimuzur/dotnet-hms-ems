@@ -1041,7 +1041,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     WorkflowActionType = Enums.ActionType.Modified,
                     Detail = lack1Data,
                     IsTisToTis = model.IsTisToTisReport,
-                    IsSupplierNppbkcImport = model.IsSupplierNppbkcImport
+                    IsSupplierNppbkcImport = model.IsSupplierNppbkcImport,
+                    IsNeedGenerate = !isSubmit
                 };
 
                 var saveResult = _lack1Bll.SaveEdit(input);
