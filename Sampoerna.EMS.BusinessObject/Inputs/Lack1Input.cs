@@ -13,6 +13,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public bool IsTisToTis { get; set; }
 
         public bool IsSupplierNppbkcImport { get; set; }
+
+        public bool IsNeedGenerate { get; set; }
     }
 
     public class Lack1GetDashboardDataByParamInput
