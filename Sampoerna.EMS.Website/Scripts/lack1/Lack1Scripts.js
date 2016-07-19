@@ -17,6 +17,7 @@
     param.Noted = $('#Noted').val();
     
     param.IsTisToTisReport = ($('#IsTisToTisReport').is(':checked'));
+    param.IsSupplierNppbkcImport = ($('#IsSupplierNppbkcImport').is(':checked'));
 
     param.Noted = $('#Noted').val();
     //console.log(param.IsTisToTisReport);

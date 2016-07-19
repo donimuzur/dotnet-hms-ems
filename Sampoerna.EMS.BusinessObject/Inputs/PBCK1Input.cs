@@ -130,6 +130,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string SupplierPlantId { get; set; }
         public int PeriodMonth { get; set; }
         public int PeriodYear { get; set; }
+
+        public bool IsSupplierNppbkcImport { get; set; }
     }
 
     public class Pbck1GetSupplierPlantByParamInput

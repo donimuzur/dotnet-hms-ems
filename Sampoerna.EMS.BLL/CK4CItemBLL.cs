@@ -50,5 +50,18 @@ namespace Sampoerna.EMS.BLL
 
             return Mapper.Map<List<Ck4cItem>>(data);
         }
+
+        public List<Ck4cItem> GetDataByParentPlant(string levelPlant)
+        {
+            Expression<Func<CK4C_ITEM, bool>> queryFilter = PredicateHelper.True<CK4C_ITEM>();
+
+            queryFilter = queryFilter.And(c=> c.CK4C.PLANT_ID == levelPlant);
+
+            var data = _repository.Get(queryFilter, null, includeTables).ToList();
+
+            data = data.OrderBy(c => c.PROD_DATE).ToList();
+
+            return Mapper.Map<List<Ck4cItem>>(data);
+        }
     }
 }

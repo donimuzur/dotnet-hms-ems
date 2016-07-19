@@ -140,6 +140,12 @@ namespace Sampoerna.EMS.BLL
                 Id = null,
                 Lack1Number = string.Empty
             };
+
+            if (input.IsSupplierNppbkcImport)
+            {
+                input.SupplierPlantNppbkcId = _t001WServices.GetById(input.SupplierPlantId).NPPBKC_IMPORT_ID;
+            }
+
             var generatedData = GenerateLack1Data(input);
             if (!generatedData.Success)
             {
@@ -172,6 +178,7 @@ namespace Sampoerna.EMS.BLL
             data.STATUS = Enums.DocumentStatus.Draft;
             data.CREATED_DATE = DateTime.Now;
             data.IS_TIS_TO_TIS = input.IsTisToTis;
+            data.IS_SUPPLIER_IMPORT = input.IsSupplierNppbkcImport;
 
             //set from input, exclude on mapper
             data.CREATED_BY = input.UserId;
@@ -331,7 +338,7 @@ namespace Sampoerna.EMS.BLL
 
             //check if need to regenerate
             //radit 2016-04-20 always false
-            var isNeedToRegenerate = dbData.STATUS == Enums.DocumentStatus.Draft || dbData.STATUS == Enums.DocumentStatus.Rejected;
+            var isNeedToRegenerate = (dbData.STATUS == Enums.DocumentStatus.Draft || dbData.STATUS == Enums.DocumentStatus.Rejected) && input.IsNeedGenerate;
             var generateInput = Mapper.Map<Lack1GenerateDataParamInput>(input);
             //if (!isNeedToRegenerate)
             //{
@@ -388,7 +395,7 @@ namespace Sampoerna.EMS.BLL
                 destination.Noted = input.Detail.Noted;
                 isModified = SetChangesHistory(origin, destination, input.UserId);
                 destination.IsTisToTis = input.IsTisToTis;
-
+                destination.IsSupplierNppbkcImport = input.IsSupplierNppbkcImport;
                 
 
                 //regenerate
@@ -514,6 +521,7 @@ namespace Sampoerna.EMS.BLL
             dbData.RETURN_QTY = input.Detail.ReturnQty;
             dbData.RETURN_UOM = input.Detail.ReturnUom;
             dbData.IS_TIS_TO_TIS = input.IsTisToTis;
+            dbData.IS_SUPPLIER_IMPORT = input.IsSupplierNppbkcImport;
 
             dbData.MODIFIED_BY = input.UserId;
             dbData.MODIFIED_DATE = DateTime.Now;
@@ -2131,6 +2139,7 @@ namespace Sampoerna.EMS.BLL
                 InvMovementGroupedForProductionStepTracingItem(
                     rc.InventoryProductionTisToFa.InvetoryMovementData.InvMovementReceivingList);
 
+            
             foreach (var item in invMovementReceivingListGrouped)
             {
                 //set for level 0
@@ -2165,7 +2174,7 @@ namespace Sampoerna.EMS.BLL
                 productionTraceList.Add(itemToInsert);
                 allTrackingList.AddRange(itemToInsert.InvMovementProductionStepTracing);
             }
-            //var json = new JavaScriptSerializer().Serialize(allTrackingList);
+            
             
             //process the production list got from previous process
             var mvtType = new List<string>()
@@ -2244,42 +2253,16 @@ namespace Sampoerna.EMS.BLL
                     FaCode = item.MaterialId,
                     Ordr = item.Ordr,
                     ProdCode = prodType.PROD_CODE,
-                    ProductType = prodType.PRODUCT_ALIAS,
-                    ProductAlias = prodType.PRODUCT_TYPE,
+                    ProductType = prodType.PRODUCT_TYPE,
+                    ProductAlias = prodType.PRODUCT_ALIAS,
                     Amount = item.ProductionQty,
                     UomId = item.ConvertedUomId,
                     UomDesc = item.ConvertedUomDesc
                 };
 
-                //no need proportional 
-                //temp solution
-                //var rec = invMovementOutput.UsageProportionalList.FirstOrDefault(c =>
-                //    c.Order == item.ParentOrdr);
                 
-                //if (rec != null)
-                //{
-                //    //calculate proporsional
-                //    itemToInsert.Amount =
-                //        Math.Round(
-                //            ((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount), 5);
-                //}
-                //else
-                //{
-                //    //check in prev data inventory_movement
-                //    rec =
-                //        prevInventoryMovementByParam.UsageProportionalList.FirstOrDefault(
-                //            c => c.Order == item.ParentOrdr);
 
-                //    if (rec != null)
-                //    {
-                //        //calculate proporsional from prev inventory movement
-                //        itemToInsert.Amount =
-                //            Math.Round(
-                //                ((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount), 5);
-                //    }
-                //}
-
-                if (itemToInsert.UomId != null)
+                if (!string.IsNullOrEmpty(itemToInsert.UomId))
                 {
                     productionList.Add(itemToInsert);
                 }
@@ -3186,7 +3169,7 @@ namespace Sampoerna.EMS.BLL
             var t001WSupplierInfo = _t001WServices.GetById(input.SupplierPlantId);
             if (t001WSupplierInfo != null) { 
                 input.SupplierPlantNppbkcId = t001WSupplierInfo.NPPBKC_ID;
-                if (input.ReceivedPlantId == input.SupplierPlantId) input.SupplierPlantNppbkcId = t001WSupplierInfo.NPPBKC_IMPORT_ID;
+                if (input.ReceivedPlantId == input.SupplierPlantId || input.IsSupplierNppbkcImport) input.SupplierPlantNppbkcId = t001WSupplierInfo.NPPBKC_IMPORT_ID;
             }
             var pbck1ProdConverter =
                 _pbck1ProdConverterService.GetProductionLack1TisToTis(new Pbck1GetProductionLack1TisToTisParamInput()
@@ -3194,7 +3177,7 @@ namespace Sampoerna.EMS.BLL
                     NppbkcId = input.NppbkcId,
                     ExcisableGoodsTypeId = input.ExcisableGoodsType,
                     SupplierPlantId = input.SupplierPlantId,
-                    SupplierPlantNppbkcId = input.SupplierPlantNppbkcId,
+                    SupplierPlantNppbkcId = input.SupplierPlantNppbkcId ,
                     PeriodMonth = input.PeriodMonth,
                     PeriodYear = input.PeriodYear
                 });
@@ -3227,35 +3210,7 @@ namespace Sampoerna.EMS.BLL
                 };
             }
 
-            //old code, remove harcoded uom on tis to tis production list
-            //var gramUomData = uomData.Count > 0
-            //    ? uomData.FirstOrDefault(c => c.UOM_ID.ToLower() == "g" || c.UOM_DESC.ToLower() == "gram")
-            //    : null;
-
-            //if (gramUomData == null)
-            //{
-            //    return new Lack1GeneratedOutput()
-            //    {
-            //        Success = false,
-            //        ErrorCode = ExceptionCodes.BLLExceptions.MissingUomData.ToString(),
-            //        ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingUomData),
-            //        Data = rc
-            //    };
-            //}
-
-            //old code, remove harcoded uom on tis to tis production list
-            //var joinedWithUomData = (from j in pbck1ProdConverter
-            //                         join u in uomData on j.CONVERTER_UOM_ID equals u.UOM_ID
-            //                         select new
-            //                         {
-            //                             j.PROD_CODE,
-            //                             j.PRODUCT_TYPE,
-            //                             j.PRODUCT_ALIAS,
-            //                             j.CONVERTER_OUTPUT,
-            //                             j.CONVERTER_UOM_ID,
-            //                             u.UOM_DESC,
-            //                             Convertion = (decimal)(j.CONVERTER_UOM_ID.ToLower() == "kg" ? 1000 : 1)
-            //                         }).Distinct().ToList();
+            
 
             var joinedWithUomData = (from j in pbck1ProdConverter
                                      select new
@@ -3278,18 +3233,7 @@ namespace Sampoerna.EMS.BLL
                 uomDescFirstDataInvMovementTisToTis = firstDataInventoryMovementTisToTis.ConvertedUomDesc;
             }
 
-            //old code, remove harcoded uom on tis to tis production list
-            //var productionList = joinedWithUomData.Select(item => new Lack1GeneratedProductionDataDto()
-            //{
-            //    FaCode = null,
-            //    Ordr = null,
-            //    ProdCode = item.PROD_CODE,
-            //    ProductType = item.PRODUCT_TYPE,
-            //    ProductAlias = item.PRODUCT_ALIAS,
-            //    Amount = item.CONVERTER_OUTPUT.HasValue ? ((rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0) * item.CONVERTER_OUTPUT.Value * item.Convertion) : 0,
-            //    UomId = item.CONVERTER_UOM_ID.ToLower() == "kg" ? gramUomData.UOM_ID : item.CONVERTER_UOM_ID,
-            //    UomDesc = item.CONVERTER_UOM_ID.ToLower() == "kg" ? gramUomData.UOM_DESC : item.UOM_DESC
-            //}).ToList();
+            
 
             var productionList = joinedWithUomData.Select(item => new Lack1GeneratedProductionDataDto()
             {
@@ -3693,6 +3637,7 @@ namespace Sampoerna.EMS.BLL
                     Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.AllUsageList)
             };
             rc.TotalUsage = totalUsage + mvt201 - mvt201Asigned;
+            //rc.TotalUsage = totalUsage;
 
             invMovementOutput = getInventoryMovementByParamOutput;
 
