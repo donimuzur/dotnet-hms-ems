@@ -338,7 +338,7 @@ namespace Sampoerna.EMS.BLL
 
             //check if need to regenerate
             //radit 2016-04-20 always false
-            var isNeedToRegenerate = dbData.STATUS == Enums.DocumentStatus.Draft || dbData.STATUS == Enums.DocumentStatus.Rejected;
+            var isNeedToRegenerate = (dbData.STATUS == Enums.DocumentStatus.Draft || dbData.STATUS == Enums.DocumentStatus.Rejected) && input.IsNeedGenerate;
             var generateInput = Mapper.Map<Lack1GenerateDataParamInput>(input);
             //if (!isNeedToRegenerate)
             //{
@@ -2139,6 +2139,7 @@ namespace Sampoerna.EMS.BLL
                 InvMovementGroupedForProductionStepTracingItem(
                     rc.InventoryProductionTisToFa.InvetoryMovementData.InvMovementReceivingList);
 
+            
             foreach (var item in invMovementReceivingListGrouped)
             {
                 //set for level 0
@@ -2173,7 +2174,7 @@ namespace Sampoerna.EMS.BLL
                 productionTraceList.Add(itemToInsert);
                 allTrackingList.AddRange(itemToInsert.InvMovementProductionStepTracing);
             }
-            //var json = new JavaScriptSerializer().Serialize(allTrackingList);
+            
             
             //process the production list got from previous process
             var mvtType = new List<string>()
@@ -2259,35 +2260,9 @@ namespace Sampoerna.EMS.BLL
                     UomDesc = item.ConvertedUomDesc
                 };
 
-                //no need proportional 
-                //temp solution
-                //var rec = invMovementOutput.UsageProportionalList.FirstOrDefault(c =>
-                //    c.Order == item.ParentOrdr);
                 
-                //if (rec != null)
-                //{
-                //    //calculate proporsional
-                //    itemToInsert.Amount =
-                //        Math.Round(
-                //            ((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount), 5);
-                //}
-                //else
-                //{
-                //    //check in prev data inventory_movement
-                //    rec =
-                //        prevInventoryMovementByParam.UsageProportionalList.FirstOrDefault(
-                //            c => c.Order == item.ParentOrdr);
 
-                //    if (rec != null)
-                //    {
-                //        //calculate proporsional from prev inventory movement
-                //        itemToInsert.Amount =
-                //            Math.Round(
-                //                ((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount), 5);
-                //    }
-                //}
-
-                if (itemToInsert.UomId != null)
+                if (!string.IsNullOrEmpty(itemToInsert.UomId))
                 {
                     productionList.Add(itemToInsert);
                 }
@@ -3235,35 +3210,7 @@ namespace Sampoerna.EMS.BLL
                 };
             }
 
-            //old code, remove harcoded uom on tis to tis production list
-            //var gramUomData = uomData.Count > 0
-            //    ? uomData.FirstOrDefault(c => c.UOM_ID.ToLower() == "g" || c.UOM_DESC.ToLower() == "gram")
-            //    : null;
-
-            //if (gramUomData == null)
-            //{
-            //    return new Lack1GeneratedOutput()
-            //    {
-            //        Success = false,
-            //        ErrorCode = ExceptionCodes.BLLExceptions.MissingUomData.ToString(),
-            //        ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingUomData),
-            //        Data = rc
-            //    };
-            //}
-
-            //old code, remove harcoded uom on tis to tis production list
-            //var joinedWithUomData = (from j in pbck1ProdConverter
-            //                         join u in uomData on j.CONVERTER_UOM_ID equals u.UOM_ID
-            //                         select new
-            //                         {
-            //                             j.PROD_CODE,
-            //                             j.PRODUCT_TYPE,
-            //                             j.PRODUCT_ALIAS,
-            //                             j.CONVERTER_OUTPUT,
-            //                             j.CONVERTER_UOM_ID,
-            //                             u.UOM_DESC,
-            //                             Convertion = (decimal)(j.CONVERTER_UOM_ID.ToLower() == "kg" ? 1000 : 1)
-            //                         }).Distinct().ToList();
+            
 
             var joinedWithUomData = (from j in pbck1ProdConverter
                                      select new
@@ -3286,18 +3233,7 @@ namespace Sampoerna.EMS.BLL
                 uomDescFirstDataInvMovementTisToTis = firstDataInventoryMovementTisToTis.ConvertedUomDesc;
             }
 
-            //old code, remove harcoded uom on tis to tis production list
-            //var productionList = joinedWithUomData.Select(item => new Lack1GeneratedProductionDataDto()
-            //{
-            //    FaCode = null,
-            //    Ordr = null,
-            //    ProdCode = item.PROD_CODE,
-            //    ProductType = item.PRODUCT_TYPE,
-            //    ProductAlias = item.PRODUCT_ALIAS,
-            //    Amount = item.CONVERTER_OUTPUT.HasValue ? ((rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0) * item.CONVERTER_OUTPUT.Value * item.Convertion) : 0,
-            //    UomId = item.CONVERTER_UOM_ID.ToLower() == "kg" ? gramUomData.UOM_ID : item.CONVERTER_UOM_ID,
-            //    UomDesc = item.CONVERTER_UOM_ID.ToLower() == "kg" ? gramUomData.UOM_DESC : item.UOM_DESC
-            //}).ToList();
+            
 
             var productionList = joinedWithUomData.Select(item => new Lack1GeneratedProductionDataDto()
             {
@@ -3668,26 +3604,26 @@ namespace Sampoerna.EMS.BLL
             }
 
 
-            var batchList = getInventoryMovementByParamOutput.IncludeInCk5List.Select(x => x.BATCH).Distinct().ToList();
-            decimal mvt201;
-            if (getInventoryMovementByParamOutput.Mvt201List.Count == 0)
-            {
-                mvt201 = 0;
-            }
-            else
-            {
-                mvt201 = (-1) * getInventoryMovementByParamOutput.Mvt201List.Where(x => batchList.Contains(x.BATCH)).Sum(d => d.ConvertedQty);
-            }
+            //var batchList = getInventoryMovementByParamOutput.IncludeInCk5List.Select(x => x.BATCH).Distinct().ToList();
+            //decimal mvt201;
+            //if (getInventoryMovementByParamOutput.Mvt201List.Count == 0)
+            //{
+            //    mvt201 = 0;
+            //}
+            //else
+            //{
+            //    mvt201 = (-1) * getInventoryMovementByParamOutput.Mvt201List.Where(x => batchList.Contains(x.BATCH)).Sum(d => d.ConvertedQty);
+            //}
 
-            decimal mvt201Asigned;
-            if (getInventoryMovementByParamOutput.Mvt201Assigned.Count == 0)
-            {
-                mvt201Asigned = 0;
-            }
-            else
-            {
-                mvt201Asigned = (-1) * getInventoryMovementByParamOutput.Mvt201Assigned.Where(x => batchList.Contains(x.BATCH)).Sum(d => d.ConvertedQty);
-            }
+            //decimal mvt201Asigned;
+            //if (getInventoryMovementByParamOutput.Mvt201Assigned.Count == 0)
+            //{
+            //    mvt201Asigned = 0;
+            //}
+            //else
+            //{
+            //    mvt201Asigned = (-1) * getInventoryMovementByParamOutput.Mvt201Assigned.Where(x => batchList.Contains(x.BATCH)).Sum(d => d.ConvertedQty);
+            //}
 
             //nebeng in tis to fa field
             //set to tis to fa
@@ -3700,7 +3636,8 @@ namespace Sampoerna.EMS.BLL
                 InvMovementAllList =
                     Mapper.Map<List<Lack1GeneratedTrackingDto>>(getInventoryMovementByParamOutput.AllUsageList)
             };
-            rc.TotalUsage = totalUsage + mvt201 - mvt201Asigned;
+            //rc.TotalUsage = totalUsage + mvt201 - mvt201Asigned;
+            rc.TotalUsage = totalUsage;
 
             invMovementOutput = getInventoryMovementByParamOutput;
 
