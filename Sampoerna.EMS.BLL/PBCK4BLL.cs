@@ -1596,7 +1596,7 @@ namespace Sampoerna.EMS.BLL
             result.ReportDetails.TextTo = nppbkcData != null ? nppbkcData.TEXT_TO : string.Empty;
             result.ReportDetails.CityTo = nppbkcData != null ? nppbkcData.CITY : string.Empty;
             if (poa != null) result.ReportDetails.PoaName = poa.PRINTED_NAME;
-            result.ReportDetails.PoaTitle = dtData.POA != null ? dtData.POA.TITLE : string.Empty;
+            result.ReportDetails.PoaTitle = poa != null ? poa.TITLE : string.Empty;
             result.ReportDetails.CompanyName = dtData.COMPANY_NAME;
             result.ReportDetails.CompanyAddress = plantData != null ? plantData.ADDRESS : string.Empty;
             result.ReportDetails.NppbkcId = dtData.NPPBKC_ID;
