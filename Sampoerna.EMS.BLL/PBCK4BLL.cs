@@ -1596,7 +1596,7 @@ namespace Sampoerna.EMS.BLL
             result.ReportDetails.TextTo = nppbkcData != null ? nppbkcData.TEXT_TO : string.Empty;
             result.ReportDetails.CityTo = nppbkcData != null ? nppbkcData.CITY : string.Empty;
             if (poa != null) result.ReportDetails.PoaName = poa.PRINTED_NAME;
-            result.ReportDetails.PoaTitle = dtData.POA != null ? dtData.POA.TITLE : string.Empty;
+            result.ReportDetails.PoaTitle = poa != null ? poa.TITLE : string.Empty;
             result.ReportDetails.CompanyName = dtData.COMPANY_NAME;
             result.ReportDetails.CompanyAddress = plantData != null ? plantData.ADDRESS : string.Empty;
             result.ReportDetails.NppbkcId = dtData.NPPBKC_ID;
@@ -1610,7 +1610,7 @@ namespace Sampoerna.EMS.BLL
             result.ReportDetails.NppbkcDate = nppbkcDate;
 
             result.ReportDetails.PlantCity = result.ReportDetails.CityTo;
-            result.ReportDetails.PrintDate = DateReportDisplayString(DateTime.Now, false);
+            result.ReportDetails.PrintDate = DateReportDisplayString(dtData.REPORTED_ON.HasValue? dtData.REPORTED_ON.Value : DateTime.Now, false);
             result.ReportDetails.RegionOffice = nppbkcData != null ? nppbkcData.REGION_DGCE : string.Empty;
             int i = 0;
 
