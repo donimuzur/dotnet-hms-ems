@@ -1610,7 +1610,7 @@ namespace Sampoerna.EMS.BLL
             result.ReportDetails.NppbkcDate = nppbkcDate;
 
             result.ReportDetails.PlantCity = result.ReportDetails.CityTo;
-            result.ReportDetails.PrintDate = DateReportDisplayString(DateTime.Now, false);
+            result.ReportDetails.PrintDate = DateReportDisplayString(dtData.REPORTED_ON.HasValue? dtData.REPORTED_ON.Value : DateTime.Now, false);
             result.ReportDetails.RegionOffice = nppbkcData != null ? nppbkcData.REGION_DGCE : string.Empty;
             int i = 0;
 
