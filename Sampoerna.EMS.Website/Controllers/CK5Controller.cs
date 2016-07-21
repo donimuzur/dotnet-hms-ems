@@ -3372,7 +3372,7 @@ namespace Sampoerna.EMS.Website.Controllers
             filter.Month = DateTime.Now.Month.ToString();
             filter.Year = DateTime.Now.Year.ToString();
 
-            model.DetailsList = SearchDataSummaryReports(filter);
+            model.DetailsList = new List<CK5SummaryReportsItem>(); //SearchDataSummaryReports(filter);
 
             model.SearchView.CompanyCodeSourceList = GetCompanyList(true, model.DetailsList);
             model.SearchView.CompanyCodeDestList = GetCompanyList(false, model.DetailsList);
