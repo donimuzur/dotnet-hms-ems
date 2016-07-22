@@ -3420,7 +3420,7 @@ namespace Sampoerna.EMS.BLL
                                 FaCode = item.BRAND,
                                 ProdTypeAlias = "",
                                 Brand = "",
-                                Qty = item.CONVERTED_QTY,
+                                Qty = item.CONVERTED_QTY ,
                                 Content = null, //todo: ask to analyst
                                 SeriesValue = "",
                                 Hje = item.HJE,
@@ -3437,7 +3437,12 @@ namespace Sampoerna.EMS.BLL
                                     : "-";
                                 itemToInsert.SeriesValue = brandData.SERIES_CODE;
                                 itemToInsert.Content = Convert.ToDecimal(brandData.BRAND_CONTENT);
+                                if (itemToInsert.Qty.HasValue)
+                                    itemToInsert.Qty = itemToInsert.Qty.Value/itemToInsert.Content;
+
                             }
+                            else
+                                itemToInsert.Qty = null;
                             rc.Items.Add(itemToInsert);
                         }
                     }
