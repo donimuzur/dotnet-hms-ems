@@ -203,6 +203,27 @@
           <Property Name="PACKED_IN_PACK" Type="int" />
           <Property Name="REMARKS" Type="nvarchar" MaxLength="100" />
         </EntityType>
+        <EntityType Name="CK4C_REPORT_ITEM">
+          <Key>
+            <PropertyRef Name="CK4C_REPORT_ITEM_ID" />
+          </Key>
+          <Property Name="CK4C_REPORT_ITEM_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CK4C_ID" Type="int" />
+          <Property Name="PROD_CODE" Type="nvarchar" MaxLength="2" />
+          <Property Name="PROD_TYPE" Type="nvarchar" MaxLength="35" />
+          <Property Name="MERK" Type="nvarchar" MaxLength="65" />
+          <Property Name="HJE" Type="nvarchar" MaxLength="50" />
+          <Property Name="NO_ITEM" Type="nvarchar" MaxLength="50" />
+          <Property Name="NO_PROD" Type="nvarchar" MaxLength="50" />
+          <Property Name="PROD_DATE" Type="nvarchar" MaxLength="15" />
+          <Property Name="SUM_BTG" Type="nvarchar" MaxLength="50" />
+          <Property Name="BTG_GR" Type="nvarchar" MaxLength="50" />
+          <Property Name="ISI" Type="nvarchar" MaxLength="50" />
+          <Property Name="TOTAL" Type="nvarchar" MaxLength="50" />
+          <Property Name="PROD_WASTE" Type="nvarchar" MaxLength="50" />
+          <Property Name="COMMENT_ITEM" Type="nvarchar" MaxLength="100" />
+          <Property Name="COLLUM_NO" Type="int" />
+        </EntityType>
         <EntityType Name="CK5">
           <Key>
             <PropertyRef Name="CK5_ID" />
@@ -3472,6 +3493,7 @@
           <EntitySet Name="CK4C" EntityType="Self.CK4C" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK4C_DECREE_DOC" EntityType="Self.CK4C_DECREE_DOC" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK4C_ITEM" EntityType="Self.CK4C_ITEM" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CK4C_REPORT_ITEM" EntityType="Self.CK4C_REPORT_ITEM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK5" EntityType="Self.CK5" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK5_FILE_UPLOAD" EntityType="Self.CK5_FILE_UPLOAD" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK5_MATERIAL" EntityType="Self.CK5_MATERIAL" Schema="dbo" store:Type="Tables" />
@@ -4961,6 +4983,7 @@
             <End Role="ZAAP_SHIFT_RPT" EntitySet="ZAAP_SHIFT_RPT" />
             <End Role="REVERSAL" EntitySet="REVERSAL" />
           </AssociationSet>
+          <EntitySet Name="CK4C_REPORT_ITEM" EntityType="EMSModel.CK4C_REPORT_ITEM" />
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -8841,6 +8864,27 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="CK4C_REPORT_ITEM">
+          <Key>
+            <PropertyRef Name="CK4C_REPORT_ITEM_ID" />
+          </Key>
+          <Property Name="CK4C_REPORT_ITEM_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CK4C_ID" Type="Int32" />
+          <Property Name="PROD_CODE" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="PROD_TYPE" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="MERK" Type="String" MaxLength="65" FixedLength="false" Unicode="true" />
+          <Property Name="HJE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NO_ITEM" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NO_PROD" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PROD_DATE" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="SUM_BTG" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BTG_GR" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ISI" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TOTAL" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PROD_WASTE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="COMMENT_ITEM" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="COLLUM_NO" Type="Int32" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -10455,6 +10499,28 @@
                 <ScalarProperty Name="PRODUCTION_DATE" ColumnName="PRODUCTION_DATE" />
                 <ScalarProperty Name="ZAAP_SHIFT_RPT_ID" ColumnName="ZAAP_SHIFT_RPT_ID" />
                 <ScalarProperty Name="REVERSAL_ID" ColumnName="REVERSAL_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CK4C_REPORT_ITEM">
+            <EntityTypeMapping TypeName="EMSModel.CK4C_REPORT_ITEM">
+              <MappingFragment StoreEntitySet="CK4C_REPORT_ITEM">
+                <ScalarProperty Name="COLLUM_NO" ColumnName="COLLUM_NO" />
+                <ScalarProperty Name="COMMENT_ITEM" ColumnName="COMMENT_ITEM" />
+                <ScalarProperty Name="PROD_WASTE" ColumnName="PROD_WASTE" />
+                <ScalarProperty Name="TOTAL" ColumnName="TOTAL" />
+                <ScalarProperty Name="ISI" ColumnName="ISI" />
+                <ScalarProperty Name="BTG_GR" ColumnName="BTG_GR" />
+                <ScalarProperty Name="SUM_BTG" ColumnName="SUM_BTG" />
+                <ScalarProperty Name="PROD_DATE" ColumnName="PROD_DATE" />
+                <ScalarProperty Name="NO_PROD" ColumnName="NO_PROD" />
+                <ScalarProperty Name="NO_ITEM" ColumnName="NO_ITEM" />
+                <ScalarProperty Name="HJE" ColumnName="HJE" />
+                <ScalarProperty Name="MERK" ColumnName="MERK" />
+                <ScalarProperty Name="PROD_TYPE" ColumnName="PROD_TYPE" />
+                <ScalarProperty Name="PROD_CODE" ColumnName="PROD_CODE" />
+                <ScalarProperty Name="CK4C_ID" ColumnName="CK4C_ID" />
+                <ScalarProperty Name="CK4C_REPORT_ITEM_ID" ColumnName="CK4C_REPORT_ITEM_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -105,6 +105,9 @@
     <Compile Include="CK4C_ITEM.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="CK4C_REPORT_ITEM.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="CK5.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
