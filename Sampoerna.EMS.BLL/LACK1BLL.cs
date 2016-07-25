@@ -2837,28 +2837,28 @@ namespace Sampoerna.EMS.BLL
             var zaapShiftRpt = _zaapShiftRptService.GetForLack1ByParam(zaapShiftReportInput);
             var completeZaapData = _zaapShiftRptService.GetCompleteData(zaapShiftReportInput);
             
-            var totalFaZaapShiftRpt = completeZaapData.GroupBy(x => new { x.FA_CODE, x.PRODUCTION_DATE }).Select(y => new
+            var totalFaZaapShiftRpt = completeZaapData.GroupBy(x => new { x.FA_CODE }).Select(y => new
             {
                 FaCode = y.Key.FA_CODE,
-                ProductionDate = y.Key.PRODUCTION_DATE,
+                //ProductionDate = y.Key.PRODUCTION_DATE,
                 TotalQtyFa = y.Sum(x=> x.QTY.HasValue? x.QTY.Value : 0) 
             }).ToList();
 
-            var totalOrderZaapShiftRpt = completeZaapData.GroupBy(x => new { x.ORDR, x.FA_CODE,x.PRODUCTION_DATE }).Select(y => new
+            var totalOrderZaapShiftRpt = completeZaapData.GroupBy(x => new { x.ORDR, x.FA_CODE }).Select(y => new
             {
                 FaCode = y.Key.FA_CODE,
-                ProductionDate = y.Key.PRODUCTION_DATE,
+                //ProductionDate = y.Key.PRODUCTION_DATE,
                 Ordr = y.Key.ORDR,
                 TotalQtyOrdr = y.Sum(x => x.QTY.HasValue ? x.QTY.Value : 0)
             }).ToList();
 
             var proportionalOrderPerFa = (from faZaap in totalFaZaapShiftRpt join 
-                                          orderZaap in totalOrderZaapShiftRpt on new {faZaap.FaCode, faZaap.ProductionDate} equals new { orderZaap.FaCode, orderZaap.ProductionDate} 
+                                          orderZaap in totalOrderZaapShiftRpt on new {faZaap.FaCode} equals new { orderZaap.FaCode} 
                                           //where faZaap.TotalQtyFa > 0
                                          select new Lack1GeneratedProductionDataDto()
                                          {
                                              FaCode = faZaap.FaCode,
-                                             ProductionDate = orderZaap.ProductionDate,
+                                             //ProductionDate = orderZaap.ProductionDate,
                                              Ordr = orderZaap.Ordr,
                                              ProportionalOrder = faZaap.TotalQtyFa > 0 ? orderZaap.TotalQtyOrdr / faZaap.TotalQtyFa : 1
                                          }).ToList();
@@ -2879,8 +2879,8 @@ namespace Sampoerna.EMS.BLL
 
             //join data ck4cItem and ZaapShiftRpt
             var joinedData = (from zaap in zaapShiftRpt
-                              join ck4CItem in ck4CItemData on new {zaap.WERKS, zaap.FA_CODE, PRODUCTION_DATE = zaap.PRODUCTION_DATE } equals
-                                   new { ck4CItem.WERKS, ck4CItem.FA_CODE, PRODUCTION_DATE = ck4CItem.PROD_DATE }
+                              join ck4CItem in ck4CItemData on new {zaap.WERKS, zaap.FA_CODE } equals
+                                   new { ck4CItem.WERKS, ck4CItem.FA_CODE }
                               join prod in prodTypeData on new { ck4CItem.PROD_CODE } equals new { prod.PROD_CODE }
                               select new
                               {
@@ -2888,7 +2888,7 @@ namespace Sampoerna.EMS.BLL
                                   zaap.WERKS,
                                   zaap.COMPANY_CODE,
                                   zaap.UOM,
-                                  zaap.PRODUCTION_DATE,
+                                  //zaap.PRODUCTION_DATE,
                                   zaap.BATCH,
                                   ck4CItem.PROD_QTY,
                                   zaap.ORDR,
@@ -2914,14 +2914,14 @@ namespace Sampoerna.EMS.BLL
 
             var joinedWithUomData = (from j in joinedData
                                      join u in uomData on j.UOM equals u.UOM_ID
-                                     join p in proportionalOrderPerFa on new { j.FA_CODE, j.ORDR, j.PRODUCTION_DATE } equals new { FA_CODE = p.FaCode, ORDR = p.Ordr, PRODUCTION_DATE = p.ProductionDate }
+                                     join p in proportionalOrderPerFa on new { j.FA_CODE, j.ORDR } equals new { FA_CODE = p.FaCode, ORDR = p.Ordr }
                                      select new
                                      {
                                          j.FA_CODE,
                                          j.WERKS,
                                          j.COMPANY_CODE,
                                          j.UOM,
-                                         j.PRODUCTION_DATE,
+                                         //j.PRODUCTION_DATE,
                                          j.BATCH,
                                          j.PROD_QTY,
                                          j.ORDR,
@@ -2977,7 +2977,7 @@ namespace Sampoerna.EMS.BLL
                     //Amount = item.PROD_QTY,
                     UomId = item.UOM,
                     UomDesc = item.UOM_DESC,
-                    ProductionDate = item.PRODUCTION_DATE
+                    //ProductionDate = item.PRODUCTION_DATE
                     //ProportionalOrder = item.ProportionalOrder,
                 };
 
@@ -3050,13 +3050,13 @@ namespace Sampoerna.EMS.BLL
             var zaapItemKeyList = (from zaap in zaapShiftRpt
                                    select new
                                    {
-                                       key = zaap.FA_CODE + "-" + zaap.PRODUCTION_DATE.ToString("yyyMMdd"),
+                                       key = zaap.FA_CODE + "-" + zaap.WERKS,
 
                                    }).ToList();
 
             var ck4CItemNonZaap = (from item in ck4CItemData
                                    where !(from zaap in zaapItemKeyList
-                                           select zaap.key).Contains(item.FA_CODE + "-" + item.PROD_DATE.ToString("yyyyMMdd"))
+                                           select zaap.key).Contains(item.FA_CODE + "-" + item.WERKS)
                                    select item).ToList();
 
 
