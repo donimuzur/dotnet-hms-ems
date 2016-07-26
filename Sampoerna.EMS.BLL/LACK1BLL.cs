@@ -2332,7 +2332,9 @@ namespace Sampoerna.EMS.BLL
                     //sebenarnya cuma nge-set isFinalGoods nya aja sih ya ? atau dari max level nya ? bisa bisa :-)
                     item.IsFinalGoodsType = true;
                     item.ProductionQty = 0;
-                    traceItems.Add(item);
+                    //if (item.PostingDate.HasValue && item.PostingDate.Value.Month == periodMonth &&
+                    //    item.PostingDate.Value.Year == periodYear) 
+                        traceItems.Add(item);
                 }
                 else
                 {
