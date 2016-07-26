@@ -144,22 +144,89 @@ namespace Sampoerna.EMS.BLL.Services
             return data.FirstOrDefault();
         }
 
-        public List<INVENTORY_MOVEMENT> GetUsageByBatchAndPlantIdInPeriod(GetUsageByBatchAndPlantIdInPeriodParamInput input)
+        public List<INVENTORY_MOVEMENT> GetUsageByBatchAndPlantIdInPeriod(GetUsageByBatchAndPlantIdInPeriodParamInput input, List<BOM> bomMapList)
         {
 
             var mvtUsage = EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage261);
-            var data =
-                _repository.Get(
-                    c =>
-                        c.BATCH == input.Batch && c.PLANT_ID == input.PlantId &&
-                        c.MVT == mvtUsage);
-                        //&& c.POSTING_DATE.HasValue &&
-                        //c.POSTING_DATE.Value.Year == input.PeriodYear && c.POSTING_DATE.Value.Month == input.PeriodMonth);
+            BOM bom = new BOM();
+            string bomMaterial;
+            if (input.TrackLevel == 1)
+            {
+                bom = bomMapList.Where(x => x.LEVEL1 == input.LastMaterialId).FirstOrDefault();
+                bomMaterial = bom != null ? bom.LEVEL1 : null;
+            }
+            else if (input.TrackLevel == 2)
+            {
+                bom = bomMapList.Where(x => x.LEVEL2 == input.LastMaterialId).FirstOrDefault();
+                bomMaterial = bom != null ? bom.LEVEL2 : null;
+            }
+            else if (input.TrackLevel == 3)
+            {
+                bom = bomMapList.Where(x => x.LEVEL3 == input.LastMaterialId).FirstOrDefault();
+                bomMaterial = bom != null ? bom.LEVEL3 : null;
+            }
+            else if (input.TrackLevel == 4)
+            {
+                bom = bomMapList.Where(x => x.LEVEL4 == input.LastMaterialId).FirstOrDefault();
+                bomMaterial = bom != null ? bom.LEVEL4 : null;
+            }
+            else if (input.TrackLevel == 5)
+            {
+                bom = bomMapList.Where(x => x.LEVEL5 == input.LastMaterialId).FirstOrDefault();
+                bomMaterial = bom != null ? bom.LEVEL5 : null;
+            }
+            else if (input.TrackLevel == 6)
+            {
+                bom = bomMapList.Where(x => x.LEVEL6 == input.LastMaterialId).FirstOrDefault();
+                bomMaterial = bom != null ? bom.LEVEL6 : null;
+            }
+            else if (input.TrackLevel == 7)
+            {
+                bom = bomMapList.Where(x => x.LEVEL7 == input.LastMaterialId).FirstOrDefault();
+                bomMaterial = bom != null ? bom.LEVEL7 : null;
+            }
+            else if (input.TrackLevel == 8)
+            {
+                bom = bomMapList.Where(x => x.LEVEL8 == input.LastMaterialId).FirstOrDefault();
+                bomMaterial = bom != null ? bom.LEVEL8 : null;
+            }
+            else if (input.TrackLevel == 9)
+            {
+                bom = bomMapList.Where(x => x.LEVEL9 == input.LastMaterialId).FirstOrDefault();
+                bomMaterial = bom != null ? bom.LEVEL9 : null;
+            }
+            else if (input.TrackLevel == 10)
+            {
+                bom = bomMapList.Where(x => x.LEVEL10 == input.LastMaterialId).FirstOrDefault();
+                bomMaterial = bom != null ? bom.LEVEL10 : null;
+            }
+            else
+            {
+                bom = bomMapList.Where(x => x.MATERIAL_ID == input.LastMaterialId).FirstOrDefault();
+                bomMaterial = bom != null ? bom.MATERIAL_ID : null;
+            }
 
-            return data.ToList();
+            if (bom != null)
+            {
+                var data =
+                    _repository.Get(
+                        c =>
+                            c.BATCH == input.Batch && c.PLANT_ID == input.PlantId &&
+                            c.MVT == mvtUsage && c.MATERIAL_ID == bomMaterial);
+                //&& c.POSTING_DATE.HasValue &&
+                //c.POSTING_DATE.Value.Year == input.PeriodYear && c.POSTING_DATE.Value.Month == input.PeriodMonth);
+
+                return data.ToList();
+            }
+            else
+            {
+                return new List<INVENTORY_MOVEMENT>();
+            }
+
+
         }
 
-        public List<INVENTORY_MOVEMENT> GetReceivingByOrderAndPlantIdInPeriod(GetReceivingByOrderAndPlantIdInPeriodParamInput input)
+        public List<INVENTORY_MOVEMENT> GetReceivingByOrderAndPlantIdInPeriod(GetReceivingByOrderAndPlantIdInPeriodParamInput input, List<BOM> bomMapList)
         {
 
             var mvtReceiving = new List<string>()
@@ -168,15 +235,79 @@ namespace Sampoerna.EMS.BLL.Services
                 EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving102)
             };
 
-            var data =
-                _repository.Get(
-                    c =>
-                        c.ORDR == input.Ordr && c.PLANT_ID == input.PlantId &&
-                        mvtReceiving.Contains(c.MVT)); 
-                        //&& c.POSTING_DATE.HasValue &&
-                        //c.POSTING_DATE.Value.Year == input.PeriodYear && c.POSTING_DATE.Value.Month == input.PeriodMonth);
+            //BOM bom = new BOM();
+            List<string> bomMaterial = new List<string>();
+            int prevLevel = input.TrackLevel - 1;
 
-            return data.ToList();
+            if (prevLevel <= 0)
+            {
+                bomMaterial = bomMapList.Where(x => x.MATERIAL_ID == input.LastMaterialId).Select(x => x.LEVEL1).Distinct().ToList();
+            }
+            else if (prevLevel == 1)
+            {
+                bomMaterial = bomMapList.Where(x => x.LEVEL1 == input.LastMaterialId).Select(x => x.LEVEL2).Distinct().ToList();
+                //bomMaterial = bom != null ? bom.LEVEL1 : null;
+            }
+            else if (prevLevel == 2)
+            {
+                bomMaterial = bomMapList.Where(x => x.LEVEL2 == input.LastMaterialId).Select(x => x.LEVEL3).Distinct().ToList();
+                //bomMaterial = bom != null ? bom.LEVEL2 : null;
+            }
+            else if (prevLevel == 3)
+            {
+                bomMaterial = bomMapList.Where(x => x.LEVEL3 == input.LastMaterialId).Select(x => x.LEVEL4).Distinct().ToList();
+                //bomMaterial = bom != null ? bom.LEVEL3 : null;
+            }
+            else if (prevLevel == 4)
+            {
+                bomMaterial = bomMapList.Where(x => x.LEVEL4 == input.LastMaterialId).Select(x => x.LEVEL5).Distinct().ToList();
+                //bomMaterial = bom != null ? bom.LEVEL4 : null;
+            }
+            else if (prevLevel == 5)
+            {
+                bomMaterial = bomMapList.Where(x => x.LEVEL5 == input.LastMaterialId).Select(x => x.LEVEL6).Distinct().ToList();
+                //bomMaterial = bom != null ? bom.LEVEL5 : null;
+            }
+            else if (prevLevel == 6)
+            {
+                bomMaterial = bomMapList.Where(x => x.LEVEL6 == input.LastMaterialId).Select(x => x.LEVEL7).Distinct().ToList();
+                //bomMaterial = bom != null ? bom.LEVEL6 : null;
+            }
+            else if (prevLevel == 7)
+            {
+                bomMaterial = bomMapList.Where(x => x.LEVEL7 == input.LastMaterialId).Select(x => x.LEVEL8).Distinct().ToList();
+                //bomMaterial = bom != null ? bom.LEVEL7 : null;
+            }
+            else if (prevLevel == 8)
+            {
+                bomMaterial = bomMapList.Where(x => x.LEVEL8 == input.LastMaterialId).Select(x => x.LEVEL9).Distinct().ToList();
+                //bomMaterial = bom != null ? bom.LEVEL8 : null;
+            }
+            else if (prevLevel == 9)
+            {
+                bomMaterial = bomMapList.Where(x => x.LEVEL9 == input.LastMaterialId).Select(x => x.LEVEL10).Distinct().ToList();
+                //bomMaterial = bom != null ? bom.LEVEL9 : null;
+            }
+            else
+            {
+                bomMaterial = new List<string>();
+                //bomMaterial = bom != null ? bom.MATERIAL_ID : null;
+            }
+
+            if (bomMaterial.Count > 0 )
+            {
+
+                var data =
+                    _repository.Get(
+                        c =>
+                            c.ORDR == input.Ordr && c.PLANT_ID == input.PlantId &&
+                            mvtReceiving.Contains(c.MVT) && bomMaterial.Contains(c.MATERIAL_ID));
+                //&& c.POSTING_DATE.HasValue &&
+                //c.POSTING_DATE.Value.Year == input.PeriodYear && c.POSTING_DATE.Value.Month == input.PeriodMonth);
+
+                return data.ToList();
+            }
+            return new List<INVENTORY_MOVEMENT>();
         }
 
         

@@ -39,6 +39,10 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string PlantId { get; set; }
         public int PeriodMonth { get; set; }
         public int PeriodYear { get; set; }
+
+        public string LastMaterialId { get; set; }
+
+        public int TrackLevel { get; set; }
     }
 
     public class GetReceivingByOrderAndPlantIdInPeriodParamInput
@@ -47,6 +51,10 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string PlantId { get; set; }
         public int PeriodMonth { get; set; }
         public int PeriodYear { get; set; }
+
+        public string LastMaterialId { get; set; }
+
+        public int TrackLevel { get; set; }
     }
 
 }
