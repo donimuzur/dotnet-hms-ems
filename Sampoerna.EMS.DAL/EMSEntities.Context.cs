@@ -123,5 +123,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<ZAAP_SHIFT_RPT> ZAAP_SHIFT_RPT { get; set; }
         public virtual DbSet<PRODUCTION> PRODUCTION { get; set; }
         public virtual DbSet<REVERSAL> REVERSAL { get; set; }
+        public virtual DbSet<CK4C_REPORT_ITEM> CK4C_REPORT_ITEM { get; set; }
     }
 }
