@@ -147,7 +147,11 @@ namespace Sampoerna.EMS.BLL.Services
         public List<INVENTORY_MOVEMENT> GetUsageByBatchAndPlantIdInPeriod(GetUsageByBatchAndPlantIdInPeriodParamInput input, List<BOM> bomMapList)
         {
 
-            var mvtUsage = EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage261);
+            var mvtUsage = new List<string>()
+            {
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage261),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage262)
+            };
             BOM bom = new BOM();
             string bomMaterial;
             if (input.TrackLevel == 1)
@@ -206,24 +210,25 @@ namespace Sampoerna.EMS.BLL.Services
                 bomMaterial = bom != null ? bom.MATERIAL_ID : null;
             }
 
-            if (bom != null)
-            {
+            //if (bom != null)
+            //{
                 var data =
                     _repository.Get(
                         c =>
                             c.BATCH == input.Batch && c.PLANT_ID == input.PlantId &&
-                            c.MVT == mvtUsage 
+                            mvtUsage.Contains(c.MVT)
                             //&& c.MATERIAL_ID == bomMaterial
-                            && c.POSTING_DATE.HasValue 
-                            && c.POSTING_DATE.Value.Year <= input.PeriodYear && c.POSTING_DATE.Value.Month <= input.PeriodMonth);
+                            //&& c.POSTING_DATE.HasValue 
+                            //&& c.POSTING_DATE.Value.Year <= input.PeriodYear && c.POSTING_DATE.Value.Month <= input.PeriodMonth
+                            );
                 
 
                 return data.ToList();
-            }
-            else
-            {
-                return new List<INVENTORY_MOVEMENT>();
-            }
+            //}
+            //else
+            //{
+            //    return new List<INVENTORY_MOVEMENT>();
+            //}
 
 
         }
@@ -305,8 +310,8 @@ namespace Sampoerna.EMS.BLL.Services
                             c.ORDR == input.Ordr && c.PLANT_ID == input.PlantId &&
                             mvtReceiving.Contains(c.MVT) 
                             && bomMaterial.Contains(c.MATERIAL_ID)
-                            && c.POSTING_DATE.HasValue 
-                            && c.POSTING_DATE.Value.Year <= input.PeriodYear && c.POSTING_DATE.Value.Month <= input.PeriodMonth
+                            //&& c.POSTING_DATE.HasValue 
+                            //&& c.POSTING_DATE.Value.Year <= input.PeriodYear && c.POSTING_DATE.Value.Month <= input.PeriodMonth
                             );
                 
 

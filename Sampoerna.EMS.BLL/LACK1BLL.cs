@@ -2321,7 +2321,7 @@ namespace Sampoerna.EMS.BLL
                 item.IsFinalGoodsType = false;
                 item.ParentOrdr = parentOrdr;
                 item.ProductionQty = item.Qty;
-
+                
                 var receivingList = GetReceivingEtilAlcoholProdTrace(parentOrdr, (trackLevel + 1), item.Ordr, plantId,
                     periodMonth, periodYear, bkcUomId,item.MaterialId,bommapList).ToList();
 
