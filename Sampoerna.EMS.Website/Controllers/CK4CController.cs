@@ -443,17 +443,33 @@ namespace Sampoerna.EMS.Website.Controllers
             return new SelectList(years, "ValueField", "TextField");
         }
 
-        private List<Ck4cItemData> SetOtherCk4cItemData(List<Ck4cItemData> ck4cItemData)
+        private List<Ck4cItemData> SetOtherCk4cItemData(List<Ck4cItemData> ck4cItemData, int ck4cId)
         {
             List<Ck4cItemData> listData;
 
             listData = ck4cItemData.OrderBy(x => x.ProdDate).ToList();
 
+            var listBrand = _brandRegistrationBll.GetAllBrandsOnly();
+            var listPlant = _plantBll.GetAllPlant();
+            var listProdType = _prodTypeBll.GetAll();
+
+            var ck4cData = _ck4CBll.GetCk4cReportDataById(ck4cId);
+
+            var ck4cItemList = ck4cData.Ck4cItemList;
+
             foreach (var item in listData)
             {
-                var brand = _brandRegistrationBll.GetById(item.Werks, item.FaCode);
-                var plant = _plantBll.GetT001WById(item.Werks);
-                var prodType = _prodTypeBll.GetByCode(item.ProdCode);
+                //var brand = _brandRegistrationBll.GetById(item.Werks, item.FaCode);
+                //var plant = _plantBll.GetT001WById(item.Werks);
+                //var prodType = _prodTypeBll.GetByCode(item.ProdCode);
+                var brand = listBrand.Where(x => x.WERKS == item.Werks && x.FA_CODE == item.FaCode).FirstOrDefault();
+                var plant = listPlant.Where(x => x.WERKS == item.Werks).FirstOrDefault();
+                var prodType = listProdType.FirstOrDefault(c => c.PROD_CODE == item.ProdCode);
+
+                var unpackedBrand = ck4cItemList.Where(x => x.Merk == brand.BRAND_CE && x.ProdType == prodType.PRODUCT_ALIAS
+                    && x.ProdDate == item.ProdDate.ToString("d-MMM-yyyy") && x.Hje == String.Format("{0:n}", brand.HJE_IDR)).Select(x => x.ProdWaste).FirstOrDefault();
+
+                if (unpackedBrand == "Nihil") unpackedBrand = "0";
 
                 if (item.ContentPerPack == 0)
                     item.ContentPerPack = Convert.ToInt32(brand.BRAND_CONTENT);
@@ -465,6 +481,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 item.BrandDescription = brand.BRAND_CE;
                 item.PlantName = item.Werks + "-" + plant.NAME1;
                 item.ProdType = prodType.PRODUCT_TYPE;
+
+                item.UnpackedQtyBrand = Convert.ToDecimal(unpackedBrand);
 
                 item.IsEditable = prodType.CK4CEDITABLE;
             }
@@ -525,7 +543,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     PrintHistoryList = printHistory
                 };
 
-                model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData);
+                model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData, id.Value);
 
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
 
@@ -601,7 +619,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     PrintHistoryList = printHistory
                 };
 
-                model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData);
+                model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData, id.Value);
 
                 //validate approve and reject
                 var input = new WorkflowAllowApproveAndRejectInput
@@ -699,7 +717,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     PrintHistoryList = printHistory
                 };
 
-                model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData);
+                model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData, id.Value);
 
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
 
@@ -752,7 +770,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 model.Details = Mapper.Map<DataDocumentList>(ck4cData);
 
-                model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData);
+                model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData, id.Value);
 
                 var plant = _plantBll.GetT001WById(ck4cData.PlantId);
                 var nppbkcId = ck4cData.NppbkcId;
