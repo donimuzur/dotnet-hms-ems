@@ -71,6 +71,7 @@ namespace Sampoerna.EMS.BLL
         private ICK5MaterialService _ck5MaterialService;
         private IProductionServices _productionServices;
         private IWasteServices _wasteServices;
+        private IBomService _bomService;
 
         public LACK1BLL(IUnitOfWork uow, ILogger logger)
         {
@@ -117,6 +118,7 @@ namespace Sampoerna.EMS.BLL
             _ck5MaterialService = new CK5MaterialService(_uow, _logger);
             _productionServices = new ProductionServices(_uow, _logger);
             _wasteServices = new WasteServices(_uow, _logger);
+            _bomService = new BomServices(_uow,_logger);
         }
 
         public List<Lack1Dto> GetAllByParam(Lack1GetByParamInput input)
@@ -2357,6 +2359,8 @@ namespace Sampoerna.EMS.BLL
             
             foreach (var item in invMovementReceivingListGrouped)
             {
+                var bommapList = _bomService.GetBomByPlantIdAndMaterial(item.PlantId, item.MaterialId);
+
                 //set for level 0
                 item.TrackLevel = 0;
                 item.ParentOrdr = item.Ordr;
@@ -2371,7 +2375,7 @@ namespace Sampoerna.EMS.BLL
                 };
 
                 var traceItems = GetUsageEtilAlcoholProdTrace(item.ParentOrdr, 0, item.Batch, item.PlantId,
-                    input.PeriodMonth, input.PeriodYear, bkcUomId).ToList();
+                    input.PeriodMonth, input.PeriodYear, bkcUomId,item.MaterialId, bommapList).ToList();
 
                 if (traceItems.Count > 0)
                 {
@@ -2504,7 +2508,7 @@ namespace Sampoerna.EMS.BLL
             };
         }
 
-        private IEnumerable<Lack1GeneratedInvMovementProductionStepTracingItem> GetUsageEtilAlcoholProdTrace(string parentOrdr, int trackLevel, string batch, string plantId, int periodMonth, int periodYear, string bkcUomId)
+        private IEnumerable<Lack1GeneratedInvMovementProductionStepTracingItem> GetUsageEtilAlcoholProdTrace(string parentOrdr, int trackLevel, string batch, string plantId, int periodMonth, int periodYear, string bkcUomId,string lastMaterialId,List<BOM> bommapList)
         {
             var traceItems = new List<Lack1GeneratedInvMovementProductionStepTracingItem>();
 
@@ -2515,8 +2519,10 @@ namespace Sampoerna.EMS.BLL
                         Batch = batch,
                         PlantId = plantId,
                         PeriodYear = periodYear,
-                        PeriodMonth = periodMonth
-                    });
+                        PeriodMonth = periodMonth,
+                        TrackLevel = trackLevel,
+                        LastMaterialId = lastMaterialId
+                    }, bommapList);
 
             var usageListWithConvertion = InvMovementConvertionProcess(usageList, bkcUomId);
 
@@ -2530,9 +2536,9 @@ namespace Sampoerna.EMS.BLL
                 item.IsFinalGoodsType = false;
                 item.ParentOrdr = parentOrdr;
                 item.ProductionQty = item.Qty;
-
+                
                 var receivingList = GetReceivingEtilAlcoholProdTrace(parentOrdr, (trackLevel + 1), item.Ordr, plantId,
-                    periodMonth, periodYear, bkcUomId).ToList();
+                    periodMonth, periodYear, bkcUomId,item.MaterialId,bommapList).ToList();
 
                 if (receivingList.Count <= 0)
                 {
@@ -2541,7 +2547,9 @@ namespace Sampoerna.EMS.BLL
                     //sebenarnya cuma nge-set isFinalGoods nya aja sih ya ? atau dari max level nya ? bisa bisa :-)
                     item.IsFinalGoodsType = true;
                     item.ProductionQty = 0;
-                    traceItems.Add(item);
+                    //if (item.PostingDate.HasValue && item.PostingDate.Value.Month == periodMonth &&
+                    //    item.PostingDate.Value.Year == periodYear) 
+                        traceItems.Add(item);
                 }
                 else
                 {
@@ -2555,7 +2563,7 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        private IEnumerable<Lack1GeneratedInvMovementProductionStepTracingItem> GetReceivingEtilAlcoholProdTrace(string parentOrdr, int trackLevel, string ordr, string plantId, int periodMonth, int periodYear, string bkcUomId)
+        private IEnumerable<Lack1GeneratedInvMovementProductionStepTracingItem> GetReceivingEtilAlcoholProdTrace(string parentOrdr, int trackLevel, string ordr, string plantId, int periodMonth, int periodYear, string bkcUomId,string lastmaterialid,List<BOM> bommapList)
         {
             var traceItems = new List<Lack1GeneratedInvMovementProductionStepTracingItem>();
             var receivingList =
@@ -2565,8 +2573,10 @@ namespace Sampoerna.EMS.BLL
                         Ordr = ordr,
                         PlantId = plantId,
                         PeriodYear = periodYear,
-                        PeriodMonth = periodMonth
-                    });
+                        PeriodMonth = periodMonth,
+                        LastMaterialId = lastmaterialid,
+                        TrackLevel = trackLevel
+                    },bommapList);
 
             var receivingListWithConvertion = InvMovementConvertionProcess(receivingList, bkcUomId);
 
@@ -2596,7 +2606,7 @@ namespace Sampoerna.EMS.BLL
                 {
                     //not exists in zaidm_ex_material = continue get 261
                     item.IsFinalGoodsType = false;
-                    var usageList = GetUsageEtilAlcoholProdTrace(parentOrdr, trackLevel, item.Batch, plantId, periodMonth, periodYear, bkcUomId).ToList();
+                    var usageList = GetUsageEtilAlcoholProdTrace(parentOrdr, trackLevel, item.Batch, plantId, periodMonth, periodYear, bkcUomId,item.MaterialId,bommapList).ToList();
                     if (usageList.Count <= 0)
                     {
                         //set prodution qty to zero cause of no more usage at next level

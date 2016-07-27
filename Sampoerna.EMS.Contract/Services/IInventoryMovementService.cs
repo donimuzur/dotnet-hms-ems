@@ -18,10 +18,10 @@ namespace Sampoerna.EMS.Contract.Services
 
         INVENTORY_MOVEMENT GetUsageByBatchAndPlantId(string batch, string plantId);
 
-        List<INVENTORY_MOVEMENT> GetUsageByBatchAndPlantIdInPeriod(GetUsageByBatchAndPlantIdInPeriodParamInput input);
+        List<INVENTORY_MOVEMENT> GetUsageByBatchAndPlantIdInPeriod(GetUsageByBatchAndPlantIdInPeriodParamInput input,  List<BOM> bomMapList);
 
         List<INVENTORY_MOVEMENT> GetReceivingByOrderAndPlantIdInPeriod(
-            GetReceivingByOrderAndPlantIdInPeriodParamInput input);
+            GetReceivingByOrderAndPlantIdInPeriodParamInput input,  List<BOM> bomMapList);
 
         List<INVENTORY_MOVEMENT> GetMvt201(InvMovementGetUsageByParamInput input, bool isAssigned = false);
 
