@@ -96,6 +96,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public string ProdCode { get; set; }
         public Decimal PackedQty { get; set; }
         public Decimal UnpackedQty { get; set; }
+        public Decimal UnpackedQtyBrand { get; set; }
         public string ProdDateName { get; set; }
         public string BrandDescription { get; set; }
         public string PlantName { get; set; }

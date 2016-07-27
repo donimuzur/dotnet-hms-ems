@@ -206,7 +206,7 @@ function getProductionData(urlFunction) {
     if (comp == "" || (plant == "" && isPlant) || (nppbkc == "" && isNppbkc) || period == "" || month == "" || year == "") {
         $('.loading').hide();
         $('#tb-body-ck4c').html("");
-        $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="15">no data<td></tr>');
+        $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="16">no data<td></tr>');
     }
     else {
         $.ajax({
@@ -245,6 +245,7 @@ function getProductionData(urlFunction) {
                             '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_PackedQty" name="Details.Ck4cItemData[' + i + '].PackedQty" value=' + data[i].QtyPacked + '></input>' + ThausandSeperator(data[i].QtyPacked, 2) + '</td>' +
                             '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_PackedInPack" name="Details.Ck4cItemData[' + i + '].PackedInPack" value=' + data[i].PackedInPack + '></input>' + ThausandSeperator(data[i].PackedInPack, 2) + '</td>' +
                             '<td class="number">' + ThausandSeperator(data[i].QtyUnpacked, 2) + '</td>' +
+                            '<td class="number">' + 0 + '</td>' +
                             '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ProdQty" name="Details.Ck4cItemData[' + i + '].ProdQty" value=' + data[i].QtyProduced + '></input>' + ThausandSeperator(data[i].QtyProduced, 2) + '</td>' +
                             '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ProdQtyUom" name="Details.Ck4cItemData[' + i + '].ProdQtyUom" value=' + data[i].Uom + '></input><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ProdCode" name="Details.Ck4cItemData[' + i + '].ProdCode" value=' + data[i].ProdCode + '></input>' + data[i].Uom + '</td>' +
                             '<td></td>' +
@@ -256,7 +257,7 @@ function getProductionData(urlFunction) {
                     }
                 } else {
                     $('#tb-body-ck4c').html("");
-                    $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="15">no data<td></tr>');
+                    $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="16">no data<td></tr>');
                 }
             }
         });
@@ -269,9 +270,9 @@ function EditRow(o) {
     //set value
     $('#uploadItemRow').val(nRow.find("td").eq(1).html());
 
-    $('#uploadRemarks').val(nRow.find("td").eq(15).text());
+    $('#uploadRemarks').val(nRow.find("td").eq(16).text());
     
-    $('#uploadWip').val(nRow.find("td").eq(18).text());
+    $('#uploadWip').val(nRow.find("td").eq(19).text());
     $('#uploadValidate').val('1');//need validate
     $("#rowUnpack").css("visibility", "visible");
     
@@ -280,8 +281,8 @@ function EditRow(o) {
     $('#uploadWip').removeClass('input-validation-error');
     $('#uploadWip').addClass('valid');
     
-    if (nRow.find("td").eq(17).text() == 'False'
-        || nRow.find("td").eq(17).text() == 'false')
+    if (nRow.find("td").eq(18).text() == 'False'
+        || nRow.find("td").eq(18).text() == 'false')
     {
         $("#rowUnpack").css("visibility", "hidden");
         $('#uploadValidate').val('0');
@@ -311,11 +312,11 @@ function UpdateRow() {
                 var classRemarks = "Remarks" + row;
                 var classUnpack = "Unpack" + row;
 
-                $(this).find('td').eq(15).text($('#uploadRemarks').val());
+                $(this).find('td').eq(16).text($('#uploadRemarks').val());
                 $("." + classRemarks).val($('#uploadRemarks').val());
 
                 $(this).find('td').eq(12).text($('#uploadWip').val());
-                $(this).find('td').eq(18).text($('#uploadWip').val());
+                $(this).find('td').eq(19).text($('#uploadWip').val());
 
                 var unpackValue = $('#uploadWip').val().replace(/\,/g, '');
                 $("." + classUnpack).val(unpackValue);
@@ -400,6 +401,6 @@ function CheckSameData() {
 
     if (comp != compX || plant != plantX || nppbkc != nppbkcX || period != periodX || month != monthX || year != yearX) {
         $('#tb-body-ck4c').html("");
-        $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="15">no data<td></tr>');
+        $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="16">no data<td></tr>');
     }
 }
