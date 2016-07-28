@@ -2036,7 +2036,7 @@ namespace Sampoerna.EMS.BLL
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.GovRejected);
             WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.Rejected);
 
-            dbData.STATUS = Enums.DocumentStatus.GovRejected;
+            dbData.STATUS = Enums.DocumentStatus.Draft;
             dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
 
             dbData.MODIFIED_DATE = DateTime.Now;

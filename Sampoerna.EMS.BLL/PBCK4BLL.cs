@@ -1519,7 +1519,7 @@ namespace Sampoerna.EMS.BLL
          
            InsertOrDeletePbck4Item(pbckDocument);
 
-           dbData.STATUS = Enums.DocumentStatus.GovRejected;
+           dbData.STATUS = Enums.DocumentStatus.Draft;
             dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
 
             dbData.MODIFIED_DATE = DateTime.Now;
