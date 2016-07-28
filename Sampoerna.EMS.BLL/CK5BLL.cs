@@ -198,7 +198,7 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
-            if (input.UserRole != Enums.UserRole.Administrator)
+            if (input.UserRole != Enums.UserRole.Administrator && input.UserRole != Enums.UserRole.Viewer)
             {
 
                 if (input.ListUserPlant == null)
@@ -3791,7 +3791,7 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
-            if (input.UserRole != Enums.UserRole.Administrator)
+            if (input.UserRole != Enums.UserRole.Administrator && input.UserRole != Enums.UserRole.Viewer)
             {
                 if (input.ListUserPlant == null)
                     throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
@@ -3853,6 +3853,29 @@ namespace Sampoerna.EMS.BLL
                 }
 
             }
+
+            //if (input.UserRole == Enums.UserRole.Viewer)
+            //{
+            //    if (input.ListUserPlant == null)
+            //        throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
+
+            //    if (input.Ck5Type == Enums.CK5Type.PortToImporter || input.Ck5Type == Enums.CK5Type.DomesticAlcohol || input.Ck5Type == Enums.CK5Type.Waste)
+            //    {
+            //        queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.DEST_PLANT_ID));
+            //    }
+            //    else if (input.Ck5Type == Enums.CK5Type.Manual || input.Ck5Type == Enums.CK5Type.MarketReturn)
+            //    {
+
+            //        queryFilter = queryFilter.And(c => (
+            //            (c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText && input.ListUserPlant.Contains(c.DEST_PLANT_ID))
+            //            || input.ListUserPlant.Contains(c.SOURCE_PLANT_ID)));
+            //    }
+            //    else
+            //    {
+
+            //        queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.SOURCE_PLANT_ID));
+            //    }
+            //}
 
             if (!string.IsNullOrEmpty(input.CompanyCodeSource))
             {
@@ -5651,7 +5674,7 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
-            if (input.UserRole != Enums.UserRole.Administrator)
+            if (input.UserRole != Enums.UserRole.Administrator && input.UserRole != Enums.UserRole.Viewer)
             {
                 if (input.ListUserPlant == null)
                     throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
@@ -5664,6 +5687,20 @@ namespace Sampoerna.EMS.BLL
                               input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
 
             }
+
+            //if (input.UserRole == Enums.UserRole.Viewer)
+            //{
+            //    if (input.ListUserPlant == null)
+            //        throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
+
+                
+            //        queryFilter = queryFilter.And(c => (
+            //            (c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText && input.ListUserPlant.Contains(c.DEST_PLANT_ID))
+            //            || input.ListUserPlant.Contains(c.SOURCE_PLANT_ID)));
+               
+                
+            //}
+
             if (!string.IsNullOrEmpty(input.FaCode))
             {
                 queryFilter = queryFilter.And(c => c.CK5_MATERIAL.Any(x => x.BRAND == input.FaCode));
@@ -5995,7 +6032,7 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
-            if (input.UserRole != Enums.UserRole.Administrator)
+            if (input.UserRole != Enums.UserRole.Administrator && input.UserRole != Enums.UserRole.Viewer)
             {
 
                 if (input.ListUserPlant == null)
@@ -6057,6 +6094,29 @@ namespace Sampoerna.EMS.BLL
                 }
 
             }
+
+            //if (input.UserRole == Enums.UserRole.Viewer)
+            //{
+            //    if (input.ListUserPlant == null)
+            //        throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
+
+            //    if (input.Ck5Type == Enums.CK5Type.PortToImporter || input.Ck5Type == Enums.CK5Type.DomesticAlcohol || input.Ck5Type == Enums.CK5Type.Waste)
+            //    {
+            //        queryFilter = queryFilter.And(c =>input.ListUserPlant.Contains(c.DEST_PLANT_ID));
+            //    }
+            //    else if (input.Ck5Type == Enums.CK5Type.Manual || input.Ck5Type == Enums.CK5Type.MarketReturn)
+            //    {
+
+            //        queryFilter = queryFilter.And(c => (
+            //            (c.MANUAL_FREE_TEXT == Enums.Ck5ManualFreeText.SourceFreeText && input.ListUserPlant.Contains(c.DEST_PLANT_ID)) 
+            //            ||input.ListUserPlant.Contains(c.SOURCE_PLANT_ID)));
+            //    }
+            //    else
+            //    {
+
+            //        queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.SOURCE_PLANT_ID));
+            //    }
+            //}
 
             if (input.Ck5Type == Enums.CK5Type.Completed)
                 queryFilter = queryFilter.And(c => (c.STATUS_ID == Enums.DocumentStatus.Completed || c.STATUS_ID == Enums.DocumentStatus.Cancelled) && c.CK5_TYPE != Enums.CK5Type.MarketReturn);

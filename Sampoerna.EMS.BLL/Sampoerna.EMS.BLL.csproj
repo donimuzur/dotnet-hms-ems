@@ -103,6 +103,7 @@
     <Compile Include="SchedulerSettingBLL.cs" />
     <Compile Include="Services\Back1Services.cs" />
     <Compile Include="Services\Back3Services.cs" />
+    <Compile Include="Services\BomServices.cs" />
     <Compile Include="Services\BrandRegistrationService.cs" />
     <Compile Include="Services\CK1Services.cs" />
     <Compile Include="Services\CK2Services.cs" />
