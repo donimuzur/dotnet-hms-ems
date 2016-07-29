@@ -146,7 +146,8 @@
                                         <th>Content Per Pack (8)</th>
                                         <th>Packed QTY (6)</th>
                                         <th>Packed QTY In Pack (10)</th>
-                                        <th>Unpacked QTY (11)</th>
+                                        <th>Unpacked QTY (FA)</th>
+                                        <th>Unpacked QTY (Brand) (11)</th>
                                         <th>Produced QTY (5)</th>
                                         <th>UoM Produced QTY</th>
                                         <th>Remarks (12)</th>
@@ -168,6 +169,7 @@
                                             <td class="number">@string.Format("{0:N2}", item.PackedQty)</td>
                                             <td class="number">@string.Format("{0:N2}", item.PackedInPack)</td>
                                             <td class="number">@string.Format("{0:N2}", item.UnpackedQty)</td>
+                                            <td class="number">@string.Format("{0:N2}", item.UnpackedQtyBrand)</td>
                                             <td class="number">@string.Format("{0:N2}", item.ProdQty)</td>
                                             <td>@item.ProdQtyUom</td>
                                             <td>@item.Remarks</td>
