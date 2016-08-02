@@ -2854,6 +2854,19 @@ namespace Sampoerna.EMS.BLL
                                            select zaap.key).Contains(item.FA_CODE + "-" + item.WERKS)
                                    select item).ToList();
 
+            var ck4cItemZaap = (from ck4c in ck4CItemData
+                                join zaap in zaapShiftRpt on new { ck4c.FA_CODE, ck4c.WERKS, ck4c.PROD_DATE }
+                                equals new { zaap.FA_CODE, zaap.WERKS, PROD_DATE = zaap.PRODUCTION_DATE } into zaapT
+                                from zaap in zaapT.DefaultIfEmpty()
+
+                                select new
+                                {
+                                    ck4c,
+                                    IS_ZAAP = zaap != null
+                                }).ToList();
+
+            var ck4cItemNonZaapDate = ck4cItemZaap.Where(x => !x.IS_ZAAP).ToList();
+            ck4CItemNonZaap.AddRange(ck4cItemNonZaapDate.Select(data => data.ck4c));
 
             var joinedData = (from ck4CItem in ck4CItemNonZaap
                               join prod in prodTypeData on new { ck4CItem.PROD_CODE } equals new { prod.PROD_CODE }
@@ -2897,54 +2910,64 @@ namespace Sampoerna.EMS.BLL
                                      }).Distinct().ToList();
 
 
-            var groupedOrderProductionList = currentProductionList.GroupBy(p => new { p.FaCode })
-                .Select(x => new { Fa_Code = x.Key.FaCode, QtyTotal = x.Sum(y => y.Amount) }).ToList();
+            //var groupedOrderProductionList = currentProductionList.GroupBy(p => new { p.FaCode })
+            //    .Select(x => new { Fa_Code = x.Key.FaCode, QtyTotal = x.Sum(y => y.Amount) }).ToList();
 
             var res = new List<Lack1GeneratedProductionDataDto>();
             foreach (var nonzaapItem in joinedWithUomData)
             {
                 
-                var zaapshiftRptByOrder = currentProductionList.Where(x => x.FaCode == nonzaapItem.FA_CODE).ToList();
+                //var zaapshiftRptByOrder = currentProductionList.Where(x => x.FaCode == nonzaapItem.FA_CODE).ToList();
 
-                foreach (var shiftRpt in zaapshiftRptByOrder)
+                //foreach (var shiftRpt in zaapshiftRptByOrder)
+                //{
+                //    var itemToInsert = new Lack1GeneratedProductionDataDto()
+                //    {
+                //        FaCode = nonzaapItem.FA_CODE,
+                //        //Ordr = nonzaapItem.ORDR,
+                //        ProdCode = nonzaapItem.PROD_CODE,
+                //        ProductType = nonzaapItem.PRODUCT_TYPE,
+                //        ProductAlias = nonzaapItem.PRODUCT_ALIAS,
+                //        Amount = nonzaapItem.PROD_QTY,
+                //        UomId = nonzaapItem.UOM_PROD_QTY,
+                //        UomDesc = nonzaapItem.UOM_DESC,
+                //        //ProportionalOrder = 
+                //    };
+
+                //    var totalProductionOrder = groupedOrderProductionList.FirstOrDefault(x => x.Fa_Code == nonzaapItem.FA_CODE);
+                //    if (totalProductionOrder != null && totalProductionOrder.QtyTotal > 0)
+                //    {
+                //        var proportional = new Lack1FACodeProportional()
+                //        {
+                //            Fa_Code = nonzaapItem.FA_CODE,
+                //            Order = shiftRpt.Ordr,
+                //            QtyOrder = shiftRpt.Amount,
+                //            QtyAllOrder = totalProductionOrder.QtyTotal
+                //        };
+
+                //        //var value = proportional.QtyOrder / proportional.QtyAllOrder * nonzaapItem.PROD_QTY;
+                //        //itemToInsert.Amount = Convert.ToDecimal(ROUNDUP((double)value,0)); //Math.Round((proportional.QtyOrder / proportional.QtyAllOrder) * nonzaapItem.PROD_QTY, 0, MidpointRounding.AwayFromZero);
+                //        itemToInsert.Amount = (proportional.QtyOrder / proportional.QtyAllOrder) * nonzaapItem.PROD_QTY;
+
+                //        res.Add(itemToInsert);
+                //    }
+                //}
+
+
+                
+                var itemToInsert = new Lack1GeneratedProductionDataDto()
                 {
-                    var itemToInsert = new Lack1GeneratedProductionDataDto()
-                    {
-                        FaCode = nonzaapItem.FA_CODE,
-                        //Ordr = nonzaapItem.ORDR,
-                        ProdCode = nonzaapItem.PROD_CODE,
-                        ProductType = nonzaapItem.PRODUCT_TYPE,
-                        ProductAlias = nonzaapItem.PRODUCT_ALIAS,
-                        Amount = nonzaapItem.PROD_QTY,
-                        UomId = nonzaapItem.UOM_PROD_QTY,
-                        UomDesc = nonzaapItem.UOM_DESC,
-                        //ProportionalOrder = 
-                    };
-
-                    var totalProductionOrder = groupedOrderProductionList.FirstOrDefault(x => x.Fa_Code == nonzaapItem.FA_CODE);
-                    if (totalProductionOrder != null && totalProductionOrder.QtyTotal > 0)
-                    {
-                        var proportional = new Lack1FACodeProportional()
-                        {
-                            Fa_Code = nonzaapItem.FA_CODE,
-                            Order = shiftRpt.Ordr,
-                            QtyOrder = shiftRpt.Amount,
-                            QtyAllOrder = totalProductionOrder.QtyTotal
-                        };
-
-                        //var value = proportional.QtyOrder / proportional.QtyAllOrder * nonzaapItem.PROD_QTY;
-                        //itemToInsert.Amount = Convert.ToDecimal(ROUNDUP((double)value,0)); //Math.Round((proportional.QtyOrder / proportional.QtyAllOrder) * nonzaapItem.PROD_QTY, 0, MidpointRounding.AwayFromZero);
-                        itemToInsert.Amount = (proportional.QtyOrder / proportional.QtyAllOrder) * nonzaapItem.PROD_QTY;
-
-                        res.Add(itemToInsert);
-                    }
-                }
-
-
-                //var data = itemToInsert;
-                //data.Amount = nonzaapItem.PROD_QTY;
-
-                //res.Add(data);
+                    FaCode = nonzaapItem.FA_CODE,
+                    //Ordr = nonzaapItem.ORDR,
+                    ProdCode = nonzaapItem.PROD_CODE,
+                    ProductType = nonzaapItem.PRODUCT_TYPE,
+                    ProductAlias = nonzaapItem.PRODUCT_ALIAS,
+                    Amount = nonzaapItem.PROD_QTY,
+                    UomId = nonzaapItem.UOM_PROD_QTY,
+                    UomDesc = nonzaapItem.UOM_DESC,
+                    //ProportionalOrder = 
+                };
+                res.Add(itemToInsert);
                 
             }
 
