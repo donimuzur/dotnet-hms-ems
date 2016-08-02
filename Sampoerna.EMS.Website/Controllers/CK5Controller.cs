@@ -27,6 +27,7 @@ using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.CK5;
 using Sampoerna.EMS.Website.Models.PrintHistory;
+using Sampoerna.EMS.Website.Models.Shared;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Utility;
 using Sampoerna.EMS.XMLReader;
@@ -3600,6 +3601,7 @@ namespace Sampoerna.EMS.Website.Controllers
             input.ListUserPlant = CurrentUser.ListUserPlants;
 
             dbData = _ck5Bll.GetSummaryReportsViewByParam(input);
+            
             return Mapper.Map<List<CK5SummaryReportsItem>>(dbData);
         }
 
@@ -3607,7 +3609,29 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public PartialViewResult SearchSummaryReports(CK5SummaryReportsViewModel model)
         {
-            model.DetailsList = SearchDataSummaryReports(model.SearchView);
+            var data = SearchDataSummaryReports(model.SearchView);
+            model.TotalData = data.Count;
+            if (model.TotalDataPerPage > 0)
+            {
+                data = data.Skip(model.TotalDataPerPage * model.CurrentPage).Take(model.TotalDataPerPage).ToList();
+            }
+            model.DetailsList = data;
+            
+            return PartialView("_CK5ListSummaryReport", model);
+        }
+
+
+        [HttpPost]
+        public PartialViewResult SearchSummaryReportsAjax(DTParameters param)
+        {
+            var data = SearchDataSummaryReports(model.SearchView);
+            model.TotalData = data.Count;
+            if (model.TotalDataPerPage > 0)
+            {
+                data = data.Skip(model.TotalDataPerPage * model.CurrentPage).Take(model.TotalDataPerPage).ToList();
+            }
+            model.DetailsList = data;
+
             return PartialView("_CK5ListSummaryReport", model);
         }
 

@@ -25,6 +25,11 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
         public Enums.CK5Type Ck5Type { get; set; }
 
+        public int TotalData { get; set; }
+        public int TotalDataPerPage { get; set; }
+
+        public int CurrentPage { get; set; }
+
         
     }
 
@@ -72,6 +77,8 @@ namespace Sampoerna.EMS.Website.Models.CK5
         public SelectList MaterialDescriptionList { get; set; }
         public SelectList PoaList { get; set; }
         public SelectList CreatorList { get; set; }
+
+       
 
     }
 

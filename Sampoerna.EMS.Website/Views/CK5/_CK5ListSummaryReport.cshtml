@@ -1,5 +1,7 @@
 ﻿@model Sampoerna.EMS.Website.Models.CK5.CK5SummaryReportsViewModel
-
+<input type="hidden" id="returnTotalData" value="@Model.TotalData" />
+<input type="hidden" id="returnTotalPerPage" value="@Model.TotalDataPerPage" />
+<input type="hidden" id="returnCurrentPage" value="@Model.CurrentPage" />
 <table id="ck5Table" class="display" cellspacing="0" width="100%">
     <thead>
         <tr>
