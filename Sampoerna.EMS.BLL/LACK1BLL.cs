@@ -3002,7 +3002,7 @@ namespace Sampoerna.EMS.BLL
                 {
                     //calculate proporsional
                     //itemToInsert.Amount = Math.Round((rec.Qty/rec.TotalQtyPerMaterialId)*itemToInsert.Amount);
-                    itemToInsert.Amount = (rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount;
+                    if (rec.TotalQtyPerMaterialId != 0) itemToInsert.Amount = (rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount;
                     //Math.Round(((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount ), 3);
                     //((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount * itemToInsert.ProportionalOrder), 3);
                 }
