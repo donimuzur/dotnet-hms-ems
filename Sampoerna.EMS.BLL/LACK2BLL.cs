@@ -1147,16 +1147,16 @@ namespace Sampoerna.EMS.BLL
                 isSameNppbkcAllowed = nppbkc.FLAG_FOR_LACK1.HasValue && nppbkc.FLAG_FOR_LACK1.Value
             });
 
-            if (ck5Selected.Count == 0)
-            {
-                return new Lack2GeneratedOutput()
-                {
-                    Success = false,
-                    ErrorCode = ExceptionCodes.BLLExceptions.MissingCk5DataSelected.ToString(),
-                    ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingCk5DataSelected),
-                    Data = null
-                };
-            }
+            //if (ck5Selected.Count == 0)
+            //{
+            //    return new Lack2GeneratedOutput()
+            //    {
+            //        Success = false,
+            //        ErrorCode = ExceptionCodes.BLLExceptions.MissingCk5DataSelected.ToString(),
+            //        ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BLLExceptions.MissingCk5DataSelected),
+            //        Data = null
+            //    };
+            //}
 
             rc.Data.Ck5Items = Mapper.Map<List<Lack2GeneratedItemDto>>(ck5Selected);
 

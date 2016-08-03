@@ -506,13 +506,11 @@ namespace Sampoerna.EMS.BLL
 
             if (isComplete)
             {
-                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed || c.STATUS == Enums.DocumentStatus.Cancelled
-                    || c.STATUS == Enums.DocumentStatus.GovRejected);
+                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed || c.STATUS == Enums.DocumentStatus.Cancelled);
             }
             else
             {
-                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed && c.STATUS != Enums.DocumentStatus.Cancelled
-                    && c.STATUS != Enums.DocumentStatus.GovRejected);
+                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed && c.STATUS != Enums.DocumentStatus.Cancelled);
             }
 
             Func<IQueryable<PBCK3>, IOrderedQueryable<PBCK3>> orderBy = n => n.OrderByDescending(z => z.CREATED_DATE);
@@ -2038,7 +2036,7 @@ namespace Sampoerna.EMS.BLL
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.GovRejected);
             WorkflowStatusGovAddChanges(input, dbData.GOV_STATUS, Enums.DocumentStatusGov.Rejected);
 
-            dbData.STATUS = Enums.DocumentStatus.GovRejected;
+            dbData.STATUS = Enums.DocumentStatus.Draft;
             dbData.GOV_STATUS = Enums.DocumentStatusGov.Rejected;
 
             dbData.MODIFIED_DATE = DateTime.Now;
@@ -2832,7 +2830,7 @@ namespace Sampoerna.EMS.BLL
             WorkflowStatusAddChangesPbck3(input, dbData.STATUS.Value, Enums.DocumentStatus.GovRejected);
             WorkflowStatusGovAddChangesPbck3(input, dbData.GOV_STATUS, Enums.DocumentStatusGovType3.Rejected);
 
-            dbData.STATUS = Enums.DocumentStatus.GovRejected;
+            dbData.STATUS = Enums.DocumentStatus.Draft;
             dbData.GOV_STATUS = Enums.DocumentStatusGovType3.Rejected;
 
             dbData.MODIFIED_DATE = DateTime.Now;
