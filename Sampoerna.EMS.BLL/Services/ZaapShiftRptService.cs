@@ -55,7 +55,7 @@ namespace Sampoerna.EMS.BLL.Services
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
 
-            var retData = dbData.GroupBy(x => new {x.ORDR, x.COMPANY_CODE,x.WERKS,x.FA_CODE,x.PRODUCTION_DATE})
+            var retData = dbData.GroupBy(x => new {x.ORDR, x.COMPANY_CODE,x.WERKS,x.FA_CODE})
                 .Select(x=>
                 {
                     var zaapShiftRpt = x.FirstOrDefault();
@@ -65,7 +65,7 @@ namespace Sampoerna.EMS.BLL.Services
                                     COMPANY_CODE = zaapShiftRpt.COMPANY_CODE,
                                     WERKS = zaapShiftRpt.WERKS,
                                     FA_CODE = zaapShiftRpt.FA_CODE,
-                                    PRODUCTION_DATE = zaapShiftRpt.PRODUCTION_DATE,
+                                    //PRODUCTION_DATE = zaapShiftRpt.PRODUCTION_DATE,
                                     UOM = zaapShiftRpt.UOM
                                 } : null;
                 }).ToList();

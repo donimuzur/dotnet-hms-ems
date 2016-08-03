@@ -2604,7 +2604,7 @@ namespace Sampoerna.EMS.BLL
             ck4CItemInput.IsHigherFromApproved = false;
             ck4CItemInput.IsCompletedOnly = true;
             var ck4CItemData = _ck4cItemService.GetByParam(ck4CItemInput); //131
-
+            var total = ck4CItemData.Sum(x => x.PROD_QTY);
             //by pass : http://192.168.62.216/TargetProcess/entity/1465
             //if (ck4CItemData.Count == 0)
             //{
@@ -2627,12 +2627,23 @@ namespace Sampoerna.EMS.BLL
                 AllowedOrder = groupUsageProporsional.GroupBy(x=> x.Order).Select( d=> d.Key).ToList()
             };
 
+            var zaapShiftReportInputTotal = new ZaapShiftRptGetForLack1ByParamInput()
+            {
+                CompanyCode = input.CompanyCode,
+                Werks = plantIdList,
+                PeriodMonth = input.PeriodMonth,
+                PeriodYear = input.PeriodYear,
+                FaCodeList = ck4CItemData.Select(d => d.FA_CODE).Distinct().ToList(),
+                AllowedOrder = null
+            };
+
             
             //get zaap_shift_rpt
             var zaapShiftRpt = _zaapShiftRptService.GetForLack1ByParam(zaapShiftReportInput);
             var completeZaapData = _zaapShiftRptService.GetCompleteData(zaapShiftReportInput);
-            
-            var totalFaZaapShiftRpt = completeZaapData.GroupBy(x => new { x.FA_CODE }).Select(y => new
+            var completeZaapDataTotal = _zaapShiftRptService.GetCompleteData(zaapShiftReportInputTotal);
+
+            var totalFaZaapShiftRpt = completeZaapDataTotal.GroupBy(x => new { x.FA_CODE }).Select(y => new
             {
                 FaCode = y.Key.FA_CODE,
                 //ProductionDate = y.Key.PRODUCTION_DATE,
@@ -2643,7 +2654,7 @@ namespace Sampoerna.EMS.BLL
             {
                 FaCode = y.Key.FA_CODE,
                 //ProductionDate = y.Key.PRODUCTION_DATE,
-                Ordr = y.Key.ORDR,
+               
                 TotalQtyOrdr = y.Sum(x => x.QTY.HasValue ? x.QTY.Value : 0)
             }).ToList();
 
@@ -2654,7 +2665,7 @@ namespace Sampoerna.EMS.BLL
                                          {
                                              FaCode = faZaap.FaCode,
                                              //ProductionDate = orderZaap.ProductionDate,
-                                             Ordr = orderZaap.Ordr,
+                                             //Ordr = orderZaap.Ordr,
                                              ProportionalOrder = faZaap.TotalQtyFa > 0 ? orderZaap.TotalQtyOrdr / faZaap.TotalQtyFa : 1
                                          }).ToList();
 
@@ -2673,24 +2684,22 @@ namespace Sampoerna.EMS.BLL
             var prodTypeData = _prodTypeService.GetAll();
 
             //join data ck4cItem and ZaapShiftRpt
-            var joinedData = (from zaap in zaapShiftRpt
-                              join ck4CItem in ck4CItemData on new {zaap.WERKS, zaap.FA_CODE } equals
-                                   new { ck4CItem.WERKS, ck4CItem.FA_CODE }
+            var joinedData = (from ck4CItem in ck4CItemData
                               join prod in prodTypeData on new { ck4CItem.PROD_CODE } equals new { prod.PROD_CODE }
                               select new
                               {
-                                  zaap.FA_CODE,
-                                  zaap.WERKS,
-                                  zaap.COMPANY_CODE,
-                                  zaap.UOM,
+                                  ck4CItem.FA_CODE,
+                                  ck4CItem.WERKS,
+                                  //zaap.COMPANY_CODE,
+                                  UOM = ck4CItem.UOM_PROD_QTY,
                                   //zaap.PRODUCTION_DATE,
-                                  zaap.BATCH,
+                                  //zaap.BATCH,
                                   ck4CItem.PROD_QTY,
-                                  zaap.ORDR,
+                                  //ck4CItem.ORDR,
                                   ck4CItem.PROD_CODE,
                                   prod.PRODUCT_ALIAS,
                                   prod.PRODUCT_TYPE
-                              }).Distinct().ToList();
+                              }).ToList();
 
             //bypass http://192.168.62.216/TargetProcess/entity/1465
             //if (joinedData.Count == 0)
@@ -2709,24 +2718,24 @@ namespace Sampoerna.EMS.BLL
 
             var joinedWithUomData = (from j in joinedData
                                      join u in uomData on j.UOM equals u.UOM_ID
-                                     join p in proportionalOrderPerFa on new { j.FA_CODE, j.ORDR } equals new { FA_CODE = p.FaCode, ORDR = p.Ordr }
+                                     join p in proportionalOrderPerFa on new { j.FA_CODE} equals new { FA_CODE = p.FaCode}
                                      select new
                                      {
                                          j.FA_CODE,
                                          j.WERKS,
-                                         j.COMPANY_CODE,
+                                         //j.COMPANY_CODE,
                                          j.UOM,
                                          //j.PRODUCTION_DATE,
-                                         j.BATCH,
+                                         //j.BATCH,
                                          j.PROD_QTY,
-                                         j.ORDR,
+                                         //j.ORDR,
                                          j.PROD_CODE,
                                          j.PRODUCT_ALIAS,
                                          j.PRODUCT_TYPE,
                                          u.UOM_DESC,
                                          p.ProportionalOrder
                                          
-                                     }).Distinct().ToList();
+                                     }).ToList();
 
             //Get Prev Inventory Movement
             var prevInventoryMovementByParamInput = new InvMovementGetUsageByParamInput()
@@ -2764,7 +2773,7 @@ namespace Sampoerna.EMS.BLL
                 var itemToInsert = new Lack1GeneratedProductionDataDto()
                 {
                     FaCode = item.FA_CODE,
-                    Ordr = item.ORDR,
+                    //Ordr = item.ORDR,
                     ProdCode = item.PROD_CODE,
                     ProductType = item.PRODUCT_TYPE,
                     ProductAlias = item.PRODUCT_ALIAS,
@@ -2778,37 +2787,36 @@ namespace Sampoerna.EMS.BLL
 
                 
 
-                var rec = groupUsageProporsional.ToList().FirstOrDefault(c =>
-                    c.Order == item.ORDR
-                    //&& c.Batch == item.BATCH
-                    );
+                //var rec = groupUsageProporsional.ToList().FirstOrDefault(c =>
+                //    c.Order == item.ORDR
+                //    //&& c.Batch == item.BATCH
+                //    );
                 
-                if (rec != null)
-                {
-                    //calculate proporsional
-                    //itemToInsert.Amount = Math.Round((rec.Qty/rec.TotalQtyPerMaterialId)*itemToInsert.Amount);
-                    itemToInsert.Amount = (rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount;
-                    //Math.Round(((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount ), 3);
-                    //((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount * itemToInsert.ProportionalOrder), 3);
-                }
-                else
-                {
-                    if (prevInventoryMovementByParam.UsageProportionalList.Count > 0)
-                    {
-                        var chk =
-                            prevInventoryMovementByParam.UsageProportionalList.FirstOrDefault(
-                               c=> c.Order == item.ORDR 
-                                   //&& c.Batch == item.BATCH
-                                   );
-                        if (chk != null)
-                        {
-                            //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
-                            //itemToInsert.Amount = Math.Round((chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount);
-                            itemToInsert.Amount = (chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount;
-                            //((chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount * itemToInsert.ProportionalOrder), 3);
-                        }
-                    }
-                }
+                //if (rec != null)
+                //{
+                //    //calculate proporsional
+                    
+                //    itemToInsert.Amount = (rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount;
+                //    //itemToInsert.Amount = itemToInsert.Amount;
+                //}
+                //else
+                //{
+                //    if (prevInventoryMovementByParam.UsageProportionalList.Count > 0)
+                //    {
+                //        var chk =
+                //            prevInventoryMovementByParam.UsageProportionalList.FirstOrDefault(
+                //               c=> c.Order == item.ORDR 
+                //                   //&& c.Batch == item.BATCH
+                //                   );
+                //        if (chk != null)
+                //        {
+                //            //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
+                //            //itemToInsert.Amount = Math.Round((chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount);
+                //            itemToInsert.Amount = (chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount;
+                //            //((chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount * itemToInsert.ProportionalOrder), 3);
+                //        }
+                //    }
+                //}
 
                 productionList.Add(itemToInsert);
             }
