@@ -6,6 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using CrystalDecisions.Shared.Json;
+using DocumentFormat.OpenXml.EMMA;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Business;
@@ -2571,6 +2572,9 @@ namespace Sampoerna.EMS.BLL
         //    return "";
         //}
 
+        
+
+
         /// <summary>
         /// for normal LACK-1 Production Data
         /// </summary>
@@ -2596,7 +2600,7 @@ namespace Sampoerna.EMS.BLL
                         //Batch = p.Batch,
                         //Qty = p.Qty,
                         //TotalQtyPerMaterialId = p.TotalQtyPerMaterialId
-            });
+                    }).ToList();
 
 
             //get Ck4CItem
@@ -2624,39 +2628,64 @@ namespace Sampoerna.EMS.BLL
                 PeriodMonth = input.PeriodMonth,
                 PeriodYear = input.PeriodYear,
                 FaCodeList = ck4CItemData.Select(d => d.FA_CODE).Distinct().ToList(),
-                AllowedOrder = groupUsageProporsional.GroupBy(x=> x.Order).Select( d=> d.Key).ToList()
+                AllowedOrder = groupUsageProporsional.GroupBy(x => x.Order).Select(d => d.Key).ToList()
             };
 
-            
+
+
+
             //get zaap_shift_rpt
             var zaapShiftRpt = _zaapShiftRptService.GetForLack1ByParam(zaapShiftReportInput);
             var completeZaapData = _zaapShiftRptService.GetCompleteData(zaapShiftReportInput);
-            
+
+
             var totalFaZaapShiftRpt = completeZaapData.GroupBy(x => new { x.FA_CODE }).Select(y => new
             {
                 FaCode = y.Key.FA_CODE,
                 //ProductionDate = y.Key.PRODUCTION_DATE,
-                TotalQtyFa = y.Sum(x=> x.QTY.HasValue? x.QTY.Value : 0) 
+                TotalQtyFa = y.Sum(x => x.QTY.HasValue ? x.QTY.Value : 0)
             }).ToList();
 
-            var totalOrderZaapShiftRpt = completeZaapData.GroupBy(x => new { x.ORDR, x.FA_CODE }).Select(y => new
+
+
+            var totalOrderZaapShiftRpt = completeZaapData.GroupBy(x => new { x.FA_CODE, x.ORDR }).Select(y => new
             {
                 FaCode = y.Key.FA_CODE,
                 //ProductionDate = y.Key.PRODUCTION_DATE,
-                Ordr = y.Key.ORDR,
+                y.Key.ORDR,
                 TotalQtyOrdr = y.Sum(x => x.QTY.HasValue ? x.QTY.Value : 0)
             }).ToList();
 
-            var proportionalOrderPerFa = (from faZaap in totalFaZaapShiftRpt join 
-                                          orderZaap in totalOrderZaapShiftRpt on new {faZaap.FaCode} equals new { orderZaap.FaCode} 
+
+
+            var orderBatchProportional = (from zaapOrder in totalOrderZaapShiftRpt
+                                          join usgprop in groupUsageProporsional on zaapOrder.ORDR equals usgprop.Order
+                                          select new
+                                          {
+                                              zaapOrder.FaCode,
+                                              //ProductionDate = y.Key.PRODUCTION_DATE,
+                                              zaapOrder.ORDR,
+                                              TotalQtyOrdr = usgprop.TotalQtyPerMaterialId != 0 ? zaapOrder.TotalQtyOrdr * (usgprop.Qty / usgprop.TotalQtyPerMaterialId) : 1
+                                          }).ToList();
+
+            var totalProportionalOrder = orderBatchProportional.GroupBy(x => x.FaCode).Select(y => new
+            {
+                FaCode = y.Key,
+                TotalQtyOrdr = y.Sum(x => x.TotalQtyOrdr)
+            }).ToList();
+
+            //change this with totalProportionalOrder or totalOrderZaapShiftRptFaOnly
+            var proportionalOrderPerFa = (from faZaap in totalFaZaapShiftRpt
+                                          join
+                                              orderZaap in totalProportionalOrder on new { faZaap.FaCode } equals new { orderZaap.FaCode }
                                           //where faZaap.TotalQtyFa > 0
-                                         select new Lack1GeneratedProductionDataDto()
-                                         {
-                                             FaCode = faZaap.FaCode,
-                                             //ProductionDate = orderZaap.ProductionDate,
-                                             Ordr = orderZaap.Ordr,
-                                             ProportionalOrder = faZaap.TotalQtyFa > 0 ? orderZaap.TotalQtyOrdr / faZaap.TotalQtyFa : 1
-                                         }).ToList();
+                                          select new Lack1GeneratedProductionDataDto()
+                                          {
+                                              FaCode = faZaap.FaCode,
+                                              //ProductionDate = orderZaap.ProductionDate,
+                                              //Ordr = orderZaap.Ordr,
+                                              ProportionalOrder = faZaap.TotalQtyFa > 0 ? orderZaap.TotalQtyOrdr / faZaap.TotalQtyFa : 1
+                                          }).ToList();
 
             //bypass http://192.168.62.216/TargetProcess/entity/1465
             //if (zaapShiftRpt.Count == 0)
@@ -2671,26 +2700,55 @@ namespace Sampoerna.EMS.BLL
             //}
 
             var prodTypeData = _prodTypeService.GetAll();
-
+            var facodeListAllowed = zaapShiftRpt.GroupBy(x => x.FA_CODE).Select(x => x.Key).ToList();
             //join data ck4cItem and ZaapShiftRpt
-            var joinedData = (from zaap in zaapShiftRpt
-                              join ck4CItem in ck4CItemData on new {zaap.WERKS, zaap.FA_CODE } equals
-                                   new { ck4CItem.WERKS, ck4CItem.FA_CODE }
-                              join prod in prodTypeData on new { ck4CItem.PROD_CODE } equals new { prod.PROD_CODE }
+            var joinedData = (from ck4CItem in ck4CItemData.Where(x => facodeListAllowed.Contains(x.FA_CODE))
+                              from prod in prodTypeData.Where(x => x.PROD_CODE == ck4CItem.PROD_CODE)
+                              //from zaap in zaapShiftRpt.Where(x=> x.WERKS == ck4CItem.WERKS && x.FA_CODE == ck4CItem.FA_CODE && x.PRODUCTION_DATE == ck4CItem.PROD_DATE) into zappT
+
+
                               select new
                               {
-                                  zaap.FA_CODE,
-                                  zaap.WERKS,
-                                  zaap.COMPANY_CODE,
-                                  zaap.UOM,
-                                  //zaap.PRODUCTION_DATE,
-                                  zaap.BATCH,
+                                  ck4CItem.FA_CODE,
+                                  ck4CItem.WERKS,
+                                  //zaap.COMPANY_CODE,
+                                  UOM = ck4CItem.UOM_PROD_QTY,
+                                  ck4CItem.PROD_DATE,
+                                  //zaap.BATCH,
                                   ck4CItem.PROD_QTY,
-                                  zaap.ORDR,
+                                  //zaap.ORDR,
                                   ck4CItem.PROD_CODE,
                                   prod.PRODUCT_ALIAS,
                                   prod.PRODUCT_TYPE
-                              }).Distinct().ToList();
+                              }).ToList();
+
+            var joinedDataGrouped = joinedData.GroupBy(ck4CItem => new
+            {
+                ck4CItem.FA_CODE,
+                ck4CItem.WERKS,
+                //zaap.COMPANY_CODE,
+                ck4CItem.UOM,
+                ///ck4CItem.PROD_DATE,
+                //zaap.BATCH,
+
+                //zaap.ORDR,
+                ck4CItem.PROD_CODE,
+                ck4CItem.PRODUCT_ALIAS,
+                ck4CItem.PRODUCT_TYPE
+            }).Select(y => new
+            {
+                y.Key.FA_CODE,
+                y.Key.WERKS,
+                //zaap.COMPANY_CODE,
+                y.Key.UOM,
+                //y.Key.PROD_DATE,
+                //zaap.BATCH,
+                PROD_QTY = y.Sum(x => x.PROD_QTY),
+                //zaap.ORDR,
+                y.Key.PROD_CODE,
+                y.Key.PRODUCT_ALIAS,
+                y.Key.PRODUCT_TYPE
+            }).ToList();
 
             //bypass http://192.168.62.216/TargetProcess/entity/1465
             //if (joinedData.Count == 0)
@@ -2707,55 +2765,32 @@ namespace Sampoerna.EMS.BLL
             var productionList = new List<Lack1GeneratedProductionDataDto>();
             var uomData = _uomBll.GetAll();
 
-            var joinedWithUomData = (from j in joinedData
+            var joinedWithUomData = (from j in joinedDataGrouped
                                      join u in uomData on j.UOM equals u.UOM_ID
-                                     join p in proportionalOrderPerFa on new { j.FA_CODE, j.ORDR } equals new { FA_CODE = p.FaCode, ORDR = p.Ordr }
+                                     join p in proportionalOrderPerFa on new { j.FA_CODE } equals new { FA_CODE = p.FaCode }
                                      select new
                                      {
                                          j.FA_CODE,
                                          j.WERKS,
-                                         j.COMPANY_CODE,
+                                         //j.COMPANY_CODE,
                                          j.UOM,
                                          //j.PRODUCTION_DATE,
-                                         j.BATCH,
+                                         //j.BATCH,
                                          j.PROD_QTY,
-                                         j.ORDR,
+                                         //j.ORDR,
                                          j.PROD_CODE,
                                          j.PRODUCT_ALIAS,
                                          j.PRODUCT_TYPE,
                                          u.UOM_DESC,
                                          p.ProportionalOrder
-                                         
-                                     }).Distinct().ToList();
 
-            //Get Prev Inventory Movement
-            var prevInventoryMovementByParamInput = new InvMovementGetUsageByParamInput()
-            {
-                PlantIdList = plantIdList,
-                PeriodMonth = input.PeriodMonth,
-                PeriodYear = input.PeriodYear,
-                NppbkcId = input.NppbkcId,
-                IsTisToTis = input.IsTisToTis
-            };
+                                     }).ToList();
 
-            if (input.PeriodMonth == 1)
-            {
-                //Year - 1, Month = 12
-                prevInventoryMovementByParamInput.PeriodMonth = 12;
-                prevInventoryMovementByParamInput.PeriodYear = prevInventoryMovementByParamInput.PeriodYear - 1;
-            }
-            else
-            {
-                //Same Year, Month - 1
-                prevInventoryMovementByParamInput.PeriodMonth = input.PeriodMonth - 1;
-            }
 
-            var stoReceiverNumberList = rc.IncomeList.Select(d => d.Ck5Type == Enums.CK5Type.Intercompany ? d.StoReceiverNumber : d.StoSenderNumber).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToList();
 
-            var prevInventoryMovementByParam = GetInventoryMovementByParam(prevInventoryMovementByParamInput,
-                stoReceiverNumberList, bkcUomId);
 
-            
+
+
             //var jsonusage = new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(groupUsageProporsional);
             //var jsonProd = new System.Web.Script.Serialization.JavaScriptSerializer().Serialize(joinedWithUomData);
             //calculation proccess
@@ -2764,7 +2799,7 @@ namespace Sampoerna.EMS.BLL
                 var itemToInsert = new Lack1GeneratedProductionDataDto()
                 {
                     FaCode = item.FA_CODE,
-                    Ordr = item.ORDR,
+                    //Ordr = item.ORDR,
                     ProdCode = item.PROD_CODE,
                     ProductType = item.PRODUCT_TYPE,
                     ProductAlias = item.PRODUCT_ALIAS,
@@ -2776,44 +2811,27 @@ namespace Sampoerna.EMS.BLL
                     //ProportionalOrder = item.ProportionalOrder,
                 };
 
-                
 
-                var rec = groupUsageProporsional.ToList().FirstOrDefault(c =>
-                    c.Order == item.ORDR
-                    //&& c.Batch == item.BATCH
-                    );
-                
-                if (rec != null)
-                {
-                    //calculate proporsional
-                    //itemToInsert.Amount = Math.Round((rec.Qty/rec.TotalQtyPerMaterialId)*itemToInsert.Amount);
-                    if (rec.TotalQtyPerMaterialId != 0) itemToInsert.Amount = (rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount;
-                    //Math.Round(((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount ), 3);
-                    //((rec.Qty / rec.TotalQtyPerMaterialId) * itemToInsert.Amount * itemToInsert.ProportionalOrder), 3);
-                }
-                else
-                {
-                    if (prevInventoryMovementByParam.UsageProportionalList.Count > 0)
-                    {
-                        var chk =
-                            prevInventoryMovementByParam.UsageProportionalList.FirstOrDefault(
-                               c=> c.Order == item.ORDR 
-                                   //&& c.Batch == item.BATCH
-                                   );
-                        if (chk != null)
-                        {
-                            //produksi lintas bulan, di proporsional kan jika ketemu ordr nya
-                            //itemToInsert.Amount = Math.Round((chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount);
-                            itemToInsert.Amount = (chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount;
-                            //((chk.Qty / chk.TotalQtyPerMaterialId) * itemToInsert.Amount * itemToInsert.ProportionalOrder), 3);
-                        }
-                    }
-                }
+
+
 
                 productionList.Add(itemToInsert);
             }
 
-            var nonZaapProd = SetProductionListNonZaap(ck4CItemData, zaapShiftRpt, productionList,prodTypeData,uomData);
+            var zaapShiftRptforNonZaap = zaapShiftRpt.GroupBy(x => new { x.ORDR, x.COMPANY_CODE, x.WERKS, x.FA_CODE }).Select(x =>
+            {
+                var data = x.FirstOrDefault();
+                return data != null ? new ZAAP_SHIFT_RPT()
+                {
+                    ORDR = data.ORDR,
+                    COMPANY_CODE = data.COMPANY_CODE,
+                    WERKS = data.WERKS,
+                    FA_CODE = data.FA_CODE,
+
+                    UOM = data.UOM
+                } : null;
+            }).ToList();
+            var nonZaapProd = SetProductionListNonZaap(ck4CItemData, zaapShiftRptforNonZaap, productionList, prodTypeData, uomData);
             productionList.AddRange(nonZaapProd);
 
             //set to Normal Data
@@ -2836,8 +2854,8 @@ namespace Sampoerna.EMS.BLL
         }
 
 
-        private List<Lack1GeneratedProductionDataDto> SetProductionListNonZaap(List<CK4C_ITEM> ck4CItemData, 
-            List<ZAAP_SHIFT_RPT> zaapShiftRpt, 
+        private List<Lack1GeneratedProductionDataDto> SetProductionListNonZaap(List<CK4C_ITEM> ck4CItemData,
+            List<ZAAP_SHIFT_RPT> zaapShiftRpt,
             List<Lack1GeneratedProductionDataDto> currentProductionList,
             List<ZAIDM_EX_PRODTYP> prodTypeData,
             List<UOM> uomData)
@@ -2872,10 +2890,10 @@ namespace Sampoerna.EMS.BLL
                                   prod.PRODUCT_TYPE
                               }).Distinct().ToList();
 
-            
+
 
             //var productionList = new List<Lack1GeneratedProductionDataDto>();
-            
+
 
             var joinedWithUomData = (from j in joinedData
                                      join u in uomData on j.UOM_PROD_QTY equals u.UOM_ID
@@ -2903,7 +2921,7 @@ namespace Sampoerna.EMS.BLL
             var res = new List<Lack1GeneratedProductionDataDto>();
             foreach (var nonzaapItem in joinedWithUomData)
             {
-                
+
                 var zaapshiftRptByOrder = currentProductionList.Where(x => x.FaCode == nonzaapItem.FA_CODE).ToList();
 
                 foreach (var shiftRpt in zaapshiftRptByOrder)
@@ -2945,7 +2963,7 @@ namespace Sampoerna.EMS.BLL
                 //data.Amount = nonzaapItem.PROD_QTY;
 
                 //res.Add(data);
-                
+
             }
 
             return res;
@@ -3958,20 +3976,20 @@ namespace Sampoerna.EMS.BLL
             var receivingList = (from rec in receivingAllWithConvertion
                                  join a in movementUsaheAllWithConvertion.DistinctBy(d => new { d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR }) on 
                                  new { rec.BATCH
-                                     //, rec.MATERIAL_ID 
+                                     , rec.MATERIAL_ID 
                                  } equals 
                                     new { a.BATCH
-                                       // , a.MATERIAL_ID 
+                                        , a.MATERIAL_ID 
                                     }
                                  select rec).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
             var usageReceivingList = (from rec in receivingAllWithConvertion.DistinctBy(d => new { d.MVT, d.MATERIAL_ID, d.PLANT_ID, d.BATCH, d.ORDR })
                                       join a in movementUsaheAllWithConvertion on 
                                       new { rec.BATCH
-                                        //  , rec.MATERIAL_ID 
+                                          , rec.MATERIAL_ID 
                                       } equals 
                                       new { a.BATCH
-                                         // , a.MATERIAL_ID 
+                                          , a.MATERIAL_ID 
                                       }
                                       select a).DistinctBy(d => d.INVENTORY_MOVEMENT_ID).ToList();
 
@@ -4017,9 +4035,11 @@ namespace Sampoerna.EMS.BLL
             inventoryMovementUsageAll.AddRange(invUsage201);
             var listTotalPerMaterialId = inventoryMovementUsageAll.GroupBy(p => new
             {
+                p.MATERIAL_ID,
                 p.ORDR
             }).Select(g => new
             {
+                MaterialId = g.Key.MATERIAL_ID,
                 Order = g.Key.ORDR,
                 TotalQty = g.Sum(p => p.QTY.HasValue ? p.QTY.Value : 0)
             }).ToList();
@@ -4031,7 +4051,7 @@ namespace Sampoerna.EMS.BLL
             {
                 //p.MAT_DOC,
                 //p.MVT,
-                //p.MATERIAL_ID,
+                p.MATERIAL_ID,
                 //p.PLANT_ID,
                 p.BATCH,
                 p.ORDR
@@ -4039,7 +4059,7 @@ namespace Sampoerna.EMS.BLL
             {
                 //MatDoc = g.Key.MAT_DOC,
                 //Mvt = g.Key.MVT,
-                //MaterialId = g.Key.MATERIAL_ID,
+                MaterialId = g.Key.MATERIAL_ID,
                 //PlantId = g.Key.PLANT_ID,
                 Batch = g.Key.BATCH,
                 Ordr = g.Key.ORDR,
@@ -4047,20 +4067,16 @@ namespace Sampoerna.EMS.BLL
             }).ToList();
 
             var rc = (from x in groupedInventoryMovements
-                      join y in listTotalPerMaterialId on x.Ordr equals y.Order
+                      join y in listTotalPerMaterialId on new {x.Ordr, x.MaterialId } equals new {Ordr = y.Order, y.MaterialId}
                       select new InvMovementUsageProportional()
                       {
-                          //MaterialId = x.MaterialId,
+                          MaterialId = x.MaterialId,
                           Batch = x.Batch,
                           Qty = x.TotalQty,
                           TotalQtyPerMaterialId = y.TotalQty,
                           Order = x.Ordr
                       }).ToList();
-            var rc1 = rc;
-            foreach (var invMovementUsageProportional in rc1)
-            {
-                invMovementUsageProportional.Batch = invMovementUsageProportional.Batch.Substring(0, 2);
-            }
+            
             return rc;
         }
 
