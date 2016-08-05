@@ -2665,7 +2665,7 @@ namespace Sampoerna.EMS.BLL
                                               zaapOrder.FaCode,
                                               //ProductionDate = y.Key.PRODUCTION_DATE,
                                               zaapOrder.ORDR,
-                                              TotalQtyOrdr = usgprop.TotalQtyPerMaterialId != 0 ? zaapOrder.TotalQtyOrdr * (usgprop.Qty / usgprop.TotalQtyPerMaterialId) : 1
+                                              TotalQtyOrdr = usgprop.TotalQtyPerMaterialId != 0 ? zaapOrder.TotalQtyOrdr * (usgprop.Qty / usgprop.TotalQtyPerMaterialId) : zaapOrder.TotalQtyOrdr
                                           }).ToList();
 
             var totalProportionalOrder = orderBatchProportional.GroupBy(x => x.FaCode).Select(y => new
