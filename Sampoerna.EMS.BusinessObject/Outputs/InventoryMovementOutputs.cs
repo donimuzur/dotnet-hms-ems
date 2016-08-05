@@ -46,7 +46,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
 
     public class InvMovementUsageProportional
     {
-        //public string MaterialId { get; set; }
+        public string MaterialId { get; set; }
         public string Order { get; set; }
         public decimal Qty { get; set; }
         public decimal TotalQtyPerMaterialId { get; set; }

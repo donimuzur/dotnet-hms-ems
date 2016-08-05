@@ -80,7 +80,7 @@ namespace Sampoerna.EMS.BLL.Services
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
             }
 
-            var retData = dbData.GroupBy(x => new {x.ORDR, x.COMPANY_CODE,x.WERKS,x.FA_CODE,x.PRODUCTION_DATE})
+            var retData = dbData.GroupBy(x => new { x.ORDR, x.COMPANY_CODE, x.WERKS, x.FA_CODE,x.PRODUCTION_DATE })
                 .Select(x=>
                 {
                     var zaapShiftRpt = x.FirstOrDefault();
