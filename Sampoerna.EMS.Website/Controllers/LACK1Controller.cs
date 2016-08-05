@@ -724,6 +724,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 dMasterRow.Footer = !string.IsNullOrEmpty(data.HeaderFooter.FOOTER_CONTENT) ? data.HeaderFooter.FOOTER_CONTENT.Replace("<br />", Environment.NewLine) : string.Empty;    
             }
 
+            if (data.SupplierCompanyName == null)
+            {
+                if (data.Lack1Pbck1Mapping.Count > 0)
+                {
+                    dMasterRow.SupplierCompanyName = data.Lack1Pbck1Mapping.Select(d => d.SUPPLIER_COMPANY).FirstOrDefault();
+                }
+            }
+
             dsReport.Lack1.AddLack1Row(dMasterRow);
             
             //for total

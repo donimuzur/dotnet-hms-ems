@@ -81,6 +81,7 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<LACK1_PBCK1_MAPPING, Lack1Pbck1MappingDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.PBCK1_NUMBER, opt => opt.MapFrom(src => src.PBCK1.NUMBER))
                 .ForMember(dest => dest.DECREE_DATE, opt => opt.MapFrom(src => src.PBCK1.DECREE_DATE))
+                .ForMember(dest => dest.SUPPLIER_COMPANY, opt => opt.MapFrom(src => src.PBCK1.SUPPLIER_COMPANY))
                 ;
 
             Mapper.CreateMap<LACK1_PLANT, Lack1PlantDto>().IgnoreAllNonExisting();
