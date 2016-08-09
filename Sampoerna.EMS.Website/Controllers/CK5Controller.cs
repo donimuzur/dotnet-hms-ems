@@ -3622,21 +3622,23 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
         [HttpPost]
-        public JsonResult SearchSummaryReportsAjax(DTParameters param)
+        public JsonResult SearchSummaryReportsAjax(DTParameters<CK5SummaryReportsViewModel> param)
         {
-            var model = (CK5SummaryReportsViewModel)param.ExtraFilter;
-            var data = SearchDataSummaryReports(model.SearchView);
+            var model = param.ExtraFilter;
+
+            var data = model != null ? SearchDataSummaryReports(model.SearchView) : SearchDataSummaryReports();
             DTResult<CK5SummaryReportsItem> result = new DTResult<CK5SummaryReportsItem>();
-            
-            
-            //param.TotalData = data.Count;
-            if (model.TotalDataPerPage > 0)
-            {
-                data = data.Skip(model.TotalDataPerPage * model.CurrentPage).Take(model.TotalDataPerPage).ToList();
-                result.data = data;
-            }
+            result.draw = param.Draw;
             result.recordsFiltered = data.Count;
             result.recordsTotal = data.Count;
+            //param.TotalData = data.Count;
+            //if (param != null && param.Start > 0)
+            //{
+            data = data.Skip(param.Start).Take(param.Length).ToList();
+                
+            //}
+            result.data = data;
+            
             return Json(result);
             
         }

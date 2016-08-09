@@ -586,6 +586,72 @@
 
         });
 
+        function setupColumns() {
+
+            var columns = [
+                { "data": null, "defaultContent": "", "orderable": false },
+                { "data": "SubmissionNumber", "orderable": false },
+                { "data": "SubmissionDate", "orderable": false },
+                { "data": "Ck5TypeDescription", "orderable": false },
+                { "data": "SourcePlantId", "orderable": false },
+                { "data": "SourcePlant", "orderable": false },
+                { "data": "OriginCompanyNppbkc", "orderable": false },
+                { "data": "OriginCeOffice", "orderable": false },
+                { "data": "OriginCompany", "orderable": false },
+                { "data": "OriginCompanyAddress", "orderable": false },
+                { "data": "DestinationPlantId", "orderable": false },
+                { "data": "DestinationPlant", "orderable": false },
+                { "data": "DestinationCeOffice", "orderable": false },
+                { "data": "CompanyDestination", "orderable": false },
+                { "data": "DestinationCountry", "orderable": false },
+                { "data": "TanggalAju", "orderable": false },
+                { "data": "NomerAju", "orderable": false },
+                { "data": "TanggalPendaftaran", "orderable": false },
+                { "data": "NomerPendaftaran", "orderable": false },
+                { "data": "ExGoodTypeDesc", "orderable": false },
+                { "data": "ExciseSettlement", "orderable": false },
+                { "data": "ExciseStatus", "orderable": false },
+                { "data": "RequestType", "orderable": false },
+                { "data": "UnpaidExciseFacilityNumber", "orderable": false },
+                { "data": "UnpaidExciseFacilityDate", "orderable": false },
+                { "data": "SealingNotificationDate", "orderable": false },
+                { "data": "SealingNotificationNumber", "orderable": false },
+                { "data": "UnSealingNotificationDate", "orderable": false },
+                { "data": "UnSealingNotificationNumber", "orderable": false },
+                { "data": "NumberBox", "orderable": false },
+                { "data": "ContainPerBox", "orderable": false },
+                { "data": "ConvertedQty", "orderable": false },
+                { "data": "ConvertedUom", "orderable": false },
+                { "data": "TotalOfExcisableGoods", "orderable": false },
+                { "data": "BanderolPrice", "orderable": false },
+                { "data": "ExciseTariff", "orderable": false },
+                { "data": "ExciseValue", "orderable": false },
+                { "data": "MaterialNumber", "orderable": false },
+                { "data": "MaterialDescription", "orderable": false },
+                { "data": "DestCompanyAddress", "orderable": false },
+                { "data": "DestCompanyNppbkc", "orderable": false },
+                { "data": "DestCompanyName", "orderable": false },
+                { "data": "LoadingPort", "orderable": false },
+                { "data": "LoadingPortName", "orderable": false },
+                { "data": "StoNumberSender", "orderable": false },
+                { "data": "StoNumberReciever", "orderable": false },
+                { "data": "StoBNumber", "orderable": false },
+                { "data": "DnNumber", "orderable": false },
+                { "data": "GrDate", "orderable": false },
+                { "data": "GiDate", "orderable": false },
+                { "data": "Status", "orderable": false },
+                { "data": "Poa", "orderable": false },
+                { "data": "Creator", "orderable": false },
+                { "data": "CompletedDate", "orderable": false },
+                { "data": "Lack1", "orderable": false },
+                { "data": "Lack2", "orderable": false }
+            ];
+
+            return columns;
+
+
+        }
+
 
         function setupDataTables(blFirst) {
 
@@ -595,7 +661,7 @@
                 table = $('#ck5Table').DataTable();
                 table.destroy();
             }
-            debugger;
+
             table = $('#ck5Table').DataTable(
                 {
                     "sDom": "Rlfrtip",
@@ -604,13 +670,50 @@
                         "zeroRecords": "No records found",
                         "infoFiltered": "(filtered from _MAX_ total records)"
                     },
+
+                    "rowCallback": function (row, data, index) {
+                        $(row).find("td").first().html(index + 1);
+                    },
+                    "serverSide": true,
+                    "processing": true,
+                    "paging": true,
+                    "deferRender": true,
+                    "columns": setupColumns(),
                     "ajax": {
-                        "url": @Html.Action("SearchSummaryReportsAjax", "CK5"),
+                        "url": "@Url.Action("SearchSummaryReportsAjax", "CK5")",
                         "type": "POST",
+
                         "data": function(d) {
                             return $.extend({}, d, {
-                                "ExtraData": {
-                                    
+                                "ExtraFilter": {
+                                    "SearchView": {
+                                        Ck5Type: $("#Ck5Type").val(),
+
+                                        CompanyCodeSource: $('#SearchView_CompanyCodeSource').find("option:selected").val(),
+
+                                        CompanyCodeDest: $('#SearchView_CompanyCodeDest').find("option:selected").val(),
+
+                                        NppbkcIdSource: $('#SearchView_NppbkcIdSource').find("option:selected").val(),
+
+                                        NppbkcIdDest: $('#SearchView_NppbkcIdDest').find("option:selected").val(),
+
+                                        PlantSource: $('#SearchView_PlantSource').find("option:selected").val(),
+
+                                        PlantDest: $('#SearchView_PlantDest').find("option:selected").val(),
+
+                                        DateFrom: $('#SearchView_DateFrom').find("option:selected").val(),
+
+                                        DateTo: $('#SearchView_DateTo').find("option:selected").val(),
+
+                                        Month: $('#SearchView_Month').find("option:selected").val(),
+
+                                        Year: $('#SearchView_Year').find("option:selected").val(),
+
+                                        MaterialNumber: $('#SearchView_MaterialNumber').find("option:selected").val(),
+                                        MaterialDescription: $('#SearchView_MaterialDescription').find("option:selected").val(),
+                                        Poa: $('#SearchView_Poa').find("option:selected").val(),
+                                        Creator: $('#SearchView_Creator').find("option:selected").val(),
+                                    }
                                 }
                             });
                         }

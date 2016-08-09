@@ -65,7 +65,7 @@ namespace Sampoerna.EMS.Website.Models.Shared
     /// <summary>
     /// The parameters sent by jQuery DataTables in AJAX queries.
     /// </summary>
-    public class DTParameters
+    public class DTParameters<T>
     {
         /// <summary>
         /// Draw counter.
@@ -115,8 +115,10 @@ namespace Sampoerna.EMS.Website.Models.Shared
             }
         }
 
-        public object ExtraFilter { get; set; }
+        public T ExtraFilter { get; set; }
 
+        
+        
     }
 
     /// <summary>
