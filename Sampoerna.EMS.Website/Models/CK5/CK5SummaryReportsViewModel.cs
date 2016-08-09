@@ -84,6 +84,7 @@ namespace Sampoerna.EMS.Website.Models.CK5
 
     public class CK5SummaryReportsItem
     {
+
         public long Ck5Id { get; set; }
 
         public string Ck5TypeDescription { get; set; }
