@@ -3634,13 +3634,157 @@ namespace Sampoerna.EMS.Website.Controllers
             //param.TotalData = data.Count;
             //if (param != null && param.Start > 0)
             //{
+            IEnumerable<CK5SummaryReportsItem> dataordered;
+            dataordered = data;
+            if (param.Order.Length > 0)
+            {
+                foreach (var ordr in param.Order)
+                {
+                    if (ordr.Column == 0)
+                    {
+                        continue;
+                    }
+                    dataordered = SummaryReportsDataOrder(SummaryReportsOrderByIndex(ordr.Column), ordr.Dir, dataordered);
+                }
+            }
+            data = dataordered.ToList();
             data = data.Skip(param.Start).Take(param.Length).ToList();
-                
+            
             //}
             result.data = data;
             
             return Json(result);
             
+        }
+
+        private IEnumerable<CK5SummaryReportsItem> SummaryReportsDataOrder(string column,DTOrderDir dir,IEnumerable<CK5SummaryReportsItem> data)
+        {
+            
+            switch(column)
+            {
+                case "SubmissionNumber": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.SubmissionNumber).ToList() : data.OrderByDescending(x => x.SubmissionNumber).ToList();
+                case "SubmissionDate": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.SubmissionDate).ToList() : data.OrderByDescending(x => x.SubmissionDate).ToList();
+                case "Ck5TypeDescription": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.Ck5TypeDescription).ToList() : data.OrderByDescending(x => x.Ck5TypeDescription).ToList();
+                case "SourcePlantId": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.SourcePlantId).ToList() : data.OrderByDescending(x => x.SourcePlantId).ToList();
+                case "SourcePlant": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.SourcePlant).ToList() : data.OrderByDescending(x => x.SourcePlant).ToList();
+                case "OriginCompanyNppbkc": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.OriginCompanyNppbkc).ToList() : data.OrderByDescending(x => x.OriginCompanyNppbkc).ToList();
+                case "OriginCeOffice": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.OriginCeOffice).ToList() : data.OrderByDescending(x => x.OriginCeOffice).ToList();
+                case "OriginCompany": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.OriginCompany).ToList() : data.OrderByDescending(x => x.OriginCompany).ToList();
+                case "OriginCompanyAddress": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.OriginCompanyAddress).ToList() : data.OrderByDescending(x => x.OriginCompanyAddress).ToList();
+                case "DestinationPlantId": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.DestinationPlantId).ToList() : data.OrderByDescending(x => x.DestinationPlantId).ToList();
+                case "DestinationPlant": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.DestinationPlant).ToList() : data.OrderByDescending(x => x.DestinationPlant).ToList();
+                case "DestinationCeOffice": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.DestinationCeOffice).ToList() : data.OrderByDescending(x => x.DestinationCeOffice).ToList();
+                case "CompanyDestination": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.CompanyDestination).ToList() : data.OrderByDescending(x => x.CompanyDestination).ToList();
+                case "DestinationCountry": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.DestinationCountry).ToList() : data.OrderByDescending(x => x.DestinationCountry).ToList();
+                case "TanggalAju": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.TanggalAju).ToList() : data.OrderByDescending(x => x.TanggalAju).ToList();
+                case "NomerAju": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.NomerAju).ToList() : data.OrderByDescending(x => x.NomerAju).ToList();
+                case "TanggalPendaftaran": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.TanggalPendaftaran).ToList() : data.OrderByDescending(x => x.TanggalPendaftaran).ToList();
+                case "NomerPendaftaran": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.NomerPendaftaran).ToList() : data.OrderByDescending(x => x.NomerPendaftaran).ToList();
+                case "ExGoodTypeDesc": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.ExGoodTypeDesc).ToList() : data.OrderByDescending(x => x.ExGoodTypeDesc).ToList();
+                case "ExciseSettlement": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.ExciseSettlement).ToList() : data.OrderByDescending(x => x.ExciseSettlement).ToList();
+                case "ExciseStatus": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.ExciseStatus).ToList() : data.OrderByDescending(x => x.ExciseStatus).ToList();
+                case "RequestType": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.RequestType).ToList() : data.OrderByDescending(x => x.RequestType).ToList();
+                case "UnpaidExciseFacilityNumber": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.UnpaidExciseFacilityNumber).ToList() : data.OrderByDescending(x => x.UnpaidExciseFacilityNumber).ToList();
+                case "UnpaidExciseFacilityDate": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.UnpaidExciseFacilityDate).ToList() : data.OrderByDescending(x => x.UnpaidExciseFacilityDate).ToList();
+                case "SealingNotificationDate": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.SealingNotificationDate).ToList() : data.OrderByDescending(x => x.SealingNotificationDate).ToList();
+                case "SealingNotificationNumber": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.SealingNotificationNumber).ToList() : data.OrderByDescending(x => x.SealingNotificationNumber).ToList();
+                case "UnSealingNotificationDate": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.UnSealingNotificationDate).ToList() : data.OrderByDescending(x => x.UnSealingNotificationDate).ToList();
+                case "UnSealingNotificationNumber": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.UnSealingNotificationNumber).ToList() : data.OrderByDescending(x => x.UnSealingNotificationNumber).ToList();
+                case "NumberBox": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.NumberBox).ToList() : data.OrderByDescending(x => x.NumberBox).ToList();
+                case "ContainPerBox": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.ContainPerBox).ToList() : data.OrderByDescending(x => x.ContainPerBox).ToList();
+                case "ConvertedQty": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.ConvertedQty).ToList() : data.OrderByDescending(x => x.ConvertedQty).ToList();
+                case "ConvertedUom": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.ConvertedUom).ToList() : data.OrderByDescending(x => x.ConvertedUom).ToList();
+                case "TotalOfExcisableGoods": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.TotalOfExcisableGoods).ToList() : data.OrderByDescending(x => x.TotalOfExcisableGoods).ToList();
+                case "BanderolPrice": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.BanderolPrice).ToList() : data.OrderByDescending(x => x.BanderolPrice).ToList();
+                case "ExciseTariff": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.ExciseTariff).ToList() : data.OrderByDescending(x => x.ExciseTariff).ToList();
+                case "ExciseValue": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.ExciseValue).ToList() : data.OrderByDescending(x => x.ExciseValue).ToList();
+                case "MaterialNumber": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.MaterialNumber).ToList() : data.OrderByDescending(x => x.MaterialNumber).ToList();
+                case "MaterialDescription": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.MaterialDescription).ToList() : data.OrderByDescending(x => x.MaterialDescription).ToList();
+                case "DestCompanyAddress": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.DestCompanyAddress).ToList() : data.OrderByDescending(x => x.DestCompanyAddress).ToList();
+                case "DestCompanyNppbkc": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.DestCompanyNppbkc).ToList() : data.OrderByDescending(x => x.DestCompanyNppbkc).ToList();
+                case "DestCompanyName": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.DestCompanyName).ToList() : data.OrderByDescending(x => x.DestCompanyName).ToList();
+                case "LoadingPort": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.LoadingPort).ToList() : data.OrderByDescending(x => x.LoadingPort).ToList();
+                case "LoadingPortName": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.LoadingPortName).ToList() : data.OrderByDescending(x => x.LoadingPortName).ToList();
+                case "StoNumberSender": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.StoNumberSender).ToList() : data.OrderByDescending(x => x.StoNumberSender).ToList();
+                case "StoNumberReciever": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.StoNumberReciever).ToList() : data.OrderByDescending(x => x.StoNumberReciever).ToList();
+                case "StoBNumber": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.StoBNumber).ToList() : data.OrderByDescending(x => x.StoBNumber).ToList();
+                case "DnNumber": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.DnNumber).ToList() : data.OrderByDescending(x => x.DnNumber).ToList();
+                case "GrDate": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.GrDate).ToList() : data.OrderByDescending(x => x.GrDate).ToList();
+                case "GiDate": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.GiDate).ToList() : data.OrderByDescending(x => x.GiDate).ToList();
+                case "Status": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.Status).ToList() : data.OrderByDescending(x => x.Status).ToList();
+                case "Poa": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.Poa).ToList() : data.OrderByDescending(x => x.Poa).ToList();
+                case "Creator": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.Creator).ToList() : data.OrderByDescending(x => x.Creator).ToList();
+                case "CompletedDate": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.CompletedDate).ToList() : data.OrderByDescending(x => x.CompletedDate).ToList();
+                case "Lack1": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.Lack1).ToList() : data.OrderByDescending(x => x.Lack1).ToList();
+                case "Lack2": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.Lack2).ToList() : data.OrderByDescending(x => x.Lack2).ToList();
+
+
+                    
+            }
+            return null;
+        }
+
+        private string SummaryReportsOrderByIndex(int index)
+        {
+            Dictionary<int,string> columnDict = new Dictionary<int, string>();
+            columnDict.Add(1, "SubmissionNumber");
+            columnDict.Add(2, "SubmissionDate");
+            columnDict.Add(3, "Ck5TypeDescription");
+            columnDict.Add(4, "SourcePlantId");
+            columnDict.Add(5, "SourcePlant");
+            columnDict.Add(6, "OriginCompanyNppbkc");
+            columnDict.Add(7, "OriginCeOffice");
+            columnDict.Add(8, "OriginCompany");
+            columnDict.Add(9, "OriginCompanyAddress");
+            columnDict.Add(10, "DestinationPlantId");
+            columnDict.Add(11, "DestinationPlant");
+            columnDict.Add(12, "DestinationCeOffice");
+            columnDict.Add(13, "CompanyDestination");
+            columnDict.Add(14, "DestinationCountry");
+            columnDict.Add(15, "TanggalAju");
+            columnDict.Add(16, "NomerAju");
+            columnDict.Add(17, "TanggalPendaftaran");
+            columnDict.Add(18, "NomerPendaftaran");
+            columnDict.Add(19, "ExGoodTypeDesc");
+            columnDict.Add(20, "ExciseSettlement");
+            columnDict.Add(21, "ExciseStatus");
+            columnDict.Add(22, "RequestType");
+            columnDict.Add(23, "UnpaidExciseFacilityNumber");
+            columnDict.Add(24, "UnpaidExciseFacilityDate");
+            columnDict.Add(25, "SealingNotificationDate");
+            columnDict.Add(26, "SealingNotificationNumber");
+            columnDict.Add(27, "UnSealingNotificationDate");
+            columnDict.Add(28, "UnSealingNotificationNumber");
+            columnDict.Add(29, "NumberBox");
+            columnDict.Add(30, "ContainPerBox");
+            columnDict.Add(31, "ConvertedQty");
+            columnDict.Add(32, "ConvertedUom");
+            columnDict.Add(33, "TotalOfExcisableGoods");
+            columnDict.Add(34, "BanderolPrice");
+            columnDict.Add(35, "ExciseTariff");
+            columnDict.Add(36, "ExciseValue");
+            columnDict.Add(37, "MaterialNumber");
+            columnDict.Add(38, "MaterialDescription");
+            columnDict.Add(39, "DestCompanyAddress");
+            columnDict.Add(40, "DestCompanyNppbkc");
+            columnDict.Add(41, "DestCompanyName");
+            columnDict.Add(42, "LoadingPort");
+            columnDict.Add(43, "LoadingPortName");
+            columnDict.Add(44, "StoNumberSender");
+            columnDict.Add(45, "StoNumberReciever");
+            columnDict.Add(46, "StoBNumber");
+            columnDict.Add(47, "DnNumber");
+            columnDict.Add(48, "GrDate");
+            columnDict.Add(49, "GiDate");
+            columnDict.Add(50, "Status");
+            columnDict.Add(51, "Poa");
+            columnDict.Add(52, "Creator");
+            columnDict.Add(53, "CompletedDate");
+            columnDict.Add(54, "Lack1");
+            columnDict.Add(55, "Lack2");
+
+
+            return columnDict[index];
         }
 
         public void ExportXlsSummaryReports(CK5SummaryReportsViewModel model)
