@@ -426,6 +426,7 @@
     <Compile Include="Models\SelectItemModel.cs" />
     <Compile Include="Models\Settings\DocumentSequenceModel.cs" />
     <Compile Include="Models\Settings\GlobalSettingModel.cs" />
+    <Compile Include="Models\Shared\DataTable.cs" />
     <Compile Include="Models\UOM\UomDetailViewModel.cs" />
     <Compile Include="Models\UOM\UomIndexViewModel.cs" />
     <Compile Include="Models\UserAuthorization\CreateUserAuthorizationViewModel.cs" />
