@@ -2918,6 +2918,10 @@ namespace Sampoerna.EMS.Website.Controllers
                             string nppbkcId = "";
                             if (outputPbck3.Pbck3CompositeDto.FromPbck7)
                                 nppbkcId = outputPbck3.Pbck3CompositeDto.Pbck7Composite.NppbkcId;
+                            else
+                            {
+                                nppbkcId = outputPbck3.Pbck3CompositeDto.Ck5Composite.Ck5Dto.DEST_PLANT_NPPBKC_ID;
+                            }
                             CreateXml(ck2, nppbkcId, outputPbck3.Pbck3CompositeDto.PBCK3_NUMBER);
 
                             //send mail after that

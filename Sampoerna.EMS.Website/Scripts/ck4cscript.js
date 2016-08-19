@@ -186,6 +186,7 @@ function ajaxGetNppbkcByCompany(urlFunction, company, nppbkc) {
 
 function getProductionData(urlFunction) {
     $('.loading').show();
+    $(".wipHead").css("display", "none");
 
     var comp = $('#Details_CompanyId').find("option:selected").val();
     var plant = $('#Details_PlantId').find("option:selected").val();
@@ -206,6 +207,7 @@ function getProductionData(urlFunction) {
     if (comp == "" || (plant == "" && isPlant) || (nppbkc == "" && isNppbkc) || period == "" || month == "" || year == "") {
         $('.loading').hide();
         $('#tb-body-ck4c').html("");
+        $("#WipLabel").css("visibility", "hidden");
         $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="16">no data<td></tr>');
     }
     else {
@@ -217,6 +219,7 @@ function getProductionData(urlFunction) {
                 $('.loading').hide();
                 if (data.length > 0) {
                     $('#tb-body-ck4c').html("");
+                    $("#WipLabel").css("visibility", "visible");
                     for (var i = 0; i < data.length; i++) {
                         var dt = new Date(parseInt(data[i].ProductionDate.substr(6)));
                         var dtStr = dt.toString();
@@ -245,7 +248,6 @@ function getProductionData(urlFunction) {
                             '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_PackedQty" name="Details.Ck4cItemData[' + i + '].PackedQty" value=' + data[i].QtyPacked + '></input>' + ThausandSeperator(data[i].QtyPacked, 2) + '</td>' +
                             '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_PackedInPack" name="Details.Ck4cItemData[' + i + '].PackedInPack" value=' + data[i].PackedInPack + '></input>' + ThausandSeperator(data[i].PackedInPack, 2) + '</td>' +
                             '<td class="number">' + ThausandSeperator(data[i].QtyUnpacked, 2) + '</td>' +
-                            '<td class="number">' + 0 + '</td>' +
                             '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ProdQty" name="Details.Ck4cItemData[' + i + '].ProdQty" value=' + data[i].QtyProduced + '></input>' + ThausandSeperator(data[i].QtyProduced, 2) + '</td>' +
                             '<td><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ProdQtyUom" name="Details.Ck4cItemData[' + i + '].ProdQtyUom" value=' + data[i].Uom + '></input><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ProdCode" name="Details.Ck4cItemData[' + i + '].ProdCode" value=' + data[i].ProdCode + '></input>' + data[i].Uom + '</td>' +
                             '<td></td>' +
@@ -257,7 +259,8 @@ function getProductionData(urlFunction) {
                     }
                 } else {
                     $('#tb-body-ck4c').html("");
-                    $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="16">no data<td></tr>');
+                    $("#WipLabel").css("visibility", "hidden");
+                    $('#tb-body-ck4c').append('<tr><td style="text-align:center" colspan="15">no data<td></tr>');
                 }
             }
         });

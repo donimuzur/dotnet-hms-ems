@@ -1613,11 +1613,10 @@ namespace Sampoerna.EMS.BLL
 
             if (!string.IsNullOrEmpty(dbData.APPROVED_BY_POA))
             {
-                var poa = _poaBll.GetDetailsById(dbData.APPROVED_BY_POA);
-                if (poa != null)
-                {
-                    dtToReturn.PoaPrintedName = poa.PRINTED_NAME;
-                }
+                var poa = _poaBll.GetDetailsById(dbData.CREATED_BY);
+                if (poa == null) poa = _poaBll.GetDetailsById(dbData.APPROVED_BY_POA);
+
+                dtToReturn.PoaPrintedName = poa.PRINTED_NAME;
             }
 
             if (dtToReturn.AllLack1IncomeDetail == null || dtToReturn.AllLack1IncomeDetail.Count <= 0)
