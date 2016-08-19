@@ -4285,8 +4285,33 @@ namespace Sampoerna.EMS.BLL
             result.ReportDetails.CK5Type = dtData.CK5_TYPE.ToString();
             //get material desc
 
+            result = MergeItem(result);
+
             return result;
             //return Mapper.Map<CK5ReportDto>(dtData);
+        }
+
+        private CK5ReportDto MergeItem(CK5ReportDto data)
+        {
+            var listItem = data.ListMaterials.GroupBy(x => new { x.Uom, x.Convertion, x.ConvertedUom, x.MaterialDescription, x.Hje, x.Tariff, x.UsdValue, x.Note })
+                .Select(p => new CK5ReportMaterialDto()
+                {
+                    Uom = p.FirstOrDefault().Uom,
+                    Convertion = p.FirstOrDefault().Convertion,
+                    ConvertedUom = p.FirstOrDefault().ConvertedUom,
+                    MaterialDescription = p.FirstOrDefault().MaterialDescription,
+                    Hje = p.FirstOrDefault().Hje,
+                    Tariff = p.FirstOrDefault().Tariff,
+                    UsdValue = p.FirstOrDefault().UsdValue,
+                    Note = p.FirstOrDefault().Note,
+                    Qty = p.Sum(c => Convert.ToDecimal(c.Qty)).ToString("#,##0.#0"),
+                    ConvertedQty = p.Sum(c => Convert.ToDecimal(c.ConvertedQty)).ToString("#,##0.#0"),
+                    ExciseValue = p.Sum(c => Convert.ToDecimal(c.ExciseValue)).ToString("#,##0.#0")
+                });
+
+            data.ListMaterials = listItem.ToList();
+
+            return data;
         }
 
         #endregion
