@@ -33,6 +33,9 @@ namespace Sampoerna.EMS.Contract.Services
 
         List<INVENTORY_MOVEMENT> GetReceivingByParamZaapShiftRpt(InvGetReceivingByParamZaapShiftRptInput input);
 
+        List<INVENTORY_MOVEMENT> GetReceivingByBatch201(InvGetReceivingByParamZaapShiftRptInput input,
+            List<string> batchlist);
+
         List<INVENTORY_MOVEMENT> GetBatchByPurchDoc(string purchDoc);
 
         List<INVENTORY_MOVEMENT> GetLack1DetailTis(GetLack1DetailTisInput input);

@@ -1713,9 +1713,14 @@ namespace Sampoerna.EMS.BLL
                 var tempdataUsage = _inventoryMovementService.GetReceivingByParamZaapShiftRpt(zaapInput261);
                 var matdoclist = _ck5Service.GetCk5AssignedMatdoc();
                 var dataUsage = tempdataUsage.Where(x => !matdoclist.Contains(x.MAT_DOC)).ToList();
+                
                 data.Lack1CFUsagevsFaDetailDtoMvt101 = Mapper.Map<List<Lack1CFUsagevsFaDetailDtoMvt>>(dataReceiving);
+
+                
                 var dataUsageWithConv = InvMovementConvertionProcess(dataUsage, "G");
+                
                 data.Lack1CFUsagevsFaDetailDtoMvt261 = Mapper.Map<List<Lack1CFUsagevsFaDetailDtoMvt>>(dataUsageWithConv);
+                
 
                 data.Lack1CFUsagevsFaDetailDtoMvtWaste = _wasteBll.GetAllByParam(new WasteGetByParamInput()
                 {
@@ -1729,8 +1734,9 @@ namespace Sampoerna.EMS.BLL
             }
 
             
-            
-
+            var dataUsage201 = _inventoryMovementService.GetReceivingByBatch201(zaapInput261, batchList);
+            var dataUsage201WithConv = InvMovementConvertionProcess(dataUsage201, "G");
+            data.Lack1CFUsagevsFaDetailDtoMvt261.AddRange(Mapper.Map<List<Lack1CFUsagevsFaDetailDtoMvt>>(dataUsage201WithConv));
 
             return result;
         }
