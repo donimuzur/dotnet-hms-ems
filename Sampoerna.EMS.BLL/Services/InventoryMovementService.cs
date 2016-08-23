@@ -126,23 +126,25 @@ namespace Sampoerna.EMS.BLL.Services
             return _repository.Get(queryFilter).ToList();
         }
 
-        public List<INVENTORY_MOVEMENT> GetReceivingByBatch201(InvGetReceivingByParamZaapShiftRptInput input,List<string> batchlist)
+        public List<INVENTORY_MOVEMENT> GetReceivingByBatch201(ZaapShiftRptGetForLack1ReportByParamInput input)
         {
             var receivingMvtType = new List<string>()
             {
-                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving101),
-                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving102),
-                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage261),
-                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage262)
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage201),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage202),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage901),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage902),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.UsageZ01),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.UsageZ02)
             };
 
             Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue && c.POSTING_DATE.Value <= input.EndDate;
 
-            queryFilter = queryFilter.And(c => c.POSTING_DATE.HasValue && c.POSTING_DATE >= input.StartDate);
+            queryFilter = queryFilter.And(c => c.POSTING_DATE.HasValue && c.POSTING_DATE >= input.BeginingDate);
 
 
 
-            queryFilter = queryFilter.And(c => c.PLANT_ID == input.PlantId);
+            queryFilter = queryFilter.And(c => input.Werks.Contains(c.PLANT_ID));
 
 
 
@@ -150,9 +152,9 @@ namespace Sampoerna.EMS.BLL.Services
             
 
 
-            queryFilter = queryFilter.And(c => !receivingMvtType.Contains(c.MVT));
+            queryFilter = queryFilter.And(c => receivingMvtType.Contains(c.MVT));
 
-            queryFilter = queryFilter.And(c => !batchlist.Contains(c.BATCH));
+            
 
 
 
