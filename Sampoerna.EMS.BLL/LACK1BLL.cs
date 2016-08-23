@@ -1900,18 +1900,29 @@ namespace Sampoerna.EMS.BLL
                     BeginingProductionDate = inputParam.BeginingDate,
                     EndProductionDate = inputParam.EndDate
                 });
-                data.Lack1CFUsagevsFaDetailDtoMvtWaste =
-                    data.Lack1CFUsagevsFaDetailDtoMvtWaste.GroupBy(x => new {x.FaCode, x.PlantWerks})
-                        .Select(x => new WasteDto()
-                        {
-                            FaCode = x.Key.FaCode,
-                            PlantWerks = x.Key.PlantWerks,
-                            MarkerRejectStickQty = x.Sum(y=> y.MarkerRejectStickQty),
-                            PackerRejectStickQty = x.Sum(y => y.PackerRejectStickQty),
-                            DustWasteGramQty = x.Sum(y=> y.DustWasteGramQty),
-                            FloorWasteGramQty = x.Sum(y=> y.FloorWasteGramQty),
-                            StampWasteQty = x.Sum(y => y.StampWasteQty)
-                        }).ToList();
+                
+                var wasteCurrent =
+                    result.Where(x => x.Fa_Code == data.Fa_Code && x.PlantId == data.PlantId)
+                        .Select(x => x.Lack1CFUsagevsFaDetailDtoMvtWaste.Count).Sum();
+                if (wasteCurrent == 0)
+                {
+                    data.Lack1CFUsagevsFaDetailDtoMvtWaste =
+                        data.Lack1CFUsagevsFaDetailDtoMvtWaste.GroupBy(x => new {x.FaCode, x.PlantWerks})
+                            .Select(x => new WasteDto()
+                            {
+                                FaCode = x.Key.FaCode,
+                                PlantWerks = x.Key.PlantWerks,
+                                MarkerRejectStickQty = x.Sum(y => y.MarkerRejectStickQty),
+                                PackerRejectStickQty = x.Sum(y => y.PackerRejectStickQty),
+                                DustWasteGramQty = x.Sum(y => y.DustWasteGramQty),
+                                FloorWasteGramQty = x.Sum(y => y.FloorWasteGramQty),
+                                StampWasteQty = x.Sum(y => y.StampWasteQty)
+                            }).ToList();
+                }
+                else
+                {
+                    data.Lack1CFUsagevsFaDetailDtoMvtWaste = new List<WasteDto>();
+                }
                 result.Add(data);
             }
 
