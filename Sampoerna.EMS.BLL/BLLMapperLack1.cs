@@ -580,8 +580,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Material_Id, opt => opt.MapFrom(src => src.MATERIAL_ID))
                 .ForMember(dest => dest.Mvt, opt => opt.MapFrom(src => src.MVT))
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
-                .ForMember(dest => dest.PostingDate, opt => opt.MapFrom(src => src.POSTING_DATE))
-                .ForMember(dest => dest.ProductionDate, opt => opt.MapFrom(src => src.POSTING_DATE))
+                .ForMember(dest => dest.PostingDate, opt => opt.MapFrom(src => src.POSTING_DATE.HasValue ? src.POSTING_DATE.Value : new DateTime()))
+                .ForMember(dest => dest.ProductionDate, opt => opt.MapFrom(src => src.POSTING_DATE.HasValue ? src.POSTING_DATE.Value : new DateTime()))
                 .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.ConvertedQty))
                 .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.ConvertedUomId));
 

@@ -1713,9 +1713,61 @@ namespace Sampoerna.EMS.BLL
                 var tempdataUsage = _inventoryMovementService.GetReceivingByParamZaapShiftRpt(zaapInput261);
                 var matdoclist = _ck5Service.GetCk5AssignedMatdoc();
                 var dataUsage = tempdataUsage.Where(x => !matdoclist.Contains(x.MAT_DOC)).ToList();
+                
                 data.Lack1CFUsagevsFaDetailDtoMvt101 = Mapper.Map<List<Lack1CFUsagevsFaDetailDtoMvt>>(dataReceiving);
+
+                
                 var dataUsageWithConv = InvMovementConvertionProcess(dataUsage, "G");
+                
                 data.Lack1CFUsagevsFaDetailDtoMvt261 = Mapper.Map<List<Lack1CFUsagevsFaDetailDtoMvt>>(dataUsageWithConv);
+                
+                data.Lack1CFUsagevsFaDetailDtoMvtWaste = new List<WasteDto>();
+                
+
+                result.Add(data);
+            }
+
+            var filter201 = new ZaapShiftRptGetForLack1ReportByParamInput()
+            {
+                BeginingDate = input.BeginingPostingDate,
+                EndDate = input.EndPostingDate,
+                Werks = werks.Select(x => x.WERKS).ToList(),
+
+            };
+            var dataUsage201 = _inventoryMovementService.GetReceivingByBatch201(filter201);
+            var dataUsage201WithConv = InvMovementConvertionProcess(dataUsage201, "G");
+
+            foreach (var zaapShiftRpt in dataUsage201WithConv)
+            {
+                var data = new Lack1CFUsagevsFaDetailDto();
+                data.PlantId = zaapShiftRpt.PLANT_ID;
+                data.PlantDesc = werks.Where(x => x.WERKS == data.PlantId).Select(x => x.NAME1).Single();
+
+                data.Lack1CFUsagevsFaDetailDtoMvt261 = new List<Lack1CFUsagevsFaDetailDtoMvt>();
+                data.Lack1CFUsagevsFaDetailDtoMvt261.Add(Mapper.Map<Lack1CFUsagevsFaDetailDtoMvt>(zaapShiftRpt));
+                data.Lack1CFUsagevsFaDetailDtoMvtWaste = new List<WasteDto>();
+                data.Lack1CFUsagevsFaDetailDtoMvt101 = new List<Lack1CFUsagevsFaDetailDtoMvt>();
+                result.Add(data);
+            }
+
+
+            var facodeDataList = zaapshiftrpt.GroupBy(x => new {x.FA_CODE, x.WERKS}).Select(x => new
+            {
+                x.Key.FA_CODE,
+                x.Key.WERKS
+            }).ToList();
+
+            foreach (var obj in facodeDataList)
+            {
+                var data = new Lack1CFUsagevsFaDetailDto();
+
+                
+
+                data.PlantId = obj.WERKS;
+                data.PlantDesc = werks.Where(x => x.WERKS == data.PlantId).Select(x => x.NAME1).Single();
+                data.Fa_Code = obj.FA_CODE;
+                //brandList.Add(data.Fa_Code);
+                data.Brand_Desc = brandData.Where(x => x.FA_CODE == data.Fa_Code && x.WERKS == data.PlantId).Select(x => x.BRAND_CE).Single();
 
                 data.Lack1CFUsagevsFaDetailDtoMvtWaste = _wasteBll.GetAllByParam(new WasteGetByParamInput()
                 {
@@ -1725,14 +1777,23 @@ namespace Sampoerna.EMS.BLL
                     EndProductionDate = inputParam.EndDate
                 });
 
+                data.Lack1CFUsagevsFaDetailDtoMvt261 = new List<Lack1CFUsagevsFaDetailDtoMvt>();
+                
+                
+                data.Lack1CFUsagevsFaDetailDtoMvt101 = new List<Lack1CFUsagevsFaDetailDtoMvt>();
+
+                foreach (var wasterow in data.Lack1CFUsagevsFaDetailDtoMvtWaste)
+                {
+                    data.Lack1CFUsagevsFaDetailDtoMvt101.Add(new Lack1CFUsagevsFaDetailDtoMvt()
+                    {
+                        ProductionDate = wasterow.WasteProductionDate,
+                        PostingDate = wasterow.WasteProductionDate,
+                    });
+                }
+
                 result.Add(data);
             }
-
-            
-            
-
-
-            return result;
+            return result.OrderBy(x => x.PlantId).ThenBy(x => x.Fa_Code).ThenBy(x => x.Order).ToList();
         }
 
         private List<Lack1CFUsagevsFaDetailDto> GetCfUsagevsFaSummaryData(Lack1CFUsageVsFAByParamInput input)
@@ -1839,18 +1900,29 @@ namespace Sampoerna.EMS.BLL
                     BeginingProductionDate = inputParam.BeginingDate,
                     EndProductionDate = inputParam.EndDate
                 });
-                data.Lack1CFUsagevsFaDetailDtoMvtWaste =
-                    data.Lack1CFUsagevsFaDetailDtoMvtWaste.GroupBy(x => new {x.FaCode, x.PlantWerks})
-                        .Select(x => new WasteDto()
-                        {
-                            FaCode = x.Key.FaCode,
-                            PlantWerks = x.Key.PlantWerks,
-                            MarkerRejectStickQty = x.Sum(y=> y.MarkerRejectStickQty),
-                            PackerRejectStickQty = x.Sum(y => y.PackerRejectStickQty),
-                            DustWasteGramQty = x.Sum(y=> y.DustWasteGramQty),
-                            FloorWasteGramQty = x.Sum(y=> y.FloorWasteGramQty),
-                            StampWasteQty = x.Sum(y => y.StampWasteQty)
-                        }).ToList();
+                
+                var wasteCurrent =
+                    result.Where(x => x.Fa_Code == data.Fa_Code && x.PlantId == data.PlantId)
+                        .Select(x => x.Lack1CFUsagevsFaDetailDtoMvtWaste.Count).Sum();
+                if (wasteCurrent == 0)
+                {
+                    data.Lack1CFUsagevsFaDetailDtoMvtWaste =
+                        data.Lack1CFUsagevsFaDetailDtoMvtWaste.GroupBy(x => new {x.FaCode, x.PlantWerks})
+                            .Select(x => new WasteDto()
+                            {
+                                FaCode = x.Key.FaCode,
+                                PlantWerks = x.Key.PlantWerks,
+                                MarkerRejectStickQty = x.Sum(y => y.MarkerRejectStickQty),
+                                PackerRejectStickQty = x.Sum(y => y.PackerRejectStickQty),
+                                DustWasteGramQty = x.Sum(y => y.DustWasteGramQty),
+                                FloorWasteGramQty = x.Sum(y => y.FloorWasteGramQty),
+                                StampWasteQty = x.Sum(y => y.StampWasteQty)
+                            }).ToList();
+                }
+                else
+                {
+                    data.Lack1CFUsagevsFaDetailDtoMvtWaste = new List<WasteDto>();
+                }
                 result.Add(data);
             }
 

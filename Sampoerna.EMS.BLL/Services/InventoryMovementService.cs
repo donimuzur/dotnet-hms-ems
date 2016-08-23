@@ -126,6 +126,43 @@ namespace Sampoerna.EMS.BLL.Services
             return _repository.Get(queryFilter).ToList();
         }
 
+        public List<INVENTORY_MOVEMENT> GetReceivingByBatch201(ZaapShiftRptGetForLack1ReportByParamInput input)
+        {
+            var receivingMvtType = new List<string>()
+            {
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage201),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage202),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage901),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Usage902),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.UsageZ01),
+                EnumHelper.GetDescription(Core.Enums.MovementTypeCode.UsageZ02)
+            };
+
+            Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = c => c.POSTING_DATE.HasValue && c.POSTING_DATE.Value <= input.EndDate;
+
+            queryFilter = queryFilter.And(c => c.POSTING_DATE.HasValue && c.POSTING_DATE >= input.BeginingDate);
+
+
+
+            queryFilter = queryFilter.And(c => input.Werks.Contains(c.PLANT_ID));
+
+
+
+
+            
+
+
+            queryFilter = queryFilter.And(c => receivingMvtType.Contains(c.MVT));
+
+            
+
+
+
+            return _repository.Get(queryFilter).ToList();
+        }
+
+    
+
         public List<INVENTORY_MOVEMENT> GetReceivingByParamZaapShiftRpt(InvGetReceivingByParamZaapShiftRptInput input)
         {
             var receivingMvtType = new List<string>()
