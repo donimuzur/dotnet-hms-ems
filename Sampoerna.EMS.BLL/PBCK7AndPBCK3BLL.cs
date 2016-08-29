@@ -3458,6 +3458,7 @@ namespace Sampoerna.EMS.BLL
             rc.HeaderFooter = headerFooterData;
             rc.PrintedDate = DateReportString(dbData.PBCK3_DATE);
             rc = SetExecutionDate(rc);
+            rc = MergeItem(rc);
             return rc;
         }
 
@@ -3529,13 +3530,13 @@ namespace Sampoerna.EMS.BLL
             var listItem = data.Items.GroupBy(x => new { x.ProdTypeAlias, x.Brand, x.Content, x.SeriesValue, x.Hje, x.Tariff })
                 .Select(p => new Pbck73ItemPrintOutDto()
                 {
-                    ProdTypeAlias = p.FirstOrDefault().ProdTypeAlias,
-                    Brand = p.FirstOrDefault().Brand,
-                    Content = p.FirstOrDefault().Content,
+                    ProdTypeAlias = p.Key.ProdTypeAlias,
+                    Brand = p.Key.Brand,
+                    Content = p.Key.Content,
                     Qty = p.Sum(c => c.Qty),
-                    SeriesValue = p.FirstOrDefault().SeriesValue,
-                    Hje = p.FirstOrDefault().Hje,
-                    Tariff = p.FirstOrDefault().Tariff,
+                    SeriesValue = p.Key.SeriesValue,
+                    Hje = p.Key.Hje,
+                    Tariff = p.Key.Tariff,
                     ExciseValue = p.Sum(c => c.ExciseValue),
                 });
 
