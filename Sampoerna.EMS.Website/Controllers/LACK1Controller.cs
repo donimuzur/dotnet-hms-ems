@@ -4201,7 +4201,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var data = _lack1Bll.GetCfUsagevsFaDetailData(param);
                 var html = generateTableDataCsVsFA(data,param.IsSummary);
-                ExportCfVsFaDetailsToExcel(html);
+                ExportCfVsFaDetailsToExcel(html, param.IsSummary);
             }
             catch (Exception ex)
             {
@@ -4218,9 +4218,13 @@ namespace Sampoerna.EMS.Website.Controllers
             
         }
 
-        private void ExportCfVsFaDetailsToExcel(string html)
+        private void ExportCfVsFaDetailsToExcel(string html,bool isSummary)
         {
             var fileName = "LACK-1 Cf Vs Fa Detail" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            if (isSummary)
+            {
+                fileName = "LACK-1 Cf Vs Fa Summary" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xls";
+            }
             Response.ClearContent();
             Response.Buffer = true;
             Response.AddHeader("content-disposition", "attachment; filename=" + fileName);
