@@ -1926,6 +1926,39 @@ namespace Sampoerna.EMS.BLL
                 result.Add(data);
             }
 
+            var filter201 = new ZaapShiftRptGetForLack1ReportByParamInput()
+            {
+                BeginingDate = input.BeginingPostingDate,
+                EndDate = input.EndPostingDate,
+                Werks = werks.Select(x => x.WERKS).ToList(),
+
+            };
+            var dataUsage201 = _inventoryMovementService.GetReceivingByBatch201(filter201);
+            var dataUsage201WithConv = InvMovementConvertionProcess(dataUsage201, "G");
+            var groupedConverted201 = dataUsage201WithConv.GroupBy(x => new {x.MATERIAL_ID, x.PLANT_ID}).Select(x=> new InvMovementItemWithConvertion()
+            {
+                MATERIAL_ID = x.Key.MATERIAL_ID,
+                PLANT_ID = x.Key.PLANT_ID,
+                ConvertedQty = x.Sum(y=> y.ConvertedQty)
+            });
+            foreach (var zaapShiftRpt in groupedConverted201)
+            {
+                var data = new Lack1CFUsagevsFaDetailDto();
+                data.PlantId = zaapShiftRpt.PLANT_ID;
+                data.PlantDesc = werks.Where(x => x.WERKS == data.PlantId).Select(x => x.NAME1).Single();
+
+                data.Lack1CFUsagevsFaDetailDtoMvt261 = new List<Lack1CFUsagevsFaDetailDtoMvt>();
+                data.Lack1CFUsagevsFaDetailDtoMvt261.Add(Mapper.Map<Lack1CFUsagevsFaDetailDtoMvt>(zaapShiftRpt));
+                data.Lack1CFUsagevsFaDetailDtoMvtWaste = new List<WasteDto>();
+                data.Lack1CFUsagevsFaDetailDtoMvt101 = new List<Lack1CFUsagevsFaDetailDtoMvt>();
+                data.Lack1CFUsagevsFaDetailDtoMvt101.Add(new Lack1CFUsagevsFaDetailDtoMvt()
+                {
+                    PlantId =  zaapShiftRpt.PLANT_ID,
+                    
+                });
+                result.Add(data);
+            }
+
 
 
             return result;
