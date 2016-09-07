@@ -333,43 +333,44 @@ function generateTable(data) {
 function generateTableWithTisToTis(data) {
     console.log('With Tis To Tis');
     console.log(data);
+    
     var rc = '<table border="0" class="table table-bordered">' + generateHeaderTable();
     rc = rc + '<tbody><tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>';
 
+    
     if (data.IncomeList != null && data.IncomeList.length > 0) {
-        if (data.IncomeList) {
-            var rowCount = data.IncomeList.length;
-            /*if only one record for income list from CK5*/
-            if (rowCount == 1) {
-                rc = rc + generateContentTableLack1WithTisToTisOnlyOneIncomeList(data);
-            } else {
-                rc = rc + generateContentTableLack1WithTisToTis(data);
-            }
+        var rowCount = data.IncomeList.length;
+        /*if only one record for income list from CK5*/
+        if (rowCount == 1) {
+            rc = rc + generateContentTableLack1WithTisToTisOnlyOneIncomeList(data);
         } else {
-            
-            rc = rc +
-            /*Only 1 Record*/
-            '<tr><td rowspan="2">1</td>' +
-            '<td rowspan="2">' + ThausandSeperator(data.BeginingBalance, 2) + '</td>' +
-            '<td rowspan="2"></td>' +
-            '<td rowspan="2"></td>' +
-            '<td rowspan="2"></td>' +
-            '<td>' + generateJenisHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
-            '<td>' + generateJumlahHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
-            '<td rowspan="2">' + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
-            '<td rowspan="2">' + ThausandSeperator(data.CloseBalance, 2) + '</td>' +
-            '<td rowspan="2">' + generateRemark(data) + '</td></tr>';
-            /*LOGS POINT 19 - 2015-12-17*/
-            //'<td rowspan="2">' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';
-            
-            /*Second record*/
-            rc = rc + '<tr><td style="border-bottom:none">' + ThausandSeperator(data.TotalUsageTisToTis, 2) + '</td>' +
-                    '<td style="border-top:none">' + generateJenisHasilProduksi(data.InventoryProductionTisToTis.ProductionData) + '</td>' +
-                    '<td style="border-top:none">' + generateJumlahHasilProduksi(data.InventoryProductionTisToTis.ProductionData) + '</td></tr>';
-
-            $('#IncomeListCount').val(0);
+            rc = rc + generateContentTableLack1WithTisToTis(data);
         }
+    } else {
+            
+        rc = rc +
+        /*Only 1 Record*/
+        '<tr><td rowspan="2">1</td>' +
+        '<td rowspan="2">' + ThausandSeperator(data.BeginingBalance, 2) + '</td>' +
+        '<td rowspan="2"></td>' +
+        '<td rowspan="2"></td>' +
+        '<td ></td>' +
+        '<td>' + generateJenisHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
+        '<td>' + generateJumlahHasilProduksi(data.InventoryProductionTisToFa.ProductionData) + '</td>' +
+        '<td rowspan="2">' + ThausandSeperator(data.EndingBalance, 2) + '</td>' +
+        '<td rowspan="2">' + ThausandSeperator(data.CloseBalance, 2) + '</td>' +
+        '<td rowspan="2">' + generateRemark(data) + '</td></tr>';
+        /*LOGS POINT 19 - 2015-12-17*/
+        //'<td rowspan="2">' + (data.DocumentNoted ? data.DocumentNoted : '') + '</td></tr>';
+            
+        /*Second record*/
+        rc = rc + '<tr><td style="border-bottom:none">' + ThausandSeperator(data.TotalUsageTisToTis, 2) + '</td>' +
+                '<td style="border-top:none">' + generateJenisHasilProduksi(data.InventoryProductionTisToTis.ProductionData) + '</td>' +
+                '<td style="border-top:none">' + generateJumlahHasilProduksi(data.InventoryProductionTisToTis.ProductionData) + '</td></tr>';
+
+        $('#IncomeListCount').val(0);
     }
+    
     /*footer*/
     rc = rc + '<tr><td></td><td></td><td></td><td>Total : ' + '<input name="TotalIncome" type="hidden" value = "' + data.TotalIncome + '" />'
         + ((data.TotalIncome == 0) ? '-' : ThausandSeperator(data.TotalIncome, 2)) + '</td><td></td><td></td><td>' + generateSummaryJumlahProduksi(data.FusionSummaryProductionList) + '</td><td colspan="3"></td></tr>' +
