@@ -171,6 +171,7 @@
           <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE_MANAGER" Type="datetime" />
           <Property Name="DECREE_DATE" Type="datetime" />
+          <Property Name="CK4C_ID_REVISED" Type="int" />
         </EntityType>
         <EntityType Name="CK4C_DECREE_DOC">
           <Key>
@@ -202,6 +203,8 @@
           <Property Name="CONTENT_PER_PACK" Type="int" />
           <Property Name="PACKED_IN_PACK" Type="int" />
           <Property Name="REMARKS" Type="nvarchar" MaxLength="100" />
+          <Property Name="ZB" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="PACKED_ADJUSTED" Type="decimal" Precision="18" Scale="4" />
         </EntityType>
         <EntityType Name="CK4C_REPORT_ITEM">
           <Key>
@@ -1113,6 +1116,8 @@
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="LAST_SHIFT" Type="int" />
+          <Property Name="ZB" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="PACKED_ADJUSTED" Type="decimal" Precision="18" Scale="4" />
         </EntityType>
         <EntityType Name="REVERSAL">
           <Key>
@@ -1408,6 +1413,8 @@
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="PER_CODE_DESC" Type="nvarchar" MaxLength="30" />
+          <Property Name="BAHAN_KEMASAN" Type="nvarchar" MaxLength="100" />
+          <Property Name="PACKED_ADJUSTED" Type="decimal" Precision="18" Scale="4" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_GOODTYP">
           <Key>
@@ -5261,6 +5268,8 @@
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T001W" FromRole="ZAIDM_EX_BRAND" ToRole="T001W" />
           <NavigationProperty Name="ZAIDM_EX_PRODTYP" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_PRODTYP" />
           <NavigationProperty Name="ZAIDM_EX_SERIES" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_SERIES" />
+          <Property Name="BAHAN_KEMASAN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PACKED_ADJUSTED" Type="Decimal" Precision="18" Scale="4" />
           </EntityType>
         <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET">
           <End Type="EMSModel.ZAIDM_EX_MARKET" Role="ZAIDM_EX_MARKET" Multiplicity="0..1" />
@@ -7151,6 +7160,7 @@
           <NavigationProperty Name="POA" Relationship="EMSModel.FK_CK4C_POA" FromRole="CK4C" ToRole="POA" />
           <NavigationProperty Name="CK4C_DECREE_DOC" Relationship="EMSModel.FK_CK4C_DECREE_DOC_CK4C" FromRole="CK4C" ToRole="CK4C_DECREE_DOC" />
           <Property Name="DECREE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CK4C_ID_REVISED" Type="Int32" />
         </EntityType>
         <Association Name="FK_CK4C_MODIFIED_BY">
           <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
@@ -7373,6 +7383,8 @@
           <Property Name="CONTENT_PER_PACK" Type="Int32" />
           <Property Name="PACKED_IN_PACK" Type="Int32" />
           <Property Name="REMARKS" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ZB" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="PACKED_ADJUSTED" Type="Decimal" Precision="18" Scale="4" />
         </EntityType>
         <Association Name="FK_CK4C_ITEM_CK4C">
           <End Type="EMSModel.CK4C" Role="CK4C" Multiplicity="1" />
@@ -8839,6 +8851,8 @@
           <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="LAST_SHIFT" Type="Int32" />
+          <Property Name="ZB" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="PACKED_ADJUSTED" Type="Decimal" Precision="18" Scale="4" />
         </EntityType>
         <EntityType Name="REVERSAL">
           <Key>
@@ -9071,7 +9085,9 @@
     <EntitySetMapping Name="ZAIDM_EX_BRAND">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.ZAIDM_EX_BRAND)">
         <MappingFragment StoreEntitySet="ZAIDM_EX_BRAND">
-          <ScalarProperty Name="PER_CODE_DESC" ColumnName="PER_CODE_DESC" />
+          <ScalarProperty Name="PACKED_ADJUSTED" ColumnName="PACKED_ADJUSTED" />
+                <ScalarProperty Name="BAHAN_KEMASAN" ColumnName="BAHAN_KEMASAN" />
+                <ScalarProperty Name="PER_CODE_DESC" ColumnName="PER_CODE_DESC" />
                 <ScalarProperty Name="WERKS" ColumnName="WERKS" />
           <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
           <ScalarProperty Name="STICKER_CODE" ColumnName="STICKER_CODE" />
@@ -9781,6 +9797,7 @@
           <EntitySetMapping Name="CK4C">
             <EntityTypeMapping TypeName="EMSModel.CK4C">
               <MappingFragment StoreEntitySet="CK4C">
+                <ScalarProperty Name="CK4C_ID_REVISED" ColumnName="CK4C_ID_REVISED" />
                 <ScalarProperty Name="DECREE_DATE" ColumnName="DECREE_DATE" />
                 <ScalarProperty Name="APPROVED_DATE_MANAGER" ColumnName="APPROVED_DATE_MANAGER" />
                 <ScalarProperty Name="APPROVED_BY_MANAGER" ColumnName="APPROVED_BY_MANAGER" />
@@ -9884,6 +9901,8 @@
           <EntitySetMapping Name="CK4C_ITEM">
             <EntityTypeMapping TypeName="EMSModel.CK4C_ITEM">
               <MappingFragment StoreEntitySet="CK4C_ITEM">
+                <ScalarProperty Name="PACKED_ADJUSTED" ColumnName="PACKED_ADJUSTED" />
+                <ScalarProperty Name="ZB" ColumnName="ZB" />
                 <ScalarProperty Name="REMARKS" ColumnName="REMARKS" />
                 <ScalarProperty Name="PACKED_IN_PACK" ColumnName="PACKED_IN_PACK" />
                 <ScalarProperty Name="CONTENT_PER_PACK" ColumnName="CONTENT_PER_PACK" />
@@ -10465,6 +10484,8 @@
           <EntitySetMapping Name="PRODUCTION">
             <EntityTypeMapping TypeName="EMSModel.PRODUCTION">
               <MappingFragment StoreEntitySet="PRODUCTION">
+                <ScalarProperty Name="PACKED_ADJUSTED" ColumnName="PACKED_ADJUSTED" />
+                <ScalarProperty Name="ZB" ColumnName="ZB" />
                 <ScalarProperty Name="LAST_SHIFT" ColumnName="LAST_SHIFT" />
                 <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
                 <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
