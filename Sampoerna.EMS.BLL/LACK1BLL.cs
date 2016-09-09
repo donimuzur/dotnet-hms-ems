@@ -1099,10 +1099,30 @@ namespace Sampoerna.EMS.BLL
                 WorkflowDecreeDateAddChanges(input.DocumentId, input.UserId, dbData.DECREE_DATE,
                     input.AdditionalDocumentData.DecreeDate);
 
-                dbData.LACK1_DOCUMENT = null;
+                if (input.UserRole != Enums.UserRole.Administrator)
+                {
+                    dbData.LACK1_DOCUMENT = null;
+                    dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
+                }
+                else
+                {
+                    var datadoc = GetDetailsById(input.DocumentId.Value).Lack1Document;
+                    if (datadoc.Count > 0)
+                    {
+
+                        var oldDoc = Mapper.Map<List<LACK1_DOCUMENT>>(datadoc);
+                        var additionaldoc = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
+                        foreach (var lack1Document in additionaldoc)
+                        {
+                            lack1Document.LACK1_ID = input.DocumentId;
+                            oldDoc.Add(lack1Document);
+                        }
+                        dbData.LACK1_DOCUMENT = oldDoc;
+                    }
+                }
                 dbData.STATUS = Enums.DocumentStatus.Completed;
                 dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
-                dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
+                
                 dbData.GOV_STATUS = Enums.DocumentStatusGovType2.Approved;
                 dbData.MODIFIED_DATE = DateTime.Now;
 
