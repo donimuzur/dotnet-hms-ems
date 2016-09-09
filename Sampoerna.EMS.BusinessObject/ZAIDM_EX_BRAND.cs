@@ -46,7 +46,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string MODIFIED_BY { get; set; }
         public string PER_CODE_DESC { get; set; }
         public string BAHAN_KEMASAN { get; set; }
-        public Nullable<decimal> PACKED_ADJUSTED { get; set; }
+        public Nullable<bool> PACKED_ADJUSTED { get; set; }
     
         public virtual ZAIDM_EX_MARKET ZAIDM_EX_MARKET { get; set; }
         public virtual ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
