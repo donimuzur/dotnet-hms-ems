@@ -1548,9 +1548,12 @@ namespace Sampoerna.EMS.Website.Controllers
                                 continue;
                             AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
                             return RedirectToAction("Edit", "Lack1", new { id = model.Lack1Id });
+                            
                         }
                     }
                 }
+
+                Lack1WorkflowGovApprove(model, model.GovApprovalActionType, model.Comment);
 
                 var input = new Lack1UpdateSomeField()
                 {
@@ -1565,7 +1568,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 _lack1Bll.UpdateSomeField(input);
 
-                Lack1WorkflowGovApprove(model, Enums.ActionType.Completed, string.Empty);
+                //Lack1WorkflowGovApprove(model, model.GovApprovalActionType, string.Empty);
+
+                
+
+                
+                
                 isSuccess = true;
             }
             catch (Exception ex)
