@@ -1834,6 +1834,8 @@ namespace Sampoerna.EMS.BLL
                 var tariff = new List<string>();
                 var content = new List<string>();
                 var packedQty = new List<string>();
+                var zb = new List<string>();
+                var packedAdjusted = new List<string>();
                 var packedQtyInPack = new List<string>();
                 var unpackedQty = new List<string>();
                 var prodQty = new List<string>();
@@ -1857,11 +1859,15 @@ namespace Sampoerna.EMS.BLL
 
                     var contentPerPack = ck4CItem.CONTENT_PER_PACK == null ? 0 : ck4CItem.CONTENT_PER_PACK.Value;
                     var packedInPack = ck4CItem.PACKED_IN_PACK == null ? 0 : ck4CItem.PACKED_IN_PACK.Value;
+                    var zbValue = ck4CItem.ZB == null ? 0 : ck4CItem.ZB.Value;
+                    var packedAdjustedValue = ck4CItem.PACKED_ADJUSTED == null ? 0 : ck4CItem.PACKED_ADJUSTED.Value;
 
                     hje.Add(String.Format("{0:n}", ck4CItem.HJE_IDR.Value));
                     tariff.Add(String.Format("{0:n}", ck4CItem.TARIFF.Value));
                     content.Add(String.Format("{0:n}", contentPerPack));
                     packedQty.Add(String.Format("{0:n}", ck4CItem.PACKED_QTY.Value));
+                    zb.Add(String.Format("{0:n}", zbValue));
+                    packedAdjusted.Add(String.Format("{0:n}", packedAdjustedValue));
                     packedQtyInPack.Add(String.Format("{0:n}", packedInPack));
                     unpackedQty.Add(String.Format("{0:n}", ck4CItem.UNPACKED_QTY.Value));
                     prodQty.Add(String.Format("{0:n}", ck4CItem.PROD_QTY));
@@ -1877,6 +1883,8 @@ namespace Sampoerna.EMS.BLL
                 summaryDto.Tariff = tariff;
                 summaryDto.Content = content;
                 summaryDto.PackedQty = packedQty;
+                summaryDto.Zb = zb;
+                summaryDto.PackedAdjusted = packedAdjusted;
                 summaryDto.PackedQtyInPack = packedQtyInPack;
                 summaryDto.UnPackQty = unpackedQty;
                 summaryDto.ProducedQty = prodQty;
@@ -1927,6 +1935,8 @@ namespace Sampoerna.EMS.BLL
                     var tariff = new List<string>();
                     var content = new List<string>();
                     var packedQty = new List<string>();
+                    var zb = new List<string>();
+                    var packedAdjusted = new List<string>();
                     var packedQtyInPack = new List<string>();
                     var unpackedQty = new List<string>();
                     var prodQty = new List<string>();
@@ -1948,11 +1958,15 @@ namespace Sampoerna.EMS.BLL
 
                     var contentPerPack = ck4CItem.CONTENT_PER_PACK == null ? 0 : ck4CItem.CONTENT_PER_PACK.Value;
                     var packedInPack = ck4CItem.PACKED_IN_PACK == null ? 0 : ck4CItem.PACKED_IN_PACK.Value;
+                    var zbValue = ck4CItem.ZB == null ? 0 : ck4CItem.ZB.Value;
+                    var packedAdjustedValue = ck4CItem.PACKED_ADJUSTED == null ? 0 : ck4CItem.PACKED_ADJUSTED.Value;
 
                     hje.Add(String.Format("{0:n}", ck4CItem.HJE_IDR.Value));
                     tariff.Add(String.Format("{0:n}", ck4CItem.TARIFF.Value));
                     content.Add(String.Format("{0:n}", contentPerPack));
                     packedQty.Add(String.Format("{0:n}", ck4CItem.PACKED_QTY.Value));
+                    zb.Add(String.Format("{0:n}", zbValue));
+                    packedAdjusted.Add(String.Format("{0:n}", packedAdjustedValue));
                     packedQtyInPack.Add(String.Format("{0:n}", packedInPack));
                     unpackedQty.Add(String.Format("{0:n}", ck4CItem.UNPACKED_QTY.Value));
                     prodQty.Add(String.Format("{0:n}", ck4CItem.PROD_QTY));
@@ -1967,6 +1981,8 @@ namespace Sampoerna.EMS.BLL
                     summaryDto.Tariff = tariff;
                     summaryDto.Content = content;
                     summaryDto.PackedQty = packedQty;
+                    summaryDto.Zb = zb;
+                    summaryDto.PackedAdjusted = packedAdjusted;
                     summaryDto.PackedQtyInPack = packedQtyInPack;
                     summaryDto.UnPackQty = unpackedQty;
                     summaryDto.ProducedQty = prodQty;

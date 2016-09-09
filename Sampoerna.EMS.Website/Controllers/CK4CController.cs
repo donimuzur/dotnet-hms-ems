@@ -1817,6 +1817,18 @@ namespace Sampoerna.EMS.Website.Controllers
                     iColumn = iColumn + 1;
                 }
 
+                if (modelExport.Zb)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, string.Join(Environment.NewLine, data.Zb.ToArray()));
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.PackedAdjusted)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, string.Join(Environment.NewLine, data.PackedAdjusted.ToArray()));
+                    iColumn = iColumn + 1;
+                }
+
                 if (modelExport.UnPackQty)
                 {
                     slDocument.SetCellValue(iRow, iColumn, string.Join(Environment.NewLine, data.UnPackQty.ToArray()));
@@ -1989,6 +2001,18 @@ namespace Sampoerna.EMS.Website.Controllers
             if (modelExport.PackedQty)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Packed QTY");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Zb)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "ZB: Only for SKT");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.PackedAdjusted)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Packed - Adjusted: Only for TIS CF");
                 iColumn = iColumn + 1;
             }
 
