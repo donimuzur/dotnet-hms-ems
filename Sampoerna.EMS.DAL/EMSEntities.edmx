@@ -1414,7 +1414,7 @@
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="PER_CODE_DESC" Type="nvarchar" MaxLength="30" />
           <Property Name="BAHAN_KEMASAN" Type="nvarchar" MaxLength="100" />
-          <Property Name="PACKED_ADJUSTED" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="PACKED_ADJUSTED" Type="bit" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_GOODTYP">
           <Key>
@@ -5269,7 +5269,7 @@
           <NavigationProperty Name="ZAIDM_EX_PRODTYP" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_PRODTYP" />
           <NavigationProperty Name="ZAIDM_EX_SERIES" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_SERIES" />
           <Property Name="BAHAN_KEMASAN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="PACKED_ADJUSTED" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="PACKED_ADJUSTED" Type="Boolean" />
           </EntityType>
         <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET">
           <End Type="EMSModel.ZAIDM_EX_MARKET" Role="ZAIDM_EX_MARKET" Multiplicity="0..1" />
