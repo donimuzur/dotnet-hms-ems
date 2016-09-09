@@ -636,9 +636,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     PlantId = ck4cData.PlantId
                 };
 
+                model.ActionType = "GovCompletedDocument";
+
                 ////workflow
                 var allowApproveAndReject = _workflowBll.AllowApproveAndReject(input);
                 model.AllowApproveAndReject = allowApproveAndReject;
+
+                if (allowApproveAndReject) model.ActionType = "ApproveDocument";
 
                 //first code when manager exists
                 //if (!allowApproveAndReject)
@@ -924,23 +928,27 @@ namespace Sampoerna.EMS.Website.Controllers
 
         #region Workflow
 
-        public ActionResult ApproveDocument(int? id)
+        public ActionResult ApproveDocument(Ck4CIndexDocumentListViewModel model)
         {
-            if (!id.HasValue)
-            {
-                return HttpNotFound();
-            }
             bool isSuccess = false;
             try
             {
-                Ck4cWorkflow(id.Value, Enums.ActionType.Approve, string.Empty);
+                var input = new Ck4cUpdateReportedOn()
+                {
+                    Id = model.Details.Ck4CId,
+                    ReportedOn = model.Details.ReportedOn
+                };
+
+                _ck4CBll.UpdateReportedOn(input);
+
+                Ck4cWorkflow(model.Details.Ck4CId, Enums.ActionType.Approve, string.Empty);
                 isSuccess = true;
             }
             catch (Exception ex)
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
-            if (!isSuccess) return RedirectToAction("Details", "CK4C", new { id });
+            if (!isSuccess) return RedirectToAction("Details", "CK4C", new { id = model.Details.Ck4CId });
             AddMessageInfo("Success Approve Document", Enums.MessageInfoType.Success);
             return RedirectToAction("DocumentList");
         }

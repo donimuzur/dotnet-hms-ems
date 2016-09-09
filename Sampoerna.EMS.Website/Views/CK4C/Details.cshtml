@@ -5,7 +5,7 @@
     ViewBag.Title = "Details";
 }
 
-@using (Html.BeginForm("GovCompletedDocument", "CK4C", FormMethod.Post, new { @id = "DetailForm", enctype = "multipart/form-data" }))
+@using (Html.BeginForm(Model.ActionType, "CK4C", FormMethod.Post, new { @id = "DetailForm", enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     <div class="container-wrap title-page">
@@ -206,7 +206,8 @@
             });
 
             $("#btnConfirm").click(function () {
-                window.location = "@Url.Action("ApproveDocument", "CK4C", new { id = @Model.Details.Ck4CId })";
+                //window.location = "@Url.Action("ApproveDocument", "CK4C", new { id = @Model.Details.Ck4CId, reportedOn = @Model.Details.ReportedOn })";
+                $('#DetailForm').submit();
             });
 
             $("#btnSaveGovStatus").click(function () {
