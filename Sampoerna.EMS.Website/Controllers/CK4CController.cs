@@ -721,9 +721,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     PrintHistoryList = printHistory
                 };
 
+                model.ActionType = "GovCompletedDocumentSuperAdmin";
+
                 model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData, id.Value);
 
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
+
+                model.AllowAdminRevise = _ck4CBll.AllowReviseCompletedDocument(ck4cData);
 
                 return View(model);
             }

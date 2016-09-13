@@ -38,5 +38,7 @@ namespace Sampoerna.EMS.Contract
         bool AllowEditCompletedDocument(Ck4CDto item, string userId);
 
         List<Ck4cItemExportDto> GetCk4cItemById(int id);
+
+        bool AllowReviseCompletedDocument(Ck4CDto item);
     }
 }

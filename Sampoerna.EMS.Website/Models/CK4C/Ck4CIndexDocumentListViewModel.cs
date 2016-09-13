@@ -28,6 +28,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public bool AllowGovApproveAndReject { get; set; }
         public bool AllowPrintDocument { get; set; }
         public bool AllowEditCompleted { get; set; }
+        public bool AllowAdminRevise { get; set; }
         public string ActionType { get; set; }
 
         //selectlist
