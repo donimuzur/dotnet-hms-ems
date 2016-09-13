@@ -5,7 +5,7 @@
     ViewBag.Title = "Edits";
 }
 
-@using (Html.BeginForm("GovCompletedDocumentSuperAdmin", "CK4C", FormMethod.Post, new { @id = "DetailForm", enctype = "multipart/form-data" }))
+@using (Html.BeginForm(Model.ActionType, "CK4C", FormMethod.Post, new { @id = "DetailForm", enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     <div class="container-wrap title-page">
@@ -20,6 +20,11 @@
                     <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK4C", new { id = @Model.Details.Ck4CId })')" />
 
                     <input type="button" value="Back" class="btn btn-grey" id="btnCancelCompleted" />
+
+                    @if (Model.AllowAdminRevise)
+                    {
+                        <input type="button" class="btn btn-blue" value="Revise" id="btnRevise" />
+                    }
 
                 </div>
             </div>
@@ -70,6 +75,24 @@
     </div>
 </div>
 
+<div id="Ck4cModal" class="modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h3><span id="lblTitleModal">Revise</span> </h3>
+            </div>
+            <div class="modal-body">
+                <span id="lblMessageModal">Revise Documents ?</span>
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="btnConfirm" class="btn btn-blue" value="Yes" />
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="No" />
+            </div>
+        </div>
+    </div>
+</div>
+
 @section scripts
 {
     <script src="~/Scripts/ck4cscript.js"></script>
@@ -96,6 +119,11 @@
 
             $('#btnExportCk4cItem').click(function (e) {
                 location.href = '@Url.Action("ExportXlsCk4cItem", "CK4C", new { id = @Model.Details.Ck4CId })';
+            });
+
+            $("#btnRevise").click(function () {
+                $('#btnConfirm').show();
+                $('#Ck4cModal').modal('show');
             });
         });
 

@@ -2046,5 +2046,26 @@ namespace Sampoerna.EMS.BLL
 
             return result;
         }
+
+        public bool AllowReviseCompletedDocument(Ck4CDto item)
+        {
+            var isAllow = true;
+
+            var reportedPeriod = 2;
+            if (item.ReportedPeriod == 2) reportedPeriod = 1;
+
+            var nextMonth = new DateTime(item.ReportedYears, item.ReportedMonth, 1).AddMonths(1);
+            var reportedMonth = nextMonth.Month;
+            var reportedYear = nextMonth.Year;
+
+            var rc = _repository.Get(c => c.REPORTED_PERIOD == reportedPeriod && c.REPORTED_MONTH == reportedMonth 
+                                        && c.REPORTED_YEAR == reportedYear && c.NPPBKC_ID == item.NppbkcId 
+                                        && c.PLANT_ID == item.PlantId && (c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.Rejected), 
+                                        null, includeTables).ToList();
+
+            if (rc.Count > 0) isAllow = false;
+
+            return isAllow;
+        }
     }
 }
