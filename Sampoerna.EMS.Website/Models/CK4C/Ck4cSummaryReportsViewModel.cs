@@ -76,6 +76,8 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public List<string> ProducedQty { get; set; }
         public List<string> UomProducedQty { get; set; }
         public List<string> Remarks { get; set; }
+        public List<string> Zb { get; set; }
+        public List<string> PackedAdjusted { get; set; }
     }
 
     public class Ck4CExportSummaryReportsViewModel
@@ -115,5 +117,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public bool ProducedQty { get; set; }
         public bool UomProducedQty { get; set; }
         public bool Remarks { get; set; }
+        public bool Zb { get; set; }
+        public bool PackedAdjusted { get; set; }
     }
 }
