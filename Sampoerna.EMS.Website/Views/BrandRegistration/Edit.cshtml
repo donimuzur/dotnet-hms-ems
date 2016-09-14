@@ -224,7 +224,15 @@
                                                             @if (Model.IsFromSAP)
                                                             {
                                                                 @Html.HiddenFor(model => model.SeriesId)
-                                                                @Html.TextBox("seriescode", Model.SeriesId + "-" + Model.SeriesValue, new { @class = "form-control", disabled = "disabled" })
+                                                                @if (Model.SeriesId=="0")
+                                                                {
+                                                                    @Html.TextBox("seriescode", "NO SERIES", new { @class = "form-control", disabled = "disabled" })
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Html.TextBox("seriescode", Model.SeriesId + "-" + Model.SeriesValue, new { @class = "form-control", disabled = "disabled" })
+                                                                }
+                                                                
                                                             }
                                                             else
                                                             {

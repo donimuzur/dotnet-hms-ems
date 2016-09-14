@@ -186,7 +186,7 @@ namespace Sampoerna.EMS.Website.Code
                              select new SelectListItem
                                         {
                                             Value = s.SERIES_CODE,
-                                            Text = s.SERIES_CODE + "-" + s.SERIES_VALUE
+                                            Text = (s.SERIES_CODE=="0" ? "NO SERIES" : s.SERIES_CODE + "-" + s.SERIES_VALUE)
                                         };
             return new SelectList(selectList, "Value", "Text");
         }

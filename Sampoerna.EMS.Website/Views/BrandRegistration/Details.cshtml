@@ -171,8 +171,14 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Series Code<span class="red">*</span></label>
                                                                 <div class="col-md-8">
+                                                                    @if (Model.SeriesCode == "0")
+                                                                    {
+                                                                        @Html.TextBox("seriescode", "NO SERIES", new { @class = "form-control", disabled = "disabled" })
+                                                                    }
+                                                                    else
+                                                                    {
                                                                         @Html.TextBox("seriescode", Model.SeriesCode + "-" + Model.SeriesValue, new { @class = "form-control", disabled = "disabled" })
-                                                                    
+                                                                    }
                                                                 </div>
                                                             </div>
                                                         </div>
