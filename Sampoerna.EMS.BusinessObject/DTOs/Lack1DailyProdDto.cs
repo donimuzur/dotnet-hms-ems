@@ -13,6 +13,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ProdUom { get; set; }
         public decimal? RejectParkerQty { get; set; }
         public string RejectParkerUom { get; set; }
+
+        public decimal? Zb { get; set; }
+        public decimal? PackedAdjusted { get; set; }
         
     }
 }

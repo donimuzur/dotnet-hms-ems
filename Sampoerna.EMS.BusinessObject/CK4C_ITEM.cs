@@ -29,6 +29,8 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<int> CONTENT_PER_PACK { get; set; }
         public Nullable<int> PACKED_IN_PACK { get; set; }
         public string REMARKS { get; set; }
+        public Nullable<decimal> ZB { get; set; }
+        public Nullable<decimal> PACKED_ADJUSTED { get; set; }
     
         public virtual CK4C CK4C { get; set; }
         public virtual UOM UOM { get; set; }

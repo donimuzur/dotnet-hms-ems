@@ -36,5 +36,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string CREATED_BY { get; set; }
         public string MODIFIED_BY { get; set; }
         public Nullable<int> LAST_SHIFT { get; set; }
+        public Nullable<decimal> ZB { get; set; }
+        public Nullable<decimal> PACKED_ADJUSTED { get; set; }
     }
 }
