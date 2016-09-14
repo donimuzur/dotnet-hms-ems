@@ -570,6 +570,17 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
 
+        public static SelectList GetBahanKemasanList(IBrandRegistrationBLL brandRegistrationBll)
+        {
+            var data = brandRegistrationBll.GetAllBrands().Where(x => x.IS_DELETED != true && x.BAHAN_KEMASAN != "" && x.BAHAN_KEMASAN != null);
+            var selectList = from s in data
+                             select new SelectListItem
+                             {
+                                 Value = s.BAHAN_KEMASAN,
+                                 Text = s.BAHAN_KEMASAN
+                             };
+            return new SelectList(selectList.GroupBy(p => p.Value).Select(g => g.First()), "Value", "Text");
+        }
       
     }
 

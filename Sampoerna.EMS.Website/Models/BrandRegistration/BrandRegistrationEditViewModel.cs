@@ -141,5 +141,9 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public bool? BoolIsDeleted { get; set; }
 
         public string IsDeleted { get; set; }
+
+        public string BahanKemasan { get; set; }
+        public SelectList BahanKemasanList { get; set; }
+        public bool IsPackedAdjusted { get; set; }
     }
 }

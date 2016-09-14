@@ -84,6 +84,14 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Bahan Kemasan<span class="red">*</span></label>
+                                                        <div class="col-md-8">
+                                                            @Html.DropDownListFor(model => model.BahanKemasan, Model.BahanKemasanList, "Select", new { @class = "selectpicker form-control" })
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="row">
                                                 
@@ -209,7 +217,14 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                               
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <label class="col-md-2">Packed-Adjusted</label>
+                                                        <div class="col-md-10">
+                                                            @Html.EditorFor(model => model.IsPackedAdjusted, new { @class = "form-control" }) Active
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="col-md-4">Start Date<span class="red">*</span></label>
@@ -350,7 +365,7 @@
             }
         }
 
-                @*$("#ProductCode").change(function() {
+        @*$("#ProductCode").change(function() {
             if ($("#ProductCode").length) {
                 var productCode = $(this).find("option:selected").val();
                 if (productCode == '') {
@@ -362,6 +377,19 @@
             }
 
         });*@
+
+        $("#ProductCode").change(function() {
+            if ($("#ProductCode").length) {
+                var productCode = $(this).find("option:selected").val();
+                var goodTypeCode = $("#GoodType").find("option:selected").val();
+                //console.log('productCode:' + productCode + ' goodTypeCode:' + goodTypeCode)
+                if (productCode == '05' && goodTypeCode == '02') {
+                    $("label:contains('HJE')").html('HJE per gram<span class="red">*</span>');
+                } else {
+                    $("label:contains('HJE')").html('HJE<span class="red">*</span>');
+                }
+            }
+        });
 
         function ajaxGetProductCodeDetails(url, formData) {
             if (formData.productId) {
@@ -437,6 +465,13 @@
                     $('#GoodTypeDescription').val('');
                 } else {
                     ajaxGetGoodTypeDescription('@Url.Action("GoodTypeDescription", "BrandRegistration")', { goodTypeId: goodTypeCode });
+
+                    var productCode = $("#ProductCode").find("option:selected").val();
+                    if (productCode == '05' && goodTypeCode == '02') {
+                        $("label:contains('HJE')").html('HJE per gram<span class="red">*</span>');
+                    } else {
+                        $("label:contains('HJE')").html('HJE<span class="red">*</span>');
+                    }
                 }
             }
 

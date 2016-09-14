@@ -96,6 +96,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.HjeCurrencyList = GlobalFunctions.GetCurrencyList();
             model.TariffCurrencyList = GlobalFunctions.GetCurrencyList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
+            model.BahanKemasanList = GlobalFunctions.GetBahanKemasanList(_brandRegistrationBll);
 
             return model;
         }
@@ -170,6 +171,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
                 dbBrand.PRINTING_PRICE = model.PrintingPrice == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
                 dbBrand.STATUS = model.IsActive;
+                dbBrand.PACKED_ADJUSTED = model.IsPackedAdjusted;
                 if (!string.IsNullOrEmpty(dbBrand.PER_CODE_DESC))
                     dbBrand.PER_CODE_DESC = model.PersonalizationCodeDescription.Split('-')[1];
 
@@ -209,6 +211,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.HjeCurrencyList = GlobalFunctions.GetCurrencyList();
             model.TariffCurrencyList = GlobalFunctions.GetCurrencyList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
+            model.BahanKemasanList = GlobalFunctions.GetBahanKemasanList(_brandRegistrationBll);
             return model;
         }
 

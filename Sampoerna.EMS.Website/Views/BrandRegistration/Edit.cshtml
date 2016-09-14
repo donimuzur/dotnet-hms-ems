@@ -132,7 +132,25 @@
                                                             }
                                                         </div>
                                                     </div>
+                                                    
                                                 </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Bahan Kemasan</label>
+                                                        <div class="col-md-8">
+                                                            @if (Model.IsFromSAP)
+                                                            {
+                                                                @Html.HiddenFor(model => model.BahanKemasan)
+                                                                @Html.TextBox("bahankemasan", Model.BahanKemasan, new { @class = "form-control", disabled = "disabled" })
+                                                            }
+                                                            else
+                                                            {
+                                                                @Html.DropDownListFor(model => model.BahanKemasan, Model.BahanKemasanList, "Select", new { @class = "selectpicker form-control" })
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                             <div class="row">
 
@@ -366,7 +384,14 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <label class="col-md-2">Packed-Adjusted</label>
+                                                        <div class="col-md-10">
+                                                            @Html.EditorFor(model => model.IsPackedAdjusted, new { @class = "form-control" })
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="col-md-4">Start Date<span class="red">*</span></label>

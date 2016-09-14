@@ -388,7 +388,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Conversion, opt => opt.MapFrom(src => src.CONVERSION))
                 .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.BRAND_CONTENT))
                 .ForMember(dest => dest.HjeValueStr, opt => opt.MapFrom(src => src.HJE_IDR))
-                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.STATUS));
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.STATUS))
+                .ForMember(dest => dest.BahanKemasan, opt => opt.MapFrom(src => src.BAHAN_KEMASAN))
+                .ForMember(dest => dest.IsPackedAdjusted, opt => opt.MapFrom(src => src.PACKED_ADJUSTED));
 
 
             Mapper.CreateMap<ZAIDM_EX_BRAND, BrandRegistrationEditViewModel>().IgnoreAllNonExisting()
@@ -426,7 +428,8 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.BRAND_CONTENT))
             .ForMember(dest => dest.BoolIsDeleted, opt => opt.MapFrom(src => src.IS_DELETED))
             .ForMember(dest => dest.IsDeleted, opt => opt.ResolveUsing<NullableBooleanToStringDeletedResolver>().FromMember(src => src.IS_DELETED))
-            ;
+            .ForMember(dest => dest.BahanKemasan, opt => opt.MapFrom(src => src.BAHAN_KEMASAN))
+            .ForMember(dest => dest.IsPackedAdjusted, opt => opt.MapFrom(src => src.PACKED_ADJUSTED));
 
             Mapper.CreateMap<BrandRegistrationCreateViewModel, ZAIDM_EX_BRAND>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.STICKER_CODE, opt => opt.MapFrom(src => src.StickerCode))
@@ -479,7 +482,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PRINTING_PRICE, opt => opt.MapFrom(src => src.PrintingPrice))
                 .ForMember(dest => dest.CUT_FILLER_CODE, opt => opt.MapFrom(src => src.CutFillerCode))
                 .ForMember(dest => dest.CONVERSION, opt => opt.MapFrom(src => src.Conversion))
-                .ForMember(dest => dest.BRAND_CONTENT, opt => opt.MapFrom(src => src.Content));
+                .ForMember(dest => dest.BRAND_CONTENT, opt => opt.MapFrom(src => src.Content))
+                .ForMember(dest => dest.BAHAN_KEMASAN, opt => opt.MapFrom(src => src.BahanKemasan))
+                .ForMember(dest => dest.PACKED_ADJUSTED, opt => opt.MapFrom(src => src.IsPackedAdjusted));
             #endregion
 
             Mapper.CreateMap<CHANGES_HISTORY, ChangesHistoryItemModel>().IgnoreAllNonExisting()
