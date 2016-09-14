@@ -66,7 +66,7 @@ namespace Sampoerna.EMS.BLL.Services
             {
                 queryFilterCk4C = queryFilterCk4C.And(c => input.MaterialIdList.Contains(c.FA_CODE));
             }
-
+            queryFilterCk4C = queryFilterCk4C.And(c => c.CK4C.CK4C_ID_REVISED == null);
             return _ck4CItemRepository.Get(queryFilterCk4C, null, "CK4C, UOM").ToList();
         }
 
