@@ -168,7 +168,7 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">HJE<span class="red">*</span></label>
+                                                        <label id="hje" class="col-md-4">HJE<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.TextBoxFor(m=>m.HjeValueStr, new { @id ="hje", @class = "decimal form-control" })
                                                             
@@ -382,11 +382,10 @@
             if ($("#ProductCode").length) {
                 var productCode = $(this).find("option:selected").val();
                 var goodTypeCode = $("#GoodType").find("option:selected").val();
-                //console.log('productCode:' + productCode + ' goodTypeCode:' + goodTypeCode)
                 if (productCode == '05' && goodTypeCode == '02') {
-                    $("label:contains('HJE')").html('HJE per gram<span class="red">*</span>');
+                    $("#hje").html('HJE per Gram<span class="red">*</span>');
                 } else {
-                    $("label:contains('HJE')").html('HJE<span class="red">*</span>');
+                    $("#hje").html('HJE<span class="red">*</span>');
                 }
             }
         });
@@ -468,9 +467,9 @@
 
                     var productCode = $("#ProductCode").find("option:selected").val();
                     if (productCode == '05' && goodTypeCode == '02') {
-                        $("label:contains('HJE')").html('HJE per gram<span class="red">*</span>');
+                        $("#hje").html('HJE per Gram<span class="red">*</span>');
                     } else {
-                        $("label:contains('HJE')").html('HJE<span class="red">*</span>');
+                        $("#hje").html('HJE<span class="red">*</span>');
                     }
                 }
             }

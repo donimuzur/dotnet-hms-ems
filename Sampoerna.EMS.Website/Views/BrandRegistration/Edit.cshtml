@@ -224,7 +224,7 @@
                                                             @if (Model.IsFromSAP)
                                                             {
                                                                 @Html.HiddenFor(model => model.SeriesId)
-                                                                @if (Model.SeriesId=="0")
+                                                                if (Model.SeriesId=="0")
                                                                 {
                                                                     @Html.TextBox("seriescode", "NO SERIES", new { @class = "form-control", disabled = "disabled" })
                                                                 }
@@ -297,7 +297,7 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">HJE<span class="red">*</span></label>
+                                                        <label id="hje" class="col-md-4">HJE<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @if (Model.IsFromSAP)
                                                             {
@@ -562,5 +562,29 @@
                 $('#PersonalizationCodeDescription').val(PersonalizationName);
             }
         }
+
+        $("#ProductCode").change(function () {
+            if ($("#ProductCode").length) {
+                var productCode = $(this).find("option:selected").val();
+                var goodTypeCode = $("#GoodType").find("option:selected").val();
+                if (productCode == '05' && goodTypeCode == '02') {
+                    $("#hje").html('HJE per Gram<span class="red">*</span>');
+                } else {
+                    $("#hje").html('HJE<span class="red">*</span>');
+                }
+            }
+        });
+
+        $("#GoodType").change(function () {
+            if ($("#GoodType").length) {
+                var goodTypeCode = $(this).find("option:selected").val();
+                var productCode = $("#ProductCode").find("option:selected").val();
+                if (productCode == '05' && goodTypeCode == '02') {
+                    $("#hje").html('HJE per Gram<span class="red">*</span>');
+                } else {
+                    $("#hje").html('HJE<span class="red">*</span>');
+                }
+            }
+        });
     </script>
 }
