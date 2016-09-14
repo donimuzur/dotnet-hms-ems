@@ -5848,7 +5848,9 @@ namespace Sampoerna.EMS.BLL
                                      ProdUom = production.UOM,
 
                                      RejectParkerQty = waste.PACKER_REJECT_STICK_QTY,
-                                     RejectParkerUom = "Batang"
+                                     RejectParkerUom = "Batang",
+                                     PackedAdjusted = production.PACKED_ADJUSTED,
+                                     Zb = production.ZB
 
                                  }).ToList();
 
