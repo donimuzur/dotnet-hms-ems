@@ -15,6 +15,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
             Detail = new List<DataDocumentList>();
             WorkflowHistory = new List<WorkflowHistoryViewModel>();
             ActionType = "Edit";
+            OldWorkflowHistory = new List<WorkflowHistoryViewModel>();
         }
         public string Ck4cNumber { get; set; }
         public string CompanyCode { get; set; }
@@ -45,6 +46,9 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public SelectList PeriodList { get; set; }
         public SelectList PlanList { get; set; }
         public SelectList PoaList { get; set; }
+
+        public DataDocumentList OldDetails { get; set; }
+        public List<WorkflowHistoryViewModel> OldWorkflowHistory { get; set; }
     }
     public class DataDocumentList
     {

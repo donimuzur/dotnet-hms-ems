@@ -86,6 +86,8 @@ namespace Sampoerna.EMS.BLL
         {
             Expression<Func<CK4C, bool>> queryFilter = PredicateHelper.True<CK4C>();
 
+            queryFilter = queryFilter.And(c => c.CK4C_ID_REVISED == null);
+
             if (input.Month > 0)
             {
                 queryFilter = queryFilter.And(c => c.REPORTED_MONTH == input.Month);
@@ -912,7 +914,7 @@ namespace Sampoerna.EMS.BLL
         {
             var queryFilter = ProcessQueryFilter(input);
 
-            queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+            queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed && c.CK4C_ID_REVISED == null);
 
             if (input.UserRole == Enums.UserRole.POA)
             {
@@ -2047,6 +2049,9 @@ namespace Sampoerna.EMS.BLL
             return result;
         }
 
+
+        #region Revise Completed Document
+
         public bool AllowReviseCompletedDocument(Ck4CDto item)
         {
             var isAllow = true;
@@ -2067,5 +2072,60 @@ namespace Sampoerna.EMS.BLL
 
             return isAllow;
         }
+
+        public void ReviseCompletedDocument(int id)
+        {
+            CK4C model;
+            CK4C newModel;
+
+            try
+            {
+                //part insert new ck4c
+                model = _repository.Get(c => c.CK4C_ID == id).FirstOrDefault();
+                //get new document number
+                newModel = model;
+                var newDocNumber = model.NUMBER + "-R";
+                newModel.NUMBER = newDocNumber;
+                newModel.STATUS = Enums.DocumentStatus.Draft;
+                newModel.GOV_STATUS = null;
+                _repository.Insert(newModel);
+                _uow.SaveChanges();
+
+                //part insert new ck4citem
+                var newCk4cId = newModel.CK4C_ID;
+                model = _repository.Get(c => c.CK4C_ID == id, null, includeTables).FirstOrDefault();
+                var listCk4cItem = Mapper.Map<List<Ck4cItem>>(model.CK4C_ITEM);
+                foreach (var item in listCk4cItem)
+                {
+                    item.Ck4CId = newCk4cId;
+                }
+                newModel = _repository.Get(c => c.CK4C_ID == newCk4cId, null, includeTables).FirstOrDefault();
+                newModel.CK4C_ITEM = null;
+                newModel.CK4C_ITEM = Mapper.Map<List<CK4C_ITEM>>(listCk4cItem); ;
+                _repository.Update(newModel);
+                _uow.SaveChanges();
+
+                //part update old ck4c
+                model = _repository.Get(c => c.CK4C_ID == id).FirstOrDefault();
+                model.CK4C_ID_REVISED = newCk4cId;
+                _repository.Update(model);
+                _uow.SaveChanges();
+            }
+            catch (Exception exception)
+            {
+                throw exception;
+            }
+        }
+
+        public Ck4CDto GetByCk4cReviseId(long id)
+        {
+            var dbData = _repository.Get(c => c.CK4C_ID_REVISED == id, null, includeTables).FirstOrDefault();
+
+            var mapResult = Mapper.Map<Ck4CDto>(dbData);
+
+            return mapResult;
+        }
+
+        #endregion
     }
 }

@@ -59,6 +59,10 @@
                         <li class="active" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
                         <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Print Out</a></li>
                         <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Changes Log</a></li>
+                        @if (Model.OldDetails != null)
+                        {
+                            <li role="presentation"><a href="#informationold" aria-controls="informationold" role="tab" data-toggle="tab">Old Information</a></li>
+                        }
                     </ul>
 
                     <!-- Tab panes -->
@@ -74,6 +78,10 @@
                         
                         @Html.Partial("_PrintOut")
                         @Html.Partial("_ChangeLog")
+                        @if (Model.OldDetails != null)
+                        {
+                            @Html.Partial("_HomeDetailsOld")
+                        }
                     </div>
                 </div>
             </div>
@@ -218,6 +226,10 @@
 
             $('#btnExportCk4cItem').click(function (e) {
                 location.href = '@Url.Action("ExportXlsCk4cItem", "CK4C", new { id = @Model.Details.Ck4CId })';
+            });
+
+            $('#btnExportCk4cItemOld').click(function (e) {
+                location.href = '@Url.Action("ExportXlsCk4cItem", "CK4C", new { id = @Model.OldDetails.Ck4CId })';
             });
         });
 
