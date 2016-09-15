@@ -33,7 +33,7 @@
                         <input type="button" class="btn btn-blue" value="Save" id="btnSaveGovStatus" />
                     }
 
-                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK4C", new { id = @Model.Details.Ck4CId })')" />
+                    <input type="button" class="btn btn-grey" value="Print Preview" id="btnPrintPreview" />
 
                     @if (Model.Details.Status == Enums.DocumentStatus.Completed)
                     {
@@ -59,6 +59,10 @@
                         <li class="active" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
                         <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Print Out</a></li>
                         <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Changes Log</a></li>
+                        @if (Model.OldDetails != null)
+                        {
+                            <li role="presentation"><a href="#informationold" aria-controls="informationold" role="tab" data-toggle="tab">Old Information</a></li>
+                        }
                     </ul>
 
                     <!-- Tab panes -->
@@ -74,6 +78,10 @@
                         
                         @Html.Partial("_PrintOut")
                         @Html.Partial("_ChangeLog")
+                        @if (Model.OldDetails != null)
+                        {
+                            @Html.Partial("_HomeDetailsOld")
+                        }
                     </div>
                 </div>
             </div>
@@ -157,155 +165,167 @@
         <script src="~/Scripts/ck4c/doccompleted.js"></script>
     }
     <script type="text/javascript" language="javascript" class="init">
-        $(document).ready(function () {
-            SetBasedOn();
+    $(document).ready(function () {
+        SetBasedOn();
 
-            SetPoaList();
+        SetPoaList();
 
-            SetStatusGov();
+        SetStatusGov();
+
+        $('#divComment').hide();
+
+        $('#Details_StatusGoverment').on('change', function (e) {
+            var valueSelected = this.value;
 
             $('#divComment').hide();
 
-            $('#Details_StatusGoverment').on('change', function (e) {
-                var valueSelected = this.value;
-
-                $('#divComment').hide();
-
-                if (valueSelected == 'Rejected') {
-                    $('#divComment').show();
-                    $('#Details_GovApprovalActionType').val('@Enums.ActionType.GovReject');
-                }
-                else if (valueSelected == 'Approved') {
-                    $('#Details_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
-                }
-                else if (valueSelected == '') {
-                    $('#Details_GovApprovalActionType').val('@Enums.ActionType.Completed');
-                }
-            });
-
-            $('#btnCancel').click(function (e) {
-                location.href = '@Url.Action("DocumentList", "CK4C")';
-            });
-
-            $('#btnCancelCompleted').click(function (e) {
-                location.href = '@Url.Action("CompletedDocument", "CK4C")';
-            });
-            
-            $("#btnApprove").click(function () {
-                $('#btnConfirm').show();
-                $('#btnConfirmGovApprove').hide();
-                $('#btnConfirmGovPartApprove').hide();
-                $("#lblTitleModal").text('Approval');
-                $("#lblMessageModal").text('Approve Documents ?');
-                $('#Pbck1Modal').modal('show');
-            });
-
-            $("#btnReject").click(function () {
-                $('#Detail_Comment').val('');
-                $('#Pbck1ModalReject').modal('show');
-            });
-
-            $("#btnConfirm").click(function () {
-                //window.location = "@Url.Action("ApproveDocument", "CK4C", new { id = @Model.Details.Ck4CId, reportedOn = @Model.Details.ReportedOn })";
-                $('#DetailForm').submit();
-            });
-
-            $("#btnSaveGovStatus").click(function () {
-                if (ValidateCompletedInput()) {
-                    $('#DetailForm').submit();
-                }
-            });
-
-            $('#btnExportCk4cItem').click(function (e) {
-                location.href = '@Url.Action("ExportXlsCk4cItem", "CK4C", new { id = @Model.Details.Ck4CId })';
-            });
-        });
-
-        function SetStatusGov() {
-            var statusGov = '@Model.Details.StatusGoverment';
-            if (statusGov == 'Rejected') {
+            if (valueSelected == 'Rejected') {
+                $('#divComment').show();
                 $('#Details_GovApprovalActionType').val('@Enums.ActionType.GovReject');
             }
-            else if (statusGov == 'Approved') {
+            else if (valueSelected == 'Approved') {
                 $('#Details_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
             }
+            else if (valueSelected == '') {
+                $('#Details_GovApprovalActionType').val('@Enums.ActionType.Completed');
+            }
+        });
+
+        $('#btnCancel').click(function (e) {
+            location.href = '@Url.Action("DocumentList", "CK4C")';
+        });
+
+        $('#btnCancelCompleted').click(function (e) {
+            location.href = '@Url.Action("CompletedDocument", "CK4C")';
+        });
+
+        $("#btnApprove").click(function () {
+            $('#btnConfirm').show();
+            $('#btnConfirmGovApprove').hide();
+            $('#btnConfirmGovPartApprove').hide();
+            $("#lblTitleModal").text('Approval');
+            $("#lblMessageModal").text('Approve Documents ?');
+            $('#Pbck1Modal').modal('show');
+        });
+
+        $("#btnReject").click(function () {
+            $('#Detail_Comment').val('');
+            $('#Pbck1ModalReject').modal('show');
+        });
+
+        $("#btnConfirm").click(function () {
+            //window.location = "@Url.Action("ApproveDocument", "CK4C", new { id = @Model.Details.Ck4CId, reportedOn = @Model.Details.ReportedOn })";
+            $('#DetailForm').submit();
+        });
+
+        $("#btnSaveGovStatus").click(function () {
+            if (ValidateCompletedInput()) {
+                $('#DetailForm').submit();
+            }
+        });
+
+        $('#btnExportCk4cItem').click(function (e) {
+            location.href = '@Url.Action("ExportXlsCk4cItem", "CK4C", new { id = @Model.Details.Ck4CId })';
+        });
+
+        $('#btnExportCk4cItemOld').click(function (e) {
+            location.href = '@Url.Action("ExportXlsCk4cItemOld", "CK4C", new { id = @Model.Details.Ck4CId })';
+        });
+
+        $('#btnPrintPreview').click(function (e) {
+            var activeTab = $('li.active a').html();
+
+            if (activeTab == 'Information') {
+                printPreview('@Url.EncryptedAction("PrintPreview", "CK4C", new { id = @Model.Details.Ck4CId })');
+            } else {
+                printPreview('@Url.EncryptedAction("PrintPreviewOld", "CK4C", new { id = @Model.Details.Ck4CId })');
+            }
+
+        });
+    });
+
+    function SetStatusGov() {
+        var statusGov = '@Model.Details.StatusGoverment';
+        if (statusGov == 'Rejected') {
+            $('#Details_GovApprovalActionType').val('@Enums.ActionType.GovReject');
         }
+        else if (statusGov == 'Approved') {
+            $('#Details_GovApprovalActionType').val('@Enums.ActionType.GovApprove');
+        }
+    }
 
-        function SetPoaList() {
-            var poa = '@Model.Details.ApprovedByPoa';
-            var nppbkc = '@Model.Details.NppbkcId';
-            var plant = '@Model.Details.PlantId';
-            var url = '@Url.Action("PoaListPartial", "CK4C")';
-            var urlPlant = '@Url.Action("GetPoaByPlantId", "CK4C")';
+    function SetPoaList() {
+        var poa = '@Model.Details.ApprovedByPoa';
+        var nppbkc = '@Model.Details.NppbkcId';
+        var plant = '@Model.Details.PlantId';
+        var url = '@Url.Action("PoaListPartial", "CK4C")';
+        var urlPlant = '@Url.Action("GetPoaByPlantId", "CK4C")';
 
-            if (poa == '')
-            {
-                if (plant != '') {
-                    ajaxSelectNppbck({ plantId: plant }, urlPlant);
-                }
-                else {
-                    ajaxSelectNppbck({ nppbkcid: nppbkc }, url);
-                }
+        if (poa == '') {
+            if (plant != '') {
+                ajaxSelectNppbck({ plantId: plant }, urlPlant);
+            }
+            else {
+                ajaxSelectNppbck({ nppbkcid: nppbkc }, url);
             }
         }
+    }
 
-        function SetBasedOn() {
-            var nppbkc = '@Model.Details.NppbkcId';
-            var plantId = '@Model.Details.PlantId';
-            var plantName = '@Model.Details.PlantName';
+    function SetBasedOn() {
+        var nppbkc = '@Model.Details.NppbkcId';
+        var plantId = '@Model.Details.PlantId';
+        var plantName = '@Model.Details.PlantName';
 
-            if (plantId == '')
-            {
-                $('#basedNppbkc').prop('checked', true);
+        if (plantId == '') {
+            $('#basedNppbkc').prop('checked', true);
+        }
+
+        if (plantId != '') {
+            $('#Details_PlantName').val(plantId + '-' + plantName);
+        }
+    }
+
+    function printPreview(url) {
+        window.open(url, '_blank', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+    }
+
+    function openAttachment(url) {
+        window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes');
+    }
+
+    function PrintOutClick(reportUrl, addHistoryUrl, id) {
+
+        window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+        $.ajax({
+            type: 'POST',
+            url: addHistoryUrl,
+            data: { id: id },
+            success: function (response) {
+                $('#PrintOutHistoryTable').html("");
+                $('#PrintOutHistoryTable').html(response);
+                ResetPrintHistoryDataTable();
             }
+        });
+    }
 
-            if(plantId != '')
+    function ResetPrintHistoryDataTable() {
+        // DataTable
+        var table = null;
+        if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
+            table = $('#printHistoryTable').DataTable();
+            table.destroy();
+        }
+
+        table = $('#printHistoryTable').DataTable(
             {
-                $('#Details_PlantName').val(plantId + '-' + plantName);
-            }
-        }
-
-        function printPreview(url) {
-            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
-        }
-        
-        function openAttachment(url) {
-            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes');
-        }
-
-        function PrintOutClick(reportUrl, addHistoryUrl, id) {
-
-            window.open(reportUrl, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
-
-            $.ajax({
-                type: 'POST',
-                url: addHistoryUrl,
-                data: { id: id },
-                success: function (response) {
-                    $('#PrintOutHistoryTable').html("");
-                    $('#PrintOutHistoryTable').html(response);
-                    ResetPrintHistoryDataTable();
+                "sDom": "Rlfrtip",
+                "language": {
+                    "zeroRecords": "No records found",
+                    "infoFiltered": "(filtered from _MAX_ total records)"
                 }
             });
-        }
-
-        function ResetPrintHistoryDataTable() {
-            // DataTable
-            var table = null;
-            if ($.fn.dataTable.isDataTable('#printHistoryTable')) {
-                table = $('#printHistoryTable').DataTable();
-                table.destroy();
-            }
-
-            table = $('#printHistoryTable').DataTable(
-                {
-                    "sDom": "Rlfrtip",
-                    "language": {
-                        "zeroRecords": "No records found",
-                        "infoFiltered": "(filtered from _MAX_ total records)"
-                    }
-                });
-        }
+    }
 
     </script>
 }
