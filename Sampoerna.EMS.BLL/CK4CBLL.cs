@@ -2110,6 +2110,9 @@ namespace Sampoerna.EMS.BLL
                 model.CK4C_ID_REVISED = newCk4cId;
                 _repository.Update(model);
                 _uow.SaveChanges();
+
+                //send email to next document creator
+                SendEmailWorkflowRevise(newCk4cId);
             }
             catch (Exception exception)
             {
@@ -2124,6 +2127,92 @@ namespace Sampoerna.EMS.BLL
             var mapResult = Mapper.Map<Ck4CDto>(dbData);
 
             return mapResult;
+        }
+
+        private void SendEmailWorkflowRevise(int ck4cId)
+        {
+            var ck4cData = _repository.Get(c => c.CK4C_ID == ck4cId, null, includeTables).FirstOrDefault();
+
+            var reportedPeriod = 2;
+            if (ck4cData.REPORTED_PERIOD == 2) reportedPeriod = 1;
+
+            var nextMonth = new DateTime(ck4cData.REPORTED_YEAR.Value, ck4cData.REPORTED_MONTH.Value, 1).AddMonths(1);
+            var reportedMonth = nextMonth.Month;
+            var reportedYear = nextMonth.Year;
+
+            var rc = _repository.Get(c => c.REPORTED_PERIOD == reportedPeriod && c.REPORTED_MONTH == reportedMonth
+                                        && c.REPORTED_YEAR == reportedYear && c.NPPBKC_ID == ck4cData.NPPBKC_ID
+                                        && c.PLANT_ID == ck4cData.PLANT_ID && (c.STATUS == Enums.DocumentStatus.Draft || c.STATUS == Enums.DocumentStatus.Rejected),
+                                        null, includeTables).ToList();
+
+            var ck4cNext = rc.Count > 0 ? rc.FirstOrDefault() : null;
+
+            var mailProcess = ProsesMailNotificationBodyRevise(ck4cData, ck4cNext);
+
+            _messageService.SendEmailToListWithCC(mailProcess.To, mailProcess.CC, mailProcess.Subject, mailProcess.Body, true);
+        }
+
+        private Ck4cMailNotification ProsesMailNotificationBodyRevise(CK4C ck4cData, CK4C nextDocument)
+        {
+            var bodyMail = new StringBuilder();
+            var rc = new Ck4cMailNotification();
+            var plant = _plantBll.GetT001WById(ck4cData.PLANT_ID);
+            var nppbkc = ck4cData.NPPBKC_ID;
+
+            var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
+            var ck4cType = "Plant";
+            if (plant == null) ck4cType = "NPPBKC";
+
+            var userData = _userBll.GetUserById(ck4cData.CREATED_BY);
+
+            rc.Subject = "CK-4C " + ck4cData.NUMBER + " is Revised";
+            bodyMail.Append("Dear Team,<br />");
+            bodyMail.AppendLine();
+            bodyMail.Append("Kindly be informed, CK-4C Document is Revised. <br />");
+            bodyMail.AppendLine();
+            bodyMail.Append("<table>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Creator </td><td>: " + userData.LAST_NAME + ", " + userData.FIRST_NAME + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Company Code </td><td>: " + ck4cData.COMPANY_ID + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Plant ID </td><td>: " + ck4cData.PLANT_ID + " - " + ck4cData.PLANT_NAME + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Period </td><td>: " + _monthBll.GetMonth(ck4cData.REPORTED_MONTH.Value).MONTH_NAME_ENG + " " + ck4cData.REPORTED_PERIOD + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>KPPBC </td><td>: " + _lfaBll.GetById(_nppbkcbll.GetById(nppbkc).KPPBC_ID).NAME2 + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>NPPBKC </td><td>: " + nppbkc + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Document Number</td><td> : " + ck4cData.NUMBER + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Document Type</td><td> : CK-4C level " + ck4cType + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr colspan='2'><td><i>To VIEW, Please click this <a href='" + webRootUrl + "/CK4C/Detail/" + ck4cData.CK4C_ID + "'>link</a></i></td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("</table>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<br />Regards,<br />");
+
+            rc.To.Add(userData.EMAIL);
+            rc.CC.Add(_userBll.GetUserById(ck4cData.APPROVED_BY_POA).EMAIL);
+
+            if (nextDocument != null)
+            {
+                rc.CC.Add(_userBll.GetUserById(nextDocument.CREATED_BY).EMAIL);
+
+                var approveRejectedPoa = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(new GetByFormTypeAndFormIdInput() { FormId = nextDocument.CK4C_ID, FormType = Enums.FormType.CK4C });
+
+                if (approveRejectedPoa != null)
+                {
+                    var poaApproveId = _userBll.GetUserById(approveRejectedPoa.ACTION_BY);
+
+                    rc.CC.Add(poaApproveId.EMAIL);
+                }
+            }
+
+            rc.Body = bodyMail.ToString();
+            return rc;
         }
 
         #endregion

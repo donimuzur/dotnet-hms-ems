@@ -2474,6 +2474,30 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("DocumentList");
         }
 
+        public void ExportXlsCk4cItemOld(int id)
+        {
+            var oldCk4c = _ck4CBll.GetByCk4cReviseId(id);
+
+            ExportXlsCk4cItem(oldCk4c.Ck4CId);
+        }
+
+        [EncryptedParameter]
+        public ActionResult PrintPreviewOld(int? id)
+        {
+            if (!id.HasValue)
+                HttpNotFound();
+
+            var oldCk4c = _ck4CBll.GetByCk4cReviseId(id.Value);
+
+            var ck4cData = _ck4CBll.GetCk4cReportDataById(oldCk4c.Ck4CId);
+            if (ck4cData == null)
+                HttpNotFound();
+
+            Stream stream = GetReport(ck4cData, "PREVIEW CK-4C");
+
+            return File(stream, "application/pdf");
+        }
+
         #endregion
     }
 }
