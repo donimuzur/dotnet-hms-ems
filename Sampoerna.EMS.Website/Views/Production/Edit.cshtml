@@ -116,6 +116,34 @@
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                    </div>
+                                                    <div id="zbRow" class="row">
+                                                        <div class="col-md-6">
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4"> ZB</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBoxFor(model => model.Zb, new { @class = "decimal form-control" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div id="packedAdjustedRow" class="row">
+                                                        <div class="col-md-6">
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4"> Packed-Adjusted</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextBoxFor(model => model.PackedAdjusted, new { @class = "decimal form-control" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                        </div>
                                                         <div class="col-md-6">
                                                             <div class="row">
                                                                 <label class="col-md-4"> Produced Qty</label>
@@ -143,7 +171,8 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-
+                                                    </div>
+                                                    <div class="row">
                                                         <div class="col-md-6">
                                                             <div class="row">
                                                                 <label class="col-md-4"> Bundle </label>
@@ -160,6 +189,8 @@
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                    </div>
+                                                    <div class="row">
                                                         <div class="col-md-6">
                                                             <div class="row">
                                                                 <label class="col-md-4"> Material Document Number </label>
@@ -169,7 +200,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-
+                                                        <div class="col-md-6"></div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-6">
@@ -353,17 +384,32 @@
                     url: url,
                     data: formData,
                     success: function(data) {
-
+                        console.log('PROD_CODE: ' + data.PROD_CODE + ' EXC_GOOD_TYPE: ' + data.EXC_GOOD_TYP + ' PACKED_ADJUSTED: ' + data.PACKED_ADJUSTED);
                         $('#test').val(data.BRAND_CE);
                         if (!data.IS_FROM_SAP) {
                             $('#QtyPacked.form-control').prop('disabled', false);
                         } else {
                             $('#QtyPacked.form-control').prop('disabled', true);
                         }
+
+                        if (data.PROD_CODE=="01") {
+                            $('#zbRow').show();
+                        } else {
+                            $('#zbRow').hide();
+                        }
+                        if (data.PROD_CODE=="05" && data.EXC_GOOD_TYP=="02") {
+                            $('#packedAdjustedRow').show();
+                        } else {
+                            $('#packedAdjustedRow').hide();
+                        }
+                        if (data.PACKED_ADJUSTED=="0" || data.PACKED_ADJUSTED==null) {
+                            $('#packedAdjustedRow').enabled();
+                        } else {
+                            $('#packedAdjustedRow').disabled();
+                        }
                     }
                 });
             }
-
         }
 
         $('#QtyPacked.form-control').change(function (obj) {

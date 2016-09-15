@@ -103,6 +103,9 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         //domain model
         public ProductionDto ProductionDtos { get; set; }
         public List<ProductionUploadItems> UploadItems { get; set; }
+
+        public decimal? Zb { get; set; }
+        public decimal? PackedAdjusted { get; set; }
     }
 
 }
