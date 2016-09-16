@@ -124,7 +124,8 @@
                                                             <div class="row">
                                                                 <label class="col-md-4"> ZB</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.TextBoxFor(model => model.Zb, new { @class = "decimal form-control" })
+                                                                    @Html.HiddenFor(model => model.ZbStr)
+                                                                    @Html.TextBoxFor(model => model.ZbStr, new { @class = "decimal form-control", id = "Zb" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -136,7 +137,8 @@
                                                             <div class="row">
                                                                 <label class="col-md-4"> Packed-Adjusted</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.TextBoxFor(model => model.PackedAdjusted, new { @class = "decimal form-control" })
+                                                                    @Html.HiddenFor(model => model.PackedAdjustedStr)
+                                                                    @Html.TextBoxFor(model => model.PackedAdjustedStr, new { @class = "decimal form-control", id = "PackedAdjusted" })
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -243,6 +245,8 @@
         $('#QtyPackedStr').val(ThausandSeperator($('#QtyPackedStr').val(), 2));
         $('#ProdQtyStickStr').val(ThausandSeperator($('#ProdQtyStickStr').val(), 2));
         $('#QtyStr').val(ThausandSeperator($('#QtyStr').val(), 2));
+        $('#ZbStr').val(ThausandSeperator($('#ZbStr').val(), 2));
+        $('#PackedAdjustedStr').val(ThausandSeperator($('#PackedAdjustedStr').val(), 2));
 
         $(document).ready(function() {
             var cpy = $("#CompanyCode").find("option:selected").val();
@@ -418,6 +422,17 @@
             
         });
 
+        $('#Zb.form-control').change(function (obj) {
+            var data = $('#Zb.form-control').val().replace(',', '');
+            $('#ZbStr').val(ThausandSeperator(data, 2));
+
+        });
+
+        $('#PackedAdjusted.form-control').change(function (obj) {
+            var data = $('#PackedAdjusted.form-control').val().replace(',', '');
+            $('#PackedAdjustedStr').val(ThausandSeperator(data, 2));
+
+        });
         
     </script>
 }

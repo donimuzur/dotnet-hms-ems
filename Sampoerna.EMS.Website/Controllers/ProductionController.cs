@@ -320,6 +320,10 @@ namespace Sampoerna.EMS.Website.Controllers
                         model.ProdQtyStick = 0;
                         model.QtyPackedStr = "0";
                         model.ProdQtyStickStr = "0";
+                        model.Zb = 0;
+                        model.ZbStr = "0";
+                        model.PackedAdjusted = 0;
+                        model.PackedAdjustedStr = "0";
                     }
                 }
 

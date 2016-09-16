@@ -128,6 +128,8 @@ namespace Sampoerna.EMS.BLL
             dbProduction.QTY_PACKED = productionDto.QtyPackedStr == null ? 0 : Convert.ToDecimal(productionDto.QtyPackedStr);
             dbProduction.QTY = productionDto.QtyStr == null ? 0 : Convert.ToDecimal(productionDto.QtyStr);
             dbProduction.PROD_QTY_STICK = productionDto.ProdQtyStickStr == null ? 0 : Convert.ToDecimal(productionDto.ProdQtyStickStr);
+            dbProduction.ZB = productionDto.ZbStr == null ? 0 : Convert.ToDecimal(productionDto.ZbStr);
+            dbProduction.PACKED_ADJUSTED = productionDto.PackedAdjustedStr == null ? 0 : Convert.ToDecimal(productionDto.PackedAdjustedStr);
 
             var origin = _repository.GetByID(productionDto.CompanyCodeX, productionDto.PlantWerksX, productionDto.FaCodeX,
                Convert.ToDateTime(productionDto.ProductionDateX));
@@ -207,6 +209,8 @@ namespace Sampoerna.EMS.BLL
             item.QtyPackedStr = item.QtyPacked == null ? string.Empty : item.QtyPacked.ToString();
             item.QtyStr = item.Qty == null ? string.Empty : item.Qty.ToString();
             item.ProdQtyStickStr = item.ProdQtyStick == null ? string.Empty : item.ProdQtyStick.ToString();
+            item.ZbStr = item.Zb == null ? string.Empty : item.Zb.ToString();
+            item.PackedAdjustedStr = item.PackedAdjusted == null ? string.Empty : item.PackedAdjusted.ToString();
             var brand = _brandRegistrationBll.GetByFaCode(item.PlantWerks, item.FaCode);
 
             if (brand.IS_FROM_SAP != null && brand.IS_FROM_SAP.Value)
