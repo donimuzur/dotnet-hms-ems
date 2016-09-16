@@ -68,6 +68,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal? Zb { get; set; }
         public string PackedAdjustedStr { get; set; }
         public decimal? PackedAdjusted { get; set; }
+        public string Remark { get; set; }
     }
 
     public class ProductionUploadItems
