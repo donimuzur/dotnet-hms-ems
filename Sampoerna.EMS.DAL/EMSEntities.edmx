@@ -1118,6 +1118,7 @@
           <Property Name="LAST_SHIFT" Type="int" />
           <Property Name="ZB" Type="decimal" Precision="18" Scale="4" />
           <Property Name="PACKED_ADJUSTED" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="REMARK" Type="text" />
         </EntityType>
         <EntityType Name="REVERSAL">
           <Key>
@@ -8853,6 +8854,7 @@
           <Property Name="LAST_SHIFT" Type="Int32" />
           <Property Name="ZB" Type="Decimal" Precision="18" Scale="4" />
           <Property Name="PACKED_ADJUSTED" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="REMARK" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="REVERSAL">
           <Key>
@@ -10484,6 +10486,7 @@
           <EntitySetMapping Name="PRODUCTION">
             <EntityTypeMapping TypeName="EMSModel.PRODUCTION">
               <MappingFragment StoreEntitySet="PRODUCTION">
+                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
                 <ScalarProperty Name="PACKED_ADJUSTED" ColumnName="PACKED_ADJUSTED" />
                 <ScalarProperty Name="ZB" ColumnName="ZB" />
                 <ScalarProperty Name="LAST_SHIFT" ColumnName="LAST_SHIFT" />
