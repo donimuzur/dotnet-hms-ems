@@ -1244,19 +1244,7 @@ namespace Sampoerna.EMS.BLL
             result.Detail.NBatang = nBatang.ToString();
             result.Detail.NGram = nGram.ToString();
 
-            var prodTotal = string.Empty;
-            if (nBatang != 0 && nGram != 0)
-            {
-                prodTotal = String.Format("{0:n}",nBatang) + " batang dan " + String.Format("{0:n}",nGram) + " gram";
-            }
-            else if (nBatang == 0 && nGram != 0)
-            {
-                prodTotal = String.Format("{0:n}",nGram) + " gram";
-            }
-            else if (nBatang != 0 && nGram == 0)
-            {
-                prodTotal = String.Format("{0:n}",nBatang) + " batang";
-            }
+            var prodTotal = String.Format("{0:n}", nBatang) + " batang dan/atau " + String.Format("{0:n}", nGram) + " gram";
 
             var city = plant == null ? _nppbkcbll.GetById(dtData.NPPBKC_ID).CITY : plant.ORT01;
             result.Detail.City = city;

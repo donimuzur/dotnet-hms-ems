@@ -1514,7 +1514,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             ReportClass rpt = new ReportClass
             {
-                FileName = ConfigurationManager.AppSettings["Report_Path"] + "CK4C\\Preview.rpt"
+                FileName = ConfigurationManager.AppSettings["Report_Path"] + "CK4C\\PreviewNew.rpt"
 
             };
             rpt.Load();
