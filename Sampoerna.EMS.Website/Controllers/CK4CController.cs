@@ -503,6 +503,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var ck4cData = _ck4CBll.GetById(id.Value);
 
+            //get old data
+            var ck4cDataOld = _ck4CBll.GetByCk4cReviseId(id.Value);
+
             if (ck4cData == null)
             {
                 return HttpNotFound();
@@ -543,6 +546,40 @@ namespace Sampoerna.EMS.Website.Controllers
                     PrintHistoryList = printHistory
                 };
 
+                if (ck4cDataOld != null)
+                {
+                    //get old data
+                    plant = _plantBll.GetT001WById(ck4cDataOld.PlantId);
+                    nppbkcId = ck4cDataOld.NppbkcId;
+
+                    //workflow history
+                    workflowInput = new GetByFormNumberInput();
+                    workflowInput.FormNumber = ck4cDataOld.Number;
+                    workflowInput.DocumentStatus = ck4cDataOld.Status;
+                    workflowInput.NppbkcId = nppbkcId;
+                    workflowInput.DocumentCreator = ck4cDataOld.CreatedBy;
+                    if (plant != null)
+                    {
+                        workflowInput.PlantId = ck4cDataOld.PlantId;
+                    }
+
+                    var workflowHistoryOld = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+
+                    model = new Ck4CIndexDocumentListViewModel()
+                    {
+                        MainMenu = _mainMenu,
+                        CurrentMenu = PageInfo,
+                        Details = Mapper.Map<DataDocumentList>(ck4cData),
+                        WorkflowHistory = workflowHistory,
+                        ChangesHistoryList = changesHistory,
+                        PrintHistoryList = printHistory,
+                        OldDetails = Mapper.Map<DataDocumentList>(ck4cDataOld),
+                        OldWorkflowHistory = workflowHistoryOld
+                    };
+
+                    model.OldDetails.Ck4cItemData = SetOtherCk4cItemData(model.OldDetails.Ck4cItemData, ck4cDataOld.Ck4CId);
+                }
+
                 model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData, id.Value);
 
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
@@ -566,6 +603,9 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var ck4cData = _ck4CBll.GetById(id.Value);
+
+            //get old data
+            var ck4cDataOld = _ck4CBll.GetByCk4cReviseId(id.Value);
 
             if (ck4cData == null)
             {
@@ -618,6 +658,40 @@ namespace Sampoerna.EMS.Website.Controllers
                     ChangesHistoryList = changesHistory,
                     PrintHistoryList = printHistory
                 };
+
+                if (ck4cDataOld != null)
+                {
+                    //get old data
+                    plant = _plantBll.GetT001WById(ck4cDataOld.PlantId);
+                    nppbkcId = ck4cDataOld.NppbkcId;
+
+                    //workflow history
+                    workflowInput = new GetByFormNumberInput();
+                    workflowInput.FormNumber = ck4cDataOld.Number;
+                    workflowInput.DocumentStatus = ck4cDataOld.Status;
+                    workflowInput.NppbkcId = nppbkcId;
+                    workflowInput.DocumentCreator = ck4cDataOld.CreatedBy;
+                    if (plant != null)
+                    {
+                        workflowInput.PlantId = ck4cDataOld.PlantId;
+                    }
+
+                    var workflowHistoryOld = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+
+                    model = new Ck4CIndexDocumentListViewModel()
+                    {
+                        MainMenu = _mainMenu,
+                        CurrentMenu = PageInfo,
+                        Details = Mapper.Map<DataDocumentList>(ck4cData),
+                        WorkflowHistory = workflowHistory,
+                        ChangesHistoryList = changesHistory,
+                        PrintHistoryList = printHistory,
+                        OldDetails = Mapper.Map<DataDocumentList>(ck4cDataOld),
+                        OldWorkflowHistory = workflowHistoryOld
+                    };
+
+                    model.OldDetails.Ck4cItemData = SetOtherCk4cItemData(model.OldDetails.Ck4cItemData, ck4cDataOld.Ck4CId);
+                }
 
                 model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData, id.Value);
 
@@ -676,6 +750,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var ck4cData = _ck4CBll.GetById(id.Value);
 
+            //get old data
+            var ck4cDataOld = _ck4CBll.GetByCk4cReviseId(id.Value);
+
             if (ck4cData == null)
             {
                 return HttpNotFound();
@@ -723,6 +800,40 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 model.ActionType = "GovCompletedDocumentSuperAdmin";
 
+                if (ck4cDataOld != null)
+                {
+                    //get old data
+                    plant = _plantBll.GetT001WById(ck4cDataOld.PlantId);
+                    nppbkcId = ck4cDataOld.NppbkcId;
+
+                    //workflow history
+                    workflowInput = new GetByFormNumberInput();
+                    workflowInput.FormNumber = ck4cDataOld.Number;
+                    workflowInput.DocumentStatus = ck4cDataOld.Status;
+                    workflowInput.NppbkcId = nppbkcId;
+                    workflowInput.DocumentCreator = ck4cDataOld.CreatedBy;
+                    if (plant != null)
+                    {
+                        workflowInput.PlantId = ck4cDataOld.PlantId;
+                    }
+
+                    var workflowHistoryOld = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+
+                    model = new Ck4CIndexDocumentListViewModel()
+                    {
+                        MainMenu = _mainMenu,
+                        CurrentMenu = PageInfo,
+                        Details = Mapper.Map<DataDocumentList>(ck4cData),
+                        WorkflowHistory = workflowHistory,
+                        ChangesHistoryList = changesHistory,
+                        PrintHistoryList = printHistory,
+                        OldDetails = Mapper.Map<DataDocumentList>(ck4cDataOld),
+                        OldWorkflowHistory = workflowHistoryOld
+                    };
+
+                    model.OldDetails.Ck4cItemData = SetOtherCk4cItemData(model.OldDetails.Ck4cItemData, ck4cDataOld.Ck4CId);
+                }
+
                 model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData, id.Value);
 
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
@@ -750,6 +861,9 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var ck4cData = _ck4CBll.GetById(id.Value);
+
+            //get old data
+            var ck4cDataOld = _ck4CBll.GetByCk4cReviseId(id.Value);
 
             if (ck4cData == null)
             {
@@ -844,6 +958,30 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
+
+                if (ck4cDataOld != null)
+                {
+                    //get old data
+                    plant = _plantBll.GetT001WById(ck4cDataOld.PlantId);
+                    nppbkcId = ck4cDataOld.NppbkcId;
+
+                    //workflow history
+                    workflowInput = new GetByFormNumberInput();
+                    workflowInput.FormNumber = ck4cDataOld.Number;
+                    workflowInput.DocumentStatus = ck4cDataOld.Status;
+                    workflowInput.NppbkcId = nppbkcId;
+                    workflowInput.DocumentCreator = ck4cDataOld.CreatedBy;
+                    if (plant != null)
+                    {
+                        workflowInput.PlantId = ck4cDataOld.PlantId;
+                    }
+
+                    var workflowHistoryOld = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+
+                    model.OldDetails = Mapper.Map<DataDocumentList>(ck4cDataOld);
+                    model.OldWorkflowHistory = workflowHistoryOld;
+                    model.OldDetails.Ck4cItemData = SetOtherCk4cItemData(model.OldDetails.Ck4cItemData, ck4cDataOld.Ck4CId);
+                }
             }
             catch (Exception exception)
             {
@@ -2312,6 +2450,52 @@ namespace Sampoerna.EMS.Website.Controllers
             var data = InitDashboardModel(model);
 
             return PartialView("_ChartStatus", data.Detil);
+        }
+
+        #endregion
+
+
+        #region Revise Document
+
+        public ActionResult ReviseDocument(int? id)
+        {
+            bool isSuccess = false;
+            try
+            {
+                _ck4CBll.ReviseCompletedDocument(id.Value);
+                isSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+            if (!isSuccess) return RedirectToAction("Details", "CK4C", new { id });
+            AddMessageInfo("Success Revise Document", Enums.MessageInfoType.Success);
+            return RedirectToAction("DocumentList");
+        }
+
+        public void ExportXlsCk4cItemOld(int id)
+        {
+            var oldCk4c = _ck4CBll.GetByCk4cReviseId(id);
+
+            ExportXlsCk4cItem(oldCk4c.Ck4CId);
+        }
+
+        [EncryptedParameter]
+        public ActionResult PrintPreviewOld(int? id)
+        {
+            if (!id.HasValue)
+                HttpNotFound();
+
+            var oldCk4c = _ck4CBll.GetByCk4cReviseId(id.Value);
+
+            var ck4cData = _ck4CBll.GetCk4cReportDataById(oldCk4c.Ck4CId);
+            if (ck4cData == null)
+                HttpNotFound();
+
+            Stream stream = GetReport(ck4cData, "PREVIEW CK-4C");
+
+            return File(stream, "application/pdf");
         }
 
         #endregion

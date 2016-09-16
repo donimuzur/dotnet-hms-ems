@@ -1312,6 +1312,7 @@
     <Content Include="Views\ProductType\Index.cshtml" />
     <Content Include="Views\ProductType\Edit.cshtml" />
     <Content Include="Views\ProductType\Detail.cshtml" />
+    <Content Include="Views\CK4C\_HomeDetailsOld.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
