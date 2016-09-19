@@ -1158,6 +1158,7 @@ namespace Sampoerna.EMS.BLL
                     ck4cItem.Total = "Nihil";
                     ck4cItem.ProdWaste = unpackedQty == null ? strOldUnpacked : (unpackedQty.UnpackedQty == 0 ? "Nihil" : String.Format("{0:n}", unpackedQty.UnpackedQty));
                     ck4cItem.Comment = "Saldo CK-4C Sebelumnya";
+                    ck4cItem.BhnKemasan = brand.BAHAN_KEMASAN;
 
                     //disable quantity when ck4c level by plant
                     if (dtData.PLANT_ID != null)
@@ -1193,7 +1194,8 @@ namespace Sampoerna.EMS.BLL
                 c.Hje,
                 c.Total,
                 c.ProdWaste,
-                c.Comment
+                c.Comment,
+                c.BhnKemasan
             });
 
             var distinctTempCk4cDto = tempCk4cDto.Distinct().ToList();
@@ -1213,7 +1215,8 @@ namespace Sampoerna.EMS.BLL
                 Hje = c.Hje,
                 Total = c.Total,
                 ProdWaste = c.ProdWaste,
-                Comment = c.Comment
+                Comment = c.Comment,
+                BhnKemasan = c.BhnKemasan
 
             }).ToList();
 
@@ -1351,6 +1354,7 @@ namespace Sampoerna.EMS.BLL
                         ck4cItem.Total = total == null || total == 0 ? "Nihil" : String.Format("{0:n}", total);
                         ck4cItem.ProdWaste = unpackedQty == null || unpackedQty == 0 ? "Nihil" : String.Format("{0:n}", unpackedQty);
                         ck4cItem.Comment = remarks == null ? string.Empty : remarks.REMARKS;
+                        ck4cItem.BhnKemasan = brand.BAHAN_KEMASAN;
 
                         //disable quantity when ck4c level by plant
                         if (dtData.PLANT_ID != null)
@@ -1396,7 +1400,8 @@ namespace Sampoerna.EMS.BLL
                     c.Hje,
                     c.Total,
                     c.ProdWaste,
-                    c.Comment
+                    c.Comment,
+                    c.BhnKemasan
                 });
 
                 var distinctTempCk4cDto2 = tempCk4cDto2.Distinct().ToList();
@@ -1416,7 +1421,8 @@ namespace Sampoerna.EMS.BLL
                     Hje = c.Hje,
                     Total = c.Total,
                     ProdWaste = c.ProdWaste,
-                    Comment = c.Comment
+                    Comment = c.Comment,
+                    BhnKemasan = c.BhnKemasan
 
                 }).ToList();
 
@@ -1520,7 +1526,7 @@ namespace Sampoerna.EMS.BLL
             //header
             var groupList = groupItem
                 .Where(c=>string.IsNullOrEmpty(c.ProdDate))
-                .GroupBy(x => new { x.Ck4cItemId, x.ProdQty, x.ProdCode, x.ProdType, x.Merk, x.Hje, x.No, x.NoProd, x.ProdDate, x.Isi, x.CollumNo })
+                .GroupBy(x => new { x.Ck4cItemId, x.ProdQty, x.ProdCode, x.ProdType, x.Merk, x.Hje, x.No, x.NoProd, x.ProdDate, x.Isi, x.CollumNo, x.BhnKemasan })
                 .Select(p => new Ck4cGroupReportItemDto()
                 {
                     Ck4cItemId = p.FirstOrDefault().Ck4cItemId,
@@ -1535,6 +1541,7 @@ namespace Sampoerna.EMS.BLL
                     Isi = p.FirstOrDefault().Isi,
                     Comment = p.FirstOrDefault().Comment,
                     CollumNo = p.FirstOrDefault().CollumNo,
+                    BhnKemasan = p.FirstOrDefault().BhnKemasan,
                     SumBtg = p.Sum(c => c.SumBtg),
                     BtgGr = p.Sum(c => c.BtgGr),
                     Total = p.Sum(c => c.Total),
@@ -1547,7 +1554,7 @@ namespace Sampoerna.EMS.BLL
             //different when take field remark 
             var groupList2 = groupItem
                 .Where(c => !string.IsNullOrEmpty(c.ProdDate))
-                .GroupBy(x => new { x.Ck4cItemId, x.ProdQty, x.ProdCode, x.ProdType, x.Merk, x.Hje, x.No, x.NoProd, x.ProdDate, x.Isi, x.CollumNo })
+                .GroupBy(x => new { x.Ck4cItemId, x.ProdQty, x.ProdCode, x.ProdType, x.Merk, x.Hje, x.No, x.NoProd, x.ProdDate, x.Isi, x.CollumNo, x.BhnKemasan })
                 .Select(p => new Ck4cGroupReportItemDto()
                 {
                     Ck4cItemId = p.FirstOrDefault().Ck4cItemId,
@@ -1562,6 +1569,7 @@ namespace Sampoerna.EMS.BLL
                     Isi = p.FirstOrDefault().Isi,
                     Comment = string.Join("", p.Select(c => c.Comment)),// p.LastOrDefault().Comment,
                     CollumNo = p.FirstOrDefault().CollumNo,
+                    BhnKemasan = p.FirstOrDefault().BhnKemasan,
                     SumBtg = p.Sum(c => c.SumBtg),
                     BtgGr = p.Sum(c => c.BtgGr),
                     Total = p.Sum(c => c.Total),

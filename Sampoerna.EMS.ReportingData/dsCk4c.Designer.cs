@@ -932,6 +932,8 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnCollumNo;
             
+            private global::System.Data.DataColumn columnBhnKemasan;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public Ck4cItemDataTable() {
@@ -1087,6 +1089,14 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn BhnKemasanColumn {
+                get {
+                    return this.columnBhnKemasan;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -1122,7 +1132,23 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public Ck4cItemRow AddCk4cItemRow(string Ck4cItemId, string ProdQty, string ProdType, string Merk, string Hje, string No, string NoProd, string ProdDate, string SumBtg, string BtgGr, string Isi, string Total, string ProdWaste, string Comment, int CollumNo) {
+            public Ck4cItemRow AddCk4cItemRow(
+                        string Ck4cItemId, 
+                        string ProdQty, 
+                        string ProdType, 
+                        string Merk, 
+                        string Hje, 
+                        string No, 
+                        string NoProd, 
+                        string ProdDate, 
+                        string SumBtg, 
+                        string BtgGr, 
+                        string Isi, 
+                        string Total, 
+                        string ProdWaste, 
+                        string Comment, 
+                        int CollumNo, 
+                        string BhnKemasan) {
                 Ck4cItemRow rowCk4cItemRow = ((Ck4cItemRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Ck4cItemId,
@@ -1139,7 +1165,8 @@ namespace Sampoerna.EMS.ReportingData {
                         Total,
                         ProdWaste,
                         Comment,
-                        CollumNo};
+                        CollumNo,
+                        BhnKemasan};
                 rowCk4cItemRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowCk4cItemRow);
                 return rowCk4cItemRow;
@@ -1177,6 +1204,7 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnProdWaste = base.Columns["ProdWaste"];
                 this.columnComment = base.Columns["Comment"];
                 this.columnCollumNo = base.Columns["CollumNo"];
+                this.columnBhnKemasan = base.Columns["BhnKemasan"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1212,6 +1240,8 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnComment);
                 this.columnCollumNo = new global::System.Data.DataColumn("CollumNo", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnCollumNo);
+                this.columnBhnKemasan = new global::System.Data.DataColumn("BhnKemasan", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnBhnKemasan);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2691,6 +2721,22 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string BhnKemasan {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4cItem.BhnKemasanColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'BhnKemasan\' in table \'Ck4cItem\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4cItem.BhnKemasanColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsCk4cItemIdNull() {
                 return this.IsNull(this.tableCk4cItem.Ck4cItemIdColumn);
             }
@@ -2867,6 +2913,18 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetCollumNoNull() {
                 this[this.tableCk4cItem.CollumNoColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsBhnKemasanNull() {
+                return this.IsNull(this.tableCk4cItem.BhnKemasanColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetBhnKemasanNull() {
+                this[this.tableCk4cItem.BhnKemasanColumn] = global::System.Convert.DBNull;
             }
         }
         

@@ -1589,6 +1589,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 detailRow.ProdWaste = itemDto.ProdWaste;
                 detailRow.Comment = itemDto.Comment;
                 detailRow.CollumNo = itemDto.CollumNo;
+                detailRow.BhnKemasan = itemDto.BhnKemasan;
 
                 dsCk4c.Ck4cItem.AddCk4cItemRow(detailRow);
             }
