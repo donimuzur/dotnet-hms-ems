@@ -153,6 +153,13 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        public JsonResult BahanKemasanList()
+        {
+            var bahanKemasanList = GlobalFunctions.GetBahanKemasanList(_brandRegistrationBll);
+            return Json(bahanKemasanList);
+        }
+
+        [HttpPost]
         public ActionResult Create(BrandRegistrationCreateViewModel model)
         {
             if (ModelState.IsValid)

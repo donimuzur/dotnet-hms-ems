@@ -145,7 +145,7 @@
                                                             }
                                                             else
                                                             {
-                                                                @Html.DropDownListFor(model => model.BahanKemasan, Model.BahanKemasanList, "Select", new { @class = "selectpicker form-control" })
+                                                                @Html.TextBox("bahankemasan", Model.BahanKemasan, new { @class = "form-control"})
                                                             }
                                                         </div>
                                                     </div>
@@ -528,6 +528,7 @@
     </div>
 }
 @section scripts {
+    <link rel="stylesheet" type="text/css" href="../../Content/themes/base/all.css">
     <script src="~/Scripts/thousand-separator.js"></script>
 
     <script type="text/javascript" language="javascript">
@@ -549,7 +550,28 @@
             $('#PersonalizationCode').change(function () {
                 PersonalizationCodeOnChange();
             });
+
+            ajaxBahanKemasan('@Url.Action("BahanKemasanList", "BrandRegistration")', null);
         });
+
+        function ajaxBahanKemasan(url, formData) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    var availableTags=[];
+                    if (data) {
+                        for(i=1;i<=data.length;i++){
+                            availableTags.push(data[i-1].Value);
+                        }
+                    }
+                    $("#bahankemasan").autocomplete({
+                        source: availableTags
+                    });
+                }
+            });
+        }
         
         var confirmDeleteBrand = function () {
             $('#btn-delete-brand').click();
