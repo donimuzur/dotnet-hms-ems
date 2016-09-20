@@ -153,6 +153,64 @@ namespace Sampoerna.EMS.BLL
                 input.SupplierPlantNppbkcId = _t001WServices.GetById(input.SupplierPlantId).NPPBKC_IMPORT_ID;
             }
 
+            var lack1DataDto = new Lack1GeneratedDto
+            {
+                CompanyCode = input.CompanyCode,
+                CompanyName = input.CompanyName,
+                NppbkcId = input.NppbkcId,
+                ExcisableGoodsType = input.ExcisableGoodsType,
+                ExcisableGoodsTypeDesc = input.ExcisableGoodsTypeDesc,
+                SupplierPlantId = input.SupplierPlantId,
+                FusionSummaryProductionList = new List<Lack1GeneratedSummaryProductionDataDto>(),
+                BeginingBalance = 0 //set default
+            };
+
+
+
+            //set Pbck-1 Data by selection criteria
+            lack1DataDto = SetPbck1DataBySelectionCriteria(lack1DataDto, input);
+
+            var newdata = new LACK1();
+             //set default when create new LACK-1 Document
+            newdata.APPROVED_BY_POA = null;
+            newdata.APPROVED_DATE_POA = null;
+            newdata.APPROVED_BY_MANAGER = null;
+            newdata.APPROVED_DATE_MANAGER = null;
+            newdata.DECREE_DATE = null;
+            newdata.GOV_STATUS = null;
+            newdata.STATUS = Enums.DocumentStatus.Draft;
+            newdata.CREATED_DATE = DateTime.Now;
+            newdata.IS_TIS_TO_TIS = input.IsTisToTis;
+            newdata.IS_SUPPLIER_IMPORT = input.IsSupplierNppbkcImport;
+
+            //set from input, exclude on mapper
+            newdata.CREATED_BY = input.UserId;
+            newdata.LACK1_LEVEL = input.Lack1Level;
+            newdata.SUBMISSION_DATE = input.SubmissionDate;
+            newdata.WASTE_QTY = input.WasteAmount;
+            newdata.WASTE_UOM = input.WasteAmountUom;
+            newdata.RETURN_QTY = input.ReturnAmount;
+            newdata.RETURN_UOM = input.ReturnAmountUom;
+            newdata.LACK1_UOM_ID = lack1DataDto.Lack1UomId;
+            newdata.BEGINING_BALANCE = 0;
+            newdata.TOTAL_INCOME = 0;
+            newdata.USAGE = 0;
+
+            //generate new Document Number get from Sequence Number BLL
+            var generateNumberInput = new GenerateDocNumberInput()
+            {
+                Month = Convert.ToInt32(input.PeriodMonth),
+                Year = Convert.ToInt32(input.PeriodYear),
+                NppbkcId = input.NppbkcId
+            };
+
+
+            newdata.LACK1_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
+
+            _lack1Service.Insert(newdata);
+
+            _uow.SaveChanges();
+
             var generatedData = GenerateLack1Data(input);
             if (!generatedData.Success)
             {
@@ -173,28 +231,36 @@ namespace Sampoerna.EMS.BLL
                 ErrorMessage = string.Empty
             };
 
-            var data = Mapper.Map<LACK1>(generatedData.Data);
+            
+            var generatedLack1 = Mapper.Map<LACK1>(generatedData.Data);
+            newdata.BUKRS = generatedLack1.BUKRS;
+            newdata.BUTXT = generatedLack1.BUTXT;
+            newdata.PERIOD_MONTH = generatedLack1.PERIOD_MONTH;
+            newdata.PERIOD_YEAR = generatedLack1.PERIOD_YEAR;
+            newdata.SUPPLIER_PLANT = generatedLack1.SUPPLIER_PLANT;
+            newdata.SUPPLIER_COMPANY_CODE = generatedLack1.SUPPLIER_COMPANY_CODE;
+            newdata.SUPPLIER_COMPANY_NAME = generatedLack1.SUPPLIER_COMPANY_NAME;
+            newdata.SUPPLIER_PLANT_WERKS = generatedLack1.SUPPLIER_PLANT_WERKS;
+            newdata.SUPPLIER_PLANT_ADDRESS = generatedLack1.SUPPLIER_PLANT_ADDRESS;
+            newdata.EX_GOODTYP = generatedLack1.EX_GOODTYP;
+            newdata.EX_TYP_DESC = generatedLack1.EX_TYP_DESC;
+            newdata.NPPBKC_ID = generatedLack1.NPPBKC_ID;
+            newdata.BEGINING_BALANCE = generatedLack1.BEGINING_BALANCE;
+            newdata.TOTAL_INCOME = generatedLack1.TOTAL_INCOME;
+            newdata.USAGE = generatedLack1.USAGE;
+            newdata.USAGE_TISTOTIS = generatedLack1.USAGE_TISTOTIS;
+            newdata.LACK1_UOM_ID = generatedLack1.LACK1_UOM_ID;
+            newdata.DOCUMENT_NOTED = generatedLack1.DOCUMENT_NOTED;
+            newdata.NOTED = generatedLack1.NOTED;
 
-            //set default when create new LACK-1 Document
-            data.APPROVED_BY_POA = null;
-            data.APPROVED_DATE_POA = null;
-            data.APPROVED_BY_MANAGER = null;
-            data.APPROVED_DATE_MANAGER = null;
-            data.DECREE_DATE = null;
-            data.GOV_STATUS = null;
-            data.STATUS = Enums.DocumentStatus.Draft;
-            data.CREATED_DATE = DateTime.Now;
-            data.IS_TIS_TO_TIS = input.IsTisToTis;
-            data.IS_SUPPLIER_IMPORT = input.IsSupplierNppbkcImport;
+            newdata.LACK1_INCOME_DETAIL = generatedLack1.LACK1_INCOME_DETAIL;
 
-            //set from input, exclude on mapper
-            data.CREATED_BY = input.UserId;
-            data.LACK1_LEVEL = input.Lack1Level;
-            data.SUBMISSION_DATE = input.SubmissionDate;
-            data.WASTE_QTY = input.WasteAmount;
-            data.WASTE_UOM = input.WasteAmountUom;
-            data.RETURN_QTY = input.ReturnAmount;
-            data.RETURN_UOM = input.ReturnAmountUom;
+            newdata.LACK1_PBCK1_MAPPING = generatedLack1.LACK1_PBCK1_MAPPING;
+
+           
+                
+
+
 
             //set LACK1_TRACKING
             var allTrackingList = new List<Lack1GeneratedTrackingDto>();
@@ -228,33 +294,33 @@ namespace Sampoerna.EMS.BLL
                 }
             }
 
-            data.LACK1_TRACKING = Mapper.Map<List<LACK1_TRACKING>>(allTrackingList.Distinct().ToList());
+            newdata.LACK1_TRACKING = Mapper.Map<List<LACK1_TRACKING>>(allTrackingList.Distinct().ToList());
 
             if (!string.IsNullOrEmpty(generatedData.Data.ExcisableGoodsTypeDesc) && (generatedData.Data.ExcisableGoodsTypeDesc.ToLower().Contains("alkohol") ||
                                               generatedData.Data.ExcisableGoodsTypeDesc.ToLower().Contains("alcohol")))
             {
                 //etil alcohol 100%
-                data.LACK1_TRACKING_ALCOHOL = null;
-                data.LACK1_TRACKING_ALCOHOL =
+                newdata.LACK1_TRACKING_ALCOHOL = null;
+                newdata.LACK1_TRACKING_ALCOHOL =
                     Mapper.Map<List<LACK1_TRACKING_ALCOHOL>>(generatedData.Data.AlcoholTrackingList.Distinct().ToList());
             }
 
-            data.LACK1_PLANT = null;
+            newdata.LACK1_PLANT = null;
 
             //set LACK1_PLANT table
             if (input.Lack1Level == Enums.Lack1Level.Nppbkc)
             {
                 var plantListFromMaster = _t001WServices.GetByNppbkcId(input.NppbkcId);
-                data.LACK1_PLANT = Mapper.Map<List<LACK1_PLANT>>(plantListFromMaster);
+                newdata.LACK1_PLANT = Mapper.Map<List<LACK1_PLANT>>(plantListFromMaster);
             }
             else
             {
                 var plantFromMaster = _t001WServices.GetById(input.ReceivedPlantId);
-                data.LACK1_PLANT = new List<LACK1_PLANT>() { Mapper.Map<LACK1_PLANT>(plantFromMaster) };
+                newdata.LACK1_PLANT = new List<LACK1_PLANT>() { Mapper.Map<LACK1_PLANT>(plantFromMaster) };
             }
 
             //set LACK1_PRODUCTION_DETAIL
-            data.LACK1_PRODUCTION_DETAIL = null;
+            newdata.LACK1_PRODUCTION_DETAIL = null;
             var productionDetail = new List<Lack1GeneratedProductionDataDto>();
 
             //tis to fa
@@ -291,38 +357,31 @@ namespace Sampoerna.EMS.BLL
                 }
             }
 
-            data.LACK1_PRODUCTION_DETAIL =
+            newdata.LACK1_PRODUCTION_DETAIL =
                 Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(productionDetail.Distinct().ToList());
 
-            //generate new Document Number get from Sequence Number BLL
-            var generateNumberInput = new GenerateDocNumberInput()
-            {
-                Month = Convert.ToInt32(input.PeriodMonth),
-                Year = Convert.ToInt32(input.PeriodYear),
-                NppbkcId = input.NppbkcId
-            };
-
-            data.LACK1_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
-
-            _lack1Service.Insert(data);
+            
+            
 
             //add workflow history for create document
             var getUserRole = _poaBll.GetUserRole(input.UserId);
             AddWorkflowHistory(new Lack1WorkflowDocumentInput()
             {
                 DocumentId = null,
-                DocumentNumber = data.LACK1_NUMBER,
+                DocumentNumber = newdata.LACK1_NUMBER,
                 ActionType = Enums.ActionType.Created,
                 UserId = input.UserId,
                 UserRole = getUserRole
             });
 
+            
+
             _uow.SaveChanges();
 
             rc.Success = true;
             rc.ErrorCode = string.Empty;
-            rc.Id = data.LACK1_ID;
-            rc.Lack1Number = data.LACK1_NUMBER;
+            rc.Id = newdata.LACK1_ID;
+            rc.Lack1Number = newdata.LACK1_NUMBER;
 
             return rc;
         }
