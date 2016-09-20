@@ -449,13 +449,14 @@ namespace Sampoerna.EMS.BLL.Services
             var receiving101 = EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving101);
 
 
-            var data = _repository.Get(x => x.MVT == receiving101 && (!input.ListOrdrZaapShiftReport.Contains(x.ORDR)) 
+            var data = _repository.Get(x => x.MVT == receiving101  
                     && x.POSTING_DATE >= input.DateFrom && x.POSTING_DATE < input.DateTo
                     && string.Compare(x.PLANT_ID, input.PlantFrom) >= 0 
                     && string.Compare(x.PLANT_ID, input.PlantTo)  <= 0).ToList();
 
-
             data = data.Where(x => !string.IsNullOrEmpty(x.ORDR)).ToList();
+            data = data.Where(x => (!input.ListOrdrZaapShiftReport.Contains(x.ORDR))).ToList();
+            
            
             return data;
         }
