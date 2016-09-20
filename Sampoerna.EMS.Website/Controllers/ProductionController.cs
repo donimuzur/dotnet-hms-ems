@@ -185,6 +185,17 @@ namespace Sampoerna.EMS.Website.Controllers
                         productionDate = model.ProductionDate
                     });
                 }
+                
+                if(model.PackedAdjusted > model.QtyPacked){
+                    AddMessageInfo("Packed-Adjusted value can't be greater than Qty Packed", Enums.MessageInfoType.Warning);
+                    return RedirectToAction("Edit", "Production", new
+                    {
+                        companyCode = model.CompanyCode,
+                        plantWerk = model.PlantWerks,
+                        faCode = model.FaCode,
+                        productionDate = model.ProductionDate
+                    });
+                }
 
                 var data = Mapper.Map<ProductionDto>(model);
 
@@ -320,7 +331,23 @@ namespace Sampoerna.EMS.Website.Controllers
                         model.ProdQtyStick = 0;
                         model.QtyPackedStr = "0";
                         model.ProdQtyStickStr = "0";
+                        model.Zb = 0;
+                        model.ZbStr = "0";
+                        model.PackedAdjusted = 0;
+                        model.PackedAdjustedStr = "0";
                     }
+                }
+
+                if (decimal.Parse(model.PackedAdjustedStr) > decimal.Parse(model.QtyPackedStr))
+                {
+                    AddMessageInfo("Packed-Adjusted value can't be greater than Qty Packed", Enums.MessageInfoType.Warning);
+                    return RedirectToAction("Edit", "Production", new
+                    {
+                        companyCode = model.CompanyCode,
+                        plantWerk = model.PlantWerks,
+                        faCode = model.FaCode,
+                        productionDate = model.ProductionDate
+                    });
                 }
 
                 var dbPrductionNew = Mapper.Map<ProductionDto>(model);
@@ -528,6 +555,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     var item = new ProductionUploadItems();
                     var brand = _brandRegistrationBll.GetByFaCode(dataRow[1], dataRow[2]);
                     var prodQty = dataRow[4] == "" ? 0 : Convert.ToDecimal(dataRow[4]);
+                    var zb = dataRow[7] == "" ? 0 : Convert.ToDecimal(dataRow[7]);
+                    var packedAdjusted = dataRow[8] == "" ? 0 : Convert.ToDecimal(dataRow[8]);
 
                     item.CompanyCode = dataRow[0];
                     item.PlantWerks = dataRow[1];
@@ -537,6 +566,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.Qty = dataRow[5].ToLower() == "btg" ? Math.Round(prodQty).ToString() : dataRow[4];
                     item.Uom = dataRow[5];
                     item.ProductionDate = dataRow[6];
+                    item.Zb = zb;
+                    item.PackedAdjusted = packedAdjusted;
+                    item.Remark = dataRow[9];
 
                     model.Add(item);
 
