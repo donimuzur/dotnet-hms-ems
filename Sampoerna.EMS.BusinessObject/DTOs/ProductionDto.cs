@@ -90,7 +90,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string MesssageUploadFileDocuments { get; set; }
         public bool IsValid { get; set; }
         public string Message { get; set; }
-
+        public decimal? Zb { get; set; }
+        public decimal? PackedAdjusted { get; set; }
+        public string Remark { get; set; }
     }
 
 }
