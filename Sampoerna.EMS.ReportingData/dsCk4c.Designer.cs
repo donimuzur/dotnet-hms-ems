@@ -1383,6 +1383,12 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnProdBtg;
             
+            private global::System.Data.DataColumn columnPackedBtgTotal;
+            
+            private global::System.Data.DataColumn columnPackedGTotal;
+            
+            private global::System.Data.DataColumn columnPackedInPackTotal;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public Ck4cTotalProdDataTable() {
@@ -1450,6 +1456,30 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn PackedBtgTotalColumn {
+                get {
+                    return this.columnPackedBtgTotal;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn PackedGTotalColumn {
+                get {
+                    return this.columnPackedGTotal;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn PackedInPackTotalColumn {
+                get {
+                    return this.columnPackedInPackTotal;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -1485,13 +1515,16 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public Ck4cTotalProdRow AddCk4cTotalProdRow(string Comment, string ProdType, string ProdTotal, string ProdBtg) {
+            public Ck4cTotalProdRow AddCk4cTotalProdRow(string Comment, string ProdType, string ProdTotal, string ProdBtg, string PackedBtgTotal, string PackedGTotal, string PackedInPackTotal) {
                 Ck4cTotalProdRow rowCk4cTotalProdRow = ((Ck4cTotalProdRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Comment,
                         ProdType,
                         ProdTotal,
-                        ProdBtg};
+                        ProdBtg,
+                        PackedBtgTotal,
+                        PackedGTotal,
+                        PackedInPackTotal};
                 rowCk4cTotalProdRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowCk4cTotalProdRow);
                 return rowCk4cTotalProdRow;
@@ -1518,6 +1551,9 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnProdType = base.Columns["ProdType"];
                 this.columnProdTotal = base.Columns["ProdTotal"];
                 this.columnProdBtg = base.Columns["ProdBtg"];
+                this.columnPackedBtgTotal = base.Columns["PackedBtgTotal"];
+                this.columnPackedGTotal = base.Columns["PackedGTotal"];
+                this.columnPackedInPackTotal = base.Columns["PackedInPackTotal"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1531,6 +1567,12 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnProdTotal);
                 this.columnProdBtg = new global::System.Data.DataColumn("ProdBtg", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnProdBtg);
+                this.columnPackedBtgTotal = new global::System.Data.DataColumn("PackedBtgTotal", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPackedBtgTotal);
+                this.columnPackedGTotal = new global::System.Data.DataColumn("PackedGTotal", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPackedGTotal);
+                this.columnPackedInPackTotal = new global::System.Data.DataColumn("PackedInPackTotal", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPackedInPackTotal);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3008,6 +3050,54 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string PackedBtgTotal {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4cTotalProd.PackedBtgTotalColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'PackedBtgTotal\' in table \'Ck4cTotalProd\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4cTotalProd.PackedBtgTotalColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string PackedGTotal {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4cTotalProd.PackedGTotalColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'PackedGTotal\' in table \'Ck4cTotalProd\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4cTotalProd.PackedGTotalColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string PackedInPackTotal {
+                get {
+                    try {
+                        return ((string)(this[this.tableCk4cTotalProd.PackedInPackTotalColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'PackedInPackTotal\' in table \'Ck4cTotalProd\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableCk4cTotalProd.PackedInPackTotalColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsCommentNull() {
                 return this.IsNull(this.tableCk4cTotalProd.CommentColumn);
             }
@@ -3052,6 +3142,42 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetProdBtgNull() {
                 this[this.tableCk4cTotalProd.ProdBtgColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsPackedBtgTotalNull() {
+                return this.IsNull(this.tableCk4cTotalProd.PackedBtgTotalColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetPackedBtgTotalNull() {
+                this[this.tableCk4cTotalProd.PackedBtgTotalColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsPackedGTotalNull() {
+                return this.IsNull(this.tableCk4cTotalProd.PackedGTotalColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetPackedGTotalNull() {
+                this[this.tableCk4cTotalProd.PackedGTotalColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsPackedInPackTotalNull() {
+                return this.IsNull(this.tableCk4cTotalProd.PackedInPackTotalColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetPackedInPackTotalNull() {
+                this[this.tableCk4cTotalProd.PackedInPackTotalColumn] = global::System.Convert.DBNull;
             }
         }
         

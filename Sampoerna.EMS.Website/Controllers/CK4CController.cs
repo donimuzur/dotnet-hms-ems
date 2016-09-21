@@ -1603,6 +1603,9 @@ namespace Sampoerna.EMS.Website.Controllers
             detailRow.ProdType = ck4cReportTotal.ProdType;
             detailRow.ProdTotal = ck4cReportTotal.ProdTotal;
             detailRow.ProdBtg = ck4cReportTotal.ProdBtg;
+            detailRow.PackedBtgTotal = ck4cReportTotal.PackedBtgTotal;
+            detailRow.PackedGTotal = ck4cReportTotal.PackedGTotal;
+            detailRow.PackedInPackTotal = ck4cReportTotal.PackedInPackTotal;
 
             dsCk4c.Ck4cTotalProd.AddCk4cTotalProdRow(detailRow);
 

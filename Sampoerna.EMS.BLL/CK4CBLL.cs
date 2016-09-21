@@ -1307,7 +1307,12 @@ namespace Sampoerna.EMS.BLL
                         var lastItemCk4c = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE < prodDateFormat).LastOrDefault();
                         var prodQty = itemCk4c.Sum(x => x.PROD_QTY);
                         var zbQty = itemCk4c.Sum(x => x.ZB);
-                        var packedQty = zbQty == 0 ? itemCk4c.Sum(x => x.PACKED_QTY) : zbQty;
+                        var packedAdjustedQty = itemCk4c.Sum(x => x.PACKED_ADJUSTED);
+                        var packedQty = itemCk4c.Sum(x => x.PACKED_QTY);
+
+                        if (zbQty > 0) packedQty = zbQty;
+                        if (packedAdjustedQty > 0) packedQty = packedAdjustedQty;
+
                         var unpackedQty = itemCk4c.Sum(x => x.UNPACKED_QTY);
                         var remarks = itemCk4c.FirstOrDefault();
                         var total = brand.BRAND_CONTENT == null ? 0 : packedQty / Convert.ToInt32(brand.BRAND_CONTENT);
@@ -1485,6 +1490,10 @@ namespace Sampoerna.EMS.BLL
             result.Ck4cItemList = groupItemList;
 
             result.Detail.ProdTotal = prodTotal;
+
+            result.Ck4cTotal.PackedInPackTotal = String.Format("{0:n}", result.Ck4cItemList.Where(x => x.Total != "Nihil").Sum(x => Convert.ToDecimal(x.Total)));
+            result.Ck4cTotal.PackedBtgTotal = String.Format("{0:n}", result.Ck4cItemList.Where(x => x.ProdType != "TIS" && x.Total != "Nihil").Sum(x => Convert.ToDecimal(x.BtgGr)));
+            result.Ck4cTotal.PackedGTotal = String.Format("{0:n}", result.Ck4cItemList.Where(x => x.ProdType == "TIS" && x.Total != "Nihil").Sum(x => Convert.ToDecimal(x.BtgGr)));
 
             return result;
         }

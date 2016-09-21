@@ -484,7 +484,12 @@ namespace Sampoerna.EMS.BLL
 
                 var prodWaste = oldWaste <= item.QtyProduced ? oldWaste : 0;
 
-                var unpackedQty = oldUnpacked + (item.QtyProduced - oldWaste) - ((item.Zb == 0 ? item.QtyPacked : item.Zb) - existReversal);
+                var optionalPacked = item.QtyPacked;
+
+                if (item.Zb > 0) optionalPacked = item.Zb;
+                if (item.PackedAdjusted > 0) optionalPacked = item.PackedAdjusted;
+
+                var unpackedQty = oldUnpacked + (item.QtyProduced - oldWaste) - (optionalPacked - existReversal);
 
                 var prodQty = item.QtyProduced - prodWaste;
 
@@ -492,7 +497,12 @@ namespace Sampoerna.EMS.BLL
 
                 var zbQty = item.Zb == 0 ? 0 : item.Zb - existReversal;
 
-                var packedInPack = (zbQty == 0 ? Convert.ToInt32(packedQty) : Convert.ToInt32(zbQty)) / item.ContentPerPack;
+                var packedAdjustedQty = item.PackedAdjusted == 0 ? 0 : item.PackedAdjusted - existReversal;
+
+                var packedInPack = Convert.ToInt32(packedQty) / item.ContentPerPack;
+
+                if (zbQty > 0) packedInPack = Convert.ToInt32(zbQty) / item.ContentPerPack;
+                if (packedAdjustedQty > 0) packedInPack = Convert.ToInt32(packedAdjustedQty) / item.ContentPerPack;
 
                 item.QtyUnpacked = unpackedQty;
 
@@ -501,6 +511,8 @@ namespace Sampoerna.EMS.BLL
                 item.QtyPacked = packedQty;
 
                 item.Zb = zbQty;
+
+                item.PackedAdjusted = packedAdjustedQty;
 
                 item.PackedInPack = packedInPack;
 
