@@ -209,7 +209,7 @@ namespace Sampoerna.EMS.BLL
             item.QtyPackedStr = item.QtyPacked == null ? string.Empty : item.QtyPacked.ToString();
             item.QtyStr = item.Qty == null ? string.Empty : item.Qty.ToString();
             item.ProdQtyStickStr = item.ProdQtyStick == null ? string.Empty : item.ProdQtyStick.ToString();
-            item.ZbStr = item.Zb == null ? string.Empty : item.Zb.ToString();
+            item.ZbStr = item.Zb == null ? string.Empty : Convert.ToInt64(item.Zb).ToString();
             item.PackedAdjustedStr = item.PackedAdjusted == null ? string.Empty : item.PackedAdjusted.ToString();
             var brand = _brandRegistrationBll.GetByFaCode(item.PlantWerks, item.FaCode);
 
