@@ -859,7 +859,10 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ProductionDate,
                     opt => opt.MapFrom(src => src.ProductionDate.ToString("dd MMM yyyy")))
                 .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PlantWerks + " - " + src.PlantName))
-                .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.Qty));
+                .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.Qty))
+                .ForMember(dest => dest.Zb, opt => opt.MapFrom(src => src.Zb))
+                .ForMember(dest => dest.PackedAdjusted, opt => opt.MapFrom(src => src.PackedAdjusted))
+                .ForMember(dest => dest.Remark, opt => opt.MapFrom(src => src.Remark));
             //.ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FaCode));
 
 
@@ -871,11 +874,24 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Year, opt => opt.MapFrom(src => Convert.ToInt16(src.Year)));
 
 
-            Mapper.CreateMap<ProductionDetail, ProductionDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<ProductionDetail, ProductionDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Zb, opt => opt.MapFrom(src => src.Zb))
+                .ForMember(dest => dest.PackedAdjusted, opt => opt.MapFrom(src => src.PackedAdjusted))
+                .ForMember(dest => dest.Remark, opt => opt.MapFrom(src => src.Remark));
 
             Mapper.CreateMap<ProductionDto, ProductionUploadViewModel>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<ProductionUploadViewModel, ProductionDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<ProductionDto, PRODUCTION>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ZB, opt => opt.MapFrom(src => src.Zb))
+                .ForMember(dest => dest.PACKED_ADJUSTED, opt => opt.MapFrom(src => src.PackedAdjusted))
+                .ForMember(dest => dest.REMARK, opt => opt.MapFrom(src => src.Remark));
+
+            Mapper.CreateMap<PRODUCTION,ProductionDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Zb, opt => opt.MapFrom(src => src.ZB))
+                .ForMember(dest => dest.PackedAdjusted, opt => opt.MapFrom(src => src.PACKED_ADJUSTED))
+                .ForMember(dest => dest.Remark, opt => opt.MapFrom(src => src.REMARK));
 
             Mapper.CreateMap<ProductionUploadItemsInput, ProductionUploadItems>().IgnoreAllNonExisting();
             //.ForMember(dest => dest.QtyPacked, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.QtyPacked))
@@ -902,7 +918,10 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.QtyPacked, opt => opt.MapFrom(src => src.QTY_PACKED))
                 .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UOM))
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CREATED_BY))
-                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE));
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
+                .ForMember(dest => dest.Zb, opt => opt.MapFrom(src => src.ZB))
+                .ForMember(dest => dest.PackedAdjusted, opt => opt.MapFrom(src => src.PACKED_ADJUSTED))
+                .ForMember(dest => dest.Remark, opt => opt.MapFrom(src => src.REMARK));
 
             #endregion
 

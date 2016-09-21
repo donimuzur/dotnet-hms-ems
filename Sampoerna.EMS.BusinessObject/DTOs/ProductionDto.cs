@@ -64,9 +64,11 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public bool IsBrandFromSap { get; set; }
         public bool IsEditable { get; set; }
-
+        public string ZbStr { get; set; }
         public decimal? Zb { get; set; }
+        public string PackedAdjustedStr { get; set; }
         public decimal? PackedAdjusted { get; set; }
+        public string Remark { get; set; }
     }
 
     public class ProductionUploadItems
@@ -88,7 +90,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string MesssageUploadFileDocuments { get; set; }
         public bool IsValid { get; set; }
         public string Message { get; set; }
-
+        public decimal? Zb { get; set; }
+        public decimal? PackedAdjusted { get; set; }
+        public string Remark { get; set; }
     }
 
 }

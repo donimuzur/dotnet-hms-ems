@@ -19,5 +19,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string ProductionDate { get; set; }
         public string Message { get; set; }
         public bool IsValid { get; set; }
+        public decimal? Zb { get; set; }
+        public decimal? PackedAdjusted { get; set; }
+        public string Remark { get; set; }
     }
 }
