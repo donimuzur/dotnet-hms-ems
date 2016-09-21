@@ -149,6 +149,7 @@ namespace Sampoerna.EMS.BLL
                 input.SupplierPlantNppbkcId = _t001WServices.GetById(input.SupplierPlantId).NPPBKC_IMPORT_ID;
             }
 
+            //var pbck1Data = SetPbck1DataBySelectionCriteria(new Lack1GeneratedDto(), input);
             var generatedData = GenerateLack1Data(input);
             if (!generatedData.Success)
             {
@@ -191,6 +192,20 @@ namespace Sampoerna.EMS.BLL
             data.WASTE_UOM = input.WasteAmountUom;
             data.RETURN_QTY = input.ReturnAmount;
             data.RETURN_UOM = input.ReturnAmountUom;
+
+            //generate new Document Number get from Sequence Number BLL
+            var generateNumberInput = new GenerateDocNumberInput()
+            {
+                Month = Convert.ToInt32(input.PeriodMonth),
+                Year = Convert.ToInt32(input.PeriodYear),
+                NppbkcId = input.NppbkcId
+            };
+
+            data.LACK1_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
+
+            _lack1Service.Insert(data);
+
+            _uow.SaveChanges();
 
             //set LACK1_TRACKING
             var allTrackingList = new List<Lack1GeneratedTrackingDto>();
@@ -290,17 +305,7 @@ namespace Sampoerna.EMS.BLL
             data.LACK1_PRODUCTION_DETAIL =
                 Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(productionDetail.Distinct().ToList());
 
-            //generate new Document Number get from Sequence Number BLL
-            var generateNumberInput = new GenerateDocNumberInput()
-            {
-                Month = Convert.ToInt32(input.PeriodMonth),
-                Year = Convert.ToInt32(input.PeriodYear),
-                NppbkcId = input.NppbkcId
-            };
-
-            data.LACK1_NUMBER = _docSeqNumBll.GenerateNumber(generateNumberInput);
-
-            _lack1Service.Insert(data);
+           
 
             //add workflow history for create document
             var getUserRole = _poaBll.GetUserRole(input.UserId);
@@ -312,6 +317,8 @@ namespace Sampoerna.EMS.BLL
                 UserId = input.UserId,
                 UserRole = getUserRole
             });
+
+            
 
             _uow.SaveChanges();
 
@@ -1099,10 +1106,30 @@ namespace Sampoerna.EMS.BLL
                 WorkflowDecreeDateAddChanges(input.DocumentId, input.UserId, dbData.DECREE_DATE,
                     input.AdditionalDocumentData.DecreeDate);
 
-                dbData.LACK1_DOCUMENT = null;
+                if (input.UserRole != Enums.UserRole.Administrator)
+                {
+                    dbData.LACK1_DOCUMENT = null;
+                    dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
+                }
+                else
+                {
+                    var datadoc = GetDetailsById(input.DocumentId.Value).Lack1Document;
+                    if (datadoc.Count > 0)
+                    {
+
+                        var oldDoc = Mapper.Map<List<LACK1_DOCUMENT>>(datadoc);
+                        var additionaldoc = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
+                        foreach (var lack1Document in additionaldoc)
+                        {
+                            lack1Document.LACK1_ID = input.DocumentId;
+                            oldDoc.Add(lack1Document);
+                        }
+                        dbData.LACK1_DOCUMENT = oldDoc;
+                    }
+                }
                 dbData.STATUS = Enums.DocumentStatus.Completed;
                 dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
-                dbData.LACK1_DOCUMENT = Mapper.Map<List<LACK1_DOCUMENT>>(input.AdditionalDocumentData.Lack1Document);
+                
                 dbData.GOV_STATUS = Enums.DocumentStatusGovType2.Approved;
                 dbData.MODIFIED_DATE = DateTime.Now;
 
