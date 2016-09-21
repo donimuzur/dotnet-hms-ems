@@ -19,7 +19,7 @@
 
                 <div class="form-excise" role="form">
                     <div class="row">
-                        @using (Ajax.BeginForm("SearchSummaryReports", "CK5",
+                        @*@using (Ajax.BeginForm("SearchSummaryReports", "CK5",
                             new AjaxOptions
                     {
                         HttpMethod = "POST",
@@ -29,10 +29,12 @@
                         OnComplete = "ReloadDataTables"
 
                     }, new { id = "ajaxForm" }))
-                        {
+                            {*@
+                            <input type="hidden" name="TotalDataPerPage" id="TotalDataPerPage" value="10" />
+                            <input type="hidden" name="CurrentPage" id="CurrentPage" value="1" />
                             <div class="col-md-6">
                                 <div class="row">
-                                    <label class="col-md-4">Company Source</label>
+                                    <label class="col-md-4">Company Soursce</label>
                                     <div class="col-md-8">
                                         @(Model.SearchView.CompanyCodeSourceList == null ? Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
                                               : Html.DropDownListFor(model => model.SearchView.CompanyCodeSource, Model.SearchView.CompanyCodeSourceList, "All", new { @class = "form-control selectreset" }))
@@ -208,7 +210,7 @@
                             </div>
 
 
-                        }
+                        @*}*@
                     </div>
                 </div>
             </div>
@@ -558,9 +560,7 @@
     <script src="~/Scripts/CK5Scripts.js"></script>
     <script type="text/javascript" language="javascript">
 
-      
-
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#SearchView_Month').addClass('input-validation-error');
             $('#SearchView_Year').addClass('input-validation-error');
 
@@ -568,10 +568,10 @@
             //$('#MenuCK5SummaryReports').addClass('active');
 
             $('#MenuCk5OpenDocument').removeClass('open');
-           
+
             $('#MenuCk5Report').addClass('open');
             $('#MenuCK5SummaryReports').addClass('active');
-            
+
 
             $("#SearchView_Ck5Type").change(function() {
                 if ($("#SearchView_Ck5Type").length) {
@@ -586,6 +586,72 @@
 
         });
 
+        function setupColumns() {
+
+            var columns = [
+                { "data": null, "orderable": false },
+                { "data": "SubmissionNumber", "orderable": true },
+                { "data": "SubmissionDate", "orderable": true },
+                { "data": "Ck5TypeDescription", "orderable": true },
+                { "data": "SourcePlantId", "orderable": true },
+                { "data": "SourcePlant", "orderable": true },
+                { "data": "OriginCompanyNppbkc", "orderable": true },
+                { "data": "OriginCeOffice", "orderable": true },
+                { "data": "OriginCompany", "orderable": true },
+                { "data": "OriginCompanyAddress", "orderable": true },
+                { "data": "DestinationPlantId", "orderable": true },
+                { "data": "DestinationPlant", "orderable": true },
+                { "data": "DestinationCeOffice", "orderable": true },
+                { "data": "CompanyDestination", "orderable": true },
+                { "data": "DestinationCountry", "orderable": true },
+                { "data": "TanggalAju", "orderable": true },
+                { "data": "NomerAju", "orderable": true },
+                { "data": "TanggalPendaftaran", "orderable": true },
+                { "data": "NomerPendaftaran", "orderable": true },
+                { "data": "ExGoodTypeDesc", "orderable": true },
+                { "data": "ExciseSettlement", "orderable": true },
+                { "data": "ExciseStatus", "orderable": true },
+                { "data": "RequestType", "orderable": true },
+                { "data": "UnpaidExciseFacilityNumber", "orderable": true },
+                { "data": "UnpaidExciseFacilityDate", "orderable": true },
+                { "data": "SealingNotificationDate", "orderable": true },
+                { "data": "SealingNotificationNumber", "orderable": true },
+                { "data": "UnSealingNotificationDate", "orderable": true },
+                { "data": "UnSealingNotificationNumber", "orderable": true },
+                { "data": "NumberBox", "orderable": true },
+                { "data": "ContainPerBox", "orderable": true },
+                { "data": "ConvertedQty", "orderable": true },
+                { "data": "ConvertedUom", "orderable": true },
+                { "data": "TotalOfExcisableGoods", "orderable": true },
+                { "data": "BanderolPrice", "orderable": true },
+                { "data": "ExciseTariff", "orderable": true },
+                { "data": "ExciseValue", "orderable": true },
+                { "data": "MaterialNumber", "orderable": true },
+                { "data": "MaterialDescription", "orderable": true },
+                { "data": "DestCompanyAddress", "orderable": true },
+                { "data": "DestCompanyNppbkc", "orderable": true },
+                { "data": "DestCompanyName", "orderable": true },
+                { "data": "LoadingPort", "orderable": true },
+                { "data": "LoadingPortName", "orderable": true },
+                { "data": "StoNumberSender", "orderable": true },
+                { "data": "StoNumberReciever", "orderable": true },
+                { "data": "StoBNumber", "orderable": true },
+                { "data": "DnNumber", "orderable": true },
+                { "data": "GrDate", "orderable": true },
+                { "data": "GiDate", "orderable": true },
+                { "data": "Status", "orderable": true },
+                { "data": "Poa", "orderable": true },
+                { "data": "Creator", "orderable": true },
+                { "data": "CompletedDate", "orderable": true },
+                { "data": "Lack1", "orderable": true },
+                { "data": "Lack2", "orderable": false }
+            ];
+
+            return columns;
+
+
+        }
+
 
         function setupDataTables(blFirst) {
 
@@ -599,16 +665,67 @@
             table = $('#ck5Table').DataTable(
                 {
                     "sDom": "Rlfrtip",
+                    "sPaginationType": "full_numbers",
                     "language": {
                         "zeroRecords": "No records found",
                         "infoFiltered": "(filtered from _MAX_ total records)"
+                    },
+
+                    "rowCallback": function(row, data, index) {
+
+                        var info = $('#ck5Table').DataTable().page.info();
+                        $(row).find("td").first().html((info.page * info.length) + index + 1);
+                    },
+                    "serverSide": true,
+                    "processing": true,
+                    "paging": true,
+                    "deferRender": true,
+                    "columns": setupColumns(),
+                    "ajax": {
+                        "url": "@Url.Action("SearchSummaryReportsAjax", "CK5")",
+                        "type": "POST",
+
+                        "data": function(d) {
+                            return $.extend({}, d, {
+                                "ExtraFilter": {
+                                    "SearchView": {
+                                        Ck5Type: $("#Ck5Type").val(),
+
+                                        CompanyCodeSource: $('#SearchView_CompanyCodeSource').find("option:selected").val(),
+
+                                        CompanyCodeDest: $('#SearchView_CompanyCodeDest').find("option:selected").val(),
+
+                                        NppbkcIdSource: $('#SearchView_NppbkcIdSource').find("option:selected").val(),
+
+                                        NppbkcIdDest: $('#SearchView_NppbkcIdDest').find("option:selected").val(),
+
+                                        PlantSource: $('#SearchView_PlantSource').find("option:selected").val(),
+
+                                        PlantDest: $('#SearchView_PlantDest').find("option:selected").val(),
+
+                                        DateFrom: $('#SearchView_DateFrom').find("option:selected").val(),
+
+                                        DateTo: $('#SearchView_DateTo').find("option:selected").val(),
+
+                                        Month: $('#SearchView_Month').find("option:selected").val(),
+
+                                        Year: $('#SearchView_Year').find("option:selected").val(),
+
+                                        MaterialNumber: $('#SearchView_MaterialNumber').find("option:selected").val(),
+                                        MaterialDescription: $('#SearchView_MaterialDescription').find("option:selected").val(),
+                                        Poa: $('#SearchView_Poa').find("option:selected").val(),
+                                        Creator: $('#SearchView_Creator').find("option:selected").val(),
+                                    }
+                                }
+                            });
+                        }
                     }
                 });
 
 
-            $('#selecctall').change(function () {
+            $('#selecctall').change(function() {
                 if ($(this).is(':checked')) {
-                    $('.checkexport').each(function () {
+                    $('.checkexport').each(function() {
                         this.checked = true;
                     });
                     for (var i = 0; i < 56; i++) {
@@ -618,7 +735,7 @@
 
 
                 } else {
-                    $('.checkexport').each(function () {
+                    $('.checkexport').each(function() {
                         this.checked = false;
                     });
                     for (var i = 0; i < 56; i++) {
@@ -627,17 +744,17 @@
                     $('#ck5Table').parents('div.dataTables_wrapper').first().hide();
                 }
             });
-            
+
             $('.checkexport').on('click', function(e) {
                 // e.preventDefault();
                 table.column(0).visible(true);
-                
+
                 // Get the column API object
                 var column = table.column($(this).attr('datacolumn'));
 
                 // Toggle the visibility
                 column.visible(!column.visible());
-                
+
                 $('#ck5Table').parents('div.dataTables_wrapper').first().hide();
 
                 for (var i = 0; i < 56; i++) {
@@ -646,7 +763,7 @@
                         return;
                     }
                 }
-                
+
             });
 
             if (blFirst) {
@@ -654,7 +771,7 @@
                     table.column(i).visible(false);
                 }
             } else {
-                $('.checkexport').each(function () {
+                $('.checkexport').each(function() {
 
                     // Get the column API object
                     var column = table.column($(this).attr('datacolumn'));
@@ -672,10 +789,21 @@
 
         function ReloadDataTables() {
             setupDataTables(false);
-
+            setpaginglink();
             $('#SearchView_Month').removeClass('input-validation-error');
             $('#SearchView_Year').removeClass('input-validation-error');
         }
+
+        function setpaginglink() {
+
+        }
+
+        function OnFilter() {
+            var table = $('#ck5Table').DataTable();
+            
+            table.ajax.reload();
+        }
+
 
         function OnReset() {
 
@@ -698,7 +826,7 @@
             $('#ExportModel_PlantDest').val($('#SearchView_PlantDest').find("option:selected").val());
             $('#ExportModel_DateFrom').val($('#SearchView_DateFrom').find("option:selected").val());
             $('#ExportModel_DateTo').val($('#SearchView_DateTo').find("option:selected").val());
-            
+
             $('#ExportModel_MaterialNumber').val($('#SearchView_MaterialNumber').find("option:selected").val());
             $('#ExportModel_MaterialDescription').val($('#SearchView_MaterialDescription').find("option:selected").val());
             $('#ExportModel_Poa').val($('#SearchView_Poa').find("option:selected").val());

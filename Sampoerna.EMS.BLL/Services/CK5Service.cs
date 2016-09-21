@@ -246,6 +246,31 @@ namespace Sampoerna.EMS.BLL.Services
 
             return ck5Material.Select(x => x.BRAND).ToList();
         }
+        public List<CK5> GetCk5ForLack1DetailTis(Ck5GetForLack1DetailTis input)
+        {
+            Expression<Func<CK5, bool>> queryFilterCk5 =
+                c => string.Compare(c.DEST_PLANT_ID, input.PlantReceiverFrom) >= 0
+                    && string.Compare(c.DEST_PLANT_ID, input.PlantReceiverTo) <= 0
+                    && c.GR_DATE >= input.DateFrom.Value
+                    && c.GR_DATE <= input.DateTo.Value
+                    && c.EX_GOODS_TYPE == Enums.ExGoodsType.HasilTembakau
+                ;
+
+            return _repository.Get(queryFilterCk5, null, "CK5_MATERIAL").ToList();
+        }
+
+        public List<CK5> GetCk5ForLack1DetailEa(Ck5GetForLack1DetailEa input)
+        {
+            Expression<Func<CK5, bool>> queryFilterCk5 =
+                c => string.Compare(c.DEST_PLANT_ID, input.PlantReceiverFrom) >= 0
+                    && string.Compare(c.DEST_PLANT_ID, input.PlantReceiverTo) <= 0
+                    && c.GR_DATE >= input.DateFrom.Value
+                    && c.GR_DATE <= input.DateTo.Value
+                    && c.EX_GOODS_TYPE == Enums.ExGoodsType.EtilAlcohol
+                ;
+
+            return _repository.Get(queryFilterCk5, null, "CK5_MATERIAL").ToList();
+        }
     }
 
 }

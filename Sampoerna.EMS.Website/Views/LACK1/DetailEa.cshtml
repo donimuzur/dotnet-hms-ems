@@ -1,0 +1,148 @@
+﻿@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.LACK1.Lack1DetailEaViewModel
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 id="lblTitle">LACK1 - Detail EA</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                <div class="form-excise" role="form">
+                    <div class="row">
+                        @using (Ajax.BeginForm("SearchDetailEa", "Lack1",
+                            new AjaxOptions
+                            {
+                                HttpMethod = "POST",
+                                InsertionMode = InsertionMode.Replace,
+                                UpdateTargetId = "contenttable",
+                                OnComplete = "ReloadDataTables"
+                            }))
+                        {
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Plant Receiver From</label>
+                                        <div class="col-md-8">
+                                            @if (Model.SearchView.PlantReceiverFromList == null)
+                                            {
+                                                @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                            }
+                                            else
+                                            {
+                                                @Html.DropDownListFor(model => model.SearchView.PlantReceiverFrom, Model.SearchView.PlantReceiverFromList, "All", new { @class = "form-control selectreset" })
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Date From</label>
+                                        <div class="col-md-6">
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(model => model.SearchView.DateFrom, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Plant Receiver To</label>
+                                        <div class="col-md-8">
+                                            @if (Model.SearchView.PlantReceiverToList == null)
+                                            {
+                                                @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                            }
+                                            else
+                                            {
+                                                @Html.DropDownListFor(model => model.SearchView.PlantReceiverTo, Model.SearchView.PlantReceiverToList, "All", new { @class = "form-control selectreset" })
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="col-md-4">Date To</label>
+                                        <div class="col-md-6">
+                                            <div class="input-group date">
+                                                @Html.TextBoxFor(model => model.SearchView.DateTo, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 col-md-offset-8">
+                                    <button id="btn-filter" class="btn btn-blue full">FILTER</button>
+                                </div>
+                                <div class="col-md-2">
+                                    <input id="btn-export-to-excel" type="button" class="btn btn-blue full" value="EXPORT" />
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            @using (Html.BeginForm("ExportDetailEa", "LACK1", FormMethod.Post, new { @id = "ExportXlsDetailEa" }))
+            {
+                @Html.HiddenFor(model => model.ExportSearchView.PlantReceiverFrom)
+                @Html.HiddenFor(model => model.ExportSearchView.PlantReceiverTo)
+                @Html.HiddenFor(model => model.ExportSearchView.DateFrom)
+                @Html.HiddenFor(model => model.ExportSearchView.DateTo)
+            }
+        </div>
+    </div>
+    <div id="contenttable" class="table-container">
+        @Html.Partial("_Lack1DetailEa")
+    </div>
+</div>
+
+<div class="loading"></div>
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/js/vendors/jquery.table2excel.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+
+        $('#MenuLack1OpenDocument').removeClass('open');
+        $('#MenuLack1Report').addClass('open');
+        $('#MenuLack1DetailEa').addClass('active');
+
+        $(document).ready(function () {
+
+            $('#btn-export-to-excel').click(function () {
+                exportDetailEa();
+            });
+
+            $('#btn-filter').click(function () {
+                $('.loading').show();
+            });
+        });
+
+        function exportDetailEa() {
+            $('#ExportSearchView_PlantReceiverFrom').val($('#SearchView_PlantReceiverFrom').find("option:selected").val());
+            $('#ExportSearchView_PlantReceiverTo').val($('#SearchView_PlantReceiverTo').find("option:selected").val());
+            $('#ExportSearchView_DateFrom').val($('#SearchView_DateFrom').val());
+            $('#ExportSearchView_DateTo').val($('#SearchView_DateTo').val());
+            $('#ExportXlsDetailEa').submit();
+        }
+
+        function ReloadDataTables() {
+            $('.loading').hide();
+        }
+
+    </script>
+}

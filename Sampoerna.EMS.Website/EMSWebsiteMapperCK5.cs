@@ -124,6 +124,11 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.CK5_MANUAL_TYPE, opt => opt.MapFrom(src => src.Ck5ManualType))
               .ForMember(dest => dest.CK5_REF_ID, opt => opt.MapFrom(src => src.Ck5RefId))
               .ForMember(dest => dest.REDUCE_TRIAL, opt => opt.MapFrom(src => src.IsReducePbck1Ck5Trial))
+
+              .ForMember(dest => dest.STO_SENDER_NUMBER, opt => opt.MapFrom(src => src.StoSenderNumber))
+              .ForMember(dest => dest.STO_RECEIVER_NUMBER, opt => opt.MapFrom(src => src.StoReceiverNumber))
+              .ForMember(dest => dest.STOB_NUMBER, opt => opt.MapFrom(src => src.StobNumber))
+
               ;
 
             Mapper.CreateMap<CK5Dto, CK5FormViewModel>().IgnoreAllNonExisting()

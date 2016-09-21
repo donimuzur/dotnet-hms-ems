@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 
 namespace Sampoerna.EMS.Contract.Services
@@ -24,9 +25,22 @@ namespace Sampoerna.EMS.Contract.Services
 
         List<INVENTORY_MOVEMENT> GetMvt201(InvMovementGetUsageByParamInput input, bool isAssigned = false);
 
-
-
-
         List<INVENTORY_MOVEMENT> GetMvt201NotUsed(List<long> usedList);
+
+        List<INVENTORY_MOVEMENT> GetLack1PrimaryResultsCfProduced(GetLack1PrimaryResultsInput input);
+
+        List<INVENTORY_MOVEMENT> GetLack1PrimaryResultsBkc(GetLack1PrimaryResultsInput input);
+
+        List<INVENTORY_MOVEMENT> GetReceivingByParamZaapShiftRpt(InvGetReceivingByParamZaapShiftRptInput input);
+
+        List<INVENTORY_MOVEMENT> GetReceivingByBatch201(ZaapShiftRptGetForLack1ReportByParamInput input);
+
+        List<INVENTORY_MOVEMENT> GetBatchByPurchDoc(string purchDoc);
+
+        List<INVENTORY_MOVEMENT> GetLack1DetailTis(GetLack1DetailTisInput input);
+
+        List<INVENTORY_MOVEMENT> GetLack1DetailEa(GetLack1DetailEaInput input);
+
+        List<InventoryMovementLevelDto> GetLack1DetailLevel(GetLack1DetailLevelInput input);
     }
 }

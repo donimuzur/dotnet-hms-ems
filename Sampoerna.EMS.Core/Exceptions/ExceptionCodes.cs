@@ -155,6 +155,12 @@ namespace Sampoerna.EMS.Core.Exceptions
             [Description("Log XML File not found")]
             LogXmlNotFound,
 
+            [Description("Convertion Material Uom (Gram) in Material Master not exist")]
+            ConvertedUomLack1GramNotFound,
+
+            [Description("Convertion Material Uom (Gram) in Material Master Zero Divided")]
+            ConvertedUomLack1ZeroDivided,
+
             [Description("The scheduler json config failed to update.")]
             SchedulerSetingJsonError,
         }

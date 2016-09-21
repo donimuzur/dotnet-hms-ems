@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Sampoerna.EMS.BusinessObject.Inputs
 {
@@ -57,4 +58,69 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public int TrackLevel { get; set; }
     }
 
+    public class GetLack1DailyProdInput
+    {
+        public DateTime DateFrom { get; set; }
+        public DateTime DateTo { get; set; }
+        public string PlantFrom { get; set; }
+        public string PlantTo { get; set; }
+
+        public List<string> ListOrdrZaapShiftReport { get; set; }
+        public List<string> ListBatch { get; set; }
+    }
+
+    public class GetLack1PrimaryResultsInput
+    {
+        public DateTime DateFrom { get; set; }
+        public DateTime DateTo { get; set; }
+        public string PlantFrom { get; set; }
+        public string PlantTo { get; set; }
+
+        public List<string> ListOrdrZaapShiftReport { get; set; }
+        public List<string> ListOrder { get; set; }
+    }
+    public class InvGetReceivingByParamZaapShiftRptInput
+    {
+        public string Ordr { get; set; }
+        public string PlantId { get; set; }
+
+        public string FaCode { get; set; }
+
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+    }
+
+
+    public class GetLack1DetailTisInput
+    {
+        public DateTime DateFrom { get; set; }
+        public DateTime DateTo { get; set; }
+
+        public List<string> ListBatch { get; set; }
+    }
+
+    public class GetLack1DetailTisInputProduction
+    {
+        public DateTime DateFrom { get; set; }
+        public DateTime DateTo { get; set; }
+        public string PlantFrom { get; set; }
+        public string PlantTo { get; set; }
+    }
+
+    public class GetLack1DetailEaInput
+    {
+        public DateTime DateFrom { get; set; }
+        public DateTime DateTo { get; set; }
+
+        public List<string> ListBatch { get; set; }
+    }
+
+    public class GetLack1DetailLevelInput
+    {
+        public DateTime DateFrom { get; set; }
+        public DateTime DateTo { get; set; }
+        public int Level { get; set; }
+
+        public List<string> ListOrdr { get; set; }
+    }
 }
