@@ -16,11 +16,15 @@ namespace Sampoerna.EMS.BLL.Services
         private ILogger _logger;
         private IUnitOfWork _uow;
 
+        private IMaterialUomService _materialUomService;
+
         public MaterialBalanceService(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<ZAIDM_EX_MATERIAL_BALANCE>();
+
+            _materialUomService = new MaterialUomService(_uow, _logger);
         }
 
         public List<MaterialBalanceDto> GetByPlantAndMaterialList(List<string> plantId, List<string> materialList, int month, int year,string uomId)
@@ -76,6 +80,66 @@ namespace Sampoerna.EMS.BLL.Services
                 c => plantId.Contains(c.WERKS) && materialList.Contains(c.MATERIAL_ID);
 
             return _repository.Get(queryFilter).ToList();
+        }
+
+        public MaterialBalanceTotalDto GetByMaterialListAndPlant(string plantId, List<string> materialList, int month,
+            int year)
+        {
+            var data = new MaterialBalanceTotalDto();
+            data.BeginningBalance = 0;
+            data.BeginningBalanceUom = string.Empty;
+
+            Expression<Func<ZAIDM_EX_MATERIAL_BALANCE, bool>> queryFilter =
+                c => c.WERKS == plantId && materialList.Contains(c.MATERIAL_ID) && c.PERIOD_MONTH == month && c.PERIOD_YEAR == year;
+
+            var openBalanceList = _repository.Get(queryFilter);
+
+            var umren = Convert.ToDecimal(1);
+            var materialUom = _materialUomService.GetByMaterialListAndPlantId(materialList, plantId);
+            if (materialUom.Count > 0)
+            {
+                umren = materialUom.Where(x => x.MEINH == "G").FirstOrDefault().UMREN.Value;
+            }
+
+            if (openBalanceList.ToList().Count > 0)
+            {
+                var openBalance = openBalanceList.Sum(x => x.OPEN_BALANCE.Value);
+                openBalance = openBalance / umren;
+                data.BeginningBalance = openBalance;
+                data.BeginningBalanceUom = "Gram";
+            }
+
+            return data;
+        }
+
+        public MaterialBalanceTotalDto GetByMaterialListAndPlantEa(string plantId, List<string> materialList, int month,
+            int year)
+        {
+            var data = new MaterialBalanceTotalDto();
+            data.BeginningBalance = 0;
+            data.BeginningBalanceUom = string.Empty;
+
+            Expression<Func<ZAIDM_EX_MATERIAL_BALANCE, bool>> queryFilter =
+                c => c.WERKS == plantId && materialList.Contains(c.MATERIAL_ID) && c.PERIOD_MONTH == month && c.PERIOD_YEAR == year;
+
+            var umren = Convert.ToDecimal(1);
+            var materialUom = _materialUomService.GetByMaterialListAndPlantId(materialList, plantId);
+            if (materialUom.Count > 0)
+            {
+                umren = materialUom.Where(x => x.MEINH == "L").FirstOrDefault().UMREN.Value;
+            }
+
+            var openBalanceList = _repository.Get(queryFilter);
+
+            if (openBalanceList.ToList().Count > 0)
+            {
+                var openBalance = openBalanceList.Sum(x => x.OPEN_BALANCE.Value);
+                openBalance = openBalance / umren;
+                data.BeginningBalance = openBalance;
+                data.BeginningBalanceUom = "Liter";
+            }
+
+            return data;
         }
     }
 }

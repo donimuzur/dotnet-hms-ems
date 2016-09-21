@@ -54,10 +54,11 @@
                         @Html.HiddenFor(model => model.SubmissionNumber)
 
 
+                        @Html.HiddenFor(model => model.StoSenderNumber)
+                        @Html.HiddenFor(model => model.StobNumber)
+                        @Html.HiddenFor(model => model.StoReceiverNumber)
 
-
-
-
+                        
                         @if (Model.IsCk5PortToImporter)
                         {
                             @Html.HiddenFor(model => model.SourcePlantId)

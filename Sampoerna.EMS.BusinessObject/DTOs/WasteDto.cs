@@ -29,6 +29,13 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         }
         public DateTime WasteProductionDate { get; set; }
         public DateTime WasteProductionDateX { get; set; }
+
+        public string WasteProductionDateText {
+            get
+            {
+                return WasteProductionDate.ToString("dd-MMM-yyyy");
+            }
+        }
         public string CompanyName { get; set; }
         public string PlantName { get; set; }
         public decimal? DustWasteGramQty { get; set; }

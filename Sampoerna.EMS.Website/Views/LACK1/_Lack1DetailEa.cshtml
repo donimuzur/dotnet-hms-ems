@@ -1,0 +1,127 @@
+﻿@model Sampoerna.EMS.Website.Models.LACK1.Lack1DetailEaViewModel
+
+<table id="lack1Table" cellspacing="0" width="100%" class="table table-bordered" border="0">
+    <thead>
+        <tr>
+            <th class="toggle-row"> No </th>
+            <th>Plant ID Receiver</th>
+            <th>Plant Desc Receiver</th>
+            <th>Plant Supplier ID</th>
+            <th>Plant Supplier Description</th>
+            <th>EA Code</th>
+            <th>EA Desc</th>
+            <th>Beginning Balance</th>
+            <th>Beginning Balance UoM</th>
+            <th>CK-5 EMS No</th>
+            <th>CK-5 Reg No</th>
+            <th>CK-5 Reg Date</th>
+            <th>CK-5 Qty</th>
+            <th>Usage</th>
+            <th>Usage UOM</th>
+            <th>Usage Posting Date</th>
+            <th>Level</th>
+            <th>Flavor Code</th>
+            <th>Flavor Desc</th>
+            <th>CF Produced Code</th>
+            <th>CF Prod Desc</th>
+            <th>CF Prod Qty</th>
+            <th>CF Prod UOM</th>
+            <th>Production Posting Date</th>
+            <th>Production Date</th>
+            <th>Ending Balance</th>
+            <th>Ending Balance UOM</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @{
+            int row = 1;
+
+            foreach (var item in Model.DetailList)
+            {
+                if (item.LevelList.Count > 0)
+                {
+                    var levelCount = item.LevelList.Count;
+
+                    <tr>
+                        <td style="vertical-align:top !important" rowspan="@levelCount" align="center">@row</td>
+                        <td style="vertical-align:top !important" rowspan="@levelCount">@Html.DisplayFor(model => item.PlantIdReceiver)</td>
+                        <td style="vertical-align:top !important" rowspan="@levelCount">@Html.DisplayFor(model => item.PlantDescReceiver)</td>
+                        <td style="vertical-align:top !important" rowspan="@levelCount">@Html.DisplayFor(model => item.PlantIdSupplier)</td>
+                        <td style="vertical-align:top !important" rowspan="@levelCount">@Html.DisplayFor(model => item.PlantDescSupplier)</td>
+                        <td style="vertical-align:top !important" rowspan="@levelCount">@Html.DisplayFor(model => item.EaCode)</td>
+                        <td style="vertical-align:top !important" rowspan="@levelCount">@Html.DisplayFor(model => item.EaDesc)</td>
+                        <td style="vertical-align:top !important" rowspan="@levelCount">@String.Format("{0:n}", @item.BeginingBalance)</td>
+                        <td style="vertical-align:top !important" rowspan="@levelCount">@Html.DisplayFor(model => item.BeginingBalanceUom)</td>
+                        <td style="vertical-align:top !important" rowspan="@levelCount">@Html.DisplayFor(model => item.Ck5EmsNo)</td>
+                        <td style="vertical-align:top !important" rowspan="@levelCount">@Html.DisplayFor(model => item.Ck5RegNo)</td>
+                        <td style="vertical-align:top !important" rowspan="@levelCount">@Html.DisplayFor(model => item.Ck5RegDate)</td>
+                        <td style="vertical-align:top !important" rowspan="@levelCount">@String.Format("{0:n}", @item.Ck5Qty)</td>
+                        <td style="vertical-align:top !important" rowspan="@levelCount">@String.Format("{0:n}", @item.Usage)</td>
+                        <td style="vertical-align:top !important" rowspan="@levelCount">@Html.DisplayFor(model => item.UsageUom)</td>
+                        <td style="vertical-align:top !important" rowspan="@levelCount">@Html.DisplayFor(model => item.UsagePostingDate)</td>
+                        <td>@item.LevelList[0].Level</td>
+                        <td>@item.LevelList[0].FlavorCode</td>
+                        <td>@item.LevelList[0].FlavorDesc</td>
+                        <td>@item.LevelList[0].CfProdCode</td>
+                        <td>@item.LevelList[0].CfProdDesc</td>
+                        <td>@item.LevelList[0].CfProdQty</td>
+                        <td>@item.LevelList[0].CfProdUom</td>
+                        <td>@item.LevelList[0].ProdPostingDate</td>
+                        <td>@item.LevelList[0].ProdDate</td>
+                        <td style="vertical-align:top !important" rowspan="@levelCount">@String.Format("{0:n}", @item.EndingBalance)</td>
+                        <td style="vertical-align:top !important" rowspan="@levelCount">@Html.DisplayFor(model => item.EndingBalanceUom)</td>
+                    </tr>
+
+                    for (int i = 1; i < item.LevelList.Count; i++)
+                    {
+                        <tr>
+                            <td>@item.LevelList[i].Level</td>
+                            <td>@item.LevelList[i].FlavorCode</td>
+                            <td>@item.LevelList[i].FlavorDesc</td>
+                            <td>@item.LevelList[i].CfProdCode</td>
+                            <td>@item.LevelList[i].CfProdDesc</td>
+                            <td>@item.LevelList[i].CfProdQty</td>
+                            <td>@item.LevelList[i].CfProdUom</td>
+                            <td>@item.LevelList[i].ProdPostingDate</td>
+                            <td>@item.LevelList[i].ProdDate</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td align="center">@row</td>
+                        <td>@Html.DisplayFor(model => item.PlantIdReceiver)</td>
+                        <td>@Html.DisplayFor(model => item.PlantDescReceiver)</td>
+                        <td>@Html.DisplayFor(model => item.PlantIdSupplier)</td>
+                        <td>@Html.DisplayFor(model => item.PlantDescSupplier)</td>
+                        <td>@Html.DisplayFor(model => item.EaCode)</td>
+                        <td>@Html.DisplayFor(model => item.EaDesc)</td>
+                        <td>@String.Format("{0:n}", @item.BeginingBalance)</td>
+                        <td>@Html.DisplayFor(model => item.BeginingBalanceUom)</td>
+                        <td>@Html.DisplayFor(model => item.Ck5EmsNo)</td>
+                        <td>@Html.DisplayFor(model => item.Ck5RegNo)</td>
+                        <td>@Html.DisplayFor(model => item.Ck5RegDate)</td>
+                        <td>@String.Format("{0:n}", @item.Ck5Qty)</td>
+                        <td>@String.Format("{0:n}", @item.Usage)</td>
+                        <td>@Html.DisplayFor(model => item.UsageUom)</td>
+                        <td>@Html.DisplayFor(model => item.UsagePostingDate)</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>@String.Format("{0:n}", @item.EndingBalance)</td>
+                        <td>@Html.DisplayFor(model => item.EndingBalanceUom)</td>
+                    </tr>
+                }
+                row = row + 1;
+            }
+        }
+    </tbody>
+</table>

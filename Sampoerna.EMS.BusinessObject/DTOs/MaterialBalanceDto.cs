@@ -18,4 +18,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal OpenBalance { get; set; }
         public decimal CloseBalance { get; set; }
     }
+
+    public class MaterialBalanceTotalDto
+    {
+        public decimal BeginningBalance { get; set; }
+        public string BeginningBalanceUom { get; set; }
+    }
 }

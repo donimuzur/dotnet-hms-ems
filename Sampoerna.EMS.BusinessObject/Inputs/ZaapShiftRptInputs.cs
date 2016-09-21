@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Sampoerna.EMS.BusinessObject.Inputs
 {
@@ -16,5 +17,12 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public List<string> FaCodeList { get; set; }
 
         public List<string> AllowedOrder { get; set; } 
+    }
+
+    public class ZaapShiftRptGetForLack1ReportByParamInput
+    {
+        public List<string> Werks { get; set; }
+        public DateTime? BeginingDate { get; set; }
+        public DateTime? EndDate { get; set; }
     }
 }

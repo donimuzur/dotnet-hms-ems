@@ -58,6 +58,10 @@
        
           
         });
+        
+        function ExportXls() {
+            $('#ExportToXls').submit();
+        }
     </script>
 }
 
@@ -86,6 +90,13 @@
 
 <div class="container-wrap">
     <div class="row">
+        <div class="col-lg-12">
+            <input id="btnExport" type="button" class="btn btn-blue pull-right" onclick="ExportXls();" value="EXPORT" />
+        </div>
+        @using (Html.BeginForm("ExportXlsFile", "POA", FormMethod.Post, new { @id = "ExportToXls" }))
+        {
+
+        }
         <div class="col-sm-12">
             <div id="contenttable" class="table-container">
                 <table id="mydata" class="table cell-border display no-wrap" cellspacing="0" width="100%">

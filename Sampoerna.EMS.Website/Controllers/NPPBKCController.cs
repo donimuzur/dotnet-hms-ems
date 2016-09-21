@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Web.Mvc;
 using Antlr.Runtime.Misc;
 using AutoMapper;
 using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.NPPBKC;
+using SpreadsheetLight;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -207,5 +212,145 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Index");
         }
 
+        #region export xls
+
+        public void ExportXlsFile()
+        {
+            string pathFile = "";
+
+            pathFile = CreateXlsFile();
+
+            var newFile = new FileInfo(pathFile);
+
+            var fileName = Path.GetFileName(pathFile);
+
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+        }
+
+        private string CreateXlsFile()
+        {
+            //get data
+            var listData = Mapper.Map<List<VirtualNppbckDetails>>(_nppbkcBll.GetAll());
+
+            var slDocument = new SLDocument();
+
+            //title
+            slDocument.SetCellValue(1, 1, "Master NPPBKC");
+            slDocument.MergeWorksheetCells(1, 1, 1, 15);
+            //create style
+            SLStyle valueStyle = slDocument.CreateStyle();
+            valueStyle.SetHorizontalAlignment(HorizontalAlignmentValues.Center);
+            valueStyle.Font.Bold = true;
+            valueStyle.Font.FontSize = 18;
+            slDocument.SetCellStyle(1, 1, valueStyle);
+
+            //create header
+            slDocument = CreateHeaderExcel(slDocument);
+
+            //create data
+            slDocument = CreateDataExcel(slDocument, listData);
+
+            var fileName = "MasterData_MasterNppbkc" + DateTime.Now.ToString("_yyyyMMddHHmmss") + ".xlsx";
+            var path = Path.Combine(Server.MapPath(Constans.UploadPath), fileName);
+
+            slDocument.SaveAs(path);
+
+            return path;
+
+        }
+
+        private SLDocument CreateHeaderExcel(SLDocument slDocument)
+        {
+            int iRow = 2;
+
+            slDocument.SetCellValue(iRow, 1, "NPPBKC ID");
+            slDocument.SetCellValue(iRow, 2, "Address1");
+            slDocument.SetCellValue(iRow, 3, "Address2");
+            slDocument.SetCellValue(iRow, 4, "City");
+            slDocument.SetCellValue(iRow, 5, "City Alias");
+            slDocument.SetCellValue(iRow, 6, "Region Office of DGCE");
+            slDocument.SetCellValue(iRow, 7, "Text To");
+            slDocument.SetCellValue(iRow, 8, "KPPBC ID");
+            slDocument.SetCellValue(iRow, 9, "Region");
+            slDocument.SetCellValue(iRow, 10, "Account Number");
+            slDocument.SetCellValue(iRow, 11, "Start Date");
+            slDocument.SetCellValue(iRow, 12, "End Date");
+            slDocument.SetCellValue(iRow, 13, "Flaging For LACK-1");
+            slDocument.SetCellValue(iRow, 14, "Plant");
+            slDocument.SetCellValue(iRow, 15, "Deleted");
+
+
+            SLStyle headerStyle = slDocument.CreateStyle();
+            headerStyle.Alignment.Horizontal = HorizontalAlignmentValues.Center;
+            headerStyle.Font.Bold = true;
+            headerStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            headerStyle.Fill.SetPattern(PatternValues.Solid, System.Drawing.Color.LightGray, System.Drawing.Color.LightGray);
+
+            slDocument.SetCellStyle(iRow, 1, iRow, 15, headerStyle);
+
+            return slDocument;
+
+        }
+
+        private SLDocument CreateDataExcel(SLDocument slDocument, List<VirtualNppbckDetails> listData)
+        {
+            int iRow = 3; //starting row data
+
+            var listPlants = _plantBll.GetAll();
+
+            foreach (var data in listData)
+            {
+                string plantDesc = "";
+                var plant = listPlants.Where(c => c.NPPBKC_ID == data.VirtualNppbckId);
+                foreach (var plant1 in plant)
+                {
+                    plantDesc += plant1.WERKS + "-" + plant1.ORT01 + Environment.NewLine;
+                }
+
+                slDocument.SetCellValue(iRow, 1, data.VirtualNppbckId);
+                slDocument.SetCellValue(iRow, 2, data.Address1);
+                slDocument.SetCellValue(iRow, 3, data.Address2);
+                slDocument.SetCellValue(iRow, 4, data.City);
+                slDocument.SetCellValue(iRow, 5, data.CityAlias);
+                slDocument.SetCellValue(iRow, 6, data.RegionOfficeOfDGCE);
+                slDocument.SetCellValue(iRow, 7, data.TextTo);
+                slDocument.SetCellValue(iRow, 8, data.KppbcId);
+                slDocument.SetCellValue(iRow, 9, data.Region);
+                slDocument.SetCellValue(iRow, 10, data.AcountNumber);
+                slDocument.SetCellValue(iRow, 11, Utils.ConvertHelper.ConvertDateToStringddMMMyyyy(data.StartDate));
+                slDocument.SetCellValue(iRow, 12, Utils.ConvertHelper.ConvertDateToStringddMMMyyyy(data.EndDate));
+                slDocument.SetCellValue(iRow, 13, data.FlagForLack1 ? "Yes" : "No");
+                slDocument.SetCellValue(iRow, 14, plantDesc);
+                slDocument.SetCellValue(iRow, 15, data.Is_Deleted);
+
+
+                iRow++;
+            }
+
+            //create style
+            SLStyle valueStyle = slDocument.CreateStyle();
+            valueStyle.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            valueStyle.SetWrapText(true);
+
+            slDocument.AutoFitColumn(1, 15);
+            slDocument.SetCellStyle(3, 1, iRow - 1, 15, valueStyle);
+
+            return slDocument;
+        }
+
+        #endregion
     }
 }

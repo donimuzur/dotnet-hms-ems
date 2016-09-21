@@ -38,6 +38,9 @@ namespace Sampoerna.EMS.BLL.Services
             return _repository.Get(queryFilter, null, "ZAIDM_EX_MATERIAL").ToList();
         }
 
-
+        public List<MATERIAL_UOM> GetByMeinh(string meinh)
+        {
+            return _repository.Get(c => c.MEINH == meinh).ToList();
+        }
     }
 }
