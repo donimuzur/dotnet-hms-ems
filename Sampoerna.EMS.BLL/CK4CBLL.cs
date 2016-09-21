@@ -1110,7 +1110,7 @@ namespace Sampoerna.EMS.BLL
                     listBrand.Where(
                         x =>
                             x.WERKS == item && x.IS_DELETED != true && x.STATUS == true &&
-                            Int32.TryParse(x.BRAND_CONTENT, out isInt) && x.EXC_GOOD_TYP == "01")
+                            Int32.TryParse(x.BRAND_CONTENT, out isInt) && (x.EXC_GOOD_TYP == "01" || x.EXC_GOOD_TYP == "02"))
                         .OrderBy(x => x.PROD_CODE);
 
 
@@ -1151,10 +1151,12 @@ namespace Sampoerna.EMS.BLL
 
                     //var brand = _brandBll.GetById(item, data.FA_CODE);
                     var brand = listBrand.FirstOrDefault(c => c.WERKS == item && c.FA_CODE == data.FA_CODE);
-                    ck4cItem.Merk = brand.BRAND_CE;
+                    var hjeValue = brand.HJE_IDR;
+                    if (brand.BRAND_CE.Trim().ToLower() == "bahan baku") hjeValue = brand.HJE_IDR * Convert.ToInt32(brand.BRAND_CONTENT);
 
+                    ck4cItem.Merk = brand.BRAND_CE;
                     ck4cItem.Isi = Convert.ToInt32(brand.BRAND_CONTENT) == 0 ? "Nihil" : String.Format("{0:n}", Convert.ToInt32(brand.BRAND_CONTENT));
-                    ck4cItem.Hje = brand.HJE_IDR == null ? "Nihil" : String.Format("{0:n}", brand.HJE_IDR);
+                    ck4cItem.Hje = brand.HJE_IDR == null ? "Nihil" : String.Format("{0:n}", hjeValue);
                     ck4cItem.Total = "Nihil";
                     ck4cItem.ProdWaste = unpackedQty == null ? strOldUnpacked : (unpackedQty.UnpackedQty == 0 ? "Nihil" : String.Format("{0:n}", unpackedQty.UnpackedQty));
                     ck4cItem.Comment = "Saldo CK-4C Sebelumnya";
@@ -1283,7 +1285,7 @@ namespace Sampoerna.EMS.BLL
                         listBrand.Where(
                             x =>
                                 x.WERKS == item && x.IS_DELETED != true && x.STATUS == true &&
-                                Int32.TryParse(x.BRAND_CONTENT, out isInt) && x.EXC_GOOD_TYP == "01");
+                                Int32.TryParse(x.BRAND_CONTENT, out isInt) && (x.EXC_GOOD_TYP == "01" || x.EXC_GOOD_TYP == "02"));
 
                    //var blFind = false;
 
@@ -1295,6 +1297,8 @@ namespace Sampoerna.EMS.BLL
                         var ck4cItem = new Ck4cReportItemDto();
                         //var brand = _brandBll.GetById(item, data.FA_CODE);
                         var brand = listBrand.FirstOrDefault(c => c.WERKS == item && c.FA_CODE == data.FA_CODE);
+                        var hjeValue = brand.HJE_IDR;
+                        if (brand.BRAND_CE.Trim().ToLower() == "bahan baku") hjeValue = brand.HJE_IDR * Convert.ToInt32(brand.BRAND_CONTENT);
 
                         //var prodType = _prodTypeBll.GetById(data.PROD_CODE);
                         var prodType = listProdType.FirstOrDefault(c => c.PROD_CODE == data.PROD_CODE);
@@ -1302,7 +1306,8 @@ namespace Sampoerna.EMS.BLL
                         var itemCk4c = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat);
                         var lastItemCk4c = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE < prodDateFormat).LastOrDefault();
                         var prodQty = itemCk4c.Sum(x => x.PROD_QTY);
-                        var packedQty = itemCk4c.Sum(x => x.PACKED_QTY);
+                        var zbQty = itemCk4c.Sum(x => x.ZB);
+                        var packedQty = zbQty == 0 ? itemCk4c.Sum(x => x.PACKED_QTY) : zbQty;
                         var unpackedQty = itemCk4c.Sum(x => x.UNPACKED_QTY);
                         var remarks = itemCk4c.FirstOrDefault();
                         var total = brand.BRAND_CONTENT == null ? 0 : packedQty / Convert.ToInt32(brand.BRAND_CONTENT);
@@ -1350,7 +1355,7 @@ namespace Sampoerna.EMS.BLL
                         ck4cItem.BtgGr = packedQty == null || packedQty == 0 ? "Nihil" : String.Format("{0:n}", packedQty);
                         ck4cItem.Merk = brand.BRAND_CE;
                         ck4cItem.Isi = Convert.ToInt32(brand.BRAND_CONTENT) == 0 ? "Nihil" : String.Format("{0:n}", Convert.ToInt32(brand.BRAND_CONTENT));
-                        ck4cItem.Hje = brand.HJE_IDR == null || brand.HJE_IDR == 0 ? "Nihil" : String.Format("{0:n}", brand.HJE_IDR);
+                        ck4cItem.Hje = brand.HJE_IDR == null || brand.HJE_IDR == 0 ? "Nihil" : String.Format("{0:n}", hjeValue);
                         ck4cItem.Total = total == null || total == 0 ? "Nihil" : String.Format("{0:n}", total);
                         ck4cItem.ProdWaste = unpackedQty == null || unpackedQty == 0 ? "Nihil" : String.Format("{0:n}", unpackedQty);
                         ck4cItem.Comment = remarks == null ? string.Empty : remarks.REMARKS;

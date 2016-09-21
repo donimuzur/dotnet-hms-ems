@@ -480,19 +480,23 @@ namespace Sampoerna.EMS.BLL
 
                 var prodWaste = oldWaste <= item.QtyProduced ? oldWaste : 0;
 
-                var unpackedQty = oldUnpacked + (item.QtyProduced - oldWaste) - (item.QtyPacked - existReversal);
+                var unpackedQty = oldUnpacked + (item.QtyProduced - oldWaste) - ((item.Zb == 0 ? item.QtyPacked : item.Zb) - existReversal);
 
                 var prodQty = item.QtyProduced - prodWaste;
 
                 var packedQty = item.QtyPacked - existReversal;
 
-                var packedInPack = Convert.ToInt32(packedQty) / item.ContentPerPack;
+                var zbQty = item.Zb == 0 ? 0 : item.Zb - existReversal;
+
+                var packedInPack = (zbQty == 0 ? Convert.ToInt32(packedQty) : Convert.ToInt32(zbQty)) / item.ContentPerPack;
 
                 item.QtyUnpacked = unpackedQty;
 
                 item.QtyProduced = prodQty;
 
                 item.QtyPacked = packedQty;
+
+                item.Zb = zbQty;
 
                 item.PackedInPack = packedInPack;
 
