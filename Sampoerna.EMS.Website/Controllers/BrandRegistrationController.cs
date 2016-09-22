@@ -338,6 +338,7 @@ namespace Sampoerna.EMS.Website.Controllers
             changesData.Add("Conversion", origin.CONVERSION == updatedModel.Conversion);
             changesData.Add("CutFilterCode", origin.CUT_FILLER_CODE == updatedModel.CutFillerCode);
             changesData.Add("PRINTING_PRICE", origin.PRINTING_PRICE == updatedModel.PrintingPrice);
+            changesData.Add("BahanKemasan", origin.BAHAN_KEMASAN == updatedModel.BahanKemasan);
 
             foreach (var listChange in changesData)
             {
@@ -446,6 +447,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     case "PRINTING_PRICE":
                         changes.OLD_VALUE = origin.PRINTING_PRICE.ToString();
                         changes.NEW_VALUE = updatedModel.PrintingPrice.ToString();
+                        break;
+                    case "BahanKemasan":
+                        changes.OLD_VALUE = origin.BAHAN_KEMASAN;
+                        changes.NEW_VALUE = updatedModel.BahanKemasan;
                         break;
                 }
                 _changesHistoryBll.AddHistory(changes);
