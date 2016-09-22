@@ -1098,132 +1098,132 @@ namespace Sampoerna.EMS.BLL
             var lisCk4cItem = _ck4cItemBll.GetDataByParentPlant(dtData.PLANT_ID);
 
             string prodTypeDistinct = string.Empty;
-            string currentProdType = string.Empty;
-            List<Ck4cReportItemDto> tempListck4c1 = new List<Ck4cReportItemDto>();
+            //string currentProdType = string.Empty;
+            //List<Ck4cReportItemDto> tempListck4c1 = new List<Ck4cReportItemDto>();
             //add data details of CK-4C sebelumnya
-            foreach (var item in addressPlant)
-            {
-                Int32 isInt;
-                //var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt) && x.EXC_GOOD_TYP == "01").OrderBy(x => x.PROD_CODE);
+            //foreach (var item in addressPlant)
+            //{
+            //    Int32 isInt;
+            //    //var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt) && x.EXC_GOOD_TYP == "01").OrderBy(x => x.PROD_CODE);
                 
-                var activeBrand =
-                    listBrand.Where(
-                        x =>
-                            x.WERKS == item && x.IS_DELETED != true && x.STATUS == true &&
-                            Int32.TryParse(x.BRAND_CONTENT, out isInt) && (x.EXC_GOOD_TYP == "01" || x.EXC_GOOD_TYP == "02"))
-                        .OrderBy(x => x.PROD_CODE);
+            //    var activeBrand =
+            //        listBrand.Where(
+            //            x =>
+            //                x.WERKS == item && x.IS_DELETED != true && x.STATUS == true &&
+            //                Int32.TryParse(x.BRAND_CONTENT, out isInt) && (x.EXC_GOOD_TYP == "01" || x.EXC_GOOD_TYP == "02"))
+            //            .OrderBy(x => x.PROD_CODE);
 
 
                 
-                foreach (var data in activeBrand)
-                {
-                    if(currentProdType != data.PROD_CODE)
-                    {
-                        currentProdType = data.PROD_CODE;
-                        prodTypeDistinct += "|" + data.PROD_CODE;
-                    }
+            //    foreach (var data in activeBrand)
+            //    {
+            //        if(currentProdType != data.PROD_CODE)
+            //        {
+            //            currentProdType = data.PROD_CODE;
+            //            prodTypeDistinct += "|" + data.PROD_CODE;
+            //        }
 
-                    var ck4cItem = new Ck4cReportItemDto();
+            //        var ck4cItem = new Ck4cReportItemDto();
 
-                    //var unpackedQty = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE, dtData.PLANT_ID).Where(c => c.ProdDate < saldoDate).LastOrDefault();
-                    var unpackedQty = lisCk4cItem.LastOrDefault(c => c.Werks == item && c.FaCode == data.FA_CODE && c.ProdDate < saldoDate);
+            //        //var unpackedQty = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE, dtData.PLANT_ID).Where(c => c.ProdDate < saldoDate).LastOrDefault();
+            //        var unpackedQty = lisCk4cItem.LastOrDefault(c => c.Werks == item && c.FaCode == data.FA_CODE && c.ProdDate < saldoDate);
 
-                    //var oldData = _productionBll.GetOldSaldo(dtData.COMPANY_ID, item, data.FA_CODE, saldoDate).LastOrDefault();
-                    var oldData = GetOldSaldoForReport(listProduction, listReversal, listWaste, item, data.FA_CODE, saldoDate).LastOrDefault();
+            //        //var oldData = _productionBll.GetOldSaldo(dtData.COMPANY_ID, item, data.FA_CODE, saldoDate).LastOrDefault();
+            //        var oldData = GetOldSaldoForReport(listProduction, listReversal, listWaste, item, data.FA_CODE, saldoDate).LastOrDefault();
 
 
-                    var oldUnpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
+            //        var oldUnpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
 
-                    var strOldUnpacked = oldUnpacked == 0 ? "Nihil" : String.Format("{0:n}", oldUnpacked);
+            //        var strOldUnpacked = oldUnpacked == 0 ? "Nihil" : String.Format("{0:n}", oldUnpacked);
 
-                    ck4cItem.CollumNo = 0;
-                    ck4cItem.No = string.Empty;
-                    ck4cItem.NoProd = string.Empty;
-                    ck4cItem.ProdDate = string.Empty;
+            //        ck4cItem.CollumNo = 0;
+            //        ck4cItem.No = string.Empty;
+            //        ck4cItem.NoProd = string.Empty;
+            //        ck4cItem.ProdDate = string.Empty;
 
-                    //var prodType = _prodTypeBll.GetById(data.PROD_CODE);
-                    var prodType = listProdType.FirstOrDefault(c => c.PROD_CODE == data.PROD_CODE);
-                    ck4cItem.ProdCode = data.PROD_CODE;
-                    ck4cItem.ProdType = prodType.PRODUCT_ALIAS;
+            //        //var prodType = _prodTypeBll.GetById(data.PROD_CODE);
+            //        var prodType = listProdType.FirstOrDefault(c => c.PROD_CODE == data.PROD_CODE);
+            //        ck4cItem.ProdCode = data.PROD_CODE;
+            //        ck4cItem.ProdType = prodType.PRODUCT_ALIAS;
 
-                    ck4cItem.SumBtg = "Nihil";
-                    ck4cItem.BtgGr = "Nihil";
+            //        ck4cItem.SumBtg = "Nihil";
+            //        ck4cItem.BtgGr = "Nihil";
 
-                    //var brand = _brandBll.GetById(item, data.FA_CODE);
-                    var brand = listBrand.FirstOrDefault(c => c.WERKS == item && c.FA_CODE == data.FA_CODE);
-                    var hjeValue = brand.HJE_IDR;
-                    if (brand.BRAND_CE.Trim().ToLower() == "bahan baku") hjeValue = brand.HJE_IDR * Convert.ToInt32(brand.BRAND_CONTENT);
+            //        //var brand = _brandBll.GetById(item, data.FA_CODE);
+            //        var brand = listBrand.FirstOrDefault(c => c.WERKS == item && c.FA_CODE == data.FA_CODE);
+            //        var hjeValue = brand.HJE_IDR;
+            //        if (brand.BRAND_CE.Trim().ToLower() == "bahan baku") hjeValue = brand.HJE_IDR * Convert.ToInt32(brand.BRAND_CONTENT);
 
-                    ck4cItem.Merk = brand.BRAND_CE;
-                    ck4cItem.Isi = Convert.ToInt32(brand.BRAND_CONTENT) == 0 ? "Nihil" : String.Format("{0:n}", Convert.ToInt32(brand.BRAND_CONTENT));
-                    ck4cItem.Hje = brand.HJE_IDR == null ? "Nihil" : String.Format("{0:n}", hjeValue);
-                    ck4cItem.Total = "Nihil";
-                    ck4cItem.ProdWaste = unpackedQty == null ? strOldUnpacked : (unpackedQty.UnpackedQty == 0 ? "Nihil" : String.Format("{0:n}", unpackedQty.UnpackedQty));
-                    ck4cItem.Comment = "Saldo CK-4C Sebelumnya";
-                    ck4cItem.BhnKemasan = brand.BAHAN_KEMASAN;
+            //        ck4cItem.Merk = brand.BRAND_CE;
+            //        ck4cItem.Isi = Convert.ToInt32(brand.BRAND_CONTENT) == 0 ? "Nihil" : String.Format("{0:n}", Convert.ToInt32(brand.BRAND_CONTENT));
+            //        ck4cItem.Hje = brand.HJE_IDR == null ? "Nihil" : String.Format("{0:n}", hjeValue);
+            //        ck4cItem.Total = "Nihil";
+            //        ck4cItem.ProdWaste = unpackedQty == null ? strOldUnpacked : (unpackedQty.UnpackedQty == 0 ? "Nihil" : String.Format("{0:n}", unpackedQty.UnpackedQty));
+            //        ck4cItem.Comment = "Saldo CK-4C Sebelumnya";
+            //        ck4cItem.BhnKemasan = brand.BAHAN_KEMASAN;
 
-                    //disable quantity when ck4c level by plant
-                    if (dtData.PLANT_ID != null)
-                    {
-                        //var CheckBrand = _brandBll.GetByFaCode(dtData.PLANT_ID, data.FA_CODE);
-                        var CheckBrand =
-                            listBrand.FirstOrDefault(c => c.WERKS == dtData.PLANT_ID && c.FA_CODE == data.FA_CODE);
+            //        //disable quantity when ck4c level by plant
+            //        if (dtData.PLANT_ID != null)
+            //        {
+            //            //var CheckBrand = _brandBll.GetByFaCode(dtData.PLANT_ID, data.FA_CODE);
+            //            var CheckBrand =
+            //                listBrand.FirstOrDefault(c => c.WERKS == dtData.PLANT_ID && c.FA_CODE == data.FA_CODE);
 
-                        if (CheckBrand == null || dtData.PLANT_ID != item)
-                        {
-                            ck4cItem.ProdWaste = "Nihil";
-                        }
-                    }
+            //            if (CheckBrand == null || dtData.PLANT_ID != item)
+            //            {
+            //                ck4cItem.ProdWaste = "Nihil";
+            //            }
+            //        }
 
-                    //result.Ck4cItemList.Add(ck4cItem);
-                    tempListck4c1.Add(ck4cItem);
-                }
+            //        //result.Ck4cItemList.Add(ck4cItem);
+            //        tempListck4c1.Add(ck4cItem);
+            //    }
                 
-            }
-            //distinct var tempListck4c1
-            var tempCk4cDto = tempListck4c1.Select(c => new
-            {
-                c.CollumNo,
-                c.No,
-                c.NoProd,
-                c.ProdDate,
-                c.ProdCode,
-                c.ProdType,
-                c.SumBtg,
-                c.BtgGr,
-                c.Merk,
-                c.Isi,
-                c.Hje,
-                c.Total,
-                c.ProdWaste,
-                c.Comment,
-                c.BhnKemasan
-            });
+            //}
+            ////distinct var tempListck4c1
+            //var tempCk4cDto = tempListck4c1.Select(c => new
+            //{
+            //    c.CollumNo,
+            //    c.No,
+            //    c.NoProd,
+            //    c.ProdDate,
+            //    c.ProdCode,
+            //    c.ProdType,
+            //    c.SumBtg,
+            //    c.BtgGr,
+            //    c.Merk,
+            //    c.Isi,
+            //    c.Hje,
+            //    c.Total,
+            //    c.ProdWaste,
+            //    c.Comment,
+            //    c.BhnKemasan
+            //});
 
-            var distinctTempCk4cDto = tempCk4cDto.Distinct().ToList();
+            //var distinctTempCk4cDto = tempCk4cDto.Distinct().ToList();
 
-            var newDistinctCk4cReportItemDto = distinctTempCk4cDto.Select(c => new Ck4cReportItemDto
-            {
-                CollumNo = c.CollumNo,
-                No = c.No,
-                NoProd = c.NoProd,
-                ProdDate = c.ProdDate,
-                ProdCode = c.ProdCode,
-                ProdType = c.ProdType,
-                SumBtg = c.SumBtg,
-                BtgGr = c.BtgGr,
-                Merk = c.Merk,
-                Isi = c.Isi,
-                Hje = c.Hje,
-                Total = c.Total,
-                ProdWaste = c.ProdWaste,
-                Comment = c.Comment,
-                BhnKemasan = c.BhnKemasan
+            //var newDistinctCk4cReportItemDto = distinctTempCk4cDto.Select(c => new Ck4cReportItemDto
+            //{
+            //    CollumNo = c.CollumNo,
+            //    No = c.No,
+            //    NoProd = c.NoProd,
+            //    ProdDate = c.ProdDate,
+            //    ProdCode = c.ProdCode,
+            //    ProdType = c.ProdType,
+            //    SumBtg = c.SumBtg,
+            //    BtgGr = c.BtgGr,
+            //    Merk = c.Merk,
+            //    Isi = c.Isi,
+            //    Hje = c.Hje,
+            //    Total = c.Total,
+            //    ProdWaste = c.ProdWaste,
+            //    Comment = c.Comment,
+            //    BhnKemasan = c.BhnKemasan
 
-            }).ToList();
+            //}).ToList();
 
             //add to dictionary group by date empty
-            ck4cItemGroupByDate.Add(String.Empty, newDistinctCk4cReportItemDto);
+            //ck4cItemGroupByDate.Add(String.Empty, newDistinctCk4cReportItemDto);
             result.Detail.CompanyAddress = address;
 
             var plant = _plantBll.GetT001WById(dtData.PLANT_ID);
@@ -1453,22 +1453,22 @@ namespace Sampoerna.EMS.BLL
             var sumTotal = string.Empty;
             var btgTotal = string.Empty;
 
-            if(prodTypeDistinct != string.Empty)
-            {
-                var brandType = prodTypeDistinct.Substring(1).Split('|').Distinct();
+            //if(prodTypeDistinct != string.Empty)
+            //{
+            //    var brandType = prodTypeDistinct.Substring(1).Split('|').Distinct();
 
-                foreach (var data in brandType)
-                {
-                    var sum = dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PROD_QTY);
-                    var total = dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PACKED_QTY);
+            //    foreach (var data in brandType)
+            //    {
+            //        var sum = dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PROD_QTY);
+            //        var total = dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PACKED_QTY);
 
-                    //prodAlias += _prodTypeBll.GetById(data).PRODUCT_ALIAS + Environment.NewLine;
-                    prodAlias += listProdType.FirstOrDefault(c => c.PROD_CODE == data).PRODUCT_ALIAS + Environment.NewLine;
+            //        //prodAlias += _prodTypeBll.GetById(data).PRODUCT_ALIAS + Environment.NewLine;
+            //        prodAlias += listProdType.FirstOrDefault(c => c.PROD_CODE == data).PRODUCT_ALIAS + Environment.NewLine;
 
-                    sumTotal += (sum == 0 ? "Nihil" : String.Format("{0:n}", sum)) + Environment.NewLine;
-                    btgTotal += (total == 0 ? "Nihil" : String.Format("{0:n}", total)) + Environment.NewLine;
-                }
-            }
+            //        sumTotal += (sum == 0 ? "Nihil" : String.Format("{0:n}", sum)) + Environment.NewLine;
+            //        btgTotal += (total == 0 ? "Nihil" : String.Format("{0:n}", total)) + Environment.NewLine;
+            //    }
+            //}
 
             result.Ck4cTotal.ProdType = prodAlias;
             result.Ck4cTotal.ProdTotal = sumTotal;
