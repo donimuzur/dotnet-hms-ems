@@ -138,15 +138,7 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Bahan Kemasan</label>
                                                         <div class="col-md-8">
-                                                            @if (Model.IsFromSAP)
-                                                            {
-                                                                @Html.HiddenFor(model => model.BahanKemasan)
-                                                                @Html.TextBox("bahankemasan", Model.BahanKemasan, new { @class = "form-control", disabled = "disabled" })
-                                                            }
-                                                            else
-                                                            {
-                                                                @Html.TextBox("bahankemasan", Model.BahanKemasan, new { @class = "form-control"})
-                                                            }
+                                                            @Html.TextBox("bahankemasan", Model.BahanKemasan, new { @class = "form-control"})
                                                         </div>
                                                     </div>
                                                 </div>
