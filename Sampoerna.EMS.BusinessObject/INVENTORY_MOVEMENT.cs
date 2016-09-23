@@ -17,6 +17,7 @@ namespace Sampoerna.EMS.BusinessObject
         public INVENTORY_MOVEMENT()
         {
             this.LACK1_TRACKING = new HashSet<LACK1_TRACKING>();
+            this.REVERSAL = new HashSet<REVERSAL>();
         }
     
         public long INVENTORY_MOVEMENT_ID { get; set; }
@@ -38,5 +39,6 @@ namespace Sampoerna.EMS.BusinessObject
         public string XML_FILE { get; set; }
     
         public virtual ICollection<LACK1_TRACKING> LACK1_TRACKING { get; set; }
+        public virtual ICollection<REVERSAL> REVERSAL { get; set; }
     }
 }

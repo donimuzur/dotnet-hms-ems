@@ -20,7 +20,9 @@ namespace Sampoerna.EMS.BusinessObject
         public string FA_CODE { get; set; }
         public string WERKS { get; set; }
         public Nullable<decimal> REVERSAL_QTY { get; set; }
+        public Nullable<long> INVENTORY_MOVEMENT_ID { get; set; }
     
         public virtual ZAAP_SHIFT_RPT ZAAP_SHIFT_RPT { get; set; }
+        public virtual INVENTORY_MOVEMENT INVENTORY_MOVEMENT { get; set; }
     }
 }
