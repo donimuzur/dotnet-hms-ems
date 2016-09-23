@@ -338,16 +338,19 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
 
-                if (decimal.Parse(model.PackedAdjustedStr) > decimal.Parse(model.QtyPackedStr))
+                if (model.PackedAdjustedStr != "" && model.PackedAdjustedStr != null && model.QtyPackedStr != "" && model.QtyPackedStr != null)
                 {
-                    AddMessageInfo("Packed-Adjusted value can't be greater than Qty Packed", Enums.MessageInfoType.Warning);
-                    return RedirectToAction("Edit", "Production", new
+                    if (decimal.Parse(model.PackedAdjustedStr) > decimal.Parse(model.QtyPackedStr))
                     {
-                        companyCode = model.CompanyCode,
-                        plantWerk = model.PlantWerks,
-                        faCode = model.FaCode,
-                        productionDate = model.ProductionDate
-                    });
+                        AddMessageInfo("Packed-Adjusted value can't be greater than Qty Packed", Enums.MessageInfoType.Warning);
+                        return RedirectToAction("Edit", "Production", new
+                        {
+                            companyCode = model.CompanyCode,
+                            plantWerk = model.PlantWerks,
+                            faCode = model.FaCode,
+                            productionDate = model.ProductionDate
+                        });
+                    }
                 }
 
                 var dbPrductionNew = Mapper.Map<ProductionDto>(model);
