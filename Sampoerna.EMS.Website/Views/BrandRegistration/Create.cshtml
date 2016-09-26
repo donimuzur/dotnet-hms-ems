@@ -84,6 +84,14 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Bahan Kemasan<span class="red">*</span></label>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBox("bahankemasan", Model.BahanKemasan, new { @class = "form-control" })
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="row">
                                                 
@@ -160,7 +168,7 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">HJE<span class="red">*</span></label>
+                                                        <label id="hje" class="col-md-4">HJE<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @Html.TextBoxFor(m=>m.HjeValueStr, new { @id ="hje", @class = "decimal form-control" })
                                                             
@@ -209,7 +217,14 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                               
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <label class="col-md-2">Packed-Adjusted</label>
+                                                        <div class="col-md-10">
+                                                            @Html.EditorFor(model => model.IsPackedAdjusted, new { @class = "form-control" }) Active
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="col-md-4">Start Date<span class="red">*</span></label>
@@ -296,6 +311,7 @@
 
 }
 @section scripts {
+    <link rel="stylesheet" type="text/css" href="../../Content/themes/base/all.css">
     <script src="~/Scripts/thousand-separator.js"></script>
 
     <script type="text/javascript" language="javascript">
@@ -322,8 +338,28 @@
             $('#PersonalizationCode').change(function() {
                 PersonalizationCodeOnChange();
             });
+
+            ajaxBahanKemasan('@Url.Action("BahanKemasanList", "BrandRegistration")', null);
         });
 
+        function ajaxBahanKemasan(url, formData) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    var availableTags = [];
+                    if (data) {
+                        for (i = 1; i <= data.length; i++) {
+                            availableTags.push(data[i - 1].Value);
+                        }
+                    }
+                    $("#bahankemasan").autocomplete({
+                        source: availableTags
+                    });
+                }
+            });
+        }
 
                 @*$("#PersonalizationCode").change(function() {
             if ($("#PersonalizationCode").length) {
@@ -350,7 +386,7 @@
             }
         }
 
-                @*$("#ProductCode").change(function() {
+        @*$("#ProductCode").change(function() {
             if ($("#ProductCode").length) {
                 var productCode = $(this).find("option:selected").val();
                 if (productCode == '') {
@@ -362,6 +398,18 @@
             }
 
         });*@
+
+        $("#ProductCode").change(function() {
+            if ($("#ProductCode").length) {
+                var productCode = $(this).find("option:selected").val();
+                var goodTypeCode = $("#GoodType").find("option:selected").val();
+                if (productCode == '05' && goodTypeCode == '02') {
+                    $("#hje").html('HJE per Gram<span class="red">*</span>');
+                } else {
+                    $("#hje").html('HJE<span class="red">*</span>');
+                }
+            }
+        });
 
         function ajaxGetProductCodeDetails(url, formData) {
             if (formData.productId) {
@@ -437,6 +485,13 @@
                     $('#GoodTypeDescription').val('');
                 } else {
                     ajaxGetGoodTypeDescription('@Url.Action("GoodTypeDescription", "BrandRegistration")', { goodTypeId: goodTypeCode });
+
+                    var productCode = $("#ProductCode").find("option:selected").val();
+                    if (productCode == '05' && goodTypeCode == '02') {
+                        $("#hje").html('HJE per Gram<span class="red">*</span>');
+                    } else {
+                        $("#hje").html('HJE<span class="red">*</span>');
+                    }
                 }
             }
 

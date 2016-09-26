@@ -55,6 +55,8 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public bool IsAllowDelete { get; set; }
         public bool? IsFromSap { get; set; }
         public bool? BoolIsDeleted { get; set; }
+        public string BahanKemasan { get; set; }
+        public bool IsPackedAdjusted { get; set; }
         
     }
 }

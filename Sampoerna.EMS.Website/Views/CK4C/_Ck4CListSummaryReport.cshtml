@@ -23,6 +23,8 @@
             <th style="min-width: 100px">Tariff</th>
             <th style="min-width: 130px">Content Per Pack</th>
             <th style="min-width: 120px">Packed QTY</th>
+            <th style="min-width: 120px">ZB: Only for SKT</th>
+            <th style="min-width: 120px">Packed - Adjusted: Only for TIS CF</th>
             <th style="min-width: 120px">Unpacked QTY</th>
             <th style="min-width: 120px">Produced QTY</th>
             <th style="min-width: 120px">UoM Produced QTY</th>
@@ -113,6 +115,22 @@
                     <td class="number">
                         <ol>
                             @foreach (var data in item.PackedQty)
+                            {
+                                <li>@string.Format("{0:N2}", data)</li>
+                            }
+                        </ol>
+                    </td>
+                    <td class="number">
+                        <ol>
+                            @foreach (var data in item.Zb)
+                            {
+                                <li>@string.Format("{0:N2}", data)</li>
+                            }
+                        </ol>
+                    </td>
+                    <td class="number">
+                        <ol>
+                            @foreach (var data in item.PackedAdjusted)
                             {
                                 <li>@string.Format("{0:N2}", data)</li>
                             }

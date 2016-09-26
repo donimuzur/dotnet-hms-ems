@@ -125,6 +125,9 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string CutFillerCode { get; set; }
 
         public bool IsActive { get; set; }
-        
+
+        public string BahanKemasan { get; set; }
+        public SelectList BahanKemasanList { get; set; }
+        public bool IsPackedAdjusted { get; set; }
     }
 }

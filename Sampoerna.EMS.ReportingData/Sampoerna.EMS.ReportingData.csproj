@@ -39,6 +39,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="dsCk4c.cs">
+      <DependentUpon>dsCk4c.xsd</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="dsCk4c.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -75,11 +75,35 @@
                                     <div class="row">
                                         <label class="col-md-4">Qty Packed<span class="red">*</span></label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.QtyPackedStr, new { @class = "decimal form-control", disabled = "disabled", @maxlength = "19", id="QtyPacked" })
+                                            @Html.TextBoxFor(model => model.QtyPackedStr, new { @class = "decimal form-control", disabled = "disabled", @maxlength = "19", id = "QtyPacked" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div id="remarkRow" class="row">
+                                        <label class="col-md-4">Remark</label>
+                                        <div class="col-md-8">
+                                            @Html.TextAreaFor(model => model.Remark, 6, 20, new { @class = "form-control", id = "remark" })
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
+                                    <div id="zbRow" class="row">
+                                        <label class="col-md-4"> ZB<span class="red">*</span></label>
+                                        <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.ZbStr)
+                                            @Html.TextBoxFor(model => model.ZbStr, new { @class = "decimal form-control", id = "Zb" })
+                                        </div>
+                                    </div>
+                                    <div id="packedAdjustedRow" class="row">
+                                        <label class="col-md-4"> Packed-Adjusted</label>
+                                        <div class="col-md-8">
+                                            @Html.HiddenFor(model => model.PackedAdjustedStr)
+                                            @Html.TextBoxFor(model => model.PackedAdjustedStr, new { @class = "decimal form-control", id = "PackedAdjusted" })
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <label class="col-md-4">Produced Qty<span class="red">*</span></label>
                                         <div class="col-md-8">
@@ -88,6 +112,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
@@ -97,13 +122,13 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                <div class="col-md-6">
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                 </div>
             </div>
         </div>
-        
     </div>
 </div>

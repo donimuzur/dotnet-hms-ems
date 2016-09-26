@@ -128,6 +128,8 @@ namespace Sampoerna.EMS.BLL
             dbProduction.QTY_PACKED = productionDto.QtyPackedStr == null ? 0 : Convert.ToDecimal(productionDto.QtyPackedStr);
             dbProduction.QTY = productionDto.QtyStr == null ? 0 : Convert.ToDecimal(productionDto.QtyStr);
             dbProduction.PROD_QTY_STICK = productionDto.ProdQtyStickStr == null ? 0 : Convert.ToDecimal(productionDto.ProdQtyStickStr);
+            dbProduction.ZB = productionDto.ZbStr == null ? 0 : Convert.ToDecimal(productionDto.ZbStr);
+            dbProduction.PACKED_ADJUSTED = productionDto.PackedAdjustedStr == null ? 0 : Convert.ToDecimal(productionDto.PackedAdjustedStr);
 
             var origin = _repository.GetByID(productionDto.CompanyCodeX, productionDto.PlantWerksX, productionDto.FaCodeX,
                Convert.ToDateTime(productionDto.ProductionDateX));
@@ -207,6 +209,8 @@ namespace Sampoerna.EMS.BLL
             item.QtyPackedStr = item.QtyPacked == null ? string.Empty : item.QtyPacked.ToString();
             item.QtyStr = item.Qty == null ? string.Empty : item.Qty.ToString();
             item.ProdQtyStickStr = item.ProdQtyStick == null ? string.Empty : item.ProdQtyStick.ToString();
+            item.ZbStr = item.Zb == null ? string.Empty : Convert.ToInt64(item.Zb).ToString();
+            item.PackedAdjustedStr = item.PackedAdjusted == null ? string.Empty : item.PackedAdjusted.ToString();
             var brand = _brandRegistrationBll.GetByFaCode(item.PlantWerks, item.FaCode);
 
             if (brand.IS_FROM_SAP != null && brand.IS_FROM_SAP.Value)
@@ -480,19 +484,35 @@ namespace Sampoerna.EMS.BLL
 
                 var prodWaste = oldWaste <= item.QtyProduced ? oldWaste : 0;
 
-                var unpackedQty = oldUnpacked + (item.QtyProduced - oldWaste) - (item.QtyPacked - existReversal);
+                var optionalPacked = item.QtyPacked;
+
+                if (item.Zb > 0) optionalPacked = item.Zb;
+                if (item.PackedAdjusted > 0) optionalPacked = item.PackedAdjusted;
+
+                var unpackedQty = oldUnpacked + (item.QtyProduced - oldWaste) - (optionalPacked - existReversal);
 
                 var prodQty = item.QtyProduced - prodWaste;
 
                 var packedQty = item.QtyPacked - existReversal;
 
+                var zbQty = item.Zb == 0 ? 0 : item.Zb - existReversal;
+
+                var packedAdjustedQty = item.PackedAdjusted == 0 ? 0 : item.PackedAdjusted - existReversal;
+
                 var packedInPack = Convert.ToInt32(packedQty) / item.ContentPerPack;
+
+                if (zbQty > 0) packedInPack = Convert.ToInt32(zbQty) / item.ContentPerPack;
+                if (packedAdjustedQty > 0) packedInPack = Convert.ToInt32(packedAdjustedQty) / item.ContentPerPack;
 
                 item.QtyUnpacked = unpackedQty;
 
                 item.QtyProduced = prodQty;
 
                 item.QtyPacked = packedQty;
+
+                item.Zb = zbQty;
+
+                item.PackedAdjusted = packedAdjustedQty;
 
                 item.PackedInPack = packedInPack;
 
@@ -649,6 +669,90 @@ namespace Sampoerna.EMS.BLL
                 {
                     output.IsValid = false;
                     messageList.AddRange(messages);
+                }
+
+                #endregion
+
+                #region --------------ZB Validation --------------------
+
+                //Product Code Validation
+                var brandRegistration = _brandRegistrationBll.GetByFaCode(output.PlantWerks, output.FaCode);
+                if (brandRegistration.PROD_CODE=="01")
+                {
+                    //Value Validation
+                    if (output.Zb == "" || output.Zb == "-")
+                    {
+                        messageList.Add("ZB can't be blank");
+                    }
+                    else
+                    {
+                        if (!decimal.TryParse(output.Zb, out tempDecimal))
+                        {
+                            output.Zb = output.Zb;
+                            messageList.Add("ZB [" + output.Zb + "] not valid");
+                        }
+                    }
+                }
+                else
+                {
+                    if (output.Zb != "" || output.Zb != "-")
+                    {
+                        output.Zb = output.Zb;
+                        messageList.Add("ZB [" + output.Zb + "] must be blank when Product Code is not SKT");
+                    }
+                }
+
+                #endregion
+
+                #region --------------Packed-Adjusted Validation --------------------
+
+                //Product Code & Exc Good Type Validation
+                if (brandRegistration.PROD_CODE == "05" && brandRegistration.EXC_GOOD_TYP=="02")
+                {
+                    //Value Validation
+                    if (decimal.TryParse(output.PackedAdjusted, out tempDecimal) || output.PackedAdjusted == "" || output.PackedAdjusted == "-")
+                    {
+                        if (decimal.Parse(output.PackedAdjusted) > decimal.Parse(output.QtyPacked))
+                        {
+                            output.PackedAdjusted = output.PackedAdjusted;
+                            messageList.Add("Packed-Adjusted [" + output.PackedAdjusted + "] can't be greater than Qty Packed");
+                        }
+                        else
+                        {
+                            output.PackedAdjusted = output.PackedAdjusted == "" || output.PackedAdjusted == "-" ? "0" : output.PackedAdjusted;
+                        }
+                    }
+                    else
+                    {
+                        output.PackedAdjusted = output.PackedAdjusted;
+                        messageList.Add("Packed-Adjusted [" + output.PackedAdjusted + "] not valid");
+                    }
+                }
+                else
+                {
+                    if (output.PackedAdjusted != "" || output.PackedAdjusted != "-")
+                    {
+                        output.PackedAdjusted = output.PackedAdjusted;
+                        messageList.Add("Packed-Adjusted [" + output.PackedAdjusted + "] must be blank when Product Code & Exc Good Type is not TIS");
+                    }
+                }
+
+                #endregion
+
+                #region --------------Remark Validation --------------------
+
+                //Product Code & Exc Good Type Validation
+                if (brandRegistration.PROD_CODE == "05" && brandRegistration.EXC_GOOD_TYP == "02")
+                {
+                    output.Remark = output.Remark;
+                }
+                else
+                {
+                    if (output.Remark != "" || output.Remark != "-")
+                    {
+                        output.Remark = output.Remark;
+                        messageList.Add("Remark [" + output.Remark + "] must be blank when Product Code & Exc Good Type is not TIS");
+                    }
                 }
 
                 #endregion
