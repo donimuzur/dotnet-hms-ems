@@ -1295,6 +1295,7 @@ namespace Sampoerna.EMS.BLL
                         //    blFind = true;
 
                         var ck4cItem = new Ck4cReportItemDto();
+                        var ck4cItemTis = new Ck4cReportItemDto();
                         //var brand = _brandBll.GetById(item, data.FA_CODE);
                         var brand = listBrand.FirstOrDefault(c => c.WERKS == item && c.FA_CODE == data.FA_CODE);
                         var hjeValue = brand.HJE_IDR;
@@ -1381,8 +1382,56 @@ namespace Sampoerna.EMS.BLL
                             }
                         }
 
+                        //for new role tis
+                        if (brand.BRAND_CE.Trim().ToLower() == "bahan baku")
+                        {
+                            if (ck4cItem.Total != "Nihil")
+                            {
+                                decimal decimalVal = total.Value % 1;
+
+                                if (decimalVal > 0)
+                                {
+                                    decimal intVal = Math.Floor(total.Value);
+                                    decimal newBtgGr = Convert.ToInt32(brand.BRAND_CONTENT) * intVal;
+                                    decimal btgGrTis = packedQty.Value - newBtgGr;
+
+                                    ck4cItem.Total = String.Format("{0:n}", intVal);
+                                    ck4cItem.BtgGr = String.Format("{0:n}", newBtgGr);
+
+                                    ck4cItemTis.CollumNo = i;
+                                    ck4cItemTis.No = i.ToString();
+                                    ck4cItemTis.NoProd = i.ToString();
+                                    ck4cItemTis.ProdDate = prodDate;
+                                    ck4cItemTis.ProdCode = data.PROD_CODE;
+                                    ck4cItemTis.ProdType = prodType.PRODUCT_ALIAS;
+                                    ck4cItemTis.SumBtg = prodQty == 0 ? "Nihil" : String.Format("{0:n}", prodQty);
+                                    ck4cItemTis.BtgGr = String.Format("{0:n}", btgGrTis);
+                                    ck4cItemTis.Merk = brand.BRAND_CE;
+                                    ck4cItemTis.Isi = String.Format("{0:n}", btgGrTis);
+                                    ck4cItemTis.Hje = String.Format("{0:n}", brand.HJE_IDR * btgGrTis);
+                                    ck4cItemTis.Total = String.Format("{0:n}", 1);
+                                    ck4cItemTis.ProdWaste = unpackedQty == null || unpackedQty == 0 ? "Nihil" : String.Format("{0:n}", unpackedQty);
+                                    ck4cItemTis.Comment = remarks == null ? string.Empty : remarks.REMARKS;
+                                    ck4cItemTis.BhnKemasan = brand.BAHAN_KEMASAN;
+                                }
+                            }
+                        }
+
                         //result.Ck4cItemList.Add(ck4cItem);
                         tempListck4c2.Add(ck4cItem);
+
+                        if (brand.BRAND_CE.Trim().ToLower() == "bahan baku")
+                        {
+                            if (ck4cItem.Total != "Nihil")
+                            {
+                                decimal decimalVal = total.Value % 1;
+
+                                if (decimalVal > 0)
+                                {
+                                    tempListck4c2.Add(ck4cItemTis);
+                                }
+                            }
+                        }
 
                         var unpackedItem = new Ck4cUnpacked();
                         unpackedItem.PlantId = item;
