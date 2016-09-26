@@ -140,20 +140,23 @@ namespace Sampoerna.EMS.XMLReader
                 };
 
                 var periodMonth = DateTime.Today.AddDays(-1).Month;
+                var periodYear = DateTime.Today.AddDays(-1).Year;
                 var companyMapping = _xmlMapper.uow.GetGenericRepository<T001K>().Get().ToList();
                 var companyData = _xmlMapper.uow.GetGenericRepository<T001>().Get().ToList();
                 var plantData = _xmlMapper.uow.GetGenericRepository<T001W>().Get().ToList();
+                var tisDesc = EnumHelper.GetDescription(Enums.GoodsType.TembakauIris);
                 var dataMaterial =
                     _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_BRAND>()
-                        .Get(x => x.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.TembakauIris) && x.PROD_CODE == "05")
+                        .Get(x => x.EXC_GOOD_TYP == tisDesc && x.PROD_CODE == "05")
 
                         .ToList();
                 var listMaterial = dataMaterial.Select(x => x.FA_CODE + "-" + x.WERKS).Distinct().ToList();
 
                 var data = _xmlMapper.uow.GetGenericRepository<INVENTORY_MOVEMENT>()
                     .Get(x => x.POSTING_DATE.Value.Month == periodMonth
-                              && listMaterial.Contains(x.MATERIAL_ID + "-" + x.PLANT_ID)
-                             && mvtTypeList.Contains(x.MVT))
+                        && x.POSTING_DATE.Value.Year == periodYear
+                        && listMaterial.Contains(x.MATERIAL_ID + "-" + x.PLANT_ID)
+                        && mvtTypeList.Contains(x.MVT))
                     .GroupBy(x => new {x.PLANT_ID, x.MATERIAL_ID, x.POSTING_DATE})
                     .Select(x => new INVENTORY_MOVEMENT()
                     {
@@ -166,7 +169,7 @@ namespace Sampoerna.EMS.XMLReader
 
                 var dataJoined = (from dt in data
                     join mapping in companyMapping on dt.PLANT_ID equals mapping.BWKEY
-                    join comp in companyData on mapping.BWKEY equals comp.BUKRS
+                    join comp in companyData on mapping.BUKRS equals comp.BUKRS
                     join plant in plantData on dt.PLANT_ID equals plant.WERKS
                     join mat in dataMaterial on new {dt.PLANT_ID, dt.MATERIAL_ID} equals
                         new {PLANT_ID = mat.WERKS, MATERIAL_ID = mat.FA_CODE}
