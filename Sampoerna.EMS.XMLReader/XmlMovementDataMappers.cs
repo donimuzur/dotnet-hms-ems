@@ -133,20 +133,27 @@ namespace Sampoerna.EMS.XMLReader
 
             try
             {
+                var mvtTypeList = new List<string>()
+                {
+                    EnumHelper.GetDescription(Core.Enums.MovementTypeCode.Receiving101)
+                    
+                };
+
                 var periodMonth = DateTime.Today.AddDays(-1).Month;
                 var companyMapping = _xmlMapper.uow.GetGenericRepository<T001K>().Get().ToList();
                 var companyData = _xmlMapper.uow.GetGenericRepository<T001>().Get().ToList();
                 var plantData = _xmlMapper.uow.GetGenericRepository<T001W>().Get().ToList();
                 var dataMaterial =
                     _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_BRAND>()
-                        .Get(x => x.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.TembakauIris))
+                        .Get(x => x.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.TembakauIris) && x.PROD_CODE == "05")
 
                         .ToList();
                 var listMaterial = dataMaterial.Select(x => x.FA_CODE + "-" + x.WERKS).Distinct().ToList();
 
                 var data = _xmlMapper.uow.GetGenericRepository<INVENTORY_MOVEMENT>()
                     .Get(x => x.POSTING_DATE.Value.Month == periodMonth
-                              && listMaterial.Contains(x.MATERIAL_ID + "-" + x.PLANT_ID))
+                              && listMaterial.Contains(x.MATERIAL_ID + "-" + x.PLANT_ID)
+                             && mvtTypeList.Contains(x.MVT))
                     .GroupBy(x => new {x.PLANT_ID, x.MATERIAL_ID, x.POSTING_DATE})
                     .Select(x => new INVENTORY_MOVEMENT()
                     {
