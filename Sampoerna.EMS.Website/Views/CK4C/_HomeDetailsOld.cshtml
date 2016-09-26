@@ -103,7 +103,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4"><input name="based-on" type="radio" id="basedPlantOld" checked value="1" disabled> Plant Id</label>
+                                        <label class="col-md-4"><input name="based-onOld" type="radio" id="basedPlantOld" checked value="1" disabled> Plant Id</label>
                                         <div class="col-md-8">
                                             @Html.HiddenFor(model => model.OldDetails.PlantId)
                                             @Html.TextBoxFor(model => model.OldDetails.PlantName, new { @class = "form-control", @disabled = "disabled" })
@@ -114,7 +114,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4"><input name="based-on" type="radio" id="basedNppbkcOld" value="2" disabled> NPPBKC</label>
+                                        <label class="col-md-4"><input name="based-onOld" type="radio" id="basedNppbkcOld" value="2" disabled> NPPBKC</label>
                                         <div class="col-md-8">
                                             @Html.TextBoxFor(model => model.OldDetails.NppbkcId, new { @class = "form-control", @disabled = "disabled" })
                                         </div>

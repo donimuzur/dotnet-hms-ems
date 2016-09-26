@@ -578,6 +578,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     };
 
                     model.OldDetails.Ck4cItemData = SetOtherCk4cItemData(model.OldDetails.Ck4cItemData, ck4cDataOld.Ck4CId);
+
+                    if (plant != null) model.OldDetails.PlantName = plant.WERKS + "-" + plant.NAME1;
                 }
 
                 model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData, id.Value);
@@ -691,6 +693,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     };
 
                     model.OldDetails.Ck4cItemData = SetOtherCk4cItemData(model.OldDetails.Ck4cItemData, ck4cDataOld.Ck4CId);
+
+                    if (plant != null) model.OldDetails.PlantName = plant.WERKS + "-" + plant.NAME1;
                 }
 
                 model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData, id.Value);
@@ -832,6 +836,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     };
 
                     model.OldDetails.Ck4cItemData = SetOtherCk4cItemData(model.OldDetails.Ck4cItemData, ck4cDataOld.Ck4CId);
+
+                    if (plant != null) model.OldDetails.PlantName = plant.WERKS + "-" + plant.NAME1;
                 }
 
                 model.Details.Ck4cItemData = SetOtherCk4cItemData(model.Details.Ck4cItemData, id.Value);
@@ -981,6 +987,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     model.OldDetails = Mapper.Map<DataDocumentList>(ck4cDataOld);
                     model.OldWorkflowHistory = workflowHistoryOld;
                     model.OldDetails.Ck4cItemData = SetOtherCk4cItemData(model.OldDetails.Ck4cItemData, ck4cDataOld.Ck4CId);
+
+                    if (plant != null) model.OldDetails.PlantName = plant.WERKS + "-" + plant.NAME1;
                 }
             }
             catch (Exception exception)
