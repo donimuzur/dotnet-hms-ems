@@ -347,6 +347,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(model);
         }
 
+        [HttpPost]
         public JsonResult GetInventoryMovementData(string plantWerk, string faCode)
         {
             var listInventoryMovement = GlobalFunctions.GetReversalInventoryMovementData(plantWerk, faCode);
