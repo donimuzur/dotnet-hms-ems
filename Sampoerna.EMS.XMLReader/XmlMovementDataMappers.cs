@@ -179,7 +179,7 @@ namespace Sampoerna.EMS.XMLReader
                         BRAND_DESC = mat.BRAND_CE,
                         CREATED_BY = "PI",
                         CREATED_DATE = DateTime.Now,
-                        COMPANY_CODE = mapping.BWKEY,
+                        COMPANY_CODE = mapping.BUKRS,
                         COMPANY_NAME = comp.BUTXT,
                         FA_CODE = dt.MATERIAL_ID,
                         PLANT_NAME = plant.NAME1,
