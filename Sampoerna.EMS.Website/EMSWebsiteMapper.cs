@@ -201,7 +201,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Ort01, opt => opt.MapFrom(src => src.ORT01))
                 .ForMember(dest => dest.NPPBKC_IMPORT_ID, opt => opt.MapFrom(src => src.NPPBKC_IMPORT_ID))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
-                .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IS_DELETED));
+                .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IS_DELETED))
+                ;
 
 
             Mapper.CreateMap<DetailPlantT1001W, T001W>().IgnoreAllNonExisting()
@@ -392,6 +393,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Conversion, opt => opt.MapFrom(src => src.CONVERSION))
                 .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.BRAND_CONTENT))
                 .ForMember(dest => dest.HjeValueStr, opt => opt.MapFrom(src => src.HJE_IDR))
+                .ForMember(dest => dest.TariffValueStr, opt => opt.MapFrom(src => src.TARIFF))
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.STATUS))
                 .ForMember(dest => dest.BahanKemasan, opt => opt.MapFrom(src => src.BAHAN_KEMASAN))
                 .ForMember(dest => dest.IsPackedAdjusted, opt => opt.MapFrom(src => src.PACKED_ADJUSTED));

@@ -18,6 +18,13 @@
 
 <div class="container-wrap">
     <div class="row">
+        <div class="col-lg-12">
+            <input id="btnExport" type="button" class="btn btn-blue pull-right" onclick="ExportXls();" value="EXPORT" />
+        </div>
+        @using (Html.BeginForm("ExportXlsFile", "Plant", FormMethod.Post, new { @id = "ExportToXls" }))
+        {
+
+        }
         <div class="col-sm-12">
             <div id="contenttable" class="table-container">
                 <table id="mydata" class="table cell-border display no-wrap" cellspacing="0" width="100%">
@@ -58,7 +65,7 @@
                                 <td class="action">
                                     <a href="@Url.Action("Detail", "Plant", new { id = item.Werks })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
                                     @if (Model.IsNotViewer){
-                                    <a href="@Url.Action("Edit", "Plant", new { id = item.Werks })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                                        <a href="@Url.Action("Edit", "Plant", new { id = item.Werks })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                                     }
                                 </td>
                                 <td>
@@ -75,7 +82,7 @@
                                     @Html.DisplayFor(modelItem => item.Name1)
                                 </td>
                                 <td>
-                                   @Html.CheckBoxFor(modelItem => item.IsMainPlant, new { @disabled = "disabled" })
+                                    @Html.CheckBoxFor(modelItem => item.IsMainPlant, new { @disabled = "disabled" })
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Address)
@@ -166,6 +173,9 @@
 
        
 
-    });
+        });
+        function ExportXls() {
+            $('#ExportToXls').submit();
+        }
     </script>
 }

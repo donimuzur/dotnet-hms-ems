@@ -20,6 +20,14 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public int Year { get; set; }
     }
 
+    public class GetProductionDailyProdByParamInput
+    {
+        public DateTime DateFrom { get; set; }
+        public DateTime DateTo { get; set; }
+        public string PlantFrom { get; set; }
+        public string PlantTo { get; set; }
+    }
+
     public class GetOtherProductionByParamInput
     {
         public string Company { get; set; }

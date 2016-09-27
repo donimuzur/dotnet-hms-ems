@@ -528,6 +528,82 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<Lack1ReceivingDetailReportDto, Lack1TrackingConsolidationDetailReportDto>().IgnoreAllNonExisting();
             Mapper.CreateMap<LACK1_PRODUCTION_DETAIL, Lack1ProductionBreakdownDetail>().IgnoreAllNonExisting();
             Mapper.CreateMap<ZAIDM_EX_MATERIAL_BALANCE,Lack1BeginingSaldoDetail>().IgnoreAllNonExisting();
+            #region LACK1 Detail TIS
+
+            Mapper.CreateMap<Lack1GetDetailTisByParamInput, Ck5GetForLack1DetailTis>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<CK5, Lack1DetailTisDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PlantIdReceiver, opt => opt.MapFrom(src => src.DEST_PLANT_ID))
+                .ForMember(dest => dest.PlantDescReceiver, opt => opt.MapFrom(src => src.DEST_PLANT_NAME))
+                .ForMember(dest => dest.PlantIdSupplier, opt => opt.MapFrom(src => src.SOURCE_PLANT_ID))
+                .ForMember(dest => dest.PlantDescSupplier, opt => opt.MapFrom(src => src.SOURCE_PLANT_NAME))
+                .ForMember(dest => dest.Ck5EmsNo, opt => opt.MapFrom(src => src.SUBMISSION_NUMBER))
+                .ForMember(dest => dest.Ck5RegNo, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
+                .ForMember(dest => dest.Ck5RegDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE.HasValue ? src.REGISTRATION_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
+                .ForMember(dest => dest.Ck5GrDate, opt => opt.MapFrom(src => src.GR_DATE.HasValue ? src.GR_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
+                .ForMember(dest => dest.Ck5Qty, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX.Value))
+                .ForMember(dest => dest.StoReceiverNumber, opt => opt.MapFrom(src => src.STO_RECEIVER_NUMBER))
+                ;
+
+            #endregion
+            Mapper.CreateMap<ZAAP_SHIFT_RPT, Lack1CFUsagevsFaDetailDtoMvt>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Batch, opt => opt.MapFrom(src => src.BATCH))
+                .ForMember(dest => dest.Order, opt => opt.MapFrom(src => src.ORDR))
+                .ForMember(dest => dest.Converted_Qty, opt => opt.MapFrom(src => src.QTY))
+                .ForMember(dest => dest.Converted_Uom, opt => opt.MapFrom(src => src.UOM))
+                .ForMember(dest => dest.Material_Id, opt => opt.MapFrom(src => src.FA_CODE))
+                .ForMember(dest => dest.Mvt, opt => opt.MapFrom(src => src.MVT))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.WERKS))
+                .ForMember(dest => dest.PostingDate, opt => opt.MapFrom(src => src.POSTING_DATE))
+                .ForMember(dest => dest.ProductionDate, opt => opt.MapFrom(src => src.PRODUCTION_DATE))
+                .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.ORIGINAL_QTY))
+                .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.ORIGINAL_UOM));
+
+            Mapper.CreateMap<INVENTORY_MOVEMENT, Lack1CFUsagevsFaDetailDtoMvt>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Batch, opt => opt.MapFrom(src => src.BATCH))
+                .ForMember(dest => dest.Order, opt => opt.MapFrom(src => src.ORDR))
+                
+                
+                .ForMember(dest => dest.Material_Id, opt => opt.MapFrom(src => src.MATERIAL_ID))
+                .ForMember(dest => dest.Mvt, opt => opt.MapFrom(src => src.MVT))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
+                .ForMember(dest => dest.PostingDate, opt => opt.MapFrom(src => src.POSTING_DATE))
+                .ForMember(dest => dest.ProductionDate, opt => opt.MapFrom(src => src.POSTING_DATE))
+                .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.QTY))
+                .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.BUN));
+
+            Mapper.CreateMap<InvMovementItemWithConvertion, Lack1CFUsagevsFaDetailDtoMvt>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Batch, opt => opt.MapFrom(src => src.BATCH))
+                .ForMember(dest => dest.Order, opt => opt.MapFrom(src => src.ORDR))
+
+
+                .ForMember(dest => dest.Material_Id, opt => opt.MapFrom(src => src.MATERIAL_ID))
+                .ForMember(dest => dest.Mvt, opt => opt.MapFrom(src => src.MVT))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
+                .ForMember(dest => dest.PostingDate, opt => opt.MapFrom(src => src.POSTING_DATE.HasValue ? src.POSTING_DATE.Value : new DateTime()))
+                .ForMember(dest => dest.ProductionDate, opt => opt.MapFrom(src => src.POSTING_DATE.HasValue ? src.POSTING_DATE.Value : new DateTime()))
+                .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.ConvertedQty))
+                .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.ConvertedUomId));
+
+            #region LACK1 Detail EA
+
+            Mapper.CreateMap<Lack1GetDetailEaByParamInput, Ck5GetForLack1DetailEa>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<CK5, Lack1DetailEaDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PlantIdReceiver, opt => opt.MapFrom(src => src.DEST_PLANT_ID))
+                .ForMember(dest => dest.PlantDescReceiver, opt => opt.MapFrom(src => src.DEST_PLANT_NAME))
+                .ForMember(dest => dest.PlantIdSupplier, opt => opt.MapFrom(src => src.SOURCE_PLANT_ID))
+                .ForMember(dest => dest.PlantDescSupplier, opt => opt.MapFrom(src => src.SOURCE_PLANT_NAME))
+                .ForMember(dest => dest.Ck5EmsNo, opt => opt.MapFrom(src => src.SUBMISSION_NUMBER))
+                .ForMember(dest => dest.Ck5RegNo, opt => opt.MapFrom(src => src.REGISTRATION_NUMBER))
+                .ForMember(dest => dest.Ck5RegDate, opt => opt.MapFrom(src => src.REGISTRATION_DATE.HasValue ? src.REGISTRATION_DATE.Value.ToString("dd MMM yyyy") : string.Empty))
+                .ForMember(dest => dest.Ck5Qty, opt => opt.MapFrom(src => src.GRAND_TOTAL_EX.Value))
+                .ForMember(dest => dest.DnNumber, opt => opt.MapFrom(src => src.DN_NUMBER))
+                ;
+
+            Mapper.CreateMap<InventoryMovementLevelDto, Lack1DetailLevelDto>().IgnoreAllNonExisting();
+
+            #endregion
         }
 
     }

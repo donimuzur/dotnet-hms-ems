@@ -91,6 +91,20 @@ namespace Sampoerna.EMS.BLL
                 }
             }
 
+            if (input.BeginingProductionDate.HasValue)
+            {
+                queryFilter = queryFilter.And(c => c.WASTE_PROD_DATE >= input.BeginingProductionDate.Value);
+            }
+
+            if (input.EndProductionDate.HasValue)
+            {
+                queryFilter = queryFilter.And(c => c.WASTE_PROD_DATE <= input.EndProductionDate.Value);
+            }
+
+            if (!string.IsNullOrEmpty(input.FaCode))
+            {
+                queryFilter = queryFilter.And(c => c.FA_CODE == input.FaCode);
+            }
 
             Func<IQueryable<WASTE>, IOrderedQueryable<WASTE>> orderBy = null;
             {

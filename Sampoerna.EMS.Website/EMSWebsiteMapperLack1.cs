@@ -318,6 +318,49 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
+
+            #region ----------------- Detail Tis ---------
+
+            Mapper.CreateMap<Lack1SearchDetailTisViewModel, Lack1GetDetailTisByParamInput>()
+                .IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack1DetailTisDto, Lack1DetailTisItemModel>().IgnoreAllNonExisting();
+
+            #endregion
+
+            #region Daily Prod
+
+            Mapper.CreateMap<Lack1DailyProdDto, Lack1DailyProdDetail>().IgnoreAllNonExisting()
+            .ForMember(dest => dest.ProductionDate, opt => opt.MapFrom(src => src.ProductionDate.ToString("dd-MMM-yyyy")))
+            .ForMember(dest => dest.ProdQty, opt => opt.ResolveUsing<DecimalToStringMoneyResolver2>().FromMember(src => src.ProdQty))
+            .ForMember(dest => dest.RejectParkerQty, opt => opt.ResolveUsing<DecimalToStringMoneyResolver2>().FromMember(src => src.RejectParkerQty))
+                ;
+
+            #endregion
+
+            #region PrimaryResults
+
+            Mapper.CreateMap<Lack1PrimaryResultsDto, Lack1PrimaryResultsDetail>().IgnoreAllNonExisting()
+            .ForMember(dest => dest.CfProdDate, opt => opt.ResolveUsing<DateToStringDDMMMYYYYResolver>().FromMember(src => src.CfProdDate))
+            .ForMember(dest => dest.CfProdQty, opt => opt.ResolveUsing<DecimalToStringMoneyResolver2>().FromMember(src => src.CfProdQty))
+            .ForMember(dest => dest.BkcIssueQty, opt => opt.ResolveUsing<DecimalToStringMoneyResolver2>().FromMember(src => src.BkcIssueQty))
+                ;
+
+            #endregion
+
+
+            #region ----------------- Detail Ea ---------
+
+            Mapper.CreateMap<Lack1SearchDetailEaViewModel, Lack1GetDetailEaByParamInput>()
+                .IgnoreAllNonExisting();
+
+            Mapper.CreateMap<Lack1DetailEaDto, Lack1DetailEaItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.LevelList,
+                    opt => opt.MapFrom(src => Mapper.Map<List<Lack1DetailLevelItemModel>>(src.LevelList)));
+
+            Mapper.CreateMap<Lack1DetailLevelDto, Lack1DetailLevelItemModel>().IgnoreAllNonExisting();
+
+            #endregion
         }
     }
 }

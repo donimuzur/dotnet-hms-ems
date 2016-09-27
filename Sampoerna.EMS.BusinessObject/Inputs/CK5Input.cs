@@ -246,4 +246,20 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string MaterialId { get; set; }
 
     }
+
+    public class Ck5GetForLack1DetailTis
+    {
+        public DateTime? DateFrom { get; set; }
+        public DateTime? DateTo { get; set; }
+        public string PlantReceiverFrom { get; set; }
+        public string PlantReceiverTo { get; set; }
+    }
+
+    public class Ck5GetForLack1DetailEa
+    {
+        public DateTime? DateFrom { get; set; }
+        public DateTime? DateTo { get; set; }
+        public string PlantReceiverFrom { get; set; }
+        public string PlantReceiverTo { get; set; }
+    }
 }

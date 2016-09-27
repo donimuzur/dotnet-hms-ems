@@ -1,134 +1,139 @@
 ﻿@model Sampoerna.EMS.Website.Models.CK5.CK5SummaryReportsViewModel
+<input type="hidden" id="returnTotalData" value="@Model.TotalData" />
+<input type="hidden" id="returnTotalPerPage" value="@Model.TotalDataPerPage" />
+<input type="hidden" id="returnCurrentPage" value="@Model.CurrentPage" />
 
-<table id="ck5Table" class="display" cellspacing="0" width="100%">
-    <thead>
-        <tr>
-            <th class="toggle-row"> No </th>
-            <th>Submission Number</th>
-            <th>Submission Date</th>
-            <th>CK5 Type</th>
-            <th>Origin Plant ID</th>
-            <th>Origin Plant Desc</th>
-            <th>Origin NPPBKC</th>
-            <th>Origin KPPBC</th>
-            <th>Origin Company</th>
-            <th>Origin Company Address</th>
-            <th>Destination Plant ID</th>
-            <th>Destination Plant Desc</th>
-            <th>Destination KPPBC</th>
-            <th>Destination Company</th>
-            <th>Destination Country</th>
-            <th>Tanggal AJU</th>
-            <th>Nomer AJU</th>
-            <th>Tanggal Pendaftaran</th>
-            <th>Nomer Pendaftaran</th>
-            <th>Excise Goods Type</th>
-            <th>Excise Settlement</th>
-            <th>Excise Status</th>
-            <th>Request Type</th>
-            <th>Unpaid Excise Facility Number</th>
-            <th>Unpaid Excise Facility Date</th>
-            <th>Sealing Notification Date</th>
-            <th>Sealing Notification Number</th>
-            <th>UnSealing Notification Date</th>
-            <th>UnSealing Notification Number</th>
-            <th>Number Box</th>
-            <th>Contain per Box</th>
-            <th>Converted Qty</th>
-            <th>Converted UOM</th>
-            <th>Total of Excisable Goods</th>
-            <th>Banderol Price</th>
-            <th>Excise Tariff</th>
-            <th>Excise Value</th>
-            <th>Material Code</th>
-            <th>Material Description</th>
-            <th>Last Storage Location</th>
-            <th>Last Storage Location's NPPBKC</th>
-            <th>Last Storage Location's CE Office</th>
-            <th>Loading Port</th>
-            <th>Loading Port Name</th>
-            <th>STO Sender Number </th>
-            <th>STO Reciever Number</th>
-            <th>STOB Number</th>
-            <th>DN Number</th>
-            <th>GR Date</th>
-            <th>GI Date</th>
-            <th>Status</th>
-            <th>POA Approved by</th>
-            <th>Creator</th>
-            <th>Completed Date</th>
-            <th>Reported to LACK-1 Month</th>
-            <th>Reported to LACK-2 Month</th>
-           </tr>
-    </thead>
-   
-    <tbody>
-        @{
-            int row = 1;
-
-            foreach (var item in Model.DetailsList)
-            {
-                <tr>
-                    <td>@row</td>
-                    <td>@Html.DisplayFor(model => item.SubmissionNumber)</td>
-                    <td>@Html.DisplayFor(model => item.SubmissionDate)</td>
-                    <td>@Html.DisplayFor(model => item.Ck5TypeDescription)</td>
-                    <td>@Html.DisplayFor(model => item.SourcePlantId)</td>
-                    <td>@Html.DisplayFor(model => item.SourcePlant)</td>
-                    <td>@Html.DisplayFor(model => item.OriginCompanyNppbkc)</td>
-                    <td>@Html.DisplayFor(model => item.OriginCeOffice)</td>
-                    <td>@Html.DisplayFor(model => item.OriginCompany)</td>
-                    <td>@Html.DisplayFor(model => item.OriginCompanyAddress)</td>
-                    <td>@Html.DisplayFor(model => item.DestinationPlantId)</td>
-                    <td>@Html.DisplayFor(model => item.DestinationPlant)</td>
-                    <td>@Html.DisplayFor(model => item.DestinationCeOffice)</td>
-                    <td>@Html.DisplayFor(model => item.CompanyDestination)</td>
-                    <td>@Html.DisplayFor(model => item.DestinationCountry)</td>
-                    <td>@Html.DisplayFor(model => item.TanggalAju)</td>
-                    <td>@Html.DisplayFor(model => item.NomerAju)</td>
-                    <td>@Html.DisplayFor(model => item.TanggalPendaftaran)</td>
-                    <td>@Html.DisplayFor(model => item.NomerPendaftaran)</td>
-                    <td>@Html.DisplayFor(model => item.ExGoodTypeDesc)</td>
-                    <td>@Html.DisplayFor(model => item.ExciseSettlement)</td>
-                    <td>@Html.DisplayFor(model => item.ExciseStatus)</td>
-                    <td>@Html.DisplayFor(model => item.RequestType)</td>
-                    <td>@Html.DisplayFor(model => item.UnpaidExciseFacilityNumber)</td>
-                    <td>@Html.DisplayFor(model => item.UnpaidExciseFacilityDate)</td>
-                    <td>@Html.DisplayFor(model => item.SealingNotificationDate)</td>
-                    <td>@Html.DisplayFor(model => item.SealingNotificationNumber)</td>
-                    <td>@Html.DisplayFor(model => item.UnSealingNotificationDate)</td>
-                    <td>@Html.DisplayFor(model => item.UnSealingNotificationNumber)</td>
-                    <td class="number">@Html.DisplayFor(model => item.NumberBox)</td>
-                    <td class="number">@Html.DisplayFor(model => item.ContainPerBox)</td>
-                    <td class="number">@Html.DisplayFor(model => item.ConvertedQty)</td>
-                    <td>@Html.DisplayFor(model => item.ConvertedUom)</td>
-                    <td class="number">@Html.DisplayFor(model => item.TotalOfExcisableGoods)</td>
-                    <td>@Html.DisplayFor(model => item.BanderolPrice)</td>
-                    <td>@Html.DisplayFor(model => item.ExciseTariff)</td>
-                    <td>@Html.DisplayFor(model => item.ExciseValue)</td>
-                    <td>@Html.DisplayFor(model => item.MaterialNumber)</td>
-                    <td>@Html.DisplayFor(model => item.MaterialDescription)</td>
-                    <td>@Html.DisplayFor(model => item.DestCompanyAddress)</td>
-                    <td>@Html.DisplayFor(model => item.DestCompanyNppbkc)</td>
-                    <td>@Html.DisplayFor(model => item.DestCompanyName)</td>
-                    <td>@Html.DisplayFor(model => item.LoadingPort)</td>
-                    <td>@Html.DisplayFor(model => item.LoadingPortName)</td>
-                    <td>@Html.DisplayFor(model => item.StoNumberSender)</td>
-                    <td>@Html.DisplayFor(model => item.StoNumberReciever)</td>
-                    <td>@Html.DisplayFor(model => item.StoBNumber)</td>
-                    <td>@Html.DisplayFor(model => item.DnNumber)</td>
-                    <td>@Html.DisplayFor(model => item.GrDate)</td>
-                    <td>@Html.DisplayFor(model => item.GiDate)</td>
-                    <td>@Html.DisplayFor(model => item.Status)</td>
-                    <td>@Html.DisplayFor(model => item.Poa)</td>
-                    <td>@Html.DisplayFor(model => item.Creator)</td>
-                    <td>@Html.DisplayFor(model => item.CompletedDate)</td>
-                    <td>@Html.DisplayFor(model => item.Lack1)</td>
-                    <td>@Html.DisplayFor(model => item.Lack2)</td>
-                </tr>
-                row = row + 1;
-            }
-        }
-    </tbody>
+    
 </table>
+    <table id="ck5Table" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th class="toggle-row"> No </th>
+                <th>Submission Number</th>
+                <th>Submission Date</th>
+                <th>CK5 Type</th>
+                <th>Origin Plant ID</th>
+                <th>Origin Plant Desc</th>
+                <th>Origin NPPBKC</th>
+                <th>Origin KPPBC</th>
+                <th>Origin Company</th>
+                <th>Origin Company Address</th>
+                <th>Destination Plant ID</th>
+                <th>Destination Plant Desc</th>
+                <th>Destination KPPBC</th>
+                <th>Destination Company</th>
+                <th>Destination Country</th>
+                <th>Tanggal AJU</th>
+                <th>Nomer AJU</th>
+                <th>Tanggal Pendaftaran</th>
+                <th>Nomer Pendaftaran</th>
+                <th>Excise Goods Type</th>
+                <th>Excise Settlement</th>
+                <th>Excise Status</th>
+                <th>Request Type</th>
+                <th>Unpaid Excise Facility Number</th>
+                <th>Unpaid Excise Facility Date</th>
+                <th>Sealing Notification Date</th>
+                <th>Sealing Notification Number</th>
+                <th>UnSealing Notification Date</th>
+                <th>UnSealing Notification Number</th>
+                <th>Number Box</th>
+                <th>Contain per Box</th>
+                <th>Converted Qty</th>
+                <th>Converted UOM</th>
+                <th>Total of Excisable Goods</th>
+                <th>Banderol Price</th>
+                <th>Excise Tariff</th>
+                <th>Excise Value</th>
+                <th>Material Code</th>
+                <th>Material Description</th>
+                <th>Last Storage Location</th>
+                <th>Last Storage Location's NPPBKC</th>
+                <th>Last Storage Location's CE Office</th>
+                <th>Loading Port</th>
+                <th>Loading Port Name</th>
+                <th>STO Sender Number </th>
+                <th>STO Reciever Number</th>
+                <th>STOB Number</th>
+                <th>DN Number</th>
+                <th>GR Date</th>
+                <th>GI Date</th>
+                <th>Status</th>
+                <th>POA Approved by</th>
+                <th>Creator</th>
+                <th>Completed Date</th>
+                <th>Reported to LACK-1 Month</th>
+                <th>Reported to LACK-2 Month</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @{
+                int row = 1;
+
+                foreach (var item in Model.DetailsList)
+                {
+                    <tr>
+                        <td>@row</td>
+                        <td>@Html.DisplayFor(model => item.SubmissionNumber)</td>
+                        <td>@Html.DisplayFor(model => item.SubmissionDate)</td>
+                        <td>@Html.DisplayFor(model => item.Ck5TypeDescription)</td>
+                        <td>@Html.DisplayFor(model => item.SourcePlantId)</td>
+                        <td>@Html.DisplayFor(model => item.SourcePlant)</td>
+                        <td>@Html.DisplayFor(model => item.OriginCompanyNppbkc)</td>
+                        <td>@Html.DisplayFor(model => item.OriginCeOffice)</td>
+                        <td>@Html.DisplayFor(model => item.OriginCompany)</td>
+                        <td>@Html.DisplayFor(model => item.OriginCompanyAddress)</td>
+                        <td>@Html.DisplayFor(model => item.DestinationPlantId)</td>
+                        <td>@Html.DisplayFor(model => item.DestinationPlant)</td>
+                        <td>@Html.DisplayFor(model => item.DestinationCeOffice)</td>
+                        <td>@Html.DisplayFor(model => item.CompanyDestination)</td>
+                        <td>@Html.DisplayFor(model => item.DestinationCountry)</td>
+                        <td>@Html.DisplayFor(model => item.TanggalAju)</td>
+                        <td>@Html.DisplayFor(model => item.NomerAju)</td>
+                        <td>@Html.DisplayFor(model => item.TanggalPendaftaran)</td>
+                        <td>@Html.DisplayFor(model => item.NomerPendaftaran)</td>
+                        <td>@Html.DisplayFor(model => item.ExGoodTypeDesc)</td>
+                        <td>@Html.DisplayFor(model => item.ExciseSettlement)</td>
+                        <td>@Html.DisplayFor(model => item.ExciseStatus)</td>
+                        <td>@Html.DisplayFor(model => item.RequestType)</td>
+                        <td>@Html.DisplayFor(model => item.UnpaidExciseFacilityNumber)</td>
+                        <td>@Html.DisplayFor(model => item.UnpaidExciseFacilityDate)</td>
+                        <td>@Html.DisplayFor(model => item.SealingNotificationDate)</td>
+                        <td>@Html.DisplayFor(model => item.SealingNotificationNumber)</td>
+                        <td>@Html.DisplayFor(model => item.UnSealingNotificationDate)</td>
+                        <td>@Html.DisplayFor(model => item.UnSealingNotificationNumber)</td>
+                        <td class="number">@Html.DisplayFor(model => item.NumberBox)</td>
+                        <td class="number">@Html.DisplayFor(model => item.ContainPerBox)</td>
+                        <td class="number">@Html.DisplayFor(model => item.ConvertedQty)</td>
+                        <td>@Html.DisplayFor(model => item.ConvertedUom)</td>
+                        <td class="number">@Html.DisplayFor(model => item.TotalOfExcisableGoods)</td>
+                        <td>@Html.DisplayFor(model => item.BanderolPrice)</td>
+                        <td>@Html.DisplayFor(model => item.ExciseTariff)</td>
+                        <td>@Html.DisplayFor(model => item.ExciseValue)</td>
+                        <td>@Html.DisplayFor(model => item.MaterialNumber)</td>
+                        <td>@Html.DisplayFor(model => item.MaterialDescription)</td>
+                        <td>@Html.DisplayFor(model => item.DestCompanyAddress)</td>
+                        <td>@Html.DisplayFor(model => item.DestCompanyNppbkc)</td>
+                        <td>@Html.DisplayFor(model => item.DestCompanyName)</td>
+                        <td>@Html.DisplayFor(model => item.LoadingPort)</td>
+                        <td>@Html.DisplayFor(model => item.LoadingPortName)</td>
+                        <td>@Html.DisplayFor(model => item.StoNumberSender)</td>
+                        <td>@Html.DisplayFor(model => item.StoNumberReciever)</td>
+                        <td>@Html.DisplayFor(model => item.StoBNumber)</td>
+                        <td>@Html.DisplayFor(model => item.DnNumber)</td>
+                        <td>@Html.DisplayFor(model => item.GrDate)</td>
+                        <td>@Html.DisplayFor(model => item.GiDate)</td>
+                        <td>@Html.DisplayFor(model => item.Status)</td>
+                        <td>@Html.DisplayFor(model => item.Poa)</td>
+                        <td>@Html.DisplayFor(model => item.Creator)</td>
+                        <td>@Html.DisplayFor(model => item.CompletedDate)</td>
+                        <td>@Html.DisplayFor(model => item.Lack1)</td>
+                        <td>@Html.DisplayFor(model => item.Lack2)</td>
+                    </tr>
+                    row = row + 1;
+                }
+            }
+        </tbody>
+    </table>
 
