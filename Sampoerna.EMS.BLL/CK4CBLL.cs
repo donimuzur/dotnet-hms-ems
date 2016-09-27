@@ -2009,8 +2009,10 @@ namespace Sampoerna.EMS.BLL
                     var brand = _brandBll.GetById(ck4CItem.WERKS, ck4CItem.FA_CODE);
                     var total = brand.BRAND_CONTENT == null ? 0 : ck4CItem.PACKED_QTY.Value / Convert.ToInt32(brand.BRAND_CONTENT);
 
+                    itemDto.DateProduction = ck4CItem.PROD_DATE;
                     itemDto.ProductionDate = ck4CItem.PROD_DATE.ToString("dd-MMM-yy");
                     itemDto.Plant = ck4CItem.WERKS;
+                    itemDto.ProdCode = ck4CItem.PROD_CODE;
                     itemDto.TobbacoProdType = prodType.PRODUCT_TYPE;
                     itemDto.FaCode = ck4CItem.FA_CODE;
                     itemDto.BrandDesc = brand.BRAND_CE;
