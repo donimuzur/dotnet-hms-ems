@@ -570,6 +570,14 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
 
+        public static SelectList GetReversalInventoryMovementData(string plant, string facode)
+        {
+            IInventoryMovementService inventoryMovementBll = MvcApplication.GetInstance<InventoryMovementService>();
+            var inventoryMovementList = inventoryMovementBll.GetReversalData(plant, facode);
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(inventoryMovementList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+
         public static SelectList GetBahanKemasanList(IBrandRegistrationBLL brandRegistrationBll)
         {
             var data = brandRegistrationBll.GetAllBrands().Where(x => x.IS_DELETED != true && x.BAHAN_KEMASAN != "" && x.BAHAN_KEMASAN != null);

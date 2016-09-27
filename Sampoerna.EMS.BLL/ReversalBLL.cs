@@ -27,6 +27,7 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<PRODUCTION> _repositoryProd;
 
         private IZaapShiftRptService _zaapShiftRptService;
+        private IInventoryMovementService _inventoryMovementService;
         private IUserPlantMapBLL _userPlantBll;
         private IPOAMapBLL _poaMapBll;
         private IPlantBLL _plantBll;
@@ -40,6 +41,7 @@ namespace Sampoerna.EMS.BLL
             _repositoryProd = _uow.GetGenericRepository<PRODUCTION>();
 
             _zaapShiftRptService = new ZaapShiftRptService(_uow, _logger);
+            _inventoryMovementService = new InventoryMovementService(_uow, _logger);
             _userPlantBll = new UserPlantMapBLL(_uow, _logger);
             _poaMapBll = new POAMapBLL(_uow, _logger);
             _plantBll = new PlantBLL(_uow, _logger);
@@ -95,12 +97,25 @@ namespace Sampoerna.EMS.BLL
         {
             var output = new ReversalOutput();
 
-            var zaapData = _zaapShiftRptService.GetById(reversalInput.ZaapShiftId);
+            ZAAP_SHIFT_RPT zaapData;
+            INVENTORY_MOVEMENT inventoryMovementData;
+            List<REVERSAL> reversalList;
+            decimal remainingQty;
 
-            var reversalList = GetReversalData(x => x.ZAAP_SHIFT_RPT_ID == reversalInput.ZaapShiftId, null);
-
-            var remainingQty = (zaapData == null ? 0 : (zaapData.QTY.HasValue ? (zaapData.QTY.Value * -1) : 0)) - 
+            if (reversalInput.InventoryMovementId!=0)
+            {
+                inventoryMovementData = _inventoryMovementService.GetById(reversalInput.InventoryMovementId);
+                reversalList = GetReversalData(x => x.INVENTORY_MOVEMENT_ID == reversalInput.InventoryMovementId, null);
+                remainingQty = (inventoryMovementData == null ? 0 : (inventoryMovementData.QTY.HasValue ? (inventoryMovementData.QTY.Value * -1) : 0)) -
                 (reversalList.Sum(x => x.REVERSAL_QTY.HasValue ? x.REVERSAL_QTY.Value : 0));
+            }
+            else
+            {
+                zaapData = _zaapShiftRptService.GetById(reversalInput.ZaapShiftId);
+                reversalList = GetReversalData(x => x.ZAAP_SHIFT_RPT_ID == reversalInput.ZaapShiftId, null);
+                remainingQty = (zaapData == null ? 0 : (zaapData.QTY.HasValue ? (zaapData.QTY.Value * -1) : 0)) -
+                    (reversalList.Sum(x => x.REVERSAL_QTY.HasValue ? x.REVERSAL_QTY.Value : 0));
+            }
 
             var reversalListByPlantFacodeDate = GetReversalData(x => x.WERKS == reversalInput.Werks && x.FA_CODE == reversalInput.FaCode
                                                                     && x.PRODUCTION_DATE == reversalInput.ProductionDate, null);

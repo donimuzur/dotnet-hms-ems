@@ -8,6 +8,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL.Services
 {
@@ -18,6 +19,7 @@ namespace Sampoerna.EMS.BLL.Services
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<ZAAP_SHIFT_RPT> _zaapShiftRptRepository;
+        private IGenericRepository<ZAIDM_EX_BRAND> _zaidmExBrandRepository;
 
         public InventoryMovementService(IUnitOfWork uow, ILogger logger)
         {
@@ -25,6 +27,7 @@ namespace Sampoerna.EMS.BLL.Services
             _uow = uow;
             _repository = _uow.GetGenericRepository<INVENTORY_MOVEMENT>();
             _zaapShiftRptRepository = _uow.GetGenericRepository<ZAAP_SHIFT_RPT>();
+            _zaidmExBrandRepository = _uow.GetGenericRepository<ZAIDM_EX_BRAND>();
         }
 
         public List<INVENTORY_MOVEMENT> GetUsageByParam(InvMovementGetUsageByParamInput input)
@@ -127,7 +130,7 @@ namespace Sampoerna.EMS.BLL.Services
             return _repository.Get(c => c.ORDR == processOrder && c.PLANT_ID == plantId && c.MVT == mvtReceiving).FirstOrDefault();
         }
 
-        public INVENTORY_MOVEMENT GetById(long id)
+        public INVENTORY_MOVEMENT GetById(long? id)
         {
             return _repository.GetByID(id);
         }
@@ -365,6 +368,38 @@ namespace Sampoerna.EMS.BLL.Services
             
 
             return data;
+        }
+
+        public List<INVENTORY_MOVEMENT> GetReversalData(string plant, string facode)
+        {
+            Expression<Func<INVENTORY_MOVEMENT, bool>> queryFilter = PredicateHelper.True<INVENTORY_MOVEMENT>();
+
+            string receiving102 = EnumHelper.GetDescription(Enums.MovementTypeCode.Receiving102);
+
+            queryFilter = queryFilter.And(c => c.MVT == receiving102);
+
+            if (plant != null)
+            {
+                queryFilter = queryFilter.And(c => c.PLANT_ID == plant);
+            }
+
+            if (facode != null)
+            {
+                queryFilter = queryFilter.And(c => c.MATERIAL_ID == facode);
+            }
+
+            //var dbData = _repository.Get(queryFilter).Join(_zaidmExBrandRepository, i => new { i.MATERIAL_ID, i.PLANT_ID }, b => new { MATERIAL_ID=b.});
+
+            var result = from i in _repository.GetQuery()
+                         join b in _zaidmExBrandRepository.GetQuery()
+                         on new { i.MATERIAL_ID, i.PLANT_ID }
+                         equals new { MATERIAL_ID = b.FA_CODE, PLANT_ID=b.WERKS }
+                         where i.MVT == receiving102 && b.PROD_CODE=="05" && b.EXC_GOOD_TYP == "02" &&
+                               i.PLANT_ID==plant && i.MATERIAL_ID == facode
+                         select i;
+
+            //return result.Where(queryFilter).ToList();
+            return result.ToList();
         }
     }
 }

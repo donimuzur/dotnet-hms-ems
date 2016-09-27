@@ -500,6 +500,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
                 .ForMember(dest => dest.Werks, opt => opt.MapFrom(src => src.WERKS))
                 .ForMember(dest => dest.ReversalQty, opt => opt.MapFrom(src => src.REVERSAL_QTY))
+                .ForMember(dest => dest.InventoryMovementId, opt => opt.MapFrom(src => src.INVENTORY_MOVEMENT_ID))
                 ;
 
             Mapper.CreateMap<ReversalDto, REVERSAL>().IgnoreAllNonExisting()
@@ -509,6 +510,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.FA_CODE, opt => opt.MapFrom(src => src.FaCode))
                 .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.Werks))
                 .ForMember(dest => dest.REVERSAL_QTY, opt => opt.MapFrom(src => src.ReversalQty))
+                .ForMember(dest => dest.INVENTORY_MOVEMENT_ID, opt => opt.MapFrom(src => src.InventoryMovementId))
                 ;
 
             #endregion
