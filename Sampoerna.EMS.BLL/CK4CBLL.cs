@@ -2085,15 +2085,21 @@ namespace Sampoerna.EMS.BLL
                     var prodType = _prodTypeBll.GetByCode(ck4CItem.PROD_CODE);
                     var brand = _brandBll.GetById(ck4CItem.WERKS, ck4CItem.FA_CODE);
                     var total = brand.BRAND_CONTENT == null ? 0 : ck4CItem.PACKED_QTY.Value / Convert.ToInt32(brand.BRAND_CONTENT);
+                    var zbValue = ck4CItem.ZB == null ? 0 : ck4CItem.ZB.Value;
+                    var packedAdjustedValue = ck4CItem.PACKED_ADJUSTED == null ? 0 : ck4CItem.PACKED_ADJUSTED.Value;
 
+                    itemDto.DateProduction = ck4CItem.PROD_DATE;
                     itemDto.ProductionDate = ck4CItem.PROD_DATE.ToString("dd-MMM-yy");
                     itemDto.Plant = ck4CItem.WERKS;
+                    itemDto.ProdCode = ck4CItem.PROD_CODE;
                     itemDto.TobbacoProdType = prodType.PRODUCT_TYPE;
                     itemDto.FaCode = ck4CItem.FA_CODE;
                     itemDto.BrandDesc = brand.BRAND_CE;
                     itemDto.ProdQty = String.Format("{0:n}", ck4CItem.PROD_QTY);
                     itemDto.ProdQtyUom = ck4CItem.UOM_PROD_QTY;
                     itemDto.PackedQty = String.Format("{0:n}", ck4CItem.PACKED_QTY.Value);
+                    itemDto.Zb = String.Format("{0:n}", zbValue);
+                    itemDto.PackedAdjusted = String.Format("{0:n}", packedAdjustedValue);
                     itemDto.UnpackedQty = String.Format("{0:n}", ck4CItem.UNPACKED_QTY.Value);
                     itemDto.Remarks = ck4CItem.REMARKS;
                     itemDto.Content = String.Format("{0:n}", ck4CItem.CONTENT_PER_PACK.Value);

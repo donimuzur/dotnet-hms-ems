@@ -2286,10 +2286,17 @@ namespace Sampoerna.EMS.Website.Controllers
             //create header
             slDocument = CreateHeaderExcelForCk4cItem(slDocument);
 
+            var ck4cData = _ck4CBll.GetCk4cReportDataById(ck4cId);
+
+            var ck4cItemList = ck4cData.Ck4cItemList;
+
             iRow++;
             int iColumn = 1;
             foreach (var data in dataExportItem)
             {
+                var unpackedBrand = ck4cItemList.Where(x => x.Merk == data.BrandDesc && x.ProdCode == data.ProdCode
+                    && x.ProdDate == data.DateProduction.ToString("d-MMM-yyyy") && x.Hje == data.Hje).Select(x => x.ProdWaste).FirstOrDefault();
+
                 iColumn = 1;
 
                 slDocument.SetCellValue(iRow, iColumn, data.ProductionDate);
@@ -2316,7 +2323,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 slDocument.SetCellValue(iRow, iColumn, data.PackedQty);
                 iColumn = iColumn + 1;
 
+                slDocument.SetCellValue(iRow, iColumn, data.Zb);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.PackedAdjusted);
+                iColumn = iColumn + 1;
+
                 slDocument.SetCellValue(iRow, iColumn, data.UnpackedQty);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, unpackedBrand);
                 iColumn = iColumn + 1;
 
                 slDocument.SetCellValue(iRow, iColumn, data.Remarks);
@@ -2370,7 +2386,16 @@ namespace Sampoerna.EMS.Website.Controllers
             slDocument.SetCellValue(iRow, iColumn, "Packed QTY (6)");
             iColumn = iColumn + 1;
 
-            slDocument.SetCellValue(iRow, iColumn, "Unpacked QTY (11)");
+            slDocument.SetCellValue(iRow, iColumn, "ZB: Only for SKT");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Packed - Adjusted: Only for TIS CF");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Unpacked QTY (FA)");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Unpacked QTY (Brand) (11)");
             iColumn = iColumn + 1;
 
             slDocument.SetCellValue(iRow, iColumn, "Remarks (12)");
