@@ -135,6 +135,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PlantWerksList = plantList;
             model.FaCodeList = GlobalFunctions.GetFaCodeByPlant(model.Details.Werks);
             model.ZaapShiftList = GlobalFunctions.GetReversalData("", "");
+            model.InventoryMovementList = GlobalFunctions.GetReversalInventoryMovementData("", "");
 
             return (model);
         }
@@ -346,11 +347,23 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(model);
         }
 
-        [HttpPost]
-        public JsonResult GetRemainingQuota(string zaapShift)
+        public JsonResult GetInventoryMovementData(string plantWerk, string faCode)
         {
+            var listInventoryMovement = GlobalFunctions.GetReversalInventoryMovementData(plantWerk, faCode);
+
+            var model = new ReversalIndexViewModel() { InventoryMovementList = listInventoryMovement };
+
+            return Json(model);
+        }
+
+        [HttpPost]
+        public JsonResult GetRemainingQuota(string zaapShift, string inventoryMovement)
+        {
+            if (zaapShift == "") { zaapShift="0";}
+            if (inventoryMovement == "") { inventoryMovement = "0"; }
             var paramInput = new ReversalCreateParamInput();
             paramInput.ZaapShiftId = Convert.ToInt32(zaapShift);
+            paramInput.InventoryMovementId = Convert.ToInt32(inventoryMovement);
             paramInput.ReversalQty = 0;
             paramInput.ReversalId = 0;
             paramInput.Werks = string.Empty;

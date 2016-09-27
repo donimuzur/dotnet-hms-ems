@@ -123,6 +123,10 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.ZAAP_SHIFT_RPT_ID))
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => string.Format("{0} - {1} - {2} - {3}", src.POSTING_DATE.Value.ToString("dd MMM yyyy"), (src.QTY.Value * -1), src.ORDR, src.MATDOC)));
 
+            Mapper.CreateMap<INVENTORY_MOVEMENT, SelectItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.INVENTORY_MOVEMENT_ID))
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => string.Format("{0} - {1} - {2}", src.POSTING_DATE.Value.ToString("dd MMM yyyy"), (src.QTY.Value * -1), src.ORDR)));
+
 
             #region NPPBKC
 

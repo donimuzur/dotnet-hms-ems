@@ -145,7 +145,7 @@ namespace Sampoerna.EMS.BLL.Services
             return dbData.ToList();
         }
 
-        public ZAAP_SHIFT_RPT GetById(int id)
+        public ZAAP_SHIFT_RPT GetById(int? id)
         {
             var data = _repository.GetQuery(x => x.ZAAP_SHIFT_RPT_ID == id).FirstOrDefault();
 
