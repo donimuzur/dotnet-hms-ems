@@ -173,6 +173,7 @@ namespace Sampoerna.EMS.XMLReader
                     join plant in plantData on dt.PLANT_ID equals plant.WERKS
                     join mat in dataMaterial on new {dt.PLANT_ID, dt.MATERIAL_ID} equals
                         new {PLANT_ID = mat.WERKS, MATERIAL_ID = mat.FA_CODE}
+                    where mat.PACKED_ADJUSTED.HasValue && mat.PACKED_ADJUSTED.Value
                     select new PRODUCTION()
                     {
                         BRAND_DESC = mat.BRAND_CE,
