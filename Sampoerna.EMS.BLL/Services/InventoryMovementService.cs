@@ -376,21 +376,8 @@ namespace Sampoerna.EMS.BLL.Services
 
             string receiving102 = EnumHelper.GetDescription(Enums.MovementTypeCode.Receiving102);
 
-            queryFilter = queryFilter.And(c => c.MVT == receiving102);
-
-            if (plant != null)
-            {
-                queryFilter = queryFilter.And(c => c.PLANT_ID == plant);
-            }
-
-            if (facode != null)
-            {
-                queryFilter = queryFilter.And(c => c.MATERIAL_ID == facode);
-            }
-
-            //var dbData = _repository.Get(queryFilter).Join(_zaidmExBrandRepository, i => new { i.MATERIAL_ID, i.PLANT_ID }, b => new { MATERIAL_ID=b.});
-
             var result = from i in _repository.GetQuery()
+                         orderby i.POSTING_DATE descending
                          join b in _zaidmExBrandRepository.GetQuery()
                          on new { i.MATERIAL_ID, i.PLANT_ID }
                          equals new { MATERIAL_ID = b.FA_CODE, PLANT_ID=b.WERKS }

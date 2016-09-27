@@ -102,7 +102,7 @@ namespace Sampoerna.EMS.BLL
             List<REVERSAL> reversalList;
             decimal remainingQty;
 
-            if (reversalInput.InventoryMovementId!=0)
+            if (reversalInput.InventoryMovementId!=0 && reversalInput.InventoryMovementId!=null)
             {
                 inventoryMovementData = _inventoryMovementService.GetById(reversalInput.InventoryMovementId);
                 reversalList = GetReversalData(x => x.INVENTORY_MOVEMENT_ID == reversalInput.InventoryMovementId, null);
