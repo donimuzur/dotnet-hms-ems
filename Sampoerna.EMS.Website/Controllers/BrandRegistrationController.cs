@@ -179,6 +179,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbBrand.PRINTING_PRICE = model.PrintingPrice == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
                 dbBrand.STATUS = model.IsActive;
                 dbBrand.PACKED_ADJUSTED = model.IsPackedAdjusted;
+                dbBrand.BAHAN_KEMASAN = model.BahanKemasan.Trim();
                 if (!string.IsNullOrEmpty(dbBrand.PER_CODE_DESC))
                     dbBrand.PER_CODE_DESC = model.PersonalizationCodeDescription.Split('-')[1];
 
@@ -278,6 +279,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
             dbBrand.PRINTING_PRICE = model.PrintingPriceValueStr == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
             dbBrand.FA_CODE = model.FaCode.Trim();
+            dbBrand.BAHAN_KEMASAN = model.BahanKemasan.Trim();
             //dbBrand.CREATED_BY = CurrentUser.USER_ID;
             if (!string.IsNullOrEmpty(model.PersonalizationCodeDescription))
                 dbBrand.PER_CODE_DESC = model.PersonalizationCodeDescription;
