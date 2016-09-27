@@ -8,8 +8,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 {
     public class Ck4cItemExportDto
     {
+        public DateTime DateProduction { get; set; }
         public string ProductionDate { get; set; }
         public string Plant { get; set; }
+        public string ProdCode { get; set; }
         public string TobbacoProdType { get; set; }
         public string FaCode { get; set; }
         public string BrandDesc { get; set; }
