@@ -1393,7 +1393,7 @@
           <Property Name="SKEP_DATE" Type="datetime" />
           <Property Name="PROD_CODE" Type="nvarchar" MaxLength="2" Nullable="false" />
           <Property Name="SERIES_CODE" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="BRAND_CONTENT" Type="nvarchar" MaxLength="4" />
+          <Property Name="BRAND_CONTENT" Type="nvarchar" MaxLength="7" />
           <Property Name="MARKET_ID" Type="nvarchar" MaxLength="2" />
           <Property Name="COUNTRY" Type="nvarchar" MaxLength="3" />
           <Property Name="HJE_IDR" Type="numeric" Precision="15" Scale="2" />
@@ -5263,7 +5263,7 @@
           <Property Name="SKEP_DATE" Type="DateTime" Precision="3" />
           <Property Name="PROD_CODE" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="SERIES_CODE" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="BRAND_CONTENT" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="BRAND_CONTENT" Type="String" MaxLength="7" FixedLength="false" Unicode="true" />
           <Property Name="MARKET_ID" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="COUNTRY" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
           <Property Name="HJE_IDR" Type="Decimal" Precision="15" Scale="2" />
