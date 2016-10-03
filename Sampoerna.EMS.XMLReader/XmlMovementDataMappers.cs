@@ -83,8 +83,11 @@ namespace Sampoerna.EMS.XMLReader
 
         public MovedFileOutput InsertToDatabase()
         {
-            var retVal = _xmlMapper.InsertToDatabase<INVENTORY_MOVEMENT>(Items);
-            ProcessToDailyProduction();
+            var items = Items;
+            List<DateTime> postingDateList = items.GroupBy(x => x.POSTING_DATE).Select(x => x.Key.Value).ToList();
+            var retVal = _xmlMapper.InsertToDatabase<INVENTORY_MOVEMENT>(items);
+            
+            ProcessToDailyProduction(postingDateList);
             return retVal;
 
         }
@@ -128,7 +131,7 @@ namespace Sampoerna.EMS.XMLReader
         }
 
 
-        public void ProcessToDailyProduction()
+        public void ProcessToDailyProduction(List<DateTime> postingDateList)
         {
 
             try
@@ -139,8 +142,8 @@ namespace Sampoerna.EMS.XMLReader
                     
                 };
 
-                var periodMonth = DateTime.Today.AddDays(-1).Month;
-                var periodYear = DateTime.Today.AddDays(-1).Year;
+                //var periodMonth = DateTime.Today.AddDays(-1).Month;
+                //var periodYear = DateTime.Today.AddDays(-1).Year;
                 var companyMapping = _xmlMapper.uow.GetGenericRepository<T001K>().Get().ToList();
                 var companyData = _xmlMapper.uow.GetGenericRepository<T001>().Get().ToList();
                 var plantData = _xmlMapper.uow.GetGenericRepository<T001W>().Get().ToList();
@@ -153,8 +156,7 @@ namespace Sampoerna.EMS.XMLReader
                 var listMaterial = dataMaterial.Select(x => x.FA_CODE + "-" + x.WERKS).Distinct().ToList();
 
                 var data = _xmlMapper.uow.GetGenericRepository<INVENTORY_MOVEMENT>()
-                    .Get(x => x.POSTING_DATE.Value.Month == periodMonth
-                        && x.POSTING_DATE.Value.Year == periodYear
+                    .Get(x => postingDateList.Contains(x.POSTING_DATE.Value)
                         && listMaterial.Contains(x.MATERIAL_ID + "-" + x.PLANT_ID)
                         && mvtTypeList.Contains(x.MVT))
                     .GroupBy(x => new {x.PLANT_ID, x.MATERIAL_ID, x.POSTING_DATE})
@@ -173,7 +175,6 @@ namespace Sampoerna.EMS.XMLReader
                     join plant in plantData on dt.PLANT_ID equals plant.WERKS
                     join mat in dataMaterial on new {dt.PLANT_ID, dt.MATERIAL_ID} equals
                         new {PLANT_ID = mat.WERKS, MATERIAL_ID = mat.FA_CODE}
-                    where mat.PACKED_ADJUSTED.HasValue && mat.PACKED_ADJUSTED.Value
                     select new PRODUCTION()
                     {
                         BRAND_DESC = mat.BRAND_CE,
@@ -185,7 +186,7 @@ namespace Sampoerna.EMS.XMLReader
                         PLANT_NAME = plant.NAME1,
                         PRODUCTION_DATE = dt.POSTING_DATE.Value,
                         QTY_PACKED = dt.QTY*1000,
-                        PACKED_ADJUSTED = 0,
+                        PACKED_ADJUSTED = dt.QTY * 1000,
                         UOM = "G",
                         WERKS = dt.PLANT_ID,
                         ZB = 0,
