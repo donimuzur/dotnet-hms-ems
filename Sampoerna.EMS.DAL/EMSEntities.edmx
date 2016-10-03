@@ -1130,6 +1130,7 @@
           <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" />
           <Property Name="WERKS" Type="nvarchar" MaxLength="4" />
           <Property Name="REVERSAL_QTY" Type="decimal" Precision="18" Scale="3" />
+          <Property Name="INVENTORY_MOVEMENT_ID" Type="bigint" />
         </EntityType>
         <EntityType Name="SUPPLIER_PORT">
           <Key>
@@ -1392,7 +1393,7 @@
           <Property Name="SKEP_DATE" Type="datetime" />
           <Property Name="PROD_CODE" Type="nvarchar" MaxLength="2" Nullable="false" />
           <Property Name="SERIES_CODE" Type="nvarchar" MaxLength="4" Nullable="false" />
-          <Property Name="BRAND_CONTENT" Type="nvarchar" MaxLength="4" />
+          <Property Name="BRAND_CONTENT" Type="nvarchar" MaxLength="7" />
           <Property Name="MARKET_ID" Type="nvarchar" MaxLength="2" />
           <Property Name="COUNTRY" Type="nvarchar" MaxLength="3" />
           <Property Name="HJE_IDR" Type="numeric" Precision="15" Scale="2" />
@@ -3013,6 +3014,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_REVERSAL_INVENTORY_MOVEMENT">
+          <End Role="INVENTORY_MOVEMENT" Type="Self.INVENTORY_MOVEMENT" Multiplicity="0..1" />
+          <End Role="REVERSAL" Type="Self.REVERSAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="INVENTORY_MOVEMENT">
+              <PropertyRef Name="INVENTORY_MOVEMENT_ID" />
+            </Principal>
+            <Dependent Role="REVERSAL">
+              <PropertyRef Name="INVENTORY_MOVEMENT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_REVERSAL_ZAAP_SHIFT_RPT">
           <End Role="ZAAP_SHIFT_RPT" Type="Self.ZAAP_SHIFT_RPT" Multiplicity="0..1" />
           <End Role="REVERSAL" Type="Self.REVERSAL" Multiplicity="*" />
@@ -4068,6 +4081,10 @@
             <End Role="USER" EntitySet="USER" />
             <End Role="PRINT_HISTORY" EntitySet="PRINT_HISTORY" />
           </AssociationSet>
+          <AssociationSet Name="FK_REVERSAL_INVENTORY_MOVEMENT" Association="Self.FK_REVERSAL_INVENTORY_MOVEMENT">
+            <End Role="INVENTORY_MOVEMENT" EntitySet="INVENTORY_MOVEMENT" />
+            <End Role="REVERSAL" EntitySet="REVERSAL" />
+          </AssociationSet>
           <AssociationSet Name="FK_REVERSAL_ZAAP_SHIFT_RPT" Association="Self.FK_REVERSAL_ZAAP_SHIFT_RPT">
             <End Role="ZAAP_SHIFT_RPT" EntitySet="ZAAP_SHIFT_RPT" />
             <End Role="REVERSAL" EntitySet="REVERSAL" />
@@ -4992,6 +5009,10 @@
             <End Role="REVERSAL" EntitySet="REVERSAL" />
           </AssociationSet>
           <EntitySet Name="CK4C_REPORT_ITEM" EntityType="EMSModel.CK4C_REPORT_ITEM" />
+          <AssociationSet Name="FK_REVERSAL_INVENTORY_MOVEMENT" Association="EMSModel.FK_REVERSAL_INVENTORY_MOVEMENT">
+            <End Role="INVENTORY_MOVEMENT" EntitySet="INVENTORY_MOVEMENT" />
+            <End Role="REVERSAL" EntitySet="REVERSAL" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -5242,7 +5263,7 @@
           <Property Name="SKEP_DATE" Type="DateTime" Precision="3" />
           <Property Name="PROD_CODE" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="SERIES_CODE" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="BRAND_CONTENT" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="BRAND_CONTENT" Type="String" MaxLength="7" FixedLength="false" Unicode="true" />
           <Property Name="MARKET_ID" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
           <Property Name="COUNTRY" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
           <Property Name="HJE_IDR" Type="Decimal" Precision="15" Scale="2" />
@@ -7362,6 +7383,7 @@
           <NavigationProperty Name="LACK1_TRACKING" Relationship="EMSModel.FK_LACK1_TRACKING_INVENTORY_MOVEMENT" FromRole="INVENTORY_MOVEMENT" ToRole="LACK1_TRACKING" />
           <Property Name="ORDR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="XML_FILE" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="REVERSAL" Relationship="EMSModel.FK_REVERSAL_INVENTORY_MOVEMENT" FromRole="INVENTORY_MOVEMENT" ToRole="REVERSAL" />
         </EntityType>
         <EntityType Name="CK4C_ITEM">
           <Key>
@@ -8867,6 +8889,8 @@
           <Property Name="WERKS" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="REVERSAL_QTY" Type="Decimal" Precision="18" Scale="3" />
           <NavigationProperty Name="ZAAP_SHIFT_RPT" Relationship="EMSModel.FK_REVERSAL_ZAAP_SHIFT_RPT" FromRole="REVERSAL" ToRole="ZAAP_SHIFT_RPT" />
+          <Property Name="INVENTORY_MOVEMENT_ID" Type="Int64" />
+          <NavigationProperty Name="INVENTORY_MOVEMENT" Relationship="EMSModel.FK_REVERSAL_INVENTORY_MOVEMENT" FromRole="REVERSAL" ToRole="INVENTORY_MOVEMENT" />
         </EntityType>
         <Association Name="FK_REVERSAL_ZAAP_SHIFT_RPT">
           <End Type="EMSModel.ZAAP_SHIFT_RPT" Role="ZAAP_SHIFT_RPT" Multiplicity="0..1" />
@@ -8901,6 +8925,18 @@
           <Property Name="COMMENT_ITEM" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="COLLUM_NO" Type="Int32" />
         </EntityType>
+        <Association Name="FK_REVERSAL_INVENTORY_MOVEMENT">
+          <End Type="EMSModel.INVENTORY_MOVEMENT" Role="INVENTORY_MOVEMENT" Multiplicity="0..1" />
+          <End Type="EMSModel.REVERSAL" Role="REVERSAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="INVENTORY_MOVEMENT">
+              <PropertyRef Name="INVENTORY_MOVEMENT_ID" />
+            </Principal>
+            <Dependent Role="REVERSAL">
+              <PropertyRef Name="INVENTORY_MOVEMENT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -10517,6 +10553,7 @@
           <EntitySetMapping Name="REVERSAL">
             <EntityTypeMapping TypeName="EMSModel.REVERSAL">
               <MappingFragment StoreEntitySet="REVERSAL">
+                <ScalarProperty Name="INVENTORY_MOVEMENT_ID" ColumnName="INVENTORY_MOVEMENT_ID" />
                 <ScalarProperty Name="REVERSAL_QTY" ColumnName="REVERSAL_QTY" />
                 <ScalarProperty Name="WERKS" ColumnName="WERKS" />
                 <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
