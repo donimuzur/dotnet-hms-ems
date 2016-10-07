@@ -197,6 +197,14 @@ namespace Sampoerna.EMS.BLL
             data.RETURN_QTY = input.ReturnAmount;
             data.RETURN_UOM = input.ReturnAmountUom;
 
+            if (string.IsNullOrEmpty(data.LACK1_UOM_ID))
+            {
+                data.LACK1_UOM_ID = input.ExcisableGoodsType ==
+                                       EnumHelper.GetDescription(Enums.GoodsType.TembakauIris)
+                    ? "G"
+                    : "L";
+            }
+
             //generate new Document Number get from Sequence Number BLL
             var generateNumberInput = new GenerateDocNumberInput()
             {
@@ -3879,18 +3887,35 @@ namespace Sampoerna.EMS.BLL
             var pbck1Input = Mapper.Map<Pbck1GetDataForLack1ParamInput>(input);
             var pbck1Data = _pbck1Service.GetForLack1ByParam(pbck1Input);
 
+            
+            
+            var supplierPlantData = _t001WServices.GetById(input.SupplierPlantId);
+            
+            var supplierCompanyData = _t001KService.GetByBwkey(supplierPlantData.T001K.BWKEY);
+            
+            if (supplierCompanyData != null)
+            {
+                rc.SupplierCompanyCode = supplierCompanyData.BUKRS;
+                rc.SupplierCompanyName = supplierCompanyData.T001.BUTXT;
+
+                rc.SupplierPlantAddress = supplierPlantData.ADDRESS;
+                rc.SupplierPlantName = supplierPlantData.NAME1;
+            }
+
+            
+
             if (pbck1Data.Count > 0)
             {
                 var latestDecreeDate = pbck1Data.OrderByDescending(c => c.DECREE_DATE).FirstOrDefault();
 
                 if (latestDecreeDate != null)
                 {
-                    var companyData = _t001KService.GetByBwkey(latestDecreeDate.SUPPLIER_PLANT_WERKS);
-                    if (companyData != null)
-                    {
-                        rc.SupplierCompanyCode = companyData.BUKRS;
-                        rc.SupplierCompanyName = companyData.T001.BUTXT;
-                    }
+                    //var companyData = _t001KService.GetByBwkey(latestDecreeDate.SUPPLIER_PLANT_WERKS);
+                    //if (companyData != null)
+                    //{
+                    //    rc.SupplierCompanyCode = companyData.BUKRS;
+                    //    rc.SupplierCompanyName = companyData.T001.BUTXT;
+                    //}
                     rc.SupplierPlantAddress = latestDecreeDate.SUPPLIER_ADDRESS;
                     rc.SupplierPlantName = latestDecreeDate.SUPPLIER_PLANT;
                     rc.Lack1UomId = latestDecreeDate.REQUEST_QTY_UOM;

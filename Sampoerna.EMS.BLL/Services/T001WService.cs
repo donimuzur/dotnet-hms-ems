@@ -22,7 +22,7 @@ namespace Sampoerna.EMS.BLL.Services
 
         public T001W GetById(string werks)
         {
-            return _repository.GetByID(werks);
+            return _repository.Get(x=> x.WERKS == werks,null,"T001K,T001K.T001").FirstOrDefault();
         }
 
         public List<T001W> GetByNppbkcId(string nppbkcId)
