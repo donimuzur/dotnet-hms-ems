@@ -5069,6 +5069,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new CK5FormViewModel();
             model.DestPlantList = GlobalFunctions.GetPlantAll();
+            model.CountryCodeList = GlobalFunctions.GetCountryListCodeAndName();
             if (isFreeText)
             {
                 return PartialView("_CK5ManualPlantDestination", model);
