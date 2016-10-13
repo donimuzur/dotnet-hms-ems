@@ -4245,20 +4245,51 @@ namespace Sampoerna.EMS.BLL
                     }
                 }
 
-                result.ReportDetails.DestinationCountry = "-";
-                result.ReportDetails.DestinationCode = "-";
-                result.ReportDetails.DestinationNppbkc = "-";
-                result.ReportDetails.DestinationName = "-";
-                result.ReportDetails.DestinationAddress = "-";
-                result.ReportDetails.DestinationOfficeName = "-";
-                result.ReportDetails.DestinationOfficeCode = "-";
+                if (!string.IsNullOrEmpty(dtData.DEST_COUNTRY_CODE))
+                {
+                    result.ReportDetails.DestPlantName = "-";
+                    result.ReportDetails.DestPlantAddress = "-";
 
-                result.ReportDetails.LoadingPort = "-";
-                result.ReportDetails.LoadingPortName = "-";
-                result.ReportDetails.LoadingPortId = "-";
-                result.ReportDetails.FinalPort = "-";
-                result.ReportDetails.FinalPortName = "-";
-                result.ReportDetails.FinalPortId = "-";
+                    result.ReportDetails.DestinationCountry = dtData.DEST_COUNTRY_NAME;
+                    result.ReportDetails.DestinationCode = dtData.DEST_COUNTRY_CODE;
+
+                    result.ReportDetails.DestinationNppbkc = result.ReportDetails.SourcePlantNppbkc;
+                        //dtData.DEST_PLANT_NPPBKC_ID;
+                    result.ReportDetails.DestinationName = result.ReportDetails.SourcePlantName;
+                        //dtData.DEST_PLANT_NAME;
+                    result.ReportDetails.DestinationAddress = result.ReportDetails.SourcePlantAddress;
+                        //dtData.DEST_PLANT_ADDRESS;
+                    result.ReportDetails.DestinationOfficeName = result.ReportDetails.SourceOfficeName;
+                        //dtData.DEST_PLANT_COMPANY_NAME;
+                    result.ReportDetails.DestinationOfficeCode = result.ReportDetails.SourceOfficeCode;
+                        //dtData.DEST_PLANT_COMPANY_CODE;
+
+                    result.ReportDetails.LoadingPort = dtData.LOADING_PORT;
+                    result.ReportDetails.LoadingPortName = dtData.LOADING_PORT_NAME;
+                    result.ReportDetails.LoadingPortId = dtData.LOADING_PORT_ID;
+                    result.ReportDetails.FinalPort = dtData.FINAL_PORT;
+                    result.ReportDetails.FinalPortName = dtData.FINAL_PORT_NAME;
+                    result.ReportDetails.FinalPortId = dtData.FINAL_PORT_ID;
+                }
+                else
+                {
+                    result.ReportDetails.DestinationCountry = "-";
+                    result.ReportDetails.DestinationCode = "-";
+                    result.ReportDetails.DestinationNppbkc = "-";
+                    result.ReportDetails.DestinationName = "-";
+                    result.ReportDetails.DestinationAddress = "-";
+                    result.ReportDetails.DestinationOfficeName = "-";
+                    result.ReportDetails.DestinationOfficeCode = "-";
+
+                    result.ReportDetails.LoadingPort = "-";
+                    result.ReportDetails.LoadingPortName = "-";
+                    result.ReportDetails.LoadingPortId = "-";
+                    result.ReportDetails.FinalPort = "-";
+                    result.ReportDetails.FinalPortName = "-";
+                    result.ReportDetails.FinalPortId = "-";
+                }
+
+                
             }
 
             if (dtData.CK5_TYPE == Enums.CK5Type.Export
