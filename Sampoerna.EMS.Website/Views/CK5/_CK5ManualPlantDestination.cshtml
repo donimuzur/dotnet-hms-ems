@@ -15,6 +15,14 @@
             </div>
         </div>
     </div>
+    <div class="col-md-6" class="manualexport">
+        <div class="row">
+            <label class="col-md-4">Destination Country<span class="red">*</span></label>
+            <div class="col-md-8">
+                @Html.DropDownListFor(model => model.CountryCode, Model.CountryCodeList, "Select", new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
 
 </div>
 
@@ -72,6 +80,64 @@
             <div class="col-md-8">
                 @Html.TextBoxFor(model => model.DestKppbcNameManual, new { @class = "form-control", @maxlength = "150" })
 
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row" class="manualexport">
+
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">Loading Port<span class="red">*</span></label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.LoadingPort, new { @class = "form-control", @maxlength = "50" })
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">Loading Port Name & ID<span class="red">*</span></label>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.LoadingPortName, new { @class = "form-control", @maxlength = "50" })
+                    </div>
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(model => model.LoadingPortId, new { @class = "form-control", @maxlength = "10" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">Final Port<span class="red">*</span></label>
+            <div class="col-md-8">
+                @Html.TextBoxFor(model => model.FinalPort, new { @class = "form-control", @maxlength = "50" })
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="row">
+            <label class="col-md-4">Final Port Name & ID<span class="red">*</span></label>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.FinalPortName, new { @class = "form-control", @maxlength = "50" })
+                    </div>
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(model => model.FinalPortId, new { @class = "form-control", @maxlength = "10" })
+                    </div>
+                </div>
             </div>
         </div>
     </div>
