@@ -352,7 +352,7 @@ namespace Sampoerna.EMS.XMLReader
                     && x.MVT == item.MVT
                     && x.ORDR == item.ORDR
                     && x.SHIFT == item.SHIFT
-                    
+                    && x.DOCGMVTER == item.DOCGMVTER
                     && x.PRODUCTION_DATE  == item.PRODUCTION_DATE
                     && x.POSTING_DATE == item.POSTING_DATE
                     && x.ENTERED_DATE == item.ENTERED_DATE
