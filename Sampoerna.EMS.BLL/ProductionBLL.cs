@@ -216,9 +216,19 @@ namespace Sampoerna.EMS.BLL
             if (brand.IS_FROM_SAP != null && brand.IS_FROM_SAP.Value)
             {
                 item.IsBrandFromSap = brand.IS_FROM_SAP != null && brand.IS_FROM_SAP.Value;
+                
             }
 
-            
+            if (item.CreatedBy == "PI" || item.ModifiedBy == "PI")
+            {
+                item.IsBrandFromSap = true;
+            }
+
+            if (brand.PROD_CODE == "05" && // TIS
+                brand.EXC_GOOD_TYP == EnumHelper.GetDescription(Core.Enums.GoodsType.TembakauIris))
+            {
+                item.IsBrandFromSap = true;
+            } 
 
             if (dbData == null)
             {
