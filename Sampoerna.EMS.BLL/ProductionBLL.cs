@@ -683,36 +683,36 @@ namespace Sampoerna.EMS.BLL
 
                 #endregion
 
-                #region --------------ZB Validation --------------------
+                //#region --------------ZB Validation --------------------
 
                 //Product Code Validation
                 var brandRegistration = _brandRegistrationBll.GetByFaCode(output.PlantWerks, output.FaCode);
-                if (brandRegistration.PROD_CODE=="01")
-                {
-                    //Value Validation
-                    if (output.Zb == "" || output.Zb == "-")
-                    {
-                        messageList.Add("ZB can't be blank");
-                    }
-                    else
-                    {
-                        if (!decimal.TryParse(output.Zb, out tempDecimal))
-                        {
-                            output.Zb = output.Zb;
-                            messageList.Add("ZB [" + output.Zb + "] not valid");
-                        }
-                    }
-                }
-                else
-                {
-                    if (output.Zb != "" || output.Zb != "-")
-                    {
-                        output.Zb = output.Zb;
-                        messageList.Add("ZB [" + output.Zb + "] must be blank when Product Code is not SKT");
-                    }
-                }
+                //if (brandRegistration.PROD_CODE=="01")
+                //{
+                //    //Value Validation
+                //    if (output.Zb == "" || output.Zb == "-")
+                //    {
+                //        messageList.Add("ZB can't be blank");
+                //    }
+                //    else
+                //    {
+                //        if (!decimal.TryParse(output.Zb, out tempDecimal))
+                //        {
+                //            output.Zb = output.Zb;
+                //            messageList.Add("ZB [" + output.Zb + "] not valid");
+                //        }
+                //    }
+                //}
+                //else
+                //{
+                //    if (output.Zb != "" || output.Zb != "-")
+                //    {
+                //        output.Zb = output.Zb;
+                //        messageList.Add("ZB [" + output.Zb + "] must be blank when Product Code is not SKT");
+                //    }
+                //}
 
-                #endregion
+                //#endregion
 
                 #region --------------Packed-Adjusted Validation --------------------
 
