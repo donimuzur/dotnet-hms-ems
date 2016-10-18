@@ -15,6 +15,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
@@ -619,6 +620,10 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetFaCodeDescription(string plantWerk, string faCode)
         {
             var fa = _brandRegistrationBll.GetByFaCode(plantWerk, faCode);
+            if (fa.PROD_CODE == "05" && fa.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.TembakauIris))
+            {
+                fa.IS_FROM_SAP = true;
+            }
             return Json(fa);
         }
 
