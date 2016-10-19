@@ -462,7 +462,7 @@ namespace Sampoerna.EMS.BLL.Services
                          select i;
 
             //return result.Where(queryFilter).ToList();
-            return result.ToList();
+            return result.OrderByDescending(x=> x.POSTING_DATE).ToList();
         }
 
         public List<INVENTORY_MOVEMENT> GetLack1PrimaryResultsCfProduced(GetLack1PrimaryResultsInput input)
