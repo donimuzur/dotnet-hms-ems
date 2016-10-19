@@ -1540,9 +1540,9 @@ namespace Sampoerna.EMS.BLL
 
             result.Detail.ProdTotal = prodTotal;
 
-            result.Ck4cTotal.PackedInPackTotal = String.Format("{0:n}", result.Ck4cItemList.Where(x => x.Total != "Nihil").Sum(x => Convert.ToDecimal(x.Total)));
-            result.Ck4cTotal.PackedBtgTotal = String.Format("{0:n}", result.Ck4cItemList.Where(x => x.ProdType != "TIS" && x.Total != "Nihil").Sum(x => Convert.ToDecimal(x.BtgGr)));
-            result.Ck4cTotal.PackedGTotal = String.Format("{0:n}", result.Ck4cItemList.Where(x => x.ProdType == "TIS" && x.Total != "Nihil").Sum(x => Convert.ToDecimal(x.BtgGr)));
+            result.Ck4cTotal.PackedInPackTotal = String.Format("{0:n0}", result.Ck4cItemList.Where(x => x.Total != "Nihil").Sum(x => Convert.ToDecimal(x.Total)));
+            result.Ck4cTotal.PackedBtgTotal = String.Format("{0:n0}", result.Ck4cItemList.Where(x => x.ProdType != "TIS" && x.Total != "Nihil").Sum(x => Convert.ToDecimal(x.BtgGr)));
+            result.Ck4cTotal.PackedGTotal = String.Format("{0:n0}", result.Ck4cItemList.Where(x => x.ProdType == "TIS" && x.Total != "Nihil").Sum(x => Convert.ToDecimal(x.BtgGr)));
 
             return result;
         }

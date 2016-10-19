@@ -130,14 +130,14 @@
                                                             <div id="zbRow" class="row">
                                                                 <label class="col-md-4"> ZB<span class="red">*</span></label>
                                                                 <div class="col-md-8">
-                                                                    @Html.HiddenFor(model => model.ZbStr)
+                                                                    @*@Html.HiddenFor(model => model.ZbStr)*@
                                                                     @Html.TextBoxFor(model => model.ZbStr, new {@class = "form-control", id = "Zb", @maxlength = "12" })
                                                                 </div>
                                                             </div>
                                                             <div id="packedAdjustedRow" class="row">
                                                                 <label class="col-md-4"> Packed-Adjusted</label>
                                                                 <div class="col-md-8">
-                                                                    @Html.HiddenFor(model => model.PackedAdjustedStr)
+                                                                    @*@Html.HiddenFor(model => model.PackedAdjustedStr)*@
                                                                     @Html.TextBoxFor(model => model.PackedAdjustedStr, new { @class = "decimal form-control", id = "PackedAdjusted", @maxlength = "16" })
                                                                 </div>
                                                             </div>

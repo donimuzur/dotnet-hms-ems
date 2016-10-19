@@ -104,7 +104,7 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         public ProductionDto ProductionDtos { get; set; }
         public List<ProductionUploadItems> UploadItems { get; set; }
 
-        [Required]
+        
         [MaxLength(12)]
         [MinLength(1)]
         [RegularExpression("^[0-9]*$")]
