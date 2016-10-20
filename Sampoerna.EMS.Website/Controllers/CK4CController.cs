@@ -1590,10 +1590,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 detailRow.No = itemDto.No;
                 detailRow.NoProd = itemDto.NoProd;
                 detailRow.ProdDate = itemDto.ProdDate;
-                detailRow.SumBtg = itemDto.SumBtg;
-                detailRow.BtgGr = itemDto.BtgGr;
+                detailRow.SumBtg = itemDto.SumBtg.Replace(".00", ""); 
+                detailRow.BtgGr = itemDto.BtgGr.Replace(".00", ""); 
                 detailRow.Isi = itemDto.Isi;
-                detailRow.Total = itemDto.Total;
+                detailRow.Total = itemDto.Total.Replace(".00","");
                 detailRow.ProdWaste = itemDto.ProdWaste;
                 detailRow.Comment = itemDto.Comment;
                 detailRow.CollumNo = itemDto.CollumNo;
