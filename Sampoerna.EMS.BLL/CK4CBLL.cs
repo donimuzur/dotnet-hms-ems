@@ -1299,7 +1299,7 @@ namespace Sampoerna.EMS.BLL
                         //var brand = _brandBll.GetById(item, data.FA_CODE);
                         var brand = listBrand.FirstOrDefault(c => c.WERKS == item && c.FA_CODE == data.FA_CODE);
                         var hjeValue = brand.HJE_IDR;
-                        if (brand.BRAND_CE.Trim().ToLower() == "bahan baku") hjeValue = brand.HJE_IDR * Convert.ToInt32(brand.BRAND_CONTENT);
+                        if (brand.PROD_CODE == "05" && brand.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.TembakauIris)) hjeValue = brand.HJE_IDR * Convert.ToInt32(brand.BRAND_CONTENT);
 
                         //var prodType = _prodTypeBll.GetById(data.PROD_CODE);
                         var prodType = listProdType.FirstOrDefault(c => c.PROD_CODE == data.PROD_CODE);
@@ -1383,7 +1383,7 @@ namespace Sampoerna.EMS.BLL
                         }
 
                         //for new role tis
-                        if (brand.BRAND_CE.Trim().ToLower() == "bahan baku")
+                        if (brand.PROD_CODE == "05" && brand.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.TembakauIris))
                         {
                             if (ck4cItem.Total != "Nihil")
                             {
@@ -1420,7 +1420,7 @@ namespace Sampoerna.EMS.BLL
                         //result.Ck4cItemList.Add(ck4cItem);
                         tempListck4c2.Add(ck4cItem);
 
-                        if (brand.BRAND_CE.Trim().ToLower() == "bahan baku")
+                        if (brand.PROD_CODE == "05" && brand.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.TembakauIris))
                         {
                             if (ck4cItem.Total != "Nihil")
                             {
