@@ -472,11 +472,15 @@ namespace Sampoerna.EMS.Website.Controllers
                         continue;
                     }
 
+                    item.QtyPacked = "0";
+
                     if (item.Uom == "TH")
                     {
                         item.Uom = "Btg";
-                        item.QtyPacked = Convert.ToString(Convert.ToDecimal(item.QtyPacked) * 1000);
+                        //item.QtyPacked = Convert.ToString(Convert.ToDecimal(item.QtyPacked) * 1000);
                         item.Qty = Convert.ToString(Convert.ToDecimal(item.Qty) * 1000);
+                        item.Zb = Convert.ToDecimal(item.Zb) * 1000;
+                        
                     }
 
                     if (item.Uom == "KG")
@@ -484,6 +488,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         item.Uom = "G";
                         item.QtyPacked = Convert.ToString(Convert.ToDecimal(item.QtyPacked) * 1000);
                         item.Qty = Convert.ToString(Convert.ToDecimal(item.Qty) * 1000);
+                        item.PackedAdjusted = item.PackedAdjusted*1000;
                     }
 
                     item.CompanyName = company.BUTXT;
@@ -561,15 +566,15 @@ namespace Sampoerna.EMS.Website.Controllers
                     var item = new ProductionUploadItems();
                     var brand = _brandRegistrationBll.GetByFaCode(dataRow[1], dataRow[2]);
                     var prodQty = dataRow[4] == "" ? 0 : Convert.ToDecimal(dataRow[4]);
-                    var zb = brand.PROD_CODE == "01" ? Convert.ToDecimal(dataRow[3]) : 0;
-                    var packedQty = brand.PROD_CODE == "01" ? "0" : dataRow[3];
+                    var zb = dataRow[3] == "" ? 0 : Convert.ToDecimal(dataRow[3]); //brand.PROD_CODE == "01" ? Convert.ToDecimal(dataRow[3]) : 0;
+                    var packedQty = dataRow[3] == "" ? "0" : dataRow[3]; //brand.PROD_CODE == "01" ? 0 : Convert.ToDecimal(dataRow[3]);
                     var packedAdjusted = dataRow[7] == "" ? 0 : Convert.ToDecimal(dataRow[7]);
 
                     item.CompanyCode = dataRow[0];
                     item.PlantWerks = dataRow[1];
                     item.FaCode = dataRow[2];
                     item.BrandDescription = brand == null ? string.Empty : brand.BRAND_CE;
-                    item.QtyPacked = packedQty;
+                    item.QtyPacked = packedQty.ToString();
                     item.Qty = dataRow[5].ToLower() == "btg" ? Math.Round(prodQty).ToString() : dataRow[4];
                     item.Uom = dataRow[5];
                     item.ProductionDate = dataRow[6];
