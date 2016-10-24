@@ -1249,7 +1249,9 @@ namespace Sampoerna.EMS.BLL
             result.Detail.NBatang = nBatang.ToString();
             result.Detail.NGram = nGram.ToString();
 
-            var prodTotal = String.Format("{0:n0}", nBatang) + " batang dan/atau " + String.Format("{0:n0}", nGram) + " gram";
+            var nBatangstr = nBatang == 0 ? "Nihil" : String.Format("{0:n0}", nBatang);
+            var nGramstr = nGram == 0 ? "Nihil" : String.Format("{0:n0}", nGram);
+            var prodTotal = nBatangstr + " batang dan/atau " + nGramstr + " gram";
 
             var city = plant == null ? _nppbkcbll.GetById(dtData.NPPBKC_ID).CITY : plant.ORT01;
             result.Detail.City = city;
@@ -1543,6 +1545,16 @@ namespace Sampoerna.EMS.BLL
             result.Ck4cTotal.PackedInPackTotal = String.Format("{0:n0}", result.Ck4cItemList.Where(x => x.Total != "Nihil").Sum(x => Convert.ToDecimal(x.Total)));
             result.Ck4cTotal.PackedBtgTotal = String.Format("{0:n0}", result.Ck4cItemList.Where(x => x.ProdType != "TIS" && x.Total != "Nihil").Sum(x => Convert.ToDecimal(x.BtgGr)));
             result.Ck4cTotal.PackedGTotal = String.Format("{0:n0}", result.Ck4cItemList.Where(x => x.ProdType == "TIS" && x.Total != "Nihil").Sum(x => Convert.ToDecimal(x.BtgGr)));
+
+            result.Ck4cTotal.PackedInPackTotal = result.Ck4cTotal.PackedInPackTotal == "0"
+                ? "Nihil"
+                : result.Ck4cTotal.PackedInPackTotal;
+            result.Ck4cTotal.PackedBtgTotal = result.Ck4cTotal.PackedBtgTotal == "0"
+                ? "Nihil"
+                : result.Ck4cTotal.PackedBtgTotal;
+            result.Ck4cTotal.PackedGTotal = result.Ck4cTotal.PackedGTotal == "0"
+                ? "Nihil"
+                : result.Ck4cTotal.PackedGTotal;
 
             return result;
         }
