@@ -514,6 +514,11 @@ namespace Sampoerna.EMS.Website.Controllers
                         //return RedirectToAction("UploadManualProduction");
                         var existItem = Mapper.Map<ProductionUploadItems>(existingData);
                         existItem.Qty = item.Qty;
+                        existItem.PackedAdjusted = item.PackedAdjusted;
+                        existItem.Zb = item.Zb;
+                        existItem.Remark = item.Remark;
+                        existItem.ModifiedDate = DateTime.Now;
+                        existItem.ModifiedBy = CurrentUser.USER_ID;
                         listProduction.Add(existItem);
                         continue;
                     }
