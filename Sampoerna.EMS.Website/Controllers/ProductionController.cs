@@ -187,16 +187,16 @@ namespace Sampoerna.EMS.Website.Controllers
                     });
                 }
                 
-                if(model.PackedAdjusted > model.QtyPacked){
-                    AddMessageInfo("Packed-Adjusted value can't be greater than Qty Packed", Enums.MessageInfoType.Warning);
-                    return RedirectToAction("Edit", "Production", new
-                    {
-                        companyCode = model.CompanyCode,
-                        plantWerk = model.PlantWerks,
-                        faCode = model.FaCode,
-                        productionDate = model.ProductionDate
-                    });
-                }
+                //if(model.PackedAdjusted > model.QtyPacked){
+                //    AddMessageInfo("Packed-Adjusted value can't be greater than Qty Packed", Enums.MessageInfoType.Warning);
+                //    return RedirectToAction("Edit", "Production", new
+                //    {
+                //        companyCode = model.CompanyCode,
+                //        plantWerk = model.PlantWerks,
+                //        faCode = model.FaCode,
+                //        productionDate = model.ProductionDate
+                //    });
+                //}
 
                 var data = Mapper.Map<ProductionDto>(model);
 
@@ -341,20 +341,20 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
 
-                if (model.PackedAdjustedStr != "" && model.PackedAdjustedStr != null && model.QtyPackedStr != "" && model.QtyPackedStr != null)
-                {
-                    if (decimal.Parse(model.PackedAdjustedStr) > decimal.Parse(model.QtyPackedStr))
-                    {
-                        AddMessageInfo("Packed-Adjusted value can't be greater than Qty Packed", Enums.MessageInfoType.Warning);
-                        return RedirectToAction("Edit", "Production", new
-                        {
-                            companyCode = model.CompanyCode,
-                            plantWerk = model.PlantWerks,
-                            faCode = model.FaCode,
-                            productionDate = model.ProductionDate
-                        });
-                    }
-                }
+                //if (model.PackedAdjustedStr != "" && model.PackedAdjustedStr != null && model.QtyPackedStr != "" && model.QtyPackedStr != null)
+                //{
+                //    if (decimal.Parse(model.PackedAdjustedStr) > decimal.Parse(model.QtyPackedStr))
+                //    {
+                //        AddMessageInfo("Packed-Adjusted value can't be greater than Qty Packed", Enums.MessageInfoType.Warning);
+                //        return RedirectToAction("Edit", "Production", new
+                //        {
+                //            companyCode = model.CompanyCode,
+                //            plantWerk = model.PlantWerks,
+                //            faCode = model.FaCode,
+                //            productionDate = model.ProductionDate
+                //        });
+                //    }
+                //}
 
                 var dbPrductionNew = Mapper.Map<ProductionDto>(model);
 
