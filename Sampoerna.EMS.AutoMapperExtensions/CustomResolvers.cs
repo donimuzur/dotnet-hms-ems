@@ -454,7 +454,7 @@ namespace Sampoerna.EMS.AutoMapperExtensions
         protected override string ResolveCore(decimal? value)
         {
             if (!value.HasValue)
-                return "0";
+                return "0.00";
 
             return ((decimal)value).ToString("n2", CultureInfo.InvariantCulture);
 

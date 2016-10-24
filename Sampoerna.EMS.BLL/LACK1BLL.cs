@@ -5923,7 +5923,8 @@ namespace Sampoerna.EMS.BLL
                                  join
                                      waste in listWaste
                                      on new { production.FA_CODE, production.PRODUCTION_DATE, production.WERKS }
-                                     equals new { waste.FA_CODE, PRODUCTION_DATE = waste.WASTE_PROD_DATE, waste.WERKS }
+                                     equals new { waste.FA_CODE, PRODUCTION_DATE = waste.WASTE_PROD_DATE, waste.WERKS } into wt
+                                 from w in wt.DefaultIfEmpty()
                                  select new Lack1DailyProdDto()
                                  {
                                      PlantId = production.WERKS,
@@ -5934,8 +5935,8 @@ namespace Sampoerna.EMS.BLL
                                      ProdQty = production.QTY,
                                      ProdUom = production.UOM,
 
-                                     RejectParkerQty = waste.PACKER_REJECT_STICK_QTY,
-                                     RejectParkerUom = "Batang",
+                                     RejectParkerQty = w == null ? 0 : w.PACKER_REJECT_STICK_QTY,
+                                     RejectParkerUom = w == null ? "-" : "Batang",
                                      PackedAdjusted = production.PACKED_ADJUSTED,
                                      Zb = production.ZB
 

@@ -51,8 +51,8 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public string RejectParkerQty { get; set; }
         public string RejectParkerUom { get; set; }
 
-        public decimal? Zb { get; set; }
-        public decimal? PackedAdjusted { get; set; }
+        public string Zb { get; set; }
+        public string PackedAdjusted { get; set; }
         
     }
 }
