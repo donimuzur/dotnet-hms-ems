@@ -110,7 +110,7 @@
 
                     $('#tb-upload-excel').html('');
                     uploaditems = JSON.parse(response);
-
+                    var error = "";
                     for (var i = 0; i < uploaditems.length; i++) {
                         var tr = '<tr>' +
                     createColumn(i + 1) +
@@ -127,9 +127,10 @@
                     createColumnWithHiddenField(uploaditems[i].Remark, 'UploadItems[' + i + '].Remark') +
                     createColumnWithHiddenField(uploaditems[i].Message, 'UploadItems[' + i + '].Message') + + '</tr>';
                         $('#tb-upload-excel').append(tr);
+                        error += uploaditems[i].Message;
                     }
-                   
-                    $('#btnSave').enable();
+                    if (error.trim() == "") $('#btnSave').enable();
+                    else $('#btnSave').disable();
                     changeToDecimal('.decimal', 'html');
                 }
             });

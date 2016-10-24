@@ -724,25 +724,35 @@ namespace Sampoerna.EMS.BLL
                     //Value Validation
                     if (decimal.TryParse(output.PackedAdjusted, out tempDecimal) || output.PackedAdjusted == "" || output.PackedAdjusted == "-")
                     {
-                        if (decimal.Parse(output.PackedAdjusted) > decimal.Parse(output.Qty))
-                        {
-                            output.PackedAdjusted = output.PackedAdjusted;
-                            messageList.Add("Packed-Adjusted [" + output.PackedAdjusted + "] can't be greater than Qty");
-                        }
-                        else
-                        {
-                            output.PackedAdjusted = output.PackedAdjusted == "" || output.PackedAdjusted == "-" ? "0" : output.PackedAdjusted;
-                        }
+                        //if (decimal.Parse(output.PackedAdjusted) > decimal.Parse(output.Qty))
+                        //{
+                        //    output.PackedAdjusted = output.PackedAdjusted;
+                        //    messageList.Add("Packed-Adjusted [" + output.PackedAdjusted + "] can't be greater than Qty");
+                        //}
+                        //else
+                        //{
+                            output.PackedAdjusted = output.PackedAdjusted.Trim() == "" || output.PackedAdjusted.Trim() == "-" ? "0" : output.PackedAdjusted;
+                        //}
                     }
                     else
                     {
                         output.PackedAdjusted = output.PackedAdjusted;
                         messageList.Add("Packed-Adjusted [" + output.PackedAdjusted + "] not valid");
                     }
+
+                    if (brandRegistration.PACKED_ADJUSTED.HasValue && brandRegistration.PACKED_ADJUSTED.Value)
+                    {
+                        output.PackedAdjusted = output.PackedAdjusted;
+                    }
+                    else
+                    {
+                        output.PackedAdjusted = output.PackedAdjusted;
+                        messageList.Add(brandRegistration.FA_CODE +" on " + brandRegistration.WERKS + " cannot have Packed-Adjusted value");
+                    }
                 }
                 else
                 {
-                    if (output.PackedAdjusted != "" && output.PackedAdjusted != "-" && output.PackedAdjusted.Trim() != "0")
+                    if (output.PackedAdjusted.Trim() != "" && output.PackedAdjusted.Trim() != "-" && output.PackedAdjusted.Trim() != "0")
                     {
                         output.PackedAdjusted = output.PackedAdjusted;
                         messageList.Add("Packed-Adjusted [" + output.PackedAdjusted + "] must be blank when Product Code & Exc Good Type is not TIS");
