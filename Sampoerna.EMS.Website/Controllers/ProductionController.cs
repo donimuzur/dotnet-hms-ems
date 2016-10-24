@@ -580,7 +580,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     item.ProductionDate = dataRow[6];
                     item.Zb = zb;
                     item.PackedAdjusted = packedAdjusted;
-                    item.Remark = dataRow[8];
+                    if(dataRow.Count >= 9) item.Remark = dataRow[8];
+                    
 
                     model.Add(item);
 
