@@ -23,6 +23,7 @@ namespace Sampoerna.EMS.Website.Models.Reversal
         public Enums.CK4CType Ck4CType { get; set; }
 
         public SelectList ZaapShiftList { get; set; }
+        public SelectList InventoryMovementList { get; set; }
         public SelectList FaCodeList { get; set; }
         public SelectList PlantWerksList { get; set; }
         public DataReversal Details { get; set; }
@@ -34,8 +35,7 @@ namespace Sampoerna.EMS.Website.Models.Reversal
     public class DataReversal
     {
         public int ReversalId { get; set; }
-        [Required]
-        public int ZaapShiftId { get; set; }
+        public int? ZaapShiftId { get; set; }
         [Required]
         public DateTime? ProductionDate { get; set; }
         [Required]
@@ -47,5 +47,6 @@ namespace Sampoerna.EMS.Website.Models.Reversal
         public string ProductionDateDisplay { get; set; }
         public Decimal ReversalRemaining { get; set; }
         public Decimal PackedQty { get; set; }
+        public int? InventoryMovementId { get; set; }
     }
 }

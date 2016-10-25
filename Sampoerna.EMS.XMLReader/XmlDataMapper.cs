@@ -87,7 +87,8 @@ namespace Sampoerna.EMS.XMLReader
             var shortFilename = _xmlName.Split('\\')[_xmlName.Split('\\').Length - 1];
             var xmllogs = GetXmlLogs(shortFilename);
             var errorCount = 0;
-            var itemToInsert = 0;
+            //var itemToInsert = 0;
+            var isProdOrInventory = false;
             var fileName = string.Empty;
             var needMoved = true;
             try
@@ -96,7 +97,12 @@ namespace Sampoerna.EMS.XMLReader
                 foreach (var item in existingData)
                 {
                     if (item is PRODUCTION || item is INVENTORY_MOVEMENT)
+                    {
                         needMoved = true;
+                        isProdOrInventory = true;
+                        break;
+                    }
+                    
                     if (item is LFA1)
                         continue;
 
@@ -136,14 +142,20 @@ namespace Sampoerna.EMS.XMLReader
 
                 if (Errors.Count == 0)
                 {
-                    
-                    foreach (var item in items)
+                    if (isProdOrInventory)
                     {
-                        itemToInsert++;
-                        repo.InsertOrUpdate(item);
-
-
+                        repo.InsertOrUpdateBulk(items);
                     }
+                    else
+                    {
+                        foreach (var item in items)
+                        {
+                            //itemToInsert++;
+                            repo.InsertOrUpdate(item);
+                        }
+                    }
+
+                    
 
                     if (xmllogs != null)
                     {

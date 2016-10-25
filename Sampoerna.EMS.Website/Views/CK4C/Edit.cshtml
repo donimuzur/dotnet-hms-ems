@@ -23,7 +23,7 @@
                         <input type="button" class="btn btn-blue" value="Save" id="btnSaveCk4c" />
                     }
                     
-                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK4C", new { id = @Model.Details.Ck4CId })')" />
+                    <input type="button" class="btn btn-grey" value="Print Preview" id="btnPrintPreview" />
                     <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
                     @if (Model.Details.Status == Enums.DocumentStatus.Draft || Model.Details.Status == Enums.DocumentStatus.Rejected || Model.Details.Status == Enums.DocumentStatus.GovRejected)
                     {
@@ -44,6 +44,10 @@
                         <li class="active" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
                         <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Print Out</a></li>
                         <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Changes Log</a></li>
+                        @if (Model.OldDetails != null)
+                        {
+                            <li role="presentation"><a href="#informationold" aria-controls="informationold" role="tab" data-toggle="tab">Old Information</a></li>
+                        }
                     </ul>
 
                     <!-- Tab panes -->
@@ -59,6 +63,10 @@
                         
                         @Html.Partial("_PrintOut")
                         @Html.Partial("_ChangeLog")
+                        @if (Model.OldDetails != null)
+                        {
+                            @Html.Partial("_HomeDetailsOld")
+                        }
                     </div>
                 </div>
             </div>
@@ -228,6 +236,21 @@
         $('#btnExportCk4cItem').click(function (e) {
             location.href = '@Url.Action("ExportXlsCk4cItem", "CK4C", new { id = @Model.Details.Ck4CId })';
         });
+
+        $('#btnExportCk4cItemOld').click(function (e) {
+            location.href = '@Url.Action("ExportXlsCk4cItemOld", "CK4C", new { id = @Model.Details.Ck4CId })';
+        });
+
+        $('#btnPrintPreview').click(function (e) {
+            var activeTab = $('li.active a').html();
+
+            if (activeTab == 'Information') {
+                printPreview('@Url.EncryptedAction("PrintPreview", "CK4C", new { id = @Model.Details.Ck4CId })');
+            } else {
+                printPreview('@Url.EncryptedAction("PrintPreviewOld", "CK4C", new { id = @Model.Details.Ck4CId })');
+            }
+
+        });
     });
 
     function ChangeCompany(comp, plant, nppbkc) {
@@ -238,8 +261,8 @@
         if ($("#Details_CompanyId").length) {
             var cpy = comp;
             if (cpy != '') {
-            ajaxSelectPlant('@Url.Action("CompanyListPartialCk4CDocument", "CK4C")', { companyId: cpy }, plant);
-            ajaxGetNppbkcByCompany('@Url.Action("GetNppbkcByCompanyId", "CK4C")', cpy, nppbkc);
+                ajaxSelectPlant('@Url.Action("CompanyListPartialCk4CDocument", "CK4C")', { companyId: cpy }, plant);
+                ajaxGetNppbkcByCompany('@Url.Action("GetNppbkcByCompanyId", "CK4C")', cpy, nppbkc);
             }
         }
     }
@@ -252,14 +275,11 @@
         var url = '@Url.Action("PoaListPartial", "CK4C")';
         var urlPlant = '@Url.Action("GetPoaByPlantId", "CK4C")';
 
-        if (poa == '')
-        {
-            if (plant != '')
-            {
+        if (poa == '') {
+            if (plant != '') {
                 ajaxSelectNppbck({ plantId: plant, documentCreator: creator }, urlPlant);
             }
-            else
-            {
+            else {
                 ajaxSelectNppbck({ nppbkcid: nppbkc, documentCreator: creator }, url);
             }
         }
@@ -288,7 +308,7 @@
     }
 
     function printPreview(url) {
-        window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+        window.open(url, '_blank', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
     }
 
     function PrintOutClick(reportUrl, addHistoryUrl, id) {
@@ -306,5 +326,5 @@
             }
         });
     }
-    </script>
+</script>
 }

@@ -75,6 +75,7 @@
 
                         if (formData.faCode) {
                             ajaxSelectZaapShift('@Url.Action("GetZaapData", "Reversal")', { plantWerk: formData.plantWerk, faCode: formData.faCode, zaapShift: formData.zaapShift });
+                            ajaxSelectInventoryMovement('@Url.Action("GetInventoryMovementData", "Reversal")', { plantWerk: formData.plantWerk, faCode: formData.faCode, inventoryMovement: formData.inventoryMovement });
                             ajaxSelectPackedQty();
                         }
                     }
@@ -107,37 +108,63 @@
         }
     }
 
+    function ajaxSelectInventoryMovement(url, formData) {
+        if (formData.plantWerk && formData.faCode) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    var inventoryMovementList = data.InventoryMovementList;
+                    $('#SearchInput_InventoryMovement').append('<option value="">Select</option>');
+                    if (inventoryMovementList.length > 0) {
+                        for (var i = 0; i < inventoryMovementList.length; i++) {
+                            $('#SearchInput_InventoryMovement').append('<option value=' + inventoryMovementList[i].Value + '>' + inventoryMovementList[i].Text + '</option>');
+                        }
+
+                        if (formData.inventoryMovement) {
+                            $('#SearchInput_FaCode').val(formData.faCode);
+                            $('#SearchInput_InventoryMovement').val(formData.inventoryMovement);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
     function SetExistingData() {
         var plant = '@Model.Details.Werks';
         var facode = '@Model.Details.FaCode';
         var zaap = '@Model.Details.ZaapShiftId';
+        var inventoryMovement = '@Model.Details.InventoryMovementId';
 
         $('#SearchInput_FaCode option').remove();
         $('#SearchInput_Zaap option').remove();
+        $('#SearchInput_InventoryMovement option').remove();
 
-        ajaxSelectPlantWerks('@Url.Action("GetFaCodeByPlant", "Reversal")', { plantWerk: plant, faCode: facode, zaapShift: zaap });
+        ajaxSelectPlantWerks('@Url.Action("GetFaCodeByPlant", "Reversal")', { plantWerk: plant, faCode: facode, zaapShift: zaap, inventoryMovement: inventoryMovement });
+        ajaxFaCodeDescription('@Url.Action("GetFaCodeDescription", "Production")', { plantWerk: plant, faCode: facode });
 
-        var formData = { zaapShift: '@Model.Details.ZaapShiftId' };
+        var formData = { zaapShift: '@Model.Details.ZaapShiftId', inventoryMovement: '@Model.Details.InventoryMovementId' };
         var zaap = '@Model.Details.ZaapShiftId';
+        var inventoryMovement = '@Model.Details.InventoryMovementId';
         var qty = '@Model.Details.ReversalQty';
 
-        if (formData.zaapShift == '') {
-            $('#Details_ReversalRemaining').val(0);
-        }
-        else {
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("GetRemainingQuota", "Reversal")',
-                data: formData,
-                success: function (data) {
-                    if (zaap == formData.zaapShift) {
-                        data = parseInt(data) + parseInt(qty);
-                    }
+        $('#Details_ReversalRemaining').val(0);
 
-                    $('#Details_ReversalRemaining').val(data);
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetRemainingQuota", "Reversal")',
+            data: formData,
+            success: function (data) {
+                if (zaap == formData.zaapShift || inventoryMovement == formData.inventoryMovement) {
+                    data = parseInt(data) + parseInt(qty);
                 }
-            });
-        }
+
+                $('#Details_ReversalRemaining').val(data);
+            }
+        });
+        
 
         var formData = {
             plantWerk: plant,
@@ -156,6 +183,25 @@
                 success: function (data) {
 
                     $('#Details_PackedQty').val(data);
+                }
+            });
+        }
+    }
+
+    function ajaxFaCodeDescription(url, formData) {
+        if (formData.plantWerk, formData.faCode) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    if (data.PROD_CODE == "05" && data.EXC_GOOD_TYP == "02") {
+                        $('#SearchInput_InventoryMovement').show();
+                        $('#SearchInput_Zaap').hide();
+                    } else {
+                        $('#SearchInput_Zaap').show();
+                        $('#SearchInput_InventoryMovement').hide();
+                    }
                 }
             });
         }

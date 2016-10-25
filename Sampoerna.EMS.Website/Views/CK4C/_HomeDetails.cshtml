@@ -1,5 +1,6 @@
 ﻿@model Sampoerna.EMS.Website.Models.CK4C.Ck4CIndexDocumentListViewModel
 @using Sampoerna.EMS.Website.Helpers
+@using Sampoerna.EMS.Core
 
 <div id="information" class="tab-pane active" role="tabpanel">
     <div class="">
@@ -30,7 +31,19 @@
                                     <div class="row">
                                         <label class="col-md-4">Reported On</label>
                                         <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.Details.ReportedOn, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+                                            @if (Model.Details.Status == Enums.DocumentStatus.WaitingForApproval && Model.AllowApproveAndReject)
+                                            {
+                                                <div class="input-group date">
+                                                    @Html.TextBoxFor(model => model.Details.ReportedOn, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>
+                                            }
+                                            else
+                                            { 
+                                                @Html.TextBoxFor(model => model.Details.ReportedOn, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+                                            }                                            
                                         </div>
                                     </div>
                                 </div>
@@ -140,6 +153,8 @@
                                     <th>Tarif</th>
                                     <th>Content Per Pack (8)</th>
                                     <th>Packed QTY (6)</th>
+                                    <th>ZB: Only for SKT</th>
+                                    <th>Packed - Adjusted: Only for TIS CF</th>
                                     <th>Packed QTY In Pack (10)</th>
                                     <th>Unpacked QTY (FA)</th>
                                     <th>Unpacked QTY (Brand) (11)</th>
@@ -162,6 +177,8 @@
                                         <td class="number">@string.Format("{0:N2}", item.Tarif)</td>
                                         <td class="number">@string.Format("{0:N2}", item.ContentPerPack)</td>
                                         <td class="number">@string.Format("{0:N2}", item.PackedQty)</td>
+                                        <td class="number">@string.Format("{0:N2}", item.Zb)</td>
+                                        <td class="number">@string.Format("{0:N2}", item.PackedAdjusted)</td>
                                         <td class="number">@string.Format("{0:N2}", item.PackedInPack)</td>
                                         <td class="number">@string.Format("{0:N2}", item.UnpackedQty)</td>
                                         <td class="number">@string.Format("{0:N2}", item.UnpackedQtyBrand)</td>

@@ -170,6 +170,29 @@ namespace Sampoerna.EMS.BLL.Services
             return dbData.ToList();
         }
 
+        public List<ZAAP_SHIFT_RPT> GetReversalDataByDate(GetProductionDailyProdByParamInput input)
+        {
+            Expression<Func<ZAAP_SHIFT_RPT, bool>> queryFilter = PredicateHelper.True<ZAAP_SHIFT_RPT>();
+
+            string receiving102 = EnumHelper.GetDescription(Enums.MovementTypeCode.Receiving102);
+
+            queryFilter = queryFilter.And(c => c.MVT == receiving102);
+
+            queryFilter = queryFilter.And(x => x.PRODUCTION_DATE >= input.DateFrom && x.PRODUCTION_DATE <= input.DateTo
+                 && string.Compare(x.WERKS, input.PlantFrom) >= 0 && string.Compare(x.WERKS, input.PlantTo) <= 0);
+
+            var dbData = _repository.Get(queryFilter).GroupBy(x=> new {x.PRODUCTION_DATE, x.FA_CODE, x.WERKS})
+                .Select(x=> new ZAAP_SHIFT_RPT()
+                {
+                    FA_CODE = x.Key.FA_CODE,
+                    WERKS = x.Key.WERKS,
+                    PRODUCTION_DATE = x.Key.PRODUCTION_DATE,
+                    QTY = x.Sum(y=> y.QTY * 1000)
+                });
+
+            return dbData.ToList();
+        }
+
         public List<ZAAP_SHIFT_RPT> GetForCFVsFa(ZaapShiftRptGetForLack1ReportByParamInput input)
         {
             Expression<Func<ZAAP_SHIFT_RPT, bool>> queryFilter = PredicateHelper.True<ZAAP_SHIFT_RPT>();
@@ -183,7 +206,7 @@ namespace Sampoerna.EMS.BLL.Services
             return data.ToList();
         }
 
-        public ZAAP_SHIFT_RPT GetById(int id)
+        public ZAAP_SHIFT_RPT GetById(int? id)
         {
             var data = _repository.GetQuery(x => x.ZAAP_SHIFT_RPT_ID == id).FirstOrDefault();
 

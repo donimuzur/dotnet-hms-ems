@@ -116,7 +116,31 @@
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                    </div>
+                                                    <div class="row">
                                                         <div class="col-md-6">
+                                                            <div id="remarkRow" class="row">
+                                                                <label class="col-md-4">Remark</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextAreaFor(model => model.Remark, 6, 20, new { @class = "form-control", id = "remark" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div id="zbRow" class="row">
+                                                                <label class="col-md-4"> ZB<span class="red">*</span></label>
+                                                                <div class="col-md-8">
+                                                                    @*@Html.HiddenFor(model => model.ZbStr)*@
+                                                                    @Html.TextBoxFor(model => model.ZbStr, new {@class = "form-control", id = "Zb", @maxlength = "12" })
+                                                                </div>
+                                                            </div>
+                                                            <div id="packedAdjustedRow" class="row">
+                                                                <label class="col-md-4"> Packed-Adjusted</label>
+                                                                <div class="col-md-8">
+                                                                    @*@Html.HiddenFor(model => model.PackedAdjustedStr)*@
+                                                                    @Html.TextBoxFor(model => model.PackedAdjustedStr, new { @class = "decimal form-control", @maxlength = "16" })
+                                                                </div>
+                                                            </div>
                                                             <div class="row">
                                                                 <label class="col-md-4"> Produced Qty</label>
                                                                 <div class="col-md-8">
@@ -143,7 +167,8 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-
+                                                    </div>
+                                                    <div class="row">
                                                         <div class="col-md-6">
                                                             <div class="row">
                                                                 <label class="col-md-4"> Bundle </label>
@@ -160,6 +185,8 @@
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                    </div>
+                                                    <div class="row">
                                                         <div class="col-md-6">
                                                             <div class="row">
                                                                 <label class="col-md-4"> Material Document Number </label>
@@ -169,7 +196,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-
+                                                        <div class="col-md-6"></div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-6">
@@ -212,6 +239,12 @@
         $('#QtyPackedStr').val(ThausandSeperator($('#QtyPackedStr').val(), 2));
         $('#ProdQtyStickStr').val(ThausandSeperator($('#ProdQtyStickStr').val(), 2));
         $('#QtyStr').val(ThausandSeperator($('#QtyStr').val(), 2));
+        $('#ZbStr').val(ThausandSeperator($('#ZbStr').val(), 2));
+        $('#PackedAdjustedStr').val(ThausandSeperator($('#PackedAdjustedStr').val(), 2));
+        $('#packedAdjustedRow').hide();
+        $('#remarkRow').hide();
+        $('#zbRow').hide();
+
 
         $(document).ready(function() {
             var cpy = $("#CompanyCode").find("option:selected").val();
@@ -327,14 +360,15 @@
 
                         var facodeListX = '@Model.FaCode';
                         $('#SearchInput_BrandCe').val(facodeListX);
+
+                        ajaxFaCodeDescription('@Url.Action("GetFaCodeDescription", "Production")', { plantWerk: formData.plantWerk, faCode: facodeListX });
                     }
                 });
             }
         }
 
-        $("#SearchInput_BrandCe").change(function() {
+        $("#SearchInput_BrandCe").change(function () {
             if ($("#SearchInput_BrandCe").length) {
-
                 var FaDesc = $(this).find("option:selected").val();
                 var Plant = $('#SearchInput_PlantId').val();
                 if (FaDesc == '') {
@@ -352,18 +386,36 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function(data) {
+                    success: function (data) {
 
-                        $('#test').val(data.BRAND_CE);
+                        
                         if (!data.IS_FROM_SAP) {
                             $('#QtyPacked.form-control').prop('disabled', false);
                         } else {
                             $('#QtyPacked.form-control').prop('disabled', true);
                         }
+
+                        if (data.PROD_CODE=="01") {
+                            $('#zbRow').show();
+                        } else {
+                            $('#zbRow').hide();
+                        }
+                        if (data.PROD_CODE=="05" && data.EXC_GOOD_TYP=="02") {
+                            $('#packedAdjustedRow').show();
+                            $('#remarkRow').show();
+                        } else {
+                            $('#packedAdjustedRow').hide();
+                            $('#remarkRow').hide();
+                        }
+
+                        if (data.PACKED_ADJUSTED == 0 || data.PACKED_ADJUSTED == null || data.PACKED_ADJUSTED == false) {
+                            $('#PackedAdjusted').prop("disabled", true);
+                        } else {
+                            $('#PackedAdjusted').prop("disabled", false);
+                        }
                     }
                 });
             }
-
         }
 
         $('#QtyPacked.form-control').change(function (obj) {
@@ -372,6 +424,17 @@
             
         });
 
+        $('#Zb.form-control').change(function (obj) {
+            var data = $('#Zb.form-control').val().replace(',', '');
+            $('#ZbStr').val(ThausandSeperator(data, 2));
+
+        });
+
+        $('#PackedAdjusted.form-control').change(function (obj) {
+            var data = $('#PackedAdjusted.form-control').val().replace(',', '');
+            $('#PackedAdjustedStr').val(ThausandSeperator(data, 2));
+
+        });
         
     </script>
 }

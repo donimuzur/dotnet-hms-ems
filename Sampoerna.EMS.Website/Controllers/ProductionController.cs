@@ -15,6 +15,7 @@ using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
@@ -185,6 +186,17 @@ namespace Sampoerna.EMS.Website.Controllers
                         productionDate = model.ProductionDate
                     });
                 }
+                
+                //if(model.PackedAdjusted > model.QtyPacked){
+                //    AddMessageInfo("Packed-Adjusted value can't be greater than Qty Packed", Enums.MessageInfoType.Warning);
+                //    return RedirectToAction("Edit", "Production", new
+                //    {
+                //        companyCode = model.CompanyCode,
+                //        plantWerk = model.PlantWerks,
+                //        faCode = model.FaCode,
+                //        productionDate = model.ProductionDate
+                //    });
+                //}
 
                 var data = Mapper.Map<ProductionDto>(model);
 
@@ -208,16 +220,18 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             else
             {
-                var errorlist = ModelState.Values.Select(x => x.Errors).Single();
+                var errorlist = ModelState.Values.Select(x => x.Errors).ToList();
 
                 var errMsg = "";
 
                 foreach (var error in errorlist)
                 {
-                    errMsg = error.ErrorMessage + "\n";
+                    foreach (var err in error)
+                    {
+                        errMsg = err.ErrorMessage + "\n";
+                    }
                 }
-                AddMessageInfo(errMsg, Enums.MessageInfoType.Error
-                           );
+                AddMessageInfo(errMsg, Enums.MessageInfoType.Error);
             }
             model = InitCreate(model);
             return View(model);
@@ -320,8 +334,27 @@ namespace Sampoerna.EMS.Website.Controllers
                         model.ProdQtyStick = 0;
                         model.QtyPackedStr = "0";
                         model.ProdQtyStickStr = "0";
+                        model.Zb = 0;
+                        model.ZbStr = "0";
+                        model.PackedAdjusted = 0;
+                        model.PackedAdjustedStr = "0";
                     }
                 }
+
+                //if (model.PackedAdjustedStr != "" && model.PackedAdjustedStr != null && model.QtyPackedStr != "" && model.QtyPackedStr != null)
+                //{
+                //    if (decimal.Parse(model.PackedAdjustedStr) > decimal.Parse(model.QtyPackedStr))
+                //    {
+                //        AddMessageInfo("Packed-Adjusted value can't be greater than Qty Packed", Enums.MessageInfoType.Warning);
+                //        return RedirectToAction("Edit", "Production", new
+                //        {
+                //            companyCode = model.CompanyCode,
+                //            plantWerk = model.PlantWerks,
+                //            faCode = model.FaCode,
+                //            productionDate = model.ProductionDate
+                //        });
+                //    }
+                //}
 
                 var dbPrductionNew = Mapper.Map<ProductionDto>(model);
 
@@ -439,11 +472,15 @@ namespace Sampoerna.EMS.Website.Controllers
                         continue;
                     }
 
+                    item.QtyPacked = "0";
+
                     if (item.Uom == "TH")
                     {
                         item.Uom = "Btg";
-                        item.QtyPacked = Convert.ToString(Convert.ToDecimal(item.QtyPacked) * 1000);
+                        //item.QtyPacked = Convert.ToString(Convert.ToDecimal(item.QtyPacked) * 1000);
                         item.Qty = Convert.ToString(Convert.ToDecimal(item.Qty) * 1000);
+                        item.Zb = Convert.ToDecimal(item.Zb) * 1000;
+                        
                     }
 
                     if (item.Uom == "KG")
@@ -451,6 +488,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         item.Uom = "G";
                         item.QtyPacked = Convert.ToString(Convert.ToDecimal(item.QtyPacked) * 1000);
                         item.Qty = Convert.ToString(Convert.ToDecimal(item.Qty) * 1000);
+                        item.PackedAdjusted = item.PackedAdjusted*1000;
                     }
 
                     item.CompanyName = company.BUTXT;
@@ -476,6 +514,11 @@ namespace Sampoerna.EMS.Website.Controllers
                         //return RedirectToAction("UploadManualProduction");
                         var existItem = Mapper.Map<ProductionUploadItems>(existingData);
                         existItem.Qty = item.Qty;
+                        existItem.PackedAdjusted = item.PackedAdjusted;
+                        existItem.Zb = item.Zb;
+                        existItem.Remark = item.Remark;
+                        existItem.ModifiedDate = DateTime.Now;
+                        existItem.ModifiedBy = CurrentUser.USER_ID;
                         listProduction.Add(existItem);
                         continue;
                     }
@@ -528,15 +571,22 @@ namespace Sampoerna.EMS.Website.Controllers
                     var item = new ProductionUploadItems();
                     var brand = _brandRegistrationBll.GetByFaCode(dataRow[1], dataRow[2]);
                     var prodQty = dataRow[4] == "" ? 0 : Convert.ToDecimal(dataRow[4]);
+                    var zb = dataRow[3] == "" ? 0 : Convert.ToDecimal(dataRow[3]); //brand.PROD_CODE == "01" ? Convert.ToDecimal(dataRow[3]) : 0;
+                    var packedQty = dataRow[3] == "" ? "0" : dataRow[3]; //brand.PROD_CODE == "01" ? 0 : Convert.ToDecimal(dataRow[3]);
+                    var packedAdjusted = dataRow[7] == "" ? 0 : Convert.ToDecimal(dataRow[7]);
 
                     item.CompanyCode = dataRow[0];
                     item.PlantWerks = dataRow[1];
                     item.FaCode = dataRow[2];
                     item.BrandDescription = brand == null ? string.Empty : brand.BRAND_CE;
-                    item.QtyPacked = dataRow[3];
+                    item.QtyPacked = packedQty.ToString();
                     item.Qty = dataRow[5].ToLower() == "btg" ? Math.Round(prodQty).ToString() : dataRow[4];
                     item.Uom = dataRow[5];
                     item.ProductionDate = dataRow[6];
+                    item.Zb = zb;
+                    item.PackedAdjusted = packedAdjusted;
+                    if(dataRow.Count >= 9) item.Remark = dataRow[8];
+                    
 
                     model.Add(item);
 
@@ -584,6 +634,10 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetFaCodeDescription(string plantWerk, string faCode)
         {
             var fa = _brandRegistrationBll.GetByFaCode(plantWerk, faCode);
+            if (fa.PROD_CODE == "05" && fa.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.TembakauIris))
+            {
+                fa.IS_FROM_SAP = true;
+            }
             return Json(fa);
         }
 
