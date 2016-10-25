@@ -53,6 +53,21 @@ namespace Sampoerna.EMS.Website.Models.LACK1
 
         public string Zb { get; set; }
         public string PackedAdjusted { get; set; }
+
+
+        public string ZbUom { get; set; }
+        
+        public string SapPackedQty { get; set; }
+
+        public string SapPackedUom { get; set; }
+        
+        public string PackedAdjustedUom { get; set; }
+        
+        public string Remark { get; set; }
+        
+        public string SapReversalQty { get; set; }
+        public string SapReversalQtyUom { get; set; }
+
         
     }
 }

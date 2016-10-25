@@ -336,6 +336,8 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.RejectParkerQty, opt => opt.ResolveUsing<DecimalToStringMoneyResolver2>().FromMember(src => src.RejectParkerQty))
             .ForMember(dest => dest.PackedAdjusted, opt => opt.ResolveUsing<DecimalToStringMoneyResolver2>().FromMember(src => src.PackedAdjusted))
             .ForMember(dest => dest.Zb, opt => opt.ResolveUsing<DecimalToStringMoneyResolver2>().FromMember(src => src.Zb))
+            .ForMember(dest => dest.SapPackedQty, opt => opt.ResolveUsing<DecimalToStringMoneyResolver2>().FromMember(src => src.SapPackedQty))
+            .ForMember(dest => dest.SapReversalQty, opt => opt.ResolveUsing<DecimalToStringMoneyResolver2>().FromMember(src => src.SapReversalQty))
                 ;
 
             #endregion
