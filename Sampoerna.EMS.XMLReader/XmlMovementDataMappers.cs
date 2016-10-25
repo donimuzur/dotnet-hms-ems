@@ -158,7 +158,9 @@ namespace Sampoerna.EMS.XMLReader
                 var data = _xmlMapper.uow.GetGenericRepository<INVENTORY_MOVEMENT>()
                     .Get(x => postingDateList.Contains(x.POSTING_DATE.Value)
                         && listMaterial.Contains(x.MATERIAL_ID + "-" + x.PLANT_ID)
-                        && mvtTypeList.Contains(x.MVT))
+                        && mvtTypeList.Contains(x.MVT)
+                        && x.ORDR != null && x.ORDR != ""
+                        )
                     .GroupBy(x => new {x.PLANT_ID, x.MATERIAL_ID, x.POSTING_DATE})
                     .Select(x => new INVENTORY_MOVEMENT()
                     {
