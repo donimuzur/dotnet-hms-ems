@@ -5916,14 +5916,19 @@ namespace Sampoerna.EMS.BLL
             inputWaste.PlantTo = input.PlantTo;
 
             var listWaste = _wasteServices.GetWasteDailyProdByParam(inputWaste);
-           
+            var listReversal = _zaapShiftRptService.GetReversalDataByDate(inputProduction);
             //join
 
             var listDailyProd = (from production in listProduction
                                  join
                                      waste in listWaste
                                      on new { production.FA_CODE, production.PRODUCTION_DATE, production.WERKS }
-                                     equals new { waste.FA_CODE, PRODUCTION_DATE = waste.WASTE_PROD_DATE, waste.WERKS }
+                                     equals new { waste.FA_CODE, PRODUCTION_DATE = waste.WASTE_PROD_DATE, waste.WERKS } into wt
+                                 join reversal in listReversal
+                                    on new { production.FA_CODE, production.PRODUCTION_DATE, production.WERKS }
+                                     equals new { reversal.FA_CODE, PRODUCTION_DATE = reversal.PRODUCTION_DATE, reversal.WERKS } into re
+                                 from w in wt.DefaultIfEmpty()
+                                 from r in re.DefaultIfEmpty()
                                  select new Lack1DailyProdDto()
                                  {
                                      PlantId = production.WERKS,
@@ -5934,11 +5939,20 @@ namespace Sampoerna.EMS.BLL
                                      ProdQty = production.QTY,
                                      ProdUom = production.UOM,
 
-                                     RejectParkerQty = waste.PACKER_REJECT_STICK_QTY,
-                                     RejectParkerUom = "Batang",
+                                     RejectParkerQty = w == null ? 0 : w.PACKER_REJECT_STICK_QTY,
+                                     RejectParkerUom = w == null ? "-" : "Batang",
                                      PackedAdjusted = production.PACKED_ADJUSTED,
-                                     Zb = production.ZB
+                                     SapPackedQty = production.QTY_PACKED,
+                                     SapPackedUom = production.UOM,
 
+                                     SapReversalQty = r == null ? 0 : r.QTY,
+                                     SapReversalQtyUom = r == null ? "-" : production.UOM,
+                                     
+                                     ZbUom = (production.ZB.HasValue && production.ZB.Value != 0) ? production.UOM : "-",
+                                     Remark = production.REMARK,
+                                     PackedAdjustedUom = (production.PACKED_ADJUSTED.HasValue && production.PACKED_ADJUSTED.Value != 0) ? production.UOM : "-",
+                                     Zb = production.ZB
+                                     
                                  }).ToList();
 
 

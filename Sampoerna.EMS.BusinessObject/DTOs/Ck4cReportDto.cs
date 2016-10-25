@@ -97,6 +97,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Comment { get; set; }
 
         public int CollumNo { get; set; }
+
+        public string BhnKemasan { get; set; }
     }
 
     public class Ck4cGroupReportItemDto
@@ -132,6 +134,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Comment { get; set; }
 
         public int CollumNo { get; set; }
+
+        public string BhnKemasan { get; set; }
     }
 
     public class Ck4cTotalProd
@@ -143,6 +147,12 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ProdTotal { get; set; }
 
         public string ProdBtg { get; set; }
+
+        public string PackedBtgTotal { get; set; }
+
+        public string PackedGTotal { get; set; }
+
+        public string PackedInPackTotal { get; set; }
     }
 
     public class Ck4cUnpacked

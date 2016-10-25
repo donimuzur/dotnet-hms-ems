@@ -86,6 +86,8 @@ namespace Sampoerna.EMS.BLL
         {
             Expression<Func<CK4C, bool>> queryFilter = PredicateHelper.True<CK4C>();
 
+            queryFilter = queryFilter.And(c => c.CK4C_ID_REVISED == null);
+
             if (input.Month > 0)
             {
                 queryFilter = queryFilter.And(c => c.REPORTED_MONTH == input.Month);
@@ -912,7 +914,7 @@ namespace Sampoerna.EMS.BLL
         {
             var queryFilter = ProcessQueryFilter(input);
 
-            queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+            queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed && c.CK4C_ID_REVISED == null);
 
             if (input.UserRole == Enums.UserRole.POA)
             {
@@ -1096,127 +1098,132 @@ namespace Sampoerna.EMS.BLL
             var lisCk4cItem = _ck4cItemBll.GetDataByParentPlant(dtData.PLANT_ID);
 
             string prodTypeDistinct = string.Empty;
-            string currentProdType = string.Empty;
-            List<Ck4cReportItemDto> tempListck4c1 = new List<Ck4cReportItemDto>();
+            //string currentProdType = string.Empty;
+            //List<Ck4cReportItemDto> tempListck4c1 = new List<Ck4cReportItemDto>();
             //add data details of CK-4C sebelumnya
-            foreach (var item in addressPlant)
-            {
-                Int32 isInt;
-                //var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt) && x.EXC_GOOD_TYP == "01").OrderBy(x => x.PROD_CODE);
+            //foreach (var item in addressPlant)
+            //{
+            //    Int32 isInt;
+            //    //var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt) && x.EXC_GOOD_TYP == "01").OrderBy(x => x.PROD_CODE);
                 
-                var activeBrand =
-                    listBrand.Where(
-                        x =>
-                            x.WERKS == item && x.IS_DELETED != true && x.STATUS == true &&
-                            Int32.TryParse(x.BRAND_CONTENT, out isInt) && x.EXC_GOOD_TYP == "01")
-                        .OrderBy(x => x.PROD_CODE);
+            //    var activeBrand =
+            //        listBrand.Where(
+            //            x =>
+            //                x.WERKS == item && x.IS_DELETED != true && x.STATUS == true &&
+            //                Int32.TryParse(x.BRAND_CONTENT, out isInt) && (x.EXC_GOOD_TYP == "01" || x.EXC_GOOD_TYP == "02"))
+            //            .OrderBy(x => x.PROD_CODE);
 
 
                 
-                foreach (var data in activeBrand)
-                {
-                    if(currentProdType != data.PROD_CODE)
-                    {
-                        currentProdType = data.PROD_CODE;
-                        prodTypeDistinct += "|" + data.PROD_CODE;
-                    }
+            //    foreach (var data in activeBrand)
+            //    {
+            //        if(currentProdType != data.PROD_CODE)
+            //        {
+            //            currentProdType = data.PROD_CODE;
+            //            prodTypeDistinct += "|" + data.PROD_CODE;
+            //        }
 
-                    var ck4cItem = new Ck4cReportItemDto();
+            //        var ck4cItem = new Ck4cReportItemDto();
 
-                    //var unpackedQty = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE, dtData.PLANT_ID).Where(c => c.ProdDate < saldoDate).LastOrDefault();
-                    var unpackedQty = lisCk4cItem.LastOrDefault(c => c.Werks == item && c.FaCode == data.FA_CODE && c.ProdDate < saldoDate);
+            //        //var unpackedQty = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE, dtData.PLANT_ID).Where(c => c.ProdDate < saldoDate).LastOrDefault();
+            //        var unpackedQty = lisCk4cItem.LastOrDefault(c => c.Werks == item && c.FaCode == data.FA_CODE && c.ProdDate < saldoDate);
 
-                    //var oldData = _productionBll.GetOldSaldo(dtData.COMPANY_ID, item, data.FA_CODE, saldoDate).LastOrDefault();
-                    var oldData = GetOldSaldoForReport(listProduction, listReversal, listWaste, item, data.FA_CODE, saldoDate).LastOrDefault();
+            //        //var oldData = _productionBll.GetOldSaldo(dtData.COMPANY_ID, item, data.FA_CODE, saldoDate).LastOrDefault();
+            //        var oldData = GetOldSaldoForReport(listProduction, listReversal, listWaste, item, data.FA_CODE, saldoDate).LastOrDefault();
 
 
-                    var oldUnpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
+            //        var oldUnpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
 
-                    var strOldUnpacked = oldUnpacked == 0 ? "Nihil" : String.Format("{0:n}", oldUnpacked);
+            //        var strOldUnpacked = oldUnpacked == 0 ? "Nihil" : String.Format("{0:n}", oldUnpacked);
 
-                    ck4cItem.CollumNo = 0;
-                    ck4cItem.No = string.Empty;
-                    ck4cItem.NoProd = string.Empty;
-                    ck4cItem.ProdDate = string.Empty;
+            //        ck4cItem.CollumNo = 0;
+            //        ck4cItem.No = string.Empty;
+            //        ck4cItem.NoProd = string.Empty;
+            //        ck4cItem.ProdDate = string.Empty;
 
-                    //var prodType = _prodTypeBll.GetById(data.PROD_CODE);
-                    var prodType = listProdType.FirstOrDefault(c => c.PROD_CODE == data.PROD_CODE);
-                    ck4cItem.ProdCode = data.PROD_CODE;
-                    ck4cItem.ProdType = prodType.PRODUCT_ALIAS;
+            //        //var prodType = _prodTypeBll.GetById(data.PROD_CODE);
+            //        var prodType = listProdType.FirstOrDefault(c => c.PROD_CODE == data.PROD_CODE);
+            //        ck4cItem.ProdCode = data.PROD_CODE;
+            //        ck4cItem.ProdType = prodType.PRODUCT_ALIAS;
 
-                    ck4cItem.SumBtg = "Nihil";
-                    ck4cItem.BtgGr = "Nihil";
+            //        ck4cItem.SumBtg = "Nihil";
+            //        ck4cItem.BtgGr = "Nihil";
 
-                    //var brand = _brandBll.GetById(item, data.FA_CODE);
-                    var brand = listBrand.FirstOrDefault(c => c.WERKS == item && c.FA_CODE == data.FA_CODE);
-                    ck4cItem.Merk = brand.BRAND_CE;
+            //        //var brand = _brandBll.GetById(item, data.FA_CODE);
+            //        var brand = listBrand.FirstOrDefault(c => c.WERKS == item && c.FA_CODE == data.FA_CODE);
+            //        var hjeValue = brand.HJE_IDR;
+            //        if (brand.BRAND_CE.Trim().ToLower() == "bahan baku") hjeValue = brand.HJE_IDR * Convert.ToInt32(brand.BRAND_CONTENT);
 
-                    ck4cItem.Isi = Convert.ToInt32(brand.BRAND_CONTENT) == 0 ? "Nihil" : String.Format("{0:n}", Convert.ToInt32(brand.BRAND_CONTENT));
-                    ck4cItem.Hje = brand.HJE_IDR == null ? "Nihil" : String.Format("{0:n}", brand.HJE_IDR);
-                    ck4cItem.Total = "Nihil";
-                    ck4cItem.ProdWaste = unpackedQty == null ? strOldUnpacked : (unpackedQty.UnpackedQty == 0 ? "Nihil" : String.Format("{0:n}", unpackedQty.UnpackedQty));
-                    ck4cItem.Comment = "Saldo CK-4C Sebelumnya";
+            //        ck4cItem.Merk = brand.BRAND_CE;
+            //        ck4cItem.Isi = Convert.ToInt32(brand.BRAND_CONTENT) == 0 ? "Nihil" : String.Format("{0:n}", Convert.ToInt32(brand.BRAND_CONTENT));
+            //        ck4cItem.Hje = brand.HJE_IDR == null ? "Nihil" : String.Format("{0:n}", hjeValue);
+            //        ck4cItem.Total = "Nihil";
+            //        ck4cItem.ProdWaste = unpackedQty == null ? strOldUnpacked : (unpackedQty.UnpackedQty == 0 ? "Nihil" : String.Format("{0:n}", unpackedQty.UnpackedQty));
+            //        ck4cItem.Comment = "Saldo CK-4C Sebelumnya";
+            //        ck4cItem.BhnKemasan = brand.BAHAN_KEMASAN;
 
-                    //disable quantity when ck4c level by plant
-                    if (dtData.PLANT_ID != null)
-                    {
-                        //var CheckBrand = _brandBll.GetByFaCode(dtData.PLANT_ID, data.FA_CODE);
-                        var CheckBrand =
-                            listBrand.FirstOrDefault(c => c.WERKS == dtData.PLANT_ID && c.FA_CODE == data.FA_CODE);
+            //        //disable quantity when ck4c level by plant
+            //        if (dtData.PLANT_ID != null)
+            //        {
+            //            //var CheckBrand = _brandBll.GetByFaCode(dtData.PLANT_ID, data.FA_CODE);
+            //            var CheckBrand =
+            //                listBrand.FirstOrDefault(c => c.WERKS == dtData.PLANT_ID && c.FA_CODE == data.FA_CODE);
 
-                        if (CheckBrand == null || dtData.PLANT_ID != item)
-                        {
-                            ck4cItem.ProdWaste = "Nihil";
-                        }
-                    }
+            //            if (CheckBrand == null || dtData.PLANT_ID != item)
+            //            {
+            //                ck4cItem.ProdWaste = "Nihil";
+            //            }
+            //        }
 
-                    //result.Ck4cItemList.Add(ck4cItem);
-                    tempListck4c1.Add(ck4cItem);
-                }
+            //        //result.Ck4cItemList.Add(ck4cItem);
+            //        tempListck4c1.Add(ck4cItem);
+            //    }
                 
-            }
-            //distinct var tempListck4c1
-            var tempCk4cDto = tempListck4c1.Select(c => new
-            {
-                c.CollumNo,
-                c.No,
-                c.NoProd,
-                c.ProdDate,
-                c.ProdCode,
-                c.ProdType,
-                c.SumBtg,
-                c.BtgGr,
-                c.Merk,
-                c.Isi,
-                c.Hje,
-                c.Total,
-                c.ProdWaste,
-                c.Comment
-            });
+            //}
+            ////distinct var tempListck4c1
+            //var tempCk4cDto = tempListck4c1.Select(c => new
+            //{
+            //    c.CollumNo,
+            //    c.No,
+            //    c.NoProd,
+            //    c.ProdDate,
+            //    c.ProdCode,
+            //    c.ProdType,
+            //    c.SumBtg,
+            //    c.BtgGr,
+            //    c.Merk,
+            //    c.Isi,
+            //    c.Hje,
+            //    c.Total,
+            //    c.ProdWaste,
+            //    c.Comment,
+            //    c.BhnKemasan
+            //});
 
-            var distinctTempCk4cDto = tempCk4cDto.Distinct().ToList();
+            //var distinctTempCk4cDto = tempCk4cDto.Distinct().ToList();
 
-            var newDistinctCk4cReportItemDto = distinctTempCk4cDto.Select(c => new Ck4cReportItemDto
-            {
-                CollumNo = c.CollumNo,
-                No = c.No,
-                NoProd = c.NoProd,
-                ProdDate = c.ProdDate,
-                ProdCode = c.ProdCode,
-                ProdType = c.ProdType,
-                SumBtg = c.SumBtg,
-                BtgGr = c.BtgGr,
-                Merk = c.Merk,
-                Isi = c.Isi,
-                Hje = c.Hje,
-                Total = c.Total,
-                ProdWaste = c.ProdWaste,
-                Comment = c.Comment
+            //var newDistinctCk4cReportItemDto = distinctTempCk4cDto.Select(c => new Ck4cReportItemDto
+            //{
+            //    CollumNo = c.CollumNo,
+            //    No = c.No,
+            //    NoProd = c.NoProd,
+            //    ProdDate = c.ProdDate,
+            //    ProdCode = c.ProdCode,
+            //    ProdType = c.ProdType,
+            //    SumBtg = c.SumBtg,
+            //    BtgGr = c.BtgGr,
+            //    Merk = c.Merk,
+            //    Isi = c.Isi,
+            //    Hje = c.Hje,
+            //    Total = c.Total,
+            //    ProdWaste = c.ProdWaste,
+            //    Comment = c.Comment,
+            //    BhnKemasan = c.BhnKemasan
 
-            }).ToList();
+            //}).ToList();
 
             //add to dictionary group by date empty
-            ck4cItemGroupByDate.Add(String.Empty, newDistinctCk4cReportItemDto);
+            //ck4cItemGroupByDate.Add(String.Empty, newDistinctCk4cReportItemDto);
             result.Detail.CompanyAddress = address;
 
             var plant = _plantBll.GetT001WById(dtData.PLANT_ID);
@@ -1242,19 +1249,9 @@ namespace Sampoerna.EMS.BLL
             result.Detail.NBatang = nBatang.ToString();
             result.Detail.NGram = nGram.ToString();
 
-            var prodTotal = string.Empty;
-            if (nBatang != 0 && nGram != 0)
-            {
-                prodTotal = String.Format("{0:n}",nBatang) + " batang dan " + String.Format("{0:n}",nGram) + " gram";
-            }
-            else if (nBatang == 0 && nGram != 0)
-            {
-                prodTotal = String.Format("{0:n}",nGram) + " gram";
-            }
-            else if (nBatang != 0 && nGram == 0)
-            {
-                prodTotal = String.Format("{0:n}",nBatang) + " batang";
-            }
+            var nBatangstr = nBatang == 0 ? "Nihil" : String.Format("{0:n0}", nBatang);
+            var nGramstr = nGram == 0 ? "Nihil" : String.Format("{0:n0}", nGram);
+            var prodTotal = nBatangstr + " batang dan/atau " + nGramstr + " gram";
 
             var city = plant == null ? _nppbkcbll.GetById(dtData.NPPBKC_ID).CITY : plant.ORT01;
             result.Detail.City = city;
@@ -1290,7 +1287,7 @@ namespace Sampoerna.EMS.BLL
                         listBrand.Where(
                             x =>
                                 x.WERKS == item && x.IS_DELETED != true && x.STATUS == true &&
-                                Int32.TryParse(x.BRAND_CONTENT, out isInt) && x.EXC_GOOD_TYP == "01");
+                                Int32.TryParse(x.BRAND_CONTENT, out isInt) && (x.EXC_GOOD_TYP == "01" || x.EXC_GOOD_TYP == "02"));
 
                    //var blFind = false;
 
@@ -1300,8 +1297,11 @@ namespace Sampoerna.EMS.BLL
                         //    blFind = true;
 
                         var ck4cItem = new Ck4cReportItemDto();
+                        var ck4cItemTis = new Ck4cReportItemDto();
                         //var brand = _brandBll.GetById(item, data.FA_CODE);
                         var brand = listBrand.FirstOrDefault(c => c.WERKS == item && c.FA_CODE == data.FA_CODE);
+                        var hjeValue = brand.HJE_IDR;
+                        if (brand.PROD_CODE == "05" && brand.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.TembakauIris)) hjeValue = brand.HJE_IDR * Convert.ToInt32(brand.BRAND_CONTENT);
 
                         //var prodType = _prodTypeBll.GetById(data.PROD_CODE);
                         var prodType = listProdType.FirstOrDefault(c => c.PROD_CODE == data.PROD_CODE);
@@ -1309,7 +1309,13 @@ namespace Sampoerna.EMS.BLL
                         var itemCk4c = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat);
                         var lastItemCk4c = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE < prodDateFormat).LastOrDefault();
                         var prodQty = itemCk4c.Sum(x => x.PROD_QTY);
+                        var zbQty = itemCk4c.Sum(x => x.ZB);
+                        var packedAdjustedQty = itemCk4c.Sum(x => x.PACKED_ADJUSTED);
                         var packedQty = itemCk4c.Sum(x => x.PACKED_QTY);
+
+                        if (zbQty > 0) packedQty = zbQty;
+                        if (packedAdjustedQty > 0) packedQty = packedAdjustedQty;
+
                         var unpackedQty = itemCk4c.Sum(x => x.UNPACKED_QTY);
                         var remarks = itemCk4c.FirstOrDefault();
                         var total = brand.BRAND_CONTENT == null ? 0 : packedQty / Convert.ToInt32(brand.BRAND_CONTENT);
@@ -1353,14 +1359,15 @@ namespace Sampoerna.EMS.BLL
                         ck4cItem.ProdDate = prodDate;
                         ck4cItem.ProdCode = data.PROD_CODE;
                         ck4cItem.ProdType = prodType.PRODUCT_ALIAS;
-                        ck4cItem.SumBtg = prodQty == 0 ? "Nihil" : String.Format("{0:n}", prodQty);
-                        ck4cItem.BtgGr = packedQty == null || packedQty == 0 ? "Nihil" : String.Format("{0:n}", packedQty);
+                        ck4cItem.SumBtg = prodQty == 0 ? "Nihil" : String.Format("{0:n0}", prodQty);
+                        ck4cItem.BtgGr = packedQty == null || packedQty == 0 ? "Nihil" : String.Format("{0:n0}", packedQty);
                         ck4cItem.Merk = brand.BRAND_CE;
-                        ck4cItem.Isi = Convert.ToInt32(brand.BRAND_CONTENT) == 0 ? "Nihil" : String.Format("{0:n}", Convert.ToInt32(brand.BRAND_CONTENT));
-                        ck4cItem.Hje = brand.HJE_IDR == null || brand.HJE_IDR == 0 ? "Nihil" : String.Format("{0:n}", brand.HJE_IDR);
-                        ck4cItem.Total = total == null || total == 0 ? "Nihil" : String.Format("{0:n}", total);
-                        ck4cItem.ProdWaste = unpackedQty == null || unpackedQty == 0 ? "Nihil" : String.Format("{0:n}", unpackedQty);
+                        ck4cItem.Isi = Convert.ToInt32(brand.BRAND_CONTENT) == 0 ? "Nihil" : String.Format("{0:n0}", Convert.ToInt32(brand.BRAND_CONTENT));
+                        ck4cItem.Hje = brand.HJE_IDR == null || brand.HJE_IDR == 0 ? "Nihil" : String.Format("{0:n0}", hjeValue);
+                        ck4cItem.Total = total == null || total == 0 ? "Nihil" : String.Format("{0:n0}", total);
+                        ck4cItem.ProdWaste = unpackedQty == null || unpackedQty == 0 ? "Nihil" : String.Format("{0:n0}", unpackedQty);
                         ck4cItem.Comment = remarks == null ? string.Empty : remarks.REMARKS;
+                        ck4cItem.BhnKemasan = brand.BAHAN_KEMASAN;
 
                         //disable quantity when ck4c level by plant
                         if (dtData.PLANT_ID != null)
@@ -1377,8 +1384,56 @@ namespace Sampoerna.EMS.BLL
                             }
                         }
 
+                        //for new role tis
+                        if (brand.PROD_CODE == "05" && brand.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.TembakauIris))
+                        {
+                            if (ck4cItem.Total != "Nihil")
+                            {
+                                decimal decimalVal = total.Value % 1;
+
+                                if (decimalVal > 0)
+                                {
+                                    decimal intVal = Math.Floor(total.Value);
+                                    decimal newBtgGr = Convert.ToInt32(brand.BRAND_CONTENT) * intVal;
+                                    decimal btgGrTis = packedQty.Value - newBtgGr;
+
+                                    ck4cItem.Total = String.Format("{0:n0}", intVal);
+                                    ck4cItem.BtgGr = String.Format("{0:n0}", newBtgGr);
+
+                                    ck4cItemTis.CollumNo = i;
+                                    ck4cItemTis.No = i.ToString();
+                                    ck4cItemTis.NoProd = i.ToString();
+                                    ck4cItemTis.ProdDate = prodDate;
+                                    ck4cItemTis.ProdCode = data.PROD_CODE;
+                                    ck4cItemTis.ProdType = prodType.PRODUCT_ALIAS;
+                                    ck4cItemTis.SumBtg = prodQty == 0 ? "Nihil" : String.Format("{0:n0}", prodQty);
+                                    ck4cItemTis.BtgGr = String.Format("{0:n0}", btgGrTis);
+                                    ck4cItemTis.Merk = brand.BRAND_CE;
+                                    ck4cItemTis.Isi = String.Format("{0:n0}", btgGrTis);
+                                    ck4cItemTis.Hje = String.Format("{0:n0}", brand.HJE_IDR * btgGrTis);
+                                    ck4cItemTis.Total = String.Format("{0:n0}", 1);
+                                    ck4cItemTis.ProdWaste = unpackedQty == null || unpackedQty == 0 ? "Nihil" : String.Format("{0:n0}", unpackedQty);
+                                    ck4cItemTis.Comment = remarks == null ? string.Empty : remarks.REMARKS;
+                                    ck4cItemTis.BhnKemasan = brand.BAHAN_KEMASAN;
+                                }
+                            }
+                        }
+
                         //result.Ck4cItemList.Add(ck4cItem);
                         tempListck4c2.Add(ck4cItem);
+
+                        if (brand.PROD_CODE == "05" && brand.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.TembakauIris))
+                        {
+                            if (ck4cItem.Total != "Nihil")
+                            {
+                                decimal decimalVal = total.Value % 1;
+
+                                if (decimalVal > 0)
+                                {
+                                    tempListck4c2.Add(ck4cItemTis);
+                                }
+                            }
+                        }
 
                         var unpackedItem = new Ck4cUnpacked();
                         unpackedItem.PlantId = item;
@@ -1406,7 +1461,8 @@ namespace Sampoerna.EMS.BLL
                     c.Hje,
                     c.Total,
                     c.ProdWaste,
-                    c.Comment
+                    c.Comment,
+                    c.BhnKemasan
                 });
 
                 var distinctTempCk4cDto2 = tempCk4cDto2.Distinct().ToList();
@@ -1426,7 +1482,8 @@ namespace Sampoerna.EMS.BLL
                     Hje = c.Hje,
                     Total = c.Total,
                     ProdWaste = c.ProdWaste,
-                    Comment = c.Comment
+                    Comment = c.Comment,
+                    BhnKemasan = c.BhnKemasan
 
                 }).ToList();
 
@@ -1447,22 +1504,22 @@ namespace Sampoerna.EMS.BLL
             var sumTotal = string.Empty;
             var btgTotal = string.Empty;
 
-            if(prodTypeDistinct != string.Empty)
-            {
-                var brandType = prodTypeDistinct.Substring(1).Split('|').Distinct();
+            //if(prodTypeDistinct != string.Empty)
+            //{
+            //    var brandType = prodTypeDistinct.Substring(1).Split('|').Distinct();
 
-                foreach (var data in brandType)
-                {
-                    var sum = dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PROD_QTY);
-                    var total = dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PACKED_QTY);
+            //    foreach (var data in brandType)
+            //    {
+            //        var sum = dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PROD_QTY);
+            //        var total = dtData.CK4C_ITEM.Where(x => x.PROD_CODE == data).Sum(x => x.PACKED_QTY);
 
-                    //prodAlias += _prodTypeBll.GetById(data).PRODUCT_ALIAS + Environment.NewLine;
-                    prodAlias += listProdType.FirstOrDefault(c => c.PROD_CODE == data).PRODUCT_ALIAS + Environment.NewLine;
+            //        //prodAlias += _prodTypeBll.GetById(data).PRODUCT_ALIAS + Environment.NewLine;
+            //        prodAlias += listProdType.FirstOrDefault(c => c.PROD_CODE == data).PRODUCT_ALIAS + Environment.NewLine;
 
-                    sumTotal += (sum == 0 ? "Nihil" : String.Format("{0:n}", sum)) + Environment.NewLine;
-                    btgTotal += (total == 0 ? "Nihil" : String.Format("{0:n}", total)) + Environment.NewLine;
-                }
-            }
+            //        sumTotal += (sum == 0 ? "Nihil" : String.Format("{0:n}", sum)) + Environment.NewLine;
+            //        btgTotal += (total == 0 ? "Nihil" : String.Format("{0:n}", total)) + Environment.NewLine;
+            //    }
+            //}
 
             result.Ck4cTotal.ProdType = prodAlias;
             result.Ck4cTotal.ProdTotal = sumTotal;
@@ -1471,12 +1528,12 @@ namespace Sampoerna.EMS.BLL
             if (nBatang == 0 && nGram != 0)
             {
                 if (result.Ck4cItemList.Where(x => x.ProdType == "SKM" || x.ProdType == "SPM" || x.ProdType == "CRT" || x.ProdType == "SKT").Count() > 0)
-                    prodTotal = "Nihil batang dan " + String.Format("{0:n}", nGram) + " gram";
+                    prodTotal = "Nihil batang dan " + String.Format("{0:n0}", nGram) + " gram";
             }
             else if (nBatang != 0 && nGram == 0)
             {
                 if (result.Ck4cItemList.Where(x => x.ProdType == "TIS").Count() > 0)
-                    prodTotal = String.Format("{0:n}", nBatang) + " batang dan Nihil gram";
+                    prodTotal = String.Format("{0:n0}", nBatang) + " batang dan Nihil gram";
             }
 
             var groupItemList = GroupListItem(result.Ck4cItemList);
@@ -1484,6 +1541,20 @@ namespace Sampoerna.EMS.BLL
             result.Ck4cItemList = groupItemList;
 
             result.Detail.ProdTotal = prodTotal;
+
+            result.Ck4cTotal.PackedInPackTotal = String.Format("{0:n0}", result.Ck4cItemList.Where(x => x.Total != "Nihil").Sum(x => Convert.ToDecimal(x.Total)));
+            result.Ck4cTotal.PackedBtgTotal = String.Format("{0:n0}", result.Ck4cItemList.Where(x => x.ProdType != "TIS" && x.Total != "Nihil").Sum(x => Convert.ToDecimal(x.BtgGr)));
+            result.Ck4cTotal.PackedGTotal = String.Format("{0:n0}", result.Ck4cItemList.Where(x => x.ProdType == "TIS" && x.Total != "Nihil").Sum(x => Convert.ToDecimal(x.BtgGr)));
+
+            result.Ck4cTotal.PackedInPackTotal = result.Ck4cTotal.PackedInPackTotal == "0"
+                ? "Nihil"
+                : result.Ck4cTotal.PackedInPackTotal;
+            result.Ck4cTotal.PackedBtgTotal = result.Ck4cTotal.PackedBtgTotal == "0"
+                ? "Nihil"
+                : result.Ck4cTotal.PackedBtgTotal;
+            result.Ck4cTotal.PackedGTotal = result.Ck4cTotal.PackedGTotal == "0"
+                ? "Nihil"
+                : result.Ck4cTotal.PackedGTotal;
 
             return result;
         }
@@ -1530,7 +1601,7 @@ namespace Sampoerna.EMS.BLL
             //header
             var groupList = groupItem
                 .Where(c=>string.IsNullOrEmpty(c.ProdDate))
-                .GroupBy(x => new { x.Ck4cItemId, x.ProdQty, x.ProdCode, x.ProdType, x.Merk, x.Hje, x.No, x.NoProd, x.ProdDate, x.Isi, x.CollumNo })
+                .GroupBy(x => new { x.Ck4cItemId, x.ProdQty, x.ProdCode, x.ProdType, x.Merk, x.Hje, x.No, x.NoProd, x.ProdDate, x.Isi, x.CollumNo, x.BhnKemasan })
                 .Select(p => new Ck4cGroupReportItemDto()
                 {
                     Ck4cItemId = p.FirstOrDefault().Ck4cItemId,
@@ -1545,6 +1616,7 @@ namespace Sampoerna.EMS.BLL
                     Isi = p.FirstOrDefault().Isi,
                     Comment = p.FirstOrDefault().Comment,
                     CollumNo = p.FirstOrDefault().CollumNo,
+                    BhnKemasan = p.FirstOrDefault().BhnKemasan,
                     SumBtg = p.Sum(c => c.SumBtg),
                     BtgGr = p.Sum(c => c.BtgGr),
                     Total = p.Sum(c => c.Total),
@@ -1557,7 +1629,7 @@ namespace Sampoerna.EMS.BLL
             //different when take field remark 
             var groupList2 = groupItem
                 .Where(c => !string.IsNullOrEmpty(c.ProdDate))
-                .GroupBy(x => new { x.Ck4cItemId, x.ProdQty, x.ProdCode, x.ProdType, x.Merk, x.Hje, x.No, x.NoProd, x.ProdDate, x.Isi, x.CollumNo })
+                .GroupBy(x => new { x.Ck4cItemId, x.ProdQty, x.ProdCode, x.ProdType, x.Merk, x.Hje, x.No, x.NoProd, x.ProdDate, x.Isi, x.CollumNo, x.BhnKemasan })
                 .Select(p => new Ck4cGroupReportItemDto()
                 {
                     Ck4cItemId = p.FirstOrDefault().Ck4cItemId,
@@ -1572,6 +1644,7 @@ namespace Sampoerna.EMS.BLL
                     Isi = p.FirstOrDefault().Isi,
                     Comment = string.Join("", p.Select(c => c.Comment)),// p.LastOrDefault().Comment,
                     CollumNo = p.FirstOrDefault().CollumNo,
+                    BhnKemasan = p.FirstOrDefault().BhnKemasan,
                     SumBtg = p.Sum(c => c.SumBtg),
                     BtgGr = p.Sum(c => c.BtgGr),
                     Total = p.Sum(c => c.Total),
@@ -1834,6 +1907,8 @@ namespace Sampoerna.EMS.BLL
                 var tariff = new List<string>();
                 var content = new List<string>();
                 var packedQty = new List<string>();
+                var zb = new List<string>();
+                var packedAdjusted = new List<string>();
                 var packedQtyInPack = new List<string>();
                 var unpackedQty = new List<string>();
                 var prodQty = new List<string>();
@@ -1857,11 +1932,15 @@ namespace Sampoerna.EMS.BLL
 
                     var contentPerPack = ck4CItem.CONTENT_PER_PACK == null ? 0 : ck4CItem.CONTENT_PER_PACK.Value;
                     var packedInPack = ck4CItem.PACKED_IN_PACK == null ? 0 : ck4CItem.PACKED_IN_PACK.Value;
+                    var zbValue = ck4CItem.ZB == null ? 0 : ck4CItem.ZB.Value;
+                    var packedAdjustedValue = ck4CItem.PACKED_ADJUSTED == null ? 0 : ck4CItem.PACKED_ADJUSTED.Value;
 
                     hje.Add(String.Format("{0:n}", ck4CItem.HJE_IDR.Value));
                     tariff.Add(String.Format("{0:n}", ck4CItem.TARIFF.Value));
                     content.Add(String.Format("{0:n}", contentPerPack));
                     packedQty.Add(String.Format("{0:n}", ck4CItem.PACKED_QTY.Value));
+                    zb.Add(String.Format("{0:n}", zbValue));
+                    packedAdjusted.Add(String.Format("{0:n}", packedAdjustedValue));
                     packedQtyInPack.Add(String.Format("{0:n}", packedInPack));
                     unpackedQty.Add(String.Format("{0:n}", ck4CItem.UNPACKED_QTY.Value));
                     prodQty.Add(String.Format("{0:n}", ck4CItem.PROD_QTY));
@@ -1877,6 +1956,8 @@ namespace Sampoerna.EMS.BLL
                 summaryDto.Tariff = tariff;
                 summaryDto.Content = content;
                 summaryDto.PackedQty = packedQty;
+                summaryDto.Zb = zb;
+                summaryDto.PackedAdjusted = packedAdjusted;
                 summaryDto.PackedQtyInPack = packedQtyInPack;
                 summaryDto.UnPackQty = unpackedQty;
                 summaryDto.ProducedQty = prodQty;
@@ -1927,6 +2008,8 @@ namespace Sampoerna.EMS.BLL
                     var tariff = new List<string>();
                     var content = new List<string>();
                     var packedQty = new List<string>();
+                    var zb = new List<string>();
+                    var packedAdjusted = new List<string>();
                     var packedQtyInPack = new List<string>();
                     var unpackedQty = new List<string>();
                     var prodQty = new List<string>();
@@ -1948,11 +2031,15 @@ namespace Sampoerna.EMS.BLL
 
                     var contentPerPack = ck4CItem.CONTENT_PER_PACK == null ? 0 : ck4CItem.CONTENT_PER_PACK.Value;
                     var packedInPack = ck4CItem.PACKED_IN_PACK == null ? 0 : ck4CItem.PACKED_IN_PACK.Value;
+                    var zbValue = ck4CItem.ZB == null ? 0 : ck4CItem.ZB.Value;
+                    var packedAdjustedValue = ck4CItem.PACKED_ADJUSTED == null ? 0 : ck4CItem.PACKED_ADJUSTED.Value;
 
                     hje.Add(String.Format("{0:n}", ck4CItem.HJE_IDR.Value));
                     tariff.Add(String.Format("{0:n}", ck4CItem.TARIFF.Value));
                     content.Add(String.Format("{0:n}", contentPerPack));
                     packedQty.Add(String.Format("{0:n}", ck4CItem.PACKED_QTY.Value));
+                    zb.Add(String.Format("{0:n}", zbValue));
+                    packedAdjusted.Add(String.Format("{0:n}", packedAdjustedValue));
                     packedQtyInPack.Add(String.Format("{0:n}", packedInPack));
                     unpackedQty.Add(String.Format("{0:n}", ck4CItem.UNPACKED_QTY.Value));
                     prodQty.Add(String.Format("{0:n}", ck4CItem.PROD_QTY));
@@ -1967,6 +2054,8 @@ namespace Sampoerna.EMS.BLL
                     summaryDto.Tariff = tariff;
                     summaryDto.Content = content;
                     summaryDto.PackedQty = packedQty;
+                    summaryDto.Zb = zb;
+                    summaryDto.PackedAdjusted = packedAdjusted;
                     summaryDto.PackedQtyInPack = packedQtyInPack;
                     summaryDto.UnPackQty = unpackedQty;
                     summaryDto.ProducedQty = prodQty;
@@ -2008,6 +2097,8 @@ namespace Sampoerna.EMS.BLL
                     var prodType = _prodTypeBll.GetByCode(ck4CItem.PROD_CODE);
                     var brand = _brandBll.GetById(ck4CItem.WERKS, ck4CItem.FA_CODE);
                     var total = brand.BRAND_CONTENT == null ? 0 : ck4CItem.PACKED_QTY.Value / Convert.ToInt32(brand.BRAND_CONTENT);
+                    var zbValue = ck4CItem.ZB == null ? 0 : ck4CItem.ZB.Value;
+                    var packedAdjustedValue = ck4CItem.PACKED_ADJUSTED == null ? 0 : ck4CItem.PACKED_ADJUSTED.Value;
 
                     itemDto.DateProduction = ck4CItem.PROD_DATE;
                     itemDto.ProductionDate = ck4CItem.PROD_DATE.ToString("dd-MMM-yy");
@@ -2019,6 +2110,8 @@ namespace Sampoerna.EMS.BLL
                     itemDto.ProdQty = String.Format("{0:n}", ck4CItem.PROD_QTY);
                     itemDto.ProdQtyUom = ck4CItem.UOM_PROD_QTY;
                     itemDto.PackedQty = String.Format("{0:n}", ck4CItem.PACKED_QTY.Value);
+                    itemDto.Zb = String.Format("{0:n}", zbValue);
+                    itemDto.PackedAdjusted = String.Format("{0:n}", packedAdjustedValue);
                     itemDto.UnpackedQty = String.Format("{0:n}", ck4CItem.UNPACKED_QTY.Value);
                     itemDto.Remarks = ck4CItem.REMARKS;
                     itemDto.Content = String.Format("{0:n}", ck4CItem.CONTENT_PER_PACK.Value);
@@ -2032,5 +2125,173 @@ namespace Sampoerna.EMS.BLL
 
             return result;
         }
+
+
+        #region Revise Completed Document
+
+        public bool AllowReviseCompletedDocument(Ck4CDto item)
+        {
+            var isAllow = true;
+
+            var reportedPeriod = 2;
+            if (item.ReportedPeriod == 2) reportedPeriod = 1;
+
+            var nextMonth = new DateTime(item.ReportedYears, item.ReportedMonth, 1).AddMonths(1);
+            var reportedMonth = nextMonth.Month;
+            var reportedYear = nextMonth.Year;
+
+            var rc = _repository.Get(c => c.REPORTED_PERIOD == reportedPeriod && c.REPORTED_MONTH == reportedMonth 
+                                        && c.REPORTED_YEAR == reportedYear && c.NPPBKC_ID == item.NppbkcId 
+                                        && c.PLANT_ID == item.PlantId && (c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.Rejected), 
+                                        null, includeTables).ToList();
+
+            if (rc.Count > 0) isAllow = false;
+
+            return isAllow;
+        }
+
+        public void ReviseCompletedDocument(int id)
+        {
+            CK4C model;
+            CK4C newModel;
+
+            try
+            {
+                //part insert new ck4c
+                model = _repository.Get(c => c.CK4C_ID == id).FirstOrDefault();
+                //get new document number
+                newModel = model;
+                var newDocNumber = model.NUMBER + "-R";
+                newModel.NUMBER = newDocNumber;
+                newModel.STATUS = Enums.DocumentStatus.Draft;
+                newModel.GOV_STATUS = null;
+                _repository.Insert(newModel);
+                _uow.SaveChanges();
+
+                //part insert new ck4citem
+                var newCk4cId = newModel.CK4C_ID;
+                model = _repository.Get(c => c.CK4C_ID == id, null, includeTables).FirstOrDefault();
+                var listCk4cItem = Mapper.Map<List<Ck4cItem>>(model.CK4C_ITEM);
+                foreach (var item in listCk4cItem)
+                {
+                    item.Ck4CId = newCk4cId;
+                }
+                newModel = _repository.Get(c => c.CK4C_ID == newCk4cId, null, includeTables).FirstOrDefault();
+                newModel.CK4C_ITEM = null;
+                newModel.CK4C_ITEM = Mapper.Map<List<CK4C_ITEM>>(listCk4cItem); ;
+                _repository.Update(newModel);
+                _uow.SaveChanges();
+
+                //part update old ck4c
+                model = _repository.Get(c => c.CK4C_ID == id).FirstOrDefault();
+                model.CK4C_ID_REVISED = newCk4cId;
+                _repository.Update(model);
+                _uow.SaveChanges();
+
+                //send email to next document creator
+                SendEmailWorkflowRevise(newCk4cId);
+            }
+            catch (Exception exception)
+            {
+                throw exception;
+            }
+        }
+
+        public Ck4CDto GetByCk4cReviseId(long id)
+        {
+            var dbData = _repository.Get(c => c.CK4C_ID_REVISED == id, null, includeTables).FirstOrDefault();
+
+            var mapResult = Mapper.Map<Ck4CDto>(dbData);
+
+            return mapResult;
+        }
+
+        private void SendEmailWorkflowRevise(int ck4cId)
+        {
+            var ck4cData = _repository.Get(c => c.CK4C_ID == ck4cId, null, includeTables).FirstOrDefault();
+
+            var reportedPeriod = 2;
+            if (ck4cData.REPORTED_PERIOD == 2) reportedPeriod = 1;
+
+            var nextMonth = new DateTime(ck4cData.REPORTED_YEAR.Value, ck4cData.REPORTED_MONTH.Value, 1).AddMonths(1);
+            var reportedMonth = nextMonth.Month;
+            var reportedYear = nextMonth.Year;
+
+            var rc = _repository.Get(c => c.REPORTED_PERIOD == reportedPeriod && c.REPORTED_MONTH == reportedMonth
+                                        && c.REPORTED_YEAR == reportedYear && c.NPPBKC_ID == ck4cData.NPPBKC_ID
+                                        && c.PLANT_ID == ck4cData.PLANT_ID && (c.STATUS == Enums.DocumentStatus.Draft || c.STATUS == Enums.DocumentStatus.Rejected),
+                                        null, includeTables).ToList();
+
+            var ck4cNext = rc.Count > 0 ? rc.FirstOrDefault() : null;
+
+            var mailProcess = ProsesMailNotificationBodyRevise(ck4cData, ck4cNext);
+
+            _messageService.SendEmailToListWithCC(mailProcess.To, mailProcess.CC, mailProcess.Subject, mailProcess.Body, true);
+        }
+
+        private Ck4cMailNotification ProsesMailNotificationBodyRevise(CK4C ck4cData, CK4C nextDocument)
+        {
+            var bodyMail = new StringBuilder();
+            var rc = new Ck4cMailNotification();
+            var plant = _plantBll.GetT001WById(ck4cData.PLANT_ID);
+            var nppbkc = ck4cData.NPPBKC_ID;
+
+            var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
+            var ck4cType = "Plant";
+            if (plant == null) ck4cType = "NPPBKC";
+
+            var userData = _userBll.GetUserById(ck4cData.CREATED_BY);
+
+            rc.Subject = "CK-4C " + ck4cData.NUMBER + " is Revised";
+            bodyMail.Append("Dear Team,<br />");
+            bodyMail.AppendLine();
+            bodyMail.Append("Kindly be informed, CK-4C Document is Revised. <br />");
+            bodyMail.AppendLine();
+            bodyMail.Append("<table>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Creator </td><td>: " + userData.LAST_NAME + ", " + userData.FIRST_NAME + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Company Code </td><td>: " + ck4cData.COMPANY_ID + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Plant ID </td><td>: " + ck4cData.PLANT_ID + " - " + ck4cData.PLANT_NAME + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Period </td><td>: " + _monthBll.GetMonth(ck4cData.REPORTED_MONTH.Value).MONTH_NAME_ENG + " " + ck4cData.REPORTED_PERIOD + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>KPPBC </td><td>: " + _lfaBll.GetById(_nppbkcbll.GetById(nppbkc).KPPBC_ID).NAME2 + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>NPPBKC </td><td>: " + nppbkc + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Document Number</td><td> : " + ck4cData.NUMBER + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr><td>Document Type</td><td> : CK-4C level " + ck4cType + "</td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<tr colspan='2'><td><i>To VIEW, Please click this <a href='" + webRootUrl + "/CK4C/Detail/" + ck4cData.CK4C_ID + "'>link</a></i></td></tr>");
+            bodyMail.AppendLine();
+            bodyMail.Append("</table>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<br />Regards,<br />");
+
+            rc.To.Add(userData.EMAIL);
+            rc.CC.Add(_userBll.GetUserById(ck4cData.APPROVED_BY_POA).EMAIL);
+
+            if (nextDocument != null)
+            {
+                rc.CC.Add(_userBll.GetUserById(nextDocument.CREATED_BY).EMAIL);
+
+                var approveRejectedPoa = _workflowHistoryBll.GetApprovedOrRejectedPOAStatusByDocumentNumber(new GetByFormTypeAndFormIdInput() { FormId = nextDocument.CK4C_ID, FormType = Enums.FormType.CK4C });
+
+                if (approveRejectedPoa != null)
+                {
+                    var poaApproveId = _userBll.GetUserById(approveRejectedPoa.ACTION_BY);
+
+                    rc.CC.Add(poaApproveId.EMAIL);
+                }
+            }
+
+            rc.Body = bodyMail.ToString();
+            return rc;
+        }
+
+        #endregion
     }
 }

@@ -186,7 +186,7 @@ namespace Sampoerna.EMS.Website.Code
                              select new SelectListItem
                                         {
                                             Value = s.SERIES_CODE,
-                                            Text = s.SERIES_CODE + "-" + s.SERIES_VALUE
+                                            Text = (s.SERIES_CODE=="0" ? "NO SERIES" : s.SERIES_CODE + "-" + s.SERIES_VALUE)
                                         };
             return new SelectList(selectList, "Value", "Text");
         }
@@ -570,6 +570,25 @@ namespace Sampoerna.EMS.Website.Code
             return new SelectList(selectItemSource, "ValueField", "TextField");
         }
 
+        public static SelectList GetReversalInventoryMovementData(string plant, string facode)
+        {
+            IInventoryMovementService inventoryMovementBll = MvcApplication.GetInstance<InventoryMovementService>();
+            var inventoryMovementList = inventoryMovementBll.GetReversalData(plant, facode);
+            var selectItemSource = Mapper.Map<List<SelectItemModel>>(inventoryMovementList);
+            return new SelectList(selectItemSource, "ValueField", "TextField");
+        }
+
+        public static SelectList GetBahanKemasanList(IBrandRegistrationBLL brandRegistrationBll)
+        {
+            var data = brandRegistrationBll.GetAllBrands().Where(x => x.IS_DELETED != true && x.BAHAN_KEMASAN != "" && x.BAHAN_KEMASAN != null);
+            var selectList = from s in data
+                             select new SelectListItem
+                             {
+                                 Value = s.BAHAN_KEMASAN,
+                                 Text = s.BAHAN_KEMASAN
+                             };
+            return new SelectList(selectList.GroupBy(p => p.Value).Select(g => g.First()), "Value", "Text");
+        }
       
     }
 

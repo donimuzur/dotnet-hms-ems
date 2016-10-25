@@ -101,6 +101,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.HjeCurrencyList = GlobalFunctions.GetCurrencyList();
             model.TariffCurrencyList = GlobalFunctions.GetCurrencyList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
+            model.BahanKemasanList = GlobalFunctions.GetBahanKemasanList(_brandRegistrationBll);
 
             return model;
         }
@@ -157,6 +158,13 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        public JsonResult BahanKemasanList()
+        {
+            var bahanKemasanList = GlobalFunctions.GetBahanKemasanList(_brandRegistrationBll);
+            return Json(bahanKemasanList);
+        }
+
+        [HttpPost]
         public ActionResult Create(BrandRegistrationCreateViewModel model)
         {
             if (ModelState.IsValid)
@@ -175,6 +183,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
                 dbBrand.PRINTING_PRICE = model.PrintingPrice == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
                 dbBrand.STATUS = model.IsActive;
+                dbBrand.PACKED_ADJUSTED = model.IsPackedAdjusted;
+                dbBrand.BAHAN_KEMASAN = model.BahanKemasan.Trim();
                 if (!string.IsNullOrEmpty(dbBrand.PER_CODE_DESC))
                     dbBrand.PER_CODE_DESC = model.PersonalizationCodeDescription.Split('-')[1];
 
@@ -214,6 +224,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.HjeCurrencyList = GlobalFunctions.GetCurrencyList();
             model.TariffCurrencyList = GlobalFunctions.GetCurrencyList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
+            model.BahanKemasanList = GlobalFunctions.GetBahanKemasanList(_brandRegistrationBll);
             return model;
         }
 
@@ -273,6 +284,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
             dbBrand.PRINTING_PRICE = model.PrintingPriceValueStr == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
             dbBrand.FA_CODE = model.FaCode.Trim();
+            dbBrand.BAHAN_KEMASAN = model.BahanKemasan.Trim();
             //dbBrand.CREATED_BY = CurrentUser.USER_ID;
             if (!string.IsNullOrEmpty(model.PersonalizationCodeDescription))
                 dbBrand.PER_CODE_DESC = model.PersonalizationCodeDescription;
@@ -333,6 +345,7 @@ namespace Sampoerna.EMS.Website.Controllers
             changesData.Add("Conversion", origin.CONVERSION == updatedModel.Conversion);
             changesData.Add("CutFilterCode", origin.CUT_FILLER_CODE == updatedModel.CutFillerCode);
             changesData.Add("PRINTING_PRICE", origin.PRINTING_PRICE == updatedModel.PrintingPrice);
+            changesData.Add("BahanKemasan", origin.BAHAN_KEMASAN == updatedModel.BahanKemasan);
 
             foreach (var listChange in changesData)
             {
@@ -441,6 +454,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     case "PRINTING_PRICE":
                         changes.OLD_VALUE = origin.PRINTING_PRICE.ToString();
                         changes.NEW_VALUE = updatedModel.PrintingPrice.ToString();
+                        break;
+                    case "BahanKemasan":
+                        changes.OLD_VALUE = origin.BAHAN_KEMASAN;
+                        changes.NEW_VALUE = updatedModel.BahanKemasan;
                         break;
                 }
                 _changesHistoryBll.AddHistory(changes);

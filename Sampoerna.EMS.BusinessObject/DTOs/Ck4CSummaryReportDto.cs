@@ -38,5 +38,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public List<string> ProducedQty { get; set; }
         public List<string> UomProducedQty { get; set; }
         public List<string> Remarks { get; set; }
+        public List<string> Zb { get; set; }
+        public List<string> PackedAdjusted { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace Sampoerna.EMS.Contract.Services
 
         INVENTORY_MOVEMENT GetReceivingByProcessOrderAndPlantId(string processOrder, string plantId);
 
-        INVENTORY_MOVEMENT GetById(long id);
+        INVENTORY_MOVEMENT GetById(long? id);
 
         INVENTORY_MOVEMENT GetUsageByBatchAndPlantId(string batch, string plantId);
 
@@ -25,6 +25,7 @@ namespace Sampoerna.EMS.Contract.Services
 
         List<INVENTORY_MOVEMENT> GetMvt201(InvMovementGetUsageByParamInput input, bool isAssigned = false);
 
+        List<INVENTORY_MOVEMENT> GetReversalData(string plant, string facode);
         List<INVENTORY_MOVEMENT> GetMvt201NotUsed(List<long> usedList);
 
         List<INVENTORY_MOVEMENT> GetLack1PrimaryResultsCfProduced(GetLack1PrimaryResultsInput input);

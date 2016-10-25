@@ -55,6 +55,7 @@
               <xs:element name="ProdWaste" msprop:Generator_ColumnVarNameInTable="columnProdWaste" msprop:Generator_ColumnPropNameInRow="ProdWaste" msprop:Generator_ColumnPropNameInTable="ProdWasteColumn" msprop:Generator_UserColumnName="ProdWaste" type="xs:string" minOccurs="0" />
               <xs:element name="Comment" msprop:Generator_ColumnVarNameInTable="columnComment" msprop:Generator_ColumnPropNameInRow="Comment" msprop:Generator_ColumnPropNameInTable="CommentColumn" msprop:Generator_UserColumnName="Comment" type="xs:string" minOccurs="0" />
               <xs:element name="CollumNo" msprop:Generator_ColumnVarNameInTable="columnCollumNo" msprop:Generator_ColumnPropNameInRow="CollumNo" msprop:Generator_ColumnPropNameInTable="CollumNoColumn" msprop:Generator_UserColumnName="CollumNo" type="xs:int" minOccurs="0" />
+              <xs:element name="BhnKemasan" msprop:Generator_ColumnVarNameInTable="columnBhnKemasan" msprop:Generator_ColumnPropNameInRow="BhnKemasan" msprop:Generator_ColumnPropNameInTable="BhnKemasanColumn" msprop:Generator_UserColumnName="BhnKemasan" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -65,6 +66,9 @@
               <xs:element name="ProdType" msprop:Generator_ColumnVarNameInTable="columnProdType" msprop:Generator_ColumnPropNameInRow="ProdType" msprop:Generator_ColumnPropNameInTable="ProdTypeColumn" msprop:Generator_UserColumnName="ProdType" type="xs:string" minOccurs="0" />
               <xs:element name="ProdTotal" msprop:Generator_ColumnVarNameInTable="columnProdTotal" msprop:Generator_ColumnPropNameInRow="ProdTotal" msprop:Generator_ColumnPropNameInTable="ProdTotalColumn" msprop:Generator_UserColumnName="ProdTotal" type="xs:string" minOccurs="0" />
               <xs:element name="ProdBtg" msprop:Generator_ColumnVarNameInTable="columnProdBtg" msprop:Generator_ColumnPropNameInRow="ProdBtg" msprop:Generator_ColumnPropNameInTable="ProdBtgColumn" msprop:Generator_UserColumnName="ProdBtg" type="xs:string" minOccurs="0" />
+              <xs:element name="PackedBtgTotal" msprop:Generator_ColumnVarNameInTable="columnPackedBtgTotal" msprop:Generator_ColumnPropNameInRow="PackedBtgTotal" msprop:Generator_ColumnPropNameInTable="PackedBtgTotalColumn" msprop:Generator_UserColumnName="PackedBtgTotal" type="xs:string" minOccurs="0" />
+              <xs:element name="PackedGTotal" msprop:Generator_ColumnVarNameInTable="columnPackedGTotal" msprop:Generator_ColumnPropNameInRow="PackedGTotal" msprop:Generator_ColumnPropNameInTable="PackedGTotalColumn" msprop:Generator_UserColumnName="PackedGTotal" type="xs:string" minOccurs="0" />
+              <xs:element name="PackedInPackTotal" msprop:Generator_ColumnVarNameInTable="columnPackedInPackTotal" msprop:Generator_ColumnPropNameInRow="PackedInPackTotal" msprop:Generator_ColumnPropNameInTable="PackedInPackTotalColumn" msprop:Generator_UserColumnName="PackedInPackTotal" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

@@ -67,6 +67,7 @@
                                         <label class="col-md-4">Reversal Per Date<span class="red">*</span></label>
                                         <div class="col-md-8">
                                             @Html.DropDownListFor(model => model.Details.ZaapShiftId, Model.ZaapShiftList, "Select", new { @class = "form-control", id = "SearchInput_Zaap" })
+                                            @Html.DropDownListFor(model => model.Details.InventoryMovementId, Model.InventoryMovementList, "Select", new { @class = "form-control", id = "SearchInput_InventoryMovement" })
                                         </div>
                                     </div>
                                 </div>

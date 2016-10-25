@@ -17,6 +17,8 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public string ProdQty { get; set; }
         public string ProdQtyUom { get; set; }
         public string PackedQty { get; set; }
+        public string Zb { get; set; }
+        public string PackedAdjusted { get; set; }
         public string UnpackedQty { get; set; }
         public string Remarks { get; set; }
         public string Content { get; set; }
