@@ -139,6 +139,29 @@ namespace Sampoerna.EMS.DAL
                 Update(entity);
         }
 
+
+        public void InsertOrUpdateBulk(IEnumerable<TEntity> entities)
+        {
+            var entitiesTobeInserted = new List<TEntity>();
+            foreach (var entity in entities)
+            {
+                if (Exists(entity))
+                {
+                    Update(entity);
+                }
+                else
+                {
+                    entitiesTobeInserted.Add(entity);
+                }
+            }
+
+            //_context.Configuration.AutoDetectChangesEnabled = false;
+            //_context.Configuration.ValidateOnSaveEnabled = false;
+
+            _dbSet.AddRange(entitiesTobeInserted);
+            
+        }
+
         /// <summary>
         /// check if the specified entity exists
         /// </summary>
@@ -159,7 +182,7 @@ namespace Sampoerna.EMS.DAL
                 objContext.Detach(foundEntity);
 
             }
-           ;
+           
             return (exists);
         }
 

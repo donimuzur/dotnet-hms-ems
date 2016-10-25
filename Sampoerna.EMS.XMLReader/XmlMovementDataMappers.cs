@@ -144,16 +144,34 @@ namespace Sampoerna.EMS.XMLReader
 
                 //var periodMonth = DateTime.Today.AddDays(-1).Month;
                 //var periodYear = DateTime.Today.AddDays(-1).Year;
+                var repoProduction = _xmlMapper.uow.GetGenericRepository<PRODUCTION>();
                 var companyMapping = _xmlMapper.uow.GetGenericRepository<T001K>().Get().ToList();
                 var companyData = _xmlMapper.uow.GetGenericRepository<T001>().Get().ToList();
                 var plantData = _xmlMapper.uow.GetGenericRepository<T001W>().Get().ToList();
                 var tisDesc = EnumHelper.GetDescription(Enums.GoodsType.TembakauIris);
                 var dataMaterial =
                     _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_BRAND>()
-                        .Get(x => x.EXC_GOOD_TYP == tisDesc && x.PROD_CODE == "05")
-
+                        .Get(x => x.EXC_GOOD_TYP == tisDesc && x.PROD_CODE == "05" && x.STATUS == true)
                         .ToList();
                 var listMaterial = dataMaterial.Select(x => x.FA_CODE + "-" + x.WERKS).Distinct().ToList();
+
+                var dataMaterialDelete =
+                    _xmlMapper.uow.GetGenericRepository<ZAIDM_EX_BRAND>()
+                        .Get(x => x.EXC_GOOD_TYP == tisDesc && x.PROD_CODE == "05")
+                        .ToList();
+                var listMaterialDelete = dataMaterialDelete.Select(x => x.FA_CODE + "-" + x.WERKS).Distinct().ToList();
+
+                var listProdNeedsDelete = repoProduction
+                    .Get(x => postingDateList.Contains(x.PRODUCTION_DATE)
+                              && listMaterialDelete.Contains(x.FA_CODE + "-" + x.WERKS)
+                    ).ToList();
+
+                foreach (var production in listProdNeedsDelete)
+                {
+                    repoProduction.Delete(production);
+                }
+
+                _xmlMapper.uow.SaveChanges();
 
                 var data = _xmlMapper.uow.GetGenericRepository<INVENTORY_MOVEMENT>()
                     .Get(x => postingDateList.Contains(x.POSTING_DATE.Value)
@@ -192,11 +210,10 @@ namespace Sampoerna.EMS.XMLReader
                         UOM = "G",
                         WERKS = dt.PLANT_ID,
                         ZB = 0,
-                        QTY = dt.QTY*1000
+                        QTY = 0
                     }
                     ).ToList();
 
-                var repoProduction = _xmlMapper.uow.GetGenericRepository<PRODUCTION>();
                 foreach (var production in dataJoined)
                 {
                     var dataProd =
