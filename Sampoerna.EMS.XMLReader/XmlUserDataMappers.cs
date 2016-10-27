@@ -104,7 +104,11 @@ namespace Sampoerna.EMS.XMLReader
                         else if (role.BROLE_DESC.ToUpper().Contains("VIEWER"))
                         {
                             roleMap.ROLEID = Enums.UserRole.Viewer;
-                            AddAllPlantToViewer(user.USER_ID);
+                            if (ExistUser == null)
+                            {
+                                AddAllPlantToViewer(user.USER_ID);
+                            }
+                            
                         }
                         else if(role.BROLE_DESC.ToUpper().Contains("CREATOR"))
                         {
@@ -297,12 +301,13 @@ namespace Sampoerna.EMS.XMLReader
         private void AddAllPlantToViewer(string userId)
         {
             //first, delete existing data
-            DeleteUserPlantMapByUser(userId);
+            //DeleteUserPlantMapByUser(userId);
 
             var plantList = _xmlMapper.uow.GetGenericRepository<T001W>()
                 .Get(x => x.IS_DELETED == null || x.IS_DELETED == false).ToList();
 
             //add user plant map
+            
             foreach(var plant in plantList)
             {
                 var userPlantMap = new USER_PLANT_MAP();
@@ -310,7 +315,8 @@ namespace Sampoerna.EMS.XMLReader
                 userPlantMap.PLANT_ID = plant.WERKS;
                 userPlantMap.IS_ACTIVE = true;
                 userPlantMap.NPPBKC_ID = plant.NPPBKC_ID;
-
+                
+                //dataPlantToAdd.Add(userPlantMap);
                 _xmlMapper.InsertOrUpdate(userPlantMap);
             }
         }

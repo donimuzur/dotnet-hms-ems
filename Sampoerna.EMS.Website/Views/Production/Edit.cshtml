@@ -131,14 +131,14 @@
                                                                 <label class="col-md-4"> ZB<span class="red">*</span></label>
                                                                 <div class="col-md-8">
                                                                     @*@Html.HiddenFor(model => model.ZbStr)*@
-                                                                    @Html.TextBoxFor(model => model.ZbStr, new {@class = "form-control", id = "Zb", @maxlength = "12" })
+                                                                    @Html.TextBoxFor(model => model.ZbStr, new { @class = "decimal form-control" })
                                                                 </div>
                                                             </div>
                                                             <div id="packedAdjustedRow" class="row">
                                                                 <label class="col-md-4"> Packed-Adjusted</label>
                                                                 <div class="col-md-8">
                                                                     @*@Html.HiddenFor(model => model.PackedAdjustedStr)*@
-                                                                    @Html.TextBoxFor(model => model.PackedAdjustedStr, new { @class = "decimal form-control", @maxlength = "16" })
+                                                                    @Html.TextBoxFor(model => model.PackedAdjustedStr, new { @class = "decimal form-control" })
                                                                 </div>
                                                             </div>
                                                             <div class="row">
@@ -424,8 +424,8 @@
             
         });
 
-        $('#Zb.form-control').change(function (obj) {
-            var data = $('#Zb.form-control').val().replace(',', '');
+        $('#ZbStr.form-control').change(function (obj) {
+            var data = $('#ZbStr.form-control').val().replace(',', '');
             $('#ZbStr').val(ThausandSeperator(data, 2));
 
         });
