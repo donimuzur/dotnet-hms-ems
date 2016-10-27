@@ -498,8 +498,8 @@ namespace Sampoerna.EMS.BLL
 
                 var optionalPacked = item.QtyPacked;
 
-                if (item.Zb > 0) optionalPacked = item.Zb;
-                if (item.PackedAdjusted > 0) optionalPacked = item.PackedAdjusted;
+                //if (item.Zb > 0) optionalPacked = item.Zb;
+                //if (item.PackedAdjusted > 0) optionalPacked = item.PackedAdjusted;
 
                 var unpackedQty = oldUnpacked + (item.QtyProduced - oldWaste) - (optionalPacked - existReversal);
 
@@ -507,7 +507,7 @@ namespace Sampoerna.EMS.BLL
 
                 var packedQty = item.QtyPacked - existReversal;
 
-                var zbQty = item.Zb == 0 ? 0 : item.Zb - existReversal;
+                var zbQty = item.Zb == 0 ? 0 : item.Zb ;
 
                 var packedAdjustedQty = item.PackedAdjusted == 0 ? 0 : item.PackedAdjusted - existReversal;
 
