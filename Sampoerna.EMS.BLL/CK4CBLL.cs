@@ -2099,6 +2099,7 @@ namespace Sampoerna.EMS.BLL
                     var total = brand.BRAND_CONTENT == null ? 0 : ck4CItem.PACKED_QTY.Value / Convert.ToInt32(brand.BRAND_CONTENT);
                     var zbValue = ck4CItem.ZB == null ? 0 : ck4CItem.ZB.Value;
                     var packedAdjustedValue = ck4CItem.PACKED_ADJUSTED == null ? 0 : ck4CItem.PACKED_ADJUSTED.Value;
+                    var totalZb = brand.BRAND_CONTENT == null ? 0 : zbValue / Convert.ToInt32(brand.BRAND_CONTENT);
 
                     itemDto.DateProduction = ck4CItem.PROD_DATE;
                     itemDto.ProductionDate = ck4CItem.PROD_DATE.ToString("dd-MMM-yy");
@@ -2116,6 +2117,7 @@ namespace Sampoerna.EMS.BLL
                     itemDto.Remarks = ck4CItem.REMARKS;
                     itemDto.Content = String.Format("{0:n}", ck4CItem.CONTENT_PER_PACK.Value);
                     itemDto.TotalPack = String.Format("{0:n}", total);
+                    itemDto.TotalPackZb = String.Format("{0:n}", totalZb);
                     itemDto.Hje = String.Format("{0:n}", ck4CItem.HJE_IDR.Value);
                     itemDto.Tariff = String.Format("{0:n}", ck4CItem.TARIFF.Value);
 

@@ -102,6 +102,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(src => src.UnpackedQty, opt => opt.MapFrom(dest => dest.UNPACKED_QTY))
                 .ForMember(src => src.ContentPerPack, opt => opt.MapFrom(dest => dest.CONTENT_PER_PACK))
                 .ForMember(src => src.PackedInPack, opt => opt.MapFrom(dest => dest.PACKED_IN_PACK))
+                .ForMember(src => src.PackedInPackZb, opt => opt.MapFrom(dest => dest.PACKED_IN_PACK_ZB))
                 .ForMember(src => src.Remarks, opt => opt.MapFrom(dest => dest.REMARKS))
                 .ForMember(src => src.Zb, opt => opt.MapFrom(dest => dest.ZB))
                 .ForMember(src => src.PackedAdjusted, opt => opt.MapFrom(dest => dest.PACKED_ADJUSTED));
@@ -121,6 +122,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(src => src.UNPACKED_QTY, opt => opt.MapFrom(dest => dest.UnpackedQty))
                 .ForMember(src => src.CONTENT_PER_PACK, opt => opt.MapFrom(dest => dest.ContentPerPack))
                 .ForMember(src => src.PACKED_IN_PACK, opt => opt.MapFrom(dest => dest.PackedInPack))
+                .ForMember(src => src.PACKED_IN_PACK_ZB, opt => opt.MapFrom(dest => dest.PackedInPackZb))
                 .ForMember(src => src.REMARKS, opt => opt.MapFrom(dest => dest.Remarks))
                 .ForMember(src => src.ZB, opt => opt.MapFrom(dest => dest.Zb))
                 .ForMember(src => src.PACKED_ADJUSTED, opt => opt.MapFrom(dest => dest.PackedAdjusted));
