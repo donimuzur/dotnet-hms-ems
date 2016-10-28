@@ -87,7 +87,8 @@ namespace Sampoerna.EMS.XMLReader
             var shortFilename = _xmlName.Split('\\')[_xmlName.Split('\\').Length - 1];
             var xmllogs = GetXmlLogs(shortFilename);
             var errorCount = 0;
-            var itemToInsert = 0;
+            //var itemToInsert = 0;
+            var isNeedInsertBulk = false;
             var fileName = string.Empty;
             var needMoved = true;
             try
@@ -96,7 +97,12 @@ namespace Sampoerna.EMS.XMLReader
                 foreach (var item in existingData)
                 {
                     if (item is PRODUCTION || item is INVENTORY_MOVEMENT)
+                    {
                         needMoved = true;
+                        isNeedInsertBulk = true;
+                        break;
+                    }
+                    
                     if (item is LFA1)
                         continue;
 
@@ -110,6 +116,7 @@ namespace Sampoerna.EMS.XMLReader
                             continue;
                             
                         }
+                        isNeedInsertBulk = true;
                     }
 
                     var isFromSap = item.GetType().GetProperty("IS_FROM_SAP") != null && (bool)item.GetType().GetProperty("IS_FROM_SAP").GetValue(item);
@@ -136,14 +143,20 @@ namespace Sampoerna.EMS.XMLReader
 
                 if (Errors.Count == 0)
                 {
-                    
-                    foreach (var item in items)
+                    if (isNeedInsertBulk)
                     {
-                        itemToInsert++;
-                        repo.InsertOrUpdate(item);
-
-
+                        repo.InsertOrUpdateBulk(items);
                     }
+                    else
+                    {
+                        foreach (var item in items)
+                        {
+                            //itemToInsert++;
+                            repo.InsertOrUpdate(item);
+                        }
+                    }
+
+                    
 
                     if (xmllogs != null)
                     {
@@ -236,6 +249,9 @@ namespace Sampoerna.EMS.XMLReader
             
 
         }
+
+
+
         public void InsertOrUpdate<T>(T entity) where T: class 
         {
             var repo = uow.GetGenericRepository<T>();

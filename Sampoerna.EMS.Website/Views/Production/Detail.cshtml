@@ -109,9 +109,34 @@
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                        
+                                                    </div>
+                                                    <div class="row">
                                                         <div class="col-md-6">
+                                                            <div id="remarkRow" class="row">
+                                                                <label class="col-md-4">Remark</label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextAreaFor(model => model.Remark, 6, 20, new { @class = "form-control", id = "remark", disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div id="zbRow" class="row">
+                                                                <label class="col-md-4"> ZB<span class="red">*</span></label>
+                                                                <div class="col-md-8">
+                                                                    @*@Html.HiddenFor(model => model.ZbStr)*@
+                                                                    @Html.TextBoxFor(model => model.ZbStr, new { @class = "form-control", disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                            <div id="packedAdjustedRow" class="row">
+                                                                <label class="col-md-4"> Packed-Adjusted</label>
+                                                                <div class="col-md-8">
+                                                                    @*@Html.HiddenFor(model => model.PackedAdjustedStr)*@
+                                                                    @Html.TextBoxFor(model => model.PackedAdjustedStr, new { @class = "decimal form-control", disabled = "disabled" })
+                                                                </div>
+                                                            </div>
                                                             <div class="row">
-                                                                <label class="col-md-4">Produced Qty</label>
+                                                                <label class="col-md-4"> Produced Qty</label>
                                                                 <div class="col-md-8">
                                                                     @Html.TextBoxFor(model => model.QtyStr, new { @class = "decimal form-control", disabled = "disabled" })
                                                                 </div>
@@ -205,7 +230,11 @@
 
     <script type="text/javascript" language="javascript" class="init">
         $('#MenuCk4cDailyProduction').addClass('active');
-
+        $('#QtyPackedStr').val(ThausandSeperator($('#QtyPackedStr').val(), 2));
+        $('#ProdQtyStickStr').val(ThausandSeperator($('#ProdQtyStickStr').val(), 2));
+        $('#QtyStr').val(ThausandSeperator($('#QtyStr').val(), 2));
+        $('#ZbStr').val(ThausandSeperator($('#ZbStr').val(), 2));
+        $('#PackedAdjustedStr').val(ThausandSeperator($('#PackedAdjustedStr').val(), 2));
     </script>
 }
 

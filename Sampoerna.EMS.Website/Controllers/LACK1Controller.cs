@@ -3785,6 +3785,34 @@ namespace Sampoerna.EMS.Website.Controllers
                 slDocument.SetCellValue(iRow, iColumn, data.RejectParkerUom);
                 iColumn = iColumn + 1;
 
+                slDocument.SetCellValue(iRow, iColumn, data.Zb);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.ZbUom);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.SapPackedQty);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.SapPackedUom);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.PackedAdjusted);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.PackedAdjustedUom);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.Remark);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.SapReversalQty);
+                iColumn = iColumn + 1;
+
+                slDocument.SetCellValue(iRow, iColumn, data.SapReversalQtyUom);
+                iColumn = iColumn + 1;	
+
+
                 iRow++;
             }
 
@@ -3872,6 +3900,35 @@ namespace Sampoerna.EMS.Website.Controllers
 
             slDocument.SetCellValue(iRow, iColumn, "Reject Packer UOM");
             iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "ZB Prod Qty");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "ZB Prod Qty UOM");
+            iColumn = iColumn + 1;
+            	
+            slDocument.SetCellValue(iRow, iColumn, "SAP Prod Qty");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "SAP Prod Qty UOM (101)");
+            iColumn = iColumn + 1;	
+            	
+            slDocument.SetCellValue(iRow, iColumn, "Adjusted SAP Prod Qty");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Adjusted SAP Prod Qty UOM");
+            iColumn = iColumn + 1;		
+            	
+            slDocument.SetCellValue(iRow, iColumn, "Remark for SAP Adjusted");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "SAP Reversal (102) Qty");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "SAP Reversal Qty (102) UOM");
+            iColumn = iColumn + 1;	
+            
+
 
             return slDocument;
 

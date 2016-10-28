@@ -58,5 +58,8 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
 
         public string CREATED_BY { get; set; }
         public System.DateTime CREATED_DATE { get; set; }
+        public string BahanKemasan { get; set; }
+        public bool IsPackedAdjusted { get; set; }
+        
     }
 }

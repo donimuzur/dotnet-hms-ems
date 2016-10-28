@@ -19,5 +19,8 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public string ProductionDate { get; set; }
         public string Message { get; set; }
         public bool IsValid { get; set; }
+        public string Zb { get; set; }
+        public string PackedAdjusted { get; set; }
+        public string Remark { get; set; }
     }
 }

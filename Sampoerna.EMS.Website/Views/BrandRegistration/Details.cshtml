@@ -114,6 +114,21 @@
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4">Bahan Kemasan<span class="red">*</span></label>
+                                                                <div class="col-md-8">
+                                                                    @if (!String.IsNullOrEmpty(Model.BahanKemasan))
+                                                                    {
+                                                                        @Html.TextBox("bahankemasan", Model.BahanKemasan, new { @class = "form-control", disabled = "disabled" })
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        @Html.TextBox("bahankemasan", "", new { @class = "form-control", disabled = "disabled" })
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                     <div class="row">
 
@@ -156,8 +171,14 @@
                                                             <div class="row">
                                                                 <label class="col-md-4">Series Code<span class="red">*</span></label>
                                                                 <div class="col-md-8">
+                                                                    @if (Model.SeriesCode == "0")
+                                                                    {
+                                                                        @Html.TextBox("seriescode", "NO SERIES", new { @class = "form-control", disabled = "disabled" })
+                                                                    }
+                                                                    else
+                                                                    {
                                                                         @Html.TextBox("seriescode", Model.SeriesCode + "-" + Model.SeriesValue, new { @class = "form-control", disabled = "disabled" })
-                                                                    
+                                                                    }
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -196,7 +217,18 @@
                                                     <div class="row">
                                                         <div class="col-md-6">
                                                             <div class="row">
-                                                                <label class="col-md-4">HJE<span class="red">*</span></label>
+                                                                <label class="col-md-4">
+                                                                    @{ var HjeLabel =	"HJE"; }
+                                                                    @if (!String.IsNullOrEmpty(Model.ProductCode) && !String.IsNullOrEmpty(Model.GoodType))
+                                                                    {
+                                                                        if (Model.ProductCode=="05" && Model.GoodType=="02")
+                                                                        {
+                                                                            HjeLabel = "HJE per Gram";
+                                                                        }
+                                                                    }
+                                                                    @HjeLabel
+                                                                    <span class="red">*</span>
+                                                                </label>
                                                                 <div class="col-md-8">
                                                                     @Html.TextBox("hje", Model.HjeValueStr, new { @id = "hje", @class = "decimal form-control", disabled = "disabled" })
                                                                    
@@ -249,7 +281,14 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-
+                                                        <div class="col-md-12">
+                                                            <div class="row">
+                                                                <label class="col-md-2">Packed-Adjusted</label>
+                                                                <div class="col-md-10">
+                                                                    @Html.CheckBox("packedadjusted", Model.IsPackedAdjusted, new { disabled = "disabled" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                         <div class="col-md-6">
                                                             <div class="row">
                                                                 <label class="col-md-4">Start Date<span class="red">*</span></label>

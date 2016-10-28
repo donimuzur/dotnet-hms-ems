@@ -132,7 +132,17 @@
                                                             }
                                                         </div>
                                                     </div>
+                                                    
                                                 </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Bahan Kemasan</label>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBox("bahankemasan", Model.BahanKemasan, new { @class = "form-control"})
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                             <div class="row">
 
@@ -206,7 +216,15 @@
                                                             @if (Model.IsFromSAP)
                                                             {
                                                                 @Html.HiddenFor(model => model.SeriesId)
-                                                                @Html.TextBox("seriescode", Model.SeriesId + "-" + Model.SeriesValue, new { @class = "form-control", disabled = "disabled" })
+                                                                if (Model.SeriesId=="0")
+                                                                {
+                                                                    @Html.TextBox("seriescode", "NO SERIES", new { @class = "form-control", disabled = "disabled" })
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Html.TextBox("seriescode", Model.SeriesId + "-" + Model.SeriesValue, new { @class = "form-control", disabled = "disabled" })
+                                                                }
+                                                                
                                                             }
                                                             else
                                                             {
@@ -227,7 +245,7 @@
                                                             }
                                                             else
                                                             {
-                                                                @Html.TextBoxFor(model => model.Content, new { @class = "form-control", @maxlength = "4" })
+                                                                @Html.TextBoxFor(model => model.Content, new { @class = "form-control", @maxlength = "7" })
                                                             }
                                                         </div>
                                                     </div>
@@ -271,7 +289,7 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="row">
-                                                        <label class="col-md-4">HJE<span class="red">*</span></label>
+                                                        <label id="hje" class="col-md-4">HJE<span class="red">*</span></label>
                                                         <div class="col-md-8">
                                                             @if (Model.IsFromSAP)
                                                             {
@@ -366,7 +384,14 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <label class="col-md-2">Packed-Adjusted</label>
+                                                        <div class="col-md-10">
+                                                            @Html.EditorFor(model => model.IsPackedAdjusted, new { @class = "form-control" })
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="col-md-4">Start Date<span class="red">*</span></label>
@@ -495,6 +520,7 @@
     </div>
 }
 @section scripts {
+    <link rel="stylesheet" type="text/css" href="../../Content/themes/base/all.css">
     <script src="~/Scripts/thousand-separator.js"></script>
 
     <script type="text/javascript" language="javascript">
@@ -516,7 +542,28 @@
             $('#PersonalizationCode').change(function () {
                 PersonalizationCodeOnChange();
             });
+
+            ajaxBahanKemasan('@Url.Action("BahanKemasanList", "BrandRegistration")', null);
         });
+
+        function ajaxBahanKemasan(url, formData) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    var availableTags=[];
+                    if (data) {
+                        for(i=1;i<=data.length;i++){
+                            availableTags.push(data[i-1].Value);
+                        }
+                    }
+                    $("#bahankemasan").autocomplete({
+                        source: availableTags
+                    });
+                }
+            });
+        }
         
         var confirmDeleteBrand = function () {
             $('#btn-delete-brand').click();
@@ -529,5 +576,29 @@
                 $('#PersonalizationCodeDescription').val(PersonalizationName);
             }
         }
+
+        $("#ProductCode").change(function () {
+            if ($("#ProductCode").length) {
+                var productCode = $(this).find("option:selected").val();
+                var goodTypeCode = $("#GoodType").find("option:selected").val();
+                if (productCode == '05' && goodTypeCode == '02') {
+                    $("#hje").html('HJE per Gram<span class="red">*</span>');
+                } else {
+                    $("#hje").html('HJE<span class="red">*</span>');
+                }
+            }
+        });
+
+        $("#GoodType").change(function () {
+            if ($("#GoodType").length) {
+                var goodTypeCode = $(this).find("option:selected").val();
+                var productCode = $("#ProductCode").find("option:selected").val();
+                if (productCode == '05' && goodTypeCode == '02') {
+                    $("#hje").html('HJE per Gram<span class="red">*</span>');
+                } else {
+                    $("#hje").html('HJE<span class="red">*</span>');
+                }
+            }
+        });
     </script>
 }

@@ -123,6 +123,10 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.ZAAP_SHIFT_RPT_ID))
                 .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => string.Format("{0} - {1} - {2} - {3}", src.POSTING_DATE.Value.ToString("dd MMM yyyy"), (src.QTY.Value * -1), src.ORDR, src.MATDOC)));
 
+            Mapper.CreateMap<INVENTORY_MOVEMENT, SelectItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.INVENTORY_MOVEMENT_ID))
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => string.Format("{0} - {1} - {2}", src.POSTING_DATE.Value.ToString("dd MMM yyyy"), (src.QTY.Value * -1), src.ORDR)));
+
 
             #region NPPBKC
 
@@ -390,7 +394,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.BRAND_CONTENT))
                 .ForMember(dest => dest.HjeValueStr, opt => opt.MapFrom(src => src.HJE_IDR))
                 .ForMember(dest => dest.TariffValueStr, opt => opt.MapFrom(src => src.TARIFF))
-                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.STATUS));
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.STATUS))
+                .ForMember(dest => dest.BahanKemasan, opt => opt.MapFrom(src => src.BAHAN_KEMASAN))
+                .ForMember(dest => dest.IsPackedAdjusted, opt => opt.MapFrom(src => src.PACKED_ADJUSTED));
 
 
             Mapper.CreateMap<ZAIDM_EX_BRAND, BrandRegistrationEditViewModel>().IgnoreAllNonExisting()
@@ -428,7 +434,8 @@ namespace Sampoerna.EMS.Website
             .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.BRAND_CONTENT))
             .ForMember(dest => dest.BoolIsDeleted, opt => opt.MapFrom(src => src.IS_DELETED))
             .ForMember(dest => dest.IsDeleted, opt => opt.ResolveUsing<NullableBooleanToStringDeletedResolver>().FromMember(src => src.IS_DELETED))
-            ;
+            .ForMember(dest => dest.BahanKemasan, opt => opt.MapFrom(src => src.BAHAN_KEMASAN))
+            .ForMember(dest => dest.IsPackedAdjusted, opt => opt.MapFrom(src => src.PACKED_ADJUSTED));
 
             Mapper.CreateMap<BrandRegistrationCreateViewModel, ZAIDM_EX_BRAND>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.STICKER_CODE, opt => opt.MapFrom(src => src.StickerCode))
@@ -481,7 +488,9 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PRINTING_PRICE, opt => opt.MapFrom(src => src.PrintingPrice))
                 .ForMember(dest => dest.CUT_FILLER_CODE, opt => opt.MapFrom(src => src.CutFillerCode))
                 .ForMember(dest => dest.CONVERSION, opt => opt.MapFrom(src => src.Conversion))
-                .ForMember(dest => dest.BRAND_CONTENT, opt => opt.MapFrom(src => src.Content));
+                .ForMember(dest => dest.BRAND_CONTENT, opt => opt.MapFrom(src => src.Content))
+                .ForMember(dest => dest.BAHAN_KEMASAN, opt => opt.MapFrom(src => src.BahanKemasan))
+                .ForMember(dest => dest.PACKED_ADJUSTED, opt => opt.MapFrom(src => src.IsPackedAdjusted));
             #endregion
 
             Mapper.CreateMap<CHANGES_HISTORY, ChangesHistoryItemModel>().IgnoreAllNonExisting()
@@ -856,7 +865,10 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ProductionDate,
                     opt => opt.MapFrom(src => src.ProductionDate.ToString("dd MMM yyyy")))
                 .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PlantWerks + " - " + src.PlantName))
-                .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.Qty));
+                .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.Qty))
+                .ForMember(dest => dest.Zb, opt => opt.MapFrom(src => src.Zb))
+                .ForMember(dest => dest.PackedAdjusted, opt => opt.MapFrom(src => src.PackedAdjusted))
+                .ForMember(dest => dest.Remark, opt => opt.MapFrom(src => src.Remark));
             //.ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FaCode));
 
 
@@ -868,11 +880,24 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Year, opt => opt.MapFrom(src => Convert.ToInt16(src.Year)));
 
 
-            Mapper.CreateMap<ProductionDetail, ProductionDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<ProductionDetail, ProductionDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Zb, opt => opt.MapFrom(src => src.Zb))
+                .ForMember(dest => dest.PackedAdjusted, opt => opt.MapFrom(src => src.PackedAdjusted))
+                .ForMember(dest => dest.Remark, opt => opt.MapFrom(src => src.Remark));
 
             Mapper.CreateMap<ProductionDto, ProductionUploadViewModel>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<ProductionUploadViewModel, ProductionDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<ProductionDto, PRODUCTION>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ZB, opt => opt.MapFrom(src => src.Zb))
+                .ForMember(dest => dest.PACKED_ADJUSTED, opt => opt.MapFrom(src => src.PackedAdjusted))
+                .ForMember(dest => dest.REMARK, opt => opt.MapFrom(src => src.Remark));
+
+            Mapper.CreateMap<PRODUCTION,ProductionDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Zb, opt => opt.MapFrom(src => src.ZB))
+                .ForMember(dest => dest.PackedAdjusted, opt => opt.MapFrom(src => src.PACKED_ADJUSTED))
+                .ForMember(dest => dest.Remark, opt => opt.MapFrom(src => src.REMARK));
 
             Mapper.CreateMap<ProductionUploadItemsInput, ProductionUploadItems>().IgnoreAllNonExisting();
             //.ForMember(dest => dest.QtyPacked, opt => opt.ResolveUsing<DecimalToStringResolver>().FromMember(src => src.QtyPacked))
@@ -899,7 +924,10 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.QtyPacked, opt => opt.MapFrom(src => src.QTY_PACKED))
                 .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.UOM))
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CREATED_BY))
-                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE));
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
+                .ForMember(dest => dest.Zb, opt => opt.MapFrom(src => src.ZB))
+                .ForMember(dest => dest.PackedAdjusted, opt => opt.MapFrom(src => src.PACKED_ADJUSTED))
+                .ForMember(dest => dest.Remark, opt => opt.MapFrom(src => src.REMARK));
 
             #endregion
 

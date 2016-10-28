@@ -14,7 +14,7 @@
                 <h3>CK-4C Form</h3>
                 <label class="status">@Model.Details.StatusName</label>
                 <div class="action-button">
-                    <input type="button" class="btn btn-grey" value="Print Preview" onclick="printPreview('@Url.EncryptedAction("PrintPreview", "CK4C", new { id = @Model.Details.Ck4CId })')" />
+                    <input type="button" class="btn btn-grey" value="Print Preview" id="btnPrintPreview" />
                     @if (Model.Details.Status == Enums.DocumentStatus.Completed)
                     {
                         <input type="button" value="Back" class="btn btn-grey" id="btnCancelCompleted" />
@@ -38,6 +38,10 @@
                         <li class="active" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
                         <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Print Out</a></li>
                         <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Changes Log</a></li>
+                        @if (Model.OldDetails != null)
+                        {
+                            <li role="presentation"><a href="#informationold" aria-controls="informationold" role="tab" data-toggle="tab">Old Information</a></li>
+                        }
                     </ul>
 
                     <!-- Tab panes -->
@@ -45,6 +49,11 @@
                         @Html.Partial("_HomeDetails")
                         @Html.Partial("_PrintOut")
                         @Html.Partial("_ChangeLog")
+                        @if (Model.OldDetails != null)
+                        {
+                            @Html.Partial("_HomeDetailsOld")
+                        }
+                        
                     </div>
                 </div>
             </div>
@@ -59,7 +68,7 @@
     <script type="text/javascript" language="javascript" class="init">
     $(document).ready(function () {
         SetBasedOn();
-
+        
         SetPoaList();
 
         $('#divComment').hide();
@@ -74,6 +83,21 @@
 
         $('#btnExportCk4cItem').click(function (e) {
             location.href = '@Url.Action("ExportXlsCk4cItem", "CK4C", new { id = @Model.Details.Ck4CId })';
+        });
+
+        $('#btnExportCk4cItemOld').click(function (e) {
+            location.href = '@Url.Action("ExportXlsCk4cItemOld", "CK4C", new { id = @Model.Details.Ck4CId })';
+        });
+
+        $('#btnPrintPreview').click(function (e) {
+            var activeTab = $('li.active a').html();
+
+            if (activeTab == 'Information') {
+                printPreview('@Url.EncryptedAction("PrintPreview", "CK4C", new { id = @Model.Details.Ck4CId })');
+            } else {
+                printPreview('@Url.EncryptedAction("PrintPreviewOld", "CK4C", new { id = @Model.Details.Ck4CId })');
+            }
+
         });
     });
 
@@ -109,9 +133,9 @@
     }
 
     function printPreview(url) {
-        window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
+        window.open(url, '_blank', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no');
     }
-    
+
     function openAttachment(url) {
         window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes');
     }
@@ -150,5 +174,5 @@
             });
     }
 
-    </script>
+</script>
 }

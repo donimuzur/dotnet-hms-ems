@@ -33,5 +33,7 @@ namespace Sampoerna.EMS.Contract
         void ExecuteSql(string sql);
 
         void ExecuteQuery(string sql);
+
+        void InsertOrUpdateBulk(IEnumerable<TEntity> entities);
     }
 }

@@ -66,6 +66,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(src => src.UnpackedQty, opt => opt.MapFrom(dest => dest.UnpackedQty))
                 .ForMember(src => src.ContentPerPack, opt => opt.MapFrom(dest => dest.ContentPerPack))
                 .ForMember(src => src.PackedInPack, opt => opt.MapFrom(dest => dest.PackedInPack))
+                .ForMember(src => src.PackedInPackZb, opt => opt.MapFrom(dest => dest.PackedInPackZb))
                 .ForMember(src => src.Remarks, opt => opt.MapFrom(dest => dest.Remarks));
 
             Mapper.CreateMap<Ck4CIndexDocumentListViewModel, Ck4cGetOpenDocumentByParamInput>().IgnoreAllNonExisting()
@@ -126,6 +127,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(src => src.UnpackedQty, opt => opt.MapFrom(dest => dest.UnpackedQty))
                 .ForMember(src => src.ContentPerPack, opt => opt.MapFrom(dest => dest.ContentPerPack))
                 .ForMember(src => src.PackedInPack, opt => opt.MapFrom(dest => dest.PackedInPack))
+                .ForMember(src => src.PackedInPackZb, opt => opt.MapFrom(dest => dest.PackedInPackZb))
                 .ForMember(src => src.Remarks, opt => opt.MapFrom(dest => dest.Remarks));
 
             Mapper.CreateMap<Ck4cDecreeDocDto, Ck4cDecreeDocModel>().IgnoreAllNonExisting();

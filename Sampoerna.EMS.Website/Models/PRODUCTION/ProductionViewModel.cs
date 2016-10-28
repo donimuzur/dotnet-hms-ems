@@ -103,6 +103,15 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         //domain model
         public ProductionDto ProductionDtos { get; set; }
         public List<ProductionUploadItems> UploadItems { get; set; }
+
+        
+        
+        //[RegularExpression("^[0-9]*$")]
+        public string ZbStr { get; set; }
+        public long? Zb { get; set; }
+        public string PackedAdjustedStr { get; set; }
+        public decimal? PackedAdjusted { get; set; }
+        public string Remark { get; set; }
     }
 
 }
