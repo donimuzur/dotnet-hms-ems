@@ -108,6 +108,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public string ProdType { get; set; }
         public int ContentPerPack { get; set; }
         public int PackedInPack { get; set; }
+        public int PackedInPackZb { get; set; }
         public string Remarks { get; set; }
         public bool IsEditable { get; set; }
         public Decimal Zb { get; set; }

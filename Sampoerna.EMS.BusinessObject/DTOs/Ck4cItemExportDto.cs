@@ -24,6 +24,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Remarks { get; set; }
         public string Content { get; set; }
         public string TotalPack { get; set; }
+        public string TotalPackZb { get; set; }
         public string Hje { get; set; }
         public string Tariff { get; set; }
     }

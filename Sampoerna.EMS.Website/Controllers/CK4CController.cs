@@ -2344,6 +2344,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 slDocument.SetCellValue(iRow, iColumn, data.TotalPack);
                 iColumn = iColumn + 1;
 
+                slDocument.SetCellValue(iRow, iColumn, data.TotalPackZb);
+                iColumn = iColumn + 1;
+
                 slDocument.SetCellValue(iRow, iColumn, data.Hje);
                 iColumn = iColumn + 1;
 
@@ -2405,6 +2408,9 @@ namespace Sampoerna.EMS.Website.Controllers
             iColumn = iColumn + 1;
 
             slDocument.SetCellValue(iRow, iColumn, "Total Pack (10)");
+            iColumn = iColumn + 1;
+
+            slDocument.SetCellValue(iRow, iColumn, "Total Pack (ZB)");
             iColumn = iColumn + 1;
 
             slDocument.SetCellValue(iRow, iColumn, "HJE (9)");

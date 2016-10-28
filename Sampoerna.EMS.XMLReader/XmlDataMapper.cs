@@ -88,7 +88,7 @@ namespace Sampoerna.EMS.XMLReader
             var xmllogs = GetXmlLogs(shortFilename);
             var errorCount = 0;
             //var itemToInsert = 0;
-            var isProdOrInventory = false;
+            var isNeedInsertBulk = false;
             var fileName = string.Empty;
             var needMoved = true;
             try
@@ -99,7 +99,7 @@ namespace Sampoerna.EMS.XMLReader
                     if (item is PRODUCTION || item is INVENTORY_MOVEMENT)
                     {
                         needMoved = true;
-                        isProdOrInventory = true;
+                        isNeedInsertBulk = true;
                         break;
                     }
                     
@@ -116,6 +116,7 @@ namespace Sampoerna.EMS.XMLReader
                             continue;
                             
                         }
+                        isNeedInsertBulk = true;
                     }
 
                     var isFromSap = item.GetType().GetProperty("IS_FROM_SAP") != null && (bool)item.GetType().GetProperty("IS_FROM_SAP").GetValue(item);
@@ -142,7 +143,7 @@ namespace Sampoerna.EMS.XMLReader
 
                 if (Errors.Count == 0)
                 {
-                    if (isProdOrInventory)
+                    if (isNeedInsertBulk)
                     {
                         repo.InsertOrUpdateBulk(items);
                     }
@@ -248,6 +249,9 @@ namespace Sampoerna.EMS.XMLReader
             
 
         }
+
+
+
         public void InsertOrUpdate<T>(T entity) where T: class 
         {
             var repo = uow.GetGenericRepository<T>();
