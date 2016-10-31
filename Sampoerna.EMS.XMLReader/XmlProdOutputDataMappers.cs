@@ -197,6 +197,8 @@ namespace Sampoerna.EMS.XMLReader
                         production.CREATED_BY = existingProd.CREATED_BY;
                         production.CREATED_DATE = existingProd.CREATED_DATE;
                         production.QTY = existingProd.QTY;
+                        production.ZB = existingProd.ZB;
+                        
                         production.BRAND_DESC = existingProd.BRAND_DESC;
                         production.COMPANY_CODE = existingProd.COMPANY_CODE;
                         production.COMPANY_NAME = existingProd.COMPANY_NAME;
