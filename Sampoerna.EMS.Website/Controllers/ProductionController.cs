@@ -571,9 +571,19 @@ namespace Sampoerna.EMS.Website.Controllers
                     var item = new ProductionUploadItems();
                     var brand = _brandRegistrationBll.GetByFaCode(dataRow[1], dataRow[2]);
                     var prodQty = dataRow[4] == "" ? 0 : Convert.ToDecimal(dataRow[4]);
-                    var zb = dataRow[3] == "" ? 0 : Convert.ToDecimal(dataRow[3]); //brand.PROD_CODE == "01" ? Convert.ToDecimal(dataRow[3]) : 0;
+                    decimal zb = dataRow[3] == "" ? 0 : Convert.ToDecimal(dataRow[3]); //brand.PROD_CODE == "01" ? Convert.ToDecimal(dataRow[3]) : 0;
                     var packedQty = dataRow[3] == "" ? "0" : dataRow[3]; //brand.PROD_CODE == "01" ? 0 : Convert.ToDecimal(dataRow[3]);
-                    var packedAdjusted = dataRow[7] == "" ? 0 : Convert.ToDecimal(dataRow[7]);
+                    decimal packedAdjusted = 0;
+
+                    if (dataRow.Count >= 8)
+                    {
+                        packedAdjusted = dataRow[7] == "" ? 0 : Convert.ToDecimal(dataRow[7]);
+                    }
+                    else
+                    {
+                        packedAdjusted = 0;
+                    }
+
 
                     item.CompanyCode = dataRow[0];
                     item.PlantWerks = dataRow[1];
