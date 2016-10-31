@@ -1313,7 +1313,7 @@ namespace Sampoerna.EMS.BLL
                         var packedAdjustedQty = itemCk4c.Sum(x => x.PACKED_ADJUSTED);
                         var packedQty = itemCk4c.Sum(x => x.PACKED_QTY);
 
-                        if (zbQty > 0) packedQty = zbQty;
+                        if (brand.PROD_CODE == "01") packedQty = zbQty;
                         if (packedAdjustedQty > 0) packedQty = packedAdjustedQty;
 
                         var unpackedQty = itemCk4c.Sum(x => x.UNPACKED_QTY);
