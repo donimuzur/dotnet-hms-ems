@@ -28,6 +28,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string VendorCity { get; set; }
         public string PrintedDate { get; set; }
         public Enums.DocumentTypePbck7AndPbck3 DocumentType { get; set; }
+        public Enums.RequestType RequestType { get; set; }
         public DateTime? ExecDateFrom { get; set; }
         public DateTime? ExecDateTo { get; set; }
         public string ExecDateDisplayString { get; set; }
