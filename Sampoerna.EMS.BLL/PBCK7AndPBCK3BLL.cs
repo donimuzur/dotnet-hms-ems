@@ -3406,6 +3406,7 @@ namespace Sampoerna.EMS.BLL
                 {
                     rc = SetCompanyData(rc, dbData.CK5.SOURCE_PLANT_ID);
                     rc = SetNppbkcData(rc, dbData.CK5.SOURCE_PLANT_NPPBKC_ID);
+                    rc.RequestType = dbData.CK5.REQUEST_TYPE_ID;
                     //get from CK5_Material, but need to process
                     //todo: ask to get Items//rc.Items = Mapper.Map<List<Pbck73ItemPrintOutDto>>(dbData.CK5.CK5_MATERIAL);
                     rc.Items = new List<Pbck73ItemPrintOutDto>();
