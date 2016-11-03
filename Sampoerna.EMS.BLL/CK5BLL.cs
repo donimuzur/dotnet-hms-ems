@@ -254,7 +254,7 @@ namespace Sampoerna.EMS.BLL
                     queryFilter =
                         queryFilter.And(
                             c =>
-                                (c.CREATED_BY == input.UserId ||
+                                (c.CREATED_BY == input.UserId || c.APPROVED_BY_POA == input.UserId ||
                                  (c.STATUS_ID != Enums.DocumentStatus.Draft &&
                                   input.ListUserPlant.Contains(c.SOURCE_PLANT_ID))));
                 }
