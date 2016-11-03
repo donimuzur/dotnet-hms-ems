@@ -3945,19 +3945,21 @@ namespace Sampoerna.EMS.BLL
             
             
             var supplierPlantData = _t001WServices.GetById(input.SupplierPlantId);
-            
-            var supplierCompanyData = _t001KService.GetByBwkey(supplierPlantData.T001K.BWKEY);
-            
-            if (supplierCompanyData != null)
-            {
-                rc.SupplierCompanyCode = supplierCompanyData.BUKRS;
-                rc.SupplierCompanyName = supplierCompanyData.T001.BUTXT;
 
-                rc.SupplierPlantAddress = supplierPlantData.ADDRESS;
-                rc.SupplierPlantName = supplierPlantData.NAME1;
+            if (supplierPlantData != null) { 
+            
+                var supplierCompanyData = _t001KService.GetByBwkey(supplierPlantData.T001K.BWKEY);
+            
+                if (supplierCompanyData != null)
+                {
+                    rc.SupplierCompanyCode = supplierCompanyData.BUKRS;
+                    rc.SupplierCompanyName = supplierCompanyData.T001.BUTXT;
+
+                    rc.SupplierPlantAddress = supplierPlantData.ADDRESS;
+                    rc.SupplierPlantName = supplierPlantData.NAME1;
+                }
+
             }
-
-            
 
             if (pbck1Data.Count > 0)
             {
