@@ -129,6 +129,8 @@ namespace Sampoerna.EMS.XMLReader
                         var existingMaterial = GetBrand(item.WERKS, item.FA_CODE,item.STICKER_CODE);
                         if (existingMaterial != null)
                         {
+                            item.BAHAN_KEMASAN = existingMaterial.BAHAN_KEMASAN;
+                            item.PACKED_ADJUSTED = existingMaterial.PACKED_ADJUSTED;
                             item.CONVERSION = existingMaterial.CONVERSION;
                             item.PRINTING_PRICE = existingMaterial.PRINTING_PRICE;
                             item.CUT_FILLER_CODE = existingMaterial.CUT_FILLER_CODE;

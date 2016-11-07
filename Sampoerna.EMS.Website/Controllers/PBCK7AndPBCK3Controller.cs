@@ -3211,6 +3211,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dMasterRow.NppbkcCity = data.NppbkcCity;
             dMasterRow.VendorCity = data.VendorCity;
             dMasterRow.DocumentType = EnumHelper.GetDescription(data.DocumentType);
+            if (data.DocumentType == 0) dMasterRow.DocumentType = EnumHelper.GetDescription(data.RequestType);
             dMasterRow.ExecutionDate = data.ExecDateDisplayString;
             dMasterRow.NppbkcDate = data.NppbkcStartDate;
             dMasterRow.ReportingDate = data.PrintedDate;
