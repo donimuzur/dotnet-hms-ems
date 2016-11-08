@@ -56,7 +56,8 @@ namespace Sampoerna.EMS.BLL.Services
             var ck5ExcludedTypes = new List<Enums.CK5Type>()
             {
                 Enums.CK5Type.Manual,
-                Enums.CK5Type.Return
+                Enums.CK5Type.Return,
+                Enums.CK5Type.MarketReturn
             };
 
             Expression<Func<CK5_MATERIAL, bool>> queryFilterCk5 = c => c.CK5.SOURCE_PLANT_ID == supplierPlant 
