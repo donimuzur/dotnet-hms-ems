@@ -1313,12 +1313,14 @@ namespace Sampoerna.EMS.BLL
                         var packedAdjustedQty = itemCk4c.Sum(x => x.PACKED_ADJUSTED);
                         var packedQty = itemCk4c.Sum(x => x.PACKED_QTY);
 
-                        if (zbQty > 0) packedQty = zbQty;
+                        if (brand.PROD_CODE == "01") packedQty = zbQty;
                         if (packedAdjustedQty > 0) packedQty = packedAdjustedQty;
 
                         var unpackedQty = itemCk4c.Sum(x => x.UNPACKED_QTY);
                         var remarks = itemCk4c.FirstOrDefault();
                         var total = brand.BRAND_CONTENT == null ? 0 : packedQty / Convert.ToInt32(brand.BRAND_CONTENT);
+                        var itemId = 0;
+                        if (itemCk4c.FirstOrDefault() != null) itemId = Convert.ToInt32(itemCk4c.FirstOrDefault().CK4C_ITEM_ID);
 
                         if (unpackedQty == 0)
                         {
@@ -1368,6 +1370,7 @@ namespace Sampoerna.EMS.BLL
                         ck4cItem.ProdWaste = unpackedQty == null || unpackedQty == 0 ? "Nihil" : String.Format("{0:n0}", unpackedQty);
                         ck4cItem.Comment = remarks == null ? string.Empty : remarks.REMARKS;
                         ck4cItem.BhnKemasan = brand.BAHAN_KEMASAN;
+                        ck4cItem.Ck4cItemId = itemId;
 
                         //disable quantity when ck4c level by plant
                         if (dtData.PLANT_ID != null)
@@ -1462,7 +1465,8 @@ namespace Sampoerna.EMS.BLL
                     c.Total,
                     c.ProdWaste,
                     c.Comment,
-                    c.BhnKemasan
+                    c.BhnKemasan,
+                    c.Ck4cItemId
                 });
 
                 var distinctTempCk4cDto2 = tempCk4cDto2.Distinct().ToList();
@@ -1483,7 +1487,8 @@ namespace Sampoerna.EMS.BLL
                     Total = c.Total,
                     ProdWaste = c.ProdWaste,
                     Comment = c.Comment,
-                    BhnKemasan = c.BhnKemasan
+                    BhnKemasan = c.BhnKemasan,
+                    Ck4cItemId = c.Ck4cItemId
 
                 }).ToList();
 
@@ -1601,10 +1606,9 @@ namespace Sampoerna.EMS.BLL
             //header
             var groupList = groupItem
                 .Where(c=>string.IsNullOrEmpty(c.ProdDate))
-                .GroupBy(x => new { x.Ck4cItemId, x.ProdQty, x.ProdCode, x.ProdType, x.Merk, x.Hje, x.No, x.NoProd, x.ProdDate, x.Isi, x.CollumNo, x.BhnKemasan })
+                .GroupBy(x => new { x.ProdQty, x.ProdCode, x.ProdType, x.Merk, x.Hje, x.No, x.NoProd, x.ProdDate, x.Isi, x.CollumNo, x.BhnKemasan })
                 .Select(p => new Ck4cGroupReportItemDto()
                 {
-                    Ck4cItemId = p.FirstOrDefault().Ck4cItemId,
                     ProdQty = p.FirstOrDefault().ProdQty,
                     ProdCode = p.FirstOrDefault().ProdCode,
                     ProdType = p.FirstOrDefault().ProdType,
@@ -1629,10 +1633,9 @@ namespace Sampoerna.EMS.BLL
             //different when take field remark 
             var groupList2 = groupItem
                 .Where(c => !string.IsNullOrEmpty(c.ProdDate))
-                .GroupBy(x => new { x.Ck4cItemId, x.ProdQty, x.ProdCode, x.ProdType, x.Merk, x.Hje, x.No, x.NoProd, x.ProdDate, x.Isi, x.CollumNo, x.BhnKemasan })
+                .GroupBy(x => new { x.ProdQty, x.ProdCode, x.ProdType, x.Merk, x.Hje, x.No, x.NoProd, x.ProdDate, x.Isi, x.CollumNo, x.BhnKemasan })
                 .Select(p => new Ck4cGroupReportItemDto()
                 {
-                    Ck4cItemId = p.FirstOrDefault().Ck4cItemId,
                     ProdQty = p.FirstOrDefault().ProdQty,
                     ProdCode = p.FirstOrDefault().ProdCode,
                     ProdType = p.FirstOrDefault().ProdType,
