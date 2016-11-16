@@ -111,7 +111,7 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public int PackedInPackZb { get; set; }
         public string Remarks { get; set; }
         public bool IsEditable { get; set; }
-        public Decimal Zb { get; set; }
-        public Decimal PackedAdjusted { get; set; }
+        public Decimal? Zb { get; set; }
+        public Decimal? PackedAdjusted { get; set; }
     }
 }
