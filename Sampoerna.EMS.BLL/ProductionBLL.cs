@@ -275,7 +275,9 @@ namespace Sampoerna.EMS.BLL
                              PackedInPackZb = Convert.ToInt32(p.ZB == null ? 0 : p.ZB) / Convert.ToInt32(b.BRAND_CONTENT),
                              IsEditable = g.CK4CEDITABLE,
                              Zb = p.ZB == null ? 0 : p.ZB,
-                             PackedAdjusted = p.PACKED_ADJUSTED == null ? 0 : p.PACKED_ADJUSTED
+                             PackedAdjusted = p.PACKED_ADJUSTED == null ? 0 : p.PACKED_ADJUSTED,
+                             ZbQty = p.ZB,
+                             PackedAdjustedQty = p.PACKED_ADJUSTED
                          };
 
             if (nppbkc != string.Empty && isNppbkc)
@@ -307,7 +309,9 @@ namespace Sampoerna.EMS.BLL
                              PackedInPackZb = Convert.ToInt32(p.ZB == null ? 0 : p.ZB) / Convert.ToInt32(b.BRAND_CONTENT),
                              IsEditable = g.CK4CEDITABLE,
                              Zb = p.ZB == null ? 0 : p.ZB,
-                             PackedAdjusted = p.PACKED_ADJUSTED == null ? 0 : p.PACKED_ADJUSTED
+                             PackedAdjusted = p.PACKED_ADJUSTED == null ? 0 : p.PACKED_ADJUSTED,
+                             ZbQty = p.ZB,
+                             PackedAdjustedQty = p.PACKED_ADJUSTED
                          };
             }
 
@@ -515,7 +519,7 @@ namespace Sampoerna.EMS.BLL
 
                 var packedInPackZb = Convert.ToInt32(zbQty) / item.ContentPerPack;
 
-                if (packedAdjustedQty > 0) packedInPack = Convert.ToInt32(packedAdjustedQty) / item.ContentPerPack;
+                if (item.PackedAdjustedQty != null) packedInPack = Convert.ToInt32(packedAdjustedQty) / item.ContentPerPack;
 
                 item.QtyUnpacked = unpackedQty;
 
