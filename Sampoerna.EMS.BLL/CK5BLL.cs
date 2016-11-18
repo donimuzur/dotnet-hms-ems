@@ -4293,7 +4293,8 @@ namespace Sampoerna.EMS.BLL
             }
 
             if (dtData.CK5_TYPE == Enums.CK5Type.Export
-                || dtData.CK5_TYPE == Enums.CK5Type.Manual)
+                || dtData.CK5_TYPE == Enums.CK5Type.Manual
+                || dtData.CK5_TYPE ==Enums.CK5Type.MarketReturn)
             {
                 foreach (var material in result.ListMaterials)
                 {
@@ -4310,6 +4311,17 @@ namespace Sampoerna.EMS.BLL
                     }
 
 
+                }
+            }
+            else {
+                foreach (var material in result.ListMaterials)
+                {
+                    if (string.IsNullOrEmpty(material.MaterialDescription)) { 
+                        var mat = _materialBll.GetByPlantIdAndStickerCode(material.PLANT_ID, material.BRAND);
+
+                        //UPDATE FOR PRINT OUT ONLY
+                        material.MaterialDescription = mat.ZAIDM_EX_GOODTYP.EXT_TYP_DESC;
+                    }
                 }
             }
 
