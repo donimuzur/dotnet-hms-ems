@@ -2082,7 +2082,14 @@ namespace Sampoerna.EMS.BLL
             rc.Detail.RequestQty = String.Format("{0:n}", dbData.REQUEST_QTY.Value);
             rc.Detail.RequestQtyUom = dbData.REQUEST_QTY_UOM;
             rc.Detail.RequestQtyUomName = dbData.UOM.UOM_DESC;
-            if (dbData.LATEST_SALDO != null) rc.Detail.LatestSaldo = String.Format("{0:n}", dbData.LATEST_SALDO.Value);
+            if (dbData.LATEST_SALDO != null) { 
+                rc.Detail.LatestSaldo = String.Format("{0:n}", dbData.LATEST_SALDO.Value);
+
+                var newReqQty = String.Format("{0:n}", dbData.REQUEST_QTY.Value + dbData.LATEST_SALDO.Value);
+                if (dbData.PBCK1_TYPE == Enums.PBCK1Type.Additional) newReqQty = String.Format("{0:n}", dbData.REQUEST_QTY.Value - dbData.LATEST_SALDO.Value);
+
+                rc.Detail.RequestQty = newReqQty;
+            }
             rc.Detail.LatestSaldoUom = dbData.LATEST_SALDO_UOM;
             rc.Detail.SupplierPlantName = dbData.SUPPLIER_PLANT;
             rc.Detail.SupplierPlantId = dbData.SUPPLIER_PLANT_WERKS;
