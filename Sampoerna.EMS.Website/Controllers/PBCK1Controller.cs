@@ -184,11 +184,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         var text = datarow[2];
                         decimal value;
-                        if (Decimal.TryParse(text, out value))
+                        if (Decimal.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out value))
                         {
                             //text = Math.Round(Convert.ToDecimal(text), 5).ToString();
                             //text = Convert.ToDecimal(text).ToString();
-                            text = ConvertHelper.ConvertDecimalFiveToString(Convert.ToDecimal(text));
+                            text = ConvertHelper.ConvertDecimalFiveToString(Decimal.Parse(text, NumberStyles.Any));
                         }
 
                         uploadItem.ProductCode = datarow[0];
