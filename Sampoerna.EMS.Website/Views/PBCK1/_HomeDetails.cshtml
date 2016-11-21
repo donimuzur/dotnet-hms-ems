@@ -303,6 +303,10 @@
                 </div>
                 <div id="collapse6" class="panel-collapse collapse" role="tabpanel-4" aria-labelledby="heading6">
                     <div class="panel-body">
+                        <div>
+                            <br />
+                            @Html.CheckBoxFor(model => model.Detail.IsDisplayRange, new { @disabled = "disabled" }) Display Range in Print Out
+                        </div>
                         <div class="table-container">
                             <table id="Detail_Pbck1ProdConverter" name="Detail.Pbck1ProdConverter" class="table table-bordered table-striped js-options-table">
                                 <thead>
@@ -314,6 +318,7 @@
                                         <th>Brand</th>
                                         <th>Converted Output</th>
                                         <th>Converted Uom</th>
+                                        <th>Range</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -328,6 +333,7 @@
                                             <td><input name="Detail.Pbck1ProdConverter[@i].BrandCE" type="hidden" value="@item.BrandCE" />@item.BrandCE</td>
                                             <td class="number"><input name="Detail.Pbck1ProdPlan[@i].ConverterOutput" type="hidden" value="@item.ConverterOutput" /><span>@string.Format("{0:N5}", item.ConverterOutput)</span></td>
                                             <td><input name="Detail.Pbck1ProdPlan[@i].ConverterUomId" type="hidden" value="@item.ConverterUomId" />@item.ConverterUomId</td>
+                                            <td class="number"><input name="Detail.Pbck1ProdPlan[@i].Range" type="hidden" value="@item.Range" /><span>@string.Format("{0:N5}", item.Range)</span></td>
                                         </tr>
                                     }
                                 </tbody>

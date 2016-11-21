@@ -6,5 +6,6 @@
         public string BrandCE { get; set; }
         public string ConverterOutput { get; set; }
         public string ConverterUom { get; set; }
+        public string Range { get; set; }
     }
 }

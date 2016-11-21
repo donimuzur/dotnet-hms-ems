@@ -62,5 +62,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public List<Pbck1DecreeDocDto> Pbck1DecreeDoc { get; set; }
         public string NppbkcKppbcId { get; set; }
         public bool IsNppbkcImport { get; set; }
+        public bool IsDisplayRange { get; set; }
     }
 }

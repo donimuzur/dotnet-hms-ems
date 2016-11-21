@@ -26,6 +26,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ProdTypeName, opt => opt.MapFrom(src => src.PRODUCT_TYPE))
                 .ForMember(dest => dest.ProdTypeCode, opt => opt.MapFrom(src => src.PROD_CODE))
                 .ForMember(dest => dest.ProdAlias, opt => opt.MapFrom(src => src.PRODUCT_ALIAS))
+                .ForMember(dest => dest.Range, opt => opt.MapFrom(src => src.RANGE_QTY))
                 ;
 
             Mapper.CreateMap<Pbck1ProdConverterDto, PBCK1_PROD_CONVERTER>().IgnoreAllNonExisting()
@@ -36,7 +37,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PRODUCT_TYPE, opt => opt.MapFrom(src => src.ProdTypeName))
                 .ForMember(dest => dest.PRODUCT_ALIAS, opt => opt.MapFrom(src => src.ProdAlias))
                 .ForMember(dest => dest.CONVERTER_OUTPUT, opt => opt.MapFrom(src => src.ConverterOutput))
-                .ForMember(dest => dest.CONVERTER_UOM_ID, opt => opt.MapFrom(src => src.ConverterOutputUomId));
+                .ForMember(dest => dest.CONVERTER_UOM_ID, opt => opt.MapFrom(src => src.ConverterOutputUomId))
+                .ForMember(dest => dest.RANGE_QTY, opt => opt.MapFrom(src => src.Range));
 
             Mapper.CreateMap<PBCK1_PROD_PLAN, Pbck1ProdPlanDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Pbck1ProdPlanId, opt => opt.MapFrom(src => src.PBCK1_PROD_PLAN_ID))
@@ -93,6 +95,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.SupplierKppbcName, opt => opt.MapFrom(src => src.SUPPLIER_KPPBC_NAME))
                 .ForMember(dest => dest.SupplierCompany, opt => opt.MapFrom(src => src.SUPPLIER_COMPANY))
                 .ForMember(dest => dest.IsNppbkcImport, opt => opt.MapFrom(src => src.IS_NPPBKC_IMPORT))
+                .ForMember(dest => dest.IsDisplayRange, opt => opt.MapFrom(src => src.IS_DISPLAY_RANGE))
                 .ForMember(dest => dest.PlanProdFrom, opt => opt.MapFrom(src => src.PLAN_PROD_FROM))
                 .ForMember(dest => dest.PlanProdTo, opt => opt.MapFrom(src => src.PLAN_PROD_TO))
                 .ForMember(dest => dest.RequestQty, opt => opt.MapFrom(src => src.REQUEST_QTY))
@@ -168,6 +171,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.SUPPLIER_KPPBC_NAME, opt => opt.MapFrom(src => src.SupplierKppbcName))
                 .ForMember(dest => dest.SUPPLIER_COMPANY, opt => opt.MapFrom(src => src.SupplierCompany))
                 .ForMember(dest => dest.IS_NPPBKC_IMPORT, opt => opt.MapFrom(src => src.IsNppbkcImport))
+                .ForMember(dest => dest.IS_DISPLAY_RANGE, opt => opt.MapFrom(src => src.IsDisplayRange))
                 .ForMember(dest => dest.SUPPLIER_PLANT_WERKS, opt => opt.MapFrom(src => src.SupplierPlantWerks))
                 .ForMember(dest => dest.PBCK1_PROD_CONVERTER, opt => opt.MapFrom(src => Mapper.Map<List<PBCK1_PROD_CONVERTER>>(src.Pbck1ProdConverter)))
                 .ForMember(dest => dest.PBCK1_PROD_PLAN, opt => opt.MapFrom(src => Mapper.Map<List<PBCK1_PROD_PLAN>>(src.Pbck1ProdPlan)))
