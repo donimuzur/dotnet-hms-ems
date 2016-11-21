@@ -488,6 +488,7 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("COMPANY", origin.NppbkcId == data.NppbkcId);
 
             changesData.Add("IS_NPPBKC_IMPORT", origin.IsNppbkcImport == data.IsNppbkcImport);
+            changesData.Add("IS_DISPLAY_RANGE", origin.IsDisplayRange == data.IsDisplayRange);
             changesData.Add("EXC_GOOD_TYP", origin.GoodType == data.GoodType);
             changesData.Add("SUPPLIER_PLANT", origin.SupplierPlant == data.SupplierPlant);
             changesData.Add("SUPPLIER_PORT_ID", origin.SupplierPortId == data.SupplierPortId);
@@ -615,6 +616,11 @@ namespace Sampoerna.EMS.BLL
                             changes.OLD_VALUE = origin.IsNppbkcImport != null ? origin.IsNppbkcImport ? "TRUE" : "FALSE" : "FALSE";
                             changes.NEW_VALUE = data.IsNppbkcImport != null ? data.IsNppbkcImport ? "TRUE" : "FALSE" : "FALSE";
                             changes.FIELD_NAME = "PBCK for Import";
+                            break;
+                        case "IS_DISPLAY_RANGE":
+                            changes.OLD_VALUE = origin.IsDisplayRange != null ? origin.IsDisplayRange ? "TRUE" : "FALSE" : "FALSE";
+                            changes.NEW_VALUE = data.IsDisplayRange != null ? data.IsDisplayRange ? "TRUE" : "FALSE" : "FALSE";
+                            changes.FIELD_NAME = "Display Range in Print Out";
                             break;
                         case "EXC_GOOD_TYP":
                             changes.OLD_VALUE = origin.GoodTypeDesc;
@@ -2001,7 +2007,7 @@ namespace Sampoerna.EMS.BLL
                         rc.BrandRegistrationList = new List<Pbck1ReportBrandRegistrationDto>();
                         foreach (var dataItem in dataJoined)
                         {
-                            rc.BrandRegistrationList.Add(new Pbck1ReportBrandRegistrationDto() { Brand = dataItem.BRAND_CE, Convertion = dataItem.CONVERTER_OUTPUT.Value.ToString("N5"), ConvertionUomId = dataItem.CONVERTER_UOM_ID, Kadar = "-", Type = dataItem.PRODUCT_ALIAS, ConvertionUom = dataItem.UOM.UOM_DESC});
+                            rc.BrandRegistrationList.Add(new Pbck1ReportBrandRegistrationDto() { Brand = dataItem.BRAND_CE, Convertion = dataItem.CONVERTER_OUTPUT.Value.ToString("N5"), ConvertionUomId = dataItem.CONVERTER_UOM_ID, Kadar = "-", Type = dataItem.PRODUCT_ALIAS, ConvertionUom = dataItem.UOM.UOM_DESC, Range = dataItem.RANGE_QTY.Value.ToString("N5") });
                         }
                     }
                 }
@@ -2098,6 +2104,7 @@ namespace Sampoerna.EMS.BLL
             rc.Detail.SupplierPlantPhone = !string.IsNullOrEmpty(dbData.SUPPLIER_PHONE) ? dbData.SUPPLIER_PHONE : "-";
             rc.Detail.SupplierKppbcId = dbData.SUPPLIER_KPPBC_ID;
             rc.Detail.SupplierCompanyName = string.IsNullOrEmpty(dbData.SUPPLIER_COMPANY) ? "-" : dbData.SUPPLIER_COMPANY;
+            rc.Detail.IsDisplayRange = dbData.IS_DISPLAY_RANGE.Value;
             
             if (!string.IsNullOrEmpty(rc.Detail.SupplierKppbcId))
             {
