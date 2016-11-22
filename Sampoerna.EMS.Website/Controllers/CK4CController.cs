@@ -1848,6 +1848,8 @@ namespace Sampoerna.EMS.Website.Controllers
             filterModel.PlantId = modelExport.Plant;
             filterModel.Poa = modelExport.PoaSearch;
             filterModel.Creator = modelExport.CreatorSearch;
+            filterModel.Month = modelExport.MonthSearch;
+            filterModel.Year = modelExport.YearSearch;
             filterModel.isForExport = true;
 
             var dataSummaryReport = SearchDataSummaryReports(filterModel);
