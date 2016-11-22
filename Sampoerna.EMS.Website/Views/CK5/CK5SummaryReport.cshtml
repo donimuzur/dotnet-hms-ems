@@ -239,6 +239,8 @@
                                         @Html.HiddenFor(model => model.ExportModel.MaterialDescription)
                                         @Html.HiddenFor(model => model.ExportModel.Poa)
                                         @Html.HiddenFor(model => model.ExportModel.Creator)
+                                        @Html.HiddenFor(model => model.ExportModel.Month)
+                                        @Html.HiddenFor(model => model.ExportModel.Year)
 
                                         <div class="row toggle">
 
@@ -831,6 +833,8 @@
             $('#ExportModel_MaterialDescription').val($('#SearchView_MaterialDescription').find("option:selected").val());
             $('#ExportModel_Poa').val($('#SearchView_Poa').find("option:selected").val());
             $('#ExportModel_Creator').val($('#SearchView_Creator').find("option:selected").val());
+            $('#ExportModel_Month').val($('#SearchView_Month').find("option:selected").val());
+            $('#ExportModel_Year').val($('#SearchView_Year').find("option:selected").val());
 
         }
 
