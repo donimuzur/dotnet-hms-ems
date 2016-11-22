@@ -86,6 +86,8 @@ namespace Sampoerna.EMS.XMLReader
                         {
                             item.CK1_ITEM = existingData.CK1_ITEM;
                             item.CK1_ID = existingData.CK1_ID;
+
+                            DeleteCk1ItemFirst(existingData.CK1_ID);
                         }
                         else
                         {
@@ -133,7 +135,7 @@ namespace Sampoerna.EMS.XMLReader
                                 InsertCk1Item(detail);
                             }
 
-                            //item.CK1_ITEM.Add(detail);
+                            item.CK1_ITEM.Add(detail);
                         }
                         
 
@@ -216,6 +218,18 @@ namespace Sampoerna.EMS.XMLReader
                 .Get(x => x.FA_CODE == brand && x.WERKS == werks && x.STICKER_CODE == stickerCode,null,"ZAIDM_EX_SERIES").FirstOrDefault();
 
             return existingBrand;
+        }
+
+        public void DeleteCk1ItemFirst(long ck1Id)
+        {
+            var repock1Item = _xmlMapper.uow.GetGenericRepository<CK1_ITEM>();
+
+            var listCk1Item = repock1Item.Get(x => x.CK1_ID == ck1Id).ToList();
+
+            foreach (var item in listCk1Item)
+            {
+                repock1Item.Delete(item);
+            }
         }
 
     }

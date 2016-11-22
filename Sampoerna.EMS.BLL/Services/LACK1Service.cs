@@ -137,10 +137,10 @@ namespace Sampoerna.EMS.BLL.Services
                     PERIODE = new DateTime(p.PERIOD_YEAR.Value, p.PERIOD_MONTH.Value, 1)
                 }).Where(x=> x.PERIOD_MONTH == lastMonth).ToList();
 
-            if (isExistnppbkcLevel)
-            {
-                getData = getData.Where(x => x.LACK1_LEVEL == Enums.Lack1Level.Nppbkc).ToList();
-            }
+            //if (isExistnppbkcLevel)
+            //{
+            //    getData = getData.Where(x => x.LACK1_LEVEL == Enums.Lack1Level.Nppbkc).ToList();
+            //}
 
 
             if (getData.Count == 0) return 0;
