@@ -29,11 +29,11 @@ namespace Sampoerna.EMS.Contract
 
        List<GetListBrandByPlantOutput> GetListBrandByPlant(string plantId);
 
-       List<GetListBrandByPlantOutput> GetListFaCodeHaveBlockStockByPlant(string plantId);
+       List<GetListBrandByPlantOutput> GetListFaCodeHaveBlockStockByNppbkc(string nppbkcId, List<string> plantList);
 
        List<GetListCk1ByNppbkcOutput> GetListCk1ByNppbkc(string nppbkcId);
 
-       GetBrandItemsOutput GetBrandItemsStickerCodeByPlantAndFaCode(string plant, string faCode);
+       GetBrandItemsOutput GetBrandItemsStickerCodeByNppbkcAndFaCode(string nppbkc, string faCode, List<string> plantList);
 
        string GetCk1DateByCk1Id(long ck1Id);
 

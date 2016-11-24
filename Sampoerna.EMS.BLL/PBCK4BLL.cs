@@ -87,7 +87,7 @@ namespace Sampoerna.EMS.BLL
                 ////delegate 
                 //var delegateUser = _poaDelegationServices.GetPoaDelegationFromByPoaToAndDate(input.UserId, DateTime.Now);
 
-                if (input.ListUserPlant == null)
+                if (input.ListUserNppbkc == null)
                     throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
 
                 //if (delegateUser.Count > 0)
@@ -98,18 +98,12 @@ namespace Sampoerna.EMS.BLL
                 //            c => input.ListUserPlant.Contains(c.PLANT_ID) && delegateUser.Contains(c.CREATED_BY));
                 //}
                 //else
-                    queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID));
+                queryFilter = queryFilter.And(c => input.ListUserNppbkc.Contains(c.NPPBKC_ID));
             }
 
             if (!string.IsNullOrEmpty(input.NppbkcId))
             {
                 queryFilter = queryFilter.And(c => c.NPPBKC_ID.Contains(input.NppbkcId));
-            }
-
-            if (!string.IsNullOrEmpty(input.PlantId))
-            {
-                queryFilter = queryFilter.And(c => c.PLANT_ID.Contains(input.PlantId));
-
             }
 
             if (input.ReportedOn.HasValue)
@@ -1598,7 +1592,13 @@ namespace Sampoerna.EMS.BLL
             if (poa != null) result.ReportDetails.PoaName = poa.PRINTED_NAME;
             result.ReportDetails.PoaTitle = poa != null ? poa.TITLE : string.Empty;
             result.ReportDetails.CompanyName = dtData.COMPANY_NAME;
-            result.ReportDetails.CompanyAddress = plantData != null ? plantData.ADDRESS : string.Empty;
+
+            var nppbkcDetails = _nppbkcBll.GetDetailsById(dtData.NPPBKC_ID);
+            if (nppbkcDetails != null)
+            {
+                result.ReportDetails.CompanyAddress = "- " + string.Join(Environment.NewLine + "- ", nppbkcDetails.T001W.Select(d => d.ADDRESS.Trim()).ToArray());
+            }
+            
             result.ReportDetails.NppbkcId = dtData.NPPBKC_ID;
 
             string nppbkcDate = "";
@@ -1640,7 +1640,7 @@ namespace Sampoerna.EMS.BLL
                     pbck4Matrikck1.Ck1Date = DateReportDisplayString(pbck4Item.CK1.CK1_DATE, false);
                     pbck4Matrikck1.Ck1OrderQty = pbck4Item.CK1.CK1_ITEM
                         .Where(x => x.MATERIAL_ID == pbck4Item.STICKER_CODE
-                            && x.FA_CODE == pbck4Item.FA_CODE && x.WERKS == pbck4Item.PLANT_ID)
+                            && x.FA_CODE == pbck4Item.FA_CODE)
                         .Sum(x => x.MENGE.Value);
                     pbck4Matrikck1.Ck1RequestedQty = pbck4Item.REQUESTED_QTY.HasValue ? pbck4Item.REQUESTED_QTY.Value : 0;
                 }
@@ -1908,22 +1908,27 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<GetListBrandByPlantOutput>>(dbBrand);
         }
 
-        public List<GetListBrandByPlantOutput> GetListFaCodeHaveBlockStockByPlant(string plantId)
+        public List<GetListBrandByPlantOutput> GetListFaCodeHaveBlockStockByNppbkc(string nppbkcId, List<string> plantList)
         {
             var output = new List<GetListBrandByPlantOutput>();
 
-            var dbBrand = _brandRegistrationServices.GetBrandByPlant(plantId).Where(x=> !x.BRAND_CE.ToLower().Contains("laboratorium")).ToList();
-            foreach (var zaidmExBrand in dbBrand)
-            {
-                var blockStock = GetBlockedStockQuota(plantId, zaidmExBrand.FA_CODE);
-                if (blockStock.BlockedStockRemainingCount > 0)
-                {
-                    var blockstockOutput = new GetListBrandByPlantOutput();
-                    blockstockOutput.PlantId = plantId;
-                    blockstockOutput.FaCode = zaidmExBrand.FA_CODE;
-                    blockstockOutput.RemainingBlockQuota = blockStock.BlockedStockRemainingCount;
+            var plantListNppbkc = _plantBll.GetActivePlant().Where(x => x.NPPBKC_ID == nppbkcId && plantList.Contains(x.WERKS)).Select(x => x.WERKS).ToList();
 
-                    output.Add(blockstockOutput);
+            foreach (var plantId in plantListNppbkc)
+            {
+                var dbBrand = _brandRegistrationServices.GetBrandByPlant(plantId).Where(x=> !x.BRAND_CE.ToLower().Contains("laboratorium")).ToList();
+                foreach (var zaidmExBrand in dbBrand)
+                {
+                    var blockStock = GetBlockedStockQuota(plantId, zaidmExBrand.FA_CODE);
+                    if (blockStock.BlockedStockRemainingCount > 0)
+                    {
+                        var blockstockOutput = new GetListBrandByPlantOutput();
+                        blockstockOutput.PlantId = plantId;
+                        blockstockOutput.FaCode = zaidmExBrand.FA_CODE;
+                        blockstockOutput.RemainingBlockQuota = blockStock.BlockedStockRemainingCount;
+
+                        output.Add(blockstockOutput);
+                    }
                 }
             }
 
@@ -1938,9 +1943,19 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<GetListCk1ByNppbkcOutput>>(dbCk1);
         }
 
-        public GetBrandItemsOutput GetBrandItemsStickerCodeByPlantAndFaCode(string plant, string faCode)
+        public GetBrandItemsOutput GetBrandItemsStickerCodeByNppbkcAndFaCode(string nppbkc, string faCode, List<string> plantList)
         {
-            var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(plant, faCode);
+            var dbBrand = new ZAIDM_EX_BRAND();
+
+            foreach (var plantId in plantList)
+            {
+                var getBrandByPlant = _brandRegistrationServices.GetByPlantIdAndFaCode(plantId, faCode);
+                if (getBrandByPlant != null)
+                {
+                    dbBrand = getBrandByPlant;
+                    break;
+                }
+            }                
 
             return Mapper.Map<GetBrandItemsOutput>(dbBrand);
         }
@@ -2022,7 +2037,7 @@ namespace Sampoerna.EMS.BLL
             {
                 foreach (var ck1Item in ck1.CK1_ITEM)
                 {
-                    if (ck1Item.WERKS == input.PlantId && ck1Item.FA_CODE == input.FaCode)
+                    if (ck1Item.FA_CODE == input.FaCode)
                     {
                         var found = new GetListCk1ByNppbkcOutput();
                         found.Ck1Id = ck1.CK1_ID.ToString();
@@ -2040,7 +2055,7 @@ namespace Sampoerna.EMS.BLL
                                     Ck1No = p.FirstOrDefault().Ck1No,
                                     Ck1Id = p.FirstOrDefault().Ck1Id,
                                     Ck1Date = p.FirstOrDefault().Ck1Date
-                                }).ToList();
+                                }).OrderBy(x => x.Ck1No).ToList();
 
             return result;
         }

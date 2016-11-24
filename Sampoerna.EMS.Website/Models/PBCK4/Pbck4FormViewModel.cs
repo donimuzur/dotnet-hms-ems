@@ -30,6 +30,7 @@ namespace Sampoerna.EMS.Website.Models.PBCK4
 
         public string PlantId { get; set; }
         public SelectList PlantList { get; set; }
+        public SelectList NppbkcList { get; set; }
 
         public string PlantDesc { get; set; }
         public string NppbkcId { get; set; }

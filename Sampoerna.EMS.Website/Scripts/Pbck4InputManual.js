@@ -27,7 +27,7 @@
 }
 
 function ajaxGetListFaCode(url, formData, selectedValue) {
-    if (formData.plantId) {
+    if (formData.nppbkcId) {
         $.ajax({
             type: 'POST',
             url: url,
@@ -92,7 +92,7 @@ function ajaxGetListCk1(url, formData, selectedText) {
 
 
 function ajaxGetListCk1DateByPlantAndFaCode(url, formData, selectedText) {
-    if (formData.plantId) {
+    if (formData.nppbkcId) {
         $.ajax({
             type: 'POST',
             url: url,
@@ -126,7 +126,7 @@ function ajaxGetListCk1DateByPlantAndFaCode(url, formData, selectedText) {
 }
 
 function ajaxGetBrandItems(url, formData) {
-    if (formData.plantId) {
+    if (formData.nppbkcId) {
         $.ajax({
             type: 'POST',
             url: url,
@@ -167,7 +167,7 @@ function ajaxGetBrandItems(url, formData) {
 
 
 function ajaxGetBrandItemsForEdit(url, formData) {
-    if (formData.plantId) {
+    if (formData.nppbkcId) {
         $.ajax({
             type: 'POST',
             url: url,

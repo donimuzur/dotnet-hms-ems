@@ -31,8 +31,6 @@
                     <div class="tab-content">
                         @Html.HiddenFor(model => model.CompanyName)
                         @Html.HiddenFor(model => model.CompanyId)
-                        @Html.HiddenFor(model => model.PlantDesc)
-                        @Html.HiddenFor(model => model.NppbkcId)
                         @Html.HiddenFor(model => model.NppbkcDesc)
                         @Html.HiddenFor(model => model.Poa)
 
@@ -79,8 +77,8 @@
                 <input id="uploadCk1Id" type="hidden" value="">
                 <div class="row">
                     <div class="col-md-4">
-                        <label>Plant</label>
-                        <input class="form-control" id="uploadPlant" type="text" value="" disabled>
+                        <label>Nppbkc Id</label>
+                        <input class="form-control" id="uploadNppbkc" type="text" value="" disabled>
                     </div>
                     
                     <div class="col-md-4">
@@ -241,9 +239,9 @@
         OnReadyFunction();
     });
 
-    $("#PlantId").change(function () {
-        if ($("#PlantId").length) {
-            var plant = $(this).find("option:selected").val();
+      $("#NppbkcId").change(function () {
+          if ($("#NppbkcId").length) {
+            var nppbkc = $(this).find("option:selected").val();
 
             //remove table
             try {
@@ -251,10 +249,9 @@
             } catch (e) {
 
             }
-            if (plant == '') {
+            if (nppbkc == '') {
                 $("input[name='CompanyName']").val('');
                 $("input[name='CompanyId']").val('');
-                $("*[name='PlantDesc']").val('');
                 $("*[name='Poa']").val('');
                 $("input[name='NppbkcId']").val('');
                 $("input[name='NppbkcDesc']").val('');
@@ -264,7 +261,7 @@
 
             } else {
 
-                ajaxGetPlantDetails('@Url.Action("GetPlantDetails", "PBCK4")', { plantId: plant });
+                ajaxGetNppbkcDetails('@Url.Action("GetNppbkcDetails", "PBCK4")', { nppbkcId: nppbkc });
             }
         }
     });
@@ -281,7 +278,7 @@
           var sourcePlant = $("#PlantId").find("option:selected").val();
           var nppbkcId = $("#NppbkcId").val();
           var faCode = nRow.find("td").eq(2).html();
-          $("#uploadPlant").val(sourcePlant);
+          $("#uploadNppbkc").val(sourcePlant);
 
           ajaxGetListFaCode('@Url.Action("GetListFaCode", "PBCK4")', { plantId: sourcePlant }, nRow.find("td").eq(2).html());
 
@@ -322,12 +319,11 @@
       }
       
       $("#btnAddRow").click(function () {
-          var sourcePlant = $("#PlantId").find("option:selected").val();
-          var nppbkcId = $("#NppbkcId").val();
+          var nppbkcId = $("#NppbkcId").find("option:selected").val();
           
-          $("#uploadPlant").val(sourcePlant);
+          $("#uploadNppbkc").val(nppbkcId);
 
-          ajaxGetListFaCode('@Url.Action("GetListFaCode", "PBCK4")', { plantId: sourcePlant },'');
+          ajaxGetListFaCode('@Url.Action("GetListFaCode", "PBCK4")', { nppbkcId: nppbkcId }, '');
 
          
           @*ajaxGetListCk1('@Url.Action("GetListCk1", "PBCK4")', { nppbkcId: nppbkcId },'');*@
@@ -364,9 +360,8 @@
                   listCk1.html(list);
                 
               } else {
-                  var nppbkcId = $("#NppbkcId").val();
-                  var plant = $("#uploadPlant").val();
-                  ajaxGetBrandItems('@Url.Action("GetBrandItems", "PBCK4")', { plantId: plant, faCode: faCode, nppbkcId: nppbkcId });
+                  var nppbkcId = $("#uploadNppbkc").val();
+                  ajaxGetBrandItems('@Url.Action("GetBrandItems", "PBCK4")', { faCode: faCode, nppbkcId: nppbkcId });
               }
           }
       });
