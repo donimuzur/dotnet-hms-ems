@@ -699,7 +699,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public PartialViewResult UploadFile(HttpPostedFileBase itemExcelFile, string plantId)
+        public PartialViewResult UploadFile(HttpPostedFileBase itemExcelFile, string nppbkcId)
         {
             var data = (new ExcelReader()).ReadExcelCk5FileDocuments(itemExcelFile);
             var model = new Pbck4FormViewModel();
@@ -717,8 +717,6 @@ namespace Sampoerna.EMS.Website.Controllers
                         uploadItem.NoPengawas = datarow[3];
                         uploadItem.ApprovedQty = datarow[4] == string.Empty ? datarow[2] : datarow[4];
                         uploadItem.Remark = datarow[5];
-                        
-                        uploadItem.Plant = plantId;
 
                         model.UploadItemModels.Add(uploadItem);
 
@@ -734,7 +732,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var input = Mapper.Map<List<Pbck4ItemsInput>>(model.UploadItemModels);
 
-            var outputResult = _pbck4Bll.Pbck4ItemProcess(input);
+            var plantListNppbkc = _plantBll.GetActivePlant().Where(x => x.NPPBKC_ID == nppbkcId && CurrentUser.ListUserPlants.Contains(x.WERKS)).Select(x => x.WERKS).ToList();
+
+            var outputResult = _pbck4Bll.Pbck4ItemProcess(input, plantListNppbkc);
 
             model.UploadItemModels = Mapper.Map<List<Pbck4UploadViewModel>>(outputResult);
 

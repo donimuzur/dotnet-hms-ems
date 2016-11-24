@@ -527,7 +527,7 @@ namespace Sampoerna.EMS.BLL
             }
         }
 
-        private List<Pbck4ItemsOutput> ValidatePbck4Items(List<Pbck4ItemsInput> inputs)
+        private List<Pbck4ItemsOutput> ValidatePbck4Items(List<Pbck4ItemsInput> inputs, List<string> plantList)
         {
             var messageList = new List<string>();
             var outputList = new List<Pbck4ItemsOutput>();
@@ -538,8 +538,19 @@ namespace Sampoerna.EMS.BLL
 
                 var output = Mapper.Map<Pbck4ItemsOutput>(pbck4ItemInput);
 
-                var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(pbck4ItemInput.Plant, pbck4ItemInput.FaCode);
-                if (dbBrand == null)
+                var dbBrand = new ZAIDM_EX_BRAND();
+
+                foreach (var plantId in plantList)
+                {
+                    var getBrandByPlant = _brandRegistrationServices.GetByPlantIdAndFaCode(plantId, pbck4ItemInput.FaCode);
+                    if (getBrandByPlant != null)
+                    {
+                        dbBrand = getBrandByPlant;
+                        break;
+                    }
+                }
+
+                if (dbBrand.FA_CODE == null)
                     messageList.Add("FA Code Not Exist");
 
                 var dbCk1 = _ck1Services.GetCk1ByCk1Number(pbck4ItemInput.Ck1No);
@@ -560,8 +571,14 @@ namespace Sampoerna.EMS.BLL
 
                 //validate ReqQty to block stock
 
-                var blockStockData = _blockStockBll.GetBlockStockByPlantAndMaterialId(pbck4ItemInput.Plant,
-                    pbck4ItemInput.FaCode);
+                var blockStockData = new List<BLOCK_STOCKDto>();
+
+                foreach (var plantId in plantList)
+                {
+                    var newblockStockData = _blockStockBll.GetBlockStockByPlantAndMaterialId(plantId, pbck4ItemInput.FaCode);
+                    blockStockData.AddRange(newblockStockData);
+                }
+                    
                 if (blockStockData.Count == 0)
                 {
                     messageList.Add("Block Stock not available");
@@ -594,10 +611,21 @@ namespace Sampoerna.EMS.BLL
             return outputList;
         }
 
-        private Pbck4ItemsOutput GetAdditionalValuePbck4Items(Pbck4ItemsOutput input)
+        private Pbck4ItemsOutput GetAdditionalValuePbck4Items(Pbck4ItemsOutput input, List<string> plantList)
         {
-            var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(input.Plant, input.FaCode);
-            if (dbBrand == null)
+            var dbBrand = new ZAIDM_EX_BRAND();
+
+            foreach (var plantId in plantList)
+            {
+                var getBrandByPlant = _brandRegistrationServices.GetByPlantIdAndFaCode(plantId, input.FaCode);
+                if (getBrandByPlant != null)
+                {
+                    dbBrand = getBrandByPlant;
+                    break;
+                }
+            }
+
+            if (dbBrand.FA_CODE == null)
             {
                 input.StickerCode = "";
                 input.SeriesCode = "";
@@ -640,8 +668,14 @@ namespace Sampoerna.EMS.BLL
                 input.Ck1Date = dbCk1.CK1_DATE.ToString("dd MMM yyyy");
             }
 
+            var dbBlockStock = new List<BLOCK_STOCKDto>();
 
-            var dbBlockStock = _blockStockBll.GetBlockStockByPlantAndMaterialId(input.Plant, input.FaCode);
+            foreach (var plantId in plantList)
+            {
+                var newblockStockData = _blockStockBll.GetBlockStockByPlantAndMaterialId(plantId, input.FaCode);
+                dbBlockStock.AddRange(newblockStockData);
+            }
+
             if (dbBlockStock.Count == 0)
                 input.BlockedStock = "0";
             else
@@ -653,16 +687,16 @@ namespace Sampoerna.EMS.BLL
             return input;
         }
 
-        public List<Pbck4ItemsOutput> Pbck4ItemProcess(List<Pbck4ItemsInput> inputs)
+        public List<Pbck4ItemsOutput> Pbck4ItemProcess(List<Pbck4ItemsInput> inputs, List<string> plantList)
         {
-            var outputList = ValidatePbck4Items(inputs);
+            var outputList = ValidatePbck4Items(inputs, plantList);
 
             if (!outputList.All(c => c.IsValid))
                 return outputList;
 
             foreach (var output in outputList)
             {
-                var resultValue = GetAdditionalValuePbck4Items(output);
+                var resultValue = GetAdditionalValuePbck4Items(output, plantList);
 
 
                 output.StickerCode = resultValue.StickerCode;
