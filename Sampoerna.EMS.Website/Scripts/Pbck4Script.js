@@ -185,7 +185,7 @@ function GenerateXlsPbck4Items(url) {
     for (var i = 0; i < totalFiles; i++) {
         var file = document.getElementById("itemExcelFile").files[i];
         formData.append("itemExcelFile", file);
-        formData.append("plantId", $('#PlantId').val());
+        formData.append("nppbkcId", $('#NppbkcId').val());
 
     }
     $.ajax({
