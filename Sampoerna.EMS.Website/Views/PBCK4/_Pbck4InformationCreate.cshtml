@@ -37,9 +37,9 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Plant<span class="red">*</span></label>
+                                        <label class="col-md-4">NPPBKC ID<span class="red">*</span></label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.PlantId, Model.PlantList, "Select", new { @class = "form-control" })
+                                            @Html.DropDownListFor(model => model.NppbkcId, Model.NppbkcList, "Select", new { @class = "form-control" })
                                            
                                         </div>
                                     </div>
@@ -57,9 +57,9 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4">Plant Desc</label>
+                                        <label class="col-md-4">NPPBKC Desc</label>
                                         <div class="col-md-8">
-                                            @Html.TextAreaFor(model => model.PlantDesc, new { @rows = "5", @disabled = "disabled", @class = "form-control" })
+                                            @Html.TextBoxFor(model => model.NppbkcDesc, new { @disabled = "disabled", @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -73,24 +73,6 @@
                                                     <i class="fa fa-calendar"></i>
                                                 </span>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">NPPBKC ID</label>
-                                        <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.NppbkcId, new { @disabled = "disabled", @class = "form-control" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <label class="col-md-4">NPPBKC Desc</label>
-                                        <div class="col-md-8">
-                                            @Html.TextBoxFor(model => model.NppbkcDesc, new { @disabled = "disabled", @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>

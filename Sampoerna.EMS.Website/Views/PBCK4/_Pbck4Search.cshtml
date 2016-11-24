@@ -23,22 +23,6 @@
             </div>
             <div class="col-md-4">
                 <div class="row">
-                    @Html.LabelFor(model => model.SearchView.PlantId, new { @class = "col-md-4" })
-                    <div class="col-md-8">
-                        @if (Model.SearchView.PlantIdList == null)
-                        {
-                        @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
-                        }
-                        else
-                        {
-                        @Html.DropDownListFor(model => model.SearchView.PlantId, Model.SearchView.PlantIdList, "All", new { @class = "form-control selectreset" })
-                        }
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="row">
                     @Html.LabelFor(model => model.SearchView.ReportedOn, new { @class = "col-md-4" })
                     <div class="col-md-8">
                         <div class="input-group date">
