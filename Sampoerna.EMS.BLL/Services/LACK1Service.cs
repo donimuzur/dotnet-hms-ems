@@ -163,7 +163,8 @@ namespace Sampoerna.EMS.BLL.Services
                                           && c.PERIOD_MONTH.HasValue && c.PERIOD_MONTH.Value >= input.MonthFrom
                                           && c.PERIOD_MONTH.Value <= input.MonthTo && c.NPPBKC_ID == input.NppbkcId &&
                                           c.SUPPLIER_PLANT_WERKS == input.SupplierPlantId
-                                          && c.EX_GOODTYP == input.ExcisableGoodsTypeId;
+                                          && c.EX_GOODTYP == input.ExcisableGoodsTypeId 
+                                          && c.STATUS == Enums.DocumentStatus.Completed;
 
             var rc = _repository.Get(queryFilter, null, incTables).ToList();
             return rc;

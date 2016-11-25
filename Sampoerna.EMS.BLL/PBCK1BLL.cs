@@ -2278,7 +2278,8 @@ namespace Sampoerna.EMS.BLL
             var realizationData = _lack1Bll.GetPbck1RealizationList(input);
 
             if (realizationData == null || realizationData.Count <= 0) return reportData;
-            
+
+            Dictionary<int, List<Pbck1RealisasiProductionDetailDto>> dictProd = new Dictionary<int, List<Pbck1RealisasiProductionDetailDto>>();
             foreach (var lack1 in realizationData)
             {
                 var item = Mapper.Map<Pbck1RealisasiP3BkcDto>(lack1);
@@ -2287,6 +2288,23 @@ namespace Sampoerna.EMS.BLL
                 item.Bulan = monthData.MONTH_NAME_IND;
                 item.BulanId = monthData.MONTH_ID;
                 item.ProductionList = new List<Pbck1RealisasiProductionDetailDto>();
+
+                
+                //var groupedProductionDetail = lack1.Lack1ProductionDetail.GroupBy(p => new
+                //{
+                //    p.PROD_CODE,
+                //    p.PRODUCT_TYPE,
+                //    p.PRODUCT_ALIAS,
+
+
+                //}).Select(g => new Lack1ProductionDetailDto()
+                //{
+                //    PROD_CODE = g.Key.PROD_CODE,
+                //    PRODUCT_TYPE = g.Key.PRODUCT_TYPE,
+                //    PRODUCT_ALIAS = g.Key.PRODUCT_ALIAS,
+                //    AMOUNT = g.Sum(p => p.AMOUNT != null ? p.AMOUNT : 0),
+
+                //});
                 //set ExcisableGoodsType by ProdCode
                 foreach (var prod in lack1.Lack1ProductionDetail)
                 {
@@ -2299,7 +2317,61 @@ namespace Sampoerna.EMS.BLL
                     summaryProdList.Add(toInsert);
                     item.ProductionList.Add(toInsert);
                 }
-                rc.Add(item);
+                if (dictProd.ContainsKey(item.BulanId))
+                {
+                    dictProd[item.BulanId].AddRange(item.ProductionList);
+                }
+                else
+                {
+                    dictProd.Add(item.BulanId,item.ProductionList);
+                    rc.Add(item);
+                }
+                
+            }
+
+            foreach (var dt in rc)
+            {
+                dt.ProductionList = dictProd[dt.BulanId].GroupBy(x => new
+                {
+                    x.ExcisableGoodsTypeDesc,
+                    x.ExcisableGoodsTypeId,
+                    x.ProductAlias,
+                    x.ProductCode,
+                    x.ProductType,
+                    x.UomDesc,
+                    x.UomId
+                }).Select(x => new Pbck1RealisasiProductionDetailDto()
+                {
+                    ExcisableGoodsTypeDesc = x.Key.ExcisableGoodsTypeDesc,
+                    ExcisableGoodsTypeId = x.Key.ExcisableGoodsTypeId,
+                    ProductAlias = x.Key.ProductAlias,
+                    ProductCode = x.Key.ProductCode,
+                    ProductType = x.Key.ProductType,
+                    UomDesc = x.Key.UomDesc,
+                    UomId = x.Key.UomId,
+                    Amount = x.Sum(y => y.Amount)
+                }).ToList(); 
+                //rc.Single(x => x.BulanId == dictProdData.Key).ProductionList = 
+                    //dictProdData.Value.GroupBy(x => new
+                    //{
+                    //    x.ExcisableGoodsTypeDesc,
+                    //    x.ExcisableGoodsTypeId,
+                    //    x.ProductAlias,
+                    //    x.ProductCode,
+                    //    x.ProductType,
+                    //    x.UomDesc,
+                    //    x.UomId
+                    //}).Select(x => new Pbck1RealisasiProductionDetailDto()
+                    //{
+                    //    ExcisableGoodsTypeDesc = x.Key.ExcisableGoodsTypeDesc,
+                    //    ExcisableGoodsTypeId = x.Key.ExcisableGoodsTypeId,
+                    //    ProductAlias = x.Key.ProductAlias,
+                    //    ProductCode = x.Key.ProductCode,
+                    //    ProductType = x.Key.ProductType,
+                    //    UomDesc = x.Key.UomDesc,
+                    //    UomId = x.Key.UomId,
+                    //    Amount = x.Sum(y => y.Amount)
+                    //}).ToList();
             }
 
             var maxData = rc.OrderBy(o => o.BulanId).LastOrDefault();
@@ -2359,8 +2431,8 @@ namespace Sampoerna.EMS.BLL
             {
                 p.ProductCode,
                 p.ProductAlias,
-                p.ProductType,
-                p.Amount
+                p.ProductType
+                
             }).Select(g => new Pbck1SummaryRealisasiProductionDetailDto()
             {
                 ProductCode = g.Key.ProductCode,
