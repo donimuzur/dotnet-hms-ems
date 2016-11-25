@@ -81,7 +81,7 @@ namespace Sampoerna.EMS.XMLReader
 
                         var xmlItems = xElement.Elements("Z1A_EKPO_SSPCP");
 
-                        var existingData = GetCk1(item.CK1_NUMBER);
+                        var existingData = GetCk1(item.CK1_SAP_NUMBER);
                         if (existingData != null)
                         {
                             item.CK1_ITEM = existingData.CK1_ITEM;
@@ -178,10 +178,10 @@ namespace Sampoerna.EMS.XMLReader
             return _xmlMapper.Errors;
         }
 
-        public CK1 GetCk1(string ck1Number)
+        public CK1 GetCk1(string ck1SapNumber)
         {
             var existingData = _xmlMapper.uow.GetGenericRepository<CK1>()
-                .Get(x=>x.CK1_NUMBER == ck1Number ).FirstOrDefault();
+                .Get(x=>x.CK1_SAP_NUMBER == ck1SapNumber ).FirstOrDefault();
             return existingData;
         }
 
