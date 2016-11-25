@@ -2007,7 +2007,7 @@ namespace Sampoerna.EMS.BLL
                         rc.BrandRegistrationList = new List<Pbck1ReportBrandRegistrationDto>();
                         foreach (var dataItem in dataJoined)
                         {
-                            rc.BrandRegistrationList.Add(new Pbck1ReportBrandRegistrationDto() { Brand = dataItem.BRAND_CE, Convertion = dataItem.CONVERTER_OUTPUT.Value.ToString("N5"), ConvertionUomId = dataItem.CONVERTER_UOM_ID, Kadar = "-", Type = dataItem.PRODUCT_ALIAS, ConvertionUom = dataItem.UOM.UOM_DESC, Range = dataItem.RANGE_QTY.Value.ToString("N5") });
+                            rc.BrandRegistrationList.Add(new Pbck1ReportBrandRegistrationDto() { Brand = dataItem.BRAND_CE, Convertion = dataItem.CONVERTER_OUTPUT.Value.ToString("N5").TrimEnd('0').TrimEnd('.'), ConvertionUomId = dataItem.CONVERTER_UOM_ID, Kadar = "-", Type = dataItem.PRODUCT_ALIAS, ConvertionUom = dataItem.UOM.UOM_DESC, Range = dataItem.RANGE_QTY == null ? "" : dataItem.RANGE_QTY.Value.ToString("N5").TrimEnd('0').TrimEnd('.') });
                         }
                     }
                 }
@@ -2104,7 +2104,7 @@ namespace Sampoerna.EMS.BLL
             rc.Detail.SupplierPlantPhone = !string.IsNullOrEmpty(dbData.SUPPLIER_PHONE) ? dbData.SUPPLIER_PHONE : "-";
             rc.Detail.SupplierKppbcId = dbData.SUPPLIER_KPPBC_ID;
             rc.Detail.SupplierCompanyName = string.IsNullOrEmpty(dbData.SUPPLIER_COMPANY) ? "-" : dbData.SUPPLIER_COMPANY;
-            rc.Detail.IsDisplayRange = dbData.IS_DISPLAY_RANGE.Value;
+            rc.Detail.IsDisplayRange = dbData.IS_DISPLAY_RANGE == null ? false : dbData.IS_DISPLAY_RANGE.Value;
             
             if (!string.IsNullOrEmpty(rc.Detail.SupplierKppbcId))
             {

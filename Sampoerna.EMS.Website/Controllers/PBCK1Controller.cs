@@ -188,13 +188,13 @@ namespace Sampoerna.EMS.Website.Controllers
                         {
                             //text = Math.Round(Convert.ToDecimal(text), 5).ToString();
                             //text = Convert.ToDecimal(text).ToString();
-                            text = ConvertHelper.ConvertDecimalFiveToString(Decimal.Parse(text, NumberStyles.Any));
+                            text = ConvertHelper.ConvertDecimalFiveToString(Decimal.Parse(text, NumberStyles.Any)).TrimEnd('0').TrimEnd('.');
                         }
 
                         var range = datarow[4];
                         if (Decimal.TryParse(range, NumberStyles.Any, CultureInfo.InvariantCulture, out value))
                         {
-                            range = ConvertHelper.ConvertDecimalFiveToString(Decimal.Parse(range, NumberStyles.Any));
+                            range = ConvertHelper.ConvertDecimalFiveToString(Decimal.Parse(range, NumberStyles.Any)).TrimEnd('0').TrimEnd('.');
                         }
 
                         uploadItem.ProductCode = datarow[0];
@@ -521,7 +521,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 foreach (var item in model.Detail.Pbck1ProdConverter)
                 {
-                    item.ConverterOutput = ConvertHelper.ConvertDecimalFiveToString(Convert.ToDecimal(item.ConverterOutput));
+                    item.ConverterOutput = ConvertHelper.ConvertDecimalFiveToString(Convert.ToDecimal(item.ConverterOutput)).TrimEnd('0').TrimEnd('.');
                 }
 
                 var changeHistory =
@@ -641,7 +641,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 foreach (var item in model.Detail.Pbck1ProdConverter)
                 {
-                    item.ConverterOutput = ConvertHelper.ConvertDecimalFiveToString(Convert.ToDecimal(item.ConverterOutput));
+                    item.ConverterOutput = ConvertHelper.ConvertDecimalFiveToString(Convert.ToDecimal(item.ConverterOutput)).TrimEnd('0').TrimEnd('.');
                 }
 
                 var changeHistory =
@@ -914,7 +914,7 @@ namespace Sampoerna.EMS.Website.Controllers
             };
             foreach (var item in model.Detail.Pbck1ProdConverter)
             {
-                item.ConverterOutput = ConvertHelper.ConvertDecimalFiveToString(Convert.ToDecimal(item.ConverterOutput));
+                item.ConverterOutput = ConvertHelper.ConvertDecimalFiveToString(Convert.ToDecimal(item.ConverterOutput)).TrimEnd('0').TrimEnd('.');
             }
             model.DocStatus = model.Detail.Status;
 
