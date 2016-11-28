@@ -2180,7 +2180,7 @@ namespace Sampoerna.EMS.BLL
                 MonthTo = dbData.LACK1_TO_MONTH.Value,
                 Year = dbData.LACK1_TO_YEAR.Value,
                 NppbkcId = dbData.NPPBKC_ID,
-                SupplierPlantId = dbData.SUPPLIER_PLANT_WERKS,
+                SupplierPlantId = dbData.SUPPLIER_PLANT_WERKS == null ? dbData.SUPPLIER_PLANT : dbData.SUPPLIER_PLANT_WERKS,
                 ExcisableGoodsTypeId = dbData.EXC_GOOD_TYP
             });
             
