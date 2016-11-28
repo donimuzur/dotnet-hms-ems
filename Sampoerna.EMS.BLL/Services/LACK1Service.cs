@@ -111,7 +111,7 @@ namespace Sampoerna.EMS.BLL.Services
             var dtTo = new DateTime(input.YearTo, input.MonthTo, 1);
 
             var getDataRaw = _repository.Get(c => c.NPPBKC_ID == input.NppbkcId
-                                               && (int)c.STATUS >= (int)Core.Enums.DocumentStatus.Approved
+                                               && c.STATUS == Enums.DocumentStatus.Completed
                                                && c.PERIOD_YEAR == input.YearTo &&  c.SUPPLIER_PLANT_WERKS == input.SupplierPlantWerks 
                                                && c.EX_GOODTYP == input.ExcisableGoodsType, null,
                 "").ToList();
