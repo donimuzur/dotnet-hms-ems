@@ -142,6 +142,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string RealisasiUomDesc { get; set; }
         public string TipeMadya { get; set; }
         public bool IsDisplayRange { get; set; }
+
+        public string NppbkcTextTo { get; set; }
     }
 
     public class Pbck1ReportProdPlanDto
