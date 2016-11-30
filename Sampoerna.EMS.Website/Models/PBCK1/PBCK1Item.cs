@@ -192,5 +192,6 @@ namespace Sampoerna.EMS.Website.Models.PBCK1
         public bool IsNppbkcImport { get; set; }
 
         public bool IsExternalSupplier { get; set; }
+        public bool IsDisplayRange { get; set; }
     }
 }

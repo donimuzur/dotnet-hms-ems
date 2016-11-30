@@ -46,14 +46,16 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ProdAlias, opt => opt.MapFrom(src => src.ProdTypeAlias))
                 .ForMember(dest => dest.ConverterOutput, opt => opt.ResolveUsing<StringToDecimalResolver>().FromMember(src => src.ConverterOutput))
                 .ForMember(dest => dest.ConverterOutputUomId, opt => opt.MapFrom(src => src.ConverterUomId))
+                .ForMember(dest => dest.Range, opt => opt.ResolveUsing<StringToDecimalResolver>().FromMember(src => src.Range))
                 ;
             Mapper.CreateMap<Pbck1ProdConverterDto, Pbck1ProdConvModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ProductCode, opt => opt.MapFrom(src => src.ProdTypeCode))
                 .ForMember(dest => dest.ProdTypeName, opt => opt.MapFrom(src => src.ProdTypeName))
                 .ForMember(dest => dest.ProdTypeAlias, opt => opt.MapFrom(src => src.ProdAlias))
-                .ForMember(dest => dest.ConverterOutput, opt => opt.MapFrom(src => src.ConverterOutput))
+                .ForMember(dest => dest.ConverterOutput, opt => opt.MapFrom(src => ConvertHelper.ConvertDecimalFiveToString(src.ConverterOutput).TrimEnd('0').TrimEnd('.')))
                 .ForMember(dest => dest.ConverterUomId, opt => opt.MapFrom(src => src.ConverterOutputUomId))
                 .ForMember(dest => dest.ConverterUom, opt => opt.MapFrom(src => src.ConverterOutputUomName))
+                .ForMember(dest => dest.Range, opt => opt.MapFrom(src => ConvertHelper.ConvertDecimalFiveToString(src.Range).TrimEnd('0').TrimEnd('.')))
                 ;
 
             Mapper.CreateMap<Pbck1ProdPlanModel, Pbck1ProdPlanDto>().IgnoreAllNonExisting()

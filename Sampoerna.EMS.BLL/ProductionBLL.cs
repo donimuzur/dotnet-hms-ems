@@ -270,12 +270,15 @@ namespace Sampoerna.EMS.BLL
                              QtyProduced = p.QTY == null ? 0 : p.QTY,
                              Uom = p.UOM,
                              ProdCode = b.PROD_CODE,
+                             ExGoodType = b.EXC_GOOD_TYP,
                              ContentPerPack = Convert.ToInt32(b.BRAND_CONTENT),
                              PackedInPack = Convert.ToInt32(p.QTY_PACKED) / Convert.ToInt32(b.BRAND_CONTENT),
                              PackedInPackZb = Convert.ToInt32(p.ZB == null ? 0 : p.ZB) / Convert.ToInt32(b.BRAND_CONTENT),
                              IsEditable = g.CK4CEDITABLE,
                              Zb = p.ZB == null ? 0 : p.ZB,
-                             PackedAdjusted = p.PACKED_ADJUSTED == null ? 0 : p.PACKED_ADJUSTED
+                             PackedAdjusted = p.PACKED_ADJUSTED == null ? 0 : p.PACKED_ADJUSTED,
+                             ZbQty = p.ZB,
+                             PackedAdjustedQty = p.PACKED_ADJUSTED
                          };
 
             if (nppbkc != string.Empty && isNppbkc)
@@ -302,12 +305,15 @@ namespace Sampoerna.EMS.BLL
                              QtyProduced = p.QTY == null ? 0 : p.QTY,
                              Uom = p.UOM,
                              ProdCode = b.PROD_CODE,
+                             ExGoodType = b.EXC_GOOD_TYP,
                              ContentPerPack = Convert.ToInt32(b.BRAND_CONTENT),
                              PackedInPack = Convert.ToInt32(p.QTY_PACKED) / Convert.ToInt32(b.BRAND_CONTENT),
                              PackedInPackZb = Convert.ToInt32(p.ZB == null ? 0 : p.ZB) / Convert.ToInt32(b.BRAND_CONTENT),
                              IsEditable = g.CK4CEDITABLE,
                              Zb = p.ZB == null ? 0 : p.ZB,
-                             PackedAdjusted = p.PACKED_ADJUSTED == null ? 0 : p.PACKED_ADJUSTED
+                             PackedAdjusted = p.PACKED_ADJUSTED == null ? 0 : p.PACKED_ADJUSTED,
+                             ZbQty = p.ZB,
+                             PackedAdjustedQty = p.PACKED_ADJUSTED
                          };
             }
 
@@ -515,7 +521,7 @@ namespace Sampoerna.EMS.BLL
 
                 var packedInPackZb = Convert.ToInt32(zbQty) / item.ContentPerPack;
 
-                if (packedAdjustedQty > 0) packedInPack = Convert.ToInt32(packedAdjustedQty) / item.ContentPerPack;
+                if (item.PackedAdjustedQty != null && item.ProdCode == "05" && item.ExGoodType == EnumHelper.GetDescription(Core.Enums.GoodsType.TembakauIris)) packedInPack = Convert.ToInt32(packedAdjustedQty) / item.ContentPerPack;
 
                 item.QtyUnpacked = unpackedQty;
 
@@ -1073,6 +1079,8 @@ namespace Sampoerna.EMS.BLL
 
             var plantList = _plantBll.GetAll().Where(x => x.WERKS == input.Plant);
 
+            var listBrand = _brandRegistrationBll.GetAllBrandsOnly();
+
             if (input.IsNppbkc)
             {
                 plantList = _plantBll.GetPlantByNppbkc(input.Nppbkc).Distinct();
@@ -1093,8 +1101,8 @@ namespace Sampoerna.EMS.BLL
                 foreach (var item in plantList)
                 {
                     Int32 isInt;
-                    var activeBrand = _brandRegistrationBll.GetByPlantId(item.WERKS).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt)
-                        && x.EXC_GOOD_TYP == "01" && prodCode.Contains(x.PROD_CODE));
+                    var activeBrand = listBrand.Where(x => x.WERKS == item.WERKS && Int32.TryParse(x.BRAND_CONTENT, out isInt)
+                        && (x.EXC_GOOD_TYP == "01" || x.EXC_GOOD_TYP == "02") && prodCode.Contains(x.PROD_CODE));
 
                     foreach (var data in activeBrand.Distinct())
                     {

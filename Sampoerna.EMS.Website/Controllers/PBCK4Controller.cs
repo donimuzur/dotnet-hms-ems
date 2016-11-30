@@ -124,7 +124,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.IsCompletedDocument = isCompletedDocument;
                 input.UserId = CurrentUser.USER_ID;
                 input.UserRole = CurrentUser.UserRole;
-                input.ListUserPlant = CurrentUser.ListUserPlants;
+                input.ListUserNppbkc = CurrentUser.ListUserNppbkc;
                 dbData = _pbck4Bll.GetPbck4ByParam(input);
                 return Mapper.Map<List<Pbck4Item>>(dbData);
             }
@@ -135,7 +135,7 @@ namespace Sampoerna.EMS.Website.Controllers
             input.IsCompletedDocument = isCompletedDocument;
             input.UserId = CurrentUser.USER_ID;
             input.UserRole = CurrentUser.UserRole;
-            input.ListUserPlant = CurrentUser.ListUserPlants;
+            input.ListUserNppbkc = CurrentUser.ListUserNppbkc;
             dbData = _pbck4Bll.GetPbck4ByParam(input);
             return Mapper.Map<List<Pbck4Item>>(dbData);
         }
@@ -199,7 +199,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.PBCK4;
             model.CurrentMenu = PageInfo;
 
-            model.PlantList = GlobalFunctions.GetPlantByListUserPlant(CurrentUser.ListUserPlants);//GlobalFunctions.GetPlantAll();
+            model.NppbkcList = GlobalFunctions.GetNppbkcByCurrentUser(CurrentUser.ListUserNppbkc);
 
             return model;
         }
@@ -264,9 +264,9 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetPlantDetails(string plantId)
+        public JsonResult GetNppbkcDetails(string nppbkcId)
         {
-            var dbPlant = _plantBll.GetT001WById(plantId);
+            var dbPlant = _plantBll.GetMainPlantByNppbkcId(nppbkcId);
             var model = Mapper.Map<Pbck4PlantModel>(dbPlant);
 
             var poa = _poaBll.GetById(CurrentUser.USER_ID);
@@ -275,7 +275,7 @@ namespace Sampoerna.EMS.Website.Controllers
             else
             {
                 //model.Poa = _pbck4Bll.GetListPoaByNppbkcId(model.NppbkcId);
-                model.Poa = _pbck4Bll.GetListPoaByPlantId(plantId);
+                model.Poa = _pbck4Bll.GetListPoaByNppbkcId(nppbkcId);
             }
             return Json(model);
         }
@@ -295,15 +295,16 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var pbck4Details = _pbck4Bll.GetDetailsPbck4(id);
 
-
                 Mapper.Map(pbck4Details.Pbck4Dto, model);
+
+                var plantListNppbkc = _plantBll.GetActivePlant().Where(x => x.NPPBKC_ID == pbck4Details.Pbck4Dto.NppbkcId && CurrentUser.ListUserPlants.Contains(x.WERKS)).FirstOrDefault();
 
                 var inputEdit = new WorkflowAllowAccessDataInput
                 {
                     UserId = CurrentUser.USER_ID,
                     UserRole = CurrentUser.UserRole,
                     UserPlant = CurrentUser.ListUserPlants,
-                    DataPlant = pbck4Details.Pbck4Dto.PlantId,
+                    DataPlant = plantListNppbkc.WERKS,
                     DataUser = pbck4Details.Pbck4Dto.CREATED_BY
                 };
 
@@ -397,15 +398,16 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var pbck4Details = _pbck4Bll.GetDetailsPbck4(id);
 
-
                 Mapper.Map(pbck4Details.Pbck4Dto, model);
+
+                var plantListNppbkc = _plantBll.GetActivePlant().Where(x => x.NPPBKC_ID == pbck4Details.Pbck4Dto.NppbkcId && CurrentUser.ListUserPlants.Contains(x.WERKS)).FirstOrDefault();
 
                 var inputEdit = new WorkflowAllowAccessDataInput
                 {
                     UserId = CurrentUser.USER_ID,
                     UserRole = CurrentUser.UserRole,
                     UserPlant = CurrentUser.ListUserPlants,
-                    DataPlant = pbck4Details.Pbck4Dto.PlantId,
+                    DataPlant = plantListNppbkc.WERKS,
                     DataUser = pbck4Details.Pbck4Dto.CREATED_BY
                 };
 
@@ -527,7 +529,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
 
-            model.PlantList = GlobalFunctions.GetPlantByListUserPlant(CurrentUser.ListUserPlants);//GlobalFunctions.GetPlantAll();
+            model.NppbkcList = GlobalFunctions.GetNppbkcByCurrentUser(CurrentUser.ListUserNppbkc);
 
             return model;
         }
@@ -549,12 +551,14 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 Mapper.Map(pbck4Details.Pbck4Dto, model);
 
+                var plantListNppbkc = _plantBll.GetActivePlant().Where(x => x.NPPBKC_ID == pbck4Details.Pbck4Dto.NppbkcId && CurrentUser.ListUserPlants.Contains(x.WERKS));
+
                 var inputEdit = new WorkflowAllowAccessDataInput
                 {
                     UserId = CurrentUser.USER_ID,
                     UserRole = CurrentUser.UserRole,
                     UserPlant = CurrentUser.ListUserPlants,
-                    DataPlant = pbck4Details.Pbck4Dto.PlantId,
+                    DataPlant = plantListNppbkc.FirstOrDefault().WERKS,
                     DataUser = pbck4Details.Pbck4Dto.CREATED_BY
                 };
 
@@ -580,10 +584,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 //get blocked stock
                 foreach (var uploadItemModel in model.UploadItemModels)
                 {
-                    var blockStockOutput = _pbck4Bll.GetBlockedStockQuota(uploadItemModel.Plant, uploadItemModel.FaCode);
-                    uploadItemModel.BlockedStock = blockStockOutput.BlockedStock;
-                    uploadItemModel.BlockedStockUsed = blockStockOutput.BlockedStockUsed;
-                    uploadItemModel.BlockedStockRemaining = blockStockOutput.BlockedStockRemaining;
+                    var blockedStockQty = new decimal();
+                    var blockedStockUsedQty = new decimal();
+                    var blockedStockRemainingQty = new decimal();
+
+                    foreach (var plantId in plantListNppbkc.Select(x => x.WERKS).ToList())
+                    {
+                        var blockStockOutput = _pbck4Bll.GetBlockedStockQuota(plantId, uploadItemModel.FaCode);
+
+                        blockedStockQty += Convert.ToDecimal(blockStockOutput.BlockedStock);
+                        blockedStockUsedQty += Convert.ToDecimal(blockStockOutput.BlockedStockUsed);
+                        blockedStockRemainingQty += Convert.ToDecimal(blockStockOutput.BlockedStockRemaining);
+                    }
+
+                    uploadItemModel.BlockedStock = blockedStockQty.ToString();
+                    uploadItemModel.BlockedStockUsed = blockedStockUsedQty.ToString();
+                    uploadItemModel.BlockedStockRemaining = blockedStockRemainingQty.ToString();
 
 
                     //add remaining with current reqQty
@@ -683,7 +699,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public PartialViewResult UploadFile(HttpPostedFileBase itemExcelFile, string plantId)
+        public PartialViewResult UploadFile(HttpPostedFileBase itemExcelFile, string nppbkcId)
         {
             var data = (new ExcelReader()).ReadExcelCk5FileDocuments(itemExcelFile);
             var model = new Pbck4FormViewModel();
@@ -701,8 +717,6 @@ namespace Sampoerna.EMS.Website.Controllers
                         uploadItem.NoPengawas = datarow[3];
                         uploadItem.ApprovedQty = datarow[4] == string.Empty ? datarow[2] : datarow[4];
                         uploadItem.Remark = datarow[5];
-                        
-                        uploadItem.Plant = plantId;
 
                         model.UploadItemModels.Add(uploadItem);
 
@@ -718,7 +732,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var input = Mapper.Map<List<Pbck4ItemsInput>>(model.UploadItemModels);
 
-            var outputResult = _pbck4Bll.Pbck4ItemProcess(input);
+            var plantListNppbkc = _plantBll.GetActivePlant().Where(x => x.NPPBKC_ID == nppbkcId && CurrentUser.ListUserPlants.Contains(x.WERKS)).Select(x => x.WERKS).ToList();
+
+            var outputResult = _pbck4Bll.Pbck4ItemProcess(input, plantListNppbkc);
 
             model.UploadItemModels = Mapper.Map<List<Pbck4UploadViewModel>>(outputResult);
 
@@ -1295,9 +1311,12 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var dataSet = SetDataSetReport(pbck4Report, printTitle);
 
+            var setReport = "PBCK4\\Pbck4PrintOut.rpt";
+            if (pbck4Report.ListPbck4Items.Count > 3) setReport = "PBCK4\\Pbck4PrintOutNew.rpt";
+
             ReportClass rpt = new ReportClass
             {
-                FileName = ConfigurationManager.AppSettings["Report_Path"] + "PBCK4\\Pbck4PrintOut.rpt"
+                FileName = ConfigurationManager.AppSettings["Report_Path"] + setReport
                
             };
             rpt.Load();
@@ -2020,9 +2039,9 @@ namespace Sampoerna.EMS.Website.Controllers
         #region "Input Manual"
 
         [HttpPost]
-        public JsonResult GetListFaCode(string plantId)
+        public JsonResult GetListFaCode(string nppbkcId)
         {
-            var brandOutput = _pbck4Bll.GetListFaCodeHaveBlockStockByPlant(plantId);
+            var brandOutput = _pbck4Bll.GetListFaCodeHaveBlockStockByNppbkc(nppbkcId, CurrentUser.ListUserPlants);
 
             //var brandOutput = _pbck4Bll.GetListBrandByPlant(plantId);
             //var model = Mapper.Map<List<Pbck4InputManualViewModel>>(dbMaterial);
@@ -2040,39 +2059,44 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetListCk1Date(string plantId, string faCode, string nppbkcId)
+        public JsonResult GetListCk1Date(string faCode, string nppbkcId)
         {
-
             var input = new GetListCk1ByPlantAndFaCodeInput();
             input.NppbkcId = nppbkcId;
-            input.PlantId = plantId;
             input.FaCode = faCode;
-
             var result = _pbck4Bll.GetListCk1ByPlantAndFaCode(input);
-
             return Json(result);
         }
 
-
         [HttpPost]
-        public JsonResult GetBrandItems(string plantId, string faCode, string nppbkcId)
+        public JsonResult GetBrandItems(string faCode, string nppbkcId)
         {
+            var plantListNppbkc = _plantBll.GetActivePlant().Where(x => x.NPPBKC_ID == nppbkcId && CurrentUser.ListUserPlants.Contains(x.WERKS)).Select(x => x.WERKS).ToList();
 
-            var brandOutput = _pbck4Bll.GetBrandItemsStickerCodeByPlantAndFaCode(plantId, faCode);
+            var brandOutput = _pbck4Bll.GetBrandItemsStickerCodeByNppbkcAndFaCode(nppbkcId, faCode, plantListNppbkc);
 
-            //getblockedstock
-            var blockedStockOutput = _pbck4Bll.GetBlockedStockQuota(plantId, faCode);
+            var blockedStockQty = new decimal();
+            var blockedStockUsedQty = new decimal();
+            var blockedStockRemainingQty = new decimal();
+
+            foreach (var plantId in plantListNppbkc)
+            {
+                //getblockedstock
+                var blockedStockOutput = _pbck4Bll.GetBlockedStockQuota(plantId, faCode);
+
+                blockedStockQty += Convert.ToDecimal(blockedStockOutput.BlockedStock);
+                blockedStockUsedQty += Convert.ToDecimal(blockedStockOutput.BlockedStockUsed);
+                blockedStockRemainingQty += Convert.ToDecimal(blockedStockOutput.BlockedStockRemaining);
+            }
 
             //brandOutput.BlockedStock = _pbck4Bll.GetBlockedStockByPlantAndFaCode(plantId, faCode).ToString();
-            brandOutput.BlockedStock = blockedStockOutput.BlockedStock;
-            brandOutput.BlockedStockUsed = blockedStockOutput.BlockedStockUsed;
-            brandOutput.BlockedStockRemaining = blockedStockOutput.BlockedStockRemaining;
+            brandOutput.BlockedStock = blockedStockQty.ToString();
+            brandOutput.BlockedStockUsed = blockedStockUsedQty.ToString();
+            brandOutput.BlockedStockRemaining = blockedStockRemainingQty.ToString();
 
             var input = new GetListCk1ByPlantAndFaCodeInput();
             input.NppbkcId = nppbkcId;
-            input.PlantId = plantId;
             input.FaCode = faCode;
-
 
             //list ck1
             brandOutput.ListCk1Date = _pbck4Bll.GetListCk1ByPlantAndFaCode(input);
@@ -2083,19 +2107,31 @@ namespace Sampoerna.EMS.Website.Controllers
      
       
         [HttpPost]
-        public JsonResult GetBrandItemsForEdit(int pbck4Id, string plantId, string faCode, string plantIdOri, string faCodeOri, string nppbkcId)
+        public JsonResult GetBrandItemsForEdit(int pbck4Id, string faCode, string faCodeOri, string nppbkcId)
         {
+            var plantListNppbkc = _plantBll.GetActivePlant().Where(x => x.NPPBKC_ID == nppbkcId && CurrentUser.ListUserPlants.Contains(x.WERKS)).Select(x => x.WERKS).ToList();
 
-            var brandOutput = _pbck4Bll.GetBrandItemsStickerCodeByPlantAndFaCode(plantId, faCode);
+            var brandOutput = _pbck4Bll.GetBrandItemsStickerCodeByNppbkcAndFaCode(nppbkcId, faCode, plantListNppbkc);
 
-            //getblockedstock
-            var blockedStockOutput = _pbck4Bll.GetBlockedStockQuota(plantId, faCode);
+            var blockedStockQty = new decimal();
+            var blockedStockUsedQty = new decimal();
+            var blockedStockRemainingQty = new decimal();
 
-            brandOutput.BlockedStock = blockedStockOutput.BlockedStock;
-            brandOutput.BlockedStockUsed = blockedStockOutput.BlockedStockUsed;
-            brandOutput.BlockedStockRemaining = blockedStockOutput.BlockedStockRemaining;
+            foreach (var plantId in plantListNppbkc)
+            {
+                //getblockedstock
+                var blockedStockOutput = _pbck4Bll.GetBlockedStockQuota(plantId, faCode);
 
-            if (plantId == plantIdOri && faCode == faCodeOri)
+                blockedStockQty += Convert.ToDecimal(blockedStockOutput.BlockedStock);
+                blockedStockUsedQty += Convert.ToDecimal(blockedStockOutput.BlockedStockUsed);
+                blockedStockRemainingQty += Convert.ToDecimal(blockedStockOutput.BlockedStockRemaining);
+            }
+
+            brandOutput.BlockedStock = blockedStockQty.ToString();
+            brandOutput.BlockedStockUsed = blockedStockUsedQty.ToString();
+            brandOutput.BlockedStockRemaining = blockedStockRemainingQty.ToString();
+
+            if (faCode == faCodeOri)
             {
                 var reqQty = _pbck4Bll.GetCurrentReqQtyByPbck4IdAndFaCode(pbck4Id, faCode);
                 brandOutput.BlockedStockRemaining =
@@ -2104,7 +2140,6 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var input = new GetListCk1ByPlantAndFaCodeInput();
             input.NppbkcId = nppbkcId;
-            input.PlantId = plantId;
             input.FaCode = faCode;
 
             //list ck1

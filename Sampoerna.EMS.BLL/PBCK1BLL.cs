@@ -488,6 +488,7 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("COMPANY", origin.NppbkcId == data.NppbkcId);
 
             changesData.Add("IS_NPPBKC_IMPORT", origin.IsNppbkcImport == data.IsNppbkcImport);
+            changesData.Add("IS_DISPLAY_RANGE", origin.IsDisplayRange == data.IsDisplayRange);
             changesData.Add("EXC_GOOD_TYP", origin.GoodType == data.GoodType);
             changesData.Add("SUPPLIER_PLANT", origin.SupplierPlant == data.SupplierPlant);
             changesData.Add("SUPPLIER_PORT_ID", origin.SupplierPortId == data.SupplierPortId);
@@ -615,6 +616,11 @@ namespace Sampoerna.EMS.BLL
                             changes.OLD_VALUE = origin.IsNppbkcImport != null ? origin.IsNppbkcImport ? "TRUE" : "FALSE" : "FALSE";
                             changes.NEW_VALUE = data.IsNppbkcImport != null ? data.IsNppbkcImport ? "TRUE" : "FALSE" : "FALSE";
                             changes.FIELD_NAME = "PBCK for Import";
+                            break;
+                        case "IS_DISPLAY_RANGE":
+                            changes.OLD_VALUE = origin.IsDisplayRange != null ? origin.IsDisplayRange ? "TRUE" : "FALSE" : "FALSE";
+                            changes.NEW_VALUE = data.IsDisplayRange != null ? data.IsDisplayRange ? "TRUE" : "FALSE" : "FALSE";
+                            changes.FIELD_NAME = "Display Range in Print Out";
                             break;
                         case "EXC_GOOD_TYP":
                             changes.OLD_VALUE = origin.GoodTypeDesc;
@@ -2001,7 +2007,7 @@ namespace Sampoerna.EMS.BLL
                         rc.BrandRegistrationList = new List<Pbck1ReportBrandRegistrationDto>();
                         foreach (var dataItem in dataJoined)
                         {
-                            rc.BrandRegistrationList.Add(new Pbck1ReportBrandRegistrationDto() { Brand = dataItem.BRAND_CE, Convertion = dataItem.CONVERTER_OUTPUT.Value.ToString("N5"), ConvertionUomId = dataItem.CONVERTER_UOM_ID, Kadar = "-", Type = dataItem.PRODUCT_ALIAS, ConvertionUom = dataItem.UOM.UOM_DESC});
+                            rc.BrandRegistrationList.Add(new Pbck1ReportBrandRegistrationDto() { Brand = dataItem.BRAND_CE, Convertion = dataItem.CONVERTER_OUTPUT.Value.ToString("N5").TrimEnd('0').TrimEnd('.'), ConvertionUomId = dataItem.CONVERTER_UOM_ID, Kadar = "-", Type = dataItem.PRODUCT_ALIAS, ConvertionUom = dataItem.UOM.UOM_DESC, Range = dataItem.RANGE_QTY == null ? "" : dataItem.RANGE_QTY.Value.ToString("N5").TrimEnd('0').TrimEnd('.') });
                         }
                     }
                 }
@@ -2082,7 +2088,14 @@ namespace Sampoerna.EMS.BLL
             rc.Detail.RequestQty = String.Format("{0:n}", dbData.REQUEST_QTY.Value);
             rc.Detail.RequestQtyUom = dbData.REQUEST_QTY_UOM;
             rc.Detail.RequestQtyUomName = dbData.UOM.UOM_DESC;
-            if (dbData.LATEST_SALDO != null) rc.Detail.LatestSaldo = String.Format("{0:n}", dbData.LATEST_SALDO.Value);
+            if (dbData.LATEST_SALDO != null) { 
+                rc.Detail.LatestSaldo = String.Format("{0:n}", dbData.LATEST_SALDO.Value);
+
+                var newReqQty = String.Format("{0:n}", dbData.REQUEST_QTY.Value + dbData.LATEST_SALDO.Value);
+                if (dbData.PBCK1_TYPE == Enums.PBCK1Type.Additional) newReqQty = String.Format("{0:n}", dbData.REQUEST_QTY.Value - dbData.LATEST_SALDO.Value);
+
+                rc.Detail.RequestQty = newReqQty;
+            }
             rc.Detail.LatestSaldoUom = dbData.LATEST_SALDO_UOM;
             rc.Detail.SupplierPlantName = dbData.SUPPLIER_PLANT;
             rc.Detail.SupplierPlantId = dbData.SUPPLIER_PLANT_WERKS;
@@ -2091,7 +2104,14 @@ namespace Sampoerna.EMS.BLL
             rc.Detail.SupplierPlantPhone = !string.IsNullOrEmpty(dbData.SUPPLIER_PHONE) ? dbData.SUPPLIER_PHONE : "-";
             rc.Detail.SupplierKppbcId = dbData.SUPPLIER_KPPBC_ID;
             rc.Detail.SupplierCompanyName = string.IsNullOrEmpty(dbData.SUPPLIER_COMPANY) ? "-" : dbData.SUPPLIER_COMPANY;
-            
+            rc.Detail.IsDisplayRange = dbData.IS_DISPLAY_RANGE == null ? false : dbData.IS_DISPLAY_RANGE.Value;
+
+            var dataNppbkc = _nppbkcbll.GetById(dbData.NPPBKC_ID);
+            if (dataNppbkc != null)
+            {
+                rc.Detail.TipeMadya = dataNppbkc.TEXT_TO;
+            }
+
             if (!string.IsNullOrEmpty(rc.Detail.SupplierKppbcId))
             {
                 var kppbcDetail = _kppbcbll.GetById(rc.Detail.SupplierKppbcId);
@@ -2166,7 +2186,7 @@ namespace Sampoerna.EMS.BLL
                 MonthTo = dbData.LACK1_TO_MONTH.Value,
                 Year = dbData.LACK1_TO_YEAR.Value,
                 NppbkcId = dbData.NPPBKC_ID,
-                SupplierPlantId = dbData.SUPPLIER_PLANT_WERKS,
+                SupplierPlantId = dbData.SUPPLIER_PLANT_WERKS == null ? dbData.SUPPLIER_PLANT : dbData.SUPPLIER_PLANT_WERKS,
                 ExcisableGoodsTypeId = dbData.EXC_GOOD_TYP
             });
             
@@ -2262,9 +2282,10 @@ namespace Sampoerna.EMS.BLL
             var summaryProdList = new List<Pbck1RealisasiProductionDetailDto>();
             var monthList = _monthBll.GetAll();
             var realizationData = _lack1Bll.GetPbck1RealizationList(input);
-
+            var productDetails = _prodTypeBll.GetAll();
             if (realizationData == null || realizationData.Count <= 0) return reportData;
-            
+
+            Dictionary<int, List<Pbck1RealisasiProductionDetailDto>> dictProd = new Dictionary<int, List<Pbck1RealisasiProductionDetailDto>>();
             foreach (var lack1 in realizationData)
             {
                 var item = Mapper.Map<Pbck1RealisasiP3BkcDto>(lack1);
@@ -2273,19 +2294,80 @@ namespace Sampoerna.EMS.BLL
                 item.Bulan = monthData.MONTH_NAME_IND;
                 item.BulanId = monthData.MONTH_ID;
                 item.ProductionList = new List<Pbck1RealisasiProductionDetailDto>();
+
+                
+                
                 //set ExcisableGoodsType by ProdCode
                 foreach (var prod in lack1.Lack1ProductionDetail)
                 {
                     var toInsert = Mapper.Map<Pbck1RealisasiProductionDetailDto>(prod);
                     var excisableGoodsType =
                         _brandRegistrationBll.GetGoodTypeByProdCodeInBrandRegistration(prod.PROD_CODE);
+                    var prodDetail = productDetails.Single(x => x.PROD_CODE == prod.PROD_CODE);
                     if (excisableGoodsType == null) continue;
+                    if(prodDetail == null) continue;
                     toInsert.ExcisableGoodsTypeDesc = excisableGoodsType.EXT_TYP_DESC;
                     toInsert.ExcisableGoodsTypeId = excisableGoodsType.EXC_GOOD_TYP;
+                    toInsert.ProductAlias = prodDetail.PRODUCT_ALIAS;
+                    toInsert.ProductType = prodDetail.PRODUCT_TYPE;
                     summaryProdList.Add(toInsert);
                     item.ProductionList.Add(toInsert);
                 }
-                rc.Add(item);
+                if (dictProd.ContainsKey(item.BulanId))
+                {
+                    dictProd[item.BulanId].AddRange(item.ProductionList);
+                }
+                else
+                {
+                    dictProd.Add(item.BulanId,item.ProductionList);
+                    rc.Add(item);
+                }
+                
+            }
+
+            foreach (var dt in rc)
+            {
+                dt.ProductionList = dictProd[dt.BulanId].GroupBy(x => new
+                {
+                    x.ExcisableGoodsTypeDesc,
+                    x.ExcisableGoodsTypeId,
+                    x.ProductAlias,
+                    x.ProductCode,
+                    x.ProductType,
+                    x.UomDesc,
+                    x.UomId
+                }).Select(x => new Pbck1RealisasiProductionDetailDto()
+                {
+                    ExcisableGoodsTypeDesc = x.Key.ExcisableGoodsTypeDesc,
+                    ExcisableGoodsTypeId = x.Key.ExcisableGoodsTypeId,
+                    ProductAlias = x.Key.ProductAlias,
+                    ProductCode = x.Key.ProductCode,
+                    ProductType = x.Key.ProductType,
+                    UomDesc = x.Key.UomDesc,
+                    UomId = x.Key.UomId,
+                    Amount = x.Sum(y => y.Amount)
+                }).ToList(); 
+                //rc.Single(x => x.BulanId == dictProdData.Key).ProductionList = 
+                    //dictProdData.Value.GroupBy(x => new
+                    //{
+                    //    x.ExcisableGoodsTypeDesc,
+                    //    x.ExcisableGoodsTypeId,
+                    //    x.ProductAlias,
+                    //    x.ProductCode,
+                    //    x.ProductType,
+                    //    x.UomDesc,
+                    //    x.UomId
+                    //}).Select(x => new Pbck1RealisasiProductionDetailDto()
+                    //{
+                    //    ExcisableGoodsTypeDesc = x.Key.ExcisableGoodsTypeDesc,
+                    //    ExcisableGoodsTypeId = x.Key.ExcisableGoodsTypeId,
+                    //    ProductAlias = x.Key.ProductAlias,
+                    //    ProductCode = x.Key.ProductCode,
+                    //    ProductType = x.Key.ProductType,
+                    //    UomDesc = x.Key.UomDesc,
+                    //    UomId = x.Key.UomId,
+                    //    Amount = x.Sum(y => y.Amount)
+                    //}).ToList();
             }
 
             var maxData = rc.OrderBy(o => o.BulanId).LastOrDefault();
@@ -2345,8 +2427,8 @@ namespace Sampoerna.EMS.BLL
             {
                 p.ProductCode,
                 p.ProductAlias,
-                p.ProductType,
-                p.Amount
+                p.ProductType
+                
             }).Select(g => new Pbck1SummaryRealisasiProductionDetailDto()
             {
                 ProductCode = g.Key.ProductCode,

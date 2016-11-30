@@ -234,6 +234,12 @@ function getProductionData(urlFunction) {
                         var classRemarks = "Remarks" + rowCount;
                         var classWip = "Unpack" + rowCount;
 
+                        var zbData = '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_Zb" name="Details.Ck4cItemData[' + i + '].Zb" value=' + data[i].ZbQty + '></input>' + ThausandSeperator(data[i].Zb, 2) + '</td>';
+                        if (data[i].ZbQty == null) zbData = '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_Zb" name="Details.Ck4cItemData[' + i + '].Zb"></input>' + ThausandSeperator(data[i].Zb, 2) + '</td>';
+
+                        var packedAdjData = '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_PackedAdjusted" name="Details.Ck4cItemData[' + i + '].PackedAdjusted" value=' + data[i].PackedAdjustedQty + '></input>' + ThausandSeperator(data[i].PackedAdjusted, 2) + '</td>';
+                        if (data[i].PackedAdjustedQty == null) packedAdjData = '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_PackedAdjusted" name="Details.Ck4cItemData[' + i + '].PackedAdjusted" ></input>' + ThausandSeperator(data[i].PackedAdjusted, 2) + '</td>';
+
                         var tableProdItem = '<tr>' +
                             classAction +
                             "<td style='display: none'>" + rowCount + "</td>" +
@@ -246,8 +252,11 @@ function getProductionData(urlFunction) {
                             '<td class="number" class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_Tarif" name="Details.Ck4cItemData[' + i + '].Tarif" value=' + data[i].Tarif + '></input>' + ThausandSeperator(data[i].Tarif, 2) + '</td>' +
                             '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ContentPerPack" name="Details.Ck4cItemData[' + i + '].ContentPerPack" value=' + data[i].ContentPerPack + '></input>' + ThausandSeperator(data[i].ContentPerPack, 2) + '</td>' +
                             '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_PackedQty" name="Details.Ck4cItemData[' + i + '].PackedQty" value=' + data[i].QtyPacked + '></input>' + ThausandSeperator(data[i].QtyPacked, 2) + '</td>' +
-                            '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_Zb" name="Details.Ck4cItemData[' + i + '].Zb" value=' + data[i].Zb + '></input>' + ThausandSeperator(data[i].Zb, 2) + '</td>' +
-                            '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_PackedAdjusted" name="Details.Ck4cItemData[' + i + '].PackedAdjusted" value=' + data[i].PackedAdjusted + '></input>' + ThausandSeperator(data[i].PackedAdjusted, 2) + '</td>' +
+
+                            zbData +
+
+                            packedAdjData +
+
                             '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_PackedInPack" name="Details.Ck4cItemData[' + i + '].PackedInPack" value=' + data[i].PackedInPack + '></input>' + ThausandSeperator(data[i].PackedInPack, 2) + '</td>' +
                             '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_PackedInPackZb" name="Details.Ck4cItemData[' + i + '].PackedInPackZb" value=' + data[i].PackedInPackZb + '></input>' + ThausandSeperator(data[i].PackedInPackZb, 2) + '</td>' +
                             '<td class="number">' + ThausandSeperator(data[i].QtyUnpacked, 2) + '</td>' +

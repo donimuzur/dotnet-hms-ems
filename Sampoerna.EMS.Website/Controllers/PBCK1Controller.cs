@@ -184,17 +184,24 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         var text = datarow[2];
                         decimal value;
-                        if (Decimal.TryParse(text, out value))
+                        if (Decimal.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out value))
                         {
                             //text = Math.Round(Convert.ToDecimal(text), 5).ToString();
                             //text = Convert.ToDecimal(text).ToString();
-                            text = ConvertHelper.ConvertDecimalFiveToString(Convert.ToDecimal(text));
+                            text = ConvertHelper.ConvertDecimalFiveToString(Decimal.Parse(text, NumberStyles.Any)).TrimEnd('0').TrimEnd('.');
+                        }
+
+                        var range = datarow[4];
+                        if (Decimal.TryParse(range, NumberStyles.Any, CultureInfo.InvariantCulture, out value))
+                        {
+                            range = ConvertHelper.ConvertDecimalFiveToString(Decimal.Parse(range, NumberStyles.Any)).TrimEnd('0').TrimEnd('.');
                         }
 
                         uploadItem.ProductCode = datarow[0];
                         uploadItem.BrandCE = datarow[1];
                         uploadItem.ConverterOutput = text;
                         uploadItem.ConverterUom = datarow[3];
+                        uploadItem.Range = range;
 
                         model.Detail.Pbck1ProdConverter.Add(uploadItem);
 
@@ -514,7 +521,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 foreach (var item in model.Detail.Pbck1ProdConverter)
                 {
-                    item.ConverterOutput = ConvertHelper.ConvertDecimalFiveToString(Convert.ToDecimal(item.ConverterOutput));
+                    item.ConverterOutput = ConvertHelper.ConvertDecimalFiveToString(Convert.ToDecimal(item.ConverterOutput)).TrimEnd('0').TrimEnd('.');
                 }
 
                 var changeHistory =
@@ -634,7 +641,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 foreach (var item in model.Detail.Pbck1ProdConverter)
                 {
-                    item.ConverterOutput = ConvertHelper.ConvertDecimalFiveToString(Convert.ToDecimal(item.ConverterOutput));
+                    item.ConverterOutput = ConvertHelper.ConvertDecimalFiveToString(Convert.ToDecimal(item.ConverterOutput)).TrimEnd('0').TrimEnd('.');
                 }
 
                 var changeHistory =
@@ -907,7 +914,7 @@ namespace Sampoerna.EMS.Website.Controllers
             };
             foreach (var item in model.Detail.Pbck1ProdConverter)
             {
-                item.ConverterOutput = ConvertHelper.ConvertDecimalFiveToString(Convert.ToDecimal(item.ConverterOutput));
+                item.ConverterOutput = ConvertHelper.ConvertDecimalFiveToString(Convert.ToDecimal(item.ConverterOutput)).TrimEnd('0').TrimEnd('.');
             }
             model.DocStatus = model.Detail.Status;
 
@@ -2464,7 +2471,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var dsPbck1 = new dsPbck1();
             dsPbck1 = AddDataPbck1Row(dsPbck1, pbck1ReportData.Detail, printTitle);
             dsPbck1 = AddDataPbck1ProdPlan(dsPbck1, pbck1ReportData.Detail.ExcisableGoodsDescription, pbck1ReportData);
-            dsPbck1 = AddDataPbck1BrandRegistration(dsPbck1, pbck1ReportData.BrandRegistrationList);
+            dsPbck1 = AddDataPbck1BrandRegistration(dsPbck1, pbck1ReportData.BrandRegistrationList, pbck1ReportData.Detail.IsDisplayRange);
             dsPbck1 = AddDataRealisasiP3Bkc(dsPbck1, pbck1ReportData, pbck1ReportData.SummaryRealisasiP3Bkc);
             //dsPbck1 = FakeDataRealisasiP3Bkc(dsPbck1);
             dsPbck1 = AddDataHeaderFooter(dsPbck1, pbck1ReportData.HeaderFooter);
@@ -2724,18 +2731,20 @@ namespace Sampoerna.EMS.Website.Controllers
             return ds;
         }
 
-        private dsPbck1 AddDataPbck1BrandRegistration(dsPbck1 ds, List<Pbck1ReportBrandRegistrationDto> brandData)
+        private dsPbck1 AddDataPbck1BrandRegistration(dsPbck1 ds, List<Pbck1ReportBrandRegistrationDto> brandData, bool isDisplayRange)
         {
             if (brandData != null && brandData.Count > 0)
             {
                 int no = 1;
                 foreach (var item in brandData)
                 {
+                    var textRange = string.Empty;
+                    if (isDisplayRange) textRange = " ± " + item.Range;
                     var detailRow = ds.Pbck1BrandRegistration.NewPbck1BrandRegistrationRow();
                     detailRow.Type = item.Type;
                     detailRow.Brand = item.Brand;
                     detailRow.Kadar = item.Kadar;
-                    detailRow.Convertion = item.Convertion;
+                    detailRow.Convertion = item.Convertion + textRange;
                     detailRow.ConvertionUom = item.ConvertionUom;
                     // ReSharper disable once SpecifyACultureInStringConversionExplicitly
                     detailRow.No = no.ToString();

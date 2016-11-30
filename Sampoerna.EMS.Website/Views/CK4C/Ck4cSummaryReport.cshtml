@@ -112,6 +112,8 @@
                                         @Html.HiddenFor(model => model.ExportModel.Plant)
                                         @Html.HiddenFor(model => model.ExportModel.PoaSearch)
                                         @Html.HiddenFor(model => model.ExportModel.CreatorSearch)
+                                        @Html.HiddenFor(model => model.ExportModel.MonthSearch)
+                                        @Html.HiddenFor(model => model.ExportModel.YearSearch)
 
                                         <div class="row toggle">
 
@@ -440,6 +442,8 @@
             $('#ExportModel_Plant').val($('#SearchView_PlantId').find("option:selected").val());
             $('#ExportModel_PoaSearch').val($('#SearchView_Poa').find("option:selected").val());
             $('#ExportModel_CreatorSearch').val($('#SearchView_Creator').find("option:selected").val());
+            $('#ExportModel_MonthSearch').val($('#SearchInput_Month').find("option:selected").val());
+            $('#ExportModel_YearSearch').val($('#SearchInput_Year').find("option:selected").val());
         }
 
         $("#btnConfirm").click(function () {

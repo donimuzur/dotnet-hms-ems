@@ -110,12 +110,21 @@ namespace Sampoerna.EMS.BLL.Services
         {
             var dtTo = new DateTime(input.YearTo, input.MonthTo, 1);
 
-            var getData = _repository.Get(c => c.NPPBKC_ID == input.NppbkcId
-                                               &&
-                                               (int)c.STATUS >= (int)Core.Enums.DocumentStatus.Approved, null,
-                "").ToList().Select(p => new
+            var getDataRaw = _repository.Get(c => c.NPPBKC_ID == input.NppbkcId
+                                               && c.STATUS == Enums.DocumentStatus.Completed
+                                               && c.PERIOD_YEAR == input.YearTo &&  c.SUPPLIER_PLANT_WERKS == input.SupplierPlantWerks 
+                                               && c.EX_GOODTYP == input.ExcisableGoodsType, null,
+                "").ToList();
+
+            var isExistnppbkcLevel = getDataRaw.Any(x => x.LACK1_LEVEL == Enums.Lack1Level.Nppbkc);
+            var lastMonth = getDataRaw.GroupBy(x=> x.PERIOD_MONTH).OrderByDescending(x=> x.Key).Select(x=> x.Key).FirstOrDefault();
+
+            
+            var getData = getDataRaw
+            .Select(p => new
                 {
                     p.LACK1_ID,
+                    p.LACK1_LEVEL,
                     p.LACK1_NUMBER,
                     p.PERIOD_MONTH,
                     p.PERIOD_YEAR,
@@ -126,17 +135,23 @@ namespace Sampoerna.EMS.BLL.Services
                     p.EX_GOODTYP,
                     //p.TOTAL_PRODUCTION,
                     PERIODE = new DateTime(p.PERIOD_YEAR.Value, p.PERIOD_MONTH.Value, 1)
-                }).ToList();
+                }).Where(x=> x.PERIOD_MONTH == lastMonth).ToList();
+
+            //if (isExistnppbkcLevel)
+            //{
+            //    getData = getData.Where(x => x.LACK1_LEVEL == Enums.Lack1Level.Nppbkc).ToList();
+            //}
+
 
             if (getData.Count == 0) return 0;
 
-            var selected = getData.Where(c => c.PERIODE <= dtTo &&  c.SUPPLIER_PLANT_WERKS == input.SupplierPlantWerks && c.EX_GOODTYP == input.ExcisableGoodsType).OrderByDescending(o => o.PERIODE).FirstOrDefault();
+            
 
-            if (selected == null) return 0;
+            
 
             decimal rc = 0;
 
-            rc = selected.BEGINING_BALANCE + selected.TOTAL_INCOME - selected.USAGE;
+            rc = getData.Sum(x=> (x.BEGINING_BALANCE + x.TOTAL_INCOME - x.USAGE));
 
             return rc;
         }
@@ -148,7 +163,8 @@ namespace Sampoerna.EMS.BLL.Services
                                           && c.PERIOD_MONTH.HasValue && c.PERIOD_MONTH.Value >= input.MonthFrom
                                           && c.PERIOD_MONTH.Value <= input.MonthTo && c.NPPBKC_ID == input.NppbkcId &&
                                           c.SUPPLIER_PLANT_WERKS == input.SupplierPlantId
-                                          && c.EX_GOODTYP == input.ExcisableGoodsTypeId;
+                                          && c.EX_GOODTYP == input.ExcisableGoodsTypeId 
+                                          && c.STATUS == Enums.DocumentStatus.Completed;
 
             var rc = _repository.Get(queryFilter, null, incTables).ToList();
             return rc;

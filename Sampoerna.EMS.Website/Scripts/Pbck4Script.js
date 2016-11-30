@@ -150,8 +150,8 @@ function ValidatePbck4Form() {
     return result;
 }
 
-function ajaxGetPlantDetails(url, formData) {
-    if (formData.plantId) {
+function ajaxGetNppbkcDetails(url, formData) {
+    if (formData.nppbkcId) {
         $.ajax({
             type: 'POST',
             url: url,
@@ -159,7 +159,6 @@ function ajaxGetPlantDetails(url, formData) {
             success: function (data) {
                 $("input[name='CompanyName']").val(data.CompanyName);
                 $("input[name='CompanyId']").val(data.CompanyId);
-                $("*[name='PlantDesc']").val(data.PlantDesc);
                 $("*[name='Poa']").val(data.Poa);
                 $("input[name='NppbkcId']").val(data.NppbkcId);
                 $("input[name='NppbkcDesc']").val(data.NppbkcDescription);
@@ -186,7 +185,7 @@ function GenerateXlsPbck4Items(url) {
     for (var i = 0; i < totalFiles; i++) {
         var file = document.getElementById("itemExcelFile").files[i];
         formData.append("itemExcelFile", file);
-        formData.append("plantId", $('#PlantId').val());
+        formData.append("nppbkcId", $('#NppbkcId').val());
 
     }
     $.ajax({

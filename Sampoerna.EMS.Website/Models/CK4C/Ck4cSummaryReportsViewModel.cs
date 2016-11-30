@@ -86,6 +86,8 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public string Plant { get; set; }
         public string PoaSearch { get; set; }
         public string CreatorSearch { get; set; }
+        public string MonthSearch { get; set; }
+        public string YearSearch { get; set; }
         public bool NoRow { get; set; }
         public bool Ck4CNo { get; set; }
         public bool CeOffice { get; set; }

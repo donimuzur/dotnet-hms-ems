@@ -141,6 +141,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string RealisasiUomId { get; set; }
         public string RealisasiUomDesc { get; set; }
         public string TipeMadya { get; set; }
+        public bool IsDisplayRange { get; set; }
+
+        //public string NppbkcTextTo { get; set; }
     }
 
     public class Pbck1ReportProdPlanDto
@@ -173,6 +176,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Convertion { get; set; }
         public string ConvertionUomId { get; set; }
         public string ConvertionUom { get; set; }
+        public string Range { get; set; }
     }
 
     public class Pbck1RealisasiP3BkcDto

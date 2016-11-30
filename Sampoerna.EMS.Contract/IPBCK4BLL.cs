@@ -15,7 +15,7 @@ namespace Sampoerna.EMS.Contract
 
        Pbck4Dto SavePbck4(Pbck4SaveInput input);
 
-       List<Pbck4ItemsOutput> Pbck4ItemProcess(List<Pbck4ItemsInput> inputs);
+       List<Pbck4ItemsOutput> Pbck4ItemProcess(List<Pbck4ItemsInput> inputs, List<string> plantList);
 
        void PBCK4Workflow(Pbck4WorkflowDocumentInput input);
 
@@ -29,11 +29,11 @@ namespace Sampoerna.EMS.Contract
 
        List<GetListBrandByPlantOutput> GetListBrandByPlant(string plantId);
 
-       List<GetListBrandByPlantOutput> GetListFaCodeHaveBlockStockByPlant(string plantId);
+       List<GetListBrandByPlantOutput> GetListFaCodeHaveBlockStockByNppbkc(string nppbkcId, List<string> plantList);
 
        List<GetListCk1ByNppbkcOutput> GetListCk1ByNppbkc(string nppbkcId);
 
-       GetBrandItemsOutput GetBrandItemsStickerCodeByPlantAndFaCode(string plant, string faCode);
+       GetBrandItemsOutput GetBrandItemsStickerCodeByNppbkcAndFaCode(string nppbkc, string faCode, List<string> plantList);
 
        string GetCk1DateByCk1Id(long ck1Id);
 

@@ -11,5 +11,6 @@
         public decimal? ConverterOutput { get; set; }
         public string ConverterOutputUomId { get; set; }
         public string ConverterOutputUomName { get; set; }
+        public decimal? Range { get; set; }
     }
 }

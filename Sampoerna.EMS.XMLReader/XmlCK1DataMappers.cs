@@ -81,11 +81,13 @@ namespace Sampoerna.EMS.XMLReader
 
                         var xmlItems = xElement.Elements("Z1A_EKPO_SSPCP");
 
-                        var existingData = GetCk1(item.CK1_NUMBER);
+                        var existingData = GetCk1(item.CK1_SAP_NUMBER);
                         if (existingData != null)
                         {
                             item.CK1_ITEM = existingData.CK1_ITEM;
                             item.CK1_ID = existingData.CK1_ID;
+
+                            DeleteCk1ItemFirst(existingData.CK1_ID);
                         }
                         else
                         {
@@ -133,7 +135,7 @@ namespace Sampoerna.EMS.XMLReader
                                 InsertCk1Item(detail);
                             }
 
-                            //item.CK1_ITEM.Add(detail);
+                            item.CK1_ITEM.Add(detail);
                         }
                         
 
@@ -176,10 +178,10 @@ namespace Sampoerna.EMS.XMLReader
             return _xmlMapper.Errors;
         }
 
-        public CK1 GetCk1(string ck1Number)
+        public CK1 GetCk1(string ck1SapNumber)
         {
             var existingData = _xmlMapper.uow.GetGenericRepository<CK1>()
-                .Get(x=>x.CK1_NUMBER == ck1Number ).FirstOrDefault();
+                .Get(x=>x.CK1_SAP_NUMBER == ck1SapNumber ).FirstOrDefault();
             return existingData;
         }
 
@@ -216,6 +218,18 @@ namespace Sampoerna.EMS.XMLReader
                 .Get(x => x.FA_CODE == brand && x.WERKS == werks && x.STICKER_CODE == stickerCode,null,"ZAIDM_EX_SERIES").FirstOrDefault();
 
             return existingBrand;
+        }
+
+        public void DeleteCk1ItemFirst(long ck1Id)
+        {
+            var repock1Item = _xmlMapper.uow.GetGenericRepository<CK1_ITEM>();
+
+            var listCk1Item = repock1Item.Get(x => x.CK1_ID == ck1Id).ToList();
+
+            foreach (var item in listCk1Item)
+            {
+                repock1Item.Delete(item);
+            }
         }
 
     }

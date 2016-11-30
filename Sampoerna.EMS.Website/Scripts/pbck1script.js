@@ -106,7 +106,7 @@ function IsProdConverterValid() {
     var datarows = GetTableData($('#prod-conv-table'));
 
     for (var i = 0; i < datarows.length; i++) {
-        if (datarows[i][7].length > 0)
+        if (datarows[i][8].length > 0)
             return false;
     }
 
@@ -135,6 +135,8 @@ function prodConvSaveClick() {
                 + '].ConverterOutput" type="hidden" value = "' + changeToNumber(datarows[i][5]) + '" />' + datarows[i][5] + '</td>';
             data += '<td><input name="Detail.Pbck1ProdConverter[' + i
                 + '].ConverterUomId" type="hidden" value = "' + datarows[i][6] + '" />' + datarows[i][6] + '</td>';
+            data += '<td class="number"><input name="Detail.Pbck1ProdConverter[' + i
+                + '].Range" type="hidden" value = "' + changeToNumber(datarows[i][7]) + '" />' + datarows[i][7] + '</td>';
 
         }
         

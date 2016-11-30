@@ -1309,12 +1309,12 @@ namespace Sampoerna.EMS.BLL
                         var itemCk4c = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE == prodDateFormat);
                         var lastItemCk4c = dtData.CK4C_ITEM.Where(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.PROD_DATE < prodDateFormat).LastOrDefault();
                         var prodQty = itemCk4c.Sum(x => x.PROD_QTY);
-                        var zbQty = itemCk4c.Sum(x => x.ZB);
-                        var packedAdjustedQty = itemCk4c.Sum(x => x.PACKED_ADJUSTED);
+                        var zbQty = itemCk4c.FirstOrDefault() == null ? null : itemCk4c.FirstOrDefault().ZB;
+                        var packedAdjustedQty = itemCk4c.FirstOrDefault() == null ? null : itemCk4c.FirstOrDefault().PACKED_ADJUSTED;
                         var packedQty = itemCk4c.Sum(x => x.PACKED_QTY);
 
                         if (brand.PROD_CODE == "01") packedQty = zbQty;
-                        if (packedAdjustedQty > 0) packedQty = packedAdjustedQty;
+                        if (brand.PROD_CODE == "05" && brand.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.TembakauIris) &&  packedAdjustedQty != null) packedQty = packedAdjustedQty;
 
                         var unpackedQty = itemCk4c.Sum(x => x.UNPACKED_QTY);
                         var remarks = itemCk4c.FirstOrDefault();

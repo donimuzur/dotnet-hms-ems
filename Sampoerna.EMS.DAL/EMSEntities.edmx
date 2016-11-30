@@ -773,6 +773,7 @@
           <Property Name="SUPPLIER_COMPANY" Type="nvarchar" MaxLength="35" />
           <Property Name="IS_NPPBKC_IMPORT" Type="bit" />
           <Property Name="SUPPLIER_KPPBC_NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="IS_DISPLAY_RANGE" Type="bit" />
         </EntityType>
         <EntityType Name="PBCK1_DECREE_DOC">
           <Key>
@@ -797,6 +798,7 @@
           <Property Name="CONVERTER_OUTPUT" Type="numeric" Precision="18" Scale="5" />
           <Property Name="CONVERTER_UOM_ID" Type="nvarchar" MaxLength="5" />
           <Property Name="BRAND_CE" Type="nvarchar" MaxLength="65" />
+          <Property Name="RANGE_QTY" Type="numeric" Precision="18" Scale="5" />
         </EntityType>
         <EntityType Name="PBCK1_PROD_PLAN">
           <Key>
@@ -5607,6 +5609,7 @@
           <Property Name="IS_NPPBKC_IMPORT" Type="Boolean" />
           <NavigationProperty Name="LACK1_PBCK1_MAPPING" Relationship="EMSModel.FK_LACK1_PBCK1_MAPPING_PBCK1" FromRole="PBCK1" ToRole="LACK1_PBCK1_MAPPING" />
           <NavigationProperty Name="PBCK1_PROD_CONVERTER" Relationship="EMSModel.FK_PBCK1_PROD_CONVERTER_PBCK1" FromRole="PBCK1" ToRole="PBCK1_PROD_CONVERTER" />
+          <Property Name="IS_DISPLAY_RANGE" Type="Boolean" />
           </EntityType>
         <Association Name="FK_CK5_PBCK1">
           <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="0..1" />
@@ -8378,6 +8381,7 @@
           <Property Name="BRAND_CE" Type="String" MaxLength="65" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="PBCK1" Relationship="EMSModel.FK_PBCK1_PROD_CONVERTER_PBCK1" FromRole="PBCK1_PROD_CONVERTER" ToRole="PBCK1" />
           <NavigationProperty Name="UOM" Relationship="EMSModel.FK_PBCK1_PROD_CONVERTER_UOM" FromRole="PBCK1_PROD_CONVERTER" ToRole="UOM" />
+          <Property Name="RANGE_QTY" Type="Decimal" Precision="18" Scale="5" />
         </EntityType>
         <Association Name="FK_PBCK1_PROD_CONVERTER_PBCK1">
           <End Type="EMSModel.PBCK1" Role="PBCK1" Multiplicity="0..1" />
@@ -9344,6 +9348,7 @@
     <EntitySetMapping Name="PBCK1">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.PBCK1)">
         <MappingFragment StoreEntitySet="PBCK1">
+                <ScalarProperty Name="IS_DISPLAY_RANGE" ColumnName="IS_DISPLAY_RANGE" />
                 <ScalarProperty Name="IS_NPPBKC_IMPORT" ColumnName="IS_NPPBKC_IMPORT" />
                 <ScalarProperty Name="SUPPLIER_COMPANY" ColumnName="SUPPLIER_COMPANY" />
                 <ScalarProperty Name="SUPPLIER_KPPBC_NAME" ColumnName="SUPPLIER_KPPBC_NAME" />
@@ -10316,6 +10321,7 @@
           <EntitySetMapping Name="PBCK1_PROD_CONVERTER">
             <EntityTypeMapping TypeName="EMSModel.PBCK1_PROD_CONVERTER">
               <MappingFragment StoreEntitySet="PBCK1_PROD_CONVERTER">
+                <ScalarProperty Name="RANGE_QTY" ColumnName="RANGE_QTY" />
                 <ScalarProperty Name="BRAND_CE" ColumnName="BRAND_CE" />
                 <ScalarProperty Name="CONVERTER_UOM_ID" ColumnName="CONVERTER_UOM_ID" />
                 <ScalarProperty Name="CONVERTER_OUTPUT" ColumnName="CONVERTER_OUTPUT" />

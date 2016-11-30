@@ -67,9 +67,12 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public bool IsEditable { get; set; }
         public string ZbStr { get; set; }
         public decimal? Zb { get; set; }
+        public decimal? ZbQty { get; set; }
         public string PackedAdjustedStr { get; set; }
         public decimal? PackedAdjusted { get; set; }
+        public decimal? PackedAdjustedQty { get; set; }
         public string Remark { get; set; }
+        public string ExGoodType { get; set; }
     }
 
     public class ProductionUploadItems

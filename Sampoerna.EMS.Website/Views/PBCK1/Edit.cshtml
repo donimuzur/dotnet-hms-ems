@@ -683,6 +683,10 @@
                 goodtype = $('#Detail_GoodType').val();
             }
 
+            if ($("#Detail_IsExternalSupplier").is(':checked')) {
+                plant = $('#Detail_SupplierPlant').val();
+            }
+
             if (month != 0 && year != 0 && plant != "" && goodtype != "") {
                 setLatestSaldo({ month: month, year: year, nppbkcid: nppbkcid, plant: plant, goodtype: goodtype }, '@Url.Action("GetLatestSaldoLack", "PBCK1")');
             } else {
