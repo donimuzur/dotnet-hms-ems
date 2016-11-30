@@ -2105,7 +2105,13 @@ namespace Sampoerna.EMS.BLL
             rc.Detail.SupplierKppbcId = dbData.SUPPLIER_KPPBC_ID;
             rc.Detail.SupplierCompanyName = string.IsNullOrEmpty(dbData.SUPPLIER_COMPANY) ? "-" : dbData.SUPPLIER_COMPANY;
             rc.Detail.IsDisplayRange = dbData.IS_DISPLAY_RANGE == null ? false : dbData.IS_DISPLAY_RANGE.Value;
-            
+
+            var dataNppbkc = _nppbkcbll.GetById(dbData.NPPBKC_ID);
+            if (dataNppbkc != null)
+            {
+                rc.Detail.TipeMadya = dataNppbkc.TEXT_TO;
+            }
+
             if (!string.IsNullOrEmpty(rc.Detail.SupplierKppbcId))
             {
                 var kppbcDetail = _kppbcbll.GetById(rc.Detail.SupplierKppbcId);
@@ -2276,7 +2282,7 @@ namespace Sampoerna.EMS.BLL
             var summaryProdList = new List<Pbck1RealisasiProductionDetailDto>();
             var monthList = _monthBll.GetAll();
             var realizationData = _lack1Bll.GetPbck1RealizationList(input);
-
+            var productDetails = _prodTypeBll.GetAll();
             if (realizationData == null || realizationData.Count <= 0) return reportData;
 
             Dictionary<int, List<Pbck1RealisasiProductionDetailDto>> dictProd = new Dictionary<int, List<Pbck1RealisasiProductionDetailDto>>();
@@ -2290,30 +2296,20 @@ namespace Sampoerna.EMS.BLL
                 item.ProductionList = new List<Pbck1RealisasiProductionDetailDto>();
 
                 
-                //var groupedProductionDetail = lack1.Lack1ProductionDetail.GroupBy(p => new
-                //{
-                //    p.PROD_CODE,
-                //    p.PRODUCT_TYPE,
-                //    p.PRODUCT_ALIAS,
-
-
-                //}).Select(g => new Lack1ProductionDetailDto()
-                //{
-                //    PROD_CODE = g.Key.PROD_CODE,
-                //    PRODUCT_TYPE = g.Key.PRODUCT_TYPE,
-                //    PRODUCT_ALIAS = g.Key.PRODUCT_ALIAS,
-                //    AMOUNT = g.Sum(p => p.AMOUNT != null ? p.AMOUNT : 0),
-
-                //});
+                
                 //set ExcisableGoodsType by ProdCode
                 foreach (var prod in lack1.Lack1ProductionDetail)
                 {
                     var toInsert = Mapper.Map<Pbck1RealisasiProductionDetailDto>(prod);
                     var excisableGoodsType =
                         _brandRegistrationBll.GetGoodTypeByProdCodeInBrandRegistration(prod.PROD_CODE);
+                    var prodDetail = productDetails.Single(x => x.PROD_CODE == prod.PROD_CODE);
                     if (excisableGoodsType == null) continue;
+                    if(prodDetail == null) continue;
                     toInsert.ExcisableGoodsTypeDesc = excisableGoodsType.EXT_TYP_DESC;
                     toInsert.ExcisableGoodsTypeId = excisableGoodsType.EXC_GOOD_TYP;
+                    toInsert.ProductAlias = prodDetail.PRODUCT_ALIAS;
+                    toInsert.ProductType = prodDetail.PRODUCT_TYPE;
                     summaryProdList.Add(toInsert);
                     item.ProductionList.Add(toInsert);
                 }
