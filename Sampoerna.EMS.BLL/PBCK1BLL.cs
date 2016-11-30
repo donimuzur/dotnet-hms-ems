@@ -2109,7 +2109,7 @@ namespace Sampoerna.EMS.BLL
             var dataNppbkc = _nppbkcbll.GetById(dbData.NPPBKC_ID);
             if (dataNppbkc != null)
             {
-                rc.Detail.NppbkcTextTo = dataNppbkc.TEXT_TO;
+                rc.Detail.TipeMadya = dataNppbkc.TEXT_TO;
             }
 
             if (!string.IsNullOrEmpty(rc.Detail.SupplierKppbcId))
