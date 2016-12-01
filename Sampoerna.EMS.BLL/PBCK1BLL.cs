@@ -2106,11 +2106,7 @@ namespace Sampoerna.EMS.BLL
             rc.Detail.SupplierCompanyName = string.IsNullOrEmpty(dbData.SUPPLIER_COMPANY) ? "-" : dbData.SUPPLIER_COMPANY;
             rc.Detail.IsDisplayRange = dbData.IS_DISPLAY_RANGE == null ? false : dbData.IS_DISPLAY_RANGE.Value;
 
-            var dataNppbkc = _nppbkcbll.GetById(dbData.NPPBKC_ID);
-            if (dataNppbkc != null)
-            {
-                rc.Detail.TipeMadya = dataNppbkc.TEXT_TO;
-            }
+            
 
             if (!string.IsNullOrEmpty(rc.Detail.SupplierKppbcId))
             {
@@ -2129,13 +2125,13 @@ namespace Sampoerna.EMS.BLL
                                 .Replace("Kepala", string.Empty).Replace("kepala", string.Empty).Trim();
                     }
 
-                    var tipeMadya = kppbcDetail.KPPBC_TYPE;
-                    if (kppbcDetail.KPPBC_TYPE.ToLower().Contains("madya"))
-                    {
-                        tipeMadya = "Tipe " + tipeMadya;
-                    }
+                    //var tipeMadya = kppbcDetail.KPPBC_TYPE;
+                    //if (kppbcDetail.KPPBC_TYPE.ToLower().Contains("madya"))
+                    //{
+                    //    tipeMadya = "Tipe " + tipeMadya;
+                    //}
 
-                    rc.Detail.TipeMadya = tipeMadya;
+                    //rc.Detail.TipeMadya = tipeMadya;
                 }
                 else
                 {
@@ -2145,6 +2141,12 @@ namespace Sampoerna.EMS.BLL
             else
             {
                 rc.Detail.SupplierKppbcMengetahui = dbData.SUPPLIER_KPPBC_NAME;
+            }
+
+            var dataNppbkc = _nppbkcbll.GetById(dbData.NPPBKC_ID);
+            if (dataNppbkc != null)
+            {
+                rc.Detail.TipeMadya = dataNppbkc.TEXT_TO;
             }
             
             string supplierPortName;
