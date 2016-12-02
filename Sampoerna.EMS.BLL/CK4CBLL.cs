@@ -2092,17 +2092,25 @@ namespace Sampoerna.EMS.BLL
         {
             var result = new List<Ck4cItemExportDto>();
 
+            var listProdType = _prodTypeBll.GetAll();
+            var listBrand = _brandBll.GetAllBrandsOnly();
+
             foreach (var dtData in listCk4C)
             {
                 foreach (var ck4CItem in dtData.CK4C_ITEM)
                 {
                     var itemDto = new Ck4cItemExportDto();
-                    var prodType = _prodTypeBll.GetByCode(ck4CItem.PROD_CODE);
-                    var brand = _brandBll.GetById(ck4CItem.WERKS, ck4CItem.FA_CODE);
+                    var prodType = listProdType.FirstOrDefault(c => c.PROD_CODE == ck4CItem.PROD_CODE);
+                    var brand = listBrand.Where(x => x.WERKS == ck4CItem.WERKS && x.FA_CODE == ck4CItem.FA_CODE).FirstOrDefault();
                     var total = brand.BRAND_CONTENT == null ? 0 : ck4CItem.PACKED_QTY.Value / Convert.ToInt32(brand.BRAND_CONTENT);
                     var zbValue = ck4CItem.ZB == null ? 0 : ck4CItem.ZB.Value;
                     var packedAdjustedValue = ck4CItem.PACKED_ADJUSTED == null ? 0 : ck4CItem.PACKED_ADJUSTED.Value;
                     var totalZb = brand.BRAND_CONTENT == null ? 0 : zbValue / Convert.ToInt32(brand.BRAND_CONTENT);
+
+                    if (brand.PROD_CODE == "05" && brand.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.TembakauIris) && ck4CItem.PACKED_ADJUSTED != null)
+                    {
+                        total = brand.BRAND_CONTENT == null ? 0 : ck4CItem.PACKED_ADJUSTED.Value / Convert.ToInt32(brand.BRAND_CONTENT);
+                    }
 
                     itemDto.DateProduction = ck4CItem.PROD_DATE;
                     itemDto.ProductionDate = ck4CItem.PROD_DATE.ToString("dd-MMM-yy");
