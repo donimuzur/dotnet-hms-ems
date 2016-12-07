@@ -5797,15 +5797,17 @@ namespace Sampoerna.EMS.Website.Controllers
                 input.SEALING_NOTIF_DATE = model.SealingNotifDate;
                 input.UNSEALING_NOTIF_NUMBER = model.UnSealingNotifNumber;
                 input.UNSEALING_NOTIF_DATE = model.UnsealingNotifDate;
+                
                 input.Ck5MaterialDtos = Mapper.Map<List<CK5MaterialDto>>(model.UploadItemModels);
 
                 input.Ck5FileUploadList = Mapper.Map<List<CK5_FILE_UPLOADDto>>(model.Ck5FileUploadModelList);
 
-                if (model.IsCk5Waste)
+                if (model.IsCk5Waste || model.IsCk5Manual)
                 {
                     input.GI_DATE = model.GiDate;
                     input.GR_DATE = model.GrDate;
                     input.IsCk5Waste = model.IsCk5Waste;
+                    input.IsCk5Manual = model.IsCk5Manual;
                 }
 
                 _ck5Bll.EditCompletedDocument(input);

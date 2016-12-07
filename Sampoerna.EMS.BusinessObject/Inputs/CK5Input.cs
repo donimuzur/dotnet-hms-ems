@@ -235,6 +235,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime? GR_DATE { get; set; }
 
         public bool IsCk5Waste { get; set; }
+        public bool IsCk5Manual { get; set; }
 
         public List<CK5MaterialDto> Ck5MaterialDtos { get; set; }
     }
