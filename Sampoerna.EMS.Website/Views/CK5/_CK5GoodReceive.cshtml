@@ -3,7 +3,8 @@
 <div class="row">
     <div class="col-md-6">
         <div class="row">
-            @Html.LabelFor(model => model.GiDate, new { @class = "col-md-4" })
+            <label class="col-md-4">GI Date<span class="red">*</span></label>
+            
             <div class="col-md-8">
                 @Html.EditorFor(model => model.GiDate)
             </div>
@@ -15,7 +16,8 @@
 <div class="row">
     <div class="col-md-6">
         <div class="row">
-            @Html.LabelFor(model => model.SealingNotifNumber, new { @class = "col-md-4" })
+            <label class="col-md-4">Sealing Notification Number<span class="red">*</span></label>
+            
             <div class="col-md-8">
                 @Html.TextBoxFor(model => model.SealingNotifNumber, new { @class = "form-control", @disabled = "true" })
             </div>
@@ -24,7 +26,8 @@
 
     <div class="col-md-6">
         <div class="row">
-            @Html.LabelFor(model => model.SealingNotifDate, new { @class = "col-md-4" })
+            <label class="col-md-4">Sealing Notification Date<span class="red">*</span></label>
+            
             <div class="col-md-8">
                 @Html.EditorFor(model => model.SealingNotifDate)
             </div>
@@ -36,7 +39,8 @@
 <div class="row">
     <div class="col-md-6">
         <div class="row">
-            @Html.LabelFor(model => model.GrDate, new { @class = "col-md-4" })
+            <label class="col-md-4">GR Date<span class="red">*</span></label>
+            
             <div class="col-md-8">
                 <div class="input-group date">
                     @Html.TextBoxFor(model => model.GrDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
@@ -58,7 +62,8 @@
 <div class="row">
     <div class="col-md-6">
         <div class="row">
-            @Html.LabelFor(model => model.UnSealingNotifNumber, new { @class = "col-md-4" })
+            <label class="col-md-4">Unsealing Notification Number<span class="red">*</span></label>
+            
             <div class="col-md-8">
                 @Html.TextBoxFor(model => model.UnSealingNotifNumber, new { @class = "form-control" })
             </div>
@@ -67,7 +72,7 @@
 
     <div class="col-md-6">
         <div class="row">
-            @Html.LabelFor(model => model.UnsealingNotifDate, new { @class = "col-md-4" })
+            <label class="col-md-4">Unsealing Notification Date<span class="red">*</span></label>
             <div class="col-md-8">
                 <div class="input-group date">
                     @Html.TextBoxFor(model => model.UnsealingNotifDate, "{0:dd MMM yyyy}", new { @class = "form-control" })

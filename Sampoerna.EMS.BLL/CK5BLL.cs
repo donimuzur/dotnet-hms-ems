@@ -1479,6 +1479,8 @@ namespace Sampoerna.EMS.BLL
             changesData.Add("DESTINATION_COUNTRY", origin.DEST_COUNTRY_NAME == data.DEST_COUNTRY_NAME);
 
             changesData.Add("SUBMISSION_DATE", origin.SUBMISSION_DATE == data.SUBMISSION_DATE);
+            changesData.Add("GR_DATE",origin.GR_DATE == data.GR_DATE);
+            changesData.Add("GI_DATE", origin.GI_DATE == data.GI_DATE);
 
             if (origin.CK5_TYPE == Enums.CK5Type.MarketReturn)
                 changesData.Add("SOURCE_PLANT_ADDRESS", origin.SOURCE_PLANT_ADDRESS == (data.SOURCE_PLANT_ADDRESS));
@@ -1565,6 +1567,14 @@ namespace Sampoerna.EMS.BLL
                     case "SOURCE_PLANT_ADDRESS":
                         changes.OLD_VALUE = origin.SOURCE_PLANT_ADDRESS;
                         changes.NEW_VALUE = data.SOURCE_PLANT_ADDRESS;
+                        break;
+                    case "GR_DATE":
+                        changes.OLD_VALUE = origin.GR_DATE.HasValue ? origin.GR_DATE.Value.ToString("dd MMMM yyyy") : null;
+                        changes.NEW_VALUE = data.GR_DATE.HasValue ? data.GR_DATE.Value.ToString("dd MMMM yyyy") : null;
+                        break;
+                    case "GI_DATE":
+                        changes.OLD_VALUE = origin.GI_DATE.HasValue ? origin.GI_DATE.Value.ToString("dd MMMM yyyy") : null;
+                        changes.NEW_VALUE = data.GI_DATE.HasValue ? data.GI_DATE.Value.ToString("dd MMMM yyyy") : null;
                         break;
                 }
                 _changesHistoryBll.AddHistory(changes);
@@ -6006,7 +6016,7 @@ namespace Sampoerna.EMS.BLL
             inputChangeLogs.SEALING_NOTIF_DATE = input.SEALING_NOTIF_DATE;
             inputChangeLogs.UNSEALING_NOTIF_NUMBER = input.UNSEALING_NOTIF_NUMBER;
             inputChangeLogs.UNSEALING_NOTIF_DATE = input.UNSEALING_NOTIF_DATE;
-            if (input.IsCk5Waste)
+            if (input.IsCk5Waste || input.IsCk5Manual)
             {
                 inputChangeLogs.GI_DATE = input.GI_DATE;
                 inputChangeLogs.GR_DATE = input.GR_DATE;
@@ -6028,7 +6038,7 @@ namespace Sampoerna.EMS.BLL
             dbData.SEALING_NOTIF_DATE = input.SEALING_NOTIF_DATE;
             dbData.UNSEALING_NOTIF_NUMBER = input.UNSEALING_NOTIF_NUMBER;
             dbData.UNSEALING_NOTIF_DATE = input.UNSEALING_NOTIF_DATE;
-            if (input.IsCk5Waste)
+            if (input.IsCk5Waste || input.IsCk5Manual)
             {
                 dbData.GI_DATE = input.GI_DATE;
                 dbData.GR_DATE = input.GR_DATE;
