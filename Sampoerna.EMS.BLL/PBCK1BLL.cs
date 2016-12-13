@@ -2116,13 +2116,19 @@ namespace Sampoerna.EMS.BLL
                     //rc.Detail.SupplierKppbcMengetahui = kppbcDetail.MENGETAHUI_DETAIL;
                     if (!string.IsNullOrEmpty(kppbcDetail.MENGETAHUI_DETAIL))
                     {
-                        var strToSplit = kppbcDetail.MENGETAHUI_DETAIL.Replace("ub<br />", "|");
-                        List<string> stringList = strToSplit.Split('|').ToList();
-                        rc.Detail.SupplierKppbcMengetahui = stringList[0].Replace("<br />", Environment.NewLine);
-                        rc.Detail.SupplierKppbcMengetahui =
-                            rc.Detail.SupplierKppbcMengetahui.Replace("Mengetahui", string.Empty)
-                                .Replace("mengetahui", string.Empty)
-                                .Replace("Kepala", string.Empty).Replace("kepala", string.Empty).Trim();
+                        //var strToSplit = kppbcDetail.MENGETAHUI_DETAIL.Replace("ub<br />", "|");
+                        //List<string> stringList = strToSplit.Split('|').ToList();
+                        //rc.Detail.SupplierKppbcMengetahui = stringList[0].Replace("<br />", Environment.NewLine);
+                        //rc.Detail.SupplierKppbcMengetahui =
+                        //    rc.Detail.SupplierKppbcMengetahui.Replace("Mengetahui", string.Empty)
+                        //        .Replace("mengetahui", string.Empty)
+                        //        .Replace("Kepala", string.Empty).Replace("kepala", string.Empty).Trim();
+                        var template = "Kepala Kantor Pengawasan dan Pelayanan<br />Bea dan Cukai";
+                        var city = nppbkcDetails.CITY.ToLower();
+                        city = city[0].ToString().ToUpper() + city.Substring(1, city.Length - 1);
+                        rc.Detail.SupplierKppbcMengetahui = template.Replace("<br />",Environment.NewLine);
+                        rc.Detail.SupplierKppbcMengetahui = rc.Detail.SupplierKppbcMengetahui + " " +
+                                                            kppbcDetail.KPPBC_TYPE + " " + city;
                     }
 
                     //var tipeMadya = kppbcDetail.KPPBC_TYPE;
