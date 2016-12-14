@@ -2154,11 +2154,18 @@ namespace Sampoerna.EMS.BLL
             {
                 rc.Detail.TipeMadya = dataNppbkc.TEXT_TO;
 
+                
+            }
+
+            var datasupplierNppbkc = _nppbkcbll.GetById(dbData.SUPPLIER_NPPBKC_ID);
+
+            if (datasupplierNppbkc != null)
+            {
                 var template = Environment.NewLine + "Bea dan Cukai";
-                var mengetahui = dataNppbkc.TEXT_TO.Replace("Kepala ", "").Replace("Bea dan Cukai",template);
+                var mengetahui = datasupplierNppbkc.TEXT_TO.Replace("Kepala ", "").Replace("Bea dan Cukai", template);
                 rc.Detail.SupplierKppbcMengetahui = mengetahui;
             }
-            
+
             string supplierPortName;
             if (string.IsNullOrEmpty(dbData.SUPPLIER_PORT_NAME))
                 supplierPortName = "-";
