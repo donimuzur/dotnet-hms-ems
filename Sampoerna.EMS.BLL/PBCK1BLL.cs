@@ -2108,53 +2108,64 @@ namespace Sampoerna.EMS.BLL
 
             
 
-            if (!string.IsNullOrEmpty(rc.Detail.SupplierKppbcId))
-            {
-                var kppbcDetail = _kppbcbll.GetById(rc.Detail.SupplierKppbcId);
-                if (kppbcDetail != null)
-                {
-                    //rc.Detail.SupplierKppbcMengetahui = kppbcDetail.MENGETAHUI_DETAIL;
-                    if (!string.IsNullOrEmpty(kppbcDetail.MENGETAHUI_DETAIL))
-                    {
-                        //var strToSplit = kppbcDetail.MENGETAHUI_DETAIL.Replace("ub<br />", "|");
-                        //List<string> stringList = strToSplit.Split('|').ToList();
-                        //rc.Detail.SupplierKppbcMengetahui = stringList[0].Replace("<br />", Environment.NewLine);
-                        //rc.Detail.SupplierKppbcMengetahui =
-                        //    rc.Detail.SupplierKppbcMengetahui.Replace("Mengetahui", string.Empty)
-                        //        .Replace("mengetahui", string.Empty)
-                        //        .Replace("Kepala", string.Empty).Replace("kepala", string.Empty).Trim();
-                        var template = "Kepala Kantor Pengawasan dan Pelayanan<br />Bea dan Cukai";
-                        var city = nppbkcDetails.CITY.ToLower();
-                        city = city[0].ToString().ToUpper() + city.Substring(1, city.Length - 1);
-                        rc.Detail.SupplierKppbcMengetahui = template.Replace("<br />",Environment.NewLine);
-                        rc.Detail.SupplierKppbcMengetahui = rc.Detail.SupplierKppbcMengetahui + " " +
-                                                            kppbcDetail.KPPBC_TYPE + " " + city;
-                    }
+            //if (!string.IsNullOrEmpty(rc.Detail.SupplierKppbcId))
+            //{
+            //    var kppbcDetail = _kppbcbll.GetById(rc.Detail.SupplierKppbcId);
+            //    if (kppbcDetail != null)
+            //    {
+            //        //rc.Detail.SupplierKppbcMengetahui = kppbcDetail.MENGETAHUI_DETAIL;
+            //        if (!string.IsNullOrEmpty(kppbcDetail.MENGETAHUI_DETAIL))
+            //        {
+            //            //var strToSplit = kppbcDetail.MENGETAHUI_DETAIL.Replace("ub<br />", "|");
+            //            //List<string> stringList = strToSplit.Split('|').ToList();
+            //            //rc.Detail.SupplierKppbcMengetahui = stringList[0].Replace("<br />", Environment.NewLine);
+            //            //rc.Detail.SupplierKppbcMengetahui =
+            //            //    rc.Detail.SupplierKppbcMengetahui.Replace("Mengetahui", string.Empty)
+            //            //        .Replace("mengetahui", string.Empty)
+            //            //        .Replace("Kepala", string.Empty).Replace("kepala", string.Empty).Trim();
+            //            var template = "Kepala Kantor Pengawasan dan Pelayanan<br />Bea dan Cukai";
+            //            var city = nppbkcDetails.CITY.ToLower();
+            //            city = city[0].ToString().ToUpper() + city.Substring(1, city.Length - 1);
+            //            rc.Detail.SupplierKppbcMengetahui = template.Replace("<br />",Environment.NewLine);
+            //            rc.Detail.SupplierKppbcMengetahui = rc.Detail.SupplierKppbcMengetahui + " " +
+            //                                                kppbcDetail.KPPBC_TYPE + " " + city;
+            //        }
 
-                    //var tipeMadya = kppbcDetail.KPPBC_TYPE;
-                    //if (kppbcDetail.KPPBC_TYPE.ToLower().Contains("madya"))
-                    //{
-                    //    tipeMadya = "Tipe " + tipeMadya;
-                    //}
+            //        //var tipeMadya = kppbcDetail.KPPBC_TYPE;
+            //        //if (kppbcDetail.KPPBC_TYPE.ToLower().Contains("madya"))
+            //        //{
+            //        //    tipeMadya = "Tipe " + tipeMadya;
+            //        //}
 
-                    //rc.Detail.TipeMadya = tipeMadya;
-                }
-                else
-                {
-                    rc.Detail.SupplierKppbcMengetahui = dbData.SUPPLIER_KPPBC_NAME;
-                }
-            }
-            else
-            {
-                rc.Detail.SupplierKppbcMengetahui = dbData.SUPPLIER_KPPBC_NAME;
-            }
+            //        //rc.Detail.TipeMadya = tipeMadya;
+            //    }
+            //    else
+            //    {
+            //        rc.Detail.SupplierKppbcMengetahui = dbData.SUPPLIER_KPPBC_NAME;
+            //    }
+            //}
+            //else
+            //{
+            //    rc.Detail.SupplierKppbcMengetahui = dbData.SUPPLIER_KPPBC_NAME;
+            //}
 
             var dataNppbkc = _nppbkcbll.GetById(dbData.NPPBKC_ID);
             if (dataNppbkc != null)
             {
                 rc.Detail.TipeMadya = dataNppbkc.TEXT_TO;
+
+                
             }
-            
+
+            var datasupplierNppbkc = _nppbkcbll.GetById(dbData.SUPPLIER_NPPBKC_ID);
+
+            if (datasupplierNppbkc != null)
+            {
+                var template = Environment.NewLine + "Bea dan Cukai";
+                var mengetahui = datasupplierNppbkc.TEXT_TO.Replace("Kepala ", "").Replace("Bea dan Cukai", template);
+                rc.Detail.SupplierKppbcMengetahui = mengetahui;
+            }
+
             string supplierPortName;
             if (string.IsNullOrEmpty(dbData.SUPPLIER_PORT_NAME))
                 supplierPortName = "-";
@@ -3014,7 +3025,7 @@ namespace Sampoerna.EMS.BLL
         private List<Pbck1MonitoringMutasiDto> GetCorrectReceivedAdditional(List<Pbck1MonitoringMutasiDto> listData)
         {
             var list = listData;
-
+            var vendorList = _lfaBll.GetAll();
             foreach (var item in list)
             {
                 var receivedAdditional = Convert.ToDecimal(0);
@@ -3030,7 +3041,13 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 item.ReceivedAdditional = receivedAdditional;
-                item.RecKppbc = _lfaBll.GetById(item.RecKppbc).NAME1;
+
+                var vendorDetail = vendorList.SingleOrDefault(x=> x.LIFNR == item.RecKppbc);
+                if (vendorDetail != null)
+                {
+                    item.RecKppbc = vendorDetail.NAME1;
+                }
+                
             }
 
             return list;
