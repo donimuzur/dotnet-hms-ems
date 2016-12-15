@@ -61,6 +61,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string NppbkcId { get; set; }
         public string SupplierPlantWerks { get; set; }
         public string ExcisableGoodsType { get; set; }
+
+        public bool isImport { get; set; }
     }
 
     public class Lack1GetByPeriodParamInput
