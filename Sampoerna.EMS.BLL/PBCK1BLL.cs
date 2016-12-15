@@ -3025,7 +3025,7 @@ namespace Sampoerna.EMS.BLL
         private List<Pbck1MonitoringMutasiDto> GetCorrectReceivedAdditional(List<Pbck1MonitoringMutasiDto> listData)
         {
             var list = listData;
-
+            var vendorList = _lfaBll.GetAll();
             foreach (var item in list)
             {
                 var receivedAdditional = Convert.ToDecimal(0);
@@ -3041,7 +3041,13 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 item.ReceivedAdditional = receivedAdditional;
-                item.RecKppbc = _lfaBll.GetById(item.RecKppbc).NAME1;
+
+                var vendorDetail = vendorList.SingleOrDefault(x=> x.LIFNR == item.RecKppbc);
+                if (vendorDetail != null)
+                {
+                    item.RecKppbc = vendorDetail.NAME1;
+                }
+                
             }
 
             return list;
