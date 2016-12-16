@@ -136,6 +136,7 @@ namespace Sampoerna.EMS.BLL.Services
                     p.EX_GOODTYP,
                     //p.TOTAL_PRODUCTION,
                     USAGE_TISTOTIS =  p.USAGE_TISTOTIS.HasValue ? p.USAGE_TISTOTIS.Value : 0,
+                    RETURN_QTY = p.RETURN_QTY.HasValue ? p.RETURN_QTY.Value : 0,
                     PERIODE = new DateTime(p.PERIOD_YEAR.Value, p.PERIOD_MONTH.Value, 1)
                 }).Where(x=> x.PERIOD_MONTH == lastMonth).ToList();
 
@@ -153,7 +154,7 @@ namespace Sampoerna.EMS.BLL.Services
 
             decimal rc = 0;
 
-            rc = getData.Sum(x=> (x.BEGINING_BALANCE + x.TOTAL_INCOME - x.USAGE - x.USAGE_TISTOTIS));
+            rc = getData.Sum(x=> (x.BEGINING_BALANCE + x.TOTAL_INCOME - x.USAGE - x.USAGE_TISTOTIS - x.RETURN_QTY));
 
             return rc;
         }

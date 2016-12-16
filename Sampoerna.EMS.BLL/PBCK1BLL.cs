@@ -115,7 +115,7 @@ namespace Sampoerna.EMS.BLL
 
             //    queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.NUMBER));
             //}
-            else if (input.UserRole == Enums.UserRole.Administrator)
+            else if (input.UserRole == Enums.UserRole.Administrator || input.UserRole == Enums.UserRole.Viewer)
             {
                 queryFilter = queryFilter.And(c => c.NUMBER != null);
             }
@@ -2164,6 +2164,10 @@ namespace Sampoerna.EMS.BLL
                 var template = Environment.NewLine + "Bea dan Cukai";
                 var mengetahui = datasupplierNppbkc.TEXT_TO.Replace("Kepala ", "").Replace("Bea dan Cukai", template);
                 rc.Detail.SupplierKppbcMengetahui = mengetahui;
+            }
+            else
+            {
+                rc.Detail.SupplierKppbcMengetahui = dbData.SUPPLIER_KPPBC_NAME;
             }
 
             string supplierPortName;
