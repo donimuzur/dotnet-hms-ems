@@ -2165,6 +2165,10 @@ namespace Sampoerna.EMS.BLL
                 var mengetahui = datasupplierNppbkc.TEXT_TO.Replace("Kepala ", "").Replace("Bea dan Cukai", template);
                 rc.Detail.SupplierKppbcMengetahui = mengetahui;
             }
+            else
+            {
+                rc.Detail.SupplierKppbcMengetahui = dbData.SUPPLIER_KPPBC_NAME;
+            }
 
             string supplierPortName;
             if (string.IsNullOrEmpty(dbData.SUPPLIER_PORT_NAME))
