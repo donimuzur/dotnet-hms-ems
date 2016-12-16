@@ -2470,8 +2470,9 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var dsPbck1 = new dsPbck1();
             dsPbck1 = AddDataPbck1Row(dsPbck1, pbck1ReportData.Detail, printTitle);
-            dsPbck1 = AddDataPbck1ProdPlan(dsPbck1, pbck1ReportData.Detail.ExcisableGoodsDescription, pbck1ReportData);
             dsPbck1 = AddDataPbck1BrandRegistration(dsPbck1, pbck1ReportData.BrandRegistrationList, pbck1ReportData.Detail.IsDisplayRange);
+            dsPbck1 = AddDataPbck1ProdPlan(dsPbck1, pbck1ReportData.Detail.ExcisableGoodsDescription, pbck1ReportData);
+            
             dsPbck1 = AddDataRealisasiP3Bkc(dsPbck1, pbck1ReportData, pbck1ReportData.SummaryRealisasiP3Bkc);
             //dsPbck1 = FakeDataRealisasiP3Bkc(dsPbck1);
             dsPbck1 = AddDataHeaderFooter(dsPbck1, pbck1ReportData.HeaderFooter);
@@ -2772,7 +2773,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var prodPlan = reportData.ProdPlanList;
             var summary = reportData.SummaryProdPlantList;
-
+            //Dictionary<string,string> visibilityArray = new Dictionary<string, string>();
             if (prodPlan != null && prodPlan.Count > 0)
             {
                 var visibilityUomAmount = "l";
@@ -2871,6 +2872,27 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (summaryUomBkc.Contains("L"))
                     summaryUomBkc = summaryUomBkc.Replace("L", "Liter");
 
+                var uomList = prodPlan.GroupBy(x => x.ProdTypeCode).Select(x => x.Key).ToList();
+                //01	SIGARET KRETEK TANGAN
+                //02	SIGARET KRETEK MESIN
+                //03	SIGARET PUTIH MESIN
+                //04	CERUTU
+                //05	TEMBAKAU IRIS (TIS)
+                //06	TEMBAKAU IRIS REJECT (TIS)
+                //07	ETIL ALKOHOL (EA)
+                var visibilityUomProd = "";
+                visibilityUomProd = uomList.Contains("07") ? visibilityUomProd + "1" : visibilityUomProd + "0";
+                visibilityUomProd = uomList.Contains("05") || uomList.Contains("06") ? visibilityUomProd + "|1" : visibilityUomProd + "|0";
+                if (uomList.Contains("01") || uomList.Contains("02") || uomList.Contains("03") || uomList.Contains("04"))
+                {
+                    visibilityUomProd = visibilityUomProd + "|1";
+                }
+                else
+                {
+                    visibilityUomProd = visibilityUomProd + "|0";
+                }
+
+
                 foreach (var item in prodPlan)
                 {
                     var detailRow = ds.Pbck1ProdPlan.NewPbck1ProdPlanRow();
@@ -2900,7 +2922,33 @@ namespace Sampoerna.EMS.Website.Controllers
                     // ReSharper disable once SpecifyACultureInStringConversionExplicitly
                     detailRow.No = item.MonthId.ToString();
 
-                    detailRow.VisibilityUomAmount = visibilityUomAmount;
+                    detailRow.VisibilityUomAmount = visibilityUomProd;
+
+                    //01	SIGARET KRETEK TANGAN
+                    //02	SIGARET KRETEK MESIN
+                    //03	SIGARET PUTIH MESIN
+                    //04	CERUTU
+                    //05	TEMBAKAU IRIS (TIS)
+                    //06	TEMBAKAU IRIS REJECT (TIS)
+                    //07	ETIL ALKOHOL (EA)
+                    if (item.ProdTypeCode == "05" || item.ProdTypeCode == "06")
+                    {
+                        uomAmount = "Kg";
+                        //if(!visibilityArray.ContainsKey("k")) visibilityArray.Add("k","1");
+                        //detailRow.VisibilityUomAmount = "0|0|1";
+                    }
+                    else if (item.ProdTypeCode == "07")
+                    {
+                        uomAmount = "Liter";
+                        //if (!visibilityArray.ContainsKey("l")) visibilityArray.Add("l", "1");
+                        //detailRow.VisibilityUomAmount = "1|0|0";
+                    }
+                    else
+                    {
+                        uomAmount = "Batang";
+                        //if (!visibilityArray.ContainsKey("b")) visibilityArray.Add("b", "1");
+                        //detailRow.VisibilityUomAmount = "0|1|0";
+                    }
                     detailRow.UomAmount = uomAmount;
                     detailRow.VisibilityUomBkc = visibilityUomBkc;
 
@@ -2911,6 +2959,15 @@ namespace Sampoerna.EMS.Website.Controllers
                     ds.Pbck1ProdPlan.AddPbck1ProdPlanRow(detailRow);
 
                 }
+
+                //if (visibilityArray.Count > 0)
+                //{
+                //    var tempVisibility = "";
+                //    tempVisibility = visibilityArray.ContainsKey("l") ? "1" : "0";
+                //    tempVisibility = tempVisibility + "|" + (visibilityArray.ContainsKey("b") ? "1" : "0");
+                //    tempVisibility = tempVisibility + "|" + (visibilityArray.ContainsKey("k") ? "1" : "0");
+                //    ds.Pbck1ProdPlan.VisibilityUomAmountColumn.DefaultValue = tempVisibility;
+                //}
             }
             else
             {
