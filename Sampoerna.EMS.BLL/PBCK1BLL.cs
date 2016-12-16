@@ -115,7 +115,7 @@ namespace Sampoerna.EMS.BLL
 
             //    queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.NUMBER));
             //}
-            else if (input.UserRole == Enums.UserRole.Administrator)
+            else if (input.UserRole == Enums.UserRole.Administrator || input.UserRole == Enums.UserRole.Viewer)
             {
                 queryFilter = queryFilter.And(c => c.NUMBER != null);
             }
