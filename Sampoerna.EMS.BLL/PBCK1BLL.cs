@@ -2246,6 +2246,31 @@ namespace Sampoerna.EMS.BLL
                 BkcRequiredUomId = string.Empty,
                 BkcRequiredUomName = string.Empty
             }));
+
+            var uomDict = new Dictionary<string, string>();
+
+            var prodAliasList = prodPlanList.GroupBy(x => x.ProdAlias).Select(x => x.Key).ToList();
+
+            foreach (var prodalias in prodAliasList)
+            {
+                var uom = "";
+                if (prodalias == "TIS")
+                {
+                    uom = "Gram";
+                   
+                }
+                else if (prodalias == "EA")
+                {
+                    uom = "Liter";
+                   
+                }
+                else
+                {
+                    uom = "Batang";
+                   
+                }
+                uomDict.Add(prodalias,uom);
+            }
             
             //set summary
             var groupedData = prodPlanList.Where(c => c.Amount.HasValue).GroupBy(p => new
@@ -2274,24 +2299,12 @@ namespace Sampoerna.EMS.BLL
                 TotalAmount = g.Sum(p => p.TotalAmount)
             });
 
-            var uomAmount = "Kilogram";
-            if (reportData.Detail.ConvertedUomId.ToLower() == "btg")
-            {
-                uomAmount = "Batang";
-            }
-            else if (reportData.Detail.ConvertedUomId.ToLower() == "l")
-            {
-                uomAmount = "Liter";
-            }
-            else if (reportData.Detail.ConvertedUomId.ToLower() == "g" || reportData.Detail.ConvertedUomId.ToLower() == "kg")
-            {
-                uomAmount = "Kg";
-            }
+            
 
             reportData.Detail.ProductConvertedOutputs = string.Join(Environment.NewLine,
                 totalAmount.Select(
-                d => String.Format("{0:n}", (reportData.Detail.ConvertedUomId.ToLower() == "g" && d.ProdAlias.ToUpper() != "TIS") ? d.TotalAmount / 1000 : d.TotalAmount)
-                        + " " + (d.ProdAlias.ToUpper() == "TIS" ? "Gram" : uomAmount) + " " 
+                d => String.Format("{0:n}", (d.ProdAlias.ToUpper() != "TIS") ? d.TotalAmount / 1000 : d.TotalAmount)
+                        + " " + (uomDict[d.ProdAlias]) + " " 
                         + d.ProdName + " (" + d.ProdAlias + ")").ToArray());
 
             reportData.SummaryProdPlantList = groupedData.ToList();

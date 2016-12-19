@@ -2487,6 +2487,13 @@ namespace Sampoerna.EMS.Website.Controllers
             var bkcExcisableGoodsTypeDesc = reportDto.Detail.RealisasiBkcExcisableGoodsTypeDesc;
             var sumPemasukan = 0m;
             var sumPenggunaan = 0m;
+            var uomHasil = new List<string>();
+            foreach (var i in data.Select(x => x.ProductionList))
+            {
+               uomHasil.AddRange(i.GroupBy(x => x.UomId).Select(x => x.Key).ToList());
+            }
+            uomHasil = uomHasil.Distinct().ToList();
+            
             if (data != null && data.Count > 0)
             {
                 var summaryJenis = string.Join(Environment.NewLine, summaryData.Select(d => d.ProductAlias));
@@ -2517,6 +2524,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     conversion = 1;
                 }
+
+                
 
                 if (bkcExcisableGoodsTypeDesc.ToLower().Contains("hasil tembakau"))
                 {
@@ -2551,8 +2560,22 @@ namespace Sampoerna.EMS.Website.Controllers
                         sumPenggunaan += item.Penggunaan == null ? 0 : (conversion * item.Penggunaan.Value);
                     }
                     month = item.Bulan;
+
+                    
+                    //uomHasil = item.ProductionList.GroupBy(x => x.UomId).Select(x => x.Key).ToList();
+                    visibilityUomBkc = "";
+                    if (uomHasil.Contains("G"))
+                    {
+                        visibilityUomBkc = visibilityUomBkc + "k";
+                    }
+                    if (uomHasil.Contains("Btg"))
+                    {
+                        visibilityUomBkc = visibilityUomBkc + "b";
+                    }
                     if (item.ProductionList.Count > 0)
                     {
+                        
+
                         foreach (var prod in item.ProductionList)
                         {
 
@@ -2798,6 +2821,31 @@ namespace Sampoerna.EMS.Website.Controllers
                     visibilityUomAmount = "k";
                 }
 
+                var uomDict = new Dictionary<string, string>();
+
+                var prodAliasList = prodPlan.GroupBy(x => x.ProdAlias).Select(x => x.Key).ToList();
+
+                foreach (var prodalias in prodAliasList)
+                {
+                    var uom = "";
+                    if (prodalias == "TIS")
+                    {
+                        uom = "Kg";
+
+                    }
+                    else if (prodalias == "EA")
+                    {
+                        uom = "Liter";
+
+                    }
+                    else
+                    {
+                        uom = "Batang";
+
+                    }
+                    uomDict.Add(prodalias, uom);
+                }
+
                 var summaryUomBkc = string.Empty;
                 var firstDataBkc = prodPlan.FirstOrDefault(c => !string.IsNullOrEmpty(c.BkcRequiredUomId));
                 if (firstDataBkc != null)
@@ -2837,11 +2885,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 var SummaryJenisAmount = new Dictionary<string, decimal>();
                 var SummaryBkcRequired = new Dictionary<string, decimal>();
 
+                var summaryUomAmount = "";
                 foreach (var prodAlias in summaryJenis)
                 {
                     SummaryJenisAmount.Add(prodAlias, prodPlan.Where(c => c.ProdAlias == prodAlias && c.Amount != null).Select(c => c.Amount.Value).Sum());
                     SummaryBkcRequired.Add(prodAlias, prodPlan.Where(c => c.ProdAlias == prodAlias && c.BkcRequired != null).Select(c => c.BkcRequired.Value).Sum());
+                    summaryUomAmount = String.Join(Environment.NewLine, uomDict.Select(x=> x.Value));
+                    //string.Join(Environment.NewLine, summary.Select(d => uomAmount).Take(SummaryJenisAmount.Keys.Count()));
                 }
+                summaryUomAmount = String.Join(Environment.NewLine, uomDict.Select(x => x.Value));
 
                 //set total jenis bkc
                 var summaryJenisNewLine = String.Join(Environment.NewLine, SummaryJenisAmount.Select(c => c.Key));
@@ -2865,7 +2917,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var totalBkcSummaryNewLine = String.Join(Environment.NewLine, bckSummary);
 
                 //set satuan total jumlah produksi
-                var summaryUomAmount = string.Join(Environment.NewLine, summary.Select(d => uomAmount).Take(SummaryJenisAmount.Keys.Count()));
+                //var summaryUomAmount = string.Join(Environment.NewLine, summary.Select(d => uomAmount).Take(SummaryJenisAmount.Keys.Count()));
 
                 //set satuan kebutuhan bkc
                 summaryUomBkc = string.Join(Environment.NewLine, summary.Select(d => uomBkcId).Take(SummaryJenisAmount.Keys.Count()));
