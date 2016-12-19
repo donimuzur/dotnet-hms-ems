@@ -113,7 +113,8 @@ namespace Sampoerna.EMS.BLL.Services
             var getDataRaw = _repository.Get(c => c.NPPBKC_ID == input.NppbkcId
                                                && c.STATUS == Enums.DocumentStatus.Completed
                                                && c.PERIOD_YEAR == input.YearTo &&  c.SUPPLIER_PLANT_WERKS == input.SupplierPlantWerks 
-                                               && c.EX_GOODTYP == input.ExcisableGoodsType, null,
+                                               && c.EX_GOODTYP == input.ExcisableGoodsType 
+                                               && ((c.IS_SUPPLIER_IMPORT != null && c.IS_SUPPLIER_IMPORT == input.isImport) || (c.IS_SUPPLIER_IMPORT == null && input.isImport == false)), null,
                 "").ToList();
 
             var isExistnppbkcLevel = getDataRaw.Any(x => x.LACK1_LEVEL == Enums.Lack1Level.Nppbkc);
@@ -134,6 +135,8 @@ namespace Sampoerna.EMS.BLL.Services
                     p.SUPPLIER_PLANT_WERKS,
                     p.EX_GOODTYP,
                     //p.TOTAL_PRODUCTION,
+                    USAGE_TISTOTIS =  p.USAGE_TISTOTIS.HasValue ? p.USAGE_TISTOTIS.Value : 0,
+                    RETURN_QTY = p.RETURN_QTY.HasValue ? p.RETURN_QTY.Value : 0,
                     PERIODE = new DateTime(p.PERIOD_YEAR.Value, p.PERIOD_MONTH.Value, 1)
                 }).Where(x=> x.PERIOD_MONTH == lastMonth).ToList();
 
@@ -151,7 +154,7 @@ namespace Sampoerna.EMS.BLL.Services
 
             decimal rc = 0;
 
-            rc = getData.Sum(x=> (x.BEGINING_BALANCE + x.TOTAL_INCOME - x.USAGE));
+            rc = getData.Sum(x=> (x.BEGINING_BALANCE + x.TOTAL_INCOME - x.USAGE - x.USAGE_TISTOTIS - x.RETURN_QTY));
 
             return rc;
         }

@@ -161,6 +161,7 @@
             var year = 0;
             var plant = "";
             var goodtype = "";
+            var isnppbkcImport = false;
 
             var nppbkcid = "";
             if ($("#Detail_NppbkcId").length) {
@@ -183,8 +184,12 @@
                 plant = $('#Detail_SupplierPlant').val();
             }
 
+            if ($("#Detail_IsNppbkcImport").is(':checked')) {
+                isnppbkcImport = true;
+            }
+
             if (month != 0 && year != 0 && plant != "" && goodtype != "") {
-                setLatestSaldo({ month: month, year: year, nppbkcid: nppbkcid, plant: plant, goodtype: goodtype}, '@Url.Action("GetLatestSaldoLack", "PBCK1")');
+                setLatestSaldo({ month: month, year: year, nppbkcid: nppbkcid, plant: plant, goodtype: goodtype, isImport: isnppbkcImport }, '@Url.Action("GetLatestSaldoLack", "PBCK1")');
             } else {
                 $('#Detail_LatestSaldoUomName').val('0');
             }

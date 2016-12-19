@@ -1298,9 +1298,9 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetLatestSaldoLack(int month, int year, string nppbkcid, string plant, string goodtype)
+        public JsonResult GetLatestSaldoLack(int month, int year, string nppbkcid, string plant, string goodtype, bool isImport)
         {
-            var latestSaldo = _lackBll.GetLatestSaldoPerPeriod(new Lack1GetLatestSaldoPerPeriodInput() { MonthTo = month, YearTo = year, NppbkcId = nppbkcid, SupplierPlantWerks = plant, ExcisableGoodsType = goodtype });
+            var latestSaldo = _lackBll.GetLatestSaldoPerPeriod(new Lack1GetLatestSaldoPerPeriodInput() { MonthTo = month, YearTo = year, NppbkcId = nppbkcid, SupplierPlantWerks = plant, ExcisableGoodsType = goodtype, isImport = isImport});
             return Json(new { latestSaldo });
         }
 
@@ -2470,8 +2470,9 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var dsPbck1 = new dsPbck1();
             dsPbck1 = AddDataPbck1Row(dsPbck1, pbck1ReportData.Detail, printTitle);
-            dsPbck1 = AddDataPbck1ProdPlan(dsPbck1, pbck1ReportData.Detail.ExcisableGoodsDescription, pbck1ReportData);
             dsPbck1 = AddDataPbck1BrandRegistration(dsPbck1, pbck1ReportData.BrandRegistrationList, pbck1ReportData.Detail.IsDisplayRange);
+            dsPbck1 = AddDataPbck1ProdPlan(dsPbck1, pbck1ReportData.Detail.ExcisableGoodsDescription, pbck1ReportData);
+            
             dsPbck1 = AddDataRealisasiP3Bkc(dsPbck1, pbck1ReportData, pbck1ReportData.SummaryRealisasiP3Bkc);
             //dsPbck1 = FakeDataRealisasiP3Bkc(dsPbck1);
             dsPbck1 = AddDataHeaderFooter(dsPbck1, pbck1ReportData.HeaderFooter);
@@ -2486,6 +2487,13 @@ namespace Sampoerna.EMS.Website.Controllers
             var bkcExcisableGoodsTypeDesc = reportDto.Detail.RealisasiBkcExcisableGoodsTypeDesc;
             var sumPemasukan = 0m;
             var sumPenggunaan = 0m;
+            var uomHasil = new List<string>();
+            foreach (var i in data.Select(x => x.ProductionList))
+            {
+               uomHasil.AddRange(i.GroupBy(x => x.UomId).Select(x => x.Key).ToList());
+            }
+            uomHasil = uomHasil.Distinct().ToList();
+            
             if (data != null && data.Count > 0)
             {
                 var summaryJenis = string.Join(Environment.NewLine, summaryData.Select(d => d.ProductAlias));
@@ -2516,6 +2524,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     conversion = 1;
                 }
+
+                
 
                 if (bkcExcisableGoodsTypeDesc.ToLower().Contains("hasil tembakau"))
                 {
@@ -2550,8 +2560,22 @@ namespace Sampoerna.EMS.Website.Controllers
                         sumPenggunaan += item.Penggunaan == null ? 0 : (conversion * item.Penggunaan.Value);
                     }
                     month = item.Bulan;
+
+                    
+                    //uomHasil = item.ProductionList.GroupBy(x => x.UomId).Select(x => x.Key).ToList();
+                    visibilityUomBkc = "";
+                    if (uomHasil.Contains("G"))
+                    {
+                        visibilityUomBkc = visibilityUomBkc + "k";
+                    }
+                    if (uomHasil.Contains("Btg"))
+                    {
+                        visibilityUomBkc = visibilityUomBkc + "b";
+                    }
                     if (item.ProductionList.Count > 0)
                     {
+                        
+
                         foreach (var prod in item.ProductionList)
                         {
 
@@ -2772,7 +2796,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var prodPlan = reportData.ProdPlanList;
             var summary = reportData.SummaryProdPlantList;
-
+            //Dictionary<string,string> visibilityArray = new Dictionary<string, string>();
             if (prodPlan != null && prodPlan.Count > 0)
             {
                 var visibilityUomAmount = "l";
@@ -2795,6 +2819,31 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     uomAmount = "Kg";
                     visibilityUomAmount = "k";
+                }
+
+                var uomDict = new Dictionary<string, string>();
+
+                var prodAliasList = prodPlan.GroupBy(x => x.ProdAlias).Select(x => x.Key).ToList();
+
+                foreach (var prodalias in prodAliasList)
+                {
+                    var uom = "";
+                    if (prodalias == "TIS")
+                    {
+                        uom = "Kg";
+
+                    }
+                    else if (prodalias == "EA")
+                    {
+                        uom = "Liter";
+
+                    }
+                    else
+                    {
+                        uom = "Batang";
+
+                    }
+                    uomDict.Add(prodalias, uom);
                 }
 
                 var summaryUomBkc = string.Empty;
@@ -2836,11 +2885,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 var SummaryJenisAmount = new Dictionary<string, decimal>();
                 var SummaryBkcRequired = new Dictionary<string, decimal>();
 
+                var summaryUomAmount = "";
                 foreach (var prodAlias in summaryJenis)
                 {
                     SummaryJenisAmount.Add(prodAlias, prodPlan.Where(c => c.ProdAlias == prodAlias && c.Amount != null).Select(c => c.Amount.Value).Sum());
                     SummaryBkcRequired.Add(prodAlias, prodPlan.Where(c => c.ProdAlias == prodAlias && c.BkcRequired != null).Select(c => c.BkcRequired.Value).Sum());
+                    summaryUomAmount = String.Join(Environment.NewLine, uomDict.Select(x=> x.Value));
+                    //string.Join(Environment.NewLine, summary.Select(d => uomAmount).Take(SummaryJenisAmount.Keys.Count()));
                 }
+                summaryUomAmount = String.Join(Environment.NewLine, uomDict.Select(x => x.Value));
 
                 //set total jenis bkc
                 var summaryJenisNewLine = String.Join(Environment.NewLine, SummaryJenisAmount.Select(c => c.Key));
@@ -2864,12 +2917,33 @@ namespace Sampoerna.EMS.Website.Controllers
                 var totalBkcSummaryNewLine = String.Join(Environment.NewLine, bckSummary);
 
                 //set satuan total jumlah produksi
-                var summaryUomAmount = string.Join(Environment.NewLine, summary.Select(d => uomAmount).Take(SummaryJenisAmount.Keys.Count()));
+                //var summaryUomAmount = string.Join(Environment.NewLine, summary.Select(d => uomAmount).Take(SummaryJenisAmount.Keys.Count()));
 
                 //set satuan kebutuhan bkc
                 summaryUomBkc = string.Join(Environment.NewLine, summary.Select(d => uomBkcId).Take(SummaryJenisAmount.Keys.Count()));
                 if (summaryUomBkc.Contains("L"))
                     summaryUomBkc = summaryUomBkc.Replace("L", "Liter");
+
+                var uomList = prodPlan.GroupBy(x => x.ProdTypeCode).Select(x => x.Key).ToList();
+                //01	SIGARET KRETEK TANGAN
+                //02	SIGARET KRETEK MESIN
+                //03	SIGARET PUTIH MESIN
+                //04	CERUTU
+                //05	TEMBAKAU IRIS (TIS)
+                //06	TEMBAKAU IRIS REJECT (TIS)
+                //07	ETIL ALKOHOL (EA)
+                var visibilityUomProd = "";
+                visibilityUomProd = uomList.Contains("07") ? visibilityUomProd + "1" : visibilityUomProd + "0";
+                visibilityUomProd = uomList.Contains("05") || uomList.Contains("06") ? visibilityUomProd + "|1" : visibilityUomProd + "|0";
+                if (uomList.Contains("01") || uomList.Contains("02") || uomList.Contains("03") || uomList.Contains("04"))
+                {
+                    visibilityUomProd = visibilityUomProd + "|1";
+                }
+                else
+                {
+                    visibilityUomProd = visibilityUomProd + "|0";
+                }
+
 
                 foreach (var item in prodPlan)
                 {
@@ -2900,7 +2974,33 @@ namespace Sampoerna.EMS.Website.Controllers
                     // ReSharper disable once SpecifyACultureInStringConversionExplicitly
                     detailRow.No = item.MonthId.ToString();
 
-                    detailRow.VisibilityUomAmount = visibilityUomAmount;
+                    detailRow.VisibilityUomAmount = visibilityUomProd;
+
+                    //01	SIGARET KRETEK TANGAN
+                    //02	SIGARET KRETEK MESIN
+                    //03	SIGARET PUTIH MESIN
+                    //04	CERUTU
+                    //05	TEMBAKAU IRIS (TIS)
+                    //06	TEMBAKAU IRIS REJECT (TIS)
+                    //07	ETIL ALKOHOL (EA)
+                    if (item.ProdTypeCode == "05" || item.ProdTypeCode == "06")
+                    {
+                        uomAmount = "Kg";
+                        //if(!visibilityArray.ContainsKey("k")) visibilityArray.Add("k","1");
+                        //detailRow.VisibilityUomAmount = "0|0|1";
+                    }
+                    else if (item.ProdTypeCode == "07")
+                    {
+                        uomAmount = "Liter";
+                        //if (!visibilityArray.ContainsKey("l")) visibilityArray.Add("l", "1");
+                        //detailRow.VisibilityUomAmount = "1|0|0";
+                    }
+                    else
+                    {
+                        uomAmount = "Batang";
+                        //if (!visibilityArray.ContainsKey("b")) visibilityArray.Add("b", "1");
+                        //detailRow.VisibilityUomAmount = "0|1|0";
+                    }
                     detailRow.UomAmount = uomAmount;
                     detailRow.VisibilityUomBkc = visibilityUomBkc;
 
@@ -2911,6 +3011,15 @@ namespace Sampoerna.EMS.Website.Controllers
                     ds.Pbck1ProdPlan.AddPbck1ProdPlanRow(detailRow);
 
                 }
+
+                //if (visibilityArray.Count > 0)
+                //{
+                //    var tempVisibility = "";
+                //    tempVisibility = visibilityArray.ContainsKey("l") ? "1" : "0";
+                //    tempVisibility = tempVisibility + "|" + (visibilityArray.ContainsKey("b") ? "1" : "0");
+                //    tempVisibility = tempVisibility + "|" + (visibilityArray.ContainsKey("k") ? "1" : "0");
+                //    ds.Pbck1ProdPlan.VisibilityUomAmountColumn.DefaultValue = tempVisibility;
+                //}
             }
             else
             {

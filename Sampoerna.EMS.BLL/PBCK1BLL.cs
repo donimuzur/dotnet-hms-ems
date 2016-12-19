@@ -115,7 +115,7 @@ namespace Sampoerna.EMS.BLL
 
             //    queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.NUMBER));
             //}
-            else if (input.UserRole == Enums.UserRole.Administrator)
+            else if (input.UserRole == Enums.UserRole.Administrator || input.UserRole == Enums.UserRole.Viewer)
             {
                 queryFilter = queryFilter.And(c => c.NUMBER != null);
             }
@@ -2108,47 +2108,68 @@ namespace Sampoerna.EMS.BLL
 
             
 
-            if (!string.IsNullOrEmpty(rc.Detail.SupplierKppbcId))
+            //if (!string.IsNullOrEmpty(rc.Detail.SupplierKppbcId))
+            //{
+            //    var kppbcDetail = _kppbcbll.GetById(rc.Detail.SupplierKppbcId);
+            //    if (kppbcDetail != null)
+            //    {
+            //        //rc.Detail.SupplierKppbcMengetahui = kppbcDetail.MENGETAHUI_DETAIL;
+            //        if (!string.IsNullOrEmpty(kppbcDetail.MENGETAHUI_DETAIL))
+            //        {
+            //            //var strToSplit = kppbcDetail.MENGETAHUI_DETAIL.Replace("ub<br />", "|");
+            //            //List<string> stringList = strToSplit.Split('|').ToList();
+            //            //rc.Detail.SupplierKppbcMengetahui = stringList[0].Replace("<br />", Environment.NewLine);
+            //            //rc.Detail.SupplierKppbcMengetahui =
+            //            //    rc.Detail.SupplierKppbcMengetahui.Replace("Mengetahui", string.Empty)
+            //            //        .Replace("mengetahui", string.Empty)
+            //            //        .Replace("Kepala", string.Empty).Replace("kepala", string.Empty).Trim();
+            //            var template = "Kepala Kantor Pengawasan dan Pelayanan<br />Bea dan Cukai";
+            //            var city = nppbkcDetails.CITY.ToLower();
+            //            city = city[0].ToString().ToUpper() + city.Substring(1, city.Length - 1);
+            //            rc.Detail.SupplierKppbcMengetahui = template.Replace("<br />",Environment.NewLine);
+            //            rc.Detail.SupplierKppbcMengetahui = rc.Detail.SupplierKppbcMengetahui + " " +
+            //                                                kppbcDetail.KPPBC_TYPE + " " + city;
+            //        }
+
+            //        //var tipeMadya = kppbcDetail.KPPBC_TYPE;
+            //        //if (kppbcDetail.KPPBC_TYPE.ToLower().Contains("madya"))
+            //        //{
+            //        //    tipeMadya = "Tipe " + tipeMadya;
+            //        //}
+
+            //        //rc.Detail.TipeMadya = tipeMadya;
+            //    }
+            //    else
+            //    {
+            //        rc.Detail.SupplierKppbcMengetahui = dbData.SUPPLIER_KPPBC_NAME;
+            //    }
+            //}
+            //else
+            //{
+            //    rc.Detail.SupplierKppbcMengetahui = dbData.SUPPLIER_KPPBC_NAME;
+            //}
+
+            var dataNppbkc = _nppbkcbll.GetById(dbData.NPPBKC_ID);
+            if (dataNppbkc != null)
             {
-                var kppbcDetail = _kppbcbll.GetById(rc.Detail.SupplierKppbcId);
-                if (kppbcDetail != null)
-                {
-                    //rc.Detail.SupplierKppbcMengetahui = kppbcDetail.MENGETAHUI_DETAIL;
-                    if (!string.IsNullOrEmpty(kppbcDetail.MENGETAHUI_DETAIL))
-                    {
-                        var strToSplit = kppbcDetail.MENGETAHUI_DETAIL.Replace("ub<br />", "|");
-                        List<string> stringList = strToSplit.Split('|').ToList();
-                        rc.Detail.SupplierKppbcMengetahui = stringList[0].Replace("<br />", Environment.NewLine);
-                        rc.Detail.SupplierKppbcMengetahui =
-                            rc.Detail.SupplierKppbcMengetahui.Replace("Mengetahui", string.Empty)
-                                .Replace("mengetahui", string.Empty)
-                                .Replace("Kepala", string.Empty).Replace("kepala", string.Empty).Trim();
-                    }
+                rc.Detail.TipeMadya = dataNppbkc.TEXT_TO;
 
-                    //var tipeMadya = kppbcDetail.KPPBC_TYPE;
-                    //if (kppbcDetail.KPPBC_TYPE.ToLower().Contains("madya"))
-                    //{
-                    //    tipeMadya = "Tipe " + tipeMadya;
-                    //}
+                
+            }
 
-                    //rc.Detail.TipeMadya = tipeMadya;
-                }
-                else
-                {
-                    rc.Detail.SupplierKppbcMengetahui = dbData.SUPPLIER_KPPBC_NAME;
-                }
+            var datasupplierNppbkc = _nppbkcbll.GetById(dbData.SUPPLIER_NPPBKC_ID);
+
+            if (datasupplierNppbkc != null)
+            {
+                var template = Environment.NewLine + "Bea dan Cukai";
+                var mengetahui = datasupplierNppbkc.TEXT_TO.Replace("Kepala ", "").Replace("Bea dan Cukai", template);
+                rc.Detail.SupplierKppbcMengetahui = mengetahui;
             }
             else
             {
                 rc.Detail.SupplierKppbcMengetahui = dbData.SUPPLIER_KPPBC_NAME;
             }
 
-            var dataNppbkc = _nppbkcbll.GetById(dbData.NPPBKC_ID);
-            if (dataNppbkc != null)
-            {
-                rc.Detail.TipeMadya = dataNppbkc.TEXT_TO;
-            }
-            
             string supplierPortName;
             if (string.IsNullOrEmpty(dbData.SUPPLIER_PORT_NAME))
                 supplierPortName = "-";
@@ -2225,6 +2246,31 @@ namespace Sampoerna.EMS.BLL
                 BkcRequiredUomId = string.Empty,
                 BkcRequiredUomName = string.Empty
             }));
+
+            var uomDict = new Dictionary<string, string>();
+
+            var prodAliasList = prodPlanList.GroupBy(x => x.ProdAlias).Select(x => x.Key).ToList();
+
+            foreach (var prodalias in prodAliasList)
+            {
+                var uom = "";
+                if (prodalias == "TIS")
+                {
+                    uom = "Gram";
+                   
+                }
+                else if (prodalias == "EA")
+                {
+                    uom = "Liter";
+                   
+                }
+                else
+                {
+                    uom = "Batang";
+                   
+                }
+                uomDict.Add(prodalias,uom);
+            }
             
             //set summary
             var groupedData = prodPlanList.Where(c => c.Amount.HasValue).GroupBy(p => new
@@ -2253,24 +2299,12 @@ namespace Sampoerna.EMS.BLL
                 TotalAmount = g.Sum(p => p.TotalAmount)
             });
 
-            var uomAmount = "Kilogram";
-            if (reportData.Detail.ConvertedUomId.ToLower() == "btg")
-            {
-                uomAmount = "Batang";
-            }
-            else if (reportData.Detail.ConvertedUomId.ToLower() == "l")
-            {
-                uomAmount = "Liter";
-            }
-            else if (reportData.Detail.ConvertedUomId.ToLower() == "g" || reportData.Detail.ConvertedUomId.ToLower() == "kg")
-            {
-                uomAmount = "Kg";
-            }
+            
 
             reportData.Detail.ProductConvertedOutputs = string.Join(Environment.NewLine,
                 totalAmount.Select(
-                d => String.Format("{0:n}", (reportData.Detail.ConvertedUomId.ToLower() == "g" && d.ProdAlias.ToUpper() != "TIS") ? d.TotalAmount / 1000 : d.TotalAmount)
-                        + " " + (d.ProdAlias.ToUpper() == "TIS" ? "Gram" : uomAmount) + " " 
+                d => String.Format("{0:n}", (d.ProdAlias.ToUpper() != "TIS") ? d.TotalAmount / 1000 : d.TotalAmount)
+                        + " " + (uomDict[d.ProdAlias]) + " " 
                         + d.ProdName + " (" + d.ProdAlias + ")").ToArray());
 
             reportData.SummaryProdPlantList = groupedData.ToList();
@@ -3008,7 +3042,7 @@ namespace Sampoerna.EMS.BLL
         private List<Pbck1MonitoringMutasiDto> GetCorrectReceivedAdditional(List<Pbck1MonitoringMutasiDto> listData)
         {
             var list = listData;
-
+            var vendorList = _lfaBll.GetAll();
             foreach (var item in list)
             {
                 var receivedAdditional = Convert.ToDecimal(0);
@@ -3024,7 +3058,13 @@ namespace Sampoerna.EMS.BLL
                 }
 
                 item.ReceivedAdditional = receivedAdditional;
-                item.RecKppbc = _lfaBll.GetById(item.RecKppbc).NAME1;
+
+                var vendorDetail = vendorList.SingleOrDefault(x=> x.LIFNR == item.RecKppbc);
+                if (vendorDetail != null)
+                {
+                    item.RecKppbc = vendorDetail.NAME1;
+                }
+                
             }
 
             return list;

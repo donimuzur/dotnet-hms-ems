@@ -317,8 +317,8 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<Lack1DetailsDto, Pbck1RealisasiP3BkcDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.SaldoAwal, opt => opt.MapFrom(src => src.BeginingBalance))
                 .ForMember(dest => dest.Pemasukan, opt => opt.MapFrom(src => src.TotalIncome))
-                .ForMember(dest => dest.Penggunaan, opt => opt.MapFrom(src => src.Usage))
-                .ForMember(dest => dest.SaldoAkhir, opt => opt.MapFrom(src => (src.BeginingBalance + src.TotalIncome - src.Usage)))
+                .ForMember(dest => dest.Penggunaan, opt => opt.MapFrom(src => src.Usage + src.UsageTisToTis))
+                .ForMember(dest => dest.SaldoAkhir, opt => opt.MapFrom(src => (src.BeginingBalance + src.TotalIncome - src.Usage - src.UsageTisToTis - src.ReturnQty)))
                 ;
 
             #endregion
