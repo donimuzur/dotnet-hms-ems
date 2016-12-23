@@ -2900,10 +2900,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 //set total jumlah produksi
                 List<string> amountSummary = new List<string>();
-                foreach (var item in SummaryJenisAmount.Select(c => c.Value))
+                foreach (var item in SummaryJenisAmount)
                 {
-                    var sumAmount = item;
-                    if (reportData.Detail.ConvertedUomId.ToLower() == "g") sumAmount = item / 1000;
+
+                    var sumAmount = item.Value;
+                    if (item.Key == "TIS") sumAmount = item.Value / 1000;
                     amountSummary.Add(String.Format("{0:n}", sumAmount));
                 }
                 var totalAmountNewLine = String.Join(Environment.NewLine, amountSummary);
@@ -2956,7 +2957,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     if (item.Amount.HasValue)
                     {
                         var amountPlan = item.Amount.Value;
-                        if (reportData.Detail.ConvertedUomId.ToLower() == "g") amountPlan = amountPlan / 1000;
+                        //if (reportData.Detail.ConvertedUomId.ToLower() == "g") amountPlan = amountPlan / 1000;
+                        if (item.ProdAlias == "TIS")
+                        {
+                            amountPlan = amountPlan / 1000;
+
+                        }
+                        
                         detailRow.AmountDecimal = amountPlan;
                     }
                     detailRow.BkcRequired = 0;
