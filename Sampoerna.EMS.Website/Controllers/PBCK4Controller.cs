@@ -298,6 +298,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 Mapper.Map(pbck4Details.Pbck4Dto, model);
 
                 var plantListNppbkc = _plantBll.GetActivePlant().Where(x => x.NPPBKC_ID == pbck4Details.Pbck4Dto.NppbkcId && CurrentUser.ListUserPlants.Contains(x.WERKS)).FirstOrDefault();
+                if (CurrentUser.UserRole == Enums.UserRole.Administrator)
+                    plantListNppbkc =
+                        _plantBll.GetActivePlant().Where(x => x.NPPBKC_ID == pbck4Details.Pbck4Dto.NppbkcId).FirstOrDefault();
 
                 var inputEdit = new WorkflowAllowAccessDataInput
                 {
@@ -401,7 +404,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 Mapper.Map(pbck4Details.Pbck4Dto, model);
 
                 var plantListNppbkc = _plantBll.GetActivePlant().Where(x => x.NPPBKC_ID == pbck4Details.Pbck4Dto.NppbkcId && CurrentUser.ListUserPlants.Contains(x.WERKS)).FirstOrDefault();
-
+                if (CurrentUser.UserRole == Enums.UserRole.Administrator)
+                    plantListNppbkc =
+                        _plantBll.GetActivePlant().Where(x => x.NPPBKC_ID == pbck4Details.Pbck4Dto.NppbkcId).FirstOrDefault();
                 var inputEdit = new WorkflowAllowAccessDataInput
                 {
                     UserId = CurrentUser.USER_ID,
@@ -552,7 +557,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 Mapper.Map(pbck4Details.Pbck4Dto, model);
 
                 var plantListNppbkc = _plantBll.GetActivePlant().Where(x => x.NPPBKC_ID == pbck4Details.Pbck4Dto.NppbkcId && CurrentUser.ListUserPlants.Contains(x.WERKS));
-
+                if (CurrentUser.UserRole == Enums.UserRole.Administrator)
+                    plantListNppbkc =
+                        _plantBll.GetActivePlant().Where(x => x.NPPBKC_ID == pbck4Details.Pbck4Dto.NppbkcId);
                 var inputEdit = new WorkflowAllowAccessDataInput
                 {
                     UserId = CurrentUser.USER_ID,
