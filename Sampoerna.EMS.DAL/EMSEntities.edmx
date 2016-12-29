@@ -755,7 +755,7 @@
           <Property Name="LACK1_TO_YEAR" Type="int" />
           <Property Name="STATUS" Type="int" Nullable="false" />
           <Property Name="STATUS_GOV" Type="int" />
-          <Property Name="QTY_APPROVED" Type="numeric" Precision="18" Scale="0" />
+          <Property Name="QTY_APPROVED" Type="decimal" Precision="18" Scale="2" />
           <Property Name="DECREE_DATE" Type="datetime" />
           <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
@@ -5576,7 +5576,7 @@
           <Property Name="LACK1_TO_YEAR" Type="Int32" />
           <Property Name="STATUS" Type="EMSModel.DocumentStatus" Nullable="false" />
           <Property Name="STATUS_GOV" Type="EMSModel.DocumentStatusGov" />
-          <Property Name="QTY_APPROVED" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="QTY_APPROVED" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="DECREE_DATE" Type="DateTime" Precision="3" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
