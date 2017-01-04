@@ -3762,7 +3762,11 @@ namespace Sampoerna.EMS.BLL
         {
             var ck5Input = Mapper.Map<Ck5GetForLack1ByParamInput>(input);
             var nppbckData = _nppbkcService.GetById(input.NppbkcId);
-            ck5Input.IsExcludeSameNppbkcId = !(nppbckData.FLAG_FOR_LACK1.HasValue && nppbckData.FLAG_FOR_LACK1.Value);
+            ck5Input.IsExcludeSameNppbkcId = false;
+            if (nppbckData != null)
+            {
+                ck5Input.IsExcludeSameNppbkcId = !(nppbckData.FLAG_FOR_LACK1.HasValue && nppbckData.FLAG_FOR_LACK1.Value);
+            }
 
             //pbck-1 decree id list
             ck5Input.Pbck1DecreeIdList = rc.Pbck1List.Select(d => d.Pbck1Id).ToList();
@@ -3819,7 +3823,11 @@ namespace Sampoerna.EMS.BLL
         {
             var ck5Input = Mapper.Map<Ck5GetForLack1ByParamInput>(input);
             var nppbckData = _nppbkcService.GetById(input.NppbkcId);
-            ck5Input.IsExcludeSameNppbkcId = !(nppbckData.FLAG_FOR_LACK1.HasValue && nppbckData.FLAG_FOR_LACK1.Value);
+            ck5Input.IsExcludeSameNppbkcId = false;
+            if (nppbckData != null)
+            {
+                ck5Input.IsExcludeSameNppbkcId = !(nppbckData.FLAG_FOR_LACK1.HasValue && nppbckData.FLAG_FOR_LACK1.Value);
+            }
 
             //pbck-1 decree id list
             ck5Input.Pbck1DecreeIdList = rc.Pbck1List.Select(d => d.Pbck1Id).ToList();
