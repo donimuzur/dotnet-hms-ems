@@ -19,7 +19,7 @@
 
                 <div class="form-excise" role="form">
                     <div class="row">
-                        @using (Ajax.BeginForm("SearchSummaryReports", "CK4C",
+                        @*@using (Ajax.BeginForm("SearchSummaryReports", "CK4C",
                             new AjaxOptions
                             {
                                 HttpMethod = "POST",
@@ -28,7 +28,9 @@
                                 OnComplete = "ReloadDataTables"
 
                             }))
-                        {
+                        {*@
+                        <input type="hidden" name="TotalDataPerPage" id="TotalDataPerPage" value="10" />
+                        <input type="hidden" name="CurrentPage" id="CurrentPage" value="1" />
                             <div class="col-md-6">
                                 <div class="row">
                                     <label class="col-md-4">CK-4C No</label>
@@ -84,7 +86,7 @@
                             </div>
 
                             <div class="col-md-2 col-md-offset-8">
-                                <button id="btn-filter" class="btn btn-blue full">FILTER</button>
+                                <button id="btn-filter" onclick="OnFilter();" id="btnFILTER" class="btn btn-blue full">FILTER</button>
                             </div>
                             <div class="col-md-2">
                                 <input id="btnExport" type="button" class="btn btn-blue full" value="EXPORT" />
@@ -93,7 +95,7 @@
 
 
 
-                        }
+                        @*}*@
                     </div>
                 </div>
             </div>
@@ -295,8 +297,8 @@
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script type="text/javascript" language="javascript" class="init">
-        
-        $(document).ready(function () {
+
+        $(document).ready(function() {
 
             setupDataTables(true);
 
@@ -309,10 +311,10 @@
             $('#MenuCk4CSummaryReports').addClass('active');
 
             $('#selecctall').prop('checked', false);
-            $('.checkexport').each(function () {
+            $('.checkexport').each(function() {
                 this.checked = false;
             });
-           
+
             $('#checkboxDefault1').prop('checked', true);
             $('#checkboxDefault2').prop('checked', true);
             $('#checkboxDefault3').prop('checked', true);
@@ -324,33 +326,100 @@
             $('#checkboxDefault9').prop('checked', true);
         });
 
-
         function setupDataTables(blFirst) {
-
-            $('#btn-filter').click(function () {
-                $('.loading').show();
-            });
-
-            // DataTable
+            
             var table = null;
             if ($.fn.dataTable.isDataTable('#ck4CTable')) {
                 table = $('#ck4CTable').DataTable();
                 table.destroy();
             }
-
+            
             table = $('#ck4CTable').DataTable(
-               {
-                   "order": [[0, 'asc'], [3, 'asc']],
-                   "sDom": "Rlfrtip",
-                   "language": {
-                       "zeroRecords": "No records found",
-                       "infoFiltered": "(filtered from _MAX_ total records)"
-                   }
-               });
+                {
+                    "sDom": "Rlfrtip",
+                    "sPaginationType": "full_numbers",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    },
 
-          
+                    "rowCallback": function(row, data, index) {
+
+                        var info = $('#ck4CTable').DataTable().page.info();
+                        $(row).find("td").first().html((info.page * info.length) + index + 1);
+                    },
+                    "serverSide": true,
+                    //"processing": true,
+                    "paging": true,
+                    "deferRender": true,
+                    "columns": setupColumns(),
+                    "ajax": {
+                        "url": "@Url.Action("SearchSummaryReportsAjax", "CK4C")",
+                    "type": "POST",
+
+                    "data": function(d) {
+                        return $.extend({}, d, {
+                            "ExtraFilter": {
+                                "SearchView": {
+                                    Ck4CNo: $("#SearchView_Ck4CNo").find("option:selected").val(),
+
+                                    PlantId: $('#SearchView_PlantId').find("option:selected").val(),
+
+                                    
+
+                                    Month: $('#SearchInput_Month').find("option:selected").val(),
+
+                                    Year: $('#SearchInput_Year').find("option:selected").val(),
+
+                                   
+                                    Poa: $('#SearchView_Poa').find("option:selected").val(),
+                                    Creator: $('#SearchView_Creator').find("option:selected").val()
+                                }
+                            }
+                        });
+                    }
+                }
+                });
+            
+            table.on('preXhr', function (e, settings, data) {
+                $(".loading").show();
+            });
+
+            table.on('xhr', function (e, settings, data) {
+                $(".loading").hide();
+            });
+
+            if (blFirst) {
+                    for (var i = 1; i < 30; i++) {
+                        table.column(i).visible(false);
+                    }
+
+                    table.column(1).visible(true);
+                    table.column(2).visible(true);
+                    table.column(3).visible(true);
+                    table.column(4).visible(true);
+                    table.column(5).visible(true);
+                    table.column(7).visible(true);
+                    table.column(8).visible(true);
+                    table.column(9).visible(true);
+                } else {
+                    $('.checkexport').each(function() {
+
+                        // Get the column API object
+                        var column = table.column($(this).attr('datacolumn'));
+
+                        // Toggle the visibility
+                        column.visible(false);
+                        if ($(this).is(':checked')) {
+                            // Toggle the visibility
+                            column.visible(true);
+                        }
+
+                    });
+            }
+            
             $('.checkexport').on('click', function (e) {
-                //e.preventDefault();
+                // e.preventDefault();
                 table.column(0).visible(true);
 
                 // Get the column API object
@@ -358,81 +427,162 @@
 
                 // Toggle the visibility
                 column.visible(!column.visible());
-                $('#ck4CTable').parents('div.dataTables_wrapper').first().show();
-            });
 
-            if (blFirst) {
-                for (var i = 1; i < 30; i++) {
-                    table.column(i).visible(false);
+                $('#ck4CTable').parents('div.dataTables_wrapper').first().hide();
+
+                for (var i = 0; i < 30; i++) {
+                    if (table.column(i).visible()) {
+                        $('#ck4CTable').parents('div.dataTables_wrapper').first().show();
+                        return;
+                    }
                 }
 
-                table.column(1).visible(true);
-                table.column(2).visible(true);
-                table.column(3).visible(true);
-                table.column(4).visible(true);
-                table.column(5).visible(true);
-                table.column(7).visible(true);
-                table.column(8).visible(true);
-                table.column(9).visible(true);
-            } else {
-                $('.checkexport').each(function () {
+            });
 
-                    // Get the column API object
-                    var column = table.column($(this).attr('datacolumn'));
-
-                    // Toggle the visibility
-                    column.visible(false);
+            $('#selecctall').change(function () {
+                
                     if ($(this).is(':checked')) {
-                        // Toggle the visibility
-                        column.visible(true);
-                    }
+                        $('.checkexport').prop('checked', this.checked);
+                        // Show a column
+                        $('#ck4CTable').parents('div.dataTables_wrapper').first().show();
+                        var table = $('#ck4CTable').DataTable();
+                        for (var i = 0; i < 30; i++) {
+                            table.column(i).visible(true);
 
+                        }
+                        table.column(0).visible(true);
+                        // Show a column
+                        $('#ck4CTable').parents('div.dataTables_wrapper').first().show();
+
+                    } else {
+                        $('.checkexport').each(function() {
+                            this.checked = false;
+
+                        });
+                        var table = $('#ck4CTable').DataTable();
+                        for (var i = 0; i < 30; i++) {
+                            table.column(i).visible(false);
+
+                        }
+                        $('#ck4CTable').parents('div.dataTables_wrapper').first().hide();
+                    }
                 });
-            }
-
-           $('#selecctall').change(function () {
-                if ($(this).is(':checked')) {
-                    $('.checkexport').prop('checked', this.checked);
-                    // Show a column
-                    $('#ck4CTable').parents('div.dataTables_wrapper').first().show();
-                    var table = $('#ck4CTable').DataTable();
-                    for (var i = 0; i < 30; i++) {
-                        table.column(i).visible(true);
-
-                    }
-                    table.column(0).visible(true);
-                    // Show a column
-                    $('#ck4CTable').parents('div.dataTables_wrapper').first().show();
-
-                } else {
-                    $('.checkexport').each(function () {
-                        this.checked = false;
-
-                    });
-                    var table = $('#ck4CTable').DataTable();
-                    for (var i = 0; i < 30; i++) {
-                        table.column(i).visible(false);
-
-                    }
-                    $('#ck4CTable').parents('div.dataTables_wrapper').first().hide();
-                }
-            });
-
         }
+
+        //function setupDataTables(blFirst) {
+
+        //    $('#btn-filter').click(function() {
+        //        $('.loading').show();
+        //    });
+
+        //    // DataTable
+        //    var table = null;
+        //    if ($.fn.dataTable.isDataTable('#ck4CTable')) {
+        //        table = $('#ck4CTable').DataTable();
+        //        table.destroy();
+        //    }
+
+        //    table = $('#ck4CTable').DataTable(
+        //        {
+        //            "order": [[0, 'asc'], [3, 'asc']],
+        //            "sDom": "Rlfrtip",
+        //            "language": {
+        //                "zeroRecords": "No records found",
+        //                "infoFiltered": "(filtered from _MAX_ total records)"
+        //            }
+        //        });
+
+
+        //    $('.checkexport').on('click', function(e) {
+        //        //e.preventDefault();
+        //        table.column(0).visible(true);
+
+        //        // Get the column API object
+        //        var column = table.column($(this).attr('datacolumn'));
+
+        //        // Toggle the visibility
+        //        column.visible(!column.visible());
+        //        $('#ck4CTable').parents('div.dataTables_wrapper').first().show();
+        //    });
+
+        //    if (blFirst) {
+        //        for (var i = 1; i < 30; i++) {
+        //            table.column(i).visible(false);
+        //        }
+
+        //        table.column(1).visible(true);
+        //        table.column(2).visible(true);
+        //        table.column(3).visible(true);
+        //        table.column(4).visible(true);
+        //        table.column(5).visible(true);
+        //        table.column(7).visible(true);
+        //        table.column(8).visible(true);
+        //        table.column(9).visible(true);
+        //    } else {
+        //        $('.checkexport').each(function() {
+
+        //            // Get the column API object
+        //            var column = table.column($(this).attr('datacolumn'));
+
+        //            // Toggle the visibility
+        //            column.visible(false);
+        //            if ($(this).is(':checked')) {
+        //                // Toggle the visibility
+        //                column.visible(true);
+        //            }
+
+        //        });
+        //    }
+
+        //    $('#selecctall').change(function() {
+        //        if ($(this).is(':checked')) {
+        //            $('.checkexport').prop('checked', this.checked);
+        //            // Show a column
+        //            $('#ck4CTable').parents('div.dataTables_wrapper').first().show();
+        //            var table = $('#ck4CTable').DataTable();
+        //            for (var i = 0; i < 30; i++) {
+        //                table.column(i).visible(true);
+
+        //            }
+        //            table.column(0).visible(true);
+        //            // Show a column
+        //            $('#ck4CTable').parents('div.dataTables_wrapper').first().show();
+
+        //        } else {
+        //            $('.checkexport').each(function() {
+        //                this.checked = false;
+
+        //            });
+        //            var table = $('#ck4CTable').DataTable();
+        //            for (var i = 0; i < 30; i++) {
+        //                table.column(i).visible(false);
+
+        //            }
+        //            $('#ck4CTable').parents('div.dataTables_wrapper').first().hide();
+        //        }
+        //    });
+
+        //}
 
         function ReloadDataTables() {
             setupDataTables(false);
             $('#SearchInput_Month').removeClass('input-validation-error');
             $('#SearchInput_Year').removeClass('input-validation-error');
-            $('.loading').hide();
+            //$('.loading').hide();
         }
 
         function OnReset() {
 
             $(".selectreset").val($(".selectreset option:first").val());
         }
+        
+        function OnFilter() {
+            var table = $('#ck4CTable').DataTable();
 
-        $("#btnExport").click(function () {
+            table.ajax.reload();
+        }
+
+        $("#btnExport").click(function() {
             GetSearchSummaryReports();
             $('#ExportSummaryReportsForms').submit();
         });
@@ -446,7 +596,61 @@
             $('#ExportModel_YearSearch').val($('#SearchInput_Year').find("option:selected").val());
         }
 
-        $("#btnConfirm").click(function () {
+        function setupColumns() {
+            
+            var columns = [
+                { "data": null, "orderable": false },
+
+                { "data": "Ck4CNo", "orderable": true },
+                { "data": "Status", "orderable": true },
+                { "data": "BasedOn", "orderable": true },
+                { "data": "CeOffice", "orderable": true },
+                { "data": "LicenseNumber", "orderable": true },
+                { "data": "Kppbc", "orderable": true },
+                { "data": "PlantId", "orderable": true },
+                { "data": "PlantDescription", "orderable": true },
+                { "data": "Period", "orderable": true },
+                { "data": "Month", "orderable": true },
+                { "data": "Year", "orderable": true },
+                
+                
+                
+                
+                
+                
+                
+                
+
+                { "data": "ProductionDate", "orderable": false },
+                { "data": "FaCode", "orderable": false },
+                { "data": "TobaccoProductType", "orderable": false },
+                { "data": "BrandDescription", "orderable": false },
+                { "data": "Hje", "orderable": false },
+                { "data": "Tariff", "orderable": false },
+                { "data": "Content", "orderable": false },
+                { "data": "PackedQty", "orderable": false },
+                { "data": "Zb", "orderable": false },
+                { "data": "PackedAdjusted", "orderable": false },
+                //{ "data": "PackedQtyInPack", "orderable": false },
+                { "data": "UnPackQty", "orderable": false },
+                { "data": "ProducedQty", "orderable": false },
+                { "data": "UomProducedQty", "orderable": false },
+                { "data": "Remarks", "orderable": false },
+                
+                
+                { "data": "Creator", "orderable": true },
+                { "data": "PoaApproved", "orderable": true },
+                { "data": "ReportPeriod", "orderable": true },
+                { "data": "CompletedDate", "orderable": true }
+                
+            ];
+
+            return columns;
+
+
+        }
+
+        $("#btnConfirm").click(function() {
             GetSearchSummaryReports();
             $('#ExportSummaryReportsForms').submit();
         });
