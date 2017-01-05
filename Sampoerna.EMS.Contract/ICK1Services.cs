@@ -12,5 +12,7 @@ namespace Sampoerna.EMS.Contract
         CK1 GetCk1ById(long ck1Id);
 
         List<CK1> GetCk1ByPlant(string plant);
+
+        List<CK1_ITEM> GetCk1ItemByNppbkc(string nppbkcId);
     }
 }
