@@ -327,13 +327,13 @@
         });
 
         function setupDataTables(blFirst) {
-            
+
             var table = null;
             if ($.fn.dataTable.isDataTable('#ck4CTable')) {
                 table = $('#ck4CTable').DataTable();
                 table.destroy();
             }
-            
+
             table = $('#ck4CTable').DataTable(
                 {
                     "sDom": "Rlfrtip",
@@ -355,70 +355,153 @@
                     "columns": setupColumns(),
                     "ajax": {
                         "url": "@Url.Action("SearchSummaryReportsAjax", "CK4C")",
-                    "type": "POST",
+                        "type": "POST",
 
-                    "data": function(d) {
-                        return $.extend({}, d, {
-                            "ExtraFilter": {
-                                "SearchView": {
-                                    Ck4CNo: $("#SearchView_Ck4CNo").find("option:selected").val(),
+                        "data": function(d) {
+                            return $.extend({}, d, {
+                                "ExtraFilter": {
+                                    "SearchView": {
+                                        Ck4CNo: $("#SearchView_Ck4CNo").find("option:selected").val(),
 
-                                    PlantId: $('#SearchView_PlantId').find("option:selected").val(),
+                                        PlantId: $('#SearchView_PlantId').find("option:selected").val(),
 
-                                    
+                                        Month: $('#SearchInput_Month').find("option:selected").val(),
 
-                                    Month: $('#SearchInput_Month').find("option:selected").val(),
+                                        Year: $('#SearchInput_Year').find("option:selected").val(),
 
-                                    Year: $('#SearchInput_Year').find("option:selected").val(),
-
-                                   
-                                    Poa: $('#SearchView_Poa').find("option:selected").val(),
-                                    Creator: $('#SearchView_Creator').find("option:selected").val()
+                                        Poa: $('#SearchView_Poa').find("option:selected").val(),
+                                        Creator: $('#SearchView_Creator').find("option:selected").val()
+                                    }
                                 }
+                            });
+                        }
+                    },
+                    "columnDefs": [{
+                            "targets": 12,
+                            "render": function (data, type, full, meta) {
+                                debugger;
+                                return renderColumnList(data);
+                            }                            
+                        },
+                        {
+                            "targets": 13,
+                            "render": function(data, type, full, meta) {
+                                return renderColumnList(data);
                             }
-                        });
-                    }
-                }
+                        },
+                        {
+                            "targets": 14,
+                            "render": function (data, type, full, meta) {
+                                return renderColumnList(data);
+                            }
+                        },
+                        {
+                            "targets": 15,
+                            "render": function (data, type, full, meta) {
+                                return renderColumnList(data);
+                            }
+                        },
+                        {
+                            "targets": 16,
+                            "render": function (data, type, full, meta) {
+                                return renderColumnList(data);
+                            }
+                        },
+                        {
+                            "targets": 17,
+                            "render": function (data, type, full, meta) {
+                                return renderColumnList(data);
+                            }
+                        },
+                        {
+                            "targets": 18,
+                            "render": function (data, type, full, meta) {
+                                return renderColumnList(data);
+                            }
+                        },
+                        {
+                            "targets": 19,
+                            "render": function (data, type, full, meta) {
+                                return renderColumnList(data);
+                            }
+                        },
+                        {
+                            "targets": 20,
+                            "render": function (data, type, full, meta) {
+                                return renderColumnList(data);
+                            }
+                        },
+                        {
+                            "targets": 21,
+                            "render": function (data, type, full, meta) {
+                                return renderColumnList(data);
+                            }
+                        },
+                        {
+                            "targets": 22,
+                            "render": function (data, type, full, meta) {
+                                return renderColumnList(data);
+                            }
+                        },
+                        {
+                            "targets": 23,
+                            "render": function (data, type, full, meta) {
+                                return renderColumnList(data);
+                            }
+                        },
+                        {
+                            "targets": 24,
+                            "render": function (data, type, full, meta) {
+                                return renderColumnList(data);
+                            }
+                        },
+                        {
+                            "targets": 25,
+                            "render": function (data, type, full, meta) {
+                                return renderColumnList(data);
+                            }
+                        }
+                    ]
                 });
-            
-            table.on('preXhr', function (e, settings, data) {
+
+            table.on('preXhr', function(e, settings, data) {
                 $(".loading").show();
             });
 
-            table.on('xhr', function (e, settings, data) {
+            table.on('xhr', function(e, settings, data) {
                 $(".loading").hide();
             });
 
             if (blFirst) {
-                    for (var i = 1; i < 30; i++) {
-                        table.column(i).visible(false);
+                for (var i = 1; i < 30; i++) {
+                    table.column(i).visible(false);
+                }
+
+                table.column(1).visible(true);
+                table.column(2).visible(true);
+                table.column(3).visible(true);
+                table.column(4).visible(true);
+                table.column(5).visible(true);
+                table.column(7).visible(true);
+                table.column(8).visible(true);
+                table.column(9).visible(true);
+            } else {
+                $('.checkexport').each(function() {
+
+                    // Get the column API object
+                    var column = table.column($(this).attr('datacolumn'));
+
+                    // Toggle the visibility
+                    column.visible(false);
+                    if ($(this).is(':checked')) {
+                        // Toggle the visibility
+                        column.visible(true);
                     }
 
-                    table.column(1).visible(true);
-                    table.column(2).visible(true);
-                    table.column(3).visible(true);
-                    table.column(4).visible(true);
-                    table.column(5).visible(true);
-                    table.column(7).visible(true);
-                    table.column(8).visible(true);
-                    table.column(9).visible(true);
-                } else {
-                    $('.checkexport').each(function() {
-
-                        // Get the column API object
-                        var column = table.column($(this).attr('datacolumn'));
-
-                        // Toggle the visibility
-                        column.visible(false);
-                        if ($(this).is(':checked')) {
-                            // Toggle the visibility
-                            column.visible(true);
-                        }
-
-                    });
+                });
             }
-            
-            $('.checkexport').on('click', function (e) {
+
+            $('.checkexport').on('click', function(e) {
                 // e.preventDefault();
                 table.column(0).visible(true);
 
@@ -439,34 +522,44 @@
 
             });
 
-            $('#selecctall').change(function () {
-                
-                    if ($(this).is(':checked')) {
-                        $('.checkexport').prop('checked', this.checked);
-                        // Show a column
-                        $('#ck4CTable').parents('div.dataTables_wrapper').first().show();
-                        var table = $('#ck4CTable').DataTable();
-                        for (var i = 0; i < 30; i++) {
-                            table.column(i).visible(true);
+            $('#selecctall').change(function() {
 
-                        }
-                        table.column(0).visible(true);
-                        // Show a column
-                        $('#ck4CTable').parents('div.dataTables_wrapper').first().show();
+                if ($(this).is(':checked')) {
+                    $('.checkexport').prop('checked', this.checked);
+                    // Show a column
+                    $('#ck4CTable').parents('div.dataTables_wrapper').first().show();
+                    var table = $('#ck4CTable').DataTable();
+                    for (var i = 0; i < 30; i++) {
+                        table.column(i).visible(true);
 
-                    } else {
-                        $('.checkexport').each(function() {
-                            this.checked = false;
-
-                        });
-                        var table = $('#ck4CTable').DataTable();
-                        for (var i = 0; i < 30; i++) {
-                            table.column(i).visible(false);
-
-                        }
-                        $('#ck4CTable').parents('div.dataTables_wrapper').first().hide();
                     }
-                });
+                    table.column(0).visible(true);
+                    // Show a column
+                    $('#ck4CTable').parents('div.dataTables_wrapper').first().show();
+
+                } else {
+                    $('.checkexport').each(function() {
+                        this.checked = false;
+
+                    });
+                    var table = $('#ck4CTable').DataTable();
+                    for (var i = 0; i < 30; i++) {
+                        table.column(i).visible(false);
+
+                    }
+                    $('#ck4CTable').parents('div.dataTables_wrapper').first().hide();
+                }
+            });
+        }
+
+        function renderColumnList(data) {
+            var retData = '<ol>';
+            for (var i = 0; i < data.length; i++) {
+                retData = retData + '<ul>' + data[i] + '</ul>';
+            }
+            retData = retData + '</ol>';
+
+            return retData;
         }
 
         //function setupDataTables(blFirst) {
@@ -575,7 +668,7 @@
 
             $(".selectreset").val($(".selectreset option:first").val());
         }
-        
+
         function OnFilter() {
             var table = $('#ck4CTable').DataTable();
 
@@ -597,10 +690,9 @@
         }
 
         function setupColumns() {
-            
+
             var columns = [
                 { "data": null, "orderable": false },
-
                 { "data": "Ck4CNo", "orderable": true },
                 { "data": "Status", "orderable": true },
                 { "data": "BasedOn", "orderable": true },
@@ -612,15 +704,6 @@
                 { "data": "Period", "orderable": true },
                 { "data": "Month", "orderable": true },
                 { "data": "Year", "orderable": true },
-                
-                
-                
-                
-                
-                
-                
-                
-
                 { "data": "ProductionDate", "orderable": false },
                 { "data": "FaCode", "orderable": false },
                 { "data": "TobaccoProductType", "orderable": false },
@@ -636,13 +719,10 @@
                 { "data": "ProducedQty", "orderable": false },
                 { "data": "UomProducedQty", "orderable": false },
                 { "data": "Remarks", "orderable": false },
-                
-                
                 { "data": "Creator", "orderable": true },
                 { "data": "PoaApproved", "orderable": true },
                 { "data": "ReportPeriod", "orderable": true },
                 { "data": "CompletedDate", "orderable": true }
-                
             ];
 
             return columns;
