@@ -1947,14 +1947,18 @@ namespace Sampoerna.EMS.BLL
             var output = new List<GetListBrandByPlantOutput>();
 
             var plantListNppbkc = _plantBll.GetActivePlant().Where(x => x.NPPBKC_ID == nppbkcId && plantList.Contains(x.WERKS)).Select(x => x.WERKS).ToList();
+            var allowedCk1Item = _ck1Services.GetCk1ItemByNppbkc(nppbkcId).Select(x=> x.FA_CODE + x.WERKS + x.MATERIAL_ID).ToList();
 
             foreach (var plantId in plantListNppbkc)
             {
-                var dbBrand = _brandRegistrationServices.GetBrandByPlant(plantId).Where(x=> !x.BRAND_CE.ToLower().Contains("laboratorium")).ToList();
+                var dbBrand = _brandRegistrationServices.GetBrandByPlant(plantId)
+                    .Where(x=> !x.BRAND_CE.ToLower().Contains("laboratorium")).ToList();
                 foreach (var zaidmExBrand in dbBrand)
                 {
+                    var itemCheck = (zaidmExBrand.FA_CODE.Trim() + zaidmExBrand.WERKS.Trim() +
+                                     zaidmExBrand.STICKER_CODE.Trim());
                     var blockStock = GetBlockedStockQuota(plantId, zaidmExBrand.FA_CODE);
-                    if (blockStock.BlockedStockRemainingCount > 0)
+                    if (blockStock.IsExist && allowedCk1Item.Contains(itemCheck))
                     {
                         var blockstockOutput = new GetListBrandByPlantOutput();
                         blockstockOutput.PlantId = plantId;
@@ -2029,12 +2033,13 @@ namespace Sampoerna.EMS.BLL
                     pbck4 =>
                         pbck4.PBCK4_ITEM.Where(pbck4Item => pbck4Item.FA_CODE == faCode)
                             .Sum(pbck4Item => pbck4Item.REQUESTED_QTY.HasValue ? pbck4Item.REQUESTED_QTY.Value : 0));
-
+            
             var result = new BlockedStockQuotaOutput();
             result.BlockedStock = blockStock.ToString();
             result.BlockedStockUsed = blockStockUsed.ToString();
             result.BlockedStockRemaining = (blockStock - blockStockUsed).ToString();
             result.BlockedStockRemainingCount = blockStock - blockStockUsed;
+            result.IsExist = dbBlock.Count > 0;
 
             return result;
 
