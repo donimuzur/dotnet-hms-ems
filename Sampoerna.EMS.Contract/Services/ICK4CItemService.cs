@@ -9,5 +9,6 @@ namespace Sampoerna.EMS.Contract.Services
         List<CK4C_ITEM> GetByParam(CK4CItemGetByParamInput input);
         List<string> GetFaCodeListByParam(CK4CItemGetByParamInput input);
         List<CK4C_ITEM> GetByPlant(List<string> plant, int month, int year);
+        List<CK4C_ITEM> GetAllCk4cItem();
     }
 }

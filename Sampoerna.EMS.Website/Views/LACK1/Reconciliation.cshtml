@@ -29,7 +29,14 @@
                                     <div class="row">
                                         <label class="col-md-4">NPPBKC ID</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.SearchView.NppbkcId, Model.SearchView.NppbkcIdList, "All", new { @class = "form-control selectreset" })
+                                            @if (Model.SearchView.NppbkcIdList == null)
+                                            {
+                                                @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                            }
+                                            else
+                                            {
+                                                @Html.DropDownListFor(model => model.SearchView.NppbkcId, Model.SearchView.NppbkcIdList, "All", new { @class = "form-control selectreset" })
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -37,7 +44,14 @@
                                     <div class="row">
                                         <label class="col-md-4">Plant Id</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.SearchView.PlantId, Model.SearchView.PlantIdList, "All", new { @class = "form-control selectreset" })
+                                            @if (Model.SearchView.PlantIdList == null)
+                                            {
+                                                @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                            }
+                                            else
+                                            {
+                                                @Html.DropDownListFor(model => model.SearchView.PlantId, Model.SearchView.PlantIdList, "All", new { @class = "form-control selectreset" })
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -47,7 +61,14 @@
                                     <div class="row">
                                         <label class="col-md-4">Excisable Goods Type</label>
                                         <div class="col-md-8">
-                                            @Html.DropDownListFor(model => model.SearchView.ExGoodType, Model.SearchView.ExGoodTypeList, "All", new { @class = "form-control selectreset" })
+                                            @if (Model.SearchView.ExGoodTypeList == null)
+                                            {
+                                                @Html.DropDownList("dropdown-name", Enumerable.Empty<SelectListItem>())
+                                            }
+                                            else
+                                            {
+                                                @Html.DropDownListFor(model => model.SearchView.ExGoodType, Model.SearchView.ExGoodTypeList, "All", new { @class = "form-control selectreset" })
+                                            }
                                         </div>
                                     </div>
                                 </div>
