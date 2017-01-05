@@ -23,6 +23,7 @@ using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.CK4C;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.PrintHistory;
+using Sampoerna.EMS.Website.Models.Shared;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using System.Configuration;
 using SpreadsheetLight;
@@ -1763,17 +1764,50 @@ namespace Sampoerna.EMS.Website.Controllers
             return model;
         }
 
+        private List<string> addBreaktoList(List<string> dataList)
+        {
+            List<string> returnData = new List<string>();
+            foreach (var item in dataList)
+            {
+                returnData.Add(item + Environment.NewLine);
+            }
+
+            return returnData;
+        }
+
         private List<Ck4CSummaryReportsItem> SearchDataSummaryReports(Ck4CSearchSummaryReportsViewModel filter = null)
         {
             Ck4CGetSummaryReportByParamInput input;
             List<Ck4CSummaryReportDto> dbData;
+            List<Ck4CSummaryReportsItem> retData = new List<Ck4CSummaryReportsItem>();
             if (filter == null)
             {
                 //Get All
                 input = new Ck4CGetSummaryReportByParamInput();
 
                 dbData = _ck4CBll.GetSummaryReportsByParam(input);
-                return Mapper.Map<List<Ck4CSummaryReportsItem>>(dbData);
+                retData =  Mapper.Map<List<Ck4CSummaryReportsItem>>(dbData);
+                //foreach (var item in retData)
+                //{
+                //    item.ProductionDate = addBreaktoList(item.ProductionDate);
+                //    item.FaCode = addBreaktoList(item.FaCode);
+                //    item.TobaccoProductType = addBreaktoList(item.TobaccoProductType);
+                //    item.BrandDescription = addBreaktoList(item.BrandDescription);
+                //    item.Hje = addBreaktoList(item.Hje);
+                //    item.Tariff = addBreaktoList(item.Tariff);
+                //    item.Content = addBreaktoList(item.Content);
+                //    item.PackedQty = addBreaktoList(item.PackedQty);
+                //    item.PackedQtyInPack = addBreaktoList(item.PackedQtyInPack);
+                //    item.UnPackQty = addBreaktoList(item.UnPackQty);
+                //    item.ProducedQty = addBreaktoList(item.ProducedQty);
+                //    item.UomProducedQty = addBreaktoList(item.UomProducedQty);
+                //    item.Remarks = addBreaktoList(item.Remarks);
+                //    item.Zb = addBreaktoList(item.Zb);
+                //    item.PackedAdjusted = addBreaktoList(item.PackedAdjusted);
+
+                //}
+
+                return retData;
             }
 
             //getbyparams
@@ -1784,7 +1818,28 @@ namespace Sampoerna.EMS.Website.Controllers
             input.ListUserPlant = CurrentUser.ListUserPlants;
 
             dbData = _ck4CBll.GetSummaryReportsByParam(input);
-            return Mapper.Map<List<Ck4CSummaryReportsItem>>(dbData);
+            retData = Mapper.Map<List<Ck4CSummaryReportsItem>>(dbData);
+            //foreach (var item in retData)
+            //{
+            //    item.ProductionDate = addBreaktoList(item.ProductionDate);
+            //    item.FaCode = addBreaktoList(item.FaCode);
+            //    item.TobaccoProductType = addBreaktoList(item.TobaccoProductType);
+            //    item.BrandDescription = addBreaktoList(item.BrandDescription);
+            //    item.Hje = addBreaktoList(item.Hje);
+            //    item.Tariff = addBreaktoList(item.Tariff);
+            //    item.Content = addBreaktoList(item.Content);
+            //    item.PackedQty = addBreaktoList(item.PackedQty);
+            //    item.PackedQtyInPack = addBreaktoList(item.PackedQtyInPack);
+            //    item.UnPackQty = addBreaktoList(item.UnPackQty);
+            //    item.ProducedQty = addBreaktoList(item.ProducedQty);
+            //    item.UomProducedQty = addBreaktoList(item.UomProducedQty);
+            //    item.Remarks = addBreaktoList(item.Remarks);
+            //    item.Zb = addBreaktoList(item.Zb);
+            //    item.PackedAdjusted = addBreaktoList(item.PackedAdjusted);
+
+            //}
+
+            return retData;
         }
 
         public ActionResult SummaryReports()
@@ -1814,10 +1869,105 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public PartialViewResult SearchSummaryReports(Ck4CSummaryReportsViewModel model)
         {
-            model.DetailsList = SearchDataSummaryReports(model.SearchView);
+            var data = SearchDataSummaryReports(model.SearchView);;
+            
+            model.TotalData = data.Count;
+            if (model.TotalDataPerPage > 0)
+            {
+                data = data.Skip(model.TotalDataPerPage * model.CurrentPage).Take(model.TotalDataPerPage).ToList();
+            }
+            
+            model.DetailsList = data;
             return PartialView("_Ck4CListSummaryReport", model);
 
 
+        }
+
+        [HttpPost]
+        public JsonResult SearchSummaryReportsAjax(DTParameters<Ck4CSummaryReportsViewModel> param)
+        {
+            var model = param.ExtraFilter;
+
+            var data = model != null ? SearchDataSummaryReports(model.SearchView) : SearchDataSummaryReports();
+            DTResult<Ck4CSummaryReportsItem> result = new DTResult<Ck4CSummaryReportsItem>();
+            result.draw = param.Draw;
+            result.recordsFiltered = data.Count;
+            result.recordsTotal = data.Count;
+            //param.TotalData = data.Count;
+            //if (param != null && param.Start > 0)
+            //{
+            IEnumerable<Ck4CSummaryReportsItem> dataordered;
+            dataordered = data;
+            if (param.Order.Length > 0)
+            {
+                foreach (var ordr in param.Order)
+                {
+                    if (ordr.Column == 0)
+                    {
+                        continue;
+                    }
+                    dataordered = SummaryReportsDataOrder(SummaryReportsOrderByIndex(ordr.Column), ordr.Dir, dataordered);
+                }
+            }
+            data = dataordered.ToList();
+            data = data.Skip(param.Start).Take(param.Length).ToList();
+
+            //}
+            result.data = data;
+
+            return Json(result);
+
+        }
+
+        private string SummaryReportsOrderByIndex(int index)
+        {
+            Dictionary<int, string> columnDict = new Dictionary<int, string>();
+            columnDict.Add(1, "Ck4CNo");
+            columnDict.Add(2, "CeOffice");
+            columnDict.Add(3, "BasedOn");
+            columnDict.Add(4, "PlantId");
+            columnDict.Add(5, "PlantDescription");
+            columnDict.Add(6, "LicenseNumber");
+            columnDict.Add(7, "Kppbc");
+            columnDict.Add(8, "ReportPeriod");
+            columnDict.Add(9, "Period");
+            columnDict.Add(10, "Month");
+            columnDict.Add(11, "Year");
+            columnDict.Add(12, "PoaApproved");
+            columnDict.Add(13, "ManagerApproved");
+            columnDict.Add(14, "Status");
+            columnDict.Add(15, "CompletedDate");
+            columnDict.Add(16, "Creator");
+            
+
+
+            return columnDict[index];
+        }
+
+        private IEnumerable<Ck4CSummaryReportsItem> SummaryReportsDataOrder(string column, DTOrderDir dir, IEnumerable<Ck4CSummaryReportsItem> data)
+        {
+
+            switch (column)
+            {
+                case "Ck4CNo": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.Ck4CNo).ToList() : data.OrderByDescending(x => x.Ck4CNo).ToList();
+                case "CeOffice": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.CeOffice).ToList() : data.OrderByDescending(x => x.CeOffice).ToList();
+                case "BasedOn": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.BasedOn).ToList() : data.OrderByDescending(x => x.BasedOn).ToList();
+                case "PlantId": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.PlantId).ToList() : data.OrderByDescending(x => x.PlantId).ToList();
+                case "PlantDescription": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.PlantDescription).ToList() : data.OrderByDescending(x => x.PlantDescription).ToList();
+                case "LicenseNumber": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.LicenseNumber).ToList() : data.OrderByDescending(x => x.LicenseNumber).ToList();
+                case "Kppbc": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.Kppbc).ToList() : data.OrderByDescending(x => x.Kppbc).ToList();
+                case "ReportPeriod": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.ReportPeriod).ToList() : data.OrderByDescending(x => x.ReportPeriod).ToList();
+                case "Period": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.Period).ToList() : data.OrderByDescending(x => x.Period).ToList();
+                case "Month": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.Month).ToList() : data.OrderByDescending(x => x.Month).ToList();
+                case "Year": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.Year).ToList() : data.OrderByDescending(x => x.Year).ToList();
+                case "PoaApproved": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.PoaApproved).ToList() : data.OrderByDescending(x => x.PoaApproved).ToList();
+                case "ManagerApproved": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.ManagerApproved).ToList() : data.OrderByDescending(x => x.ManagerApproved).ToList();
+                case "Status": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.Status).ToList() : data.OrderByDescending(x => x.Status).ToList();
+                case "CompletedDate": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.CompletedDate).ToList() : data.OrderByDescending(x => x.CompletedDate).ToList();
+                case "Creator": return dir == DTOrderDir.ASC ? data.OrderBy(x => x.Creator).ToList() : data.OrderByDescending(x => x.Creator).ToList();
+
+            }
+            return null;
         }
 
         public void ExportXlsSummaryReports(Ck4CSummaryReportsViewModel model)
