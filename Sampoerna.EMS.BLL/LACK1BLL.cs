@@ -5622,6 +5622,9 @@ namespace Sampoerna.EMS.BLL
 
         public List<Lack1DetailTisDto> GetDetailTisByParam(Lack1GetDetailTisByParamInput input)
         {
+            if (input.DateFrom == null) input.DateFrom = DateTime.Now;
+            if (input.DateTo == null) input.DateTo = DateTime.Now;
+
             var ck5Input = Mapper.Map<Ck5GetForLack1DetailTis>(input);
 
             var ck5Data = _ck5Service.GetCk5ForLack1DetailTis(ck5Input);
