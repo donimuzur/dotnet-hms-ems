@@ -43,6 +43,7 @@ namespace Sampoerna.EMS.BLL
         private IWasteBLL _wasteBll;
         private IProductionBLL _prodBll;
         private ILFA1BLL _lfaBll;
+        private IBrandRegistrationBLL _brandBll;
         
         //services
         private ICK4CItemService _ck4cItemService;
@@ -91,6 +92,7 @@ namespace Sampoerna.EMS.BLL
             _wasteBll = new WasteBLL(_logger, _uow);
             _prodBll = new ProductionBLL(_logger, _uow);
             _lfaBll = new LFA1BLL(_uow, _logger);
+            _brandBll = new BrandRegistrationBLL(_uow, _logger);
 
             _ck4cItemService = new CK4CItemService(_uow, _logger);
             _ck5Service = new CK5Service(_uow, _logger);
@@ -3762,7 +3764,11 @@ namespace Sampoerna.EMS.BLL
         {
             var ck5Input = Mapper.Map<Ck5GetForLack1ByParamInput>(input);
             var nppbckData = _nppbkcService.GetById(input.NppbkcId);
-            ck5Input.IsExcludeSameNppbkcId = !(nppbckData.FLAG_FOR_LACK1.HasValue && nppbckData.FLAG_FOR_LACK1.Value);
+            ck5Input.IsExcludeSameNppbkcId = false;
+            if (nppbckData != null)
+            {
+                ck5Input.IsExcludeSameNppbkcId = !(nppbckData.FLAG_FOR_LACK1.HasValue && nppbckData.FLAG_FOR_LACK1.Value);
+            }
 
             //pbck-1 decree id list
             ck5Input.Pbck1DecreeIdList = rc.Pbck1List.Select(d => d.Pbck1Id).ToList();
@@ -3819,7 +3825,11 @@ namespace Sampoerna.EMS.BLL
         {
             var ck5Input = Mapper.Map<Ck5GetForLack1ByParamInput>(input);
             var nppbckData = _nppbkcService.GetById(input.NppbkcId);
-            ck5Input.IsExcludeSameNppbkcId = !(nppbckData.FLAG_FOR_LACK1.HasValue && nppbckData.FLAG_FOR_LACK1.Value);
+            ck5Input.IsExcludeSameNppbkcId = false;
+            if (nppbckData != null)
+            {
+                ck5Input.IsExcludeSameNppbkcId = !(nppbckData.FLAG_FOR_LACK1.HasValue && nppbckData.FLAG_FOR_LACK1.Value);
+            }
 
             //pbck-1 decree id list
             ck5Input.Pbck1DecreeIdList = rc.Pbck1List.Select(d => d.Pbck1Id).ToList();
@@ -5362,6 +5372,10 @@ namespace Sampoerna.EMS.BLL
 
         public List<Lack1ReconciliationDto> GetReconciliationByParam(Lack1GetReconciliationByParamInput input)
         {
+            var listBrand = _brandBll.GetAllBrandsOnly();
+            var listCk4cItem = _ck4cItemService.GetAllCk4cItem();
+            var listWaste = _wasteBll.GetAllWasteObject();
+
             var reconciliationList = new List<Lack1ReconciliationDto>();
 
             var dbData = from p in _lack1Service.GetReconciliationByParamInput(input)
@@ -5372,11 +5386,17 @@ namespace Sampoerna.EMS.BLL
                              Year = p.PERIOD_YEAR.Value,
                              Month = p.MONTH.MONTH_NAME_ENG,
                              Date = p.SUBMISSION_DATE.Value.Day.ToString(),
-                             ItemCode = string.Join(Environment.NewLine, _brandRegService.GetByPlantAndFaCode(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), _ck4cItemService.GetByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Select(c => c.FA_CODE).Distinct().ToList()).Select(b => b.STICKER_CODE).Distinct()),
-                             FinishGoodCode = string.Join(Environment.NewLine, _ck4cItemService.GetByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Select(c => c.FA_CODE).Distinct()),
+                             ItemCode = string.Join(Environment.NewLine, listBrand.Where(b => p.LACK1_PLANT.Select(x => x.PLANT_ID).Contains(b.WERKS) &&
+                                 listCk4cItem.Where(c => p.LACK1_PLANT.Select(x => x.PLANT_ID).Contains(c.WERKS) && 
+                                     c.CK4C.REPORTED_MONTH == p.PERIOD_MONTH.Value &&
+                                     c.CK4C.REPORTED_YEAR == p.PERIOD_YEAR.Value).Select(c => c.FA_CODE).Distinct().Contains(b.FA_CODE)).Select(b => b.STICKER_CODE).Distinct()),
+                             FinishGoodCode = string.Join(Environment.NewLine, listCk4cItem.Where(c => p.LACK1_PLANT.Select(x => x.PLANT_ID).Contains(c.WERKS) &&
+                                     c.CK4C.REPORTED_MONTH == p.PERIOD_MONTH.Value &&
+                                     c.CK4C.REPORTED_YEAR == p.PERIOD_YEAR.Value).Select(c => c.FA_CODE).Distinct()),
                              Remaining = p.LACK1_PBCK1_MAPPING.Sum(x => x.PBCK1.REMAINING_QUOTA.HasValue ? x.PBCK1.REMAINING_QUOTA.Value : 0),
                              BeginningStock = p.BEGINING_BALANCE,
-                             ReceivedCk5No = string.Join(Environment.NewLine, p.LACK1_INCOME_DETAIL.Where(x => x.CK5.CK5_TYPE != Enums.CK5Type.Waste && x.CK5.CK5_TYPE != Enums.CK5Type.Return).Select(x => x.CK5.SUBMISSION_NUMBER).Distinct()),
+                             ReceivedCk5No = string.Join(Environment.NewLine, p.LACK1_INCOME_DETAIL.Where(x => x.CK5.CK5_TYPE != Enums.CK5Type.Waste && 
+                                 x.CK5.CK5_TYPE != Enums.CK5Type.Return).Select(x => x.CK5.SUBMISSION_NUMBER).Distinct()),
                              Received = p.TOTAL_INCOME,
                              UsageOther = p.USAGE + (p.USAGE_TISTOTIS.HasValue ? p.USAGE_TISTOTIS.Value : 0),
                              UsageSelf = p.LACK1_TRACKING.Sum(x => x.INVENTORY_MOVEMENT.QTY.Value) > (p.USAGE + (p.USAGE_TISTOTIS.HasValue ? p.USAGE_TISTOTIS.Value : 0)) ?
@@ -5386,30 +5406,43 @@ namespace Sampoerna.EMS.BLL
                              ResultStick = p.LACK1_PRODUCTION_DETAIL.Where(x => x.UOM_ID.ToLower() == "btg").Sum(x => x.AMOUNT),
                              EndingStock = p.BEGINING_BALANCE + p.TOTAL_INCOME - p.USAGE - (p.RETURN_QTY.HasValue ? p.RETURN_QTY.Value : 0),
                              RemarkDesc = p.DOCUMENT_NOTED != null ? p.DOCUMENT_NOTED.Replace("<br />", Environment.NewLine) : string.Empty,
-                             RemarkCk5No = string.Join(Environment.NewLine, p.LACK1_INCOME_DETAIL.Where(x => x.CK5.CK5_TYPE == Enums.CK5Type.Waste || x.CK5.CK5_TYPE == Enums.CK5Type.Return).Select(x => x.CK5.SUBMISSION_NUMBER).Distinct()),
+                             RemarkCk5No = string.Join(Environment.NewLine, p.LACK1_INCOME_DETAIL.Where(x => x.CK5.CK5_TYPE == Enums.CK5Type.Waste || 
+                                 x.CK5.CK5_TYPE == Enums.CK5Type.Return).Select(x => x.CK5.SUBMISSION_NUMBER).Distinct()),
                              RemarkQty = (p.RETURN_QTY.HasValue ? p.RETURN_QTY.Value : 0) + (p.WASTE_QTY.HasValue ? p.WASTE_QTY.Value : 0),
-                             StickProd = _ck4cItemService.GetByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Sum(c => c.PROD_QTY),
-                             PackProd = _ck4cItemService.GetByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Sum(c => c.PACKED_QTY.HasValue ? c.PACKED_QTY.Value : 0),
-                             Wip = _ck4cItemService.GetByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Sum(c => c.UNPACKED_QTY.HasValue ? c.UNPACKED_QTY.Value : 0),
-                             RejectMaker = _wasteBll.GetAllByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Sum(c => c.MarkerRejectStickQty.HasValue ? c.MarkerRejectStickQty.Value : 0),
-                             RejectPacker = _wasteBll.GetAllByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Sum(c => c.PackerRejectStickQty.HasValue ? c.PackerRejectStickQty.Value : 0),
-                             FloorSweep = _wasteBll.GetAllByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Sum(c => c.FloorWasteGramQty.HasValue ? c.FloorWasteGramQty.Value : 0),
-                             Stem = _wasteBll.GetAllByPlant(p.LACK1_PLANT.Select(x => x.PLANT_ID).ToList(), p.PERIOD_MONTH.Value, p.PERIOD_YEAR.Value).Sum(c => c.StampWasteQty.HasValue ? c.StampWasteQty.Value : 0)
+                             StickProd = listCk4cItem.Where(c => p.LACK1_PLANT.Select(x => x.PLANT_ID).Contains(c.WERKS) &&
+                                     c.CK4C.REPORTED_MONTH == p.PERIOD_MONTH.Value &&
+                                     c.CK4C.REPORTED_YEAR == p.PERIOD_YEAR.Value).Sum(c => c.PROD_QTY),
+                             PackProd = listCk4cItem.Where(c => p.LACK1_PLANT.Select(x => x.PLANT_ID).Contains(c.WERKS) &&
+                                     c.CK4C.REPORTED_MONTH == p.PERIOD_MONTH.Value &&
+                                     c.CK4C.REPORTED_YEAR == p.PERIOD_YEAR.Value).Sum(c => c.PACKED_QTY.HasValue ? c.PACKED_QTY.Value : 0),
+                             Wip = listCk4cItem.Where(c => p.LACK1_PLANT.Select(x => x.PLANT_ID).Contains(c.WERKS) &&
+                                     c.CK4C.REPORTED_MONTH == p.PERIOD_MONTH.Value &&
+                                     c.CK4C.REPORTED_YEAR == p.PERIOD_YEAR.Value).Sum(c => c.UNPACKED_QTY.HasValue ? c.UNPACKED_QTY.Value : 0),
+                             RejectMaker = listWaste.Where(c => p.LACK1_PLANT.Select(x => x.PLANT_ID).Contains(c.WERKS) &&
+                                 c.WASTE_PROD_DATE.Month == p.PERIOD_MONTH.Value &&
+                                 c.WASTE_PROD_DATE.Year == p.PERIOD_YEAR.Value).Sum(c => c.MARKER_REJECT_STICK_QTY.HasValue ? c.MARKER_REJECT_STICK_QTY.Value : 0),
+                             RejectPacker = listWaste.Where(c => p.LACK1_PLANT.Select(x => x.PLANT_ID).Contains(c.WERKS) &&
+                                 c.WASTE_PROD_DATE.Month == p.PERIOD_MONTH.Value &&
+                                 c.WASTE_PROD_DATE.Year == p.PERIOD_YEAR.Value).Sum(c => c.PACKER_REJECT_STICK_QTY.HasValue ? c.PACKER_REJECT_STICK_QTY.Value : 0),
+                             FloorSweep = listWaste.Where(c => p.LACK1_PLANT.Select(x => x.PLANT_ID).Contains(c.WERKS) &&
+                                 c.WASTE_PROD_DATE.Month == p.PERIOD_MONTH.Value &&
+                                 c.WASTE_PROD_DATE.Year == p.PERIOD_YEAR.Value).Sum(c => c.FLOOR_WASTE_GRAM_QTY.HasValue ? c.FLOOR_WASTE_GRAM_QTY.Value : 0),
+                             Stem = listWaste.Where(c => p.LACK1_PLANT.Select(x => x.PLANT_ID).Contains(c.WERKS) &&
+                                 c.WASTE_PROD_DATE.Month == p.PERIOD_MONTH.Value &&
+                                 c.WASTE_PROD_DATE.Year == p.PERIOD_YEAR.Value).Sum(c => c.STAMP_WASTE_QTY.HasValue ? c.STAMP_WASTE_QTY.Value : 0)
                          };
 
-            foreach (var item in dbData)
-            {
-                reconciliationList.Add(item);
-            }
+            reconciliationList = dbData.ToList();
 
-            reconciliationList = GetUnReconciliation(reconciliationList, input);
+            reconciliationList = GetUnReconciliation(reconciliationList, input, listBrand, listCk4cItem, listWaste);
 
             reconciliationList = reconciliationList.OrderBy(x => x.MonthNumber).OrderBy(x => x.Year).ToList();
 
             return reconciliationList;
         }
 
-        private List<Lack1ReconciliationDto> GetUnReconciliation(List<Lack1ReconciliationDto> list, Lack1GetReconciliationByParamInput input)
+        private List<Lack1ReconciliationDto> GetUnReconciliation(List<Lack1ReconciliationDto> list, Lack1GetReconciliationByParamInput input,
+            List<ZAIDM_EX_BRAND> listBrand, List<CK4C_ITEM> listCk4cItem, List<WASTE> listWaste)
         {
             var monthList = from m in _ck5Service.GetReconciliationLack1()
                             select new Lack1MonthReconciliation()
@@ -5472,9 +5505,13 @@ namespace Sampoerna.EMS.BLL
                 var plantList = ck5ListPlant.Select(x => x.DEST_PLANT_ID).Distinct();
                 var supPlantList = ck5List.Select(x => x.SOURCE_PLANT_ID).Distinct();
                 var brandList = brandItem;
-                var stickerList = _brandRegService.GetByPlantAndFaCode(plantList.ToList(), brandList.FirstOrDefault()).Select(b => b.STICKER_CODE).Distinct();
-                var ck4cList = _ck4cItemService.GetByPlant(plantList.ToList(), data.MonthNumber, data.Year);
-                var wasteList = _wasteBll.GetAllByPlant(plantList.ToList(), data.MonthNumber, data.Year);
+                var stickerList = listBrand.Where(b => plantList.Contains(b.WERKS) && brandList.FirstOrDefault().Contains(b.FA_CODE)).Select(b => b.STICKER_CODE).Distinct();
+                var ck4cList = listCk4cItem.Where(c => plantList.Contains(c.WERKS) &&
+                                     c.CK4C.REPORTED_MONTH == data.MonthNumber &&
+                                     c.CK4C.REPORTED_YEAR == data.Year);
+                var wasteList = listWaste.Where(c => plantList.Contains(c.WERKS) &&
+                                 c.WASTE_PROD_DATE.Month == data.MonthNumber &&
+                                 c.WASTE_PROD_DATE.Year == data.Year);
                 var wasteQty = ck5List.Where(x => x.CK5_TYPE == Enums.CK5Type.Waste).Sum(x => x.GRAND_TOTAL_EX.HasValue ? x.GRAND_TOTAL_EX.Value : 0);
                 var returnQty = ck5List.Where(x => x.CK5_TYPE == Enums.CK5Type.Return).Sum(x => x.GRAND_TOTAL_EX.HasValue ? x.GRAND_TOTAL_EX.Value : 0);
                 var beginningBalance = Convert.ToDecimal(0);
@@ -5553,10 +5590,10 @@ namespace Sampoerna.EMS.BLL
                 data.StickProd = ck4cList.Sum(c => c.PROD_QTY);
                 data.PackProd = ck4cList.Sum(c => c.PACKED_QTY.HasValue ? c.PACKED_QTY.Value : 0);
                 data.Wip = ck4cList.Sum(c => c.UNPACKED_QTY.HasValue ? c.UNPACKED_QTY.Value : 0);
-                data.RejectMaker = wasteList.Sum(c => c.MarkerRejectStickQty.HasValue ? c.MarkerRejectStickQty.Value : 0);
-                data.RejectPacker = wasteList.Sum(c => c.PackerRejectStickQty.HasValue ? c.PackerRejectStickQty.Value : 0);
-                data.FloorSweep = wasteList.Sum(c => c.FloorWasteGramQty.HasValue ? c.FloorWasteGramQty.Value : 0);
-                data.Stem = wasteList.Sum(c => c.StampWasteQty.HasValue ? c.StampWasteQty.Value : 0);
+                data.RejectMaker = wasteList.Sum(c => c.MARKER_REJECT_STICK_QTY.HasValue ? c.MARKER_REJECT_STICK_QTY.Value : 0);
+                data.RejectPacker = wasteList.Sum(c => c.PACKER_REJECT_STICK_QTY.HasValue ? c.PACKER_REJECT_STICK_QTY.Value : 0);
+                data.FloorSweep = wasteList.Sum(c => c.FLOOR_WASTE_GRAM_QTY.HasValue ? c.FLOOR_WASTE_GRAM_QTY.Value : 0);
+                data.Stem = wasteList.Sum(c => c.STAMP_WASTE_QTY.HasValue ? c.STAMP_WASTE_QTY.Value : 0);
 
                 list.Add(data);
             }
@@ -5614,6 +5651,9 @@ namespace Sampoerna.EMS.BLL
 
         public List<Lack1DetailTisDto> GetDetailTisByParam(Lack1GetDetailTisByParamInput input)
         {
+            if (input.DateFrom == null) input.DateFrom = DateTime.Now;
+            if (input.DateTo == null) input.DateTo = DateTime.Now;
+
             var ck5Input = Mapper.Map<Ck5GetForLack1DetailTis>(input);
 
             var ck5Data = _ck5Service.GetCk5ForLack1DetailTis(ck5Input);

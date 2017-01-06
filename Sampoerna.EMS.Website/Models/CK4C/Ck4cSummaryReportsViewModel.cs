@@ -17,6 +17,11 @@ namespace Sampoerna.EMS.Website.Models.CK4C
         public Ck4CSearchSummaryReportsViewModel SearchView { get; set; }
         public List<Ck4CSummaryReportsItem> DetailsList { get; set; }
         public Ck4CExportSummaryReportsViewModel ExportModel { get; set; }
+
+        public int TotalData { get; set; }
+        public int TotalDataPerPage { get; set; }
+
+        public int CurrentPage { get; set; }
     }
 
     public class Ck4CSearchSummaryReportsViewModel
