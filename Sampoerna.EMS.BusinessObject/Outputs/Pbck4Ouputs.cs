@@ -65,7 +65,8 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public string BlockedStockRemaining { get; set; }
         public decimal BlockedStockRemainingCount { get; set; }
 
-        public string PlantId { get; set; }
-        public string FaCode { get; set; }
+
+
+        public bool IsExist { get; set; }
     }
 }
