@@ -2016,7 +2016,12 @@ namespace Sampoerna.EMS.BLL
         public BlockedStockQuotaOutput GetBlockedStockQuota(string plant, string faCode)
         {
             var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(plant, faCode);
-            var dbBlock = _blockStockBll.GetBlockStockByPlantAndMaterialId(plant, dbBrand.STICKER_CODE);
+            var dbBlock = new List<BLOCK_STOCKDto>();
+            if (dbBrand != null)
+            {
+                dbBlock = _blockStockBll.GetBlockStockByPlantAndMaterialId(plant, dbBrand.STICKER_CODE);
+            }
+            
             decimal blockStock = dbBlock.Count == 0
                 ? 0
                 : dbBlock.Sum(blockStockDto => blockStockDto.BLOCKED.HasValue ? blockStockDto.BLOCKED.Value : 0);
