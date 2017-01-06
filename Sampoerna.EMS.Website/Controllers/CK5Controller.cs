@@ -701,7 +701,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
 
-            if (sourceNppbkcId == destNppbkcId || ck5Type == Enums.CK5Type.Manual)
+            if (sourceNppbkcId == destNppbkcId || ck5Type == Enums.CK5Type.Manual || ck5Type == Enums.CK5Type.Waste || ck5Type == Enums.CK5Type.MarketReturn)
             {
                 model.Pbck1Id = null;
                 model.Pbck1Number = null;

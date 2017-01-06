@@ -118,6 +118,11 @@ namespace Sampoerna.EMS.BLL.Services
 
             return _ck4CItemRepository.Get(queryFilterCk4C, null, "CK4C").ToList();
         }
+
+        public List<CK4C_ITEM> GetAllCk4cItem()
+        {
+            return _ck4CItemRepository.Get(null, null, "CK4C").ToList();
+        }
         
     }
 }
