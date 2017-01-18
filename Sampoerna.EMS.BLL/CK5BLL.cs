@@ -4309,6 +4309,21 @@ namespace Sampoerna.EMS.BLL
                 foreach (var material in result.ListMaterials)
                 {
                     var mat = _materialBll.GetByPlantIdAndStickerCode(material.PLANT_ID, material.BRAND);
+                    if (mat == null)
+                    {
+                        var brmat = _brandRegistration.GetByPlantIdAndFaCode(material.PLANT_ID, material.BRAND);
+                        if (brmat != null)
+                        {
+                            mat = new ZAIDM_EX_MATERIAL();
+                            mat.EXC_GOOD_TYP = brmat.EXC_GOOD_TYP;
+                        }
+                        else
+                        {
+                            continue;
+                            
+                        }
+
+                    }
                     if (mat.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau))
                     {
                         //UPDATE FOR PRINT OUT ONLY
