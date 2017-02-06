@@ -135,7 +135,7 @@ namespace Sampoerna.EMS.BLL
 
         public List<Ck4CDto> GetOpenDocument()
         {
-            var dtData = _repository.Get(x => x.STATUS != Enums.DocumentStatus.Completed, null, includeTables).ToList();
+            var dtData = _repository.Get(x => x.STATUS != Enums.DocumentStatus.Completed).ToList();
 
             return Mapper.Map<List<Ck4CDto>>(dtData);
         }
@@ -1030,7 +1030,7 @@ namespace Sampoerna.EMS.BLL
         
         public List<Ck4CDto> GetCompletedDocument()
         {
-            var dtData = _repository.Get(x => x.STATUS == Enums.DocumentStatus.Completed, null, includeTables).ToList();
+            var dtData = _repository.Get(x => x.STATUS == Enums.DocumentStatus.Completed).ToList();
 
             return Mapper.Map<List<Ck4CDto>>(dtData);
         }
