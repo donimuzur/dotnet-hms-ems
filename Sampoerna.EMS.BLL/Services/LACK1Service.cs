@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.BLL.Services
         private ILogger _logger;
         private IUnitOfWork _uow;
 
-        private string includeTables = "UOM, UOM1, MONTH";
+        private string includeTables = "UOM, MONTH";
 
         public LACK1Service(IUnitOfWork uow, ILogger logger)
         {

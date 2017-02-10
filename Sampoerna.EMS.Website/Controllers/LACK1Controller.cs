@@ -142,6 +142,8 @@ namespace Sampoerna.EMS.Website.Controllers
             input.IsOpenDocumentOnly = true;
             input.UserId = currUser.USER_ID;
             input.UserRole = currUser.UserRole;
+            input.ListNppbkc = currUser.ListUserNppbkc;
+            input.ListUserPlant = currUser.ListUserPlants;
 
             var dbData = _lack1Bll.GetAllByParam(input);
 
@@ -212,6 +214,8 @@ namespace Sampoerna.EMS.Website.Controllers
             inputPlant.IsOpenDocumentOnly = true;
             inputPlant.UserId = curUser.USER_ID;
             inputPlant.UserRole = curUser.UserRole;
+            inputPlant.ListNppbkc = curUser.ListUserNppbkc;
+            inputPlant.ListUserPlant = curUser.ListUserPlants;
 
             var dbDataPlant = _lack1Bll.GetAllByParam(inputPlant);
 
