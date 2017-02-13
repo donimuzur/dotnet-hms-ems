@@ -1298,3 +1298,16 @@ function OnFilter() {
     else
         $('#ajaxForm').submit();
 }
+
+
+function getExGroupTypeVal(exgrouptypeId) {
+    if (exgrouptypeId == "HasilTembakau") {
+        return 3;
+    } else if(exgrouptypeId == "EtilAlkohol") {
+        return 1;
+    }else if (exgrouptypeId == "MMEA") {
+        return 2;
+    } else {
+        return 4;
+    }
+}
