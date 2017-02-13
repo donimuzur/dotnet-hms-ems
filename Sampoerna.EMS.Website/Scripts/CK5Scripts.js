@@ -91,9 +91,9 @@ function OnReadyFunction(ck5Type) {
                 data += '<input name="UploadItemModels[' + i + '].MaterialDesc" type="hidden" value = "' + datarows[i][15] + '">';
                 data += '<input name="UploadItemModels[' + i + '].CK5_MATERIAL_ID" type="hidden" value = "' + datarows[i][18] + '">';
                 
-                total += parseFloat(datarows[i][16]); //Qty
+                total += parseFloat(datarows[i][6]); //Qty
                 if (i == 0) {
-                    $("#PackageUomName").val(datarows[i][17]);
+                    $("#PackageUomName").val(datarows[i][7]);
                 }
             }
             data += '</tr>';
