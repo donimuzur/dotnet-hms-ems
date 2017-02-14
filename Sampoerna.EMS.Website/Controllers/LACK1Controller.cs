@@ -589,6 +589,8 @@ namespace Sampoerna.EMS.Website.Controllers
             var inputPlant = Mapper.Map<Lack1GetByParamInput>(model);
             inputPlant.IsOpenDocumentOnly = false;
             inputPlant.UserRole = CurrentUser.UserRole;
+            inputPlant.ListNppbkc = CurrentUser.ListUserNppbkc;
+            inputPlant.ListUserPlant = CurrentUser.ListUserPlants;
 
             var dbDataPlant = _lack1Bll.GetCompletedDocumentByParam(inputPlant);
 
