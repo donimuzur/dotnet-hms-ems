@@ -4931,9 +4931,7 @@ namespace Sampoerna.EMS.BLL
                     }
                     else
                     {
-                        if (input.Ck5Dto.EX_GOODS_TYPE == Enums.ExGoodsType.HasilTembakau)
-                            dbData.PACKAGE_UOM_ID = "G";
-                        else
+                        if (input.Ck5Dto.EX_GOODS_TYPE == Enums.ExGoodsType.EtilAlcohol)
                             dbData.PACKAGE_UOM_ID = "L";
                     }
                 }
