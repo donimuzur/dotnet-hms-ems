@@ -20,6 +20,11 @@ namespace Sampoerna.EMS.Website.Models.LACK1
 
     public class Lack1SearchDetailEaViewModel
     {
+        public Lack1SearchDetailEaViewModel()
+        {
+            DateFrom = DateTime.Now;
+            DateTo = DateTime.Now;
+        }
         public DateTime? DateFrom { get; set; }
         public DateTime? DateTo { get; set; }
         public string PlantReceiverFrom { get; set; }
