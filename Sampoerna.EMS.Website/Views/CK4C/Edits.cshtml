@@ -145,10 +145,10 @@
         $('#btnPrintPreview').click(function (e) {
             var activeTab = $('li.active a').html();
 
-            if (activeTab == 'Information') {
-                printPreview('@Url.EncryptedAction("PrintPreview", "CK4C", new { id = @Model.Details.Ck4CId })');
-            } else {
+            if (activeTab == 'Old Information') {
                 printPreview('@Url.EncryptedAction("PrintPreviewOld", "CK4C", new { id = @Model.Details.Ck4CId })');
+            } else {
+                printPreview('@Url.EncryptedAction("PrintPreview", "CK4C", new { id = @Model.Details.Ck4CId })');
             }
 
         });
