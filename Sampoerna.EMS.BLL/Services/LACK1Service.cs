@@ -20,7 +20,7 @@ namespace Sampoerna.EMS.BLL.Services
         private ILogger _logger;
         private IUnitOfWork _uow;
 
-        private string includeTables = "UOM, UOM1, MONTH";
+        private string includeTables = "UOM, MONTH";
 
         public LACK1Service(IUnitOfWork uow, ILogger logger)
         {
@@ -460,6 +460,35 @@ namespace Sampoerna.EMS.BLL.Services
             if (!string.IsNullOrEmpty(input.Creator))
             {
                 queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
+
+            DateTime? dtFrom = null;
+            DateTime? dtTo = null;
+
+            if (input.PeriodMonthFrom.HasValue && input.PeriodYearFrom.HasValue)
+            {
+                dtFrom = new DateTime(input.PeriodYearFrom.Value, input.PeriodMonthFrom.Value, 1);
+            }
+            if (input.PeriodMonthTo.HasValue && input.PeriodYearTo.HasValue)
+            {
+                dtTo = new DateTime(input.PeriodYearTo.Value, input.PeriodMonthTo.Value, 1);
+            }
+
+            if (dtFrom.HasValue && dtTo.HasValue)
+            {
+                queryFilter = queryFilter.And(c => (c.PERIOD_MONTH.Value >= input.PeriodMonthFrom.Value && c.PERIOD_YEAR.Value >= input.PeriodYearFrom.Value) &&
+                    (c.PERIOD_MONTH.Value <= input.PeriodMonthTo.Value && c.PERIOD_YEAR.Value <= input.PeriodYearTo.Value));
+            }
+            else
+            {
+                if (dtFrom.HasValue)
+                {
+                    queryFilter = queryFilter.And(c => c.PERIOD_MONTH.Value >= input.PeriodMonthFrom.Value && c.PERIOD_YEAR.Value >= input.PeriodYearFrom.Value);
+                }
+                if (dtTo.HasValue)
+                {
+                    queryFilter = queryFilter.And(c => c.PERIOD_MONTH.Value <= input.PeriodMonthTo.Value && c.PERIOD_YEAR.Value <= input.PeriodYearTo.Value);
+                }
             }
 
             return _repository.Get(queryFilter, null, incTables).ToList();

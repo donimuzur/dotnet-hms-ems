@@ -1852,7 +1852,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     HtmlEncode = false
                 });
             }
-            if (model.ExportModel.Kppbc)
+            if (model.ExportModel.OriginalKppbc)
             {
                 grid.Columns.Add(new BoundField()
                 {
@@ -1876,7 +1876,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     HeaderText = "Supplier NPPBKC"
                 });
             }
-            if (model.ExportModel.OriginalKppbc)
+            if (model.ExportModel.Kppbc)
             {
                 grid.Columns.Add(new BoundField()
                 {

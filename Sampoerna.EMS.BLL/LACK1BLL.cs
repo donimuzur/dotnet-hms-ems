@@ -895,7 +895,8 @@ namespace Sampoerna.EMS.BLL
                 if (dbData.STATUS != Enums.DocumentStatus.Draft)
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-                if (dbData.CREATED_BY != input.UserId)
+                var isdelegated = _poaDelegationServices.IsDelegatedUserByUserAndDate(dbData.CREATED_BY, input.UserId, DateTime.Now);
+                if (dbData.CREATED_BY != input.UserId && !isdelegated)
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
                 //Add Changes
@@ -4581,34 +4582,6 @@ namespace Sampoerna.EMS.BLL
             var dbData = _lack1Service.GetDetailReportByParamInput(input);
 
             var tempData = Mapper.Map<List<Lack1DetailReportTempDto>>(dbData.ToList());
-
-            DateTime? dtFrom = null;
-            DateTime? dtTo = null;
-
-            if (input.PeriodMonthFrom.HasValue && input.PeriodYearFrom.HasValue)
-            {
-                dtFrom = new DateTime(input.PeriodYearFrom.Value, input.PeriodMonthFrom.Value, 1);
-            }
-            if (input.PeriodMonthTo.HasValue && input.PeriodYearTo.HasValue)
-            {
-                dtTo = new DateTime(input.PeriodYearTo.Value, input.PeriodMonthTo.Value, 1);
-            }
-
-            if (dtFrom.HasValue && dtTo.HasValue)
-            {
-                tempData = tempData.Where(c => c.PeriodDate >= dtFrom.Value && c.PeriodDate <= dtTo.Value).ToList();
-            }
-            else
-            {
-                if (dtFrom.HasValue)
-                {
-                    tempData = tempData.Where(c => c.PeriodDate >= dtFrom.Value).ToList();
-                }
-                if (dtTo.HasValue)
-                {
-                    tempData = tempData.Where(c => c.PeriodDate <= dtTo.Value).ToList();
-                }
-            }
 
             var rc = new List<Lack1DetailReportDto>();
             var uomData = _uomBll.GetAll();

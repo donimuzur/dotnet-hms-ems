@@ -2028,22 +2028,22 @@ namespace Sampoerna.EMS.BLL
 
             //get from pbck4 
 
-            var dbPbck4 = _repository.Get(c => c.PLANT_ID == plant &&
-                        (c.STATUS != Enums.DocumentStatus.Cancelled 
-                        && c.STATUS != Enums.DocumentStatus.Completed
-                        && c.STATUS != Enums.DocumentStatus.GovRejected), null, "PBCK4_ITEM");
+            //var dbPbck4 = _repository.Get(c => c.PLANT_ID == plant &&
+            //            (c.STATUS != Enums.DocumentStatus.Cancelled 
+            //            && c.STATUS != Enums.DocumentStatus.Completed
+            //            && c.STATUS != Enums.DocumentStatus.GovRejected), null, "PBCK4_ITEM");
 
-            decimal blockStockUsed =
-                dbPbck4.Sum(
-                    pbck4 =>
-                        pbck4.PBCK4_ITEM.Where(pbck4Item => pbck4Item.FA_CODE == faCode)
-                            .Sum(pbck4Item => pbck4Item.REQUESTED_QTY.HasValue ? pbck4Item.REQUESTED_QTY.Value : 0));
+            decimal blockStockUsed = 0;
+            //    dbPbck4.Sum(
+            //        pbck4 =>
+            //            pbck4.PBCK4_ITEM.Where(pbck4Item => pbck4Item.FA_CODE == faCode)
+            //                .Sum(pbck4Item => pbck4Item.REQUESTED_QTY.HasValue ? pbck4Item.REQUESTED_QTY.Value : 0));
             
             var result = new BlockedStockQuotaOutput();
             result.BlockedStock = blockStock.ToString();
             result.BlockedStockUsed = blockStockUsed.ToString();
-            result.BlockedStockRemaining = (blockStock - blockStockUsed).ToString();
-            result.BlockedStockRemainingCount = blockStock - blockStockUsed;
+            result.BlockedStockRemaining = blockStock.ToString();
+            result.BlockedStockRemainingCount = blockStock;
             result.IsExist = dbBlock.Count > 0;
 
             return result;

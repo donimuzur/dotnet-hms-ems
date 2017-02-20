@@ -592,7 +592,7 @@
                     sourcePlant = $("#DestPlantId").find("option:selected").val();
                 }
             }
-            var goodTypeGroupId = $("#GoodType").val();
+            var goodTypeGroupId = getExGroupTypeVal($("#GoodType").val());
             var convertedUom = $('#uploadConvertedUom').val();
 
             //materialInput.materialNumber = materialNumber;

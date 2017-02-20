@@ -4242,7 +4242,16 @@ namespace Sampoerna.EMS.BLL
 
                 result.ReportDetails.DestOfficeCode = dtData.DEST_PLANT_NPPBKC_ID;
                 if (!string.IsNullOrEmpty(dtData.DEST_PLANT_NPPBKC_ID) && dtData.DEST_PLANT_NPPBKC_ID.Length >= 4)
+                {
                     result.ReportDetails.DestOfficeCode = dtData.DEST_PLANT_NPPBKC_ID.Substring(0, 4) + "00";
+                    if (dtData.CK5_TYPE == Enums.CK5Type.PortToImporter)
+                    {
+                        result.ReportDetails.OfficeCode = result.ReportDetails.DestOfficeCode;
+                    }
+                }
+                    
+
+                
 
                 var dbNppbkcDest = _nppbkcBll.GetById(dtData.DEST_PLANT_NPPBKC_ID);
                 if (dbNppbkcDest != null)
@@ -4931,9 +4940,7 @@ namespace Sampoerna.EMS.BLL
                     }
                     else
                     {
-                        if (input.Ck5Dto.EX_GOODS_TYPE == Enums.ExGoodsType.HasilTembakau)
-                            dbData.PACKAGE_UOM_ID = "G";
-                        else
+                        if (input.Ck5Dto.EX_GOODS_TYPE == Enums.ExGoodsType.EtilAlcohol)
                             dbData.PACKAGE_UOM_ID = "L";
                     }
                 }
