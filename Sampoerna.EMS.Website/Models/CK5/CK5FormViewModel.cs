@@ -318,6 +318,8 @@ namespace Sampoerna.EMS.Website.Models.CK5
         //public bool FLAG_FOR_LACK1 { get; set; }
 
         public bool FLAG_NPPBKC_IMPORT { get; set; }
+        public bool FLAG_NPPBKC_IMPORT_DEST { get; set; }
+        
 
         public SelectList MatdocList { get; set; }
 

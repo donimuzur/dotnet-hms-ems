@@ -311,6 +311,7 @@
 
             $('#ck5TrialPbck1Reduce').hide();
             $('#idFlagNppbkc').hide();
+            $('#idFlagNppbkcDest').hide();
         });
 
         function OnChangeDestinationPlant() {
@@ -362,8 +363,8 @@
                         var sourcePlant = $("#SourcePlantId").find("option:selected").val();
                         var goodTypeGroupId = $("#GoodType").val();
                         var sourceNppbkcId = $("#SourceNppbkcId").val();
-
-                        ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodTypeGroupId: goodTypeGroupId, ck5Type: '@Model.Ck5Type' });
+                        var isnppbkcImport = $("input[name='FLAG_NPPBKC_IMPORT_DEST']").is(":checked");
+                        ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodTypeGroupId: goodTypeGroupId, ck5Type: '@Model.Ck5Type', isnppbkcImport: isnppbkcImport });
 
 
                     }
@@ -391,8 +392,8 @@
                 if (submissionDate == '')
                     submissionDate = '@DateTime.Now';
 
-
-                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodtypegroupid: goodTypeGroupId, ck5Type: '@Model.Ck5Type' });
+                var isnppbkcImport = $("input[name='FLAG_NPPBKC_IMPORT_DEST']").is(":checked");
+                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodtypegroupid: goodTypeGroupId, ck5Type: '@Model.Ck5Type', isnppbkcImport: isnppbkcImport });
 
             }
         });
@@ -416,8 +417,8 @@
                 if (submissionDate == '')
                     submissionDate = '@DateTime.Now';
 
-
-                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodtypegroupid: goodTypeGroupId, ck5Type: '@Model.Ck5Type' });
+                var isnppbkcImport = $("input[name='FLAG_NPPBKC_IMPORT_DEST']").is(":checked");
+                ajaxGetDestPlantDetails('@Url.Action("GetSourcePlantDetailsAndPbckItem", "CK5")', { sourcePlantId: sourcePlant, destPlantId: destPlant, sourceNppbkcId: sourceNppbkcId, submissionDate: submissionDate, goodtypegroupid: goodTypeGroupId, ck5Type: '@Model.Ck5Type', isnppbkcImport: isnppbkcImport });
 
             }
 
@@ -453,7 +454,8 @@
 
                     } else {
                         var isnppbkcImport = $("input[name='FLAG_NPPBKC_IMPORT']").is(":checked");
-                        ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant, ck5type: '@Model.Ck5Type', isNppbkcImport: isnppbkcImport });
+                        var isnppbkcImportDest = $("input[name='FLAG_NPPBKC_IMPORT_DEST']").is(":checked");
+                        ajaxGetPlantDetails('@Url.Action("GetSourcePlantDetails", "CK5")', { plantId: sourcePlant, ck5type: '@Model.Ck5Type', isNppbkcImport: isnppbkcImport, isNppbkcImportDest : isnppbkcImportDest });
                     }
                 }
             });
@@ -769,7 +771,10 @@
                     $('#ck5TrialPbck1Reduce').show();
 
                     $('#idFlagNppbkc').show();
+                    $('#idFlagNppbkcDest').show();
+                    
                     $('#FLAG_NPPBKC_IMPORT').prop('checked', false);
+                    $('#FLAG_NPPBKC_IMPORT_DEST').prop('checked', false);
 
                 } else {
                     $('#IsFreeTextSource').removeAttr("disabled");
@@ -779,7 +784,9 @@
                     $('#IsReducePbck1Ck5Trial').prop('checked', false);
 
                     $('#idFlagNppbkc').hide();
+                    $('#idFlagNppbkcDest').hide();
                     $('#FLAG_NPPBKC_IMPORT').prop('checked', false);
+                    $('#FLAG_NPPBKC_IMPORT_DEST').prop('checked', false);
 
                 }
 
@@ -888,6 +895,36 @@
                 }
             });
         }
+        
+        function GetPlantListByNppbkcImportDest(isNppbkcImport)
+        {
+            $("input[name='DestNpwp']").val('');
+            $("input[name='DestNppbkcId']").val('');
+            $("input[name='DestCompanyCode']").val('');
+            $("input[name='DestCompanyName']").val('');
+            $("*[name='DestAddress']").val('');
+            $("input[name='DestKppbcName']").val('');
+            $("input[name='DestPlantName']").val('');
+
+            var formData = { isNppbkcImport: isNppbkcImport };
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetListPlant", "CK5")',
+                data: formData,
+                success: function (data) {
+                    var listMaterial = $('#DestPlantId');
+                    listMaterial.empty();
+                    var list = '<option value>Select</option>';
+                    if (data != null) {
+                        for (var i = 0; i < data.length; i++) {
+
+                            list += "<option value='" + data[i].Value + "'>" + data[i].Text + "</option>";
+                        }
+                    }
+                    listMaterial.html(list);
+                }
+            });
+        }
 
         $("#FLAG_NPPBKC_IMPORT").on('change', function () {
 
@@ -897,6 +934,17 @@
             }
 
             GetPlantListByNppbkcImport(isNppbkcImport);
+
+        });
+        
+        $("#FLAG_NPPBKC_IMPORT_DEST").on('change', function () {
+
+            var isNppbkcImport = false;
+            if ($(this).is(':checked')) {
+                isNppbkcImport = true;
+            }
+
+            GetPlantListByNppbkcImportDest(isNppbkcImport);
 
         });
 
