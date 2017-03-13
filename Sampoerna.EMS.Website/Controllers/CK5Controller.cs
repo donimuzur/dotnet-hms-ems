@@ -880,6 +880,11 @@ namespace Sampoerna.EMS.Website.Controllers
                             }
                         }
 
+                        if (model.Ck5Type != Enums.CK5Type.Manual && model.Ck5Type != Enums.CK5Type.MarketReturn &&
+                            model.Ck5Type != Enums.CK5Type.DomesticAlcohol && model.Ck5Type != Enums.CK5Type.Waste)
+                        {
+                            _ck5Bll.CheckCk5ForXmlById(model.SourcePlantId, model.DestPlantId, model.Ck5Type, Mapper.Map<List<CK5MaterialDto>>(model.UploadItemModels));
+                        }
 
                         var saveResult = SaveCk5ToDatabase(model);
 
@@ -1390,6 +1395,12 @@ namespace Sampoerna.EMS.Website.Controllers
                                     model.Ck5TotalExciseable = currentCk5.ToString();
                                     model.RemainQuota = (output.QtyApprovedPbck1 - currentCk5).ToString();
                                 }
+                            }
+
+                            if (model.Ck5Type != Enums.CK5Type.Manual && model.Ck5Type != Enums.CK5Type.MarketReturn &&
+                            model.Ck5Type != Enums.CK5Type.DomesticAlcohol && model.Ck5Type != Enums.CK5Type.Waste)
+                            {
+                                _ck5Bll.GetCk5ForXmlById(model.Ck5Id);
                             }
 
                             var resultDto = SaveCk5ToDatabase(model);
