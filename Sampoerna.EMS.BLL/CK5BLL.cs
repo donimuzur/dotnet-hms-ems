@@ -5,8 +5,10 @@ using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
+using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
@@ -5067,6 +5069,113 @@ namespace Sampoerna.EMS.BLL
             //return listInsertedCk5;
             //return Mapper.Map<CK5Dto>(dbData);
 
+
+        }
+
+
+        public void CheckCk5ForXmlById(string sourcePlant, string destPlant, Enums.CK5Type ck5Type,
+            List<CK5MaterialDto> materialList)
+        
+        {
+            //includeTables = "ZAIDM_EX_GOODTYP,EX_SETTLEMENT,EX_STATUS,REQUEST_TYPE,PBCK1,CARRIAGE_METHOD,COUNTRY, UOM";
+            
+
+
+            var sourceplantDb = _plantBll.GetT001WById(sourcePlant);
+            var destplantDb = _plantBll.GetT001WById(destPlant);
+
+            var SOURCE_PLANT_ID = sourcePlant;
+            var DEST_PLANT_ID =destPlant;
+            var CK5_TYPE = ck5Type;
+
+            if (ck5Type == Enums.CK5Type.ImporterToPlant)
+            {
+                var plantMap = _virtualMappingBLL.GetByCompany(destplantDb.CompanyCode);
+
+                SOURCE_PLANT_ID = plantMap.IMPORT_PLANT_ID;
+            }
+            else if (ck5Type == Enums.CK5Type.Export)
+            {
+                var plantMap = _virtualMappingBLL.GetByCompany(sourceplantDb.CompanyCode);
+
+                DEST_PLANT_ID = plantMap.EXPORT_PLANT_ID;
+            }
+            else if (ck5Type == Enums.CK5Type.PortToImporter)
+            {
+                var plantMap = _virtualMappingBLL.GetByCompany(destplantDb.CompanyCode);
+
+                SOURCE_PLANT_ID = plantMap.IMPORT_PLANT_ID;
+                DEST_PLANT_ID = plantMap.IMPORT_PLANT_ID;
+            }
+            else if (ck5Type == Enums.CK5Type.Return)
+            {
+                CK5_TYPE = Enums.CK5Type.Intercompany;
+
+                if (sourceplantDb.CompanyCode == destplantDb.CompanyCode)
+                    CK5_TYPE = Enums.CK5Type.Domestic;
+            }
+
+            foreach (var ck5MaterialDto in materialList)
+            {
+                var material = _materialBll.getByID(ck5MaterialDto.BRAND, SOURCE_PLANT_ID);
+                if (material == null)
+                {
+
+                    throw new Exception(String.Format("Material {0} in {1} is not found in material master", ck5MaterialDto.BRAND, SOURCE_PLANT_ID));
+                }
+
+                material = _materialBll.getByID(ck5MaterialDto.BRAND, DEST_PLANT_ID);
+
+                if (material == null)
+                {
+
+                    throw new Exception(String.Format("Material {0} in {1} is not found in material master", ck5MaterialDto.BRAND, DEST_PLANT_ID));
+                }
+
+                if (ck5MaterialDto.CONVERTED_UOM == material.BASE_UOM_ID)
+                    continue;
+
+                var matUom = material.MATERIAL_UOM;
+
+                var isConvertionExist = matUom.Any(x => x.MEINH == ck5MaterialDto.CONVERTED_UOM);
+
+                if (isConvertionExist)
+                {
+                    //ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
+                    var dbMaterialConv = matUom.FirstOrDefault(x => x.MEINH == ck5MaterialDto.CONVERTED_UOM);
+                    if (dbMaterialConv != null)
+                    {
+                        var umren = dbMaterialConv.UMREN;
+                        if (umren != null)
+                            ck5MaterialDto.CONVERTED_QTY = ck5MaterialDto.CONVERTED_QTY * umren.Value;
+                        else
+                        {
+
+                            throw new Exception(
+                                String.Format("Conversion value for {0} in {1} to {2} is not found in material master",
+                                    material.STICKER_CODE, material.WERKS, ck5MaterialDto.CONVERTED_UOM_ID));
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception(
+                                String.Format("Conversion value for {0} in {1} to {2} is not found in material master",
+                                    material.STICKER_CODE, material.WERKS, ck5MaterialDto.CONVERTED_UOM_ID));
+                    }
+                    ck5MaterialDto.CONVERTED_UOM = material.BASE_UOM_ID;
+                }
+                else
+                {
+
+                    throw new Exception(String.Format("Material Conversion {0} in {1} is not found in material master", material.STICKER_CODE, material.WERKS));
+                }
+                // ck5MaterialDto.CONVERTED_UOM_ID
+            }
+
+            //create group by material by plant, material, converted uom , sum converted qty
+            //dataXmlDto.Ck5Material = CreateGroupByCk5MaterialForXml(dataXmlDto.Ck5Material);
+
+           
 
         }
 

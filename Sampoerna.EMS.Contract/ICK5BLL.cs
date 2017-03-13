@@ -52,6 +52,9 @@ namespace Sampoerna.EMS.Contract
 
        CK5XmlDto GetCk5ForXmlById(long id);
 
+       void CheckCk5ForXmlById(string sourcePlant, string destPlant, Enums.CK5Type ck5Type,
+           List<CK5MaterialDto> materialList);
+
        void GovApproveDocumentRollback(CK5WorkflowDocumentInput input);
 
        void CancelSTOCreatedRollback(CK5WorkflowDocumentInput input);
