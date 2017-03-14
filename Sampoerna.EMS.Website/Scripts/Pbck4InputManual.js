@@ -40,7 +40,7 @@ function ajaxGetListFaCode(url, formData, selectedValue) {
 
                 if (data != null) {
                     for (var i = 0; i < data.length; i++) {
-                        list += "<option value='" + data[i].FaCode + "'>" + data[i].FaCode + "</option>";
+                        list += "<option value='" + data[i].FaCode + " - " + data[i].StickerCode + "'>" + data[i].FaCode + " - " + data[i].StickerCode + "</option>";
                     }
 
                 }
@@ -326,13 +326,16 @@ function AddRowPbck4() {
             '<a href="#" onclick=" RemoveRow($(this)); "data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash-o"></i></a>' +
             '<a href="#" onclick=" EditRow($(this)); " data-toggle=" tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>' +
             '</td>';
-
+        
+        var tempFaCode = $('#uploadFaCode').val();
+        var faCode = tempFaCode.split(" - ")[0];
+        var stickerCode = tempFaCode.split(" - ")[1];
         $("#Ck5UploadTable tbody").append(
             "<tr>" +
                  classAction +
                  "<td style='display: none'>" + (rowCount) + "</td>" +
-                "<td>" + $('#uploadFaCode').val() + "</td>" +
-                "<td>" + $('#uploadStickerCode').val() + "</td>" +
+                "<td>" + faCode + "</td>" +
+                "<td>" + stickerCode + "</td>" +
                 "<td>" + $("#uploadCk1No option:selected").text() + "</td>" +
                 "<td>" + $('#uploadCk1Date').val() + "</td>" +
                  "<td>" + $('#uploadSeriesCode').val() + "</td>" +
@@ -380,9 +383,12 @@ function UpdateRowPbck4() {
         $('#Ck5UploadTable tr').each(function () {
 
             if ($(this).find('td').eq(1).text() == row) {
-
-                $(this).find('td').eq(2).text($('#uploadFaCode').val());
-                $(this).find('td').eq(3).text($('#uploadStickerCode').val());
+                var tempFaCode = $('#uploadFaCode').val();
+                var faCode = tempFaCode.split(" - ")[0];
+                var stickerCode = tempFaCode.split(" - ")[1];
+                
+                $(this).find('td').eq(2).text(faCode);
+                $(this).find('td').eq(3).text(stickerCode);
                 //$(this).find('td').eq(4).text($('#uploadCk1No').val());
                 $(this).find('td').eq(4).text($("#uploadCk1No option:selected").text());
                 
