@@ -631,13 +631,23 @@
         });
 
         function EditRow(o, url) {
-            //debugger;
+            debugger;
             var nRow = o.parents('tr');
-            var plant = nRow.find("td").eq(19).html();
+            var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+
+            if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
+                sourcePlant = $("#DestPlantId").find("option:selected").val();
+            } else if ('@Model.Ck5Type.ToString()' == '@Enums.CK5Type.Manual.ToString()') {
+                if ($('#IsFreeTextSource').is(':checked')) {
+                    sourcePlant = $("#DestPlantId").find("option:selected").val();
+                }
+            }
+            $("#uploadMaterialPlant").val(sourcePlant);
+            var plant = sourcePlant;
             var materialnumber = nRow.find("td").eq(2).html();
 
 
-            var goodTypeGroupId = $("#GoodType").val();
+            
             var goodTypeGroupId = $("#GoodType").val();
             if (goodTypeGroupId == "") {
                 $('#modalBodyMessage').text('Please fill the excisable good types for this CK-5 document');
@@ -678,7 +688,7 @@
             $('#uploadMaterialDesc').val(nRow.find("td").eq(15).html());
 
             //===Fixing Bug CK5 no. 110====
-            $('#uploadMaterialPlant').val(nRow.find("td").eq(19).html());
+            //$('#uploadMaterialPlant').val(nRow.find("td").eq(19).html());
             //=============================
 
             $('#uploadMaterialId').val(nRow.find("td").eq(18).html());

@@ -253,6 +253,19 @@
                                         </div>
                                     </div>
                                 </div>
+                                if (Model.IsCk5Manual && Model.Ck5ManualType == Enums.Ck5ManualType.Trial)
+                                {
+                                    <div class="row" id="idFlagNppbkcDest">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-md-4">NPPBKC Import</label>
+                                                <div class="col-md-8">
+                                                    @Html.CheckBoxFor(model => model.FLAG_NPPBKC_IMPORT_DEST, new { @disabled = "disabled" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
                             }
                         </div>
                     </div>
