@@ -40,6 +40,12 @@ namespace Sampoerna.EMS.BLL.Services
             return dbData;
         }
 
+        public ZAIDM_EX_BRAND GetByPlantIdAndFaCodeStickerCode(string plantId, string faCode,string stickerCode)
+        {
+            var dbData = _repository.Get(b => b.WERKS == plantId && b.FA_CODE == faCode && b.STICKER_CODE == stickerCode, null, "ZAIDM_EX_PRODTYP, ZAIDM_EX_SERIES").FirstOrDefault();
+            return dbData;
+        }
+
         public List<ZAIDM_EX_BRAND> GetBrandByPlant(string plant)
         {
             var dbData = _repository.Get(c => c.WERKS == plant);

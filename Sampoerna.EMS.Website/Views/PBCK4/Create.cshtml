@@ -340,10 +340,11 @@
       
       $("#uploadFaCode").change(function () {
           if ($("#uploadFaCode").length) {
-              var faCode = $(this).find("option:selected").val();
-              
+              var tempFaCode = $(this).find("option:selected").val();
+              var faCode = tempFaCode.split(" - ")[0];
+              var stickerCode = tempFaCode.split(" - ")[1];
             
-              if (faCode == '') {
+              if (tempFaCode == '' || faCode == '') {
                   $("#uploadStickerCode").val('');
                   $("#uploadSeriesCode").val('');
                   $("#uploadBrandName").val('');
@@ -361,7 +362,7 @@
                 
               } else {
                   var nppbkcId = $("#uploadNppbkc").val();
-                  ajaxGetBrandItems('@Url.Action("GetBrandItems", "PBCK4")', { faCode: faCode, nppbkcId: nppbkcId });
+                  ajaxGetBrandItems('@Url.Action("GetBrandItems", "PBCK4")', { faCode: faCode, nppbkcId: nppbkcId,stickerCode : stickerCode });
               }
           }
       });
