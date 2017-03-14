@@ -1951,18 +1951,19 @@ namespace Sampoerna.EMS.BLL
 
             foreach (var plantId in plantListNppbkc)
             {
-                var dbBrand = _brandRegistrationServices.GetBrandByPlant(plantId)
-                    .Where(x=> !x.BRAND_CE.ToLower().Contains("laboratorium")).ToList();
+                var dbBrand = _brandRegistrationServices.GetBrandByPlant(plantId).ToList();
+                    //.Where(x=> !x.BRAND_CE.ToLower().Contains("laboratorium")).ToList();
                 foreach (var zaidmExBrand in dbBrand)
                 {
                     var itemCheck = (zaidmExBrand.FA_CODE.Trim() + zaidmExBrand.WERKS.Trim() +
                                      zaidmExBrand.STICKER_CODE.Trim());
-                    var blockStock = GetBlockedStockQuota(plantId, zaidmExBrand.FA_CODE);
+                    var blockStock = GetBlockedStockQuota(plantId, zaidmExBrand.FA_CODE,zaidmExBrand.STICKER_CODE);
                     if (blockStock.IsExist && allowedCk1Item.Contains(itemCheck))
                     {
                         var blockstockOutput = new GetListBrandByPlantOutput();
                         blockstockOutput.PlantId = plantId;
                         blockstockOutput.FaCode = zaidmExBrand.FA_CODE;
+                        blockstockOutput.StickerCode = zaidmExBrand.STICKER_CODE;
                         blockstockOutput.RemainingBlockQuota = blockStock.BlockedStockRemainingCount;
 
                         output.Add(blockstockOutput);
@@ -1981,16 +1982,23 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<GetListCk1ByNppbkcOutput>>(dbCk1);
         }
 
-        public GetBrandItemsOutput GetBrandItemsStickerCodeByNppbkcAndFaCode(string nppbkc, string faCode, List<string> plantList)
+        public GetBrandItemsOutput GetBrandItemsStickerCodeByNppbkcAndFaCode(string nppbkc, string faCode, List<string> plantList,string stickerCode = null)
         {
             var dbBrand = new ZAIDM_EX_BRAND();
 
             foreach (var plantId in plantList)
             {
-                var getBrandByPlant = _brandRegistrationServices.GetByPlantIdAndFaCode(plantId, faCode);
-                if (getBrandByPlant != null)
+                if (stickerCode != null)
                 {
-                    dbBrand = getBrandByPlant;
+                    dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCodeStickerCode(plantId, faCode, stickerCode);
+                }
+                else
+                {
+                    dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(plantId, faCode);
+                }
+                
+                if (dbBrand != null)
+                {
                     break;
                 }
             }                
@@ -2013,9 +2021,14 @@ namespace Sampoerna.EMS.BLL
                 : dbBlock.Sum(blockStockDto => blockStockDto.BLOCKED.HasValue ? blockStockDto.BLOCKED.Value : 0);
         }
 
-        public BlockedStockQuotaOutput GetBlockedStockQuota(string plant, string faCode)
+        public BlockedStockQuotaOutput GetBlockedStockQuota(string plant, string faCode,string stickerCode = null)
         {
             var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(plant, faCode);
+            if (stickerCode != null)
+            {
+               dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCodeStickerCode(plant, faCode, stickerCode);
+            }
+
             var dbBlock = new List<BLOCK_STOCKDto>();
             if (dbBrand != null)
             {
@@ -2050,7 +2063,7 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public decimal GetCurrentReqQtyByPbck4IdAndFaCode(int pbck4Id, string faCode)
+        public decimal GetCurrentReqQtyByPbck4IdAndFaCode(int pbck4Id, string faCode, string stickerCode = null)
         {
             decimal result = 0;
             var dbPbck = _repository.Get(c => c.PBCK4_ID == pbck4Id, null, includeTables).FirstOrDefault();
@@ -2059,7 +2072,7 @@ namespace Sampoerna.EMS.BLL
             {
                 foreach (var pbck4Item in dbPbck.PBCK4_ITEM)
                 {
-                    if (pbck4Item.FA_CODE == faCode)
+                    if (pbck4Item.FA_CODE == faCode && pbck4Item.STICKER_CODE == stickerCode)
                     {
                         result = pbck4Item.REQUESTED_QTY.HasValue ? pbck4Item.REQUESTED_QTY.Value : 0;
                         return result;
@@ -2081,15 +2094,32 @@ namespace Sampoerna.EMS.BLL
             {
                 foreach (var ck1Item in ck1.CK1_ITEM)
                 {
-                    if (ck1Item.FA_CODE == input.FaCode)
+                    var found = new GetListCk1ByNppbkcOutput();
+                    if (input.StickerCode != null)
                     {
-                        var found = new GetListCk1ByNppbkcOutput();
-                        found.Ck1Id = ck1.CK1_ID.ToString();
-                        found.Ck1No = ck1.CK1_NUMBER;
-                        found.Ck1Date = ConvertHelper.ConvertDateToStringddMMMyyyy(ck1.CK1_DATE);
+                        if (ck1Item.FA_CODE == input.FaCode && ck1Item.MATERIAL_ID == input.StickerCode)
+                        {
 
-                        result.Add(found);
+                            found.Ck1Id = ck1.CK1_ID.ToString();
+                            found.Ck1No = ck1.CK1_NUMBER;
+                            found.Ck1Date = ConvertHelper.ConvertDateToStringddMMMyyyy(ck1.CK1_DATE);
+
+                            result.Add(found);
+                        }
                     }
+                    else
+                    {
+                        if (ck1Item.FA_CODE == input.FaCode)
+                        {
+                            
+                            found.Ck1Id = ck1.CK1_ID.ToString();
+                            found.Ck1No = ck1.CK1_NUMBER;
+                            found.Ck1Date = ConvertHelper.ConvertDateToStringddMMMyyyy(ck1.CK1_DATE);
+
+                            result.Add(found);
+                        }
+                    }
+                    
                 }
 
             }

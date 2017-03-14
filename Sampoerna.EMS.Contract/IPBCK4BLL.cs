@@ -33,15 +33,18 @@ namespace Sampoerna.EMS.Contract
 
        List<GetListCk1ByNppbkcOutput> GetListCk1ByNppbkc(string nppbkcId);
 
-       GetBrandItemsOutput GetBrandItemsStickerCodeByNppbkcAndFaCode(string nppbkc, string faCode, List<string> plantList);
+       //GetBrandItemsOutput GetBrandItemsStickerCodeByNppbkcAndFaCode(string nppbkc, string faCode, List<string> plantList);
+
+       GetBrandItemsOutput GetBrandItemsStickerCodeByNppbkcAndFaCode(string nppbkc, string faCode,
+           List<string> plantList, string stickerCode = null);
 
        string GetCk1DateByCk1Id(long ck1Id);
 
        decimal GetBlockedStockByPlantAndFaCode(string plant, string faCode);
 
-       BlockedStockQuotaOutput GetBlockedStockQuota(string plant, string faCode);
+       BlockedStockQuotaOutput GetBlockedStockQuota(string plant, string faCode, string stickerCode = null);
 
-       decimal GetCurrentReqQtyByPbck4IdAndFaCode(int pbck4Id, string faCode);
+       decimal GetCurrentReqQtyByPbck4IdAndFaCode(int pbck4Id, string faCode, string stickerCode = null);
 
        List<GetListCk1ByNppbkcOutput> GetListCk1ByPlantAndFaCode(GetListCk1ByPlantAndFaCodeInput input);
 
