@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -874,8 +875,16 @@ namespace Sampoerna.EMS.Website.Controllers
                                     model.SubmissionDate.Value, model.DestNppbkcId, (int)model.GoodType);
                                 }
 
-
-
+                                if (output.Pbck1Id != null)
+                                {
+                                    model.PbckDecreeDate = DateTime.ParseExact(output.Pbck1DecreeDate,"dd/MM/yyyy",CultureInfo.InvariantCulture);
+                                    //new DateTime(
+                                    //DateTime.Parse() output.Pbck1DecreeDate.Split("/")[2],
+                                    //output.Pbck1DecreeDate.Split("/")[1],
+                                    //output.Pbck1DecreeDate.Split("/")[0],
+                                    //);    
+                                }
+                                
                                 model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
                             }
                         }
