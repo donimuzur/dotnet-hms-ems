@@ -244,7 +244,8 @@
             var nppbkc = $(this).find("option:selected").val();
 
             //remove table
-            try {
+              try {
+                $("#uploadFaCode").html("<option value>Select</option>");
                 RemovePbck4ItemsTable();
             } catch (e) {
 
