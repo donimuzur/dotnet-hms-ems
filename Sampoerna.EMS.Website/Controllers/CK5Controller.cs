@@ -477,10 +477,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.DestPlantList = GlobalFunctions.GetPlantByListUserPlant(CurrentUser.ListUserPlants);//GlobalFunctions.GetPlantAll();
                 model.Ck5RefList = GlobalFunctions.GetCk5RefPortToImporter(_ck5Bll, model.Ck5RefId);
             }
-            else if (model.Ck5Type == Enums.CK5Type.PortToImporter || 
-                (model.Ck5Type == Enums.CK5Type.Manual && 
-                model.Ck5ManualType == Enums.Ck5ManualType.NonPlantExToPlant && 
-                model.FLAG_NPPBKC_IMPORT_DEST))
+            else if (model.Ck5Type == Enums.CK5Type.PortToImporter)
             {
                 model.DestPlantList = GlobalFunctions.GetPlantImportList();
                 model.SourcePlantList = GlobalFunctions.GetExternalSupplierList(model.Ck5Type);
