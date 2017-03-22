@@ -4247,8 +4247,8 @@ namespace Sampoerna.EMS.BLL
                 {
                     result.ReportDetails.DestOfficeCode = dtData.DEST_PLANT_NPPBKC_ID.Substring(0, 4) + "00";
                     if (dtData.CK5_TYPE == Enums.CK5Type.PortToImporter || 
-                        (dtData.CK5_TYPE == Enums.CK5Type.Manual && dtData.CK5_MANUAL_TYPE.Value == Enums.Ck5ManualType.NonPlantExToPlant 
-                        && dtData.FLAG_NPPBKC_IMPORT_DEST.HasValue && dtData.FLAG_NPPBKC_IMPORT_DEST.Value) )
+                        
+                        (dtData.MANUAL_FREE_TEXT.HasValue && dtData.MANUAL_FREE_TEXT.Value == Enums.Ck5ManualFreeText.SourceFreeText) )
                     {
                         result.ReportDetails.OfficeCode = result.ReportDetails.DestOfficeCode;
                     }

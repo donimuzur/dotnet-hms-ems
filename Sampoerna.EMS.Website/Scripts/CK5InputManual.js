@@ -140,7 +140,16 @@ function UpdateRow(data) {
                 $(this).find('td').eq(16).text(exciseQty);
                 $(this).find('td').eq(17).text(exciseUOM);
                 $(this).find('td').eq(18).text(materialId);
-                $(this).find('td').eq(19).text($('#uploadMaterialPlant').val());
+                var sourcePlant = $("#SourcePlantId").find("option:selected").val();
+
+                if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
+                    sourcePlant = $("#DestPlantId").find("option:selected").val();
+                } else if ('@Model.Ck5Type.ToString()' == '@Enums.CK5Type.Manual.ToString()') {
+                    if ($('#IsFreeTextSource').is(':checked')) {
+                        sourcePlant = $("#DestPlantId").find("option:selected").val();
+                    }
+                }
+                $(this).find('td').eq(19).text(sourcePlant);
                
             }
         });
