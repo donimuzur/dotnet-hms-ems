@@ -276,18 +276,19 @@
           $('#btnSaveMaterial').hide();
           $('#btnUpdateMaterial').show();
 
-          var sourcePlant = $("#PlantId").find("option:selected").val();
+          //var sourcePlant = $("#PlantId").find("option:selected").val();
           var nppbkcId = $("#NppbkcId").val();
           var faCode = nRow.find("td").eq(2).html();
-          $("#uploadNppbkc").val(sourcePlant);
+          $("#uploadNppbkc").val(nppbkcId);
 
-          ajaxGetListFaCode('@Url.Action("GetListFaCode", "PBCK4")', { plantId: sourcePlant }, nRow.find("td").eq(2).html());
+          var selected = nRow.find("td").eq(2).html() + " - " + nRow.find("td").eq(3).html();
+          ajaxGetListFaCode('@Url.Action("GetListFaCode", "PBCK4")', { nppbkcId: nppbkcId }, selected);
 
 
           @*ajaxGetListCk1('@Url.Action("GetListCk1", "PBCK4")', { nppbkcId: nppbkcId }, nRow.find("td").eq(4).html());*@
 
         
-          ajaxGetListCk1DateByPlantAndFaCode('@Url.Action("GetListCk1Date", "PBCK4")', { plantId: sourcePlant, faCode: faCode, nppbkcId : nppbkcId }, nRow.find("td").eq(4).html());
+          ajaxGetListCk1DateByPlantAndFaCode('@Url.Action("GetListCk1Date", "PBCK4")', { faCode: faCode, nppbkcId : nppbkcId }, nRow.find("td").eq(4).html());
 
 
           //set value
