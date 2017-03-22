@@ -637,7 +637,7 @@
 
             if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
                 sourcePlant = $("#DestPlantId").find("option:selected").val();
-            } else if ('@Model.Ck5Type.ToString()' == '@Enums.CK5Type.Manual.ToString()') {
+            } else if ('@Model.Ck5Type.ToString()' == 'Manual') {
                 if ($('#IsFreeTextSource').is(':checked')) {
                     sourcePlant = $("#DestPlantId").find("option:selected").val();
                 }

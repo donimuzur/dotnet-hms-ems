@@ -807,11 +807,18 @@
         });
 
         function EditRow(o, url) {
-            //debugger;
+            debugger;
             var nRow = o.parents('tr');
             var plant = nRow.find("td").eq(19).html();
             var materialnumber = nRow.find("td").eq(2).html();
 
+            if ('@Model.Ck5Type.ToString()' == "PortToImporter" || '@Model.Ck5Type.ToString()' == "DomesticAlcohol") {
+                plant = $("#DestPlantId").find("option:selected").val();
+            } else if ('@Model.Ck5Type.ToString()' == 'Manual') {
+                if ($('#IsFreeTextSource').is(':checked')) {
+                    plant = $("#DestPlantId").find("option:selected").val();
+                }
+            }
 
             var goodTypeGroupId = $("#GoodType").val();
             if (goodTypeGroupId == "") {
@@ -866,7 +873,7 @@
             $('#uploadMaterialDesc').val(nRow.find("td").eq(15).html());
 
             //===Fixing Bug CK5 no. 110====
-            $('#uploadMaterialPlant').val(nRow.find("td").eq(19).html());
+            $('#uploadMaterialPlant').val(plant);
             //=============================
 
             $('#uploadMaterialId').val(nRow.find("td").eq(18).html());
