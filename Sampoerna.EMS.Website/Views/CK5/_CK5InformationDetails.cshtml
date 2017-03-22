@@ -81,7 +81,8 @@
                                     </div>
                                 </div>
                             </div>
-                            @if (Model.IsCk5Manual && Model.Ck5ManualType == Enums.Ck5ManualType.Trial)
+                            
+                            @if (Model.IsCk5Manual && (Model.Ck5ManualType == Enums.Ck5ManualType.Trial || Model.Ck5ManualType == Enums.Ck5ManualType.NonPlantPlantToEx))
                             {
                                 <div class="row" id="idFlagNppbkc">
                                     <div class="col-md-6">
@@ -253,7 +254,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                if (Model.IsCk5Manual && Model.Ck5ManualType == Enums.Ck5ManualType.Trial)
+                                if (Model.IsCk5Manual && (Model.Ck5ManualType == Enums.Ck5ManualType.Trial || Model.Ck5ManualType == Enums.Ck5ManualType.NonPlantExToPlant))
                                 {
                                     <div class="row" id="idFlagNppbkcDest">
                                         <div class="col-md-6">

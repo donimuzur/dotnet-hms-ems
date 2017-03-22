@@ -984,6 +984,13 @@
 
                     $('#idFlagNppbkc').hide();
                     $('#idFlagNppbkcDest').hide();
+                    if (manualType == '@Enums.Ck5ManualType.NonPlantExToPlant.ToString()') {
+                        $('#idFlagNppbkc').hide();
+                        $('#idFlagNppbkcDest').show();
+                    } else if (manualType == '@Enums.Ck5ManualType.NonPlantPlantToEx.ToString()') {
+                        $('#idFlagNppbkc').show();
+                        $('#idFlagNppbkcDest').hide();
+                    }
                     $('#FLAG_NPPBKC_IMPORT').prop('checked', false);
                     $('#FLAG_NPPBKC_IMPORT_DEST').prop('checked', false);
                 }
