@@ -62,7 +62,7 @@ namespace Sampoerna.EMS.MessagingService
                 // error not thrown, log error here
                 _logger.Error("MessagingService.Messager SendEmail: " + ex);
 
-                throw new BLLException(ExceptionCodes.BLLExceptions.ServerIsBusy);
+                //throw new BLLException(ExceptionCodes.BLLExceptions.ServerIsBusy);
             }
         }
 
@@ -126,7 +126,7 @@ namespace Sampoerna.EMS.MessagingService
                 // error not thrown, log error here
                 _logger.Error("MessagingService.Messager SendEmail: " + ex);
 
-                throw new BLLException(ExceptionCodes.BLLExceptions.ServerIsBusy);
+                //throw new BLLException(ExceptionCodes.BLLExceptions.ServerIsBusy);
             }
         }
     }

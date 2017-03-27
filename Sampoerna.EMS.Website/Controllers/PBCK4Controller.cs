@@ -2076,11 +2076,11 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetBrandItems(string faCode, string nppbkcId)
+        public JsonResult GetBrandItems(string faCode, string nppbkcId,string stickerCode = null)
         {
             var plantListNppbkc = _plantBll.GetActivePlant().Where(x => x.NPPBKC_ID == nppbkcId && CurrentUser.ListUserPlants.Contains(x.WERKS)).Select(x => x.WERKS).ToList();
 
-            var brandOutput = _pbck4Bll.GetBrandItemsStickerCodeByNppbkcAndFaCode(nppbkcId, faCode, plantListNppbkc);
+            var brandOutput = _pbck4Bll.GetBrandItemsStickerCodeByNppbkcAndFaCode(nppbkcId, faCode, plantListNppbkc,stickerCode);
 
             var blockedStockQty = new decimal();
             var blockedStockUsedQty = new decimal();
@@ -2089,7 +2089,7 @@ namespace Sampoerna.EMS.Website.Controllers
             foreach (var plantId in plantListNppbkc)
             {
                 //getblockedstock
-                var blockedStockOutput = _pbck4Bll.GetBlockedStockQuota(plantId, faCode);
+                var blockedStockOutput = _pbck4Bll.GetBlockedStockQuota(plantId, faCode,stickerCode);
 
                 blockedStockQty += Convert.ToDecimal(blockedStockOutput.BlockedStock);
                 blockedStockUsedQty += Convert.ToDecimal(blockedStockOutput.BlockedStockUsed);
@@ -2104,6 +2104,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var input = new GetListCk1ByPlantAndFaCodeInput();
             input.NppbkcId = nppbkcId;
             input.FaCode = faCode;
+            input.StickerCode = stickerCode;
 
             //list ck1
             brandOutput.ListCk1Date = _pbck4Bll.GetListCk1ByPlantAndFaCode(input);
@@ -2114,11 +2115,11 @@ namespace Sampoerna.EMS.Website.Controllers
      
       
         [HttpPost]
-        public JsonResult GetBrandItemsForEdit(int pbck4Id, string faCode, string faCodeOri, string nppbkcId)
+        public JsonResult GetBrandItemsForEdit(int pbck4Id, string faCode, string faCodeOri, string nppbkcId,string stickerCodeOri = null, string stickerCode = null)
         {
             var plantListNppbkc = _plantBll.GetActivePlant().Where(x => x.NPPBKC_ID == nppbkcId && CurrentUser.ListUserPlants.Contains(x.WERKS)).Select(x => x.WERKS).ToList();
 
-            var brandOutput = _pbck4Bll.GetBrandItemsStickerCodeByNppbkcAndFaCode(nppbkcId, faCode, plantListNppbkc);
+            var brandOutput = _pbck4Bll.GetBrandItemsStickerCodeByNppbkcAndFaCode(nppbkcId, faCode, plantListNppbkc,stickerCode);
 
             var blockedStockQty = new decimal();
             var blockedStockUsedQty = new decimal();
@@ -2127,7 +2128,7 @@ namespace Sampoerna.EMS.Website.Controllers
             foreach (var plantId in plantListNppbkc)
             {
                 //getblockedstock
-                var blockedStockOutput = _pbck4Bll.GetBlockedStockQuota(plantId, faCode);
+                var blockedStockOutput = _pbck4Bll.GetBlockedStockQuota(plantId, faCode,stickerCode);
 
                 blockedStockQty += Convert.ToDecimal(blockedStockOutput.BlockedStock);
                 blockedStockUsedQty += Convert.ToDecimal(blockedStockOutput.BlockedStockUsed);
@@ -2138,16 +2139,17 @@ namespace Sampoerna.EMS.Website.Controllers
             brandOutput.BlockedStockUsed = blockedStockUsedQty.ToString();
             brandOutput.BlockedStockRemaining = blockedStockRemainingQty.ToString();
 
-            if (faCode == faCodeOri)
-            {
-                var reqQty = _pbck4Bll.GetCurrentReqQtyByPbck4IdAndFaCode(pbck4Id, faCode);
-                brandOutput.BlockedStockRemaining =
-                    (ConvertHelper.ConvertToDecimalOrZero(brandOutput.BlockedStockRemaining) + reqQty).ToString();
-            }
+            //if (faCode == faCodeOri && stickerCode == stickerCodeOri)
+            //{
+            //    var reqQty = _pbck4Bll.GetCurrentReqQtyByPbck4IdAndFaCode(pbck4Id, faCode);
+            //    brandOutput.BlockedStockRemaining =
+            //        (ConvertHelper.ConvertToDecimalOrZero(brandOutput.BlockedStockRemaining) + reqQty).ToString();
+            //}
 
             var input = new GetListCk1ByPlantAndFaCodeInput();
             input.NppbkcId = nppbkcId;
             input.FaCode = faCode;
+            input.StickerCode = stickerCode;
 
             //list ck1
             brandOutput.ListCk1Date = _pbck4Bll.GetListCk1ByPlantAndFaCode(input);

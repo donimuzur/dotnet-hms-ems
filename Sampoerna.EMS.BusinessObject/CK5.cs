@@ -99,6 +99,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<bool> FLAG_FOR_LACK1 { get; set; }
         public Nullable<bool> FLAG_NPPBKC_IMPORT { get; set; }
         public string MATDOC { get; set; }
+        public Nullable<bool> FLAG_NPPBKC_IMPORT_DEST { get; set; }
     
         public virtual ICollection<CK5_MATERIAL> CK5_MATERIAL { get; set; }
         public virtual PBCK1 PBCK1 { get; set; }

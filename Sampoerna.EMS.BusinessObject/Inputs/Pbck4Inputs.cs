@@ -121,6 +121,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
 
         public string FaCode { get; set; }
 
+        public string StickerCode { get; set; }
+
     }
 
     public class Pbck4DasboardParamInput

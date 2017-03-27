@@ -144,6 +144,7 @@
                 <input id="uploadCk1Id" type="hidden" value="">
                 <input id="uploadMode" type="hidden" value="">
                 <input id="uploadFaCodeOri" type="hidden" value="">
+                <input id="uploadStickerCodeOri" type="hidden" value="">
                 <div class="row">
                     <div class="col-md-4">
                         <label>Nppbkc Id</label>
@@ -353,6 +354,7 @@
 
                 //remove table
                 try {
+                    $("#uploadFaCode").html("<option value>Select</option>");
                     RemovePbck4ItemsTable();
                 } catch(e) {
 
@@ -385,8 +387,8 @@
             var faCode = nRow.find("td").eq(2).html();
             
             $("#uploadNppbkc").val(nppbkcId);
-
-            ajaxGetListFaCode('@Url.Action("GetListFaCode", "PBCK4")', { nppbkcId: nppbkcId }, nRow.find("td").eq(2).html());
+            var selected = nRow.find("td").eq(2).html() + " - " + nRow.find("td").eq(3).html();
+            ajaxGetListFaCode('@Url.Action("GetListFaCode", "PBCK4")', { nppbkcId: nppbkcId }, selected);
 
 
             @*ajaxGetListCk1('@Url.Action("GetListCk1", "PBCK4")', { nppbkcId: nppbkcId }, nRow.find("td").eq(4).html());*@
@@ -399,6 +401,7 @@
             ClearInputForm();
             ClearValidation();
 
+            
             $('#uploadStickerCode').val(nRow.find("td").eq(3).html());
             $('#uploadCk1Date').val(nRow.find("td").eq(5).html());
             $('#uploadSeriesCode').val(nRow.find("td").eq(6).html());
@@ -422,6 +425,7 @@
 
             $("#uploadMode").val('2');
             $("#uploadFaCodeOri").val(nRow.find("td").eq(2).html());
+            $("#uploadStickerCodeOri").val(nRow.find("td").eq(3).html());
 
             $('#Pbck4UploadModal').modal('show');
 
@@ -451,8 +455,10 @@
 
         $("#uploadFaCode").change(function() {
             if ($("#uploadFaCode").length) {
-                var faCode = $(this).find("option:selected").val();
-
+                //var faCode = $(this).find("option:selected").val();
+                var tempFaCode = $(this).find("option:selected").val();
+                var faCode = tempFaCode.split(" - ")[0];
+                var stickerCode = tempFaCode.split(" - ")[1];
 
                 if (faCode == '') {
                     $("#uploadStickerCode").val('');
@@ -482,8 +488,8 @@
                         //edit mode
                         var pbckId = '@Model.Pbck4Id';
                         var faCodeOri = $("#uploadFaCodeOri").val();
-                        
-                        ajaxGetBrandItemsForEdit('@Url.Action("GetBrandItemsForEdit", "PBCK4")', { pbck4Id: pbckId, faCode: faCode, faCodeOri: faCodeOri, nppbkcId: nppbkcId });
+                        var stickerCodeOri = $("#uploadFaCodeOri").val();
+                        ajaxGetBrandItemsForEdit('@Url.Action("GetBrandItemsForEdit", "PBCK4")', { pbck4Id: pbckId, faCode: faCode, faCodeOri: faCodeOri, nppbkcId: nppbkcId, stickerCodeOri: stickerCodeOri, stickerCode: stickerCode });
                     }
                 }
             }

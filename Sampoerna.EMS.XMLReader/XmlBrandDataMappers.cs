@@ -138,6 +138,12 @@ namespace Sampoerna.EMS.XMLReader
                             item.MODIFIED_BY = item.CREATED_BY;
                             item.MODIFIED_DATE = DateTime.Now;
                             item.CREATED_BY = existingMaterial.CREATED_BY;
+                            if (!existingMaterial.STATUS.HasValue ||
+                                (existingMaterial.STATUS.HasValue && !existingMaterial.STATUS.Value))
+                            {
+                                item.STATUS = false;
+                            }
+                            
                             items.Add(item);
 
                         }

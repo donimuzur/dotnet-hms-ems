@@ -296,7 +296,7 @@ namespace Sampoerna.EMS.BLL.Services
                         c =>
                             c.BATCH == input.Batch && c.PLANT_ID == input.PlantId &&
                             mvtUsage.Contains(c.MVT)
-                            //&& c.MATERIAL_ID == bomMaterial
+                            && c.MATERIAL_ID == input.LastMaterialId
                             //&& c.POSTING_DATE.HasValue 
                             //&& c.POSTING_DATE.Value.Year <= input.PeriodYear && c.POSTING_DATE.Value.Month <= input.PeriodMonth
                             );
@@ -380,23 +380,23 @@ namespace Sampoerna.EMS.BLL.Services
                 //bomMaterial = bom != null ? bom.MATERIAL_ID : null;
             }
 
-            if (bomMaterial.Count > 0 )
-            {
+            //if (bomMaterial.Count > 0 )
+            //{
 
                 var data =
                     _repository.Get(
                         c =>
                             c.ORDR == input.Ordr && c.PLANT_ID == input.PlantId &&
                             mvtReceiving.Contains(c.MVT) 
-                            && bomMaterial.Contains(c.MATERIAL_ID)
+                            //&& bomMaterial.Contains(c.MATERIAL_ID)
                             //&& c.POSTING_DATE.HasValue 
                             //&& c.POSTING_DATE.Value.Year <= input.PeriodYear && c.POSTING_DATE.Value.Month <= input.PeriodMonth
                             );
                 
 
                 return data.ToList();
-            }
-            return new List<INVENTORY_MOVEMENT>();
+           // }
+            //return new List<INVENTORY_MOVEMENT>();
         }
 
         

@@ -465,7 +465,9 @@ namespace Sampoerna.EMS.BLL
                 if (dbData.STATUS != Enums.DocumentStatus.Draft)
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-                if (dbData.CREATED_BY != input.UserId)
+                var isDelegated = _poaDelegationServices.IsDelegatedUserByUserAndDate(dbData.CREATED_BY, input.UserId,
+                    DateTime.Now);
+                if (dbData.CREATED_BY != input.UserId && !isDelegated)
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
                 //Add Changes

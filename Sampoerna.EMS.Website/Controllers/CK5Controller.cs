@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -332,7 +333,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
 
-        private SelectList GetCorrespondingPlantList(string plantId, Enums.CK5Type ck5Type)
+        private SelectList GetCorrespondingPlantList(string plantId, Enums.CK5Type ck5Type,bool isNppbkcImportDest = false)
         {
             SelectList data;
             T001WDto dataPlant = _plantBll.GetT001WById(plantId);
@@ -351,8 +352,20 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 data = GlobalFunctions.GetPlantByNppbkcImport(true);
             }
+            else if (ck5Type == Enums.CK5Type.Manual)
+            {
+                if (isNppbkcImportDest)
+                {
+                    data = GlobalFunctions.GetPlantByNppbkcImport(true);
+                }
+                else
+                {
+                    data = GlobalFunctions.GetPlantAll();
+                }
+            }
             else
             {
+
                 data = GlobalFunctions.GetPlantAll();
 
             }
@@ -643,7 +656,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
         [HttpPost]
-        public JsonResult GetSourcePlantDetailsAndPbckItem(string sourcePlantId, string sourceNppbkcId, string destPlantId, DateTime submissionDate, string goodTypeGroupId, Enums.CK5Type ck5Type)
+        public JsonResult GetSourcePlantDetailsAndPbckItem(string sourcePlantId, string sourceNppbkcId, string destPlantId, DateTime submissionDate, string goodTypeGroupId, Enums.CK5Type ck5Type, bool isNppbkcImport = false)
         {
             //var dbPlantSource = _plantBll.GetT001ById(sourcePlantId);
             T001WDto dbPlantDest = null;
@@ -662,7 +675,7 @@ namespace Sampoerna.EMS.Website.Controllers
             GetQuotaAndRemainOutput output;
             var destNppbkcId = dbPlantDest.NPPBKC_ID;
 
-            if (ck5Type == Enums.CK5Type.PortToImporter)
+            if (ck5Type == Enums.CK5Type.PortToImporter || isNppbkcImport)
             {
                 destNppbkcId = dbPlantDest.NPPBKC_IMPORT_ID;
                 model.NPPBCK_ID = destNppbkcId;
@@ -760,7 +773,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetSourcePlantDetails(string plantId, Enums.CK5Type ck5Type,bool isNppbkcImport)
+        public JsonResult GetSourcePlantDetails(string plantId, Enums.CK5Type ck5Type, bool isNppbkcImport, bool isNppbkcImportDest = false)
         {
             CK5PlantModel model = new CK5PlantModel();
 
@@ -786,7 +799,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var vendorInfo = _lfa1Bll.GetById(model.KppbcNo);
                 model.KppBcName = vendorInfo.NAME2 + "-" + model.KppbcNo;
                 model.KppbcCity = vendorInfo.NAME2;
-                model.CorrespondingPlantList = GetCorrespondingPlantList(plantId, ck5Type);
+                model.CorrespondingPlantList = GetCorrespondingPlantList(plantId, ck5Type,isNppbkcImportDest);
             }
 
 
@@ -862,12 +875,25 @@ namespace Sampoerna.EMS.Website.Controllers
                                     model.SubmissionDate.Value, model.DestNppbkcId, (int)model.GoodType);
                                 }
 
-
-
+                                if (output.Pbck1Id != null)
+                                {
+                                    model.PbckDecreeDate = DateTime.ParseExact(output.Pbck1DecreeDate,"dd/MM/yyyy",CultureInfo.InvariantCulture);
+                                    //new DateTime(
+                                    //DateTime.Parse() output.Pbck1DecreeDate.Split("/")[2],
+                                    //output.Pbck1DecreeDate.Split("/")[1],
+                                    //output.Pbck1DecreeDate.Split("/")[0],
+                                    //);    
+                                }
+                                
                                 model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
                             }
                         }
 
+                        if (model.Ck5Type != Enums.CK5Type.Manual && model.Ck5Type != Enums.CK5Type.MarketReturn &&
+                            model.Ck5Type != Enums.CK5Type.DomesticAlcohol && model.Ck5Type != Enums.CK5Type.Waste)
+                        {
+                            _ck5Bll.CheckCk5ForXmlById(model.SourcePlantId, model.DestPlantId, model.Ck5Type, Mapper.Map<List<CK5MaterialDto>>(model.UploadItemModels));
+                        }
 
                         var saveResult = SaveCk5ToDatabase(model);
 
@@ -1378,6 +1404,12 @@ namespace Sampoerna.EMS.Website.Controllers
                                     model.Ck5TotalExciseable = currentCk5.ToString();
                                     model.RemainQuota = (output.QtyApprovedPbck1 - currentCk5).ToString();
                                 }
+                            }
+
+                            if (model.Ck5Type != Enums.CK5Type.Manual && model.Ck5Type != Enums.CK5Type.MarketReturn &&
+                            model.Ck5Type != Enums.CK5Type.DomesticAlcohol && model.Ck5Type != Enums.CK5Type.Waste)
+                            {
+                                _ck5Bll.GetCk5ForXmlById(model.Ck5Id);
                             }
 
                             var resultDto = SaveCk5ToDatabase(model);
