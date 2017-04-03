@@ -154,7 +154,17 @@ namespace Sampoerna.EMS.BLL
                 var prodData = _repositoryProd.Get(p => p.PRODUCTION_DATE == reversalInput.ProductionDate.Value
                                                         && p.WERKS == reversalInput.Werks && p.FA_CODE == reversalInput.FaCode).FirstOrDefault();
 
-                if (ck4cData.Count() > 0) output.IsForCk4cCompleted = true;
+                if (ck4cData.Count() > 0) { 
+                    output.IsForCk4cCompleted = true;
+
+                    var ck4cIdRevise = ck4cData.FirstOrDefault().CK4C_ID_REVISED;
+                    var ck4cRevise = _repositoryCk4c.Get(x => x.CK4C_ID == ck4cIdRevise
+                                                                && x.STATUS != Enums.DocumentStatus.Completed);
+
+                    if (ck4cRevise.Count() > 0) {
+                        output.IsForCk4cCompleted = false;
+                    }
+                }
 
                 if (prodData != null)
                 {
