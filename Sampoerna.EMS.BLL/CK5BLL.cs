@@ -4633,12 +4633,17 @@ namespace Sampoerna.EMS.BLL
                             messageList.Add("CarriageMethod not valid");
                     }
                 }
-                if (!string.IsNullOrEmpty(ck5UploadFileDocuments.PackageUomName))
+                if (!string.IsNullOrEmpty(ck5UploadFileDocuments.PackageUomName.Trim()))
                 {
 
                     if (!_uomBll.IsUomIdExist(ck5UploadFileDocuments.PackageUomName))
                         messageList.Add("UOM not exist");
                 }
+                else
+                {
+                    messageList.Add("UOM must not be empty");
+                }
+
 
                 //exsport type
                 if (ck5UploadFileDocuments.Ck5Type == Convert.ToInt32(Enums.CK5Type.Export).ToString())
