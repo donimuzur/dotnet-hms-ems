@@ -102,6 +102,7 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<CK5FileDocumentDto, CK5Dto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.KPPBC_CITY, opt => opt.MapFrom(src => src.KppBcCityName))
                 .ForMember(dest => dest.CK5_MANUAL_TYPE, opt => opt.MapFrom(src => src.CK5_MANUAL_TYPE))
+                .ForMember(dest => dest.PACKAGE_UOM_ID, opt => opt.MapFrom(src => src.Uom))
                 ;
 
             Mapper.CreateMap<CK5FileDocumentDto, CK5MaterialDto>().IgnoreAllNonExisting()
