@@ -63,5 +63,10 @@ namespace Sampoerna.EMS.BLL
 
             return Mapper.Map<List<Ck4cItem>>(data);
         }
+
+        public List<CK4C_ITEM> GetAllCk4cItems()
+        {
+            return _repository.Get(null, null, includeTables).OrderBy(c => c.PROD_DATE).ToList();
+        }
     }
 }
