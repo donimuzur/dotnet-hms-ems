@@ -1217,6 +1217,7 @@
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="IS_ACTIVE" Type="int" />
           <Property Name="ACCT" Type="nvarchar" MaxLength="10" />
+          <Property Name="IS_MASTER_DATA_APPROVER" Type="bit" />
         </EntityType>
         <EntityType Name="USER_BROLE">
           <Key>
@@ -5898,6 +5899,7 @@
           <NavigationProperty Name="POA_DELEGATION1" Relationship="EMSModel.FK_POA_DELEGATION_POAUSER11" FromRole="USER" ToRole="POA_DELEGATION" />
           <NavigationProperty Name="POA_DELEGATION2" Relationship="EMSModel.FK_POA_DELEGATION_USER" FromRole="USER" ToRole="POA_DELEGATION" />
           <NavigationProperty Name="POA_DELEGATION3" Relationship="EMSModel.FK_POA_DELEGATION_USER1" FromRole="USER" ToRole="POA_DELEGATION" />
+          <Property Name="IS_MASTER_DATA_APPROVER" Type="Boolean" />
           </EntityType>
         <EntityType Name="USER_BROLE">
           <Key>
@@ -9473,6 +9475,7 @@
           <EntitySetMapping Name="USER">
             <EntityTypeMapping TypeName="EMSModel.USER">
               <MappingFragment StoreEntitySet="USER">
+                <ScalarProperty Name="IS_MASTER_DATA_APPROVER" ColumnName="IS_MASTER_DATA_APPROVER" />
                 <ScalarProperty Name="ACCT" ColumnName="ACCT" />
                 <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
                 <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
