@@ -85,6 +85,7 @@ namespace Sampoerna.EMS.XMLReader
                         {
                             user.MODIFIED_DATE = DateTime.Now;
                             user.CREATED_DATE = ExistUser.CREATED_DATE;
+                            user.IS_MASTER_DATA_APPROVER = ExistUser.IS_MASTER_DATA_APPROVER;
                         }
 
 

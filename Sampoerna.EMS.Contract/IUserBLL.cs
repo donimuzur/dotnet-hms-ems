@@ -23,5 +23,7 @@ namespace Sampoerna.EMS.Contract
 
         List<UserDto> GetListUserRoleByUserId(string userId);
 
+        void SaveUser(USER user);
+
     }
 }

@@ -132,6 +132,20 @@ namespace Sampoerna.EMS.BLL
         //    return Mapper.Map<List<UserDto>>(filterResult);
         //}
 
+
+        public void SaveUser(USER user)
+        {
+            
+                var data = _repository.GetByID(user.USER_ID);
+
+                data.IS_MASTER_DATA_APPROVER = user.IS_MASTER_DATA_APPROVER;
+                _repository.InsertOrUpdate(data);
+
+                _uow.SaveChanges();
+            
+            
+        }
+
         public List<UserDto> GetListUserRoleByUserId(string userId)
         {
             var userRole = _poabll.GetUserRole(userId);

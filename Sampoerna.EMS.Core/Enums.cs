@@ -41,7 +41,8 @@ namespace Sampoerna.EMS.Core
             WasteStock = 34,
             PoaDelegation = 35,
             SchedulerSettings = 36,
-            ProductType = 37
+            ProductType = 37,
+            MasterDataApproveSetting = 38
         }
         public enum PBCK1Type
         {

@@ -90,6 +90,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
         public Nullable<int> IS_ACTIVE { get; set; }
         public string ACCT { get; set; }
+        public Nullable<bool> IS_MASTER_DATA_APPROVER { get; set; }
     
         public virtual ICollection<BROLE_MAP> BROLE_MAP { get; set; }
         public virtual ICollection<CHANGES_HISTORY> CHANGES_HISTORY { get; set; }

@@ -30,6 +30,8 @@ namespace Sampoerna.EMS.Website.Models
         public string PHONE { get; set; }
 
         public string IsActive { get; set; }
+
+        public bool IS_MASTER_DATA_APPROVER { get; set; }
     }
 
     public class UserItemViewModel : BaseModel
