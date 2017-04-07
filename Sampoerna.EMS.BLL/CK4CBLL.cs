@@ -1089,15 +1089,17 @@ namespace Sampoerna.EMS.BLL
                 address += "- " + _plantBll.GetT001WById(data).ADDRESS.Trim() + Environment.NewLine;
             }
 
+            Int32 isInt;
             //performance
             var listProdType = _prodTypeBll.GetAll();
-            var listBrand = _brandBll.GetAllBrandsOnly();
+            var listBrand = _brandBll.GetAllBrandsOnly().Where(x => x.IS_DELETED != true && x.STATUS == true &&
+                                Int32.TryParse(x.BRAND_CONTENT, out isInt) && (x.EXC_GOOD_TYP == "01" || x.EXC_GOOD_TYP == "02")).ToList();
             var listProduction = _productionBll.GetByCompany(dtData.COMPANY_ID);
             var listReversal = _reversalBll.GetAllReversal();
-            var listWaste = _wasteBll.GetAllWasteObject();
+            var listWaste = _wasteBll.GetAllWasteObject().Where(w => w.COMPANY_CODE == dtData.COMPANY_ID).ToList();
             var lisCk4cItem = _ck4cItemBll.GetDataByParentPlant(dtData.PLANT_ID);
 
-            string prodTypeDistinct = string.Empty;
+            //string prodTypeDistinct = string.Empty;
             //string currentProdType = string.Empty;
             //List<Ck4cReportItemDto> tempListck4c1 = new List<Ck4cReportItemDto>();
             //add data details of CK-4C sebelumnya
@@ -1281,13 +1283,9 @@ namespace Sampoerna.EMS.BLL
                 foreach (var item in addressPlant)
                 {
                    
-                    Int32 isInt;
                     //var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt) && x.EXC_GOOD_TYP == "01");
                     var activeBrand =
-                        listBrand.Where(
-                            x =>
-                                x.WERKS == item && x.IS_DELETED != true && x.STATUS == true &&
-                                Int32.TryParse(x.BRAND_CONTENT, out isInt) && (x.EXC_GOOD_TYP == "01" || x.EXC_GOOD_TYP == "02"));
+                        listBrand.Where(x => x.WERKS == item);
 
                    //var blFind = false;
 
@@ -1333,7 +1331,7 @@ namespace Sampoerna.EMS.BLL
                                 else
                                 {
                                     //var wasteData = _wasteBll.GetExistDto(dtData.COMPANY_ID, item, data.FA_CODE, prodDateFormat);
-                                    var wasteData = listWaste.FirstOrDefault(c =>c.COMPANY_CODE == dtData.COMPANY_ID && c.WERKS == item && c.FA_CODE == data.FA_CODE && c.WASTE_PROD_DATE == prodDateFormat);
+                                    var wasteData = listWaste.FirstOrDefault(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.WASTE_PROD_DATE == prodDateFormat);
 
                                     var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
 
@@ -1693,7 +1691,7 @@ namespace Sampoerna.EMS.BLL
                 var wasteData =
                     listWaste.FirstOrDefault(
                         c =>
-                            c.COMPANY_CODE == item.COMPANY_CODE && c.WERKS == item.WERKS && c.FA_CODE == item.FA_CODE &&
+                            c.WERKS == item.WERKS && c.FA_CODE == item.FA_CODE &&
                             c.WASTE_PROD_DATE == item.PRODUCTION_DATE);
                 
                 var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
