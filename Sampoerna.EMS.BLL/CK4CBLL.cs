@@ -1342,13 +1342,22 @@ namespace Sampoerna.EMS.BLL
                                     //var lastSaldo = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE, dtData.PLANT_ID).Where(c => c.ProdDate < saldoDate).LastOrDefault();
                                     var lastSaldo = lisCk4cItem.LastOrDefault(c => c.Werks == item && c.FaCode == data.FA_CODE && c.ProdDate < saldoDate);
 
-
                                     //var oldData = _productionBll.GetOldSaldo(dtData.COMPANY_ID, item, data.FA_CODE, saldoDate).LastOrDefault();
-                                    var oldData = GetOldSaldoForReport(listProduction,listReversal,listWaste, item, data.FA_CODE, saldoDate).LastOrDefault();
 
-                                    var oldUnpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
+                                    //var lastSaldoUnpacked = lastSaldo == null ? oldUnpacked : lastSaldo.UnpackedQty;
+                                    var lastSaldoUnpacked = Convert.ToDecimal(0);
 
-                                    var lastSaldoUnpacked = lastSaldo == null ? oldUnpacked : lastSaldo.UnpackedQty;
+                                    if (lastSaldo == null){
+                                        var oldData = GetOldSaldoForReport(listProduction, listReversal, listWaste, item, data.FA_CODE, saldoDate).LastOrDefault();
+
+                                        var oldUnpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
+
+                                        lastSaldoUnpacked = oldUnpacked;
+                                    }
+                                    else
+                                    {
+                                        lastSaldoUnpacked = lastSaldo.UnpackedQty;
+                                    }
 
                                     unpackedQty = (lastUnpacked == 0 ? lastSaldoUnpacked : lastUnpacked) - oldWaste;
                                 }
