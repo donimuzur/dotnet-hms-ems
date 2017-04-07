@@ -3043,15 +3043,21 @@ namespace Sampoerna.EMS.BLL
                 AllowedOrder = groupUsageProporsional.GroupBy(x => x.Order).Select(d => d.Key).ToList()
             };
 
-
-
+            
 
             //get zaap_shift_rpt
             var zaapShiftRpt = _zaapShiftRptService.GetForLack1ByParam(zaapShiftReportInput);
             var completeZaapData = _zaapShiftRptService.GetCompleteData(zaapShiftReportInput);
+            
+            var facodeListAllowed = zaapShiftRpt.GroupBy(x => x.FA_CODE).Select(x => x.Key).ToList();
 
+            var zaapShiftReportInputForAllOrder = zaapShiftReportInput;
+            zaapShiftReportInputForAllOrder.FaCodeList = facodeListAllowed;
+            zaapShiftReportInputForAllOrder.AllowedOrder = null;
 
-            var totalFaZaapShiftRpt = completeZaapData.GroupBy(x => new { x.FA_CODE }).Select(y => new
+            var completeZaapDataAllOrder = _zaapShiftRptService.GetCompleteData(zaapShiftReportInputForAllOrder);
+
+            var totalFaZaapShiftRpt = completeZaapDataAllOrder.GroupBy(x => new { x.FA_CODE }).Select(y => new
             {
                 FaCode = y.Key.FA_CODE,
                 //ProductionDate = y.Key.PRODUCTION_DATE,
@@ -3112,7 +3118,7 @@ namespace Sampoerna.EMS.BLL
             //}
 
             var prodTypeData = _prodTypeService.GetAll();
-            var facodeListAllowed = zaapShiftRpt.GroupBy(x => x.FA_CODE).Select(x => x.Key).ToList();
+            
             //join data ck4cItem and ZaapShiftRpt
             var joinedData = (from ck4CItem in ck4CItemData.Where(x => facodeListAllowed.Contains(x.FA_CODE))
                               from prod in prodTypeData.Where(x => x.PROD_CODE == ck4CItem.PROD_CODE)
