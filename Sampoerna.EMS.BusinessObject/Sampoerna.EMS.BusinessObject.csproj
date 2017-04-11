@@ -335,6 +335,9 @@
     <Compile Include="LFA1.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="MASTER_DATA_APPROVE_SETTING.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="MATERIAL_UOM.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>

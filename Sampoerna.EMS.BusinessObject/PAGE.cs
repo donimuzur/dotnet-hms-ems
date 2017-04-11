@@ -18,6 +18,7 @@ namespace Sampoerna.EMS.BusinessObject
         {
             this.PAGE1 = new HashSet<PAGE>();
             this.PAGE_MAP = new HashSet<PAGE_MAP>();
+            this.MASTER_DATA_APPROVE_SETTING = new HashSet<MASTER_DATA_APPROVE_SETTING>();
         }
     
         public int PAGE_ID { get; set; }
@@ -29,5 +30,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<PAGE> PAGE1 { get; set; }
         public virtual PAGE PAGE2 { get; set; }
         public virtual ICollection<PAGE_MAP> PAGE_MAP { get; set; }
+        public virtual ICollection<MASTER_DATA_APPROVE_SETTING> MASTER_DATA_APPROVE_SETTING { get; set; }
     }
 }
