@@ -516,6 +516,12 @@ namespace Sampoerna.EMS.BLL
                 ;
 
             #endregion
+
+            #region Master Data Approval
+
+            Mapper.CreateMap<MASTER_DATA_APPROVE_SETTING, MasterDataApprovalSettingDetail>().IgnoreAllNonExisting();
+            Mapper.CreateMap<MasterDataApprovalSettingDetail, MASTER_DATA_APPROVE_SETTING>().IgnoreAllNonExisting();
+            #endregion
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Sampoerna.EMS.BusinessObject.Business;
 
 namespace Sampoerna.EMS.Contract
 {
@@ -35,5 +36,7 @@ namespace Sampoerna.EMS.Contract
         void ExecuteQuery(string sql);
 
         void InsertOrUpdateBulk(IEnumerable<TEntity> entities);
+
+        List<TableDetail> GetTableDetail();
     }
 }

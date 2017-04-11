@@ -1,5 +1,8 @@
-﻿using System.Data.Entity.Migrations;
+﻿using System.Data.Entity.Core.Metadata.Edm;
+using System.Data.Entity.Core.Objects.DataClasses;
+using System.Data.Entity.Migrations;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.Contract;
 using System;
 using System.Collections.Generic;
@@ -13,6 +16,8 @@ using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.DAL
 {
+    
+
     public class SqlGenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
         internal EMSEntities _context;
@@ -126,7 +131,6 @@ namespace Sampoerna.EMS.DAL
 
         public void Detach(TEntity entity)
         {
-            
             _context.Entry(entity).State = EntityState.Detached;
         }
 
@@ -208,6 +212,25 @@ namespace Sampoerna.EMS.DAL
         public void ExecuteQuery(string sql)
         {
             _dbSet.SqlQuery(sql);
+        }
+
+
+        public List<TableDetail> GetTableDetail()
+        {
+            var objContext = ((IObjectContextAdapter)_context).ObjectContext;
+
+            var cols = (from meta in objContext.MetadataWorkspace.GetItems(DataSpace.CSpace)
+                       .Where(m => m.BuiltInTypeKind == BuiltInTypeKind.EntityType)
+                       from p in (meta as EntityType).Properties
+                          .Where(p => p.DeclaringType.Name == "EntityName")
+                       select new TableDetail
+                       {
+                           PropertyName = p.Name,
+                           TypeUsageName = p.TypeUsage.EdmType.Name, //type name
+                           Documentation = p.Documentation
+                       }).ToList();
+            
+            return cols;
         }
 
     }

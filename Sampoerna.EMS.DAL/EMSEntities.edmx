@@ -5291,32 +5291,132 @@
             <PropertyRef Name="FA_CODE" />
             <PropertyRef Name="STICKER_CODE" />
           </Key>
-          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="FA_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
-          <Property Name="STICKER_CODE" Type="String" MaxLength="18" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="PER_CODE" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
-          <Property Name="BRAND_CE" Type="String" Nullable="false" MaxLength="65" FixedLength="false" Unicode="true" />
-          <Property Name="SKEP_NO" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="SKEP_DATE" Type="DateTime" Precision="3" />
-          <Property Name="PROD_CODE" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
-          <Property Name="SERIES_CODE" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="BRAND_CONTENT" Type="String" MaxLength="7" FixedLength="false" Unicode="true" />
-          <Property Name="MARKET_ID" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
-          <Property Name="COUNTRY" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
-          <Property Name="HJE_IDR" Type="Decimal" Precision="15" Scale="2" />
-          <Property Name="HJE_CURR" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="TARIFF" Type="Decimal" Precision="15" Scale="2" />
-          <Property Name="TARIF_CURR" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="COLOUR" Type="String" MaxLength="70" FixedLength="false" Unicode="true" />
-          <Property Name="EXC_GOOD_TYP" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
-          <Property Name="CUT_FILLER_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="PRINTING_PRICE" Type="Decimal" Precision="15" Scale="2" />
-          <Property Name="CONVERSION" Type="Decimal" Precision="18" Scale="4" />
-          <Property Name="START_DATE" Type="DateTime" Precision="3" />
-          <Property Name="END_DATE" Type="DateTime" Precision="3" />
-          <Property Name="STATUS" Type="Boolean" />
+          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Plant Id</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="FA_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Fa Code</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="STICKER_CODE" Type="String" MaxLength="18" FixedLength="false" Unicode="true" Nullable="false" >
+            <Documentation>
+              <LongDescription>Sticker Code</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="PER_CODE" Type="String" MaxLength="2" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Personalisation Code</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="BRAND_CE" Type="String" Nullable="false" MaxLength="65" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Brand Description</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="SKEP_NO" Type="String" MaxLength="30" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>SKEP No</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="SKEP_DATE" Type="DateTime" Precision="3" >
+            <Documentation>
+              <LongDescription>SKEP Date</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="PROD_CODE" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Product Code</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="SERIES_CODE" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Series Code</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="BRAND_CONTENT" Type="String" MaxLength="7" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Brand Content</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="MARKET_ID" Type="String" MaxLength="2" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Market Id</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="COUNTRY" Type="String" MaxLength="3" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Country</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="HJE_IDR" Type="Decimal" Precision="15" Scale="2" >
+            <Documentation>
+              <LongDescription>Hje</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="HJE_CURR" Type="String" MaxLength="5" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>HJE Currency</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="TARIFF" Type="Decimal" Precision="15" Scale="2" >
+            <Documentation>
+              <LongDescription>Tariff</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="TARIF_CURR" Type="String" MaxLength="5" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Tariff Currency</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="COLOUR" Type="String" MaxLength="70" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Colour</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="EXC_GOOD_TYP" Type="String" MaxLength="2" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Excisable Good Type</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="CUT_FILLER_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Cut Filler Code</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="PRINTING_PRICE" Type="Decimal" Precision="15" Scale="2" >
+            <Documentation>
+              <LongDescription>Printing Price</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="CONVERSION" Type="Decimal" Precision="18" Scale="4" >
+            <Documentation>
+              <LongDescription>Conversion</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="START_DATE" Type="DateTime" Precision="3" >
+            <Documentation>
+              <LongDescription>Start Date</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="END_DATE" Type="DateTime" Precision="3" >
+            <Documentation>
+              <LongDescription>End Date</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="STATUS" Type="Boolean" >
+            <Documentation>
+              <LongDescription>Status Active</LongDescription>
+            </Documentation>
+          </Property>
           <Property Name="IS_FROM_SAP" Type="Boolean" />
-          <Property Name="IS_DELETED" Type="Boolean" />
+          <Property Name="IS_DELETED" Type="Boolean" >
+            <Documentation>
+              <LongDescription>Is Deleted</LongDescription>
+            </Documentation>
+          </Property>
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
@@ -5327,8 +5427,16 @@
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_T001W" FromRole="ZAIDM_EX_BRAND" ToRole="T001W" />
           <NavigationProperty Name="ZAIDM_EX_PRODTYP" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_PRODTYP" />
           <NavigationProperty Name="ZAIDM_EX_SERIES" Relationship="EMSModel.FK_ZAIDM_EX_BRAND_ZAIDM_EX_SERIES" FromRole="ZAIDM_EX_BRAND" ToRole="ZAIDM_EX_SERIES" />
-          <Property Name="BAHAN_KEMASAN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="PACKED_ADJUSTED" Type="Boolean" />
+          <Property Name="BAHAN_KEMASAN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Bahan Kemasan</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="PACKED_ADJUSTED" Type="Boolean" >
+            <Documentation>
+              <LongDescription>Packed Adjusted</LongDescription>
+            </Documentation>
+          </Property>
           </EntityType>
         <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET">
           <End Type="EMSModel.ZAIDM_EX_MARKET" Role="ZAIDM_EX_MARKET" Multiplicity="0..1" />

@@ -81,6 +81,7 @@
     <Compile Include="Business\Plant.cs" />
     <Compile Include="Business\SchedulerConfigJson.cs" />
     <Compile Include="Business\SchedulerSetting.cs" />
+    <Compile Include="Business\TableDetail.cs" />
     <Compile Include="CHANGES_HISTORY.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -173,6 +174,7 @@
     <Compile Include="DTOs\Lack2SummaryReportDto.cs" />
     <Compile Include="DTOs\LFA1Dto.cs" />
     <Compile Include="DTOs\Lack1DocumentDto.cs" />
+    <Compile Include="DTOs\MasterDataApprovalSettingDto.cs" />
     <Compile Include="DTOs\MaterialBalanceDto.cs" />
     <Compile Include="DTOs\MaterialDto.cs" />
     <Compile Include="DTOs\NlogDto.cs" />

@@ -228,6 +228,7 @@
     <Compile Include="AspnetWebForms\GenericReportViewer.aspx.designer.cs">
       <DependentUpon>GenericReportViewer.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\MasterDataApprovalSettingController.cs" />
     <Compile Include="Controllers\PBCK4Controller.cs" />
     <Compile Include="Controllers\PoaDelegationController.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
@@ -1343,6 +1344,7 @@
     <Content Include="Views\LACK1\DetailEa.cshtml" />
     <Content Include="Views\LACK1\_Lack1DetailEa.cshtml" />
     <Content Include="Views\User\Edit.cshtml" />
+    <Content Include="Views\MasterDataApprovalSetting\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
