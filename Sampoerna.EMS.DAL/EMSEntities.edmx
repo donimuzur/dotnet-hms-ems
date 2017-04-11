@@ -656,6 +656,15 @@
           <Property Name="ORT01" Type="nvarchar" MaxLength="25" />
           <Property Name="STRAS" Type="nvarchar" MaxLength="250" />
         </EntityType>
+        <EntityType Name="MASTER_DATA_APPROVE_SETTING">
+          <Key>
+            <PropertyRef Name="PAGE_ID" />
+            <PropertyRef Name="COLUMN_NAME" />
+          </Key>
+          <Property Name="PAGE_ID" Type="int" Nullable="false" />
+          <Property Name="COLUMN_NAME" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="IS_APPROVAL" Type="bit" />
+        </EntityType>
         <EntityType Name="MATERIAL_UOM">
           <Key>
             <PropertyRef Name="MATERIAL_UOM_ID" />
@@ -2261,6 +2270,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_MASTER_DATA_APPROVE_SETTING_PAGE">
+          <End Role="PAGE" Type="Self.PAGE" Multiplicity="1" />
+          <End Role="MASTER_DATA_APPROVE_SETTING" Type="Self.MASTER_DATA_APPROVE_SETTING" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PAGE">
+              <PropertyRef Name="PAGE_ID" />
+            </Principal>
+            <Dependent Role="MASTER_DATA_APPROVE_SETTING">
+              <PropertyRef Name="PAGE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL">
           <End Role="ZAIDM_EX_MATERIAL" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="1" />
           <End Role="MATERIAL_UOM" Type="Self.MATERIAL_UOM" Multiplicity="*" />
@@ -3546,6 +3567,7 @@
           <EntitySet Name="LACK2_DOCUMENT" EntityType="Self.LACK2_DOCUMENT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK2_ITEM" EntityType="Self.LACK2_ITEM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LFA1" EntityType="Self.LFA1" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MASTER_DATA_APPROVE_SETTING" EntityType="Self.MASTER_DATA_APPROVE_SETTING" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MATERIAL_UOM" EntityType="Self.MATERIAL_UOM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MENGETAHUI" EntityType="Self.MENGETAHUI" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MONTH" EntityType="Self.MONTH" Schema="dbo" store:Type="Tables" />
@@ -3833,6 +3855,10 @@
           <AssociationSet Name="FK_LACK2_USER_MODIFIED_BY" Association="Self.FK_LACK2_USER_MODIFIED_BY">
             <End Role="USER" EntitySet="USER" />
             <End Role="LACK2" EntitySet="LACK2" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MASTER_DATA_APPROVE_SETTING_PAGE" Association="Self.FK_MASTER_DATA_APPROVE_SETTING_PAGE">
+            <End Role="PAGE" EntitySet="PAGE" />
+            <End Role="MASTER_DATA_APPROVE_SETTING" EntitySet="MASTER_DATA_APPROVE_SETTING" />
           </AssociationSet>
           <AssociationSet Name="FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL" Association="Self.FK_MATERIAL_UOM_ZAIDM_EX_MATERIAL">
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
@@ -5018,6 +5044,11 @@
             <End Role="INVENTORY_MOVEMENT" EntitySet="INVENTORY_MOVEMENT" />
             <End Role="REVERSAL" EntitySet="REVERSAL" />
           </AssociationSet>
+          <EntitySet Name="MASTER_DATA_APPROVE_SETTING" EntityType="EMSModel.MASTER_DATA_APPROVE_SETTING" />
+          <AssociationSet Name="FK_MASTER_DATA_APPROVE_SETTING_PAGE" Association="EMSModel.FK_MASTER_DATA_APPROVE_SETTING_PAGE">
+            <End Role="PAGE" EntitySet="PAGE" />
+            <End Role="MASTER_DATA_APPROVE_SETTING" EntitySet="MASTER_DATA_APPROVE_SETTING" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -5144,6 +5175,7 @@
           <NavigationProperty Name="PAGE1" Relationship="EMSModel.FK_PAGE_PAGE" FromRole="PAGE" ToRole="PAGE1" />
           <NavigationProperty Name="PAGE2" Relationship="EMSModel.FK_PAGE_PAGE" FromRole="PAGE1" ToRole="PAGE" />
           <NavigationProperty Name="PAGE_MAP" Relationship="EMSModel.FK_PAGE_MAP_PAGE" FromRole="PAGE" ToRole="PAGE_MAP" />
+          <NavigationProperty Name="MASTER_DATA_APPROVE_SETTING" Relationship="EMSModel.FK_MASTER_DATA_APPROVE_SETTING_PAGE" FromRole="PAGE" ToRole="MASTER_DATA_APPROVE_SETTING" />
         </EntityType>
         <EntityType Name="PARAMATER">
           <Key>
@@ -8947,6 +8979,28 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="MASTER_DATA_APPROVE_SETTING">
+          <Key>
+            <PropertyRef Name="PAGE_ID" />
+            <PropertyRef Name="COLUMN_NAME" />
+          </Key>
+          <Property Name="PAGE_ID" Type="Int32" Nullable="false" />
+          <Property Name="COLUMN_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IS_APPROVAL" Type="Boolean" />
+          <NavigationProperty Name="PAGE" Relationship="EMSModel.FK_MASTER_DATA_APPROVE_SETTING_PAGE" FromRole="MASTER_DATA_APPROVE_SETTING" ToRole="PAGE" />
+        </EntityType>
+        <Association Name="FK_MASTER_DATA_APPROVE_SETTING_PAGE">
+          <End Type="EMSModel.PAGE" Role="PAGE" Multiplicity="1" />
+          <End Type="EMSModel.MASTER_DATA_APPROVE_SETTING" Role="MASTER_DATA_APPROVE_SETTING" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PAGE">
+              <PropertyRef Name="PAGE_ID" />
+            </Principal>
+            <Dependent Role="MASTER_DATA_APPROVE_SETTING">
+              <PropertyRef Name="PAGE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -10597,6 +10651,15 @@
                 <ScalarProperty Name="PROD_CODE" ColumnName="PROD_CODE" />
                 <ScalarProperty Name="CK4C_ID" ColumnName="CK4C_ID" />
                 <ScalarProperty Name="CK4C_REPORT_ITEM_ID" ColumnName="CK4C_REPORT_ITEM_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MASTER_DATA_APPROVE_SETTING">
+            <EntityTypeMapping TypeName="EMSModel.MASTER_DATA_APPROVE_SETTING">
+              <MappingFragment StoreEntitySet="MASTER_DATA_APPROVE_SETTING">
+                <ScalarProperty Name="IS_APPROVAL" ColumnName="IS_APPROVAL" />
+                <ScalarProperty Name="COLUMN_NAME" ColumnName="COLUMN_NAME" />
+                <ScalarProperty Name="PAGE_ID" ColumnName="PAGE_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
