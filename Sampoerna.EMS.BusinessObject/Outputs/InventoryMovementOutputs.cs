@@ -11,6 +11,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
             ReceivingList = new List<InvMovementItemWithConvertion>();
             AllUsageList = new List<InvMovementItemWithConvertion>();
             Mvt201List = new List<InvMovementItemWithConvertion>();
+            UsageProportionalBrandList = new List<InvMovementUsageProportionalBrand>();
         }
         public List<InvMovementItemWithConvertion> IncludeInCk5List { get; set; }
         public List<InvMovementItemWithConvertion> ExcludeFromCk5List { get; set; }
@@ -19,6 +20,8 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public List<InvMovementItemWithConvertion> Mvt201List { get; set; }
         public List<InvMovementItemWithConvertion> Mvt201Assigned { get; set; }
         public List<InvMovementUsageProportional> UsageProportionalList { get; set; }
+
+        public List<InvMovementUsageProportionalBrand> UsageProportionalBrandList { get; set; }
     }
 
     public class InvMovementGetForLack1UsageMovementForEtilAlcoholByParamOutput
@@ -52,5 +55,16 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
         public decimal TotalQtyPerMaterialId { get; set; }
 
         public string Batch { get; set; }
+    }
+
+
+    public class InvMovementUsageProportionalBrand
+    {
+        public string MaterialId { get; set; }
+        public string FaCode { get; set; }
+        public decimal Qty { get; set; }
+        public decimal TotalUsagePerFaCode { get; set; }
+
+        
     }
 }
