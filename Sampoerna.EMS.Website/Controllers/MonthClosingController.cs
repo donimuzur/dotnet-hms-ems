@@ -144,67 +144,88 @@ namespace Sampoerna.EMS.Website.Controllers
             return sFileName;
         }
 
+        public ActionResult Detail(int? id)
+        {
+            var model = InitEdit(id.Value);
+            return View("Detail", model);
+        }
+
         public ActionResult Edit(int? id)
         {
-            if (!id.HasValue)
-            {
-                return HttpNotFound();
-            }
-
             if (CurrentUser.UserRole == Enums.UserRole.Viewer)
             {
                 return RedirectToAction("Detail", new { id });
             }
 
-            var closingData = _monthClosingBll.GetById(id.Value);
-
-            if (closingData == null)
-            {
-                return HttpNotFound();
-            }
-
-            var model = new MonthClosingIndexViewModel();
-
-            try
-            {
-                model.Details = Mapper.Map<MonthClosingDetail>(closingData);
-            }
-            catch (Exception exception)
-            {
-                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
-                return RedirectToAction("Index");
-            }
-
-            return View(model);
+            var model = InitEdit(id.Value);
+            return View("Edit", model);
         }
 
-        public ActionResult Detail(int? id)
+        [HttpPost]
+        public ActionResult Edit(MonthClosingIndexViewModel model)
         {
-            if (!id.HasValue)
-            {
-                return HttpNotFound();
-            }
-
-            var closingData = _monthClosingBll.GetById(id.Value);
-
-            if (closingData == null)
-            {
-                return HttpNotFound();
-            }
-
-            var model = new MonthClosingIndexViewModel();
-
             try
             {
-                model.Details = Mapper.Map<MonthClosingDetail>(closingData);
-            }
-            catch (Exception exception)
-            {
-                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+                MonthClosingDto data = new MonthClosingDto();
+
+                model.Details.MonthClosingDoc = new List<MonthClosingDocModel>();
+                if (model.Details.MonthClosingFiles != null)
+                {
+                    int counter = 0;
+                    foreach (var item in model.Details.MonthClosingFiles)
+                    {
+                        if (item != null)
+                        {
+                            var filenamecheck = item.FileName;
+
+                            if (filenamecheck.Contains("\\"))
+                            {
+                                filenamecheck = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                            }
+
+                            var attachment = new MonthClosingDocModel()
+                            {
+                                FILE_NAME = filenamecheck,
+                                FILE_PATH = SaveUploadedFile(item, model.Details.ClosingDate.ToString("MMyyyy"), counter),
+                                MONTH_FLAG = model.Details.ClosingDate.ToString("MMyyyy")
+                            };
+                            model.Details.MonthClosingDoc.Add(attachment);
+                            counter += 1;
+                        }
+                    }
+                }
+
+                data = Mapper.Map<MonthClosingDto>(model.Details);
+                var monthClosingData = _monthClosingBll.Save(data);
+
+                var docData = Mapper.Map<List<MonthClosingDocDto>>(model.Details.MonthClosingDoc);
+                var monthClosingDocData = _monthClosingDocBll.Save(docData);
+
+                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
                 return RedirectToAction("Index");
             }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
 
-            return View(model);
+                return View(model);
+            }
+        }
+
+        private MonthClosingIndexViewModel InitEdit(int id)
+        {
+            var currentData = _monthClosingBll.GetById(id);
+            var currentDoc = _monthClosingDocBll.GetDocByFlag(currentData.ClosingDate.ToString("MMyyyy"));
+            var model = new MonthClosingIndexViewModel
+            {
+                CurrentMenu = PageInfo,
+                MainMenu = _mainMenu,
+                Details = Mapper.Map<MonthClosingDetail>(currentData)
+            };
+
+            model.Details.MonthClosingDoc = Mapper.Map<List<MonthClosingDocModel>>(currentDoc);
+
+            return model;
         }
     }
 }

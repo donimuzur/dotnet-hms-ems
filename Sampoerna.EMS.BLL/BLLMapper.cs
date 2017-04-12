@@ -524,7 +524,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.MonthClosingId, opt => opt.MapFrom(src => src.MONTH_CLOSING_ID))
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
                 .ForMember(dest => dest.ClosingDay, opt => opt.MapFrom(src => src.CLOSING_DATE.Value.Day))
-                .ForMember(dest => dest.ClosingMonth, opt => opt.MapFrom(src => src.CLOSING_DATE.Value.Month))
+                .ForMember(dest => dest.ClosingMonth, opt => opt.MapFrom(src => src.CLOSING_DATE.Value.ToString("MMMM")))
                 .ForMember(dest => dest.ClosingYear, opt => opt.MapFrom(src => src.CLOSING_DATE.Value.Year))
                 .ForMember(dest => dest.ClosingDate, opt => opt.MapFrom(src => src.CLOSING_DATE));
 

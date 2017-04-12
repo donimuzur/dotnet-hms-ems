@@ -7,5 +7,6 @@ namespace Sampoerna.EMS.Contract
     public interface IMonthClosingDocBLL
     {
         bool Save(List<MonthClosingDocDto> item);
+        List<MonthClosingDocDto> GetDocByFlag(string monthFlag);
     }
 }
