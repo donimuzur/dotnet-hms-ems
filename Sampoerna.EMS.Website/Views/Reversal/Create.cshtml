@@ -67,8 +67,8 @@
                     ajaxSelectPlantWerks('@Url.Action("GetFaCodeByPlant", "Reversal")', { plantWerk: ce });
                     ajaxSetPlantAndFacode();
                     ajaxSelectPackedQty();
-                    checkClosingDate('@Url.Action("CheckClosingMonth", "Production")', { plantWerk: ce, prodDate: date });
-                    displayClosingDate('@Url.Action("DisplayClosingMonth", "Production")', { plantWerk: ce, prodDate: date });
+                    checkClosingDate('@Url.Action("CheckClosingMonth", "Reversal")', { plantWerk: ce, prodDate: date });
+                    displayClosingDate('@Url.Action("DisplayClosingMonth", "Reversal")', { plantWerk: ce, prodDate: date });
 
                 }
             }
@@ -263,8 +263,8 @@
             var date = $(this).val();
             $('#btnSave').prop('disabled', false);
             $('#ClosingMonthText').html('');
-            checkClosingDate('@Url.Action("CheckClosingMonth", "Production")', { plantWerk: ce, prodDate: date });
-            displayClosingDate('@Url.Action("DisplayClosingMonth", "Production")', { plantWerk: ce, prodDate: date });
+            checkClosingDate('@Url.Action("CheckClosingMonth", "Reversal")', { plantWerk: ce, prodDate: date });
+            displayClosingDate('@Url.Action("DisplayClosingMonth", "Reversal")', { plantWerk: ce, prodDate: date });
         });
 
         function checkClosingDate(url, formData) {

@@ -130,8 +130,8 @@
 
                 } else {
                     ajaxSelectPlantWerks('@Url.Action("GetBrandCeByPlant", "Waste")', { plantWerk: ce });
-                    checkClosingDate('@Url.Action("CheckClosingMonth", "Production")', { plantWerk: ce, prodDate: date });
-                    displayClosingDate('@Url.Action("DisplayClosingMonth", "Production")', { plantWerk: ce, prodDate: date });
+                    checkClosingDate('@Url.Action("CheckClosingMonth", "Waste")', { plantWerk: ce, prodDate: date });
+                    displayClosingDate('@Url.Action("DisplayClosingMonth", "Waste")', { plantWerk: ce, prodDate: date });
                 }
             }
         });
@@ -161,8 +161,8 @@
             var date = $(this).val();
             $('#btnSave').prop('disabled', false);
             $('#ClosingMonthText').html('');
-            checkClosingDate('@Url.Action("CheckClosingMonth", "Production")', { plantWerk: ce, prodDate: date });
-            displayClosingDate('@Url.Action("DisplayClosingMonth", "Production")', { plantWerk: ce, prodDate: date });
+            checkClosingDate('@Url.Action("CheckClosingMonth", "Waste")', { plantWerk: ce, prodDate: date });
+            displayClosingDate('@Url.Action("DisplayClosingMonth", "Waste")', { plantWerk: ce, prodDate: date });
         });
 
         function checkClosingDate(url, formData) {

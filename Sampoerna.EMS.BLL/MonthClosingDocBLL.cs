@@ -51,5 +51,13 @@ namespace Sampoerna.EMS.BLL
 
             return result;
         }
+
+
+        public List<MonthClosingDocDto> GetDocByFlag(string monthFlag)
+        {
+            var monthClosingDocList = _repository.Get(d => d.MONTH_FLAG == monthFlag).ToList();
+
+            return Mapper.Map<List<MonthClosingDocDto>>(monthClosingDocList);
+        }
     }
 }

@@ -1,11 +1,12 @@
-﻿@using Sampoerna.EMS.Core
-@using Sampoerna.EMS.Website.Helpers
-@model Sampoerna.EMS.Website.Models.MonthClosing.MonthClosingIndexViewModel
+﻿@model Sampoerna.EMS.Website.Models.MonthClosing.MonthClosingIndexViewModel
 
 @{
     ViewBag.Title = "Edit Month Closing";
 }
-@using (Html.BeginForm("Edit", "MonthClosing", FormMethod.Post, new { @id = "CreateForm", enctype = "multipart/form-data", @class = "form-excise", role = "form" }))
+@section styles{
+    <link href="~/Content/chosen.min.css" rel="stylesheet" />
+}
+@using (Html.BeginForm("Edit", "MonthClosing", null, FormMethod.Post, new { @class = "form-excise", enctype = "multipart/form-data", role = "form", @id = "FormEdit" }))
 {
     @Html.AntiForgeryToken()
     <div class="container-wrap title-page">
@@ -42,6 +43,8 @@
                                             <div class="row">
                                                 <label class="col-md-4">Plant ID</label>
                                                 <div class="col-md-4">
+                                                    @Html.HiddenFor(model => model.Details.MonthClosingId)
+                                                    @Html.HiddenFor(model => model.Details.PlantId)
                                                     @Html.TextBoxFor(model => model.Details.PlantId, new { @class = "form-control", @disabled = "disabled" })
                                                 </div>
                                             </div>
@@ -50,7 +53,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="row">
-                                                <label class="col-md-4">Date<span class="red">*</span></label>
+                                                <label class="col-md-4">Date</label>
                                                 <div class="col-md-6">
                                                     <div class="input-group date">
                                                         @Html.TextBoxFor(model => model.Details.ClosingDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
@@ -66,19 +69,27 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="row">
-                                                <label class="col-md-4">Attachment<span class="red">*</span></label>
+                                                <label class="col-md-4">Attachment</label>
                                                 <div class="col-md-6">
                                                     <div class="file-upload" id="poa-files">
-
+                                                        @if (Model.Details.MonthClosingDoc != null)
+                                                        {
+                                                            var count = 0;
+                                                            foreach (var file in Model.Details.MonthClosingDoc)
+                                                            {
+                                                                <div class="row">
+                                                                    <div class="col-sm-10">
+                                                                        <i class="fa fa-file"></i>
+                                                                        <a onclick="openAttachment('@Url.Content(file.FILE_PATH)')">@file.FILE_NAME</a>
+                                                                    </div>
+                                                                </div>
+                                                                count++;
+                                                            }
+                                                        }
                                                     </div>
                                                     <button type="button" class="btn btn-primary full" data-toggle="modal" data-target=".upload-file" id="MonthClosingDoc">Add File</button>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <span class="red">*</span> ) This Field Required
                                         </div>
                                     </div>
                                 </form>
@@ -86,31 +97,14 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
 
         @Html.Partial("_Upload")
     </div>
+
 }
-
-<div id="ModalAttachmentDoc" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Error</h4>
-            </div>
-            <div class="modal-body">
-                <p>
-                    <span id="modalBodyMessage">Attachment document is required.</span>
-                </p>
-            </div>
-            <div class="modal-footer">
-                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
-            </div>
-        </div>
-    </div>
-</div>
-
 @section scripts {
 
     <script src="~/Scripts/chosen.jquery.min.js"></script>
@@ -126,10 +120,14 @@
 
             $("#btnSave").click(function () {
                 if (ValidateInput()) {
-                    $('#CreateForm').submit();
+                    $('#FormEdit').submit();
                 }
             });
         });
+
+        function openAttachment(url) {
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes');
+        }
 
     </script>
 }

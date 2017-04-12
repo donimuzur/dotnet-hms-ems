@@ -39,6 +39,7 @@ namespace Sampoerna.EMS.BLL
         private IPOAMapBLL _poaMapBll;
         private ICK4CItemBLL _ck4cItemBll;
         private IReversalBLL _reversalBll;
+        private IMonthClosingBLL _monthClosingBll;
 
         public ProductionBLL(ILogger logger, IUnitOfWork uow)
         {
@@ -59,6 +60,7 @@ namespace Sampoerna.EMS.BLL
             _poaMapBll = new POAMapBLL(_uow, _logger);
             _ck4cItemBll = new CK4CItemBLL(_uow, _logger);
             _reversalBll = new ReversalBLL(_logger,_uow);
+            _monthClosingBll = new MonthClosingBLL(_uow, _logger);
         }
 
         public List<ProductionDto> GetAllByParam(ProductionGetByParamInput input)
@@ -706,7 +708,7 @@ namespace Sampoerna.EMS.BLL
 
                 #endregion
 
-                //#region --------------ZB Validation --------------------
+                #region --------------ZB Validation --------------------
 
                 //Product Code Validation
                 var brandRegistration = _brandRegistrationBll.GetByFaCode(output.PlantWerks, output.FaCode);
@@ -737,7 +739,7 @@ namespace Sampoerna.EMS.BLL
                     }
                 }
 
-                //#endregion
+                #endregion
 
                 #region --------------Packed-Adjusted Validation --------------------
 
@@ -799,6 +801,21 @@ namespace Sampoerna.EMS.BLL
                 //        messageList.Add("Remark [" + output.Remark + "] must be blank when Product Code & Exc Good Type is not TIS");
                 //    }
                 //}
+
+                #endregion
+
+                #region --------------Month Closing Validation --------------------
+
+                var param = new MonthClosingGetByParam();
+                param.PlantId = output.PlantWerks;
+                param.ClosingDate = Convert.ToDateTime(output.ProductionDate);
+
+                var data = _monthClosingBll.GetDataByParam(param);
+
+                if (data != null)
+                {
+                    messageList.Add("Check Closing Date");
+                }
 
                 #endregion
 
