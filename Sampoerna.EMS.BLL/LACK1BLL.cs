@@ -3043,14 +3043,21 @@ namespace Sampoerna.EMS.BLL
                 AllowedOrder = groupUsageProporsional.GroupBy(x => x.Order).Select(d => d.Key).ToList()
             };
 
-
-
+            
 
             //get zaap_shift_rpt
             var zaapShiftRpt = _zaapShiftRptService.GetForLack1ByParam(zaapShiftReportInput);
             var completeZaapData = _zaapShiftRptService.GetCompleteData(zaapShiftReportInput);
+            
+            var facodeListAllowed = zaapShiftRpt.GroupBy(x => x.FA_CODE).Select(x => x.Key).ToList();
 
+            var zaapShiftReportInputForAllOrder = zaapShiftReportInput;
+            zaapShiftReportInputForAllOrder.FaCodeList = facodeListAllowed;
+            zaapShiftReportInputForAllOrder.AllowedOrder = null;
 
+            var completeZaapDataAllOrder = _zaapShiftRptService.GetCompleteData(zaapShiftReportInputForAllOrder).ToList();
+            var usgProportionalBrand = CalculateInvMovementUsageProportionalBrand(invMovementOutput.IncludeInCk5List, invMovementOutput.AllUsageList,
+                invMovementOutput.Mvt201List, completeZaapDataAllOrder);
             var totalFaZaapShiftRpt = completeZaapData.GroupBy(x => new { x.FA_CODE }).Select(y => new
             {
                 FaCode = y.Key.FA_CODE,
@@ -3089,14 +3096,14 @@ namespace Sampoerna.EMS.BLL
             //change this with totalProportionalOrder or totalOrderZaapShiftRptFaOnly
             var proportionalOrderPerFa = (from faZaap in totalFaZaapShiftRpt
                                           join
-                                              orderZaap in totalProportionalOrder on new { faZaap.FaCode } equals new { orderZaap.FaCode }
+                                              orderZaap in usgProportionalBrand on new { faZaap.FaCode } equals new { orderZaap.FaCode }
                                           //where faZaap.TotalQtyFa > 0
                                           select new Lack1GeneratedProductionDataDto()
                                           {
                                               FaCode = faZaap.FaCode,
                                               //ProductionDate = orderZaap.ProductionDate,
                                               //Ordr = orderZaap.Ordr,
-                                              ProportionalOrder = faZaap.TotalQtyFa > 0 ? orderZaap.TotalQtyOrdr / faZaap.TotalQtyFa : 1
+                                              ProportionalOrder = faZaap.TotalQtyFa != 0 ? orderZaap.Qty / orderZaap.TotalUsagePerFaCode : 1
                                           }).ToList();
 
             //bypass http://192.168.62.216/TargetProcess/entity/1465
@@ -3112,7 +3119,7 @@ namespace Sampoerna.EMS.BLL
             //}
 
             var prodTypeData = _prodTypeService.GetAll();
-            var facodeListAllowed = zaapShiftRpt.GroupBy(x => x.FA_CODE).Select(x => x.Key).ToList();
+            
             //join data ck4cItem and ZaapShiftRpt
             var joinedData = (from ck4CItem in ck4CItemData.Where(x => facodeListAllowed.Contains(x.FA_CODE))
                               from prod in prodTypeData.Where(x => x.PROD_CODE == ck4CItem.PROD_CODE)
@@ -3215,7 +3222,7 @@ namespace Sampoerna.EMS.BLL
                     ProdCode = item.PROD_CODE,
                     ProductType = item.PRODUCT_TYPE,
                     ProductAlias = item.PRODUCT_ALIAS,
-                    Amount = item.ProportionalOrder * item.PROD_QTY,//Convert.ToDecimal(ROUNDUP(((double)item.ProportionalOrder), 3) * (double)item.PROD_QTY),//Math.Round(item.PROD_QTY * item.ProportionalOrder,0,MidpointRounding.ToEven),
+                    Amount = Math.Round(item.ProportionalOrder * item.PROD_QTY,0),//Convert.ToDecimal(ROUNDUP(((double)item.ProportionalOrder), 3) * (double)item.PROD_QTY),//Math.Round(item.PROD_QTY * item.ProportionalOrder,0,MidpointRounding.ToEven),
                     //Amount = item.PROD_QTY,
                     UomId = item.UOM,
                     UomDesc = item.UOM_DESC,
@@ -4455,6 +4462,90 @@ namespace Sampoerna.EMS.BLL
             };
 
             return rc;
+        }
+
+        private List<InvMovementUsageProportionalBrand> CalculateInvMovementUsageProportionalBrand(
+            IEnumerable<INVENTORY_MOVEMENT> usageReceivingAll, IEnumerable<INVENTORY_MOVEMENT> usageAll,
+            IEnumerable<INVENTORY_MOVEMENT> usage201,
+            List<ZAAP_SHIFT_RPT> zaapList )
+        {
+            var ordrList = zaapList.GroupBy(x => x.ORDR).Select(x => x.Key).ToList();
+            var inventoryMovements = usageReceivingAll.ToList();
+            var inventoryMovementUsageAll = usageAll.Where(x=> ordrList.Contains(x.ORDR)).ToList();
+
+            var invUsage201 = usage201.ToList();
+
+
+
+            if (!inventoryMovements.Any()) return new List<InvMovementUsageProportionalBrand>();
+            inventoryMovementUsageAll.AddRange(invUsage201);
+
+            var zaapListFaOrdr = zaapList.GroupBy(x => new {x.ORDR, x.FA_CODE}).Select(x => new ZAAP_SHIFT_RPT()
+            {
+                FA_CODE = x.Key.FA_CODE,
+                ORDR = x.Key.ORDR
+            }).ToList();
+
+            var invMovementByOrder =
+                inventoryMovements.GroupBy(x => new {x.MATERIAL_ID, x.ORDR}).Select(x => new INVENTORY_MOVEMENT()
+                {
+                    MATERIAL_ID = x.Key.MATERIAL_ID,
+                    ORDR = x.Key.ORDR,
+                    QTY = x.Sum(y => y.QTY)
+                }).ToList();
+            
+            var joinedZaapUsageReceiving = (from x in invMovementByOrder
+                                            join y in zaapListFaOrdr on new {x.ORDR } equals new {y.ORDR}
+                                            select new InvMovementUsageProportionalBrand()
+                                            {
+                                                MaterialId = x.MATERIAL_ID,
+                                                
+                                                FaCode = y.FA_CODE,
+                                                Qty = x.QTY.HasValue? x.QTY.Value : 0
+                                                
+                                            }).GroupBy(x=> new {x.FaCode, x.MaterialId})
+                                            .Select(x=> new InvMovementUsageProportionalBrand()
+                                            {
+                                                MaterialId = x.Key.MaterialId,
+
+                                                FaCode = x.Key.FaCode,
+                                                Qty = x.Sum(y=> y.Qty) * (-1000)
+                                            }).ToList();
+
+            var invMovementAllByOrder =
+                inventoryMovementUsageAll.GroupBy(x => new { x.MATERIAL_ID, x.ORDR }).Select(x => new INVENTORY_MOVEMENT()
+                {
+                    MATERIAL_ID = x.Key.MATERIAL_ID,
+                    ORDR = x.Key.ORDR,
+                    QTY = x.Sum(y => y.QTY)
+                }).ToList();
+            var joinedZaapUsageAll = (from x in invMovementAllByOrder
+                                      join y in zaapListFaOrdr on new { x.ORDR } equals new { y.ORDR }
+                                      select new InvMovementUsageProportionalBrand()
+                                      {
+                                          MaterialId = x.MATERIAL_ID,
+
+                                          FaCode = y.FA_CODE,
+                                          Qty = x.QTY.HasValue ? x.QTY.Value : 0
+
+                                      }).GroupBy(x=> new {x.FaCode})
+                                      .Select(x=> new InvMovementUsageProportionalBrand()
+                                      {
+                                          FaCode = x.Key.FaCode,
+                                          TotalUsagePerFaCode = x.Sum(y => y.Qty) * (-1000)
+                                      }).ToList();
+            var output = (from x in joinedZaapUsageReceiving
+                join y in joinedZaapUsageAll on new {x.FaCode} equals new {y.FaCode}
+                select new InvMovementUsageProportionalBrand()
+                {
+                    MaterialId = x.MaterialId,
+
+                    FaCode = y.FaCode,
+                    Qty = x.Qty,
+                    TotalUsagePerFaCode = y.TotalUsagePerFaCode
+
+                }).ToList();
+            return output;
         }
 
         private List<InvMovementUsageProportional> CalculateInvMovementUsageProportional(
