@@ -516,6 +516,28 @@ namespace Sampoerna.EMS.BLL
                 ;
 
             #endregion
+
+
+            #region Month Closing
+
+            Mapper.CreateMap<MONTH_CLOSING, MonthClosingDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.MonthClosingId, opt => opt.MapFrom(src => src.MONTH_CLOSING_ID))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
+                .ForMember(dest => dest.ClosingDay, opt => opt.MapFrom(src => src.CLOSING_DATE.Value.Day))
+                .ForMember(dest => dest.ClosingMonth, opt => opt.MapFrom(src => src.CLOSING_DATE.Value.Month))
+                .ForMember(dest => dest.ClosingYear, opt => opt.MapFrom(src => src.CLOSING_DATE.Value.Year))
+                .ForMember(dest => dest.ClosingDate, opt => opt.MapFrom(src => src.CLOSING_DATE));
+
+            Mapper.CreateMap<MonthClosingDto, MONTH_CLOSING>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.MONTH_CLOSING_ID, opt => opt.MapFrom(src => src.MonthClosingId))
+                .ForMember(dest => dest.PLANT_ID, opt => opt.MapFrom(src => src.PlantId))
+                .ForMember(dest => dest.CLOSING_DATE, opt => opt.MapFrom(src => src.ClosingDate));
+
+            Mapper.CreateMap<MONTH_CLOSING_DOCUMENT, MonthClosingDocDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<MonthClosingDocDto, MONTH_CLOSING_DOCUMENT>().IgnoreAllNonExisting();
+
+            #endregion
         }
     }
 }

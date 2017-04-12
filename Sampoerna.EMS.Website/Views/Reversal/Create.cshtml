@@ -11,7 +11,7 @@
             <div class="col-sm-12">
                 <h3>Reversal Production Create</h3>
                 <div class="action-button">
-                    <button class="btn btn-blue">Save</button>
+                    <button class="btn btn-blue" id="btnSave">Save</button>
                     <a href="@Url.Action("Index", "Reversal")" class="btn btn-grey">Back</a>
                 </div>
             </div>
@@ -52,9 +52,12 @@
         $("#SearchInput_PlantId").change(function () {
             if ($("#SearchInput_PlantId").length) {
                 var ce = $(this).find("option:selected").val();
+                var date = $("#SearchInput_ProdDate").val();
                 $('#SearchInput_FaCode option').remove();
                 $('#SearchInput_Zaap option').remove();
                 $('#SearchInput_InventoryMovement option').remove();
+                $('#btnSave').prop('disabled', false);
+                $('#ClosingMonthText').html('');
                 
                 if (ce == '' || $(this).find("option:selected").val() == '') {
                     $('#SearchInput_FaCode option').append('<option value="">Select</option>');
@@ -64,6 +67,9 @@
                     ajaxSelectPlantWerks('@Url.Action("GetFaCodeByPlant", "Reversal")', { plantWerk: ce });
                     ajaxSetPlantAndFacode();
                     ajaxSelectPackedQty();
+                    checkClosingDate('@Url.Action("CheckClosingMonth", "Production")', { plantWerk: ce, prodDate: date });
+                    displayClosingDate('@Url.Action("DisplayClosingMonth", "Production")', { plantWerk: ce, prodDate: date });
+
                 }
             }
         });
@@ -247,6 +253,46 @@
                     data: formData,
                     success: function (data) {
                         $('#Details_PackedQty').val(data);
+                    }
+                });
+            }
+        }
+
+        $("#SearchInput_ProdDate").change(function () {
+            var ce = $("#SearchInput_PlantId").find("option:selected").val();
+            var date = $(this).val();
+            $('#btnSave').prop('disabled', false);
+            $('#ClosingMonthText').html('');
+            checkClosingDate('@Url.Action("CheckClosingMonth", "Production")', { plantWerk: ce, prodDate: date });
+            displayClosingDate('@Url.Action("DisplayClosingMonth", "Production")', { plantWerk: ce, prodDate: date });
+        });
+
+        function checkClosingDate(url, formData) {
+            if (formData.plantWerk) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        if (data.MonthClosingId > 0) {
+                            $('#btnSave').prop('disabled', true);
+                            $('#ModalCloseMonth').modal('show');
+                        }
+                    }
+                });
+            }
+        }
+
+        function displayClosingDate(url, formData) {
+            if (formData.plantWerk) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        if (data.MonthClosingId > 0) {
+                            $('#ClosingMonthText').html(data.DisplayDate);
+                        }
                     }
                 });
             }

@@ -60,6 +60,8 @@
     <Compile Include="ILACK2BLL.cs" />
     <Compile Include="IMessageService.cs" />
     <Compile Include="ILACK1BLL.cs" />
+    <Compile Include="IMonthClosingBLL.cs" />
+    <Compile Include="IMonthClosingDocBLL.cs" />
     <Compile Include="INlogBLL.cs" />
     <Compile Include="IPbck1DecreeDocBLL.cs" />
     <Compile Include="IPbck1ProdConverterBLL.cs" />

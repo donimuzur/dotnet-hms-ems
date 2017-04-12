@@ -228,6 +228,7 @@
     <Compile Include="AspnetWebForms\GenericReportViewer.aspx.designer.cs">
       <DependentUpon>GenericReportViewer.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\MonthClosingController.cs" />
     <Compile Include="Controllers\PBCK4Controller.cs" />
     <Compile Include="Controllers\PoaDelegationController.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
@@ -378,6 +379,8 @@
     <Compile Include="Models\Material\MaterialDetailViewModel.cs" />
     <Compile Include="Models\Material\MaterialEditViewModel.cs" />
     <Compile Include="Models\Material\MaterialListViewModel.cs" />
+    <Compile Include="Models\MonthClosing\MonthClosingDocModel.cs" />
+    <Compile Include="Models\MonthClosing\MonthClosingIndexViewModel.cs" />
     <Compile Include="Models\NPPBKC\NPPBKCIViewModels.cs" />
     <Compile Include="Models\PBCK1\Pbck1DashboardModel.cs" />
     <Compile Include="Models\PBCK1\Pbck1DecreeDocModel.cs" />
@@ -935,6 +938,7 @@
     <Content Include="Scripts\modernizr.min.js" />
     <Content Include="Scripts\js\_scripts.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\monthClosing.js" />
     <Content Include="Scripts\pbck1script.js" />
     <Content Include="Scripts\pbck1\docupload.js" />
     <Content Include="Scripts\Pbck3Script.js" />
@@ -1342,6 +1346,11 @@
     <Content Include="Views\LACK1\CfVsFaSummary.cshtml" />
     <Content Include="Views\LACK1\DetailEa.cshtml" />
     <Content Include="Views\LACK1\_Lack1DetailEa.cshtml" />
+    <Content Include="Views\MonthClosing\Index.cshtml" />
+    <Content Include="Views\MonthClosing\Create.cshtml" />
+    <Content Include="Views\MonthClosing\_Upload.cshtml" />
+    <Content Include="Views\MonthClosing\Edit.cshtml" />
+    <Content Include="Views\MonthClosing\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1508,7 +1517,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>57497</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

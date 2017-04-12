@@ -41,6 +41,7 @@ using Sampoerna.EMS.Website.Models.PoaDelegation;
 using Sampoerna.EMS.Website.Models.SchedulerSetting;
 using Sampoerna.EMS.Website.Models.Reversal;
 using Sampoerna.EMS.Website.Models.ProductType;
+using Sampoerna.EMS.Website.Models.MonthClosing;
 
 namespace Sampoerna.EMS.Website
 {
@@ -1158,6 +1159,17 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.PRODUCT_ALIAS, opt => opt.MapFrom(src => src.ProductAlias))
               .ForMember(dest => dest.CK4CEDITABLE, opt => opt.MapFrom(src => src.IsCk4CEditable))
               ;
+
+            #endregion
+
+
+            #region Month Closing
+
+            Mapper.CreateMap<MonthClosingDetail, MonthClosingDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<MonthClosingDto, MonthClosingDetail>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<MonthClosingDocDto, MonthClosingDocModel>().IgnoreAllNonExisting();
+            Mapper.CreateMap<MonthClosingDocModel, MonthClosingDocDto>().IgnoreAllNonExisting();
 
             #endregion
 
