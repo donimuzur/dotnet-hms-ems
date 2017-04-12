@@ -2824,6 +2824,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var uomDict = new Dictionary<string, string>();
 
                 var prodAliasList = prodPlan.GroupBy(x => x.ProdAlias).Select(x => x.Key).ToList();
+                prodAliasList.Remove("-");
 
                 foreach (var prodalias in prodAliasList)
                 {
@@ -2926,6 +2927,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     summaryUomBkc = summaryUomBkc.Replace("L", "Liter");
 
                 var uomList = prodPlan.GroupBy(x => x.ProdTypeCode).Select(x => x.Key).ToList();
+                uomList.Remove("-");
                 //01	SIGARET KRETEK TANGAN
                 //02	SIGARET KRETEK MESIN
                 //03	SIGARET PUTIH MESIN
@@ -2935,7 +2937,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 //07	ETIL ALKOHOL (EA)
                 var visibilityUomProd = "";
                 visibilityUomProd = uomList.Contains("07") ? visibilityUomProd + "1" : visibilityUomProd + "0";
-                visibilityUomProd = uomList.Contains("05") || uomList.Contains("06") ? visibilityUomProd + "|1" : visibilityUomProd + "|0";
                 if (uomList.Contains("01") || uomList.Contains("02") || uomList.Contains("03") || uomList.Contains("04"))
                 {
                     visibilityUomProd = visibilityUomProd + "|1";
@@ -2944,6 +2945,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     visibilityUomProd = visibilityUomProd + "|0";
                 }
+                visibilityUomProd = uomList.Contains("05") || uomList.Contains("06") ? visibilityUomProd + "|1" : visibilityUomProd + "|0";
+                
 
 
                 foreach (var item in prodPlan)
@@ -3004,7 +3007,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                     else
                     {
-                        uomAmount = "Batang";
+                        uomAmount = "Kg";
                         //if (!visibilityArray.ContainsKey("b")) visibilityArray.Add("b", "1");
                         //detailRow.VisibilityUomAmount = "0|1|0";
                     }
