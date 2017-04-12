@@ -1349,6 +1349,8 @@
     <Content Include="Views\MonthClosing\Index.cshtml" />
     <Content Include="Views\MonthClosing\Create.cshtml" />
     <Content Include="Views\MonthClosing\_Upload.cshtml" />
+    <Content Include="Views\MonthClosing\Edit.cshtml" />
+    <Content Include="Views\MonthClosing\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

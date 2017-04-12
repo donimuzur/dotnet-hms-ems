@@ -68,7 +68,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private MonthClosingIndexViewModel InitialModel(MonthClosingIndexViewModel model)
         {
-            model.Details.ClosingDate = DateTime.Now;
+            if (model.Details != null) model.Details.ClosingDate = DateTime.Now;
 
             return (model);
         }
@@ -142,6 +142,69 @@ namespace Sampoerna.EMS.Website.Controllers
             file.SaveAs(path);
 
             return sFileName;
+        }
+
+        public ActionResult Edit(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            {
+                return RedirectToAction("Detail", new { id });
+            }
+
+            var closingData = _monthClosingBll.GetById(id.Value);
+
+            if (closingData == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = new MonthClosingIndexViewModel();
+
+            try
+            {
+                model.Details = Mapper.Map<MonthClosingDetail>(closingData);
+            }
+            catch (Exception exception)
+            {
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
+            return View(model);
+        }
+
+        public ActionResult Detail(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var closingData = _monthClosingBll.GetById(id.Value);
+
+            if (closingData == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = new MonthClosingIndexViewModel();
+
+            try
+            {
+                model.Details = Mapper.Map<MonthClosingDetail>(closingData);
+            }
+            catch (Exception exception)
+            {
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+
+            return View(model);
         }
     }
 }

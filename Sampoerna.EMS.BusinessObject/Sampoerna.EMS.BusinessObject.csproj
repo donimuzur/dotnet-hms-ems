@@ -270,6 +270,7 @@
     <Compile Include="Inputs\LFAInputs.cs" />
     <Compile Include="Inputs\Lack2GetByParamInput.cs" />
     <Compile Include="Inputs\MaterialInput.cs" />
+    <Compile Include="Inputs\MonthClosingGetByParam.cs" />
     <Compile Include="Inputs\NlogInput.cs" />
     <Compile Include="Inputs\PBCK1Input.cs" />
     <Compile Include="Inputs\Pbck1ProdConverterInput.cs" />

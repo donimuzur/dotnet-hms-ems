@@ -10,6 +10,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.Reversal;
+using Sampoerna.EMS.Website.Models.MonthClosing;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -19,14 +20,16 @@ namespace Sampoerna.EMS.Website.Controllers
         private IReversalBLL _reversalBll;
         private IUserPlantMapBLL _userPlantBll;
         private IPOAMapBLL _poaMapBll;
+        private IMonthClosingBLL _monthClosingBll;
 
-        public ReversalController(IPageBLL pageBll, IReversalBLL reversalBll, IUserPlantMapBLL userPlantBll, IPOAMapBLL poaMapBll)
+        public ReversalController(IPageBLL pageBll, IReversalBLL reversalBll, IUserPlantMapBLL userPlantBll, IPOAMapBLL poaMapBll, IMonthClosingBLL monthClosingBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _mainMenu = Enums.MenuList.CK4C;
             _reversalBll = reversalBll;
             _userPlantBll = userPlantBll;
             _poaMapBll = poaMapBll;
+            _monthClosingBll = monthClosingBll;
         }
 
         #region Index
@@ -389,6 +392,40 @@ namespace Sampoerna.EMS.Website.Controllers
             var checkData = _reversalBll.CheckData(paramInput);
 
             return Json(checkData.PackedQty);
+        }
+
+        [HttpPost]
+        public JsonResult CheckClosingMonth(string plantWerk, DateTime prodDate)
+        {
+            var param = new MonthClosingGetByParam();
+            param.ClosingDate = prodDate;
+            param.PlantId = plantWerk;
+            param.DisplayDate = null;
+
+            var data = _monthClosingBll.GetDataByParam(param);
+
+            var model = Mapper.Map<MonthClosingDetail>(data);
+
+            return Json(model);
+        }
+
+        [HttpPost]
+        public JsonResult DisplayClosingMonth(string plantWerk, DateTime prodDate)
+        {
+            var param = new MonthClosingGetByParam();
+            param.DisplayDate = prodDate;
+            param.PlantId = plantWerk;
+            param.ClosingDate = null;
+
+            var data = _monthClosingBll.GetDataByParam(param);
+
+            var model = Mapper.Map<MonthClosingDetail>(data);
+            if (model != null)
+            {
+                model.DisplayDate = "Closing Date : " + model.ClosingDate.ToString("dd MMM yyyy");
+            }
+
+            return Json(model);
         }
 
         #endregion

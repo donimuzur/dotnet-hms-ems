@@ -1,0 +1,134 @@
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.MonthClosing.MonthClosingIndexViewModel
+
+@{
+    ViewBag.Title = "Detail Month Closing";
+}
+@using (Html.BeginForm("", "MonthClosing", new { @id = "DetailForm", @class = "form-excise" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Month Closing</h3>
+                <div class="action-button">
+                    <input type="button" value="Cancel" class="btn btn-grey" id="btnCancel" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Edit Month Closing
+                                    <i class="fa fa-caret-down"></i>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <form class="form-excise" role="form">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <label class="col-md-4">Plant ID</label>
+                                                <div class="col-md-4">
+                                                    @Html.TextBoxFor(model => model.Details.PlantId, new { @class = "form-control", @disabled = "disabled" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <label class="col-md-4">Date<span class="red">*</span></label>
+                                                <div class="col-md-6">
+                                                    <div class="input-group date">
+                                                        @Html.TextBoxFor(model => model.Details.ClosingDate, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+                                                        <span class="input-group-addon">
+                                                            <i class="fa fa-calendar"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <label class="col-md-4">Attachment<span class="red">*</span></label>
+                                                <div class="col-md-6">
+                                                    <div class="file-upload" id="poa-files">
+
+                                                    </div>
+                                                    <button type="button" class="btn btn-primary full" data-toggle="modal" data-target=".upload-file" id="MonthClosingDoc">Add File</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <span class="red">*</span> ) This Field Required
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @Html.Partial("_Upload")
+    </div>
+}
+
+<div id="ModalAttachmentDoc" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Error</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <span id="modalBodyMessage">Attachment document is required.</span>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script src="~/Scripts/monthClosing.js"></script>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function() {
+            $('#MenuMonthClosing').addClass('active');
+
+            $('#btnCancel').click(function(e) {
+                location.href = '@Url.Action("Index", "MonthClosing")';
+            });
+
+            $("#btnSave").click(function () {
+                if (ValidateInput()) {
+                    $('#CreateForm').submit();
+                }
+            });
+        });
+
+    </script>
+}

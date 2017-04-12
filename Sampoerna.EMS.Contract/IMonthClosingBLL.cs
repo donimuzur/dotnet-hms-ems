@@ -9,5 +9,7 @@ namespace Sampoerna.EMS.Contract
     {
         List<MonthClosingDto> GetList();
         bool Save(MonthClosingDto item);
+        MonthClosingDto GetDataByParam(MonthClosingGetByParam param);
+        MonthClosingDto GetById(long id);
     }
 }
