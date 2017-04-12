@@ -1,0 +1,116 @@
+﻿@using iTextSharp.text.pdf.qrcode
+@model Sampoerna.EMS.Website.Models.MonthClosing.MonthClosingIndexViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Month Closing</h3>
+            <div class="action-button new">
+                @if (Model.IsNotViewer)
+                {
+                    <a href="@Url.Action("Create", "MonthClosing")">
+                        <button class="btn btn-blue">NEW</button>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="contenttable" class="table-container">
+                <table id="MonthClosingTable" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th class="toggle-row"> Filter </th>
+                            <th>Plant</th>
+                            <th>Day</th>
+                            <th>Month</th>
+                            <th>Year</th>
+                        </tr>
+                    </thead>
+                    <thead class="filters">
+                        <tr>
+                            <th>Action</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.MonthClosingList.Count(); i++)
+                        {
+                            <tr>
+
+                                <td class="action">
+                                    <a href="@Url.Action("Detail", "MonthClosing", new { id = Model.MonthClosingList[i].MonthClosingId })" data-toggle=" tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    @if (Model.IsNotViewer)
+                                    {
+                                        <a href="@Url.Action("Edit", "MonthClosing", new { id = Model.MonthClosingList[i].MonthClosingId })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                                    }
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => model.MonthClosingList[i].PlantId)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => model.MonthClosingList[i].ClosingDay)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => model.MonthClosingList[i].ClosingMonth)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => model.MonthClosingList[i].ClosingYear)
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    <script src="~/Scripts/js/custom.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+        $('#MenuMonthClosing').addClass('active');
+        $(document).ready(function () {
+
+            // Setup - add a text input to each footer cell
+            $('#MonthClosingTable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    var title = $('#MonthClosingTable thead th').eq($(this).index()).text();
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
+
+                }
+            });
+
+            // DataTable
+            var table = $('#MonthClosingTable').DataTable();
+
+
+            // Apply the search
+
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+
+        });
+    </script>
+}

@@ -175,6 +175,8 @@
     <Compile Include="DTOs\Lack1DocumentDto.cs" />
     <Compile Include="DTOs\MaterialBalanceDto.cs" />
     <Compile Include="DTOs\MaterialDto.cs" />
+    <Compile Include="DTOs\MonthClosingDocDto.cs" />
+    <Compile Include="DTOs\MonthClosingDto.cs" />
     <Compile Include="DTOs\NlogDto.cs" />
     <Compile Include="DTOs\NppbkcPlantDto.cs" />
     <Compile Include="DTOs\Pbck1DecreeDocDto.cs" />
@@ -342,6 +344,12 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="MONTH.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MONTH_CLOSING.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MONTH_CLOSING_DOCUMENT.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="NlogLogs.cs">
