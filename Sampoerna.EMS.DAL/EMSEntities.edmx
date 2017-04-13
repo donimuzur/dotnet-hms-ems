@@ -656,6 +656,29 @@
           <Property Name="ORT01" Type="nvarchar" MaxLength="25" />
           <Property Name="STRAS" Type="nvarchar" MaxLength="250" />
         </EntityType>
+        <EntityType Name="MASTER_DATA_APPROVAL">
+          <Key>
+            <PropertyRef Name="APPROVAL_ID" />
+          </Key>
+          <Property Name="APPROVAL_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PAGE_ID" Type="int" Nullable="false" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="APPROVED_DATE" Type="datetime" />
+          <Property Name="STATUS_ID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MASTER_DATA_APPROVAL_DETAIL">
+          <Key>
+            <PropertyRef Name="APPROVAL_DETAIL_ID" />
+          </Key>
+          <Property Name="APPROVAL_DETAIL_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="APPROVAL_ID" Type="int" Nullable="false" />
+          <Property Name="COLUMN_NAME" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="COLUMN_DESCRIPTION" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="OLD_VALUE" Type="varchar" MaxLength="2000" />
+          <Property Name="NEW_VALUE" Type="varchar" MaxLength="2000" />
+        </EntityType>
         <EntityType Name="MASTER_DATA_APPROVE_SETTING">
           <Key>
             <PropertyRef Name="PAGE_ID" />
@@ -2271,6 +2294,54 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_MASTER_DATA_APPROVAL_APPROVER">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="MASTER_DATA_APPROVAL" Type="Self.MASTER_DATA_APPROVAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="MASTER_DATA_APPROVAL">
+              <PropertyRef Name="APPROVED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MASTER_DATA_APPROVAL_DETAIL_MASTER_DATA_APPROVAL">
+          <End Role="MASTER_DATA_APPROVAL" Type="Self.MASTER_DATA_APPROVAL" Multiplicity="1" />
+          <End Role="MASTER_DATA_APPROVAL_DETAIL" Type="Self.MASTER_DATA_APPROVAL_DETAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MASTER_DATA_APPROVAL">
+              <PropertyRef Name="APPROVAL_ID" />
+            </Principal>
+            <Dependent Role="MASTER_DATA_APPROVAL_DETAIL">
+              <PropertyRef Name="APPROVAL_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MASTER_DATA_APPROVAL_PAGE">
+          <End Role="PAGE" Type="Self.PAGE" Multiplicity="1" />
+          <End Role="MASTER_DATA_APPROVAL" Type="Self.MASTER_DATA_APPROVAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PAGE">
+              <PropertyRef Name="PAGE_ID" />
+            </Principal>
+            <Dependent Role="MASTER_DATA_APPROVAL">
+              <PropertyRef Name="PAGE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MASTER_DATA_APPROVAL_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="MASTER_DATA_APPROVAL" Type="Self.MASTER_DATA_APPROVAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="MASTER_DATA_APPROVAL">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_MASTER_DATA_APPROVE_SETTING_PAGE">
           <End Role="PAGE" Type="Self.PAGE" Multiplicity="1" />
           <End Role="MASTER_DATA_APPROVE_SETTING" Type="Self.MASTER_DATA_APPROVE_SETTING" Multiplicity="*" />
@@ -3568,6 +3639,8 @@
           <EntitySet Name="LACK2_DOCUMENT" EntityType="Self.LACK2_DOCUMENT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK2_ITEM" EntityType="Self.LACK2_ITEM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LFA1" EntityType="Self.LFA1" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MASTER_DATA_APPROVAL" EntityType="Self.MASTER_DATA_APPROVAL" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MASTER_DATA_APPROVAL_DETAIL" EntityType="Self.MASTER_DATA_APPROVAL_DETAIL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MASTER_DATA_APPROVE_SETTING" EntityType="Self.MASTER_DATA_APPROVE_SETTING" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MATERIAL_UOM" EntityType="Self.MATERIAL_UOM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MENGETAHUI" EntityType="Self.MENGETAHUI" Schema="dbo" store:Type="Tables" />
@@ -3856,6 +3929,22 @@
           <AssociationSet Name="FK_LACK2_USER_MODIFIED_BY" Association="Self.FK_LACK2_USER_MODIFIED_BY">
             <End Role="USER" EntitySet="USER" />
             <End Role="LACK2" EntitySet="LACK2" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MASTER_DATA_APPROVAL_APPROVER" Association="Self.FK_MASTER_DATA_APPROVAL_APPROVER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="MASTER_DATA_APPROVAL" EntitySet="MASTER_DATA_APPROVAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MASTER_DATA_APPROVAL_DETAIL_MASTER_DATA_APPROVAL" Association="Self.FK_MASTER_DATA_APPROVAL_DETAIL_MASTER_DATA_APPROVAL">
+            <End Role="MASTER_DATA_APPROVAL" EntitySet="MASTER_DATA_APPROVAL" />
+            <End Role="MASTER_DATA_APPROVAL_DETAIL" EntitySet="MASTER_DATA_APPROVAL_DETAIL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MASTER_DATA_APPROVAL_PAGE" Association="Self.FK_MASTER_DATA_APPROVAL_PAGE">
+            <End Role="PAGE" EntitySet="PAGE" />
+            <End Role="MASTER_DATA_APPROVAL" EntitySet="MASTER_DATA_APPROVAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MASTER_DATA_APPROVAL_USER" Association="Self.FK_MASTER_DATA_APPROVAL_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="MASTER_DATA_APPROVAL" EntitySet="MASTER_DATA_APPROVAL" />
           </AssociationSet>
           <AssociationSet Name="FK_MASTER_DATA_APPROVE_SETTING_PAGE" Association="Self.FK_MASTER_DATA_APPROVE_SETTING_PAGE">
             <End Role="PAGE" EntitySet="PAGE" />
@@ -5050,6 +5139,28 @@
             <End Role="PAGE" EntitySet="PAGE" />
             <End Role="MASTER_DATA_APPROVE_SETTING" EntitySet="MASTER_DATA_APPROVE_SETTING" />
           </AssociationSet>
+          <EntitySet Name="MASTER_DATA_APPROVAL" EntityType="EMSModel.MASTER_DATA_APPROVAL" />
+          <EntitySet Name="MASTER_DATA_APPROVAL_DETAIL" EntityType="EMSModel.MASTER_DATA_APPROVAL_DETAIL" />
+          <AssociationSet Name="FK_MASTER_DATA_APPROVAL_APPROVER" Association="EMSModel.FK_MASTER_DATA_APPROVAL_APPROVER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="MASTER_DATA_APPROVAL" EntitySet="MASTER_DATA_APPROVAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MASTER_DATA_APPROVAL_DETAIL_MASTER_DATA_APPROVAL" Association="EMSModel.FK_MASTER_DATA_APPROVAL_DETAIL_MASTER_DATA_APPROVAL">
+            <End Role="MASTER_DATA_APPROVAL" EntitySet="MASTER_DATA_APPROVAL" />
+            <End Role="MASTER_DATA_APPROVAL_DETAIL" EntitySet="MASTER_DATA_APPROVAL_DETAIL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MASTER_DATA_APPROVAL_PAGE" Association="EMSModel.FK_MASTER_DATA_APPROVAL_PAGE">
+            <End Role="PAGE" EntitySet="PAGE" />
+            <End Role="MASTER_DATA_APPROVAL" EntitySet="MASTER_DATA_APPROVAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MASTER_DATA_APPROVAL_USER" Association="EMSModel.FK_MASTER_DATA_APPROVAL_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="MASTER_DATA_APPROVAL" EntitySet="MASTER_DATA_APPROVAL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MASTER_DATA_APPROVAL_PAGE1" Association="EMSModel.FK_MASTER_DATA_APPROVAL_PAGE1">
+            <End Role="PAGE" EntitySet="PAGE" />
+            <End Role="MASTER_DATA_APPROVAL" EntitySet="MASTER_DATA_APPROVAL" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -5178,6 +5289,8 @@
           <NavigationProperty Name="PAGE_MAP" Relationship="EMSModel.FK_PAGE_MAP_PAGE" FromRole="PAGE" ToRole="PAGE_MAP" />
           <NavigationProperty Name="MASTER_DATA_APPROVE_SETTING" Relationship="EMSModel.FK_MASTER_DATA_APPROVE_SETTING_PAGE" FromRole="PAGE" ToRole="MASTER_DATA_APPROVE_SETTING" />
           <Property Name="MAIN_TABLE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="MASTER_DATA_APPROVAL" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_PAGE" FromRole="PAGE" ToRole="MASTER_DATA_APPROVAL" />
+          <NavigationProperty Name="MASTER_DATA_APPROVAL1" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_PAGE1" FromRole="PAGE" ToRole="MASTER_DATA_APPROVAL" />
         </EntityType>
         <EntityType Name="PARAMATER">
           <Key>
@@ -6042,6 +6155,8 @@
           <NavigationProperty Name="POA_DELEGATION2" Relationship="EMSModel.FK_POA_DELEGATION_USER" FromRole="USER" ToRole="POA_DELEGATION" />
           <NavigationProperty Name="POA_DELEGATION3" Relationship="EMSModel.FK_POA_DELEGATION_USER1" FromRole="USER" ToRole="POA_DELEGATION" />
           <Property Name="IS_MASTER_DATA_APPROVER" Type="Boolean" />
+          <NavigationProperty Name="MASTER_DATA_APPROVAL" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_APPROVER" FromRole="USER" ToRole="MASTER_DATA_APPROVAL" />
+          <NavigationProperty Name="MASTER_DATA_APPROVAL1" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_USER" FromRole="USER" ToRole="MASTER_DATA_APPROVAL" />
           </EntityType>
         <EntityType Name="USER_BROLE">
           <Key>
@@ -9111,6 +9226,95 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="MASTER_DATA_APPROVAL">
+          <Key>
+            <PropertyRef Name="APPROVAL_ID" />
+          </Key>
+          <Property Name="APPROVAL_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PAGE_ID" Type="Int32" Nullable="false" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="APPROVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="APPROVED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="STATUS_ID" Type="EMSModel.DocumentStatus" Nullable="false" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_APPROVER" FromRole="MASTER_DATA_APPROVAL" ToRole="USER" />
+          <NavigationProperty Name="MASTER_DATA_APPROVAL_DETAIL" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_DETAIL_MASTER_DATA_APPROVAL" FromRole="MASTER_DATA_APPROVAL" ToRole="MASTER_DATA_APPROVAL_DETAIL" />
+          <NavigationProperty Name="PAGE" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_PAGE" FromRole="MASTER_DATA_APPROVAL" ToRole="PAGE" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_USER" FromRole="MASTER_DATA_APPROVAL" ToRole="USER" />
+          <NavigationProperty Name="PAGE1" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_PAGE1" FromRole="MASTER_DATA_APPROVAL" ToRole="PAGE" />
+        </EntityType>
+        <EntityType Name="MASTER_DATA_APPROVAL_DETAIL">
+          <Key>
+            <PropertyRef Name="APPROVAL_DETAIL_ID" />
+          </Key>
+          <Property Name="APPROVAL_DETAIL_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="APPROVAL_ID" Type="Int32" Nullable="false" />
+          <Property Name="COLUMN_NAME" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="COLUMN_DESCRIPTION" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="OLD_VALUE" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="NEW_VALUE" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="MASTER_DATA_APPROVAL" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_DETAIL_MASTER_DATA_APPROVAL" FromRole="MASTER_DATA_APPROVAL_DETAIL" ToRole="MASTER_DATA_APPROVAL" />
+        </EntityType>
+        <Association Name="FK_MASTER_DATA_APPROVAL_APPROVER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.MASTER_DATA_APPROVAL" Role="MASTER_DATA_APPROVAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="MASTER_DATA_APPROVAL">
+              <PropertyRef Name="APPROVED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MASTER_DATA_APPROVAL_DETAIL_MASTER_DATA_APPROVAL">
+          <End Type="EMSModel.MASTER_DATA_APPROVAL" Role="MASTER_DATA_APPROVAL" Multiplicity="1" />
+          <End Type="EMSModel.MASTER_DATA_APPROVAL_DETAIL" Role="MASTER_DATA_APPROVAL_DETAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MASTER_DATA_APPROVAL">
+              <PropertyRef Name="APPROVAL_ID" />
+            </Principal>
+            <Dependent Role="MASTER_DATA_APPROVAL_DETAIL">
+              <PropertyRef Name="APPROVAL_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MASTER_DATA_APPROVAL_PAGE">
+          <End Type="EMSModel.PAGE" Role="PAGE" Multiplicity="1" />
+          <End Type="EMSModel.MASTER_DATA_APPROVAL" Role="MASTER_DATA_APPROVAL" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="PAGE">
+              <PropertyRef Name="PAGE_ID" />
+            </Principal>
+            <Dependent Role="MASTER_DATA_APPROVAL">
+              <PropertyRef Name="APPROVAL_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MASTER_DATA_APPROVAL_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.MASTER_DATA_APPROVAL" Role="MASTER_DATA_APPROVAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="MASTER_DATA_APPROVAL">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MASTER_DATA_APPROVAL_PAGE1">
+          <End Type="EMSModel.PAGE" Role="PAGE" Multiplicity="1" />
+          <End Type="EMSModel.MASTER_DATA_APPROVAL" Role="MASTER_DATA_APPROVAL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PAGE">
+              <PropertyRef Name="PAGE_ID" />
+            </Principal>
+            <Dependent Role="MASTER_DATA_APPROVAL">
+              <PropertyRef Name="PAGE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -10771,6 +10975,31 @@
                 <ScalarProperty Name="IS_APPROVAL" ColumnName="IS_APPROVAL" />
                 <ScalarProperty Name="COLUMN_NAME" ColumnName="COLUMN_NAME" />
                 <ScalarProperty Name="PAGE_ID" ColumnName="PAGE_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MASTER_DATA_APPROVAL">
+            <EntityTypeMapping TypeName="EMSModel.MASTER_DATA_APPROVAL">
+              <MappingFragment StoreEntitySet="MASTER_DATA_APPROVAL">
+                <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
+                <ScalarProperty Name="APPROVED_DATE" ColumnName="APPROVED_DATE" />
+                <ScalarProperty Name="APPROVED_BY" ColumnName="APPROVED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="PAGE_ID" ColumnName="PAGE_ID" />
+                <ScalarProperty Name="APPROVAL_ID" ColumnName="APPROVAL_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MASTER_DATA_APPROVAL_DETAIL">
+            <EntityTypeMapping TypeName="EMSModel.MASTER_DATA_APPROVAL_DETAIL">
+              <MappingFragment StoreEntitySet="MASTER_DATA_APPROVAL_DETAIL">
+                <ScalarProperty Name="NEW_VALUE" ColumnName="NEW_VALUE" />
+                <ScalarProperty Name="OLD_VALUE" ColumnName="OLD_VALUE" />
+                <ScalarProperty Name="COLUMN_DESCRIPTION" ColumnName="COLUMN_DESCRIPTION" />
+                <ScalarProperty Name="COLUMN_NAME" ColumnName="COLUMN_NAME" />
+                <ScalarProperty Name="APPROVAL_ID" ColumnName="APPROVAL_ID" />
+                <ScalarProperty Name="APPROVAL_DETAIL_ID" ColumnName="APPROVAL_DETAIL_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

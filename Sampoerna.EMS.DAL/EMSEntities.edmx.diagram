@@ -272,6 +272,13 @@
         <AssociationConnector Association="EMSModel.FK_REVERSAL_INVENTORY_MOVEMENT" />
         <EntityTypeShape EntityType="EMSModel.MASTER_DATA_APPROVE_SETTING" Width="1.5" PointX="6" PointY="59.625" />
         <AssociationConnector Association="EMSModel.FK_MASTER_DATA_APPROVE_SETTING_PAGE" />
+        <EntityTypeShape EntityType="EMSModel.MASTER_DATA_APPROVAL" Width="1.5" PointX="13" PointY="55.875" />
+        <EntityTypeShape EntityType="EMSModel.MASTER_DATA_APPROVAL_DETAIL" Width="1.5" PointX="15.25" PointY="78.25" />
+        <AssociationConnector Association="EMSModel.FK_MASTER_DATA_APPROVAL_APPROVER" />
+        <AssociationConnector Association="EMSModel.FK_MASTER_DATA_APPROVAL_DETAIL_MASTER_DATA_APPROVAL" />
+        <AssociationConnector Association="EMSModel.FK_MASTER_DATA_APPROVAL_PAGE" />
+        <AssociationConnector Association="EMSModel.FK_MASTER_DATA_APPROVAL_USER" />
+        <AssociationConnector Association="EMSModel.FK_MASTER_DATA_APPROVAL_PAGE1" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

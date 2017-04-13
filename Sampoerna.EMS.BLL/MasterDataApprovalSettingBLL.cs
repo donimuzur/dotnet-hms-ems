@@ -75,6 +75,8 @@ namespace Sampoerna.EMS.BLL
             
         }
 
+        
+
         public void SaveSetting(MasterDataApprovalSettingDto data)
         {
             var datatoSave = Mapper.Map<List<MASTER_DATA_APPROVE_SETTING>>(data.Details);

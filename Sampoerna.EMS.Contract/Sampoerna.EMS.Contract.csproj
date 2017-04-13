@@ -59,6 +59,7 @@
     <Compile Include="ILFA1BLL.cs" />
     <Compile Include="ILACK2BLL.cs" />
     <Compile Include="IMasterDataApprovalSettingBLL.cs" />
+    <Compile Include="IMasterDataAprovalBLL.cs" />
     <Compile Include="IMessageService.cs" />
     <Compile Include="ILACK1BLL.cs" />
     <Compile Include="INlogBLL.cs" />

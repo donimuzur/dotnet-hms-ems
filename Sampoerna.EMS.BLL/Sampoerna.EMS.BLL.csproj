@@ -94,6 +94,7 @@
     <Compile Include="BrandRegistrationBLL.cs" />
     <Compile Include="CountryBLL.cs" />
     <Compile Include="LFA1BLL.cs" />
+    <Compile Include="MasterDataApprovalBLL.cs" />
     <Compile Include="MasterDataApprovalSettingBLL.cs" />
     <Compile Include="NlogBLL.cs" />
     <Compile Include="PBCK4BLL.cs" />

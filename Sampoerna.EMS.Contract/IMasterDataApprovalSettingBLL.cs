@@ -15,5 +15,7 @@ namespace Sampoerna.EMS.Contract
         void SaveSetting(MasterDataApprovalSettingDto data);
 
         List<MasterDataApprovalSettingDto> GetAllMasterSettingsPage();
+
+        
     }
 }
