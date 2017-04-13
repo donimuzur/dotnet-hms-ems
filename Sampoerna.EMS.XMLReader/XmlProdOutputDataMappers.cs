@@ -143,8 +143,12 @@ namespace Sampoerna.EMS.XMLReader
                         //zaapShftRptItem.PLANT_NAME = company.T001W.NAME1;
                     }
 
-                    
-                    itemTemp.Add(zaapShftRptItem);
+                    var closingDate = CheckClosingDate(zaapShftRptItem.WERKS, zaapShftRptItem.PRODUCTION_DATE);
+
+                    if (closingDate == null)
+                    {
+                        itemTemp.Add(zaapShftRptItem);
+                    }
                     
 
                 }
@@ -275,11 +279,13 @@ namespace Sampoerna.EMS.XMLReader
                         }
                     }
 
-                    
 
-                    
+                    var closingDate = CheckClosingDate(production.WERKS, production.PRODUCTION_DATE);
 
-                    items.Add(production);
+                    if (closingDate == null)
+                    {
+                        items.Add(production);
+                    }
                 }
 
                 return items;
@@ -595,6 +601,15 @@ namespace Sampoerna.EMS.XMLReader
 
 
             return tempProdList.ToList();
+        }
+
+        public MONTH_CLOSING CheckClosingDate(string plant, DateTime date)
+        {
+            var existingData = _xmlMapper.uow.GetGenericRepository<MONTH_CLOSING>()
+                .Get(c => c.PLANT_ID == plant && c.CLOSING_DATE <= date
+                                    && c.CLOSING_DATE.Value.Month == date.Month
+                                    && c.CLOSING_DATE.Value.Year == date.Year).FirstOrDefault();
+            return existingData;
         }
     }
 }
