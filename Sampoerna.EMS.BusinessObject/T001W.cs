@@ -24,6 +24,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.USER_PLANT_MAP = new HashSet<USER_PLANT_MAP>();
             this.WASTE_ROLE = new HashSet<WASTE_ROLE>();
             this.WASTE_STOCK = new HashSet<WASTE_STOCK>();
+            this.MONTH_CLOSING = new HashSet<MONTH_CLOSING>();
         }
     
         public string WERKS { get; set; }
@@ -51,5 +52,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<USER_PLANT_MAP> USER_PLANT_MAP { get; set; }
         public virtual ICollection<WASTE_ROLE> WASTE_ROLE { get; set; }
         public virtual ICollection<WASTE_STOCK> WASTE_STOCK { get; set; }
+        public virtual ICollection<MONTH_CLOSING> MONTH_CLOSING { get; set; }
     }
 }

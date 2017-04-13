@@ -22,13 +22,15 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private IMonthClosingBLL _monthClosingBll;
         private IMonthClosingDocBLL _monthClosingDocBll;
+        private IMonthBLL _monthBll;
 
-        public MonthClosingController(IPageBLL pageBLL, IMonthClosingBLL monthClosingBll, IMonthClosingDocBLL monthClosingDocBll)
+        public MonthClosingController(IPageBLL pageBLL, IMonthClosingBLL monthClosingBll, IMonthClosingDocBLL monthClosingDocBll, IMonthBLL monthBll)
             : base(pageBLL, Enums.MenuList.Settings)
         {
             _mainMenu = Enums.MenuList.Settings;
             _monthClosingBll = monthClosingBll;
             _monthClosingDocBll = monthClosingDocBll;
+            _monthBll = monthBll;
         }
 
         public ActionResult Index()
@@ -36,7 +38,15 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new MonthClosingIndexViewModel();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            var closingList = _monthClosingBll.GetList();
+            model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
+            model.Month = DateTime.Now.Month;
+            model.Year = DateTime.Now.Year;
+
+            var input = new MonthClosingGetByParam();
+            input.Month = DateTime.Now.Month;
+            input.Year = DateTime.Now.Year;
+
+            var closingList = _monthClosingBll.GetList(input);
             model.MonthClosingList = Mapper.Map<List<MonthClosingDetail>>(closingList);
             model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
 
@@ -226,6 +236,39 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Details.MonthClosingDoc = Mapper.Map<List<MonthClosingDocModel>>(currentDoc);
 
             return model;
+        }
+
+        [HttpPost]
+        public JsonResult CheckClosingMonth(DateTime prodDate)
+        {
+            var param = new MonthClosingGetByParam();
+            param.DisplayDate = prodDate;
+            param.PlantId = null;
+            param.ClosingDate = null;
+
+            var data = _monthClosingBll.GetDataByParam(param);
+
+            var model = Mapper.Map<MonthClosingDetail>(data);
+            if (model != null)
+            {
+                model.DisplayDate = "Closing Date for current month already exists";
+            }
+
+            return Json(model);
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterData(MonthClosingIndexViewModel model)
+        {
+            var input = new MonthClosingGetByParam();
+            input.Month = model.Month;
+            input.Year = model.Year;
+
+            var closingList = _monthClosingBll.GetList(input);
+            model.MonthClosingList = Mapper.Map<List<MonthClosingDetail>>(closingList);
+
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false);
+            return PartialView("_List", model);
         }
     }
 }

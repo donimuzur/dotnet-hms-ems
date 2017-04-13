@@ -23,6 +23,8 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<MONTH_CLOSING> _repository;
         private IPlantBLL _plantBll;
 
+        private string includeTables = "T001W";
+
         public MonthClosingBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -31,9 +33,21 @@ namespace Sampoerna.EMS.BLL
             _plantBll = new PlantBLL(_uow, _logger);
         }
 
-        public List<MonthClosingDto> GetList()
+        public List<MonthClosingDto> GetList(MonthClosingGetByParam param)
         {
-            var monthClosingList = _repository.Get().ToList();
+            Expression<Func<MONTH_CLOSING, bool>> queryFilter = PredicateHelper.True<MONTH_CLOSING>();
+
+            if (param.Month > 0)
+            {
+                queryFilter = queryFilter.And(c => c.CLOSING_DATE.Value.Month == param.Month);
+            }
+
+            if (param.Year > 0)
+            {
+                queryFilter = queryFilter.And(c => c.CLOSING_DATE.Value.Year == param.Year);
+            }
+
+            var monthClosingList = _repository.Get(queryFilter, null, includeTables).ToList();
 
             return Mapper.Map<List<MonthClosingDto>>(monthClosingList);
         }

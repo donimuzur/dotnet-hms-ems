@@ -11,5 +11,8 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public string PlantId { get; set; }
         public DateTime? ClosingDate { get; set; }
         public DateTime? DisplayDate { get; set; }
+
+        public int Month { get; set; }
+        public int Year { get; set; }
     }
 }
