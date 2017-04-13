@@ -559,7 +559,6 @@ namespace Sampoerna.EMS.BLL
 
                 #region ---------------Waste Production Date validation-------------
                 int temp;
-                DateTime dateTemp;
                 if (Int32.TryParse(output.WasteProductionDate, out temp))
                 {
                     try

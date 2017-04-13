@@ -2979,10 +2979,10 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetBrandItems(string plantId, string faCode)
+        public JsonResult GetBrandItems(string plantId, string faCode, string stickerCode = null)
         {
 
-            var brandOutput = _pbck7Pbck3Bll.GetBrandItemsByPlantAndFaCode(plantId, faCode);
+            var brandOutput = _pbck7Pbck3Bll.GetBrandItemsByPlantAndFaCode(plantId, faCode, stickerCode);
 
             //getblockedstock
             var blockedStockOutput = _pbck7Pbck3Bll.GetBlockedStockQuota(plantId, faCode);
@@ -2994,10 +2994,10 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetBrandItemsForEdit(int pbck7Id, string plantId, string faCode, string plantIdOri, string faCodeOri)
+        public JsonResult GetBrandItemsForEdit(int pbck7Id, string plantId, string faCode, string plantIdOri, string faCodeOri, string stickerCodeOri = null, string stickerCode = null)
         {
 
-            var brandOutput = _pbck7Pbck3Bll.GetBrandItemsByPlantAndFaCode(plantId, faCode);
+            var brandOutput = _pbck7Pbck3Bll.GetBrandItemsByPlantAndFaCode(plantId, faCode, stickerCode);
 
             //getblockedstock
             var blockedStockOutput = _pbck7Pbck3Bll.GetBlockedStockQuota(plantId, faCode);
@@ -3005,9 +3005,9 @@ namespace Sampoerna.EMS.Website.Controllers
           
             brandOutput.BlockedStockRemaining = blockedStockOutput.BlockedStockRemaining;
 
-            if (plantId == plantIdOri && faCode == faCodeOri)
+            if (plantId == plantIdOri && faCode == faCodeOri && stickerCode == stickerCodeOri)
             {
-                var reqQty = _pbck7Pbck3Bll.GetCurrentReqQtyByPbck7IdAndFaCode(pbck7Id, faCode);
+                var reqQty = _pbck7Pbck3Bll.GetCurrentReqQtyByPbck7IdAndFaCode(pbck7Id, faCode, stickerCode);
                 brandOutput.BlockedStockRemaining =
                     (ConvertHelper.ConvertToDecimalOrZero(brandOutput.BlockedStockRemaining) + reqQty).ToString();
             }

@@ -177,16 +177,17 @@ $('#btn-save-upload').click(function () {
         var tr = '<tr>' +
             createColumn(i + 1) +
             createColumnWithHiddenField(uploaditems[i][2], 'UploadItems[' + i + '].FaCode') +
-            createColumnWithHiddenField(uploaditems[i][3], 'UploadItems[' + i + '].ProdTypeAlias') +
-            createColumnWithHiddenField(uploaditems[i][4], 'UploadItems[' + i + '].Brand') +
-            createColumnWithHiddenField(uploaditems[i][5], 'UploadItems[' + i + '].Content') +
-            createColumnWithHiddenField(uploaditems[i][6], 'UploadItems[' + i + '].Pbck7Qty') +
-            createColumnWithHiddenField(uploaditems[i][7], 'UploadItems[' + i + '].Back1Qty') +
-            createColumnWithHiddenField(uploaditems[i][8], 'UploadItems[' + i + '].SeriesValue') +
-            createColumnWithHiddenField(uploaditems[i][9], 'UploadItems[' + i + '].Hje') +
-            createColumnWithHiddenField(uploaditems[i][10], 'UploadItems[' + i + '].Tariff') +
-            createColumnWithHiddenField(uploaditems[i][11], 'UploadItems[' + i + '].FiscalYear') +
-            createColumnWithHiddenField(uploaditems[i][12], 'UploadItems[' + i + '].ExciseValue') + '</tr>';
+            createColumnWithHiddenField(uploaditems[i][3], 'UploadItems[' + i + '].StickerCode') +
+            createColumnWithHiddenField(uploaditems[i][4], 'UploadItems[' + i + '].ProdTypeAlias') +
+            createColumnWithHiddenField(uploaditems[i][5], 'UploadItems[' + i + '].Brand') +
+            createColumnWithHiddenField(uploaditems[i][6], 'UploadItems[' + i + '].Content') +
+            createColumnWithHiddenField(uploaditems[i][7], 'UploadItems[' + i + '].Pbck7Qty') +
+            createColumnWithHiddenField(uploaditems[i][8], 'UploadItems[' + i + '].Back1Qty') +
+            createColumnWithHiddenField(uploaditems[i][9], 'UploadItems[' + i + '].SeriesValue') +
+            createColumnWithHiddenField(uploaditems[i][10], 'UploadItems[' + i + '].Hje') +
+            createColumnWithHiddenField(uploaditems[i][11], 'UploadItems[' + i + '].Tariff') +
+            createColumnWithHiddenField(uploaditems[i][12], 'UploadItems[' + i + '].FiscalYear') +
+            createColumnWithHiddenField(uploaditems[i][13], 'UploadItems[' + i + '].ExciseValue') + '</tr>';
         $('#body-tb-upload').append(tr);
         //$('#table-upload tbody').append(tr);
     }

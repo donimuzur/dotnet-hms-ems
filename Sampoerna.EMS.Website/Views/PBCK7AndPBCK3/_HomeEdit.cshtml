@@ -154,6 +154,7 @@
                                     <tr>
                                         <th>No</th>
                                         <th>FA Code</th>
+                                        <th>Sticker Code</th>
                                         <th>Product Type Alias</th>
                                         <th>Brand</th>
                                         <th>Content</th>
@@ -178,6 +179,10 @@
                                                 <td>
                                                     @Html.HiddenFor(x => x.UploadItems[i].FaCode)
                                                     @Model.UploadItems[i].FaCode
+                                                </td>
+                                                <td>
+                                                    @Html.HiddenFor(x => x.UploadItems[i].StickerCode)
+                                                    @Model.UploadItems[i].StickerCode
                                                 </td> 
                                                 <td>@Html.HiddenFor(x => x.UploadItems[i].ProdTypeAlias)
                                                     @Model.UploadItems[i].ProdTypeAlias 

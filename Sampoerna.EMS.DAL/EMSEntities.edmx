@@ -1033,6 +1033,7 @@
           <Property Name="TARIFF" Type="decimal" Precision="15" Scale="2" />
           <Property Name="FISCAL_YEAR" Type="int" />
           <Property Name="EXCISE_VALUE" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="STICKER_CODE" Type="nvarchar" MaxLength="18" />
         </EntityType>
         <EntityType Name="PLANT_RECEIVE_MATERIAL">
           <Key>
@@ -8193,6 +8194,7 @@
           <Property Name="FISCAL_YEAR" Type="Int32" />
           <Property Name="EXCISE_VALUE" Type="Decimal" Precision="15" Scale="2" />
           <NavigationProperty Name="PBCK7" Relationship="EMSModel.FK_PBCK7_ITEM_PBCK7" FromRole="PBCK7_ITEM" ToRole="PBCK7" />
+          <Property Name="STICKER_CODE" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_PBCK7_ITEM_PBCK7">
           <End Type="EMSModel.PBCK7" Role="PBCK7" Multiplicity="1" />
@@ -10327,6 +10329,7 @@
           <EntitySetMapping Name="PBCK7_ITEM">
             <EntityTypeMapping TypeName="EMSModel.PBCK7_ITEM">
               <MappingFragment StoreEntitySet="PBCK7_ITEM">
+                <ScalarProperty Name="STICKER_CODE" ColumnName="STICKER_CODE" />
                 <ScalarProperty Name="EXCISE_VALUE" ColumnName="EXCISE_VALUE" />
                 <ScalarProperty Name="FISCAL_YEAR" ColumnName="FISCAL_YEAR" />
                 <ScalarProperty Name="TARIFF" ColumnName="TARIFF" />

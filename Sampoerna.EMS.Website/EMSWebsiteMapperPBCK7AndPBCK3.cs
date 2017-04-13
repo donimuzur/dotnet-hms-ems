@@ -195,6 +195,7 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<PBCK7_ITEM, Pbck7UploadViewModel>().IgnoreAllNonExisting()
                  .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.PBCK7_ITEM_ID))
                 .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
+                .ForMember(dest => dest.StickerCode, opt => opt.MapFrom(src => src.STICKER_CODE))
                 .ForMember(dest => dest.ProdTypeAlias, opt => opt.MapFrom(src => src.PRODUCT_ALIAS))
                 .ForMember(dest => dest.Brand, opt => opt.MapFrom(src => src.BRAND_CE))
                 .ForMember(dest => dest.SeriesValue, opt => opt.MapFrom(src => src.SERIES_VALUE))

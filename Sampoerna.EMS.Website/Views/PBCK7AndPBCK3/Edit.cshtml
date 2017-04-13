@@ -227,10 +227,11 @@
 
         $("#uploadFaCode").change(function() {
             if ($("#uploadFaCode").length) {
-                var faCode = $(this).find("option:selected").val();
+                var tempFaCode = $(this).find("option:selected").val();
+                var faCode = tempFaCode.split(" - ")[0];
+                var stickerCode = tempFaCode.split(" - ")[1];
 
-
-                if (faCode == '') {
+                if (tempFaCode == '') {
                     $("#uploadProductTypeAlias").val('');
                     $("#uploadBrand").val('');
                     $("#uploadContent").val('');
@@ -243,14 +244,15 @@
                     var uploadMode = $("#uploadMode").val();
                     if (uploadMode == '1') //new input
                     {
-                        ajaxGetBrandItems('@Url.Action("GetBrandItems", "PBCK7AndPBCK3")', { plantId: plant, faCode: faCode });
+                        ajaxGetBrandItems('@Url.Action("GetBrandItems", "PBCK7AndPBCK3")', { plantId: plant, faCode: faCode, stickerCode: stickerCode });
                     } else {
                         //edit mode
                         var pbckId = '@Model.Id';
                         var plantOri = $("#uploadPlantOri").val();
                         var faCodeOri = $("#uploadFaCodeOri").val();
+                        var stickerCodeOri = $("#uploadStickerCodeOri").val();
 
-                        ajaxGetBrandItemsForEdit('@Url.Action("GetBrandItemsForEdit", "PBCK7AndPBCK3")', { pbck7Id: pbckId, plantId: plant, faCode: faCode, plantIdOri: plantOri, faCodeOri: faCodeOri });
+                        ajaxGetBrandItemsForEdit('@Url.Action("GetBrandItemsForEdit", "PBCK7AndPBCK3")', { pbck7Id: pbckId, plantId: plant, faCode: faCode, plantIdOri: plantOri, faCodeOri: faCodeOri, stickerCodeOri: stickerCodeOri, stickerCode: stickerCode });
                     }
                     
                 }
@@ -267,10 +269,10 @@
 
             var sourcePlant = $("#PlantId").find("option:selected").val();
 
-            var faCode = nRow.find("td").eq(2).html();
             $("#uploadPlant").val(sourcePlant);
 
-            ajaxGetListFaCode('@Url.Action("GetListFaCode", "PBCK7AndPBCK3")', { plantId: sourcePlant }, faCode);
+            var selected = nRow.find("td").eq(2).html() + " - " + nRow.find("td").eq(3).html();
+            ajaxGetListFaCode('@Url.Action("GetListFaCode", "PBCK7AndPBCK3")', { plantId: sourcePlant }, selected);
 
             //set value
             $('#uploadMaterialRow').val(nRow.find("td").eq(1).html());
@@ -291,25 +293,26 @@
             $("#uploadFiscalYear").val('');
             $("#uploadExciseValue").val('');
 
-            $('#uploadProductTypeAlias').val(nRow.find("td").eq(3).html());
-            $('#uploadBrand').val(nRow.find("td").eq(4).html());
-            $('#uploadContent').val(nRow.find("td").eq(5).html());
-            $('#uploadPbck7Qty').val(nRow.find("td").eq(6).html());
-            //7 back1 qty
-            $('#uploadSeriesValue').val(nRow.find("td").eq(8).html());
-            $('#uploadHje').val(nRow.find("td").eq(9).html());
-            $('#uploadTariff').val(nRow.find("td").eq(10).html());
+            $('#uploadProductTypeAlias').val(nRow.find("td").eq(4).html());
+            $('#uploadBrand').val(nRow.find("td").eq(5).html());
+            $('#uploadContent').val(nRow.find("td").eq(6).html());
+            $('#uploadPbck7Qty').val(nRow.find("td").eq(7).html());
+            //8 back1 qty
+            $('#uploadSeriesValue').val(nRow.find("td").eq(9).html());
+            $('#uploadHje').val(nRow.find("td").eq(10).html());
+            $('#uploadTariff').val(nRow.find("td").eq(11).html());
 
-            $('#uploadFiscalYear').val(nRow.find("td").eq(11).html());
-            $('#uploadExciseValue').val(nRow.find("td").eq(12).html());
+            $('#uploadFiscalYear').val(nRow.find("td").eq(12).html());
+            $('#uploadExciseValue').val(nRow.find("td").eq(13).html());
 
-            $('#uploadBlockedStocked').val(nRow.find("td").eq(14).html());
+            $('#uploadBlockedStocked').val(nRow.find("td").eq(15).html());
 
             $("#lblTitleInputManual").text('Edit Input');
 
             $("#uploadMode").val('2');
             $("#uploadPlantOri").val(sourcePlant);
             $("#uploadFaCodeOri").val(nRow.find("td").eq(2).html());
+            $("#uploadStickerCodeOri").val(nRow.find("td").eq(3).html());
             
             $('#Pbck7UploadModal').modal('show');
 
