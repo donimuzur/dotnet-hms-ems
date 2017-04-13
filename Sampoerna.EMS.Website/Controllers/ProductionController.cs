@@ -540,7 +540,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             }
 
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 AddMessageInfo("Error, Data is not Valid", Enums.MessageInfoType.Error);
@@ -562,7 +562,6 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new List<ProductionUploadItems>();
             if (data != null)
             {
-                DateTime temp;
                 foreach (var dataRow in data.DataRows)
                 {
                     if (dataRow[0] == "")

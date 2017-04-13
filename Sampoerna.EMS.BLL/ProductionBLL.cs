@@ -29,7 +29,6 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<UOM> _repositoryUom;
         private IGenericRepository<T001W> _repositoryPlant;
         private ChangesHistoryBLL _changesHistoryBll;
-        private IGenericRepository<T001> _repositoryCompany;
         private ICompanyBLL _companyBll;
         private IPlantBLL _plantBll;
         private IBrandRegistrationBLL _brandRegistrationBll;
@@ -647,7 +646,6 @@ namespace Sampoerna.EMS.BLL
                 #region ---------------Production Date validation-------------
 
                 int temp;
-                DateTime dateTemp;
                 if (Int32.TryParse(output.ProductionDate, out temp))
                 {
                     try

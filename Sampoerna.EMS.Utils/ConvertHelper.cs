@@ -17,7 +17,7 @@ namespace Sampoerna.EMS.Utils
             {
                 return GetDecimal(value);
                }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return 0;
             }
@@ -30,7 +30,7 @@ namespace Sampoerna.EMS.Utils
                 var result = GetDecimal(value);
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -47,8 +47,6 @@ namespace Sampoerna.EMS.Utils
         }
         public static DateTime? StringToDateTimeCk5FileDocuments(string value)
         {
-            DateTime? result = null;
-
             if (!IsNumeric(value))
                 return null;
 
@@ -63,7 +61,7 @@ namespace Sampoerna.EMS.Utils
                     Convert.ToInt32(value.Substring(0, 2)));
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }

@@ -335,10 +335,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Index");
 
             }
-            catch (Exception exception)
+            catch (Exception)
             {
-                AddMessageInfo("Edit Failed.", Enums.MessageInfoType.Error
-                    );
+                AddMessageInfo("Edit Failed.", Enums.MessageInfoType.Error);
             }
 
             model = IniEdit(model);
@@ -450,7 +449,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 else AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
             }
 
-            catch (Exception ex)
+            catch (Exception)
             {
                 AddMessageInfo("Error, Data is not Valid", Enums.MessageInfoType.Error);
                 return RedirectToAction("UploadManualWaste");
