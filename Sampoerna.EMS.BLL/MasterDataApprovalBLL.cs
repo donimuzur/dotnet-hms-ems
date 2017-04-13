@@ -49,7 +49,7 @@ namespace Sampoerna.EMS.BLL
                     var oldValue = oldObject.GetType().GetProperty(isneedApprove.COLUMN_NAME).GetValue(oldObject, null);
                     var newValue = newObject.GetType().GetProperty(isneedApprove.COLUMN_NAME).GetValue(newObject, null);
 
-                    if (oldValue != newValue)
+                    if (!oldValue.Equals(newValue))
                     {
                         masterDataApprovalDetail.OLD_VALUE = oldValue.ToString();
                         masterDataApprovalDetail.NEW_VALUE = newValue.ToString();

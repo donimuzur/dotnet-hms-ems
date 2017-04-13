@@ -5157,10 +5157,6 @@
             <End Role="USER" EntitySet="USER" />
             <End Role="MASTER_DATA_APPROVAL" EntitySet="MASTER_DATA_APPROVAL" />
           </AssociationSet>
-          <AssociationSet Name="FK_MASTER_DATA_APPROVAL_PAGE1" Association="EMSModel.FK_MASTER_DATA_APPROVAL_PAGE1">
-            <End Role="PAGE" EntitySet="PAGE" />
-            <End Role="MASTER_DATA_APPROVAL" EntitySet="MASTER_DATA_APPROVAL" />
-          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -5290,8 +5286,7 @@
           <NavigationProperty Name="MASTER_DATA_APPROVE_SETTING" Relationship="EMSModel.FK_MASTER_DATA_APPROVE_SETTING_PAGE" FromRole="PAGE" ToRole="MASTER_DATA_APPROVE_SETTING" />
           <Property Name="MAIN_TABLE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="MASTER_DATA_APPROVAL" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_PAGE" FromRole="PAGE" ToRole="MASTER_DATA_APPROVAL" />
-          <NavigationProperty Name="MASTER_DATA_APPROVAL1" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_PAGE1" FromRole="PAGE" ToRole="MASTER_DATA_APPROVAL" />
-        </EntityType>
+          </EntityType>
         <EntityType Name="PARAMATER">
           <Key>
             <PropertyRef Name="PARAMETER_ID" />
@@ -9241,7 +9236,6 @@
           <NavigationProperty Name="MASTER_DATA_APPROVAL_DETAIL" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_DETAIL_MASTER_DATA_APPROVAL" FromRole="MASTER_DATA_APPROVAL" ToRole="MASTER_DATA_APPROVAL_DETAIL" />
           <NavigationProperty Name="PAGE" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_PAGE" FromRole="MASTER_DATA_APPROVAL" ToRole="PAGE" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_USER" FromRole="MASTER_DATA_APPROVAL" ToRole="USER" />
-          <NavigationProperty Name="PAGE1" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_PAGE1" FromRole="MASTER_DATA_APPROVAL" ToRole="PAGE" />
         </EntityType>
         <EntityType Name="MASTER_DATA_APPROVAL_DETAIL">
           <Key>
@@ -9281,13 +9275,13 @@
         </Association>
         <Association Name="FK_MASTER_DATA_APPROVAL_PAGE">
           <End Type="EMSModel.PAGE" Role="PAGE" Multiplicity="1" />
-          <End Type="EMSModel.MASTER_DATA_APPROVAL" Role="MASTER_DATA_APPROVAL" Multiplicity="0..1" />
+          <End Type="EMSModel.MASTER_DATA_APPROVAL" Role="MASTER_DATA_APPROVAL" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="PAGE">
               <PropertyRef Name="PAGE_ID" />
             </Principal>
             <Dependent Role="MASTER_DATA_APPROVAL">
-              <PropertyRef Name="APPROVAL_ID" />
+              <PropertyRef Name="PAGE_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -9300,18 +9294,6 @@
             </Principal>
             <Dependent Role="MASTER_DATA_APPROVAL">
               <PropertyRef Name="CREATED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_MASTER_DATA_APPROVAL_PAGE1">
-          <End Type="EMSModel.PAGE" Role="PAGE" Multiplicity="1" />
-          <End Type="EMSModel.MASTER_DATA_APPROVAL" Role="MASTER_DATA_APPROVAL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PAGE">
-              <PropertyRef Name="PAGE_ID" />
-            </Principal>
-            <Dependent Role="MASTER_DATA_APPROVAL">
-              <PropertyRef Name="PAGE_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>

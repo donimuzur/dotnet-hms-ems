@@ -278,7 +278,6 @@
         <AssociationConnector Association="EMSModel.FK_MASTER_DATA_APPROVAL_DETAIL_MASTER_DATA_APPROVAL" />
         <AssociationConnector Association="EMSModel.FK_MASTER_DATA_APPROVAL_PAGE" />
         <AssociationConnector Association="EMSModel.FK_MASTER_DATA_APPROVAL_USER" />
-        <AssociationConnector Association="EMSModel.FK_MASTER_DATA_APPROVAL_PAGE1" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

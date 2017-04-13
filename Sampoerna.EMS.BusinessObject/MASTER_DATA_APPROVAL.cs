@@ -31,6 +31,5 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<MASTER_DATA_APPROVAL_DETAIL> MASTER_DATA_APPROVAL_DETAIL { get; set; }
         public virtual PAGE PAGE { get; set; }
         public virtual USER USER1 { get; set; }
-        public virtual PAGE PAGE1 { get; set; }
     }
 }
