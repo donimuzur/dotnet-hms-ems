@@ -10,8 +10,10 @@ namespace Sampoerna.EMS.Contract
 {
     public interface IMasterDataApprovalSettingBLL
     {
-        List<string> GetAllEditableColumn(int pageId);
+        MasterDataApprovalSettingDto GetAllEditableColumn(int pageId);
 
         void SaveSetting(MasterDataApprovalSettingDto data);
+
+        List<MasterDataApprovalSettingDto> GetAllMasterSettingsPage();
     }
 }

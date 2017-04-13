@@ -215,14 +215,14 @@ namespace Sampoerna.EMS.DAL
         }
 
 
-        public List<TableDetail> GetTableDetail()
+        public List<TableDetail> GetTableDetail(string tableName)
         {
             var objContext = ((IObjectContextAdapter)_context).ObjectContext;
 
             var cols = (from meta in objContext.MetadataWorkspace.GetItems(DataSpace.CSpace)
                        .Where(m => m.BuiltInTypeKind == BuiltInTypeKind.EntityType)
                        from p in (meta as EntityType).Properties
-                          .Where(p => p.DeclaringType.Name == "EntityName")
+                          .Where(p => p.DeclaringType.Name == tableName)
                        select new TableDetail
                        {
                            PropertyName = p.Name,

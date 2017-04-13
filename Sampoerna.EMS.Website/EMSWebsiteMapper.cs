@@ -41,6 +41,7 @@ using Sampoerna.EMS.Website.Models.PoaDelegation;
 using Sampoerna.EMS.Website.Models.SchedulerSetting;
 using Sampoerna.EMS.Website.Models.Reversal;
 using Sampoerna.EMS.Website.Models.ProductType;
+using Sampoerna.EMS.Website.Models.MasterDataApprovalSetting;
 
 namespace Sampoerna.EMS.Website
 {
@@ -1161,6 +1162,17 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.PRODUCT_ALIAS, opt => opt.MapFrom(src => src.ProductAlias))
               .ForMember(dest => dest.CK4CEDITABLE, opt => opt.MapFrom(src => src.IsCk4CEditable))
               ;
+
+            #endregion
+
+            #region Master Data Approval
+
+            Mapper.CreateMap<MasterDataApprovalSettingDto, MasterDataSetting>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.MasterDataSettingDetails, opt => opt.MapFrom(src => src.Details));
+            Mapper.CreateMap<MasterDataApprovalSettingDetail, MasterDataSettingDetail>().IgnoreAllNonExisting();
+            Mapper.CreateMap<MasterDataSettingDetail, MasterDataApprovalSettingDetail>().IgnoreAllNonExisting();
+            Mapper.CreateMap<MasterDataSetting, MasterDataApprovalSettingDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Details, opt => opt.MapFrom(src => src.MasterDataSettingDetails)); ;
 
             #endregion
 

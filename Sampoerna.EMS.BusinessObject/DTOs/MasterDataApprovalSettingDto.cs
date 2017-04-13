@@ -11,6 +11,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public int PAGE_ID { get; set; }
         public string COLUMN_NAME { get; set; }
         public bool? IS_APPROVAL { get; set; }
+
+        public string ColumnDescription { get; set; }
     }
 
     public class MasterDataApprovalSettingDto
@@ -23,6 +25,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public int PageId { get; set; }
         public string PageDescription { get; set; }
 
-        List<MasterDataApprovalSettingDetail> Details { get; set; }
+        public List<MasterDataApprovalSettingDetail> Details { get; set; }
     }
 }

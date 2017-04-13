@@ -716,6 +716,7 @@
           <Property Name="PAGE_URL" Type="nvarchar" MaxLength="100" />
           <Property Name="MENU_NAME" Type="nvarchar" MaxLength="50" />
           <Property Name="PARENT_PAGE_ID" Type="int" />
+          <Property Name="MAIN_TABLE" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="PAGE_MAP">
           <Key>
@@ -5176,6 +5177,7 @@
           <NavigationProperty Name="PAGE2" Relationship="EMSModel.FK_PAGE_PAGE" FromRole="PAGE1" ToRole="PAGE" />
           <NavigationProperty Name="PAGE_MAP" Relationship="EMSModel.FK_PAGE_MAP_PAGE" FromRole="PAGE" ToRole="PAGE_MAP" />
           <NavigationProperty Name="MASTER_DATA_APPROVE_SETTING" Relationship="EMSModel.FK_MASTER_DATA_APPROVE_SETTING_PAGE" FromRole="PAGE" ToRole="MASTER_DATA_APPROVE_SETTING" />
+          <Property Name="MAIN_TABLE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="PARAMATER">
           <Key>
@@ -9217,7 +9219,8 @@
     <EntitySetMapping Name="PAGE">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.PAGE)">
         <MappingFragment StoreEntitySet="PAGE">
-          <ScalarProperty Name="PAGE_ID" ColumnName="PAGE_ID" />
+          <ScalarProperty Name="MAIN_TABLE" ColumnName="MAIN_TABLE" />
+                <ScalarProperty Name="PAGE_ID" ColumnName="PAGE_ID" />
           <ScalarProperty Name="PAGE_NAME" ColumnName="PAGE_NAME" />
           <ScalarProperty Name="PAGE_URL" ColumnName="PAGE_URL" />
           <ScalarProperty Name="MENU_NAME" ColumnName="MENU_NAME" />

@@ -375,6 +375,8 @@
     <Compile Include="Models\LACK2\Lack2SummaryReportsViewModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\MasterDataApprovalSetting\MasterDataApprovalSettingEditViewModel.cs" />
+    <Compile Include="Models\MasterDataApprovalSetting\MasterDataApprovalSettingIndexViewModel.cs" />
     <Compile Include="Models\Material\MaterialCreatelViewModel.cs" />
     <Compile Include="Models\Material\MaterialDetailViewModel.cs" />
     <Compile Include="Models\Material\MaterialEditViewModel.cs" />
@@ -1345,6 +1347,7 @@
     <Content Include="Views\LACK1\_Lack1DetailEa.cshtml" />
     <Content Include="Views\User\Edit.cshtml" />
     <Content Include="Views\MasterDataApprovalSetting\Index.cshtml" />
+    <Content Include="Views\MasterDataApprovalSetting\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

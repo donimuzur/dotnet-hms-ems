@@ -26,6 +26,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string PAGE_URL { get; set; }
         public string MENU_NAME { get; set; }
         public Nullable<int> PARENT_PAGE_ID { get; set; }
+        public string MAIN_TABLE { get; set; }
     
         public virtual ICollection<PAGE> PAGE1 { get; set; }
         public virtual PAGE PAGE2 { get; set; }

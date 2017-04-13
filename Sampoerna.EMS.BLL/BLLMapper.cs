@@ -521,6 +521,15 @@ namespace Sampoerna.EMS.BLL
 
             Mapper.CreateMap<MASTER_DATA_APPROVE_SETTING, MasterDataApprovalSettingDetail>().IgnoreAllNonExisting();
             Mapper.CreateMap<MasterDataApprovalSettingDetail, MASTER_DATA_APPROVE_SETTING>().IgnoreAllNonExisting();
+            Mapper.CreateMap<TableDetail, MasterDataApprovalSettingDetail>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.COLUMN_NAME, opt => opt.MapFrom(src => src.PropertyName))
+                .ForMember(dest => dest.ColumnDescription,
+                    opt =>
+                        opt.MapFrom(
+                            src => src.Documentation.LongDescription != null ? src.Documentation.LongDescription : ""));
+            Mapper.CreateMap<PAGE, MasterDataApprovalSettingDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PageId, opt => opt.MapFrom(src => src.PAGE_ID))
+                .ForMember(dest => dest.PageDescription, opt => opt.MapFrom(src => src.MENU_NAME));
             #endregion
         }
     }

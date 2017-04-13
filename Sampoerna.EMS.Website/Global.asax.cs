@@ -99,6 +99,7 @@ namespace Sampoerna.EMS.Website
             container.Register<IPoaDelegationBLL, PoaDelegationBLL>();
             container.Register<IReversalBLL, ReversalBLL>();
             container.Register<ISchedulerSettingBLL, SchedulerSettingBLL>();
+            container.Register<IMasterDataApprovalSettingBLL,MasterDataApprovalSettingBLL>();
 
             // 3. Optionally verify the container's configuration.
             container.Verify();

@@ -37,6 +37,6 @@ namespace Sampoerna.EMS.Contract
 
         void InsertOrUpdateBulk(IEnumerable<TEntity> entities);
 
-        List<TableDetail> GetTableDetail();
+        List<TableDetail> GetTableDetail(string tableName);
     }
 }
