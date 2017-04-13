@@ -79,9 +79,11 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <br />
                                     <div class="row">
                                         <div class="col-md-12">
                                             <span class="red">*</span> ) This Field Required
+                                            <span class="red" id="ClosingMonthText"></span>
                                         </div>
                                     </div>
                                 </form>
@@ -127,12 +129,41 @@
                 location.href = '@Url.Action("Index", "MonthClosing")';
             });
 
+            $("#Details_ClosingDate").change(function () {
+                checkClosingDate();
+            });
+
             $("#btnSave").click(function () {
                 if (ValidateInput()) {
                     $('#CreateForm').submit();
                 }
             });
+
+            checkClosingDate();
         });
+
+        function checkClosingDate() {
+            var date = $("#Details_ClosingDate").val();
+            $('#btnSave').prop('disabled', false);
+            $('#ClosingMonthText').html('');
+            displayClosingDate('@Url.Action("CheckClosingMonth", "MonthClosing")', { prodDate: date });
+        }
+
+        function displayClosingDate(url, formData) {
+            if (formData.prodDate) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        if (data.MonthClosingId > 0) {
+                            $('#btnSave').prop('disabled', true);
+                            $('#ClosingMonthText').html(data.DisplayDate);
+                        }
+                    }
+                });
+            }
+        }
 
     </script>
 }

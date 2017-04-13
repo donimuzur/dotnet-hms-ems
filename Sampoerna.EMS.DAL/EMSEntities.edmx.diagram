@@ -272,6 +272,7 @@
         <AssociationConnector Association="EMSModel.FK_REVERSAL_INVENTORY_MOVEMENT" />
         <EntityTypeShape EntityType="EMSModel.MONTH_CLOSING" Width="1.5" PointX="13.375" PointY="5.75" />
         <EntityTypeShape EntityType="EMSModel.MONTH_CLOSING_DOCUMENT" Width="1.5" PointX="15.375" PointY="5.75" />
+        <AssociationConnector Association="EMSModel.FK_MONTH_CLOSING_T001W" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

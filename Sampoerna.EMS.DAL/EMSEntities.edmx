@@ -688,7 +688,7 @@
             <PropertyRef Name="MONTH_CLOSING_ID" />
           </Key>
           <Property Name="MONTH_CLOSING_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
+          <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="CLOSING_DATE" Type="datetime" />
           <Property Name="MONTH_FLAG" Type="nvarchar" MaxLength="6" />
         </EntityType>
@@ -2292,6 +2292,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_MONTH_CLOSING_T001W">
+          <End Role="T001W" Type="Self.T001W" Multiplicity="1" />
+          <End Role="MONTH_CLOSING" Type="Self.MONTH_CLOSING" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T001W">
+              <PropertyRef Name="WERKS" />
+            </Principal>
+            <Dependent Role="MONTH_CLOSING">
+              <PropertyRef Name="PLANT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PAGE_PAGE">
           <End Role="PAGE" Type="Self.PAGE" Multiplicity="0..1" />
           <End Role="PAGE1" Type="Self.PAGE" Multiplicity="*" />
@@ -2832,8 +2844,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <!--Errors Found During Generation:
-warning 6037: Foreign key constraint 'FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP' has been omitted from the storage model. Column 'EXC_GOOD_TYP' of table 'EMSModel.Store.PLANT_RECEIVE_MATERIAL' is a foreign key participating in multiple relationships. A one-to-one Entity Model will not validate since data inconsistency is possible.
         <Association Name="FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP">
           <End Role="ZAIDM_EX_GOODTYP" Type="Self.ZAIDM_EX_GOODTYP" Multiplicity="1" />
           <End Role="PLANT_RECEIVE_MATERIAL" Type="Self.PLANT_RECEIVE_MATERIAL" Multiplicity="*" />
@@ -2845,7 +2855,7 @@ warning 6037: Foreign key constraint 'FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP
               <PropertyRef Name="EXC_GOOD_TYP" />
             </Dependent>
           </ReferentialConstraint>
-        </Association>-->
+        </Association>
         <Association Name="FK_POA_CREATED_BY_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="1" />
           <End Role="POA" Type="Self.POA" Multiplicity="*" />
@@ -3062,8 +3072,6 @@ warning 6037: Foreign key constraint 'FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <!--Errors Found During Generation:
-warning 6037: Foreign key constraint 'FK_T001K_T1001' has been omitted from the storage model. Column 'BUKRS' of table 'EMSModel.Store.T001K' is a foreign key participating in multiple relationships. A one-to-one Entity Model will not validate since data inconsistency is possible.
         <Association Name="FK_T001K_T1001">
           <End Role="T001" Type="Self.T001" Multiplicity="1" />
           <End Role="T001K" Type="Self.T001K" Multiplicity="*" />
@@ -3075,7 +3083,7 @@ warning 6037: Foreign key constraint 'FK_T001K_T1001' has been omitted from the 
               <PropertyRef Name="BUKRS" />
             </Dependent>
           </ReferentialConstraint>
-        </Association>-->
+        </Association>
         <Association Name="FK_T001W_ZAIDM_EX_NPPBKC">
           <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="0..1" />
           <End Role="T001W" Type="Self.T001W" Multiplicity="*" />
@@ -3268,8 +3276,6 @@ warning 6037: Foreign key constraint 'FK_T001K_T1001' has been omitted from the 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <!--Errors Found During Generation:
-warning 6037: Foreign key constraint 'FK_WASTE_STOCK_USER2' has been omitted from the storage model. Column 'MODIFIED_BY' of table 'EMSModel.Store.WASTE_STOCK' is a foreign key participating in multiple relationships. A one-to-one Entity Model will not validate since data inconsistency is possible.
         <Association Name="FK_WASTE_STOCK_USER2">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="WASTE_STOCK" Type="Self.WASTE_STOCK" Multiplicity="*" />
@@ -3281,9 +3287,7 @@ warning 6037: Foreign key constraint 'FK_WASTE_STOCK_USER2' has been omitted fro
               <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
-        </Association>-->
-        <!--Errors Found During Generation:
-warning 6037: Foreign key constraint 'FK_WASTE_STOCK_ZAIDM_EX_MATERIAL' has been omitted from the storage model. Column 'WERKS' of table 'EMSModel.Store.WASTE_STOCK' is a foreign key participating in multiple relationships. A one-to-one Entity Model will not validate since data inconsistency is possible.
+        </Association>
         <Association Name="FK_WASTE_STOCK_ZAIDM_EX_MATERIAL">
           <End Role="ZAIDM_EX_MATERIAL" Type="Self.ZAIDM_EX_MATERIAL" Multiplicity="1" />
           <End Role="WASTE_STOCK" Type="Self.WASTE_STOCK" Multiplicity="*" />
@@ -3297,7 +3301,7 @@ warning 6037: Foreign key constraint 'FK_WASTE_STOCK_ZAIDM_EX_MATERIAL' has been
               <PropertyRef Name="WERKS" />
             </Dependent>
           </ReferentialConstraint>
-        </Association>-->
+        </Association>
         <Association Name="FK_WORKFLOW_HISTORY_USER">
           <End Role="USER" Type="Self.USER" Multiplicity="1" />
           <End Role="WORKFLOW_HISTORY" Type="Self.WORKFLOW_HISTORY" Multiplicity="*" />
@@ -3492,8 +3496,6 @@ warning 6037: Foreign key constraint 'FK_WASTE_STOCK_ZAIDM_EX_MATERIAL' has been
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <!--Errors Found During Generation:
-warning 6037: Foreign key constraint 'FK_ZAIDM_EX_NPPBKC_T0011' has been omitted from the storage model. Column 'BUKRS' of table 'EMSModel.Store.ZAIDM_EX_NPPBKC' is a foreign key participating in multiple relationships. A one-to-one Entity Model will not validate since data inconsistency is possible.
         <Association Name="FK_ZAIDM_EX_NPPBKC_T0011">
           <End Role="T001" Type="Self.T001" Multiplicity="0..1" />
           <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="*" />
@@ -3505,7 +3507,7 @@ warning 6037: Foreign key constraint 'FK_ZAIDM_EX_NPPBKC_T0011' has been omitted
               <PropertyRef Name="BUKRS" />
             </Dependent>
           </ReferentialConstraint>
-        </Association>-->
+        </Association>
         <Association Name="FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC">
           <End Role="ZAIDM_EX_KPPBC" Type="Self.ZAIDM_EX_KPPBC" Multiplicity="0..1" />
           <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="*" />
@@ -3855,6 +3857,10 @@ warning 6037: Foreign key constraint 'FK_ZAIDM_EX_NPPBKC_T0011' has been omitted
             <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
             <End Role="MATERIAL_UOM" EntitySet="MATERIAL_UOM" />
           </AssociationSet>
+          <AssociationSet Name="FK_MONTH_CLOSING_T001W" Association="Self.FK_MONTH_CLOSING_T001W">
+            <End Role="T001W" EntitySet="T001W" />
+            <End Role="MONTH_CLOSING" EntitySet="MONTH_CLOSING" />
+          </AssociationSet>
           <AssociationSet Name="FK_PAGE_PAGE" Association="Self.FK_PAGE_PAGE">
             <End Role="PAGE" EntitySet="PAGE" />
             <End Role="PAGE1" EntitySet="PAGE" />
@@ -4035,6 +4041,10 @@ warning 6037: Foreign key constraint 'FK_ZAIDM_EX_NPPBKC_T0011' has been omitted
             <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
             <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
           </AssociationSet>
+          <AssociationSet Name="FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP" Association="Self.FK_PLANT_RECEIVE_MATERIAL_ZAIDM_EX_GOODTYP">
+            <End Role="ZAIDM_EX_GOODTYP" EntitySet="ZAIDM_EX_GOODTYP" />
+            <End Role="PLANT_RECEIVE_MATERIAL" EntitySet="PLANT_RECEIVE_MATERIAL" />
+          </AssociationSet>
           <AssociationSet Name="FK_POA_CREATED_BY_USER" Association="Self.FK_POA_CREATED_BY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="POA" EntitySet="POA" />
@@ -4107,6 +4117,10 @@ warning 6037: Foreign key constraint 'FK_ZAIDM_EX_NPPBKC_T0011' has been omitted
             <End Role="T001" EntitySet="T001" />
             <End Role="T001K" EntitySet="T001K" />
           </AssociationSet>
+          <AssociationSet Name="FK_T001K_T1001" Association="Self.FK_T001K_T1001">
+            <End Role="T001" EntitySet="T001" />
+            <End Role="T001K" EntitySet="T001K" />
+          </AssociationSet>
           <AssociationSet Name="FK_T001W_ZAIDM_EX_NPPBKC" Association="Self.FK_T001W_ZAIDM_EX_NPPBKC">
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
             <End Role="T001W" EntitySet="T001W" />
@@ -4171,6 +4185,14 @@ warning 6037: Foreign key constraint 'FK_ZAIDM_EX_NPPBKC_T0011' has been omitted
             <End Role="USER" EntitySet="USER" />
             <End Role="WASTE_STOCK" EntitySet="WASTE_STOCK" />
           </AssociationSet>
+          <AssociationSet Name="FK_WASTE_STOCK_USER2" Association="Self.FK_WASTE_STOCK_USER2">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="WASTE_STOCK" EntitySet="WASTE_STOCK" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WASTE_STOCK_ZAIDM_EX_MATERIAL" Association="Self.FK_WASTE_STOCK_ZAIDM_EX_MATERIAL">
+            <End Role="ZAIDM_EX_MATERIAL" EntitySet="ZAIDM_EX_MATERIAL" />
+            <End Role="WASTE_STOCK" EntitySet="WASTE_STOCK" />
+          </AssociationSet>
           <AssociationSet Name="FK_WORKFLOW_HISTORY_USER" Association="Self.FK_WORKFLOW_HISTORY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="WORKFLOW_HISTORY" EntitySet="WORKFLOW_HISTORY" />
@@ -4232,6 +4254,10 @@ warning 6037: Foreign key constraint 'FK_ZAIDM_EX_NPPBKC_T0011' has been omitted
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
           </AssociationSet>
           <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_T001" Association="Self.FK_ZAIDM_EX_NPPBKC_T001">
+            <End Role="T001" EntitySet="T001" />
+            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ZAIDM_EX_NPPBKC_T0011" Association="Self.FK_ZAIDM_EX_NPPBKC_T0011">
             <End Role="T001" EntitySet="T001" />
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
           </AssociationSet>
@@ -5013,6 +5039,10 @@ warning 6037: Foreign key constraint 'FK_ZAIDM_EX_NPPBKC_T0011' has been omitted
           </AssociationSet>
           <EntitySet Name="MONTH_CLOSING" EntityType="EMSModel.MONTH_CLOSING" />
           <EntitySet Name="MONTH_CLOSING_DOCUMENT" EntityType="EMSModel.MONTH_CLOSING_DOCUMENT" />
+          <AssociationSet Name="FK_MONTH_CLOSING_T001W" Association="EMSModel.FK_MONTH_CLOSING_T001W">
+            <End Role="T001W" EntitySet="T001W" />
+            <End Role="MONTH_CLOSING" EntitySet="MONTH_CLOSING" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -6526,6 +6556,7 @@ warning 6037: Foreign key constraint 'FK_ZAIDM_EX_NPPBKC_T0011' has been omitted
           <NavigationProperty Name="USER_PLANT_MAP" Relationship="EMSModel.FK_USER_PLANT_MAP_T001W" FromRole="T001W" ToRole="USER_PLANT_MAP" />
           <NavigationProperty Name="WASTE_ROLE" Relationship="EMSModel.FK_WASTE_ROLE_T001W" FromRole="T001W" ToRole="WASTE_ROLE" />
           <NavigationProperty Name="WASTE_STOCK" Relationship="EMSModel.FK_WASTE_STOCK_T001W" FromRole="T001W" ToRole="WASTE_STOCK" />
+          <NavigationProperty Name="MONTH_CLOSING" Relationship="EMSModel.FK_MONTH_CLOSING_T001W" FromRole="T001W" ToRole="MONTH_CLOSING" />
         </EntityType>
         <Association Name="FK_HEADER_FOOTER_HEADER_FOOTER">
           <End Type="EMSModel.T001" Role="T001" Multiplicity="1" />
@@ -8946,9 +8977,10 @@ warning 6037: Foreign key constraint 'FK_ZAIDM_EX_NPPBKC_T0011' has been omitted
             <PropertyRef Name="MONTH_CLOSING_ID" />
           </Key>
           <Property Name="MONTH_CLOSING_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CLOSING_DATE" Type="DateTime" Precision="3" />
           <Property Name="MONTH_FLAG" Type="String" MaxLength="6" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="T001W" Relationship="EMSModel.FK_MONTH_CLOSING_T001W" FromRole="MONTH_CLOSING" ToRole="T001W" />
         </EntityType>
         <EntityType Name="MONTH_CLOSING_DOCUMENT">
           <Key>
@@ -8959,6 +8991,18 @@ warning 6037: Foreign key constraint 'FK_ZAIDM_EX_NPPBKC_T0011' has been omitted
           <Property Name="FILE_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="FILE_PATH" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
         </EntityType>
+        <Association Name="FK_MONTH_CLOSING_T001W">
+          <End Type="EMSModel.T001W" Role="T001W" Multiplicity="1" />
+          <End Type="EMSModel.MONTH_CLOSING" Role="MONTH_CLOSING" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T001W">
+              <PropertyRef Name="WERKS" />
+            </Principal>
+            <Dependent Role="MONTH_CLOSING">
+              <PropertyRef Name="PLANT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -10645,7 +10689,7 @@ warning 6037: Foreign key constraint 'FK_ZAIDM_EX_NPPBKC_T0011' has been omitted
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="False" />
-        <DesignerProperty Name="IncludeForeignKeysInModel" Value="False" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
         <DesignerProperty Name="UseLegacyProvider" Value="False" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
       </DesignerInfoPropertySet>

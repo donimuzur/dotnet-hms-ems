@@ -7,7 +7,7 @@ namespace Sampoerna.EMS.Contract
 {
     public interface IMonthClosingBLL
     {
-        List<MonthClosingDto> GetList();
+        List<MonthClosingDto> GetList(MonthClosingGetByParam param);
         bool Save(MonthClosingDto item);
         MonthClosingDto GetDataByParam(MonthClosingGetByParam param);
         MonthClosingDto GetById(long id);

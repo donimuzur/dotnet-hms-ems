@@ -1,0 +1,43 @@
+﻿@model Sampoerna.EMS.Website.Models.MonthClosing.MonthClosingIndexViewModel
+
+<div class="white-wrapper">
+    <div class="form-excise" role="form">
+        <div class="row">
+
+            <div class="col-md-4">
+                <div class="row">
+                    <label class="col-md-4">Month</label>
+                    <div class="col-md-8">
+                        @Html.DropDownListFor(model => model.Month, Model.MonthList, "All", new { @class = " form-control resetfield", id = "SearchInput_Month" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="row">
+                    <label class="col-md-4">Year</label>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.Year, "", new { @class = "form-control resetfield" })
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-4">
+                <div class="row">
+                    <div class="col-md-4">
+                        <button class="btn btn-blue">SEARCH</button>
+                    </div>
+                    <div class="col-md-4">
+                        <input class="btn btn-blue" type="button" value="RESET" onclick="OnReset();" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+    </div>
+</div>

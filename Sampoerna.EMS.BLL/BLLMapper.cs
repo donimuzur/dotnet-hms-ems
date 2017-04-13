@@ -523,6 +523,7 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<MONTH_CLOSING, MonthClosingDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.MonthClosingId, opt => opt.MapFrom(src => src.MONTH_CLOSING_ID))
                 .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
+                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.T001W.NAME1))
                 .ForMember(dest => dest.ClosingDay, opt => opt.MapFrom(src => src.CLOSING_DATE.Value.Day))
                 .ForMember(dest => dest.ClosingMonth, opt => opt.MapFrom(src => src.CLOSING_DATE.Value.ToString("MMMM")))
                 .ForMember(dest => dest.ClosingYear, opt => opt.MapFrom(src => src.CLOSING_DATE.Value.Year))
