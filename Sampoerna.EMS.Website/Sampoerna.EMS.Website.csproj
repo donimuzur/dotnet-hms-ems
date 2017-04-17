@@ -228,6 +228,7 @@
     <Compile Include="AspnetWebForms\GenericReportViewer.aspx.designer.cs">
       <DependentUpon>GenericReportViewer.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\MasterApprovalController.cs" />
     <Compile Include="Controllers\MasterDataApprovalSettingController.cs" />
     <Compile Include="Controllers\PBCK4Controller.cs" />
     <Compile Include="Controllers\PoaDelegationController.cs" />
@@ -377,6 +378,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\MasterDataApprovalSetting\MasterDataApprovalSettingEditViewModel.cs" />
     <Compile Include="Models\MasterDataApprovalSetting\MasterDataApprovalSettingIndexViewModel.cs" />
+    <Compile Include="Models\MasterDataApproval\MasterDataApprovalViewModel.cs" />
     <Compile Include="Models\Material\MaterialCreatelViewModel.cs" />
     <Compile Include="Models\Material\MaterialDetailViewModel.cs" />
     <Compile Include="Models\Material\MaterialEditViewModel.cs" />
@@ -1348,6 +1350,9 @@
     <Content Include="Views\User\Edit.cshtml" />
     <Content Include="Views\MasterDataApprovalSetting\Index.cshtml" />
     <Content Include="Views\MasterDataApprovalSetting\Edit.cshtml" />
+    <Content Include="Views\Shared\_ChangesAproval.cshtml" />
+    <Content Include="Views\MasterApproval\Index.cshtml" />
+    <Content Include="Views\MasterApproval\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

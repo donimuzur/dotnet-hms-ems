@@ -26,6 +26,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string APPROVED_BY { get; set; }
         public Nullable<System.DateTime> APPROVED_DATE { get; set; }
         public Sampoerna.EMS.Core.Enums.DocumentStatus STATUS_ID { get; set; }
+        public string FORM_ID { get; set; }
     
         public virtual USER USER { get; set; }
         public virtual ICollection<MASTER_DATA_APPROVAL_DETAIL> MASTER_DATA_APPROVAL_DETAIL { get; set; }

@@ -15,7 +15,7 @@ namespace Sampoerna.EMS.Website.Controllers
     {
         private Enums.MenuList _mainMenu;
         private IMasterDataApprovalSettingBLL _masterDataApprovalSettingBLL;
-        private IUnitOfWork _uow;
+        
         //
         // GET: /MasterDataApprovalSetting/
         public MasterDataApprovalSettingController(IPageBLL pageBll, IMasterDataApprovalSettingBLL masterDataSettingBLL) : base(pageBll, Enums.MenuList.MasterDataApproveSetting)

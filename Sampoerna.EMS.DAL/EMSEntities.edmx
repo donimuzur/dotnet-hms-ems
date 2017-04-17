@@ -667,6 +667,7 @@
           <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="APPROVED_DATE" Type="datetime" />
           <Property Name="STATUS_ID" Type="int" Nullable="false" />
+          <Property Name="FORM_ID" Type="varchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="MASTER_DATA_APPROVAL_DETAIL">
           <Key>
@@ -9236,6 +9237,7 @@
           <NavigationProperty Name="MASTER_DATA_APPROVAL_DETAIL" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_DETAIL_MASTER_DATA_APPROVAL" FromRole="MASTER_DATA_APPROVAL" ToRole="MASTER_DATA_APPROVAL_DETAIL" />
           <NavigationProperty Name="PAGE" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_PAGE" FromRole="MASTER_DATA_APPROVAL" ToRole="PAGE" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_USER" FromRole="MASTER_DATA_APPROVAL" ToRole="USER" />
+          <Property Name="FORM_ID" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="MASTER_DATA_APPROVAL_DETAIL">
           <Key>
@@ -10963,6 +10965,7 @@
           <EntitySetMapping Name="MASTER_DATA_APPROVAL">
             <EntityTypeMapping TypeName="EMSModel.MASTER_DATA_APPROVAL">
               <MappingFragment StoreEntitySet="MASTER_DATA_APPROVAL">
+                <ScalarProperty Name="FORM_ID" ColumnName="FORM_ID" />
                 <ScalarProperty Name="STATUS_ID" ColumnName="STATUS_ID" />
                 <ScalarProperty Name="APPROVED_DATE" ColumnName="APPROVED_DATE" />
                 <ScalarProperty Name="APPROVED_BY" ColumnName="APPROVED_BY" />

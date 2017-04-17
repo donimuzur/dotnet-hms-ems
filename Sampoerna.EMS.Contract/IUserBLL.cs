@@ -25,5 +25,7 @@ namespace Sampoerna.EMS.Contract
 
         void SaveUser(USER user);
 
+        bool IsUserMasterApprover(string userId);
+
     }
 }
