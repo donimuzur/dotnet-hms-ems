@@ -10,6 +10,7 @@ using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
+using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 using Enums = Sampoerna.EMS.Core.Enums;
 
@@ -28,6 +29,7 @@ namespace Sampoerna.EMS.BLL
         private IPOAMapBLL _poaMapBLL;
         private IZaidmExMaterialService _materialBLL;
         private IMasterDataApprovalSettingBLL _approvalSettingBLL;
+        private IChangesHistoryBLL _changesHistoryBLL;
         private string includeTables = "MASTER_DATA_APPROVAL_DETAIL,PAGE";
         public MasterDataApprovalBLL(IUnitOfWork uow, ILogger logger)
         {
@@ -37,6 +39,7 @@ namespace Sampoerna.EMS.BLL
             _repository = _uow.GetGenericRepository<MASTER_DATA_APPROVAL>();
             _pageBLL = new PageBLL(_uow,_logger);
             _approvalSettingBLL = new MasterDataApprovalSettingBLL(_uow,_logger);
+            _changesHistoryBLL = new ChangesHistoryBLL(_uow,_logger);
             _brandRegistrationBLL = new BrandRegistrationBLL(_uow,_logger);
             _poaBll = new POABLL(_uow,_logger);
             _poaMapBLL = new POAMapBLL(_uow,_logger);
@@ -125,6 +128,7 @@ namespace Sampoerna.EMS.BLL
                 data.APPROVED_DATE = DateTime.Now;
                 
                 UpdateObjectByFormId(data);
+                UpdateChangesHistory(data);
                 _uow.SaveChanges();
             }
         }
@@ -253,6 +257,49 @@ namespace Sampoerna.EMS.BLL
 
             else
                 return Convert.ChangeType(value, property.PropertyType);
+        }
+
+
+        private void UpdateChangesHistory(MASTER_DATA_APPROVAL data)
+        {
+            var formId = data.FORM_ID.Split('-');
+            foreach (var detail in data.MASTER_DATA_APPROVAL_DETAIL)
+            {
+                var changesFormId = "";
+                switch (data.PAGE_ID)
+                {
+                    case (int)Enums.MenuList.BrandRegistration:
+                        var werks = formId[0];
+                        var facode = formId[1];
+                        var stickerCode = formId[2];
+                        changesFormId = werks+facode+stickerCode;
+                        break;
+                    case (int)Enums.MenuList.POA:
+                        changesFormId = data.FORM_ID;
+                        break;
+                    case (int)Enums.MenuList.POAMap:
+                        changesFormId = data.FORM_ID;
+                        break;
+                    case (int)Enums.MenuList.MaterialMaster:
+                        var werksM = formId[0];
+
+                        var stickerCodeM = formId[1];
+                        changesFormId = stickerCodeM + werksM;
+                        break;
+                }
+
+                CHANGES_HISTORY changes = new CHANGES_HISTORY();
+                changes.FIELD_NAME = detail.COLUMN_DESCRIPTION.ToUpper();
+                changes.FORM_ID = changesFormId;
+                changes.FORM_TYPE_ID = (Enums.MenuList) data.PAGE_ID;
+                changes.MODIFIED_BY = data.APPROVED_BY;
+                changes.MODIFIED_DATE = data.APPROVED_DATE;
+                changes.NEW_VALUE = detail.NEW_VALUE;
+                changes.OLD_VALUE = detail.OLD_VALUE;
+
+                _changesHistoryBLL.AddHistory(changes);
+            }
+            
         }
     }
 }
