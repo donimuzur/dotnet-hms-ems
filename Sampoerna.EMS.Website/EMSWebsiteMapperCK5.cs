@@ -233,7 +233,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.USD_VALUE, opt => opt.ResolveUsing<StringToDecimalResolver>().FromMember(src => src.UsdValue))
                 .ForMember(dest => dest.CONVERTED_UOM, opt => opt.MapFrom(src => src.ConvertedUom))
                 .ForMember(dest => dest.MATERIAL_DESC, opt => opt.MapFrom(src => src.MaterialDesc))
-                .ForMember(dest => dest.MATDOC, opt => opt.MapFrom(src => src.MatDoc));
+                .ForMember(dest => dest.MATDOC, opt => opt.MapFrom(src => src.MatDoc))
+                .ForMember(dest => dest.STICKER_CODE, opt => opt.MapFrom(src => src.StickerCode));
 
 
             Mapper.CreateMap<CK5MaterialDto, CK5UploadViewModel>().IgnoreAllNonExisting()
@@ -245,7 +246,8 @@ namespace Sampoerna.EMS.Website
                .ForMember(dest => dest.UsdValue, opt => opt.ResolveUsing<DecimalToStringMoneyResolver>().FromMember(src => src.USD_VALUE))
                .ForMember(dest => dest.ConvertedUom, opt => opt.MapFrom(src => src.CONVERTED_UOM))
                .ForMember(dest => dest.MaterialDesc, opt => opt.MapFrom(src => src.MATERIAL_DESC))
-               .ForMember(dest => dest.MatDoc, opt => opt.MapFrom(src => src.MATDOC));
+               .ForMember(dest => dest.MatDoc, opt => opt.MapFrom(src => src.MATDOC))
+               .ForMember(dest => dest.StickerCode, opt => opt.MapFrom(src => src.STICKER_CODE));
 
 
 

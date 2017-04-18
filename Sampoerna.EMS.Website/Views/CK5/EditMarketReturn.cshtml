@@ -436,11 +436,11 @@
 
         $("#btnAddRow").click(function () {
             var sourcePlant = $("#DestPlantId").find("option:selected").val();
-
+            var defaultMaterial = "";
 
             $("#uploadMaterialPlant").val(sourcePlant);
 
-            ajaxGetListMaterialMarketReturn('@Url.Action("GetListMaterialMarketReturn", "CK5")', { plantId: sourcePlant });
+            ajaxGetListMaterialMarketReturn('@Url.Action("GetListMaterialMarketReturn", "CK5")', { plantId: sourcePlant }, defaultMaterial);
 
             $('#btnSaveMaterial').show();
             $('#btnUpdateMaterial').hide();

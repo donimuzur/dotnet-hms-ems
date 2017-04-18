@@ -99,6 +99,12 @@
             if ($(this).length) {
                 var nppbkc = $(this).find("option:selected").val();
 
+                //remove table
+                try {
+                    RemovePbck7ItemsTable();
+                } catch (e) {
+                }
+
                 $('#PlantId').html('');
                 $('#displayPoaList').html('');
                 if (nppbkc != '') {
@@ -114,6 +120,12 @@
 
             if ($(this).length) {
                 var plant = $(this).find("option:selected").val();
+
+                //remove table
+                try {
+                    RemovePbck7ItemsTable();
+                } catch (e) {
+                }
 
                 $('#displayPoaList').html('');
                 if (plant != '') {
