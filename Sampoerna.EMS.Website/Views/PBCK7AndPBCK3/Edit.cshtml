@@ -192,6 +192,12 @@
         $('#PlantId').change(function () {
 
             if ($(this).length) {
+                //remove table
+                try {
+                    RemovePbck7ItemsTable();
+                } catch (e) {
+                }
+
                 var plant = $(this).find("option:selected").val();
 
                 $('#displayPoaList').html('');

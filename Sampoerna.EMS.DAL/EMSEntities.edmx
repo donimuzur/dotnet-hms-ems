@@ -342,6 +342,7 @@
           <Property Name="CONVERTED_UOM" Type="varchar" MaxLength="50" />
           <Property Name="MATERIAL_DESC" Type="nvarchar" MaxLength="65" />
           <Property Name="MATDOC" Type="varchar" MaxLength="50" />
+          <Property Name="STICKER_CODE" Type="nvarchar" MaxLength="18" />
         </EntityType>
         <EntityType Name="COUNTRY">
           <Key>
@@ -5422,6 +5423,7 @@
           <NavigationProperty Name="CK5" Relationship="EMSModel.FK_CK5_MATERIAL_CK5" FromRole="CK5_MATERIAL" ToRole="CK5" />
           <Property Name="MATERIAL_DESC" Type="String" MaxLength="65" FixedLength="false" Unicode="true" />
           <Property Name="MATDOC" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="STICKER_CODE" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="DOC_NUMBER_SEQ">
           <Key>
@@ -9272,7 +9274,8 @@
     <EntitySetMapping Name="CK5_MATERIAL">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.CK5_MATERIAL)">
         <MappingFragment StoreEntitySet="CK5_MATERIAL">
-          <ScalarProperty Name="MATDOC" ColumnName="MATDOC" />
+          <ScalarProperty Name="STICKER_CODE" ColumnName="STICKER_CODE" />
+                <ScalarProperty Name="MATDOC" ColumnName="MATDOC" />
                 <ScalarProperty Name="MATERIAL_DESC" ColumnName="MATERIAL_DESC" />
                 <ScalarProperty Name="CK5_MATERIAL_ID" ColumnName="CK5_MATERIAL_ID" />
           <ScalarProperty Name="CK5_ID" ColumnName="CK5_ID" />

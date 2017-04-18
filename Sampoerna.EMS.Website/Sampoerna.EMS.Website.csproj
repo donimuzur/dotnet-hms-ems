@@ -1353,6 +1353,8 @@
     <Content Include="Views\MonthClosing\Detail.cshtml" />
     <Content Include="Views\MonthClosing\_Search.cshtml" />
     <Content Include="Views\MonthClosing\_List.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadCreateMarketReturn.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadListMarketReturn.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

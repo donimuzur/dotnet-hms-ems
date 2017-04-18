@@ -27,5 +27,6 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string CONVERTED_UOM { get; set; }
         public string MATERIAL_DESC { get; set; }
         public string MATDOC { get; set; }
+        public string STICKER_CODE { get; set; }
     }
 }

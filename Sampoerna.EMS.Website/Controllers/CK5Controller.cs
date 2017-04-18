@@ -5071,10 +5071,10 @@ namespace Sampoerna.EMS.Website.Controllers
         //}
 
         [HttpPost]
-        public JsonResult GetMaterialHjeAndTariffMarketReturn(string plantId, string materialNumber)
+        public JsonResult GetMaterialHjeAndTariffMarketReturn(string plantId, string materialNumber, string stickerCode)
         {
 
-            var dbMaterial = _ck5Bll.GetBrandByPlantAndMaterialNumber(plantId, materialNumber);
+            var dbMaterial = _ck5Bll.GetBrandByPlantAndMaterialNumber(plantId, materialNumber, stickerCode);
             var model = Mapper.Map<CK5InputManualViewModel>(dbMaterial);
 
             return Json(model);

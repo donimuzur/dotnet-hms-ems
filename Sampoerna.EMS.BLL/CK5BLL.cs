@@ -696,6 +696,10 @@ namespace Sampoerna.EMS.BLL
 
                 //validate
                 var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand);
+                if (ck5MaterialInput.StickerCode != null)
+                {
+                    dbBrand = _brandRegistration.GetByPlantIdAndFaCodeStickerCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand, ck5MaterialInput.StickerCode);
+                }
                 if (dbBrand == null)
                     messageList.Add("Material Number Not Exist");
                 else
@@ -5775,9 +5779,14 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public GetBrandByPlantAndMaterialNumberOutput GetBrandByPlantAndMaterialNumber(string plantId, string materialNumber)
+        public GetBrandByPlantAndMaterialNumberOutput GetBrandByPlantAndMaterialNumber(string plantId, string materialNumber, string stickerCode = null)
         {
             var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(plantId, materialNumber);
+
+            if (stickerCode != null)
+            {
+                dbBrand = _brandRegistration.GetByPlantIdAndFaCodeStickerCode(plantId, materialNumber, stickerCode);
+            }
 
             var result = new GetBrandByPlantAndMaterialNumberOutput();
             if (dbBrand == null)
