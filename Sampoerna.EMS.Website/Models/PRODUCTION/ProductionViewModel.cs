@@ -108,7 +108,7 @@ namespace Sampoerna.EMS.Website.Models.PRODUCTION
         
         //[RegularExpression("^[0-9]*$")]
         public string ZbStr { get; set; }
-        public long? Zb { get; set; }
+        public decimal? Zb { get; set; }
         public string PackedAdjustedStr { get; set; }
         public decimal? PackedAdjusted { get; set; }
         public string Remark { get; set; }
