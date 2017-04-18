@@ -308,6 +308,7 @@
                                 <thead>
                                     <tr>
                                         <th>Material Number</th>
+                                        <th>Sticker Code</th>
                                         <th>QTY</th>
                                         <th>UOM</th>
                                         <th>Convertion</th>
@@ -326,6 +327,7 @@
                                     @for (int i = 0; i < Model.UploadItemModels.Count(); i++)
                                     {
                                         @Html.HiddenFor(model => model.UploadItemModels[i].Brand)
+                                        @Html.HiddenFor(model => model.UploadItemModels[i].StickerCode)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].Qty)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].Uom)
                                         @Html.HiddenFor(model => model.UploadItemModels[i].Convertion)
@@ -341,6 +343,7 @@
                                         <tr>
                                             @*<td style="display: none"></td>*@
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].Brand)</td>
+                                            <td>@Html.DisplayFor(model => model.UploadItemModels[i].StickerCode)</td>
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].Qty)</td>
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].Uom)</td>
                                             <td>@Html.DisplayFor(model => model.UploadItemModels[i].Convertion)</td>

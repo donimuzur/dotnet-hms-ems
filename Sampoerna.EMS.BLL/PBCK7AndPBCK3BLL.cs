@@ -3276,7 +3276,11 @@ namespace Sampoerna.EMS.BLL
         public GetBrandItemsByPlantAndFaCodeOutput GetBrandItemsByPlantAndFaCode(string plantId, string faCode, string stickerCode = null)
         {
             var result = new GetBrandItemsByPlantAndFaCodeOutput();
-            var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCodeStickerCode(plantId, faCode, stickerCode);
+            var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(plantId, faCode);
+            if (stickerCode != null)
+            {
+                dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCodeStickerCode(plantId, faCode, stickerCode);
+            }
             if (dbBrand == null)
             {
                 result.PlantId = plantId;

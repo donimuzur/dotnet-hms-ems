@@ -910,6 +910,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 else
                 {
+                    //var errors = ModelState.Values.Where(c => c.Errors.Count > 0).ToList();
+
+                    //if (errors.Count > 0)
+                    //{
+                    //    //get error details
+                    //}
+
                     //ModelState.Values
                     AddMessageInfo("Not Valid Model", Enums.MessageInfoType.Error);
                 }
@@ -1435,7 +1442,10 @@ namespace Sampoerna.EMS.Website.Controllers
                         AddMessageInfo("Missing CK5 Material", Enums.MessageInfoType.Error);
                 }
                 else
+                {
+
                     AddMessageInfo("Not Valid Model", Enums.MessageInfoType.Error);
+                }
 
                 model = InitEdit(model);
                 model = GetHistorys(model);
