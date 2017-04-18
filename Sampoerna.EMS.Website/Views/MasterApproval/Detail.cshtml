@@ -1,22 +1,36 @@
-﻿@model Sampoerna.EMS.Website.Models.MasterDataApproval.MasterDataApprovalItemViewModel
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.MasterDataApproval.MasterDataApprovalItemViewModel
 
-@using (Html.BeginForm("Approve", "MasterApproval", FormMethod.Post, new { @id = "EditCk5Forms" }))
-{
+
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
                 <h3 class="desc">Master Data Approval</h3>
-                <div class="action-button">
-                    @if (Model.IsMasterApprover)
+                <div class="action-button col-sm-4">
+                    <div class="col-sm-3 action-button">
+                        <a href="@Url.Action("Index", "MasterApproval")" class="btn btn-grey">Back</a>
+                    </div>
+                    @if (Model.IsMasterApprover && (Model.Detail.STATUS_ID == Enums.DocumentStatus.WaitingForMasterApprover) )
                     {
-                        @Html.HiddenFor(model => model.Detail.APPROVAL_ID)
-                        <input type="submit" class="btn btn-blue" value="Approve" />    
+
+
+                        using (Html.BeginForm("Reject", "MasterApproval", FormMethod.Post, new { @id = "RejectForm", @class = "col-sm-3 action-button" }))
+                        {
+                            @Html.HiddenFor(model => model.Detail.APPROVAL_ID)
+                            <input type="submit" class="btn btn-danger" value="Reject" />
+                        }
+
+                        using (Html.BeginForm("Approve", "MasterApproval", FormMethod.Post, new { @id = "ApproveForm", @class = "col-sm-3 action-button" }))
+                        {
+                            @Html.HiddenFor(model => model.Detail.APPROVAL_ID)
+                            <input type="submit" class="btn btn-blue" value="Approve" />
+                        }
                     }
                     
                     
                     
-
-                    <a href="@Url.Action("Index", "MasterApproval")" class="btn btn-grey">Back</a>
+                    
+                    
                 </div>
             </div>
         </div>
@@ -159,4 +173,3 @@
     
 
     
-}

@@ -6497,19 +6497,47 @@
             <PropertyRef Name="POA_ID" />
           </Key>
           <Property Name="POA_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ID_CARD" Type="String" Nullable="false" MaxLength="22" FixedLength="false" Unicode="true" />
-          <Property Name="POA_PHONE" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="true" />
-          <Property Name="POA_ADDRESS" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="POA_EMAIL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PRINTED_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="TITLE" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="ID_CARD" Type="String" Nullable="false" MaxLength="22" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>ID Card</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="POA_PHONE" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Phone</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="POA_ADDRESS" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Address</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="POA_EMAIL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Email</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="PRINTED_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Printed Name</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="TITLE" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Title</LongDescription>
+            </Documentation>
+          </Property>
           <Property Name="LOGIN_AS" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MANAGER_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
-          <Property Name="IS_ACTIVE" Type="Boolean" />
+          <Property Name="IS_ACTIVE" Type="Boolean" >
+            <Documentation>
+              <LongDescription>Is Active</LongDescription>
+            </Documentation>
+          </Property>
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_POA_CREATED_BY_USER" FromRole="POA" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK_POA_LOGIN_AS_USER" FromRole="POA" ToRole="USER" />
           <NavigationProperty Name="USER2" Relationship="EMSModel.FK_POA_MODIFIED_BY_USER" FromRole="POA" ToRole="USER" />
@@ -7006,20 +7034,68 @@
             <PropertyRef Name="WERKS" />
           </Key>
           <Property Name="STICKER_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
-          <Property Name="MATERIAL_DESC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="MATERIAL_GROUP" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="PURCHASING_GROUP" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="MATERIAL_DESC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Material Description</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="MATERIAL_GROUP" Type="String" MaxLength="35" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Material Group</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="PURCHASING_GROUP" Type="String" MaxLength="35" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Purchasing Group</LongDescription>
+            </Documentation>
+          </Property>
           <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="EXC_GOOD_TYP" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
-          <Property Name="ISSUE_STORANGE_LOC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="BASE_UOM_ID" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="HJE" Type="Decimal" Precision="15" Scale="2" />
-          <Property Name="HJE_CURR" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
-          <Property Name="TARIFF" Type="Decimal" Precision="15" Scale="2" />
-          <Property Name="TARIFF_CURR" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="EXC_GOOD_TYP" Type="String" MaxLength="2" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Excisable Good type</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="ISSUE_STORANGE_LOC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Issue Storage Loc</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="BASE_UOM_ID" Type="String" MaxLength="5" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Base UOM (SAP)</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="HJE" Type="Decimal" Precision="15" Scale="2" >
+            <Documentation>
+              <LongDescription>Hje</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="HJE_CURR" Type="String" MaxLength="5" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Hje Currency</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="TARIFF" Type="Decimal" Precision="15" Scale="2" >
+            <Documentation>
+              <LongDescription>Tariff</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="TARIFF_CURR" Type="String" MaxLength="5" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Tariff Currency</LongDescription>
+            </Documentation>
+          </Property>
           <Property Name="IS_FROM_SAP" Type="Boolean" Nullable="false" />
-          <Property Name="CLIENT_DELETION" Type="Boolean" />
-          <Property Name="PLANT_DELETION" Type="Boolean" />
+          <Property Name="CLIENT_DELETION" Type="Boolean" >
+            <Documentation>
+              <LongDescription>Client Deletion</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="PLANT_DELETION" Type="Boolean" >
+            <Documentation>
+              <LongDescription>Plant Deletion</LongDescription>
+            </Documentation>
+          </Property>
           <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />

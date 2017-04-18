@@ -19,5 +19,7 @@ namespace Sampoerna.EMS.Contract
             Enums.DocumentStatus status = Enums.DocumentStatus.WaitingForMasterApprover);
 
         MASTER_DATA_APPROVAL GetByApprovalId(int approvalId);
+
+        void Reject(string userId, int masterApprovalId);
     }
 }

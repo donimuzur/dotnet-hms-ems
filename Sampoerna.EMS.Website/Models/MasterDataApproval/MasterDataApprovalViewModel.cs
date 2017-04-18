@@ -13,6 +13,12 @@ namespace Sampoerna.EMS.Website.Models.MasterDataApproval
             Details = new List<MasterDataApprovalDetailViewModel>();
         }
 
+        public Enums.DocumentStatus DocumentStatus { get; set; }
+
+        public int PageId { get; set; }
+
+        
+
         public List<MasterDataApprovalDetailViewModel> Details { get; set; }
     }
 

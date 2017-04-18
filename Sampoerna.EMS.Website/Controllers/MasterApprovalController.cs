@@ -35,6 +35,17 @@ namespace Sampoerna.EMS.Website.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public ActionResult Index(MasterDataApprovalIndexViewModel model)
+        {
+            
+            model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
+            var data = _masterDataAprovalBLL.GetList();
+            model.Details = Mapper.Map<List<MasterDataApprovalDetailViewModel>>(data);
+            return View(model);
+        }
+
         public ActionResult Detail(int id)
         {
             var model = new MasterDataApprovalItemViewModel();
@@ -61,6 +72,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
             
+            return RedirectToAction("Detail", new { id = model.Detail.APPROVAL_ID });
+        }
+
+
+        public ActionResult Reject(MasterDataApprovalItemViewModel model)
+        {
+            try
+            {
+                _masterDataAprovalBLL.Reject(CurrentUser.USER_ID, model.Detail.APPROVAL_ID);
+                AddMessageInfo("Success", Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+
             return RedirectToAction("Detail", new { id = model.Detail.APPROVAL_ID });
         }
     }

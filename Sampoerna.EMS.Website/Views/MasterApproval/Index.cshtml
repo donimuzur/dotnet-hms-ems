@@ -83,6 +83,42 @@
     <div class="row">
 
         <div class="col-sm-12">
+            @*<div class="white-wrapper">
+                @using (Ajax.BeginForm("FilterMaterialIndex", "MasterApproval",
+                    new AjaxOptions
+                    {
+                        HttpMethod = "POST",
+                        InsertionMode = InsertionMode.Replace,
+                        UpdateTargetId = "contenttable",
+                        OnComplete = "ReloadDataTables",
+                    }, new { @class = "form-excise", role = "form" }))
+                {
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <label class="col-md-3">Excisable Goods Type</label>
+                                <div class="col-md-4">
+                                    @Html.DropDownListFor(model => model.GoodType, Model.GoodTypeList, "All", new { @class = " form-control selectreset", id = "SearchInput_GoodType" })
+                                </div>
+
+                                <div class="col-md-5">
+                                    <div class="col-md-3">
+                                        <input id="btn-filter" type="submit" class="btn btn-blue" value="FILTER" />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="button" id="btn-reset-filter" class="btn btn-blue">RESET</button>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input id="btnExport" type="button" class="btn btn-blue" onclick="ExportXls();" value="EXPORT" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            </div>*@
             <div id="contenttable" class="table-container">
                 <table id="mydata" class="table cell-border display no-wrap" cellspacing="0" width="100%">
                     <thead>

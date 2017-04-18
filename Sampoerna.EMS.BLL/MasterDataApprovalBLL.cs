@@ -6,8 +6,10 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using CrystalDecisions.Shared;
+using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Contract.Services;
 using Voxteneo.WebComponents.Logger;
 using Enums = Sampoerna.EMS.Core.Enums;
 
@@ -24,7 +26,7 @@ namespace Sampoerna.EMS.BLL
         private IBrandRegistrationBLL _brandRegistrationBLL;
         private IPOABLL _poaBll;
         private IPOAMapBLL _poaMapBLL;
-        private IMaterialBLL _materialBLL;
+        private IZaidmExMaterialService _materialBLL;
         private IMasterDataApprovalSettingBLL _approvalSettingBLL;
         private string includeTables = "MASTER_DATA_APPROVAL_DETAIL,PAGE";
         public MasterDataApprovalBLL(IUnitOfWork uow, ILogger logger)
@@ -38,7 +40,7 @@ namespace Sampoerna.EMS.BLL
             _brandRegistrationBLL = new BrandRegistrationBLL(_uow,_logger);
             _poaBll = new POABLL(_uow,_logger);
             _poaMapBLL = new POAMapBLL(_uow,_logger);
-            _materialBLL = new MaterialBLL(_uow,_logger);
+            _materialBLL = new ZaidmExMaterialService(_uow,_logger);
         }
         public T MasterDataApprovalValidation<T>(int pageId,string userId, T oldObject, T newObject)
         {
@@ -86,7 +88,7 @@ namespace Sampoerna.EMS.BLL
                 newApproval.CREATED_BY = userId;
                 newApproval.CREATED_DATE = DateTime.Now;
                 newApproval.PAGE_ID = approvalSettings.PageId;
-                newApproval.STATUS_ID = Enums.DocumentStatus.Draft;
+                newApproval.STATUS_ID = Enums.DocumentStatus.WaitingForMasterApprover;
                 newApproval.FORM_ID = GenerateFormId(approvalSettings.PageId, newObject);
                 newApproval.MASTER_DATA_APPROVAL_DETAIL = needApprovalList;
 
@@ -123,6 +125,19 @@ namespace Sampoerna.EMS.BLL
                 data.APPROVED_DATE = DateTime.Now;
                 
                 UpdateObjectByFormId(data);
+                _uow.SaveChanges();
+            }
+        }
+
+        public void Reject(string userId, int masterApprovalId)
+        {
+            var data = _repository.Get(x => x.APPROVAL_ID == masterApprovalId, null, includeTables).FirstOrDefault();
+            if (data != null)
+            {
+                data.STATUS_ID = Enums.DocumentStatus.Rejected;
+                
+
+                
                 _uow.SaveChanges();
             }
         }
@@ -198,7 +213,7 @@ namespace Sampoerna.EMS.BLL
                 var tempId = approvalData.FORM_ID.Split('-');
                 var werks = tempId[0];
                 var materialnumber = tempId[1];
-                var dataMaterial = _materialBLL.GetByPlantIdAndStickerCode(werks, materialnumber);
+                var dataMaterial = _materialBLL.GetByMaterialAndPlantId(materialnumber, werks);
                 foreach (var detail in approvalData.MASTER_DATA_APPROVAL_DETAIL)
                 {
                     propInfo = typeof(ZAIDM_EX_MATERIAL).GetProperty(detail.COLUMN_NAME);

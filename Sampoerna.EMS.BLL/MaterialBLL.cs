@@ -21,8 +21,10 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private string includeTables = "T001W, MATERIAL_UOM, UOM,ZAIDM_EX_GOODTYP";
         private ChangesHistoryBLL _changesHistoryBll;
+        private IMasterDataAprovalBLL _masterDataAprovalBLL;
         private IGenericRepository<MATERIAL_UOM> _repositoryUoM;
         private IExGroupTypeBLL _goodTypeGroupBLL;
+        
         public MaterialBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -31,6 +33,8 @@ namespace Sampoerna.EMS.BLL
             _repositoryUoM = _uow.GetGenericRepository<MATERIAL_UOM>();
             _changesHistoryBll = new ChangesHistoryBLL(_uow,_logger);
             _goodTypeGroupBLL = new ExGroupTypeBLL(_uow, logger);
+            _masterDataAprovalBLL = new MasterDataApprovalBLL(_uow,_logger);
+            
         }
 
         public MaterialDto getByID(string materialId, string plant)
@@ -142,7 +146,12 @@ namespace Sampoerna.EMS.BLL
                 {
                     PlantDeletion(data, userId);
                 }
+                var tempNewData = AutoMapper.Mapper.Map<ZAIDM_EX_MATERIAL>(data);
+                tempNewData = _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.MaterialMaster, userId, origin,
+                    tempNewData);
+                data = AutoMapper.Mapper.Map<MaterialDto>(tempNewData);
                 SetChanges(originDto, data, userId);
+
                 data.MATERIAL_UOM = origin.MATERIAL_UOM;
             }
             else {
