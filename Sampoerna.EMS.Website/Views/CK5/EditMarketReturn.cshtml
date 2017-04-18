@@ -72,7 +72,7 @@
 
                         @Html.Partial("_CK5InformationEditMarketReturn")
                         @Html.Partial("_CK5Printout")
-                        @Html.Partial("_CK5UploadEdit")
+                        @Html.Partial("_CK5UploadCreateMarketReturn")
                         @Html.Partial("_CK5ChangeLog")
 
 
@@ -456,12 +456,15 @@
 
             var materialInput = {};
             var materialNumber = $('#uploadMaterialNumber').val();
+            var faCode = materialNumber.split(" - ")[0];
+            var stickerCode = materialNumber.split(" - ")[1];
             var sourcePlant = $("#DestPlantId").find("option:selected").val();
 
             var convertedUom = $('#uploadConvertedUom').val();
 
             materialInput.Plant = sourcePlant;
-            materialInput.Brand = materialNumber;
+            materialInput.Brand = faCode;
+            materialInput.StickerCode = stickerCode;
             materialInput.Qty = $('#uploadMaterialQty').val();
             materialInput.Uom = $('#uploadMaterialUom').val();
             materialInput.Convertion = $('#uploadMaterialConvertion').val();
@@ -479,10 +482,11 @@
 
         $("#uploadMaterialNumber").change(function () {
             if ($("#uploadMaterialNumber").length) {
-                var materialNumber = $(this).find("option:selected").val();
+                var tempMaterial = $(this).find("option:selected").val();
+                var faCode = tempMaterial.split(" - ")[0];
+                var stickerCode = tempMaterial.split(" - ")[1];
 
-
-                if (materialNumber == '') {
+                if (tempMaterial == '') {
                     $("#uploadMaterialHje").val('0');
                     $("#uploadMaterialTariff").val('0');
                     $('#uploadMaterialDesc').val('');
@@ -491,7 +495,7 @@
                 } else {
                     var sourcePlant = $("#uploadMaterialPlant").val();
 
-                    ajaxGetMaterialHjeAndTariffMarketReturn('@Url.Action("GetMaterialHjeAndTariffMarketReturn", "CK5")', { plantId: sourcePlant, materialNumber: materialNumber });
+                    ajaxGetMaterialHjeAndTariffMarketReturn('@Url.Action("GetMaterialHjeAndTariffMarketReturn", "CK5")', { plantId: sourcePlant, materialNumber: faCode, stickerCode: stickerCode });
                 }
             }
         });
@@ -499,12 +503,15 @@
         $("#btnUpdateMaterial").click(function () {
             var materialInput = {};
             var materialNumber = $('#uploadMaterialNumber').val();
+            var faCode = materialNumber.split(" - ")[0];
+            var stickerCode = materialNumber.split(" - ")[1];
             var sourcePlant = $("#DestPlantId").find("option:selected").val();
 
             var convertedUom = $('#uploadConvertedUom').val();
 
             materialInput.Plant = sourcePlant;
-            materialInput.Brand = materialNumber;
+            materialInput.Brand = faCode;
+            materialInput.StickerCode = stickerCode;
             materialInput.Qty = $('#uploadMaterialQty').val();
             materialInput.Uom = $('#uploadMaterialUom').val();
             materialInput.Convertion = $('#uploadMaterialConvertion').val();
@@ -523,10 +530,10 @@
         function EditRow(o, url) {
             //debugger;
             var nRow = o.parents('tr');
-            var plant = nRow.find("td").eq(19).html();
-            var materialnumber = nRow.find("td").eq(2).html();
+            var plant = nRow.find("td").eq(20).html();
+            var materialnumber = nRow.find("td").eq(2).html() + " - " + nRow.find("td").eq(3).html();
 
-            ajaxGetListMaterial('@Url.Action("GetListMaterialMarketReturn", "CK5")', { plantId: plant }, materialnumber);
+            ajaxGetListMaterialMarketReturn('@Url.Action("GetListMaterialMarketReturn", "CK5")', { plantId: plant }, materialnumber);
 
             $('#btnSaveMaterial').hide();
             $('#btnUpdateMaterial').show();
@@ -537,31 +544,31 @@
 
             $('#uploadMaterialNumber').find('option:not(:first)').remove();
             //===Fixing Bug CK5 no. 110====
-            $('#uploadMaterialNumber').append('<option>' + nRow.find("td").eq(2).html() + '</option>');
+            $('#uploadMaterialNumber').append('<option>' + materialnumber + '</option>');
             //=============================
 
             $('#uploadMaterialNumber').val(materialnumber);
-            $('#uploadMaterialQty').val(nRow.find("td").eq(3).html());
+            $('#uploadMaterialQty').val(nRow.find("td").eq(4).html());
 
-            $('#uploadMaterialUom').val(nRow.find("td").eq(4).html());
-            $('#uploadMaterialConvertion').val(nRow.find("td").eq(5).html());
+            $('#uploadMaterialUom').val(nRow.find("td").eq(5).html());
+            $('#uploadMaterialConvertion').val(nRow.find("td").eq(6).html());
 
-            $('#uploadConvertedUom').val(nRow.find("td").eq(7).html());
+            $('#uploadConvertedUom').val(nRow.find("td").eq(8).html());
 
-            $('#uploadMaterialHje').val(nRow.find("td").eq(8).html());
-            $('#uploadMaterialTariff').val(nRow.find("td").eq(9).html());
+            $('#uploadMaterialHje').val(nRow.find("td").eq(9).html());
+            $('#uploadMaterialTariff').val(nRow.find("td").eq(10).html());
 
-            $('#uploadUsdValue').val(nRow.find("td").eq(11).html());
+            $('#uploadUsdValue').val(nRow.find("td").eq(12).html());
 
-            $('#uploadNote').val(nRow.find("td").eq(12).html());
+            $('#uploadNote').val(nRow.find("td").eq(13).html());
 
-            $('#uploadMaterialDesc').val(nRow.find("td").eq(15).html());
+            $('#uploadMaterialDesc').val(nRow.find("td").eq(16).html());
 
             //===Fixing Bug CK5 no. 110====
-            $('#uploadMaterialPlant').val(nRow.find("td").eq(19).html());
+            $('#uploadMaterialPlant').val(nRow.find("td").eq(20).html());
             //=============================
 
-            $('#uploadMaterialId').val(nRow.find("td").eq(18).html());
+            $('#uploadMaterialId').val(nRow.find("td").eq(19).html());
 
             ClearValidation();
 

@@ -1131,7 +1131,7 @@ function MoveUploadToTableMarketReturn() {
                 return;
             }
             data += '<td> <input name="UploadItemModels[' + i + '].Brand" type="hidden" value = "' + datarows[i][2] + '">' + datarows[i][2] + '</td>';
-            data += '<td> <input name="UploadItemModels[' + i + '].Sticker" type="hidden" value = "' + datarows[i][3] + '">' + datarows[i][3] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].StickerCode" type="hidden" value = "' + datarows[i][3] + '">' + datarows[i][3] + '</td>';
             data += '<td> <input name="UploadItemModels[' + i + '].Qty" type="hidden" value = "' + datarows[i][4] + '">' + datarows[i][4] + '</td>';
             data += '<td> <input name="UploadItemModels[' + i + '].Uom" type="hidden" value = "' + datarows[i][5] + '">' + datarows[i][5] + '</td>';
             data += '<td> <input name="UploadItemModels[' + i + '].Convertion" type="hidden" value = "' + datarows[i][6] + '">' + datarows[i][6] + '</td>';
