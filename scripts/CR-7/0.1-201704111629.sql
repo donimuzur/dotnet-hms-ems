@@ -1,5 +1,3 @@
-USE [EMS_QAS]
-GO
 
 /****** Object:  Table [dbo].[MASTER_DATA_APPROVE_SETTING]    Script Date: 4/11/2017 4:28:59 PM ******/
 SET ANSI_NULLS ON
