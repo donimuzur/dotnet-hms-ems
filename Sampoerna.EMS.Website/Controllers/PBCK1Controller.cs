@@ -1315,7 +1315,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (model.Detail.Pbck1DecreeFiles == null)
             {
                 AddMessageInfo("Decree Doc is required.", Enums.MessageInfoType.Error);
-                return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+                return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
             }
 
             bool isSuccess = false;
@@ -1350,7 +1350,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         else
                         {
                             AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
-                            return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+                            return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
                         }
                     }
                 }
