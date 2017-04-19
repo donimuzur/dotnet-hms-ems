@@ -1587,7 +1587,7 @@ namespace Sampoerna.EMS.BLL
             //    dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager &&
             //    dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
 
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval || dbData.STATUS != Enums.DocumentStatus.WaitingForApproval2)
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval && dbData.STATUS != Enums.DocumentStatus.WaitingForApproval2)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
