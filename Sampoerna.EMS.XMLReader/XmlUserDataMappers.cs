@@ -100,7 +100,7 @@ namespace Sampoerna.EMS.XMLReader
                         }
                         else if (role.BROLE_DESC.ToUpper().Contains("POA MANAGER"))
                         {
-                            roleMap.ROLEID = Enums.UserRole.Manager;
+                            roleMap.ROLEID = Enums.UserRole.Controller;
                         }
                         else if (role.BROLE_DESC.ToUpper().Contains("VIEWER"))
                         {

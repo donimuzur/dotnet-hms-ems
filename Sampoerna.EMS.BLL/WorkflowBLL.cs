@@ -192,23 +192,25 @@ namespace Sampoerna.EMS.BLL
                 return input.PlantId != null ? IsOnePlant(input.PlantId, input.CurrentUser) : IsOneNppbkc(input.NppbkcId, input.CurrentUser);
             }
             
-            //if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApprovalManager)
-            //{
-            //    if (input.UserRole != Enums.UserRole.Manager)
-            //        return false;
+            if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApprovalController)
+            {
+                if (input.UserRole != Enums.UserRole.Controller)
+                    return false;
 
-            //    //get poa id by document number in workflow history
+                //get poa id by document number in workflow history
 
-            //    var poaId = _workflowHistoryBll.GetPoaByDocumentNumber(input.DocumentNumber);
+                //var poaId = _workflowHistoryBll.GetPoaByDocumentNumber(input.DocumentNumber);
 
-            //    if (string.IsNullOrEmpty(poaId))
-            //        return false;
+                //if (string.IsNullOrEmpty(poaId))
+                //    return false;
 
-            //    var managerId = _poabll.GetManagerIdByPoaId(poaId);
+                //var managerId = _poabll.GetManagerIdByPoaId(poaId);
 
-            //    return managerId == input.CurrentUser;
+                //return managerId == input.CurrentUser;
 
-            //}
+                return true;
+
+            }
 
             return false;
           
@@ -230,7 +232,7 @@ namespace Sampoerna.EMS.BLL
             {
                 string originalPoa;
 
-                if (input.UserRole == Enums.UserRole.Manager)
+                if (input.UserRole == Enums.UserRole.Controller)
                     return false;
 
                 if (input.CreatedUser == input.CurrentUser)
@@ -321,7 +323,7 @@ namespace Sampoerna.EMS.BLL
         {
             if (input.DocumentStatus == Enums.DocumentStatus.WaitingGovApproval)
             {
-                if (input.UserRole == Enums.UserRole.Manager && input.ManagerApprove == input.CurrentUser)
+                if (input.UserRole == Enums.UserRole.Controller && input.ManagerApprove == input.CurrentUser)
                     return true;
             }
 

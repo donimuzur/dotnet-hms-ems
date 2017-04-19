@@ -25,6 +25,7 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<WORKFLOW_HISTORY> _repository;
         private IZaidmExPOAMapBLL _poaMapBll;
         private IPOABLL _poaBll;
+        private IUserBLL _userBll;
         private string includeTables = "USER";
 
         private IWasteRoleServices _wasteRoleServices;
@@ -39,6 +40,7 @@ namespace Sampoerna.EMS.BLL
             _poaBll = new POABLL(_uow,_logger);
             _wasteRoleServices = new WasteRoleServices(_uow, _logger);
             _poaDelegationServices = new PoaDelegationServices(_uow, _logger);
+            _userBll = new UserBLL(_uow, _logger);
         }
 
         public WorkflowHistoryDto GetById(long id)
@@ -191,7 +193,7 @@ namespace Sampoerna.EMS.BLL
 
                  result.Add(CreateWaitingApprovalRecord(input));
             }
-            else if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApprovalManager)
+            else if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApprovalController)
             {
                 result.Add(CreateWaitingApprovalRecord(input));
             }
@@ -273,13 +275,15 @@ namespace Sampoerna.EMS.BLL
 
                     newRecord.ROLE = Enums.UserRole.POA;
                 }
-                else if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApprovalManager)
+                else if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApprovalController)
                 {
                     //get action by poa
-                    var poaId = GetPoaByDocumentNumber(input.FormNumber);
-                    displayUserId = _poaBll.GetManagerIdByPoaId(poaId);
+                    //var poaId = GetPoaByDocumentNumber(input.FormNumber);
+                    //displayUserId = _poaBll.GetManagerIdByPoaId(poaId);
+                    var controllerList = _userBll.GetControllers();
+                    displayUserId = string.Join(",", controllerList.Select(c => c.USER_ID).Distinct());
                   
-                    newRecord.ROLE = Enums.UserRole.Manager;
+                    newRecord.ROLE = Enums.UserRole.Controller;
                 }
             }
             
@@ -452,7 +456,7 @@ namespace Sampoerna.EMS.BLL
 
                 result.Add(CreateWaitingApprovalRecord(input));
             }
-            else if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApprovalManager)
+            else if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApprovalController)
             {
                 result.Add(CreateWaitingApprovalRecord(input));
             }

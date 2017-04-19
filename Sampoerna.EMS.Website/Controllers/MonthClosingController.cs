@@ -267,7 +267,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var closingList = _monthClosingBll.GetList(input);
             model.MonthClosingList = Mapper.Map<List<MonthClosingDetail>>(closingList);
 
-            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false);
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false);
             return PartialView("_List", model);
         }
     }

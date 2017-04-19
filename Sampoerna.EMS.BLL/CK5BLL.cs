@@ -2066,7 +2066,7 @@ namespace Sampoerna.EMS.BLL
                         rc.CC.Add(userCreatorInfo.EMAIL);
 
                     }
-                    else if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
+                    else if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalController)
                     {
                         var managerId = _poaBll.GetManagerIdByPoaId(ck5Dto.CREATED_BY);
                         var managerDetail = _userBll.GetUserById(managerId);
@@ -2085,7 +2085,7 @@ namespace Sampoerna.EMS.BLL
 
                     break;
                 case Enums.ActionType.Approve:
-                    if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
+                    if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalController)
                     {
                         rc.To.Add(GetManagerEmail(ck5Dto.APPROVED_BY_POA));
                         //var poaData = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
@@ -2568,7 +2568,7 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApproval &&
-                dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApprovalManager &&
+                dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApprovalController &&
                 dbData.STATUS_ID != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
