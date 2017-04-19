@@ -1377,7 +1377,7 @@ namespace Sampoerna.EMS.BLL
                     SubmitDocument(input);
                     break;
                 case Enums.ActionType.Approve:
-                    ApproveDocument(input);
+                    isNeedSendNotif = ApproveDocument(input);
                     break;
                 case Enums.ActionType.Reject:
                     RejectDocument(input);
@@ -1455,8 +1455,9 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        private void ApproveDocument(Pbck1WorkflowDocumentInput input)
+        private bool ApproveDocument(Pbck1WorkflowDocumentInput input)
         {
+            var isNeedSendEmail = true;
             var dbData = _repository.GetByID(input.DocumentId);
 
             if (dbData == null)
@@ -1479,7 +1480,7 @@ namespace Sampoerna.EMS.BLL
             //dbData.APPROVED_BY_POA = input.UserId;
             //dbData.APPROVED_DATE_POA = DateTime.Now;
             //Add Changes
-            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
+            
 
             if (input.UserRole == Enums.UserRole.POA)
             {
@@ -1487,15 +1488,28 @@ namespace Sampoerna.EMS.BLL
                 {
                     //first code when manager exists
                     //dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-                    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
-                    dbData.APPROVED_BY_POA = input.UserId;
-                    dbData.APPROVED_DATE_POA = DateTime.Now;
+                    
+                        WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
+                        dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                        dbData.APPROVED_BY_POA = input.UserId;
+                        dbData.APPROVED_DATE_POA = DateTime.Now;
+                        
+                    
+                    
+                    
+                }
+                else if (dbData.STATUS == Enums.DocumentStatus.WaitingForApproval2)
+                {
+                    WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingForApproval2);
+                    dbData.STATUS = Enums.DocumentStatus.Completed;
+                    isNeedSendEmail = false;
+
                 }
                 else
                 {
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
                 }
-               
+
             }
             //first code when manager exists
             //else
@@ -1513,6 +1527,7 @@ namespace Sampoerna.EMS.BLL
 
             AddWorkflowHistory(input);
 
+            return isNeedSendEmail;
         }
 
         private string CommentDelegateUser(PBCK1 dbData, Pbck1WorkflowDocumentInput input)
@@ -1572,14 +1587,22 @@ namespace Sampoerna.EMS.BLL
             //    dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager &&
             //    dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
 
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval)
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval || dbData.STATUS != Enums.DocumentStatus.WaitingForApproval2)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
 
             //change back to draft
-            dbData.STATUS = Enums.DocumentStatus.Rejected;
+            if (dbData.STATUS == Enums.DocumentStatus.WaitingForApproval2)
+            {
+                dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+            }
+            else
+            {
+                dbData.STATUS = Enums.DocumentStatus.Rejected;
+            }
+            
 
             //todo ask
             //dbData.APPROVED_BY_POA = null;
@@ -1613,7 +1636,7 @@ namespace Sampoerna.EMS.BLL
             //WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
             //WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.FullApproved);
 
-            dbData.STATUS = Enums.DocumentStatus.Completed;
+            dbData.STATUS = Enums.DocumentStatus.WaitingForApproval2;
 
             //todo: update remaining quota and necessary data
             dbData.PBCK1_DECREE_DOC = null;
@@ -1675,7 +1698,7 @@ namespace Sampoerna.EMS.BLL
 
             //todo: update remaining quota and necessary data
             dbData.PBCK1_DECREE_DOC = null;
-            dbData.STATUS = Enums.DocumentStatus.Completed;
+            dbData.STATUS = Enums.DocumentStatus.WaitingForApproval2;
             dbData.QTY_APPROVED = input.AdditionalDocumentData.QtyApproved;
             dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
             dbData.PBCK1_DECREE_DOC = Mapper.Map<List<PBCK1_DECREE_DOC>>(input.AdditionalDocumentData.Pbck1DecreeDoc);
