@@ -1363,7 +1363,6 @@
     <Content Include="Views\User\Edit.cshtml" />
     <Content Include="Views\MasterDataApprovalSetting\Index.cshtml" />
     <Content Include="Views\MasterDataApprovalSetting\Edit.cshtml" />
-    <Content Include="Views\Shared\_ChangesAproval.cshtml" />
     <Content Include="Views\MasterApproval\Index.cshtml" />
     <Content Include="Views\MasterApproval\Detail.cshtml" />
   </ItemGroup>
