@@ -274,6 +274,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 newpoa.CREATED_DATE = poa.CREATED_DATE;
                 newpoa.MODIFIED_BY = CurrentUser.USER_ID;
                 newpoa.MODIFIED_DATE = DateTime.Today;
+                newpoa.IS_ACTIVE = poa.IS_ACTIVE;
 
                 newpoa = _masterDataAprovalBLL.MasterDataApprovalValidation((int)Enums.MenuList.POA, CurrentUser.USER_ID, poa,
                     newpoa);
@@ -329,7 +330,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
-                _poaBll.Delete(id);
+                
+                _poaBll.Delete(id,CurrentUser.USER_ID);
                 var poa = _poaBll.GetById(id);
                 var updated = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
                 if (poa.IS_ACTIVE == true)

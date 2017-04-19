@@ -25,7 +25,7 @@ namespace Sampoerna.EMS.BLL
 
         private IPageBLL _pageBLL;
         private IBrandRegistrationBLL _brandRegistrationBLL;
-        private IPOABLL _poaBll;
+        private IPoaService _poaBll;
         private IPOAMapBLL _poaMapBLL;
         private IZaidmExMaterialService _materialBLL;
         private IMasterDataApprovalSettingBLL _approvalSettingBLL;
@@ -41,7 +41,7 @@ namespace Sampoerna.EMS.BLL
             _approvalSettingBLL = new MasterDataApprovalSettingBLL(_uow,_logger);
             _changesHistoryBLL = new ChangesHistoryBLL(_uow,_logger);
             _brandRegistrationBLL = new BrandRegistrationBLL(_uow,_logger);
-            _poaBll = new POABLL(_uow,_logger);
+            _poaBll = new POAService(_uow,_logger);
             _poaMapBLL = new POAMapBLL(_uow,_logger);
             _materialBLL = new ZaidmExMaterialService(_uow,_logger);
         }
