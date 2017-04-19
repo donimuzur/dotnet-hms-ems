@@ -215,5 +215,23 @@ namespace Sampoerna.EMS.BLL
 
             return Mapper.Map<List<UserDto>>(filterResult);
         }
+
+        public List<USER> GetControllers()
+        {
+            var controllersList = new List<USER>();
+
+            var data = _repository.Get(x => (!x.IS_ACTIVE.HasValue || x.IS_ACTIVE != 0), null, "BROLE_MAP").ToList();
+
+            foreach (var item in data)
+            {
+                var userRole = _poabll.GetUserRole(item.USER_ID);
+                if (userRole == Enums.UserRole.Controller)
+                {
+                    controllersList.Add(item);
+                }
+            }
+
+            return controllersList;
+        }
     }
 }

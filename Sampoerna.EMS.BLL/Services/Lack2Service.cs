@@ -86,9 +86,13 @@ namespace Sampoerna.EMS.BLL.Services
             //        break;
             //}
 
-            if (input.UserRole != Enums.UserRole.Administrator)
+            if (input.UserRole != Enums.UserRole.Administrator && input.UserRole != Enums.UserRole.Controller)
             {
                 queryFilter = queryFilter.And(c => input.PlantList.Contains(c.LEVEL_PLANT_ID));    
+            }
+            else if (input.UserRole == Enums.UserRole.Controller)
+            {
+                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.WaitingForApprovalController);
             }
             
 

@@ -31,7 +31,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Reported On</label>
                                         <div class="col-md-8">
-                                            @if (Model.Details.Status == Enums.DocumentStatus.WaitingForApproval && Model.AllowApproveAndReject)
+                                            @if ((Model.Details.Status == Enums.DocumentStatus.WaitingForApproval || Model.Details.Status == Enums.DocumentStatus.WaitingForApprovalController) && Model.AllowApproveAndReject)
                                             {
                                                 <div class="input-group date">
                                                     @Html.TextBoxFor(model => model.Details.ReportedOn, "{0:dd MMM yyyy}", new { @class = "form-control" })

@@ -273,6 +273,9 @@ namespace Sampoerna.EMS.BLL.Services
                 case Enums.UserRole.Administrator:
                     queryFilter = queryFilter.And(c => c.LACK1_LEVEL != null);
                     break;
+                case Enums.UserRole.Controller:
+                    queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.WaitingForApprovalController || c.STATUS == Enums.DocumentStatus.Completed);
+                    break;
                 default:
                     queryFilter = queryFilter.And(c => (input.ListUserPlant.Contains(c.LACK1_PLANT.FirstOrDefault().PLANT_ID) && c.LACK1_LEVEL == Enums.Lack1Level.Plant) ||
                                                     (input.ListNppbkc.Contains(c.NPPBKC_ID) && c.LACK1_LEVEL == Enums.Lack1Level.Nppbkc));

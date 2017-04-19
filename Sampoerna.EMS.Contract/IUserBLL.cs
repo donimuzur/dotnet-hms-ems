@@ -27,5 +27,7 @@ namespace Sampoerna.EMS.Contract
 
         bool IsUserMasterApprover(string userId);
 
+        List<USER> GetControllers();
+
     }
 }
