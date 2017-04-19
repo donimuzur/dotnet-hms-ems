@@ -41,7 +41,9 @@ namespace Sampoerna.EMS.Core
             WasteStock = 34,
             PoaDelegation = 35,
             SchedulerSettings = 36,
-            ProductType = 37
+            ProductType = 37,
+            MasterDataApproveSetting = 38,
+            MasterDataApproval = 39
         }
         public enum PBCK1Type
         {
@@ -244,7 +246,10 @@ namespace Sampoerna.EMS.Core
             TFPosting = 320,
 
             [Description("Waiting for Purchase Order")]
-            PurchaseOrder = 321
+            PurchaseOrder = 321,
+
+            [Description("Waiting for Purchase Order")]
+            WaitingForMasterApprover = 322
         }
 
 

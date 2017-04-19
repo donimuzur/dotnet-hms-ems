@@ -2,9 +2,11 @@
 using System.Linq;
 using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL
 {
@@ -16,6 +18,7 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<PAGE_MAP> _pageMapRepository;
         private IGenericRepository<BROLE_MAP> _repositoryRoleMap;
         private IGenericRepository<USER_BROLE> _repositoryBRole;
+        private IGenericRepository<USER> _repositoryUser; 
        
         public PageBLL(IUnitOfWork uow, ILogger logger)
         {
@@ -25,6 +28,7 @@ namespace Sampoerna.EMS.BLL
             _pageMapRepository = _uow.GetGenericRepository<PAGE_MAP>();
             _repositoryRoleMap = _uow.GetGenericRepository<BROLE_MAP>();
             _repositoryBRole = _uow.GetGenericRepository<USER_BROLE>();
+            _repositoryUser = _uow.GetGenericRepository<USER>();
         }
 
         public List<PAGE> GetPages()
@@ -62,10 +66,12 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<UserAuthorizationDto>(_repositoryBRole.Get(c => c.BROLE == id, null, "BROLE_MAP, BROLE_MAP.USER, PAGE_MAP, PAGE_MAP.PAGE").FirstOrDefault());
         }
 
-        public List<int?> GetAuthPages(string userid)
+        public List<int?> GetAuthPages(Login user)
         {
             var pages = new List<int?>();
-            var broleMaps = _repositoryRoleMap.Get(x => x.MSACCT == userid);
+            
+            var broleMaps = _repositoryRoleMap.Get(x => x.MSACCT == user.USER_ID);
+            
             foreach (var broleMap in broleMaps)
             {
                 var brole = GetById(broleMap.BROLE);
@@ -73,6 +79,10 @@ namespace Sampoerna.EMS.BLL
                 {
                     pages.Add(page.Page.Id);
                 }
+            }
+            if (user.IS_MASTER_DATA_APPROVER.HasValue && user.IS_MASTER_DATA_APPROVER.Value)
+            {
+                pages.Add((int)Enums.MenuList.MasterDataApproval);
             }
             return pages;
         }

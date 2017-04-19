@@ -132,6 +132,25 @@ namespace Sampoerna.EMS.BLL
         //    return Mapper.Map<List<UserDto>>(filterResult);
         //}
 
+
+        public void SaveUser(USER user)
+        {
+            
+                var data = _repository.GetByID(user.USER_ID);
+
+                data.IS_MASTER_DATA_APPROVER = user.IS_MASTER_DATA_APPROVER;
+                _repository.InsertOrUpdate(data);
+
+                _uow.SaveChanges();
+            
+            
+        }
+
+        public bool IsUserMasterApprover(string userId)
+        {
+            return _repository.Get(x => x.IS_MASTER_DATA_APPROVER.HasValue && x.IS_MASTER_DATA_APPROVER.Value && x.USER_ID == userId, null, "").Any();
+        }
+
         public List<UserDto> GetListUserRoleByUserId(string userId)
         {
             var userRole = _poabll.GetUserRole(userId);

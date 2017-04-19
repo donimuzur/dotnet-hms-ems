@@ -20,6 +20,7 @@ namespace Sampoerna.EMS.Website.Controllers
     public class BrandRegistrationController : BaseController
     {
         private IBrandRegistrationBLL _brandRegistrationBll;
+        private IMasterDataAprovalBLL _masterDataAprovalBLL;
         private IMasterDataBLL _masterBll;
         private IZaidmExProdTypeBLL _productBll;
         private IZaidmExGoodTypeBLL _goodTypeBll;
@@ -30,10 +31,12 @@ namespace Sampoerna.EMS.Website.Controllers
         
         public BrandRegistrationController(IBrandRegistrationBLL brandRegistrationBll, IPageBLL pageBLL, 
             IMasterDataBLL masterBll, IZaidmExProdTypeBLL productBll, IZaidmExGoodTypeBLL goodTypeBll, 
-            IChangesHistoryBLL changesHistoryBll, IPlantBLL plantBll, IMaterialBLL materialBll)
+            IChangesHistoryBLL changesHistoryBll, IPlantBLL plantBll, IMaterialBLL materialBll,
+            IMasterDataAprovalBLL masterDataAprovalBLL)
             : base(pageBLL, Enums.MenuList.BrandRegistration)
         {
             _brandRegistrationBll = brandRegistrationBll;
+            _masterDataAprovalBLL = masterDataAprovalBLL;
             _masterBll = masterBll;
             _productBll = productBll;
             _goodTypeBll = goodTypeBll;
@@ -190,7 +193,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 try
                 {
-                     AddHistoryCreate(dbBrand.WERKS, dbBrand.FA_CODE, dbBrand.STICKER_CODE); 
+                     AddHistoryCreate(dbBrand.WERKS, dbBrand.FA_CODE, dbBrand.STICKER_CODE);
+                    
                     _brandRegistrationBll.Save(dbBrand);
                     
 
@@ -260,6 +264,8 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Edit(BrandRegistrationEditViewModel model)
         {
             var dbBrand = _brandRegistrationBll.GetById(model.PlantId, model.FaCode,model.StickerCode);
+            var oldDbBrand = Mapper.Map<BrandRegistrationEditViewModel>(dbBrand);
+            var oldObject = Mapper.Map<ZAIDM_EX_BRAND>(oldDbBrand);
             if (dbBrand == null)
             {
                 ModelState.AddModelError("BrandName", "Data Not Found");
@@ -290,16 +296,17 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbBrand.PER_CODE_DESC = model.PersonalizationCodeDescription;
             try
             {
+                dbBrand = _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.BrandRegistration,
+                    CurrentUser.USER_ID, oldObject, dbBrand);
                 _brandRegistrationBll.Save(dbBrand);
                 AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
                          );
                 return RedirectToAction("Index");
 
             }
-            catch 
+            catch(Exception ex)
             {
-                AddMessageInfo("Edit Failed.", Enums.MessageInfoType.Error
-                         );
+                AddMessageInfo("Edit Failed.", Enums.MessageInfoType.Error);
             }
 
             model = InitEdit(model);

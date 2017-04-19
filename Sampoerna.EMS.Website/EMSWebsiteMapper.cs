@@ -42,6 +42,8 @@ using Sampoerna.EMS.Website.Models.SchedulerSetting;
 using Sampoerna.EMS.Website.Models.Reversal;
 using Sampoerna.EMS.Website.Models.ProductType;
 using Sampoerna.EMS.Website.Models.MonthClosing;
+using Sampoerna.EMS.Website.Models.MasterDataApprovalSetting;
+using Sampoerna.EMS.Website.Models.MasterDataApproval;
 
 namespace Sampoerna.EMS.Website
 {
@@ -756,6 +758,9 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<USER, UserItem>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IS_ACTIVE.Value == 1 ? "Yes" : "No"));
 
+            Mapper.CreateMap<UserItem, USER>().IgnoreAllNonExisting().
+                ForMember(dest => dest.IS_ACTIVE, opt => opt.MapFrom(src => src.IS_ACTIVE ? 1 : 0)); ;
+
             Mapper.CreateMap<T001WDto, T001WModel>().IgnoreAllNonExisting();
 
             #region Email Template
@@ -1170,6 +1175,22 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<MonthClosingDocDto, MonthClosingDocModel>().IgnoreAllNonExisting();
             Mapper.CreateMap<MonthClosingDocModel, MonthClosingDocDto>().IgnoreAllNonExisting();
+
+            #endregion
+
+            #region Master Data Approval
+
+            Mapper.CreateMap<MasterDataApprovalSettingDto, MasterDataSetting>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.MasterDataSettingDetails, opt => opt.MapFrom(src => src.Details));
+            Mapper.CreateMap<MasterDataApprovalSettingDetail, MasterDataSettingDetail>().IgnoreAllNonExisting();
+            Mapper.CreateMap<MasterDataSettingDetail, MasterDataApprovalSettingDetail>().IgnoreAllNonExisting();
+            Mapper.CreateMap<MasterDataSetting, MasterDataApprovalSettingDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Details, opt => opt.MapFrom(src => src.MasterDataSettingDetails)); ;
+
+            Mapper.CreateMap<MASTER_DATA_APPROVAL, MasterDataApprovalDetailViewModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Details, opt => opt.MapFrom(src => src.MASTER_DATA_APPROVAL_DETAIL))
+                .ForMember(dest => dest.PageDesciption, opt => opt.MapFrom(src => src.PAGE.MENU_NAME));
+            Mapper.CreateMap<MASTER_DATA_APPROVAL_DETAIL, MasterDataApprovalDetail>().IgnoreAllNonExisting();
 
             #endregion
 

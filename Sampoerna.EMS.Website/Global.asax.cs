@@ -101,6 +101,8 @@ namespace Sampoerna.EMS.Website
             container.Register<ISchedulerSettingBLL, SchedulerSettingBLL>();
             container.Register<IMonthClosingBLL, MonthClosingBLL>();
             container.Register<IMonthClosingDocBLL, MonthClosingDocBLL>();
+            container.Register<IMasterDataApprovalSettingBLL,MasterDataApprovalSettingBLL>();
+            container.Register<IMasterDataAprovalBLL,MasterDataApprovalBLL>();
 
             // 3. Optionally verify the container's configuration.
             container.Verify();

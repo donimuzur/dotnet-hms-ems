@@ -96,6 +96,8 @@
     <Compile Include="LFA1BLL.cs" />
     <Compile Include="MonthClosingBLL.cs" />
     <Compile Include="MonthClosingDocBLL.cs" />
+    <Compile Include="MasterDataApprovalBLL.cs" />
+    <Compile Include="MasterDataApprovalSettingBLL.cs" />
     <Compile Include="NlogBLL.cs" />
     <Compile Include="PBCK4BLL.cs" />
     <Compile Include="PBCK7AndPBCK3BLL.cs" />
