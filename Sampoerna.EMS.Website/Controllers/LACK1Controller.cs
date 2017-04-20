@@ -1372,10 +1372,17 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
             bool isSuccess = false;
+            var lack1Level = "Index";
             try
             {
                 Lack1Workflow(id.Value, Enums.ActionType.Approve, string.Empty);
                 isSuccess = true;
+
+                var lack1Data = _lack1Bll.GetDetailsById(id.Value);
+                if (lack1Data.Lack1Level == Enums.Lack1Level.Plant)
+                {
+                    lack1Level = "ListByPlant";
+                }
             }
             catch (Exception ex)
             {
@@ -1383,16 +1390,23 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             if (!isSuccess) return RedirectToAction("Details", "Lack1", new { id });
             AddMessageInfo("Success Approve Document", Enums.MessageInfoType.Success);
-            return RedirectToAction("Index");
+            return RedirectToAction(lack1Level);
         }
 
         public ActionResult RejectDocument(Lack1ItemViewModel model)
         {
             bool isSuccess = false;
+            var lack1Level = "Index";
             try
             {
                 Lack1Workflow(model.Lack1Id, Enums.ActionType.Reject, model.Comment);
                 isSuccess = true;
+
+                var lack1Data = _lack1Bll.GetDetailsById(model.Lack1Id);
+                if (lack1Data.Lack1Level == Enums.Lack1Level.Plant)
+                {
+                    lack1Level = "ListByPlant";
+                }
             }
             catch (Exception ex)
             {
@@ -1401,7 +1415,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (!isSuccess) return RedirectToAction("Details", "Lack1", new { id = model.Lack1Id });
             AddMessageInfo("Success Reject Document", Enums.MessageInfoType.Success);
-            return RedirectToAction("Index");
+            return RedirectToAction(lack1Level);
         }
 
         private void Lack1Workflow(int id, Enums.ActionType actionType, string comment, bool isModified = false)
