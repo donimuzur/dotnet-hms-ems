@@ -140,6 +140,8 @@ namespace Sampoerna.EMS.Core
             WaitingForApproval = 10,
             [Description("Waiting for Controller Approval")]
             WaitingForApprovalController = 11,
+            [Description("Waiting for POA Approval 2")]
+            WaitingForApproval2 = 12,
             [Description("Approved")]
             Approved = 15,
             [Description("Rejected")]
@@ -301,6 +303,8 @@ namespace Sampoerna.EMS.Core
             Submit = 10,
             [Description("Waiting for Approval")]
             WaitingForApproval = 11,
+            [Description("Waiting for Approval 2")]
+            WaitingForApproval2 = 12,
             [Description("Approve")]
             Approve = 15,
             [Description("Reject")]

@@ -102,7 +102,7 @@ namespace Sampoerna.EMS.BLL
                     .ToList();
             var result = Mapper.Map<List<WorkflowHistoryDto>>(dbData);
 
-            if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApproval)
+            if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApproval || input.DocumentStatus == Enums.DocumentStatus.WaitingForApproval2)
             {
                 //find history that approve or rejected by POA
                 var rejected = dbData.FirstOrDefault(c => c.ACTION == Enums.ActionType.Reject || c.ACTION == Enums.ActionType.Approve && c.ROLE == Enums.UserRole.POA);
@@ -212,7 +212,15 @@ namespace Sampoerna.EMS.BLL
         {
             var newRecord = new WorkflowHistoryDto();
             newRecord.FORM_NUMBER = input.FormNumber;
-            newRecord.ACTION = Enums.ActionType.WaitingForApproval;
+            if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApproval2)
+            {
+                newRecord.ACTION = Enums.ActionType.WaitingForApproval2;
+            }
+            else
+            {
+                newRecord.ACTION = Enums.ActionType.WaitingForApproval;
+            }
+
 
 
             string displayUserId = "";
@@ -223,7 +231,7 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApproval)
+                if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApproval || input.DocumentStatus == Enums.DocumentStatus.WaitingForApproval2)
                 {
                     List<POADto> listPoa;
                     if(input.FormType == Enums.FormType.PBCK1){

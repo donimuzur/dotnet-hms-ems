@@ -125,7 +125,7 @@ namespace Sampoerna.EMS.BLL
                 return false;
             
             //need approve by POA only
-            if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApproval)
+            if (input.DocumentStatus == Enums.DocumentStatus.WaitingForApproval || input.DocumentStatus == Enums.DocumentStatus.WaitingForApproval2)
             {
                 if (input.UserRole != Enums.UserRole.POA)
                     return false;
