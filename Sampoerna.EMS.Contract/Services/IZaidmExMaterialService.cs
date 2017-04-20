@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 
 namespace Sampoerna.EMS.Contract.Services
 {
@@ -10,5 +11,9 @@ namespace Sampoerna.EMS.Contract.Services
         List<ZAIDM_EX_MATERIAL> GetByMaterialListAndPlantId(List<string> materialList, string plantId);
         List<ZAIDM_EX_MATERIAL> GetByPlantIdAndExGoodType(List<string> plantId, string exGoodType);
         List<ZAIDM_EX_MATERIAL> GetAll();
+
+        void ClientDeletion(MaterialDto data, string userId);
+
+        void PlantDeletion(MaterialDto data, string userId);
     }
 }

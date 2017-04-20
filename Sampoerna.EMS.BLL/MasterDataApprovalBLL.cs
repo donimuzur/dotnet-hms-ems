@@ -5,9 +5,11 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using CrystalDecisions.Shared;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Utils;
@@ -66,17 +68,32 @@ namespace Sampoerna.EMS.BLL
                     var oldValue = oldObject.GetType().GetProperty(isneedApprove.COLUMN_NAME).GetValue(oldObject, null);
                     var newValue = newObject.GetType().GetProperty(isneedApprove.COLUMN_NAME).GetValue(newObject, null);
 
-                    if (!oldValue.Equals(newValue))
+                    if (oldValue == null)
                     {
-                        masterDataApprovalDetail.OLD_VALUE = oldValue.ToString();
-                        masterDataApprovalDetail.NEW_VALUE = newValue.ToString();
+                        masterDataApprovalDetail.OLD_VALUE = string.Empty;
+                        masterDataApprovalDetail.NEW_VALUE = string.Empty;
+                        if (newValue != null) masterDataApprovalDetail.NEW_VALUE = newValue.ToString();
                         masterDataApprovalDetail.COLUMN_DESCRIPTION = isneedApprove.ColumnDescription;
                         masterDataApprovalDetail.COLUMN_NAME = isneedApprove.COLUMN_NAME;
 
-                        needApprovalList.Add(masterDataApprovalDetail);
-
-                        newObject.GetType().GetProperty(isneedApprove.COLUMN_NAME).SetValue(newObject, oldValue);
+                        if (masterDataApprovalDetail.OLD_VALUE != masterDataApprovalDetail.NEW_VALUE) needApprovalList.Add(masterDataApprovalDetail);
                     }
+                    else
+                    {
+                        if (!oldValue.Equals(newValue))
+                        {
+                            masterDataApprovalDetail.OLD_VALUE = oldValue.ToString();
+                            masterDataApprovalDetail.NEW_VALUE = newValue.ToString();
+                            masterDataApprovalDetail.COLUMN_DESCRIPTION = isneedApprove.ColumnDescription;
+                            masterDataApprovalDetail.COLUMN_NAME = isneedApprove.COLUMN_NAME;
+
+                            needApprovalList.Add(masterDataApprovalDetail);
+
+                            newObject.GetType().GetProperty(isneedApprove.COLUMN_NAME).SetValue(newObject, oldValue);
+                        }
+                    }
+
+                    
                     
 
 
@@ -222,6 +239,17 @@ namespace Sampoerna.EMS.BLL
                 {
                     propInfo = typeof(ZAIDM_EX_MATERIAL).GetProperty(detail.COLUMN_NAME);
                     dataMaterial.GetType().GetProperty(detail.COLUMN_NAME).SetValue(dataMaterial, CastPropertyValue(propInfo, detail.NEW_VALUE));
+                    
+                    if (detail.COLUMN_NAME == "CLIENT_DELETION")
+                    {
+                        var materialClientDto = Mapper.Map<MaterialDto>(dataMaterial);
+                        _materialBLL.ClientDeletion(materialClientDto, approvalData.APPROVED_BY);
+                    }
+                    else if (detail.COLUMN_NAME == "PLANT_DELETION")
+                    {
+                        var materialPlantDto = Mapper.Map<MaterialDto>(dataMaterial);
+                        _materialBLL.ClientDeletion(materialPlantDto, approvalData.APPROVED_BY);
+                    }
                 }
             }
             

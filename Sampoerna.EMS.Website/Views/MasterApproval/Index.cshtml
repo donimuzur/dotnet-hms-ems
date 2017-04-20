@@ -1,4 +1,5 @@
 ﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
 @model Sampoerna.EMS.Website.Models.MasterDataApproval.MasterDataApprovalIndexViewModel
 
 @section styles
@@ -9,10 +10,15 @@
     <script src="~/Scripts/js/custom.js"></script>
     <script type="text/javascript" language="javascript" class="init">
         $('#MenuMasterDataApproval').addClass('active');
-        $(document).ready(function () {
-
+        $(document).ready(function() {
+            $('#ddlStatus option').each(function () {
+                if ($(this).val() != "WaitingForMasterApprover" && $(this).val() != "Approved" && $(this).val() != "Rejected" && $(this).val() != null) {
+                    $(this).remove();
+                }
+            });
+            
             // Setup - add a text input to each footer cell
-            $('#mydata .filters th').each(function () {
+            $('#mydata .filters th').each(function() {
                 var idx = $(this).index();
                 if (idx != 0 && idx != 0) {
                     var title = $('#mydata thead th').eq($(this).index()).text();
@@ -27,8 +33,8 @@
 
             // Apply the search
 
-            table.columns().eq(0).each(function (colIdx) {
-                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+            table.columns().eq(0).each(function(colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function() {
                     table
                         .column(colIdx)
                         .search(this.value)
@@ -39,22 +45,22 @@
 
             @if (TempData[Constans.SubmitType.Save] != null)
             {
-               @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Save]');
-                           @: $('#btn-poa-modal').click();
-                           @:TempData[Constans.SubmitType.Save] = null;
-                        }
-        else if (TempData[Constans.SubmitType.Update] != null)
-             {
-              @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Update]');
-                           @: $('#btn-poa-modal').click();
-                           @:TempData[Constans.SubmitType.Update] = null;
-                         }
-        else if (TempData[Constans.SubmitType.Delete] != null)
+                @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Save]');
+                @: $('#btn-poa-modal').click();
+                @:TempData[Constans.SubmitType.Save] = null;
+            }
+            else if (TempData[Constans.SubmitType.Update] != null)
+            {
+                @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Update]');
+                @: $('#btn-poa-modal').click();
+                @:TempData[Constans.SubmitType.Update] = null;
+            }
+            else if (TempData[Constans.SubmitType.Delete] != null)
             {
                 @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Delete]');
-                             @: $('#btn-poa-modal').click();
-                           @:TempData[Constans.SubmitType.Delete] = null;
-                        }
+                @: $('#btn-poa-modal').click();
+                @:TempData[Constans.SubmitType.Delete] = null;
+            }
 
 
         });
@@ -83,42 +89,37 @@
     <div class="row">
 
         <div class="col-sm-12">
-            @*<div class="white-wrapper">
-                @using (Ajax.BeginForm("FilterMaterialIndex", "MasterApproval",
-                    new AjaxOptions
-                    {
-                        HttpMethod = "POST",
-                        InsertionMode = InsertionMode.Replace,
-                        UpdateTargetId = "contenttable",
-                        OnComplete = "ReloadDataTables",
-                    }, new { @class = "form-excise", role = "form" }))
+            <div class="white-wrapper">
+                
+                @using (Html.BeginForm("Index", "MasterApproval", FormMethod.Post, new {@id = "filterForm"}))
                 {
-
                     <div class="row">
                         <div class="col-md-12">
                             <div class="row">
-                                <label class="col-md-3">Excisable Goods Type</label>
-                                <div class="col-md-4">
-                                    @Html.DropDownListFor(model => model.GoodType, Model.GoodTypeList, "All", new { @class = " form-control selectreset", id = "SearchInput_GoodType" })
+                                <div class="col-sm-5">
+                                    <label class="col-md-3">Status</label>
+                                    <div class="col-md-9">
+                                        
+                                        @Html.EnumDropDownListFor(model => model.DocumentStatus, Model.DocumentStatusList, "Select Status", new { @class = "form-control selectreset", @id = "ddlStatus" })
+                                    </div>
                                 </div>
+                                
 
-                                <div class="col-md-5">
+                                <div class="col-md-2">
                                     <div class="col-md-3">
                                         <input id="btn-filter" type="submit" class="btn btn-blue" value="FILTER" />
                                     </div>
-                                    <div class="col-md-3">
-                                        <button type="button" id="btn-reset-filter" class="btn btn-blue">RESET</button>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <input id="btnExport" type="button" class="btn btn-blue" onclick="ExportXls();" value="EXPORT" />
-                                    </div>
+                                    
+                                    
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 }
-            </div>*@
+                    
+                
+                
+            </div>
             <div id="contenttable" class="table-container">
                 <table id="mydata" class="table cell-border display no-wrap" cellspacing="0" width="100%">
                     <thead>
@@ -169,7 +170,7 @@
                                     @Html.DisplayFor(modelItem => item.CREATED_DATE)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.STATUS_ID)
+                                    @Html.DisplayFor(modelItem => item.StatusString)
                                 </td>
                             </tr>
                         }
