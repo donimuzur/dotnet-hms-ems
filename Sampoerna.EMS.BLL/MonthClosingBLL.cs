@@ -37,14 +37,16 @@ namespace Sampoerna.EMS.BLL
         {
             Expression<Func<MONTH_CLOSING, bool>> queryFilter = PredicateHelper.True<MONTH_CLOSING>();
 
-            if (param.Month > 0)
+            if (!string.IsNullOrEmpty(param.Month))
             {
-                queryFilter = queryFilter.And(c => c.CLOSING_DATE.Value.Month == param.Month);
+                var month = Convert.ToInt32(param.Month);
+                queryFilter = queryFilter.And(c => c.CLOSING_DATE.Value.Month == month);
             }
 
-            if (param.Year > 0)
+            if (!string.IsNullOrEmpty(param.Year))
             {
-                queryFilter = queryFilter.And(c => c.CLOSING_DATE.Value.Year == param.Year);
+                var year = Convert.ToInt32(param.Year);
+                queryFilter = queryFilter.And(c => c.CLOSING_DATE.Value.Year == year);
             }
 
             var monthClosingList = _repository.Get(queryFilter, null, includeTables).ToList();

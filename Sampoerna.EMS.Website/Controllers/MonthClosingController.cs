@@ -39,12 +39,12 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
             model.MonthList = GlobalFunctions.GetMonthList(_monthBll);
-            model.Month = DateTime.Now.Month;
-            model.Year = DateTime.Now.Year;
+            model.Month = DateTime.Now.Month.ToString();
+            model.Year = DateTime.Now.Year.ToString();
 
             var input = new MonthClosingGetByParam();
-            input.Month = DateTime.Now.Month;
-            input.Year = DateTime.Now.Year;
+            input.Month = DateTime.Now.Month.ToString();
+            input.Year = DateTime.Now.Year.ToString();
 
             var closingList = _monthClosingBll.GetList(input);
             model.MonthClosingList = Mapper.Map<List<MonthClosingDetail>>(closingList);
