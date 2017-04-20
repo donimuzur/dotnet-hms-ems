@@ -9,8 +9,8 @@ namespace Sampoerna.EMS.Website.Models.MonthClosing
 {
     public class MonthClosingIndexViewModel : BaseModel
     {
-        public int Month { get; set; }
-        public int Year { get; set; }
+        public string Month { get; set; }
+        public string Year { get; set; }
         public SelectList MonthList { get; set; }
 
         public List<MonthClosingDetail> MonthClosingList { get; set; }

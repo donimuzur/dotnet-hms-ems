@@ -12,7 +12,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime? ClosingDate { get; set; }
         public DateTime? DisplayDate { get; set; }
 
-        public int Month { get; set; }
-        public int Year { get; set; }
+        public string Month { get; set; }
+        public string Year { get; set; }
     }
 }
