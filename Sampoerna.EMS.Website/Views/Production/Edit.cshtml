@@ -347,6 +347,7 @@
                         if (!data.IS_FROM_SAP) {
                             $('#QtyPackedStr').prop('disabled', false);
                         } else {
+                            $('#QtyPackedStr').val('');
                             $('#QtyPackedStr').prop('disabled', true);
                         }
                     }
@@ -417,11 +418,13 @@
                     url: url,
                     data: formData,
                     success: function (data) {
-
+                        $('#BrandDescription').val(data.BRAND_CE);
+                        $('#test').val(data.BRAND_CE);
                         
                         if (!data.IS_FROM_SAP) {
                             $('#QtyPacked.form-control').prop('disabled', false);
                         } else {
+                            $('#QtyPacked.form-control').val('');
                             $('#QtyPacked.form-control').prop('disabled', true);
                         }
 
