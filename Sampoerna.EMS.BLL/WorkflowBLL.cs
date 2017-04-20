@@ -154,7 +154,7 @@ namespace Sampoerna.EMS.BLL
                 if (input.FormType == Enums.FormType.PBCK3)
                 {
                     var rejectedSourcePoa = _workflowHistoryBll.GetApprovedRejectedPoaByDocumentNumber(input.DocumentNumberSource);
-                    if (rejectedSourcePoa != "")
+                    if (rejectedSourcePoa != "" && rejectedSourcePoa != input.CreatedUser)
                     {
                         //if (input.CurrentUser != rejectedSourcePoa)
                         //    return false;
