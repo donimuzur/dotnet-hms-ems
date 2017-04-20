@@ -153,7 +153,7 @@ namespace Sampoerna.EMS.BLL
                             _repository.Get(c => c.FORM_NUMBER == input.FormNumberSource, null, includeTables).OrderBy(c => c.ACTION_DATE).ToList();
                         var rejectedSource = dbDataSource.FirstOrDefault(c => c.ACTION == Enums.ActionType.Reject ||c.ACTION == Enums.ActionType.Approve 
                                                                               && c.ROLE == Enums.UserRole.POA);
-                        if (rejectedSource != null)
+                        if (rejectedSource != null && rejectedSource.ACTION_BY != input.DocumentCreator)
                         {
                             //was rejected
                             input.IsRejected = true;
