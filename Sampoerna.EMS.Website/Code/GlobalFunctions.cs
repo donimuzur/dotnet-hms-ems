@@ -388,7 +388,7 @@ namespace Sampoerna.EMS.Website.Code
 
                     plants.AddRange(item.Plants);
                 }
-                var selectItemSource = Mapper.Map<List<SelectItemModel>>(plants);
+                var selectItemSource = Mapper.Map<List<SelectItemModel>>(plants.Distinct().ToList());
                 return new SelectList(selectItemSource, "ValueField", "TextField");
             }
 
