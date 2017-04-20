@@ -30,6 +30,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new MasterDataApprovalSettingIndexViewModel();
             model.MainMenu = _mainMenu;
             model.Details = Mapper.Map<List<MasterDataSetting>>(data);
+            model.CurrentMenu = PageInfo;
             model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
 
             return View("index",model);
@@ -40,6 +41,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new MasterDataApprovalSettingEditViewModel();
             model.MainMenu = _mainMenu;
             model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.CurrentMenu = PageInfo;
 
             var data = _masterDataApprovalSettingBLL.GetAllEditableColumn(pageId);
             model.Detail = Mapper.Map<MasterDataSetting>(data);
@@ -90,6 +92,20 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 return View("Edit", model);
             }
+        }
+
+        public ActionResult Detail(int pageId)
+        {
+            var model = new MasterDataApprovalSettingEditViewModel();
+            model.MainMenu = _mainMenu;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.CurrentMenu = PageInfo;
+
+            var data = _masterDataApprovalSettingBLL.GetAllEditableColumn(pageId);
+            model.Detail = Mapper.Map<MasterDataSetting>(data);
+
+
+            return View("Detail", model);
         }
     }
 }

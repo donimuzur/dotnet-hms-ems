@@ -15,6 +15,8 @@ namespace Sampoerna.EMS.Website.Models.MasterDataApproval
 
         public Enums.DocumentStatus DocumentStatus { get; set; }
 
+        public Enums.DocumentStatus DocumentStatusList { get; set; }
+
         public int PageId { get; set; }
 
         
@@ -48,7 +50,7 @@ namespace Sampoerna.EMS.Website.Models.MasterDataApproval
 
         public string PageDesciption { get; set; }
 
-
+        public string StatusString { get; set; }
 
         public virtual List<MasterDataApprovalDetail> Details { get; set; }
     }

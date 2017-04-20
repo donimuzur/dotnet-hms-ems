@@ -250,7 +250,7 @@ namespace Sampoerna.EMS.Core
             [Description("Waiting for Purchase Order")]
             PurchaseOrder = 321,
 
-            [Description("Waiting for Purchase Order")]
+            [Description("Waiting for Master Approver")]
             WaitingForMasterApprover = 322
         }
 

@@ -145,6 +145,7 @@
     <Compile Include="Services\IMaterialUomService.cs" />
     <Compile Include="Services\IPbck1ProdConverterService.cs" />
     <Compile Include="Services\IPBCK1Service.cs" />
+    <Compile Include="Services\IPOAService.cs" />
     <Compile Include="Services\IT001KService.cs" />
     <Compile Include="Services\IT001Service.cs" />
     <Compile Include="Services\IT001WService.cs" />

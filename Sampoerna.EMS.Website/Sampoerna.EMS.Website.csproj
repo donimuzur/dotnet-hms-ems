@@ -1365,6 +1365,7 @@
     <Content Include="Views\MasterDataApprovalSetting\Edit.cshtml" />
     <Content Include="Views\MasterApproval\Index.cshtml" />
     <Content Include="Views\MasterApproval\Detail.cshtml" />
+    <Content Include="Views\MasterDataApprovalSetting\Detail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
