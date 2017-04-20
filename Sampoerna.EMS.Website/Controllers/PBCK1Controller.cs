@@ -1349,6 +1349,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
                         else
                         {
+                            if (model.Pbck1OldDecreeFilesID != null && model.Pbck1OldDecreeFilesID.Count > 0) continue;
                             AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
                             return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
                         }
