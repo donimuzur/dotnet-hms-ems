@@ -203,7 +203,7 @@ function toUploadTab() {
 }
 
 
-function ajaxGetPlantByNppbkc(nppbkc, url) {
+function ajaxGetPlantByNppbkc(nppbkc, url, plant) {
 
     $.ajax({
         type: 'POST',
@@ -218,6 +218,8 @@ function ajaxGetPlantByNppbkc(nppbkc, url) {
                 $('#PlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
 
             }
+
+            $("#PlantId").val(plant);
 
         }
     }
@@ -454,21 +456,16 @@ function ValidateGovInput() {
             result = false;
         }
 
-        //if ($('#poa_sk0').length == 0) {
-        //    AddValidationClass(false, 'poa-files');
+        if ($('#poa_sk0').length == 0) {
+            AddValidationClass(false, 'poa-files');
 
-        //    if (result) {
-        //        $('#modalBodyMessage').text('Missing attach files BACK-1 Doc');
-        //        $('#ModalPbck7ValidateGov').modal('show');
+            $('#modalBodyMessage').text('Missing attach files BACK-1 Doc');
+            $('#ModalPbck7ValidateGov').modal('show');
 
-        //        $('#collapseFour').removeClass('collapse');
-        //        $('#collapseFour').addClass('in');
-        //        $("#collapseFour").css({ height: "auto" });
-
-        //    }
-        //    result = false;
-        //}
+            result = false;
+        }
     }
+
     if (result == false) {
         $('#collapseFour').removeClass('collapse');
         $('#collapseFour').addClass('in');

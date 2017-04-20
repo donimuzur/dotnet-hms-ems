@@ -131,6 +131,9 @@
     <script src="~/Scripts/Pbck7Script.js"></script>
     <script src="~/Scripts/Pbck7InputManual.js"></script>
     <script type="text/javascript">
+        $(document).ready(function () {
+            SetPlant();
+        });
 
         $('#MenuPBCK7Index').addClass('active');
 
@@ -182,7 +185,7 @@
                 $('#PlantId').html('');
                 $('#displayPoaList').html('');
                 if (nppbkc != '') {
-                    ajaxGetPlantByNppbkc(nppbkc, '@Url.Action("GetPlantByNppbkcId", "PBCK7AndPBCK3")');
+                    ajaxGetPlantByNppbkc(nppbkc, '@Url.Action("GetPlantByNppbkcId", "PBCK7AndPBCK3")','');
                     @*ajaxGetPoaByNppbkc(nppbkc, '@Url.Action("GetPoaByNppbkcId", "PBCK7AndPBCK3")');*@
                 }
             }
@@ -323,6 +326,11 @@
             $('#Pbck7UploadModal').modal('show');
 
 
+        }
+
+        function SetPlant() {
+            var nppbkc = $('#NppbkcId').find("option:selected").val();
+            ajaxGetPlantByNppbkc(nppbkc, '@Url.Action("GetPlantByNppbkcId", "PBCK7AndPBCK3")', '@Model.PlantId');
         }
 
     </script>

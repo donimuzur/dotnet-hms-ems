@@ -108,7 +108,7 @@
                 $('#PlantId').html('');
                 $('#displayPoaList').html('');
                 if (nppbkc != '') {
-                    ajaxGetPlantByNppbkc(nppbkc, '@Url.Action("GetPlantByNppbkcId", "PBCK7AndPBCK3")');
+                    ajaxGetPlantByNppbkc(nppbkc, '@Url.Action("GetPlantByNppbkcId", "PBCK7AndPBCK3")','');
                     @*ajaxGetPoaByPlant(nppbkc, '@Url.Action("GetPoaByPlantId", "PBCK7AndPBCK3")');*@
                     //ajaxGetPoaByPlant($('#PlantId').find("option:selected").val(), '@Url.Action("GetPoaByPlantId", "PBCK7AndPBCK3")');
                 }
