@@ -657,7 +657,8 @@ namespace Sampoerna.EMS.BLL
                         dbData = UpdateSubmissionNumber(dbData.CK5_ID);
                     }
                 }
-
+                var quota = GetQuotaRemainAndDatePbck1ByCk5Id(dbData.CK5_ID);
+                SendEmailQuotaWarning(quota);
             }
             catch (DbEntityValidationException e)
             {
@@ -4981,6 +4982,8 @@ namespace Sampoerna.EMS.BLL
 
             AddWorkflowHistory(inputWorkflowHistory);
 
+            
+
             return dbData;
         }
 
@@ -5062,6 +5065,12 @@ namespace Sampoerna.EMS.BLL
                     }
                     
                 }
+                foreach (var ck5 in listInsertedCk5)
+                {
+                    var quota = GetQuotaRemainAndDatePbck1ByCk5Id(ck5.CK5_ID);
+                    SendEmailQuotaWarning(quota);
+                }
+                
             }
             catch (DbEntityValidationException e)
             {
@@ -6352,6 +6361,11 @@ namespace Sampoerna.EMS.BLL
             var dtData = _repository.Get(queryFilter).Select(c => c.SUBMISSION_NUMBER).ToList();
 
             return dtData;
+        }
+
+        public void SendEmailQuotaWarning(GetQuotaAndRemainOutput quotaDetail)
+        {
+            
         }
     }
 }
