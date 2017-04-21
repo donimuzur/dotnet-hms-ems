@@ -315,6 +315,9 @@ namespace Sampoerna.EMS.Website.Controllers
             //    return RedirectToAction("Detail", new { id });
             //}
 
+            if (!_workflowBll.IsAllowEditLack1(lack2Data.CreatedBy, CurrentUser.USER_ID, lack2Data.Status, CurrentUser.UserRole, lack2Data.Lack2Number))
+                return RedirectToAction("Detail", new { id = lack2Data.Lack2Id });
+
             //first code when manager exists
             if ((lack2Data.Status == Enums.DocumentStatus.WaitingForApproval ||
                  lack2Data.Status == Enums.DocumentStatus.WaitingForApprovalController))
