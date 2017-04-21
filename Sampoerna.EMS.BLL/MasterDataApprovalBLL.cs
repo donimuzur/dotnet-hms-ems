@@ -118,6 +118,18 @@ namespace Sampoerna.EMS.BLL
             return newObject;
         }
 
+
+        public void CreateNewDataForApproval<T>(int pageId,string userId,T data)
+        {
+            var page = _pageBLL.GetPageByID(pageId);
+            var tabledetails = _repository.GetTableDetail(page.MAIN_TABLE);
+
+            foreach (var tabledetail in tabledetails)
+            {
+                
+            }
+        }
+
         public List<MASTER_DATA_APPROVAL> GetList(Enums.DocumentStatus status = Enums.DocumentStatus.WaitingForMasterApprover)
         {
             return _repository.Get(x => x.STATUS_ID == status, null, includeTables).ToList();
