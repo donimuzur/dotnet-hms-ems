@@ -2123,12 +2123,18 @@ namespace Sampoerna.EMS.Website.Controllers
             drow = dt.NewRow();
             drow[0] = lack2.Butxt;
             drow[1] = lack2.NppbkcId;
-
+            
             var plant = _plantBLL.GetT001WById(lack2.LevelPlantId);
-
+            var isnppbkcImport = _nppbkcbll.IsNppbkcImport(lack2.NppbkcId);
             string plantAddress = "";
             if (plant != null)
+            {
                 plantAddress = plant.ADDRESS;
+                if (isnppbkcImport) plantAddress = plant.ADDRESS_IMPORT;
+
+
+            }
+            
 
             //drow[2] = lack2.LevelPlantName + ", " + lack2.LevelPlantCity;
             drow[2] = plantAddress;

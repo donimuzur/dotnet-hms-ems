@@ -81,6 +81,8 @@ namespace Sampoerna.EMS.Website.Models.PLANT
             }
             
         }
+
+        public string ADDRESS_IMPORT { get; set; }
     }
 
 }
