@@ -26,6 +26,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string CompanyCode { get; set; }
 
         public bool IsChecked { get; set; }
+
+        public string ADDRESS_IMPORT { get; set; }
     }
 
     public class PlantDto

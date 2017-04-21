@@ -1243,6 +1243,7 @@
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_DELETED" Type="bit" />
           <Property Name="NPPBKC_IMPORT_ID" Type="nvarchar" MaxLength="15" />
+          <Property Name="ADDRESS_IMPORT" Type="nvarchar" MaxLength="200" />
         </EntityType>
         <EntityType Name="UOM">
           <Key>
@@ -2785,6 +2786,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PBCK4_ITEM_CK1">
+          <End Role="CK1" Type="Self.CK1" Multiplicity="0..1" />
+          <End Role="PBCK4_ITEM" Type="Self.PBCK4_ITEM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CK1">
+              <PropertyRef Name="CK1_ID" />
+            </Principal>
+            <Dependent Role="PBCK4_ITEM">
+              <PropertyRef Name="CK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PBCK4_ITEM_PBCK4">
           <End Role="PBCK4" Type="Self.PBCK4" Multiplicity="1" />
           <End Role="PBCK4_ITEM" Type="Self.PBCK4_ITEM" Multiplicity="*" />
@@ -4108,6 +4121,10 @@
           <AssociationSet Name="FK_PBCK4_DOCUMENT_PBCK4" Association="Self.FK_PBCK4_DOCUMENT_PBCK4">
             <End Role="PBCK4" EntitySet="PBCK4" />
             <End Role="PBCK4_DOCUMENT" EntitySet="PBCK4_DOCUMENT" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK4_ITEM_CK1" Association="Self.FK_PBCK4_ITEM_CK1">
+            <End Role="CK1" EntitySet="CK1" />
+            <End Role="PBCK4_ITEM" EntitySet="PBCK4_ITEM" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK4_ITEM_PBCK4" Association="Self.FK_PBCK4_ITEM_PBCK4">
             <End Role="PBCK4" EntitySet="PBCK4" />
@@ -6843,6 +6860,7 @@
           <NavigationProperty Name="WASTE_ROLE" Relationship="EMSModel.FK_WASTE_ROLE_T001W" FromRole="T001W" ToRole="WASTE_ROLE" />
           <NavigationProperty Name="WASTE_STOCK" Relationship="EMSModel.FK_WASTE_STOCK_T001W" FromRole="T001W" ToRole="WASTE_STOCK" />
           <NavigationProperty Name="MONTH_CLOSING" Relationship="EMSModel.FK_MONTH_CLOSING_T001W" FromRole="T001W" ToRole="MONTH_CLOSING" />
+          <Property Name="ADDRESS_IMPORT" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_HEADER_FOOTER_HEADER_FOOTER">
           <End Type="EMSModel.T001" Role="T001" Multiplicity="1" />
@@ -10133,6 +10151,7 @@
           <EntitySetMapping Name="T001W">
             <EntityTypeMapping TypeName="EMSModel.T001W">
               <MappingFragment StoreEntitySet="T001W">
+                <ScalarProperty Name="ADDRESS_IMPORT" ColumnName="ADDRESS_IMPORT" />
                 <ScalarProperty Name="NPPBKC_IMPORT_ID" ColumnName="NPPBKC_IMPORT_ID" />
                 <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
                 <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />

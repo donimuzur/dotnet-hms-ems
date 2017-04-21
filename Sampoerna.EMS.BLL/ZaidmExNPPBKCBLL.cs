@@ -28,6 +28,7 @@ namespace Sampoerna.EMS.BLL
             _uow = uow;
             _repository = _uow.GetGenericRepository<ZAIDM_EX_NPPBKC>();
             _poaMapRepository = _uow.GetGenericRepository<POA_MAP>();
+            _repositoryT001w = _uow.GetGenericRepository<T001W>();
             _changesHistoryBll = new ChangesHistoryBLL(_uow,_logger);
             
         }
@@ -183,7 +184,7 @@ namespace Sampoerna.EMS.BLL
             return Mapper.Map<List<ZAIDM_EX_NPPBKCDto>>(nppbkcList.ToList());
         }
 
-        private bool IsNppbkcImport(string id)
+        public bool IsNppbkcImport(string id)
         {
             
             bool isImport = _repositoryT001w.Get(x => x.NPPBKC_IMPORT_ID == id).Any();
