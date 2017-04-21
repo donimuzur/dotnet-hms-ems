@@ -32,6 +32,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             var data = _masterDataAprovalBLL.GetList();
             model.Details = Mapper.Map<List<MasterDataApprovalDetailViewModel>>(data);
+            model.DocumentStatus = Enums.DocumentStatus.WaitingForMasterApprover;
             return View(model);
         }
 
@@ -41,7 +42,7 @@ namespace Sampoerna.EMS.Website.Controllers
             
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            var data = _masterDataAprovalBLL.GetList();
+            var data = _masterDataAprovalBLL.GetList(model.DocumentStatus);
             model.Details = Mapper.Map<List<MasterDataApprovalDetailViewModel>>(data);
             return View(model);
         }

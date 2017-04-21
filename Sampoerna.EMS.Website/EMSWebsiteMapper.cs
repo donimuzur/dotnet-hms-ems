@@ -1189,7 +1189,8 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<MASTER_DATA_APPROVAL, MasterDataApprovalDetailViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Details, opt => opt.MapFrom(src => src.MASTER_DATA_APPROVAL_DETAIL))
-                .ForMember(dest => dest.PageDesciption, opt => opt.MapFrom(src => src.PAGE.MENU_NAME));
+                .ForMember(dest => dest.PageDesciption, opt => opt.MapFrom(src => src.PAGE.MENU_NAME))
+                .ForMember(dest => dest.StatusString, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS_ID)));
             Mapper.CreateMap<MASTER_DATA_APPROVAL_DETAIL, MasterDataApprovalDetail>().IgnoreAllNonExisting();
 
             #endregion

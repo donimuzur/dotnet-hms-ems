@@ -199,6 +199,7 @@ namespace Sampoerna.EMS.BLL
             #endregion
 
             Mapper.CreateMap<POA, POADto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<POADto, POA>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<T001K, T001KDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.BUTXT, opt => opt.MapFrom(src => src.T001.BUTXT))
