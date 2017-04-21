@@ -962,6 +962,10 @@ namespace Sampoerna.EMS.BLL
             {
                 queryFilter = queryFilter.And(c => c.GOV_STATUS == Enums.StatusGovCk4c.Approved);
             }
+            else if (input.UserRole == Enums.UserRole.Controller)
+            {
+                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed && c.CK4C_ID_REVISED == null);
+            }
             else
             {
                 queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID) ||

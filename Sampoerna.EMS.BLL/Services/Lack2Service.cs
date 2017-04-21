@@ -125,9 +125,13 @@ namespace Sampoerna.EMS.BLL.Services
                 queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
             }
 
-            if (input.UserRole != Enums.UserRole.Administrator)
+            if (input.UserRole != Enums.UserRole.Administrator && input.UserRole != Enums.UserRole.Controller)
             {
                 queryFilter = queryFilter.And(c => input.PlantList.Contains(c.LEVEL_PLANT_ID));
+            }
+            else if (input.UserRole == Enums.UserRole.Controller)
+            {
+                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
             }
 
             Func<IQueryable<LACK2>, IOrderedQueryable<LACK2>> orderBy = null;
