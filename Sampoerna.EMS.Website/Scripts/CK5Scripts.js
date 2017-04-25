@@ -825,6 +825,16 @@ function ValidateCk5Form(ck5Type) {
         }
     }
 
+    if (ck5Type == 'PortToImporter') {
+        if ($('#SourcePlantName').val() == '') {
+            AddValidationClass(false, 'SourcePlantName');
+            result = false;
+
+            $('#collapseTwo').removeClass('collapse');
+            $('#collapseTwo').addClass('in');
+            $("#collapseTwo").css({ height: "auto" });
+        }
+    }
     
 
     if (result) {
