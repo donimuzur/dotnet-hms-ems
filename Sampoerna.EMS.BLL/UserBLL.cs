@@ -220,17 +220,10 @@ namespace Sampoerna.EMS.BLL
         {
             var controllersList = new List<USER>();
 
-            var data = _repository.Get(x => (!x.IS_ACTIVE.HasValue || x.IS_ACTIVE != 0), null, "BROLE_MAP").ToList();
+            var data = _repository.Get(x => (!x.IS_ACTIVE.HasValue || x.IS_ACTIVE != 0) && x.BROLE_MAP.Any(y => y.ROLEID == Enums.UserRole.Controller && y.MSACCT.ToLower() == x.USER_ID.ToLower()), null, "BROLE_MAP").ToList();
 
-            foreach (var item in data)
-            {
-                var userRole = _poabll.GetUserRole(item.USER_ID);
-                if (userRole == Enums.UserRole.Controller)
-                {
-                    controllersList.Add(item);
-                }
-            }
-
+            
+            controllersList.AddRange(data);
             return controllersList;
         }
     }
