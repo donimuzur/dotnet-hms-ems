@@ -18,7 +18,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<int> MONITORING_ID { get; set; }
         public string USER_ID { get; set; }
         public Nullable<int> ROLE_ID { get; set; }
-        public Nullable<int> EMAIL_STATUS { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.EmailStatus> EMAIL_STATUS { get; set; }
     
         public virtual QUOTA_MONITORING QUOTA_MONITORING { get; set; }
         public virtual USER USER { get; set; }

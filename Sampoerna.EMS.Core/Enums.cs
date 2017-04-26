@@ -697,5 +697,15 @@ namespace Sampoerna.EMS.Core
             [Description("Re-run Success")]
             Success = 3
         }
+
+        public enum EmailStatus
+        {
+            [Description("Sent")]
+            Sent = 1,
+            [Description("Failed To Send")]
+            NotSent = 2,
+            [Description("Read")]
+            Read = 3
+        }
     }
 }

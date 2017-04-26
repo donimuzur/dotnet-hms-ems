@@ -9541,7 +9541,7 @@
           <Property Name="MONITORING_ID" Type="Int32" />
           <Property Name="USER_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ROLE_ID" Type="Int32" />
-          <Property Name="EMAIL_STATUS" Type="Int32" />
+          <Property Name="EMAIL_STATUS" Type="EMSModel.EmailStatus" />
           <NavigationProperty Name="QUOTA_MONITORING" Relationship="EMSModel.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING" FromRole="QUOTA_MONITORING_DETAIL" ToRole="QUOTA_MONITORING" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING_DETAIL" FromRole="QUOTA_MONITORING_DETAIL" ToRole="USER" />
         </EntityType>
@@ -9569,6 +9569,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EnumType Name="EmailStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.EmailStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
