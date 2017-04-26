@@ -4422,6 +4422,22 @@ namespace Sampoerna.EMS.BLL
                 //var output = new CK5MaterialOutput();
                 var output = Mapper.Map<CK5FileUploadDocumentsOutput>(ck5UploadFileDocuments);
 
+                //material
+                var material = _materialBll.getByID(ck5UploadFileDocuments.MatNumber, ck5UploadFileDocuments.SourcePlantId);
+                if (material == null)
+                {
+
+                    messageList.Add(String.Format("Material {0} in {1} is not found in material master", ck5UploadFileDocuments.MatNumber, ck5UploadFileDocuments.SourcePlantId));
+                }
+
+                material = _materialBll.getByID(ck5UploadFileDocuments.MatNumber, ck5UploadFileDocuments.DestPlantId);
+
+                if (material == null)
+                {
+
+                    messageList.Add(String.Format("Material {0} in {1} is not found in material master", ck5UploadFileDocuments.MatNumber, ck5UploadFileDocuments.DestPlantId));
+                }
+
                 //ck5type
                 if (!ConvertHelper.IsNumeric(ck5UploadFileDocuments.Ck5Type))
                     messageList.Add("Type not valid");
