@@ -4437,14 +4437,16 @@ namespace Sampoerna.EMS.BLL
 
                     messageList.Add(String.Format("Material {0} in {1} is not found in material master", ck5UploadFileDocuments.MatNumber, ck5UploadFileDocuments.DestPlantId));
                 }
+                else { 
 
-                var matUom = material.MATERIAL_UOM;
+                    var matUom = material.MATERIAL_UOM;
 
-                var isConvertionExist = matUom.Any(x => x.MEINH == ck5UploadFileDocuments.ConvertedUom);
+                    var isConvertionExist = matUom.Any(x => x.MEINH == ck5UploadFileDocuments.ConvertedUom);
 
-                if (!isConvertionExist)
-                {
-                    messageList.Add(String.Format("Material Conversion {0} in {1} is not found in material master", material.STICKER_CODE, material.WERKS));
+                    if (!isConvertionExist)
+                    {
+                        messageList.Add(String.Format("Material Conversion {0} in {1} is not found in material master", material.STICKER_CODE, material.WERKS));
+                    }
                 }
 
                 //ck5type
