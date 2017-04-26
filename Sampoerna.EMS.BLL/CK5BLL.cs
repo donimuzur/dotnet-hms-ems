@@ -6439,42 +6439,50 @@ namespace Sampoerna.EMS.BLL
             var quota10Percent = 0.1 * (double)quotaDetail.QtyApprovedPbck1;
             var remainQuota = (double) (quotaDetail.QtyApprovedPbck1 - quotaDetail.QtyCk5);
             quotaDetail.RemainQuota = (decimal) remainQuota;
+            var pbck1Data = new Pbck1Dto();
+            var userList = new List<USER>();
             MailNotification mailNotif = null;
             if (remainQuota <= quota30Percent && remainQuota > quota10Percent)
             {
-                mailNotif = ProcessEmailQuotaNotification(quotaDetail, 30);
+                mailNotif = ProcessEmailQuotaNotification(quotaDetail, 30,out pbck1Data,out userList);
             }
             else if(remainQuota <= quota10Percent)
             {
-                mailNotif = ProcessEmailQuotaNotification(quotaDetail, 10);
+                mailNotif = ProcessEmailQuotaNotification(quotaDetail, 10,out pbck1Data,out userList);
             }
-
+            var success = false;
             if (mailNotif != null)
             {
                 if (mailNotif.IsCCExist)
                 {
-                    _messageService.SendEmailToListWithCC(mailNotif.To, mailNotif.CC, mailNotif.Subject, mailNotif.Body,false);
+                    success = _messageService.SendEmailToListWithCC(mailNotif.To, mailNotif.CC, mailNotif.Subject, mailNotif.Body,false);
                 }
                 else
                 {
-                    _messageService.SendEmailToList(mailNotif.To,  mailNotif.Subject, mailNotif.Body,false);
+                    success = _messageService.SendEmailToList(mailNotif.To,  mailNotif.Subject, mailNotif.Body,false);
                 }
             }
+
+            var emailStatus = success ? Enums.EmailStatus.Sent : Enums.EmailStatus.NotSent;
+            _pbck1Bll.SaveQuotaMonitoring(pbck1Data, userList, emailStatus);
         }
 
-        private MailNotification ProcessEmailQuotaNotification(GetQuotaAndRemainOutput quotaDetail,int percent)
+        private MailNotification ProcessEmailQuotaNotification(GetQuotaAndRemainOutput quotaDetail,int percent,out Pbck1Dto pbck1Data,out List<USER> userList)
         {
             var bodyMail = new StringBuilder();
             var rc = new MailNotification();
-
+            pbck1Data = null;
+            userList = new List<USER>();
             if (quotaDetail.Pbck1Id.HasValue)
             {
-                var pbck1Data = _pbck1Bll.GetById(quotaDetail.Pbck1Id.Value);
+                pbck1Data = _pbck1Bll.GetById(quotaDetail.Pbck1Id.Value);
 
                 var userCreatorInfo = _userBll.GetUserById(pbck1Data.CreatedById);
                 var userPoaApprovalInfo = _userBll.GetUserById(pbck1Data.ApprovedByPoaId);
                 var controllerList = _userBll.GetControllers();
-                
+                userList = new List<USER>();
+                userList.Add(userCreatorInfo);
+                userList.Add(userPoaApprovalInfo);
                 var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
                 rc.Subject = "PBCK-1 " + quotaDetail.Pbck1Number + " Quota is currently on " + percent + "% of Approved Qty.";

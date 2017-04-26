@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Contract
 {
@@ -60,6 +62,16 @@ namespace Sampoerna.EMS.Contract
         List<Pbck1Dto> GetByRef(int pbckId);
 
         List<Pbck1MonitoringMutasiDto> GetMonitoringMutasiByParam(Pbck1GetMonitoringMutasiByParamInput input);
+
+        List<QUOTA_MONITORING> GetQuotaMonitoringList();
+
+        QUOTA_MONITORING GetQuotaMonitoringDetail(int id);
+
+        void UpdateEmailStatus(int quotaMonitorId, string userId, Enums.EmailStatus status);
+
+        void SaveQuotaMonitoring(Pbck1Dto dto, List<USER> userlist, Enums.EmailStatus emailStatus);
+
+        void UpdateEmailStatus(int quotaMonitorId, USER user, Enums.EmailStatus emailStatus);
 
     }
 }

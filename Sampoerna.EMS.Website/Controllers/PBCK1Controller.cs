@@ -444,8 +444,14 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Index", model);
         }
 
-        public ActionResult QuotaMonitoring()
+        public ActionResult QuotaMonitoring(int id)
         {
+            var model = new QuotaMonitoringViewModel();
+            model.CurrentMenu = PageInfo;
+            model.MainMenu = _mainMenu;
+            
+            var data  =  _pbck1Bll.GetQuotaMonitoringDetail(id);
+            model.Detail = Mapper.Map<QuotaMonitoringModel>(data);
             return View();
         }
 

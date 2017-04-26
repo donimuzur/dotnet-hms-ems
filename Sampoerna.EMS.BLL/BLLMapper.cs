@@ -555,6 +555,16 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PageId, opt => opt.MapFrom(src => src.PAGE_ID))
                 .ForMember(dest => dest.PageDescription, opt => opt.MapFrom(src => src.MENU_NAME));
             #endregion
+
+            #region Quota Monitoring
+            Mapper.CreateMap<Pbck1Dto, QUOTA_MONITORING>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.NppbkcId))
+                .ForMember(dest => dest.PERIOD_FROM, opt => opt.MapFrom(src => src.PeriodFrom))
+                .ForMember(dest => dest.PERIOD_TO, opt => opt.MapFrom(src => src.PeriodTo))
+                .ForMember(dest => dest.SUPPLIER_NPPBKC_ID, opt => opt.MapFrom(src => src.SupplierNppbkcId))
+                .ForMember(dest => dest.SUPPLIER_WERKS, opt => opt.MapFrom(src => src.SupplierPlantWerks))
+                ;
+            #endregion
         }
     }
 }

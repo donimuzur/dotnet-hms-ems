@@ -1,0 +1,189 @@
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.PBCK1.QuotaMonitoringViewModel
+
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="desc">Quota Monitoring Detail</h3>
+            <div class="action-button col-sm-6">
+                <div class="col-sm-3 action-button">
+                    <a href="@Url.Action("Index", "QuotaMonitoringList")" class="btn btn-grey">Back</a>
+                </div>
+                
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Quota Detail
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="form-excise " role="form">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Nppbkc Id</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.Detail.NPPBKC_ID, new { @class = "form-control", @disabled = "true" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Supplier Plant</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.Detail.SUPPLIER_WERKS, new { @class = "form-control", @disabled = "true" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Supplier Nppbkc Id</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.Detail.SUPPLIER_NPPBKC_ID, new { @class = "form-control", @disabled = "true" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Period From</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.Detail.PERIOD_FROM, new { @class = "form-control", @disabled = "true" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Period To</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.Detail.PERIOD_TO, new { @class = "form-control", @disabled = "true" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Total Approved Quota</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.Detail.TotalApprovedQuota, new { @class = "form-control", @disabled = "true" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Total Used Quota</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.Detail.TotalUsedQuota, new { @class = "form-control", @disabled = "true" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Remaining Quota</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.Detail.TotalRemainingQuota, new { @class = "form-control", @disabled = "true" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-group" id="accordionTwo" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingTwo">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordionTwo" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                    Email Notification Details
+                                    <i class="fa fa-caret-down"></i>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                            <div class="container-wrap">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div id="contenttable" class="table-container">
+                                            <table id="changesApproval" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+                                                <thead>
+                                                    <tr>
+
+                                                        <th>Receiver Name</th>
+                                                        <th>Role Id</th>
+                                                        <th>Email Status</th>
+                                                        <th>New Value</th>
+
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    @foreach (var item in Model.Detail.Details)
+                                                    {
+                                                        <tr>
+                                                            <td>@item.USER_ID</td>
+                                                            <td>@item.ROLE_ID</td>
+                                                            <td>
+                                                                @item.EMAIL_STATUS
+                                                            </td>
+                                                            
+
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
