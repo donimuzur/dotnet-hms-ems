@@ -25,9 +25,6 @@ namespace Sampoerna.EMS.BusinessObject
         public string SUPPLIER_WERKS { get; set; }
         public Nullable<System.DateTime> PERIOD_FROM { get; set; }
         public Nullable<System.DateTime> PERIOD_TO { get; set; }
-        public Nullable<decimal> QUOTA_APPROVED { get; set; }
-        public Nullable<decimal> QUOTA_USED { get; set; }
-        public Nullable<decimal> QUOTA_REMAIN { get; set; }
     
         public virtual ICollection<QUOTA_MONITORING_DETAIL> QUOTA_MONITORING_DETAIL { get; set; }
     }

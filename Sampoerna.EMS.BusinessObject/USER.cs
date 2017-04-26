@@ -80,6 +80,7 @@ namespace Sampoerna.EMS.BusinessObject
             this.POA_DELEGATION3 = new HashSet<POA_DELEGATION>();
             this.MASTER_DATA_APPROVAL = new HashSet<MASTER_DATA_APPROVAL>();
             this.MASTER_DATA_APPROVAL1 = new HashSet<MASTER_DATA_APPROVAL>();
+            this.QUOTA_MONITORING_DETAIL = new HashSet<QUOTA_MONITORING_DETAIL>();
         }
     
         public string USER_ID { get; set; }
@@ -158,5 +159,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<POA_DELEGATION> POA_DELEGATION3 { get; set; }
         public virtual ICollection<MASTER_DATA_APPROVAL> MASTER_DATA_APPROVAL { get; set; }
         public virtual ICollection<MASTER_DATA_APPROVAL> MASTER_DATA_APPROVAL1 { get; set; }
+        public virtual ICollection<QUOTA_MONITORING_DETAIL> QUOTA_MONITORING_DETAIL { get; set; }
     }
 }

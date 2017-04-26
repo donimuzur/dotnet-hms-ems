@@ -21,5 +21,6 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<int> EMAIL_STATUS { get; set; }
     
         public virtual QUOTA_MONITORING QUOTA_MONITORING { get; set; }
+        public virtual USER USER { get; set; }
     }
 }

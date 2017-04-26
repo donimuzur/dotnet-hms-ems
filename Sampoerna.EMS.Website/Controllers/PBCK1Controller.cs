@@ -444,6 +444,11 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Index", model);
         }
 
+        public ActionResult QuotaMonitoring()
+        {
+            return View();
+        }
+
         public Pbck1ViewModel InitPbck1ViewModel(Pbck1ViewModel model)
         {
             var nppbkc = GlobalFunctions.GetNppbkcAll(_nppbkcbll);

@@ -1188,9 +1188,6 @@
           <Property Name="SUPPLIER_WERKS" Type="varchar" MaxLength="50" />
           <Property Name="PERIOD_FROM" Type="datetime" />
           <Property Name="PERIOD_TO" Type="datetime" />
-          <Property Name="QUOTA_APPROVED" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="QUOTA_USED" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="QUOTA_REMAIN" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="QUOTA_MONITORING_DETAIL">
           <Key>
@@ -1198,7 +1195,7 @@
           </Key>
           <Property Name="MONITORING_DETAIL_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MONITORING_ID" Type="int" />
-          <Property Name="USER_ID" Type="varchar" MaxLength="10" />
+          <Property Name="USER_ID" Type="nvarchar" MaxLength="50" />
           <Property Name="ROLE_ID" Type="int" />
           <Property Name="EMAIL_STATUS" Type="int" />
         </EntityType>
@@ -3182,6 +3179,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING_DETAIL">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="QUOTA_MONITORING_DETAIL" Type="Self.QUOTA_MONITORING_DETAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="QUOTA_MONITORING_DETAIL">
+              <PropertyRef Name="USER_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_REVERSAL_INVENTORY_MOVEMENT">
           <End Role="INVENTORY_MOVEMENT" Type="Self.INVENTORY_MOVEMENT" Multiplicity="0..1" />
           <End Role="REVERSAL" Type="Self.REVERSAL" Multiplicity="*" />
@@ -4284,6 +4293,10 @@
             <End Role="QUOTA_MONITORING" EntitySet="QUOTA_MONITORING" />
             <End Role="QUOTA_MONITORING_DETAIL" EntitySet="QUOTA_MONITORING_DETAIL" />
           </AssociationSet>
+          <AssociationSet Name="FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING_DETAIL" Association="Self.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING_DETAIL">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="QUOTA_MONITORING_DETAIL" EntitySet="QUOTA_MONITORING_DETAIL" />
+          </AssociationSet>
           <AssociationSet Name="FK_REVERSAL_INVENTORY_MOVEMENT" Association="Self.FK_REVERSAL_INVENTORY_MOVEMENT">
             <End Role="INVENTORY_MOVEMENT" EntitySet="INVENTORY_MOVEMENT" />
             <End Role="REVERSAL" EntitySet="REVERSAL" />
@@ -5249,6 +5262,10 @@
           <EntitySet Name="QUOTA_MONITORING_DETAIL" EntityType="EMSModel.QUOTA_MONITORING_DETAIL" />
           <AssociationSet Name="FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING" Association="EMSModel.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING">
             <End Role="QUOTA_MONITORING" EntitySet="QUOTA_MONITORING" />
+            <End Role="QUOTA_MONITORING_DETAIL" EntitySet="QUOTA_MONITORING_DETAIL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING_DETAIL" Association="EMSModel.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING_DETAIL">
+            <End Role="USER" EntitySet="USER" />
             <End Role="QUOTA_MONITORING_DETAIL" EntitySet="QUOTA_MONITORING_DETAIL" />
           </AssociationSet>
           </EntityContainer>
@@ -6247,6 +6264,7 @@
           <Property Name="IS_MASTER_DATA_APPROVER" Type="Boolean" />
           <NavigationProperty Name="MASTER_DATA_APPROVAL" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_APPROVER" FromRole="USER" ToRole="MASTER_DATA_APPROVAL" />
           <NavigationProperty Name="MASTER_DATA_APPROVAL1" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_USER" FromRole="USER" ToRole="MASTER_DATA_APPROVAL" />
+          <NavigationProperty Name="QUOTA_MONITORING_DETAIL" Relationship="EMSModel.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING_DETAIL" FromRole="USER" ToRole="QUOTA_MONITORING_DETAIL" />
           </EntityType>
         <EntityType Name="USER_BROLE">
           <Key>
@@ -9513,9 +9531,6 @@
           <Property Name="SUPPLIER_WERKS" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="PERIOD_FROM" Type="DateTime" Precision="3" />
           <Property Name="PERIOD_TO" Type="DateTime" Precision="3" />
-          <Property Name="QUOTA_APPROVED" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="QUOTA_USED" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="QUOTA_REMAIN" Type="Decimal" Precision="18" Scale="2" />
           <NavigationProperty Name="QUOTA_MONITORING_DETAIL" Relationship="EMSModel.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING" FromRole="QUOTA_MONITORING" ToRole="QUOTA_MONITORING_DETAIL" />
         </EntityType>
         <EntityType Name="QUOTA_MONITORING_DETAIL">
@@ -9524,10 +9539,11 @@
           </Key>
           <Property Name="MONITORING_DETAIL_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="MONITORING_ID" Type="Int32" />
-          <Property Name="USER_ID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="USER_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ROLE_ID" Type="Int32" />
           <Property Name="EMAIL_STATUS" Type="Int32" />
           <NavigationProperty Name="QUOTA_MONITORING" Relationship="EMSModel.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING" FromRole="QUOTA_MONITORING_DETAIL" ToRole="QUOTA_MONITORING" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING_DETAIL" FromRole="QUOTA_MONITORING_DETAIL" ToRole="USER" />
         </EntityType>
         <Association Name="FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING">
           <End Type="EMSModel.QUOTA_MONITORING" Role="QUOTA_MONITORING" Multiplicity="0..1" />
@@ -9538,6 +9554,18 @@
             </Principal>
             <Dependent Role="QUOTA_MONITORING_DETAIL">
               <PropertyRef Name="MONITORING_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING_DETAIL">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.QUOTA_MONITORING_DETAIL" Role="QUOTA_MONITORING_DETAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="QUOTA_MONITORING_DETAIL">
+              <PropertyRef Name="USER_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -11256,9 +11284,6 @@
           <EntitySetMapping Name="QUOTA_MONITORING">
             <EntityTypeMapping TypeName="EMSModel.QUOTA_MONITORING">
               <MappingFragment StoreEntitySet="QUOTA_MONITORING">
-                <ScalarProperty Name="QUOTA_REMAIN" ColumnName="QUOTA_REMAIN" />
-                <ScalarProperty Name="QUOTA_USED" ColumnName="QUOTA_USED" />
-                <ScalarProperty Name="QUOTA_APPROVED" ColumnName="QUOTA_APPROVED" />
                 <ScalarProperty Name="PERIOD_TO" ColumnName="PERIOD_TO" />
                 <ScalarProperty Name="PERIOD_FROM" ColumnName="PERIOD_FROM" />
                 <ScalarProperty Name="SUPPLIER_WERKS" ColumnName="SUPPLIER_WERKS" />
