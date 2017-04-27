@@ -281,6 +281,11 @@
         <EntityTypeShape EntityType="EMSModel.MONTH_CLOSING" Width="1.5" PointX="13.375" PointY="5.75" />
         <EntityTypeShape EntityType="EMSModel.MONTH_CLOSING_DOCUMENT" Width="1.5" PointX="15.375" PointY="5.75" />
         <AssociationConnector Association="EMSModel.FK_MONTH_CLOSING_T001W" />
+        <EntityTypeShape EntityType="EMSModel.QUOTA_MONITORING" Width="1.5" PointX="10.375" PointY="63.375" />
+        <EntityTypeShape EntityType="EMSModel.QUOTA_MONITORING_DETAIL" Width="1.5" PointX="12.625" PointY="60.375" />
+        <AssociationConnector Association="EMSModel.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING" />
+        <AssociationConnector Association="EMSModel.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING_DETAIL" />
+        <AssociationConnector Association="EMSModel.FK_QUOTA_MONITORING_EX_GROUP_TYPE" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

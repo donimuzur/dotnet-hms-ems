@@ -1178,6 +1178,29 @@
           <Property Name="PACKED_ADJUSTED" Type="decimal" Precision="18" Scale="4" />
           <Property Name="REMARK" Type="text" />
         </EntityType>
+        <EntityType Name="QUOTA_MONITORING">
+          <Key>
+            <PropertyRef Name="MONITORING_ID" />
+          </Key>
+          <Property Name="MONITORING_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NPPBKC_ID" Type="varchar" MaxLength="20" />
+          <Property Name="SUPPLIER_NPPBKC_ID" Type="varchar" MaxLength="20" />
+          <Property Name="SUPPLIER_WERKS" Type="varchar" MaxLength="50" />
+          <Property Name="PERIOD_FROM" Type="datetime" />
+          <Property Name="PERIOD_TO" Type="datetime" />
+          <Property Name="EX_GROUP_TYPE" Type="int" />
+          <Property Name="WARNING_LEVEL" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="QUOTA_MONITORING_DETAIL">
+          <Key>
+            <PropertyRef Name="MONITORING_DETAIL_ID" />
+          </Key>
+          <Property Name="MONITORING_DETAIL_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MONITORING_ID" Type="int" />
+          <Property Name="USER_ID" Type="nvarchar" MaxLength="50" />
+          <Property Name="ROLE_ID" Type="int" />
+          <Property Name="EMAIL_STATUS" Type="int" />
+        </EntityType>
         <EntityType Name="REVERSAL">
           <Key>
             <PropertyRef Name="REVERSAL_ID" />
@@ -3146,6 +3169,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING">
+          <End Role="QUOTA_MONITORING" Type="Self.QUOTA_MONITORING" Multiplicity="0..1" />
+          <End Role="QUOTA_MONITORING_DETAIL" Type="Self.QUOTA_MONITORING_DETAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QUOTA_MONITORING">
+              <PropertyRef Name="MONITORING_ID" />
+            </Principal>
+            <Dependent Role="QUOTA_MONITORING_DETAIL">
+              <PropertyRef Name="MONITORING_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING_DETAIL">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="QUOTA_MONITORING_DETAIL" Type="Self.QUOTA_MONITORING_DETAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="QUOTA_MONITORING_DETAIL">
+              <PropertyRef Name="USER_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QUOTA_MONITORING_EX_GROUP_TYPE">
+          <End Role="EX_GROUP_TYPE" Type="Self.EX_GROUP_TYPE" Multiplicity="0..1" />
+          <End Role="QUOTA_MONITORING" Type="Self.QUOTA_MONITORING" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EX_GROUP_TYPE">
+              <PropertyRef Name="EX_GROUP_TYPE_ID" />
+            </Principal>
+            <Dependent Role="QUOTA_MONITORING">
+              <PropertyRef Name="EX_GROUP_TYPE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_REVERSAL_INVENTORY_MOVEMENT">
           <End Role="INVENTORY_MOVEMENT" Type="Self.INVENTORY_MOVEMENT" Multiplicity="0..1" />
           <End Role="REVERSAL" Type="Self.REVERSAL" Multiplicity="*" />
@@ -3705,6 +3764,8 @@
           <EntitySet Name="POA_SK" EntityType="Self.POA_SK" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PRINT_HISTORY" EntityType="Self.PRINT_HISTORY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PRODUCTION" EntityType="Self.PRODUCTION" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="QUOTA_MONITORING" EntityType="Self.QUOTA_MONITORING" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="QUOTA_MONITORING_DETAIL" EntityType="Self.QUOTA_MONITORING_DETAIL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="REVERSAL" EntityType="Self.REVERSAL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SUPPLIER_PORT" EntityType="Self.SUPPLIER_PORT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="T001" EntityType="Self.T001" Schema="dbo" store:Type="Tables" />
@@ -4241,6 +4302,18 @@
           <AssociationSet Name="FK_PRINT_HISTORY_USER" Association="Self.FK_PRINT_HISTORY_USER">
             <End Role="USER" EntitySet="USER" />
             <End Role="PRINT_HISTORY" EntitySet="PRINT_HISTORY" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING" Association="Self.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING">
+            <End Role="QUOTA_MONITORING" EntitySet="QUOTA_MONITORING" />
+            <End Role="QUOTA_MONITORING_DETAIL" EntitySet="QUOTA_MONITORING_DETAIL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING_DETAIL" Association="Self.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING_DETAIL">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="QUOTA_MONITORING_DETAIL" EntitySet="QUOTA_MONITORING_DETAIL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QUOTA_MONITORING_EX_GROUP_TYPE" Association="Self.FK_QUOTA_MONITORING_EX_GROUP_TYPE">
+            <End Role="EX_GROUP_TYPE" EntitySet="EX_GROUP_TYPE" />
+            <End Role="QUOTA_MONITORING" EntitySet="QUOTA_MONITORING" />
           </AssociationSet>
           <AssociationSet Name="FK_REVERSAL_INVENTORY_MOVEMENT" Association="Self.FK_REVERSAL_INVENTORY_MOVEMENT">
             <End Role="INVENTORY_MOVEMENT" EntitySet="INVENTORY_MOVEMENT" />
@@ -5203,6 +5276,20 @@
             <End Role="T001W" EntitySet="T001W" />
             <End Role="MONTH_CLOSING" EntitySet="MONTH_CLOSING" />
           </AssociationSet>
+          <EntitySet Name="QUOTA_MONITORING" EntityType="EMSModel.QUOTA_MONITORING" />
+          <EntitySet Name="QUOTA_MONITORING_DETAIL" EntityType="EMSModel.QUOTA_MONITORING_DETAIL" />
+          <AssociationSet Name="FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING" Association="EMSModel.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING">
+            <End Role="QUOTA_MONITORING" EntitySet="QUOTA_MONITORING" />
+            <End Role="QUOTA_MONITORING_DETAIL" EntitySet="QUOTA_MONITORING_DETAIL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING_DETAIL" Association="EMSModel.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING_DETAIL">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="QUOTA_MONITORING_DETAIL" EntitySet="QUOTA_MONITORING_DETAIL" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QUOTA_MONITORING_EX_GROUP_TYPE" Association="EMSModel.FK_QUOTA_MONITORING_EX_GROUP_TYPE">
+            <End Role="EX_GROUP_TYPE" EntitySet="EX_GROUP_TYPE" />
+            <End Role="QUOTA_MONITORING" EntitySet="QUOTA_MONITORING" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -5242,6 +5329,7 @@
           <Property Name="EX_GROUP_TYPE_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="GROUP_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="EX_GROUP_TYPE_DETAILS" Relationship="EMSModel.FK_EX_GROUP_TYPE_DETAILS_EX_GROUP_TYPE" FromRole="EX_GROUP_TYPE" ToRole="EX_GROUP_TYPE_DETAILS" />
+          <NavigationProperty Name="QUOTA_MONITORING" Relationship="EMSModel.FK_QUOTA_MONITORING_EX_GROUP_TYPE" FromRole="EX_GROUP_TYPE" ToRole="QUOTA_MONITORING" />
         </EntityType>
         <EntityType Name="EX_GROUP_TYPE_DETAILS">
           <Key>
@@ -6199,6 +6287,7 @@
           <Property Name="IS_MASTER_DATA_APPROVER" Type="Boolean" />
           <NavigationProperty Name="MASTER_DATA_APPROVAL" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_APPROVER" FromRole="USER" ToRole="MASTER_DATA_APPROVAL" />
           <NavigationProperty Name="MASTER_DATA_APPROVAL1" Relationship="EMSModel.FK_MASTER_DATA_APPROVAL_USER" FromRole="USER" ToRole="MASTER_DATA_APPROVAL" />
+          <NavigationProperty Name="QUOTA_MONITORING_DETAIL" Relationship="EMSModel.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING_DETAIL" FromRole="USER" ToRole="QUOTA_MONITORING_DETAIL" />
           </EntityType>
         <EntityType Name="USER_BROLE">
           <Key>
@@ -9455,6 +9544,70 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="QUOTA_MONITORING">
+          <Key>
+            <PropertyRef Name="MONITORING_ID" />
+          </Key>
+          <Property Name="MONITORING_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NPPBKC_ID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="SUPPLIER_NPPBKC_ID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="SUPPLIER_WERKS" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PERIOD_FROM" Type="DateTime" Precision="3" />
+          <Property Name="PERIOD_TO" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="QUOTA_MONITORING_DETAIL" Relationship="EMSModel.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING" FromRole="QUOTA_MONITORING" ToRole="QUOTA_MONITORING_DETAIL" />
+          <Property Name="EX_GROUP_TYPE" Type="Int32" />
+          <NavigationProperty Name="EX_GROUP_TYPE1" Relationship="EMSModel.FK_QUOTA_MONITORING_EX_GROUP_TYPE" FromRole="QUOTA_MONITORING" ToRole="EX_GROUP_TYPE" />
+          <Property Name="WARNING_LEVEL" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="QUOTA_MONITORING_DETAIL">
+          <Key>
+            <PropertyRef Name="MONITORING_DETAIL_ID" />
+          </Key>
+          <Property Name="MONITORING_DETAIL_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MONITORING_ID" Type="Int32" />
+          <Property Name="USER_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ROLE_ID" Type="Int32" />
+          <Property Name="EMAIL_STATUS" Type="EMSModel.EmailStatus" />
+          <NavigationProperty Name="QUOTA_MONITORING" Relationship="EMSModel.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING" FromRole="QUOTA_MONITORING_DETAIL" ToRole="QUOTA_MONITORING" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING_DETAIL" FromRole="QUOTA_MONITORING_DETAIL" ToRole="USER" />
+        </EntityType>
+        <Association Name="FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING">
+          <End Type="EMSModel.QUOTA_MONITORING" Role="QUOTA_MONITORING" Multiplicity="0..1" />
+          <End Type="EMSModel.QUOTA_MONITORING_DETAIL" Role="QUOTA_MONITORING_DETAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QUOTA_MONITORING">
+              <PropertyRef Name="MONITORING_ID" />
+            </Principal>
+            <Dependent Role="QUOTA_MONITORING_DETAIL">
+              <PropertyRef Name="MONITORING_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING_DETAIL">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.QUOTA_MONITORING_DETAIL" Role="QUOTA_MONITORING_DETAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="QUOTA_MONITORING_DETAIL">
+              <PropertyRef Name="USER_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EnumType Name="EmailStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.EmailStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <Association Name="FK_QUOTA_MONITORING_EX_GROUP_TYPE">
+          <End Type="EMSModel.EX_GROUP_TYPE" Role="EX_GROUP_TYPE" Multiplicity="0..1" />
+          <End Type="EMSModel.QUOTA_MONITORING" Role="QUOTA_MONITORING" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EX_GROUP_TYPE">
+              <PropertyRef Name="EX_GROUP_TYPE_ID" />
+            </Principal>
+            <Dependent Role="QUOTA_MONITORING">
+              <PropertyRef Name="EX_GROUP_TYPE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -11164,6 +11317,31 @@
                 <ScalarProperty Name="FILE_NAME" ColumnName="FILE_NAME" />
                 <ScalarProperty Name="MONTH_FLAG" ColumnName="MONTH_FLAG" />
                 <ScalarProperty Name="MONTH_CLOSING_DOCUMENT_ID" ColumnName="MONTH_CLOSING_DOCUMENT_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="QUOTA_MONITORING">
+            <EntityTypeMapping TypeName="EMSModel.QUOTA_MONITORING">
+              <MappingFragment StoreEntitySet="QUOTA_MONITORING">
+                <ScalarProperty Name="WARNING_LEVEL" ColumnName="WARNING_LEVEL" />
+                <ScalarProperty Name="EX_GROUP_TYPE" ColumnName="EX_GROUP_TYPE" />
+                <ScalarProperty Name="PERIOD_TO" ColumnName="PERIOD_TO" />
+                <ScalarProperty Name="PERIOD_FROM" ColumnName="PERIOD_FROM" />
+                <ScalarProperty Name="SUPPLIER_WERKS" ColumnName="SUPPLIER_WERKS" />
+                <ScalarProperty Name="SUPPLIER_NPPBKC_ID" ColumnName="SUPPLIER_NPPBKC_ID" />
+                <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
+                <ScalarProperty Name="MONITORING_ID" ColumnName="MONITORING_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="QUOTA_MONITORING_DETAIL">
+            <EntityTypeMapping TypeName="EMSModel.QUOTA_MONITORING_DETAIL">
+              <MappingFragment StoreEntitySet="QUOTA_MONITORING_DETAIL">
+                <ScalarProperty Name="EMAIL_STATUS" ColumnName="EMAIL_STATUS" />
+                <ScalarProperty Name="ROLE_ID" ColumnName="ROLE_ID" />
+                <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
+                <ScalarProperty Name="MONITORING_ID" ColumnName="MONITORING_ID" />
+                <ScalarProperty Name="MONITORING_DETAIL_ID" ColumnName="MONITORING_DETAIL_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

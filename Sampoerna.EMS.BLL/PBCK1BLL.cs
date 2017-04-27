@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Linq;
 using System.Linq.Expressions;
@@ -26,6 +27,8 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<PBCK1> _repository;
+        private IGenericRepository<QUOTA_MONITORING> _repositoryQuotaMonitor;
+        private IGenericRepository<QUOTA_MONITORING_DETAIL> _repositoryQuotaMonitorDetail;
         private IDocumentSequenceNumberBLL _docSeqNumBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IChangesHistoryBLL _changesHistoryBll;
@@ -57,6 +60,8 @@ namespace Sampoerna.EMS.BLL
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<PBCK1>();
+            _repositoryQuotaMonitor = _uow.GetGenericRepository<QUOTA_MONITORING>();
+            _repositoryQuotaMonitorDetail = _uow.GetGenericRepository<QUOTA_MONITORING_DETAIL>();
             _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
@@ -3109,6 +3114,118 @@ namespace Sampoerna.EMS.BLL
             }
 
             data.NUMBER = newDocNumber;
+        }
+
+        public List<QUOTA_MONITORING> GetQuotaMonitoringList()
+        {
+            return _repositoryQuotaMonitor.Get().ToList();
+        }
+
+        public QUOTA_MONITORING GetQuotaMonitoringDetail(int id)
+        {
+            var data = _repositoryQuotaMonitor.Get(x => x.MONITORING_ID == id, null, "QUOTA_MONITORING_DETAIL,QUOTA_MONITORING_DETAIL.USER").FirstOrDefault();
+
+            return data;
+        }
+
+        public void UpdateEmailStatus(int quotaMonitorId, string userId, Enums.EmailStatus status)
+        {
+            var data = _repositoryQuotaMonitor.Get(x => x.MONITORING_ID == quotaMonitorId, null, "QUOTA_MONITORING_DETAIL").FirstOrDefault();
+
+            if (data != null && data.QUOTA_MONITORING_DETAIL.Count > 0)
+            {
+                var monitoringDetail = data.QUOTA_MONITORING_DETAIL.FirstOrDefault(x => x.USER_ID == userId);
+                if (monitoringDetail != null) monitoringDetail.EMAIL_STATUS = status;
+            }
+
+            _uow.SaveChanges();
+        }
+
+        public int SaveQuotaMonitoring(Pbck1Dto dto, List<USER> userlist, Enums.EmailStatus emailStatus, int exGoodType,int quotaPercent)
+        {
+            var data = Mapper.Map<QUOTA_MONITORING>(dto);
+            data.EX_GROUP_TYPE = exGoodType;
+            var existing = _repositoryQuotaMonitor.Get(
+                x =>
+                    x.NPPBKC_ID == dto.NppbkcId && x.PERIOD_FROM <= dto.PeriodFrom && x.PERIOD_TO >= dto.PeriodTo &&
+                    x.SUPPLIER_NPPBKC_ID == dto.SupplierNppbkcId && x.SUPPLIER_WERKS == dto.SupplierPlantWerks && x.EX_GROUP_TYPE == exGoodType).FirstOrDefault();
+
+            if (existing == null)
+            {
+                data.QUOTA_MONITORING_DETAIL = new Collection<QUOTA_MONITORING_DETAIL>();
+                foreach (USER user in userlist)
+                {
+                    data.QUOTA_MONITORING_DETAIL.Add(new QUOTA_MONITORING_DETAIL()
+                    {
+                        USER_ID = user.USER_ID,
+                        EMAIL_STATUS = emailStatus,
+                        ROLE_ID = (int) _poaBll.GetUserRole(user.USER_ID)
+                    });
+                }
+
+                _repositoryQuotaMonitor.Insert(data);
+            }
+            else
+            {
+                existing.WARNING_LEVEL = quotaPercent;
+            }
+            _uow.SaveChanges();
+
+            return existing != null ? existing.MONITORING_ID : data.MONITORING_ID;
+        }
+
+        public void UpdateAllEmailStatus(Pbck1Dto dto, Enums.EmailStatus emailStatus,int exGoodType)
+        {
+            
+            
+            var existing = _repositoryQuotaMonitor.Get(
+                x =>
+                    x.NPPBKC_ID == dto.NppbkcId && x.PERIOD_FROM <= dto.PeriodFrom && x.PERIOD_TO >= dto.PeriodTo &&
+                    x.SUPPLIER_NPPBKC_ID == dto.SupplierNppbkcId && x.SUPPLIER_WERKS == dto.SupplierPlantWerks && x.EX_GROUP_TYPE == exGoodType).FirstOrDefault();
+
+            if (existing != null)
+            {
+                var details = _repositoryQuotaMonitorDetail.Get(x => x.MONITORING_ID == existing.MONITORING_ID).ToList();
+
+                foreach (var quotaMonitoringDetail in details)
+                {
+                    quotaMonitoringDetail.EMAIL_STATUS = emailStatus;
+                }
+            }
+            _uow.SaveChanges();
+        }
+
+        public bool CheckExistingQuotaMonitoringByParam(Pbck1Dto dto, int exGoodType,int quotaPercent)
+        {
+            var retVal = false;
+            var existing = _repositoryQuotaMonitor.Get(
+                x =>
+                    x.NPPBKC_ID == dto.NppbkcId && x.PERIOD_FROM <= dto.PeriodFrom && x.PERIOD_TO >= dto.PeriodTo &&
+                    x.SUPPLIER_NPPBKC_ID == dto.SupplierNppbkcId && x.SUPPLIER_WERKS == dto.SupplierPlantWerks && x.EX_GROUP_TYPE == exGoodType).FirstOrDefault();
+            if (existing == null)
+            {
+                return true;
+            }
+
+            if(existing.WARNING_LEVEL == 30 && quotaPercent == 10)
+            {
+                retVal = true;
+            }
+            
+            return retVal;
+        }
+
+        public void UpdateEmailStatus(int quotaMonitorId, USER user, Enums.EmailStatus emailStatus)
+        {
+            var data = _repositoryQuotaMonitorDetail.Get(x => x.MONITORING_ID == quotaMonitorId && x.USER_ID == user.USER_ID)
+                .FirstOrDefault();
+
+            if (data != null)
+            {
+                data.EMAIL_STATUS = emailStatus;
+            }
+
+            _uow.SaveChanges();
         }
     }
 }

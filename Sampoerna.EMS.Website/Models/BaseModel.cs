@@ -34,5 +34,7 @@ namespace Sampoerna.EMS.Website.Models
 
         public bool IsShowNewButton { get; set; }
         public bool IsNotViewer { get; set; }
+
+      
     }
 }

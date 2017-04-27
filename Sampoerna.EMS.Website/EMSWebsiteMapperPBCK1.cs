@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using Sampoerna.EMS.AutoMapperExtensions;
+using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
@@ -183,6 +184,9 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
+            Mapper.CreateMap<QUOTA_MONITORING, QuotaMonitoringModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Details, opt => opt.MapFrom(src => src.QUOTA_MONITORING_DETAIL));
+            Mapper.CreateMap<QUOTA_MONITORING_DETAIL, QuotaMonitoringDetail>().IgnoreAllNonExisting();
         }
     }
 }
