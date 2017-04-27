@@ -69,9 +69,12 @@ namespace Sampoerna.EMS.Contract
 
         void UpdateEmailStatus(int quotaMonitorId, string userId, Enums.EmailStatus status);
 
-        void SaveQuotaMonitoring(Pbck1Dto dto, List<USER> userlist, Enums.EmailStatus emailStatus);
+        int SaveQuotaMonitoring(Pbck1Dto dto, List<USER> userlist, Enums.EmailStatus emailStatus, int exGoodType,int quotaPercent);
 
         void UpdateEmailStatus(int quotaMonitorId, USER user, Enums.EmailStatus emailStatus);
 
+        bool CheckExistingQuotaMonitoringByParam(Pbck1Dto dto, int exGoodType,int percentageQuota);
+
+        void UpdateAllEmailStatus(Pbck1Dto dto, Enums.EmailStatus emailStatus, int exGoodType);
     }
 }

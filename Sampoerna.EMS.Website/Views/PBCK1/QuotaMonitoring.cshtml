@@ -46,6 +46,14 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Supplier Nppbkc Id</label>
+                                                    <div class="col-md-9">
+                                                        @Html.TextBoxFor(model => model.Detail.SUPPLIER_NPPBKC_ID, new { @class = "form-control", @disabled = "true" })
+                                                    </div>
+                                                </div>
+                                            </div>
                                             
                                         </div>
 
@@ -58,15 +66,15 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="col-md-6">
                                                 <div class="row">
-                                                    <label class="col-md-3">Supplier Nppbkc Id</label>
+                                                    <label class="col-md-3">Excisable Group</label>
                                                     <div class="col-md-9">
-                                                        @Html.TextBoxFor(model => model.Detail.SUPPLIER_NPPBKC_ID, new { @class = "form-control", @disabled = "true" })
+                                                        @Html.TextBoxFor(model => model.Detail.ExGoodTypeDescription, new { @class = "form-control", @disabled = "true" })
                                                     </div>
                                                 </div>
                                             </div>
+                                            
 
                                         </div>
                                         <div class="row">
@@ -148,7 +156,7 @@
                                                         <th>Receiver Name</th>
                                                         <th>Role Id</th>
                                                         <th>Email Status</th>
-                                                        <th>New Value</th>
+                                                        
 
                                                     </tr>
                                                 </thead>
@@ -158,7 +166,7 @@
                                                     {
                                                         <tr>
                                                             <td>@item.USER_ID</td>
-                                                            <td>@item.ROLE_ID</td>
+                                                            <td>@item.RoleDescription</td>
                                                             <td>
                                                                 @item.EMAIL_STATUS
                                                             </td>

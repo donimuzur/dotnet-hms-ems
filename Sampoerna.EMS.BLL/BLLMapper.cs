@@ -563,7 +563,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PERIOD_TO, opt => opt.MapFrom(src => src.PeriodTo))
                 .ForMember(dest => dest.SUPPLIER_NPPBKC_ID, opt => opt.MapFrom(src => src.SupplierNppbkcId))
                 .ForMember(dest => dest.SUPPLIER_WERKS, opt => opt.MapFrom(src => src.SupplierPlantWerks))
-                ;
+                .ForMember(dest => dest.EX_GROUP_TYPE, opt => opt.UseValue(3));
             #endregion
         }
     }

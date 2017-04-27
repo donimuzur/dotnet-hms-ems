@@ -3123,7 +3123,7 @@ namespace Sampoerna.EMS.BLL
 
         public QUOTA_MONITORING GetQuotaMonitoringDetail(int id)
         {
-            var data = _repositoryQuotaMonitor.Get(x=> x.MONITORING_ID == id,null,"QUOTA_MONITORING_DETAIL,USER").FirstOrDefault();
+            var data = _repositoryQuotaMonitor.Get(x => x.MONITORING_ID == id, null, "QUOTA_MONITORING_DETAIL,QUOTA_MONITORING_DETAIL.USER").FirstOrDefault();
 
             return data;
         }
@@ -3141,14 +3141,14 @@ namespace Sampoerna.EMS.BLL
             _uow.SaveChanges();
         }
 
-        public void SaveQuotaMonitoring(Pbck1Dto dto,List<USER> userlist,Enums.EmailStatus emailStatus)
+        public int SaveQuotaMonitoring(Pbck1Dto dto, List<USER> userlist, Enums.EmailStatus emailStatus, int exGoodType,int quotaPercent)
         {
             var data = Mapper.Map<QUOTA_MONITORING>(dto);
-
+            data.EX_GROUP_TYPE = exGoodType;
             var existing = _repositoryQuotaMonitor.Get(
                 x =>
                     x.NPPBKC_ID == dto.NppbkcId && x.PERIOD_FROM <= dto.PeriodFrom && x.PERIOD_TO >= dto.PeriodTo &&
-                    x.SUPPLIER_NPPBKC_ID == dto.SupplierNppbkcId && x.SUPPLIER_WERKS == dto.SupplierPlantWerks).FirstOrDefault();
+                    x.SUPPLIER_NPPBKC_ID == dto.SupplierNppbkcId && x.SUPPLIER_WERKS == dto.SupplierPlantWerks && x.EX_GROUP_TYPE == exGoodType).FirstOrDefault();
 
             if (existing == null)
             {
@@ -3162,10 +3162,57 @@ namespace Sampoerna.EMS.BLL
                         ROLE_ID = (int) _poaBll.GetUserRole(user.USER_ID)
                     });
                 }
-                
+
                 _repositoryQuotaMonitor.Insert(data);
             }
+            else
+            {
+                existing.WARNING_LEVEL = quotaPercent;
+            }
             _uow.SaveChanges();
+
+            return existing != null ? existing.MONITORING_ID : data.MONITORING_ID;
+        }
+
+        public void UpdateAllEmailStatus(Pbck1Dto dto, Enums.EmailStatus emailStatus,int exGoodType)
+        {
+            
+            
+            var existing = _repositoryQuotaMonitor.Get(
+                x =>
+                    x.NPPBKC_ID == dto.NppbkcId && x.PERIOD_FROM <= dto.PeriodFrom && x.PERIOD_TO >= dto.PeriodTo &&
+                    x.SUPPLIER_NPPBKC_ID == dto.SupplierNppbkcId && x.SUPPLIER_WERKS == dto.SupplierPlantWerks && x.EX_GROUP_TYPE == exGoodType).FirstOrDefault();
+
+            if (existing != null)
+            {
+                var details = _repositoryQuotaMonitorDetail.Get(x => x.MONITORING_ID == existing.MONITORING_ID).ToList();
+
+                foreach (var quotaMonitoringDetail in details)
+                {
+                    quotaMonitoringDetail.EMAIL_STATUS = emailStatus;
+                }
+            }
+            _uow.SaveChanges();
+        }
+
+        public bool CheckExistingQuotaMonitoringByParam(Pbck1Dto dto, int exGoodType,int quotaPercent)
+        {
+            var retVal = false;
+            var existing = _repositoryQuotaMonitor.Get(
+                x =>
+                    x.NPPBKC_ID == dto.NppbkcId && x.PERIOD_FROM <= dto.PeriodFrom && x.PERIOD_TO >= dto.PeriodTo &&
+                    x.SUPPLIER_NPPBKC_ID == dto.SupplierNppbkcId && x.SUPPLIER_WERKS == dto.SupplierPlantWerks && x.EX_GROUP_TYPE == exGoodType).FirstOrDefault();
+            if (existing == null)
+            {
+                return true;
+            }
+
+            if(existing.WARNING_LEVEL == 30 && quotaPercent == 10)
+            {
+                retVal = true;
+            }
+            
+            return retVal;
         }
 
         public void UpdateEmailStatus(int quotaMonitorId, USER user, Enums.EmailStatus emailStatus)

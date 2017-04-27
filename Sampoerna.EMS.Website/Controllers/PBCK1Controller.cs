@@ -165,7 +165,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //first code when manager exists
             //model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
             model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false);
-
+            
             return PartialView("_Pbck1Table", model);
         }
 
@@ -452,7 +452,36 @@ namespace Sampoerna.EMS.Website.Controllers
             
             var data  =  _pbck1Bll.GetQuotaMonitoringDetail(id);
             model.Detail = Mapper.Map<QuotaMonitoringModel>(data);
-            return View();
+            var quotaDetails = _ck5Bll.GetQuotaRemainAndDatePbck1Item(data.SUPPLIER_WERKS, data.SUPPLIER_NPPBKC_ID, DateTime.Now,
+                data.NPPBKC_ID, data.EX_GROUP_TYPE);
+            model.Detail.TotalApprovedQuota = quotaDetails.QtyApprovedPbck1;
+            model.Detail.TotalUsedQuota = quotaDetails.QtyCk5;
+            model.Detail.TotalRemainingQuota = quotaDetails.RemainQuota;
+
+            foreach (var detail in model.Detail.Details)
+            {
+                if (detail.ROLE_ID != null)
+                    detail.RoleDescription = EnumHelper.GetDescription((Enums.UserRole) detail.ROLE_ID);
+            }
+
+            var userInForm = model.Detail.Details.FirstOrDefault(x => x.USER_ID == CurrentUser.USER_ID && x.EMAIL_STATUS != Enums.EmailStatus.Read);
+            if (userInForm != null)
+            {
+                _pbck1Bll.UpdateEmailStatus(id,userInForm.USER_ID,Enums.EmailStatus.Read);
+                userInForm.EMAIL_STATUS = Enums.EmailStatus.Read;
+            }
+            return View(model);
+        }
+
+        public ActionResult QuotaMonitoringList()
+        {
+            var model = new QuotaMonitoringListViewModel();
+            model.CurrentMenu = PageInfo;
+            model.MainMenu = _mainMenu;
+
+            var data = _pbck1Bll.GetQuotaMonitoringList();
+            model.Details = Mapper.Map<List<QuotaMonitoringModel>>(data);
+            return View(model);
         }
 
         public Pbck1ViewModel InitPbck1ViewModel(Pbck1ViewModel model)

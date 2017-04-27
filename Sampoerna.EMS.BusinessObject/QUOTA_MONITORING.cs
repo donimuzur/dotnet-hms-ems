@@ -25,7 +25,10 @@ namespace Sampoerna.EMS.BusinessObject
         public string SUPPLIER_WERKS { get; set; }
         public Nullable<System.DateTime> PERIOD_FROM { get; set; }
         public Nullable<System.DateTime> PERIOD_TO { get; set; }
+        public Nullable<int> EX_GROUP_TYPE { get; set; }
+        public int WARNING_LEVEL { get; set; }
     
         public virtual ICollection<QUOTA_MONITORING_DETAIL> QUOTA_MONITORING_DETAIL { get; set; }
+        public virtual EX_GROUP_TYPE EX_GROUP_TYPE1 { get; set; }
     }
 }

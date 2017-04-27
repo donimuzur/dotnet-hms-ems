@@ -662,12 +662,12 @@ namespace Sampoerna.EMS.BLL
                 if (dbData.CK5_TYPE == Enums.CK5Type.Manual && dbData.REDUCE_TRIAL == true)
                 {
                     var quotaManual = GetQuotaRemainAndDatePbck1ByCk5IdForNotif(dbData.CK5_ID);
-                    SendEmailQuotaWarning(quotaManual);
+                    SendEmailQuotaWarning(quotaManual,(int)dbData.EX_GOODS_TYPE);
                 }
                 else if (dbData.CK5_TYPE != Enums.CK5Type.Waste && dbData.CK5_TYPE != Enums.CK5Type.Return)
                 {
                     var quota = GetQuotaRemainAndDatePbck1ByCk5IdForNotif(dbData.CK5_ID);
-                    SendEmailQuotaWarning(quota);
+                    SendEmailQuotaWarning(quota,(int)dbData.EX_GOODS_TYPE);
                         
                 }
                 
@@ -5083,12 +5083,12 @@ namespace Sampoerna.EMS.BLL
                     if (ck5.CK5_TYPE == Enums.CK5Type.Manual && ck5.REDUCE_TRIAL == true)
                     {
                         var quotaManual = GetQuotaRemainAndDatePbck1ByCk5IdForNotif(ck5.CK5_ID);
-                        SendEmailQuotaWarning(quotaManual);
+                        SendEmailQuotaWarning(quotaManual, (int)ck5.EX_GOODS_TYPE);
                     }
                     else if (ck5.CK5_TYPE != Enums.CK5Type.Waste && ck5.CK5_TYPE != Enums.CK5Type.Return)
                     {
                         var quota = GetQuotaRemainAndDatePbck1ByCk5IdForNotif(ck5.CK5_ID);
-                        SendEmailQuotaWarning(quota);
+                        SendEmailQuotaWarning(quota, (int)ck5.EX_GOODS_TYPE);
 
                     }
                     
@@ -6433,87 +6433,121 @@ namespace Sampoerna.EMS.BLL
             return dtData;
         }
 
-        public void SendEmailQuotaWarning(GetQuotaAndRemainOutput quotaDetail)
+        public void SendEmailQuotaWarning(GetQuotaAndRemainOutput quotaDetail,int exGoodType)
         {
+            
+
             var quota30Percent = 0.3 * (double) quotaDetail.QtyApprovedPbck1;
             var quota10Percent = 0.1 * (double)quotaDetail.QtyApprovedPbck1;
             var remainQuota = (double) (quotaDetail.QtyApprovedPbck1 - quotaDetail.QtyCk5);
             quotaDetail.RemainQuota = (decimal) remainQuota;
-            var pbck1Data = new Pbck1Dto();
+            
             var userList = new List<USER>();
             MailNotification mailNotif = null;
+
+            var needSendEmail = false;
+            var quotaPercent = 30;
             if (remainQuota <= quota30Percent && remainQuota > quota10Percent)
             {
-                mailNotif = ProcessEmailQuotaNotification(quotaDetail, 30,out pbck1Data,out userList);
+                quotaPercent = 30;
+                
             }
             else if(remainQuota <= quota10Percent)
             {
-                mailNotif = ProcessEmailQuotaNotification(quotaDetail, 10,out pbck1Data,out userList);
-            }
-            var success = false;
-            if (mailNotif != null)
-            {
-                if (mailNotif.IsCCExist)
-                {
-                    success = _messageService.SendEmailToListWithCC(mailNotif.To, mailNotif.CC, mailNotif.Subject, mailNotif.Body,false);
-                }
-                else
-                {
-                    success = _messageService.SendEmailToList(mailNotif.To,  mailNotif.Subject, mailNotif.Body,false);
-                }
+                quotaPercent = 10;
+                
             }
 
-            var emailStatus = success ? Enums.EmailStatus.Sent : Enums.EmailStatus.NotSent;
-            _pbck1Bll.SaveQuotaMonitoring(pbck1Data, userList, emailStatus);
-        }
+            var pbck1Data = new Pbck1Dto();
 
-        private MailNotification ProcessEmailQuotaNotification(GetQuotaAndRemainOutput quotaDetail,int percent,out Pbck1Dto pbck1Data,out List<USER> userList)
-        {
-            var bodyMail = new StringBuilder();
-            var rc = new MailNotification();
-            pbck1Data = null;
-            userList = new List<USER>();
             if (quotaDetail.Pbck1Id.HasValue)
             {
                 pbck1Data = _pbck1Bll.GetById(quotaDetail.Pbck1Id.Value);
-
                 var userCreatorInfo = _userBll.GetUserById(pbck1Data.CreatedById);
                 var userPoaApprovalInfo = _userBll.GetUserById(pbck1Data.ApprovedByPoaId);
                 var controllerList = _userBll.GetControllers();
                 userList = new List<USER>();
                 userList.Add(userCreatorInfo);
                 userList.Add(userPoaApprovalInfo);
-                var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
+                userList.AddRange(controllerList);
 
-                rc.Subject = "PBCK-1 " + quotaDetail.Pbck1Number + " Quota is currently on " + percent + "% of Approved Qty.";
-                bodyMail.Append("Dear Team,<br />");
+                needSendEmail = _pbck1Bll.CheckExistingQuotaMonitoringByParam(pbck1Data, exGoodType, quotaPercent);
 
-                bodyMail.Append("Kindly be informed, " + rc.Subject + ". <br />");
+                var monitoringId = _pbck1Bll.SaveQuotaMonitoring(pbck1Data, userList, Enums.EmailStatus.NotSent, exGoodType, quotaPercent);
 
-                bodyMail.Append(BuildBodyMailForQuotaNotification(pbck1Data, quotaDetail, webRootUrl, userCreatorInfo, userPoaApprovalInfo));
+                mailNotif = ProcessEmailQuotaNotification(quotaDetail, quotaPercent, pbck1Data, userList,monitoringId);
+                
 
-                rc.To.Add(userCreatorInfo.EMAIL);
-                rc.To.Add(userPoaApprovalInfo.EMAIL);
-                rc.Body = bodyMail.ToString();
-                foreach (var controller in controllerList)
+                if (needSendEmail)
                 {
-                    rc.IsCCExist = true;
-                    rc.CC.Add(controller.EMAIL);
+                    var success = false;
+                    
+                    if (mailNotif != null)
+                    {
+                        if (mailNotif.IsCCExist)
+                        {
+                            success = _messageService.SendEmailToListWithCC(mailNotif.To, mailNotif.CC, mailNotif.Subject, mailNotif.Body, false);
+                        }
+                        else
+                        {
+                            success = _messageService.SendEmailToList(mailNotif.To, mailNotif.Subject, mailNotif.Body, false);
+                        }
+                        var emailStatus = success ? Enums.EmailStatus.Sent : Enums.EmailStatus.NotSent;
+                        _pbck1Bll.UpdateAllEmailStatus(pbck1Data, emailStatus, exGoodType);
+                    }
                 }
-
-                return rc;
             }
+
+            
+            
+
+            
+        }
+
+        private MailNotification ProcessEmailQuotaNotification(GetQuotaAndRemainOutput quotaDetail,int percent, Pbck1Dto pbck1Data, List<USER> userList,int monitoringId)
+            
+        {
+            var bodyMail = new StringBuilder();
+            var rc = new MailNotification();
+            
+            
+            
+            
+
+            var userCreatorInfo = userList.FirstOrDefault(x => x.USER_ID ==  pbck1Data.CreatedById);
+            var userPoaApprovalInfo = userList.FirstOrDefault(x => x.USER_ID == pbck1Data.ApprovedByPoaId);
+            var controllerList = userList.Where(x => x.USER_ID != pbck1Data.CreatedById && x.USER_ID != pbck1Data.ApprovedByPoaId).ToList();
+            
+            var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
+
+            rc.Subject = "PBCK-1 " + quotaDetail.Pbck1Number + " Quota is currently on " + percent + "% of Approved Qty.";
+            bodyMail.Append("Dear Team,<br />");
+
+            bodyMail.Append("Kindly be informed, " + rc.Subject + ". <br />");
+
+            bodyMail.Append(BuildBodyMailForQuotaNotification(pbck1Data, quotaDetail, webRootUrl, userCreatorInfo, userPoaApprovalInfo,monitoringId));
+
+            rc.To.Add(userCreatorInfo.EMAIL);
+            rc.To.Add(userPoaApprovalInfo.EMAIL);
+            rc.Body = bodyMail.ToString();
+            foreach (var controller in controllerList)
+            {
+                rc.IsCCExist = true;
+                rc.CC.Add(controller.EMAIL);
+            }
+
+            return rc;
+            
             
 
 
-            return null;
+           
         }
 
-        private string BuildBodyMailForQuotaNotification(Pbck1Dto pbck1Data, GetQuotaAndRemainOutput quotaDetail, string webRootUrl, USER creator, USER poa)
+        private string BuildBodyMailForQuotaNotification(Pbck1Dto pbck1Data, GetQuotaAndRemainOutput quotaDetail, string webRootUrl, USER creator, USER poa,int monitoringId)
         {
             var bodyMail = new StringBuilder();
-            bodyMail.Append("<table><tr><td>PBCK1 Number </td><td>: " + pbck1Data.Pbck1Number  + " - " +
-                            pbck1Data.DecreeDate + "</td></tr>");
+            bodyMail.Append("<table><tr><td>PBCK1 Number </td><td>: <a href='" + webRootUrl + "/PBCK1/Details/" + pbck1Data.Pbck1Id + "'>" + pbck1Data.Pbck1Number + "</a></td></tr>");
             bodyMail.Append("<tr><td>NPPBKC Destination </td><td>: " + pbck1Data.NppbkcId + "</td></tr>");
             bodyMail.Append("<tr><td>Plant & NPPBKC Supplier </td><td>: " + pbck1Data.SupplierPlantWerks + " - " +
                             pbck1Data.SupplierPlant + "</td></tr>");
@@ -6536,12 +6570,12 @@ namespace Sampoerna.EMS.BLL
             if (poa != null)
                 userName = poa.LAST_NAME + ", " + poa.FIRST_NAME;
             bodyMail.Append("<tr><td>POA Approver</td><td> : " + userName + "</td></tr>");
-            
 
 
-            
 
-            bodyMail.Append("<tr colspan='2'><td><i>To VIEW, Please click this <a href='" + webRootUrl + "/PBCK1/QuotaMonitoring/" + pbck1Data.Pbck1Id + "'><u>link</u></a> to view detailed information</i></td></tr>");
+
+
+            bodyMail.Append("<tr colspan='2'><td><i>To VIEW, Please click this <a href='" + webRootUrl + "/PBCK1/QuotaMonitoring/" + monitoringId + "'><u>link</u></a> to view detailed information</i></td></tr>");
 
             
 

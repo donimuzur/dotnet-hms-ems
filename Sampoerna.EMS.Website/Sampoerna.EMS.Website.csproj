@@ -1368,6 +1368,7 @@
     <Content Include="Views\MasterApproval\Detail.cshtml" />
     <Content Include="Views\MasterDataApprovalSetting\Detail.cshtml" />
     <Content Include="Views\PBCK1\QuotaMonitoring.cshtml" />
+    <Content Include="Views\PBCK1\QuotaMonitoringList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
