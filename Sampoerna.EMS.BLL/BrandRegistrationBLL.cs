@@ -17,6 +17,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<T001W> _repositoryPlantT001W;
         private IGenericRepository<ZAIDM_EX_SERIES> _repositorySeries;
+        private IGenericRepository<ZAIDM_EX_MARKET> _repositoryMarket;
         private IPlantBLL _plantBll;
         // private IChangesHistoryBLL _changesHistoryBll;
 
@@ -27,6 +28,7 @@ namespace Sampoerna.EMS.BLL
             _repository = _uow.GetGenericRepository<ZAIDM_EX_BRAND>();
             _repositoryPlantT001W = _uow.GetGenericRepository<T001W>();
             _repositorySeries = _uow.GetGenericRepository<ZAIDM_EX_SERIES>();
+            _repositoryMarket = _uow.GetGenericRepository<ZAIDM_EX_MARKET>();
             _plantBll = new PlantBLL(_uow, _logger);
             //_changesHistoryBll = changesHistoryBll;
         }
@@ -187,6 +189,17 @@ namespace Sampoerna.EMS.BLL
                         x.WERKS == plant && x.FA_CODE == facode && x.BRAND_CE == brandCe).FirstOrDefault();
 
             return dbData;
+        }
+
+
+        public ZAIDM_EX_MARKET GetMarket(string marketId)
+        {
+            return _repositoryMarket.GetByID(marketId);
+        }
+
+        public ZAIDM_EX_SERIES GetSeries(string seriesCode)
+        {
+            return _repositorySeries.GetByID(seriesCode);
         }
 
     }
