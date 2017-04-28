@@ -3202,13 +3202,15 @@ namespace Sampoerna.EMS.BLL
                 x =>
                     x.NPPBKC_ID == dto.NppbkcId && x.PERIOD_FROM <= dto.PeriodFrom && x.PERIOD_TO >= dto.PeriodTo &&
                     x.SUPPLIER_NPPBKC_ID == dto.SupplierNppbkcId && x.SUPPLIER_WERKS == dto.SupplierPlantWerks && x.EX_GROUP_TYPE == exGoodType).FirstOrDefault();
+            
             if (existing == null)
             {
+                if (quotaPercent > 30) return false;
                 return true;
             }
-
             if(existing.WARNING_LEVEL == 30 && quotaPercent == 10)
             {
+
                 retVal = true;
             }
             

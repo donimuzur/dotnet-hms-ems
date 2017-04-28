@@ -659,17 +659,24 @@ namespace Sampoerna.EMS.BLL
                     }
                 }
 
-                if (dbData.CK5_TYPE == Enums.CK5Type.Manual && dbData.REDUCE_TRIAL == true)
+                if (dbData.CK5_TYPE == Enums.CK5Type.Domestic && (dbData.SOURCE_PLANT_NPPBKC_ID == dbData.DEST_PLANT_NPPBKC_ID)
+                    || dbData.CK5_TYPE == Enums.CK5Type.MarketReturn || dbData.CK5_TYPE == Enums.CK5Type.Return
+                    || dbData.CK5_TYPE == Enums.CK5Type.Waste)
                 {
-                    var quotaManual = GetQuotaRemainAndDatePbck1ByCk5IdForNotif(dbData.CK5_ID);
-                    SendEmailQuotaWarning(quotaManual,(int)dbData.EX_GOODS_TYPE);
+
                 }
-                else if (dbData.CK5_TYPE != Enums.CK5Type.Waste && dbData.CK5_TYPE != Enums.CK5Type.Return)
+                else
                 {
-                    var quota = GetQuotaRemainAndDatePbck1ByCk5IdForNotif(dbData.CK5_ID);
-                    SendEmailQuotaWarning(quota,(int)dbData.EX_GOODS_TYPE);
-                        
+                    if (dbData.CK5_TYPE != Enums.CK5Type.Export &&
+                        dbData.CK5_TYPE != Enums.CK5Type.PortToImporter &&
+                        (dbData.CK5_TYPE != Enums.CK5Type.Manual || dbData.REDUCE_TRIAL == true))
+                    {
+                        var quota = GetQuotaRemainAndDatePbck1ByCk5IdForNotif(dbData.CK5_ID);
+                        SendEmailQuotaWarning(quota, (int)dbData.EX_GOODS_TYPE);
+                    }
                 }
+
+                
                 
             }
             catch (DbEntityValidationException e)
@@ -5080,16 +5087,21 @@ namespace Sampoerna.EMS.BLL
 
                 foreach (var ck5 in listInsertedCk5)
                 {
-                    if (ck5.CK5_TYPE == Enums.CK5Type.Manual && ck5.REDUCE_TRIAL == true)
+                    if (ck5.CK5_TYPE == Enums.CK5Type.Domestic && (ck5.SOURCE_PLANT_NPPBKC_ID == ck5.DEST_PLANT_NPPBKC_ID)
+                    || ck5.CK5_TYPE == Enums.CK5Type.MarketReturn || ck5.CK5_TYPE == Enums.CK5Type.Return
+                    || ck5.CK5_TYPE == Enums.CK5Type.Waste)
                     {
-                        var quotaManual = GetQuotaRemainAndDatePbck1ByCk5IdForNotif(ck5.CK5_ID);
-                        SendEmailQuotaWarning(quotaManual, (int)ck5.EX_GOODS_TYPE);
-                    }
-                    else if (ck5.CK5_TYPE != Enums.CK5Type.Waste && ck5.CK5_TYPE != Enums.CK5Type.Return)
-                    {
-                        var quota = GetQuotaRemainAndDatePbck1ByCk5IdForNotif(ck5.CK5_ID);
-                        SendEmailQuotaWarning(quota, (int)ck5.EX_GOODS_TYPE);
 
+                    }
+                    else
+                    {
+                        if (ck5.CK5_TYPE != Enums.CK5Type.Export &&
+                            ck5.CK5_TYPE != Enums.CK5Type.PortToImporter &&
+                            (ck5.CK5_TYPE != Enums.CK5Type.Manual || ck5.REDUCE_TRIAL == true))
+                        {
+                            var quota = GetQuotaRemainAndDatePbck1ByCk5IdForNotif(ck5.CK5_ID);
+                            SendEmailQuotaWarning(quota, (int)ck5.EX_GOODS_TYPE);
+                        }
                     }
                     
                 }
