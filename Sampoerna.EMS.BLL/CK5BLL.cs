@@ -6458,7 +6458,7 @@ namespace Sampoerna.EMS.BLL
             MailNotification mailNotif = null;
 
             var needSendEmail = false;
-            var quotaPercent = 30;
+            var quotaPercent = 100;
             if (remainQuota <= quota30Percent && remainQuota > quota10Percent)
             {
                 quotaPercent = 30;
@@ -6532,7 +6532,7 @@ namespace Sampoerna.EMS.BLL
             
             var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
 
-            rc.Subject = "PBCK-1 " + quotaDetail.Pbck1Number + " Quota is currently on " + percent + "% of Approved Qty.";
+            rc.Subject = "PBCK-1 " + quotaDetail.Pbck1Number + " Quota is currently below " + percent + "% of Approved Qty.";
             bodyMail.Append("Dear Team,<br />");
 
             bodyMail.Append("Kindly be informed, " + rc.Subject + ". <br />");
