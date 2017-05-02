@@ -58,8 +58,16 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Stiker Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.HiddenFor(model => model.StickerCode)
-                                                            @Html.TextBox("sticker_code", Model.StickerCode, new { @class = "form-control", @maxlength = "18", disabled = "disabled" })
+                                                            @if (Model.IsFromSAP)
+                                                            {
+                                                                @Html.DropDownListFor(model => model.StickerCode, Model.StickerCodeList, "Select", new { @class = "form-control" })
+                                                            }
+                                                            else
+                                                            {
+                                                                @Html.HiddenFor(model => model.StickerCode)
+                                                                @Html.TextBox("sticker_code", Model.StickerCode, new { @class = "form-control", @maxlength = "18", disabled = "disabled" })    
+                                                            }
+                                                            
                                                         </div>
                                                     </div>
                                                 </div>
@@ -588,6 +596,34 @@
                 }
             }
         });
+        
+        function ajaxGetPlantByStickerCode(sc) {
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetPlantByStickerCode", "BrandRegistration")',
+                data: { mn: sc },
+                success: function (data) {
+
+                    for (var i = 0; i < data.length; i++) {
+                        $('#PlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
+                    }
+                }
+            });
+
+        }
+        
+        //$("#StickerCode").change(function () {
+        //    if ($("#StickerCode").length) {
+        //        var stickerCode = $(this).find("option:selected").val();
+        //        $('#PlantId').html('');
+        //        $('#PlantId').append('<option value="">select</option>');
+        //        if (stickerCode != '') {
+        //            ajaxGetPlantByStickerCode(stickerCode);
+        //        }
+        //    }
+
+        //});
 
         $("#GoodType").change(function () {
             if ($("#GoodType").length) {

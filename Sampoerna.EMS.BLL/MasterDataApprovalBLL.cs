@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -13,6 +14,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Utils;
+using Sampoerna.EMS.XMLReader;
 using Voxteneo.WebComponents.Logger;
 using Enums = Sampoerna.EMS.Core.Enums;
 
@@ -26,12 +28,13 @@ namespace Sampoerna.EMS.BLL
         
 
         private IPageBLL _pageBLL;
-        private IBrandRegistrationBLL _brandRegistrationBLL;
+        private IBrandRegistrationService _brandRegistrationBLL;
         private IPoaService _poaBll;
         private IPOAMapBLL _poaMapBLL;
         private IZaidmExMaterialService _materialBLL;
         private IMasterDataApprovalSettingBLL _approvalSettingBLL;
         private IChangesHistoryBLL _changesHistoryBLL;
+        private XmlBrandRegistrationWriter _xmlWriter;
         private string includeTables = "MASTER_DATA_APPROVAL_DETAIL,PAGE";
         public MasterDataApprovalBLL(IUnitOfWork uow, ILogger logger)
         {
@@ -42,12 +45,13 @@ namespace Sampoerna.EMS.BLL
             _pageBLL = new PageBLL(_uow,_logger);
             _approvalSettingBLL = new MasterDataApprovalSettingBLL(_uow,_logger);
             _changesHistoryBLL = new ChangesHistoryBLL(_uow,_logger);
-            _brandRegistrationBLL = new BrandRegistrationBLL(_uow,_logger);
+            _brandRegistrationBLL = new BrandRegistrationService(_uow,_logger);
             _poaBll = new POAService(_uow,_logger);
             _poaMapBLL = new POAMapBLL(_uow,_logger);
             _materialBLL = new ZaidmExMaterialService(_uow,_logger);
+            _xmlWriter = new XmlBrandRegistrationWriter(_uow,_logger);
         }
-        public T MasterDataApprovalValidation<T>(int pageId,string userId, T oldObject, T newObject)
+        public T MasterDataApprovalValidation<T>(int pageId, string userId, T oldObject, T newObject, bool isNew = false)
         {
 
             var approvalSettings = _approvalSettingBLL.GetAllEditableColumn(pageId);
@@ -115,6 +119,11 @@ namespace Sampoerna.EMS.BLL
                 _repository.Insert(newApproval);
             }
 
+            if (isNew)
+            {
+                _uow.SaveChanges();
+            }
+
             return newObject;
         }
 
@@ -156,9 +165,72 @@ namespace Sampoerna.EMS.BLL
                 data.APPROVED_BY = userId;
                 data.APPROVED_DATE = DateTime.Now;
                 
-                UpdateObjectByFormId(data);
+                var newData = UpdateObjectByFormId(data);
+                if (newData != null)
+                {
+                    if (newData.GetType() == typeof (ZAIDM_EX_BRAND))
+                    {
+                        var dataBrand = (ZAIDM_EX_BRAND) newData;
+                        dataBrand.CREATED_BY = data.CREATED_BY;
+                        dataBrand.CREATED_DATE = DateTime.Now;
+                        dataBrand.MODIFIED_BY = data.APPROVED_BY;
+                        dataBrand.MODIFIED_DATE = DateTime.Now;
+                        _brandRegistrationBLL.Save(dataBrand);
+
+                        
+
+                    }
+                    else if (newData.GetType() == typeof (POA))
+                    {
+                        var dataPoa = (POA) newData;
+                        dataPoa.CREATED_BY = data.CREATED_BY;
+                        dataPoa.CREATED_DATE = DateTime.Now;
+                        dataPoa.MODIFIED_BY = data.APPROVED_BY;
+                        dataPoa.MODIFIED_DATE = DateTime.Now;
+                        _poaBll.Save(dataPoa);
+                    }
+                    else if (newData.GetType() == typeof (ZAIDM_EX_MATERIAL))
+                    {
+                        var dataMaterial = (ZAIDM_EX_MATERIAL) newData;
+                        dataMaterial.CREATED_BY = data.CREATED_BY;
+                        dataMaterial.CREATED_DATE = DateTime.Now;
+                        dataMaterial.MODIFIED_BY = data.APPROVED_BY;
+                        dataMaterial.MODIFIED_DATE = DateTime.Now;
+                        _materialBLL.Save(dataMaterial);
+                    }
+                    else if (newData.GetType() == typeof (POA_MAP))
+                    {
+                        var dataPoaMap = (POA_MAP) newData;
+                        dataPoaMap.CREATED_BY = data.CREATED_BY;
+                        dataPoaMap.CREATED_DATE = DateTime.Now;
+                        dataPoaMap.MODIFIED_BY = data.APPROVED_BY;
+                        dataPoaMap.MODIFIED_DATE = DateTime.Now;
+                        _poaMapBLL.Save(dataPoaMap);
+                    }
+                }
+
                 UpdateChangesHistory(data);
                 _uow.SaveChanges();
+
+                //create xml for brand registration
+                if (newData != null)
+                {
+                    if (newData.GetType() == typeof (ZAIDM_EX_BRAND))
+                    {
+                        var brandToxml = (ZAIDM_EX_BRAND) newData;
+                        var brandXmlDto = Mapper.Map<BrandXmlDto>(brandToxml);
+                        var fileName = ConfigurationManager.AppSettings["PathXmlTemp"] + "BRANDREG" +
+                           brandXmlDto.CREATED_DATE.ToString("yyyyMMdd-HHmmss") + ".xml";
+                        var outboundFilePath = ConfigurationManager.AppSettings["CK5PathXml"] + "BRANDREG" +
+                           brandXmlDto.CREATED_DATE.ToString("yyyyMMdd-HHmmss") + ".xml";
+                        brandXmlDto.XmlPath = fileName;
+
+                        _xmlWriter.CreateBrandRegXml(brandXmlDto);
+
+                        _xmlWriter.MoveTempToOutbound(fileName, outboundFilePath);
+                    }
+                }
+
             }
         }
 
@@ -200,7 +272,7 @@ namespace Sampoerna.EMS.BLL
             return null;
         }
 
-        private void UpdateObjectByFormId(MASTER_DATA_APPROVAL approvalData)
+        private object UpdateObjectByFormId(MASTER_DATA_APPROVAL approvalData)
         {
 
 
@@ -213,12 +285,34 @@ namespace Sampoerna.EMS.BLL
                 var facode = tempId[1];
                 var stickerCode = tempId[2];
 
-                var dataBrand = _brandRegistrationBLL.GetById(werks, facode, stickerCode);
-                foreach (var detail in approvalData.MASTER_DATA_APPROVAL_DETAIL)
+                var dataBrand = _brandRegistrationBLL.GetByPlantIdAndFaCodeStickerCode(werks, facode, stickerCode);
+                if (dataBrand != null)
                 {
-                    propInfo = typeof(ZAIDM_EX_BRAND).GetProperty(detail.COLUMN_NAME);
-                    dataBrand.GetType().GetProperty(detail.COLUMN_NAME).SetValue(dataBrand, CastPropertyValue(propInfo,detail.NEW_VALUE));
+                    foreach (var detail in approvalData.MASTER_DATA_APPROVAL_DETAIL)
+                    {
+                        propInfo = typeof (ZAIDM_EX_BRAND).GetProperty(detail.COLUMN_NAME);
+                        dataBrand.GetType()
+                            .GetProperty(detail.COLUMN_NAME)
+                            .SetValue(dataBrand, CastPropertyValue(propInfo, detail.NEW_VALUE));
+                    }
+
+                    return null;
                 }
+                else
+                {
+                    ZAIDM_EX_BRAND data = new ZAIDM_EX_BRAND();
+
+                    foreach (var detail in approvalData.MASTER_DATA_APPROVAL_DETAIL)
+                    {
+                        propInfo = typeof(ZAIDM_EX_BRAND).GetProperty(detail.COLUMN_NAME);
+                        data.GetType()
+                            .GetProperty(detail.COLUMN_NAME)
+                            .SetValue(data, CastPropertyValue(propInfo, detail.NEW_VALUE));
+                    }
+
+                    return data;
+                }
+                
                 
                 
             }
@@ -230,6 +324,8 @@ namespace Sampoerna.EMS.BLL
                     propInfo = typeof(POA).GetProperty(detail.COLUMN_NAME);
                     dataPoa.GetType().GetProperty(detail.COLUMN_NAME).SetValue(dataPoa, CastPropertyValue(propInfo, detail.NEW_VALUE));
                 }
+
+                return null;
             }
             else if (approvalData.PAGE_ID == (int)Enums.MenuList.POAMap)
             {
@@ -239,6 +335,8 @@ namespace Sampoerna.EMS.BLL
                     propInfo = typeof(POA_MAP).GetProperty(detail.COLUMN_NAME);
                     dataPoaMap.GetType().GetProperty(detail.COLUMN_NAME).SetValue(dataPoaMap, CastPropertyValue(propInfo, detail.NEW_VALUE));
                 }
+
+                return null;
 
             }
             else if (approvalData.PAGE_ID == (int)Enums.MenuList.MaterialMaster)
@@ -263,8 +361,12 @@ namespace Sampoerna.EMS.BLL
                         _materialBLL.ClientDeletion(materialPlantDto, approvalData.APPROVED_BY);
                     }
                 }
+
+                return null;
             }
-            
+
+            return null;
+
         }
 
         private object CastPropertyValue(PropertyInfo property, string value)

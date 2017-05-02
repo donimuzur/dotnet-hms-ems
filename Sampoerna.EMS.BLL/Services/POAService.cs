@@ -29,5 +29,11 @@ namespace Sampoerna.EMS.BLL.Services
         {
             return _repository.Get(p => p.POA_ID == id, null, includeTables).FirstOrDefault();
         }
+
+        public void Save(POA poa)
+        {
+            _repository.InsertOrUpdate(poa);
+
+        }
     }
 }

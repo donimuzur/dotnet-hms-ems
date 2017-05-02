@@ -18,7 +18,7 @@ namespace Sampoerna.EMS.XMLReader
         private IUnitOfWork _uow;
         private ILogger _logger;
         private IZaidmExProdTypeBLL _prodTypeBll;
-        private IBrandRegistrationBLL _brandRegistrationBLL;
+        private IBrandRegistrationService _brandRegistrationBLL;
         private IExcisableGoodsTypeService _excisableGoodsTypeService;
         
 
@@ -28,7 +28,7 @@ namespace Sampoerna.EMS.XMLReader
             _logger = logger;
 
             _prodTypeBll = new ZaidmExProdTypeBLL(_uow,_logger);
-            _brandRegistrationBLL = new BrandRegistrationBLL(_uow,_logger);
+            _brandRegistrationBLL = new BrandRegistrationService(_uow,_logger);
             _excisableGoodsTypeService = new ExcisableGoodsTypeService(_uow,_logger);
         }
 

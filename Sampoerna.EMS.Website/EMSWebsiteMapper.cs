@@ -494,6 +494,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.BRAND_CONTENT, opt => opt.MapFrom(src => src.Content))
                 .ForMember(dest => dest.BAHAN_KEMASAN, opt => opt.MapFrom(src => src.BahanKemasan))
                 .ForMember(dest => dest.PACKED_ADJUSTED, opt => opt.MapFrom(src => src.IsPackedAdjusted));
+
+            Mapper.CreateMap<BrandRegistrationEditViewModel, BrandRegistrationCreateViewModel>().IgnoreAllNonExisting();
             #endregion
 
             Mapper.CreateMap<CHANGES_HISTORY, ChangesHistoryItemModel>().IgnoreAllNonExisting()

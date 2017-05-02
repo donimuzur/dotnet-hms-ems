@@ -31,9 +31,7 @@ namespace Sampoerna.EMS.Contract
 
         List<ZAIDM_EX_BRAND> GetAllBrandsOnly();
 
-        ZAIDM_EX_MARKET GetMarket(string marketId);
-
-        ZAIDM_EX_SERIES GetSeries(string seriesCode)
+        
 
     }
 

@@ -108,5 +108,10 @@ namespace Sampoerna.EMS.BLL.Services
 
             original.PLANT_DELETION = data.PLANT_DELETION;
         }
+
+        public void Save(ZAIDM_EX_MATERIAL data)
+        {
+            _repository.Insert(data);
+        }
     }
 }

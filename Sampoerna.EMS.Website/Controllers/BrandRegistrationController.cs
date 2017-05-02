@@ -106,6 +106,12 @@ namespace Sampoerna.EMS.Website.Controllers
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
             model.BahanKemasanList = GlobalFunctions.GetBahanKemasanList(_brandRegistrationBll);
 
+            if (!string.IsNullOrEmpty(model.StickerCode))
+            {
+                var data = _materialBll.getAllPlant(model.StickerCode);
+                model.PlantList = new SelectList(data, "WERKS", "WERKS - NAME1");
+            }
+
             return model;
         }
 
@@ -193,9 +199,11 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 try
                 {
-                     AddHistoryCreate(dbBrand.WERKS, dbBrand.FA_CODE, dbBrand.STICKER_CODE);
+                    _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.BrandRegistration,
+                        CurrentUser.USER_ID, new ZAIDM_EX_BRAND(), dbBrand,true);
+                    // AddHistoryCreate(dbBrand.WERKS, dbBrand.FA_CODE, dbBrand.STICKER_CODE);
                     
-                    _brandRegistrationBll.Save(dbBrand);
+                    //_brandRegistrationBll.Save(dbBrand);
                     
 
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
@@ -218,6 +226,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
+            model.StickerCodeList = GlobalFunctions.GetStickerCodeList();
             model.PlantList = GlobalFunctions.GetVirtualPlantList();
             model.PersonalizationCodeList = GlobalFunctions.GetPersonalizationCodeList();
             model.CutFillerCodeList = GlobalFunctions.GetCutFillerCodeList(model.PlantId);
@@ -263,15 +272,25 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult Edit(BrandRegistrationEditViewModel model)
         {
-            var dbBrand = _brandRegistrationBll.GetById(model.PlantId, model.FaCode,model.StickerCode);
+            ZAIDM_EX_BRAND dbBrand = null;
+            try
+            {
+                dbBrand = _brandRegistrationBll.GetById(model.PlantId, model.FaCode,model.StickerCode);
+            }
+            catch (Exception ex)
+            {
+                dbBrand = null;
+            }
+            
             var oldDbBrand = Mapper.Map<BrandRegistrationEditViewModel>(dbBrand);
             var oldObject = Mapper.Map<ZAIDM_EX_BRAND>(oldDbBrand);
             if (dbBrand == null)
             {
-                ModelState.AddModelError("BrandName", "Data Not Found");
-                model = InitEdit(model);
+                ModelState.AddModelError("BrandName", "Data Not Found redirected to create form");
+                var modelCreate = Mapper.Map<BrandRegistrationCreateViewModel>(model);
+                modelCreate = InitCreate(modelCreate);
 
-                return View("Edit", model);
+                return View("Create", modelCreate);
             }
 
             SetChangesLog(dbBrand, model);

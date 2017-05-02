@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AutoMapper;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.LinqExtensions;
+using Sampoerna.EMS.XMLReader;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL
@@ -17,8 +20,9 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<T001W> _repositoryPlantT001W;
         private IGenericRepository<ZAIDM_EX_SERIES> _repositorySeries;
-        private IGenericRepository<ZAIDM_EX_MARKET> _repositoryMarket;
+        
         private IPlantBLL _plantBll;
+        
         // private IChangesHistoryBLL _changesHistoryBll;
 
         public BrandRegistrationBLL(IUnitOfWork uow, ILogger logger)
@@ -28,8 +32,9 @@ namespace Sampoerna.EMS.BLL
             _repository = _uow.GetGenericRepository<ZAIDM_EX_BRAND>();
             _repositoryPlantT001W = _uow.GetGenericRepository<T001W>();
             _repositorySeries = _uow.GetGenericRepository<ZAIDM_EX_SERIES>();
-            _repositoryMarket = _uow.GetGenericRepository<ZAIDM_EX_MARKET>();
+            
             _plantBll = new PlantBLL(_uow, _logger);
+            
             //_changesHistoryBll = changesHistoryBll;
         }
 
@@ -116,6 +121,7 @@ namespace Sampoerna.EMS.BLL
         {
 
             _repository.InsertOrUpdate(brandRegistration);
+            
             _uow.SaveChanges();
 
         }
@@ -192,15 +198,7 @@ namespace Sampoerna.EMS.BLL
         }
 
 
-        public ZAIDM_EX_MARKET GetMarket(string marketId)
-        {
-            return _repositoryMarket.GetByID(marketId);
-        }
-
-        public ZAIDM_EX_SERIES GetSeries(string seriesCode)
-        {
-            return _repositorySeries.GetByID(seriesCode);
-        }
+        
 
     }
 }
