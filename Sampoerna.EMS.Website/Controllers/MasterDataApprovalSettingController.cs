@@ -56,6 +56,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Edit(MasterDataApprovalSettingEditViewModel model)
         {
             model.MainMenu = _mainMenu;
+            model.CurrentMenu = PageInfo;
             model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
             try
             {
@@ -64,7 +65,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     var data = Mapper.Map<MasterDataApprovalSettingDto>(model.Detail);
                     _masterDataApprovalSettingBLL.SaveSetting(data);
                     AddMessageInfo("Success", Enums.MessageInfoType.Success);
-
+                    
                     return View("Edit", model);
                 }
                 else

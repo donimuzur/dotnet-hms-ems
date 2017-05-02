@@ -624,6 +624,22 @@
         //    }
 
         //});
+        
+
+        
+        function ajaxGetCutFillerCodeByPlant(plant) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetCutFillerCodeByPlant", "BrandRegistration")',
+                data: { plant: plant },
+                success: function (data) {
+
+                    for (var i = 0; i < data.length; i++) {
+                        $('#CutFillerCode').append('<option value=' + data[i].Value + '>' + data[i].Value + '</option>');
+                    }
+                }
+            });
+        }
 
         $("#GoodType").change(function () {
             if ($("#GoodType").length) {
