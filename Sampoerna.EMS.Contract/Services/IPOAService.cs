@@ -10,5 +10,7 @@ namespace Sampoerna.EMS.Contract.Services
     public interface IPoaService
     {
         POA GetById(string id);
+
+        void Save(POA poa);
     }
 }

@@ -14,6 +14,8 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         [StringLength(18)]
         public string StickerCode { get; set; }
 
+        public SelectList StickerCodeList { get; set; }
+
         [Required]
         public string PlantId { get; set; }
         public SelectList PlantList { get; set; }

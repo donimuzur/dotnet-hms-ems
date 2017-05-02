@@ -17,11 +17,16 @@ namespace Sampoerna.EMS.BLL.Services
         private ILogger _logger;
         private IUnitOfWork _uow;
 
+        private IGenericRepository<ZAIDM_EX_SERIES> _repositorySeries;
+        private IGenericRepository<ZAIDM_EX_MARKET> _repositoryMarket;
+
         public BrandRegistrationService(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<ZAIDM_EX_BRAND>();
+            _repositorySeries = _uow.GetGenericRepository<ZAIDM_EX_SERIES>();
+            _repositoryMarket = _uow.GetGenericRepository<ZAIDM_EX_MARKET>();
         }
 
         public List<ZAIDM_EX_BRAND> GetByFaCodeList(List<string> input)
@@ -89,6 +94,23 @@ namespace Sampoerna.EMS.BLL.Services
             }
 
             return dbData;
+        }
+
+
+        public void Save(ZAIDM_EX_BRAND data)
+        {
+            _repository.InsertOrUpdate(data);
+
+        }
+
+        public ZAIDM_EX_MARKET GetMarket(string marketId)
+        {
+            return _repositoryMarket.GetByID(marketId);
+        }
+
+        public ZAIDM_EX_SERIES GetSeries(string seriesCode)
+        {
+            return _repositorySeries.GetByID(seriesCode);
         }
     }
 }
