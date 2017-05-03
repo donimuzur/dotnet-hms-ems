@@ -6482,18 +6482,17 @@ namespace Sampoerna.EMS.BLL
                 userList.Add(userCreatorInfo);
                 userList.Add(userPoaApprovalInfo);
                 userList.AddRange(controllerList);
-
+                var monitoringId = 0;
                 needSendEmail = _pbck1Bll.CheckExistingQuotaMonitoringByParam(pbck1Data, exGoodType, quotaPercent);
-
-                var monitoringId = _pbck1Bll.SaveQuotaMonitoring(pbck1Data, userList, Enums.EmailStatus.NotSent, exGoodType, quotaPercent);
-
-                mailNotif = ProcessEmailQuotaNotification(quotaDetail, quotaPercent, pbck1Data, userList,monitoringId);
-                
 
                 if (needSendEmail)
                 {
+                    monitoringId = _pbck1Bll.SaveQuotaMonitoring(pbck1Data, userList, Enums.EmailStatus.NotSent, exGoodType, quotaPercent);
+
+                    mailNotif = ProcessEmailQuotaNotification(quotaDetail, quotaPercent, pbck1Data, userList, monitoringId);
+
                     var success = false;
-                    
+
                     if (mailNotif != null)
                     {
                         if (mailNotif.IsCCExist)
@@ -6508,6 +6507,12 @@ namespace Sampoerna.EMS.BLL
                         _pbck1Bll.UpdateAllEmailStatus(pbck1Data, emailStatus, exGoodType);
                     }
                 }
+                
+
+                
+                
+
+                
             }
 
             
