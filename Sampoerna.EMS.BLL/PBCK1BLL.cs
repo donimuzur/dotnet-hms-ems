@@ -3162,6 +3162,7 @@ namespace Sampoerna.EMS.BLL
                         ROLE_ID = (int) _poaBll.GetUserRole(user.USER_ID)
                     });
                 }
+                data.WARNING_LEVEL = quotaPercent;
 
                 _repositoryQuotaMonitor.Insert(data);
             }
