@@ -8,7 +8,6 @@ using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.LinqExtensions;
-using Sampoerna.EMS.XMLReader;
 using Voxteneo.WebComponents.Logger;
 
 namespace Sampoerna.EMS.BLL
