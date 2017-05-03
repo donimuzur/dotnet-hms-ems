@@ -42,8 +42,8 @@
                                                     <div class="row">
                                                         <label class="col-md-4">Stiker Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @*@Html.TextBoxFor(model => model.StickerCode, new { @class = "form-control", @maxlength = "18" })*@
-                                                            @Html.DropDownListFor(model => model.StickerCode, Model.StickerCodeList, "Select", new { @class = "form-control" })
+                                                            @Html.TextBoxFor(model => model.StickerCode, new { @class = "form-control", @maxlength = "18" })
+                                                            @*@Html.DropDownListFor(model => model.StickerCode, Model.StickerCodeList, "Select", new { @class = "form-control" })*@
                                                         </div>
                                                     </div>
                                                 </div>
@@ -63,7 +63,8 @@
                                                     <div class="row">
                                                         <label class="col-md-4">FA Code<span class="red">*</span></label>
                                                         <div class="col-md-8">
-                                                            @Html.TextBoxFor(model => model.FaCode, new { @class = "form-control", @maxlength = "18" })
+                                                            @*@Html.TextBoxFor(model => model.FaCode, new { @class = "form-control", @maxlength = "18" })*@
+                                                            @Html.DropDownListFor(model => model.FaCode, Model.FaCodeList, "Select", new { @class = "form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -104,7 +105,14 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4 long">Brand Name (SAP)<span class="red">*</span></label>
+                                                        <div class="col-md-8">
+                                                            @Html.TextAreaFor(model => model.SAPBrandDescription, new { @rows = "5", @class = "form-control" })
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <div class="col-md-6">
                                                     <div class="row">
                                                         <label class="col-md-4">SKEP No<span class="red">*</span></label>
@@ -277,6 +285,14 @@
                                                         <label class="col-md-4">Status</label>
                                                         <div class="col-md-8">
                                                             @Html.EditorFor(model => model.IsActive, new { @class = "form-control" }) Active
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">SAP Data</label>
+                                                        <div class="col-md-8">
+                                                            @Html.EditorFor(model => model.IsFromSAP, new { @class = "form-control" })
                                                         </div>
                                                     </div>
                                                 </div>
@@ -514,8 +530,8 @@
 
         }
 
-        $("#StickerCode").change(function() {
-            if ($("#StickerCode").length) {
+        $("#FaCode").change(function() {
+            if ($("#FaCode").length) {
                 var stickerCode = $(this).find("option:selected").val();
                 $('#PlantId').html('');
                 $('#PlantId').append('<option value="">select</option>');
@@ -533,10 +549,35 @@
                 $('#CutFillerCode').append('<option value="">select</option>');
                 if (PlantId != '') {
                     ajaxGetCutFillerCodeByPlant(PlantId);
+                    ajaxGetBrandDescriptionFromMaterial();
                 }
             }
 
         });
+        
+
+        function ajaxGetBrandDescriptionFromMaterial() {
+            var plant = $("#PlantId").val();
+            var faCode = $("#FaCode").val();
+            
+            if (plant != "" && faCode != "") {
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("GetBrandMaterialDescription", "BrandRegistration")',
+                    data: {
+                        plant: plant,
+                        faCode : faCode
+                    },
+                    success: function (data) {
+                        if (data != null) {
+                            $("#SAPBrandDescription").val(data.MATERIAL_DESC);
+                        }
+                    
+                    }
+                });
+            }
+            
+        }
 
         function ajaxGetPlantByStickerCode(sc) {
 

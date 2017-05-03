@@ -143,7 +143,15 @@
                                                                     </div>
                                                             </div>
                                                         </div>
-
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4 long">Brand Name (SAP)<span class="red">*</span></label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextAreaFor(model => model.SAPBrandDescription, new { @rows = "5", @class = "form-control", disabled = "disabled" })
+                                                                    
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                         <div class="col-md-6">
                                                             <div class="row">
                                                                 <label class="col-md-4">SKEP No<span class="red">*</span></label>

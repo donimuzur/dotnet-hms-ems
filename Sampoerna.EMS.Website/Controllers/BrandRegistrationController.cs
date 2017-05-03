@@ -74,7 +74,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.BrandRegistration, plant+facode+stickercode));
             model.PersonalizationCodeDescription = _masterBll.GetPersonalizationDescById(model.PersonalizationCode);
-
+            var materialData = _materialBll.GetByPlantIdAndStickerCode(dbBrand.WERKS, dbBrand.FA_CODE);
+            model.SAPBrandDescription = materialData != null ? materialData.MATERIAL_DESC : string.Empty;
             
             if (model.IsFromSap.HasValue && model.IsFromSap.Value)
             {
@@ -105,6 +106,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.TariffCurrencyList = GlobalFunctions.GetCurrencyList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
             model.BahanKemasanList = GlobalFunctions.GetBahanKemasanList(_brandRegistrationBll);
+            model.FaCodeList = GlobalFunctions.GetStickerCodeList();
 
             if (!string.IsNullOrEmpty(model.StickerCode))
             {
@@ -262,6 +264,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ConversionValueStr = model.Conversion == null ? string.Empty : model.Conversion.ToString();
             model.PrintingPriceValueStr = model.PrintingPrice == null ? string.Empty : model.PrintingPrice.ToString();
             model.PersonalizationCodeDescription = _masterBll.GetPersonalizationDescById(model.PersonalizationCode);
+            var materialData = _materialBll.GetByPlantIdAndStickerCode(model.PlantId, model.FaCode);
+            model.SAPBrandDescription = materialData != null ? materialData.MATERIAL_DESC : string.Empty ;
             model = InitEdit(model);
 
             model.IsAllowDelete = !model.IsFromSAP;
@@ -310,16 +314,26 @@ namespace Sampoerna.EMS.Website.Controllers
             dbBrand.PRINTING_PRICE = model.PrintingPriceValueStr == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
             dbBrand.FA_CODE = model.FaCode.Trim();
             dbBrand.BAHAN_KEMASAN = model.BahanKemasan.Trim();
+            dbBrand.PACKED_ADJUSTED = model.IsPackedAdjusted;
             //dbBrand.CREATED_BY = CurrentUser.USER_ID;
             if (!string.IsNullOrEmpty(model.PersonalizationCodeDescription))
                 dbBrand.PER_CODE_DESC = model.PersonalizationCodeDescription;
+
+            var materialData = _materialBll.GetByPlantIdAndStickerCode(model.PlantId, model.FaCode);
+            if (materialData == null)
+            {
+                AddMessageInfo("Fa code and plant not registered on Material Master.", Enums.MessageInfoType.Error);
+                model = InitEdit(model);
+
+                return View("Edit", model);
+            }
+
             try
             {
                 dbBrand = _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.BrandRegistration,
                     CurrentUser.USER_ID, oldObject, dbBrand);
                 _brandRegistrationBll.Save(dbBrand);
-                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
-                         );
+                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
                 return RedirectToAction("Index");
 
             }
@@ -549,6 +563,25 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var data = GlobalFunctions.GetCutFillerCodeList(plant);
             return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult GetBrandMaterialDescription(string plant,string faCode)
+        {
+            var data = _materialBll.GetByPlantIdAndStickerCode(plant,faCode);
+            if (data != null)
+            {
+                var retData = new ZAIDM_EX_MATERIAL();
+                retData.STICKER_CODE = data.STICKER_CODE;
+                retData.WERKS = data.WERKS;
+                retData.MATERIAL_DESC = data.MATERIAL_DESC;
+                return Json(retData);
+            }
+            else
+            {
+                return null;
+            }
+            
         }
 
         #region export xls
