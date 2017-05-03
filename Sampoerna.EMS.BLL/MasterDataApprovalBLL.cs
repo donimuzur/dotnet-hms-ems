@@ -218,16 +218,20 @@ namespace Sampoerna.EMS.BLL
                     if (newData.GetType() == typeof (ZAIDM_EX_BRAND))
                     {
                         var brandToxml = (ZAIDM_EX_BRAND) newData;
-                        var brandXmlDto = Mapper.Map<BrandXmlDto>(brandToxml);
-                        var fileName = ConfigurationManager.AppSettings["PathXmlTemp"] + "BRANDREG" +
-                           brandXmlDto.CREATED_DATE.ToString("yyyyMMdd-HHmmss") + ".xml";
-                        var outboundFilePath = ConfigurationManager.AppSettings["CK5PathXml"] + "BRANDREG" +
-                           brandXmlDto.CREATED_DATE.ToString("yyyyMMdd-HHmmss") + ".xml";
-                        brandXmlDto.XmlPath = fileName;
+                        if (brandToxml.IS_FROM_SAP == true)
+                        {
+                            var brandXmlDto = Mapper.Map<BrandXmlDto>(brandToxml);
+                            var fileName = ConfigurationManager.AppSettings["PathXmlTemp"] + "BRANDREG" +
+                               brandXmlDto.CREATED_DATE.ToString("yyyyMMdd-HHmmss") + ".xml";
+                            var outboundFilePath = ConfigurationManager.AppSettings["CK5PathXml"] + "BRANDREG" +
+                               brandXmlDto.CREATED_DATE.ToString("yyyyMMdd-HHmmss") + ".xml";
+                            brandXmlDto.XmlPath = fileName;
 
-                        _xmlWriter.CreateBrandRegXml(brandXmlDto);
+                            _xmlWriter.CreateBrandRegXml(brandXmlDto);
 
-                        _xmlWriter.MoveTempToOutbound(fileName, outboundFilePath);
+                            _xmlWriter.MoveTempToOutbound(fileName, outboundFilePath);
+                        }
+                        
                     }
                 }
 

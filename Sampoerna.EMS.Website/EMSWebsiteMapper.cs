@@ -464,7 +464,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PRINTING_PRICE, opt => opt.MapFrom(src => src.PrintingPrice))
                 .ForMember(dest => dest.CUT_FILLER_CODE, opt => opt.MapFrom(src => src.CutFillerCode))
                 .ForMember(dest => dest.CONVERSION, opt => opt.MapFrom(src => src.Conversion))
-                .ForMember(dest => dest.BRAND_CONTENT, opt => opt.MapFrom(src => src.Content));
+                .ForMember(dest => dest.BRAND_CONTENT, opt => opt.MapFrom(src => src.Content))
+                .ForMember(dest => dest.IS_FROM_SAP, opt => opt.MapFrom(src => src.IsFromSAP));
 
             Mapper.CreateMap<BrandRegistrationEditViewModel, ZAIDM_EX_BRAND>().IgnoreAllUnmapped()
                 .ForMember(dest => dest.STICKER_CODE, opt => opt.MapFrom(src => src.StickerCode))
