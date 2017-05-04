@@ -188,7 +188,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbBrand.FA_CODE = model.FaCode.Trim();
                 dbBrand.CREATED_DATE = DateTime.Now;
                 dbBrand.CREATED_BY = CurrentUser.USER_ID;
-                dbBrand.IS_FROM_SAP = false;
+                dbBrand.IS_FROM_SAP = model.IsFromSAP;
                 dbBrand.HJE_IDR = model.HjeValueStr == null ? 0 : Convert.ToDecimal(model.HjeValueStr);
                 dbBrand.TARIFF = model.TariffValueStr == null ? 0 : Convert.ToDecimal(model.TariffValueStr);
                 dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
@@ -515,8 +515,10 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var decodeFacode = HttpUtility.UrlDecode(facode);
-            AddHistoryDelete(plant, decodeFacode, stickercode);
-            var isDeleted = _brandRegistrationBll.Delete(plant, decodeFacode, stickercode);
+
+
+            //AddHistoryDelete(plant, decodeFacode, stickercode);
+            var isDeleted = _brandRegistrationBll.Delete(plant, decodeFacode, stickercode,CurrentUser.USER_ID);
             
             if(isDeleted)
                 TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Deleted;

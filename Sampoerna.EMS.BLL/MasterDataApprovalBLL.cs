@@ -51,7 +51,7 @@ namespace Sampoerna.EMS.BLL
             _materialBLL = new ZaidmExMaterialService(_uow,_logger);
             _xmlWriter = new XmlBrandRegistrationWriter(_uow,_logger);
         }
-        public T MasterDataApprovalValidation<T>(int pageId, string userId, T oldObject, T newObject, bool isNew = false)
+        public T MasterDataApprovalValidation<T>(int pageId, string userId, T oldObject, T newObject, bool isCommit = false)
         {
 
             var approvalSettings = _approvalSettingBLL.GetAllEditableColumn(pageId);
@@ -80,7 +80,12 @@ namespace Sampoerna.EMS.BLL
                         masterDataApprovalDetail.COLUMN_DESCRIPTION = isneedApprove.ColumnDescription;
                         masterDataApprovalDetail.COLUMN_NAME = isneedApprove.COLUMN_NAME;
 
-                        if (masterDataApprovalDetail.OLD_VALUE != masterDataApprovalDetail.NEW_VALUE) needApprovalList.Add(masterDataApprovalDetail);
+                        if (masterDataApprovalDetail.OLD_VALUE != masterDataApprovalDetail.NEW_VALUE)
+                        {
+                            needApprovalList.Add(masterDataApprovalDetail);
+                            newObject.GetType().GetProperty(isneedApprove.COLUMN_NAME).SetValue(newObject, oldValue);
+                        }
+                        
                     }
                     else
                     {
@@ -119,7 +124,7 @@ namespace Sampoerna.EMS.BLL
                 _repository.Insert(newApproval);
             }
 
-            if (isNew)
+            if (isCommit)
             {
                 _uow.SaveChanges();
             }
@@ -239,9 +244,9 @@ namespace Sampoerna.EMS.BLL
                     {
                         var brandXmlDto = Mapper.Map<BrandXmlDto>(brandToxml);
                         var fileName = ConfigurationManager.AppSettings["PathXmlTemp"] + "BRANDREG" +
-                           brandXmlDto.CREATED_DATE.ToString("yyyyMMdd-HHmmss") + ".xml";
+                           DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
                         var outboundFilePath = ConfigurationManager.AppSettings["CK5PathXml"] + "BRANDREG" +
-                           brandXmlDto.CREATED_DATE.ToString("yyyyMMdd-HHmmss") + ".xml";
+                           DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
                         brandXmlDto.XmlPath = fileName;
 
                         _xmlWriter.CreateBrandRegXml(brandXmlDto);

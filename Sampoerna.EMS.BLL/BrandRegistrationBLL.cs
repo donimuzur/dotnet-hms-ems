@@ -19,7 +19,7 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<T001W> _repositoryPlantT001W;
         private IGenericRepository<ZAIDM_EX_SERIES> _repositorySeries;
-        
+        private IMasterDataAprovalBLL _masterDataAprovalBLL;
         private IPlantBLL _plantBll;
         
         // private IChangesHistoryBLL _changesHistoryBll;
@@ -33,7 +33,7 @@ namespace Sampoerna.EMS.BLL
             _repositorySeries = _uow.GetGenericRepository<ZAIDM_EX_SERIES>();
             
             _plantBll = new PlantBLL(_uow, _logger);
-            
+            _masterDataAprovalBLL = new MasterDataApprovalBLL(_uow,_logger);
             //_changesHistoryBll = changesHistoryBll;
         }
 
@@ -125,11 +125,14 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public bool Delete(string plant, string facode, string stickercode)
+        public bool Delete(string plant, string facode, string stickercode,string userId)
         {
             var dbBrand = _repository.GetByID(plant, facode, stickercode);
             if (dbBrand == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            var oldDbBrand = Mapper.Map<BrandXmlDto>(dbBrand);
+            var oldObject = Mapper.Map<ZAIDM_EX_BRAND>(oldDbBrand);
 
             if (dbBrand.IS_DELETED.HasValue && dbBrand.IS_DELETED.Value)
             {
@@ -140,11 +143,12 @@ namespace Sampoerna.EMS.BLL
                 dbBrand.IS_DELETED = true;
             }
 
-
-            //_repository.Update(dbBrand);
+            dbBrand = _masterDataAprovalBLL.MasterDataApprovalValidation((int) Core.Enums.MenuList.BrandRegistration, userId,
+                oldObject, dbBrand);
+            _repository.Update(dbBrand);
             _uow.SaveChanges();
 
-            return dbBrand.IS_DELETED.Value;
+            return dbBrand.IS_DELETED.HasValue && dbBrand.IS_DELETED.Value;
         }
 
 
