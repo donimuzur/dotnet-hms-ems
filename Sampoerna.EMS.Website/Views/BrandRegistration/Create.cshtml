@@ -357,7 +357,9 @@
 
             ajaxBahanKemasan('@Url.Action("BahanKemasanList", "BrandRegistration")', null);
             
-            if ($("#StickerCode").val() != "") ajaxGetPlantByStickerCode('@Model.StickerCode');
+            if ($("#FaCode").val() != "") ajaxGetPlantByStickerCode('@Model.FaCode', true);
+            
+            ajaxGetCutFillerCodeByPlant('@Model.PlantId');
             
         });
 
@@ -579,7 +581,7 @@
             
         }
 
-        function ajaxGetPlantByStickerCode(sc) {
+        function ajaxGetPlantByStickerCode(sc,isnew) {
 
             $.ajax({
                 type: 'POST',
@@ -589,6 +591,10 @@
 
                     for (var i = 0; i < data.length; i++) {
                         $('#PlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + '-' + data[i].Text + '</option>');
+                    }
+                    
+                    if (isnew) {
+                        $('#PlantId').val('@Model.PlantId');
                     }
                 }
             });
