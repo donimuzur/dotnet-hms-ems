@@ -213,29 +213,51 @@ namespace Sampoerna.EMS.BLL
                 _uow.SaveChanges();
 
                 //create xml for brand registration
-                if (newData != null)
-                {
-                    if (newData.GetType() == typeof (ZAIDM_EX_BRAND))
-                    {
-                        var brandToxml = (ZAIDM_EX_BRAND) newData;
-                        if (brandToxml.IS_FROM_SAP == true)
-                        {
-                            var brandXmlDto = Mapper.Map<BrandXmlDto>(brandToxml);
-                            var fileName = ConfigurationManager.AppSettings["PathXmlTemp"] + "BRANDREG" +
-                               brandXmlDto.CREATED_DATE.ToString("yyyyMMdd-HHmmss") + ".xml";
-                            var outboundFilePath = ConfigurationManager.AppSettings["CK5PathXml"] + "BRANDREG" +
-                               brandXmlDto.CREATED_DATE.ToString("yyyyMMdd-HHmmss") + ".xml";
-                            brandXmlDto.XmlPath = fileName;
 
-                            _xmlWriter.CreateBrandRegXml(brandXmlDto);
+                
 
-                            _xmlWriter.MoveTempToOutbound(fileName, outboundFilePath);
-                        }
-                        
-                    }
-                }
+                GenerateXml(data);
+                
+                
 
             }
+        }
+
+        private void GenerateXml(MASTER_DATA_APPROVAL data)
+        {
+            if (data.PAGE_ID == (int)Enums.MenuList.BrandRegistration)
+            {
+                var tempId = data.FORM_ID.Split('-');
+                var werks = tempId[0];
+                var facode = tempId[1];
+                var stickerCode = tempId[2];
+
+                var brandToxml = _brandRegistrationBLL.GetByPlantIdAndFaCodeStickerCode(werks, facode, stickerCode);
+                if (brandToxml != null)
+                {
+                    if (brandToxml.IS_FROM_SAP == true)
+                    {
+                        var brandXmlDto = Mapper.Map<BrandXmlDto>(brandToxml);
+                        var fileName = ConfigurationManager.AppSettings["PathXmlTemp"] + "BRANDREG" +
+                           brandXmlDto.CREATED_DATE.ToString("yyyyMMdd-HHmmss") + ".xml";
+                        var outboundFilePath = ConfigurationManager.AppSettings["CK5PathXml"] + "BRANDREG" +
+                           brandXmlDto.CREATED_DATE.ToString("yyyyMMdd-HHmmss") + ".xml";
+                        brandXmlDto.XmlPath = fileName;
+
+                        _xmlWriter.CreateBrandRegXml(brandXmlDto);
+
+                        _xmlWriter.MoveTempToOutbound(fileName, outboundFilePath);
+                    }
+
+                    
+                }
+                
+
+
+
+            }
+            
+            
         }
 
         public void Reject(string userId, int masterApprovalId)

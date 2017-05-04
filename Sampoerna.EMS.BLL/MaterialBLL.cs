@@ -78,6 +78,7 @@ namespace Sampoerna.EMS.BLL
 
         public MaterialOutput Save(MaterialDto data, string userId)
         {
+            bool isNew = false;
             var origin = _repository.Get(x=>x.STICKER_CODE == data.STICKER_CODE && x.WERKS == data.WERKS,null,includeTables).SingleOrDefault();
             var originDto = AutoMapper.Mapper.Map<MaterialDto>(origin);
             //var edited = AutoMapper.Mapper.Map<ZAIDM_EX_MATERIAL>(model);
@@ -113,20 +114,26 @@ namespace Sampoerna.EMS.BLL
                 data.CREATED_BY = userId;
                 data.CREATED_DATE = DateTime.Now;
 
-                
+                isNew = true;
             }
 
             var dataToSave = AutoMapper.Mapper.Map<ZAIDM_EX_MATERIAL>(data);
-           
-            _repository.InsertOrUpdate(dataToSave);
-            
 
-            
             var output = new MaterialOutput();
 
             try
             {
-                _uow.SaveChanges();
+                if (!isNew)
+                {
+                    _repository.InsertOrUpdate(dataToSave);
+
+                    _uow.SaveChanges();
+                }
+                else
+                {
+                    _masterDataAprovalBLL.MasterDataApprovalValidation((int)Enums.MenuList.MaterialMaster, userId, new ZAIDM_EX_MATERIAL(), dataToSave,true);
+                }
+                
                 output.Success = true;
                 output.materialId = data.STICKER_CODE;
             }
