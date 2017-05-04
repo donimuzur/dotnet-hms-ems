@@ -556,6 +556,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PageDescription, opt => opt.MapFrom(src => src.MENU_NAME));
 
             Mapper.CreateMap<ZAIDM_EX_BRAND, BrandXmlDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<BrandXmlDto, ZAIDM_EX_BRAND>().IgnoreAllNonExisting();
             #endregion
 
             #region Quota Monitoring
