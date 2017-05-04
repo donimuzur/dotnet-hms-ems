@@ -110,8 +110,9 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
                     }
                 }
-
-                _poaBll.Save(poa);
+                _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.POA, CurrentUser.USER_ID,
+                    new POA(), poa, true);
+                //_poaBll.Save(poa);
 
                 AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
                     );

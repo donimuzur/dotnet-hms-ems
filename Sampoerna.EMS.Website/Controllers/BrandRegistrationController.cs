@@ -315,6 +315,8 @@ namespace Sampoerna.EMS.Website.Controllers
             dbBrand.FA_CODE = model.FaCode.Trim();
             dbBrand.BAHAN_KEMASAN = model.BahanKemasan.Trim();
             dbBrand.PACKED_ADJUSTED = model.IsPackedAdjusted;
+            dbBrand.BRAND_CE = model.BrandName;
+            dbBrand.IS_FROM_SAP = model.IsFromSAP;
             //dbBrand.CREATED_BY = CurrentUser.USER_ID;
             if (!string.IsNullOrEmpty(model.PersonalizationCodeDescription))
                 dbBrand.PER_CODE_DESC = model.PersonalizationCodeDescription;

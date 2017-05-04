@@ -5655,7 +5655,11 @@
               <LongDescription>Status Active</LongDescription>
             </Documentation>
           </Property>
-          <Property Name="IS_FROM_SAP" Type="Boolean" />
+          <Property Name="IS_FROM_SAP" Type="Boolean" >
+            <Documentation>
+              <LongDescription>SAP Data</LongDescription>
+            </Documentation>
+          </Property>
           <Property Name="IS_DELETED" Type="Boolean" >
             <Documentation>
               <LongDescription>Is Deleted</LongDescription>
