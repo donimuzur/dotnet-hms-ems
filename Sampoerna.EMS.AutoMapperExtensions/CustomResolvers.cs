@@ -49,7 +49,7 @@ namespace Sampoerna.EMS.AutoMapperExtensions
             {
                 return Convert.ToInt32(value);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 return -1;
@@ -69,7 +69,7 @@ namespace Sampoerna.EMS.AutoMapperExtensions
             {
                 return Convert.ToDecimal(value);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 return -1;

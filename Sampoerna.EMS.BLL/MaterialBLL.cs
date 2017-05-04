@@ -1,7 +1,9 @@
 ﻿using System.Linq.Expressions;
+using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using System;
@@ -21,8 +23,11 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private string includeTables = "T001W, MATERIAL_UOM, UOM,ZAIDM_EX_GOODTYP";
         private ChangesHistoryBLL _changesHistoryBll;
+        private IMasterDataAprovalBLL _masterDataAprovalBLL;
+        private IZaidmExMaterialService _zaidmExMaterialService;
         private IGenericRepository<MATERIAL_UOM> _repositoryUoM;
         private IExGroupTypeBLL _goodTypeGroupBLL;
+        
         public MaterialBLL(IUnitOfWork uow, ILogger logger)
         {
             _logger = logger;
@@ -31,6 +36,9 @@ namespace Sampoerna.EMS.BLL
             _repositoryUoM = _uow.GetGenericRepository<MATERIAL_UOM>();
             _changesHistoryBll = new ChangesHistoryBLL(_uow,_logger);
             _goodTypeGroupBLL = new ExGroupTypeBLL(_uow, logger);
+            _masterDataAprovalBLL = new MasterDataApprovalBLL(_uow,_logger);
+            _zaidmExMaterialService = new ZaidmExMaterialService(_uow,_logger);
+            
         }
 
         public MaterialDto getByID(string materialId, string plant)
@@ -63,64 +71,14 @@ namespace Sampoerna.EMS.BLL
             return data;
         }
 
-        private void PlantDeletion(MaterialDto data, string userId) {
+        
 
-            var original = _repository.Get(x => x.STICKER_CODE == data.STICKER_CODE && x.WERKS == data.WERKS, null, "").FirstOrDefault();
-            if (original.PLANT_DELETION != data.PLANT_DELETION)
-            {
-                var changes = new CHANGES_HISTORY
-                {
-                    FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
-                    FORM_ID = data.STICKER_CODE + data.WERKS,
-                    FIELD_NAME = "PLANT_DELETION",
-                    MODIFIED_BY = userId,
-                    MODIFIED_DATE = DateTime.Now,
-                    OLD_VALUE = data.PLANT_DELETION.HasValue ? data.PLANT_DELETION.Value.ToString() : "NULL",
-                    NEW_VALUE = true.ToString()
-                };
-
-                _changesHistoryBll.AddHistory(changes);
-            }
-
-            original.PLANT_DELETION = data.PLANT_DELETION;
-        }
-
-        private void ClientDeletion(MaterialDto data, string userId)
-        {
-            var original = _repository.Get(x => x.STICKER_CODE == data.STICKER_CODE && x.WERKS == data.WERKS, null, "").FirstOrDefault();
-
-            
-            var datatobeclientdeleted = _repository.Get(x => x.STICKER_CODE == data.STICKER_CODE, null, "").ToList();
-
-            foreach (var detail in datatobeclientdeleted) {
-
-                
-                if (original.CLIENT_DELETION != data.CLIENT_DELETION)
-                {
-                    var changes = new CHANGES_HISTORY
-                    {
-                        FORM_TYPE_ID = Core.Enums.MenuList.MaterialMaster,
-                        FORM_ID = detail.STICKER_CODE + detail.WERKS,
-                        FIELD_NAME = "CLIENT_DELETION",
-                        MODIFIED_BY = userId,
-                        MODIFIED_DATE = DateTime.Now,
-                        OLD_VALUE = detail.CLIENT_DELETION.HasValue ? detail.CLIENT_DELETION.Value.ToString() : "NULL",
-                        NEW_VALUE = data.CLIENT_DELETION.HasValue ? data.CLIENT_DELETION.ToString() : "NULL"
-                    };
-
-                    _changesHistoryBll.AddHistory(changes);
-                }
-                detail.CLIENT_DELETION = data.CLIENT_DELETION;
-                
-            }
-
-            
-            //_uow.SaveChanges();
-        }
+        
 
 
         public MaterialOutput Save(MaterialDto data, string userId)
         {
+            bool isNew = false;
             var origin = _repository.Get(x=>x.STICKER_CODE == data.STICKER_CODE && x.WERKS == data.WERKS,null,includeTables).SingleOrDefault();
             var originDto = AutoMapper.Mapper.Map<MaterialDto>(origin);
             //var edited = AutoMapper.Mapper.Map<ZAIDM_EX_MATERIAL>(model);
@@ -132,37 +90,50 @@ namespace Sampoerna.EMS.BLL
                 data.CREATED_DATE = origin.CREATED_DATE;
                 data.CREATED_BY = origin.CREATED_BY;
 
+                var tempNewData = AutoMapper.Mapper.Map<ZAIDM_EX_MATERIAL>(data);
+                tempNewData = _masterDataAprovalBLL.MasterDataApprovalValidation((int)Enums.MenuList.MaterialMaster, userId, origin,
+                    tempNewData);
+                data = AutoMapper.Mapper.Map<MaterialDto>(tempNewData);
+
                 if (data.CLIENT_DELETION != (originDto.CLIENT_DELETION.HasValue ? originDto.CLIENT_DELETION : false))
                 {
-                    ClientDeletion(data, userId);
+                     _zaidmExMaterialService.ClientDeletion(data, userId);
 
                 }
 
                 if (data.PLANT_DELETION != (originDto.PLANT_DELETION.HasValue ? originDto.PLANT_DELETION.Value : false))
                 {
-                    PlantDeletion(data, userId);
+                    _zaidmExMaterialService.PlantDeletion(data, userId);
                 }
+                
                 SetChanges(originDto, data, userId);
+
                 data.MATERIAL_UOM = origin.MATERIAL_UOM;
             }
             else {
                 data.CREATED_BY = userId;
                 data.CREATED_DATE = DateTime.Now;
 
-                
+                isNew = true;
             }
 
             var dataToSave = AutoMapper.Mapper.Map<ZAIDM_EX_MATERIAL>(data);
-           
-            _repository.InsertOrUpdate(dataToSave);
-            
 
-            
             var output = new MaterialOutput();
 
             try
             {
-                _uow.SaveChanges();
+                if (!isNew)
+                {
+                    _repository.InsertOrUpdate(dataToSave);
+
+                    _uow.SaveChanges();
+                }
+                else
+                {
+                    _masterDataAprovalBLL.MasterDataApprovalValidation((int)Enums.MenuList.MaterialMaster, userId, new ZAIDM_EX_MATERIAL(), dataToSave,true);
+                }
+                
                 output.Success = true;
                 output.materialId = data.STICKER_CODE;
             }

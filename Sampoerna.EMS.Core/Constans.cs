@@ -9,6 +9,7 @@
         public const string Lack2FolderPaht = UploadPath + "Lack2/";
         public const string CK5FolderPath = UploadPath + "CK5/";
         public const string Ck4cDecreeDocFolderPath = UploadPath + "ck4cdecreedoc/";
+        public const string MonthClosingDocFolderPath = UploadPath + "monthClosing/";
 
         public const string InList = "In List";
         public static readonly string MenuActiveDashboard = "Dashboard";

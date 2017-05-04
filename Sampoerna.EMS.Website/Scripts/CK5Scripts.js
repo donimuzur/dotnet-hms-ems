@@ -825,6 +825,16 @@ function ValidateCk5Form(ck5Type) {
         }
     }
 
+    if (ck5Type == 'PortToImporter') {
+        if ($('#SourcePlantName').val() == '') {
+            AddValidationClass(false, 'SourcePlantName');
+            result = false;
+
+            $('#collapseTwo').removeClass('collapse');
+            $('#collapseTwo').addClass('in');
+            $("#collapseTwo").css({ height: "auto" });
+        }
+    }
     
 
     if (result) {
@@ -1125,29 +1135,30 @@ function MoveUploadToTableMarketReturn() {
         data += '<tr>';
         if (columnLength > 0) {
 
-            if (datarows[i][13].length > 0) {
+            if (datarows[i][14].length > 0) {
                 $('#modalBodyMessage').text('Item Material Not Valid');
                 $('#ModalCk5Material').modal('show');
                 return;
             }
             data += '<td> <input name="UploadItemModels[' + i + '].Brand" type="hidden" value = "' + datarows[i][2] + '">' + datarows[i][2] + '</td>';
-            data += '<td> <input name="UploadItemModels[' + i + '].Qty" type="hidden" value = "' + datarows[i][3] + '">' + datarows[i][3] + '</td>';
-            data += '<td> <input name="UploadItemModels[' + i + '].Uom" type="hidden" value = "' + datarows[i][4] + '">' + datarows[i][4] + '</td>';
-            data += '<td> <input name="UploadItemModels[' + i + '].Convertion" type="hidden" value = "' + datarows[i][5] + '">' + datarows[i][5] + '</td>';
-            data += '<td> <input name="UploadItemModels[' + i + '].ConvertedQty" type="hidden" value = "' + datarows[i][6] + '">' + datarows[i][6] + '</td>';
-            data += '<td> <input name="UploadItemModels[' + i + '].ConvertedUom" type="hidden" value = "' + datarows[i][7] + '">' + datarows[i][7] + '</td>';
-            data += '<td> <input name="UploadItemModels[' + i + '].Hje" type="hidden" value = "' + datarows[i][8] + '">' + datarows[i][8] + '</td>';
-            data += '<td> <input name="UploadItemModels[' + i + '].Tariff" type="hidden" value = "' + datarows[i][9] + '">' + datarows[i][9] + '</td>';
-            data += '<td> <input name="UploadItemModels[' + i + '].ExciseValue" type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
-            data += '<td> <input name="UploadItemModels[' + i + '].UsdValue" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
-            data += '<td> <input name="UploadItemModels[' + i + '].Note" type="hidden" value = "' + datarows[i][12] + '">' + datarows[i][12] + '</td>';
-            data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][13] + '">' + datarows[i][13] + '</td>';
-            data += '<input name="UploadItemModels[' + i + '].MaterialDesc" type="hidden" value = "' + datarows[i][15] + '">';
-            data += '<input name="UploadItemModels[' + i + '].CK5_MATERIAL_ID" type="hidden" value = "' + datarows[i][18] + '">';
+            data += '<td> <input name="UploadItemModels[' + i + '].StickerCode" type="hidden" value = "' + datarows[i][3] + '">' + datarows[i][3] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].Qty" type="hidden" value = "' + datarows[i][4] + '">' + datarows[i][4] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].Uom" type="hidden" value = "' + datarows[i][5] + '">' + datarows[i][5] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].Convertion" type="hidden" value = "' + datarows[i][6] + '">' + datarows[i][6] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].ConvertedQty" type="hidden" value = "' + datarows[i][7] + '">' + datarows[i][7] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].ConvertedUom" type="hidden" value = "' + datarows[i][8] + '">' + datarows[i][8] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].Hje" type="hidden" value = "' + datarows[i][9] + '">' + datarows[i][9] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].Tariff" type="hidden" value = "' + datarows[i][10] + '">' + datarows[i][10] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].ExciseValue" type="hidden" value = "' + datarows[i][11] + '">' + datarows[i][11] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].UsdValue" type="hidden" value = "' + datarows[i][12] + '">' + datarows[i][12] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].Note" type="hidden" value = "' + datarows[i][13] + '">' + datarows[i][13] + '</td>';
+            data += '<td> <input name="UploadItemModels[' + i + '].Message" type="hidden" value = "' + datarows[i][14] + '">' + datarows[i][14] + '</td>';
+            data += '<input name="UploadItemModels[' + i + '].MaterialDesc" type="hidden" value = "' + datarows[i][16] + '">';
+            data += '<input name="UploadItemModels[' + i + '].CK5_MATERIAL_ID" type="hidden" value = "' + datarows[i][19] + '">';
 
-            total += parseFloat(datarows[i][16]); //Qty
+            total += parseFloat(datarows[i][17]); //Qty
             if (i == 0) {
-                $("#PackageUomName").val(datarows[i][17]);
+                $("#PackageUomName").val(datarows[i][18]);
             }
         }
         data += '</tr>';
@@ -1189,12 +1200,15 @@ function ajaxGetListMaterialMarketReturn(url, formData, materialid) {
 
                 var list = '<option value>Select</option>';
 
+                var faCode = materialid.split(" - ")[0];
+                var stickerCode = materialid.split(" - ")[1];
+
                 if (data != null) {
                     for (var i = 0; i < data.length; i++) {
-                        if (materialid == data[i].MaterialNumber) {
-                            list += "<option value='" + data[i].MaterialNumber + "' selected='true'>" + data[i].MaterialNumber + "</option>";
+                        if (faCode == data[i].MaterialNumber && stickerCode == data[i].StickerCode) {
+                            list += "<option value='" + data[i].MaterialNumber + " - " + data[i].StickerCode + "' selected='true'>" + data[i].MaterialNumber + " - " + data[i].StickerCode + "</option>";
                         } else {
-                            list += "<option value='" + data[i].MaterialNumber + "'>" + data[i].MaterialNumber + "</option>";
+                            list += "<option value='" + data[i].MaterialNumber + " - " + data[i].StickerCode + "'>" + data[i].MaterialNumber + " - " + data[i].StickerCode + "</option>";
                         }
 
                     }

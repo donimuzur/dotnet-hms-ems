@@ -59,7 +59,8 @@ namespace Sampoerna.EMS.Website.Controllers
             
             var plant = _plantBll.GetId(id);
             //NPPBKC Import for the dropdown dikosongkan default value
-            plant.NPPBKC_IMPORT_ID = "";
+            
+            plant.NPPBKC_IMPORT_ID = !string.IsNullOrEmpty(plant.NPPBKC_IMPORT_ID) ? plant.NPPBKC_IMPORT_ID : string.Empty;
             if (plant == null)
             {
                 return HttpNotFound();

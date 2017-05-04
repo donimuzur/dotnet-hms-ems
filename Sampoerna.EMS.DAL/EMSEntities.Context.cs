@@ -124,5 +124,12 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<PRODUCTION> PRODUCTION { get; set; }
         public virtual DbSet<REVERSAL> REVERSAL { get; set; }
         public virtual DbSet<CK4C_REPORT_ITEM> CK4C_REPORT_ITEM { get; set; }
+        public virtual DbSet<MASTER_DATA_APPROVE_SETTING> MASTER_DATA_APPROVE_SETTING { get; set; }
+        public virtual DbSet<MASTER_DATA_APPROVAL> MASTER_DATA_APPROVAL { get; set; }
+        public virtual DbSet<MASTER_DATA_APPROVAL_DETAIL> MASTER_DATA_APPROVAL_DETAIL { get; set; }
+        public virtual DbSet<MONTH_CLOSING> MONTH_CLOSING { get; set; }
+        public virtual DbSet<MONTH_CLOSING_DOCUMENT> MONTH_CLOSING_DOCUMENT { get; set; }
+        public virtual DbSet<QUOTA_MONITORING> QUOTA_MONITORING { get; set; }
+        public virtual DbSet<QUOTA_MONITORING_DETAIL> QUOTA_MONITORING_DETAIL { get; set; }
     }
 }

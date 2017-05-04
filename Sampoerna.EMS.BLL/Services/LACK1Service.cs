@@ -90,6 +90,10 @@ namespace Sampoerna.EMS.BLL.Services
             {
                 queryFilter = queryFilter.And(c => c.LACK1_LEVEL != null);
             }
+            else if (input.UserRole == Enums.UserRole.Controller)
+            {
+                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed);
+            } 
             else
             {
                 queryFilter = queryFilter.And(c => (input.ListUserPlant.Contains(c.LACK1_PLANT.FirstOrDefault().PLANT_ID) && c.LACK1_LEVEL == Enums.Lack1Level.Plant) ||
@@ -272,6 +276,9 @@ namespace Sampoerna.EMS.BLL.Services
                     break;
                 case Enums.UserRole.Administrator:
                     queryFilter = queryFilter.And(c => c.LACK1_LEVEL != null);
+                    break;
+                case Enums.UserRole.Controller:
+                    queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.WaitingForApprovalController || c.STATUS == Enums.DocumentStatus.Completed);
                     break;
                 default:
                     queryFilter = queryFilter.And(c => (input.ListUserPlant.Contains(c.LACK1_PLANT.FirstOrDefault().PLANT_ID) && c.LACK1_LEVEL == Enums.Lack1Level.Plant) ||

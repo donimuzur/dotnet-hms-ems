@@ -17,11 +17,13 @@ namespace Sampoerna.EMS.BusinessObject
         public EX_GROUP_TYPE()
         {
             this.EX_GROUP_TYPE_DETAILS = new HashSet<EX_GROUP_TYPE_DETAILS>();
+            this.QUOTA_MONITORING = new HashSet<QUOTA_MONITORING>();
         }
     
         public int EX_GROUP_TYPE_ID { get; set; }
         public string GROUP_NAME { get; set; }
     
         public virtual ICollection<EX_GROUP_TYPE_DETAILS> EX_GROUP_TYPE_DETAILS { get; set; }
+        public virtual ICollection<QUOTA_MONITORING> QUOTA_MONITORING { get; set; }
     }
 }

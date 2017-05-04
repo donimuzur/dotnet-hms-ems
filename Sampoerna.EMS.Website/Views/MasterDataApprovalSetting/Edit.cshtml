@@ -1,0 +1,183 @@
+﻿@model Sampoerna.EMS.Website.Models.MasterDataApprovalSetting.MasterDataApprovalSettingEditViewModel
+@{
+    ViewBag.Title = "Edit";
+
+
+}
+@using (Html.BeginForm("Edit", "MasterDataApprovalSetting", null, FormMethod.Post, new { @class = "form-excise", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3> Master Data Settings </h3>
+                <div class="action-button">
+                    <input type="submit" class="btn btn-blue" value="Save" />
+                    <a href="@Url.Action("Index", "MasterDataApprovalSetting")" class="btn btn-grey">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="white-wrapper">
+                    <div class="scroll">
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingOne">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            Update Master Data Settings
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                
+                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                    <div class="panel-body">
+                                        <form class="form-excise" role="form">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Form Id</label>
+                                                        <div class="col-md-8">
+
+                                                            @Html.HiddenFor(model => model.Detail.PageId)
+                                                            @Html.TextBox("Form Id", Model.Detail.PageId, new { @class = "form-control", @disabled = "disabled" })
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Form Name</label>
+                                                        <div class="col-md-8">
+                                                            
+                                                                @Html.TextBoxFor(model => model.Detail.PageDescription, new { @class = "form-control",  @disabled = "disabled" })
+                                                                @Html.HiddenFor(model => model.Detail.PageDescription)
+                                                            
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            
+                                            
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-group" id="accordionTwo" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingTwo">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordionTwo" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                            Field Settings
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                                    <div class="panel-body">
+                                        
+
+
+                                        
+                                        <div class="container-wrap">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <div id="contenttable" class="table-container">
+                                                        <table id="material-uom" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+                                                            <thead>
+                                                                <tr> 
+                                                                    <th> Field Name </th>
+                                                                    <th> Database Field </th>
+                                                                    <th> Need Approval </th>
+
+                                                                </tr>
+
+                                                            </thead>
+
+
+                                                            <tbody>
+                                                                @if (Model.Detail.MasterDataSettingDetails != null)
+                                                                {
+                                                                    for (int i = 0; i < Model.Detail.MasterDataSettingDetails.Count; i++)
+                                                                    {
+
+                                                                        <tr >
+                                                                            @Html.HiddenFor(x=> x.Detail.MasterDataSettingDetails[i].PAGE_ID)
+                                                                            @Html.HiddenFor(x => x.Detail.MasterDataSettingDetails[i].COLUMN_NAME)
+                                                                            @Html.HiddenFor(x => x.Detail.MasterDataSettingDetails[i].ColumnDescription)
+
+                                                                            <td>
+                                                                                <span id="field1">@Html.DisplayTextFor(x=> x.Detail.MasterDataSettingDetails[i].ColumnDescription)</span>
+
+                                                                            </td>
+                                                                            <td>
+                                                                                @*<span id="field2">@Html.Raw(Model.MaterialUom[i].UmrenStr)</span>*@
+                                                                                <span id="field1">@Html.DisplayTextFor(x => x.Detail.MasterDataSettingDetails[i].COLUMN_NAME)</span>
+                                                                            </td>
+                                                                            <td>
+                                                                                @*<span id="field2">@Html.Raw(Model.MaterialUom[i].UmrenStr)</span>*@
+                                                                                @Html.CheckBoxFor(x => x.Detail.MasterDataSettingDetails[i].IS_APPROVAL)
+                                                                            </td>
+                                                                        </tr>
+
+
+
+
+
+                                                                    }
+                                                                }
+                                                            </tbody>
+
+                                                        </table>
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                        
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+
+                </div>
+            </div>
+        </div>
+    </footer>
+}
+@section scripts{
+    <script src="~/Scripts/thousand-separator.js"></script>
+
+    <script type="text/javascript" language="javascript">
+
+        $('#MenuMasterApproval').addClass('active');
+
+       
+    </script>
+}

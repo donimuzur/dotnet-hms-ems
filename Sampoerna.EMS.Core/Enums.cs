@@ -41,7 +41,9 @@ namespace Sampoerna.EMS.Core
             WasteStock = 34,
             PoaDelegation = 35,
             SchedulerSettings = 36,
-            ProductType = 37
+            ProductType = 37,
+            MasterDataApproveSetting = 38,
+            MasterDataApproval = 39
         }
         public enum PBCK1Type
         {
@@ -136,8 +138,10 @@ namespace Sampoerna.EMS.Core
             Revised = 5,
             [Description("Waiting for POA Approval")]
             WaitingForApproval = 10,
-            [Description("Waiting for Manager Approval")]
-            WaitingForApprovalManager = 11,
+            [Description("Waiting for Controller Approval")]
+            WaitingForApprovalController = 11,
+            [Description("Waiting for POA Approval 2")]
+            WaitingForApproval2 = 12,
             [Description("Approved")]
             Approved = 15,
             [Description("Rejected")]
@@ -244,7 +248,10 @@ namespace Sampoerna.EMS.Core
             TFPosting = 320,
 
             [Description("Waiting for Purchase Order")]
-            PurchaseOrder = 321
+            PurchaseOrder = 321,
+
+            [Description("Waiting for Master Approver")]
+            WaitingForMasterApprover = 322
         }
 
 
@@ -296,6 +303,8 @@ namespace Sampoerna.EMS.Core
             Submit = 10,
             [Description("Waiting for Approval")]
             WaitingForApproval = 11,
+            [Description("Waiting for Approval 2")]
+            WaitingForApproval2 = 12,
             [Description("Approve")]
             Approve = 15,
             [Description("Reject")]
@@ -421,7 +430,7 @@ namespace Sampoerna.EMS.Core
         {
             User = 1,
             POA = 2,
-            Manager = 3,
+            Controller = 3,
             Viewer = 4,
             System = 10,
             Administrator = 15,
@@ -687,6 +696,16 @@ namespace Sampoerna.EMS.Core
             ReRun = 2,
             [Description("Re-run Success")]
             Success = 3
+        }
+
+        public enum EmailStatus
+        {
+            [Description("Sent")]
+            Sent = 1,
+            [Description("Failed To Send")]
+            NotSent = 2,
+            [Description("Read")]
+            Read = 3
         }
     }
 }

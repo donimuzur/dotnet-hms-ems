@@ -33,5 +33,7 @@ namespace Sampoerna.EMS.BusinessObject.Business
         public string KPPBC_CITY { get; set; }
 
         public string COMPANY_CODE { get; set; }
+
+        public string ADDRESS_IMPORT { get; set; }
     }
 }

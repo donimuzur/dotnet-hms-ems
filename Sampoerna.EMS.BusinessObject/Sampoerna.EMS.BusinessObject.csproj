@@ -81,6 +81,7 @@
     <Compile Include="Business\Plant.cs" />
     <Compile Include="Business\SchedulerConfigJson.cs" />
     <Compile Include="Business\SchedulerSetting.cs" />
+    <Compile Include="Business\TableDetail.cs" />
     <Compile Include="CHANGES_HISTORY.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -130,6 +131,7 @@
     <Compile Include="DTOs\BACK1_DOCUMENTDto.cs" />
     <Compile Include="DTOs\BACK3_DOCUMENTDto.cs" />
     <Compile Include="DTOs\BLOCK_STOCKDto.cs" />
+    <Compile Include="DTOs\BrandXmlDto.cs" />
     <Compile Include="DTOs\ChangeHistoryDto.cs" />
     <Compile Include="DTOs\CK1Dto.cs" />
     <Compile Include="DTOs\CK2_DOCUMENTDto.cs" />
@@ -173,8 +175,11 @@
     <Compile Include="DTOs\Lack2SummaryReportDto.cs" />
     <Compile Include="DTOs\LFA1Dto.cs" />
     <Compile Include="DTOs\Lack1DocumentDto.cs" />
+    <Compile Include="DTOs\MasterDataApprovalSettingDto.cs" />
     <Compile Include="DTOs\MaterialBalanceDto.cs" />
     <Compile Include="DTOs\MaterialDto.cs" />
+    <Compile Include="DTOs\MonthClosingDocDto.cs" />
+    <Compile Include="DTOs\MonthClosingDto.cs" />
     <Compile Include="DTOs\NlogDto.cs" />
     <Compile Include="DTOs\NppbkcPlantDto.cs" />
     <Compile Include="DTOs\Pbck1DecreeDocDto.cs" />
@@ -268,6 +273,7 @@
     <Compile Include="Inputs\LFAInputs.cs" />
     <Compile Include="Inputs\Lack2GetByParamInput.cs" />
     <Compile Include="Inputs\MaterialInput.cs" />
+    <Compile Include="Inputs\MonthClosingGetByParam.cs" />
     <Compile Include="Inputs\NlogInput.cs" />
     <Compile Include="Inputs\PBCK1Input.cs" />
     <Compile Include="Inputs\Pbck1ProdConverterInput.cs" />
@@ -335,6 +341,15 @@
     <Compile Include="LFA1.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="MASTER_DATA_APPROVAL.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MASTER_DATA_APPROVAL_DETAIL.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MASTER_DATA_APPROVE_SETTING.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="MATERIAL_UOM.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
@@ -342,6 +357,12 @@
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="MONTH.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MONTH_CLOSING.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MONTH_CLOSING_DOCUMENT.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="NlogLogs.cs">
@@ -453,6 +474,12 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Business\UserTree.cs" />
+    <Compile Include="QUOTA_MONITORING.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="QUOTA_MONITORING_DETAIL.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="REVERSAL.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>

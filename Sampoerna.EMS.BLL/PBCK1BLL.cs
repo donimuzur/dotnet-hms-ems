@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Linq;
 using System.Linq.Expressions;
@@ -26,6 +27,8 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<PBCK1> _repository;
+        private IGenericRepository<QUOTA_MONITORING> _repositoryQuotaMonitor;
+        private IGenericRepository<QUOTA_MONITORING_DETAIL> _repositoryQuotaMonitorDetail;
         private IDocumentSequenceNumberBLL _docSeqNumBll;
         private IWorkflowHistoryBLL _workflowHistoryBll;
         private IChangesHistoryBLL _changesHistoryBll;
@@ -57,6 +60,8 @@ namespace Sampoerna.EMS.BLL
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<PBCK1>();
+            _repositoryQuotaMonitor = _uow.GetGenericRepository<QUOTA_MONITORING>();
+            _repositoryQuotaMonitorDetail = _uow.GetGenericRepository<QUOTA_MONITORING_DETAIL>();
             _docSeqNumBll = new DocumentSequenceNumberBLL(_uow, _logger);
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
@@ -1377,7 +1382,7 @@ namespace Sampoerna.EMS.BLL
                     SubmitDocument(input);
                     break;
                 case Enums.ActionType.Approve:
-                    ApproveDocument(input);
+                    isNeedSendNotif = ApproveDocument(input);
                     break;
                 case Enums.ActionType.Reject:
                     RejectDocument(input);
@@ -1455,8 +1460,9 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        private void ApproveDocument(Pbck1WorkflowDocumentInput input)
+        private bool ApproveDocument(Pbck1WorkflowDocumentInput input)
         {
+            var isNeedSendEmail = true;
             var dbData = _repository.GetByID(input.DocumentId);
 
             if (dbData == null)
@@ -1479,7 +1485,7 @@ namespace Sampoerna.EMS.BLL
             //dbData.APPROVED_BY_POA = input.UserId;
             //dbData.APPROVED_DATE_POA = DateTime.Now;
             //Add Changes
-            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
+            
 
             if (input.UserRole == Enums.UserRole.POA)
             {
@@ -1487,15 +1493,28 @@ namespace Sampoerna.EMS.BLL
                 {
                     //first code when manager exists
                     //dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-                    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
-                    dbData.APPROVED_BY_POA = input.UserId;
-                    dbData.APPROVED_DATE_POA = DateTime.Now;
+                    
+                        WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
+                        dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                        dbData.APPROVED_BY_POA = input.UserId;
+                        dbData.APPROVED_DATE_POA = DateTime.Now;
+                        
+                    
+                    
+                    
+                }
+                else if (dbData.STATUS == Enums.DocumentStatus.WaitingForApproval2)
+                {
+                    WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingForApproval2);
+                    dbData.STATUS = Enums.DocumentStatus.Completed;
+                    isNeedSendEmail = false;
+
                 }
                 else
                 {
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
                 }
-               
+
             }
             //first code when manager exists
             //else
@@ -1513,6 +1532,7 @@ namespace Sampoerna.EMS.BLL
 
             AddWorkflowHistory(input);
 
+            return isNeedSendEmail;
         }
 
         private string CommentDelegateUser(PBCK1 dbData, Pbck1WorkflowDocumentInput input)
@@ -1572,14 +1592,22 @@ namespace Sampoerna.EMS.BLL
             //    dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager &&
             //    dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
 
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval)
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval && dbData.STATUS != Enums.DocumentStatus.WaitingForApproval2)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
 
             //change back to draft
-            dbData.STATUS = Enums.DocumentStatus.Rejected;
+            if (dbData.STATUS == Enums.DocumentStatus.WaitingForApproval2)
+            {
+                dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+            }
+            else
+            {
+                dbData.STATUS = Enums.DocumentStatus.Rejected;
+            }
+            
 
             //todo ask
             //dbData.APPROVED_BY_POA = null;
@@ -1613,7 +1641,7 @@ namespace Sampoerna.EMS.BLL
             //WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Completed);
             //WorkflowStatusGovAddChanges(input, dbData.STATUS_GOV, Enums.DocumentStatusGov.FullApproved);
 
-            dbData.STATUS = Enums.DocumentStatus.Completed;
+            dbData.STATUS = Enums.DocumentStatus.WaitingForApproval2;
 
             //todo: update remaining quota and necessary data
             dbData.PBCK1_DECREE_DOC = null;
@@ -1675,7 +1703,7 @@ namespace Sampoerna.EMS.BLL
 
             //todo: update remaining quota and necessary data
             dbData.PBCK1_DECREE_DOC = null;
-            dbData.STATUS = Enums.DocumentStatus.Completed;
+            dbData.STATUS = Enums.DocumentStatus.WaitingForApproval2;
             dbData.QTY_APPROVED = input.AdditionalDocumentData.QtyApproved;
             dbData.DECREE_DATE = input.AdditionalDocumentData.DecreeDate;
             dbData.PBCK1_DECREE_DOC = Mapper.Map<List<PBCK1_DECREE_DOC>>(input.AdditionalDocumentData.Pbck1DecreeDoc);
@@ -3086,6 +3114,121 @@ namespace Sampoerna.EMS.BLL
             }
 
             data.NUMBER = newDocNumber;
+        }
+
+        public List<QUOTA_MONITORING> GetQuotaMonitoringList()
+        {
+            return _repositoryQuotaMonitor.Get().ToList();
+        }
+
+        public QUOTA_MONITORING GetQuotaMonitoringDetail(int id)
+        {
+            var data = _repositoryQuotaMonitor.Get(x => x.MONITORING_ID == id, null, "QUOTA_MONITORING_DETAIL,QUOTA_MONITORING_DETAIL.USER").FirstOrDefault();
+
+            return data;
+        }
+
+        public void UpdateEmailStatus(int quotaMonitorId, string userId, Enums.EmailStatus status)
+        {
+            var data = _repositoryQuotaMonitor.Get(x => x.MONITORING_ID == quotaMonitorId, null, "QUOTA_MONITORING_DETAIL").FirstOrDefault();
+
+            if (data != null && data.QUOTA_MONITORING_DETAIL.Count > 0)
+            {
+                var monitoringDetail = data.QUOTA_MONITORING_DETAIL.FirstOrDefault(x => x.USER_ID == userId);
+                if (monitoringDetail != null) monitoringDetail.EMAIL_STATUS = status;
+            }
+
+            _uow.SaveChanges();
+        }
+
+        public int SaveQuotaMonitoring(Pbck1Dto dto, List<USER> userlist, Enums.EmailStatus emailStatus, int exGoodType,int quotaPercent)
+        {
+            var data = Mapper.Map<QUOTA_MONITORING>(dto);
+            data.EX_GROUP_TYPE = exGoodType;
+            var existing = _repositoryQuotaMonitor.Get(
+                x =>
+                    x.NPPBKC_ID == dto.NppbkcId && x.PERIOD_FROM <= dto.PeriodFrom && x.PERIOD_TO >= dto.PeriodTo &&
+                    x.SUPPLIER_NPPBKC_ID == dto.SupplierNppbkcId && x.SUPPLIER_WERKS == dto.SupplierPlantWerks && x.EX_GROUP_TYPE == exGoodType).FirstOrDefault();
+
+            if (existing == null)
+            {
+                data.QUOTA_MONITORING_DETAIL = new Collection<QUOTA_MONITORING_DETAIL>();
+                foreach (USER user in userlist)
+                {
+                    data.QUOTA_MONITORING_DETAIL.Add(new QUOTA_MONITORING_DETAIL()
+                    {
+                        USER_ID = user.USER_ID,
+                        EMAIL_STATUS = emailStatus,
+                        ROLE_ID = (int) _poaBll.GetUserRole(user.USER_ID)
+                    });
+                }
+                data.WARNING_LEVEL = quotaPercent;
+
+                _repositoryQuotaMonitor.Insert(data);
+            }
+            else
+            {
+                existing.WARNING_LEVEL = quotaPercent;
+            }
+            _uow.SaveChanges();
+
+            return existing != null ? existing.MONITORING_ID : data.MONITORING_ID;
+        }
+
+        public void UpdateAllEmailStatus(Pbck1Dto dto, Enums.EmailStatus emailStatus,int exGoodType)
+        {
+            
+            
+            var existing = _repositoryQuotaMonitor.Get(
+                x =>
+                    x.NPPBKC_ID == dto.NppbkcId && x.PERIOD_FROM <= dto.PeriodFrom && x.PERIOD_TO >= dto.PeriodTo &&
+                    x.SUPPLIER_NPPBKC_ID == dto.SupplierNppbkcId && x.SUPPLIER_WERKS == dto.SupplierPlantWerks && x.EX_GROUP_TYPE == exGoodType).FirstOrDefault();
+
+            if (existing != null)
+            {
+                var details = _repositoryQuotaMonitorDetail.Get(x => x.MONITORING_ID == existing.MONITORING_ID).ToList();
+
+                foreach (var quotaMonitoringDetail in details)
+                {
+                    quotaMonitoringDetail.EMAIL_STATUS = emailStatus;
+                }
+            }
+            _uow.SaveChanges();
+        }
+
+        public bool CheckExistingQuotaMonitoringByParam(Pbck1Dto dto, int exGoodType,int quotaPercent)
+        {
+            var retVal = false;
+            var existing = _repositoryQuotaMonitor.Get(
+                x =>
+                    x.NPPBKC_ID == dto.NppbkcId && x.PERIOD_FROM <= dto.PeriodFrom && x.PERIOD_TO >= dto.PeriodTo &&
+                    x.SUPPLIER_NPPBKC_ID == dto.SupplierNppbkcId && x.SUPPLIER_WERKS == dto.SupplierPlantWerks && x.EX_GROUP_TYPE == exGoodType).FirstOrDefault();
+            
+            if (existing == null)
+            {
+                if (quotaPercent > 30) return false;
+                return true;
+            }
+            if(existing.WARNING_LEVEL == 30 && quotaPercent == 10)
+            {
+
+                retVal = true;
+            }
+            
+            return retVal;
+        }
+
+        public void UpdateEmailStatus(int quotaMonitorId, USER user, Enums.EmailStatus emailStatus)
+        {
+            var data = _repositoryQuotaMonitorDetail.Get(x => x.MONITORING_ID == quotaMonitorId && x.USER_ID == user.USER_ID)
+                .FirstOrDefault();
+
+            if (data != null)
+            {
+                data.EMAIL_STATUS = emailStatus;
+            }
+
+            _uow.SaveChanges();
         }
     }
 }

@@ -20,7 +20,7 @@ $('#upload-file-sk').click(function () {
        '<a href="#" id="poa_sk' + j + '">' + poa_sk[j] + '</a>' +
        '</div>' +
        '<div class="col-xs-4 col-sm-2 col-md-4 col-lg-2">' +
-       '<button type="button" class="btn btn-danger full" onclick="removeUploadButton(' + j + ')" ><i class="fa fa-times"></i></button>	' +
+       '<button type="button" class="btn btn-danger full" onclick="removeUploadButton(' + j + ', $(this).closest(\'.row\'))" ><i class="fa fa-times"></i></button>	' +
        '</div>' +
        '</div>';
         
@@ -50,9 +50,9 @@ $('#file-sk-container').on('click', '.add-files', (function () {
         
 }));
 
-function removeUploadButton(index) {
+function removeUploadButton(index, obj) {
     file_sk--;
-    $('#poa_sk' + index).remove();
+    obj.remove();
     $('#Ck5FileUploadFileList_' + index + '_').remove();
 
     $('#file-sk-container').html("");

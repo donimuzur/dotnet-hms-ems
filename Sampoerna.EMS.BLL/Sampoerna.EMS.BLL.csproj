@@ -61,6 +61,9 @@
     <Reference Include="Quartz">
       <HintPath>..\packages\Quartz.2.2.4\lib\net40\Quartz.dll</HintPath>
     </Reference>
+    <Reference Include="Sampoerna.EMS.XMLReader">
+      <HintPath>..\Sampoerna.EMS.XMLReader\bin\Debug\Sampoerna.EMS.XMLReader.exe</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -94,6 +97,10 @@
     <Compile Include="BrandRegistrationBLL.cs" />
     <Compile Include="CountryBLL.cs" />
     <Compile Include="LFA1BLL.cs" />
+    <Compile Include="MonthClosingBLL.cs" />
+    <Compile Include="MonthClosingDocBLL.cs" />
+    <Compile Include="MasterDataApprovalBLL.cs" />
+    <Compile Include="MasterDataApprovalSettingBLL.cs" />
     <Compile Include="NlogBLL.cs" />
     <Compile Include="PBCK4BLL.cs" />
     <Compile Include="PBCK7AndPBCK3BLL.cs" />
@@ -129,6 +136,7 @@
     <Compile Include="Services\PBCK1Service.cs" />
     <Compile Include="Services\Pbck3Services.cs" />
     <Compile Include="Services\PoaDelegationServices.cs" />
+    <Compile Include="Services\POAService.cs" />
     <Compile Include="Services\ProductionServices.cs" />
     <Compile Include="Services\T001KService.cs" />
     <Compile Include="Services\T001Service.cs" />

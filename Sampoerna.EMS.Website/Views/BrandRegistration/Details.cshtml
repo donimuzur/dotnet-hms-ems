@@ -33,6 +33,7 @@
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
                     <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                    
                 </ul>
                 <!-- Tab panes -->
                 <div class="tab-content">
@@ -142,7 +143,15 @@
                                                                     </div>
                                                             </div>
                                                         </div>
-
+                                                        <div class="col-md-6">
+                                                            <div class="row">
+                                                                <label class="col-md-4 long">Brand Name (SAP)<span class="red">*</span></label>
+                                                                <div class="col-md-8">
+                                                                    @Html.TextAreaFor(model => model.SAPBrandDescription, new { @rows = "5", @class = "form-control", disabled = "disabled" })
+                                                                    
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                         <div class="col-md-6">
                                                             <div class="row">
                                                                 <label class="col-md-4">SKEP No<span class="red">*</span></label>
@@ -377,6 +386,7 @@
                             @Html.Partial("_ChangesHistoryTable", Model)
                         </div>
                     </div>
+                    
                 </div>
             </div>
         </div>

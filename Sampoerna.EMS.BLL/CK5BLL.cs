@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
 using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
@@ -658,6 +659,25 @@ namespace Sampoerna.EMS.BLL
                     }
                 }
 
+                if (dbData.CK5_TYPE == Enums.CK5Type.Domestic && (dbData.SOURCE_PLANT_NPPBKC_ID == dbData.DEST_PLANT_NPPBKC_ID)
+                    || dbData.CK5_TYPE == Enums.CK5Type.MarketReturn || dbData.CK5_TYPE == Enums.CK5Type.Return
+                    || dbData.CK5_TYPE == Enums.CK5Type.Waste)
+                {
+
+                }
+                else
+                {
+                    if (dbData.CK5_TYPE != Enums.CK5Type.Export &&
+                        dbData.CK5_TYPE != Enums.CK5Type.PortToImporter &&
+                        (dbData.CK5_TYPE != Enums.CK5Type.Manual || dbData.REDUCE_TRIAL == true))
+                    {
+                        var quota = GetQuotaRemainAndDatePbck1ByCk5IdForNotif(dbData.CK5_ID);
+                        SendEmailQuotaWarning(quota, (int)dbData.EX_GOODS_TYPE);
+                    }
+                }
+
+                
+                
             }
             catch (DbEntityValidationException e)
             {
@@ -696,6 +716,10 @@ namespace Sampoerna.EMS.BLL
 
                 //validate
                 var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand);
+                if (ck5MaterialInput.StickerCode != null)
+                {
+                    dbBrand = _brandRegistration.GetByPlantIdAndFaCodeStickerCode(ck5MaterialInput.Plant, ck5MaterialInput.Brand, ck5MaterialInput.StickerCode);
+                }
                 if (dbBrand == null)
                     messageList.Add("Material Number Not Exist");
                 else
@@ -2062,7 +2086,7 @@ namespace Sampoerna.EMS.BLL
                         rc.CC.Add(userCreatorInfo.EMAIL);
 
                     }
-                    else if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
+                    else if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalController)
                     {
                         var managerId = _poaBll.GetManagerIdByPoaId(ck5Dto.CREATED_BY);
                         var managerDetail = _userBll.GetUserById(managerId);
@@ -2081,7 +2105,7 @@ namespace Sampoerna.EMS.BLL
 
                     break;
                 case Enums.ActionType.Approve:
-                    if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalManager)
+                    if (ck5Dto.STATUS_ID == Enums.DocumentStatus.WaitingForApprovalController)
                     {
                         rc.To.Add(GetManagerEmail(ck5Dto.APPROVED_BY_POA));
                         //var poaData = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
@@ -2564,7 +2588,7 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             if (dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApproval &&
-                dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApprovalManager &&
+                dbData.STATUS_ID != Enums.DocumentStatus.WaitingForApprovalController &&
                 dbData.STATUS_ID != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
@@ -4977,6 +5001,8 @@ namespace Sampoerna.EMS.BLL
 
             AddWorkflowHistory(inputWorkflowHistory);
 
+            
+
             return dbData;
         }
 
@@ -5058,6 +5084,28 @@ namespace Sampoerna.EMS.BLL
                     }
                     
                 }
+
+                foreach (var ck5 in listInsertedCk5)
+                {
+                    if (ck5.CK5_TYPE == Enums.CK5Type.Domestic && (ck5.SOURCE_PLANT_NPPBKC_ID == ck5.DEST_PLANT_NPPBKC_ID)
+                    || ck5.CK5_TYPE == Enums.CK5Type.MarketReturn || ck5.CK5_TYPE == Enums.CK5Type.Return
+                    || ck5.CK5_TYPE == Enums.CK5Type.Waste)
+                    {
+
+                    }
+                    else
+                    {
+                        if (ck5.CK5_TYPE != Enums.CK5Type.Export &&
+                            ck5.CK5_TYPE != Enums.CK5Type.PortToImporter &&
+                            (ck5.CK5_TYPE != Enums.CK5Type.Manual || ck5.REDUCE_TRIAL == true))
+                        {
+                            var quota = GetQuotaRemainAndDatePbck1ByCk5IdForNotif(ck5.CK5_ID);
+                            SendEmailQuotaWarning(quota, (int)ck5.EX_GOODS_TYPE);
+                        }
+                    }
+                    
+                }
+                
             }
             catch (DbEntityValidationException e)
             {
@@ -5392,6 +5440,53 @@ namespace Sampoerna.EMS.BLL
                 {
                     if (pbck1Dto.QtyApproved.HasValue)
                         output.QtyApprovedPbck1 += pbck1Dto.QtyApproved.Value;
+                }
+
+                if (listPbck1.Count == 0)
+                    throw new BLLException(ExceptionCodes.BLLExceptions.Pbck1RefNull);
+
+                var periodStart = listPbck1[0].PeriodFrom;
+                var periodEnd = listPbck1[0].PeriodTo.Value.AddDays(1);
+                var pbck1npbkc = listPbck1[0].NppbkcId;
+
+                output.PbckUom = listPbck1[0].RequestQtyUomId;
+
+
+
+                output.QtyCk5 = GetQuotaCk5(ck5DbData.SOURCE_PLANT_ID, ck5DbData.SOURCE_PLANT_NPPBKC_ID, pbck1npbkc, periodStart, periodEnd, ck5DbData.EX_GOODS_TYPE);
+            }
+
+            return output;
+        }
+
+        public GetQuotaAndRemainOutput GetQuotaRemainAndDatePbck1ByCk5IdForNotif(long ck5Id)
+        {
+            var output = new GetQuotaAndRemainOutput();
+
+            var ck5DbData = _repository.GetByID(ck5Id);
+            var goodTypeGroups = _goodTypeGroupBLL.GetById((int)ck5DbData.EX_GOODS_TYPE).EX_GROUP_TYPE_DETAILS.Select(x => x.GOODTYPE_ID).ToList();
+            if (ck5DbData == null)
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            if (ck5DbData.PBCK1_DECREE_ID.HasValue)
+            {
+                var quotaOutput = GetQuotaRemainAndDatePbck1(ck5DbData.PBCK1_DECREE_ID.Value, (int)ck5DbData.EX_GOODS_TYPE, ck5DbData.CK5_TYPE);
+                quotaOutput.Pbck1Id = ck5DbData.PBCK1_DECREE_ID.Value;
+                return quotaOutput;
+            }
+
+            else
+            {
+                var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(ck5DbData.SOURCE_PLANT_ID, ck5DbData.SOURCE_PLANT_NPPBKC_ID,
+                    ck5DbData.SUBMISSION_DATE, ck5DbData.DEST_PLANT_NPPBKC_ID, goodTypeGroups);
+
+                output.QtyApprovedPbck1 = 0;
+
+                foreach (var pbck1Dto in listPbck1)
+                {
+                    if (pbck1Dto.QtyApproved.HasValue)
+                        output.QtyApprovedPbck1 += pbck1Dto.QtyApproved.Value;
+                    output.Pbck1Id = pbck1Dto.Pbck1Id;
                 }
 
                 if (listPbck1.Count == 0)
@@ -5775,9 +5870,14 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public GetBrandByPlantAndMaterialNumberOutput GetBrandByPlantAndMaterialNumber(string plantId, string materialNumber)
+        public GetBrandByPlantAndMaterialNumberOutput GetBrandByPlantAndMaterialNumber(string plantId, string materialNumber, string stickerCode = null)
         {
             var dbBrand = _brandRegistration.GetByPlantIdAndFaCode(plantId, materialNumber);
+
+            if (stickerCode != null)
+            {
+                dbBrand = _brandRegistration.GetByPlantIdAndFaCodeStickerCode(plantId, materialNumber, stickerCode);
+            }
 
             var result = new GetBrandByPlantAndMaterialNumberOutput();
             if (dbBrand == null)
@@ -6343,6 +6443,164 @@ namespace Sampoerna.EMS.BLL
             var dtData = _repository.Get(queryFilter).Select(c => c.SUBMISSION_NUMBER).ToList();
 
             return dtData;
+        }
+
+        public void SendEmailQuotaWarning(GetQuotaAndRemainOutput quotaDetail,int exGoodType)
+        {
+            
+
+            var quota30Percent = 0.3 * (double) quotaDetail.QtyApprovedPbck1;
+            var quota10Percent = 0.1 * (double)quotaDetail.QtyApprovedPbck1;
+            var remainQuota = (double) (quotaDetail.QtyApprovedPbck1 - quotaDetail.QtyCk5);
+            quotaDetail.RemainQuota = (decimal) remainQuota;
+            
+            var userList = new List<USER>();
+            MailNotification mailNotif = null;
+
+            var needSendEmail = false;
+            var quotaPercent = 100;
+            if (remainQuota <= quota30Percent && remainQuota > quota10Percent)
+            {
+                quotaPercent = 30;
+                
+            }
+            else if(remainQuota <= quota10Percent)
+            {
+                quotaPercent = 10;
+                
+            }
+
+            var pbck1Data = new Pbck1Dto();
+
+            if (quotaDetail.Pbck1Id.HasValue)
+            {
+                pbck1Data = _pbck1Bll.GetById(quotaDetail.Pbck1Id.Value);
+                var userCreatorInfo = _userBll.GetUserById(pbck1Data.CreatedById);
+                var userPoaApprovalInfo = _userBll.GetUserById(pbck1Data.ApprovedByPoaId);
+                var controllerList = _userBll.GetControllers();
+                userList = new List<USER>();
+                userList.Add(userCreatorInfo);
+                userList.Add(userPoaApprovalInfo);
+                userList.AddRange(controllerList);
+                var monitoringId = 0;
+                needSendEmail = _pbck1Bll.CheckExistingQuotaMonitoringByParam(pbck1Data, exGoodType, quotaPercent);
+
+                if (needSendEmail)
+                {
+                    monitoringId = _pbck1Bll.SaveQuotaMonitoring(pbck1Data, userList, Enums.EmailStatus.NotSent, exGoodType, quotaPercent);
+
+                    mailNotif = ProcessEmailQuotaNotification(quotaDetail, quotaPercent, pbck1Data, userList, monitoringId);
+
+                    var success = false;
+
+                    if (mailNotif != null)
+                    {
+                        if (mailNotif.IsCCExist)
+                        {
+                            success = _messageService.SendEmailToListWithCC(mailNotif.To, mailNotif.CC, mailNotif.Subject, mailNotif.Body, false);
+                        }
+                        else
+                        {
+                            success = _messageService.SendEmailToList(mailNotif.To, mailNotif.Subject, mailNotif.Body, false);
+                        }
+                        var emailStatus = success ? Enums.EmailStatus.Sent : Enums.EmailStatus.NotSent;
+                        _pbck1Bll.UpdateAllEmailStatus(pbck1Data, emailStatus, exGoodType);
+                    }
+                }
+                
+
+                
+                
+
+                
+            }
+
+            
+            
+
+            
+        }
+
+        private MailNotification ProcessEmailQuotaNotification(GetQuotaAndRemainOutput quotaDetail,int percent, Pbck1Dto pbck1Data, List<USER> userList,int monitoringId)
+            
+        {
+            var bodyMail = new StringBuilder();
+            var rc = new MailNotification();
+            
+            
+            
+            
+
+            var userCreatorInfo = userList.FirstOrDefault(x => x.USER_ID ==  pbck1Data.CreatedById);
+            var userPoaApprovalInfo = userList.FirstOrDefault(x => x.USER_ID == pbck1Data.ApprovedByPoaId);
+            var controllerList = userList.Where(x => x.USER_ID != pbck1Data.CreatedById && x.USER_ID != pbck1Data.ApprovedByPoaId).ToList();
+            
+            var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
+
+            rc.Subject = "PBCK-1 " + quotaDetail.Pbck1Number + " Quota is currently below " + percent + "% of Approved Qty.";
+            bodyMail.Append("Dear Team,<br />");
+
+            bodyMail.Append("Kindly be informed, " + rc.Subject + ". <br />");
+
+            bodyMail.Append(BuildBodyMailForQuotaNotification(pbck1Data, quotaDetail, webRootUrl, userCreatorInfo, userPoaApprovalInfo,monitoringId));
+
+            rc.To.Add(userCreatorInfo.EMAIL);
+            rc.To.Add(userPoaApprovalInfo.EMAIL);
+            rc.Body = bodyMail.ToString();
+            foreach (var controller in controllerList)
+            {
+                rc.IsCCExist = true;
+                rc.CC.Add(controller.EMAIL);
+            }
+
+            return rc;
+            
+            
+
+
+           
+        }
+
+        private string BuildBodyMailForQuotaNotification(Pbck1Dto pbck1Data, GetQuotaAndRemainOutput quotaDetail, string webRootUrl, USER creator, USER poa,int monitoringId)
+        {
+            var bodyMail = new StringBuilder();
+            bodyMail.Append("<table><tr><td>PBCK1 Number </td><td>: <a href='" + webRootUrl + "/PBCK1/Details/" + pbck1Data.Pbck1Id + "'>" + pbck1Data.Pbck1Number + "</a></td></tr>");
+            bodyMail.Append("<tr><td>NPPBKC Destination </td><td>: " + pbck1Data.NppbkcId + "</td></tr>");
+            bodyMail.Append("<tr><td>Plant & NPPBKC Supplier </td><td>: " + pbck1Data.SupplierPlantWerks + " - " +
+                            pbck1Data.SupplierPlant + "</td></tr>");
+
+            bodyMail.Append("<tr><td>Total Qty Approved </td><td>: " +
+                            ConvertHelper.ConvertDecimalToStringMoneyFormat(pbck1Data.QtyApproved) + " " + pbck1Data.RequestQtyUomName + "</td></tr>");
+            bodyMail.Append("<tr><td>Total Quota Qty Used </td><td>: " +
+                            ConvertHelper.ConvertDecimalToStringMoneyFormat(quotaDetail.QtyCk5) + " " + pbck1Data.RequestQtyUomName + "</td></tr>");
+            bodyMail.Append("<tr><td>Total Quota Qty Remain </td><td>: " +
+                            ConvertHelper.ConvertDecimalToStringMoneyFormat(quotaDetail.RemainQuota) + " " + pbck1Data.RequestQtyUomName + "</td></tr>");
+            
+            string userName = "";
+            if (creator != null)
+                userName = creator.LAST_NAME + ", " + creator.FIRST_NAME;
+            
+            
+
+            bodyMail.Append("<tr><td>Creator</td><td> : " + userName + "</td></tr>");
+
+            if (poa != null)
+                userName = poa.LAST_NAME + ", " + poa.FIRST_NAME;
+            bodyMail.Append("<tr><td>POA Approver</td><td> : " + userName + "</td></tr>");
+
+
+
+
+
+            bodyMail.Append("<tr colspan='2'><td><i>To VIEW, Please click this <a href='" + webRootUrl + "/PBCK1/QuotaMonitoring/" + monitoringId + "'><u>link</u></a> to view detailed information</i></td></tr>");
+
+            
+
+            bodyMail.Append("</table>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<br />Regards,<br />");
+
+            return bodyMail.ToString();
         }
     }
 }

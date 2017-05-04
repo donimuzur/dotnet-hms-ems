@@ -5,6 +5,8 @@
         public long Id { get; set; }
         public string FaCode { get; set; }
 
+        public string StickerCode { get; set; }
+
         public string ProdTypeAlias { get; set; }
 
         public string Brand { get; set; }

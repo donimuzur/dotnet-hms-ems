@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Web.Mvc;
 using AutoMapper;
 using DocumentFormat.OpenXml.Spreadsheet;
+using iTextSharp.text.pdf.qrcode;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
@@ -41,6 +43,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 Details = Mapper.Map<List<UserItem>>(users)
             };
+            var data = _bll.GetControllers();
             return View(model);
         }
 
@@ -62,6 +65,61 @@ namespace Sampoerna.EMS.Website.Controllers
             return View("Detail",model);
         }
 
+        public ActionResult Edit(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return RedirectToAction("Index");
+
+            var user = _bll.GetUserById(id);
+            var changeHistoryList = _changesHistoryBll.GetByFormTypeId(Enums.MenuList.USER);
+            var model = new UserItemViewModel()
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                Detail = Mapper.Map<UserItem>(user),
+                ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList)
+            };
+
+            return View("Edit", model);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(UserItemViewModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var data = Mapper.Map<USER>(model.Detail);
+                    _bll.SaveUser(data);
+
+                    AddMessageInfo("User data updated", Enums.MessageInfoType.Success);
+                }
+                else
+                {
+
+                    var errorsStates = ModelState.Values.Where(x => x.Errors.Count > 0).ToList();
+                    var errorMessages = (from errorState in errorsStates from error in errorState.Errors select error.ErrorMessage).ToList();
+                    AddMessageInfo(errorMessages,Enums.MessageInfoType.Error);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+
+            var user = _bll.GetUserById(model.Detail.USER_ID);
+            var changeHistoryList = _changesHistoryBll.GetByFormTypeId(Enums.MenuList.USER);
+            var returnModel = new UserItemViewModel()
+            {
+                MainMenu = _mainMenu,
+                CurrentMenu = PageInfo,
+                Detail = Mapper.Map<UserItem>(user),
+                ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList)
+            };
+            return View("Edit", returnModel);
+        }
 
         #region export xls
 

@@ -21,6 +21,7 @@ using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.CK4C;
 using Sampoerna.EMS.Website.Models.PRODUCTION;
+using Sampoerna.EMS.Website.Models.MonthClosing;
 using Sampoerna.EMS.Website.Utility;
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -37,9 +38,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IUserPlantMapBLL _userPlantMapBll;
         private IPOAMapBLL _poaMapBll;
         private IMonthBLL _monthBll;
+        private IMonthClosingBLL _monthClosingBll;
 
         public ProductionController(IPageBLL pageBll, IProductionBLL productionBll, ICompanyBLL companyBll, IPlantBLL plantBll, IUnitOfMeasurementBLL uomBll,
-            IBrandRegistrationBLL brandRegistrationBll, IChangesHistoryBLL changeHistorybll, IUserPlantMapBLL userPlantMapBll, IPOAMapBLL poaMapBll, IMonthBLL monthBll)
+            IBrandRegistrationBLL brandRegistrationBll, IChangesHistoryBLL changeHistorybll, IUserPlantMapBLL userPlantMapBll, IPOAMapBLL poaMapBll, IMonthBLL monthBll, IMonthClosingBLL monthClosingBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _productionBll = productionBll;
@@ -52,6 +54,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _userPlantMapBll = userPlantMapBll;
             _poaMapBll = poaMapBll;
             _monthBll = monthBll;
+            _monthClosingBll = monthClosingBll;
         }
 
         #region Index
@@ -537,7 +540,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             }
 
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 AddMessageInfo("Error, Data is not Valid", Enums.MessageInfoType.Error);
@@ -559,7 +562,6 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new List<ProductionUploadItems>();
             if (data != null)
             {
-                DateTime temp;
                 foreach (var dataRow in data.DataRows)
                 {
                     if (dataRow[0] == "")
@@ -644,10 +646,14 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetFaCodeDescription(string plantWerk, string faCode)
         {
             var fa = _brandRegistrationBll.GetByFaCode(plantWerk, faCode);
-            if (fa.PROD_CODE == "05" && fa.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.TembakauIris))
+            if (fa != null)
             {
-                fa.IS_FROM_SAP = true;
+                if (fa.PROD_CODE == "05" && fa.EXC_GOOD_TYP == EnumHelper.GetDescription(Enums.GoodsType.TembakauIris))
+                {
+                    fa.IS_FROM_SAP = true;
+                }
             }
+            
             return Json(fa);
         }
 
@@ -661,7 +667,39 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(model);
         }
 
+        [HttpPost]
+        public JsonResult CheckClosingMonth(string plantWerk, DateTime prodDate)
+        {
+            var param = new MonthClosingGetByParam();
+            param.ClosingDate = prodDate;
+            param.PlantId = plantWerk;
+            param.DisplayDate = null;
 
+            var data = _monthClosingBll.GetDataByParam(param);
+
+            var model = Mapper.Map<MonthClosingDetail>(data);
+
+            return Json(model);
+        }
+
+        [HttpPost]
+        public JsonResult DisplayClosingMonth(string plantWerk, DateTime prodDate)
+        {
+            var param = new MonthClosingGetByParam();
+            param.DisplayDate = prodDate;
+            param.PlantId = plantWerk;
+            param.ClosingDate = null;
+
+            var data = _monthClosingBll.GetDataByParam(param);
+
+            var model = Mapper.Map<MonthClosingDetail>(data);
+            if (model != null)
+            {
+                model.DisplayDate = "Closing Date : " + model.ClosingDate.ToString("dd MMM yyyy");
+            }
+
+            return Json(model);
+        }
 
         #endregion
 

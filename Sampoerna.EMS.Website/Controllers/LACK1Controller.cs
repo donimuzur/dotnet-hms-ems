@@ -103,10 +103,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     ListNppbkc = curUser.ListUserNppbkc,
                     ListUserPlant = curUser.ListUserPlants
                 })),
-                IsShowNewButton = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer && curUser.UserRole != Enums.UserRole.Administrator ? true : false),
+                IsShowNewButton = (curUser.UserRole != Enums.UserRole.Controller && curUser.UserRole != Enums.UserRole.Viewer && curUser.UserRole != Enums.UserRole.Administrator ? true : false),
                 //first code when manager exists
                 //IsNotViewer = curUser.UserRole != Enums.UserRole.Viewer
-                IsNotViewer = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer && curUser.UserRole != Enums.UserRole.Administrator ? true : false)
+                IsNotViewer = (curUser.UserRole != Enums.UserRole.Viewer && curUser.UserRole != Enums.UserRole.Administrator ? true : false)
             });
 
             return View("Index", data);
@@ -152,7 +152,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var viewModel = new Lack1IndexViewModel { Details = result };
             //first code when manager exists
             //viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
-            viewModel.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false);
+            viewModel.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false);
 
             return PartialView("_Lack1Table", viewModel);
         }
@@ -178,10 +178,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     ListNppbkc = curUser.ListUserNppbkc,
                     ListUserPlant = curUser.ListUserPlants
                 })),
-                IsShowNewButton = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer && curUser.UserRole != Enums.UserRole.Administrator ? true : false),
+                IsShowNewButton = (curUser.UserRole != Enums.UserRole.Controller && curUser.UserRole != Enums.UserRole.Viewer && curUser.UserRole != Enums.UserRole.Administrator ? true : false),
                 //first code when manager exists
                 //IsNotViewer = curUser.UserRole != Enums.UserRole.Viewer
-                IsNotViewer = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer && curUser.UserRole != Enums.UserRole.Administrator ? true : false)
+                IsNotViewer = (curUser.UserRole != Enums.UserRole.Viewer && curUser.UserRole != Enums.UserRole.Administrator ? true : false)
             });
 
             return View("ListByPlant", data);
@@ -224,7 +224,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var viewModel = new Lack1IndexPlantViewModel { Details = resultPlant };
             //first code when manager exists
             //viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
-            viewModel.IsNotViewer = (curUser.UserRole != Enums.UserRole.Manager && curUser.UserRole != Enums.UserRole.Viewer && curUser.UserRole != Enums.UserRole.Administrator ? true : false);
+            viewModel.IsNotViewer = (curUser.UserRole != Enums.UserRole.Viewer && curUser.UserRole != Enums.UserRole.Administrator ? true : false);
 
             return PartialView("_Lack1ListByPlantTable", viewModel);
 
@@ -333,7 +333,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Administrator)
+            if (CurrentUser.UserRole == Enums.UserRole.Controller || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Administrator)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction(lack1Level.Value == Enums.Lack1Level.Nppbkc ? "Index" : "ListByPlant");
@@ -347,10 +347,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 Lack1Level = lack1Level.Value,
                 MenuPlantAddClassCss = lack1Level.Value == Enums.Lack1Level.Plant ? "active" : "",
                 MenuNppbkcAddClassCss = lack1Level.Value == Enums.Lack1Level.Nppbkc ? "active" : "",
-                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
+                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false),
                 //first code when manager exists
                 //IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
-                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
             };
 
             return CreateInitial(model);
@@ -368,7 +368,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     return CreateInitial(model);
                 }
 
-                if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.Viewer)
+                if (CurrentUser.UserRole == Enums.UserRole.Controller || CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.Viewer)
                 {
                     AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                     return RedirectToAction(model.Lack1Level == Enums.Lack1Level.Nppbkc ? "Index" : "ListByPlant");
@@ -559,7 +559,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 })),
                 //first code when manager exists
                 //IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
-                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
             });
 
             return View("ListCompletedDocument", data);
@@ -599,7 +599,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var viewModel = new Lack1IndexCompletedDocumentViewModel { Details = resultPlant };
             //first code when manager exists
             //viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
-            viewModel.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            viewModel.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
 
             return PartialView("_Lack1CompletedDocumentTable", viewModel);
 
@@ -935,13 +935,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //first code when manager exists
             //if (CurrentUser.UserRole == Enums.UserRole.Viewer)
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
             {
                 //redirect to details for approval/rejected
                 return RetDetails(lack1Data, true);
             }
 
-            if (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval)
+            if (lack1Data.Status == Enums.DocumentStatus.WaitingForApproval || lack1Data.Status == Enums.DocumentStatus.WaitingForApprovalController)
             {
                 return RetDetails(lack1Data, false);
             }
@@ -1372,10 +1372,17 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
             bool isSuccess = false;
+            var lack1Level = "Index";
             try
             {
                 Lack1Workflow(id.Value, Enums.ActionType.Approve, string.Empty);
                 isSuccess = true;
+
+                var lack1Data = _lack1Bll.GetDetailsById(id.Value);
+                if (lack1Data.Lack1Level == Enums.Lack1Level.Plant)
+                {
+                    lack1Level = "ListByPlant";
+                }
             }
             catch (Exception ex)
             {
@@ -1383,16 +1390,23 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             if (!isSuccess) return RedirectToAction("Details", "Lack1", new { id });
             AddMessageInfo("Success Approve Document", Enums.MessageInfoType.Success);
-            return RedirectToAction("Index");
+            return RedirectToAction(lack1Level);
         }
 
         public ActionResult RejectDocument(Lack1ItemViewModel model)
         {
             bool isSuccess = false;
+            var lack1Level = "Index";
             try
             {
                 Lack1Workflow(model.Lack1Id, Enums.ActionType.Reject, model.Comment);
                 isSuccess = true;
+
+                var lack1Data = _lack1Bll.GetDetailsById(model.Lack1Id);
+                if (lack1Data.Lack1Level == Enums.Lack1Level.Plant)
+                {
+                    lack1Level = "ListByPlant";
+                }
             }
             catch (Exception ex)
             {
@@ -1401,7 +1415,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (!isSuccess) return RedirectToAction("Details", "Lack1", new { id = model.Lack1Id });
             AddMessageInfo("Success Reject Document", Enums.MessageInfoType.Success);
-            return RedirectToAction("Index");
+            return RedirectToAction(lack1Level);
         }
 
         private void Lack1Workflow(int id, Enums.ActionType actionType, string comment, bool isModified = false)

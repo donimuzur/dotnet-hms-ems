@@ -14,6 +14,7 @@ using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.PRODUCTION;
 using Sampoerna.EMS.Website.Models.Waste;
+using Sampoerna.EMS.Website.Models.MonthClosing;
 using Sampoerna.EMS.Website.Utility;
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -33,10 +34,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IUserPlantMapBLL _userPlantMapBll;
         private IPOAMapBLL _poaMapBll;
         private IMonthBLL _monthBll;
+        private IMonthClosingBLL _monthClosingBll;
 
         public WasteController(IPageBLL pageBll, IWasteBLL wasteBll, ICompanyBLL companyBll, IPlantBLL plantBll,
             IUnitOfMeasurementBLL uomBll, IBrandRegistrationBLL brandRegistrationBll, IChangesHistoryBLL changesHistoryBll,
-            IWasteStockBLL wasteStockBll, IMaterialBLL materialBll, IUserPlantMapBLL userPlantMapBll, IPOAMapBLL poaMapBll, IMonthBLL monthBll)
+            IWasteStockBLL wasteStockBll, IMaterialBLL materialBll, IUserPlantMapBLL userPlantMapBll, IPOAMapBLL poaMapBll, IMonthBLL monthBll, IMonthClosingBLL monthClosingBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _wasteBll = wasteBll;
@@ -51,6 +53,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _userPlantMapBll = userPlantMapBll;
             _poaMapBll = poaMapBll;
             _monthBll = monthBll;
+            _monthClosingBll = monthClosingBll;
         }
 
 
@@ -332,10 +335,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Index");
 
             }
-            catch (Exception exception)
+            catch (Exception)
             {
-                AddMessageInfo("Edit Failed.", Enums.MessageInfoType.Error
-                    );
+                AddMessageInfo("Edit Failed.", Enums.MessageInfoType.Error);
             }
 
             model = IniEdit(model);
@@ -447,7 +449,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 else AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
             }
 
-            catch (Exception ex)
+            catch (Exception)
             {
                 AddMessageInfo("Error, Data is not Valid", Enums.MessageInfoType.Error);
                 return RedirectToAction("UploadManualWaste");
@@ -539,6 +541,40 @@ namespace Sampoerna.EMS.Website.Controllers
             var listBrandCe = GlobalFunctions.GetFaCodeByPlant(plantWerk);
 
             var model = new WasteDetail() { FacodeList = listBrandCe };
+
+            return Json(model);
+        }
+
+        [HttpPost]
+        public JsonResult CheckClosingMonth(string plantWerk, DateTime prodDate)
+        {
+            var param = new MonthClosingGetByParam();
+            param.ClosingDate = prodDate;
+            param.PlantId = plantWerk;
+            param.DisplayDate = null;
+
+            var data = _monthClosingBll.GetDataByParam(param);
+
+            var model = Mapper.Map<MonthClosingDetail>(data);
+
+            return Json(model);
+        }
+
+        [HttpPost]
+        public JsonResult DisplayClosingMonth(string plantWerk, DateTime prodDate)
+        {
+            var param = new MonthClosingGetByParam();
+            param.DisplayDate = prodDate;
+            param.PlantId = plantWerk;
+            param.ClosingDate = null;
+
+            var data = _monthClosingBll.GetDataByParam(param);
+
+            var model = Mapper.Map<MonthClosingDetail>(data);
+            if (model != null)
+            {
+                model.DisplayDate = "Closing Date : " + model.ClosingDate.ToString("dd MMM yyyy");
+            }
 
             return Json(model);
         }

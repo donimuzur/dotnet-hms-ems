@@ -3232,6 +3232,7 @@ namespace Sampoerna.EMS.BLL
                     var blockstockOutput = new GetListFaCodeByPlantOutput();
                     blockstockOutput.PlantId = plantId;
                     blockstockOutput.FaCode = zaidmExBrand.FA_CODE;
+                    blockstockOutput.StickerCode = zaidmExBrand.STICKER_CODE;
                     //blockstockOutput.RemainingBlockQuota = blockStock.BlockedStockRemainingCount;
 
                     output.Add(blockstockOutput);
@@ -3272,14 +3273,19 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public GetBrandItemsByPlantAndFaCodeOutput GetBrandItemsByPlantAndFaCode(string plantId, string faCode)
+        public GetBrandItemsByPlantAndFaCodeOutput GetBrandItemsByPlantAndFaCode(string plantId, string faCode, string stickerCode = null)
         {
             var result = new GetBrandItemsByPlantAndFaCodeOutput();
             var dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCode(plantId, faCode);
+            if (stickerCode != null)
+            {
+                dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCodeStickerCode(plantId, faCode, stickerCode);
+            }
             if (dbBrand == null)
             {
                 result.PlantId = plantId;
                 result.FaCode = faCode;
+                result.StickerCode = stickerCode;
                 result.ProductAlias = "";
                 result.BrandName = "";
                 result.BrandContent = "0";
@@ -3309,7 +3315,7 @@ namespace Sampoerna.EMS.BLL
             return result;
         }
 
-        public decimal GetCurrentReqQtyByPbck7IdAndFaCode(int pbck7Id, string faCode)
+        public decimal GetCurrentReqQtyByPbck7IdAndFaCode(int pbck7Id, string faCode, string stickerCode = null)
         {
             decimal result = 0;
             var dbPbck = _repositoryPbck7.Get(c => c.PBCK7_ID == pbck7Id, null, "PBCK7_ITEM").FirstOrDefault();
@@ -3318,7 +3324,7 @@ namespace Sampoerna.EMS.BLL
             {
                 foreach (var pbck7Item in dbPbck.PBCK7_ITEM)
                 {
-                    if (pbck7Item.FA_CODE == faCode)
+                    if (pbck7Item.FA_CODE == faCode && pbck7Item.STICKER_CODE == stickerCode)
                     {
                         result = pbck7Item.PBCK7_QTY.HasValue ? pbck7Item.PBCK7_QTY.Value : 0;
                         return result;

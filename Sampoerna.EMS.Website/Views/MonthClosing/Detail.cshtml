@@ -1,0 +1,126 @@
+﻿@model Sampoerna.EMS.Website.Models.MonthClosing.MonthClosingIndexViewModel
+
+
+@{
+    ViewBag.Title = "Detail Month Closing";
+}
+@section styles{
+    <link href="~/Content/chosen.min.css" rel="stylesheet" />
+}
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Month Closing</h3>
+            <div class="action-button">
+                <input type="button" value="Cancel" class="btn btn-grey" id="btnCancel" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingOne">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                Detail Month Closing
+                                <i class="fa fa-caret-down"></i>
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                        <div class="panel-body">
+                            <form class="form-excise" role="form">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <label class="col-md-4">Plant ID</label>
+                                            <div class="col-md-4">
+                                                @Html.TextBoxFor(model => model.Details.PlantId, new { @class = "form-control", @disabled = "disabled" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <label class="col-md-4">Date</label>
+                                            <div class="col-md-6">
+                                                <div class="input-group date">
+                                                    @Html.TextBoxFor(model => model.Details.ClosingDate, "{0:dd MMM yyyy}", new { @class = "form-control", @disabled = "disabled" })
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <label class="col-md-4">Attachment</label>
+                                            <div class="col-md-6">
+                                                <div class="file-upload" id="poa-files">
+                                                    @if (Model.Details.MonthClosingDoc != null)
+                                                    {
+                                                        var count = 0;
+                                                        foreach (var file in Model.Details.MonthClosingDoc)
+                                                        {
+                                                            <div class="row">
+                                                                <div class="col-sm-10">
+                                                                    <i class="fa fa-file"></i>
+                                                                    <a onclick="openAttachment('@Url.Content(file.FILE_PATH)')">@file.FILE_NAME</a>
+                                                                </div>
+                                                            </div>
+                                                            count++;
+                                                        }
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+
+    <script src="~/Scripts/chosen.jquery.min.js"></script>
+    <script src="~/Scripts/monthClosing.js"></script>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function() {
+            $('#MenuMonthClosing').addClass('active');
+
+            $('#btnCancel').click(function(e) {
+                location.href = '@Url.Action("Index", "MonthClosing")';
+            });
+
+            $("#btnSave").click(function () {
+                if (ValidateInput()) {
+                    $('#CreateForm').submit();
+                }
+            });
+        });
+
+        function openAttachment(url) {
+            window.open(url, 'popup', 'width=800,height=600,toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes');
+        }
+
+    </script>
+}

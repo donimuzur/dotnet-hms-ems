@@ -57,7 +57,7 @@ function ajaxGetListFaCode(url, formData, selectedValue) {
 
                 if (data != null) {
                     for (var i = 0; i < data.length; i++) {
-                        list += "<option value='" + data[i].FaCode + "'>" + data[i].FaCode + "</option>";
+                        list += "<option value='" + data[i].FaCode + " - " + data[i].StickerCode + "'>" + data[i].FaCode + " - " + data[i].StickerCode + "</option>";
                     }
 
                 }
@@ -201,11 +201,15 @@ function AddRowPbck7() {
             '<a href="#" onclick=" EditRow($(this)); " data-toggle=" tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>' +
             '</td>';
 
+        var tempFaCode = $('#uploadFaCode').val();
+        var faCode = tempFaCode.split(" - ")[0];
+        var stickerCode = tempFaCode.split(" - ")[1];
         $("#Pbck7UploadTable tbody").append(
             "<tr>" +
                  classAction +
                  "<td>" + (rowCount) + "</td>" +
-                "<td>" + $('#uploadFaCode').val() + "</td>" +
+                "<td>" + faCode + "</td>" +
+                "<td>" + stickerCode + "</td>" +
                 "<td>" + $('#uploadProductTypeAlias').val() + "</td>" +
               
                 "<td>" + $('#uploadBrand').val() + "</td>" +
@@ -242,22 +246,26 @@ function UpdateRowPbck7() {
         $('#Pbck7UploadTable tr').each(function () {
 
             if ($(this).find('td').eq(1).text() == row) {
+                var tempFaCode = $('#uploadFaCode').val();
+                var faCode = tempFaCode.split(" - ")[0];
+                var stickerCode = tempFaCode.split(" - ")[1];
 
-                $(this).find('td').eq(2).text($('#uploadFaCode').val());
-                $(this).find('td').eq(3).text($('#uploadProductTypeAlias').val());
-                $(this).find('td').eq(4).text($('#uploadBrand').val());
-                $(this).find('td').eq(5).text($('#uploadContent').val());
-                $(this).find('td').eq(6).text($('#uploadPbck7Qty').val());
+                $(this).find('td').eq(2).text(faCode);
+                $(this).find('td').eq(3).text(stickerCode);
+                $(this).find('td').eq(4).text($('#uploadProductTypeAlias').val());
+                $(this).find('td').eq(5).text($('#uploadBrand').val());
+                $(this).find('td').eq(6).text($('#uploadContent').val());
+                $(this).find('td').eq(7).text($('#uploadPbck7Qty').val());
                //back-1 qty 7
-                $(this).find('td').eq(8).text($('#uploadSeriesValue').val());
-                $(this).find('td').eq(9).text($('#uploadHje').val());
-                $(this).find('td').eq(10).text($('#uploadTariff').val());
+                $(this).find('td').eq(9).text($('#uploadSeriesValue').val());
+                $(this).find('td').eq(10).text($('#uploadHje').val());
+                $(this).find('td').eq(11).text($('#uploadTariff').val());
                 
-                $(this).find('td').eq(11).text($('#uploadFiscalYear').val());
+                $(this).find('td').eq(12).text($('#uploadFiscalYear').val());
              
-                $(this).find('td').eq(12).text(totalExcise.toFixed(2));
-                $(this).find('td').eq(13).text('');
-                $(this).find('td').eq(14).text($('#uploadBlockedStocked').val());
+                $(this).find('td').eq(13).text(totalExcise.toFixed(2));
+                $(this).find('td').eq(14).text('');
+                $(this).find('td').eq(15).text($('#uploadBlockedStocked').val());
 
             }
         });

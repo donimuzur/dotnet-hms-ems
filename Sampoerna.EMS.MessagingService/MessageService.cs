@@ -27,7 +27,7 @@ namespace Sampoerna.EMS.MessagingService
         /// <param name="subject"></param>
         /// <param name="body"></param>
         /// <param name="throwError"></param>
-        public void SendEmailToList(List<string> to, string subject, string body, bool throwError = false)
+        public bool SendEmailToList(List<string> to, string subject, string body, bool throwError = false)
         {
             try
             {
@@ -56,12 +56,13 @@ namespace Sampoerna.EMS.MessagingService
                     mailMessage.From.Address, string.Join(",", mailMessage.To.Select(a => a.Address)), mailMessage.Subject, mailMessage.Body));
                 smtpClient.Send(mailMessage);
                 //smtpClient.SendAsync(mailMessage, null); //Sendasynch doesn't have the time to send in some case, no way to make sure it waits 'till the mail is sent for now.
+                return true;
             }
             catch (Exception ex)
             {
                 // error not thrown, log error here
                 _logger.Error("MessagingService.Messager SendEmail: " + ex);
-
+                return false;
                 //throw new BLLException(ExceptionCodes.BLLExceptions.ServerIsBusy);
             }
         }
@@ -88,7 +89,7 @@ namespace Sampoerna.EMS.MessagingService
         /// <param name="subject"></param>
         /// <param name="body"></param>
         /// <param name="throwError"></param>
-        public void SendEmailToListWithCC(List<string> to, List<string> cc, string subject, string body, bool throwError = false)
+        public bool SendEmailToListWithCC(List<string> to, List<string> cc, string subject, string body, bool throwError = false)
         {
             try
             {
@@ -120,12 +121,13 @@ namespace Sampoerna.EMS.MessagingService
                     mailMessage.From.Address, string.Join(",", mailMessage.To.Select(a => a.Address)), mailMessage.Subject, mailMessage.Body));
                 smtpClient.Send(mailMessage);
                 //smtpClient.SendAsync(mailMessage, null); //Sendasynch doesn't have the time to send in some case, no way to make sure it waits 'till the mail is sent for now.
+                return true;
             }
             catch (Exception ex)
             {
                 // error not thrown, log error here
                 _logger.Error("MessagingService.Messager SendEmail: " + ex);
-
+                return false;
                 //throw new BLLException(ExceptionCodes.BLLExceptions.ServerIsBusy);
             }
         }

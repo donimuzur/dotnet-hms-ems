@@ -64,12 +64,14 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
     {
         public string PlantId { get; set; }
         public string FaCode { get; set; }
+        public string StickerCode { get; set; }
     }
 
     public class GetBrandItemsByPlantAndFaCodeOutput
     {
         public string PlantId { get; set; }
         public string FaCode { get; set; }
+        public string StickerCode { get; set; }
         public string ProductAlias { get; set; }
         public string BrandName { get; set; }
         public string BrandContent { get; set; }
