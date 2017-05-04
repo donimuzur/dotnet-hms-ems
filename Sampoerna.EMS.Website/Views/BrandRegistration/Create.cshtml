@@ -359,7 +359,7 @@
             
             if ($("#FaCode").val() != "") ajaxGetPlantByStickerCode('@Model.FaCode', true);
             
-            ajaxGetCutFillerCodeByPlant('@Model.PlantId');
+            ajaxGetCutFillerCodeByPlant('@Model.PlantId','@Model.CutFillerCode');
             
         });
 
@@ -601,7 +601,7 @@
 
         }
 
-        function ajaxGetCutFillerCodeByPlant(plant) {
+        function ajaxGetCutFillerCodeByPlant(plant,cutfiller) {
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetCutFillerCodeByPlant", "BrandRegistration")',
@@ -610,6 +610,10 @@
 
                     for (var i = 0; i < data.length; i++) {
                         $('#CutFillerCode').append('<option value=' + data[i].Value + '>' + data[i].Value + '</option>');
+                    }
+                    
+                    if (cutfiller) {
+                        $('#CutFillerCode').val(cutfiller);
                     }
                 }
             });
