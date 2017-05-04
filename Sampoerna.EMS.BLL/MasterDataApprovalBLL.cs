@@ -83,7 +83,12 @@ namespace Sampoerna.EMS.BLL
                         if (masterDataApprovalDetail.OLD_VALUE != masterDataApprovalDetail.NEW_VALUE)
                         {
                             needApprovalList.Add(masterDataApprovalDetail);
-                            newObject.GetType().GetProperty(isneedApprove.COLUMN_NAME).SetValue(newObject, oldValue);
+                            var checkOldObject = GenerateFormId(pageId, oldObject) != null;
+                            if (checkOldObject)
+                            {
+                                newObject.GetType().GetProperty(isneedApprove.COLUMN_NAME).SetValue(newObject, oldValue);
+                            }
+                            
                         }
                         
                     }
@@ -280,24 +285,32 @@ namespace Sampoerna.EMS.BLL
 
         private string GenerateFormId(int pageId,object obj)
         {
-            
-            switch (pageId)
+            try
             {
-                case (int) Enums.MenuList.BrandRegistration:
-                    var werks = obj.GetType().GetProperty("WERKS").GetValue(obj).ToString();
-                    var facode = obj.GetType().GetProperty("FA_CODE").GetValue(obj).ToString();
-                    var stickerCode = obj.GetType().GetProperty("STICKER_CODE").GetValue(obj).ToString();
-                    return werks + "-" + facode + "-" + stickerCode;
-                case (int) Enums.MenuList.POA:
-                    return obj.GetType().GetProperty("POA_ID").GetValue(obj).ToString();
-                case (int)Enums.MenuList.POAMap:
-                    return obj.GetType().GetProperty("POA_MAP_ID").GetValue(obj).ToString();
-                case (int)Enums.MenuList.MaterialMaster:
-                    var werksM = obj.GetType().GetProperty("WERKS").GetValue(obj).ToString();
-                    
-                    var stickerCodeM = obj.GetType().GetProperty("STICKER_CODE").GetValue(obj).ToString();
-                    return werksM + "-" + stickerCodeM;
+                switch (pageId)
+                {
+                    case (int) Enums.MenuList.BrandRegistration:
+                        var werks = obj.GetType().GetProperty("WERKS").GetValue(obj).ToString();
+                        var facode = obj.GetType().GetProperty("FA_CODE").GetValue(obj).ToString();
+                        var stickerCode = obj.GetType().GetProperty("STICKER_CODE").GetValue(obj).ToString();
+                        return werks + "-" + facode + "-" + stickerCode;
+                    case (int) Enums.MenuList.POA:
+                        return obj.GetType().GetProperty("POA_ID").GetValue(obj).ToString();
+                    case (int) Enums.MenuList.POAMap:
+                        return obj.GetType().GetProperty("POA_MAP_ID").GetValue(obj).ToString();
+                    case (int) Enums.MenuList.MaterialMaster:
+                        var werksM = obj.GetType().GetProperty("WERKS").GetValue(obj).ToString();
+
+                        var stickerCodeM = obj.GetType().GetProperty("STICKER_CODE").GetValue(obj).ToString();
+                        return werksM + "-" + stickerCodeM;
+                }
             }
+            catch 
+            {
+                return null;
+                
+            }
+            
             
 
             return null;
@@ -350,24 +363,64 @@ namespace Sampoerna.EMS.BLL
             else if (approvalData.PAGE_ID == (int) Enums.MenuList.POA)
             {
                 var dataPoa = _poaBll.GetById(approvalData.FORM_ID);
-                foreach (var detail in approvalData.MASTER_DATA_APPROVAL_DETAIL)
+                if (dataPoa != null)
                 {
-                    propInfo = typeof(POA).GetProperty(detail.COLUMN_NAME);
-                    dataPoa.GetType().GetProperty(detail.COLUMN_NAME).SetValue(dataPoa, CastPropertyValue(propInfo, detail.NEW_VALUE));
+                    foreach (var detail in approvalData.MASTER_DATA_APPROVAL_DETAIL)
+                    {
+                        propInfo = typeof (POA).GetProperty(detail.COLUMN_NAME);
+                        dataPoa.GetType()
+                            .GetProperty(detail.COLUMN_NAME)
+                            .SetValue(dataPoa, CastPropertyValue(propInfo, detail.NEW_VALUE));
+                    }
+
+                    return null;
+                }
+                else
+                {
+                    POA data = new POA();
+
+                    foreach (var detail in approvalData.MASTER_DATA_APPROVAL_DETAIL)
+                    {
+                        propInfo = typeof(POA).GetProperty(detail.COLUMN_NAME);
+                        data.GetType()
+                            .GetProperty(detail.COLUMN_NAME)
+                            .SetValue(data, CastPropertyValue(propInfo, detail.NEW_VALUE));
+                    }
+
+                    return data;
                 }
 
-                return null;
             }
             else if (approvalData.PAGE_ID == (int)Enums.MenuList.POAMap)
             {
                 var dataPoaMap = _poaMapBLL.GetById(int.Parse(approvalData.FORM_ID));
-                foreach (var detail in approvalData.MASTER_DATA_APPROVAL_DETAIL)
+                if (dataPoaMap != null)
                 {
-                    propInfo = typeof(POA_MAP).GetProperty(detail.COLUMN_NAME);
-                    dataPoaMap.GetType().GetProperty(detail.COLUMN_NAME).SetValue(dataPoaMap, CastPropertyValue(propInfo, detail.NEW_VALUE));
+                    foreach (var detail in approvalData.MASTER_DATA_APPROVAL_DETAIL)
+                    {
+                        propInfo = typeof (POA_MAP).GetProperty(detail.COLUMN_NAME);
+                        dataPoaMap.GetType()
+                            .GetProperty(detail.COLUMN_NAME)
+                            .SetValue(dataPoaMap, CastPropertyValue(propInfo, detail.NEW_VALUE));
+                    }
+
+                    return null;
+                }
+                else
+                {
+                    POA_MAP data = new POA_MAP();
+
+                    foreach (var detail in approvalData.MASTER_DATA_APPROVAL_DETAIL)
+                    {
+                        propInfo = typeof(POA_MAP).GetProperty(detail.COLUMN_NAME);
+                        data.GetType()
+                            .GetProperty(detail.COLUMN_NAME)
+                            .SetValue(data, CastPropertyValue(propInfo, detail.NEW_VALUE));
+                    }
+
+                    return data;
                 }
 
-                return null;
 
             }
             else if (approvalData.PAGE_ID == (int)Enums.MenuList.MaterialMaster)
@@ -376,24 +429,43 @@ namespace Sampoerna.EMS.BLL
                 var werks = tempId[0];
                 var materialnumber = tempId[1];
                 var dataMaterial = _materialBLL.GetByMaterialAndPlantId(materialnumber, werks);
-                foreach (var detail in approvalData.MASTER_DATA_APPROVAL_DETAIL)
+                if (dataMaterial != null)
                 {
-                    propInfo = typeof(ZAIDM_EX_MATERIAL).GetProperty(detail.COLUMN_NAME);
-                    dataMaterial.GetType().GetProperty(detail.COLUMN_NAME).SetValue(dataMaterial, CastPropertyValue(propInfo, detail.NEW_VALUE));
-                    
-                    if (detail.COLUMN_NAME == "CLIENT_DELETION")
+                    foreach (var detail in approvalData.MASTER_DATA_APPROVAL_DETAIL)
                     {
-                        var materialClientDto = Mapper.Map<MaterialDto>(dataMaterial);
-                        _materialBLL.ClientDeletion(materialClientDto, approvalData.APPROVED_BY);
-                    }
-                    else if (detail.COLUMN_NAME == "PLANT_DELETION")
-                    {
-                        var materialPlantDto = Mapper.Map<MaterialDto>(dataMaterial);
-                        _materialBLL.ClientDeletion(materialPlantDto, approvalData.APPROVED_BY);
-                    }
-                }
+                        propInfo = typeof(ZAIDM_EX_MATERIAL).GetProperty(detail.COLUMN_NAME);
+                        dataMaterial.GetType().GetProperty(detail.COLUMN_NAME).SetValue(dataMaterial, CastPropertyValue(propInfo, detail.NEW_VALUE));
 
-                return null;
+                        if (detail.COLUMN_NAME == "CLIENT_DELETION")
+                        {
+                            var materialClientDto = Mapper.Map<MaterialDto>(dataMaterial);
+                            _materialBLL.ClientDeletion(materialClientDto, approvalData.APPROVED_BY);
+                        }
+                        else if (detail.COLUMN_NAME == "PLANT_DELETION")
+                        {
+                            var materialPlantDto = Mapper.Map<MaterialDto>(dataMaterial);
+                            _materialBLL.ClientDeletion(materialPlantDto, approvalData.APPROVED_BY);
+                        }
+                    }
+                    return null;
+                }
+                else
+                {
+                    ZAIDM_EX_MATERIAL data = new ZAIDM_EX_MATERIAL();
+
+                    foreach (var detail in approvalData.MASTER_DATA_APPROVAL_DETAIL)
+                    {
+                        propInfo = typeof(ZAIDM_EX_MATERIAL).GetProperty(detail.COLUMN_NAME);
+                        data.GetType()
+                            .GetProperty(detail.COLUMN_NAME)
+                            .SetValue(data, CastPropertyValue(propInfo, detail.NEW_VALUE));
+                    }
+
+                    return data;
+                }
+                
+
+                
             }
 
             return null;

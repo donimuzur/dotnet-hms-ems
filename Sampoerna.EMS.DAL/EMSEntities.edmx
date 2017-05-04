@@ -6635,7 +6635,11 @@
           <Key>
             <PropertyRef Name="POA_ID" />
           </Key>
-          <Property Name="POA_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="POA_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Poa ID</LongDescription>
+            </Documentation>
+          </Property>
           <Property Name="ID_CARD" Type="String" Nullable="false" MaxLength="22" FixedLength="false" Unicode="true" >
             <Documentation>
               <LongDescription>ID Card</LongDescription>
@@ -6666,7 +6670,11 @@
               <LongDescription>Title</LongDescription>
             </Documentation>
           </Property>
-          <Property Name="LOGIN_AS" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LOGIN_AS" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>POA User Id</LongDescription>
+            </Documentation>
+          </Property>
           <Property Name="MANAGER_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
@@ -6693,9 +6701,21 @@
             <PropertyRef Name="POA_MAP_ID" />
           </Key>
           <Property Name="POA_MAP_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NPPBKC_ID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="POA_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NPPBKC_ID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>NPPBKC</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Plant Id</LongDescription>
+            </Documentation>
+          </Property>
+          <Property Name="POA_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>POA User Id</LongDescription>
+            </Documentation>
+          </Property>
           <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -7174,7 +7194,11 @@
             <PropertyRef Name="STICKER_CODE" />
             <PropertyRef Name="WERKS" />
           </Key>
-          <Property Name="STICKER_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="STICKER_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Material Number</LongDescription>
+            </Documentation>
+          </Property>
           <Property Name="MATERIAL_DESC" Type="String" MaxLength="50" FixedLength="false" Unicode="true" >
             <Documentation>
               <LongDescription>Material Description</LongDescription>
@@ -7190,7 +7214,11 @@
               <LongDescription>Purchasing Group</LongDescription>
             </Documentation>
           </Property>
-          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" >
+            <Documentation>
+              <LongDescription>Plant Id</LongDescription>
+            </Documentation>
+          </Property>
           <Property Name="EXC_GOOD_TYP" Type="String" MaxLength="2" FixedLength="false" Unicode="true" >
             <Documentation>
               <LongDescription>Excisable Good type</LongDescription>
