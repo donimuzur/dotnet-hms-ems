@@ -105,7 +105,7 @@ namespace Sampoerna.EMS.XMLReader
                 writer.WriteElementString("START_DATE",SetNullToSlash(GetDateFormat(brandReg.START_DATE)));
                 writer.WriteElementString("END_DATE",SetNullToSlash(GetDateFormat(brandReg.END_DATE)));
 
-                writer.WriteElementString("EXC_TYP_DESC",SetBoolToX(brandReg.STATUS));
+                writer.WriteElementString("STATUS",SetBoolToX(brandReg.STATUS));
 
                 var modifiedDate = brandReg.MODIFIED_DATE.HasValue ? brandReg.MODIFIED_DATE : brandReg.CREATED_DATE;
                 var modifiedBy = brandReg.MODIFIED_BY ?? brandReg.CREATED_BY;
