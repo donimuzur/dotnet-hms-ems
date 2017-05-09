@@ -13,6 +13,7 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
+using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 //using Sampoerna.EMS.XMLReader;
 using Voxteneo.WebComponents.Logger;
@@ -51,14 +52,14 @@ namespace Sampoerna.EMS.BLL
             _materialBLL = new ZaidmExMaterialService(_uow,_logger);
             //_xmlWriter = new XmlBrandRegistrationWriter(_uow,_logger);
         }
-        public T MasterDataApprovalValidation<T>(int pageId, string userId, T oldObject, T newObject, bool isCommit = false)
+        public T MasterDataApprovalValidation<T>(int pageId, string userId, T oldObject, T newObject,out bool isExist, bool isCommit = false)
         {
 
             var approvalSettings = _approvalSettingBLL.GetAllEditableColumn(pageId);
             //var fieldNames = typeof(T).GetFields()
             //                .Select(field => field.Name)
             //                .ToList();
-
+            isExist = false;
 
             var needApprovalFields = approvalSettings.Details.Where(x => x.IS_APPROVAL.HasValue && x.IS_APPROVAL.Value);
             var needApprovalList = new List<MASTER_DATA_APPROVAL_DETAIL>();
@@ -116,6 +117,7 @@ namespace Sampoerna.EMS.BLL
 
             }
 
+            
             var newApproval = new MASTER_DATA_APPROVAL();
             if (needApprovalList.Count > 0)
             {
@@ -126,17 +128,37 @@ namespace Sampoerna.EMS.BLL
                 newApproval.FORM_ID = GenerateFormId(approvalSettings.PageId, newObject);
                 newApproval.MASTER_DATA_APPROVAL_DETAIL = needApprovalList;
 
-                _repository.Insert(newApproval);
+                isExist = CheckExitingOngoingApproval(newApproval.FORM_ID);
+                if (!isExist)
+                {
+                    _repository.Insert(newApproval);
+                }
+                else
+                {
+                    throw new BLLException(ExceptionCodes.BLLExceptions.ApprovalMasterExist);
+                }
+                
             }
 
             if (isCommit)
             {
-                _uow.SaveChanges();
+                if (!isExist)
+                {
+                    _uow.SaveChanges();    
+                }
+                
             }
 
             return newObject;
         }
 
+
+        private bool CheckExitingOngoingApproval(string formId)
+        {
+            var data = _repository.Get(x => x.FORM_ID == formId && x.STATUS_ID == Enums.DocumentStatus.WaitingForMasterApprover);
+
+            return data != null;
+        }
 
         public void CreateNewDataForApproval<T>(int pageId,string userId,T data)
         {
@@ -226,49 +248,14 @@ namespace Sampoerna.EMS.BLL
 
                 
 
-                GenerateXml(data);
+                
                 
                 
 
             }
         }
 
-        private void GenerateXml(MASTER_DATA_APPROVAL data)
-        {
-            if (data.PAGE_ID == (int)Enums.MenuList.BrandRegistration)
-            {
-                var tempId = data.FORM_ID.Split('-');
-                var werks = tempId[0];
-                var facode = tempId[1];
-                var stickerCode = tempId[2];
-
-                var brandToxml = _brandRegistrationBLL.GetByPlantIdAndFaCodeStickerCode(werks, facode, stickerCode);
-                if (brandToxml != null)
-                {
-                    if (brandToxml.IS_FROM_SAP == true)
-                    {
-                        var brandXmlDto = Mapper.Map<BrandXmlDto>(brandToxml);
-                        var fileName = ConfigurationManager.AppSettings["PathXmlTemp"] + "BRANDREG" +
-                           DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
-                        var outboundFilePath = ConfigurationManager.AppSettings["CK5PathXml"] + "BRANDREG" +
-                           DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
-                        brandXmlDto.XmlPath = fileName;
-
-                        //_xmlWriter.CreateBrandRegXml(brandXmlDto);
-
-                        //_xmlWriter.MoveTempToOutbound(fileName, outboundFilePath);
-                    }
-
-                    
-                }
-                
-
-
-
-            }
-            
-            
-        }
+        
 
         public void Reject(string userId, int masterApprovalId)
         {

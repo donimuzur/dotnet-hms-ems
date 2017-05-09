@@ -147,6 +147,11 @@ namespace Sampoerna.EMS.XMLReader
             return null;
         }
 
+        private void SendMailQuotaPending()
+        {
+            
+        }
+
         private List<string> OrderFile()
         {
             bool isComplete = true;

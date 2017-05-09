@@ -93,12 +93,12 @@ namespace Sampoerna.EMS.XMLReader
                         //UserItems.Add(user);
                         _xmlMapper.InsertOrUpdate(user);
 
-                        if (!role.BROLE_DESC.ToUpper().Contains("POA MANAGER") && role.BROLE_DESC.ToUpper().Contains("POA"))
+                        if (role.BROLE_DESC.ToUpper().Contains("POA"))
                         {
                             InsertPoa(user);
                             roleMap.ROLEID = Enums.UserRole.POA;
                         }
-                        else if (role.BROLE_DESC.ToUpper().Contains("POA MANAGER"))
+                        else if (role.BROLE_DESC.ToUpper().Contains("EXCISE CONTROLLER"))
                         {
                             roleMap.ROLEID = Enums.UserRole.Controller;
                         }
