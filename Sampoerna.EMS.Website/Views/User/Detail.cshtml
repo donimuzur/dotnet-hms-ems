@@ -66,14 +66,18 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="row">
-                                                <label class="col-md-3">Master Data Approver</label>
-                                                <div class="col-md-9">
-                                                    @Html.CheckBoxFor(m => m.Detail.IS_MASTER_DATA_APPROVER, new { @class = "form-control", @disabled = "disaled" })
+                                        @if (Model.Detail.IS_ACTIVE)
+                                        {
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <label class="col-md-3">Master Data Approver</label>
+                                                    <div class="col-md-9">
+                                                        @Html.CheckBoxFor(m => m.Detail.IS_MASTER_DATA_APPROVER, new {  @disabled = "disaled" })
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        }
+                                        
 
                                     </div>
                                     <div class="row">

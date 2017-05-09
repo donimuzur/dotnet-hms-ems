@@ -760,7 +760,8 @@ namespace Sampoerna.EMS.Website
 
 
             Mapper.CreateMap<USER, UserItem>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IS_ACTIVE.Value == 1 ? "Yes" : "No"));
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IS_ACTIVE.Value == 1 ? "Yes" : "No"))
+                .ForMember(dest => dest.IsMasterApprover, opt => opt.MapFrom(src => src.IS_MASTER_DATA_APPROVER.HasValue && src.IS_MASTER_DATA_APPROVER.Value ? "Yes" : "No"));
 
             Mapper.CreateMap<UserItem, USER>().IgnoreAllNonExisting().
                 ForMember(dest => dest.IS_ACTIVE, opt => opt.MapFrom(src => src.IS_ACTIVE ? 1 : 0)); ;
