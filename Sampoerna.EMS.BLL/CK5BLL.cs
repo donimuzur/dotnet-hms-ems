@@ -5831,7 +5831,7 @@ namespace Sampoerna.EMS.BLL
 
         public List<GetListMaterialMarketReturnOutput> GetListMaterialMarketReturn(string plantId)
         {
-            var listBrand = _brandRegistration.GetBrandByPlantAndListProdCode(plantId, _allowedCk5MarketReturnProdCode);
+            var listBrand = _brandRegistration.GetBrandByPlantAndListProdCode(plantId, _allowedCk5MarketReturnProdCode).Where(x => x.MARKET_ID == "01");
 
             return Mapper.Map<List<GetListMaterialMarketReturnOutput>>(listBrand);
         }
