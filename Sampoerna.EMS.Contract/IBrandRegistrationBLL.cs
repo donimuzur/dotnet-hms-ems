@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 
 namespace Sampoerna.EMS.Contract
@@ -31,8 +32,12 @@ namespace Sampoerna.EMS.Contract
 
         List<ZAIDM_EX_BRAND> GetAllBrandsOnly();
 
-        
 
+        ZAIDM_EX_MARKET GetMarket(string marketId);
+
+        ZAIDM_EX_SERIES GetSeries(string seriesCode);
+
+        BrandXmlDto GetDataForXml(string werks, string facode, string stickerCode);
     }
 
 }

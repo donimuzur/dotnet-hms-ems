@@ -195,9 +195,9 @@ $('#btn-save-upload').click(function () {
 
 function toUploadTab() {
 
-    $('#tab-information').removeClass('active');
+    $('#home-tab').removeClass('active');
     $('#information').removeClass('active');
-    $('#tab-upload').addClass("active");
+    $('#upload-tab').addClass("active");
     $('#upload').addClass("active");
    
 }

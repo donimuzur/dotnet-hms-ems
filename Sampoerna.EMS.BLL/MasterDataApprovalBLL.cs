@@ -14,7 +14,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Utils;
-using Sampoerna.EMS.XMLReader;
+//using Sampoerna.EMS.XMLReader;
 using Voxteneo.WebComponents.Logger;
 using Enums = Sampoerna.EMS.Core.Enums;
 
@@ -34,7 +34,7 @@ namespace Sampoerna.EMS.BLL
         private IZaidmExMaterialService _materialBLL;
         private IMasterDataApprovalSettingBLL _approvalSettingBLL;
         private IChangesHistoryBLL _changesHistoryBLL;
-        private XmlBrandRegistrationWriter _xmlWriter;
+        //private XmlBrandRegistrationWriter _xmlWriter;
         private string includeTables = "MASTER_DATA_APPROVAL_DETAIL,PAGE";
         public MasterDataApprovalBLL(IUnitOfWork uow, ILogger logger)
         {
@@ -49,7 +49,7 @@ namespace Sampoerna.EMS.BLL
             _poaBll = new POAService(_uow,_logger);
             _poaMapBLL = new POAMapBLL(_uow,_logger);
             _materialBLL = new ZaidmExMaterialService(_uow,_logger);
-            _xmlWriter = new XmlBrandRegistrationWriter(_uow,_logger);
+            //_xmlWriter = new XmlBrandRegistrationWriter(_uow,_logger);
         }
         public T MasterDataApprovalValidation<T>(int pageId, string userId, T oldObject, T newObject, bool isCommit = false)
         {
@@ -226,49 +226,14 @@ namespace Sampoerna.EMS.BLL
 
                 
 
-                GenerateXml(data);
+                
                 
                 
 
             }
         }
 
-        private void GenerateXml(MASTER_DATA_APPROVAL data)
-        {
-            if (data.PAGE_ID == (int)Enums.MenuList.BrandRegistration)
-            {
-                var tempId = data.FORM_ID.Split('-');
-                var werks = tempId[0];
-                var facode = tempId[1];
-                var stickerCode = tempId[2];
-
-                var brandToxml = _brandRegistrationBLL.GetByPlantIdAndFaCodeStickerCode(werks, facode, stickerCode);
-                if (brandToxml != null)
-                {
-                    if (brandToxml.IS_FROM_SAP == true)
-                    {
-                        var brandXmlDto = Mapper.Map<BrandXmlDto>(brandToxml);
-                        var fileName = ConfigurationManager.AppSettings["PathXmlTemp"] + "BRANDREG" +
-                           DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
-                        var outboundFilePath = ConfigurationManager.AppSettings["CK5PathXml"] + "BRANDREG" +
-                           DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
-                        brandXmlDto.XmlPath = fileName;
-
-                        _xmlWriter.CreateBrandRegXml(brandXmlDto);
-
-                        _xmlWriter.MoveTempToOutbound(fileName, outboundFilePath);
-                    }
-
-                    
-                }
-                
-
-
-
-            }
-            
-            
-        }
+        
 
         public void Reject(string userId, int masterApprovalId)
         {

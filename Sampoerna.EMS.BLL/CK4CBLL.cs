@@ -424,15 +424,15 @@ namespace Sampoerna.EMS.BLL
                         var poaUser = ck4cData.ApprovedByPoa == null ? ck4cData.CreatedBy : ck4cData.ApprovedByPoa;
                         var poaApproveId = _userBll.GetUserById(ck4cData.ApprovedByPoa);
 
-                        rc.To.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
+                        foreach (var item in controllerList)
+                        {
+                            rc.To.Add(item.EMAIL);
+                        }
+
+                        rc.CC.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
 
                         if (poaApproveId != null)
                             rc.CC.Add(poaApproveId.EMAIL);
-
-                        foreach (var item in controllerList)
-                        {
-                            rc.CC.Add(item.EMAIL);
-                        }
                     }
                     rc.IsCCExist = true;
                     break;

@@ -884,6 +884,8 @@ namespace Sampoerna.EMS.Website.Controllers
                                     //output.Pbck1DecreeDate.Split("/")[0],
                                     //);    
                                 }
+
+                                
                                 
                                 model.RemainQuota = (output.QtyApprovedPbck1 - output.QtyCk5).ToString();
                             }
@@ -1410,6 +1412,12 @@ namespace Sampoerna.EMS.Website.Controllers
                                     decimal currentCk5 = output.QtyCk5 - model.GrandTotalEx;
                                     model.Ck5TotalExciseable = currentCk5.ToString();
                                     model.RemainQuota = (output.QtyApprovedPbck1 - currentCk5).ToString();
+
+                                    if (string.IsNullOrEmpty(model.PackageUomName))
+                                    {
+                                        model.PackageUomName =
+                                            model.UploadItemModels.Select(x => x.ConvertedUom).Distinct().FirstOrDefault();
+                                    }
                                 }
                             }
 
@@ -4948,6 +4956,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.GoodTypeName = portToImporterModel.GoodTypeName;
                 model.GrandTotalEx = portToImporterModel.GrandTotalEx;
                 model.GrandTotalExDisplay = portToImporterModel.GrandTotalExDisplay;
+
+                model.PackageUomName = portToImporterModel.PackageUomName;
             }
             model.IsCk5ImporterToPlant = true;
 

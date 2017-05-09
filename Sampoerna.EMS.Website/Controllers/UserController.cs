@@ -43,7 +43,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 Details = Mapper.Map<List<UserItem>>(users)
             };
-            var data = _bll.GetControllers();
+            
             return View(model);
         }
 
