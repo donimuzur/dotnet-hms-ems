@@ -6547,17 +6547,17 @@ namespace Sampoerna.EMS.BLL
         private string BuildBodyMailForQuotaNotification(Pbck1Dto pbck1Data, GetQuotaAndRemainOutput quotaDetail, string webRootUrl, USER creator, USER poa,int monitoringId)
         {
             var bodyMail = new StringBuilder();
-            bodyMail.Append("<table><tr><td>PBCK1 Number </td><td>: <a href='" + webRootUrl + "/PBCK1/Details/" + pbck1Data.Pbck1Id + "'>" + pbck1Data.Pbck1Number + "</a></td></tr>");
+            bodyMail.Append("<table><tr><td>PBCK1 Number </td><td>: " + pbck1Data.Pbck1Number + "</td></tr>");
             bodyMail.Append("<tr><td>NPPBKC Destination </td><td>: " + pbck1Data.NppbkcId + "</td></tr>");
             bodyMail.Append("<tr><td>Plant & NPPBKC Supplier </td><td>: " + pbck1Data.SupplierPlantWerks + " - " +
                             pbck1Data.SupplierPlant + "</td></tr>");
 
-            bodyMail.Append("<tr><td>Total Qty Approved </td><td>: " +
-                            ConvertHelper.ConvertDecimalToStringMoneyFormat(pbck1Data.QtyApproved) + " " + pbck1Data.RequestQtyUomName + "</td></tr>");
-            bodyMail.Append("<tr><td>Total Quota Qty Used </td><td>: " +
-                            ConvertHelper.ConvertDecimalToStringMoneyFormat(quotaDetail.QtyCk5) + " " + pbck1Data.RequestQtyUomName + "</td></tr>");
-            bodyMail.Append("<tr><td>Total Quota Qty Remain </td><td>: " +
-                            ConvertHelper.ConvertDecimalToStringMoneyFormat(quotaDetail.RemainQuota) + " " + pbck1Data.RequestQtyUomName + "</td></tr>");
+            //bodyMail.Append("<tr><td>Total Qty Approved </td><td>: " +
+            //                ConvertHelper.ConvertDecimalToStringMoneyFormat(pbck1Data.QtyApproved) + " " + pbck1Data.RequestQtyUomName + "</td></tr>");
+            //bodyMail.Append("<tr><td>Total Quota Qty Used </td><td>: " +
+            //                ConvertHelper.ConvertDecimalToStringMoneyFormat(quotaDetail.QtyCk5) + " " + pbck1Data.RequestQtyUomName + "</td></tr>");
+            //bodyMail.Append("<tr><td>Total Quota Qty Remain </td><td>: " +
+            //                ConvertHelper.ConvertDecimalToStringMoneyFormat(quotaDetail.RemainQuota) + " " + pbck1Data.RequestQtyUomName + "</td></tr>");
             
             string userName = "";
             if (creator != null)

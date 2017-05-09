@@ -15,21 +15,12 @@ namespace Sampoerna.EMS.XMLReader
 {
     public class XmlBrandRegistrationWriter : XmlDataWriter
     {
-        private IUnitOfWork _uow;
-        private ILogger _logger;
-        private IZaidmExProdTypeBLL _prodTypeBll;
-        private IBrandRegistrationService _brandRegistrationBLL;
-        private IExcisableGoodsTypeService _excisableGoodsTypeService;
+        
         
 
-        public XmlBrandRegistrationWriter(IUnitOfWork uow, ILogger logger)
+        public XmlBrandRegistrationWriter()
         {
-            _uow = uow;
-            _logger = logger;
-
-            _prodTypeBll = new ZaidmExProdTypeBLL(_uow,_logger);
-            _brandRegistrationBLL = new BrandRegistrationService(_uow,_logger);
-            _excisableGoodsTypeService = new ExcisableGoodsTypeService(_uow,_logger);
+            
         }
 
         public void CreateBrandRegXml(BrandXmlDto brandReg)
@@ -76,19 +67,19 @@ namespace Sampoerna.EMS.XMLReader
                 writer.WriteElementString("SKEP_DATE",SetNullToSlash(GetDateFormat(brandReg.SKEP_DATE)));
                 writer.WriteElementString("PROD_CODE",SetNullToSlash(brandReg.PROD_CODE));
 
-                var prodType = _prodTypeBll.GetByCode(brandReg.PROD_CODE);
-                writer.WriteElementString("PRODUCT_TYPE",SetNullToSlash(prodType.PRODUCT_TYPE));
-                writer.WriteElementString("PRODUCT_ALIAS",SetNullToSlash(prodType.PRODUCT_ALIAS));
+                
+                writer.WriteElementString("PRODUCT_TYPE", SetNullToSlash(brandReg.PRODUCT_TYPE));
+                writer.WriteElementString("PRODUCT_ALIAS", SetNullToSlash(brandReg.PRODUCT_ALIAS));
 
-                var series = _brandRegistrationBLL.GetSeries(brandReg.SERIES_CODE);
+                
                 writer.WriteElementString("SERIES_CODE",SetNullToSlash(brandReg.SERIES_CODE));
-                writer.WriteElementString("SERIES_VALUE",SetNullToSlash(series.SERIES_VALUE));
+                writer.WriteElementString("SERIES_VALUE", SetNullToSlash(brandReg.SERIES_VALUE));
 
                 writer.WriteElementString("CONTENT",SetNullToSlash(brandReg.BRAND_CONTENT));
 
-                var market = _brandRegistrationBLL.GetMarket(brandReg.MARKET_ID);
+                
                 writer.WriteElementString("MARKET",SetNullToSlash(brandReg.MARKET_ID));
-                writer.WriteElementString("MARKET_DESC",SetNullToSlash(market.MARKET_DESC));
+                writer.WriteElementString("MARKET_DESC", SetNullToSlash(brandReg.MARKET_DESC));
 
                 writer.WriteElementString("COUNTRY",SetNullToSlash(brandReg.COUNTRY));
                 writer.WriteElementString("HJE_IDR",SetNullToSlash(brandReg.HJE_IDR));
@@ -98,9 +89,9 @@ namespace Sampoerna.EMS.XMLReader
 
                 writer.WriteElementString("COLOUR",SetNullToSlash(brandReg.COLOUR));
 
-                var goodType = _excisableGoodsTypeService.GetById(brandReg.EXC_GOOD_TYP);
+                
                 writer.WriteElementString("EXC_GOOD_TYP",SetNullToSlash(brandReg.EXC_GOOD_TYP));
-                writer.WriteElementString("EXC_TYP_DESC",SetNullToSlash(goodType.EXT_TYP_DESC));
+                writer.WriteElementString("EXC_TYP_DESC", SetNullToSlash(brandReg.EXC_TYP_DESC));
 
                 writer.WriteElementString("START_DATE",SetNullToSlash(GetDateFormat(brandReg.START_DATE)));
                 writer.WriteElementString("END_DATE",SetNullToSlash(GetDateFormat(brandReg.END_DATE)));

@@ -5,9 +5,13 @@ using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
 using iTextSharp.text.pdf.qrcode;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.MasterDataApproval;
+using System.Configuration;
+using Sampoerna.EMS.XMLReader;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -17,11 +21,15 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /MasterApproval/
         private Enums.MenuList _mainMenu;
         private IMasterDataAprovalBLL _masterDataAprovalBLL;
+        private IBrandRegistrationBLL _brandRegistrationBLL;
+        private XmlBrandRegistrationWriter _xmlWriter;
         private IUserBLL _userBLL;
-        public MasterApprovalController(IPageBLL pageBll,IMasterDataAprovalBLL masterDataAprovalBLL,IUserBLL userBLL) : base(pageBll, Enums.MenuList.MasterDataApproval)
+        public MasterApprovalController(IPageBLL pageBll,IMasterDataAprovalBLL masterDataAprovalBLL,IBrandRegistrationBLL brandRegistrationBLL,IUserBLL userBLL) : base(pageBll, Enums.MenuList.MasterDataApproval)
         {
             _mainMenu = Enums.MenuList.MasterData;
             _masterDataAprovalBLL = masterDataAprovalBLL;
+            
+            _xmlWriter = new XmlBrandRegistrationWriter();
             _userBLL = userBLL;
         }
 
@@ -66,6 +74,8 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 _masterDataAprovalBLL.Approve(CurrentUser.USER_ID, model.Detail.APPROVAL_ID);
+                GenerateXml(model.Detail);
+
                 AddMessageInfo("Success", Enums.MessageInfoType.Success);
             }
             catch (Exception ex)
@@ -76,6 +86,41 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Detail", new { id = model.Detail.APPROVAL_ID });
         }
 
+        private void GenerateXml(MasterDataApprovalDetailViewModel data)
+        {
+            if (data.PAGE_ID == (int)Enums.MenuList.BrandRegistration)
+            {
+                var tempId = data.FORM_ID.Split('-');
+                var werks = tempId[0];
+                var facode = tempId[1];
+                var stickerCode = tempId[2];
+
+                var brandXmlDto = _brandRegistrationBLL.GetDataForXml(werks, facode, stickerCode);
+                if (brandXmlDto != null)
+                {
+                    
+                        
+                        var fileName = ConfigurationManager.AppSettings["PathXmlTemp"] + "BRANDREG" +
+                           DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
+                        var outboundFilePath = ConfigurationManager.AppSettings["CK5PathXml"] + "BRANDREG" +
+                           DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
+                        brandXmlDto.XmlPath = fileName;
+
+                        _xmlWriter.CreateBrandRegXml(brandXmlDto);
+
+                        _xmlWriter.MoveTempToOutbound(fileName, outboundFilePath);
+                    
+
+
+                }
+
+
+
+
+            }
+
+
+        }
 
         public ActionResult Reject(MasterDataApprovalItemViewModel model)
         {
