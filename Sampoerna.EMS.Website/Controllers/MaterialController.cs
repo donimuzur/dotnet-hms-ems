@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
 using DocumentFormat.OpenXml.Spreadsheet;
+using iTextSharp.text.pdf.qrcode;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.BrandRegistration;
@@ -289,14 +290,20 @@ namespace Sampoerna.EMS.Website.Controllers
                 var output = _materialBll.Save(data, CurrentUser.USER_ID);
                 if (!output.Success)
                 {
-                    AddMessageInfo(output.ErrorMessage, Enums.MessageInfoType.Error
-                        );
+                    AddMessageInfo(output.ErrorMessage, Enums.MessageInfoType.Error);
+                    model.MainMenu = Enums.MenuList.MasterData;
+                    model.CurrentMenu = PageInfo;
+                    model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, model.MaterialNumber + model.PlantId));
+                    model.ConversionValueStr = model.Conversion == null ? string.Empty : model.Conversion.ToString();
+                    model.HjeStr = model.Hje == null ? string.Empty : model.Hje.ToString();
+                    model.TariffStr = model.Tariff == null ? string.Empty : model.Tariff.ToString();
 
+                    InitEditModel(model);
+                    return View(model);
                 }
-                else
-                {
-                    AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
-                }
+                
+                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
+                
 
 
 

@@ -12,7 +12,7 @@
                 <div class="action-button">
                     <input type="submit" class="btn btn-blue" value="Save" />
                     @{
-    var isActive = Model.Detail.Is_Active == "Yes" ? true : false;
+                        var isActive = Model.Detail.Is_Active == "Yes" ? true : false;
                     }
                     <a href="javascript:void(0);" onclick="confirmDeletePOA() " class="btn btn-danger">@(isActive == true ? "DEACTIVE" : "ACTIVE")</a>
 
