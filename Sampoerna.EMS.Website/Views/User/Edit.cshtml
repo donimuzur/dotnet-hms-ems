@@ -40,7 +40,11 @@
             <div class="col-sm-12">
                 <h3>Master User</h3>
                 <div class="action-button">
-                    <button class="btn btn-blue">Save</button>
+                    @if (Model.Detail.IS_ACTIVE)
+                    {
+                        <button class="btn btn-blue">Save</button>
+                    }
+                    
                     <input type="button" value="Back" class="btn btn-grey" id="btnCancel" />
                 </div>
             </div>
@@ -75,6 +79,8 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            @if (Model.Detail.IS_ACTIVE)
+                                            {
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <label class="col-md-3">Data Approver</label>
@@ -82,7 +88,9 @@
                                                         @Html.CheckBoxFor(m => m.Detail.IS_MASTER_DATA_APPROVER)
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div>    
+                                            }
+                                            
 
                                         </div>
                                         <div class="row">
