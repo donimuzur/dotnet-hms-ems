@@ -43,5 +43,14 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public bool? PACKED_ADJUSTED { get; set; }
 
         public string XmlPath { get; set; }
+
+        public string MARKET_DESC { get; set; }
+
+        public string PRODUCT_TYPE { get; set; }
+        public string PRODUCT_ALIAS { get; set; }
+
+        public decimal SERIES_VALUE { get; set; }
+
+        public string EXC_TYP_DESC { get; set; }
     }
 }
