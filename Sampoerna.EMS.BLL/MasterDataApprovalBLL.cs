@@ -14,7 +14,7 @@ using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Utils;
-using Sampoerna.EMS.XMLReader;
+//using Sampoerna.EMS.XMLReader;
 using Voxteneo.WebComponents.Logger;
 using Enums = Sampoerna.EMS.Core.Enums;
 
@@ -34,7 +34,7 @@ namespace Sampoerna.EMS.BLL
         private IZaidmExMaterialService _materialBLL;
         private IMasterDataApprovalSettingBLL _approvalSettingBLL;
         private IChangesHistoryBLL _changesHistoryBLL;
-        private XmlBrandRegistrationWriter _xmlWriter;
+        //private XmlBrandRegistrationWriter _xmlWriter;
         private string includeTables = "MASTER_DATA_APPROVAL_DETAIL,PAGE";
         public MasterDataApprovalBLL(IUnitOfWork uow, ILogger logger)
         {
@@ -49,7 +49,7 @@ namespace Sampoerna.EMS.BLL
             _poaBll = new POAService(_uow,_logger);
             _poaMapBLL = new POAMapBLL(_uow,_logger);
             _materialBLL = new ZaidmExMaterialService(_uow,_logger);
-            _xmlWriter = new XmlBrandRegistrationWriter(_uow,_logger);
+            //_xmlWriter = new XmlBrandRegistrationWriter(_uow,_logger);
         }
         public T MasterDataApprovalValidation<T>(int pageId, string userId, T oldObject, T newObject, bool isCommit = false)
         {
@@ -254,9 +254,9 @@ namespace Sampoerna.EMS.BLL
                            DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
                         brandXmlDto.XmlPath = fileName;
 
-                        _xmlWriter.CreateBrandRegXml(brandXmlDto);
+                        //_xmlWriter.CreateBrandRegXml(brandXmlDto);
 
-                        _xmlWriter.MoveTempToOutbound(fileName, outboundFilePath);
+                        //_xmlWriter.MoveTempToOutbound(fileName, outboundFilePath);
                     }
 
                     
