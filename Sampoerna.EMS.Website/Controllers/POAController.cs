@@ -283,17 +283,21 @@ namespace Sampoerna.EMS.Website.Controllers
                 SetChanges(origin, newpoa);
 
                 _poaBll.Save(newpoa);
-                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
-                       );
+                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
                 return RedirectToAction("Index");
             }
 
             catch (Exception ex)
             {
-                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
-                       );
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model.MainMenu = _mainMenu;
+                model.CurrentMenu = PageInfo;
+                
 
-                return View();
+                model.Managers = model.Detail.Manager == null ? GlobalFunctions.GetCreatorList() : GlobalFunctions.GetCreatorList(model.Detail.Manager.USER_ID);
+                model.Users = model.Detail.User == null ? GlobalFunctions.GetCreatorList() : GlobalFunctions.GetCreatorList(model.Detail.User.USER_ID);
+                
+                return View(model);
             }
 
         }
