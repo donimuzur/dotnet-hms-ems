@@ -66,12 +66,28 @@ namespace Sampoerna.EMS.BLL
             foreach (var isneedApprove in needApprovalFields)
             {
                 //var isneedApprove = fieldName;
+                var masterDataApprovalDetail = new MASTER_DATA_APPROVAL_DETAIL();
+                if (newObject == null) // delete data from database logic (not flagging)
+                {
+                    var oldValue = oldObject.GetType().GetProperty(isneedApprove.COLUMN_NAME).GetValue(oldObject, null);
+                    masterDataApprovalDetail.OLD_VALUE = oldValue.ToString();
+                    masterDataApprovalDetail.NEW_VALUE = null;
+                    masterDataApprovalDetail.COLUMN_DESCRIPTION = isneedApprove.ColumnDescription;
+                    masterDataApprovalDetail.COLUMN_NAME = isneedApprove.COLUMN_NAME;
+
+                    needApprovalList.Add(masterDataApprovalDetail);
+
+                   //newObject.GetType().GetProperty(isneedApprove.COLUMN_NAME).SetValue(newObject, oldValue);
+                    continue;
+                }
 
                 if (isneedApprove != null)
                 {
-                    var masterDataApprovalDetail = new MASTER_DATA_APPROVAL_DETAIL();
+                    
                     var oldValue = oldObject.GetType().GetProperty(isneedApprove.COLUMN_NAME).GetValue(oldObject, null);
                     var newValue = newObject.GetType().GetProperty(isneedApprove.COLUMN_NAME).GetValue(newObject, null);
+
+                    
 
                     if (oldValue == null)
                     {
@@ -126,6 +142,10 @@ namespace Sampoerna.EMS.BLL
                 newApproval.PAGE_ID = approvalSettings.PageId;
                 newApproval.STATUS_ID = Enums.DocumentStatus.WaitingForMasterApprover;
                 newApproval.FORM_ID = GenerateFormId(approvalSettings.PageId, newObject);
+                if (newObject == null) // delete data without flagging
+                {
+                    newApproval.FORM_ID = GenerateFormId(approvalSettings.PageId, oldObject);
+                }
                 newApproval.MASTER_DATA_APPROVAL_DETAIL = needApprovalList;
 
                 isExist = CheckExitingOngoingApproval(newApproval.FORM_ID);
@@ -155,7 +175,7 @@ namespace Sampoerna.EMS.BLL
 
         private bool CheckExitingOngoingApproval(string formId)
         {
-            var data = _repository.Get(x => x.FORM_ID == formId && x.STATUS_ID == Enums.DocumentStatus.WaitingForMasterApprover);
+            var data = _repository.Get(x => x.FORM_ID == formId && x.STATUS_ID == Enums.DocumentStatus.WaitingForMasterApprover).FirstOrDefault();
 
             return data != null;
         }
@@ -196,8 +216,8 @@ namespace Sampoerna.EMS.BLL
                 data.STATUS_ID = Enums.DocumentStatus.Approved;
                 data.APPROVED_BY = userId;
                 data.APPROVED_DATE = DateTime.Now;
-                
-                var newData = UpdateObjectByFormId(data);
+                bool isDelete;
+                var newData = UpdateObjectByFormId(data,out isDelete);
                 if (newData != null)
                 {
                     if (newData.GetType() == typeof (ZAIDM_EX_BRAND))
@@ -241,8 +261,19 @@ namespace Sampoerna.EMS.BLL
                     }
                 }
 
-                UpdateChangesHistory(data);
-                _uow.SaveChanges();
+                if (!isDelete)
+                {
+                    UpdateChangesHistory(data);
+                    _uow.SaveChanges();
+                }
+                else //delete non flagging
+                {
+                    if (data.PAGE_ID == (int) Enums.MenuList.POAMap)
+                    {
+                        _poaMapBLL.Delete(int.Parse(data.FORM_ID));
+                    }
+                }
+                
 
                 //create xml for brand registration
 
@@ -303,12 +334,12 @@ namespace Sampoerna.EMS.BLL
             return null;
         }
 
-        private object UpdateObjectByFormId(MASTER_DATA_APPROVAL approvalData)
+        private object UpdateObjectByFormId(MASTER_DATA_APPROVAL approvalData,out bool isDelete)
         {
 
 
             PropertyInfo propInfo;
-
+            isDelete = false;
             if (approvalData.PAGE_ID == (int) Enums.MenuList.BrandRegistration)
             {
                 var tempId = approvalData.FORM_ID.Split('-');
@@ -383,13 +414,19 @@ namespace Sampoerna.EMS.BLL
                 var dataPoaMap = _poaMapBLL.GetById(int.Parse(approvalData.FORM_ID));
                 if (dataPoaMap != null)
                 {
-                    foreach (var detail in approvalData.MASTER_DATA_APPROVAL_DETAIL)
+                    isDelete = approvalData.MASTER_DATA_APPROVAL_DETAIL.Where(x => x.NEW_VALUE == null).Any();
+                    if (!isDelete)
                     {
-                        propInfo = typeof (POA_MAP).GetProperty(detail.COLUMN_NAME);
-                        dataPoaMap.GetType()
-                            .GetProperty(detail.COLUMN_NAME)
-                            .SetValue(dataPoaMap, CastPropertyValue(propInfo, detail.NEW_VALUE));
+                        foreach (var detail in approvalData.MASTER_DATA_APPROVAL_DETAIL)
+                        {
+                            propInfo = typeof (POA_MAP).GetProperty(detail.COLUMN_NAME);
+                            dataPoaMap.GetType()
+                                .GetProperty(detail.COLUMN_NAME)
+                                .SetValue(dataPoaMap, CastPropertyValue(propInfo, detail.NEW_VALUE));
+                        }
                     }
+                    
+                    
 
                     return null;
                 }
