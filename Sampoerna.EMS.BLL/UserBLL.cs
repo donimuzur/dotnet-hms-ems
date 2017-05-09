@@ -148,7 +148,7 @@ namespace Sampoerna.EMS.BLL
 
         public bool IsUserMasterApprover(string userId)
         {
-            return _repository.Get(x => x.IS_MASTER_DATA_APPROVER.HasValue && x.IS_MASTER_DATA_APPROVER.Value && x.USER_ID == userId, null, "").Any();
+            return _repository.Get(x => x.IS_MASTER_DATA_APPROVER.HasValue && x.IS_MASTER_DATA_APPROVER.Value && x.USER_ID == userId && x.IS_ACTIVE.HasValue && x.IS_ACTIVE == 1, null, "").Any();
         }
 
         public List<UserDto> GetListUserRoleByUserId(string userId)
