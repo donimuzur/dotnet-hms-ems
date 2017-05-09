@@ -51,14 +51,14 @@ namespace Sampoerna.EMS.BLL
             _materialBLL = new ZaidmExMaterialService(_uow,_logger);
             //_xmlWriter = new XmlBrandRegistrationWriter(_uow,_logger);
         }
-        public T MasterDataApprovalValidation<T>(int pageId, string userId, T oldObject, T newObject, bool isCommit = false)
+        public T MasterDataApprovalValidation<T>(int pageId, string userId, T oldObject, T newObject,out bool isExist, bool isCommit = false)
         {
 
             var approvalSettings = _approvalSettingBLL.GetAllEditableColumn(pageId);
             //var fieldNames = typeof(T).GetFields()
             //                .Select(field => field.Name)
             //                .ToList();
-
+            isExist = false;
 
             var needApprovalFields = approvalSettings.Details.Where(x => x.IS_APPROVAL.HasValue && x.IS_APPROVAL.Value);
             var needApprovalList = new List<MASTER_DATA_APPROVAL_DETAIL>();
@@ -116,6 +116,7 @@ namespace Sampoerna.EMS.BLL
 
             }
 
+            
             var newApproval = new MASTER_DATA_APPROVAL();
             if (needApprovalList.Count > 0)
             {
@@ -126,17 +127,33 @@ namespace Sampoerna.EMS.BLL
                 newApproval.FORM_ID = GenerateFormId(approvalSettings.PageId, newObject);
                 newApproval.MASTER_DATA_APPROVAL_DETAIL = needApprovalList;
 
-                _repository.Insert(newApproval);
+                isExist = CheckExitingOngoingApproval(newApproval.FORM_ID);
+                if (!isExist)
+                {
+                    _repository.Insert(newApproval);    
+                }
+                
             }
 
             if (isCommit)
             {
-                _uow.SaveChanges();
+                if (!isExist)
+                {
+                    _uow.SaveChanges();    
+                }
+                
             }
 
             return newObject;
         }
 
+
+        private bool CheckExitingOngoingApproval(string formId)
+        {
+            var data = _repository.Get(x => x.FORM_ID == formId && x.STATUS_ID == Enums.DocumentStatus.WaitingForMasterApprover);
+
+            return data != null;
+        }
 
         public void CreateNewDataForApproval<T>(int pageId,string userId,T data)
         {

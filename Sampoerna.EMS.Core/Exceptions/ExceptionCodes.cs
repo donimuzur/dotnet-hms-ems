@@ -163,6 +163,9 @@ namespace Sampoerna.EMS.Core.Exceptions
 
             [Description("The scheduler json config failed to update.")]
             SchedulerSetingJsonError,
+
+            [Description("There are existing ongoing approval for this Item.")]
+            ApprovalMasterExist,
         }
 
         /// <summary>

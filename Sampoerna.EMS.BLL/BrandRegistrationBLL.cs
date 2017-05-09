@@ -151,13 +151,19 @@ namespace Sampoerna.EMS.BLL
             {
                 dbBrand.IS_DELETED = true;
             }
-
+            bool isExistApproval;
             dbBrand = _masterDataAprovalBLL.MasterDataApprovalValidation((int) Core.Enums.MenuList.BrandRegistration, userId,
-                oldObject, dbBrand);
-            _repository.Update(dbBrand);
-            _uow.SaveChanges();
+                oldObject, dbBrand,out isExistApproval);
+            if (!isExistApproval)
+            {
+                _repository.Update(dbBrand);
+                _uow.SaveChanges();
 
-            return dbBrand.IS_DELETED.HasValue && dbBrand.IS_DELETED.Value;
+                return dbBrand.IS_DELETED.HasValue && dbBrand.IS_DELETED.Value;
+            }
+
+            return false;
+
         }
 
 
