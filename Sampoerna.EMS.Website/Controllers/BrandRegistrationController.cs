@@ -7,6 +7,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.BrandRegistration;
@@ -180,6 +181,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             if (ModelState.IsValid)
             {
+                bool isExist;
                 var dbBrand = new ZAIDM_EX_BRAND();
 
                 dbBrand = Mapper.Map<ZAIDM_EX_BRAND>(model);
@@ -202,19 +204,22 @@ namespace Sampoerna.EMS.Website.Controllers
                 try
                 {
                     _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.BrandRegistration,
-                        CurrentUser.USER_ID, new ZAIDM_EX_BRAND(), dbBrand,true);
+                        CurrentUser.USER_ID, new ZAIDM_EX_BRAND(), dbBrand,out isExist, true);
                     // AddHistoryCreate(dbBrand.WERKS, dbBrand.FA_CODE, dbBrand.STICKER_CODE);
-                    
+
                     //_brandRegistrationBll.Save(dbBrand);
-                    
+
 
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
                     return RedirectToAction("Index");
                 }
-                catch
+                catch (BLLException ex)
                 {
-                    AddMessageInfo("Save Failed.", Enums.MessageInfoType.Error
-                       );
+                    AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                }
+                catch(Exception)
+                {
+                    AddMessageInfo("Save Failed.", Enums.MessageInfoType.Error);
                 }
             }
 
@@ -277,6 +282,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Edit(BrandRegistrationEditViewModel model)
         {
             ZAIDM_EX_BRAND dbBrand = null;
+            bool isApprovalExist;
             try
             {
                 dbBrand = _brandRegistrationBll.GetById(model.PlantId, model.FaCode,model.StickerCode);
@@ -333,7 +339,7 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 dbBrand = _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.BrandRegistration,
-                    CurrentUser.USER_ID, oldObject, dbBrand);
+                    CurrentUser.USER_ID, oldObject, dbBrand,out isApprovalExist);
                 _brandRegistrationBll.Save(dbBrand);
                 AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
                 return RedirectToAction("Index");
@@ -341,7 +347,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             catch(Exception ex)
             {
-                AddMessageInfo("Edit Failed.", Enums.MessageInfoType.Error);
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
 
             model = InitEdit(model);

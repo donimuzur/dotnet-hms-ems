@@ -81,6 +81,8 @@ namespace Sampoerna.EMS.BLL
             bool isNew = false;
             var origin = _repository.Get(x=>x.STICKER_CODE == data.STICKER_CODE && x.WERKS == data.WERKS,null,includeTables).SingleOrDefault();
             var originDto = AutoMapper.Mapper.Map<MaterialDto>(origin);
+
+            bool isApprovalExist;
             //var edited = AutoMapper.Mapper.Map<ZAIDM_EX_MATERIAL>(model);
             //AutoMapper.Mapper.Map(model, data);
             if (originDto != null)
@@ -92,7 +94,7 @@ namespace Sampoerna.EMS.BLL
 
                 var tempNewData = AutoMapper.Mapper.Map<ZAIDM_EX_MATERIAL>(data);
                 tempNewData = _masterDataAprovalBLL.MasterDataApprovalValidation((int)Enums.MenuList.MaterialMaster, userId, origin,
-                    tempNewData);
+                    tempNewData,out isApprovalExist);
                 data = AutoMapper.Mapper.Map<MaterialDto>(tempNewData);
 
                 if (data.CLIENT_DELETION != (originDto.CLIENT_DELETION.HasValue ? originDto.CLIENT_DELETION : false))
@@ -131,11 +133,19 @@ namespace Sampoerna.EMS.BLL
                 }
                 else
                 {
-                    _masterDataAprovalBLL.MasterDataApprovalValidation((int)Enums.MenuList.MaterialMaster, userId, new ZAIDM_EX_MATERIAL(), dataToSave,true);
+                    _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.MaterialMaster, userId,
+                        new ZAIDM_EX_MATERIAL(), dataToSave, out isApprovalExist, true);
                 }
-                
+
                 output.Success = true;
                 output.materialId = data.STICKER_CODE;
+            }
+            catch (BLLException ex)
+            {
+                _logger.Error(ex);
+                output.Success = false;
+                output.ErrorCode = ex.Code;
+                output.ErrorMessage = ex.Message;
             }
             catch (Exception exception)
             {
@@ -144,6 +154,7 @@ namespace Sampoerna.EMS.BLL
                 output.ErrorCode = ExceptionCodes.BaseExceptions.unhandled_exception.ToString();
                 output.ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BaseExceptions.unhandled_exception);
             }
+            
             return output;
         }
 

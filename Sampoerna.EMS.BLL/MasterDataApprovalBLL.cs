@@ -13,6 +13,7 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
+using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 //using Sampoerna.EMS.XMLReader;
 using Voxteneo.WebComponents.Logger;
@@ -130,7 +131,11 @@ namespace Sampoerna.EMS.BLL
                 isExist = CheckExitingOngoingApproval(newApproval.FORM_ID);
                 if (!isExist)
                 {
-                    _repository.Insert(newApproval);    
+                    _repository.Insert(newApproval);
+                }
+                else
+                {
+                    throw new BLLException(ExceptionCodes.BLLExceptions.ApprovalMasterExist);
                 }
                 
             }
