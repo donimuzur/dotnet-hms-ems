@@ -13,6 +13,7 @@ using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.DAL;
+using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
 namespace Sampoerna.EMS.XMLReader
 {
@@ -76,9 +77,10 @@ namespace Sampoerna.EMS.XMLReader
                                 if (exGoodType != null)
                                 {
                                     var excGoodTypeTemp = _xmlMapper.GetElementValue(exGoodType.Element("EXC_GOOD_TYP"));
-                                    if (excGoodTypeTemp == null)
+                                    if (excGoodTypeTemp == null) //default menjadi hasil tembakau
                                     {
-                                        item.PLANT_DELETION = true;
+                                        item.EXC_GOOD_TYP =
+                                            EnumHelper.GetDescription(Sampoerna.EMS.Core.Enums.GoodsType.HasilTembakau);
                                     }
                                     else
                                     {
