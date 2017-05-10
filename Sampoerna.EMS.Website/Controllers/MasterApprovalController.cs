@@ -120,8 +120,9 @@ namespace Sampoerna.EMS.Website.Controllers
             return RedirectToAction("Detail", new { id = model.Detail.APPROVAL_ID });
         }
 
-        private void GenerateXml(MasterDataApprovalDetailViewModel data)
+        private void GenerateXml(MasterDataApprovalDetailViewModel dataModel)
         {
+            var data  = _masterDataAprovalBLL.GetByApprovalId(dataModel.APPROVAL_ID);
             if (data.PAGE_ID == (int)Enums.MenuList.BrandRegistration)
             {
                 var tempId = data.FORM_ID.Split('-');
