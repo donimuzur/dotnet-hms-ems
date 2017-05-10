@@ -21,5 +21,8 @@ namespace Sampoerna.EMS.Contract
         MASTER_DATA_APPROVAL GetByApprovalId(int approvalId);
 
         void Reject(string userId, int masterApprovalId);
+
+        bool SendEmailWorkflow(int approvalId);
+        bool SendEmailWorkflowByParam(MASTER_DATA_APPROVAL data);
     }
 }

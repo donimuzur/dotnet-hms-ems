@@ -10,10 +10,12 @@ using AutoMapper;
 using CrystalDecisions.Shared;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.Business;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core.Exceptions;
+using Sampoerna.EMS.MessagingService;
 using Sampoerna.EMS.Utils;
 //using Sampoerna.EMS.XMLReader;
 using Voxteneo.WebComponents.Logger;
@@ -23,33 +25,37 @@ namespace Sampoerna.EMS.BLL
 {
     public class MasterDataApprovalBLL : IMasterDataAprovalBLL
     {
-        private ILogger _logger;
+        //private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<MASTER_DATA_APPROVAL> _repository;
-        
+
 
         private IPageBLL _pageBLL;
+        //private IUserBLL _userBLL;
         private IBrandRegistrationService _brandRegistrationBLL;
         private IPoaService _poaBll;
         private IPOAMapBLL _poaMapBLL;
         private IZaidmExMaterialService _materialBLL;
         private IMasterDataApprovalSettingBLL _approvalSettingBLL;
+        private IMessageService _messageService;
         private IChangesHistoryBLL _changesHistoryBLL;
         //private XmlBrandRegistrationWriter _xmlWriter;
         private string includeTables = "MASTER_DATA_APPROVAL_DETAIL,PAGE";
         public MasterDataApprovalBLL(IUnitOfWork uow, ILogger logger)
         {
             _uow = uow;
-            _logger = logger;
+            //_logger = logger;
 
             _repository = _uow.GetGenericRepository<MASTER_DATA_APPROVAL>();
-            _pageBLL = new PageBLL(_uow,_logger);
-            _approvalSettingBLL = new MasterDataApprovalSettingBLL(_uow,_logger);
-            _changesHistoryBLL = new ChangesHistoryBLL(_uow,_logger);
-            _brandRegistrationBLL = new BrandRegistrationService(_uow,_logger);
-            _poaBll = new POAService(_uow,_logger);
-            _poaMapBLL = new POAMapBLL(_uow,_logger);
-            _materialBLL = new ZaidmExMaterialService(_uow,_logger);
+            _pageBLL = new PageBLL(_uow, logger);
+            //_userBLL = new UserBLL(_uow, logger);
+            _approvalSettingBLL = new MasterDataApprovalSettingBLL(_uow, logger);
+            _changesHistoryBLL = new ChangesHistoryBLL(_uow, logger);
+            _brandRegistrationBLL = new BrandRegistrationService(_uow, logger);
+            _messageService = new MessageService(logger);
+            _poaBll = new POAService(_uow, logger);
+            _poaMapBLL = new POAMapBLL(_uow, logger);
+            _materialBLL = new ZaidmExMaterialService(_uow, logger);
             //_xmlWriter = new XmlBrandRegistrationWriter(_uow,_logger);
         }
         public T MasterDataApprovalValidation<T>(int pageId, string userId, T oldObject, T newObject,out bool isExist, bool isCommit = false)
@@ -152,6 +158,7 @@ namespace Sampoerna.EMS.BLL
                 if (!isExist)
                 {
                     _repository.Insert(newApproval);
+                    SendEmailWorkflowByParam(newApproval);
                 }
                 else
                 {
@@ -164,7 +171,8 @@ namespace Sampoerna.EMS.BLL
             {
                 if (!isExist)
                 {
-                    _uow.SaveChanges();    
+                    _uow.SaveChanges();
+                    //SendEmailWorkflow(newApproval.APPROVAL_ID);
                 }
                 
             }
@@ -277,11 +285,11 @@ namespace Sampoerna.EMS.BLL
 
                 //create xml for brand registration
 
-                
+                SendEmailWorkflow(data.APPROVAL_ID);
 
-                
-                
-                
+
+
+
 
             }
         }
@@ -294,10 +302,12 @@ namespace Sampoerna.EMS.BLL
             if (data != null)
             {
                 data.STATUS_ID = Enums.DocumentStatus.Rejected;
-                
+                data.APPROVED_BY = userId;
+                data.APPROVED_DATE = DateTime.Now;
 
                 
                 _uow.SaveChanges();
+                SendEmailWorkflow(data.APPROVAL_ID);
             }
         }
 
@@ -529,6 +539,8 @@ namespace Sampoerna.EMS.BLL
         }
 
 
+        
+
         private void UpdateChangesHistory(MASTER_DATA_APPROVAL data)
         {
             var formId = data.FORM_ID.Split('-');
@@ -569,6 +581,157 @@ namespace Sampoerna.EMS.BLL
                 _changesHistoryBLL.AddHistory(changes);
             }
             
+        }
+
+
+        public bool SendEmailWorkflowByParam(MASTER_DATA_APPROVAL data)
+        {
+
+            var mailNotif = ProsesMailNotificationBody(data);
+            var success = false;
+
+            if (mailNotif != null)
+            {
+                if (mailNotif.IsCCExist)
+                {
+                    success = _messageService.SendEmailToListWithCC(mailNotif.To, mailNotif.CC, mailNotif.Subject, mailNotif.Body, false);
+                }
+                else
+                {
+                    success = _messageService.SendEmailToList(mailNotif.To, mailNotif.Subject, mailNotif.Body, false);
+                }
+
+
+            }
+
+
+            return success;
+            
+
+            
+        }
+
+        public bool SendEmailWorkflow(int approvalId)
+        {
+            var data = GetByApprovalId(approvalId);
+            var mailNotif = ProsesMailNotificationBody(data);
+            var success = false;
+
+            if (mailNotif != null)
+            {
+                if (mailNotif.IsCCExist)
+                {
+                    success = _messageService.SendEmailToListWithCC(mailNotif.To, mailNotif.CC, mailNotif.Subject, mailNotif.Body, false);
+                }
+                else
+                {
+                    success = _messageService.SendEmailToList(mailNotif.To, mailNotif.Subject, mailNotif.Body, false);
+                }
+
+
+            }
+
+
+            return success;
+        }
+
+        private MailNotification ProsesMailNotificationBody(MASTER_DATA_APPROVAL data)
+        {
+            var bodyMail = new StringBuilder();
+            var rc = new MailNotification();
+
+
+
+
+
+            var userCreatorInfo = _poaBll.GetUserById(data.CREATED_BY);
+
+
+
+
+            var webRootUrl = ConfigurationManager.AppSettings["WebRootUrl"];
+            var page = _pageBLL.GetPageByID(data.PAGE_ID);
+            rc.Subject = "Master Data " + page.MENU_NAME + " Approval Status is " + EnumHelper.GetDescription(data.STATUS_ID);
+            bodyMail.Append("Dear Team,<br />");
+
+            bodyMail.Append("Kindly be informed, " + rc.Subject + ". <br />");
+
+            bodyMail.Append(BuildBodyMail(data, webRootUrl));
+
+            var controllerList = _poaBll.GetMasterApprovers();
+
+            rc.Body = bodyMail.ToString();
+
+            if (data.STATUS_ID == Enums.DocumentStatus.WaitingForMasterApprover)
+            {
+                foreach (var user in controllerList)
+                {
+                    
+                    rc.To.Add(user.EMAIL);
+                }
+
+
+
+                rc.IsCCExist = true;
+                rc.CC.Add(userCreatorInfo.EMAIL); 
+            }
+            else
+            {
+                foreach (var user in controllerList)
+                {
+                    rc.IsCCExist = true;
+                    rc.CC.Add(user.EMAIL);
+                }
+                
+
+
+                
+                rc.To.Add(userCreatorInfo.EMAIL);    
+            }
+            
+
+            return rc;
+        }
+
+        private string BuildBodyMail(MASTER_DATA_APPROVAL data, string webRootUrl)
+        {
+            var bodyMail = new StringBuilder();
+            var page = _pageBLL.GetPageByID(data.PAGE_ID);
+            bodyMail.Append("<table><tr><td>Master Data </td><td>: " + page.MENU_NAME + "</td></tr>");
+            bodyMail.Append("<tr><td>Form Id </td><td>: " + data.FORM_ID + "</td></tr>");
+
+
+            //bodyMail.Append("<tr><td>Total Qty Approved </td><td>: " +
+            //                ConvertHelper.ConvertDecimalToStringMoneyFormat(pbck1Data.QtyApproved) + " " + pbck1Data.RequestQtyUomName + "</td></tr>");
+            //bodyMail.Append("<tr><td>Total Quota Qty Used </td><td>: " +
+            //                ConvertHelper.ConvertDecimalToStringMoneyFormat(quotaDetail.QtyCk5) + " " + pbck1Data.RequestQtyUomName + "</td></tr>");
+            //bodyMail.Append("<tr><td>Total Quota Qty Remain </td><td>: " +
+            //                ConvertHelper.ConvertDecimalToStringMoneyFormat(quotaDetail.RemainQuota) + " " + pbck1Data.RequestQtyUomName + "</td></tr>");
+
+            string userName = "";
+            var creator = _poaBll.GetUserById(data.CREATED_BY);
+            if (creator != null)
+                userName = creator.LAST_NAME + ", " + creator.FIRST_NAME;
+
+
+
+            bodyMail.Append("<tr><td>Creator</td><td> : " + userName + "</td></tr>");
+
+
+
+
+
+
+
+            bodyMail.Append("<tr colspan='2'><td><i>To VIEW, Please click this <a href='" + webRootUrl + "/MasterApproval/Detail/" + data.APPROVAL_ID + "'><u>link</u></a> to view detailed information</i></td></tr>");
+
+
+
+            bodyMail.Append("</table>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<br />Regards,<br />");
+
+            return bodyMail.ToString();
         }
     }
 }

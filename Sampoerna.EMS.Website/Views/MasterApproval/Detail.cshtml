@@ -10,17 +10,18 @@
                     <div class="col-sm-3 action-button">
                         <a href="@Url.Action("Index", "MasterApproval")" class="btn btn-grey">Back</a>
                     </div>
-                    @if (Model.IsMasterApprover && (Model.Detail.STATUS_ID == Enums.DocumentStatus.WaitingForMasterApprover) )
-                    {
+                    @if (Model.IsMasterApprover && (Model.Detail.STATUS_ID == Enums.DocumentStatus.WaitingForMasterApprover))
+{
 
 
-                        using (Html.BeginForm("Reject", "MasterApproval", FormMethod.Post, new { @id = "RejectForm", @class = "col-sm-3 action-button" }))
-                        {
-                            @Html.HiddenFor(model => model.Detail.APPROVAL_ID)
-                            <input type="submit" class="btn btn-danger" value="Reject" />
-                        }
 
-                        using (Html.BeginForm("Approve", "MasterApproval", FormMethod.Post, new { @id = "ApproveForm", @class = "col-sm-3 action-button" }))
+    <div class="col-sm-3 action-button">
+        <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
+    </div>
+                                      
+                        
+
+    using (Html.BeginForm("Approve", "MasterApproval", FormMethod.Post, new { @id = "ApproveForm", @class = "col-sm-3 action-button" }))
                         {
                             @Html.HiddenFor(model => model.Detail.APPROVAL_ID)
                             <input type="submit" class="btn btn-blue" value="Approve" />
@@ -165,11 +166,80 @@
                             </div>
                         </div>
                     </div>
+                    <div class="panel-group" id="accordion-7" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="heading7">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
+                                        Workflow History
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
+                                <div class="panel-body">
+                                    <div class="table-container">
+                                        @Html.Partial("_WorkflowHistoryTable", Model.WorkflowHistory)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div></div>
+            </div>
+        </div>
+        >
+    </div>
+    <div id="Ck5ModalReject" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Reject Master data</h4>
                 </div>
+                @using (Html.BeginForm("Reject", "MasterApproval"))
+                {
+                    <div class="modal-body">
+                        @Html.HiddenFor(model => model.Detail.APPROVAL_ID)
+                        <div class="form-excise" role="form">
+                            <div class="row">
+                                <label class="col-md-3">Add Comment<span class="red">*</span></label>
+                                <div class="col-md-9">
+                                    @Html.TextAreaFor(model => model.RejectComment, new { @rows = "5", @class = "col-md-9",@id= "Comment" })
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                        <input type="submit" class="btn btn-danger" value="Reject" disabled id="btnConfirmReject" />
+                    </div>
+                }
             </div>
         </div>
     </div>
     
-    
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#btnReject").click(function () {
+                $('#btnConfirmReject').attr('disabled', 'disabled');
 
+                $('#Comment').val('');
+
+                $('#Ck5ModalReject').modal('show');
+
+            });
+
+            $('#Comment').bind('input propertychange', function () {
+
+                $('#btnConfirmReject').attr('disabled', 'disabled');
+                if (this.value.length) {
+                    $('#btnConfirmReject').removeAttr('disabled');
+                }
+            });
+        });
+        
+    </script>    
+}
     

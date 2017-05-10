@@ -12,5 +12,10 @@ namespace Sampoerna.EMS.Contract.Services
         POA GetById(string id);
 
         void Save(POA poa);
+
+        Core.Enums.UserRole GetUserRole(string userId);
+
+        USER GetUserById(string userId);
+        List<USER> GetMasterApprovers();
     }
 }
