@@ -3145,10 +3145,16 @@ namespace Sampoerna.EMS.BLL
         {
             var data = Mapper.Map<QUOTA_MONITORING>(dto);
             data.EX_GROUP_TYPE = exGoodType;
+            if (exGoodType == (int) Enums.ExGoodsType.EtilAlcohol)//etil alcohol
+            {
+                data.SUPPLIER_WERKS = dto.SupplierPlant;
+            }
+
             var existing = _repositoryQuotaMonitor.Get(
                 x =>
                     x.NPPBKC_ID == dto.NppbkcId && x.PERIOD_FROM <= dto.PeriodFrom && x.PERIOD_TO >= dto.PeriodTo &&
-                    x.SUPPLIER_NPPBKC_ID == dto.SupplierNppbkcId && x.SUPPLIER_WERKS == dto.SupplierPlantWerks && x.EX_GROUP_TYPE == exGoodType).FirstOrDefault();
+                    x.SUPPLIER_NPPBKC_ID == dto.SupplierNppbkcId && x.SUPPLIER_WERKS == dto.SupplierPlantWerks 
+                    && x.EX_GROUP_TYPE == exGoodType).FirstOrDefault();
 
             if (existing == null)
             {
@@ -3177,12 +3183,13 @@ namespace Sampoerna.EMS.BLL
 
         public void UpdateAllEmailStatus(Pbck1Dto dto, Enums.EmailStatus emailStatus,int exGoodType)
         {
-            
-            
+
+            var supplier = dto.SupplierPlantWerks;
+            if (exGoodType == (int) Enums.ExGoodsType.EtilAlcohol) supplier = dto.SupplierPlant;
             var existing = _repositoryQuotaMonitor.Get(
                 x =>
                     x.NPPBKC_ID == dto.NppbkcId && x.PERIOD_FROM <= dto.PeriodFrom && x.PERIOD_TO >= dto.PeriodTo &&
-                    x.SUPPLIER_NPPBKC_ID == dto.SupplierNppbkcId && x.SUPPLIER_WERKS == dto.SupplierPlantWerks && x.EX_GROUP_TYPE == exGoodType).FirstOrDefault();
+                    x.SUPPLIER_NPPBKC_ID == dto.SupplierNppbkcId && x.SUPPLIER_WERKS == supplier && x.EX_GROUP_TYPE == exGoodType).FirstOrDefault();
 
             if (existing != null)
             {
@@ -3199,10 +3206,15 @@ namespace Sampoerna.EMS.BLL
         public bool CheckExistingQuotaMonitoringByParam(Pbck1Dto dto, int exGoodType,int quotaPercent)
         {
             var retVal = false;
+            var supplier = dto.SupplierPlantWerks;
+            if (exGoodType == (int) Enums.ExGoodsType.EtilAlcohol)
+            {
+                supplier = dto.SupplierPlant;
+            }
             var existing = _repositoryQuotaMonitor.Get(
                 x =>
                     x.NPPBKC_ID == dto.NppbkcId && x.PERIOD_FROM <= dto.PeriodFrom && x.PERIOD_TO >= dto.PeriodTo &&
-                    x.SUPPLIER_NPPBKC_ID == dto.SupplierNppbkcId && x.SUPPLIER_WERKS == dto.SupplierPlantWerks && x.EX_GROUP_TYPE == exGoodType).FirstOrDefault();
+                    x.SUPPLIER_NPPBKC_ID == dto.SupplierNppbkcId && x.SUPPLIER_WERKS == supplier && x.EX_GROUP_TYPE == exGoodType).FirstOrDefault();
             
             if (existing == null)
             {

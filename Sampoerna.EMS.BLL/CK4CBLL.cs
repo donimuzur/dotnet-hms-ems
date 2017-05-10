@@ -956,7 +956,7 @@ namespace Sampoerna.EMS.BLL
 
             if (input.UserRole == Enums.UserRole.POA)
             {
-                queryFilter = queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID));
+                queryFilter = queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID) || c.CREATED_BY == input.UserId);
             }
             else if (input.UserRole == Enums.UserRole.Administrator)
             {

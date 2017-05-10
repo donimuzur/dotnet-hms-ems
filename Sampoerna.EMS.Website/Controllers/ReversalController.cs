@@ -156,6 +156,20 @@ namespace Sampoerna.EMS.Website.Controllers
                 var createInput = Mapper.Map<ReversalCreateParamInput>(model.Details);
                 createInput.ReversalId = 0;
 
+                var param = new MonthClosingGetByParam();
+                param.ClosingDate = item.ProductionDate;
+                param.PlantId = item.Werks;
+                param.DisplayDate = null;
+
+                var monthClosingdata = _monthClosingBll.GetDataByParam(param);
+
+                if (monthClosingdata != null)
+                {
+                    AddMessageInfo("Please check closing date.", Enums.MessageInfoType.Warning);
+                    model = InitialModel(model);
+                    return View(model);
+                }
+
                 var checkData = _reversalBll.CheckData(createInput);
 
                 if (checkData.IsForCk4cCompleted)
@@ -248,6 +262,20 @@ namespace Sampoerna.EMS.Website.Controllers
                 item = Mapper.Map<ReversalDto>(model.Details);
 
                 var createInput = Mapper.Map<ReversalCreateParamInput>(model.Details);
+
+                var param = new MonthClosingGetByParam();
+                param.ClosingDate = item.ProductionDate;
+                param.PlantId = item.Werks;
+                param.DisplayDate = null;
+
+                var monthClosingdata = _monthClosingBll.GetDataByParam(param);
+
+                if (monthClosingdata != null)
+                {
+                    AddMessageInfo("Please check closing date.", Enums.MessageInfoType.Warning);
+                    model = InitialModel(model);
+                    return View(model);
+                }
 
                 var checkData = _reversalBll.CheckData(createInput);
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Website.Models.WorkflowHistory;
 
 namespace Sampoerna.EMS.Website.Models.MasterDataApproval
 {
@@ -33,7 +34,11 @@ namespace Sampoerna.EMS.Website.Models.MasterDataApproval
 
         public MasterDataApprovalDetailViewModel Detail { get; set; }
 
+        public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
+
         public bool IsMasterApprover { get; set; }
+
+        public string RejectComment { get; set; }
     }
 
     public class MasterDataApprovalDetailViewModel

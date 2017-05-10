@@ -16,6 +16,7 @@ using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.ReportingData;
@@ -452,8 +453,20 @@ namespace Sampoerna.EMS.Website.Controllers
             
             var data  =  _pbck1Bll.GetQuotaMonitoringDetail(id);
             model.Detail = Mapper.Map<QuotaMonitoringModel>(data);
-            var quotaDetails = _ck5Bll.GetQuotaRemainAndDatePbck1Item(data.SUPPLIER_WERKS, data.SUPPLIER_NPPBKC_ID, DateTime.Now,
-                data.NPPBKC_ID, data.EX_GROUP_TYPE);
+            GetQuotaAndRemainOutput quotaDetails;
+            if (data.EX_GROUP_TYPE == (int) Enums.ExGoodsType.EtilAlcohol)
+            {
+                quotaDetails = _ck5Bll.GetQuotaRemainAndDatePbck1ItemExternal(data.SUPPLIER_WERKS,
+                    data.SUPPLIER_NPPBKC_ID, DateTime.Now,
+                    data.NPPBKC_ID, data.EX_GROUP_TYPE);
+            }
+            else
+            {
+                quotaDetails = _ck5Bll.GetQuotaRemainAndDatePbck1Item(data.SUPPLIER_WERKS, data.SUPPLIER_NPPBKC_ID, 
+                    DateTime.Now,data.NPPBKC_ID, data.EX_GROUP_TYPE);
+
+            }
+            
             model.Detail.TotalApprovedQuota = quotaDetails.QtyApprovedPbck1;
             model.Detail.TotalUsedQuota = quotaDetails.QtyCk5;
             model.Detail.TotalRemainingQuota = quotaDetails.RemainQuota;

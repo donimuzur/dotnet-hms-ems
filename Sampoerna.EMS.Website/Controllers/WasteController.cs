@@ -180,6 +180,24 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             if (ModelState.IsValid)
             {
+                var param = new MonthClosingGetByParam();
+                param.ClosingDate = Convert.ToDateTime(model.WasteProductionDate);
+                param.PlantId = model.PlantWerks;
+                param.DisplayDate = null;
+
+                var monthClosingdata = _monthClosingBll.GetDataByParam(param);
+
+                if (monthClosingdata != null)
+                {
+                    AddMessageInfo("Please check closing date.", Enums.MessageInfoType.Warning);
+                    model = InitCreate(model);
+                    model.CompanyCode = model.CompanyCode;
+                    model.PlantWerks = model.PlantWerks;
+                    model.FaCode = model.FaCode;
+                    model.WasteProductionDate = model.WasteProductionDate;
+                    return View(model);
+                }
+
                 var existingData = _wasteBll.GetExistDto(model.CompanyCode, model.PlantWerks, model.FaCode,
                     Convert.ToDateTime(model.WasteProductionDate));
                 if (existingData != null)
@@ -285,6 +303,24 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 return View("Edit", model);
 
+            }
+
+            var param = new MonthClosingGetByParam();
+            param.ClosingDate = Convert.ToDateTime(model.WasteProductionDate);
+            param.PlantId = model.PlantWerks;
+            param.DisplayDate = null;
+
+            var monthClosingdata = _monthClosingBll.GetDataByParam(param);
+
+            if (monthClosingdata != null)
+            {
+                AddMessageInfo("Please check closing date.", Enums.MessageInfoType.Warning);
+                model = IniEdit(model);
+                model.CompanyCode = model.CompanyCode;
+                model.PlantWerks = model.PlantWerks;
+                model.FaCode = model.FaCode;
+                model.WasteProductionDate = model.WasteProductionDate;
+                return View("Edit", model);
             }
 
             if (model.CompanyCode != model.CompanyCodeX || model.PlantWerks != model.PlantWerksX

@@ -188,14 +188,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     var output = _materialBll.Save(model, CurrentUser.USER_ID);
                     if (!output.Success)
                     {
-                        AddMessageInfo(output.ErrorMessage, Enums.MessageInfoType.Error
-                            );
+                        AddMessageInfo(output.ErrorMessage, Enums.MessageInfoType.Error);
 
                     }
                     else
                     {
-                        AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
-                   );
+                        AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
                     }
 
                 }
@@ -311,7 +309,17 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             catch (Exception ex)
             {
-                return RedirectToAction("Index");
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model.MainMenu = Enums.MenuList.MasterData;
+                model.CurrentMenu = PageInfo;
+                model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.HeaderFooter, model.MaterialNumber + model.PlantId));
+                model.ConversionValueStr = model.Conversion == null ? string.Empty : model.Conversion.ToString();
+                model.HjeStr = model.Hje == null ? string.Empty : model.Hje.ToString();
+                model.TariffStr = model.Tariff == null ? string.Empty : model.Tariff.ToString();
+
+                InitEditModel(model);
+                return View(model);
+                
             }
         }
 

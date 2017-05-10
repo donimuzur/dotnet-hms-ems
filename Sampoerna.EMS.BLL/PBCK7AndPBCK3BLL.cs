@@ -3214,7 +3214,7 @@ namespace Sampoerna.EMS.BLL
 
         public List<GetListFaCodeByPlantOutput> GetListFaCodeByPlant(string plantId)
         {
-            var dbBrand = _brandRegistrationServices.GetBrandByPlant(plantId);
+            var dbBrand = _brandRegistrationServices.GetBrandByPlant(plantId).Where(b => b.MARKET_ID == "01");
 
             return Mapper.Map<List<GetListFaCodeByPlantOutput>>(dbBrand);
         }
