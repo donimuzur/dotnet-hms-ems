@@ -112,9 +112,12 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             catch(Exception ex)
             {
-                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
-                       );
-              
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model.CurrentMenu = PageInfo;
+                model.MainMenu = _mainMenu;
+                model.NppbckIds = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+                model.Plants = GlobalFunctions.GetPlantAll();
+                model.POAs = GlobalFunctions.GetPoaAll(_poabll);
                
                 return View(model);
             }
