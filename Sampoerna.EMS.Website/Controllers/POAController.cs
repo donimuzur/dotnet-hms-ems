@@ -81,6 +81,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
+                bool isExist;
                 var poa = AutoMapper.Mapper.Map<POA>(model.Detail);
                 poa.POA_ID = model.Detail.UserId;
                 poa.CREATED_BY = CurrentUser.USER_ID;
@@ -111,17 +112,15 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
                 _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.POA, CurrentUser.USER_ID,
-                    new POA(), poa, true);
+                    new POA(), poa, out isExist, true);
                 //_poaBll.Save(poa);
 
-                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
-                    );
+                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
-                     );
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
             }
 
@@ -243,6 +242,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
+                bool isExist;
                 var poaId = model.Detail.PoaId;
                 var poa = _poaBll.GetById(poaId);
                 if (model.Detail.PoaSKFile != null)
@@ -278,22 +278,26 @@ namespace Sampoerna.EMS.Website.Controllers
                 newpoa.IS_ACTIVE = poa.IS_ACTIVE;
 
                 newpoa = _masterDataAprovalBLL.MasterDataApprovalValidation((int)Enums.MenuList.POA, CurrentUser.USER_ID, poa,
-                    newpoa);
+                    newpoa,out isExist);
 
                 SetChanges(origin, newpoa);
 
                 _poaBll.Save(newpoa);
-                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
-                       );
+                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
                 return RedirectToAction("Index");
             }
 
             catch (Exception ex)
             {
-                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
-                       );
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model.MainMenu = _mainMenu;
+                model.CurrentMenu = PageInfo;
+                
 
-                return View();
+                model.Managers = model.Detail.Manager == null ? GlobalFunctions.GetCreatorList() : GlobalFunctions.GetCreatorList(model.Detail.Manager.USER_ID);
+                model.Users = model.Detail.User == null ? GlobalFunctions.GetCreatorList() : GlobalFunctions.GetCreatorList(model.Detail.User.USER_ID);
+                
+                return View(model);
             }
 
         }

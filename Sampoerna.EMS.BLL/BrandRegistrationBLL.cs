@@ -27,6 +27,7 @@ namespace Sampoerna.EMS.BLL
         private IZaidmExProdTypeBLL _zaidmExProdTypeBLL;
         private IMasterDataAprovalBLL _masterDataAprovalBLL;
         private IExcisableGoodsTypeService _excisableGoodsTypeService;
+        private IZaidmExMaterialService _zaidmExMaterialService;
         private IPlantBLL _plantBll;
         
         // private IChangesHistoryBLL _changesHistoryBll;
@@ -42,7 +43,9 @@ namespace Sampoerna.EMS.BLL
             _plantBll = new PlantBLL(_uow, _logger);
             _masterDataAprovalBLL = new MasterDataApprovalBLL(_uow,_logger);
             _zaidmExProdTypeBLL = new ZaidmExProdTypeBLL(_uow,_logger);
+            _zaidmExMaterialService = new ZaidmExMaterialService(_uow,_logger);
             _excisableGoodsTypeService = new ExcisableGoodsTypeService(_uow,_logger);
+            
             //_changesHistoryBll = changesHistoryBll;
         }
 
@@ -151,13 +154,19 @@ namespace Sampoerna.EMS.BLL
             {
                 dbBrand.IS_DELETED = true;
             }
-
+            bool isExistApproval;
             dbBrand = _masterDataAprovalBLL.MasterDataApprovalValidation((int) Core.Enums.MenuList.BrandRegistration, userId,
-                oldObject, dbBrand);
-            _repository.Update(dbBrand);
-            _uow.SaveChanges();
+                oldObject, dbBrand,out isExistApproval);
+            if (!isExistApproval)
+            {
+                _repository.Update(dbBrand);
+                _uow.SaveChanges();
 
-            return dbBrand.IS_DELETED.HasValue && dbBrand.IS_DELETED.Value;
+                return dbBrand.IS_DELETED.HasValue && dbBrand.IS_DELETED.Value;
+            }
+
+            return false;
+
         }
 
 
@@ -232,6 +241,7 @@ namespace Sampoerna.EMS.BLL
                     var series = GetSeries(brandXmlDto.SERIES_CODE);
                     var market = GetMarket(brandXmlDto.MARKET_ID);
                     var goodType = _excisableGoodsTypeService.GetById(brandXmlDto.EXC_GOOD_TYP);
+                    var material = _zaidmExMaterialService.GetByMaterialAndPlantId(brandToxml.FA_CODE,brandToxml.WERKS);
 
                     brandXmlDto.EXC_TYP_DESC = goodType.EXT_TYP_DESC;
                     brandXmlDto.MARKET_DESC = market.MARKET_DESC;
@@ -239,6 +249,7 @@ namespace Sampoerna.EMS.BLL
                     brandXmlDto.PRODUCT_ALIAS = prodType.PRODUCT_ALIAS;
                     brandXmlDto.PRODUCT_TYPE = prodType.PRODUCT_TYPE;
 
+                    brandXmlDto.BRAND_CE = material.MATERIAL_DESC;
                     return brandXmlDto;
                 }
 

@@ -10,7 +10,7 @@ namespace Sampoerna.EMS.Contract
 {
     public interface IMasterDataAprovalBLL
     {
-        T MasterDataApprovalValidation<T>(int pageId, string userId, T oldObject, T newObject,bool isCommit = false);
+        T MasterDataApprovalValidation<T>(int pageId, string userId, T oldObject, T newObject, out bool isExist, bool isCommit = false);
         void Approve(string userId, int masterApprovalId);
 
         List<MASTER_DATA_APPROVAL> GetList(Enums.DocumentStatus status = Enums.DocumentStatus.WaitingForMasterApprover);
@@ -21,5 +21,8 @@ namespace Sampoerna.EMS.Contract
         MASTER_DATA_APPROVAL GetByApprovalId(int approvalId);
 
         void Reject(string userId, int masterApprovalId);
+
+        bool SendEmailWorkflow(int approvalId);
+        bool SendEmailWorkflowByParam(MASTER_DATA_APPROVAL data);
     }
 }

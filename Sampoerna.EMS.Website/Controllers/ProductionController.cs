@@ -176,6 +176,23 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             if (ModelState.IsValid)
             {
+                var param = new MonthClosingGetByParam();
+                param.ClosingDate = Convert.ToDateTime(model.ProductionDate);
+                param.PlantId = model.PlantWerks;
+                param.DisplayDate = null;
+
+                var monthClosingdata = _monthClosingBll.GetDataByParam(param);
+                if (monthClosingdata != null)
+                {
+                    AddMessageInfo("Please check closing date.", Enums.MessageInfoType.Warning);
+                    model = InitCreate(model);
+                    model.CompanyCode = model.CompanyCode;
+                    model.PlantWerks = model.PlantWerks;
+                    model.FaCode = model.FaCode;
+                    model.ProductionDate = model.ProductionDate;
+                    return View(model);
+                }
+
                 var existingData = _productionBll.GetExistDto(model.CompanyCode, model.PlantWerks, model.FaCode,
                     Convert.ToDateTime(model.ProductionDate));
                 if (existingData != null)
@@ -312,6 +329,23 @@ namespace Sampoerna.EMS.Website.Controllers
                     ModelState.AddModelError("Production", "Data is not Found");
                     model = IniEdit(model);
 
+                    return View("Edit", model);
+                }
+
+                var param = new MonthClosingGetByParam();
+                param.ClosingDate = Convert.ToDateTime(model.ProductionDate);
+                param.PlantId = model.PlantWerks;
+                param.DisplayDate = null;
+
+                var monthClosingdata = _monthClosingBll.GetDataByParam(param);
+                if (monthClosingdata != null)
+                {
+                    AddMessageInfo("Please check closing date.", Enums.MessageInfoType.Warning);
+                    model = IniEdit(model);
+                    model.CompanyCode = model.CompanyCode;
+                    model.PlantWerks = model.PlantWerks;
+                    model.FaCode = model.FaCode;
+                    model.ProductionDate = model.ProductionDate;
                     return View("Edit", model);
                 }
 

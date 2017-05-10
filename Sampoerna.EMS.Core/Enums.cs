@@ -285,6 +285,8 @@ namespace Sampoerna.EMS.Core
             PBCK7 = 8,
             [Description("CK-5 Market Return")]
             CK5MarketReturn = 9,
+            [Description("CK-5 Market Return")]
+            MasterDataApproval = 10,
         }
 
         public enum ActionType

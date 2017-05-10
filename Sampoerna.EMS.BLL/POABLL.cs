@@ -74,6 +74,7 @@ namespace Sampoerna.EMS.BLL
         {
             var existingPoa = GetById(id);
             var tempExistingPoa = Mapper.Map<POADto>(existingPoa);
+            bool isExist;
             if (existingPoa.IS_ACTIVE == true)
             {
                 existingPoa.IS_ACTIVE = false;
@@ -85,7 +86,7 @@ namespace Sampoerna.EMS.BLL
 
             var oldPoa = Mapper.Map<POA>(tempExistingPoa);
             existingPoa = _masterDataAprovalBLL.MasterDataApprovalValidation((int) Sampoerna.EMS.Core.Enums.MenuList.POA, userId,
-                oldPoa, existingPoa);
+                oldPoa, existingPoa,out isExist);
 
             if (existingPoa.IS_ACTIVE != oldPoa.IS_ACTIVE)
             {
