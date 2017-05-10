@@ -319,7 +319,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
             dbBrand.PRINTING_PRICE = model.PrintingPriceValueStr == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
             dbBrand.FA_CODE = model.FaCode.Trim();
-            dbBrand.BAHAN_KEMASAN = model.BahanKemasan.Trim();
+            dbBrand.BAHAN_KEMASAN = string.IsNullOrEmpty(model.BahanKemasan) ? null : model.BahanKemasan.Trim();
             dbBrand.PACKED_ADJUSTED = model.IsPackedAdjusted;
             dbBrand.BRAND_CE = model.BrandName;
             dbBrand.IS_FROM_SAP = model.IsFromSAP;
