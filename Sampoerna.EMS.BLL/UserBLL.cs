@@ -22,7 +22,7 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<USER> _repository;
-        private POABLL _poabll;
+        private IPOABLL _poabll;
         private IUserPlantMapBLL _userPlantMapBll;
 
         public UserBLL(IUnitOfWork uow, ILogger logger)
