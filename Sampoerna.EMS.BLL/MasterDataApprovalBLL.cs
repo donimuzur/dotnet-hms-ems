@@ -58,7 +58,7 @@ namespace Sampoerna.EMS.BLL
             _materialBLL = new ZaidmExMaterialService(_uow, logger);
             //_xmlWriter = new XmlBrandRegistrationWriter(_uow,_logger);
         }
-        public T MasterDataApprovalValidation<T>(int pageId, string userId, T oldObject, T newObject,out bool isExist, bool isCommit = false)
+        public T MasterDataApprovalValidation<T>(int pageId, string userId, T oldObject, T newObject, out bool isExist, out MASTER_DATA_APPROVAL newApproval, bool isCommit = false)
         {
 
             var approvalSettings = _approvalSettingBLL.GetAllEditableColumn(pageId);
@@ -140,7 +140,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             
-            var newApproval = new MASTER_DATA_APPROVAL();
+            newApproval = new MASTER_DATA_APPROVAL();
             if (needApprovalList.Count > 0)
             {
                 newApproval.CREATED_BY = userId;
@@ -158,7 +158,7 @@ namespace Sampoerna.EMS.BLL
                 if (!isExist)
                 {
                     _repository.Insert(newApproval);
-                    SendEmailWorkflowByParam(newApproval);
+                    //SendEmailWorkflowByParam(newApproval);
                 }
                 else
                 {

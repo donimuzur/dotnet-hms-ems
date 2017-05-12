@@ -203,13 +203,14 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 try
                 {
+                    MASTER_DATA_APPROVAL approvalData;
                     _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.BrandRegistration,
-                        CurrentUser.USER_ID, new ZAIDM_EX_BRAND(), dbBrand,out isExist, true);
+                        CurrentUser.USER_ID, new ZAIDM_EX_BRAND(), dbBrand,out isExist,out approvalData, true);
                     // AddHistoryCreate(dbBrand.WERKS, dbBrand.FA_CODE, dbBrand.STICKER_CODE);
 
                     //_brandRegistrationBll.Save(dbBrand);
 
-
+                    _masterDataAprovalBLL.SendEmailWorkflow(approvalData.APPROVAL_ID);
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
                     return RedirectToAction("Index");
                 }
@@ -338,9 +339,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
+                MASTER_DATA_APPROVAL approvalData;
                 dbBrand = _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.BrandRegistration,
-                    CurrentUser.USER_ID, oldObject, dbBrand,out isApprovalExist);
+                    CurrentUser.USER_ID, oldObject, dbBrand,out isApprovalExist,out approvalData);
                 _brandRegistrationBll.Save(dbBrand);
+
+                _masterDataAprovalBLL.SendEmailWorkflow(approvalData.APPROVAL_ID);
                 AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
                 return RedirectToAction("Index");
 

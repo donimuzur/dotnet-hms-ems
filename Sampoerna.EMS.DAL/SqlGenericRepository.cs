@@ -225,6 +225,7 @@ namespace Sampoerna.EMS.DAL
                           .Where(p => p.DeclaringType.Name == tableName)
                        select new TableDetail
                        {
+                           IsNullable = p.Nullable,
                            PropertyName = p.Name,
                            TypeUsageName = p.TypeUsage.EdmType.Name, //type name
                            Documentation = p.Documentation

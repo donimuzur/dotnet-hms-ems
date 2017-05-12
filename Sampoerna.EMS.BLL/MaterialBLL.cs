@@ -85,6 +85,7 @@ namespace Sampoerna.EMS.BLL
             bool isApprovalExist;
             //var edited = AutoMapper.Mapper.Map<ZAIDM_EX_MATERIAL>(model);
             //AutoMapper.Mapper.Map(model, data);
+            MASTER_DATA_APPROVAL approvalData = new MASTER_DATA_APPROVAL();
             if (originDto != null)
             {
                 data.MODIFIED_BY = userId;
@@ -94,7 +95,7 @@ namespace Sampoerna.EMS.BLL
 
                 var tempNewData = AutoMapper.Mapper.Map<ZAIDM_EX_MATERIAL>(data);
                 tempNewData = _masterDataAprovalBLL.MasterDataApprovalValidation((int)Enums.MenuList.MaterialMaster, userId, origin,
-                    tempNewData,out isApprovalExist);
+                    tempNewData,out isApprovalExist,out approvalData);
                 data = AutoMapper.Mapper.Map<MaterialDto>(tempNewData);
 
                 if (data.CLIENT_DELETION != (originDto.CLIENT_DELETION.HasValue ? originDto.CLIENT_DELETION : false))
@@ -134,9 +135,9 @@ namespace Sampoerna.EMS.BLL
                 else
                 {
                     _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.MaterialMaster, userId,
-                        new ZAIDM_EX_MATERIAL(), dataToSave, out isApprovalExist, true);
+                        new ZAIDM_EX_MATERIAL(), dataToSave, out isApprovalExist,out approvalData, true);
                 }
-
+                _masterDataAprovalBLL.SendEmailWorkflow(approvalData.APPROVAL_ID);
                 output.Success = true;
                 output.materialId = data.STICKER_CODE;
             }

@@ -103,8 +103,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 var data = Mapper.Map<POA_MAP>(model.PoaMap);
                 data.CREATED_BY = CurrentUser.USER_ID;
                 data.CREATED_DATE = DateTime.Now;
+                MASTER_DATA_APPROVAL approvalData;
                 _masterDataAprovalBLL.MasterDataApprovalValidation((int)Enums.MenuList.POAMap, CurrentUser.USER_ID,
-                    new POA_MAP(), data, out isExistApproval, true);
+                    new POA_MAP(), data, out isExistApproval,out approvalData, true);
+
+                _masterDataAprovalBLL.SendEmailWorkflow(approvalData.APPROVAL_ID);
                 //_poaMapBLL.Save(data);
 
                 AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
@@ -158,10 +161,11 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 bool isExistApproval;
                 var poaMap = _poaMapBLL.GetById(id);
+                MASTER_DATA_APPROVAL approvalData;
                 _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.POAMap, CurrentUser.USER_ID,
-                    poaMap, null, out isExistApproval, true);
+                    poaMap, null, out isExistApproval,out approvalData, true);
                 //_poaMapBLL.Delete(id);
-
+                _masterDataAprovalBLL.SendEmailWorkflow(approvalData.APPROVAL_ID);
                 AddMessageInfo(Constans.SubmitMessage.Deleted, Enums.MessageInfoType.Success
                      );
                 
@@ -198,10 +202,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 data.CREATED_DATE = DateTime.Now;
                 var oldData = _poaMapBLL.GetById(model.PoaMap.POA_MAP_ID);
 
+                MASTER_DATA_APPROVAL approvalData;
                 _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.POAMap, CurrentUser.USER_ID,
-                    oldData, data, out isExistApproval, true);
+                    oldData, data, out isExistApproval,out approvalData, true);
                 //_poaMapBLL.Save(data);
-
+                _masterDataAprovalBLL.SendEmailWorkflow(approvalData.APPROVAL_ID);
                 AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
                 return RedirectToAction("Index");
             }
