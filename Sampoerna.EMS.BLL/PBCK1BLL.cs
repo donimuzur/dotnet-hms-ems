@@ -3242,5 +3242,19 @@ namespace Sampoerna.EMS.BLL
 
             _uow.SaveChanges();
         }
+
+        public USER GetPbck1Creator(int pbck1Id)
+        {
+            var data = _repository.Get(x => x.PBCK1_ID == pbck1Id, null, includeTables).Select(x => x.USER1).FirstOrDefault();
+
+            return data;
+        }
+
+        public USER GetPbck1POA(int pbck1Id)
+        {
+            var data = _repository.Get(x => x.PBCK1_ID == pbck1Id, null, includeTables).Select(x => x.USER).FirstOrDefault();
+
+            return data;
+        }
     }
 }
