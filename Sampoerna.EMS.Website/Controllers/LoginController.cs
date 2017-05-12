@@ -46,6 +46,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 switch (CurrentUser.UserRole)
                 {
                     case Enums.UserRole.User:
+                    case Enums.UserRole.Controller:
                     case Enums.UserRole.Viewer:
                         CurrentUser.ListUserPlants =
                             _userAuthorizationBll.GetListPlantByUserId(loginResult.USER_ID);
