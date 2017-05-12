@@ -100,6 +100,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         case Enums.UserRole.User:
                         case Enums.UserRole.Viewer:
+                        case Enums.UserRole.Controller:
                             loginResult.ListUserPlants =
                                 userAuthorizationBll.GetListPlantByUserId(loginResult.USER_ID);
                             loginResult.ListUserNppbkc =
