@@ -305,24 +305,24 @@ namespace Sampoerna.EMS.Website.Controllers
 
             SetChangesLog(dbBrand, model);
 
-            if (dbBrand.IS_FROM_SAP.HasValue && dbBrand.IS_FROM_SAP.Value)
-            {
-                dbBrand.PRINTING_PRICE = model.PrintingPrice;
-                dbBrand.CONVERSION = model.Conversion;
-                dbBrand.CUT_FILLER_CODE = model.CutFillerCode;
-                dbBrand.STATUS = model.IsActive;
-            }
-            else
-                Mapper.Map(model, dbBrand);
-            dbBrand.HJE_IDR = model.HjeValueStr == null ? 0 : Convert.ToDecimal(model.HjeValueStr);
-            dbBrand.TARIFF = model.TariffValueStr == null ? 0 : Convert.ToDecimal(model.TariffValueStr);
-            dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
-            dbBrand.PRINTING_PRICE = model.PrintingPriceValueStr == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
+            //if (dbBrand.IS_FROM_SAP.HasValue && dbBrand.IS_FROM_SAP.Value)
+            //{
+            //    dbBrand.PRINTING_PRICE = model.PrintingPrice;
+            //    dbBrand.CONVERSION = model.Conversion;
+            //    dbBrand.CUT_FILLER_CODE = model.CutFillerCode;
+            //    dbBrand.STATUS = model.IsActive;
+            //}
+            //else
+            Mapper.Map(model, dbBrand);
+            dbBrand.HJE_IDR = model.HjeValueStr == null ? (decimal?)null : Convert.ToDecimal(model.HjeValueStr);
+            dbBrand.TARIFF = model.TariffValueStr == null ? (decimal?)null : Convert.ToDecimal(model.TariffValueStr);
+            dbBrand.CONVERSION = model.ConversionValueStr == null ? (decimal?)null : Convert.ToDecimal(model.ConversionValueStr);
+            dbBrand.PRINTING_PRICE = model.PrintingPriceValueStr == null ? (decimal?) null : Convert.ToDecimal(model.PrintingPriceValueStr);
             dbBrand.FA_CODE = model.FaCode.Trim();
             dbBrand.BAHAN_KEMASAN = string.IsNullOrEmpty(model.BahanKemasan) ? null : model.BahanKemasan.Trim();
-            dbBrand.PACKED_ADJUSTED = model.IsPackedAdjusted;
-            dbBrand.BRAND_CE = model.BrandName;
-            dbBrand.IS_FROM_SAP = model.IsFromSAP;
+            //dbBrand.PACKED_ADJUSTED = model.IsPackedAdjusted;
+            //dbBrand.BRAND_CE = model.BrandName;
+            //dbBrand.IS_FROM_SAP = model.IsFromSAP;
             //dbBrand.CREATED_BY = CurrentUser.USER_ID;
             if (!string.IsNullOrEmpty(model.PersonalizationCodeDescription))
                 dbBrand.PER_CODE_DESC = model.PersonalizationCodeDescription;
