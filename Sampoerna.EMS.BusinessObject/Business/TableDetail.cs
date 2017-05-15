@@ -12,5 +12,7 @@ namespace Sampoerna.EMS.BusinessObject.Business
         public string PropertyName { get; set; }
         public string TypeUsageName { get; set; }
         public Documentation Documentation { get; set; }
+
+        public bool IsNullable { get; set; }
     }
 }

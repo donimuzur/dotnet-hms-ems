@@ -76,5 +76,8 @@ namespace Sampoerna.EMS.Contract
         bool CheckExistingQuotaMonitoringByParam(Pbck1Dto dto, int exGoodType,int percentageQuota);
 
         void UpdateAllEmailStatus(Pbck1Dto dto, Enums.EmailStatus emailStatus, int exGoodType);
+
+        USER GetPbck1Creator(int pbck1Id);
+        USER GetPbck1POA(int pbck1Id);
     }
 }

@@ -85,8 +85,9 @@ namespace Sampoerna.EMS.BLL
             }
 
             var oldPoa = Mapper.Map<POA>(tempExistingPoa);
+            MASTER_DATA_APPROVAL approvalData;
             existingPoa = _masterDataAprovalBLL.MasterDataApprovalValidation((int) Sampoerna.EMS.Core.Enums.MenuList.POA, userId,
-                oldPoa, existingPoa,out isExist);
+                oldPoa, existingPoa,out isExist,out approvalData);
 
             if (existingPoa.IS_ACTIVE != oldPoa.IS_ACTIVE)
             {
@@ -95,6 +96,7 @@ namespace Sampoerna.EMS.BLL
             }
 
             _uow.SaveChanges();
+            _masterDataAprovalBLL.SendEmailWorkflow(approvalData.APPROVAL_ID);
         }
 
         public void Update(POA poa)
