@@ -1006,7 +1006,7 @@ namespace Sampoerna.EMS.BLL
             //}
             else if (input.UserRole == Enums.UserRole.Controller)
             {
-                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.WaitingForApprovalController);
+                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
             }
             else if (input.UserRole == Enums.UserRole.Administrator)
             {
