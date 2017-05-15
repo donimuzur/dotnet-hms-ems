@@ -325,7 +325,11 @@ namespace Sampoerna.EMS.BLL
                     case (int) Enums.MenuList.POA:
                         return obj.GetType().GetProperty("POA_ID").GetValue(obj).ToString();
                     case (int) Enums.MenuList.POAMap:
-                        return obj.GetType().GetProperty("POA_MAP_ID").GetValue(obj).ToString();
+                        var poa_id = obj.GetType().GetProperty("POA_ID").GetValue(obj).ToString();
+                        var nppbkc = obj.GetType().GetProperty("NPPBKC_ID").GetValue(obj).ToString();
+                        var plant_id = obj.GetType().GetProperty("WERKS").GetValue(obj).ToString();
+
+                        return poa_id + "-" + nppbkc + "-" + plant_id;
                     case (int) Enums.MenuList.MaterialMaster:
                         var werksM = obj.GetType().GetProperty("WERKS").GetValue(obj).ToString();
 
@@ -421,7 +425,12 @@ namespace Sampoerna.EMS.BLL
             }
             else if (approvalData.PAGE_ID == (int)Enums.MenuList.POAMap)
             {
-                var dataPoaMap = _poaMapBLL.GetById(int.Parse(approvalData.FORM_ID));
+                var tempId = approvalData.FORM_ID.Split('-');
+                var poaId = tempId[0];
+                var nppbkc = tempId[1];
+                var plantid = tempId[2];
+
+                var dataPoaMap = _poaMapBLL.GetByNppbckId(nppbkc,plantid,poaId);
                 if (dataPoaMap != null)
                 {
                     isDelete = approvalData.MASTER_DATA_APPROVAL_DETAIL.Where(x => x.NEW_VALUE == null).Any();
