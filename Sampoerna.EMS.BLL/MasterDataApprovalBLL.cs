@@ -614,25 +614,33 @@ namespace Sampoerna.EMS.BLL
         public bool SendEmailWorkflow(int approvalId)
         {
             var data = GetByApprovalId(approvalId);
-            var mailNotif = ProsesMailNotificationBody(data);
-            var success = false;
-
-            if (mailNotif != null)
+            if (data != null)
             {
-                if (mailNotif.IsCCExist)
+                var mailNotif = ProsesMailNotificationBody(data);
+                var success = false;
+
+                if (mailNotif != null)
                 {
-                    success = _messageService.SendEmailToListWithCC(mailNotif.To, mailNotif.CC, mailNotif.Subject, mailNotif.Body, false);
-                }
-                else
-                {
-                    success = _messageService.SendEmailToList(mailNotif.To, mailNotif.Subject, mailNotif.Body, false);
+                    if (mailNotif.IsCCExist)
+                    {
+                        success = _messageService.SendEmailToListWithCC(mailNotif.To, mailNotif.CC, mailNotif.Subject,
+                            mailNotif.Body, false);
+                    }
+                    else
+                    {
+                        success = _messageService.SendEmailToList(mailNotif.To, mailNotif.Subject, mailNotif.Body, false);
+                    }
+
+
                 }
 
 
+                return success;
             }
-
-
-            return success;
+            
+            return false;
+            
+            
         }
 
         private MailNotification ProsesMailNotificationBody(MASTER_DATA_APPROVAL data)
