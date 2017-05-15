@@ -111,10 +111,11 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
                     }
                 }
+                MASTER_DATA_APPROVAL approvalData;
                 _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.POA, CurrentUser.USER_ID,
-                    new POA(), poa, out isExist, true);
+                    new POA(), poa, out isExist,out approvalData, true);
                 //_poaBll.Save(poa);
-
+                _masterDataAprovalBLL.SendEmailWorkflow(approvalData.APPROVAL_ID);
                 AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
                 return RedirectToAction("Index");
             }
@@ -276,13 +277,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 newpoa.MODIFIED_BY = CurrentUser.USER_ID;
                 newpoa.MODIFIED_DATE = DateTime.Today;
                 newpoa.IS_ACTIVE = poa.IS_ACTIVE;
-
+                MASTER_DATA_APPROVAL approvalData;
                 newpoa = _masterDataAprovalBLL.MasterDataApprovalValidation((int)Enums.MenuList.POA, CurrentUser.USER_ID, poa,
-                    newpoa,out isExist);
+                    newpoa,out isExist,out approvalData);
 
                 SetChanges(origin, newpoa);
 
                 _poaBll.Save(newpoa);
+                _masterDataAprovalBLL.SendEmailWorkflow(approvalData.APPROVAL_ID);
                 AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
                 return RedirectToAction("Index");
             }

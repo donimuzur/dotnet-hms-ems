@@ -53,7 +53,16 @@ namespace Sampoerna.EMS.BLL
             {
                 var detail = Mapper.Map<MasterDataApprovalSettingDetail>(table);
                 var isApproval = masterDataSettings.Where(x => x.COLUMN_NAME == detail.COLUMN_NAME).Select(x=> x.IS_APPROVAL).FirstOrDefault();
-                detail.IS_APPROVAL = isApproval;
+                if (!table.IsNullable)
+                {
+                    detail.IS_APPROVAL = true;
+                }
+                else
+                {
+                    detail.IS_APPROVAL = isApproval;    
+                }
+                
+
                 detail.PAGE_ID = page.PAGE_ID;
                 if (detail.ColumnDescription != null)
                 {

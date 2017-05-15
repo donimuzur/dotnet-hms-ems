@@ -110,7 +110,7 @@ namespace Sampoerna.EMS.XMLReader
 
             bodyMail.Append("Kindly be informed, " + rc.Subject + ". <br />");
 
-            bodyMail.Append(BuildBodyMailForQuotaNotification(pbck1Data,  webRootUrl, toUserIdList, data));
+            bodyMail.Append(BuildBodyMailForQuotaNotification(pbck1Data,  webRootUrl,  data));
 
             rc.To.AddRange(toUserIdList.Select(x=> x.EMAIL).ToList());
             
@@ -129,7 +129,7 @@ namespace Sampoerna.EMS.XMLReader
 
         }
 
-        private string BuildBodyMailForQuotaNotification(Pbck1Dto pbck1Data, string webRootUrl, List<USER> listUserto, QUOTA_MONITORING dataMonitoring)
+        private string BuildBodyMailForQuotaNotification(Pbck1Dto pbck1Data, string webRootUrl,  QUOTA_MONITORING dataMonitoring)
         {
             var bodyMail = new StringBuilder();
             var supplier = dataMonitoring.SUPPLIER_WERKS;
@@ -150,14 +150,15 @@ namespace Sampoerna.EMS.XMLReader
 
             string userName = "";
 
-            var creator = listUserto.First(x => x.USER_ID == pbck1Data.CreatedById);
+            var creator = _pbck1BLL.GetPbck1Creator(pbck1Data.Pbck1Id);
             userName = creator.LAST_NAME + ", " + creator.FIRST_NAME;
 
 
 
             bodyMail.Append("<tr><td>Creator</td><td> : " + userName + "</td></tr>");
 
-            var poa = listUserto.First(x => x.USER_ID == pbck1Data.ApprovedByPoaId);
+            var poa = _pbck1BLL.GetPbck1POA(pbck1Data.Pbck1Id);
+
             userName = poa.LAST_NAME + ", " + poa.FIRST_NAME;
             bodyMail.Append("<tr><td>POA Approver</td><td> : " + userName + "</td></tr>");
 
