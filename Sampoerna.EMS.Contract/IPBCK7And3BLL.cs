@@ -66,7 +66,7 @@ namespace Sampoerna.EMS.Contract
 
         List<GetListFaCodeByPlantOutput> GetListFaCodeByPlant(string plantId);
 
-        GetBrandItemsByPlantAndFaCodeOutput GetBrandItemsByPlantAndFaCode(string plantId, string faCode);
+        GetBrandItemsByPlantAndFaCodeOutput GetBrandItemsByPlantAndFaCode(string plantId, string faCode, string stickerCode = null);
 
         void UpdateUploadedFileCompletedPbck7(List<BACK1_DOCUMENTDto> input);
 
@@ -83,7 +83,7 @@ namespace Sampoerna.EMS.Contract
 
         List<GetListFaCodeByPlantOutput> GetListFaCodeHaveBlockStockByPlant(string plantId);
 
-        decimal GetCurrentReqQtyByPbck7IdAndFaCode(int pbck7Id, string faCode);
+        decimal GetCurrentReqQtyByPbck7IdAndFaCode(int pbck7Id, string faCode, string stickerCode = null);
 
         void EditCompletedDocumentPbck7(EditCompletedDocumentPbck7Input input);
 

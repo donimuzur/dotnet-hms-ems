@@ -86,7 +86,7 @@ namespace Sampoerna.EMS.BLL.Services
             //        break;
             //}
 
-            if (input.UserRole != Enums.UserRole.Administrator)
+            if (input.UserRole != Enums.UserRole.Administrator && input.UserRole != Enums.UserRole.Controller)
             {
                 queryFilter = queryFilter.And(c => input.PlantList.Contains(c.LEVEL_PLANT_ID));    
             }
@@ -121,7 +121,7 @@ namespace Sampoerna.EMS.BLL.Services
                 queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
             }
 
-            if (input.UserRole != Enums.UserRole.Administrator)
+            if (input.UserRole != Enums.UserRole.Administrator && input.UserRole != Enums.UserRole.Controller)
             {
                 queryFilter = queryFilter.And(c => input.PlantList.Contains(c.LEVEL_PLANT_ID));
             }

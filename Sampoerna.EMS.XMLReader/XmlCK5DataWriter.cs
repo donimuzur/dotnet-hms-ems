@@ -16,99 +16,30 @@ using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 namespace Sampoerna.EMS.XMLReader
 {
-    public class XmlCK5DataWriter
+    public class XmlCK5DataWriter : XmlDataWriter
     {
-
-        private string GetDateFormat(DateTime? date)
-        {
-            var result = DateTime.MinValue;
-            if (date == null)
-                return null;
-            else
-            {
-                result =Convert.ToDateTime(date);
-            }
-            //var monthFormat = result.Month < 10 ? "0" + result.Month : result.Month.ToString();
-            //return string.Format("{0}{1}{2}", result.Year, monthFormat, result.Day);
-            return result.ToString("yyyyMMdd");
-        }
-
-        private string GetTimeFormat(DateTime? date)
-        {
-            var result = DateTime.MinValue;
-            if (date == null)
-                return null;
-            else
-            {
-                result = Convert.ToDateTime(date);
-            }
-            //var monthFormat = result.Month < 10 ? "0" + result.Month : result.Month.ToString();
-            //return string.Format("{0}{1}{2}", result.Year, monthFormat, result.Day);
-            return result.ToString("hhmmss");
-        }
-
-        private string GetLinesItem(int? line)
-        {
-            if (line == null)
-                return null;
-
-            var lineValid = Convert.ToInt32(line);
-            var result = string.Empty;
-            if (line < 10)
-                return result += "0000" + lineValid;
-            if (line < 100)
-                return result += "000" + lineValid;
-            if (line < 1000)
-                return result += "00" + lineValid;
-            if (line < 10000)
-                return result += "0" + lineValid;
-            return null;
-        }
-
-        private string SetNullValue(object value)
-        {
-            if (value == null)
-            {
-                return null;
-            }
-            return value.ToString();
-        }
 
         private string MappingCk5Type(Sampoerna.EMS.Core.Enums.CK5Type type)
         {
             switch (type)
             {
-                 case Enums.CK5Type.Domestic:
+                case Enums.CK5Type.Domestic:
                     return "01";
-                 case Enums.CK5Type.Intercompany:
+                case Enums.CK5Type.Intercompany:
                     return "02";
-                 case Enums.CK5Type.ImporterToPlant:
+                case Enums.CK5Type.ImporterToPlant:
                     return "03";
-                 case Enums.CK5Type.PortToImporter:
+                case Enums.CK5Type.PortToImporter:
                     return "04";
-                 case Enums.CK5Type.Export:
+                case Enums.CK5Type.Export:
                     return "05";
             }
             return null;
-            
-        }
-
-
-        public void MoveTempToOutbound(string oldPath, string newPath)
-        {
-            try
-            {
-                File.Move(oldPath, newPath);
-            }
-            catch (Exception ex)
-            {
-                Exception ex1 = new Exception(String.Format("Failed to move xml file to outbound folder. Cause : {0}",ex.Message));
-                
-                throw ex1;
-            }
-            
 
         }
+
+
+        
 
         public void CreateCK5Xml(CK5XmlDto ck5XmlDto, string status=null)
         {

@@ -14,6 +14,7 @@ using Sampoerna.EMS.Website.Models;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.PRODUCTION;
 using Sampoerna.EMS.Website.Models.Waste;
+using Sampoerna.EMS.Website.Models.MonthClosing;
 using Sampoerna.EMS.Website.Utility;
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -33,10 +34,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private IUserPlantMapBLL _userPlantMapBll;
         private IPOAMapBLL _poaMapBll;
         private IMonthBLL _monthBll;
+        private IMonthClosingBLL _monthClosingBll;
 
         public WasteController(IPageBLL pageBll, IWasteBLL wasteBll, ICompanyBLL companyBll, IPlantBLL plantBll,
             IUnitOfMeasurementBLL uomBll, IBrandRegistrationBLL brandRegistrationBll, IChangesHistoryBLL changesHistoryBll,
-            IWasteStockBLL wasteStockBll, IMaterialBLL materialBll, IUserPlantMapBLL userPlantMapBll, IPOAMapBLL poaMapBll, IMonthBLL monthBll)
+            IWasteStockBLL wasteStockBll, IMaterialBLL materialBll, IUserPlantMapBLL userPlantMapBll, IPOAMapBLL poaMapBll, IMonthBLL monthBll, IMonthClosingBLL monthClosingBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _wasteBll = wasteBll;
@@ -51,6 +53,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _userPlantMapBll = userPlantMapBll;
             _poaMapBll = poaMapBll;
             _monthBll = monthBll;
+            _monthClosingBll = monthClosingBll;
         }
 
 
@@ -106,8 +109,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.DailyProduction,
                 WasteProductionDate = DateTime.Today.ToString("dd MMM yyyy"),
-                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer,
-                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator
+                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller,
+                IsShowNewButton = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator && CurrentUser.UserRole != Enums.UserRole.Controller
             });
 
             return View("Index", data);
@@ -129,7 +132,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var result = Mapper.Map<List<WasteDetail>>(dbData);
             var viewModel = new WasteViewModel();
             viewModel.Details = result;
-            viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller;
             return PartialView("_WasteTableIndex", viewModel);
         }
 
@@ -177,6 +180,24 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             if (ModelState.IsValid)
             {
+                var param = new MonthClosingGetByParam();
+                param.ClosingDate = Convert.ToDateTime(model.WasteProductionDate);
+                param.PlantId = model.PlantWerks;
+                param.DisplayDate = null;
+
+                var monthClosingdata = _monthClosingBll.GetDataByParam(param);
+
+                if (monthClosingdata != null)
+                {
+                    AddMessageInfo("Please check closing date.", Enums.MessageInfoType.Warning);
+                    model = InitCreate(model);
+                    model.CompanyCode = model.CompanyCode;
+                    model.PlantWerks = model.PlantWerks;
+                    model.FaCode = model.FaCode;
+                    model.WasteProductionDate = model.WasteProductionDate;
+                    return View(model);
+                }
+
                 var existingData = _wasteBll.GetExistDto(model.CompanyCode, model.PlantWerks, model.FaCode,
                     Convert.ToDateTime(model.WasteProductionDate));
                 if (existingData != null)
@@ -284,6 +305,24 @@ namespace Sampoerna.EMS.Website.Controllers
 
             }
 
+            var param = new MonthClosingGetByParam();
+            param.ClosingDate = Convert.ToDateTime(model.WasteProductionDate);
+            param.PlantId = model.PlantWerks;
+            param.DisplayDate = null;
+
+            var monthClosingdata = _monthClosingBll.GetDataByParam(param);
+
+            if (monthClosingdata != null)
+            {
+                AddMessageInfo("Please check closing date.", Enums.MessageInfoType.Warning);
+                model = IniEdit(model);
+                model.CompanyCode = model.CompanyCode;
+                model.PlantWerks = model.PlantWerks;
+                model.FaCode = model.FaCode;
+                model.WasteProductionDate = model.WasteProductionDate;
+                return View("Edit", model);
+            }
+
             if (model.CompanyCode != model.CompanyCodeX || model.PlantWerks != model.PlantWerksX
                 || model.FaCode != model.FaCodeX || Convert.ToDateTime(model.WasteProductionDate) != Convert.ToDateTime(model.WasteProductionDateX))
             {
@@ -332,10 +371,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 return RedirectToAction("Index");
 
             }
-            catch (Exception exception)
+            catch (Exception)
             {
-                AddMessageInfo("Edit Failed.", Enums.MessageInfoType.Error
-                    );
+                AddMessageInfo("Edit Failed.", Enums.MessageInfoType.Error);
             }
 
             model = IniEdit(model);
@@ -447,7 +485,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 else AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
             }
 
-            catch (Exception ex)
+            catch (Exception)
             {
                 AddMessageInfo("Error, Data is not Valid", Enums.MessageInfoType.Error);
                 return RedirectToAction("UploadManualWaste");
@@ -539,6 +577,40 @@ namespace Sampoerna.EMS.Website.Controllers
             var listBrandCe = GlobalFunctions.GetFaCodeByPlant(plantWerk);
 
             var model = new WasteDetail() { FacodeList = listBrandCe };
+
+            return Json(model);
+        }
+
+        [HttpPost]
+        public JsonResult CheckClosingMonth(string plantWerk, DateTime prodDate)
+        {
+            var param = new MonthClosingGetByParam();
+            param.ClosingDate = prodDate;
+            param.PlantId = plantWerk;
+            param.DisplayDate = null;
+
+            var data = _monthClosingBll.GetDataByParam(param);
+
+            var model = Mapper.Map<MonthClosingDetail>(data);
+
+            return Json(model);
+        }
+
+        [HttpPost]
+        public JsonResult DisplayClosingMonth(string plantWerk, DateTime prodDate)
+        {
+            var param = new MonthClosingGetByParam();
+            param.DisplayDate = prodDate;
+            param.PlantId = plantWerk;
+            param.ClosingDate = null;
+
+            var data = _monthClosingBll.GetDataByParam(param);
+
+            var model = Mapper.Map<MonthClosingDetail>(data);
+            if (model != null)
+            {
+                model.DisplayDate = "Closing Date : " + model.ClosingDate.ToString("dd MMM yyyy");
+            }
 
             return Json(model);
         }

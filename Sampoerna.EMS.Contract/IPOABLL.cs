@@ -12,7 +12,7 @@ namespace Sampoerna.EMS.Contract
         void Save(POA poa);
 
         void Update(POA poa);
-        void Delete(string id);
+        void Delete(string id,string userId);
         Core.Enums.UserRole GetUserRole(string userId);
 
         string GetManagerIdByPoaId(string poaId);

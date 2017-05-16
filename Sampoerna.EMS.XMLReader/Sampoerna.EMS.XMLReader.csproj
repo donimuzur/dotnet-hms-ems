@@ -87,8 +87,11 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SchedulerEmailService.cs" />
     <Compile Include="Service.cs" />
+    <Compile Include="XmlBrandRegistrationWriter.cs" />
     <Compile Include="XmlCK1DataMappers.cs" />
+    <Compile Include="XmlDataWriter.cs" />
     <Compile Include="XmlPaymentDataMappers.cs" />
     <Compile Include="XmlPBCK4DataWriter.cs" />
     <Compile Include="XmlPoaMapDataMapper.cs" />

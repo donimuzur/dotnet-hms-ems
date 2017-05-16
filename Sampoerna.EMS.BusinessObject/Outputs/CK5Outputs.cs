@@ -42,6 +42,7 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
     public class GetListMaterialMarketReturnOutput
     {
         public string MaterialNumber { get; set; }
+        public string StickerCode { get; set; }
     }
 
     public class GetBrandByPlantAndMaterialNumberOutput

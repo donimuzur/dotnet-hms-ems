@@ -2,6 +2,7 @@
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
+using Sampoerna.EMS.Website.Models.MasterDataApproval;
 using Sampoerna.EMS.Website.Models.PrintHistory;
 
 namespace Sampoerna.EMS.Website.Models
@@ -20,6 +21,10 @@ namespace Sampoerna.EMS.Website.Models
 
         public List<ChangesHistoryItemModel> ChangesHistoryList { get; set; }
         public List<PrintHistoryItemModel> PrintHistoryList { get; set; }
+
+        public List<MasterDataApprovalDetailViewModel> MasterDataApprovalList { get; set; }
+
+        public MasterDataApprovalDetailViewModel MasterDataApprovalCurrent { get; set; }
         
         public string ErrorMessage { get; set; }
         public string SuccesMessage { get; set; }
@@ -29,5 +34,7 @@ namespace Sampoerna.EMS.Website.Models
 
         public bool IsShowNewButton { get; set; }
         public bool IsNotViewer { get; set; }
+
+      
     }
 }

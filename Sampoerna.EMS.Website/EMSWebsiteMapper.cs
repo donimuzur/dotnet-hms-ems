@@ -41,6 +41,9 @@ using Sampoerna.EMS.Website.Models.PoaDelegation;
 using Sampoerna.EMS.Website.Models.SchedulerSetting;
 using Sampoerna.EMS.Website.Models.Reversal;
 using Sampoerna.EMS.Website.Models.ProductType;
+using Sampoerna.EMS.Website.Models.MonthClosing;
+using Sampoerna.EMS.Website.Models.MasterDataApprovalSetting;
+using Sampoerna.EMS.Website.Models.MasterDataApproval;
 
 namespace Sampoerna.EMS.Website
 {
@@ -461,7 +464,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PRINTING_PRICE, opt => opt.MapFrom(src => src.PrintingPrice))
                 .ForMember(dest => dest.CUT_FILLER_CODE, opt => opt.MapFrom(src => src.CutFillerCode))
                 .ForMember(dest => dest.CONVERSION, opt => opt.MapFrom(src => src.Conversion))
-                .ForMember(dest => dest.BRAND_CONTENT, opt => opt.MapFrom(src => src.Content));
+                .ForMember(dest => dest.BRAND_CONTENT, opt => opt.MapFrom(src => src.Content))
+                .ForMember(dest => dest.IS_FROM_SAP, opt => opt.MapFrom(src => src.IsFromSAP));
 
             Mapper.CreateMap<BrandRegistrationEditViewModel, ZAIDM_EX_BRAND>().IgnoreAllUnmapped()
                 .ForMember(dest => dest.STICKER_CODE, opt => opt.MapFrom(src => src.StickerCode))
@@ -490,7 +494,10 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.CONVERSION, opt => opt.MapFrom(src => src.Conversion))
                 .ForMember(dest => dest.BRAND_CONTENT, opt => opt.MapFrom(src => src.Content))
                 .ForMember(dest => dest.BAHAN_KEMASAN, opt => opt.MapFrom(src => src.BahanKemasan))
-                .ForMember(dest => dest.PACKED_ADJUSTED, opt => opt.MapFrom(src => src.IsPackedAdjusted));
+                .ForMember(dest => dest.PACKED_ADJUSTED, opt => opt.MapFrom(src => src.IsPackedAdjusted))
+                .ForMember(dest => dest.IS_FROM_SAP, opt => opt.MapFrom(src => src.IsFromSAP));
+
+            Mapper.CreateMap<BrandRegistrationEditViewModel, BrandRegistrationCreateViewModel>().IgnoreAllNonExisting();
             #endregion
 
             Mapper.CreateMap<CHANGES_HISTORY, ChangesHistoryItemModel>().IgnoreAllNonExisting()
@@ -753,7 +760,11 @@ namespace Sampoerna.EMS.Website
 
 
             Mapper.CreateMap<USER, UserItem>().IgnoreAllNonExisting()
-                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IS_ACTIVE.Value == 1 ? "Yes" : "No"));
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IS_ACTIVE.Value == 1 ? "Yes" : "No"))
+                .ForMember(dest => dest.IsMasterApprover, opt => opt.MapFrom(src => src.IS_MASTER_DATA_APPROVER.HasValue && src.IS_MASTER_DATA_APPROVER.Value ? "Yes" : "No"));
+
+            Mapper.CreateMap<UserItem, USER>().IgnoreAllNonExisting().
+                ForMember(dest => dest.IS_ACTIVE, opt => opt.MapFrom(src => src.IS_ACTIVE ? 1 : 0)); ;
 
             Mapper.CreateMap<T001WDto, T001WModel>().IgnoreAllNonExisting();
 
@@ -1158,6 +1169,34 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.PRODUCT_ALIAS, opt => opt.MapFrom(src => src.ProductAlias))
               .ForMember(dest => dest.CK4CEDITABLE, opt => opt.MapFrom(src => src.IsCk4CEditable))
               ;
+
+            #endregion
+
+
+            #region Month Closing
+
+            Mapper.CreateMap<MonthClosingDetail, MonthClosingDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<MonthClosingDto, MonthClosingDetail>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<MonthClosingDocDto, MonthClosingDocModel>().IgnoreAllNonExisting();
+            Mapper.CreateMap<MonthClosingDocModel, MonthClosingDocDto>().IgnoreAllNonExisting();
+
+            #endregion
+
+            #region Master Data Approval
+
+            Mapper.CreateMap<MasterDataApprovalSettingDto, MasterDataSetting>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.MasterDataSettingDetails, opt => opt.MapFrom(src => src.Details));
+            Mapper.CreateMap<MasterDataApprovalSettingDetail, MasterDataSettingDetail>().IgnoreAllNonExisting();
+            Mapper.CreateMap<MasterDataSettingDetail, MasterDataApprovalSettingDetail>().IgnoreAllNonExisting();
+            Mapper.CreateMap<MasterDataSetting, MasterDataApprovalSettingDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Details, opt => opt.MapFrom(src => src.MasterDataSettingDetails)); ;
+
+            Mapper.CreateMap<MASTER_DATA_APPROVAL, MasterDataApprovalDetailViewModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Details, opt => opt.MapFrom(src => src.MASTER_DATA_APPROVAL_DETAIL))
+                .ForMember(dest => dest.PageDesciption, opt => opt.MapFrom(src => src.PAGE.MENU_NAME))
+                .ForMember(dest => dest.StatusString, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS_ID)));
+            Mapper.CreateMap<MASTER_DATA_APPROVAL_DETAIL, MasterDataApprovalDetail>().IgnoreAllNonExisting();
 
             #endregion
 

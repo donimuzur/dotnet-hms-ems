@@ -12,7 +12,7 @@
             <div class="col-sm-12">
                 <h3>Waste Production Edit</h3>
                 <div class="action-button">
-                    <button class="btn btn-blue">Save</button>
+                    <button class="btn btn-blue" id="btnSave">Save</button>
                     <a href="@Url.Action("Index", "Waste")" class="btn btn-grey">Cancel</a>
                 </div>
             </div>
@@ -193,6 +193,29 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <span class="red" id="ClosingMonthText"></span>
+                                </div>
+                            </div>
+
+                            <div id="ModalCloseMonth" class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                                <div class="modal-dialog modal-sm">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">Error</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>
+                                                <span id="modalBodyMessage">Please check closing date.</span>
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -305,12 +328,17 @@
         $("#SearchInput_PlantId").change(function () {
             if ($("#SearchInput_PlantId").length) {
                 var ce = $(this).find("option:selected").val();
+                var date = $("#WasteProductionDate").val();
                 $('#SearchInput_BrandCe option').remove();
+                $('#btnSave').prop('disabled', false);
+                $('#ClosingMonthText').html('');
                 if (ce == '' || $(this).find("option:selected").val() == '') {
                     $('#SearchInput_BrandCe option').append('<option value="">Select</option>');
 
                 } else {
                     ajaxSelectPlantWerks('@Url.Action("GetBrandCeByPlant", "Waste")', { plantWerk: ce });
+                    checkClosingDate('@Url.Action("CheckClosingMonth", "Waste")', { plantWerk: ce, prodDate: date });
+                    displayClosingDate('@Url.Action("DisplayClosingMonth", "Waste")', { plantWerk: ce, prodDate: date });
                 }
             }
         });
@@ -337,6 +365,45 @@
             }
         }
 
+        $("#WasteProductionDate").change(function () {
+            var ce = $("#SearchInput_PlantId").find("option:selected").val();
+            var date = $(this).val();
+            $('#btnSave').prop('disabled', false);
+            $('#ClosingMonthText').html('');
+            checkClosingDate('@Url.Action("CheckClosingMonth", "Waste")', { plantWerk: ce, prodDate: date });
+            displayClosingDate('@Url.Action("DisplayClosingMonth", "Waste")', { plantWerk: ce, prodDate: date });
+        });
+
+        function checkClosingDate(url, formData) {
+            if (formData.plantWerk) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        if (data.MonthClosingId > 0) {
+                            $('#btnSave').prop('disabled', true);
+                            $('#ModalCloseMonth').modal('show');
+                        }
+                    }
+                });
+            }
+        }
+
+        function displayClosingDate(url, formData) {
+            if (formData.plantWerk) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        if (data.MonthClosingId > 0) {
+                            $('#ClosingMonthText').html(data.DisplayDate);
+                        }
+                    }
+                });
+            }
+        }
 
 
     </script>

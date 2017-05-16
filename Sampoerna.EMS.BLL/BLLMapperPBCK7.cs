@@ -53,6 +53,7 @@ namespace Sampoerna.EMS.BLL
              //.ForMember(dest => dest.PBCK7_ITEM_ID, opt => opt.MapFrom(src => src.Id))
              .ForMember(dest => dest.BRAND_CE, opt => opt.MapFrom(src => src.Brand))
              .ForMember(dest => dest.FA_CODE, opt => opt.MapFrom(src => src.FaCode))
+             .ForMember(dest => dest.STICKER_CODE, opt => opt.MapFrom(src => src.StickerCode))
              .ForMember(dest => dest.PRODUCT_ALIAS, opt => opt.MapFrom(src => src.ProdTypeAlias))
              .ForMember(dest => dest.BRAND_CONTENT, opt => opt.MapFrom(src => src.Content))
              .ForMember(dest => dest.FISCAL_YEAR, opt => opt.MapFrom(src => src.FiscalYear))
@@ -70,6 +71,7 @@ namespace Sampoerna.EMS.BLL
            .ForMember(dest => dest.Pbck7Id, opt => opt.MapFrom(src => src.PBCK7_ID))
            .ForMember(dest => dest.Brand, opt => opt.MapFrom(src => src.BRAND_CE))
            .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
+           .ForMember(dest => dest.StickerCode, opt => opt.MapFrom(src => src.STICKER_CODE))
            .ForMember(dest => dest.ProdTypeAlias, opt => opt.MapFrom(src => src.PRODUCT_ALIAS))
            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.BRAND_CONTENT))
            .ForMember(dest => dest.FiscalYear, opt => opt.MapFrom(src => src.FISCAL_YEAR))
@@ -220,6 +222,7 @@ namespace Sampoerna.EMS.BLL
             Mapper.CreateMap<ZAIDM_EX_BRAND, GetListFaCodeByPlantOutput>().IgnoreAllNonExisting()
               .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.WERKS))
               .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE))
+              .ForMember(dest => dest.StickerCode, opt => opt.MapFrom(src => src.STICKER_CODE))
               ;
 
             Mapper.CreateMap<PBCK7_ITEM, Pbck73ItemPrintOutDto>().IgnoreAllNonExisting()

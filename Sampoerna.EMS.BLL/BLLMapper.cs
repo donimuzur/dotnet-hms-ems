@@ -199,6 +199,7 @@ namespace Sampoerna.EMS.BLL
             #endregion
 
             Mapper.CreateMap<POA, POADto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<POADto, POA>().IgnoreAllNonExisting();
 
             Mapper.CreateMap<T001K, T001KDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.BUTXT, opt => opt.MapFrom(src => src.T001.BUTXT))
@@ -515,6 +516,57 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.INVENTORY_MOVEMENT_ID, opt => opt.MapFrom(src => src.InventoryMovementId))
                 ;
 
+            #endregion
+
+
+            #region Month Closing
+
+            Mapper.CreateMap<MONTH_CLOSING, MonthClosingDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.MonthClosingId, opt => opt.MapFrom(src => src.MONTH_CLOSING_ID))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
+                .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.T001W.NAME1))
+                .ForMember(dest => dest.ClosingDay, opt => opt.MapFrom(src => src.CLOSING_DATE.Value.Day))
+                .ForMember(dest => dest.ClosingMonth, opt => opt.MapFrom(src => src.CLOSING_DATE.Value.ToString("MMMM")))
+                .ForMember(dest => dest.ClosingYear, opt => opt.MapFrom(src => src.CLOSING_DATE.Value.Year))
+                .ForMember(dest => dest.ClosingDate, opt => opt.MapFrom(src => src.CLOSING_DATE));
+
+            Mapper.CreateMap<MonthClosingDto, MONTH_CLOSING>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.MONTH_CLOSING_ID, opt => opt.MapFrom(src => src.MonthClosingId))
+                .ForMember(dest => dest.PLANT_ID, opt => opt.MapFrom(src => src.PlantId))
+                .ForMember(dest => dest.CLOSING_DATE, opt => opt.MapFrom(src => src.ClosingDate));
+
+            Mapper.CreateMap<MONTH_CLOSING_DOCUMENT, MonthClosingDocDto>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<MonthClosingDocDto, MONTH_CLOSING_DOCUMENT>().IgnoreAllNonExisting();
+
+            #endregion
+
+            #region Master Data Approval
+
+            Mapper.CreateMap<MASTER_DATA_APPROVE_SETTING, MasterDataApprovalSettingDetail>().IgnoreAllNonExisting();
+            Mapper.CreateMap<MasterDataApprovalSettingDetail, MASTER_DATA_APPROVE_SETTING>().IgnoreAllNonExisting();
+            Mapper.CreateMap<TableDetail, MasterDataApprovalSettingDetail>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.COLUMN_NAME, opt => opt.MapFrom(src => src.PropertyName))
+                .ForMember(dest => dest.ColumnDescription,
+                    opt =>
+                        opt.MapFrom(
+                            src => src.Documentation.LongDescription != null ? src.Documentation.LongDescription : ""));
+            Mapper.CreateMap<PAGE, MasterDataApprovalSettingDto>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PageId, opt => opt.MapFrom(src => src.PAGE_ID))
+                .ForMember(dest => dest.PageDescription, opt => opt.MapFrom(src => src.MENU_NAME));
+
+            Mapper.CreateMap<ZAIDM_EX_BRAND, BrandXmlDto>().IgnoreAllNonExisting();
+            Mapper.CreateMap<BrandXmlDto, ZAIDM_EX_BRAND>().IgnoreAllNonExisting();
+            #endregion
+
+            #region Quota Monitoring
+            Mapper.CreateMap<Pbck1Dto, QUOTA_MONITORING>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.NppbkcId))
+                .ForMember(dest => dest.PERIOD_FROM, opt => opt.MapFrom(src => src.PeriodFrom))
+                .ForMember(dest => dest.PERIOD_TO, opt => opt.MapFrom(src => src.PeriodTo))
+                .ForMember(dest => dest.SUPPLIER_NPPBKC_ID, opt => opt.MapFrom(src => src.SupplierNppbkcId))
+                .ForMember(dest => dest.SUPPLIER_WERKS, opt => opt.MapFrom(src => src.SupplierPlantWerks))
+                .ForMember(dest => dest.EX_GROUP_TYPE, opt => opt.UseValue(3));
             #endregion
         }
     }

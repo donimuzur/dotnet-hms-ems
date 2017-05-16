@@ -33,6 +33,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string CONVERTED_UOM { get; set; }
         public string MATERIAL_DESC { get; set; }
         public string MATDOC { get; set; }
+        public string STICKER_CODE { get; set; }
     
         public virtual CK5 CK5 { get; set; }
     }

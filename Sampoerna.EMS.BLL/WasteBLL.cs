@@ -39,6 +39,7 @@ namespace Sampoerna.EMS.BLL
 
         private IWasteStockBLL _wasteStockBll;
         private IMaterialBLL _materialBll;
+        private IMonthClosingBLL _monthClosingBll;
 
         public WasteBLL(ILogger logger, IUnitOfWork uow)
         {
@@ -58,6 +59,7 @@ namespace Sampoerna.EMS.BLL
             _poaMapBll = new POAMapBLL(_uow, _logger);
             _wasteStockBll = new WasteStockBLL(_uow, _logger);
             _materialBll = new MaterialBLL(_uow, _logger);
+            _monthClosingBll = new MonthClosingBLL(_uow, _logger);
         }
         public List<WasteDto> GetAllByParam(WasteGetByParamInput input)
         {
@@ -557,7 +559,6 @@ namespace Sampoerna.EMS.BLL
 
                 #region ---------------Waste Production Date validation-------------
                 int temp;
-                DateTime dateTemp;
                 if (Int32.TryParse(output.WasteProductionDate, out temp))
                 {
                     try
@@ -660,6 +661,21 @@ namespace Sampoerna.EMS.BLL
                     output.StampWasteQty = output.StampWasteQty;
                     messageList.Add("Stem Waste Gram Qty [" + output.StampWasteQty + "] not valid");
                 }
+                #endregion
+
+                #region --------------Month Closing Validation --------------------
+
+                var param = new MonthClosingGetByParam();
+                param.PlantId = output.PlantWerks;
+                param.ClosingDate = Convert.ToDateTime(output.WasteProductionDate);
+
+                var data = _monthClosingBll.GetDataByParam(param);
+
+                if (data != null)
+                {
+                    messageList.Add("Check Closing Date");
+                }
+
                 #endregion
 
                 #region -------------- Set Message Info if exists ---------------

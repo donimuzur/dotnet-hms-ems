@@ -228,6 +228,9 @@
     <Compile Include="AspnetWebForms\GenericReportViewer.aspx.designer.cs">
       <DependentUpon>GenericReportViewer.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Controllers\MonthClosingController.cs" />
+    <Compile Include="Controllers\MasterApprovalController.cs" />
+    <Compile Include="Controllers\MasterDataApprovalSettingController.cs" />
     <Compile Include="Controllers\PBCK4Controller.cs" />
     <Compile Include="Controllers\PoaDelegationController.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
@@ -374,10 +377,15 @@
     <Compile Include="Models\LACK2\Lack2SummaryReportsViewModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\MasterDataApprovalSetting\MasterDataApprovalSettingEditViewModel.cs" />
+    <Compile Include="Models\MasterDataApprovalSetting\MasterDataApprovalSettingIndexViewModel.cs" />
+    <Compile Include="Models\MasterDataApproval\MasterDataApprovalViewModel.cs" />
     <Compile Include="Models\Material\MaterialCreatelViewModel.cs" />
     <Compile Include="Models\Material\MaterialDetailViewModel.cs" />
     <Compile Include="Models\Material\MaterialEditViewModel.cs" />
     <Compile Include="Models\Material\MaterialListViewModel.cs" />
+    <Compile Include="Models\MonthClosing\MonthClosingDocModel.cs" />
+    <Compile Include="Models\MonthClosing\MonthClosingIndexViewModel.cs" />
     <Compile Include="Models\NPPBKC\NPPBKCIViewModels.cs" />
     <Compile Include="Models\PBCK1\Pbck1DashboardModel.cs" />
     <Compile Include="Models\PBCK1\Pbck1DecreeDocModel.cs" />
@@ -392,6 +400,7 @@
     <Compile Include="Models\PBCK1\PBCK1ProdPlanModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1SummaryReportViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ViewModel.cs" />
+    <Compile Include="Models\PBCK1\QuotaMonitoringViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4DashBoardViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4FileUploadViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4FormViewModel.cs" />
@@ -935,6 +944,7 @@
     <Content Include="Scripts\modernizr.min.js" />
     <Content Include="Scripts\js\_scripts.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\monthClosing.js" />
     <Content Include="Scripts\pbck1script.js" />
     <Content Include="Scripts\pbck1\docupload.js" />
     <Content Include="Scripts\Pbck3Script.js" />
@@ -1343,6 +1353,23 @@
     <Content Include="Views\LACK1\CfVsFaSummary.cshtml" />
     <Content Include="Views\LACK1\DetailEa.cshtml" />
     <Content Include="Views\LACK1\_Lack1DetailEa.cshtml" />
+    <Content Include="Views\MonthClosing\Index.cshtml" />
+    <Content Include="Views\MonthClosing\Create.cshtml" />
+    <Content Include="Views\MonthClosing\_Upload.cshtml" />
+    <Content Include="Views\MonthClosing\Edit.cshtml" />
+    <Content Include="Views\MonthClosing\Detail.cshtml" />
+    <Content Include="Views\MonthClosing\_Search.cshtml" />
+    <Content Include="Views\MonthClosing\_List.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadCreateMarketReturn.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadListMarketReturn.cshtml" />
+    <Content Include="Views\User\Edit.cshtml" />
+    <Content Include="Views\MasterDataApprovalSetting\Index.cshtml" />
+    <Content Include="Views\MasterDataApprovalSetting\Edit.cshtml" />
+    <Content Include="Views\MasterApproval\Index.cshtml" />
+    <Content Include="Views\MasterApproval\Detail.cshtml" />
+    <Content Include="Views\MasterDataApprovalSetting\Detail.cshtml" />
+    <Content Include="Views\PBCK1\QuotaMonitoring.cshtml" />
+    <Content Include="Views\PBCK1\QuotaMonitoringList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1509,7 +1536,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>57497</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
