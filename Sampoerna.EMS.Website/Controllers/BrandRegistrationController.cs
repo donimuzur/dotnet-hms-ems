@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Web.Mvc;
+using System.Web.Routing;
 using AutoMapper;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Sampoerna.EMS.BusinessObject;
@@ -528,14 +529,28 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
             //AddHistoryDelete(plant, decodeFacode, stickercode);
-            var isDeleted = _brandRegistrationBll.Delete(plant, decodeFacode, stickercode,CurrentUser.USER_ID);
+            try
+            {
+                var isDeleted = _brandRegistrationBll.Delete(plant, decodeFacode, stickercode, CurrentUser.USER_ID);
+
+                if (isDeleted)
+                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Deleted;
+                else
+                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Updated;
+
+                return RedirectToAction("Index");
+            }
+            catch (BLLException ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                return RedirectToAction("Edit", new RouteValueDictionary()
+                {
+                    {"plant",plant},
+                    {"facode",facode},
+                    {"stickercode",stickercode}
+                });
+            }
             
-            if(isDeleted)
-                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Deleted;
-            else
-                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Updated;
-            
-            return RedirectToAction("Index");
         }
 
         private void AddHistoryDelete(string plant, string facode, string stickercode)
