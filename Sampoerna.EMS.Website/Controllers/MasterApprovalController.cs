@@ -107,8 +107,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 
                 UpdateWorkflowHistory(model.Detail, Enums.ActionType.Approve);
                 _masterDataAprovalBLL.Approve(CurrentUser.USER_ID, model.Detail.APPROVAL_ID);
-                
-                GenerateXml(model.Detail);
+
+                var isNeedSend = (bool.TrueString.ToLower() == ConfigurationManager.AppSettings.Get("SendXmlMasterData").ToLower());
+                if(isNeedSend) GenerateXml(model.Detail);
 
                 AddMessageInfo("Success", Enums.MessageInfoType.Success);
             }
