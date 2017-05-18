@@ -25,6 +25,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new GlobalSettingModel();
 
             model.UseBackDate = (bool.TrueString.ToLower() == ConfigurationManager.AppSettings.Get("UseBackdate").ToLower());
+            model.IsSendXmlMasterData = (bool.TrueString.ToLower() == ConfigurationManager.AppSettings.Get("SendXmlMasterData").ToLower());
             HttpRuntimeSection section = (HttpRuntimeSection)ConfigurationManager.GetSection("system.web/httpRuntime");
             model.MainMenu = Enums.MenuList.Settings;
             model.CurrentMenu = PageInfo;
@@ -46,6 +47,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             Configuration config =  WebConfigurationManager.OpenWebConfiguration("~");
             config.AppSettings.Settings["UseBackdate"].Value = model.UseBackDate.ToString();
+            config.AppSettings.Settings["SendXmlMasterData"].Value = model.IsSendXmlMasterData.ToString();
             //model.UseBackDate = (bool.TrueString.ToLower() == config.AppSettings.Settings["UseBackdate"].Value.ToLower());
             HttpRuntimeSection section = (HttpRuntimeSection)config.GetSection("system.web/httpRuntime");
 
