@@ -85,6 +85,7 @@ namespace Sampoerna.EMS.XMLReader
                         {
                             user.MODIFIED_DATE = DateTime.Now;
                             user.CREATED_DATE = ExistUser.CREATED_DATE;
+                            user.IS_MASTER_DATA_APPROVER = ExistUser.IS_MASTER_DATA_APPROVER;
                         }
 
 
@@ -92,14 +93,14 @@ namespace Sampoerna.EMS.XMLReader
                         //UserItems.Add(user);
                         _xmlMapper.InsertOrUpdate(user);
 
-                        if (!role.BROLE_DESC.ToUpper().Contains("POA MANAGER") && role.BROLE_DESC.ToUpper().Contains("POA"))
+                        if (role.BROLE_DESC.ToUpper().Contains("POA"))
                         {
                             InsertPoa(user);
                             roleMap.ROLEID = Enums.UserRole.POA;
                         }
-                        else if (role.BROLE_DESC.ToUpper().Contains("POA MANAGER"))
+                        else if (role.BROLE_DESC.ToUpper().Contains("EXCISE CONTROLLER"))
                         {
-                            roleMap.ROLEID = Enums.UserRole.Manager;
+                            roleMap.ROLEID = Enums.UserRole.Controller;
                         }
                         else if (role.BROLE_DESC.ToUpper().Contains("VIEWER"))
                         {

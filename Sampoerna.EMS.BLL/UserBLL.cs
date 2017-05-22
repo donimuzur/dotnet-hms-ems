@@ -22,7 +22,7 @@ namespace Sampoerna.EMS.BLL
         private ILogger _logger;
         private IUnitOfWork _uow;
         private IGenericRepository<USER> _repository;
-        private POABLL _poabll;
+        private IPOABLL _poabll;
         private IUserPlantMapBLL _userPlantMapBll;
 
         public UserBLL(IUnitOfWork uow, ILogger logger)
@@ -132,6 +132,25 @@ namespace Sampoerna.EMS.BLL
         //    return Mapper.Map<List<UserDto>>(filterResult);
         //}
 
+
+        public void SaveUser(USER user)
+        {
+            
+                var data = _repository.GetByID(user.USER_ID);
+
+                data.IS_MASTER_DATA_APPROVER = user.IS_MASTER_DATA_APPROVER;
+                _repository.InsertOrUpdate(data);
+
+                _uow.SaveChanges();
+            
+            
+        }
+
+        public bool IsUserMasterApprover(string userId)
+        {
+            return _repository.Get(x => x.IS_MASTER_DATA_APPROVER.HasValue && x.IS_MASTER_DATA_APPROVER.Value && x.USER_ID == userId && x.IS_ACTIVE.HasValue && x.IS_ACTIVE == 1, null, "").Any();
+        }
+
         public List<UserDto> GetListUserRoleByUserId(string userId)
         {
             var userRole = _poabll.GetUserRole(userId);
@@ -195,6 +214,17 @@ namespace Sampoerna.EMS.BLL
             filterResult = filterResult.Where(c=>c.USER_ID != userId).DistinctBy(c => c.USER_ID).ToList();
 
             return Mapper.Map<List<UserDto>>(filterResult);
+        }
+
+        public List<USER> GetControllers()
+        {
+            var controllersList = new List<USER>();
+
+            var data = _repository.Get(x => (!x.IS_ACTIVE.HasValue || x.IS_ACTIVE != 0) && x.BROLE_MAP.Any(y => y.ROLEID == Enums.UserRole.Controller && y.MSACCT.ToLower() == x.USER_ID.ToLower()), null, "BROLE_MAP").ToList();
+
+            
+            controllersList.AddRange(data);
+            return controllersList;
         }
     }
 }

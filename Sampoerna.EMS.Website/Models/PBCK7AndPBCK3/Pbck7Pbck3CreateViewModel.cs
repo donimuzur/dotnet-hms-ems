@@ -9,7 +9,6 @@ using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.PrintHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.BusinessObject.DTOs;
-using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Website.Models.PBCK7AndPBCK3
 {

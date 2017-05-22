@@ -18,6 +18,7 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<POA> _repository;
         private IGenericRepository<POA_MAP> _poaMapRepository;
         private IGenericRepository<BROLE_MAP> _broleMapRepository;
+        private IMasterDataAprovalBLL _masterDataAprovalBLL;
         private string includeTables = "POA_MAP, USER, USER1, POA_SK";
         private IChangesHistoryBLL _changesHistoryBll;
         public POABLL(IUnitOfWork uow, ILogger logger)
@@ -28,6 +29,7 @@ namespace Sampoerna.EMS.BLL
             _poaMapRepository = _uow.GetGenericRepository<POA_MAP>();
             _broleMapRepository = _uow.GetGenericRepository<BROLE_MAP>();
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
+            _masterDataAprovalBLL = new MasterDataApprovalBLL(_uow,_logger);
         }
 
 
@@ -68,9 +70,11 @@ namespace Sampoerna.EMS.BLL
 
         }
 
-        public void Delete(string id)
+        public void Delete(string id,string userId)
         {
             var existingPoa = GetById(id);
+            var tempExistingPoa = Mapper.Map<POADto>(existingPoa);
+            bool isExist;
             if (existingPoa.IS_ACTIVE == true)
             {
                 existingPoa.IS_ACTIVE = false;
@@ -79,8 +83,20 @@ namespace Sampoerna.EMS.BLL
             {
                 existingPoa.IS_ACTIVE = true;
             }
-            _repository.Update(existingPoa);
+
+            var oldPoa = Mapper.Map<POA>(tempExistingPoa);
+            MASTER_DATA_APPROVAL approvalData;
+            existingPoa = _masterDataAprovalBLL.MasterDataApprovalValidation((int) Sampoerna.EMS.Core.Enums.MenuList.POA, userId,
+                oldPoa, existingPoa,out isExist,out approvalData);
+
+            if (existingPoa.IS_ACTIVE != oldPoa.IS_ACTIVE)
+            {
+                _repository.Update(existingPoa);
+                
+            }
+
             _uow.SaveChanges();
+            _masterDataAprovalBLL.SendEmailWorkflow(approvalData.APPROVAL_ID);
         }
 
         public void Update(POA poa)
@@ -112,7 +128,7 @@ namespace Sampoerna.EMS.BLL
                 var poa = GetAll();
                 var manager = _broleMapRepository.Get(x => x.USER_BROLE.BROLE_DESC.Contains("POA_MANAGER")).Select(x => x.MSACCT.ToUpper()).ToList();
                 if (manager.Contains(userId.ToUpper()))
-                    return Core.Enums.UserRole.Manager;
+                    return Core.Enums.UserRole.Controller;
 
                 if (poa.Any(zaidmExPoa => zaidmExPoa.LOGIN_AS == userId))
                     return Core.Enums.UserRole.POA;

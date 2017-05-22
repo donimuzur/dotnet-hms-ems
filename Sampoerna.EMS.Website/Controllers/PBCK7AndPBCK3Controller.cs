@@ -167,10 +167,10 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PlantList = GlobalFunctions.GetPlantAll();
             model.PoaList = GlobalFunctions.GetPoaAll(_poaBll);
             model.CreatorList = GlobalFunctions.GetCreatorList();
-            model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             //first code when manager exists
             //model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
-            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             return model;
 
         }
@@ -195,7 +195,7 @@ namespace Sampoerna.EMS.Website.Controllers
             viewModel.Detail = result;
             //first code when manager exists
             //viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
-            viewModel.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            viewModel.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
 
             return PartialView("_Pbck7TableIndex", viewModel);
         }
@@ -242,7 +242,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.PoaList = GlobalFunctions.GetPoaAll(_poaBll);
             model.PlantList = GlobalFunctions.GetPlantAll();
             model.CreatorList = GlobalFunctions.GetCreatorList();
-            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
 
             return (model);
         }
@@ -266,7 +266,7 @@ namespace Sampoerna.EMS.Website.Controllers
             viewModel.Detail = result;
             //first code when manager exists
             //viewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
-            viewModel.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            viewModel.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
 
             return PartialView("_Pbck3TableIndex", viewModel);
 
@@ -325,7 +325,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Controller || CurrentUser.UserRole == Enums.UserRole.Viewer)
             {
                 AddMessageInfo("Can't create PBCK-7 Document for User with " + EnumHelper.GetDescription(CurrentUser.UserRole) + " Role", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
@@ -441,7 +441,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //first code when manager exists
             //if (CurrentUser.UserRole == Enums.UserRole.Viewer)
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 return RedirectToAction("Details", new { id });
             }
@@ -519,7 +519,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //first code when manager exists
             //if (CurrentUser.UserRole == Enums.UserRole.Viewer)
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 return RedirectToAction("Details", new { id });
             }
@@ -2248,7 +2248,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //first code when manager exists
             //if (CurrentUser.UserRole == Enums.UserRole.Viewer)
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 return RedirectToAction("DetailsPbck3", new { id });
             }
@@ -2430,7 +2430,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //first code when manager exists
             //if (CurrentUser.UserRole == Enums.UserRole.Viewer)
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 return RedirectToAction("DetailsPbck3", new { id });
             }
@@ -2979,10 +2979,10 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetBrandItems(string plantId, string faCode)
+        public JsonResult GetBrandItems(string plantId, string faCode, string stickerCode = null)
         {
 
-            var brandOutput = _pbck7Pbck3Bll.GetBrandItemsByPlantAndFaCode(plantId, faCode);
+            var brandOutput = _pbck7Pbck3Bll.GetBrandItemsByPlantAndFaCode(plantId, faCode, stickerCode);
 
             //getblockedstock
             var blockedStockOutput = _pbck7Pbck3Bll.GetBlockedStockQuota(plantId, faCode);
@@ -2994,10 +2994,10 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetBrandItemsForEdit(int pbck7Id, string plantId, string faCode, string plantIdOri, string faCodeOri)
+        public JsonResult GetBrandItemsForEdit(int pbck7Id, string plantId, string faCode, string plantIdOri, string faCodeOri, string stickerCodeOri = null, string stickerCode = null)
         {
 
-            var brandOutput = _pbck7Pbck3Bll.GetBrandItemsByPlantAndFaCode(plantId, faCode);
+            var brandOutput = _pbck7Pbck3Bll.GetBrandItemsByPlantAndFaCode(plantId, faCode, stickerCode);
 
             //getblockedstock
             var blockedStockOutput = _pbck7Pbck3Bll.GetBlockedStockQuota(plantId, faCode);
@@ -3005,9 +3005,9 @@ namespace Sampoerna.EMS.Website.Controllers
           
             brandOutput.BlockedStockRemaining = blockedStockOutput.BlockedStockRemaining;
 
-            if (plantId == plantIdOri && faCode == faCodeOri)
+            if (plantId == plantIdOri && faCode == faCodeOri && stickerCode == stickerCodeOri)
             {
-                var reqQty = _pbck7Pbck3Bll.GetCurrentReqQtyByPbck7IdAndFaCode(pbck7Id, faCode);
+                var reqQty = _pbck7Pbck3Bll.GetCurrentReqQtyByPbck7IdAndFaCode(pbck7Id, faCode, stickerCode);
                 brandOutput.BlockedStockRemaining =
                     (ConvertHelper.ConvertToDecimalOrZero(brandOutput.BlockedStockRemaining) + reqQty).ToString();
             }

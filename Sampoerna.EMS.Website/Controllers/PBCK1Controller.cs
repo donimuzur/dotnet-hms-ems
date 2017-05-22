@@ -16,6 +16,7 @@ using Microsoft.Ajax.Utilities;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.ReportingData;
@@ -61,9 +62,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExKPPBCBLL _kppbcbll;
         private IUserPlantMapBLL _userPlantBll;
         private IPOAMapBLL _poaMapBll;
+        private IExGroupTypeBLL _exGroupTypeBLL;
 
-        public PBCK1Controller(IPageBLL pageBLL, IUnitOfMeasurementBLL uomBll, ICompanyBLL companyBll, IMasterDataBLL masterDataBll, IMonthBLL monthbll, IZaidmExGoodTypeBLL goodTypeBll, ISupplierPortBLL supplierPortBll, IZaidmExNPPBKCBLL nppbkcbll, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll,
-            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll, ILFA1BLL lfa1Bll, IT001KBLL t001kBll, IPbck1DecreeDocBLL pbck1DecreeDocBll, ICK5BLL ck5Bll, IPOABLL poabll, IZaidmExKPPBCBLL kppbcbll, IUserPlantMapBLL userPlantBll, IPOAMapBLL poaMapBll)
+        public PBCK1Controller(IPageBLL pageBLL, IUnitOfMeasurementBLL uomBll, ICompanyBLL companyBll, IMonthBLL monthbll, IZaidmExGoodTypeBLL goodTypeBll, ISupplierPortBLL supplierPortBll, IZaidmExNPPBKCBLL nppbkcbll, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll,
+            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll, ILFA1BLL lfa1Bll, IT001KBLL t001kBll, IPbck1DecreeDocBLL pbck1DecreeDocBll, ICK5BLL ck5Bll, IPOABLL poabll, IZaidmExKPPBCBLL kppbcbll, IUserPlantMapBLL userPlantBll, IPOAMapBLL poaMapBll,IExGroupTypeBLL groupTypeBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
@@ -89,6 +91,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _kppbcbll = kppbcbll;
             _userPlantBll = userPlantBll;
             _poaMapBll = poaMapBll;
+            _exGroupTypeBLL = groupTypeBll;
         }
 
         private List<Pbck1Item> GetOpenDocument(Pbck1FilterViewModel filter = null)
@@ -164,8 +167,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Details = GetOpenDocument(model.SearchInput);
             //first code when manager exists
             //model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
-            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false);
-
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false);
+            
             return PartialView("_Pbck1Table", model);
         }
 
@@ -436,12 +439,64 @@ namespace Sampoerna.EMS.Website.Controllers
                     DocumentType = Enums.Pbck1DocumentType.OpenDocument
 
                 },
-                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false),
+                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false),
                 //first code when manager exists
                 //IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
-                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false)
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false)
             });
             return View("Index", model);
+        }
+
+        public ActionResult QuotaMonitoring(int id)
+        {
+            var model = new QuotaMonitoringViewModel();
+            model.CurrentMenu = PageInfo;
+            model.MainMenu = _mainMenu;
+            
+            var data  =  _pbck1Bll.GetQuotaMonitoringDetail(id);
+            model.Detail = Mapper.Map<QuotaMonitoringModel>(data);
+            GetQuotaAndRemainOutput quotaDetails;
+            if (data.EX_GROUP_TYPE == (int) Enums.ExGoodsType.EtilAlcohol)
+            {
+                quotaDetails = _ck5Bll.GetQuotaRemainAndDatePbck1ItemExternal(data.SUPPLIER_WERKS,
+                    data.SUPPLIER_NPPBKC_ID, DateTime.Now,
+                    data.NPPBKC_ID, data.EX_GROUP_TYPE);
+            }
+            else
+            {
+                quotaDetails = _ck5Bll.GetQuotaRemainAndDatePbck1Item(data.SUPPLIER_WERKS, data.SUPPLIER_NPPBKC_ID, 
+                    DateTime.Now,data.NPPBKC_ID, data.EX_GROUP_TYPE);
+
+            }
+            
+            model.Detail.TotalApprovedQuota = quotaDetails.QtyApprovedPbck1;
+            model.Detail.TotalUsedQuota = quotaDetails.QtyCk5;
+            model.Detail.TotalRemainingQuota = quotaDetails.RemainQuota;
+
+            foreach (var detail in model.Detail.Details)
+            {
+                if (detail.ROLE_ID != null)
+                    detail.RoleDescription = EnumHelper.GetDescription((Enums.UserRole) detail.ROLE_ID);
+            }
+
+            var userInForm = model.Detail.Details.FirstOrDefault(x => x.USER_ID == CurrentUser.USER_ID && x.EMAIL_STATUS != Enums.EmailStatus.Read);
+            if (userInForm != null)
+            {
+                _pbck1Bll.UpdateEmailStatus(id,userInForm.USER_ID,Enums.EmailStatus.Read);
+                userInForm.EMAIL_STATUS = Enums.EmailStatus.Read;
+            }
+            return View(model);
+        }
+
+        public ActionResult QuotaMonitoringList()
+        {
+            var model = new QuotaMonitoringListViewModel();
+            model.CurrentMenu = PageInfo;
+            model.MainMenu = _mainMenu;
+
+            var data = _pbck1Bll.GetQuotaMonitoringList();
+            model.Details = Mapper.Map<List<QuotaMonitoringModel>>(data);
+            return View(model);
         }
 
         public Pbck1ViewModel InitPbck1ViewModel(Pbck1ViewModel model)
@@ -498,7 +553,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             //first code when manager exists
             //if (CurrentUser.UserRole == Enums.UserRole.Viewer)
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 return RedirectToAction("Details", new { id });
             }
@@ -882,7 +937,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 return HttpNotFound();
             }
 
-            bool isCurrManager = CurrentUser.UserRole == Enums.UserRole.Manager;
+            bool isCurrManager = CurrentUser.UserRole == Enums.UserRole.Controller;
             ViewBag.IsCurrManager = isCurrManager;
 
             //workflow history
@@ -972,7 +1027,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Administrator)
+            if (CurrentUser.UserRole == Enums.UserRole.Controller || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Administrator)
             {
                 //can't create PBCK1 Document
                 AddMessageInfo("Can't create PBCK-1 Document for User with " + EnumHelper.GetDescription(CurrentUser.UserRole) + " Role", Enums.MessageInfoType.Error);
@@ -1113,7 +1168,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 },
                 //first code when manager exists
                 //IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer
-                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
             });
             return View("CompletedDocument", model);
         }
@@ -1146,7 +1201,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Details = GetCompletedDocument(model.SearchInput);
             //first code when manager exists
             //model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
-            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
 
             return PartialView("_Pbck1CompletedDocumentTable", model);
         }
@@ -1315,7 +1370,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (model.Detail.Pbck1DecreeFiles == null)
             {
                 AddMessageInfo("Decree Doc is required.", Enums.MessageInfoType.Error);
-                return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+                return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
             }
 
             bool isSuccess = false;
@@ -1349,8 +1404,9 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
                         else
                         {
+                            if (model.Pbck1OldDecreeFilesID != null && model.Pbck1OldDecreeFilesID.Count > 0) continue;
                             AddMessageInfo("Please upload the decree doc", Enums.MessageInfoType.Error);
-                            return RedirectToAction("Details", "Pbck1", new { id = model.Detail.Pbck1Id });
+                            return RedirectToAction("Edit", "Pbck1", new { id = model.Detail.Pbck1Id });
                         }
                     }
                 }
@@ -2443,12 +2499,101 @@ namespace Sampoerna.EMS.Website.Controllers
 
             // ReSharper disable once PossibleInvalidOperationException
             var pbck1Data = _pbck1Bll.GetPrintOutDataById(id.Value);
+            if (!string.IsNullOrEmpty(pbck1Data.Detail.Pbck1AdditionalText))
+            {
+                var lastQuota = GetQuotaLatestPbck1(pbck1Data.Detail.Pbck1Id);
+                pbck1Data.Detail.LatestSaldo = String.Format("{0:n}", lastQuota);
+            }
+            
             if (pbck1Data == null)
                 HttpNotFound();
 
             Stream stream = GetReport(pbck1Data, "Preview PBCK-1");
 
             return File(stream, "application/pdf");
+        }
+
+        private decimal GetQuotaLatestPbck1(int pbck1Id)
+        {
+            var output = new GetQuotaAndRemainOutput();
+            var detailPbck1 = _pbck1Bll.GetById(pbck1Id);
+
+            
+            //var detailPbck1 = pbck1Data.Detail;
+            List<string> goodtypelist = new List<string>()
+            {
+                detailPbck1.GoodType
+            };
+
+            var isExternal = _plantBll.GetT001WById(detailPbck1.SupplierPlantWerks) == null;
+
+            var supplierPlant = detailPbck1.SupplierPlantWerks;
+            var supplierNppbkcId = detailPbck1.SupplierNppbkcId;
+
+            if (isExternal)
+            {
+                supplierPlant = detailPbck1.SupplierPlant;
+            }
+
+            var lack1LastDate = new DateTime(detailPbck1.Lack1ToYear.Value, detailPbck1.Lack1ToMonthId.Value,
+                DateTime.DaysInMonth(detailPbck1.Lack1ToYear.Value, detailPbck1.Lack1ToMonthId.Value));
+            var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(supplierPlant, supplierNppbkcId, lack1LastDate, detailPbck1.NppbkcId, goodtypelist);
+            if (listPbck1.Count == 0)
+            {
+                //pbck not exist
+                output.QtyApprovedPbck1 = 0;
+                output.QtyCk5 = 0;
+                output.RemainQuota = 0;
+                output.PbckUom = "";
+            }
+            else
+            {
+
+
+
+                output.Pbck1Id = listPbck1[0].Pbck1Id;
+                output.Pbck1Number = listPbck1[0].Pbck1Number;
+                output.Pbck1DecreeDate = listPbck1[0].DecreeDate.HasValue
+                    ? listPbck1[0].DecreeDate.Value.ToString("dd/MM/yyyy")
+                    : string.Empty;
+
+                output.PbckUom = listPbck1[0].RequestQtyUomId;
+
+                foreach (var pbck1Dto in listPbck1)
+                {
+                    if(pbck1Dto.Pbck1Id == pbck1Id) continue;
+                    
+                    if (pbck1Dto.QtyApproved.HasValue)
+                        output.QtyApprovedPbck1 += pbck1Dto.QtyApproved.Value;
+                }
+
+                var periodStart = listPbck1[0].PeriodFrom;
+                //var periodEnd = listPbck1[0].PeriodTo.Value.AddDays(1);
+
+                var pbck1Npbkc = listPbck1[0].NppbkcId;
+
+                var groupType = _exGroupTypeBLL.GetGroupByExGroupType(detailPbck1.GoodType).EX_GROUP_TYPE_ID;
+
+                if (isExternal)
+                {
+                    output.QtyCk5 = _ck5Bll.GetQuotaCk5External(supplierPlant, supplierNppbkcId, pbck1Npbkc, periodStart, lack1LastDate, (Enums.ExGoodsType)groupType);
+                }
+                else
+                {
+                    output.QtyCk5 = _ck5Bll.GetQuotaCk5(supplierPlant, supplierNppbkcId, pbck1Npbkc, periodStart, lack1LastDate, (Enums.ExGoodsType)groupType);    
+                }
+                
+
+                output.RemainQuota = output.QtyApprovedPbck1 - output.QtyCk5;
+
+
+
+
+
+            }
+
+            var latestLack1Saldo = detailPbck1.LatestSaldo.HasValue ? detailPbck1.LatestSaldo.Value : 0;
+            return latestLack1Saldo + output.RemainQuota;
         }
 
         private Stream GetReport(Pbck1ReportDto pbck1Data, string printTitle)

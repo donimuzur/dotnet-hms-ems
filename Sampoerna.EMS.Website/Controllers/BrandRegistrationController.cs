@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Web.Mvc;
+using System.Web.Routing;
 using AutoMapper;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.BrandRegistration;
@@ -20,6 +22,7 @@ namespace Sampoerna.EMS.Website.Controllers
     public class BrandRegistrationController : BaseController
     {
         private IBrandRegistrationBLL _brandRegistrationBll;
+        private IMasterDataAprovalBLL _masterDataAprovalBLL;
         private IMasterDataBLL _masterBll;
         private IZaidmExProdTypeBLL _productBll;
         private IZaidmExGoodTypeBLL _goodTypeBll;
@@ -30,10 +33,12 @@ namespace Sampoerna.EMS.Website.Controllers
         
         public BrandRegistrationController(IBrandRegistrationBLL brandRegistrationBll, IPageBLL pageBLL, 
             IMasterDataBLL masterBll, IZaidmExProdTypeBLL productBll, IZaidmExGoodTypeBLL goodTypeBll, 
-            IChangesHistoryBLL changesHistoryBll, IPlantBLL plantBll, IMaterialBLL materialBll)
+            IChangesHistoryBLL changesHistoryBll, IPlantBLL plantBll, IMaterialBLL materialBll,
+            IMasterDataAprovalBLL masterDataAprovalBLL)
             : base(pageBLL, Enums.MenuList.BrandRegistration)
         {
             _brandRegistrationBll = brandRegistrationBll;
+            _masterDataAprovalBLL = masterDataAprovalBLL;
             _masterBll = masterBll;
             _productBll = productBll;
             _goodTypeBll = goodTypeBll;
@@ -71,7 +76,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(_changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.BrandRegistration, plant+facode+stickercode));
             model.PersonalizationCodeDescription = _masterBll.GetPersonalizationDescById(model.PersonalizationCode);
-
+            var materialData = _materialBll.GetByPlantIdAndStickerCode(dbBrand.WERKS, dbBrand.FA_CODE);
+            model.SAPBrandDescription = materialData != null ? materialData.MATERIAL_DESC : string.Empty;
             
             if (model.IsFromSap.HasValue && model.IsFromSap.Value)
             {
@@ -102,6 +108,13 @@ namespace Sampoerna.EMS.Website.Controllers
             model.TariffCurrencyList = GlobalFunctions.GetCurrencyList();
             model.GoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
             model.BahanKemasanList = GlobalFunctions.GetBahanKemasanList(_brandRegistrationBll);
+            model.FaCodeList = GlobalFunctions.GetStickerCodeList();
+
+            if (!string.IsNullOrEmpty(model.StickerCode))
+            {
+                var data = _materialBll.getAllPlant(model.StickerCode);
+                model.PlantList = new SelectList(data, "WERKS", "WERKS - NAME1");
+            }
 
             return model;
         }
@@ -169,6 +182,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             if (ModelState.IsValid)
             {
+                bool isExist;
                 var dbBrand = new ZAIDM_EX_BRAND();
 
                 dbBrand = Mapper.Map<ZAIDM_EX_BRAND>(model);
@@ -177,30 +191,37 @@ namespace Sampoerna.EMS.Website.Controllers
                 dbBrand.FA_CODE = model.FaCode.Trim();
                 dbBrand.CREATED_DATE = DateTime.Now;
                 dbBrand.CREATED_BY = CurrentUser.USER_ID;
-                dbBrand.IS_FROM_SAP = false;
+                dbBrand.IS_FROM_SAP = model.IsFromSAP;
                 dbBrand.HJE_IDR = model.HjeValueStr == null ? 0 : Convert.ToDecimal(model.HjeValueStr);
                 dbBrand.TARIFF = model.TariffValueStr == null ? 0 : Convert.ToDecimal(model.TariffValueStr);
                 dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
                 dbBrand.PRINTING_PRICE = model.PrintingPrice == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
                 dbBrand.STATUS = model.IsActive;
                 dbBrand.PACKED_ADJUSTED = model.IsPackedAdjusted;
-                dbBrand.BAHAN_KEMASAN = model.BahanKemasan.Trim();
+                dbBrand.BAHAN_KEMASAN = string.IsNullOrEmpty(model.BahanKemasan) ? null : model.BahanKemasan.Trim();
                 if (!string.IsNullOrEmpty(dbBrand.PER_CODE_DESC))
                     dbBrand.PER_CODE_DESC = model.PersonalizationCodeDescription.Split('-')[1];
 
                 try
                 {
-                     AddHistoryCreate(dbBrand.WERKS, dbBrand.FA_CODE, dbBrand.STICKER_CODE); 
-                    _brandRegistrationBll.Save(dbBrand);
-                    
+                    MASTER_DATA_APPROVAL approvalData;
+                    _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.BrandRegistration,
+                        CurrentUser.USER_ID, new ZAIDM_EX_BRAND(), dbBrand,out isExist,out approvalData, true);
+                    // AddHistoryCreate(dbBrand.WERKS, dbBrand.FA_CODE, dbBrand.STICKER_CODE);
 
+                    //_brandRegistrationBll.Save(dbBrand);
+
+                    _masterDataAprovalBLL.SendEmailWorkflow(approvalData.APPROVAL_ID);
                     AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
                     return RedirectToAction("Index");
                 }
-                catch
+                catch (BLLException ex)
                 {
-                    AddMessageInfo("Save Failed.", Enums.MessageInfoType.Error
-                       );
+                    AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                }
+                catch(Exception)
+                {
+                    AddMessageInfo("Save Failed.", Enums.MessageInfoType.Error);
                 }
             }
 
@@ -214,6 +235,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
 
+            model.StickerCodeList = GlobalFunctions.GetStickerCodeList();
             model.PlantList = GlobalFunctions.GetVirtualPlantList();
             model.PersonalizationCodeList = GlobalFunctions.GetPersonalizationCodeList();
             model.CutFillerCodeList = GlobalFunctions.GetCutFillerCodeList(model.PlantId);
@@ -249,6 +271,8 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ConversionValueStr = model.Conversion == null ? string.Empty : model.Conversion.ToString();
             model.PrintingPriceValueStr = model.PrintingPrice == null ? string.Empty : model.PrintingPrice.ToString();
             model.PersonalizationCodeDescription = _masterBll.GetPersonalizationDescById(model.PersonalizationCode);
+            var materialData = _materialBll.GetByPlantIdAndStickerCode(model.PlantId, model.FaCode);
+            model.SAPBrandDescription = materialData != null ? materialData.MATERIAL_DESC : string.Empty ;
             model = InitEdit(model);
 
             model.IsAllowDelete = !model.IsFromSAP;
@@ -259,47 +283,76 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult Edit(BrandRegistrationEditViewModel model)
         {
-            var dbBrand = _brandRegistrationBll.GetById(model.PlantId, model.FaCode,model.StickerCode);
+            ZAIDM_EX_BRAND dbBrand = null;
+            bool isApprovalExist;
+            try
+            {
+                dbBrand = _brandRegistrationBll.GetById(model.PlantId, model.FaCode,model.StickerCode);
+            }
+            catch (Exception ex)
+            {
+                dbBrand = null;
+            }
+            
+            var oldDbBrand = Mapper.Map<BrandRegistrationEditViewModel>(dbBrand);
+            var oldObject = Mapper.Map<ZAIDM_EX_BRAND>(oldDbBrand);
             if (dbBrand == null)
             {
-                ModelState.AddModelError("BrandName", "Data Not Found");
+                ModelState.AddModelError("BrandName", "Data Not Found redirected to create form");
+                var modelCreate = Mapper.Map<BrandRegistrationCreateViewModel>(model);
+                modelCreate = InitCreate(modelCreate);
+
+                return View("Create", modelCreate);
+            }
+
+            SetChangesLog(dbBrand, model);
+
+            //if (dbBrand.IS_FROM_SAP.HasValue && dbBrand.IS_FROM_SAP.Value)
+            //{
+            //    dbBrand.PRINTING_PRICE = model.PrintingPrice;
+            //    dbBrand.CONVERSION = model.Conversion;
+            //    dbBrand.CUT_FILLER_CODE = model.CutFillerCode;
+            //    dbBrand.STATUS = model.IsActive;
+            //}
+            //else
+            Mapper.Map(model, dbBrand);
+            dbBrand.HJE_IDR = model.HjeValueStr == null ? (decimal?)null : Convert.ToDecimal(model.HjeValueStr);
+            dbBrand.TARIFF = model.TariffValueStr == null ? (decimal?)null : Convert.ToDecimal(model.TariffValueStr);
+            dbBrand.CONVERSION = model.ConversionValueStr == null ? (decimal?)null : Convert.ToDecimal(model.ConversionValueStr);
+            dbBrand.PRINTING_PRICE = model.PrintingPriceValueStr == null ? (decimal?) null : Convert.ToDecimal(model.PrintingPriceValueStr);
+            dbBrand.FA_CODE = model.FaCode.Trim();
+            dbBrand.BAHAN_KEMASAN = string.IsNullOrEmpty(model.BahanKemasan) ? null : model.BahanKemasan.Trim();
+            //dbBrand.PACKED_ADJUSTED = model.IsPackedAdjusted;
+            //dbBrand.BRAND_CE = model.BrandName;
+            //dbBrand.IS_FROM_SAP = model.IsFromSAP;
+            //dbBrand.CREATED_BY = CurrentUser.USER_ID;
+            if (!string.IsNullOrEmpty(model.PersonalizationCodeDescription))
+                dbBrand.PER_CODE_DESC = model.PersonalizationCodeDescription;
+
+            var materialData = _materialBll.GetByPlantIdAndStickerCode(model.PlantId, model.FaCode);
+            if (materialData == null)
+            {
+                AddMessageInfo("Fa code and plant not registered on Material Master.", Enums.MessageInfoType.Error);
                 model = InitEdit(model);
 
                 return View("Edit", model);
             }
 
-            SetChangesLog(dbBrand, model);
-
-            if (dbBrand.IS_FROM_SAP.HasValue && dbBrand.IS_FROM_SAP.Value)
-            {
-                dbBrand.PRINTING_PRICE = model.PrintingPrice;
-                dbBrand.CONVERSION = model.Conversion;
-                dbBrand.CUT_FILLER_CODE = model.CutFillerCode;
-                dbBrand.STATUS = model.IsActive;
-            }
-            else
-                Mapper.Map(model, dbBrand);
-            dbBrand.HJE_IDR = model.HjeValueStr == null ? 0 : Convert.ToDecimal(model.HjeValueStr);
-            dbBrand.TARIFF = model.TariffValueStr == null ? 0 : Convert.ToDecimal(model.TariffValueStr);
-            dbBrand.CONVERSION = model.ConversionValueStr == null ? 0 : Convert.ToDecimal(model.ConversionValueStr);
-            dbBrand.PRINTING_PRICE = model.PrintingPriceValueStr == null ? 0 : Convert.ToDecimal(model.PrintingPriceValueStr);
-            dbBrand.FA_CODE = model.FaCode.Trim();
-            dbBrand.BAHAN_KEMASAN = model.BahanKemasan.Trim();
-            //dbBrand.CREATED_BY = CurrentUser.USER_ID;
-            if (!string.IsNullOrEmpty(model.PersonalizationCodeDescription))
-                dbBrand.PER_CODE_DESC = model.PersonalizationCodeDescription;
             try
             {
+                MASTER_DATA_APPROVAL approvalData;
+                dbBrand = _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.BrandRegistration,
+                    CurrentUser.USER_ID, oldObject, dbBrand,out isApprovalExist,out approvalData);
                 _brandRegistrationBll.Save(dbBrand);
-                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
-                         );
+
+                _masterDataAprovalBLL.SendEmailWorkflow(approvalData.APPROVAL_ID);
+                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
                 return RedirectToAction("Index");
 
             }
-            catch 
+            catch(Exception ex)
             {
-                AddMessageInfo("Edit Failed.", Enums.MessageInfoType.Error
-                         );
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
 
             model = InitEdit(model);
@@ -473,15 +526,31 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var decodeFacode = HttpUtility.UrlDecode(facode);
-            AddHistoryDelete(plant, decodeFacode, stickercode);
-            var isDeleted = _brandRegistrationBll.Delete(plant, decodeFacode, stickercode);
+
+
+            //AddHistoryDelete(plant, decodeFacode, stickercode);
+            try
+            {
+                var isDeleted = _brandRegistrationBll.Delete(plant, decodeFacode, stickercode, CurrentUser.USER_ID);
+
+                if (isDeleted)
+                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Deleted;
+                else
+                    TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Updated;
+
+                return RedirectToAction("Index");
+            }
+            catch (BLLException ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                return RedirectToAction("Edit", new RouteValueDictionary()
+                {
+                    {"plant",plant},
+                    {"facode",facode},
+                    {"stickercode",stickercode}
+                });
+            }
             
-            if(isDeleted)
-                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Deleted;
-            else
-                TempData[Constans.SubmitType.Save] = Constans.SubmitMessage.Updated;
-            
-            return RedirectToAction("Index");
         }
 
         private void AddHistoryDelete(string plant, string facode, string stickercode)
@@ -523,6 +592,25 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var data = GlobalFunctions.GetCutFillerCodeList(plant);
             return Json(data);
+        }
+
+        [HttpPost]
+        public JsonResult GetBrandMaterialDescription(string plant,string faCode)
+        {
+            var data = _materialBll.GetByPlantIdAndStickerCode(plant,faCode);
+            if (data != null)
+            {
+                var retData = new ZAIDM_EX_MATERIAL();
+                retData.STICKER_CODE = data.STICKER_CODE;
+                retData.WERKS = data.WERKS;
+                retData.MATERIAL_DESC = data.MATERIAL_DESC;
+                return Json(retData);
+            }
+            else
+            {
+                return null;
+            }
+            
         }
 
         #region export xls

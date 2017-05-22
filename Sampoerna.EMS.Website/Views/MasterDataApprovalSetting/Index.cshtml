@@ -1,0 +1,145 @@
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.MasterDataApprovalSetting.MasterDataApprovalSettingIndexViewModel
+
+@section styles
+    {
+}
+
+@section scripts {
+    <script src="~/Scripts/js/custom.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+        $('#MenuMasterApproval').addClass('active');
+        $(document).ready(function () {
+
+            // Setup - add a text input to each footer cell
+            $('#mydata .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0 && idx != 0) {
+                    var title = $('#mydata thead th').eq($(this).index()).text();
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
+
+                }
+            });
+
+            // DataTable
+            var table = $('#mydata').DataTable();
+
+
+            // Apply the search
+
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+
+
+            @if (TempData[Constans.SubmitType.Save] != null)
+            {
+               @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Save]');
+                           @: $('#btn-poa-modal').click();
+                           @:TempData[Constans.SubmitType.Save] = null;
+                        }
+        else if (TempData[Constans.SubmitType.Update] != null)
+             {
+              @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Update]');
+                           @: $('#btn-poa-modal').click();
+                           @:TempData[Constans.SubmitType.Update] = null;
+                         }
+        else if (TempData[Constans.SubmitType.Delete] != null)
+            {
+                @: $('#modal-poa-message').html('@TempData[Constans.SubmitType.Delete]');
+                             @: $('#btn-poa-modal').click();
+                           @:TempData[Constans.SubmitType.Delete] = null;
+                        }
+
+
+        });
+
+        function ExportXls() {
+            $('#ExportToXls').submit();
+        }
+    </script>
+}
+
+
+@{
+    ViewBag.Title = "Master Data Approval Setting";
+
+}
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="desc">Master Data Approval Setting</h3>
+            
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        
+        <div class="col-sm-12">
+            <div id="contenttable" class="table-container">
+                <table id="mydata" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+
+                            <th class="toggle-row"> Filter </th>
+                            <th> Form Name</th>
+                            
+                        </tr>
+
+                    </thead>
+                    <thead class="filters">
+                        <tr>
+                            <th> Action</th>
+                            <th> Form Name </th>
+                            
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model.Details)
+                        {
+                            <tr>
+                                <td class="action">
+                                    <a href="@Url.Action("Detail", "MasterDataApprovalSetting", new { pageId = item.PageId })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                    @if (Model.IsNotViewer)
+                                    {
+                                        <a href="@Url.Action("Edit", "MasterDataApprovalSetting", new { pageId = item.PageId })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                                    }
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.PageDescription)
+                                </td>
+                                
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!--modal-->
+<input id="btn-poa-modal" style="display: none" class="btn btn-blue" data-toggle="modal" data-target=".bs-example-modal-sm" value="Save">
+
+<div class="modal ems-modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Success</h4>
+            </div>
+            <div class="modal-body" id="modal-poa-message">
+
+            </div>
+        </div>
+    </div>
+</div>

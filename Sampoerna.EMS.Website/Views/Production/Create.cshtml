@@ -10,7 +10,7 @@
             <div class="col-sm-12">
                 <h3>Daily Production Create</h3>
                 <div class="action-button">
-                    <button class="btn btn-blue">Save</button>
+                    <button class="btn btn-blue" id="btnSave">Save</button>
                     <a href="@Url.Action("Index", "Production")" class="btn btn-grey">Back</a>
                 </div>
             </div>
@@ -44,112 +44,118 @@
     <script src="~/Scripts/jquery.form.min.js"></script>
     <script src="~/Scripts/thousand-separator.js"></script>
     <script type="text/javascript" language="javascript" class="init">
-        $('#MenuCk4cDailyProduction').addClass('active');
+    $('#MenuCk4cDailyProduction').addClass('active');
 
-        $('#QtyPackedStr').val(ThausandSeperator($('#QtyPackedStr').val(), 2));
-        $('#QtyStr').val(ThausandSeperator($('#QtyStr').val(), 2));
-        $('#ZbStr').val(ThausandSeperator($('#ZbStr').val(), 2));
-        $('#PackedAdjustedStr').val(ThausandSeperator($('#PackedAdjustedStr').val(), 2));
-        $('#packedAdjustedRow').hide();
-        $('#remarkRow').hide();
-        $('#zbRow').hide();
+    $('#QtyPackedStr').val(ThausandSeperator($('#QtyPackedStr').val(), 2));
+    $('#QtyStr').val(ThausandSeperator($('#QtyStr').val(), 2));
+    $('#ZbStr').val(ThausandSeperator($('#ZbStr').val(), 2));
+    $('#PackedAdjustedStr').val(ThausandSeperator($('#PackedAdjustedStr').val(), 2));
+    $('#packedAdjustedRow').hide();
+    $('#remarkRow').hide();
+    $('#zbRow').hide();
 
 
-        $("#CompanyCode").change(function () {
-            if ($("#CompanyCode").length) {
-                var cpy = $(this).find("option:selected").val();
-                $('#SearchInput_PlantId option').remove();
-                if (cpy == '' || $(this).find("option:selected").val() == '') {
-                    $('#SearchInput_PlantId option').append('<option value="">Select</option>');
+    $("#CompanyCode").change(function () {
+        if ($("#CompanyCode").length) {
+            var cpy = $(this).find("option:selected").val();
+            $('#SearchInput_PlantId option').remove();
+            if (cpy == '' || $(this).find("option:selected").val() == '') {
+                $('#SearchInput_PlantId option').append('<option value="">Select</option>');
 
-                } else {
-                    ajaxSelectCompany('@Url.Action("CompanyListPartialProduction", "Production")', { companyId: cpy });
-                }
+            } else {
+                ajaxSelectCompany('@Url.Action("CompanyListPartialProduction", "Production")', { companyId: cpy });
             }
-        });
+        }
+    });
 
-        function ajaxSelectCompany(url, formData) {
-            if (formData.companyId) {
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function (data) {
-                        var listPlant = data.PlantWerkList;
-                        $('#SearchInput_PlantId').append('<option value="">Select</option>');
-                        if (listPlant.length > 0) {
-                            for (var i = 0; i < listPlant.length; i++) {
-                                $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
-                            }
+    function ajaxSelectCompany(url, formData) {
+        if (formData.companyId) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    var listPlant = data.PlantWerkList;
+                    $('#SearchInput_PlantId').append('<option value="">Select</option>');
+                    if (listPlant.length > 0) {
+                        for (var i = 0; i < listPlant.length; i++) {
+                            $('#SearchInput_PlantId').append('<option value=' + listPlant[i].Value + '>' + listPlant[i].Text + '</option>');
                         }
-
                     }
-                });
+
+                }
+            });
+        }
+    }
+
+    $("#SearchInput_BrandCe").change(function () {
+        if ($("#SearchInput_BrandCe").length) {
+
+            var FaDesc = $(this).find("option:selected").val();
+            var Plant = $('#SearchInput_PlantId').val();
+            console.log(FaDesc);
+            if (FaDesc == '') {
+                $('#test').val('');
+            } else {
+                ajaxFaCodeDescription('@Url.Action("GetFaCodeDescription", "Production")', { plantWerk: Plant, faCode: FaDesc });
             }
         }
 
-        $("#SearchInput_BrandCe").change(function () {
-            if ($("#SearchInput_BrandCe").length) {
+    });
 
-                var FaDesc = $(this).find("option:selected").val();
-                var Plant = $('#SearchInput_PlantId').val();
-                console.log(FaDesc);
-                if (FaDesc == '') {
-                    $('#test').val('');
-                } else {
-                    ajaxFaCodeDescription('@Url.Action("GetFaCodeDescription", "Production")', { plantWerk: Plant, faCode: FaDesc });
-                }
-            }
-
-        });
-
-        function ajaxFaCodeDescription(url, formData) {
-            if (formData.plantWerk, formData.faCode) {
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function (data) {
-                        $('#test').val(data.BRAND_CE);
-                        if (!data.IS_FROM_SAP) {
-                            $('#QtyPacked').prop('disabled', false);
-                        } else {
-                            $('#QtyPacked').prop('disabled', true);
-                        }
-                        
-                        if (data.PROD_CODE == "01") {
-                            $('#zbRow').show();
-                        } else {
-                            $('#zbRow').hide();
-                        }
-                        if (data.PROD_CODE == "05" && data.EXC_GOOD_TYP == "02") {
-                            $('#packedAdjustedRow').show();
-                            $('#remarkRow').show();
-                        } else {
-                            $('#packedAdjustedRow').hide();
-                            $('#remarkRow').hide();
-                        }
-
-                        if (data.PACKED_ADJUSTED == 0 || data.PACKED_ADJUSTED == null || data.PACKED_ADJUSTED == false) {
-                            $('#PackedAdjusted').prop("disabled", true);
-                        } else {
-                            $('#PackedAdjusted').prop("disabled", false);
-                        }
+    function ajaxFaCodeDescription(url, formData) {
+        if (formData.plantWerk, formData.faCode) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                success: function (data) {
+                    $('#test').val(data.BRAND_CE);
+                    if (!data.IS_FROM_SAP) {
+                        $('#QtyPacked').prop('disabled', false);
+                    } else {
+                        $('#QtyPacked').val('');
+                        $('#QtyPacked').prop('disabled', true);
                     }
-                });
-            }
 
+                    if (data.PROD_CODE == "01") {
+                        $('#zbRow').show();
+                    } else {
+                        $('#zbRow').hide();
+                    }
+                    if (data.PROD_CODE == "05" && data.EXC_GOOD_TYP == "02") {
+                        $('#packedAdjustedRow').show();
+                        $('#remarkRow').show();
+                    } else {
+                        $('#packedAdjustedRow').hide();
+                        $('#remarkRow').hide();
+                    }
+
+                    if (data.PACKED_ADJUSTED == 0 || data.PACKED_ADJUSTED == null || data.PACKED_ADJUSTED == false) {
+                        $('#PackedAdjusted').prop("disabled", true);
+                    } else {
+                        $('#PackedAdjusted').prop("disabled", false);
+                    }
+                }
+            });
         }
 
-        $("#SearchInput_PlantId").change(function () {
-            if ($("#SearchInput_PlantId").length) {
-                var ce = $(this).find("option:selected").val();
-                $('#SearchInput_BrandCe option').remove();
-                if (ce == '' || $(this).find("option:selected").val() == '') {
-                    $('#SearchInput_BrandCe option').append('<option value="">Select</option>');
+    }
 
-                } else {
-                    ajaxSelectPlantWerks('@Url.Action("GetBrandCeByPlant", "Production")', { plantWerk: ce });
+    $("#SearchInput_PlantId").change(function () {
+        if ($("#SearchInput_PlantId").length) {
+            var ce = $(this).find("option:selected").val();
+            var date = $("#ProductionDate").val();
+            $('#btnSave').prop('disabled', false);
+            $('#SearchInput_BrandCe option').remove();
+            $('#ClosingMonthText').html('');
+            if (ce == '' || $(this).find("option:selected").val() == '') {
+                $('#SearchInput_BrandCe option').append('<option value="">Select</option>');
+
+            } else {
+                ajaxSelectPlantWerks('@Url.Action("GetBrandCeByPlant", "Production")', { plantWerk: ce });
+                checkClosingDate('@Url.Action("CheckClosingMonth", "Production")', { plantWerk: ce, prodDate: date });
+                displayClosingDate('@Url.Action("DisplayClosingMonth", "Production")', { plantWerk: ce, prodDate: date });
                 }
             }
         });
@@ -186,7 +192,45 @@
 
         });
 
+        $("#ProductionDate").change(function () {
+            var ce = $("#SearchInput_PlantId").find("option:selected").val();
+            var date = $(this).val();
+            $('#btnSave').prop('disabled', false);
+            $('#ClosingMonthText').html('');
+            checkClosingDate('@Url.Action("CheckClosingMonth", "Production")', { plantWerk: ce, prodDate: date });
+            displayClosingDate('@Url.Action("DisplayClosingMonth", "Production")', { plantWerk: ce, prodDate: date });
+        });
 
+        function checkClosingDate(url, formData) {
+            if (formData.plantWerk) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        if (data.MonthClosingId > 0) {
+                            $('#btnSave').prop('disabled', true);
+                            $('#ModalCloseMonth').modal('show');
+                        }
+                    }
+                });
+            }
+        }
+
+        function displayClosingDate(url, formData) {
+            if (formData.plantWerk) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        if (data.MonthClosingId > 0) {
+                            $('#ClosingMonthText').html(data.DisplayDate);
+                        }
+                    }
+                });
+            }
+        }
 
     </script>
 }

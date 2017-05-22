@@ -77,7 +77,7 @@
                                                             <div class="col-md-2">
                                                                 @if (Model.IsNotViewer)
                                                                 {
-                                                                   @Html.TextBoxFor(model => model.UploadFileSize, new { @class = "form-control" })
+                                                                    @Html.TextBoxFor(model => model.UploadFileSize, new { @class = "form-control" })
                                                                 }
                                                                 else
                                                                 {
@@ -88,7 +88,7 @@
                                                             <div class="col-md-2">
                                                                 @if (Model.IsNotViewer)
                                                                 {
-                                                                   @Html.DropDownListFor(model => model.FileSizeType, Model.SizeType, new { @class = "form-control", @onchange = "changebase();" })
+                                                                    @Html.DropDownListFor(model => model.FileSizeType, Model.SizeType, new { @class = "form-control", @onchange = "changebase();" })
                                                                 }
                                                                 else
                                                                 {
@@ -108,24 +108,25 @@
                                                     </div>
 
                                                 </div>
+                                                <br/>
                                                <div class="row">
 
-                                                   @*<div class="col-md-12">
+                                                   <div class="col-md-12">
                                                        <div class="row">
-                                                           <label class="col-md-2">Use Back Date</label>
+                                                           <label class="col-md-2">Master data XML Generation</label>
                                                            <div class="col-md-8">
-                                                               @Html.CheckBoxFor(model => model.UseBackDate, new { @class = "check-box" })
+                                                               @Html.CheckBoxFor(model => model.IsSendXmlMasterData, new { @class = "check-box" })
                                                            </div>
                                                        </div>
                                                        <div class="row">
                                                            <div class="col-md-2"></div>
                                                            <div class="col-md-6">
                                                                <span>
-                                                                   All transaction date can be picked from past date.
+                                                                   If Unchecked the master data approval will not generate XML for Brand Registration.
                                                                </span>
                                                            </div>
                                                        </div>
-                                                   </div>*@
+                                                   </div>
                                                </div>
                                             </form>
                                         </div>

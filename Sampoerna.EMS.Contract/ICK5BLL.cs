@@ -93,7 +93,7 @@ namespace Sampoerna.EMS.Contract
 
        CK5MaterialOutput ValidateCk5MarketReturnMaterial(CK5MaterialInput input);
 
-       GetBrandByPlantAndMaterialNumberOutput GetBrandByPlantAndMaterialNumber(string plantId, string materialNumber);
+       GetBrandByPlantAndMaterialNumberOutput GetBrandByPlantAndMaterialNumber(string plantId, string materialNumber, string stickerCode = null);
 
        List<GetListMaterialMarketReturnOutput> GetListMaterialWaste(string plantId);
 
@@ -114,5 +114,11 @@ namespace Sampoerna.EMS.Contract
        List<Ck5MatdocDto> GetMatdocList(GetMatdocListInput input);
 
        List<string> GetCk5DocumentNumberByType(CK5GetByParamInput input);
+
+       decimal GetQuotaCk5(string plantId, string sourceNppbkc, string pbck1Npbkc, DateTime periodStart,
+            DateTime periodEnd, Enums.ExGoodsType goodtypegroupid);
+
+       decimal GetQuotaCk5External(string plantName, string sourceNppbkc, string pbck1Npbkc, DateTime periodStart,
+           DateTime periodEnd, Enums.ExGoodsType goodtypegroupid);
    }
 }

@@ -129,8 +129,8 @@
                         $('#tb-upload-excel').append(tr);
                         error += uploaditems[i].Message;
                     }
-                    if (error.trim() == "") $('#btnSave').enable();
-                    else $('#btnSave').disable();
+                    if (error.trim() == "") $('#btnSave').prop('disabled', false);
+                    else $('#btnSave').prop('disabled', true);
                     changeToDecimal('.decimal', 'html');
                 }
             });

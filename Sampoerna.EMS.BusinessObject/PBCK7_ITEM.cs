@@ -27,6 +27,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<decimal> TARIFF { get; set; }
         public Nullable<int> FISCAL_YEAR { get; set; }
         public Nullable<decimal> EXCISE_VALUE { get; set; }
+        public string STICKER_CODE { get; set; }
     
         public virtual PBCK7 PBCK7 { get; set; }
     }

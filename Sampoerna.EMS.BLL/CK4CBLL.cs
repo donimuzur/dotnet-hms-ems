@@ -120,6 +120,10 @@ namespace Sampoerna.EMS.BLL
 
             //    queryFilter = queryFilter.And(c => (c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.NUMBER)) || c.STATUS == Enums.DocumentStatus.Completed);
             //}
+            else if (input.UserRole == Enums.UserRole.Controller)
+            {
+                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.WaitingForApprovalController || c.STATUS == Enums.DocumentStatus.Completed);
+            }
             else if (input.UserRole == Enums.UserRole.Administrator)
             {
                 queryFilter = queryFilter.And(c => c.COMPANY_ID != null);
@@ -290,6 +294,7 @@ namespace Sampoerna.EMS.BLL
             if (plant == null) ck4cType = "NPPBKC";
 
             var userData = _userBll.GetUserById(ck4cData.CreatedBy);
+            var controllerList = _userBll.GetControllers();
 
             rc.Subject = "CK-4C " + ck4cData.Number + " is " + EnumHelper.GetDescription(ck4cData.Status);
             bodyMail.Append("Dear Team,<br />");
@@ -365,13 +370,15 @@ namespace Sampoerna.EMS.BLL
 
                         rc.CC.Add(userData.EMAIL);
                     }
-                    //else if (ck4cData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
+                    //else if (ck4cData.Status == Enums.DocumentStatus.WaitingForApprovalController)
                     //{
-                    //    var userData = _userBll.GetUserById(ck4cData.CreatedBy);
-                    //    rc.To.Add(GetManagerEmail(ck4cData.CreatedBy));
+                    //    foreach (var item in controllerList)
+                    //    {
+                    //        rc.To.Add(item.EMAIL);
+                    //    }
+                        
                     //    rc.CC.Add(userData.EMAIL);
 
-                    //    var poaList = _poabll.GetPoaByNppbkcIdAndMainPlant(nppbkc);
                     //    if (plant != null) poaList = _poabll.GetPoaActiveByPlantId(ck4cData.PlantId);
                     //    foreach (var poaDto in poaList)
                     //    {
@@ -391,6 +398,10 @@ namespace Sampoerna.EMS.BLL
                             rc.To.Add(poaData.POA_EMAIL);
                             //first code when manager exists
                             //rc.CC.Add(GetManagerEmail(ck4cData.CreatedBy));
+                            foreach (var item in controllerList)
+                            {
+                                rc.CC.Add(item.EMAIL);
+                            }
                         }
                         else
                         {
@@ -401,21 +412,28 @@ namespace Sampoerna.EMS.BLL
                             //first code when manager exists
                             //rc.CC.Add(GetManagerEmail(ck4cData.ApprovedByPoa));
                             rc.CC.Add(poaApproved.EMAIL);
+                            foreach (var item in controllerList)
+                            {
+                                rc.CC.Add(item.EMAIL);
+                            }
                         }
                     }
                     //first code when manager exists
-                    //else if (ck4cData.Status == Enums.DocumentStatus.WaitingForApprovalManager)
-                    //{
-                    //    var poaUser = ck4cData.ApprovedByPoa == null ? ck4cData.CreatedBy : ck4cData.ApprovedByPoa;
-                    //    var poaApproveId = _userBll.GetUserById(ck4cData.ApprovedByPoa);
+                    else if (ck4cData.Status == Enums.DocumentStatus.WaitingForApprovalController)
+                    {
+                        var poaUser = ck4cData.ApprovedByPoa == null ? ck4cData.CreatedBy : ck4cData.ApprovedByPoa;
+                        var poaApproveId = _userBll.GetUserById(ck4cData.ApprovedByPoa);
 
-                    //    rc.To.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
+                        foreach (var item in controllerList)
+                        {
+                            rc.To.Add(item.EMAIL);
+                        }
 
-                    //    if (poaApproveId != null)
-                    //        rc.CC.Add(poaApproveId.EMAIL);
+                        rc.CC.Add(_userBll.GetUserById(ck4cData.CreatedBy).EMAIL);
 
-                    //    rc.CC.Add(GetManagerEmail(poaUser));
-                    //}
+                        if (poaApproveId != null)
+                            rc.CC.Add(poaApproveId.EMAIL);
+                    }
                     rc.IsCCExist = true;
                     break;
                 case Enums.ActionType.Reject:
@@ -428,6 +446,10 @@ namespace Sampoerna.EMS.BLL
                         rc.CC.Add(poaApprove.EMAIL);
                     //first code when manager exists
                     //rc.CC.Add(managerMail);
+                    foreach (var item in controllerList)
+                    {
+                        rc.CC.Add(item.EMAIL);
+                    }
 
                     rc.IsCCExist = true;
                     break;
@@ -439,6 +461,10 @@ namespace Sampoerna.EMS.BLL
                         rc.To.Add(_userBll.GetUserById(poaData3.POA_ID).EMAIL);
                         //first code when manager exists
                         //rc.CC.Add(GetManagerEmail(ck4cData.CreatedBy));
+                        foreach (var item in controllerList)
+                        {
+                            rc.CC.Add(item.EMAIL);
+                        }
                     }
                     else
                     {
@@ -447,6 +473,10 @@ namespace Sampoerna.EMS.BLL
                         rc.CC.Add(_userBll.GetUserById(ck4cData.ApprovedByPoa).EMAIL);
                         //first code when manager exists
                         //rc.CC.Add(GetManagerEmail(ck4cData.ApprovedByPoa));
+                        foreach (var item in controllerList)
+                        {
+                            rc.CC.Add(item.EMAIL);
+                        }
                     }
                     rc.IsCCExist = true;
                     break;
@@ -458,6 +488,10 @@ namespace Sampoerna.EMS.BLL
                         rc.To.Add(_userBll.GetUserById(poaData5.POA_ID).EMAIL);
                         //first code when manager exists
                         //rc.CC.Add(GetManagerEmail(ck4cData.CreatedBy));
+                        foreach (var item in controllerList)
+                        {
+                            rc.CC.Add(item.EMAIL);
+                        }
                     }
                     else
                     {
@@ -466,6 +500,11 @@ namespace Sampoerna.EMS.BLL
                         rc.CC.Add(_userBll.GetUserById(ck4cData.ApprovedByPoa).EMAIL);
                         //first code when manager exists
                         //rc.CC.Add(GetManagerEmail(ck4cData.ApprovedByPoa));
+                        foreach (var item in controllerList)
+                        {
+                            rc.CC.Add(item.EMAIL);
+                        }
+
                     }
                     rc.IsCCExist = true;
                     break;
@@ -671,8 +710,8 @@ namespace Sampoerna.EMS.BLL
                     WorkflowPoaChanges(input, dbData.APPROVED_BY_POA, input.UserId);
 
                     //first code when manager exists
-                    //dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalManager;
-                    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                    dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalController;
+                    //dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
                     dbData.APPROVED_BY_POA = input.UserId;
                     dbData.APPROVED_DATE_POA = DateTime.Now;
                 }
@@ -681,13 +720,12 @@ namespace Sampoerna.EMS.BLL
                     throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
                 }
             }
-            //first code when manager exists
-            //else
-            //{
-            //    dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
-            //    dbData.APPROVED_BY_MANAGER = input.UserId;
-            //    dbData.APPROVED_DATE_MANAGER = DateTime.Now;
-            //}
+            else
+            {
+                dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
+                dbData.APPROVED_BY_MANAGER = input.UserId;
+                dbData.APPROVED_DATE_MANAGER = DateTime.Now;
+            }
 
             input.DocumentNumber = dbData.NUMBER;
 
@@ -741,13 +779,13 @@ namespace Sampoerna.EMS.BLL
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
 
             //first code when manager exists
-            //if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
-            //    dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalManager &&
-            //    dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
-            //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
-            if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval)
+            if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval &&
+                dbData.STATUS != Enums.DocumentStatus.WaitingForApprovalController &&
+                dbData.STATUS != Enums.DocumentStatus.WaitingGovApproval)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
+
+            //if (dbData.STATUS != Enums.DocumentStatus.WaitingForApproval)
+            //    throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
             //Add Changes
             WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.Rejected);
@@ -918,11 +956,15 @@ namespace Sampoerna.EMS.BLL
 
             if (input.UserRole == Enums.UserRole.POA)
             {
-                queryFilter = queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID));
+                queryFilter = queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID) || c.CREATED_BY == input.UserId);
             }
             else if (input.UserRole == Enums.UserRole.Administrator)
             {
                 queryFilter = queryFilter.And(c => c.GOV_STATUS == Enums.StatusGovCk4c.Approved);
+            }
+            else if (input.UserRole == Enums.UserRole.Controller)
+            {
+                queryFilter = queryFilter.And(c => c.STATUS == Enums.DocumentStatus.Completed && c.CK4C_ID_REVISED == null);
             }
             else
             {
@@ -962,6 +1004,10 @@ namespace Sampoerna.EMS.BLL
 
             //    queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Draft && c.STATUS != Enums.DocumentStatus.WaitingForApproval && document.Contains(c.NUMBER));
             //}
+            else if (input.UserRole == Enums.UserRole.Controller)
+            {
+                queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
+            }
             else if (input.UserRole == Enums.UserRole.Administrator)
             {
                 queryFilter = queryFilter.And(c => c.STATUS != Enums.DocumentStatus.Completed);
@@ -1089,15 +1135,17 @@ namespace Sampoerna.EMS.BLL
                 address += "- " + _plantBll.GetT001WById(data).ADDRESS.Trim() + Environment.NewLine;
             }
 
+            Int32 isInt;
             //performance
             var listProdType = _prodTypeBll.GetAll();
-            var listBrand = _brandBll.GetAllBrandsOnly();
+            var listBrand = _brandBll.GetAllBrandsOnly().Where(x => x.IS_DELETED != true && x.STATUS == true &&
+                                Int32.TryParse(x.BRAND_CONTENT, out isInt) && (x.EXC_GOOD_TYP == "01" || x.EXC_GOOD_TYP == "02")).ToList();
             var listProduction = _productionBll.GetByCompany(dtData.COMPANY_ID);
             var listReversal = _reversalBll.GetAllReversal();
-            var listWaste = _wasteBll.GetAllWasteObject();
+            var listWaste = _wasteBll.GetAllWasteObject().Where(w => w.COMPANY_CODE == dtData.COMPANY_ID).ToList();
             var lisCk4cItem = _ck4cItemBll.GetDataByParentPlant(dtData.PLANT_ID);
 
-            string prodTypeDistinct = string.Empty;
+            //string prodTypeDistinct = string.Empty;
             //string currentProdType = string.Empty;
             //List<Ck4cReportItemDto> tempListck4c1 = new List<Ck4cReportItemDto>();
             //add data details of CK-4C sebelumnya
@@ -1281,13 +1329,9 @@ namespace Sampoerna.EMS.BLL
                 foreach (var item in addressPlant)
                 {
                    
-                    Int32 isInt;
                     //var activeBrand = _brandBll.GetBrandCeBylant(item).Where(x => Int32.TryParse(x.BRAND_CONTENT, out isInt) && x.EXC_GOOD_TYP == "01");
                     var activeBrand =
-                        listBrand.Where(
-                            x =>
-                                x.WERKS == item && x.IS_DELETED != true && x.STATUS == true &&
-                                Int32.TryParse(x.BRAND_CONTENT, out isInt) && (x.EXC_GOOD_TYP == "01" || x.EXC_GOOD_TYP == "02"));
+                        listBrand.Where(x => x.WERKS == item);
 
                    //var blFind = false;
 
@@ -1333,7 +1377,7 @@ namespace Sampoerna.EMS.BLL
                                 else
                                 {
                                     //var wasteData = _wasteBll.GetExistDto(dtData.COMPANY_ID, item, data.FA_CODE, prodDateFormat);
-                                    var wasteData = listWaste.FirstOrDefault(c =>c.COMPANY_CODE == dtData.COMPANY_ID && c.WERKS == item && c.FA_CODE == data.FA_CODE && c.WASTE_PROD_DATE == prodDateFormat);
+                                    var wasteData = listWaste.FirstOrDefault(c => c.WERKS == item && c.FA_CODE == data.FA_CODE && c.WASTE_PROD_DATE == prodDateFormat);
 
                                     var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
 
@@ -1342,13 +1386,22 @@ namespace Sampoerna.EMS.BLL
                                     //var lastSaldo = _ck4cItemBll.GetDataByPlantAndFacode(item, data.FA_CODE, dtData.PLANT_ID).Where(c => c.ProdDate < saldoDate).LastOrDefault();
                                     var lastSaldo = lisCk4cItem.LastOrDefault(c => c.Werks == item && c.FaCode == data.FA_CODE && c.ProdDate < saldoDate);
 
-
                                     //var oldData = _productionBll.GetOldSaldo(dtData.COMPANY_ID, item, data.FA_CODE, saldoDate).LastOrDefault();
-                                    var oldData = GetOldSaldoForReport(listProduction,listReversal,listWaste, item, data.FA_CODE, saldoDate).LastOrDefault();
 
-                                    var oldUnpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
+                                    //var lastSaldoUnpacked = lastSaldo == null ? oldUnpacked : lastSaldo.UnpackedQty;
+                                    var lastSaldoUnpacked = Convert.ToDecimal(0);
 
-                                    var lastSaldoUnpacked = lastSaldo == null ? oldUnpacked : lastSaldo.UnpackedQty;
+                                    if (lastSaldo == null){
+                                        var oldData = GetOldSaldoForReport(listProduction, listReversal, listWaste, item, data.FA_CODE, saldoDate).LastOrDefault();
+
+                                        var oldUnpacked = oldData == null ? 0 : oldData.QtyUnpacked.Value;
+
+                                        lastSaldoUnpacked = oldUnpacked;
+                                    }
+                                    else
+                                    {
+                                        lastSaldoUnpacked = lastSaldo.UnpackedQty;
+                                    }
 
                                     unpackedQty = (lastUnpacked == 0 ? lastSaldoUnpacked : lastUnpacked) - oldWaste;
                                 }
@@ -1684,7 +1737,7 @@ namespace Sampoerna.EMS.BLL
                 var wasteData =
                     listWaste.FirstOrDefault(
                         c =>
-                            c.COMPANY_CODE == item.COMPANY_CODE && c.WERKS == item.WERKS && c.FA_CODE == item.FA_CODE &&
+                            c.WERKS == item.WERKS && c.FA_CODE == item.FA_CODE &&
                             c.WASTE_PROD_DATE == item.PRODUCTION_DATE);
                 
                 var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
@@ -2254,6 +2307,7 @@ namespace Sampoerna.EMS.BLL
             if (plant == null) ck4cType = "NPPBKC";
 
             var userData = _userBll.GetUserById(ck4cData.CREATED_BY);
+            var controllerList = _userBll.GetControllers();
 
             rc.Subject = "CK-4C " + ck4cData.NUMBER + " is Revised";
             bodyMail.Append("Dear Team,<br />");
@@ -2286,6 +2340,10 @@ namespace Sampoerna.EMS.BLL
 
             rc.To.Add(userData.EMAIL);
             rc.CC.Add(_userBll.GetUserById(ck4cData.APPROVED_BY_POA).EMAIL);
+            foreach (var item in controllerList)
+            {
+                rc.CC.Add(item.EMAIL);
+            }
 
             if (nextDocument != null)
             {

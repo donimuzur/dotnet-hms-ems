@@ -10,6 +10,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.Reversal;
+using Sampoerna.EMS.Website.Models.MonthClosing;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -19,14 +20,16 @@ namespace Sampoerna.EMS.Website.Controllers
         private IReversalBLL _reversalBll;
         private IUserPlantMapBLL _userPlantBll;
         private IPOAMapBLL _poaMapBll;
+        private IMonthClosingBLL _monthClosingBll;
 
-        public ReversalController(IPageBLL pageBll, IReversalBLL reversalBll, IUserPlantMapBLL userPlantBll, IPOAMapBLL poaMapBll)
+        public ReversalController(IPageBLL pageBll, IReversalBLL reversalBll, IUserPlantMapBLL userPlantBll, IPOAMapBLL poaMapBll, IMonthClosingBLL monthClosingBll)
             : base(pageBll, Enums.MenuList.CK4C)
         {
             _mainMenu = Enums.MenuList.CK4C;
             _reversalBll = reversalBll;
             _userPlantBll = userPlantBll;
             _poaMapBll = poaMapBll;
+            _monthClosingBll = monthClosingBll;
         }
 
         #region Index
@@ -38,8 +41,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Ck4CType = Enums.CK4CType.Reversal,
-                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false),
-                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
+                IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false),
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
             });
 
             return View("Index", data);
@@ -87,7 +90,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterListData(ReversalIndexViewModel model)
         {
             model.Detail = GetListDocument(model);
-            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Manager && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             return PartialView("_ReversalList", model);
         }
 
@@ -98,7 +101,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Manager || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Administrator)
+            if (CurrentUser.UserRole == Enums.UserRole.Controller || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Administrator)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
@@ -152,6 +155,20 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 var createInput = Mapper.Map<ReversalCreateParamInput>(model.Details);
                 createInput.ReversalId = 0;
+
+                var param = new MonthClosingGetByParam();
+                param.ClosingDate = item.ProductionDate;
+                param.PlantId = item.Werks;
+                param.DisplayDate = null;
+
+                var monthClosingdata = _monthClosingBll.GetDataByParam(param);
+
+                if (monthClosingdata != null)
+                {
+                    AddMessageInfo("Please check closing date.", Enums.MessageInfoType.Warning);
+                    model = InitialModel(model);
+                    return View(model);
+                }
 
                 var checkData = _reversalBll.CheckData(createInput);
 
@@ -215,7 +232,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var model = new ReversalIndexViewModel();
 
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Manager)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 return RedirectToAction("Detail", new { id });
             }
@@ -245,6 +262,20 @@ namespace Sampoerna.EMS.Website.Controllers
                 item = Mapper.Map<ReversalDto>(model.Details);
 
                 var createInput = Mapper.Map<ReversalCreateParamInput>(model.Details);
+
+                var param = new MonthClosingGetByParam();
+                param.ClosingDate = item.ProductionDate;
+                param.PlantId = item.Werks;
+                param.DisplayDate = null;
+
+                var monthClosingdata = _monthClosingBll.GetDataByParam(param);
+
+                if (monthClosingdata != null)
+                {
+                    AddMessageInfo("Please check closing date.", Enums.MessageInfoType.Warning);
+                    model = InitialModel(model);
+                    return View(model);
+                }
 
                 var checkData = _reversalBll.CheckData(createInput);
 
@@ -389,6 +420,40 @@ namespace Sampoerna.EMS.Website.Controllers
             var checkData = _reversalBll.CheckData(paramInput);
 
             return Json(checkData.PackedQty);
+        }
+
+        [HttpPost]
+        public JsonResult CheckClosingMonth(string plantWerk, DateTime prodDate)
+        {
+            var param = new MonthClosingGetByParam();
+            param.ClosingDate = prodDate;
+            param.PlantId = plantWerk;
+            param.DisplayDate = null;
+
+            var data = _monthClosingBll.GetDataByParam(param);
+
+            var model = Mapper.Map<MonthClosingDetail>(data);
+
+            return Json(model);
+        }
+
+        [HttpPost]
+        public JsonResult DisplayClosingMonth(string plantWerk, DateTime prodDate)
+        {
+            var param = new MonthClosingGetByParam();
+            param.DisplayDate = prodDate;
+            param.PlantId = plantWerk;
+            param.ClosingDate = null;
+
+            var data = _monthClosingBll.GetDataByParam(param);
+
+            var model = Mapper.Map<MonthClosingDetail>(data);
+            if (model != null)
+            {
+                model.DisplayDate = "Closing Date : " + model.ClosingDate.ToString("dd MMM yyyy");
+            }
+
+            return Json(model);
         }
 
         #endregion

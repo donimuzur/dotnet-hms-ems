@@ -147,6 +147,11 @@ namespace Sampoerna.EMS.XMLReader
             return null;
         }
 
+        private void SendMailQuotaPending()
+        {
+            
+        }
+
         private List<string> OrderFile()
         {
             bool isComplete = true;
@@ -237,6 +242,7 @@ namespace Sampoerna.EMS.XMLReader
             var errorList = new List<string>();
             //var movedFileList = new List<MovedFileOutput>();
             var orderedFile = new List<string>();
+            
             if (!isDaily)
             {
                 orderedFile = OrderFile();
@@ -245,6 +251,8 @@ namespace Sampoerna.EMS.XMLReader
             else
             {
                 orderedFile = xmlfiles == null ? null : xmlfiles.ToList();
+                var schedulerEmail = new SchedulerEmailService();
+                schedulerEmail.CheckAndSendEmailQuotaMonitoring();
             }
 
             IXmlDataReader reader =null;
@@ -258,6 +266,7 @@ namespace Sampoerna.EMS.XMLReader
                         if (isDaily)
                         {
                             reader = XmlReaderFactoryDaily(xmlfile);
+                            
                         }
                         else
                         {

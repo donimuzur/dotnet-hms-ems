@@ -78,6 +78,9 @@ namespace Sampoerna.EMS.BusinessObject
             this.POA_DELEGATION1 = new HashSet<POA_DELEGATION>();
             this.POA_DELEGATION2 = new HashSet<POA_DELEGATION>();
             this.POA_DELEGATION3 = new HashSet<POA_DELEGATION>();
+            this.MASTER_DATA_APPROVAL = new HashSet<MASTER_DATA_APPROVAL>();
+            this.MASTER_DATA_APPROVAL1 = new HashSet<MASTER_DATA_APPROVAL>();
+            this.QUOTA_MONITORING_DETAIL = new HashSet<QUOTA_MONITORING_DETAIL>();
         }
     
         public string USER_ID { get; set; }
@@ -90,6 +93,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
         public Nullable<int> IS_ACTIVE { get; set; }
         public string ACCT { get; set; }
+        public Nullable<bool> IS_MASTER_DATA_APPROVER { get; set; }
     
         public virtual ICollection<BROLE_MAP> BROLE_MAP { get; set; }
         public virtual ICollection<CHANGES_HISTORY> CHANGES_HISTORY { get; set; }
@@ -153,5 +157,8 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual ICollection<POA_DELEGATION> POA_DELEGATION1 { get; set; }
         public virtual ICollection<POA_DELEGATION> POA_DELEGATION2 { get; set; }
         public virtual ICollection<POA_DELEGATION> POA_DELEGATION3 { get; set; }
+        public virtual ICollection<MASTER_DATA_APPROVAL> MASTER_DATA_APPROVAL { get; set; }
+        public virtual ICollection<MASTER_DATA_APPROVAL> MASTER_DATA_APPROVAL1 { get; set; }
+        public virtual ICollection<QUOTA_MONITORING_DETAIL> QUOTA_MONITORING_DETAIL { get; set; }
     }
 }

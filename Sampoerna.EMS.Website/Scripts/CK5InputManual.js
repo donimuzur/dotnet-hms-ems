@@ -245,11 +245,17 @@ function AddRowManualMarketReturn(url, data) {
     if (data.error != null) {
         dataerror = data.error;
     }
+
+    var tempFaCode = $('#uploadMaterialNumber').val();
+    var faCode = tempFaCode.split(" - ")[0];
+    var stickerCode = tempFaCode.split(" - ")[1];
+
     $("#Ck5UploadTable tbody").append(
         "<tr>" +
              classAction +
              "<td style='display: none'>" + (rowCount) + "</td>" +
-            "<td>" + $('#uploadMaterialNumber').val() + "</td>" +
+            "<td>" + faCode + "</td>" +
+            "<td>" + stickerCode + "</td>" +
             "<td>" + $('#uploadMaterialQty').val() + "</td>" +
             "<td>" + $('#uploadMaterialUom').val() + "</td>" +
             "<td>" + $('#uploadMaterialConvertion').val() + "</td>" +
@@ -298,29 +304,34 @@ function UpdateRowManualMarketRetun(data) {
         dataerror = data.error;
     }
 
+    var tempFaCode = $('#uploadMaterialNumber').val();
+    var faCode = tempFaCode.split(" - ")[0];
+    var stickerCode = tempFaCode.split(" - ")[1];
+
     $('#Ck5UploadTable tr').each(function () {
 
         if ($(this).find('td').eq(1).text() == row) {
 
-            $(this).find('td').eq(2).text($('#uploadMaterialNumber').val());
-            $(this).find('td').eq(3).text($('#uploadMaterialQty').val());
-            $(this).find('td').eq(4).text($('#uploadMaterialUom').val());
-            $(this).find('td').eq(5).text($('#uploadMaterialConvertion').val());
-            $(this).find('td').eq(6).text(ThausandSeperator(convertedQty.toFixed(3),3));
-            $(this).find('td').eq(7).text($('#uploadConvertedUom').val());
-            $(this).find('td').eq(8).text($('#uploadMaterialHje').val());
-            $(this).find('td').eq(9).text($('#uploadMaterialTariff').val());
-            $(this).find('td').eq(10).text(ThausandSeperator(total.toFixed(3),3));
-            $(this).find('td').eq(11).text($('#uploadUsdValue').val());
-            $(this).find('td').eq(12).text($('#uploadNote').val());
-            $(this).find('td').eq(13).text(dataerror);
-            $(this).find('td').eq(15).text($('#uploadMaterialDesc').val());
+            $(this).find('td').eq(2).text(faCode);
+            $(this).find('td').eq(3).text(stickerCode);
+            $(this).find('td').eq(4).text($('#uploadMaterialQty').val());
+            $(this).find('td').eq(5).text($('#uploadMaterialUom').val());
+            $(this).find('td').eq(6).text($('#uploadMaterialConvertion').val());
+            $(this).find('td').eq(7).text(ThausandSeperator(convertedQty.toFixed(3),3));
+            $(this).find('td').eq(8).text($('#uploadConvertedUom').val());
+            $(this).find('td').eq(9).text($('#uploadMaterialHje').val());
+            $(this).find('td').eq(10).text($('#uploadMaterialTariff').val());
+            $(this).find('td').eq(11).text(ThausandSeperator(total.toFixed(3),3));
+            $(this).find('td').eq(12).text($('#uploadUsdValue').val());
+            $(this).find('td').eq(13).text($('#uploadNote').val());
+            $(this).find('td').eq(14).text(dataerror);
+            $(this).find('td').eq(16).text($('#uploadMaterialDesc').val());
 
 
-            $(this).find('td').eq(16).text(exciseQty);
-            $(this).find('td').eq(17).text(exciseUOM);
-            $(this).find('td').eq(18).text(materialId);
-            $(this).find('td').eq(19).text($('#uploadMaterialPlant').val());
+            $(this).find('td').eq(17).text(exciseQty);
+            $(this).find('td').eq(18).text(exciseUOM);
+            $(this).find('td').eq(19).text(materialId);
+            $(this).find('td').eq(20).text($('#uploadMaterialPlant').val());
 
         }
     });

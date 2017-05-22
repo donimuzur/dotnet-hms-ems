@@ -1,0 +1,245 @@
+﻿@using Sampoerna.EMS.Core
+@model Sampoerna.EMS.Website.Models.MasterDataApproval.MasterDataApprovalItemViewModel
+
+
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3 class="desc">Master Data Approval</h3>
+                <div class="action-button col-sm-6">
+                    <div class="col-sm-3 action-button">
+                        <a href="@Url.Action("Index", "MasterApproval")" class="btn btn-grey">Back</a>
+                    </div>
+                    @if (Model.IsMasterApprover && (Model.Detail.STATUS_ID == Enums.DocumentStatus.WaitingForMasterApprover))
+{
+
+
+
+    <div class="col-sm-3 action-button">
+        <input type="button" class="btn btn-danger" value="Reject" id="btnReject" />
+    </div>
+                                      
+                        
+
+    using (Html.BeginForm("Approve", "MasterApproval", FormMethod.Post, new { @id = "ApproveForm", @class = "col-sm-3 action-button" }))
+                        {
+                            @Html.HiddenFor(model => model.Detail.APPROVAL_ID)
+                            <input type="submit" class="btn btn-blue" value="Approve" />
+                        }
+                    }
+                    
+                    
+                    
+                    
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="white-wrapper">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Approval Detail
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="form-excise " role="form">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">Form Name</label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextBoxFor(model => model.Detail.PageDesciption, new { @class = "form-control", @disabled = "true" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">Form Id</label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextBoxFor(model => model.Detail.FORM_ID, new { @class = "form-control", @disabled = "true" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">Created By</label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextBoxFor(model => model.Detail.CREATED_BY, new { @class = "form-control", @disabled = "true" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">Created Date</label>
+                                                        <div class="col-md-9">
+
+                                                            @Html.TextBoxFor(model => model.Detail.CREATED_DATE, new { @class = "form-control", @disabled = "true" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-3">Status</label>
+                                                        <div class="col-md-9">
+                                                            @Html.TextBoxFor(model => model.Detail.StatusString, new { @class = "form-control", @disabled = "true" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-group" id="accordionTwo" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingTwo">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordionTwo" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                        Field Details
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                                <div class="container-wrap">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div id="contenttable" class="table-container">
+                                                <table id="changesApproval" class="table cell-border display no-wrap" cellspacing="0" width="100%">
+                                                    <thead>
+                                                        <tr>
+
+                                                            <th>Field Name</th>
+                                                            <th>Column Name</th>
+                                                            <th>Old Value</th>
+                                                            <th>New Value</th>
+
+                                                        </tr>
+                                                    </thead>
+                                                    
+                                                    <tbody>
+                                                        @foreach (var item in Model.Detail.Details)
+                                                        {
+                                                            <tr>
+                                                                <td>@item.COLUMN_DESCRIPTION</td>
+                                                                <td>@item.COLUMN_NAME
+                                                                <td>
+                                                                    @Html.Raw(item.OLD_VALUE)
+                                                                </td>
+                                                                <td>
+                                                                    @Html.Raw(item.NEW_VALUE)
+
+                                                                </td>
+
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-group" id="accordion-7" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="heading7">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
+                                        Workflow History
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
+                                <div class="panel-body">
+                                    <div class="table-container">
+                                        @Html.Partial("_WorkflowHistoryTable", Model.WorkflowHistory)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div></div>
+            </div>
+        </div>
+        >
+    </div>
+    <div id="Ck5ModalReject" class="modal fade in reject-doc ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Reject Master data</h4>
+                </div>
+                @using (Html.BeginForm("Reject", "MasterApproval"))
+                {
+                    <div class="modal-body">
+                        @Html.HiddenFor(model => model.Detail.APPROVAL_ID)
+                        <div class="form-excise" role="form">
+                            <div class="row">
+                                <label class="col-md-3">Add Comment<span class="red">*</span></label>
+                                <div class="col-md-9">
+                                    @Html.TextAreaFor(model => model.RejectComment, new { @rows = "5", @class = "col-md-9",@id= "Comment" })
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-grey" data-dismiss="modal" value="Close" />
+                        <input type="submit" class="btn btn-danger" value="Reject" disabled id="btnConfirmReject" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#btnReject").click(function () {
+                $('#btnConfirmReject').attr('disabled', 'disabled');
+
+                $('#Comment').val('');
+
+                $('#Ck5ModalReject').modal('show');
+
+            });
+
+            $('#Comment').bind('input propertychange', function () {
+
+                $('#btnConfirmReject').attr('disabled', 'disabled');
+                if (this.value.length) {
+                    $('#btnConfirmReject').removeAttr('disabled');
+                }
+            });
+        });
+        
+    </script>    
+}
+    

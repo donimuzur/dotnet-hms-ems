@@ -18,7 +18,9 @@ namespace Sampoerna.EMS.BusinessObject.Business
         
         public List<NppbkcPlantDto> NppbckPlants { get; set; }
         public List<string> ListUserPlants { get; set; }
-        public List<string> ListUserNppbkc { get; set; } 
+        public List<string> ListUserNppbkc { get; set; }
+
+        public bool? IS_MASTER_DATA_APPROVER { get; set; }
     }
 
 }

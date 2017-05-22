@@ -1,9 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AutoMapper;
+using DocumentFormat.OpenXml.Wordprocessing;
+using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
+using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.BusinessObject.Outputs;
 using Sampoerna.EMS.Contract;
+using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Core.Exceptions;
 using Sampoerna.EMS.LinqExtensions;
 using Voxteneo.WebComponents.Logger;
@@ -17,7 +22,14 @@ namespace Sampoerna.EMS.BLL
         private IUnitOfWork _uow;
         private IGenericRepository<T001W> _repositoryPlantT001W;
         private IGenericRepository<ZAIDM_EX_SERIES> _repositorySeries;
+        private IGenericRepository<ZAIDM_EX_MARKET> _repositoryMarket;
+
+        private IZaidmExProdTypeBLL _zaidmExProdTypeBLL;
+        private IMasterDataAprovalBLL _masterDataAprovalBLL;
+        private IExcisableGoodsTypeService _excisableGoodsTypeService;
+        private IZaidmExMaterialService _zaidmExMaterialService;
         private IPlantBLL _plantBll;
+        
         // private IChangesHistoryBLL _changesHistoryBll;
 
         public BrandRegistrationBLL(IUnitOfWork uow, ILogger logger)
@@ -27,7 +39,13 @@ namespace Sampoerna.EMS.BLL
             _repository = _uow.GetGenericRepository<ZAIDM_EX_BRAND>();
             _repositoryPlantT001W = _uow.GetGenericRepository<T001W>();
             _repositorySeries = _uow.GetGenericRepository<ZAIDM_EX_SERIES>();
+            _repositoryMarket = _uow.GetGenericRepository<ZAIDM_EX_MARKET>();
             _plantBll = new PlantBLL(_uow, _logger);
+            _masterDataAprovalBLL = new MasterDataApprovalBLL(_uow,_logger);
+            _zaidmExProdTypeBLL = new ZaidmExProdTypeBLL(_uow,_logger);
+            _zaidmExMaterialService = new ZaidmExMaterialService(_uow,_logger);
+            _excisableGoodsTypeService = new ExcisableGoodsTypeService(_uow,_logger);
+            
             //_changesHistoryBll = changesHistoryBll;
         }
 
@@ -114,15 +132,19 @@ namespace Sampoerna.EMS.BLL
         {
 
             _repository.InsertOrUpdate(brandRegistration);
+            
             _uow.SaveChanges();
 
         }
 
-        public bool Delete(string plant, string facode, string stickercode)
+        public bool Delete(string plant, string facode, string stickercode,string userId)
         {
             var dbBrand = _repository.GetByID(plant, facode, stickercode);
             if (dbBrand == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+
+            var oldDbBrand = Mapper.Map<BrandXmlDto>(dbBrand);
+            var oldObject = Mapper.Map<ZAIDM_EX_BRAND>(oldDbBrand);
 
             if (dbBrand.IS_DELETED.HasValue && dbBrand.IS_DELETED.Value)
             {
@@ -132,12 +154,20 @@ namespace Sampoerna.EMS.BLL
             {
                 dbBrand.IS_DELETED = true;
             }
+            bool isExistApproval;
+            MASTER_DATA_APPROVAL approvalData;
+            dbBrand = _masterDataAprovalBLL.MasterDataApprovalValidation((int) Core.Enums.MenuList.BrandRegistration, userId,
+                oldObject, dbBrand,out isExistApproval,out approvalData);
+            if (!isExistApproval)
+            {
+                _repository.Update(dbBrand);
+                _uow.SaveChanges();
+                _masterDataAprovalBLL.SendEmailWorkflow(approvalData.APPROVAL_ID);
+                return dbBrand.IS_DELETED.HasValue && dbBrand.IS_DELETED.Value;
+            }
 
+            return false;
 
-            //_repository.Update(dbBrand);
-            _uow.SaveChanges();
-
-            return dbBrand.IS_DELETED.Value;
         }
 
 
@@ -188,6 +218,47 @@ namespace Sampoerna.EMS.BLL
 
             return dbData;
         }
+
+        public ZAIDM_EX_MARKET GetMarket(string marketId)
+        {
+            return _repositoryMarket.GetByID(marketId);
+        }
+
+        public ZAIDM_EX_SERIES GetSeries(string seriesCode)
+        {
+            return _repositorySeries.GetByID(seriesCode);
+        }
+
+        public BrandXmlDto GetDataForXml(string werks, string facode, string stickerCode)
+        {
+            var brandToxml = GetById(werks, facode, stickerCode);
+            if (brandToxml != null)
+            {
+                if (brandToxml.IS_FROM_SAP == true)
+                {
+                    var brandXmlDto = Mapper.Map<BrandXmlDto>(brandToxml);
+
+                    var prodType = _zaidmExProdTypeBLL.GetByCode(brandXmlDto.PROD_CODE);
+                    var series = GetSeries(brandXmlDto.SERIES_CODE);
+                    var market = GetMarket(brandXmlDto.MARKET_ID);
+                    var goodType = _excisableGoodsTypeService.GetById(brandXmlDto.EXC_GOOD_TYP);
+                    var material = _zaidmExMaterialService.GetByMaterialAndPlantId(brandToxml.FA_CODE,brandToxml.WERKS);
+
+                    brandXmlDto.EXC_TYP_DESC = goodType.EXT_TYP_DESC;
+                    brandXmlDto.MARKET_DESC = market.MARKET_DESC;
+                    brandXmlDto.SERIES_VALUE = series.SERIES_VALUE.HasValue ? series.SERIES_VALUE.Value : 0;
+                    brandXmlDto.PRODUCT_ALIAS = prodType.PRODUCT_ALIAS;
+                    brandXmlDto.PRODUCT_TYPE = prodType.PRODUCT_TYPE;
+
+                    brandXmlDto.BRAND_CE = material.MATERIAL_DESC;
+                    return brandXmlDto;
+                }
+
+                return null;
+            }
+            return null;
+        }
+
 
     }
 }

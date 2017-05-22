@@ -29,7 +29,6 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<UOM> _repositoryUom;
         private IGenericRepository<T001W> _repositoryPlant;
         private ChangesHistoryBLL _changesHistoryBll;
-        private IGenericRepository<T001> _repositoryCompany;
         private ICompanyBLL _companyBll;
         private IPlantBLL _plantBll;
         private IBrandRegistrationBLL _brandRegistrationBll;
@@ -39,6 +38,7 @@ namespace Sampoerna.EMS.BLL
         private IPOAMapBLL _poaMapBll;
         private ICK4CItemBLL _ck4cItemBll;
         private IReversalBLL _reversalBll;
+        private IMonthClosingBLL _monthClosingBll;
 
         public ProductionBLL(ILogger logger, IUnitOfWork uow)
         {
@@ -59,6 +59,7 @@ namespace Sampoerna.EMS.BLL
             _poaMapBll = new POAMapBLL(_uow, _logger);
             _ck4cItemBll = new CK4CItemBLL(_uow, _logger);
             _reversalBll = new ReversalBLL(_logger,_uow);
+            _monthClosingBll = new MonthClosingBLL(_uow, _logger);
         }
 
         public List<ProductionDto> GetAllByParam(ProductionGetByParamInput input)
@@ -465,6 +466,12 @@ namespace Sampoerna.EMS.BLL
 
             var facode = string.Empty;
 
+            var ck4cItems = _ck4cItemBll.GetAllCk4cItems();
+
+            var listReversal = _reversalBll.GetAllReversal();
+
+            var listWaste = _wasteBll.GetAllWasteObject();
+
             foreach (var item in listItem)
             {
                 //set unpacked to 0 if plant or fa code different
@@ -477,24 +484,30 @@ namespace Sampoerna.EMS.BLL
                 {
                     var lastUnpacked = list.Where(x => x.PlantWerks == item.PlantWerks && x.FaCode == item.FaCode && x.ProductionDate < item.ProductionDate).LastOrDefault();
 
-                    var unpackedCk4cItem = _ck4cItemBll.GetDataByPlantAndFacode(item.PlantWerks, item.FaCode, item.LevelPlant).Where(c => c.ProdDate < item.ProductionDate).LastOrDefault();
+                    //var unpackedCk4cItem = _ck4cItemBll.GetDataByPlantAndFacode(item.PlantWerks, item.FaCode, item.LevelPlant).Where(c => c.ProdDate < item.ProductionDate).LastOrDefault();
 
-                    var oldData = GetOldSaldo(item.CompanyCode, item.PlantWerks, item.FaCode, item.ProductionDate).LastOrDefault();
+                    var unpackedCk4cItem = ck4cItems.Where(c => c.WERKS == item.PlantWerks && c.FA_CODE == item.FaCode && c.CK4C.PLANT_ID == item.LevelPlant && c.PROD_DATE < item.ProductionDate).LastOrDefault();
+
+                    var oldData = GetOldSaldo(item.CompanyCode, item.PlantWerks, item.FaCode, item.ProductionDate, listReversal, listWaste).LastOrDefault();
 
                     var unpackedOld = oldData == null ? 0 : oldData.QtyUnpacked.Value;
 
-                    unpacked = lastUnpacked != null ? lastUnpacked.QtyUnpacked.Value : (unpackedCk4cItem == null ? unpackedOld : unpackedCk4cItem.UnpackedQty);
+                    unpacked = lastUnpacked != null ? lastUnpacked.QtyUnpacked.Value : (unpackedCk4cItem == null ? unpackedOld : unpackedCk4cItem.UNPACKED_QTY.Value);
 
                     plant = item.PlantWerks;
 
                     facode = item.FaCode;
                 }
 
-                var reversalData = _reversalBll.GetListByParam(item.PlantWerks, item.FaCode, item.ProductionDate);
+                //var reversalData = _reversalBll.GetListByParam(item.PlantWerks, item.FaCode, item.ProductionDate);
 
-                var existReversal = reversalData == null ? 0 : reversalData.Sum(x => x.ReversalQty);
+                var reversalData = listReversal.Where(r => r.WERKS == item.PlantWerks && r.FA_CODE == item.FaCode && r.PRODUCTION_DATE == item.ProductionDate);
 
-                var wasteData = _wasteBll.GetExistDto(item.CompanyCode, item.PlantWerks, item.FaCode, item.ProductionDate);
+                var existReversal = reversalData == null ? 0 : reversalData.Sum(x => x.REVERSAL_QTY.Value);
+
+                //var wasteData = _wasteBll.GetExistDto(item.CompanyCode, item.PlantWerks, item.FaCode, item.ProductionDate);
+
+                var wasteData = listWaste.Where(w => w.COMPANY_CODE == item.CompanyCode && w.WERKS == item.PlantWerks && w.FA_CODE == item.FaCode && w.WASTE_PROD_DATE == item.ProductionDate).FirstOrDefault();
 
                 var oldUnpacked = unpacked;
 
@@ -633,7 +646,6 @@ namespace Sampoerna.EMS.BLL
                 #region ---------------Production Date validation-------------
 
                 int temp;
-                DateTime dateTemp;
                 if (Int32.TryParse(output.ProductionDate, out temp))
                 {
                     try
@@ -694,7 +706,7 @@ namespace Sampoerna.EMS.BLL
 
                 #endregion
 
-                //#region --------------ZB Validation --------------------
+                #region --------------ZB Validation --------------------
 
                 //Product Code Validation
                 var brandRegistration = _brandRegistrationBll.GetByFaCode(output.PlantWerks, output.FaCode);
@@ -725,7 +737,7 @@ namespace Sampoerna.EMS.BLL
                     }
                 }
 
-                //#endregion
+                #endregion
 
                 #region --------------Packed-Adjusted Validation --------------------
 
@@ -787,6 +799,21 @@ namespace Sampoerna.EMS.BLL
                 //        messageList.Add("Remark [" + output.Remark + "] must be blank when Product Code & Exc Good Type is not TIS");
                 //    }
                 //}
+
+                #endregion
+
+                #region --------------Month Closing Validation --------------------
+
+                var param = new MonthClosingGetByParam();
+                param.PlantId = output.PlantWerks;
+                param.ClosingDate = Convert.ToDateTime(output.ProductionDate);
+
+                var data = _monthClosingBll.GetDataByParam(param);
+
+                if (data != null)
+                {
+                    messageList.Add("Check Closing Date");
+                }
 
                 #endregion
 
@@ -974,21 +1001,25 @@ namespace Sampoerna.EMS.BLL
             return valResult;
         }
 
-        public List<ProductionDto> GetOldSaldo(string company, string plant, string facode, DateTime prodDate)
+        private List<ProductionDto> GetOldSaldo(string company, string plant, string facode, DateTime prodDate, List<REVERSAL> listReversal, List<WASTE> listWaste)
         {
             List<ProductionDto> data = new List<ProductionDto>();
 
             var list = _repository.Get(p => p.COMPANY_CODE == company && p.WERKS == plant && p.FA_CODE == facode && p.PRODUCTION_DATE < prodDate).OrderBy(p => p.PRODUCTION_DATE).ToList();
-
+             
             var lastUnpacked = Convert.ToDecimal(0);
 
             foreach (var item in list)
             {
-                var reversalData = _reversalBll.GetListByParam(item.WERKS, item.FA_CODE, item.PRODUCTION_DATE);
+                //var reversalData = _reversalBll.GetListByParam(item.WERKS, item.FA_CODE, item.PRODUCTION_DATE);
 
-                var existReversal = reversalData == null ? 0 : reversalData.Sum(x => x.ReversalQty);
+                var reversalData = listReversal.Where(r => r.WERKS == item.WERKS && r.FA_CODE == item.FA_CODE && r.PRODUCTION_DATE == item.PRODUCTION_DATE);
 
-                var wasteData = _wasteBll.GetExistDto(item.COMPANY_CODE, item.WERKS, item.FA_CODE, item.PRODUCTION_DATE);
+                var existReversal = reversalData == null ? 0 : reversalData.Sum(x => x.REVERSAL_QTY.Value);
+
+                //var wasteData = _wasteBll.GetExistDto(item.COMPANY_CODE, item.WERKS, item.FA_CODE, item.PRODUCTION_DATE);
+
+                var wasteData = listWaste.Where(w => w.COMPANY_CODE == item.COMPANY_CODE && w.WERKS == item.WERKS && w.FA_CODE == item.FA_CODE && w.WASTE_PROD_DATE == item.PRODUCTION_DATE).FirstOrDefault();
 
                 var oldWaste = wasteData == null ? 0 : wasteData.PACKER_REJECT_STICK_QTY;
 

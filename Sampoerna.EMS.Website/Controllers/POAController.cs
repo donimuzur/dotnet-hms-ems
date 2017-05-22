@@ -26,10 +26,11 @@ namespace Sampoerna.EMS.Website.Controllers
         private POABLL _poaBll;
         private IUserBLL _userBll;
         private IChangesHistoryBLL _changesHistoryBll;
+        private IMasterDataAprovalBLL _masterDataAprovalBLL;
         private IPOASKBLL _poaskbll;
         private Enums.MenuList _mainMenu;
         private IUnitOfWork _uow;
-        public POAController(IPageBLL pageBLL, IZaidmExPOAMapBLL poadMapBll, POABLL poaBll, IUserBLL userBll, IChangesHistoryBLL changesHistoryBll
+        public POAController(IPageBLL pageBLL, IZaidmExPOAMapBLL poadMapBll,IMasterDataAprovalBLL masterDataAprovalBLL, POABLL poaBll, IUserBLL userBll, IChangesHistoryBLL changesHistoryBll
             , IPOASKBLL poaskbll, IUnitOfWork uow)
             : base(pageBLL, Enums.MenuList.POA)
         {
@@ -37,6 +38,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _poaBll = poaBll;
             _userBll = userBll;
             _changesHistoryBll = changesHistoryBll;
+            _masterDataAprovalBLL = masterDataAprovalBLL;
             _poaskbll = poaskbll;
             _mainMenu = Enums.MenuList.MasterData;
             _uow = uow;
@@ -79,6 +81,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
+                bool isExist;
                 var poa = AutoMapper.Mapper.Map<POA>(model.Detail);
                 poa.POA_ID = model.Detail.UserId;
                 poa.CREATED_BY = CurrentUser.USER_ID;
@@ -108,17 +111,17 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
                     }
                 }
-
-                _poaBll.Save(poa);
-
-                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
-                    );
+                MASTER_DATA_APPROVAL approvalData;
+                _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.POA, CurrentUser.USER_ID,
+                    new POA(), poa, out isExist,out approvalData, true);
+                //_poaBll.Save(poa);
+                _masterDataAprovalBLL.SendEmailWorkflow(approvalData.APPROVAL_ID);
+                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
-                     );
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
             }
 
@@ -240,6 +243,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
+                bool isExist;
                 var poaId = model.Detail.PoaId;
                 var poa = _poaBll.GetById(poaId);
                 if (model.Detail.PoaSKFile != null)
@@ -267,21 +271,35 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
                 var origin = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
-                AutoMapper.Mapper.Map(model.Detail, poa);
-                SetChanges(origin, poa);
+                var newpoa = AutoMapper.Mapper.Map<POA>(model.Detail);
+                newpoa.CREATED_BY = poa.CREATED_BY;
+                newpoa.CREATED_DATE = poa.CREATED_DATE;
+                newpoa.MODIFIED_BY = CurrentUser.USER_ID;
+                newpoa.MODIFIED_DATE = DateTime.Today;
+                newpoa.IS_ACTIVE = poa.IS_ACTIVE;
+                MASTER_DATA_APPROVAL approvalData;
+                newpoa = _masterDataAprovalBLL.MasterDataApprovalValidation((int)Enums.MenuList.POA, CurrentUser.USER_ID, poa,
+                    newpoa,out isExist,out approvalData);
 
-                _poaBll.Save(poa);
-                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
-                       );
+                SetChanges(origin, newpoa);
+
+                _poaBll.Save(newpoa);
+                _masterDataAprovalBLL.SendEmailWorkflow(approvalData.APPROVAL_ID);
+                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
                 return RedirectToAction("Index");
             }
 
             catch (Exception ex)
             {
-                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
-                       );
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model.MainMenu = _mainMenu;
+                model.CurrentMenu = PageInfo;
+                
 
-                return View();
+                model.Managers = model.Detail.Manager == null ? GlobalFunctions.GetCreatorList() : GlobalFunctions.GetCreatorList(model.Detail.Manager.USER_ID);
+                model.Users = model.Detail.User == null ? GlobalFunctions.GetCreatorList() : GlobalFunctions.GetCreatorList(model.Detail.User.USER_ID);
+                
+                return View(model);
             }
 
         }
@@ -319,7 +337,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
-                _poaBll.Delete(id);
+                
+                _poaBll.Delete(id,CurrentUser.USER_ID);
                 var poa = _poaBll.GetById(id);
                 var updated = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
                 if (poa.IS_ACTIVE == true)

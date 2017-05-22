@@ -184,6 +184,7 @@ namespace Sampoerna.EMS.BLL
 
             Mapper.CreateMap<ZAIDM_EX_BRAND, GetListMaterialMarketReturnOutput>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.MaterialNumber, opt => opt.MapFrom(src => src.FA_CODE))
+                .ForMember(dest => dest.StickerCode, opt => opt.MapFrom(src => src.STICKER_CODE))
                 ;
             Mapper.CreateMap<WASTE_STOCK, GetListMaterialMarketReturnOutput>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.MaterialNumber, opt => opt.MapFrom(src => src.MATERIAL_NUMBER))

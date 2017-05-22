@@ -24,8 +24,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPOABLL _poabll;
         private IPlantBLL _plantbll;
         private IZaidmExNPPBKCBLL _nppbkcbll;
+        private IMasterDataAprovalBLL _masterDataAprovalBLL;
        
-        public POAMapController(IPageBLL pageBLL, IPOABLL poabll, IPOAMapBLL poaMapBll, IZaidmExNPPBKCBLL nppbkcbll,IPlantBLL plantbll, IChangesHistoryBLL changeHistorybll) 
+        public POAMapController(IPageBLL pageBLL, IPOABLL poabll, IPOAMapBLL poaMapBll,IMasterDataAprovalBLL masterDataAprovalBLL, IZaidmExNPPBKCBLL nppbkcbll,IPlantBLL plantbll, IChangesHistoryBLL changeHistorybll) 
             : base(pageBLL, Enums.MenuList.POAMap) 
         {
             _poaMapBLL = poaMapBll;
@@ -34,6 +35,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _nppbkcbll = nppbkcbll;
             _poabll = poabll;
             _plantbll = plantbll;
+            _masterDataAprovalBLL = masterDataAprovalBLL;
         }
         //
         // GET: /POA/
@@ -91,6 +93,7 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 // TODO: Add insert logic here
+                bool isExistApproval;
                 var existingData = _poaMapBLL.GetByNppbckId(model.PoaMap.NPPBKC_ID, model.PoaMap.WERKS, model.PoaMap.POA_ID);
                 if (existingData != null)
                 {
@@ -100,17 +103,24 @@ namespace Sampoerna.EMS.Website.Controllers
                 var data = Mapper.Map<POA_MAP>(model.PoaMap);
                 data.CREATED_BY = CurrentUser.USER_ID;
                 data.CREATED_DATE = DateTime.Now;
-                _poaMapBLL.Save(data);
+                MASTER_DATA_APPROVAL approvalData;
+                _masterDataAprovalBLL.MasterDataApprovalValidation((int)Enums.MenuList.POAMap, CurrentUser.USER_ID,
+                    new POA_MAP(), data, out isExistApproval,out approvalData, true);
 
-                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success
-                     );
+                _masterDataAprovalBLL.SendEmailWorkflow(approvalData.APPROVAL_ID);
+                //_poaMapBLL.Save(data);
+
+                AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
                 return RedirectToAction("Index");
             }
             catch(Exception ex)
             {
-                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
-                       );
-              
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model.CurrentMenu = PageInfo;
+                model.MainMenu = _mainMenu;
+                model.NppbckIds = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+                model.Plants = GlobalFunctions.GetPlantAll();
+                model.POAs = GlobalFunctions.GetPoaAll(_poabll);
                
                 return View(model);
             }
@@ -149,9 +159,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
-                
-                _poaMapBLL.Delete(id);
-
+                bool isExistApproval;
+                var poaMap = _poaMapBLL.GetById(id);
+                MASTER_DATA_APPROVAL approvalData;
+                _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.POAMap, CurrentUser.USER_ID,
+                    poaMap, null, out isExistApproval,out approvalData, true);
+                //_poaMapBLL.Delete(id);
+                _masterDataAprovalBLL.SendEmailWorkflow(approvalData.APPROVAL_ID);
                 AddMessageInfo(Constans.SubmitMessage.Deleted, Enums.MessageInfoType.Success
                      );
                 
@@ -174,6 +188,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
+                bool isExistApproval;
                 // TODO: Add insert logic here
                 var existingData = _poaMapBLL.GetByNppbckId(model.PoaMap.NPPBKC_ID, model.PoaMap.WERKS, model.PoaMap.POA_ID);
                 if (existingData != null)
@@ -185,18 +200,24 @@ namespace Sampoerna.EMS.Website.Controllers
                 data.POA_MAP_ID = model.PoaMap.POA_MAP_ID;
                 data.CREATED_BY = CurrentUser.USER_ID;
                 data.CREATED_DATE = DateTime.Now;
-                _poaMapBLL.Save(data);
+                var oldData = _poaMapBLL.GetById(model.PoaMap.POA_MAP_ID);
 
-                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success
-                     );
+                MASTER_DATA_APPROVAL approvalData;
+                _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.POAMap, CurrentUser.USER_ID,
+                    oldData, data, out isExistApproval,out approvalData, true);
+                //_poaMapBLL.Save(data);
+                _masterDataAprovalBLL.SendEmailWorkflow(approvalData.APPROVAL_ID);
+                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error
-                       );
-
-
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                model.CurrentMenu = PageInfo;
+                model.MainMenu = _mainMenu;
+                model.NppbckIds = GlobalFunctions.GetNppbkcAll(_nppbkcbll);
+                model.Plants = GlobalFunctions.GetPlantAll();
+                model.POAs = GlobalFunctions.GetPoaAll(_poabll);
                 return View(model);
             }
         }
