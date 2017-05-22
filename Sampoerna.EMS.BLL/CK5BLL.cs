@@ -5637,7 +5637,7 @@ namespace Sampoerna.EMS.BLL
             return output;
         }
 
-        private decimal GetQuotaCk5(string plantId, string sourceNppbkc, string pbck1Npbkc, DateTime periodStart, DateTime periodEnd, Enums.ExGoodsType goodtypegroupid)
+        public decimal GetQuotaCk5(string plantId, string sourceNppbkc, string pbck1Npbkc, DateTime periodStart, DateTime periodEnd, Enums.ExGoodsType goodtypegroupid)
         {
             //get ck5 
             var lisCk5 =
