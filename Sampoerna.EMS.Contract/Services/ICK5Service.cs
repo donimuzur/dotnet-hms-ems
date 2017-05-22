@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.BusinessObject.Outputs;
+using Sampoerna.EMS.Core;
 
 namespace Sampoerna.EMS.Contract.Services
 {
@@ -30,5 +32,7 @@ namespace Sampoerna.EMS.Contract.Services
         List<CK5> GetCk5ForLack1DetailTis(Ck5GetForLack1DetailTis input);
 
         List<CK5> GetCk5ForLack1DetailEa(Ck5GetForLack1DetailEa input);
+
+        
     }
 }

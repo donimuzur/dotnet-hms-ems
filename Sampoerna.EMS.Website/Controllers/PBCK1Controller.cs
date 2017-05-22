@@ -62,9 +62,10 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExKPPBCBLL _kppbcbll;
         private IUserPlantMapBLL _userPlantBll;
         private IPOAMapBLL _poaMapBll;
+        private IExGroupTypeBLL _exGroupTypeBLL;
 
-        public PBCK1Controller(IPageBLL pageBLL, IUnitOfMeasurementBLL uomBll, ICompanyBLL companyBll, IMasterDataBLL masterDataBll, IMonthBLL monthbll, IZaidmExGoodTypeBLL goodTypeBll, ISupplierPortBLL supplierPortBll, IZaidmExNPPBKCBLL nppbkcbll, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll,
-            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll, ILFA1BLL lfa1Bll, IT001KBLL t001kBll, IPbck1DecreeDocBLL pbck1DecreeDocBll, ICK5BLL ck5Bll, IPOABLL poabll, IZaidmExKPPBCBLL kppbcbll, IUserPlantMapBLL userPlantBll, IPOAMapBLL poaMapBll)
+        public PBCK1Controller(IPageBLL pageBLL, IUnitOfMeasurementBLL uomBll, ICompanyBLL companyBll, IMonthBLL monthbll, IZaidmExGoodTypeBLL goodTypeBll, ISupplierPortBLL supplierPortBll, IZaidmExNPPBKCBLL nppbkcbll, IPBCK1BLL pbckBll, IPlantBLL plantBll, IChangesHistoryBLL changesHistoryBll,
+            IWorkflowHistoryBLL workflowHistoryBll, IWorkflowBLL workflowBll, IPrintHistoryBLL printHistoryBll, IPOABLL poaBll, ILACK1BLL lackBll, ILFA1BLL lfa1Bll, IT001KBLL t001kBll, IPbck1DecreeDocBLL pbck1DecreeDocBll, ICK5BLL ck5Bll, IPOABLL poabll, IZaidmExKPPBCBLL kppbcbll, IUserPlantMapBLL userPlantBll, IPOAMapBLL poaMapBll,IExGroupTypeBLL groupTypeBll)
             : base(pageBLL, Enums.MenuList.PBCK1)
         {
             _pbck1Bll = pbckBll;
@@ -90,6 +91,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _kppbcbll = kppbcbll;
             _userPlantBll = userPlantBll;
             _poaMapBll = poaMapBll;
+            _exGroupTypeBLL = groupTypeBll;
         }
 
         private List<Pbck1Item> GetOpenDocument(Pbck1FilterViewModel filter = null)
@@ -2497,12 +2499,101 @@ namespace Sampoerna.EMS.Website.Controllers
 
             // ReSharper disable once PossibleInvalidOperationException
             var pbck1Data = _pbck1Bll.GetPrintOutDataById(id.Value);
+            if (!string.IsNullOrEmpty(pbck1Data.Detail.Pbck1AdditionalText))
+            {
+                var lastQuota = GetQuotaLatestPbck1(pbck1Data.Detail.Pbck1Id);
+                pbck1Data.Detail.LatestSaldo = String.Format("{0:n}", lastQuota);
+            }
+            
             if (pbck1Data == null)
                 HttpNotFound();
 
             Stream stream = GetReport(pbck1Data, "Preview PBCK-1");
 
             return File(stream, "application/pdf");
+        }
+
+        private decimal GetQuotaLatestPbck1(int pbck1Id)
+        {
+            var output = new GetQuotaAndRemainOutput();
+            var detailPbck1 = _pbck1Bll.GetById(pbck1Id);
+
+            
+            //var detailPbck1 = pbck1Data.Detail;
+            List<string> goodtypelist = new List<string>()
+            {
+                detailPbck1.GoodType
+            };
+
+            var isExternal = _plantBll.GetT001WById(detailPbck1.SupplierPlantWerks) == null;
+
+            var supplierPlant = detailPbck1.SupplierPlantWerks;
+            var supplierNppbkcId = detailPbck1.SupplierNppbkcId;
+
+            if (isExternal)
+            {
+                supplierPlant = detailPbck1.SupplierPlant;
+            }
+
+            var lack1LastDate = new DateTime(detailPbck1.Lack1ToYear.Value, detailPbck1.Lack1ToMonthId.Value,
+                DateTime.DaysInMonth(detailPbck1.Lack1ToYear.Value, detailPbck1.Lack1ToMonthId.Value));
+            var listPbck1 = _pbck1Bll.GetPbck1CompletedDocumentByPlantAndSubmissionDate(supplierPlant, supplierNppbkcId, lack1LastDate, detailPbck1.NppbkcId, goodtypelist);
+            if (listPbck1.Count == 0)
+            {
+                //pbck not exist
+                output.QtyApprovedPbck1 = 0;
+                output.QtyCk5 = 0;
+                output.RemainQuota = 0;
+                output.PbckUom = "";
+            }
+            else
+            {
+
+
+
+                output.Pbck1Id = listPbck1[0].Pbck1Id;
+                output.Pbck1Number = listPbck1[0].Pbck1Number;
+                output.Pbck1DecreeDate = listPbck1[0].DecreeDate.HasValue
+                    ? listPbck1[0].DecreeDate.Value.ToString("dd/MM/yyyy")
+                    : string.Empty;
+
+                output.PbckUom = listPbck1[0].RequestQtyUomId;
+
+                foreach (var pbck1Dto in listPbck1)
+                {
+                    if(pbck1Dto.Pbck1Id == pbck1Id) continue;
+                    
+                    if (pbck1Dto.QtyApproved.HasValue)
+                        output.QtyApprovedPbck1 += pbck1Dto.QtyApproved.Value;
+                }
+
+                var periodStart = listPbck1[0].PeriodFrom;
+                //var periodEnd = listPbck1[0].PeriodTo.Value.AddDays(1);
+
+                var pbck1Npbkc = listPbck1[0].NppbkcId;
+
+                var groupType = _exGroupTypeBLL.GetGroupByExGroupType(detailPbck1.GoodType).EX_GROUP_TYPE_ID;
+
+                if (isExternal)
+                {
+                    output.QtyCk5 = _ck5Bll.GetQuotaCk5External(supplierPlant, supplierNppbkcId, pbck1Npbkc, periodStart, lack1LastDate, (Enums.ExGoodsType)groupType);
+                }
+                else
+                {
+                    output.QtyCk5 = _ck5Bll.GetQuotaCk5(supplierPlant, supplierNppbkcId, pbck1Npbkc, periodStart, lack1LastDate, (Enums.ExGoodsType)groupType);    
+                }
+                
+
+                output.RemainQuota = output.QtyApprovedPbck1 - output.QtyCk5;
+
+
+
+
+
+            }
+
+            var latestLack1Saldo = detailPbck1.LatestSaldo.HasValue ? detailPbck1.LatestSaldo.Value : 0;
+            return latestLack1Saldo + output.RemainQuota;
         }
 
         private Stream GetReport(Pbck1ReportDto pbck1Data, string printTitle)
