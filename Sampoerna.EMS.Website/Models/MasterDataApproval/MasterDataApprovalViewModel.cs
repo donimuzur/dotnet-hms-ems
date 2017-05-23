@@ -34,6 +34,8 @@ namespace Sampoerna.EMS.Website.Models.MasterDataApproval
 
         public MasterDataApprovalDetailViewModel Detail { get; set; }
 
+        
+
         public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
 
         public bool IsMasterApprover { get; set; }
@@ -58,6 +60,8 @@ namespace Sampoerna.EMS.Website.Models.MasterDataApproval
         public string StatusString { get; set; }
 
         public virtual List<MasterDataApprovalDetail> Details { get; set; }
+
+        public List<MasterDataApprovalDetail> DetailObject { get; set; }
     }
 
 
