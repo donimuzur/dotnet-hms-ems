@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
@@ -151,6 +152,15 @@ namespace Sampoerna.EMS.BLL
                 if (newObject == null) // delete data without flagging
                 {
                     newApproval.FORM_ID = GenerateFormId(approvalSettings.PageId, oldObject);
+                }
+
+
+                if (approvalSettings.PageId == (int) Enums.MenuList.MaterialMaster)
+                {
+                    if (needApprovalList.Where(x => x.COLUMN_NAME == "CONVERTION").Any())
+                    {
+                        
+                    }
                 }
                 newApproval.MASTER_DATA_APPROVAL_DETAIL = needApprovalList;
 
@@ -549,6 +559,10 @@ namespace Sampoerna.EMS.BLL
                 {
                     foreach (var detail in approvalData.MASTER_DATA_APPROVAL_DETAIL)
                     {
+                        if (detail.COLUMN_NAME == "CONVERTION")
+                        {
+                            continue;
+                        }
                         propInfo = typeof(ZAIDM_EX_MATERIAL).GetProperty(detail.COLUMN_NAME);
                         dataMaterial.GetType().GetProperty(detail.COLUMN_NAME).SetValue(dataMaterial, CastPropertyValue(propInfo, detail.NEW_VALUE));
 
@@ -571,10 +585,34 @@ namespace Sampoerna.EMS.BLL
 
                     foreach (var detail in approvalData.MASTER_DATA_APPROVAL_DETAIL)
                     {
+                        if (detail.COLUMN_NAME == "CONVERTION")
+                        {
+                            
+                            continue;
+                        }
                         propInfo = typeof(ZAIDM_EX_MATERIAL).GetProperty(detail.COLUMN_NAME);
                         data.GetType()
                             .GetProperty(detail.COLUMN_NAME)
                             .SetValue(data, CastPropertyValue(propInfo, detail.NEW_VALUE));
+                    }
+
+
+                    //convertion add
+                    var firstOrDefault = approvalData.MASTER_DATA_APPROVAL_DETAIL.Where(x=> x.COLUMN_NAME == "CONVERTION").Select(x=> x.NEW_VALUE).FirstOrDefault();
+                    if (firstOrDefault != null)
+                    {
+                        var detailConvertions = firstOrDefault.Split(',');
+                        data.MATERIAL_UOM = new Collection<MATERIAL_UOM>();
+                        foreach (var detailConvertion in detailConvertions)
+                        {
+                            data.MATERIAL_UOM.Add(new MATERIAL_UOM()
+                            {
+                                STICKER_CODE = data.STICKER_CODE,
+                                WERKS = data.WERKS,
+                                UMREN = decimal.Parse(detailConvertion.Split(' ')[0]),
+                                MEINH = detailConvertion.Split(' ')[1]
+                            });
+                        }
                     }
 
                     return data;

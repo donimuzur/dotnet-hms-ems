@@ -93,9 +93,11 @@ namespace Sampoerna.EMS.BLL
                 data.CREATED_DATE = origin.CREATED_DATE;
                 data.CREATED_BY = origin.CREATED_BY;
 
+                data.MATERIAL_UOM = origin.MATERIAL_UOM;
+                
+                data = _masterDataAprovalBLL.MasterDataApprovalValidation((int)Enums.MenuList.MaterialMaster, userId, originDto,
+                    data,out isApprovalExist,out approvalData);
                 var tempNewData = AutoMapper.Mapper.Map<ZAIDM_EX_MATERIAL>(data);
-                tempNewData = _masterDataAprovalBLL.MasterDataApprovalValidation((int)Enums.MenuList.MaterialMaster, userId, origin,
-                    tempNewData,out isApprovalExist,out approvalData);
                 data = AutoMapper.Mapper.Map<MaterialDto>(tempNewData);
 
                 if (data.CLIENT_DELETION != (originDto.CLIENT_DELETION.HasValue ? originDto.CLIENT_DELETION : false))
@@ -111,12 +113,13 @@ namespace Sampoerna.EMS.BLL
                 
                 SetChanges(originDto, data, userId);
 
-                data.MATERIAL_UOM = origin.MATERIAL_UOM;
+                
             }
             else {
                 data.CREATED_BY = userId;
                 data.CREATED_DATE = DateTime.Now;
-
+                data.CLIENT_DELETION = false;
+                data.PLANT_DELETION = false;
                 isNew = true;
             }
 
@@ -135,7 +138,7 @@ namespace Sampoerna.EMS.BLL
                 else
                 {
                     _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.MaterialMaster, userId,
-                        new ZAIDM_EX_MATERIAL(), dataToSave, out isApprovalExist,out approvalData, true);
+                        new MaterialDto(), data, out isApprovalExist,out approvalData, true);
                 }
                 _masterDataAprovalBLL.SendEmailWorkflow(approvalData.APPROVAL_ID);
                 output.Success = true;

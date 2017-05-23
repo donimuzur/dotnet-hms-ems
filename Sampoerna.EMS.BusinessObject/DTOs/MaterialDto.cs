@@ -36,5 +36,30 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public ZAIDM_EX_GOODTYP ZAIDM_EX_GOODTYP { get; set; }
 
         public string GoodTypeDescription { get; set; }
+
+        public string CONVERTION
+        {
+            get
+            {
+                var data = string.Empty;
+                int i = 0;
+                if (this.MATERIAL_UOM != null)
+                {
+                    foreach (var matUom in this.MATERIAL_UOM)
+                    {
+                        if (i > 0) data += " , " + matUom.UMREN + " " + matUom.MEINH;
+                        else data += matUom.UMREN + " " + matUom.MEINH;
+                        i++;
+                    }
+                    return data;
+                }
+                else
+                {
+                    return null;
+                }
+                
+            }
+            set { } 
+        }
     }
 }
