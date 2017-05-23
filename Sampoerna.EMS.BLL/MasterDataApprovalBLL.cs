@@ -188,16 +188,89 @@ namespace Sampoerna.EMS.BLL
             return data != null;
         }
 
-        public void CreateNewDataForApproval<T>(int pageId,string userId,T data)
+        public List<MASTER_DATA_APPROVAL_DETAIL> GetObjectDetails(string formId,int pageId)
         {
+            PropertyInfo propInfo;
             var page = _pageBLL.GetPageByID(pageId);
-            var tabledetails = _repository.GetTableDetail(page.MAIN_TABLE);
-
-            foreach (var tabledetail in tabledetails)
+            var tableDetails = _repository.GetTableDetail(page.MAIN_TABLE);
+            var returnDetails = new List<MASTER_DATA_APPROVAL_DETAIL>();
+            object data = null;
+            if (pageId == (int)Enums.MenuList.BrandRegistration)
             {
+                var tempId = formId.Split('-');
+                var werks = tempId[0];
+                var facode = tempId[1];
+                var stickerCode = tempId[2];
+
+                data = _brandRegistrationBLL.GetByPlantIdAndFaCodeStickerCode(werks, facode, stickerCode);
                 
+                
+
+
+
             }
-        }
+            else if (pageId == (int)Enums.MenuList.POA)
+            {
+                data = _poaBll.GetById(formId);
+                
+                
+
+            }
+            else if (pageId == (int)Enums.MenuList.POAMap)
+            {
+                var tempId = formId.Split('-');
+                var poaId = tempId[0];
+                var nppbkc = tempId[1];
+                var plantid = tempId[2];
+
+                data = _poaMapBLL.GetByNppbckId(nppbkc, plantid, poaId);
+                
+                
+
+
+            }
+            else if (pageId == (int)Enums.MenuList.MaterialMaster)
+            {
+                var tempId = formId.Split('-');
+                var werks = tempId[0];
+                var materialnumber = tempId[1];
+                data = _materialBLL.GetByMaterialAndPlantId(materialnumber, werks);
+                
+                
+
+
+
+            }
+
+            if (data != null)
+            {
+                foreach (var detail in tableDetails)
+                {
+                    if(detail.Documentation == null) continue;
+
+                    var detailTable = new MASTER_DATA_APPROVAL_DETAIL();
+                    //propInfo = typeof(ZAIDM_EX_BRAND).GetProperty(detail.PropertyName);
+                    detailTable.COLUMN_NAME = detail.PropertyName;
+                    detailTable.COLUMN_DESCRIPTION = detail.Documentation.LongDescription;
+                    var propValue = data.GetType().GetProperty(detail.PropertyName).GetValue(data);
+                    if (propValue != null)
+                    {
+                        detailTable.OLD_VALUE = propValue.ToString();
+                    }
+                    else
+                    {
+                        detailTable.OLD_VALUE = string.Empty;
+                    }
+                    
+
+                    returnDetails.Add(detailTable);
+                }
+
+
+            }
+
+            return returnDetails;
+        } 
 
         public List<MASTER_DATA_APPROVAL> GetList(Enums.DocumentStatus status = Enums.DocumentStatus.WaitingForMasterApprover)
         {
