@@ -277,7 +277,18 @@ namespace Sampoerna.EMS.BLL
                     returnDetails.Add(detailTable);
                 }
 
+                if (pageId == (int) Core.Enums.MenuList.BrandRegistration)
+                {
+                    var dataBrand = (ZAIDM_EX_BRAND) data;
+                    var dataMaterial = _materialBLL.GetByMaterialAndPlantId(dataBrand.FA_CODE, dataBrand.WERKS);
 
+                    returnDetails.Add(new MASTER_DATA_APPROVAL_DETAIL()
+                    {
+                        COLUMN_NAME = "BRAND_CE",
+                        COLUMN_DESCRIPTION = "Brand Description (SAP)",
+                        OLD_VALUE = dataMaterial.MATERIAL_DESC
+                    });
+                }
             }
 
             return returnDetails;
@@ -375,7 +386,13 @@ namespace Sampoerna.EMS.BLL
                 {
                     if (data.PAGE_ID == (int) Enums.MenuList.POAMap)
                     {
-                        _poaMapBLL.Delete(int.Parse(data.FORM_ID));
+                        var tempId = data.FORM_ID.Split('-');
+                        var poaId = tempId[0];
+                        var nppbkc = tempId[1];
+                        var plantid = tempId[2];
+
+                        var dataPoaMap = _poaMapBLL.GetByNppbckId(nppbkc, plantid, poaId);
+                        _poaMapBLL.Delete(dataPoaMap.POA_MAP_ID);
                     }
                 }
                 
