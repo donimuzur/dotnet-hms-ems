@@ -93,7 +93,7 @@ namespace Sampoerna.EMS.BLL
                 data.CREATED_DATE = origin.CREATED_DATE;
                 data.CREATED_BY = origin.CREATED_BY;
 
-                data.MATERIAL_UOM = origin.MATERIAL_UOM;
+                //data.MATERIAL_UOM = origin.MATERIAL_UOM;
                 
                 data = _masterDataAprovalBLL.MasterDataApprovalValidation((int)Enums.MenuList.MaterialMaster, userId, originDto,
                     data,out isApprovalExist,out approvalData);
@@ -180,7 +180,7 @@ namespace Sampoerna.EMS.BLL
                 };
                 _repositoryUoM.InsertOrUpdate(data);
                 _changesHistoryBll.AddHistory(changes);
-                _uow.SaveChanges();
+                //_uow.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -222,6 +222,8 @@ namespace Sampoerna.EMS.BLL
                 output.ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BaseExceptions.unhandled_exception);
             }
         }
+
+        
 
         public int DeleteMaterialUom(int id, string userId, string mn, string p)
         {

@@ -52,8 +52,8 @@ namespace Sampoerna.EMS.Website.Models.Material
         [Display(Name = "Changed By")]
         public string ChangedBy { get; set; }
 
-        [Display(Name = "Convertion")]
-        public decimal? Convertion { get; set; }
+        //[Display(Name = "Convertion")]
+        //public decimal? Convertion { get; set; }
 
         [Required, Display(Name = "Plant Deletion")]
         public bool IsPlantDelete

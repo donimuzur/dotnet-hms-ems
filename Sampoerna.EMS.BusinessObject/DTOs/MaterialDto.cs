@@ -37,6 +37,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public string GoodTypeDescription { get; set; }
 
+        private string _conversion;
         public string CONVERTION
         {
             get
@@ -59,7 +60,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
                 }
                 
             }
-            set { } 
+            set { _conversion = value; }
         }
     }
 }
