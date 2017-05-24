@@ -17,5 +17,7 @@ namespace Sampoerna.EMS.Contract.Services
         void PlantDeletion(MaterialDto data, string userId);
 
         void Save(ZAIDM_EX_MATERIAL data);
+
+        void ClearConvertion(string mn, string p);
     }
 }

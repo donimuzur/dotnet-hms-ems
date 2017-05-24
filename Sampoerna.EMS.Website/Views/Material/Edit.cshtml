@@ -273,7 +273,7 @@
                                                                     for (int i = 0; i < Model.MaterialUom.Count; i++)
                                                                     {
                                                                        
-                                                                        <tr id="uom-exist-@Model.MaterialUom[i].Id">
+                                                                        <tr id="uom-exist-@Model.MaterialUom[i].Id" class="uom-exist">
                                                                             <td><a href="javascript:void(0)" onclick="deleteExistingUom(@Model.MaterialUom[i].Id,'@Model.MaterialNumber','@Model.PlantId')">delete</a></td>
 
                                                                             <td>
@@ -284,6 +284,10 @@
                                                                                 @*<span id="field2">@Html.Raw(Model.MaterialUom[i].UmrenStr)</span>*@
                                                                                 <span id="field2">@string.Format("{0:N4}", Model.MaterialUom[i].Umren)</span>
                                                                             </td>
+                                                                            @Html.HiddenFor(model => model.MaterialUom[i].MaterialNumber, new { @class = "MaterialNumber"})
+                                                                            @Html.HiddenFor(model => model.MaterialUom[i].Plant, new { @class = "Plant" })
+                                                                            @Html.HiddenFor(model => model.MaterialUom[i].Meinh, new { @class = "meinh" })
+                                                                            @Html.HiddenFor(model => model.MaterialUom[i].Umren, new { @class = "Umren" })
                                                                         </tr>
 
 
@@ -380,17 +384,30 @@
         $('#HjeStr').val(ThausandSeperator($('#HjeStr').val(), 2));
         $('#TariffStr').val(ThausandSeperator($('#TariffStr').val(), 2));
         $('#ConversionValueStr').val(ThausandSeperator($('#ConversionValueStr').val(), 2));
-        
-       
-        
-        
+
+
         var arrayUom = [];
+        $(".uom-exist").each(function (index,obj) {
+            
+            var meinh = $(obj).find("input.meinh").val();
+            var materialNumber = $(obj).find("input.MaterialNumber").val();
+            var plant = $(obj).find("input.Plant").val();
+            var umren = $(obj).find("input.Umren").val();
+            var objUom = { Meinh: encodeURI(meinh), Umren: umren, MaterialNumber: materialNumber, Plant: plant };
+            arrayUom.push(objUom);
+        });
+
+
+        
+
         $('#material-uom-add-btn').click(function() {
             var meinh = $('#uom-list').find("option:selected").val();
+            var materialNumber = '@Model.MaterialNumber';
+            var plant = '@Model.PlantId';
             if (meinh !== '' && $('#ConversionValueStr').val() !== '') {
                 var umren = $('#ConversionValueStr').val();
 
-                var objUom = { Meinh: encodeURI(meinh), Umren: umren };
+                var objUom = { Meinh: encodeURI(meinh), Umren: umren, MaterialNumber: materialNumber, Plant: plant };
                 arrayUom.push(objUom);
                 CreateUomList();
             }
@@ -399,9 +416,23 @@
         function CreateUomList() {
             for (var j = 0; j < arrayUom.length; j++) {
                 $('#mat-uom' + j).remove();
+                
             }
+            $('.uom-exist').remove();
+
             for (var i = 0; i < arrayUom.length; i++) {
-                $('#material-uom tbody').append('<tr id="mat-uom' + i + '"><td><input id="MaterialUom[' + i + ']_Meinh" name="MaterialUom[' + i + '].Meinh" type="hidden" value="' + arrayUom[i].Meinh + '"/><input type="hidden" name="MaterialUom[' + i + '].UmrenStr" value="' + arrayUom[i].Umren + '"/><a href="javascript:void(0)" onclick="deleteUom(' + i + ')">delete</a></td><td>' + decodeURI(arrayUom[i].Meinh) + '</td><td>' + arrayUom[i].Umren + '</td></tr>');
+                $('#material-uom tbody').append('<tr id="mat-uom' + i + '">' +
+                    '<td>' +
+                    '<input id="MaterialUom[' + i + ']_Meinh" name="MaterialUom[' + i + '].Meinh" type="hidden" value="' + arrayUom[i].Meinh + '"/>' +
+                    '<input type="hidden" name="MaterialUom[' + i + '].UmrenStr" value="' + arrayUom[i].Umren + '"/>' +
+                    '<input type="hidden" name="MaterialUom[' + i + '].Umren" value="' + arrayUom[i].Umren + '"/>' +
+                    '<a href="javascript:void(0)" onclick="deleteUom(' + i + ')">delete</a>' +
+                    '</td>' +
+                    '<td>' + decodeURI(arrayUom[i].Meinh) + '</td>' +
+                    '<td>' + arrayUom[i].Umren + '</td>' +
+                    '<input type="hidden" name="MaterialUom[' + i + '].MaterialNumber" value="' + arrayUom[i].MaterialNumber + '"/>' +
+                    '<input type="hidden" name="MaterialUom[' + i + '].Plant" value="' + arrayUom[i].Plant + '"/>' +
+                    '</tr>');
             }
         }
 
@@ -411,8 +442,9 @@
             CreateUomList();
         }
 
-        function deleteExistingUom(id,mn,p) {
-            $.ajax({
+        function deleteExistingUom(id, mn, p) {
+            $('#uom-exist-' + id).remove();
+                        @*$.ajax({
                 type: 'POST',
                 url: '@Url.Action("RemoveMaterialUom", "Material")',
                 data: { materialUomId: id, materialnumber: mn, plant:p },
@@ -420,7 +452,7 @@
                     $('#uom-exist-' + id).remove();
 
                 }
-            });
+            });*@
         }
     </script>
 }

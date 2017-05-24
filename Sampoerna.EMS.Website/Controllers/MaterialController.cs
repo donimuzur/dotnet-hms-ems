@@ -265,20 +265,20 @@ namespace Sampoerna.EMS.Website.Controllers
                     return RedirectToAction("Index");
                 }
 
-                if (model.MaterialUom != null)
-                {
-                    foreach (var matUom in model.MaterialUom)
-                    {
-                        var uom = new MATERIAL_UOM();
-                        uom.STICKER_CODE = model.MaterialNumber;
-                        uom.WERKS = model.PlantId;
-                        uom.UMREN = matUom.Umren;
-                        uom.UMREZ = matUom.Umrez;
-                        uom.MEINH = HttpUtility.UrlDecode(matUom.Meinh);
+                //if (model.MaterialUom != null)
+                //{
+                //    foreach (var matUom in model.MaterialUom)
+                //    {
+                //        var uom = new MATERIAL_UOM();
+                //        uom.STICKER_CODE = model.MaterialNumber;
+                //        uom.WERKS = model.PlantId;
+                //        uom.UMREN = matUom.Umren;
+                //        uom.UMREZ = matUom.Umrez;
+                //        uom.MEINH = HttpUtility.UrlDecode(matUom.Meinh);
 
-                        _materialBll.SaveUoM(uom, CurrentUser.USER_ID);
-                    }
-                }
+                //        _materialBll.SaveUoM(uom, CurrentUser.USER_ID);
+                //    }
+                //}
 
                 var data = AutoMapper.Mapper.Map<MaterialDto>(model);
                 data.HJE = model.HjeStr == null ? 0 : Convert.ToDecimal(model.HjeStr);

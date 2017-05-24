@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
@@ -152,6 +153,16 @@ namespace Sampoerna.EMS.BLL
                 {
                     newApproval.FORM_ID = GenerateFormId(approvalSettings.PageId, oldObject);
                 }
+
+
+                if (approvalSettings.PageId == (int) Enums.MenuList.MaterialMaster)
+                {
+                    if (needApprovalList.Where(x => x.COLUMN_NAME == "CONVERTION").Any())
+                    {
+                        if (newObject != null)
+                            newObject.GetType().GetProperty("MATERIAL_UOM").SetValue(newObject, new List<MATERIAL_UOM>());
+                    }
+                }
                 newApproval.MASTER_DATA_APPROVAL_DETAIL = needApprovalList;
 
                 isExist = CheckExitingOngoingApproval(newApproval.FORM_ID);
@@ -292,6 +303,18 @@ namespace Sampoerna.EMS.BLL
         public void Approve(string userId, int masterApprovalId)
         {
             var data = _repository.Get(x=> x.APPROVAL_ID == masterApprovalId,null,includeTables).FirstOrDefault();
+
+            if (data.PAGE_ID == (int)Core.Enums.MenuList.MaterialMaster)
+            {
+                if (data.MASTER_DATA_APPROVAL_DETAIL.Any(x => x.COLUMN_NAME == "CONVERTION"))
+                {
+                    var tempId = data.FORM_ID.Split('-');
+                    var werks = tempId[0];
+                    var materialnumber = tempId[1];
+                   _materialBLL.ClearConvertion(materialnumber,werks);
+                }
+            }
+
             if (data != null)
             {
                 data.STATUS_ID = Enums.DocumentStatus.Approved;
@@ -344,6 +367,7 @@ namespace Sampoerna.EMS.BLL
 
                 if (!isDelete)
                 {
+
                     UpdateChangesHistory(data);
                     _uow.SaveChanges();
                 }
@@ -549,6 +573,36 @@ namespace Sampoerna.EMS.BLL
                 {
                     foreach (var detail in approvalData.MASTER_DATA_APPROVAL_DETAIL)
                     {
+                        if (detail.COLUMN_NAME == "CONVERTION")
+                        {
+                            var materialUoms = detail.NEW_VALUE.Split(',');
+                            var uomList = new List<MATERIAL_UOM>();
+                            foreach (var detailConvertion in materialUoms)
+                            {
+                                if(string.IsNullOrEmpty(detailConvertion)) continue;
+                                var convertionVal = decimal.Parse(detailConvertion.Trim().Split(' ')[0]);
+                                var convertionUom = detailConvertion.Trim().Split(' ')[1];
+                                //if (dataMaterial.MATERIAL_UOM.Any(x => x.MEINH == convertionUom))
+                                //{
+                                //    uomList.FirstOrDefault(x => x.MEINH == convertionUom).UMREN = convertionVal;
+                                //}
+                                //else
+                                //{
+                                    uomList.Add(new MATERIAL_UOM()
+                                    {
+                                        STICKER_CODE = dataMaterial.STICKER_CODE,
+                                        WERKS = dataMaterial.WERKS,
+                                        UMREN = convertionVal,
+                                        MEINH = convertionUom
+                                    });
+                                
+                                //}
+
+                            }
+                            dataMaterial.MATERIAL_UOM = uomList;
+                            
+                            continue;
+                        }
                         propInfo = typeof(ZAIDM_EX_MATERIAL).GetProperty(detail.COLUMN_NAME);
                         dataMaterial.GetType().GetProperty(detail.COLUMN_NAME).SetValue(dataMaterial, CastPropertyValue(propInfo, detail.NEW_VALUE));
 
@@ -571,10 +625,34 @@ namespace Sampoerna.EMS.BLL
 
                     foreach (var detail in approvalData.MASTER_DATA_APPROVAL_DETAIL)
                     {
+                        if (detail.COLUMN_NAME == "CONVERTION")
+                        {
+                            
+                            continue;
+                        }
                         propInfo = typeof(ZAIDM_EX_MATERIAL).GetProperty(detail.COLUMN_NAME);
                         data.GetType()
                             .GetProperty(detail.COLUMN_NAME)
                             .SetValue(data, CastPropertyValue(propInfo, detail.NEW_VALUE));
+                    }
+
+
+                    //convertion add
+                    var firstOrDefault = approvalData.MASTER_DATA_APPROVAL_DETAIL.Where(x=> x.COLUMN_NAME == "CONVERTION").Select(x=> x.NEW_VALUE).FirstOrDefault();
+                    if (firstOrDefault != null)
+                    {
+                        var detailConvertions = firstOrDefault.Split(',');
+                        data.MATERIAL_UOM = new Collection<MATERIAL_UOM>();
+                        foreach (var detailConvertion in detailConvertions)
+                        {
+                            data.MATERIAL_UOM.Add(new MATERIAL_UOM()
+                            {
+                                STICKER_CODE = data.STICKER_CODE,
+                                WERKS = data.WERKS,
+                                UMREN = decimal.Parse(detailConvertion.Trim().Split(' ')[0]),
+                                MEINH = detailConvertion.Trim().Split(' ')[1]
+                            });
+                        }
                     }
 
                     return data;
