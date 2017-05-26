@@ -131,6 +131,20 @@ namespace Sampoerna.EMS.BLL
             {
                 if (!isNew)
                 {
+                    //foreach (var matUom1 in dataToSave.MATERIAL_UOM)
+                    //{
+
+                    //    var materialUom = _repositoryUoM.Get(x => x.STICKER_CODE == matUom1.STICKER_CODE
+                    //                                              && x.WERKS == matUom1.WERKS
+                    //                                              && x.MEINH == matUom1.MEINH).FirstOrDefault();
+                    //    _repositoryUoM.Detach(materialUom);
+                    //    //if (materialUom != null && materialUom)
+                    //    //{
+                    //    //    matUom1.MATERIAL_UOM_ID = materialUom.MATERIAL_UOM_ID;
+                    //    //}
+                    //}
+                    dataToSave.MATERIAL_UOM = null;
+                    
                     _repository.InsertOrUpdate(dataToSave);
 
                     _uow.SaveChanges();
