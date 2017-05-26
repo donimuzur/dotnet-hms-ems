@@ -12,7 +12,7 @@
             <div class="col-sm-12">
                 <h3> Material Master </h3>
                 <div class="action-button">
-                    <input type="submit" class="btn btn-blue" value="Save" />
+                    <input type="submit" class="btn btn-blue" onclick="CreateUomList();" value="Save" />
                     <a href="@Url.Action("Index", "Material")" class="btn btn-grey">Cancel</a>
                 </div>
             </div>
@@ -395,6 +395,7 @@
             var umren = $(obj).find("input.Umren").val();
             var objUom = { Meinh: encodeURI(meinh), Umren: umren, MaterialNumber: materialNumber, Plant: plant };
             arrayUom.push(objUom);
+            //CreateUomList();
         });
 
 
@@ -414,14 +415,15 @@
         });
 
         function CreateUomList() {
-            for (var j = 0; j < arrayUom.length; j++) {
-                $('#mat-uom' + j).remove();
+            //for (var j = 0; j < arrayUom.length; j++) {
+            //    $('#mat-uom' + j).remove();
                 
-            }
+            //}
+            $('.mat-uom').remove();
             $('.uom-exist').remove();
 
             for (var i = 0; i < arrayUom.length; i++) {
-                $('#material-uom tbody').append('<tr id="mat-uom' + i + '">' +
+                $('#material-uom tbody').append('<tr id="mat-uom' + i + '" class="mat-uom" >' +
                     '<td>' +
                     '<input id="MaterialUom[' + i + ']_Meinh" name="MaterialUom[' + i + '].Meinh" type="hidden" value="' + arrayUom[i].Meinh + '"/>' +
                     '<input type="hidden" name="MaterialUom[' + i + '].UmrenStr" value="' + arrayUom[i].Umren + '"/>' +
@@ -437,6 +439,7 @@
         }
 
         function deleteUom(index) {
+            
             arrayUom.splice(index, 1);
             $('#mat-uom' + index).remove();
             CreateUomList();

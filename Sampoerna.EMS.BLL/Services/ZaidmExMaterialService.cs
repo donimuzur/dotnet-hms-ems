@@ -29,7 +29,7 @@ namespace Sampoerna.EMS.BLL.Services
 
         public ZAIDM_EX_MATERIAL GetByMaterialAndPlantId(string materialId, string plantId)
         {
-            return _repository.Get(c => c.STICKER_CODE == materialId && c.WERKS == plantId, null, "ZAIDM_EX_GOODTYP, UOM").FirstOrDefault();
+            return _repository.Get(c => c.STICKER_CODE == materialId && c.WERKS == plantId, null, "ZAIDM_EX_GOODTYP, UOM,MATERIAL_UOM").FirstOrDefault();
         }
 
         public List<ZAIDM_EX_MATERIAL> GetByPlantId(string plantId)

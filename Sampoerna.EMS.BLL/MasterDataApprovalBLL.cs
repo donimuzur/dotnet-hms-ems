@@ -245,9 +245,9 @@ namespace Sampoerna.EMS.BLL
                 var tempId = formId.Split('-');
                 var werks = tempId[0];
                 var materialnumber = tempId[1];
-                data = _materialBLL.GetByMaterialAndPlantId(materialnumber, werks);
-                
-                
+                var tempdata = _materialBLL.GetByMaterialAndPlantId(materialnumber, werks);
+
+                data = Mapper.Map<MaterialDto>(tempdata);
 
 
 
@@ -277,6 +277,15 @@ namespace Sampoerna.EMS.BLL
                     returnDetails.Add(detailTable);
                 }
 
+                if (pageId == (int) Enums.MenuList.MaterialMaster)
+                {
+                    returnDetails.Add(new MASTER_DATA_APPROVAL_DETAIL()
+                    {
+                        COLUMN_NAME = "CONVERTION",
+                        COLUMN_DESCRIPTION = "Convertion",
+                        OLD_VALUE = ((MaterialDto)data).CONVERTION
+                    });
+                }
 
             }
 
