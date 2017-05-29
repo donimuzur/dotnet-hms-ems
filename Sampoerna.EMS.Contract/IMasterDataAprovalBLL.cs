@@ -25,5 +25,7 @@ namespace Sampoerna.EMS.Contract
 
         bool SendEmailWorkflow(int approvalId);
         bool SendEmailWorkflowByParam(MASTER_DATA_APPROVAL data);
+
+        List<MASTER_DATA_APPROVAL_DETAIL> GetObjectDetails(string formId, int pageId);
     }
 }

@@ -189,6 +189,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (dbBrand.STICKER_CODE.Length > 18)
                     dbBrand.STICKER_CODE = dbBrand.STICKER_CODE.Substring(0, 17);
                 dbBrand.FA_CODE = model.FaCode.Trim();
+                dbBrand.STICKER_CODE = model.StickerCode.Trim();
                 dbBrand.CREATED_DATE = DateTime.Now;
                 dbBrand.CREATED_BY = CurrentUser.USER_ID;
                 dbBrand.IS_FROM_SAP = model.IsFromSAP;
@@ -321,6 +322,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dbBrand.CONVERSION = model.ConversionValueStr == null ? (decimal?)null : Convert.ToDecimal(model.ConversionValueStr);
             dbBrand.PRINTING_PRICE = model.PrintingPriceValueStr == null ? (decimal?) null : Convert.ToDecimal(model.PrintingPriceValueStr);
             dbBrand.FA_CODE = model.FaCode.Trim();
+            dbBrand.STICKER_CODE = model.StickerCode.Trim();
             dbBrand.BAHAN_KEMASAN = string.IsNullOrEmpty(model.BahanKemasan) ? null : model.BahanKemasan.Trim();
             //dbBrand.PACKED_ADJUSTED = model.IsPackedAdjusted;
             //dbBrand.BRAND_CE = model.BrandName;

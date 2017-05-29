@@ -93,9 +93,11 @@ namespace Sampoerna.EMS.BLL
                 data.CREATED_DATE = origin.CREATED_DATE;
                 data.CREATED_BY = origin.CREATED_BY;
 
+                //data.MATERIAL_UOM = origin.MATERIAL_UOM;
+                
+                data = _masterDataAprovalBLL.MasterDataApprovalValidation((int)Enums.MenuList.MaterialMaster, userId, originDto,
+                    data,out isApprovalExist,out approvalData);
                 var tempNewData = AutoMapper.Mapper.Map<ZAIDM_EX_MATERIAL>(data);
-                tempNewData = _masterDataAprovalBLL.MasterDataApprovalValidation((int)Enums.MenuList.MaterialMaster, userId, origin,
-                    tempNewData,out isApprovalExist,out approvalData);
                 data = AutoMapper.Mapper.Map<MaterialDto>(tempNewData);
 
                 if (data.CLIENT_DELETION != (originDto.CLIENT_DELETION.HasValue ? originDto.CLIENT_DELETION : false))
@@ -111,12 +113,13 @@ namespace Sampoerna.EMS.BLL
                 
                 SetChanges(originDto, data, userId);
 
-                data.MATERIAL_UOM = origin.MATERIAL_UOM;
+                
             }
             else {
                 data.CREATED_BY = userId;
                 data.CREATED_DATE = DateTime.Now;
-
+                data.CLIENT_DELETION = false;
+                data.PLANT_DELETION = false;
                 isNew = true;
             }
 
@@ -128,6 +131,20 @@ namespace Sampoerna.EMS.BLL
             {
                 if (!isNew)
                 {
+                    //foreach (var matUom1 in dataToSave.MATERIAL_UOM)
+                    //{
+
+                    //    var materialUom = _repositoryUoM.Get(x => x.STICKER_CODE == matUom1.STICKER_CODE
+                    //                                              && x.WERKS == matUom1.WERKS
+                    //                                              && x.MEINH == matUom1.MEINH).FirstOrDefault();
+                    //    _repositoryUoM.Detach(materialUom);
+                    //    //if (materialUom != null && materialUom)
+                    //    //{
+                    //    //    matUom1.MATERIAL_UOM_ID = materialUom.MATERIAL_UOM_ID;
+                    //    //}
+                    //}
+                    dataToSave.MATERIAL_UOM = null;
+                    
                     _repository.InsertOrUpdate(dataToSave);
 
                     _uow.SaveChanges();
@@ -135,7 +152,7 @@ namespace Sampoerna.EMS.BLL
                 else
                 {
                     _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.MaterialMaster, userId,
-                        new ZAIDM_EX_MATERIAL(), dataToSave, out isApprovalExist,out approvalData, true);
+                        new MaterialDto(), data, out isApprovalExist,out approvalData, true);
                 }
                 _masterDataAprovalBLL.SendEmailWorkflow(approvalData.APPROVAL_ID);
                 output.Success = true;
@@ -177,7 +194,7 @@ namespace Sampoerna.EMS.BLL
                 };
                 _repositoryUoM.InsertOrUpdate(data);
                 _changesHistoryBll.AddHistory(changes);
-                _uow.SaveChanges();
+                //_uow.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -219,6 +236,8 @@ namespace Sampoerna.EMS.BLL
                 output.ErrorMessage = EnumHelper.GetDescription(ExceptionCodes.BaseExceptions.unhandled_exception);
             }
         }
+
+        
 
         public int DeleteMaterialUom(int id, string userId, string mn, string p)
         {

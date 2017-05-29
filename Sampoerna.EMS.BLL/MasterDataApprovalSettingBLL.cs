@@ -71,6 +71,17 @@ namespace Sampoerna.EMS.BLL
                 
             }
 
+            if (pageId == (int) Core.Enums.MenuList.MaterialMaster)
+            {
+                rc.Details.Add(new MasterDataApprovalSettingDetail()
+                {
+                    COLUMN_NAME = "CONVERTION",
+                    ColumnDescription = "Convertion",
+                    IS_APPROVAL = true,
+                    PAGE_ID = pageId
+                });
+            }
+
             return rc;
 
         }
