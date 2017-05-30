@@ -368,6 +368,7 @@ namespace Sampoerna.EMS.Website
                   .ForMember(dest => dest.MaterialDesc, opt => opt.MapFrom(src => src.GoodTypeDescription))
                   .ForMember(dest => dest.Hje, opt => opt.MapFrom(src => src.HJE))
                   .ForMember(dest => dest.Tariff, opt => opt.MapFrom(src => src.TARIFF))
+                  .ForMember(dest => dest.Convertion, opt => opt.MapFrom(src => 0))
                 ;
 
             Mapper.CreateMap<CK5ExternalSupplierDto, CK5ExternalSupplierModel>().IgnoreAllNonExisting()
