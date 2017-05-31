@@ -35,14 +35,14 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             model.ListProductTypes = Mapper.Map<List<ProductTypeFormViewModel>>(_exProdTypeBll.GetAll());
-            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer);
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller);
 
             return View("Index", model);
         }
 
         public ActionResult Edit(string id)
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 return RedirectToAction("Detail", new { id });
             }
