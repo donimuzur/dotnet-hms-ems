@@ -34,7 +34,7 @@ namespace Sampoerna.EMS.Website.Controllers
             uomModel.CurrentMenu = PageInfo;
 
             uomModel.Details = Mapper.Map<List<UomDetails>>(_uomBLL.GetAll());
-            uomModel.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            uomModel.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller ? true : false);
             return View("Index",uomModel);
         }
 
@@ -60,7 +60,7 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /Uom/Create
         public ActionResult Create()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
@@ -102,7 +102,7 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /Uom/Edit/5
         public ActionResult Edit(string id)
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 return RedirectToAction("Detail", new { id });
             }

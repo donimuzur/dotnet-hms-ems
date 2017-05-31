@@ -101,6 +101,10 @@ namespace Sampoerna.EMS.XMLReader
                         else if (role.BROLE_DESC.ToUpper().Contains("EXCISE CONTROLLER"))
                         {
                             roleMap.ROLEID = Enums.UserRole.Controller;
+                            if (ExistUser == null)
+                            {
+                                AddAllPlantToViewer(user.USER_ID);
+                            }
                         }
                         else if (role.BROLE_DESC.ToUpper().Contains("VIEWER"))
                         {

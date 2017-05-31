@@ -31,7 +31,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = _mainMenu;
             model.Details = Mapper.Map<List<MasterDataSetting>>(data);
             model.CurrentMenu = PageInfo;
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller;
 
             return View("index",model);
         }
@@ -40,7 +40,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new MasterDataApprovalSettingEditViewModel();
             model.MainMenu = _mainMenu;
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller;
             model.CurrentMenu = PageInfo;
 
             var data = _masterDataApprovalSettingBLL.GetAllEditableColumn(pageId);
@@ -57,7 +57,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller;
             try
             {
                 if (ModelState.IsValid)
@@ -99,7 +99,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new MasterDataApprovalSettingEditViewModel();
             model.MainMenu = _mainMenu;
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller;
             model.CurrentMenu = PageInfo;
 
             var data = _masterDataApprovalSettingBLL.GetAllEditableColumn(pageId);

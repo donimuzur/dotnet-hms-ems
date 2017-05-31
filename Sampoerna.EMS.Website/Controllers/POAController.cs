@@ -53,7 +53,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
                 Details = Mapper.Map<List<POAViewDetailModel>>(_poaBll.GetAll()),
-                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller ? true : false)
             };
 
             ViewBag.Message = TempData["message"];
@@ -62,7 +62,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
@@ -134,7 +134,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Edit(string id)
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 return RedirectToAction("Detail", new { id });
             }
@@ -329,7 +329,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Delete(string id)
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");

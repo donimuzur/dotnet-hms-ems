@@ -59,7 +59,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var dbData = _brandRegistrationBll.GetAllBrands();
             model.Details = Mapper.Map<List<BrandRegistrationDetail>>(dbData);
-            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller ? true : false);
             ViewBag.Message = TempData["message"];
             return View("Index", model);
         }
@@ -121,7 +121,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
@@ -253,7 +253,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Edit(string plant, string facode,string stickercode)
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 return RedirectToAction("Details", new { plant, facode, stickercode });
             }
@@ -521,7 +521,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Delete(string plant, string facode,string stickercode)
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");

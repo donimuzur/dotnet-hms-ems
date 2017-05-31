@@ -44,7 +44,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var userPlantDb = _userPlantMapBll.GetAllOrderByUserId();
             model.UserPlantList = Mapper.Map<List<UserPlantMapDetail>>(userIdPlant);
             model.UserPlantMaps = Mapper.Map<List<UserPlantMapDto>>(userPlantDb);
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller;
 
             return View("Index", model);
         }
@@ -78,7 +78,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Edit(string id)
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 return RedirectToAction("Detail", new { id });
             }
@@ -94,7 +94,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
