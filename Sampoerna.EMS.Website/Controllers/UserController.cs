@@ -41,7 +41,8 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                Details = Mapper.Map<List<UserItem>>(users)
+                Details = Mapper.Map<List<UserItem>>(users),
+                IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller
             };
             
             return View(model);
