@@ -139,7 +139,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             model.Ck5Type = ck5Type;
             model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller;
 
             //List<CK5Dto> listCk5Dto;
             //if (ck5Type == Enums.CK5Type.MarketReturn)
@@ -271,7 +271,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 ck5Type = Enums.CK5Type.ImporterToPlant;
 
             model.DetailList2 = GetCk5Items(ck5Type, model.SearchView);
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller;
             return PartialView("_CK5IntercompanyTablePartial", model);
         }
 
@@ -285,7 +285,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 ck5Type = Enums.CK5Type.DomesticAlcohol;
 
             model.DetailList3 = GetCk5Items(ck5Type, model.SearchView);
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller;
             return PartialView("_CK5DomesticAlcoholTablePartial", model);
         }
 
@@ -293,7 +293,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult Filter(CK5IndexViewModel model)
         {
             model.DetailsList = GetCk5Items(model.Ck5Type, model.SearchView);
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller;
             return PartialView("_CK5TablePartial", model);
         }
 
@@ -400,7 +400,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             model.Ck5Type = Enums.CK5Type.MarketReturn;
             model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller;
             model.IsCompletedType = true;
             var listCk5Dto = _ck5Bll.GetCk5ByType(Enums.CK5Type.MarketReturn); //only get based on the type
 
@@ -427,7 +427,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterMarketReturn(CK5IndexViewModel model)
         {
             model.DetailsList = GetCk5MarketReturnCompletedItems(model.SearchView);
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller;
             return PartialView("_CK5TablePartial", model);
         }
 
@@ -1091,7 +1091,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new CK5FormViewModel();
 
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 return RedirectToAction("DetailsView", new { id });
             }
@@ -1151,7 +1151,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new CK5FormViewModel();
 
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 return RedirectToAction("DetailsView", new { id });
             }
@@ -1489,7 +1489,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new CK5FormViewModel();
 
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 return RedirectToAction("DetailsView", new { id });
             }
@@ -4795,7 +4795,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.MainMenu = Enums.MenuList.CK5;
             model.CurrentMenu = PageInfo;
             model.IsNotViewer = !(CurrentUser.UserRole == Enums.UserRole.Administrator ||
-                                 CurrentUser.UserRole == Enums.UserRole.Viewer);
+                                 CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller);
             return View("CK5UploadFileDocument", model);
         }
 

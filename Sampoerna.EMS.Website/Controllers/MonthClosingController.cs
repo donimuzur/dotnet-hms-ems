@@ -48,14 +48,14 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var closingList = _monthClosingBll.GetList(input);
             model.MonthClosingList = Mapper.Map<List<MonthClosingDetail>>(closingList);
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller;
 
             return View("Index", model);
         }
 
         public ActionResult Create()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
@@ -162,7 +162,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Edit(int? id)
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 return RedirectToAction("Detail", new { id });
             }

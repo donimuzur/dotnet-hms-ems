@@ -33,7 +33,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
 
             model.Kppbcs = Mapper.Map<List<ZAIDM_EX_KPPBCDto>>(_kppbcbll.GetAll());
-            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller ? true : false);
             return View("Index", model);
         }
 
@@ -54,7 +54,7 @@ namespace Sampoerna.EMS.Website.Controllers
        
         public ActionResult Edit(string id)
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 return RedirectToAction("Detail", new { id });
             }

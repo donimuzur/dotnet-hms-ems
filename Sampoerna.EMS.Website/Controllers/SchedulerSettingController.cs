@@ -37,7 +37,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.ConfigJson = _schedulerSettingBll.GetConfigJson();
             model.MainMenu = Enums.MenuList.Settings;
             model.CurrentMenu = PageInfo;
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller;
 
             return View(model);
         }
@@ -49,7 +49,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
-                if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+                if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
                     return RedirectToAction("Index");
 
                 _schedulerSettingBll.Save(data);

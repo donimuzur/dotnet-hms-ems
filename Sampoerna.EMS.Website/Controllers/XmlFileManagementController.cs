@@ -96,7 +96,7 @@ namespace Sampoerna.EMS.Website.Controllers
             model.CurrentMenu = PageInfo;
             if (model.XmlLogStatus == Enums.XmlLogStatus.Error)
                 model.IsError = true;
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller;
 
             return View(model);
         }
@@ -105,7 +105,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
-                if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+                if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
                     return RedirectToAction("Index");
                
 

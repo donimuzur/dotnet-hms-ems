@@ -63,7 +63,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var data = _materialBll.getAllMaterial(model.GoodType);
             model.Details = AutoMapper.Mapper.Map<List<MaterialDetails>>(data);
-            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller ? true : false);
             ViewBag.Message = TempData["message"];
             return View("Index", model);
 
@@ -138,7 +138,7 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /Material/Create
         public ActionResult Create()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
@@ -215,7 +215,7 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /Material/Edit/5
         public ActionResult Edit(string mn, string p)
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 return RedirectToAction("Details", new { mn, p });
             }
@@ -330,7 +330,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Delete(string mn, string p)
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
@@ -360,7 +360,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var data = _materialBll.getAllMaterial(model.GoodType);
             model.Details = AutoMapper.Mapper.Map<List<MaterialDetails>>(data);
-            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller ? true : false);
 
             return PartialView("_MaterialList", model);
         }

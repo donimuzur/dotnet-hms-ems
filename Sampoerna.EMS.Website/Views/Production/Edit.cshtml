@@ -278,7 +278,6 @@
             $('#SearchInput_BrandCe option').remove();
 
             ajaxSelectCompany('@Url.Action("CompanyListPartialProduction", "Production")', { companyId: cpy });
-            
         });
 
 
@@ -314,7 +313,16 @@
                         }
                         var listPlantX = '@Model.PlantWerks';
                         var exist = 0 != $('#SearchInput_PlantId option[value=' + listPlantX + ']').length;
-                        if (exist) $('#SearchInput_PlantId').val(listPlantX);
+                        if (exist) {
+                            $('#SearchInput_PlantId').val(listPlantX);
+
+                            var ce = listPlantX;
+                            var date = $("#ProductionDate").val();
+                            $('#btnSave').prop('disabled', false);
+                            $('#ClosingMonthText').html('');
+                            checkClosingDate('@Url.Action("CheckClosingMonth", "Production")', { plantWerk: ce, prodDate: date });
+                            displayClosingDate('@Url.Action("DisplayClosingMonth", "Production")', { plantWerk: ce, prodDate: date });
+                        }
 
                         ajaxSelectPlantWerks('@Url.Action("GetBrandCeByPlant", "Production")', { plantWerk: listPlantX });
                         $('#SearchInput_BrandCe option').remove();
