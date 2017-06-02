@@ -143,12 +143,12 @@ namespace Sampoerna.EMS.XMLReader
                         //zaapShftRptItem.PLANT_NAME = company.T001W.NAME1;
                     }
 
-                    var closingDate = CheckClosingDate(zaapShftRptItem.WERKS, zaapShftRptItem.PRODUCTION_DATE);
+                    //var closingDate = CheckClosingDate(zaapShftRptItem.WERKS, zaapShftRptItem.PRODUCTION_DATE);
 
-                    if (closingDate == null)
-                    {
+                    //if (closingDate == null)
+                    //{
                         itemTemp.Add(zaapShftRptItem);
-                    }
+                    //}
                     
 
                 }
@@ -280,12 +280,12 @@ namespace Sampoerna.EMS.XMLReader
                     }
 
 
-                    var closingDate = CheckClosingDate(production.WERKS, production.PRODUCTION_DATE);
+                    //var closingDate = CheckClosingDate(production.WERKS, production.PRODUCTION_DATE);
 
-                    if (closingDate == null)
-                    {
+                    //if (closingDate == null)
+                    //{
                         items.Add(production);
-                    }
+                    //}
                 }
 
                 return items;
