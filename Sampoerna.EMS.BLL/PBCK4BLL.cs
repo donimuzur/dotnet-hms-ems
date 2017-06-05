@@ -1614,8 +1614,8 @@ namespace Sampoerna.EMS.BLL
             var nppbkcData = _nppbkcBll.GetById(dtData.NPPBKC_ID);
 
             var plantData = _plantBll.GetT001WById(dtData.PLANT_ID);
-            var creatorPoa = _poaBll.GetById(dtData.CREATED_BY);
-            var poaUser = creatorPoa == null ? dtData.APPROVED_BY_POA : dtData.CREATED_BY;
+            var creatorPoa = _poaBll.GetById(dtData.APPROVED_BY_POA);
+            var poaUser = creatorPoa == null ? dtData.CREATED_BY : dtData.APPROVED_BY_POA;
             var poa = _poaBll.GetDetailsById(poaUser);
 
             var result = new Pbck4ReportDto();

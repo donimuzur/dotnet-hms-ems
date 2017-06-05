@@ -1279,8 +1279,8 @@ namespace Sampoerna.EMS.BLL
             var nppbkc = dtData.NPPBKC_ID;
             result.Detail.Nppbkc = nppbkc;
 
-            var creatorPoa = _poabll.GetById(dtData.CREATED_BY);
-            var poaUser = creatorPoa == null ? dtData.APPROVED_BY_POA : dtData.CREATED_BY;
+            var creatorPoa = _poabll.GetById(dtData.APPROVED_BY_POA);
+            var poaUser = creatorPoa == null ? dtData.CREATED_BY : dtData.APPROVED_BY_POA;
 
             var poa = _poabll.GetDetailsById(poaUser);
             if (poa != null)
