@@ -2158,8 +2158,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             drow[8] = lack2.SubmissionDate == null ? null : string.Format("{0} {1} {2}", lack2.SubmissionDate.Value.Day, _monthBll.GetMonth(lack2.SubmissionDate.Value.Month).MONTH_NAME_IND, lack2.SubmissionDate.Value.Year);
 
-            var creatorPoa = _poabll.GetById(lack2.CreatedBy);
-            var poaUser = creatorPoa == null ? lack2.ApprovedBy : lack2.CreatedBy;
+            var creatorPoa = _poabll.GetById(lack2.ApprovedBy);
+            var poaUser = creatorPoa == null ? lack2.CreatedBy : lack2.ApprovedBy;
 
             var poa = _poabll.GetDetailsById(poaUser);
             if (poa != null)
