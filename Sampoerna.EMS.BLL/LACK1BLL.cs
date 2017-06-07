@@ -3871,7 +3871,11 @@ namespace Sampoerna.EMS.BLL
 
             rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
 
-            rc.Lack1UomId = ck5Data.FirstOrDefault().PACKAGE_UOM_ID;
+            if (rc.Lack1UomId == null)
+            {
+                rc.Lack1UomId = ck5Data.FirstOrDefault().PACKAGE_UOM_ID;    
+            }
+            
 
             rc.TotalWaste = rc.Ck5RemarkData.Ck5WasteData.Sum(x => x.Amount);
             rc.TotalReturn = rc.Ck5RemarkData.Ck5ReturnData.Sum(x => x.Amount);
@@ -3932,7 +3936,10 @@ namespace Sampoerna.EMS.BLL
 
             rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
 
-            rc.Lack1UomId = ck5Data.FirstOrDefault().PACKAGE_UOM_ID;
+            if (rc.Lack1UomId == null)
+            {
+                rc.Lack1UomId = ck5Data.FirstOrDefault().PACKAGE_UOM_ID;
+            }
 
             rc.TotalWaste = rc.Ck5RemarkData.Ck5WasteData.Sum(x => x.Amount);
             rc.TotalReturn = rc.Ck5RemarkData.Ck5ReturnData.Sum(x => x.Amount);
