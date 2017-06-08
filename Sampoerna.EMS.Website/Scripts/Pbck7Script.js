@@ -163,19 +163,18 @@ $('#btn-save-upload').click(function () {
     //$('#information').addClass('active');
     //$('#tab-upload').removeClass("active");
     //$('#upload').removeClass("active");
-    
-    $('#upload-tab').removeClass('active');
-    $('#home-tab').addClass('active');
-
-    $('#information').addClass('active');
-    $('#upload').removeClass('active');
-    
 
     $('#body-tb-upload').html('');
     //$('#table-upload tbody').html('');
     
     for (var i = 0; i < uploaditems.length; i++) {
-      
+        
+        if (uploaditems[i][14].length > 0) {
+            $('#modalBodyMessage').text('Item Material Not Valid');
+            $('#ModalPbck7Items').modal('show');
+            return;
+        }
+
         var tr = '<tr>' +
             createColumn(i + 1) +
             createColumnWithHiddenField(uploaditems[i][2], 'UploadItems[' + i + '].FaCode') +
@@ -193,6 +192,12 @@ $('#btn-save-upload').click(function () {
         $('#body-tb-upload').append(tr);
         //$('#table-upload tbody').append(tr);
     }
+
+    $('#upload-tab').removeClass('active');
+    $('#home-tab').addClass('active');
+
+    $('#information').addClass('active');
+    $('#upload').removeClass('active');
 });
 
 function toUploadTab() {
