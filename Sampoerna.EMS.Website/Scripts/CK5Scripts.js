@@ -190,13 +190,21 @@ function ValidateRemainQuota(total) {
     return true;
 }
 
-function IsValidDataUpload() {
+function IsValidDataUpload(ck5Type) {
 
     var datarows = GetTableData($('#Ck5UploadTable'));
 
     for (var i = 0; i < datarows.length; i++) {
-        if (datarows[i][13].length > 0)
-            return false;
+        if (ck5Type == 'MarketReturn') {
+            if (datarows[i][14].length > 0) {
+                return false;
+            }
+        }
+        else {
+            if (datarows[i][13].length > 0) {
+                return false;
+            }
+        }
     }
 
     return true;
@@ -251,7 +259,7 @@ function GenerateXlsCk5Material(url, ck5Type) {
         success: function (response) {
             $('#ProdConvContent').html("");
             $('#ProdConvContent').html(response);
-            if (IsValidDataUpload())
+            if (IsValidDataUpload(''))
                 $('#CK5UploadSave').enable();
         }
       
@@ -1116,7 +1124,7 @@ function GenerateXlsCk5MarketReturnMaterial(url) {
         success: function (response) {
             $('#ProdConvContent').html("");
             $('#ProdConvContent').html(response);
-            if (IsValidDataUpload())
+            if (IsValidDataUpload('MarketReturn'))
                 $('#CK5UploadSave').enable();
         }
 
