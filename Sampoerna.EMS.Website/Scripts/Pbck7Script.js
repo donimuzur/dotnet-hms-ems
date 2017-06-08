@@ -9,6 +9,7 @@ function uploadXmlFile(url) {
         alert('Please browse a correct excel file to upload');
         return false;
     }
+    $('#btn-save-upload').prop("disabled", true);
 
     var formData = new FormData();
     var totalFiles = document.getElementById("itemExcelFile").files.length;
@@ -72,7 +73,7 @@ function uploadXmlFile(url) {
             }
             
             if (IsValidDataUploadPbck7())
-                $('#btn-save-upload').enable();
+                $('#btn-save-upload').prop("disabled", false);
         }
     });
 }
