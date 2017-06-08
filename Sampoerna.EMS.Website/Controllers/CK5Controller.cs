@@ -1028,7 +1028,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(outputResult);
 
-            return PartialView("_CK5UploadList", model.UploadItemModels);
+            return PartialView("_CK5UploadListMarketReturn", model.UploadItemModels);
         }
 
         [HttpPost]

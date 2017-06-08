@@ -56,6 +56,7 @@ function uploadXmlFile(url) {
                     classAction +
                     createColumn(i + 1) +
                     createColumn(uploaditems[i].FaCode) +
+                    createColumn('') +
                     createColumn(uploaditems[i].ProdTypeAlias) +
                     createColumn(uploaditems[i].Brand) +
                     createColumn(uploaditems[i].Content) +
@@ -82,7 +83,7 @@ function IsValidDataUploadPbck7() {
 
     for (var i = 0; i < datarows.length; i++) {
 
-        if (datarows[i][13].length > 0)
+        if (datarows[i][14].length > 0)
             return false;
     }
 
