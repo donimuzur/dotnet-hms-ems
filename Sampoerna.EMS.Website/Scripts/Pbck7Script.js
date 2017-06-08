@@ -56,7 +56,7 @@ function uploadXmlFile(url) {
                     classAction +
                     createColumn(i + 1) +
                     createColumn(uploaditems[i].FaCode) +
-                    createColumn('') +
+                    createColumn(uploaditems[i].StickerCode) +
                     createColumn(uploaditems[i].ProdTypeAlias) +
                     createColumn(uploaditems[i].Brand) +
                     createColumn(uploaditems[i].Content) +

@@ -1000,13 +1000,14 @@ namespace Sampoerna.EMS.Website.Controllers
                     try
                     {
                         uploadItem.Brand = datarow[0];
-                        uploadItem.Qty = datarow[1];
-                        uploadItem.Uom = datarow[2];
-                        uploadItem.Convertion = datarow[3];
-                        uploadItem.ConvertedUom = datarow[4];
-                        uploadItem.UsdValue = datarow[5];
-                        if (datarow.Count > 6)
-                            uploadItem.Note = datarow[6];
+                        uploadItem.StickerCode = datarow[1];
+                        uploadItem.Qty = datarow[2];
+                        uploadItem.Uom = datarow[3];
+                        uploadItem.Convertion = datarow[4];
+                        uploadItem.ConvertedUom = datarow[5];
+                        uploadItem.UsdValue = datarow[6];
+                        if (datarow.Count > 7)
+                            uploadItem.Note = datarow[7];
                         //uploadItem.ExGoodsType = groupType;
                         uploadItem.Plant = plantId;
 
