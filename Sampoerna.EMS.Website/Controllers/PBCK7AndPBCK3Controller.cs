@@ -855,8 +855,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     try
                     {
                         item.FaCode = datarow[0];
-                        item.Pbck7Qty = datarow[1];// Convert.ToDecimal(datarow[1]);
-                        item.FiscalYear = datarow[2];// Convert.ToInt32(datarow[2]);
+                        item.StickerCode = datarow[1];
+                        item.Pbck7Qty = datarow[2];// Convert.ToDecimal(datarow[1]);
+                        item.FiscalYear = datarow[3];// Convert.ToInt32(datarow[2]);
 
                         item.PlantId = plantId;
 
