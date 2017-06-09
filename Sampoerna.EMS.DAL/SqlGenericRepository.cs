@@ -232,8 +232,8 @@ namespace Sampoerna.EMS.DAL
                        
                        select new TableDetail
                        {
-                           //IsUniquePrimaryKey = primaryKeys.Contains(p.Name),
-                           IsNullable = !primaryKeys.Contains(p.Name),
+                           IsUniquePrimaryKey = primaryKeys.Contains(p.Name),
+                           IsNullable = p.Nullable,
                            PropertyName = p.Name,
                            TypeUsageName = p.TypeUsage.EdmType.Name, //type name
                            Documentation = p.Documentation
@@ -242,10 +242,7 @@ namespace Sampoerna.EMS.DAL
             return cols;
         }
 
-        public List<string> GetPrimaryOrUniqueKeys(string tableName)
-        {
-            
-        }
+        
 
     }
     
