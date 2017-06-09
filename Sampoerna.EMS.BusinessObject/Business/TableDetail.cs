@@ -14,5 +14,7 @@ namespace Sampoerna.EMS.BusinessObject.Business
         public Documentation Documentation { get; set; }
 
         public bool IsNullable { get; set; }
+
+        public bool IsUniquePrimaryKey { get; set; }
     }
 }
