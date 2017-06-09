@@ -219,12 +219,20 @@ namespace Sampoerna.EMS.DAL
         {
             var objContext = ((IObjectContextAdapter)_context).ObjectContext;
 
+            var primaryKeys = (from meta in objContext.MetadataWorkspace.GetItems(DataSpace.CSpace)
+                .Where(m => m.BuiltInTypeKind == BuiltInTypeKind.EntityType)
+                from q in (meta as EntityType).KeyMembers
+                    .Where(q => q.DeclaringType.Name == tableName)
+                select q.Name).ToList();
+            
             var cols = (from meta in objContext.MetadataWorkspace.GetItems(DataSpace.CSpace)
                        .Where(m => m.BuiltInTypeKind == BuiltInTypeKind.EntityType)
                        from p in (meta as EntityType).Properties
-                          .Where(p => p.DeclaringType.Name == tableName)
+                       .Where(p => p.DeclaringType.Name == tableName)
+                       
                        select new TableDetail
                        {
+                           IsUniquePrimaryKey = primaryKeys.Contains(p.Name),
                            IsNullable = p.Nullable,
                            PropertyName = p.Name,
                            TypeUsageName = p.TypeUsage.EdmType.Name, //type name
@@ -233,6 +241,8 @@ namespace Sampoerna.EMS.DAL
             
             return cols;
         }
+
+        
 
     }
     
