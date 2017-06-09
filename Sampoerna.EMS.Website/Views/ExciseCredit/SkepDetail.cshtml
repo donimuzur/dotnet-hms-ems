@@ -1,0 +1,288 @@
+﻿
+
+@model Sampoerna.EMS.Website.Models.ExciseCredit.ExciseCreditFormModel
+@{
+    ViewBag.Title = "SKEP Detail";
+}
+
+@Html.HiddenFor(model => model.ViewModel.DocumentNumber)
+@using (Html.BeginForm("SubmitSkep", "ExcisCredit", null, FormMethod.Post, new { id = "SkepForm", @class = "form-excise", role = "form", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Excise Credit Form</h3>
+                <label class="status">@Model.ViewModel.ApprovalStatus.Value</label>
+                <label class="status" id="docNumber">@Model.ViewModel.DocumentNumber</label>
+                
+            </div>
+        </div>
+    </div>
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <div role="tabpanel">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" id="home-tab" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Information</a></li>
+                        <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Print Out</a></li>
+                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.Partial("_DetailExciseForm", Model)
+                        @Html.Partial("_Printout", Model)
+                        <div role="tabpanel" class="tab-pane" id="changes">
+                            <div class="table-container">
+                                @Html.Partial("_ChangesHistoryTable", Model)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<div id="ck1List" style="display:none;"></div>
+<div id="errModal" class="modal ems-modal fade bs-example-modal-sm danger" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>*@
+                <h4 class="modal-title" id="errModalTitle"></h4>
+            </div>
+            <div class="modal-body">
+                <p id="errModalContent"></p>
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/UploadExcel.js"></script>
+    <script src="~/Scripts/autoNumeric.min.js"></script>
+    <script src="~/Scripts/excise-credit/terbilang.js"></script>
+    <script src="~/Scripts/excise-credit/terbilang.min.js"></script>
+    <script src="~/Scripts/excise-credit/date.js"></script>
+    <script src="~/Scripts/excise-credit/main.js"></script>
+    <script type="text/javascript">
+        var formID = '@Model.ViewModel.Id';
+        var formType = '@Convert.ToInt64(Sampoerna.EMS.Core.Enums.FormList.ExciseRequest)';
+        var totalProducts = '@Model.SkepInput.AvailableProductTypes.Count()';
+        var skepAttachment = undefined;
+        var bpjAttachment = undefined;
+       
+        Number.prototype.formatMoney = function (c, d, t) {
+            var n = this,
+                c = isNaN(c = Math.abs(c)) ? 2 : c,
+                d = d == undefined ? "." : d,
+                t = t == undefined ? "," : t,
+                s = n < 0 ? "-" : "",
+                i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))),
+                j = (j = i.length) > 3 ? j % 3 : 0;
+            return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+        };
+        $(document).ready(function () {
+
+            var amount = Number($("#ViewModel_Amount").val().split(',').join('.'));
+            var _terbilang = terbilang(amount.toString()) + " Rupiah";
+            $("#ExciseCreditAlphaText").html(_terbilang);
+            loadOtherDocs();
+            loadApprovedProducts();
+            $.extend($.fn.autoNumeric.defaults, {
+                aSep: '@System.Threading.Thread.CurrentThread.CurrentCulture.NumberFormat.NumberGroupSeparator',
+                aDec: '@System.Threading.Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator',
+                aSign: '',
+                vMin: '0.00',
+                vMax: '999999999999999999999.99',
+                lZero: 'allow',
+                wEmpty: 'press'
+            });
+            $("#CreditAmountDisplay").autoNumeric('init');
+            $("#ProductAmountInput").autoNumeric('init');
+        });
+
+        function generateFormData() {
+            var isNewSkep = '@Model.SkepInput.IsNewEntry';
+            var id = $("#Id").val();
+            var govStatus = $("#SkepStatus").val();
+            var decreeNumber = $("#DecreeNumber").val();
+            var decreeDate = $("#DecreeDate").val();
+            var creditAmount = $("#CreditAmount").val();
+            var startDate = $("#StartDate").val();
+            var bpjDate = $("#BpjDate").val();
+            var bpjNumber = $("#BpjNumber").val();
+            var notes = $("#Notes").val();
+            var valid = false;
+            if (isNewSkep.toUpperCase() == 'TRUE') {
+                valid = id && govStatus && decreeNumber && decreeDate && creditAmount && startDate && registeredProducts && registeredProducts.length > 0 && skepAttachment;
+            } else {
+                valid = id && govStatus && decreeNumber && decreeDate && creditAmount && startDate && registeredProducts && registeredProducts.length > 0;
+            }
+
+            if (!valid) {
+                showErrorDialog("SKEP Input form not complete!");
+                return;
+            }
+
+            var form = $("#SkepForm");
+            var token = $('input[name="__RequestVerificationToken"]', form).val();
+
+            if (window.FormData !== undefined) {
+                var data = new FormData();
+                data.append("__RequestVerificationToken", token);
+                data.append("id", id);
+                data.append("decree_number", decreeNumber);
+                data.append("decree_date", decreeDate);
+                data.append("status", govStatus);
+                data.append("start_date", startDate);
+                data.append("details", JSON.stringify(registeredProducts));
+                if (skepAttachment) {
+                    data.append("skep", skepAttachment, skepAttachment.name);
+                }
+
+                if (bpjAttachment) {
+                    data.append("bpj", bpjAttachment, bpjAttachment.name);
+                }
+
+                if (bpjNumber) {
+                    data.append("bpj_number", bpjNumber);
+                }
+
+                if (bpjDate) {
+                    data.append("bpj_date", bpjDate);
+                }
+
+                if (notes) {
+                    data.append("notes", notes);
+                }
+
+                return data;
+            }
+
+
+        }
+        function loadOtherDocs() {
+
+            $("#customloader").show();
+            $.ajax({
+                url: '@Url.Action("GetOtherDocuments")',
+                type: 'POST',
+                data: JSON.stringify({
+                    type: Number(formType),
+                    id: formID
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    $("#customloader").hide();
+                    if (response && response.length > 0) {
+                        for (var i = 0; i < response.length; i++) {
+                            otherDocs[i] = response[i];
+                            otherDocsName[i] = response[i].FileName;
+                            var url = response[i].PathURL;
+                            var parts = response[i].PathURL.split('/');
+                            otherDocs[i].name = parts[parts.length - 1];
+                            existingOtherDocs[otherDocs[i].FileID] = {
+                                active: true,
+                                index: i
+                            };
+                        }
+                        console.log("Other docs: ");
+                        console.log(otherDocs);
+                        console.log("Existing Other docs: ");
+                        console.log(existingOtherDocs);
+                        _renderFileList();
+
+                    }
+                },
+                error: function () {
+                    $("#customloader").hide();
+                }
+            });
+        }
+
+        function loadApprovedProducts() {
+
+            $("#customloader").show();
+            $.ajax({
+                url: '@Url.Action("GetApprovedProduct")',
+                type: 'POST',
+                data: JSON.stringify({
+                    id: formID
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    $("#customloader").hide();
+                    if (response && response.length > 0) {
+                        registeredProducts = [];
+                        for (var i = 0; i < response.length; i++) {
+                            registeredProducts[i] = {
+                                id: response[i].ExciseId,
+                                alias: response[i].ProductAlias,
+                                amount: response[i].Amount,
+                                amount_display: Number(response[i].Amount).formatMoney(2)
+                            };
+                        }
+                        renderProducts();
+
+                    }
+                },
+                error: function () {
+                    $("#customloader").hide();
+                }
+            });
+        }
+        var registeredProducts = [];
+
+        function renderProducts() {
+            console.log(registeredProducts);
+            var container = $("#ProductTypeContainer");
+            var content = '';
+            for (var i = 0; i < registeredProducts.length; i++) {
+
+                content += '<tr>' +
+                '<td>' +
+                '<input type="hidden" name="productsids" value="' + registeredProducts[i].id + '" />' +
+                '<input class="form-control" type="text" value="' + registeredProducts[i].alias + '" readonly />' +
+                '</td>' +
+                '<td>' +
+                '<input class="form-control" type="text" name="productsamounts" value="' + registeredProducts[i].amount_display + '" readonly />' +
+                '</td>' +
+                
+                '</tr>';
+
+            }
+
+            if (!content || content == '') {
+                content = '<td colspan="2">' +
+                    '<div class="alert alert-info">' +
+                    'No Products Added' +
+                    '</div>' +
+                    '</td>'
+            }
+            container.html(content);
+            var sum = calculateAmount();
+            $("#CreditAmount").val(sum);
+            $("#CreditAmountDisplay").autoNumeric('set', sum);
+        }
+
+        function calculateAmount() {
+            var sum = 0;
+            for (var i = 0; i < registeredProducts.length; i++) {
+                sum += registeredProducts[i].amount;
+            }
+
+            return sum;
+        }
+
+
+    </script>
+}

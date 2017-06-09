@@ -1,0 +1,135 @@
+﻿@*@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevelopment.ProductDevelopmentViewModel*@
+@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevelopment.PDSummaryReportViewModel
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 id="lblTitle">Product Development List</h3>
+            @if (Model.IsNotViewer)
+            {
+                <div class="action-button new">
+                    <a href="@Url.Action("CreateProductDevelopment", "BrandRegistrationTransaction")">
+                        <button class="btn btn-blue">New</button>
+                    </a>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                                          
+                @using (Ajax.BeginForm("FilterOpenDocument", "BrandRegistrationTransaction",
+           new AjaxOptions
+           {
+               HttpMethod = "POST",
+               InsertionMode = InsertionMode.Replace,
+               UpdateTargetId = "contenttable",
+               OnComplete = "ReloadDataTables"
+           }, new { @class = "form-excise", role = "form" }))
+                {
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">POA</label>
+                                <div id="divPoaList" class="col-md-8 ui-widget">
+                                    @Html.DropDownListFor(model => model.Filter.POA, Model.PoaList, "All", new { @class = "form-control selectpicker", @id = "opt_poa" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">Creator</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.Filter.Creator, Model.CreatorList, "All", new { @class = "form-control selectpicker", @id = "opt_creator" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input id="btn-filter" type="submit" class="btn btn-blue full" value="FILTER" />
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="button" id="btn-reset-filter" class="btn btn-blue full">RESET</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                 
+            </div>
+        </div>
+    </div>
+    <div id="contenttable" class="table-container">
+        @Html.Partial("_PDListTableOpen")
+    </div>
+</div>
+
+
+
+@section scripts {
+
+    <script src="~/Scripts/js/custom.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+
+        $(document).ready(function () {
+            $('#MenuSKEP').removeClass('open');
+            $('#MenuBrand').removeClass('open');
+
+            $('#MenuProduct').addClass('open');
+            $('#MenuProductDevelopment').addClass('active');
+            setupDataTables();
+        });
+
+        function setupDataTables() {
+
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#proDevTable')) {
+                table = $('#proDevTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#proDevTable').DataTable(
+                  {
+                      "sDom": "Rlfrtip",
+                      "language": {
+                          "zeroRecords": "No records found",
+                          "infoFiltered": "(filtered from _MAX_ total records)"
+                      }
+                  });
+
+
+            $('#proDevTable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+        }
+        function ReloadDataTables() {
+            $('.toggle-row').click(function () {
+
+                var filter = $(".filters");
+                filter.slideToggle(100).promise().done(function () { });
+            });
+            $('.loading').hide();
+            setupDataTables();
+        }
+
+    </script>
+}

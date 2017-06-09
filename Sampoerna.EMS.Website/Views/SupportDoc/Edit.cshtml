@@ -1,0 +1,151 @@
+﻿@model Sampoerna.EMS.Website.Models.SupportDoc.SupportDocViewModel
+
+@{
+    ViewBag.Title = "Edit Supporting Document Entry";
+}
+@using (Html.BeginForm("Edit", "SupportDoc", null, FormMethod.Post, new { @class = "form-excise", role = "form", enctype = "multipart/form-data", id = "editForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.Partial("_ActionButton", Model);
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="white-wrapper">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Update</a></li>
+                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="information">
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingOne">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                Update Supporting Document Entry
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                        <div class="panel-body">
+                                            @Html.Partial("_FormSupport", Model)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-group" id="accordion-7" role="tablist" aria-multiselectable="true">
+                                 <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="heading7">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
+                                                Workflow History
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
+                                        <div class="panel-body">
+                                            <div class="table-container">
+                                                @Html.Partial("_WorkflowHistoryNewModule", Model.WorkflowHistory)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="changes">
+                            <div class="table-container">
+                                @Html.Partial("_ChangesHistoryTable", Model)
+                            </div>
+                        </div>
+                    </div>                            
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+@using (Html.BeginForm("Submit", "SupportDoc", null, FormMethod.Post, new { @class = "form-excise", role = "form", enctype = "multipart/form-data", @id = "SubmitForm" }))
+{
+    @Html.AntiForgeryToken()    
+    @Html.HiddenFor(model=>model.ViewModel.DocumentID)
+}
+@section scripts
+{
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/autoNumeric.min.js"></script>
+    <script src="~/Scripts/master/supportdoc.js"></script>
+    <script type="text/javascript">
+         // register events
+        $(document)
+            .on("ready", EntryPoint)
+            .on("unload", Cleanup);
+        var idElm = idToElement("ViewModel_DocumentID");
+        function submit() {            
+            $("#SubmitForm").submit();
+            $("#SubmitButton").prop('disabled', true);
+        }
+           
+        function EntryPoint() {
+            init();       
+            attachEvents();         
+            supportdocnameElm.on("change", CheckDocExistence);
+            activeStateElm.on("change", CheckDocExistence);
+            
+            $("#SubmitButton").on("click", submit);
+
+            document.getElementById("editForm").onkeypress = function (e) {
+                var key = e.charCode || e.keyCode || 0;
+                if (key == 13) {                  
+                    e.preventDefault();
+                }
+            }
+        }
+
+        function Cleanup() {                 
+            supportdocnameElm.off("change", CheckDocExistence);
+            activeStateElm.off("change", CheckDocExistence);
+            CheckDocExistence();
+            $("#SubmitButton").on("click", submit);
+        }
+
+        function CheckDocExistence() {
+         
+            var supportdocname = supportdocnameElm.val();
+            var activeState = activeStateElm.val();
+                
+            $("#customloader").show();
+            $.ajax({
+                url: '@Url.Action("IsExist", "SupportDoc")',
+                type: 'POST',
+                data: {
+                    docName: supportdocname.toString(),
+                    isActive: activeState
+                },
+                success: function (response) {
+                    response = JSON.parse(response);
+                    log(response);
+                    if (response.exist && response.detail.Id != Number(idElm.val())) {
+                        //checkerElm.html("<span>Information: Document Name with Company :" + $("#CompanySelector option:selected").html() + " and Form :" + $("#FormNameSelector option:selected").html() + " already exist.</span>");
+                        checkerElm.html("<span>Information: Document Name already exist.</span>");
+                        checkerElm.show();
+                        saveButton.prop('disabled', true);
+                    } else {
+                        checkerElm.hide();
+                        saveButton.prop('disabled', false);
+                    }
+                    //saveButton.prop('disabled', response.exist);
+                    $("#customloader").hide();
+                },
+                error: function () {
+                    alert("error");
+                    $("#customloader").hide();
+                }
+            });
+         
+        }
+    </script>
+}

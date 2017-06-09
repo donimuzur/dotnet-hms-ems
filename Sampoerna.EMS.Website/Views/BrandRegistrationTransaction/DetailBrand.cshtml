@@ -1,0 +1,596 @@
+﻿@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.BrandRegistration.BrandRegistrationReqViewModel
+
+@Html.Partial("_ActionButtonBrand", Model)
+
+
+<div class="modal fade" id="myModalListItem" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-primary" id="addItem" data-dismiss="modal">Add</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="container-wrap">
+                    <div class="panel-group" id="accordion-2" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="heading2">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion-2" href="#collapse2" aria-expanded="true" aria-controls="collapse2">
+                                        List Item
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapse2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2">
+                                <div class="panel-body">
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="myModalItem" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="row">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4">
+                        <button type="button" class="btn btn-primary" id="addItem" data-dismiss="modal">Add</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="container-wrap">
+
+                    <div class="panel-group" id="accordion-8" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="heading8">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion-8" href="#collapse8" aria-expanded="true" aria-controls="collapse8">
+                                        Item Information
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapse8" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading8">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="col-md-6"><label>Request Number</label></div>
+                                            <div class="col-md-6">@Html.TextBoxFor(model => model.ViewDetailModel.PD_Detail_ID, new { @class = "form-control", @readonly = "true", @id = "pdDetailID", @style = "text-align:right" })</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="col-md-7"><label>Name Registration</label> </div>
+                                            <div class="col-md-5"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="col-md-7"><label>Latest SKEP No</label></div>
+                                            <div class="col-md-5">@Html.TextBoxFor(model => model.ViewDetailModel.Brand_Content, new { @class = "form-control", @readonly = "true", @id = "content", @style = "text-align:right" })</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="col-md-7"><label>FA Code (Old)</label></div>
+                                            <div class="col-md-5">@Html.TextBoxFor(model => model.ViewModelProduct.Fa_Code_Old, new { @class = "form-control", @readonly = "true", @id = "content", @style = "text-align:right" })</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="col-md-7"><label>FA Code Desc (Old)</label></div>
+                                            <div class="col-md-5">@Html.TextAreaFor(model => model.ViewModelProduct.Fa_Code_Old_Desc, new { @class = "form-control", @readonly = "true", @id = "content", @style = "text-align:right" })</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="col-md-7"><label>FA Code (New)</label></div>
+                                            <div class="col-md-5">@Html.TextBoxFor(model => model.ViewModelProduct.Fa_Code_New, new { @class = "form-control", @readonly = "true", @id = "content", @style = "text-align:right" })</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="col-md-7"><label>FA Code Desc (New)</label></div>
+                                            <div class="col-md-5">@Html.TextAreaFor(model => model.ViewModelProduct.Fa_Code_New_Desc, new { @class = "form-control", @readonly = "true", @id = "content", @style = "text-align:right" })</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="col-md-7"><label>Excisable Good Type</label></div>
+                                            <div class="col-md-5"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="col-md-7"><label>Company Tier</label></div>
+                                            <div class="col-md-5">@Html.TextBoxFor(model => model.ViewDetailModel.Company_Tier, new { @class = "form-control", @readonly = "true", @id = "companyTier", @style = "text-align:right" })</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="col-md-7"><label>HJE Per Pack</label></div>
+                                            <div class="col-md-5">@Html.TextBoxFor(model => model.ViewDetailModel.Hje, new { @class = "form-control", @readonly = "true", @id = "hje", @style = "text-align:right" })</div>
+
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="col-md-7"><label>HJE (Per Batang / Gr)</label></div>
+                                            <div class="col-md-5"></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="col-md-7"><label>Content</label></div>
+                                            <div class="col-md-2">@Html.TextBoxFor(model => model.ViewDetailModel.Brand_Content, new { @class = "form-control", @readonly = "true", @id = "content", @style = "text-align:right" })</div>
+                                            <div class="col-md-3">
+                                                <select class="form-control" id="ContentUnit" name="ContentUnit">
+                                                    <option value="">- Select -</option>
+                                                    <option value="Batang">Batang</option>
+                                                    <option value="Gram">Gram</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="col-md-7"><label>Tariff</label></div>
+                                            <div class="col-md-5">@Html.TextBoxFor(model => model.ViewDetailModel.Tariff, new { @class = "form-control", @readonly = "true", @id = "tariff", @style = "text-align:right" })</div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="col-md-7"><label>Packaging Material</label></div>
+                                            <div class="col-md-5">@Html.TextBoxFor(model => model.ViewDetailModel.Material_Package, new { @class = "form-control", @readonly = "true", @id = "packagingMaterial", @style = "text-align:right" })</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="col-md-7"><label>Market</label></div>
+                                            <div class="col-md-5">@Html.TextBoxFor(model => model.ViewDetailModel.Market_ID, new { @class = "form-control", @readonly = "true", @id = "marketID", @style = "text-align:right" })</div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-group" id="accordion-2" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="heading2">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion-2" href="#collapse2" aria-expanded="true" aria-controls="collapse2">
+                                        Packaging View
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapse2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2">
+                                <div class="panel-body">
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="col-md-6"><label>Front Side</label></div>
+                                            <div class="col-md-6">@Html.TextBoxFor(model => model.ViewDetailModel.Front_Side, new { @class = "form-control", @type = "text", @readonly = true, @id = "FrontSide" })</div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="col-md-6"><label>Left Side</label></div>
+                                            <div class="col-md-6">@Html.TextBoxFor(model => model.ViewDetailModel.Left_Side, new { @class = "form-control", @type = "text", @readonly = true, @id = "LeftSide" })</div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="col-md-6"><label>Top Side</label></div>
+                                            <div class="col-md-6">@Html.TextBoxFor(model => model.ViewDetailModel.Top_Side, new { @class = "form-control", @type = "text", @readonly = true, @id = "TopSide" })</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="col-md-6"><label>Back Side</label></div>
+                                            <div class="col-md-6">@Html.TextBoxFor(model => model.ViewDetailModel.Back_Side, new { @class = "form-control", @type = "text", @readonly = true, @id = "BackSide" })</div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="col-md-6"><label>Right Side</label></div>
+                                            <div class="col-md-6">@Html.TextBoxFor(model => model.ViewDetailModel.Right_Side, new { @class = "form-control", @type = "text", @readonly = true, @id = "RightSide" })</div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="col-md-6"><label>Bottom Side</label></div>
+                                            <div class="col-md-6">@Html.TextBoxFor(model => model.ViewDetailModel.Bottom_Side, new { @class = "form-control", @type = "text", @readonly = true, @id = "BottomSide" })</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+            @*<div class="modal-footer">
+                    <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
+                </div>*@
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div role="tabpanel">
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="information">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="col-md-6">@Html.LabelFor(model => model.ViewModel.Submission_Date, "Submission Date")</div>
+                                <div class="col-md-6">
+                                    <div class="input-group date">
+                                        @Html.TextBoxFor(model => model.ViewModel.Submission_Date, "{0:dd MMM yyyy}", new { @class = "form-control", @readonly = true })
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="col-md-6"><input type="radio" name="action" value="1" />New Brand Registration</div>
+                                <div class="col-md-6"><input type="radio" name="action" value="2" />Update HJE</div>
+                            </div>
+                        </div>
+                        <hr width="100%" />
+                        <div class="tab-wrapper">
+                            <div class="white-wrapper">
+                                <div class="row">
+
+                                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="headingOne">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                        Responsible Person & Authorization Owner
+                                                        <i class="fa fa-caret-down"></i>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                                <form class="form-excise">
+                                                    <div class="panel-body">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="col-md-6">@Html.LabelFor(model => model.POA.Name, "Name")</div>
+                                                                <div class="col-md-6">@Html.TextBoxFor(model => model.POA.Name, new { @class = "form-control", @type = "text", @readonly = true })</div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="col-md-6">@Html.LabelFor(model => model.ViewModel.Nppbkc_ID, "NPPBKC")</div>
+                                                                <div class="col-md-6">@Html.DropDownListFor(model => model.ViewModel.Nppbkc_ID, Model.NppbkcList, null, new { @class = " selectpicker form-control",disabled="disabled", @id = "NppbkcSelector" })</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="col-md-6"><label>Position</label></div>
+                                                                <div class="col-md-6">@Html.TextBoxFor(model => model.POA.Position, new { @class = "form-control", @type = "text", @readonly = true })</div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="col-md-6"><label>Effective Date Req</label></div>
+                                                                <div class="col-md-6">
+                                                                    <div class="input-group date">
+                                                                        @Html.TextBoxFor(model => model.ViewModel.Effective_Date, "{0:dd MMM yyyy}", new { @class = "form-control", @readonly = true })
+                                                                        <span class="input-group-addon">
+                                                                            <i class="fa fa-calendar"></i>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="col-md-6"><label>Address</label></div>
+                                                                <div class="col-md-6">@Html.TextAreaFor(model => model.POA.Address, new { @class = "form-control", @type = "text", @readonly = true, rows = "4", columns = "50" })</div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="col-md-6">
+                                                                    @Html.LabelFor(model => model.NPPBKC.Company, "Company")
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    @Html.HiddenFor(model => model.NPPBKC.Company.Id)
+                                                                    @Html.TextBoxFor(model => model.NPPBKC.Company.Name, new { @class = "form-control", @type = "text", @readonly = true, @id = "CompanyText" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="col-md-6"></div>
+                                                                <div class="col-md-6"></div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="col-md-6"><label>NPWP / PKP</label></div>
+                                                                <div class="col-md-6">
+                                                                    @Html.HiddenFor(model => model.NPPBKC.Company.Id)
+                                                                    @Html.TextBoxFor(model => model.NPPBKC.Company.Npwp, new { @class = "form-control", @type = "text", @readonly = true, @id = "NpwpText" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="col-md-6"></div>
+                                                                <div class="col-md-6"></div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="col-md-6"><label>Address Plant</label></div>
+                                                                <div class="col-md-6">@Html.TextAreaFor(model => model.Plant.Address, new { @class = "form-control", @type = "text", @readonly = true, @id = "AddressPlant", rows = "4", columns = "50" })</div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="col-md-6"></div>
+                                                                <div class="col-md-6"></div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="col-md-6">
+                                                                    @Html.LabelFor(model => model.NPPBKC.KppbcId, "KPPBC")
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    @Html.TextBoxFor(model => model.NPPBKC.KppbcId, new { @class = "form-control", @type = "text", @readonly = true, @id = "KppbcText" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel-group" id="accordion-1" role="tablist" aria-multiselectable="true">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="heading1">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion-1" href="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                                                        Request Number from Product Development
+                                                        <i class="fa fa-caret-down"></i>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapse1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1">
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <div class="col-md-3">
+                                                            <button type="button" id="uploadItem" class="btn btn-primary btn-sm"> Upload </button>
+                                                            @*<input name="fileUpload" id="fileUpload" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"  />*@
+                                                        </div>
+                                                        <div class="col-md-3"></div>
+                                                        <div class="col-md-2"></div>
+                                                        <div class="col-md-4">
+                                                            <button type="button" id="myModalListItem" class="btn btn-primary btn-sm" disabled data-toggle="modal" data-target="#myModalListItem">Add Item</button>
+                                                            <button type="button" id="delItem" onclick="DeleteItem()" disabled class="btn btn-primary btn-sm">Del</button>
+                                                            <button type="button" onclick="CheckAllItem()" disabled class="btn btn-primary btn-sm">Check All</button>
+                                                        </div>
+                                                    </div>
+                                                    @Html.Partial("_BrandListItem")
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="panel-group" id="accordion-10" role="tablist" aria-multiselectable="true">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="heading1">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion-10" href="#collapse10" aria-expanded="true" aria-controls="collapse10">
+                                                        Attachment Document
+                                                        <i class="fa fa-caret-down"></i>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapse10" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading10">
+                                                <div class="panel-body">
+                                                    <form role="form">
+                                                        <div class="form-excise">
+
+                                                            <div class="col-md-12">
+                                                                <div class="col-md-4">
+                                                                    <label>Supporting Documents</label>
+                                                                </div>
+
+                                                                <div class="col-md-12" id="SupportingDocs">
+                                                                </div>
+                                                                <div class="alert alert-danger" style="padding-left: 30px" id="SupportingError">
+                                                                </div>
+                                                                <div class="clearfix"></div>
+                                                                <hr width="100%" />
+                                                                <div class="col-md-4">
+                                                                    <label>Additional Documents</label>
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <div class="col-md-8">
+                                                                        <div class="form-group">
+                                                                            <input id="browseOtherDocFile" type="file" name="otherDocs[]" class="file" accept="application/pdf">
+                                                                            <div class="col-md-12">
+                                                                                <div class="col-md-10">
+                                                                                    <input type="text" id="browseOtherDocText" class="form-control" disabled placeholder="Select file">
+                                                                                </div>
+                                                                                <div class="col-md-2">
+                                                                                    <span class="input-group-btn">
+                                                                                        <button id="browseOtherDoc" disabled class="browse btn btn-primary" type="button">Browse</button>
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <button class="btn btn-success" type="button" disabled id="addOtherDocBtn">Add</button>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    <table class="display table table-bordered table-striped" cellspacing="0" id="OtherDocs">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th class="toggle-row" width="5%">#</th>
+                                                                                <th width="80%">File Name</th>
+                                                                                <th width="15%">Actions</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="otherDocsBody"></tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="panel-group" id="accordion-4" role="tablist" aria-multiselectable="true">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="heading4">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion-4" href="#collapse4" aria-expanded="true" aria-controls="collapse4">
+                                                        Fill SKEP Section
+                                                        <i class="fa fa-caret-down"></i>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapse4" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading4">
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="col-md-7"><label>Government Status</label></div>
+                                                            <div class="col-md-5"></div>
+                                                        </div>
+                                                        <div class="col-md-6"></div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="col-md-7"><label>Decree Number</label></div>
+                                                            <div class="col-md-5">@Html.TextBoxFor(model => model.ViewModel.Decree_No, new { @class = "form-control", @type = "text", @readonly = true, @id = "DecreeNumber" })</div>
+                                                        </div>
+                                                        <div class="col-md-6"></div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="col-md-7"><label>Decree Date</label></div>
+                                                            <div class="col-md-5">
+                                                                <div class="input-group date">
+                                                                    @Html.TextBoxFor(model => model.ViewModel.Decree_StartDate, "{0:dd MMM yyyy}", new { @class = "form-control", @readonly = true })
+                                                                    <span class="input-group-addon">
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6"></div>
+                                                        </div>
+                                                    </div>
+
+                                                    <hr width="100%" />
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <label>Documents</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <div class="col-md-8">
+                                                                <div class="form-group">
+                                                                    <input id="browseOtherDocFileSKEP" type="file" name="otherDocsSKEP[]" class="file" accept="application/pdf">
+                                                                    <div class="col-md-12">
+                                                                        <div class="col-md-10">
+                                                                            <input type="text" id="browseOtherDocTextSKEP" class="form-control" disabled placeholder="Select file">
+                                                                        </div>
+                                                                        <div class="col-md-2">
+                                                                            <span class="input-group-btn">
+                                                                                <button id="browseOtherDocSKEP" class="browse btn btn-primary" type="button">Browse</button>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <button class="btn btn-success" type="button" id="addOtherDocBtnSKEP">Add</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <table class="display table table-bordered table-striped" cellspacing="0" id="OtherDocsSKEP">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th class="toggle-row" width="5%">#</th>
+                                                                        <th width="80%">File Name</th>
+                                                                        <th width="15%">Actions</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody id="otherDocsBodySKEP"></tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="panel-group" id="accordion-5" role="tablist" aria-multiselectable="true">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading" role="tab" id="heading5">
+                                                    <h4 class="panel-title">
+                                                        <a data-toggle="collapse" data-parent="#accordion-5" href="#collapse5" aria-expanded="true" aria-controls="collapse5">
+                                                            Workflow History
+                                                            <i class="fa fa-caret-down"></i>
+                                                        </a>
+                                                    </h4>
+                                                </div>
+                                                <div id="collapse5" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading5">
+                                                    <div class="panel-body">
+                                                        <div class="table-container">
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+
+    <script src="~/Scripts/js/custom.js"></script>
+    <script src="~/Scripts/brand-registration-trans/main_brand.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+
+        $(document).ready(function () {
+            $('#MenuBrandRegistration').addClass('active');
+
+            var urlBrNumber = '@Url.Action("GetLastRecordBR", "BrandRegistrationTransaction")';
+            var uploadUrlBrand = '@Url.Action("UploadFilesBrand", "BrandRegistrationTransaction")';
+            attach();
+
+        });
+
+        function nppbkcSelectionChanges() {
+            var _url = '@Url.Action("GetNppbkc", "BrandRegistrationTransaction")';
+            var selectedNppbkc = nppbkc.val();
+            var _company = companyId.val();
+            var _sdUrl = '@Url.Action("GetSupportingDocumentsBrand", "BrandRegistrationTransaction")';
+            var urlPlant = '@Url.Action("GetPlant", "BrandRegistrationTransaction")';
+
+            ajaxNppbkcInfo(_url, selectedNppbkc);
+            ajaxPlantInfo(urlPlant, selectedNppbkc);
+            loadSupportingDocuments(_sdUrl, _company);
+        }
+
+    </script>
+}

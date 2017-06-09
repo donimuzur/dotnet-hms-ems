@@ -13,6 +13,7 @@ namespace Sampoerna.EMS.BLL.Services
     public class ZaidmExMaterialService : IZaidmExMaterialService
     {
         private IGenericRepository<ZAIDM_EX_MATERIAL> _repository;
+        private IGenericRepository<MATERIAL_UOM> _repositoryUoM;
         private ILogger _logger;
         private IUnitOfWork _uow;
         private ChangesHistoryBLL _changesHistoryBll;
@@ -22,12 +23,13 @@ namespace Sampoerna.EMS.BLL.Services
             _logger = logger;
             _uow = uow;
             _repository = _uow.GetGenericRepository<ZAIDM_EX_MATERIAL>();
+            _repositoryUoM = _uow.GetGenericRepository<MATERIAL_UOM>();
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
         }
 
         public ZAIDM_EX_MATERIAL GetByMaterialAndPlantId(string materialId, string plantId)
         {
-            return _repository.Get(c => c.STICKER_CODE == materialId && c.WERKS == plantId, null, "ZAIDM_EX_GOODTYP, UOM").FirstOrDefault();
+            return _repository.Get(c => c.STICKER_CODE == materialId && c.WERKS == plantId, null, "ZAIDM_EX_GOODTYP, UOM,MATERIAL_UOM").FirstOrDefault();
         }
 
         public List<ZAIDM_EX_MATERIAL> GetByPlantId(string plantId)
@@ -112,6 +114,25 @@ namespace Sampoerna.EMS.BLL.Services
         public void Save(ZAIDM_EX_MATERIAL data)
         {
             _repository.Insert(data);
+        }
+
+        public void ClearConvertion(string mn, string p)
+        {
+            try
+            {
+                var tobeDeleted = _repositoryUoM.Get(x => x.STICKER_CODE == mn && x.WERKS == p).ToList();
+
+                foreach (var materialUom in tobeDeleted)
+                {
+                    _repositoryUoM.Delete(materialUom);
+                }
+                _uow.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
         }
     }
 }

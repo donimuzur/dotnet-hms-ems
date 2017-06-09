@@ -1,0 +1,54 @@
+﻿@model IEnumerable<Sampoerna.EMS.Website.Models.ExciseCredit.ExciseCreditCk1Model>
+<html>
+    <head>
+        @{
+            var obj = Model.First();
+        }
+        <title>CK-1 List (@obj.StartMonth to @obj.EndMonth)</title>
+        <link rel="stylesheet" href="@String.Format("{0}://{1}{2}/Content/bootstrap.min.css", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"))" />
+    </head>
+<body>
+    <h2 class="text-center">CK-1 List for 6 Last Months</h2>
+    <h3 class="text-center">(@obj.StartMonth to @obj.EndMonth)</h3>
+    <br />
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th width="5%">#</th>
+                <th width="10%">Month</th>
+                <th width="15%">Product Type</th>
+                <th width="20%">CK-1 Date</th>
+                <th width="20%">Order Qty</th>
+                <th width="30%">Amount (Rp)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var group in Model)
+            {
+                foreach (var data in group.Details)
+                {
+                    <tr>
+                        <td>@data.Id</td>
+                        <td>@data.PeriodDisplay</td>
+                        <td>@data.ProductTypeCode</td>
+                        <td>@String.Format("{0:dd/MM/yyyy}", data.CK1Date)</td>
+                        <td>@data.OrderQuantity</td>
+                        <td>@String.Format("{0:N}", data.Amount)</td>
+                    </tr>
+                }
+                <tr class="active">
+                    <td colspan="4">3 Months Average</td>
+                    <td>@String.Format("{0}", group.AverageQuantity3)</td>
+                    <td>@String.Format("{0:N}", group.AverageAmount3)</td>
+                </tr>
+                <tr class="active">
+                    <td colspan="4">6 Months Average</td>
+                    <td>@String.Format("{0}", group.AverageQuantity6)</td>
+                    <td>@String.Format("{0:N}", group.AverageAmount6)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>
+

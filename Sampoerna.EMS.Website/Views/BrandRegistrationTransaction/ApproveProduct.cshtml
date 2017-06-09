@@ -1,0 +1,569 @@
+﻿@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevelopment.ProductDevelopmentViewModel
+<style>
+    fieldset {
+        margin: 10px;
+        border: 1px solid silver;
+        padding: 10px;
+        border-radius: 4px;
+    }
+
+    legend {
+        width: 38%;
+        padding: 2px;
+        font-size: 16px !important;
+        text-align: left;
+    }
+</style>
+@{
+    ViewBag.Title = "Approve Product Development";
+}
+
+@Html.HiddenFor(model => model.ViewModel.PD_ID, new { @id = "PD_ID" })
+@Html.Partial("_ActionButtonProduct", Model)
+@Html.Partial("_DetailModalLock")
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div role="tabpanel">
+                @Html.HiddenFor(model => model.ViewModel.PD_ID, new { @id = "PD_ID" })
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="information">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="col-md-3"><label>First Name</label></div>
+                                <div class="col-md-6">@Html.TextBoxFor(model => model.ViewModel.Creator.FirstName, new { @class = "form-control", @maxlength = "22", disabled = "disabled" })</div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="col-md-3"><label>Last Name</label></div>
+                                <div class="col-md-6">@Html.TextBoxFor(model => model.ViewModel.Creator.LastName, new { @class = "form-control", @maxlength = "22", disabled = "disabled" })</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="col-md-3"><label>Email</label></div>
+                                <div class="col-md-6">@Html.TextBoxFor(model => model.ViewModel.Creator.Email, new { @class = "form-control", @maxlength = "22", disabled = "disabled" })</div>
+                            </div>
+                        </div>
+                        <hr width="100%" />
+                        <div class="row"></div>
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="overflow-x: scroll;">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingOne">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            Product Development
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                @*<button type="button" id="uploadItem" class="btn btn-primary btn-sm"> Upload </button>*@
+                                            </div>
+                                            <div class="col-md-3"></div>
+                                            <div class="col-md-6 text-right">                                              
+                                                @if (Model.IsExciser)
+                                                {
+                                                    <button type="button" class="btn btn-primary btn-sm" id="ApproveButton">Approve</button>
+                                                    <button type="button" class="btn btn-primary btn-sm" id="ReviseButton" >Revise</button>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="table-container" id="contenttableproduct">
+                                            @Html.Partial("_ProductListItem")
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel-group" id="accordion-2" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="heading2">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion-2" href="#collapse2" aria-expanded="true" aria-controls="collapse2">
+                                            Next Action
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapse2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            @foreach (var action in Enum.GetValues(typeof(Sampoerna.EMS.Core.Enums.ProductDevelopmentAction)))
+                                            {
+                                                <div class="col-md-3">
+                                                    @if (Model.ViewModel.Next_Action == (int)action)
+                                                    {
+                                                        @Html.RadioButton("Action", ((int)action).ToString(), new { @checked = "true", @disabled = "disabled" })
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.RadioButton("Action", ((int)action).ToString(), new { @disabled = "disabled" })
+                                                    }                                                    
+                                                    @Sampoerna.EMS.Utils.EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Sampoerna.EMS.Core.Enums.ProductDevelopmentAction), action.ToString()))
+                                                </div>
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-group" id="accordion-3" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="heading3">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion-3" href="#collapse3" aria-expanded="true" aria-controls="collapse3">
+                                            Notes Action
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapse3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading3">
+                                    <div class="panel-body">
+                                        <div class="table-container">
+                                            <p>New Brand Registration: Using Brand Registration Form for New Brand Request</p>
+                                            <p>Update HJE: Using Brand Registration for Update HJE</p>
+                                            <p>Map SKEP: Mapping Brand Registration</p>
+                                            <p>Penetapan SKEP: Penetapan SKEP Form</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@Html.Partial("_ReviseModalProduct", Model);
+@section scripts {
+
+    <script src="~/Scripts/js/scripts.min.js"></script>
+    <script src="~/Scripts/brand-registration-trans/main_product.js"></script>
+    <script type="text/javascript">
+        $(document)
+            .on("ready", EntryPoint)
+          //  .on("unload", Cleanup);
+
+        function EntryPoint() {
+            $('#MenuSKEP').removeClass('open');
+            $('#MenuBrand').removeClass('open');
+
+            $('#MenuProduct').addClass('open');
+            $('#MenuProductDevelopment').addClass('active');
+            handleBrowseEvent("browseOtherDoc", "browseOtherDocFile", "browseOtherDocText");
+            $("#ApproveButton").on("click", approve);
+            $("#ReviseButton").on("click", revise);
+        }
+
+        //$(".itemDisplay").click(function () {
+        //    var idItem = $(this).data('id');
+        //    console.log("id item : " + idItem);
+        //    getDetailItem(idItem);
+        //});
+
+        $(".itemDisplayLock").click(function () {
+            var idItem = $(this).data('id');
+            console.log("id item : " + idItem);
+            getDetailItem(idItem);
+            loadOtherDocs(idItem);
+            mapBrowseAction();
+        });
+
+        function getDetailItem(idVal) {
+            console.log("modal lock");
+            var docsItemLock = $("#DetailItemLock");
+            console.log(idVal);
+          
+            $.ajax({
+                url: '@Url.Action("GetDetailItemLock", "BrandRegistrationTransaction")',
+                type: 'POST',
+                data: {
+                    detailID: Number(idVal)
+                },
+            })
+            .success(function (partialResult) {
+                console.log("load item");               
+                docsItemLock.html(partialResult);
+                $('#myModalItemLock').modal('show');
+                
+            })
+            .error(function (error) {
+                console.log("failed load item");                
+
+            });
+        }
+
+        function loadOtherDocs(detailID) {
+
+            $("#customloader").show();
+            $.ajax({
+                url: '@Url.Action("GetOtherDocsProduct", "BrandRegistrationTransaction")',
+                type: 'POST',
+                data: JSON.stringify({
+                    detailID: Number(detailID),
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    $("#customloader").hide();
+                    if (response && response.length > 0) {
+                        for (var i = 0; i < response.length; i++) {
+                            otherDocs[i] = response[i];
+                            otherDocsName[i] = response[i].File_Name;
+                            var parts = response[i].Path_Url.split('/');
+                            otherDocs[i].name = parts[parts.length - 1];
+                            existingOtherDocs[otherDocs[i].File_ID] = {
+                                active: true,
+                                index: i
+                            };
+                        }
+                        console.log("Other docs: ");
+                        console.log(otherDocs);
+                        console.log("Existing Other docs: ");
+                        console.log(existingOtherDocs);
+                        _renderFileList();
+
+                    }
+                },
+                error: function () {
+                    $("#customloader").hide();
+                }
+            });
+        }
+
+        function _addOtherDoc() {
+            console.log("add other doc here");
+            var input = document.getElementById('browseOtherDocFile');
+            //console.log(input);
+            if (!input) {
+                showErrorDialog("Couldn't find the fileinput element.");
+            }
+            else if (!input.files) {
+                showErrorDialog("This browser doesn't seem to support the `files` property of file inputs.");
+            }
+            else if (!input.files[0]) {
+                showErrorDialog("Please select a file before clicking 'Add'");
+            }
+            else {
+                var file = input.files[0];
+                var sizeMB = fileUploadLimitElm.val();
+                //console.log("Size Limit: " + sizeMB);
+                var allowedFilesize = Number(sizeMB) * 1024 * 1024;
+                if (file.size > allowedFilesize) {
+                    showErrorDialog("File size is larger than allowed size (" + sizeMB + " MB)");
+                    return;
+                }
+                _addToList(file, fileNameInput.val());
+            }
+        }
+
+        function _removeFromList(index) {
+            if (otherDocs.length > index) {
+                var target = otherDocs[index];
+                if (target && target.FileID) {
+                    existingOtherDocs[target.FileID].active = false;
+                }
+                shift(index);
+                console.log("Other docs map: ");
+                console.log(otherDocMap);
+                console.log(existingOtherDocs);
+                otherDocs.splice(index, 1);
+                otherDocsName.splice(index, 1);
+                _renderFileList();
+
+            }
+        }
+
+        function shift(start) {
+            var cloneObj = $.extend(true, {}, otherDocMap);
+            var cloneObjName = $.extend(true, {}, otherDocMapName);
+            // delete otherDocMap[start];
+            var count = 0;
+            var first = undefined;
+            for (var key in cloneObj) {
+                if (!first) {
+                    first = parseInt(key);
+                }
+                count++;
+                if (cloneObj.hasOwnProperty(key)) {
+                    //console.log("Key: " + key);
+                    if (key >= start && start >= 0) {
+                        //console.log("Shifting " + key);
+                        if (key > 0) {
+                            otherDocMap[key - 1] = cloneObj[key];
+                            otherDocMapName[key - 1] = cloneObjName[key];
+                        }
+
+                    }
+                }
+            }
+            var idx = (first + count - 1);
+            if (idx >= 0) {
+                delete otherDocMap[idx];
+                delete otherDocMapName[idx];
+            }
+
+            //console.log("First: " + first);
+            //console.log("Count" + count);
+
+        }
+
+        var newOtherDocIdx = 0;
+
+        function _addToList(file, name) {
+            var idx = otherDocs.indexOf(file);
+            var updated = true;
+            for (var i = 0; i < otherDocs.length; i++) {
+                if (file.name == otherDocs[i].name) {
+                    updated = false;
+                    break;
+                }
+            }
+            if (idx < 0 && updated) {
+                otherDocs.push(file);
+                otherDocsName.push(name);
+                newOtherDocs[newOtherDocIdx] = file;
+                newOtherDocsName[newOtherDocIdx] = name;
+                otherDocMap[otherDocs.length - 1] = newOtherDocs[newOtherDocIdx];
+                otherDocMapName[otherDocs.length - 1] = newOtherDocsName[newOtherDocIdx];
+                newOtherDocIdx++;
+                console.log("New other docs: ");
+                console.log(otherDocMap);
+                _renderFileList();
+            }
+        }
+
+        function _renderFileList() {
+            console.log("Other Docs Length: " + otherDocs.length);
+            var container = $("#otherDocsBody");
+            var content = '';
+            if (!otherDocs || otherDocs.length <= 0) {
+                content += '<tr id="noOtherFileMsg">' +
+                            '<td colspan="4"><div class="alert alert-info">No Additonal Documents</div>' + '</td></tr>';
+            }
+            for (var i = 0; i < otherDocs.length; i++) {
+                content +=
+                    '<tr>' +
+                    '<td>' + (i + 1) + '</td>' +
+                    '<td>' + otherDocs[i].name + '</td>' +
+                    '<td>' + otherDocsName[i] + '</td>' +
+                    '<td><button class="btn btn-danger" onclick="_removeFromList(' + i + ')">Remove</button></td>' +
+                    '</tr>';
+            }
+            container.html(content);
+        }
+
+
+        function mapBrowseAction() {
+            console.log("Map additional action");
+           @foreach (var doc in Model.SupportingDocuments)
+            {
+                <text>
+                 handleBrowseEvent("supportDoc" + @doc.Id, "supportDocFile" + @doc.Id, "supportDocText" + @doc.Id);
+                $("#supportDocFile" + @doc.Id).change(function(){
+                    var input =document.getElementById("supportDocFile" + @doc.Id);
+                    if (!input) {
+                        showErrorDialog("Um, couldn't find the fileinput element.");
+                    }
+                    else if (!input.files) {
+                        showErrorDialog("This browser doesn't seem to support the `files` property of file inputs.");
+                    }
+                    else if (!input.files[0]) {
+                        showErrorDialog("Please select a file");
+                    }
+                    else {
+                        var file = input.files[0];
+                        if(!supportingDocs) {
+                            supportingDocs = {};
+                        }
+                        supportingDocs[@doc.Id] = file;
+                        console.log(supportingDocs);
+
+                    }
+                });
+
+                </text>
+            }
+        }
+
+         @*function getDetailItem(idVal) {
+            console.log("modal lock");
+            var docsItemLock = $("#DetailItemLock");
+            console.log(idVal);
+
+            $.ajax({
+                url: '@Url.Action("GetDetailItemLock", "BrandRegistrationTransaction")',
+                type: 'POST',
+                data: {
+                    detailID: Number(idVal)
+                },
+            })
+            .success(function (partialResult) {
+                console.log("load item");
+                docsItemLock.html(partialResult);
+                $('#myModalItemLock').modal('show');
+
+            })
+            .error(function (error) {
+                console.log("failed load item");
+
+            });
+        }*@
+        $('input:checkbox').click(function () {
+            if ($(this).is(':checked')) {
+                var idDetail = $(this).val();
+                tempItem.push(idDetail);
+                console.log(tempItem.length);
+            } else {
+                var idItem = $(this).val();
+                var index = tempItem.indexOf(idItem);
+
+                if (index > -1) {
+                    tempItem.splice(index, 1);
+                }
+                console.log("temp: "+tempItem.length);
+            }
+        });
+
+        function CheckItemAll() {
+            var tbodies = document.getElementsByTagName("tbody");
+            for (var i = 1 ; i <= tbodies.length ; i++) {
+                if (document.getElementById('check-' + i).disabled) {
+                    $('#check-' + i + '').prop('checked', false);
+                }
+                else {
+                    $('#check-' + i + '').prop('checked', true);
+                    var idItem = $('#check-' + i + '').val();
+                    tempItem.push(idItem);
+                }
+            };
+        }
+
+        function approve() {
+
+            var homeUrl = '@Url.Action("IndexProductDevelopment", "BrandRegistrationTransaction")';
+            var urlApprove = '@Url.Action("ApproveDetail", "BrandRegistrationTransaction")';
+            if (!tempItem.length) {
+                alert("Choose Item to be Approved.");
+                console.log("no item");
+            }
+            else {
+                $("#ApproveButton").prop('disabled', true);
+                $("#ReviseButton").prop('disabled', true);
+                console.log("approve here");
+                for (var i = 0; i < tempItem.length; i++) {
+                    var objDetail = { ProductDetailID: tempItem[i] };
+                    arrayDetail.push(objDetail);
+                    console.log(arrayDetail);
+                }
+
+                var pd_id = $('#PD_ID').val();
+                $.ajax({
+                    type: 'POST',
+                    url: urlApprove,
+                    data: {
+                        model: JSON.stringify(arrayDetail),
+                        PD_ID: Number(pd_id)
+                    },
+                    success: function (result) {
+                        console.log(result);
+                        if (result) {
+                            console.log("Approved.");
+                            document.location.href = homeUrl;
+                            //alert("Approve Item Success.");
+                        } else {
+                            showErrorDialog("Approve failed!");
+                            saveButton.prop("disabled", false);
+                            $("#customloader").hide();
+                        }
+                    },
+                    error: function (xhr, status, p3, p4) {
+                        var err = "Error " + " " + status + " " + p3 + " " + p4;
+                        if (xhr.responseText && xhr.responseText[0] == "{")
+                            err = JSON.parse(xhr.responseText).Message;
+                        showErrorDialog(err);
+                        $("#customloader").hide();
+                    }
+                });
+            }
+        }
+
+        function revise() {
+            if (!tempItem.length) {
+                alert("Choose Item to be Revised.");
+                console.log("no item selected");
+            }
+            else {
+                //show modal here
+                $('#modalRevise').modal('show');
+            }
+        }
+
+        $("#ReviseButtonSubmit").click(function () {
+            console.log("Click Reject");
+            reviseProcess();
+        });
+
+        function reviseProcess() {
+            var homeUrl = '@Url.Action("IndexProductDevelopment", "BrandRegistrationTransaction")';
+            var myText = document.getElementById('commentText').value;
+            console.log(myText);
+
+            var urlRevise = '@Url.Action("ReviseProduct", "BrandRegistrationTransaction")';
+
+            $("#ApproveButton").prop('disabled', true);
+            $("#ReviseButton").prop('disabled', true);
+
+            for (var i = 0; i < tempItem.length; i++) {
+                var objDetail = { ProductDetailID: tempItem[i] };
+                arrayDetail.push(objDetail);
+                console.log(arrayDetail);
+            }
+
+            var pd_id = $('#PD_ID').val();
+            if (myText == null || myText == "")
+            {
+                alert("Please fill reason to reject this Item.");
+            }
+            else
+            {
+                $.ajax({
+                    type: 'POST',
+                    url: urlRevise,
+                    data: {
+                        model: JSON.stringify(arrayDetail),
+                        PD_ID: Number(pd_id),
+                        comment: myText
+                    },
+                    success: function (result) {
+                        console.log(result);
+                        if (result) {
+                            console.log("Rejected.");
+                            document.location.href = homeUrl;
+                      //      alert("Reject Item Success.");
+                        } else {
+                            showErrorDialog("Reject failed!");
+                            saveButton.prop("disabled", false);
+                            $("#customloader").hide();
+                        }
+                    },
+                    error: function (xhr, status, p3, p4) {
+                        var err = "Error " + " " + status + " " + p3 + " " + p4;
+                        if (xhr.responseText && xhr.responseText[0] == "{")
+                            err = JSON.parse(xhr.responseText).Message;
+                        showErrorDialog(err);
+                        $("#customloader").hide();
+                    }
+                });
+            }
+        }
+
+    </script>
+}

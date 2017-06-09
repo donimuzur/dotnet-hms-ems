@@ -28,8 +28,9 @@ namespace Sampoerna.EMS.Website.Helpers
 
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
-            _authenticated = base.AuthorizeCore(httpContext);
+            _authenticated = base.AuthorizeCore(httpContext); // AD Authorization
 
+            //IUserAuthorizationBLL authorization;
             if (_authenticated)
             {
 
@@ -40,6 +41,11 @@ namespace Sampoerna.EMS.Website.Helpers
             _authorized = false;
             return _authorized;
         }
-       
+
+        public override void OnAuthorization(AuthorizationContext filterContext)
+        {
+            base.OnAuthorization(filterContext);
+        }
+
     }
 }

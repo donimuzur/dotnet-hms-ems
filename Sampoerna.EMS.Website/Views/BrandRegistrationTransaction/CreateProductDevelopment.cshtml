@@ -1,0 +1,785 @@
+﻿@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevelopment.ProductDevelopmentViewModel
+<style>
+    fieldset {
+        margin: 10px;
+        border: 1px solid silver;
+        padding: 10px;
+        border-radius: 4px;
+    }
+    legend {                 
+          width: 38%;
+          padding: 2px;         
+          font-size: 16px !important;
+          text-align:left;
+    }
+
+    
+   
+</style>
+
+
+
+@{
+    var baseurl = Request.Url.GetLeftPart(UriPartial.Authority);
+    var templateurl = baseurl + "/files_upload/ProductDevelopment/ImportTemplate/Product_Import_Item_Template.xlsx";
+}
+<div class="modal ems-modal fade modal_import" tabindex="-1" role="dialog" aria-labelledby="ImportModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Import Item</h4>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" style="display:none;font-size:small;" id="CheckUploadExcelLabel"></div>
+                <p align="center"><i class="fa fa-file"></i>&nbsp;<a href="@templateurl" download>Download Template</a></p>
+                <form id="form_ImportItems" method="post" enctype="multipart/form-data">
+                    <div class="col-lg-8">
+                        <input type="hidden" name="submission_date" id="txt_submissiondate_import" />
+                        <input type="hidden" name="item_notin" id="txt_hditemnotin_import" value="" />
+                        <input type="hidden" name="registration_type" id="txt_hdregistration_type" value="" />
+                        <input id="txt_FileImport" name="FileImport" type="file" class="form-control" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+                    </div>
+                    <div class="col-lg-4">
+                        <button type="button" id="btn_startimport" class="btn btn-blue btn-sm pull-right">Generate Import</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "ProductDevCreateForm" }))
+{
+    @Html.Partial("_ActionButtonProduct", Model)
+    <div role="form" class="form-product">
+        @Html.AntiForgeryToken()      
+        @Html.HiddenFor(model => model.ViewModel.PD_NO, new { @id = "PdNumber" })
+        @Html.HiddenFor(model => model.ViewModel.Next_Action, new { @id = "TempAction" })
+        @Html.HiddenFor(model => model.FileUploadLimit)
+        <div class="modal fade in ems-modal" id="myModalItem" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        @*<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>*@
+                        <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-primary btn-sm" id="addItem" >Add</button>
+                                <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">Close</button>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-wrap">
+
+                            <div class="panel-group" id="accordion-8" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="heading8">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion-8" href="#collapse8" aria-expanded="true" aria-controls="collapse8">
+                                                Item Information
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse8" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading8">
+                                        <div class="panel-body">
+                                            <div class="alert alert-danger" style="display:none;font-size:small;" id="CheckPlantLabel"></div>
+                                            <div class="alert alert-danger" style="display:none;font-size:small;" id="CheckFaOldLabel"></div>
+                                            <div class="alert alert-danger" style="display:none;font-size:small;" id="CheckFaNewLabel"></div>
+                                            <div class="alert alert-danger" style="display:none;font-size:small;" id="CheckHlLabel"></div>
+                                            <div class="row">
+                                                <div class="col-md-4"></div>
+                                                <div class="col-md-8">
+                                                    <div class="col-md-3"><label>Request No<span class="red">*</span></label></div>
+                                                    <div class="col-md-9">@Html.TextBoxFor(model => model.DetailModel.Request_No, new { @class = "form-control", @readonly = "true", @id = "brandRequestNo", @style = "text-align:right" })</div>
+                                                </div>
+                                            </div>
+                                            <hr width="100%" />
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="col-md-4"><label>Company<span class="red">*</span></label></div>
+                                                    <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Bukrs, Model.CompanyList, null, new { @class = "selectpicker form-control", @id = "CompanySelector" })</div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="col-md-4"><label>Plant<span class="red">*</span></label></div>
+                                                    <div class="col-md-8">
+                                                        <select class="form-control" id="PlantId" name="PlantId">
+                                                            <option value="">Select</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <fieldset>
+                                                        <legend><label>FA Code (Old)</label></legend>
+                                                        <div class="row">
+                                                            <div class="col-md-4"><label>FA Code</label></div>
+                                                            <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Fa_Code_Old, Model.MaterialList, "Select", new { @class = "selectpicker form-control", @id = "FaCodeOldSelector" })</div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-4"><label>Description</label></div>
+                                                            <div class="col-md-8">@Html.TextAreaFor(model => model.DetailModel.Fa_Code_Old_Desc, new { @class = "form-control", @readonly = "true", @id = "FaCodeOldDesc" })</div>
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <fieldset>
+                                                        <legend><label>FA Code (New)</label></legend>
+                                                        <div class="row">
+                                                            <div class="col-md-4"><label>FA Code</label></div>
+                                                            <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Fa_Code_New, Model.MaterialList, "Select", new { @class = "selectpicker form-control", @id = "FaCodeNewSelector" })</div>
+
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-4"><label>Description</label></div>
+                                                            <div class="col-md-8">@Html.TextAreaFor(model => model.DetailModel.Fa_Code_New_Desc, new { @class = "form-control", @readonly = "true", @id = "FaCodeNewDesc" })</div>
+                                                        </div>
+                                                    </fieldset>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="col-md-4"><label>Market<span class="red">*</span></label></div>
+                                                    <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Market_Id, Model.MarketList, new { @class = "selectpicker form-control", @id = "MarketSelector" })</div>
+                                                </div>
+                                                <div class="col-md-6">                                                
+                                                    <div class="col-md-4"><label>HL Code<span class="red">*</span></label></div>
+                                                    <div class="col-md-8">@Html.TextBoxFor(model => model.DetailModel.Hl_Code, new { @class = "form-control", @maxlength = "22", @id = "hlCode" })</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="col-md-6">@Html.CheckBoxFor(model => model.DetailModel.Is_Import, new { @id = "isImport" })<label>Import</label></div>
+                                                    <div class="col-md-6"></div>
+                                                </div>
+                                            </div>
+                                            <div class="row text-right">    
+                                                <div class="col-md-12">
+                                                    <span class="red">*</span><label style="font-size:small">) This Field Required</label>                                                 
+                                                </div>                                                                                             
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="panel-group" id="accordion-1" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="heading1">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion-1" href="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                                                Attachment Document
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1">
+                                        <div class="panel-body">
+                                            <form role="form">
+
+                                                <div class="form-excise">
+
+                                                    <div class="col-md-12">
+                                                        <div class="alert alert-danger" style="display:none;font-size:small;" id="CheckExistSuppDocLabel"></div>
+                                                        <div class="col-md-4">
+                                                            <label>Supporting Documents<span class="red">*</span></label>
+                                                        </div>
+                                                        <div class="col-md-12" id="SupportingDocs">
+                                                        </div>
+                                                        <div class="alert alert-danger" style="padding-left: 30px" id="SupportingError">
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                        <hr width="100%" />
+
+                                                        <div class="alert alert-danger" style="display:none;font-size:small;" id="CheckOtherDocLabel"></div>
+                                                        <div class="col-md-12">
+                                                            <label>Additional Documents</label>
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <input id="browseOtherDocFileName" type="text" name="browseOtherDocFileName" class="form-control" placeholder="Document Name" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <input id="browseOtherDocFile" type="file" name="otherDocs[]" class="file" accept="application/pdf">
+                                                                    <div class="col-md-9">                                                                        
+                                                                            <input type="text" id="browseOtherDocText" class="form-control" disabled placeholder="Select file">                                                                                                                                                                                                                        
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <span class="input-group-btn">
+                                                                            <button id="browseOtherDoc" class="btn btn-primary btn-sm" type="button" style="border-radius:20px!important">Browse</button>
+                                                                        </span>   
+                                                                    </div>                                                                  
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <button class="btn btn-primary btn-sm" type="button" id="addOtherDocBtn">Add</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <table class="display table table-bordered table-striped" cellspacing="0" id="OtherDocs">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th class="toggle-row" width="5%">#</th>
+                                                                        <th width="40%">File Name</th>
+                                                                        <th width="40%">Document Name</th>
+                                                                        <th width="15%">Actions</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody id="otherDocsBody">
+                                                                    <tr id="noOtherFileMsg">
+                                                                        <td colspan="4">
+                                                                            <div class="alert alert-info">No Additional Documents</div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>                                          
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div role="tabpanel">
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Workflow History</a></li>
+                                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                                    </ul>
+
+                                    <div class="tab-content">
+                                        <div role="tabpanel" class="tab-pane active" id="information">
+                                            <div class="tab-wrapper">
+                                                <div class="white-wrapper">
+                                                    <div class="panel-group" id="accordion-7" role="tablist" aria-multiselectable="true">
+                                                        <div class="panel panel-default">
+                                                            <div class="panel-heading" role="tab" id="heading7">
+                                                                <h4 class="panel-title">
+                                                                    <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
+                                                                        Workflow History
+                                                                        <i class="fa fa-caret-down"></i>
+                                                                    </a>
+                                                                </h4>
+                                                            </div>
+                                                            <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
+                                                                <div class="panel-body">
+                                                                    <div class="table-container">
+                                                                        @*@Html.Partial("_WorkflowHistoryNewModule", Model.WorkflowHistory)*@
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div role="tabpanel" class="tab-pane" id="changes">
+                                            <div class="table-container">
+                                                @Html.Partial("_ChangesHistoryTable", Model)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-wrap">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div role="tabpanel">
+                       
+
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="home">
+
+                                <!-- Tab panes -->
+
+                            <div class="alert alert-danger" style="display:none" id="CheckExistanceLabel">
+                            </div>
+                                <div class="row">
+                                    @*<label>No: </label>*@
+                                    @*<input type="hidden" value="@Model.ViewModel.PD_NO" />*@
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="col-md-3"><label>First Name<span class="red">*</span></label></div>
+                                        <div class="col-md-6">@Html.TextBoxFor(model => model.ViewModel.Creator.FirstName, new { @class = "form-control", @maxlength = "22", disabled = "disabled" })</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="col-md-3"><label>Last Name<span class="red">*</span></label></div>
+                                        <div class="col-md-6">@Html.TextBoxFor(model => model.ViewModel.Creator.LastName, new { @class = "form-control", @maxlength = "22", disabled = "disabled" })</div>
+                                    </div>
+                                </div>
+                              &nbsp;
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="col-md-3"><label>Email<span class="red">*</span></label></div>
+                                        <div class="col-md-6">@Html.TextBoxFor(model => model.ViewModel.Creator.Email, new { @class = "form-control", @maxlength = "22", disabled = "disabled" })</div>
+                                    </div>
+                                </div>
+                                <hr width="100%" />
+                                <div class="row"></div>
+                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="overflow-x: scroll;">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingOne">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                    List Product
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+
+                                            <div class="panel-body">
+                                                <div class="alert alert-danger" style="display:none" id="CheckListLabel">
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        @*<input name="ProdExcelfile" class="form-control" id="ProdExcelfile" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />*@
+                                                        <button id="btn_showimport_dialog" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".modal_import" data-backdrop="static" data-keyboard="false">Import</button>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        @*<input id="UploadProductGenerateBtn" type="button" class="btn btn-primary btn-sm" value="Generate" />*@
+                                                    </div>
+                                                    <div class="col-md-2"></div>
+                                                    
+                                                    <div class="col-md-4 text-right">
+                                                        <button type="button" id="modalItem" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModalItem" data-backdrop="static" data-keyboard="false">Add Item</button>
+                                                        <button type="button" id="delItem" onclick="DeleteItem()" class="btn btn-primary btn-sm">Delete</button>
+                                                        <button type="button" onclick="CheckAllItem()" class="btn btn-primary btn-sm">Check All</button>
+                                                    </div>
+                                                </div>
+                                                <div class="table-container" id="contenttableproduct">
+                                                    @Html.Partial("_ProductListItem")
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="panel-group" id="accordion-2" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="heading2">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion-2" href="#collapse2" aria-expanded="true" aria-controls="collapse2">
+                                                    Next Action
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2">
+                                            <div class="panel-body">
+                                                <div class="alert alert-danger" style="display:none" id="CheckRadioLabel">
+                                                </div>
+                                                <div class="row">
+                                                    @foreach (var action in Enum.GetValues(typeof(Sampoerna.EMS.Core.Enums.ProductDevelopmentAction)))
+                                                    {
+                                                        <div class="col-md-3">
+                                                            @Html.RadioButton("Action", ((int)action).ToString())
+                                                            @Sampoerna.EMS.Utils.EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Sampoerna.EMS.Core.Enums.ProductDevelopmentAction), action.ToString()))
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-group" id="accordion-3" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="heading3">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion-3" href="#collapse3" aria-expanded="true" aria-controls="collapse3">
+                                                    Notes Action
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading3">
+                                            <div class="panel-body">
+                                                <div class="table-container">
+                                                    <p>New Brand Registration: Using Brand Registration Form for New Brand Request</p>
+                                                    <p>Update HJE: Using Brand Registration for Update HJE</p>
+                                                    <p>Map SKEP: Mapping Brand Registration</p>
+                                                    <p>Penetapan SKEP: Penetapan SKEP Form</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section scripts {
+
+    <script src="~/Scripts/js/custom.js"></script>
+    <script src="~/Scripts/brand-registration-trans/main_product.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+
+        $(document).ready(function () {
+            $('#MenuProductDevelopment').addClass('active');
+
+
+            var countUrl = '@Url.Action("GetLastRecordItem", "BrandRegistrationTransaction")';
+            var urlPlantImport = '@Url.Action("GetPlantByCompanyImport", "BrandRegistrationTransaction")';
+            var urlPlantNonImport='@Url.Action("GetPlantByCompanyNonImport", "BrandRegistrationTransaction")';
+            var urlSupportDoc = '@Url.Action("GetSupportingDocumentsProduct", "BrandRegistrationTransaction")';
+            var urlOldDescription ='@Url.Action("GetCodeDescription", "BrandRegistrationTransaction")';
+            var urlNewDescription = '@Url.Action("GetCodeDescription", "BrandRegistrationTransaction")';
+            var urlNppbkc = '@Url.Action("GetNppbkc", "BrandRegistrationTransaction")';
+            var urlPdNumber = '@Url.Action("GetLastRecordPD", "BrandRegistrationTransaction")';
+            var uploadUrlProduct = '@Url.Action("UploadFilesProduct", "BrandRegistrationTransaction")';
+            var urlPlant = '@Url.Action("GetPlant", "BrandRegistrationTransaction")';
+            var createUrl = '@Url.Action("CreateProduct", "BrandRegistrationTransaction")';
+            var createDetailUrl = '@Url.Action("CreateProductDetail", "BrandRegistrationTransaction")';
+            var compId = $("#CompanySelector :selected").val();
+            var homeUrl = '@Url.Action("IndexProductDevelopment", "BrandRegistrationTransaction")';
+
+            ajaxGetPlant(urlPlantNonImport, compId);
+            loadSupportingDocuments(urlSupportDoc, compId);
+            attach();
+            
+            $('input:radio').change(function () {
+                radioElm.hide();
+                var selectedRadio = $("input[name='Action']:checked").val();
+                console.log(selectedRadio);
+                $('#TempAction').val(parseInt(selectedRadio));
+
+            });
+
+            $('#UploadProductGenerateBtn').click(function () {
+                prodGenerateClick('@Url.Action("UploadFileExcelProduct", "BrandRegistrationTransaction")');
+                //  prodGenerateClick();
+            });
+
+            $('#CompanySelector').on("change", function () {
+                var compId = $("#CompanySelector :selected").val();
+                $('#PlantId').html('');
+                $('#PlantId').append('<option value="">Select</option>');
+                console.log(compId);
+                loadSupportingDocuments(urlSupportDoc, compId);
+
+                if ($('#isImport').is(":checked")) {
+                    // For Import
+                    $('#PlantId').html('');
+                    $('#PlantId').append('<option value="">Select</option>');
+                    ajaxGetPlantImport(urlPlantImport, compId);
+                }
+                else {
+                    // For Non-Import
+                    $('#PlantId').html('');
+                    $('#PlantId').append('<option value="">Select</option>');
+                    ajaxGetPlant(urlPlantNonImport, compId);
+                }
+            });
+
+            $('#FaCodeOldSelector').on("change", function () {
+                var compId = $("#FaCodeOldSelector :selected").text();
+                ajaxFaCodeOldDescription(urlOldDescription, compId);
+                faOldElm.hide();
+            });
+
+            $('#FaCodeNewSelector').on("change", function () {
+                var compId = $("#FaCodeNewSelector :selected").text();
+                ajaxFaCodeNewDescription(urlNewDescription, compId);
+                faNewElm.hide();
+            });
+
+            $('#PlantId').on("change", function () {
+                var plant = $("#PlantId :selected").text();
+                var nppbkcId = $("#PlantId :selected").val();
+                plantElm.hide();
+                console.log("nppbkc id :" + nppbkcId);
+                ajaxLoadNppbkcData( urlNppbkc, nppbkcId);
+            });
+
+            $('#isImport').change(function () {
+                var compId = $("#CompanySelector :selected").val();
+                if ($(this).is(":checked")) {
+                    // For Import
+                    $('#PlantId').html('');
+                    $('#PlantId').append('<option value="">Select</option>');
+                    ajaxGetPlantImport(urlPlantImport, compId);
+                }
+                else {
+                    // For Non-Import
+                    $('#PlantId').html('');
+                    $('#PlantId').append('<option value="">Select</option>');
+                    ajaxGetPlant(urlPlantNonImport, compId);
+                }
+            });
+
+            ajaxLoadPDNumber(urlPdNumber);
+
+            saveButton.click(function () {
+
+                // do validation form here
+                if ($("input[name='Action']:checked").val() == null || arrayItem.length == 0) {
+                    if ($("input[name='Action']:checked").val() == null) {
+                        radioElm.html("<span>Please choose your next action for this Form.</span>");
+                        radioElm.show();
+                    }
+                    if (arrayItem.length == 0) {
+                        listElm.html("<span>No item filled in the list below.</span>");
+                        listElm.show();
+                    }
+                    checkerElm.html("<span>Information: Form not Complete. Please Check: List Product Tab or Next Action Tab</span>");
+                    checkerElm.show();
+                }
+                else {
+                    checkerElm.hide();
+                    radioElm.hide();
+                    listElm.hide();
+                    create();
+                }
+            });
+
+        });
+
+        $(document).unload(function () {
+            detach();
+        });
+     
+        function getUrl(ActionName) {
+            var BaseUrl = '@Url.Action("", "BrandRegistrationTransaction")';
+            var URL = BaseUrl + "/" + ActionName;
+            return URL;
+        }
+
+        $(".itemView").click(function () {
+            var idItem = $(this).data('id');
+            console.log("id item : " + idItem);
+            console.log("click");
+        });
+
+        $('#myModalItem').on('show.bs.modal', function () {
+            otherDocs = [];
+            otherDocsName = [];
+            supportingDocs = {};
+            console.log(otherDocs.length);
+            console.log(otherDocsName.length);
+            console.log("supp doc: " + supportingDocs);
+            renderFileList();
+        });
+
+        var productFormData = {};
+        function ajaxLoadPDNumber(urlPdNumber) {
+            var date = new Date();
+            var months = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+            var month = date.getMonth();
+            var year = date.getYear() + 1900;
+            var count = 0;
+
+            $("#customloader").show();
+            $.ajax({
+                url: urlPdNumber,
+                type: 'POST',
+                success: function (response) {
+                    $("#customloader").hide();
+                    count = parseInt(response) + 1;
+                    var restNumb = Pad(count, 10) + "/" + months[month] + "/" + year;
+                    console.log(restNumb);
+                    $('#PdNumber').val(restNumb);
+                    getValuePDNumber();
+                },
+                error: function () {
+                    $("#customloader").hide();
+                }
+            });
+        }
+
+        function FormatDocNumberPartial(companyAlias, cityAlias) {
+            var date = new Date();
+            var months = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+            var month = date.getMonth();
+            var year = date.getYear() + 1900;
+
+            var resultNumber =  companyAlias + "/" + cityAlias + "/" + months[month] + "/" + year;
+            console.log(resultNumber);
+            $("#brandRequestNo").val(resultNumber);
+
+        }
+
+        function GetLastNumberItem() {
+            var count = 0;
+            $.ajax({
+                url: '@Url.Action("GetLastRecordItem", "BrandRegistrationTransaction")',
+                async: false,
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    count = parseInt(response) + 1;
+                    console.log(count);
+                },
+                error: function () {
+                }
+            });
+            return count;
+        }
+
+        function ajaxPlantInfo( nppbkcId) {
+            var result = "";
+            $.ajax({
+                url: '@Url.Action("GetPlant", "BrandRegistrationTransaction")',
+                async: false,
+                type: 'POST',
+                data: { nppbkcId: nppbkcId },
+                success: function (response) {
+                    response = JSON.parse(response);
+                    if (response.Success) {
+                        var data = response.Data;
+                        result = data.IdPlant;
+                    }
+                },
+                error: function () {
+                }
+            });
+            return result;
+        }
+
+        function populateFormData() {
+            productFormData = {
+                Next_Action: parseInt($("#TempAction").val()),
+                PD_NO: $("#PdNumber").val()
+            };
+            console.log(JSON.stringify(productFormData));
+        }
+
+        function uploads() {
+            var files = otherDocs;
+            if (!files) {
+                files = [];
+            }
+            if (files && files.length > 0) {
+                if (window.FormData !== undefined) {
+                    var data = new FormData();
+                    var others = [];
+                    for (var x = 0; x < files.length; x++) {
+                        data.append("other_" + otherDocsName[x], files[x], files[x].name);
+                    }
+                    for (var key in supportingDocs) {
+                        if (supportingDocs.hasOwnProperty(key)) {
+                            data.append(key, supportingDocs[key], supportingDocs[key].name);
+                            console.log(supportingDocs[key]);
+                        }                       
+                    }                                      
+                    data.append("doc_number", $("#PdNumber").val());
+
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("UploadFilesProduct", "BrandRegistrationTransaction")',
+                            contentType: false,
+                            processData: false,
+                            data: data,
+                            success: function (result) {
+                                $("#customloader").hide();
+                                console.log("item added.");
+                       
+                            },
+                            error: function (xhr, status, p3, p4) {
+                                var err = "Error " + " " + status + " " + p3 + " " + p4;
+                                if (xhr.responseText && xhr.responseText[0] == "{")
+                                    err = JSON.parse(xhr.responseText).Message;
+                                console.log(err);
+                                showErrorDialog(err);
+                            }
+                        });
+                    } else {
+                        showErrorDialog("This browser doesn't support HTML5 file uploads!");
+                    }
+                }
+            }
+
+        
+
+            function create() {
+
+                var homeUrl = '@Url.Action("IndexProductDevelopment", "BrandRegistrationTransaction")';
+                var createDetailUrl = '@Url.Action("CreateProductDetail", "BrandRegistrationTransaction")';
+                $("#ProductDevCreateForm").validate();
+                var productFormValid = $("#ProductDevCreateForm").valid();
+                var supportDocsInputs = $("form#ProductDevCreateForm input[type=file]");
+                if (!productFormValid) {
+                    alert("Supporting Document are required.");
+                    showErrorDialog("Supporting documents are required.");
+                    return;
+                }
+                var sizeMB = fileUploadLimitElm.val();
+                for (var key in supportingDocs) {
+                    if (supportingDocs.hasOwnProperty(key)) {
+                        if (supportingDocs[key].size > Number(sizeMB) * 1024 * 1024) {
+                            showErrorDialog("File size is larger than allowed size (" + sizeMB + " MB)");
+                            return;
+                        }
+                    }
+                }
+                if (productFormValid) {
+                    populateFormData();
+                    $("#customloader").show();
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("CreateProduct", "BrandRegistrationTransaction")',
+                        data: {
+                            model: JSON.stringify(productFormData)
+                        },
+                        success: function (result) {
+                            console.log(result);
+                            if (result) {
+                                createDetail(createDetailUrl, result);
+                                $("#customloader").hide();
+                                document.location.href = homeUrl;
+
+                            } else {
+                                showErrorDialog("Save failed!");
+                                saveButton.prop("disabled", false);
+                                $("#customloader").hide();
+                            }
+                        },
+                        error: function (xhr, status, p3, p4) {
+                            var err = "Error " + " " + status + " " + p3 + " " + p4;
+                            if (xhr.responseText && xhr.responseText[0] == "{")
+                                err = JSON.parse(xhr.responseText).Message;
+                            showErrorDialog(err);
+                            $("#customloader").hide();
+                        }
+                    });
+                    //saveButton.prop("disabled", true);
+                }
+            }
+
+
+        
+    </script>
+}

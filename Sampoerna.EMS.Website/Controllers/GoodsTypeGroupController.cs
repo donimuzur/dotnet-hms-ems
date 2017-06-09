@@ -99,7 +99,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             goodsTypeGroup.Details = distinctDetail;
-            goodsTypeGroup.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            goodsTypeGroup.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller ? true : false);
             return View("Index", goodsTypeGroup);
         }
 
@@ -113,7 +113,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Create()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller )
             {
                 AddMessageInfo("Operation not allow", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
@@ -208,7 +208,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Edit(int id)
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 return RedirectToAction("Details", new { id });
             }

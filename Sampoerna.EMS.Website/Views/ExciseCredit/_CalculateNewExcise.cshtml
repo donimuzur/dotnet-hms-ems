@@ -1,0 +1,179 @@
+﻿
+@model Sampoerna.EMS.Website.Models.ExciseCredit.CalculationDetailModel
+<style>
+    #calcDetailModal .modal-dialog {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    #calcDetailModal .modal-content {
+        height: auto;
+        min-height: 100%;
+        border-radius: 0;
+    }
+</style>
+<div class="modal ems-modal fade" tabindex="-1" role="dialog" aria-labelledby="calcDetail" id="calcDetailModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Calculate Excise Credit New</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                <label>NPPBKC</label>
+                            </div>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(model => model.NppbkcId, new { @readonly = true, @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div role="tabpanel">
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" id="credit3-tab" class="active"><a href="#credit3" aria-controls="credit3" role="tab" data-toggle="tab">3 Months Credit Range AVG</a></li>
+                                <li role="presentation"><a href="#credit6" aria-controls="credit6" role="tab" data-toggle="tab">6 Months Credit Range AVG</a></li>
+                            </ul>
+                            <!-- Tab panes -->
+                            <div class="tab-content">
+                                <div role="tabpanel" class="tab-pane active" id="credit3">
+                                    @Html.Partial("_CreditRange", Model.CreditRanges[3])
+                                </div>
+                                <div role="tabpanel" class="tab-pane" id="credit6">
+                                    @Html.Partial("_CreditRange", Model.CreditRanges[6])
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <button type="button" class="btn btn-primary" id="ckListButton">Detail CK-1 View</button>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                <div class="col-md-6">
+                                    <label>Adjustment</label>
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.HiddenFor(model => Model.Adjustment)
+                                    @Html.TextBoxFor(model => model.AdjustmentDisplay, new { @readonly = true, @class = "form-control text-right" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="col-md-6">
+                                    <label>Liquidity Ratio</label>
+                                </div>
+                                <div class="col-md-6">
+                                    
+                                    @Html.TextBoxFor(model => model.LiquidityRatio, new { @readonly = true, @class = "form-control text-right" })
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="col-md-6">
+                                    <label>Year</label>
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.TextBoxFor(model => model.Year, new { @readonly = true, @class = "form-control text-right" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <h4>Credit Adjustment</h4>
+                    @{ 
+                        var grandTotal = 0.0;
+                    }
+                    @foreach (var pair in Model.MaxCreditRange)
+                    {
+                       grandTotal += pair.Value.Total;
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>@pair.Key</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.AdjustmentDisplay, new { @readonly = true, @class = "form-control text-right" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <label>x</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control text-right" value="@String.Format("{0:N}", pair.Value.Value)" readonly />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <label>=</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control text-right" value="@String.Format("{0:N}", pair.Value.AdditionalValue)" readonly />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <label>+</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control text-right" value="@String.Format("{0:N}", pair.Value.Value)" readonly />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <label>=</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control text-right" value="@String.Format("{0:N}", pair.Value.Total)" readonly />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-2">
+                            <div class="col-md-3 col-md-offset-6">
+                                <label class="pull-right">Grand Total</label>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <label>=</label>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control text-right" value="@String.Format("{0:N}", grandTotal)" id="grandTotal" readonly />
+                                        <input type="hidden" value="@grandTotal" id="grandTotalValue"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="saveCalcResult" data-dismiss="modal">Save</button>
+                <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

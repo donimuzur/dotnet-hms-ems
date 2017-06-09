@@ -1,0 +1,36 @@
+﻿@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.MapSKEP.ReceivedDecreeViewModel
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="desc">Penetapan SKEP</h3>            
+                <label class="status">@Model.ViewModel.ApprovalStatusDescription.Value</label>
+            @if (Model.ViewModel.Received_No != "")
+            {
+                <label class="status">@Model.ViewModel.Received_No</label>
+            }
+                <input type="hidden" name="ViewModel.Received_No"/>
+            <div class="action-button">
+                @if (Model.IsAdminApprover && ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "Approve")
+                {
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target=".modal_revise">Revise</button>                    
+                    <button type="button" class="btn btn-success" id="ApproveButton" data-toggle="modal" data-target=".approve-modal.penskep">Approve</button>
+                }
+                @if (Model.ShowActionOptions && Model.EnableFormInput)
+                {
+                    if (Model.EditMode)
+                    {
+                        <input type="button" class="btn btn-blue" value="Save" id="SaveButton">
+                        <button type="button" class="btn btn-blue" id="SubmitButton" data-toggle="modal" data-target=".submit-modal.penskep">Submit</button>
+                        <input type="button" class="btn btn-blue" data-toggle="modal" data-target=".cancel-modal.penskep" value="Cancel Document" />
+                    }
+                    if (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "Create")
+                    {
+                        <input type="button" class="btn btn-blue" value="Save" id="SaveButton">
+                    }
+                }
+                <a href="@Url.Action("Index", "BRPenetapanSkep")" class="btn btn-grey">Back</a>
+            </div>
+        </div>
+    </div>    
+</div>
+

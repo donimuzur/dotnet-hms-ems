@@ -1,0 +1,539 @@
+﻿@using Sampoerna.EMS.Core
+@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.ChangeRequest.ChangeRequestSummaryReportsViewModel
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 id="lblTitle">Summary Report</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                @using (Ajax.BeginForm("FilterSummaryReports", "MLChangeRequest",
+                    new AjaxOptions
+                    {
+                        HttpMethod = "POST",
+                        InsertionMode = InsertionMode.Replace,
+                        UpdateTargetId = "contenttable",
+                        OnComplete = "ReloadDataTables"
+                    }, new { @class = "form-excise", role = "form" }))
+                {
+
+                    <div class="form-excise" role="form">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">NPPBKC ID</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.SearchView.NPPBKCSource, Model.SearchView.NppbkcList, "All", new { @class = "form-control selectpicker" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">Type</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.SearchView.DocumentTypeSource, Model.SearchView.DocumentTypeList, "All", new { @class = "form-control selectpicker" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">Year</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.SearchView.YearSource, Model.SearchView.YearList, "All", new { @class = "form-control selectpicker" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">Creator</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.SearchView.CreatorSource, Model.SearchView.CreatorList, "All", new { @class = "form-control selectpicker" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 col-md-offset-8">
+                                <input type="submit" id="btnFILTER" class="btn btn-blue full" value="FILTER" />
+                            </div>
+                            <div class="col-md-2">
+                                <input id="btnExport" type="button" class="btn btn-blue full" value="EXPORT" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @using (Html.BeginForm("ExportXlsSummaryReports", "MLChangeRequest", FormMethod.Post, new { @id = "ExportSummaryReportsForms" }))
+            {
+                <div class="white-wrapper toggle-wrapper">
+                    <div class="form-excise" role="form">
+                        <div class="row">
+
+                            <div class="last-form">
+                                <div class="col-md-12">
+                                    @*<div id="ChangeRequestModal" class="modal ems-modal main-menu-child fade active-modal poa" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">*@
+                                    <div>
+                                        @Html.HiddenFor(model => model.ExportModel.NPPBKCSource)
+                                        @Html.HiddenFor(model => model.ExportModel.DocumentTypeSource)
+                                        @Html.HiddenFor(model => model.ExportModel.YearSource)
+                                        @Html.HiddenFor(model => model.ExportModel.CreatorSource)
+
+                                        <div class="row toggle">
+
+                                            <div class="toggle-title">
+                                                Toggle column <i class="fa fa-chevron-down"></i>
+                                            </div>
+
+                                            <div class="toggle-component">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" id="selecctall" /><b>Select All</b>
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.FormNo, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "1" })Forms Number
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.RequestDate, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "2" })Request Date
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.DocumentType, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "3"})Document Type
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Nppbkc, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "4" })NPPBKC
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.Creator, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "5" })Creator
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.CreatorDate, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "6" })Creator Date
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.LastModifiedBy, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "7" })Last Modified User
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.LastModifiedDate, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "8" })Last Modified Date
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.LastApprovedBy, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "9" })Last Approved By
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.LastApprovedDate, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "10" })Last Approved Date
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.LastApprovedStatus, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "11" })Status
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.DecreeStatus, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "12" })SKEP Status
+                                                    </label>
+                                                </div>
+                                                <div class="checkbox">
+                                                    <label>
+                                                        @Html.CheckBoxFor(model => model.ExportModel.DecreeNumber, new { @checked = "checked", @class = "checkbox checkexport", @datacolumn = "13" })SKEP No
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            
+
+                            
+                        </div>
+                    </div>
+                </div>
+
+            }
+        </div>
+    </div>
+    <div id="contenttable" class="table-container">
+        @Html.Partial("_ChangeRequestTableSummaryReport")
+    </div>
+</div>
+
+<div class="loading"></div>
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/js/custom.js"></script>
+    @*<script src="~/Scripts/ChangeRequestScripts.js"></script>*@
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            $('#MenuManufactureLicenseChangeRequestOpenDocument').addClass('active');
+            $('#MenuManufactureLicenseLicenseRequestOpenDocument').removeClass('active');
+            $('#MenuManufactureLicenseLicenseRequestOpenDocument').removeClass('open');
+            $('#MenuManufactureLicenseInterviewRequestOpenDocument').removeClass('active');
+            $('#MenuManufactureLicenseInterviewRequestOpenDocument').removeClass('open');
+
+            setupDataTables();
+
+            //setupDataTables(true);
+            $('#MenuChangeRequestSummaryReports').addClass('active');
+
+            });
+
+        function setupDataTables() {
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#changeRequestTable')) {
+                table = $('#changeRequestTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#changeRequestTable').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    }
+                });
+
+
+
+            // Setup - add a text input to each footer cell
+            $('#changeRequestTable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+            // Apply the search
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+        };
+
+        $("#btnExport").click(function () {
+            // $('#Ck5Modal').modal('show');
+            GetSearchSummaryReports();
+            $('#ExportSummaryReportsForms').submit();
+        });
+
+        function GetSearchSummaryReports() {
+            $('#ExportModel_NPPBKCSource').val($('#SearchView_NPPBKCSource').find("option:selected").val());
+            $('#ExportModel_DocumentTypeSource').val($('#SearchView_DocumentTypeSource').find("option:selected").val());
+
+        }
+
+
+        @*function setupColumns() {
+
+            var columns = [
+                { "data": null, "orderable": false },
+                { "data": "SubmissionNumber", "orderable": true },
+                { "data": "SubmissionDate", "orderable": true },
+                { "data": "ChangeRequestTypeDescription", "orderable": true },
+                { "data": "SourcePlantId", "orderable": true },
+                { "data": "SourcePlant", "orderable": true },
+                { "data": "OriginCompanyNppbkc", "orderable": true },
+                { "data": "OriginCeOffice", "orderable": true },
+                { "data": "OriginCompany", "orderable": true },
+                { "data": "OriginCompanyAddress", "orderable": true },
+                { "data": "DestinationPlantId", "orderable": true },
+                { "data": "DestinationPlant", "orderable": true },
+                { "data": "DestinationCeOffice", "orderable": true },
+                { "data": "CompanyDestination", "orderable": true },
+                { "data": "DestinationCountry", "orderable": true },
+                { "data": "TanggalAju", "orderable": true },
+                { "data": "NomerAju", "orderable": true },
+                { "data": "TanggalPendaftaran", "orderable": true },
+                { "data": "NomerPendaftaran", "orderable": true },
+                { "data": "ExGoodTypeDesc", "orderable": true },
+                { "data": "ExciseSettlement", "orderable": true },
+                { "data": "ExciseStatus", "orderable": true },
+                { "data": "RequestType", "orderable": true },
+                { "data": "UnpaidExciseFacilityNumber", "orderable": true },
+                { "data": "UnpaidExciseFacilityDate", "orderable": true },
+                { "data": "SealingNotificationDate", "orderable": true },
+                { "data": "SealingNotificationNumber", "orderable": true },
+                { "data": "UnSealingNotificationDate", "orderable": true },
+                { "data": "UnSealingNotificationNumber", "orderable": true },
+                { "data": "NumberBox", "orderable": true },
+                { "data": "ContainPerBox", "orderable": true },
+                { "data": "ConvertedQty", "orderable": true },
+                { "data": "ConvertedUom", "orderable": true },
+                { "data": "TotalOfExcisableGoods", "orderable": true },
+                { "data": "BanderolPrice", "orderable": true },
+                { "data": "ExciseTariff", "orderable": true },
+                { "data": "ExciseValue", "orderable": true },
+                { "data": "MaterialNumber", "orderable": true },
+                { "data": "MaterialDescription", "orderable": true },
+                { "data": "DestCompanyAddress", "orderable": true },
+                { "data": "DestCompanyNppbkc", "orderable": true },
+                { "data": "DestCompanyName", "orderable": true },
+                { "data": "LoadingPort", "orderable": true },
+                { "data": "LoadingPortName", "orderable": true },
+                { "data": "StoNumberSender", "orderable": true },
+                { "data": "StoNumberReciever", "orderable": true },
+                { "data": "StoBNumber", "orderable": true },
+                { "data": "DnNumber", "orderable": true },
+                { "data": "GrDate", "orderable": true },
+                { "data": "GiDate", "orderable": true },
+                { "data": "Status", "orderable": true },
+                { "data": "Poa", "orderable": true },
+                { "data": "Creator", "orderable": true },
+                { "data": "CompletedDate", "orderable": true },
+                { "data": "Lack1", "orderable": true },
+                { "data": "Lack2", "orderable": false }
+            ];
+
+            return columns;
+
+
+        }
+
+
+
+        function setupDataTables(blFirst) {
+
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#ChangeRequestTable')) {
+                table = $('#ChangeRequestTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#ChangeRequestTable').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "sPaginationType": "full_numbers",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    },
+
+                    "rowCallback": function(row, data, index) {
+
+                        var info = $('#ChangeRequestTable').DataTable().page.info();
+                        $(row).find("td").first().html((info.page * info.length) + index + 1);
+                    },
+                    "serverSide": true,
+                    //"processing": true,
+                    "paging": true,
+                    "deferRender": true,
+                    "columns": setupColumns(),
+                    "ajax": {
+                        "url": "@Url.Action("SearchSummaryReportsAjax", "ChangeRequest")",
+                        "type": "POST",
+
+                        "data": function(d) {
+                            return $.extend({}, d, {
+                                "ExtraFilter": {
+                                    "SearchView": {
+                                        ChangeRequestType: $("#ChangeRequestType").val(),
+
+                                        CompanyCodeSource: $('#SearchView_CompanyCodeSource').find("option:selected").val(),
+
+                                        CompanyCodeDest: $('#SearchView_CompanyCodeDest').find("option:selected").val(),
+
+                                        NppbkcIdSource: $('#SearchView_NppbkcIdSource').find("option:selected").val(),
+
+                                        NppbkcIdDest: $('#SearchView_NppbkcIdDest').find("option:selected").val(),
+
+                                        PlantSource: $('#SearchView_PlantSource').find("option:selected").val(),
+
+                                        PlantDest: $('#SearchView_PlantDest').find("option:selected").val(),
+
+                                        DateFrom: $('#SearchView_DateFrom').find("option:selected").val(),
+
+                                        DateTo: $('#SearchView_DateTo').find("option:selected").val(),
+
+                                        Month: $('#SearchView_Month').find("option:selected").val(),
+
+                                        Year: $('#SearchView_Year').find("option:selected").val(),
+
+                                        MaterialNumber: $('#SearchView_MaterialNumber').find("option:selected").val(),
+                                        MaterialDescription: $('#SearchView_MaterialDescription').find("option:selected").val(),
+                                        Poa: $('#SearchView_Poa').find("option:selected").val(),
+                                        Creator: $('#SearchView_Creator').find("option:selected").val(),
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            table.on('preXhr', function(e, settings, data) {
+                $(".loading").show();
+            });
+            
+            table.on('xhr', function (e, settings, data) {
+                $(".loading").hide();
+            });
+
+            $('#selecctall').change(function() {
+                if ($(this).is(':checked')) {
+                    $('.checkexport').each(function() {
+                        this.checked = true;
+                    });
+                    for (var i = 0; i < 56; i++) {
+                        table.column(i).visible(true);
+                    }
+                    $('#ChangeRequestTable').parents('div.dataTables_wrapper').first().show();
+
+
+                } else {
+                    $('.checkexport').each(function() {
+                        this.checked = false;
+                    });
+                    for (var i = 0; i < 56; i++) {
+                        table.column(i).visible(false);
+                    }
+                    $('#ChangeRequestTable').parents('div.dataTables_wrapper').first().hide();
+                }
+            });
+
+            $('.checkexport').on('click', function(e) {
+                // e.preventDefault();
+                table.column(0).visible(true);
+
+                // Get the column API object
+                var column = table.column($(this).attr('datacolumn'));
+
+                // Toggle the visibility
+                column.visible(!column.visible());
+
+                $('#ChangeRequestTable').parents('div.dataTables_wrapper').first().hide();
+
+                for (var i = 0; i < 56; i++) {
+                    if (table.column(i).visible()) {
+                        $('#ChangeRequestTable').parents('div.dataTables_wrapper').first().show();
+                        return;
+                    }
+                }
+
+            });
+
+            if (blFirst) {
+                for (var i = 11; i < 56; i++) {
+                    table.column(i).visible(false);
+                }
+            } else {
+                $('.checkexport').each(function() {
+
+                    // Get the column API object
+                    var column = table.column($(this).attr('datacolumn'));
+
+                    // Toggle the visibility
+                    column.visible(false);
+                    if ($(this).is(':checked')) {
+                        // Toggle the visibility
+                        column.visible(true);
+                    }
+
+                });
+            }
+        }
+
+        function ReloadDataTables() {
+            setupDataTables(false);
+            setpaginglink();
+            $('#SearchView_Month').removeClass('input-validation-error');
+            $('#SearchView_Year').removeClass('input-validation-error');
+        }
+
+        function setpaginglink() {
+
+        }
+
+        function OnFilter() {
+            var table = $('#ChangeRequestTable').DataTable();
+            
+            table.ajax.reload();
+        }
+
+
+        function OnReset() {
+
+            $(".selectreset").val($(".selectreset option:first").val());
+        }
+
+        $("#btnExport").click(function() {
+            // $('#ChangeRequestModal').modal('show');
+            GetSearchSummaryReports();
+            $('#ExportSummaryReportsForms').submit();
+        });
+
+        function GetSearchSummaryReports() {
+            $('#ExportModel_CompanyCodeSource').val($('#SearchView_CompanyCodeSource').find("option:selected").val());
+            $('#ExportModel_CompanyCodeDest').val($('#SearchView_CompanyCodeDest').find("option:selected").val());
+
+            $('#ExportModel_NppbkcIdSource').val($('#SearchView_NppbkcIdSource').find("option:selected").val());
+            $('#ExportModel_NppbkcIdDestt').val($('#SearchView_NppbkcIdDest').find("option:selected").val());
+            $('#ExportModel_PlantSource').val($('#SearchView_PlantSource').find("option:selected").val());
+            $('#ExportModel_PlantDest').val($('#SearchView_PlantDest').find("option:selected").val());
+            $('#ExportModel_DateFrom').val($('#SearchView_DateFrom').find("option:selected").val());
+            $('#ExportModel_DateTo').val($('#SearchView_DateTo').find("option:selected").val());
+
+            $('#ExportModel_MaterialNumber').val($('#SearchView_MaterialNumber').find("option:selected").val());
+            $('#ExportModel_MaterialDescription').val($('#SearchView_MaterialDescription').find("option:selected").val());
+            $('#ExportModel_Poa').val($('#SearchView_Poa').find("option:selected").val());
+            $('#ExportModel_Creator').val($('#SearchView_Creator').find("option:selected").val());
+            $('#ExportModel_Month').val($('#SearchView_Month').find("option:selected").val());
+            $('#ExportModel_Year').val($('#SearchView_Year').find("option:selected").val());
+
+        }
+
+
+        $("#btnConfirm").click(function() {
+            GetSearchSummaryReports();
+            $('#ExportSummaryReportsForms').submit();
+
+
+        });*@
+
+        function ReloadDataTables() {
+            $('.toggle-row').click(function () {
+
+                var filter = $(".filters");
+                filter.slideToggle(100).promise().done(function () {
+
+                });
+            });
+            $('.loading').hide();
+            setupDataTables();
+        }
+
+
+    </script>
+}

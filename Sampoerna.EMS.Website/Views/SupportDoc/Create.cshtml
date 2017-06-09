@@ -1,0 +1,109 @@
+﻿@model Sampoerna.EMS.Website.Models.SupportDoc.SupportDocViewModel
+@{
+    ViewBag.Title = "Add New Supporting Document Entry";
+}
+
+@using (Html.BeginForm("Create", "SupportDoc", null, FormMethod.Post, new { @class = "form-excise", role = "form", enctype = "multipart/form-data", id = "createForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.Partial("_ActionButton", Model)
+
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="white-wrapper">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        Create Supporting Document Entry
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    @Html.Partial("_FormSupport", Model)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+@section scripts
+{
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/autoNumeric.min.js"></script>
+    <script src="~/Scripts/master/supportdoc.js"></script>
+    <script type="text/javascript">
+        // register events
+        $(document)
+            .on("ready", EntryPoint)
+            .on("unload", Cleanup);
+
+        function EntryPoint() {
+            init();
+          //  attachEvents();
+          //  companyElm.on("change", CheckDocExistence);
+            //formnameElm.on("change", CheckDocExistence);
+            supportdocnameElm.on("change", CheckDocExistence);
+            activeStateElm.on("change", CheckDocExistence);
+            CheckDocExistence();
+
+            document.getElementById("createForm").onkeypress = function (e) {
+                var key = e.charCode || e.keyCode || 0;
+                if (key == 13) {
+                    e.preventDefault();
+                }
+            }
+        }
+        function Cleanup() {
+        //    detachEvents();
+            //companyElm.off("change", CheckDocExistence);
+           // formnameElm.off("change", CheckDocExistence);
+            supportdocnameElm.off("change", CheckDocExistence);
+            activeStateElm.on("change", CheckDocExistence);
+        }
+
+        function CheckDocExistence() {
+            //var company = companyElm.val();
+            //var formname = formnameElm.val();
+            var supportdocname = supportdocnameElm.val();
+            var activeState = activeStateElm.val();
+          //  if (!isNaN(company)) {               
+                $("#customloader").show();
+                $.ajax({
+                    url: '@Url.Action("IsExist", "SupportDoc")',
+                    type: 'POST',                    
+                    data: { docName: supportdocname.toString(),
+                            isActive: activeState},                    
+                    success: function (response) {
+                        response = JSON.parse(response);
+                        log(response);
+                        if (response.exist) {
+                            //checkerElm.html("<span>Information: Document Name with Company :" + $("#CompanySelector option:selected").html() + " and Form :" + $("#FormNameSelector option:selected").html() + " already exist.</span>");
+                            checkerElm.html("<span>Information: Document Name already exist.</span>");
+                            checkerElm.show();
+                        } else {
+                            checkerElm.hide();
+                        }
+                        saveButton.prop('disabled', response.exist);
+                        $("#customloader").hide();
+                    },
+                    error: function () {
+                        alert("error");
+                        $("#customloader").hide();
+                    }
+                });
+            //}
+        }
+
+    </script>
+}

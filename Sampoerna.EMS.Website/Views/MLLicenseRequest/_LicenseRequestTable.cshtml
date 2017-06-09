@@ -1,0 +1,75 @@
+﻿
+@model Sampoerna.EMS.Website.Models.ManufacturingLicense.LicenseRequestViewModel
+@using Sampoerna.EMS.Core
+<table id="LicenseRequestTable" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> Filter </th>
+            <th>Form No</th>
+            <th>Request Date</th>
+            <th>Company Type</th>
+            <th>KPPBC</th>
+            <th>Company</th>
+            <th>Production Type</th>
+            <th>Status</th>
+        </tr> 
+    </thead>
+    <thead class="filters">
+        <tr>
+            <th>Action</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+   
+    <tbody>
+        @foreach (var item in Model.LicenseRequestDocuments)
+            {
+            <tr>
+                <td class="action">
+                    <a href="@Url.Action("Detail", "MLLicenseRequest", new { id = item.MnfRequestID, st=1 })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                   
+                    @if ((item.Status != "WAITING_POA_APPROVAL") && (item.Status != "WAITING_POA_SKEP_APPROVAL") && (item.Status != "COMPLETED") && (item.Status != "CANCELED") && ((item.CreatedBy == item.IsCanApprove) || item.IsAdministrator))
+                    {
+                        <a href="@Url.Action("Edit", "MLLicenseRequest", new { id = item.MnfRequestID })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                    }
+                   
+                    @if ((item.Status.ToLower().Contains("waiting_poa_approval") || (item.Status.ToLower().Contains("waiting_poa_skep_approval"))) && item.CreatedBy != item.IsCanApprove && item.IsApprover)
+                    {
+                        @*<a href="@Url.Action("ToApprove", "MLLicenseRequest", new { id = item.MnfRequestID, st = item.LastApprovedStatus })" data-toggle="tooltip" data-placement="top" title="Approve">
+                        <i class="fa fa-check-square-o"></i>
+                        </a>*@
+                        <a href="@Url.Action("Approve", "MLLicenseRequest", new { id = item.MnfRequestID, st=2 })" data-toggle="tooltip" data-placement="top" title="Approve">
+                            <i class="fa fa-check"></i>
+                        </a>
+                    }
+                </td>
+                <td>@Html.DisplayFor(model => item.MnfFormNum )</td>
+                <td>@Html.DisplayFor(model => item.StrRequestDate)</td>
+                <td>@Html.DisplayFor(model => item.CompType )</td>
+                <td>@Html.DisplayFor(model => item.KPPBC )</td>
+                <td>@Html.DisplayFor(model => item.Company)</td>
+                <td>
+                    @{ string name_prodtype = ""; int idx = 1;}
+                @foreach(var det in item.List_ProdType)
+                {
+                    name_prodtype += det;
+                    if (idx >=1 && idx < item.Count_List_ProdType)
+                    {
+                        name_prodtype += ",";
+                    }
+                    idx++;
+                }
+                    @name_prodtype
+                </td>
+                <td>@Html.DisplayFor(model => item.Status_Value)@Html.HiddenFor(model => item.LastApprovedStatus)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

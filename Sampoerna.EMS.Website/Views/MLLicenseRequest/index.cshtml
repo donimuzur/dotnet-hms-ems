@@ -1,0 +1,216 @@
+﻿
+@using Sampoerna.EMS.Website.Helpers
+@using Sampoerna.EMS.Core;
+@model Sampoerna.EMS.Website.Models.ManufacturingLicense.LicenseRequestViewModel
+
+@{
+    ViewBag.Title = "License Request";
+}
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>@ViewBag.Title</h3>
+            <div class="action-button new">
+                <a href="@Url.Action("Create", "MLLicenseRequest")">
+                    @if (Model.IsNotViewer)
+                    {
+                        <input type="button" class="btn btn-blue" value="NEW" />
+                    } 
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                
+                @using (Ajax.BeginForm("FilterOpenDocument", "MLLicenseRequest",
+            new AjaxOptions
+            {
+                HttpMethod = "POST",
+                InsertionMode = InsertionMode.Replace,
+                UpdateTargetId = "contenttable",
+                OnComplete = "ReloadDataTables"
+            }, new { @class = "form-excise", role = "form" }))
+                {
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">Form No</label>
+                                <div class="col-md-8">
+                                    @Html.HiddenFor(model => model.Filter.LastApprovedStatus)
+                                   @Html.DropDownListFor(model => model.Filter.FormNum, Model.FormNumList, "All", new { @class = "form-control selectpicker" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">Company Type</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.Filter.CompType, Model.CompTypeList, "All", new { @class = "form-control selectpicker" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">KPPBC</label>
+                                <div class="col-md-8">
+                                   @Html.DropDownListFor(model => model.Filter.KPPBC, Model.KPPBCList, "All", new { @class = "form-control selectpicker" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="last-form">
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">Production Type</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.Filter.ProdType, Model.ProdTypeList, "All", new { @class = "form-control selectpicker" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">Status</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.Filter.StatusFilter, Model.LastApprovedStatusList, "All", new { @class = "form-control selectpicker" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input id="btn-filter" type="submit" class="btn btn-blue full" value="FILTER" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="button" id="btn-reset-filter" class="btn btn-blue full">RESET</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div id="contenttable" class="table-container">
+                @Html.Partial("_LicenseRequestTable")
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="loading"></div>
+
+@section scripts {
+
+    <script src="~/Scripts/js/custom.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" language="javascript">
+
+        $('#MenuManufactureLicenseLicenseRequestOpenDocument').addClass('active');
+        $('#MenuManufactureLicenseInterviewRequestOpenDocument').removeClass('active');
+        $('#MenuManufactureLicenseInterviewRequestOpenDocument').removeClass('open') ;
+        $('#MenuManufactureLicenseChangeRequestOpenDocument').removeClass('active');
+        $('#MenuManufactureLicenseChangeRequestOpenDocument').removeClass('open');
+
+       function setupDataTables() {
+            $('#btn-reset-filter').click(function () {
+                $(".selectpicker").val($(".selectpicker option:first").val());
+            });
+
+            $('#btn-filter').click(function () {
+                $('.loading').show();
+            });
+
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#LicenseRequestTable')) {
+                table = $('#LicenseRequestTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#LicenseRequestTable').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    },
+                    "order": [[2, "desc"]]
+                });
+
+
+
+            // Setup - add a text input to each footer cell
+            $('#LicenseRequestTable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+            // Apply the search
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+        }
+
+        $("#SearchInput_NppbkcId").change(function () {
+            if ($("#SearchInput_NppbkcId").length) {
+                var nbck = $(this).find("option:selected").text();
+                $('#SearchInput_POA option').remove();
+                console.log(nbck);
+                if (nbck == '' || $(this).find("option:selected").val() == '') {
+                    $('#SearchInput_POA').append('<option value="">All</option>');
+                } else {
+                    ajaxSelectNppbck('@Url.Action("PoaListPartial", "PBCK1")', { nppbkcId: nbck });
+                }
+            }
+
+        });
+
+        $(document).ready(function () {
+            setupDataTables();
+        });
+
+        function ajaxSelectNppbck(url, formData) {
+            if (formData.nppbkcId) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function (data) {
+                        var list = data.SearchInput.PoaList;
+                        $('#SearchInput_POA').append('<option value="">All</option>');
+                        if (list.length > 0) {
+                            for (var i = 0; i < list.length; i++) {
+                                $('#SearchInput_POA').append('<option value=' + list[i].Value + '>' + list[i].Text + '</option>');
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function ReloadDataTables() {
+            $('.toggle-row').click(function () {
+
+                var filter = $(".filters");
+                filter.slideToggle(100).promise().done(function () {
+
+                });
+            });
+            $('.loading').hide();
+            setupDataTables();
+        }
+
+
+    </script>
+}

@@ -1,0 +1,341 @@
+﻿@model Sampoerna.EMS.Website.Models.Configuration.ConfigurationCreateViewModel
+@using Newtonsoft.Json;
+@using (Html.BeginForm("Create", "Configuration", null, FormMethod.Post, new { @class = "form-excise", role = "form", enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary()
+    @*@Html.HiddenFor(model=>model.IsActive, new { @id= "IsActive" })*@
+    <!-- Modal User List -->
+    <div class="modal fade" id="myModalUser" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">User List</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="container-wrap">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div id="contenttable" class="table-container">
+                                    <table id="userTable" class="display" cellspacing="0" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th class="toggle-row"> Filter </th>
+                                                <th>User ID</th>
+                                                <th>User Name</th>                                                
+                                            </tr>
+                                        </thead>
+                                        <thead class="filters">
+                                            <tr>
+                                                <th> Action</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.UserList)
+                                            {
+                                                <tr>
+                                                    <td class="action">
+                                                        @Html.RadioButton("UserId",  item.UserId)                                                        
+                                                    </td>
+                                                    <td>@item.UserId</td>
+                                                    <td>@item.FullName</td>                                                    
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>                    
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="desc">Master Configuration</h3>
+            <div class="action-button">
+                <a href="@Url.Action("Index", "Configuration")">
+                    <input type="submit" id="submitSave" class="btn btn-blue" value="Save">
+                    <a href="@Url.Action("Index", "Configuration")" class="btn btn-grey">Cancel</a>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Create Configuration
+                                    <i class="fa fa-caret-down"></i>
+                                </a>
+                            </h4>
+                        </div>
+                 
+                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <label >@Html.LabelFor(model => model.ConfigText)<span class="red">*</span></label>                                        
+                                    </div>
+                                    <div class="col-md-6" id="type">
+                                        @*@Html.DropDownListFor(model => model.ConfigText, Model.TypeList, new { @class = "selectpicker form-control" })*@ 
+                                        @Html.DropDownList("ConfigText", Model.TypeList, new {@class= "selectpicker form-control" })
+                                        @Html.HiddenFor(model=>model.ConfigType)
+                                    </div>
+                                    <div class="col-md-4">
+                                        @Html.ValidationMessageFor(model => model.ConfigText)
+                                    </div>
+                                </div>
+
+                                <div id="configName">
+
+                                </div>
+
+                          
+                                <div class="row">
+                                    <div class="col-md-2" id="labelValue">
+                                      
+                                    </div>
+                                    <div class="col-md-6" id="fieldValue">                                                                                                           
+                                        @*@Html.TextBox("ConfigValue", Model.ConfigValue, new { @class = "form-control", @maxlength = "22" })*@
+                                    </div>                                    
+                                    <div class="col-md-3" id="buttonUser">
+                                      
+                                    </div>
+                                    <div class="col-md-4">
+                                        @Html.ValidationMessageFor(model => model.ConfigValue)
+                                    </div>
+                                </div>          
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <label>@Html.LabelFor(model=>model.IsActive)</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        
+                                        @Html.CheckBoxFor(model => model.IsActive) Active
+                                    </div>                                                                            
+                                </div>                                 
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <span class="red">*</span> ) This Field Required
+                                    </div>
+                                </div>
+
+                                <div class="row center">                                                                     
+                                  <div class="col-md-7">
+                                      <div class="action-button">
+                                         
+                                      </div>
+                                  </div>                                                                         
+                                </div>
+                            </div>
+                        </div>                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+@section scripts {
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="../../Content/themes/base/all.css">
+<script src="~/Scripts/js/custom.js"></script>
+<script type="text/javascript" language="javascript" class="init">
+
+    $(document).ready(function () {
+        $('#MenuMasterConfiguration').addClass('active');
+        var wrapper = $(".configName"); //Fields wrapper
+      
+        $('#ConfigText').on("change", function () {
+            var tempType = $('#ConfigText :selected').text();
+            var dataType = $('#ConfigText :selected').val();
+            
+            if (tempType == "ADMIN APPROVER") {                
+                document.getElementById("buttonUser").innerHTML = '<button type="button" id="modalUser" class="btn btn-primary btn-sm" data-toggle="modal"  data-target="#myModalUser">Search User</button>';                            
+            }
+            else {
+                document.getElementById("buttonUser").innerHTML = "";              
+            }
+
+            ajaxConfigName('@Url.Action("ConfigNameList", "Configuration")', dataType);
+
+            if (tempType == "UPLOAD FILE LIMIT" || tempType == "APPROVAL STATUS"){
+                document.getElementById("IsActive").disabled = true;
+            }
+            else{
+                document.getElementById("IsActive").disabled = false;
+            }
+
+            if (tempType == "HINT COMPONENT" || tempType == "APPROVAL STATUS") {
+                if (tempType == "HINT COMPONENT") {                 
+                    document.getElementById("configName").innerHTML = '<div class="row"><div class="col-md-2"><label>Label Name</label><span class="red">*</span></div><div class="col-md-6">@Html.Raw(Ajax.JavaScriptStringEncode(Html.DropDownListFor(model => model.ConfigName, Model.HintList,"--Select--", new { @class = "form-control", @onchange = "CallChangeNameFunction(this.value)" }).ToHtmlString()))</div>';                                                      
+                }
+                if (tempType == "APPROVAL STATUS") {                 
+                    document.getElementById("configName").innerHTML = '<div class="row"><div class="col-md-2"><label>Configuration Name</label><span class="red">*</span></div><div class="col-md-6">@Html.Raw(Ajax.JavaScriptStringEncode(Html.DropDownListFor(model => model.ConfigName, Model.ApprovalList, "--Select--", new { @class = "form-control", @onchange = "CallChangeNameFunction(this.value)" }).ToHtmlString()))</div>';               
+                }
+            }
+            else {
+                document.getElementById("configName").innerHTML = "";
+            
+            }
+
+            if (tempType == "HINT COMPONENT") {
+                document.getElementById("labelValue").innerHTML = '<label>Label Value</label><span class="red">*</span>';
+            }
+            else {
+                document.getElementById("labelValue").innerHTML = '<label>@Html.LabelFor(model => model.ConfigValue)</label><span class="red">*</span>';
+            }
+
+            if (tempType == "UPLOAD FILE LIMIT") {
+                ajaxUploadFileLimitValue('@Url.Action("GetUploadFileLimitValue", "Configuration")', dataType);
+                document.getElementById("fieldValue").innerHTML = '@Html.TextBoxFor(model => model.ConfigValue, new { @class = "form-control", @type = "number" }) '; 
+                document.getElementById("buttonUser").innerHTML = '@Html.Label("Mb")';
+          
+            }
+            else if (tempType == "ADMIN APPROVER") {
+                document.getElementById("ConfigValue").value = "";
+                document.getElementById("fieldValue").innerHTML = '@Html.TextBoxFor(model => model.ConfigValue, "ConfigValue", new { @class = "form-control", @maxlength = "22", @readonly = "true" })';
+          
+            }
+            else {
+                document.getElementById("ConfigValue").value = "";
+                document.getElementById("fieldValue").innerHTML = '@Html.TextBoxFor(model => model.ConfigValue, new { @class = "form-control"})';
+             
+            }
+        });
+                  
+        $('input:radio').change(function () {
+            var is_external = $("input[name='UserId']:checked").val();           
+            document.getElementById("ConfigValue").value = is_external;
+        
+        });
+
+        document.getElementById("labelValue").innerHTML = '<label>@Html.LabelFor(model => model.ConfigValue)</label><span class="red">*</span>';
+        document.getElementById("fieldValue").innerHTML = '@Html.TextBoxFor(model => model.ConfigValue, new { @class = "form-control", @maxlength = "22", @readonly = "true" })';
+        document.getElementById("buttonUser").innerHTML = '<button type="button" id="modalUser" class="btn btn-primary btn-sm" data-toggle="modal"  data-target="#myModalUser">Search User</button>';
+              
+        var init = $('#ConfigText').val();
+        ajaxConfigName('@Url.Action("ConfigNameList", "Configuration")', init);     
+
+        setupDataTables();
+    });
+   
+    function CallChangeNameFunction(val) {
+        if (val == "--Select--") {
+            document.getElementById("ConfigValue").value = "";
+        }
+        else {                                                      
+            ajaxNameValue('@Url.Action("GetNameValue", "Configuration")', val);
+        }
+    }
+
+    function ajaxConfigName(url, type) {
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: { configType: type },
+            success: function (data) {
+                var availableTags = [];
+                if (data) {
+                    for (i = 1; i <= data.length; i++) {
+                        availableTags.push(data[i - 1].Value);
+                    }
+                }
+                $("#ConfigName").autocomplete({
+                    source: availableTags
+                });
+            }
+        });
+    }
+    function ajaxNameValue(url, type) {
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: { field: type },
+            success: function (data) {
+                if (data != null) {
+                    document.getElementById("ConfigValue").value = data.ReffValue;
+                    document.getElementById("IsActive").checked = data.IsActive;
+                    document.getElementById("ConfigName").value = data.ReffName;                                        
+                }
+                else {
+                    document.getElementById("ConfigValue").value = "";
+                }
+            }
+        });
+    }
+
+    function ajaxUploadFileLimitValue(url, type) {
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: { field: type },
+            success: function (data) {
+                console.log(data);
+                document.getElementById("ConfigValue").value = data.ReffValue;
+                document.getElementById("IsActive").checked = data.IsActive;                
+            }
+        });
+    }
+
+    $("#submitSave").click(function () {
+        $("#customloader").show();
+        document.getElementById("IsActive").disabled = false;        
+    });
+
+    function setupDataTables() {
+
+        var table = null;
+        if ($.fn.dataTable.isDataTable('#userTable')) {
+            table = $('#userTable').DataTable();
+            table.destroy();
+        }
+
+        table = $('#userTable').DataTable(
+              {
+                  "sDom": "Rlfrtip",
+                  "language": {
+                      "zeroRecords": "No records found",
+                      "infoFiltered": "(filtered from _MAX_ total records)"
+                  }
+              });
+
+
+        $('#userTable .filters th').each(function () {
+            var idx = $(this).index();
+            if (idx != 0) {
+                $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+            }
+        });
+
+
+        table.columns().eq(0).each(function (colIdx) {
+            $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                table
+                    .column(colIdx)
+                    .search(this.value)
+                    .draw();
+            });
+        });
+
+
+    }
+</script>
+}

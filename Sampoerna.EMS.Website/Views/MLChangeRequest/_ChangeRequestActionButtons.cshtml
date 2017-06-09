@@ -1,0 +1,78 @@
+﻿@model Sampoerna.EMS.Website.Models.ChangeRequest.ChangeRequestModel
+@using Sampoerna.EMS.Core
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="desc">Change Request</h3>
+            <label class="status">@Model.LastApprovedStatus</label>
+            <label class="status" id="div_form_number">@Model.DocumentNumber</label>
+
+
+            <div class="action-button">
+                @if ((!Model.IsDetail) && (Model.CurrentRole != Enums.UserRole.Viewer))
+                {
+                    switch (Model.ButtonCombination)
+                    {
+                        case "Create":
+                            <input type="button" id="btnSave" class="btn btn-blue" value="Save" />
+                            if ((Model.Id != 0) && (Model.CurrentRole == Enums.UserRole.POA))
+                            {
+                                <input type="button" class="btn btn-blue" data-toggle="modal" data-target=".submit-modal.changerequest" value="Submit" />
+                                <input type="button" class="btn btn-blue" data-toggle="modal" data-target=".cancel-modal.changerequest" value="Cancel Request" />
+
+                                @*<input type="button" id="btnSubmit" class="btn btn-blue" value="Submit" />
+                                <input type="button" id="btnCancel" class="btn btn-blue" value="Cancel Request" />*@
+                            }
+                            break;
+
+                        case "Edit":
+                            <input type="submit" id="btnSave" class="btn btn-blue" value="Save" />
+                            if (Model.CurrentRole == Enums.UserRole.POA)
+                            {
+                                <input type="button" class="btn btn-blue" data-toggle="modal" data-target=".submit-modal.changerequest" value="Submit" />
+                                <input type="button" class="btn btn-blue" data-toggle="modal" data-target=".cancel-modal.changerequest" value="Cancel Request" />
+
+                                @*<input type="button" id="btnSubmit" class="btn btn-blue" value="Submit" />
+                                <input type="button" id="btnCancel" class="btn btn-blue" value="Cancel Request" />*@
+                            }
+                            break;
+
+                        case "ApproveReject":
+                            if (Model.CurrentRole != Enums.UserRole.Administrator)
+                            {
+                                <input type="button" class="btn btn-blue" data-toggle="modal" data-target=".approve-modal.changerequest" value="Approve" />
+
+                                @*<input type="button" id="btnApprove" class="btn btn-blue" value="Approve" />*@
+                                <input type="button" class="btn btn-blue btn_showmodal_changestatus" data-toggle="modal" data-target=".modal_ChangeStatus" data-action="Revise" value="Revise" />
+                            }
+                            @*<input type="button" class="btn btn-danger btn_showmodal_changestatus" data-toggle="modal" data-target=".modal_ChangeStatus" data-action="Reject" value="Reject" />*@
+                    break;
+
+                    case "SubmitSKEP":
+                            <input type="button" class="btn btn-blue" data-toggle="modal" data-target=".submitskep-modal.changerequest" value="Submit SKEP" />
+                            <input type="button" class="btn btn-blue" data-toggle="modal" data-target=".withdraw-modal.changerequest" value="Withdraw" />
+
+
+                            @*<input type="button" id="btnSubmitSKEP" class="btn btn-blue" value="Submit SKEP" />
+                            <input type="button" id="btnWithdraw" class="btn btn-blue" value="Withdraw" />*@
+                            @*<input type="button" id="btnCancel" class="btn btn-blue" value="Cancel Request" />*@
+                    break;
+
+                    case "ApproveRejectFinal":
+                            <input type="button" class="btn btn-blue" data-toggle="modal" data-target=".approvefinal-modal.changerequest" value="Approve" />
+
+                            @*<input type="button" id="btnApproveFinal" class="btn btn-blue" value="Approve" />*@
+                            <input type="button" id="btnRejectFinal" class="btn btn-blue btn_showmodal_changestatus" data-toggle="modal" data-target=".modal_ChangeStatus" data-action="FinalReject" value="Revise" />
+                            break;
+
+                    }
+                }
+
+                <a href="@Url.Action("Index", "MLChangerequest")" class="btn btn-grey">Back</a>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,411 @@
+﻿@model Sampoerna.EMS.Website.Models.ManufacturingLicense.LicenseRequestModel
+@using Sampoerna.EMS.Website.Helpers
+@{ 
+    System.Globalization.CultureInfo CI = new System.Globalization.CultureInfo("en-US");
+    var StrRequestDate = Model.RequestDate.ToString("dd MMM yyyy", CI);
+    var DecreeDate = Model.DecreeDate ?? DateTime.Now;
+    var StrDecreeDate = DecreeDate.ToString("dd MMM yyyy", CI);
+}
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingOne">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    DETAIL LICENSE REQUEST
+                    <i class="fa fa-caret-down"></i>
+                </a>
+            </h4>
+        </div>
+        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+            <div class="panel-body">
+                <div class="form-excise" role="form">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Request Date<span class="red">*</span></label>
+                                <div class="col-md-8">
+                                    <div class="input-group date">
+                                        @Html.TextBoxFor(model => model.RequestDate, StrRequestDate , new {  @class = "form-control" })
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">BA No</label>
+                                <div class="col-md-8">
+                                    <a href="@Html.DisplayFor(model => model.link_BA)" id="BANO_link" target="_blank"><span id="label_BANO" class="form-control row-border" style="border:0px;box-shadow:none">@Html.DisplayFor(model => model.BANum)</span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Interview Number<span class="red">*</span></label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.InterviewId, Model.FormNumList, "Select", new { @class = "form-control", @disabled = "disabled", @id = "dd_IRformnum" })
+                                    <input type="hidden" id="txt_hd_interviewNumber" value="0" name="InterviewFormNum" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Company Type</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.CompType, Model.CompType, new { @readonly = "readonly", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingTwo">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                    RESPONSIBLE PERSON & AUTHORIZATION OWNER
+                    <i class="fa fa-caret-down"></i>
+                </a>
+            </h4>
+        </div>
+        <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+            <div class="panel-body">
+                <div class="form-excise" role="form">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Name</label>
+                                <div class="col-md-8">
+                                    @Html.TextBox("POAName", Model.POAName, new { @readonly = "readonly", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">KPPBC</label>
+                                <div class="col-md-8">
+                                    @Html.TextBox("KPPBC", Model.KPPBC, new { @readonly = "readonly", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Position</label>
+                                <div class="col-md-8">
+                                    @Html.TextBox("Position", Model.POAPosition, new { @readonly = "readonly", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">KPPBC Address</label>
+                                <div class="col-md-8">
+                                    @Html.TextBox("KppbcAddress", Model.KppbcAddress, new { @readonly = "readonly", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Address</label>
+                                <div class="col-md-8">
+                                    @Html.TextArea("POAAddress", Model.POAAddress, new { @readonly = "readonly", @class = "form-control", @rows = "6" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Company</label>
+                                <div class="col-md-8">
+                                    @Html.TextBox("Company", Model.Company, new { @readonly = "readonly", @class = "form-control" })
+                                    @Html.HiddenFor(model => model.CompanyId, new { @id = "CompanyId" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label class="col-md-4">NPWP</label>
+                                <div class="col-md-8">
+                                    @Html.TextBox("Npwp", Model.Npwp, new { @readonly = "readonly", @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label class="col-md-4">Company Address</label>
+                                <div class="col-md-8">
+                                    @Html.TextBox("CompanyAddress", Model.CompanyAddress, new { @readonly = "readonly", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingThree">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                    INTERVIEW & LOCATION VISIT
+                    <i class="fa fa-caret-down"></i>
+                </a>
+            </h4>
+        </div>
+        <div id="div_interview_detail">
+            @{ 
+                var Tmpindex = 0;
+                var urut = 1;
+                string location_list = "";
+                string mnfcity_list = "";
+                string mnfaddr_list = "";
+            }
+            @foreach (var irdetail in Model.IRDetails)
+            {
+                irdetail.Index = Tmpindex;
+                irdetail.NumList = urut;
+
+                location_list += "<p style='text-indent: 5em;'><b>Detil Pabrik " + urut.ToString()+"</b></p>";
+                location_list += "<p style='text-indent: 5em;'>1. Lokasi Pabrik</p>";
+                location_list += "<div style='padding-left:5em'><table style='background:none;'><tr><td>a.</td><td>Alamat Jalan</td><td>:</td><td>" + irdetail.MnfAddr+"</td></tr>";
+                location_list += "<tr><td>b.</td><td>Kelurahan/Desa</td><td>:</td><td>"+irdetail.MnfVillage+"</td></tr>";
+                location_list += "<tr><td>c.</td><td>Kecamatan</td><td>:</td><td>" + irdetail.MnfSubDist + "</td></tr>";
+                location_list += "<tr><td>d.</td><td>Kabupaten/Kota</td><td>:</td><td>" + irdetail.MnfCity + "</td></tr>";
+                location_list += "<tr><td>e.</td><td>Provinsi</td><td>:</td><td>"+irdetail.MnfProvince+"</td></tr>";
+                location_list += "<tr><td>f.</td><td>Telepon/Faksimili</td><td>:</td><td>"+irdetail.MnfPhone+"/"+irdetail.MnfFax+"</td></tr></table></div>";
+                location_list += "<p style='padding-left:5em'>2. Batas-batas</p><div style='padding-left:5em'><table style='background:none;'><tr><td>a.</td><td>Utara</td><td>:</td><td>" + irdetail.North + "</td></tr>";
+                location_list += "<tr><td>b.</td><td>Timur</td><td>:</td><td>" + irdetail.East + "</td></tr><tr><td>c.</td><td>Selatan</td><td>:</td><td>"+irdetail.South+"</td></tr>";
+                location_list += "<tr><td>d.</td><td>Barat</td><td>:</td><td>" + irdetail.West + "</td></tr></table></div>";
+                location_list += "<p style='padding-left:5em'>3. Kondisi&nbsp;" + Model.CompType + " :</p><div style='padding-left:5em'><table style='background:none;'>";
+                location_list += "<tr><td>a.</td><td>Luas Tanah</td><td>:</td><td>"+irdetail.LandArea+" m2</td></tr><tr><td>b.</td><td>Luas Bangunan</td><td>:</td><td>"+irdetail.BuildingArea+" m2</td></tr>";
+                location_list += "<tr><td>c.</td><td>Status kepemilikan</td><td>:</td><td>"+irdetail.OwnershipStatus+"</td></tr></table></div>";
+
+
+                mnfcity_list += irdetail.MnfCity;
+                mnfaddr_list += irdetail.MnfAddr+" "+irdetail.MnfCity;
+                if (Tmpindex >= 1 && Tmpindex < irdetail.MnfCount)
+                {
+                    mnfcity_list += ",";
+                    mnfaddr_list += ",";
+                }
+                Tmpindex++;urut++;
+                @Html.Partial("_LicenseRequestInterview", irdetail)
+            }
+            <input type="hidden" id="Mnflocationlist" value="@location_list" />
+            <input type="hidden" id="Mnfcitylist" value="@mnfcity_list" />
+            <input type="hidden" id="Mnfaddresslist" value="@mnfaddr_list" />
+        </div>
+    </div>
+</div>
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingFour">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                    PRODUCTION TYPE
+                    <i class="fa fa-caret-down"></i>
+                </a>
+            </h4>
+        </div>
+        <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFour">
+            <div class="panel-body">
+                <div class="form-excise" role="form">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <label class="col-md-3">Production Type<span class="red">*</span></label>
+                                <div class="col-md-9">
+                                    @{
+                                        string product_type_list = "";
+                                        int idx = 0;
+                                        string[] numerator = new string[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" };
+                                        
+                                    }
+
+                                    @foreach (var prodtype in Model.PCDetails)
+                                    {
+                                        if (prodtype.IsChecked == "checked")
+                                        {
+                                            product_type_list += "<tr><td>"+numerator[idx] + ".</td><td>" + prodtype.ProdAlias + "</td></tr>";
+                                            idx++;
+
+                                        }
+
+                                        <div class="col-md-2">
+                                            <input id="PCDetails[@prodtype.ptIndex.ToString()].ProdCode)"  class="prodtype_list" type="checkbox" name="ProdCode" value="@prodtype.ProdCode" @prodtype.IsChecked>&nbsp;@prodtype.ProdAlias
+                                        </div>
+                                    }
+
+                                    <input type="hidden" id="product_type_list" value="@product_type_list" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <label class="col-md-3">Other Production Type</label>
+                                @if (!Model.IsFormSkep)
+                                {
+                                    <div class="col-md-7">
+                                        <input type="text" id="TxtOtherProdCode" class="form-control" />
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-blue full" type="button" id="other-prodtype-add-btn">Add</button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-10">
+                                    <table id="otherprodtype" class="display table table-bordered table-striped" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th class="toggle-row" width="5%">#</th>
+                                                <th width="80%">Other Production Type</th>
+                                                @if (!Model.IsFormSkep)
+                                                {
+                                                    <th width="15%">Actions</th>
+                                                }
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                                string otherproducttype_list = "";
+                                                int otheridx = 0;
+                                                string[] othernumerator = new string[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" };
+
+                                            }
+                                            @if (Model.OtherPCDetails != null)
+                                            {
+                                                var indx = 1;
+                                                for (int i = 0; i < Model.OtherPCDetails.Count; i++)
+                                                {
+
+                                                    otherproducttype_list += "<tr><td>" + othernumerator[otheridx] + ".</td><td>" + Model.OtherPCDetails[i].OtherProdCode + "</td></tr>";
+                                                    otheridx++;
+
+                                                    <tr id="other-exist-@Model.OtherPCDetails[i].ProdTypeId">
+                                                        <td>@indx <input type="hidden" id="other_idx_max" value="@Model.OtherPCDetails.Count" /></td>
+                                                        <td>
+                                                            <span id="field1">@Html.Raw(Model.OtherPCDetails[i].OtherProdCode)</span>
+                                                        </td>
+                                                        @if (!Model.IsFormSkep)
+                                                        {
+                                                            <td>
+                                                                <input id="@Model.OtherPCDetails[i].ProdTypeId" name="OtherProdCode" type="hidden" value="@Model.OtherPCDetails[i].OtherProdCode" />
+                                                                <a href="javascript:void(0)" onclick="deleteExistingOther(@Model.OtherPCDetails[i].ProdTypeId)" class="btn btn-blue full">delete</a>
+                                                            </td>
+                                                        }
+                                                    </tr>
+                                                    indx++;
+                                                }
+                                                <input type="hidden" id="otherproducttype_list" value="@otherproducttype_list" />
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-md-1"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingFour">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                    ATTACHMENT DOCUMENT
+                    <i class="fa fa-caret-down"></i>
+                </a>
+            </h4>
+        </div>
+        <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFour">
+            <div class="panel-body">
+                <div class="form-excise" role="form">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Supporting Document</label>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12" id="div_body_supportingdoc">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="col-md-12">
+                            <label>Additional Documents</label>
+                        </div>
+                        <div class="col-md-12 div_file div_file_otherdoc" @if (Model.IsFormReadOnly) { <text> style="display:none;" </text>    }>
+                            <div class="col-md-4">
+                                <input type="text" id="txt_otherfile_name" class="form-control" placeholder="File Name" />
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" id="txt_otherdocfile_name" class="form-control txt_file_name" readonly placeholder="Select file">
+                            </div>
+                            <div class="col-md-4">
+                                <button id="btn_browseOtherDoc_file" class="btn_browse_file btn btn-blue" type="button">Browse</button>
+                                <button class="btn btn-blue" type="button" id="btn_add_otherdoc">Add</button>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <table class="display table table-bordered table-striped" cellspacing="0" id="OtherDocs">
+                                <thead>
+                                    <tr>
+                                        <th class="toggle-row" width="5%">#</th>
+                                        <th width="40%">File</th>
+                                        <th width="40%">File Name</th>
+                                        @if (!Model.IsFormReadOnly)
+                                        {
+                                            <th width="15%">Actions</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody id="div_otherDocsBody">
+                                    @{var otherIndex = 0;
+                                    }
+                                    @foreach (var _file in Model.LicenseRequestFileOtherList)
+                                    {
+                                        otherIndex++;                                        
+                                        <tr>
+                                            <td class="td_filename_number">@otherIndex</td>
+                                            <td class="td_filename" data-filename="@_file.Name" data-fileuploadid="@_file.FileId">
+                                                <i class="fa fa-file"></i>&nbsp;<a href="@_file.Path" download>@_file.Name</a>
+                                            </td>
+                                            <td>
+                                                @_file.FileName
+                                            </td>
+                                            @if (!Model.IsFormReadOnly)
+                                            {
+                                            <td><button type="button" class="btn btn-blue btn_remove_otherdoc" data-fileuploadid="@_file.FileId">Delete</button></td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

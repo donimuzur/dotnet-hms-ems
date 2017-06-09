@@ -1,0 +1,63 @@
+﻿@model IEnumerable<Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.MapSKEP.ReceivedDecreeDetailModel>
+<div class="row">
+    <div id="contenttable" class="table-container">
+        <table id="brandTable" class="table table-bordered table-striped js-options-table">
+            <thead>
+                <tr>
+                    <th class="toggle-row"></th>
+                    <th nowrap>Request Number</th>
+                    <th nowrap>FA Code (OLD)</th>
+                    <th nowrap>FA Code (OLD) Description</th>
+                    <th nowrap>FA Code (NEW)</th>
+                    <th nowrap>FA Code (NEW) Description</th>
+                    <th>Company</th>
+                    <th nowrap>HL Code</th>
+                    <th>Market</th>
+                    <th>Production Center</th>
+                </tr>
+            <tbody id="tbody_skeplistitem">
+                @{ 
+                    var ii = 0;
+                }
+                @foreach(var item in Model)
+                {                    
+                    var hjeperbatang = Convert.ToInt64(item.HJEperPack_dec) / Convert.ToInt32(item.Brand_Content);                    
+                    <tr class="tr_item_list" id='tr_item_list_@ii' 
+                    data-index='@ii' 
+                    data-requestnumber='@item.Request_No' 
+                    data-facodeold='@item.Fa_Code_Old' 
+                    data-facodeolddesc='@item.Fa_Code_Old_Desc' 
+                    data-facodenew='@item.Fa_Code_New' 
+                    data-facodenewdesc='@item.Fa_Code_New_Desc' 
+                    data-pddetailid='@item.PD_Detail_ID'>
+                    <td class='td_inputan'>
+                        <input type='checkbox' class='cb_itemlist' />
+                        <input type='hidden' class='txt_hd_itemId' value='@item.PD_Detail_ID' name='Item[@ii].PD_Detail_ID'>
+                        <input type='hidden' class='txt_hd_detailId' value='@item.Received_Detail_ID' name='Item[@ii].Received_Detail_ID'>
+                        <input type='hidden' class='txt_hd_isactive' value='true' name='Item[@ii].IsActive'>
+                        <input type='hidden' class='txt_hd_brandname' value='@item.Brand_CE' name='Item[@ii].Brand_CE'>
+                        <input type='hidden' class='txt_hd_companytier' value='@item.Company_Tier' name='Item[@ii].Company_Tier'>
+                        <input type='hidden' class='txt_hd_excisegood' value='@item.Prod_Code' name='Item[@ii].Prod_Code'>
+                        <input type='hidden' class='txt_hd_hjeperpack' value='@Convert.ToInt64(item.HJEperPack_dec)' name='Item[@ii].HJEperPack'>
+                        <input type='hidden' class='txt_hd_hjeperbatang' value='@hjeperbatang' name='Item[@ii].HJEperBatang'>
+                        <input type='hidden' class='txt_hd_content' value='@item.Brand_Content' name='Item[@ii].Brand_Content'>
+                        <input type='hidden' class='txt_hd_unit' value='@item.Unit' name='Item[@ii].Unit'>
+                        <input type='hidden' class='txt_hd_tariff' value='@item.Tariff' name='Item[@ii].Tariff'>
+                    </td>
+                    <td class='btn_showmodal_detail' style='cursor:pointer' >@item.Request_No</td>
+                    <td class='btn_showmodal_detail' style='cursor:pointer' >@item.Fa_Code_Old</td>
+                    <td class='btn_showmodal_detail' style='cursor:pointer' >@item.Fa_Code_Old_Desc</td>
+                    <td class='btn_showmodal_detail' style='cursor:pointer' >@item.Fa_Code_New</td>
+                    <td class='btn_showmodal_detail' style='cursor:pointer' >@item.Fa_Code_New_Desc</td>
+                    <td class='btn_showmodal_detail' style='cursor:pointer' >@item.CompanyName</td>
+                    <td class='btn_showmodal_detail' style='cursor:pointer' >@item.HlCode</td>
+                    <td class='btn_showmodal_detail' style='cursor:pointer' >@item.MarketDesc</td>
+                    <td class='btn_showmodal_detail' style='cursor:pointer' ></td>
+                    </tr>
+                    ii++;
+                }
+            </tbody>
+        </table>
+    </div>
+    <input type="hidden" id="txt_index_listitem" value="@ii" />
+</div>

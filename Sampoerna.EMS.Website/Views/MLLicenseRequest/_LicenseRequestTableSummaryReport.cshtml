@@ -1,0 +1,43 @@
+﻿@model Sampoerna.EMS.Website.Models.ManufacturingLicense.LicenseRequestSummaryReportsViewModel
+@using Sampoerna.EMS.Core
+<table id="changeRequestTable" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> Filter </th>
+            <th>Form No</th>
+            <th>Request Date</th>
+            <th>Company Type</th>
+            <th>KPPBC</th>
+            <th>Company</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <thead class="filters">
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.LicenseRequestDocuments)
+            {
+            <tr>
+                <td class="action">
+                </td>
+                <td>@Html.DisplayFor(model => item.FormNumber)</td>
+                <td>@Html.DisplayFor(model => item.RequestDate)</td>
+                <td>@Html.DisplayFor(model => item.CompanyType)</td>
+                <td>@Html.DisplayFor(model => item.KPPBC)</td>
+                <td>@Html.DisplayFor(model => item.CompanyName)</td>
+                <td>@Html.DisplayFor(model => item.LastApprovedStatusValue)</td>
+@*                <td class="last">@Html.DisplayFor(model => item.ApprovalStatus.Value)</td>*@
+            </tr>
+        }
+    </tbody>
+</table>
+

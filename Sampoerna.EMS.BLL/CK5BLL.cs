@@ -201,7 +201,7 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
-            if (input.UserRole != Enums.UserRole.Administrator && input.UserRole != Enums.UserRole.Viewer)
+            if (input.UserRole != Enums.UserRole.Administrator && input.UserRole != Enums.UserRole.Viewer && input.UserRole != Enums.UserRole.Controller)
             {
 
                 if (input.ListUserPlant == null)
@@ -3827,7 +3827,7 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
-            if (input.UserRole != Enums.UserRole.Administrator && input.UserRole != Enums.UserRole.Viewer)
+            if (input.UserRole != Enums.UserRole.Administrator && input.UserRole != Enums.UserRole.Viewer && input.UserRole != Enums.UserRole.Controller)
             {
                 if (input.ListUserPlant == null)
                     throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
@@ -5637,7 +5637,7 @@ namespace Sampoerna.EMS.BLL
             return output;
         }
 
-        private decimal GetQuotaCk5(string plantId, string sourceNppbkc, string pbck1Npbkc, DateTime periodStart, DateTime periodEnd, Enums.ExGoodsType goodtypegroupid)
+        public decimal GetQuotaCk5(string plantId, string sourceNppbkc, string pbck1Npbkc, DateTime periodStart, DateTime periodEnd, Enums.ExGoodsType goodtypegroupid)
         {
             //get ck5 
             var lisCk5 =
@@ -5990,7 +5990,7 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
-            if (input.UserRole != Enums.UserRole.Administrator && input.UserRole != Enums.UserRole.Viewer)
+            if (input.UserRole != Enums.UserRole.Administrator && input.UserRole != Enums.UserRole.Viewer && input.UserRole != Enums.UserRole.Controller)
             {
                 if (input.ListUserPlant == null)
                     throw new BLLException(ExceptionCodes.BLLExceptions.UserPlantMapSettingNotFound);
@@ -6348,7 +6348,7 @@ namespace Sampoerna.EMS.BLL
 
             Expression<Func<CK5, bool>> queryFilter = PredicateHelper.True<CK5>();
 
-            if (input.UserRole != Enums.UserRole.Administrator && input.UserRole != Enums.UserRole.Viewer)
+            if (input.UserRole != Enums.UserRole.Administrator && input.UserRole != Enums.UserRole.Viewer && input.UserRole != Enums.UserRole.Controller)
             {
 
                 if (input.ListUserPlant == null)

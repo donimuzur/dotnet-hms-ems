@@ -41,9 +41,24 @@ using Sampoerna.EMS.Website.Models.PoaDelegation;
 using Sampoerna.EMS.Website.Models.SchedulerSetting;
 using Sampoerna.EMS.Website.Models.Reversal;
 using Sampoerna.EMS.Website.Models.ProductType;
+using Sampoerna.EMS.Website.Models.Shared;
+//using Sampoerna.EMS.Website.Models.FinanceRatio;
+using Sampoerna.EMS.Website.Models.Configuration;
+using Sampoerna.EMS.Website.Models.FinanceRatio;
+using Sampoerna.EMS.Website.Models.Tariff;
+using Sampoerna.EMS.Website.Models.SupportDoc;
+using Sampoerna.EMS.Website.Models.BrandRegistrationTransaction;
+using Sampoerna.EMS.Website.Models.FileUpload;
+using Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevelopment;
+using Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevelopment;
+using Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.BrandRegistration;
+using Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.MapSKEP;
+using Sampoerna.EMS.Website.Models.ProductDevUpload;
+using Sampoerna.EMS.Website.Models.Market;
+//using Sampoerna.EMS.Website.Models.POAExciser;
 using Sampoerna.EMS.Website.Models.MonthClosing;
-using Sampoerna.EMS.Website.Models.MasterDataApprovalSetting;
 using Sampoerna.EMS.Website.Models.MasterDataApproval;
+using Sampoerna.EMS.Website.Models.MasterDataApprovalSetting;
 
 namespace Sampoerna.EMS.Website
 {
@@ -496,7 +511,6 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.BAHAN_KEMASAN, opt => opt.MapFrom(src => src.BahanKemasan))
                 .ForMember(dest => dest.PACKED_ADJUSTED, opt => opt.MapFrom(src => src.IsPackedAdjusted))
                 .ForMember(dest => dest.IS_FROM_SAP, opt => opt.MapFrom(src => src.IsFromSAP));
-
             Mapper.CreateMap<BrandRegistrationEditViewModel, BrandRegistrationCreateViewModel>().IgnoreAllNonExisting();
             #endregion
 
@@ -523,7 +537,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.CityAlias, opt => opt.MapFrom(src => src.CITY_ALIAS))
                 .ForMember(dest => dest.AcountNumber, opt => opt.MapFrom(src => src.LFA1.LIFNR))
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.START_DATE))
-                .ForMember(dest => dest.Is_Deleted,opt => opt.MapFrom(src => src.IS_DELETED.HasValue && src.IS_DELETED.Value ? "Yes" : "No"))
+                .ForMember(dest => dest.Is_Deleted, opt => opt.MapFrom(src => src.IS_DELETED.HasValue && src.IS_DELETED.Value ? "Yes" : "No"))
                 .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.END_DATE))
                 .ForMember(dest => dest.FlagForLack1, opt => opt.MapFrom(src => src.FLAG_FOR_LACK1.HasValue && src.FLAG_FOR_LACK1.Value));
 
@@ -535,7 +549,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.TEXT_TO, opt => opt.MapFrom(src => src.TextTo))
                 .ForMember(dest => dest.CITY_ALIAS, opt => opt.MapFrom(src => src.CityAlias))
                 .ForMember(dest => dest.FLAG_FOR_LACK1, opt => opt.MapFrom(src => src.FlagForLack1));
-                
+
 
 
             #endregion
@@ -762,7 +776,6 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<USER, UserItem>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IS_ACTIVE.Value == 1 ? "Yes" : "No"))
                 .ForMember(dest => dest.IsMasterApprover, opt => opt.MapFrom(src => src.IS_MASTER_DATA_APPROVER.HasValue && src.IS_MASTER_DATA_APPROVER.Value ? "Yes" : "No"));
-
             Mapper.CreateMap<UserItem, USER>().IgnoreAllNonExisting().
                 ForMember(dest => dest.IS_ACTIVE, opt => opt.MapFrom(src => src.IS_ACTIVE ? 1 : 0)); ;
 
@@ -905,7 +918,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.PACKED_ADJUSTED, opt => opt.MapFrom(src => src.PackedAdjusted))
                 .ForMember(dest => dest.REMARK, opt => opt.MapFrom(src => src.Remark));
 
-            Mapper.CreateMap<PRODUCTION,ProductionDto>().IgnoreAllNonExisting()
+            Mapper.CreateMap<PRODUCTION, ProductionDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Zb, opt => opt.MapFrom(src => src.ZB))
                 .ForMember(dest => dest.PackedAdjusted, opt => opt.MapFrom(src => src.PACKED_ADJUSTED))
                 .ForMember(dest => dest.Remark, opt => opt.MapFrom(src => src.REMARK));
@@ -988,7 +1001,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<CK5ExternalSupplierDto, SelectItemModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.ValueField, opt => opt.MapFrom(src => src.SUPPLIER_PLANT))
-                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src =>src.SUPPLIER_PLANT + " - " + src.SUPPLIER_COMPANY));
+                .ForMember(dest => dest.TextField, opt => opt.MapFrom(src => src.SUPPLIER_PLANT + " - " + src.SUPPLIER_COMPANY));
 
             #region User Plant Map
             Mapper.CreateMap<UserPlantMapDetail, UserPlantMapDto>().IgnoreAllNonExisting();
@@ -1051,8 +1064,8 @@ namespace Sampoerna.EMS.Website
               .ForMember(dest => dest.WASTE_STOCK_ID, opt => opt.MapFrom(src => src.WasteStockId))
               .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.PlantId))
               .ForMember(dest => dest.MATERIAL_NUMBER, opt => opt.MapFrom(src => src.MaterialNumber))
-              .ForMember(dest => dest.STOCK, opt => opt.MapFrom(src => ConvertHelper.ConvertToDecimalOrZero(src.StockDisplay.Replace(",",""))))
-              
+              .ForMember(dest => dest.STOCK, opt => opt.MapFrom(src => ConvertHelper.ConvertToDecimalOrZero(src.StockDisplay.Replace(",", ""))))
+
               .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedBy))
               .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
               .ForMember(dest => dest.MODIFIED_BY, opt => opt.MapFrom(src => src.ModifiedBy))
@@ -1080,7 +1093,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<NlogDto, XmlLogFormViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.XmlLogId, opt => opt.MapFrom(src => src.Nlog_Id))
-                .ForMember(dest => dest.TimeStampDisplay, opt => opt.MapFrom(src => src.Timestamp.HasValue ? src.Timestamp.Value.ToString("dd MMM yyyy hh:mm:ss tt"): string.Empty))
+                .ForMember(dest => dest.TimeStampDisplay, opt => opt.MapFrom(src => src.Timestamp.HasValue ? src.Timestamp.Value.ToString("dd MMM yyyy hh:mm:ss tt") : string.Empty))
                 //.ForMember(dest => dest.Logger, opt => opt.ResolveUsing<ConcatStringResolver>().FromMember(src => src.Logger))
                 //.ForMember(dest => dest.Message, opt => opt.ResolveUsing<ConcatStringResolver>().FromMember(src => src.Message))
                 ;
@@ -1093,7 +1106,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.XmlLogId, opt => opt.MapFrom(src => src.XML_LOGS_ID))
                 .ForMember(dest => dest.FileName, opt => opt.MapFrom(src => src.XML_FILENAME))
                 .ForMember(dest => dest.TimeStamp, opt => opt.MapFrom(src => src.LAST_ERROR_TIME))
-                .ForMember(dest => dest.TimeStampDisplay, opt => opt.MapFrom(src => src.LAST_ERROR_TIME.ToString("dd MMM yyyy HH:mm:ss") ))
+                .ForMember(dest => dest.TimeStampDisplay, opt => opt.MapFrom(src => src.LAST_ERROR_TIME.ToString("dd MMM yyyy HH:mm:ss")))
                 .ForMember(dest => dest.XmlLogStatus, opt => opt.MapFrom(src => src.STATUS))
                 .ForMember(dest => dest.XmlLogStatusDescription, opt => opt.MapFrom(src => EnumHelper.GetDescription(src.STATUS)))
                 .ForMember(dest => dest.DetailListLogs, opt => opt.MapFrom(src => Mapper.Map<List<XmlFileManagementDetailsViewModel>>(src.DetailList)))
@@ -1101,7 +1114,7 @@ namespace Sampoerna.EMS.Website
 
             Mapper.CreateMap<XML_LOGS_DETAILSDto, XmlFileManagementDetailsViewModel>().IgnoreAllNonExisting()
                  .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.LOGS))
-                 .ForMember(dest => dest.TimeStampDisplay, opt => opt.MapFrom(src => src.ERROR_TIME.HasValue? src.ERROR_TIME.Value.ToString("dd MMM yyyy HH:mm:ss") : string.Empty))
+                 .ForMember(dest => dest.TimeStampDisplay, opt => opt.MapFrom(src => src.ERROR_TIME.HasValue ? src.ERROR_TIME.Value.ToString("dd MMM yyyy HH:mm:ss") : string.Empty))
                 ;
 
             #endregion
@@ -1115,7 +1128,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.DateFromDisplay, opt => opt.MapFrom(src => src.DATE_FROM.ToString("dd MMM yyyy")))
                 .ForMember(dest => dest.DateTo, opt => opt.MapFrom(src => src.DATE_TO))
                 .ForMember(dest => dest.DateToDisplay, opt => opt.MapFrom(src => src.DATE_TO.ToString("dd MMM yyyy")))
-                .ForMember(dest => dest.Reason, opt => opt.MapFrom(src => src.REASON)) 
+                .ForMember(dest => dest.Reason, opt => opt.MapFrom(src => src.REASON))
                 ;
 
             Mapper.CreateMap<PoaDelegationFormViewModel, POA_DELEGATIONDto>().IgnoreAllNonExisting()
@@ -1127,7 +1140,7 @@ namespace Sampoerna.EMS.Website
                ;
 
             #endregion
-            
+
             #region Reversal
 
             Mapper.CreateMap<ReversalDto, DataReversal>().IgnoreAllNonExisting()
@@ -1172,8 +1185,110 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
+            #region User Model
+            Mapper.CreateMap<UserModel, CustomService.Data.USER>().IgnoreAllUnmapped()
+                .ForMember(entity => entity.USER_ID, opt => opt.MapFrom(model => model.UserId))
+                .ForMember(entity => entity.EMAIL, opt => opt.MapFrom(model => model.Email))
+                .ForMember(entity => entity.FIRST_NAME, opt => opt.MapFrom(model => model.FirstName))
+                .ForMember(entity => entity.LAST_NAME, opt => opt.MapFrom(model => model.LastName))
+                .ForMember(entity => entity.ADDRESS, opt => opt.MapFrom(model => model.Address))
+                ;
+            Mapper.CreateMap<CustomService.Data.USER, UserModel>().IgnoreAllNonExisting()
+                .ForMember(entity => entity.UserId, opt => opt.MapFrom(model => model.USER_ID))
+                .ForMember(entity => entity.Email, opt => opt.MapFrom(model => model.EMAIL))
+                .ForMember(entity => entity.FirstName, opt => opt.MapFrom(model => model.FIRST_NAME))
+                .ForMember(entity => entity.LastName, opt => opt.MapFrom(model => model.LAST_NAME))
+                .ForMember(entity => entity.Address, opt => opt.MapFrom(model => model.ADDRESS))
+                ;
+            #endregion
 
-            #region Month Closing
+            #region Company Model
+            Mapper.CreateMap<CompanyModel, CustomService.Data.T001>().IgnoreAllUnmapped()
+                .ForMember(entity => entity.BUKRS, opt => opt.MapFrom(model => model.Id))
+                .ForMember(entity => entity.BUTXT, opt => opt.MapFrom(model => model.Name))
+                .ForMember(entity => entity.SPRAS, opt => opt.MapFrom(model => model.Address))
+                .ForMember(entity => entity.ORT01, opt => opt.MapFrom(model => model.City))
+                .ForMember(entity => entity.NPWP, opt => opt.MapFrom(model => model.Npwp))
+                ;
+            Mapper.CreateMap<CustomService.Data.T001, CompanyModel>().IgnoreAllNonExisting()
+                .ForMember(entity => entity.Id, opt => opt.MapFrom(model => model.BUKRS))
+                .ForMember(entity => entity.Name, opt => opt.MapFrom(model => model.BUTXT))
+                .ForMember(entity => entity.Address, opt => opt.MapFrom(model => model.SPRAS))
+                .ForMember(entity => entity.City, opt => opt.MapFrom(model => model.ORT01))
+                .ForMember(entity => entity.Npwp, opt => opt.MapFrom(model => model.NPWP))
+                ;
+            #endregion
+
+            #region References
+            Mapper.CreateMap<ConfigurationCreateViewModel, CustomService.Data.SYS_REFFERENCES_TYPE>().IgnoreAllUnmapped()
+                .ForMember(entity => entity.SYS_REFFERENCES_TYPE1, opt => opt.MapFrom(model => model.ConfigType))
+                .ForMember(entity => entity.SYS_REFFERENCES_TEXT, opt => opt.MapFrom(model => model.ConfigText))
+                ;
+            Mapper.CreateMap<CustomService.Data.SYS_REFFERENCES_TYPE, ConfigurationCreateViewModel>().IgnoreAllNonExisting()
+                .ForMember(entity => entity.ConfigType, opt => opt.MapFrom(model => model.SYS_REFFERENCES_TYPE1))
+                .ForMember(entity => entity.ConfigText, opt => opt.MapFrom(model => model.SYS_REFFERENCES_TEXT))
+                ;
+            Mapper.CreateMap<ConfigurationViewModel, CustomService.Data.SYS_REFFERENCES>().IgnoreAllUnmapped()
+                .ForMember(entity => entity.REFF_ID, opt => opt.MapFrom(model => model.REFF_ID))
+                .ForMember(entity => entity.REFF_NAME, opt => opt.MapFrom(model => model.REFF_NAME))
+                .ForMember(entity => entity.REFF_TYPE, opt => opt.MapFrom(model => model.REFF_TYPE))
+                .ForMember(entity => entity.REFF_KEYS, opt => opt.MapFrom(model => model.REFF_KEYS))
+                .ForMember(entity => entity.REFF_VALUE, opt => opt.MapFrom(model => model.REFF_VALUE))
+                .ForMember(entity => entity.CREATED_BY, opt => opt.MapFrom(model => model.CREATED_BY))
+                .ForMember(entity => entity.CREATED_DATE, opt => opt.MapFrom(model => model.CREATED_DATE))
+                .ForMember(entity => entity.LASTMODIFIED_BY, opt => opt.MapFrom(model => model.LASTMODIFIED_BY))
+                .ForMember(entity => entity.LASTMODIFIED_DATE, opt => opt.MapFrom(model => model.LASTMODIFIED_DATE))
+                .ForMember(entity => entity.IS_ACTIVE, opt => opt.MapFrom(model => model.IS_ACTIVE))
+                ;
+            Mapper.CreateMap<CustomService.Data.SYS_REFFERENCES, ConfigurationViewModel>().IgnoreAllNonExisting()
+                .ForMember(entity => entity.REFF_ID, opt => opt.MapFrom(model => model.REFF_ID))
+                .ForMember(entity => entity.REFF_NAME, opt => opt.MapFrom(model => model.REFF_NAME))
+                .ForMember(entity => entity.REFF_TYPE, opt => opt.MapFrom(model => model.REFF_TYPE))
+                .ForMember(entity => entity.REFF_KEYS, opt => opt.MapFrom(model => model.REFF_KEYS))
+                .ForMember(entity => entity.REFF_VALUE, opt => opt.MapFrom(model => model.REFF_VALUE))
+                .ForMember(entity => entity.CREATED_BY, opt => opt.MapFrom(model => model.CREATED_BY))
+                .ForMember(entity => entity.CREATED_DATE, opt => opt.MapFrom(model => model.CREATED_DATE))
+                .ForMember(entity => entity.LASTMODIFIED_BY, opt => opt.MapFrom(model => model.LASTMODIFIED_BY))
+                .ForMember(entity => entity.LASTMODIFIED_DATE, opt => opt.MapFrom(model => model.LASTMODIFIED_DATE))
+                .ForMember(entity => entity.IS_ACTIVE, opt => opt.MapFrom(model => model.IS_ACTIVE))
+                ;
+
+            Mapper.CreateMap<CustomService.Data.SYS_REFFERENCES_TYPE, ReferenceTypeModel>().IgnoreAllNonExisting()
+                .ForMember(entity => entity.Name, opt => opt.MapFrom(model => model.SYS_REFFERENCES_TYPE1))
+                .ForMember(entity => entity.Value, opt => opt.MapFrom(model => model.SYS_REFFERENCES_TEXT))
+                ;
+            Mapper.CreateMap<ReferenceTypeModel, CustomService.Data.SYS_REFFERENCES_TYPE>().IgnoreAllUnmapped()
+                .ForMember(entity => entity.SYS_REFFERENCES_TYPE1, opt => opt.MapFrom(model => model.Name))
+                .ForMember(entity => entity.SYS_REFFERENCES_TEXT, opt => opt.MapFrom(model => model.Value))
+                ;
+            Mapper.CreateMap<CustomService.Data.SYS_REFFERENCES, ReferenceModel>().IgnoreAllNonExisting()
+                .ForMember(entity => entity.Id, opt => opt.MapFrom(model => model.REFF_ID))
+                .ForMember(entity => entity.Name, opt => opt.MapFrom(model => model.REFF_NAME))
+                .ForMember(entity => entity.TypeID, opt => opt.MapFrom(model => model.REFF_TYPE))
+                .ForMember(entity => entity.Key, opt => opt.MapFrom(model => model.REFF_KEYS))
+                .ForMember(entity => entity.Value, opt => opt.MapFrom(model => model.REFF_VALUE))
+                .ForMember(entity => entity.CreatedBy, opt => opt.MapFrom(model => model.CREATED_BY))
+                .ForMember(entity => entity.CreatedDate, opt => opt.MapFrom(model => model.CREATED_DATE))
+                .ForMember(entity => entity.LastModifiedBy, opt => opt.MapFrom(model => model.LASTMODIFIED_BY))
+                .ForMember(entity => entity.LastModifiedDate, opt => opt.MapFrom(model => model.LASTMODIFIED_DATE))
+                .ForMember(entity => entity.IsActive, opt => opt.MapFrom(model => model.IS_ACTIVE))
+                .ForMember(entity => entity.Type, opt => opt.MapFrom(model => model.SYS_REFFERENCES_TYPE))
+                ;
+            Mapper.CreateMap<ReferenceModel, CustomService.Data.SYS_REFFERENCES>().IgnoreAllUnmapped()
+                .ForMember(entity => entity.REFF_ID, opt => opt.MapFrom(model => model.Id))
+                .ForMember(entity => entity.REFF_NAME, opt => opt.MapFrom(model => model.Name))
+                .ForMember(entity => entity.REFF_TYPE, opt => opt.MapFrom(model => model.TypeID))
+                .ForMember(entity => entity.REFF_KEYS, opt => opt.MapFrom(model => model.Key))
+                .ForMember(entity => entity.REFF_VALUE, opt => opt.MapFrom(model => model.Value))
+                .ForMember(entity => entity.CREATED_BY, opt => opt.MapFrom(model => model.CreatedBy))
+                .ForMember(entity => entity.CREATED_DATE, opt => opt.MapFrom(model => model.CreatedDate))
+                .ForMember(entity => entity.LASTMODIFIED_BY, opt => opt.MapFrom(model => model.LastModifiedBy))
+                .ForMember(entity => entity.LASTMODIFIED_DATE, opt => opt.MapFrom(model => model.LastModifiedDate))
+                .ForMember(entity => entity.IS_ACTIVE, opt => opt.MapFrom(model => model.IsActive))
+                .ForMember(entity => entity.SYS_REFFERENCES_TYPE, opt => opt.MapFrom(model => model.Type))
+                ;
+            #endregion
+#region Month Closing
 
             Mapper.CreateMap<MonthClosingDetail, MonthClosingDto>().IgnoreAllNonExisting();
             Mapper.CreateMap<MonthClosingDto, MonthClosingDetail>().IgnoreAllNonExisting();
@@ -1183,7 +1298,252 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
-            #region Master Data Approval
+            #region Changes Log
+            Mapper.CreateMap<CustomService.Data.CHANGES_HISTORY, ChangesHistoryItemModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.USERNAME,
+                    opt => opt.MapFrom(src => src.USER != null ? src.USER.USER_ID : string.Empty))
+                .ForMember(dest => dest.USER_FIRST_NAME,
+                    opt => opt.MapFrom(src => src.USER != null ? src.USER.FIRST_NAME : string.Empty))
+                .ForMember(dest => dest.USER_LAST_NAME,
+                    opt => opt.MapFrom(src => src.USER != null ? src.USER.LAST_NAME : string.Empty))
+                    .ForMember(dest => dest.FORM_TYPE_DESC, opt => opt.MapFrom(src => EnumHelper.GetDescription((Enums.MenuList)src.FORM_TYPE_ID)));
+            Mapper.CreateMap<CustomService.Data.WORKFLOW_HISTORY, WorkflowHistoryViewModel>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.ACTION, opt => opt.MapFrom(src => EnumHelper.GetDescription((Enums.ActionType)src.ACTION)))
+               .ForMember(dest => dest.USERNAME, opt => opt.MapFrom(src => src.ACTION_BY))
+               .ForMember(dest => dest.USER_FIRST_NAME, opt => opt.MapFrom(src => src.USER.FIRST_NAME))
+               .ForMember(dest => dest.USER_LAST_NAME, opt => opt.MapFrom(src => src.USER.LAST_NAME))
+               .ForMember(dest => dest.Role, opt => opt.MapFrom(src => EnumHelper.GetDescription((Enums.UserRole)src.ROLE)))
+               ;
+            #endregion
+
+            #region Finance Ratio
+            Mapper.CreateMap<FinanceRatioModel, CustomService.Data.MASTER_FINANCIAL_RATIO>().IgnoreAllUnmapped()
+                .ForMember(entity => entity.FINANCERATIO_ID, opt => opt.MapFrom(model => model.Id))
+                .ForMember(entity => entity.BUKRS, opt => opt.MapFrom(model => model.Bukrs))
+                .ForMember(entity => entity.YEAR_PERIOD, opt => opt.MapFrom(model => model.YearPeriod))
+                .ForMember(entity => entity.CURRENT_ASSETS, opt => opt.MapFrom(model => model.CurrentAssets))
+                .ForMember(entity => entity.CURRENT_DEBTS, opt => opt.MapFrom(model => model.CurrentDebts))
+                .ForMember(entity => entity.TOTAL_ASSETS, opt => opt.MapFrom(model => model.TotalAssets))
+                .ForMember(entity => entity.TOTAL_DEBTS, opt => opt.MapFrom(model => model.TotalDebts))
+                .ForMember(entity => entity.TOTAL_CAPITAL, opt => opt.MapFrom(model => model.TotalCapital))
+                .ForMember(entity => entity.NET_PROFIT, opt => opt.MapFrom(model => model.NetProfit))
+                .ForMember(entity => entity.LIQUIDITY_RATIO, opt => opt.MapFrom(model => model.LiquidityRatio))
+                .ForMember(entity => entity.SOLVENCY_RATIO, opt => opt.MapFrom(model => model.SolvencyRatio))
+                .ForMember(entity => entity.RENTABLE_RATIO, opt => opt.MapFrom(model => model.RentabilityRatio))
+                .ForMember(entity => entity.CREATED_BY, opt => opt.MapFrom(model => model.CreatedBy))
+                .ForMember(entity => entity.CREATED_DATE, opt => opt.MapFrom(model => model.CreatedDate))
+                .ForMember(entity => entity.LASTMODIFIED_BY, opt => opt.MapFrom(model => model.LastModifiedBy))
+                .ForMember(entity => entity.LASTMODIFIED_DATE, opt => opt.MapFrom(model => model.LastModifiedDate))
+                .ForMember(entity => entity.LASTAPPROVED_BY, opt => opt.MapFrom(model => model.LastApprovedBy))
+                .ForMember(entity => entity.LASTAPPROVED_DATE, opt => opt.MapFrom(model => model.LastApprovedDate))
+                .ForMember(entity => entity.STATUS_APPROVAL, opt => opt.MapFrom(model => model.ApprovalStatus))
+
+                .ForMember(entity => entity.COMPANY, opt => opt.MapFrom(model => model.Company))
+                .ForMember(entity => entity.CREATOR, opt => opt.MapFrom(model => model.Creator))
+                .ForMember(entity => entity.LASTEDITOR, opt => opt.MapFrom(model => model.LastEditor))
+                .ForMember(entity => entity.APPROVER, opt => opt.MapFrom(model => model.Approver))
+                .ForMember(entity => entity.APPROVALSTATUS, opt => opt.MapFrom(model => model.ApprovalStatusDescription))
+                ;
+
+            Mapper.CreateMap<CustomService.Data.MASTER_FINANCIAL_RATIO, FinanceRatioModel>().IgnoreAllNonExisting()
+                .ForMember(entity => entity.Id, opt => opt.MapFrom(model => model.FINANCERATIO_ID))
+                .ForMember(entity => entity.Bukrs, opt => opt.MapFrom(model => model.BUKRS))
+                .ForMember(entity => entity.YearPeriod, opt => opt.MapFrom(model => model.YEAR_PERIOD))
+                .ForMember(entity => entity.CurrentAssets, opt => opt.MapFrom(model => model.CURRENT_ASSETS))
+                .ForMember(entity => entity.CurrentDebts, opt => opt.MapFrom(model => model.CURRENT_DEBTS))
+                .ForMember(entity => entity.TotalAssets, opt => opt.MapFrom(model => model.TOTAL_ASSETS))
+                .ForMember(entity => entity.TotalDebts, opt => opt.MapFrom(model => model.TOTAL_DEBTS))
+                .ForMember(entity => entity.TotalCapital, opt => opt.MapFrom(model => model.TOTAL_CAPITAL))
+                .ForMember(entity => entity.NetProfit, opt => opt.MapFrom(model => model.NET_PROFIT))
+                .ForMember(entity => entity.LiquidityRatio, opt => opt.MapFrom(model => model.LIQUIDITY_RATIO))
+                .ForMember(entity => entity.SolvencyRatio, opt => opt.MapFrom(model => model.SOLVENCY_RATIO))
+                .ForMember(entity => entity.RentabilityRatio, opt => opt.MapFrom(model => model.RENTABLE_RATIO))
+                .ForMember(entity => entity.CreatedBy, opt => opt.MapFrom(model => model.CREATED_BY))
+                .ForMember(entity => entity.CreatedDate, opt => opt.MapFrom(model => model.CREATED_DATE))
+                .ForMember(entity => entity.LastModifiedBy, opt => opt.MapFrom(model => model.LASTMODIFIED_BY))
+                .ForMember(entity => entity.LastModifiedDate, opt => opt.MapFrom(model => model.LASTMODIFIED_DATE))
+                .ForMember(entity => entity.LastApprovedBy, opt => opt.MapFrom(model => model.LASTAPPROVED_BY))
+                .ForMember(entity => entity.LastApprovedDate, opt => opt.MapFrom(model => model.LASTAPPROVED_DATE))
+                .ForMember(entity => entity.ApprovalStatus, opt => opt.MapFrom(model => model.STATUS_APPROVAL))
+
+                .ForMember(entity => entity.Company, opt => opt.MapFrom(model => model.COMPANY))
+                .ForMember(entity => entity.Creator, opt => opt.MapFrom(model => model.CREATOR))
+                .ForMember(entity => entity.LastEditor, opt => opt.MapFrom(model => model.LASTEDITOR))
+                .ForMember(entity => entity.Approver, opt => opt.MapFrom(model => model.APPROVER))
+                .ForMember(entity => entity.ApprovalStatusDescription, opt => opt.MapFrom(model => model.APPROVALSTATUS))
+                ;
+            #endregion
+
+            #region Email Content
+            Mapper.CreateMap<CustomService.Data.EMAILVARIABEL, EmailVariable>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.VARIABELID))
+               .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.NAME))
+               .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.NOTE))
+               .ForMember(dest => dest.ContentID, opt => opt.MapFrom(src => src.CONTENTEMAILID))
+               ;
+
+            Mapper.CreateMap<CustomService.Data.CONTENTEMAIL, EmailContent>().IgnoreAllNonExisting()
+               .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.CONTENTEMAILID))
+               .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.EMAILNAME))
+               .ForMember(dest => dest.Subject, opt => opt.MapFrom(src => src.EMAILSUBJECT))
+               .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.EMAILCONTENT))
+               .ForMember(dest => dest.Variables, opt => opt.MapFrom(src => src.EMAILVARIABELS))
+               ;
+            #endregion
+
+            #region POA_EXCISER
+            //Mapper.CreateMap<PoaExciserViewModel, CustomService.Data.POA_EXCISER>().IgnoreAllUnmapped()
+            //  .ForMember(entity => entity.EXCISER_ID, opt => opt.MapFrom(model => model.EXCISER_ID))
+            //  .ForMember(entity => entity.POA_ID, opt => opt.MapFrom(model => model.POA_ID))
+            //  ;
+            //Mapper.CreateMap<CustomService.Data.POA_EXCISER, PoaExciserViewModel>().IgnoreAllNonExisting()
+            //    .ForMember(model => model.EXCISER_ID, opt => opt.MapFrom(entity => entity.EXCISER_ID))
+            //    .ForMember(model => model.POA_ID, opt => opt.MapFrom(entity => entity.POA_ID))
+            //    ;
+            #endregion
+
+            #region Product Type
+
+            Mapper.CreateMap<CustomService.Data.MASTER_PRODUCT_TYPE, ProductTypeFormViewModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.ProdCode, opt => opt.MapFrom(src => src.PROD_CODE))
+                .ForMember(dest => dest.ProductType, opt => opt.MapFrom(src => src.PRODUCT_TYPE))
+                .ForMember(dest => dest.ProductAlias, opt => opt.MapFrom(src => src.PRODUCT_ALIAS))
+                .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CREATED_BY))
+                .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.MODIFIED_BY))
+                .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
+                .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.MODIFIED_DATE))
+                .ForMember(dest => dest.IsDeleted, opt => opt.MapFrom(src => src.IS_DELETED))
+                .ForMember(dest => dest.Ck4CEditable, opt => opt.MapFrom(src => src.CK4CEDITABLE ? "Yes" : "No"))
+                .ForMember(dest => dest.IsCk4CEditable, opt => opt.MapFrom(src => src.CK4CEDITABLE))
+                .ForMember(dest => dest.LastApprovedBy, opt => opt.MapFrom(src => src.LASTAPPROVED_BY))
+                .ForMember(dest => dest.LastApprovedDate, opt => opt.MapFrom(src => src.LASTAPPROVED_DATE))
+                .ForMember(dest => dest.ApprovalStatus, opt => opt.MapFrom(src => src.APPROVED_STATUS))
+
+                .ForMember(entity => entity.Creator, opt => opt.MapFrom(model => model.CREATOR))
+                .ForMember(entity => entity.LastEditor, opt => opt.MapFrom(model => model.LASTEDITOR))
+                .ForMember(entity => entity.Approver, opt => opt.MapFrom(model => model.APPROVER))
+                .ForMember(entity => entity.ApprovalStatusDescription, opt => opt.MapFrom(model => model.APPROVALSTATUS))
+                ;
+
+            Mapper.CreateMap<ProductTypeFormViewModel, CustomService.Data.MASTER_PRODUCT_TYPE>().IgnoreAllUnmapped()
+              .ForMember(dest => dest.PROD_CODE, opt => opt.MapFrom(src => src.ProdCode))
+              .ForMember(dest => dest.PRODUCT_TYPE, opt => opt.MapFrom(src => src.ProductType))
+              .ForMember(dest => dest.PRODUCT_ALIAS, opt => opt.MapFrom(src => src.ProductAlias))
+              .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedBy))
+              .ForMember(dest => dest.MODIFIED_BY, opt => opt.MapFrom(src => src.ModifiedBy))
+              .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
+              .ForMember(dest => dest.MODIFIED_DATE, opt => opt.MapFrom(src => src.ModifiedDate))
+              .ForMember(dest => dest.IS_DELETED, opt => opt.MapFrom(src => src.IsDeleted))
+              .ForMember(dest => dest.CK4CEDITABLE, opt => opt.MapFrom(src => src.IsCk4CEditable))
+              .ForMember(dest => dest.LASTAPPROVED_BY, opt => opt.MapFrom(src => src.LastApprovedBy))
+              .ForMember(dest => dest.LASTAPPROVED_DATE, opt => opt.MapFrom(src => src.LastApprovedDate))
+              .ForMember(dest => dest.APPROVED_STATUS, opt => opt.MapFrom(src => src.ApprovalStatus))
+
+              .ForMember(entity => entity.CREATOR, opt => opt.MapFrom(model => model.Creator))
+              .ForMember(entity => entity.LASTEDITOR, opt => opt.MapFrom(model => model.LastEditor))
+              .ForMember(entity => entity.APPROVER, opt => opt.MapFrom(model => model.Approver))
+              .ForMember(entity => entity.APPROVALSTATUS, opt => opt.MapFrom(model => model.ApprovalStatusDescription))
+              ;
+
+            #endregion
+            #region Supporting Document
+            Mapper.CreateMap<SupportDocModel, CustomService.Data.MASTER_SUPPORTING_DOCUMENT>().IgnoreAllUnmapped()
+                .ForMember(entity => entity.DOCUMENT_ID, opt => opt.MapFrom(model => model.DocumentID))
+                .ForMember(entity => entity.FORM_ID, opt => opt.MapFrom(model => model.FormID))
+                .ForMember(entity => entity.SUPPORTING_DOCUMENT_NAME, opt => opt.MapFrom(model => model.SupportDocName))
+                .ForMember(entity => entity.BUKRS, opt => opt.MapFrom(model => model.Bukrs))
+                .ForMember(entity => entity.IS_ACTIVE, opt => opt.MapFrom(model => model.IsActive))
+                .ForMember(entity => entity.CREATED_BY, opt => opt.MapFrom(model => model.CreatedBy))
+                .ForMember(entity => entity.CREATED_DATE, opt => opt.MapFrom(model => model.CreatedDate))
+                .ForMember(entity => entity.LASTMODIFIED_BY, opt => opt.MapFrom(model => model.LastModifiedBy))
+                .ForMember(entity => entity.LASTMODIFIED_DATE, opt => opt.MapFrom(model => model.LastModifiedDate))
+                .ForMember(entity => entity.LASTAPPROVED_BY, opt => opt.MapFrom(model => model.LastApprovedBy))
+                .ForMember(entity => entity.LASTAPPROVED_DATE, opt => opt.MapFrom(model => model.LastApprovedDate))
+                .ForMember(entity => entity.LASTAPPROVED_STATUS, opt => opt.MapFrom(model => model.ApprovalStatus))
+
+                .ForMember(entity => entity.COMPANY, opt => opt.MapFrom(model => model.Company))
+                .ForMember(entity => entity.CREATOR, opt => opt.MapFrom(model => model.Creator))
+                .ForMember(entity => entity.EDITOR, opt => opt.MapFrom(model => model.LastEditor))
+                .ForMember(entity => entity.APPROVER, opt => opt.MapFrom(model => model.Approver))
+                .ForMember(entity => entity.APPROVALSTATUS, opt => opt.MapFrom(model => model.ApprovalStatusDescription))
+                ;
+
+            Mapper.CreateMap<CustomService.Data.MASTER_SUPPORTING_DOCUMENT, SupportDocModel>().IgnoreAllNonExisting()
+                .ForMember(entity => entity.DocumentID, opt => opt.MapFrom(model => model.DOCUMENT_ID))
+                .ForMember(entity => entity.FormID, opt => opt.MapFrom(model => model.FORM_ID))
+                .ForMember(entity => entity.SupportDocName, opt => opt.MapFrom(model => model.SUPPORTING_DOCUMENT_NAME))
+                .ForMember(entity => entity.Bukrs, opt => opt.MapFrom(model => model.BUKRS))
+                .ForMember(entity => entity.IsActive, opt => opt.MapFrom(model => model.IS_ACTIVE))
+                .ForMember(entity => entity.CreatedBy, opt => opt.MapFrom(model => model.CREATED_BY))
+                .ForMember(entity => entity.CreatedDate, opt => opt.MapFrom(model => model.CREATED_DATE))
+                .ForMember(entity => entity.LastModifiedBy, opt => opt.MapFrom(model => model.LASTMODIFIED_BY))
+                .ForMember(entity => entity.LastModifiedDate, opt => opt.MapFrom(model => model.LASTMODIFIED_DATE))
+                .ForMember(entity => entity.LastApprovedBy, opt => opt.MapFrom(model => model.LASTAPPROVED_BY))
+                .ForMember(entity => entity.LastApprovedDate, opt => opt.MapFrom(model => model.LASTAPPROVED_DATE))
+                .ForMember(entity => entity.ApprovalStatus, opt => opt.MapFrom(model => model.LASTAPPROVED_STATUS))
+
+                .ForMember(entity => entity.Company, opt => opt.MapFrom(model => model.COMPANY))
+                .ForMember(entity => entity.Creator, opt => opt.MapFrom(model => model.CREATOR))
+                .ForMember(entity => entity.LastEditor, opt => opt.MapFrom(model => model.EDITOR))
+                .ForMember(entity => entity.Approver, opt => opt.MapFrom(model => model.APPROVER))
+                .ForMember(entity => entity.ApprovalStatusDescription, opt => opt.MapFrom(model => model.APPROVALSTATUS))
+                ;
+            #endregion
+            #region Tariff
+            Mapper.CreateMap<TariffModel, CustomService.Data.TARIFF>().IgnoreAllUnmapped()
+              .ForMember(entity => entity.TARIFF_ID, opt => opt.MapFrom(model => model.Id))
+              .ForMember(entity => entity.PROD_CODE, opt => opt.MapFrom(model => model.ProductTypeCode))
+              .ForMember(entity => entity.HJE_FROM, opt => opt.MapFrom(model => model.MinimumHJE))
+              .ForMember(entity => entity.HJE_TO, opt => opt.MapFrom(model => model.MaximumHJE))
+              .ForMember(entity => entity.VALID_FROM, opt => opt.MapFrom(model => model.ValidStartDate))
+              .ForMember(entity => entity.VALID_TO, opt => opt.MapFrom(model => model.ValidEndDate))
+              .ForMember(entity => entity.TARIFF_VALUE, opt => opt.MapFrom(model => model.Tariff))
+              .ForMember(entity => entity.STATUS_APPROVAL, opt => opt.MapFrom(model => model.ApprovalStatus))
+              .ForMember(entity => entity.PRODUCT_TYPE, opt => opt.MapFrom(model => model.ProductType))
+              .ForMember(entity => entity.APPROVALSTATUS, opt => opt.MapFrom(model => model.ApprovalStatusDescription))
+              .ForMember(entity => entity.CREATED_BY, opt => opt.MapFrom(model => model.CreatedBy))
+              .ForMember(entity => entity.CREATED_DATE, opt => opt.MapFrom(model => model.CreatedDate))
+              .ForMember(entity => entity.CREATOR, opt => opt.MapFrom(model => model.Creator))
+              .ForMember(entity => entity.LASTMODIFIED_BY, opt => opt.MapFrom(model => model.ModifiedBy))
+              .ForMember(entity => entity.LASTMODIFIED_DATE, opt => opt.MapFrom(model => model.ModifiedDate))
+              .ForMember(entity => entity.LASTAPPROVED_BY, opt => opt.MapFrom(model => model.ApprovedBy))
+              .ForMember(entity => entity.LASTAPPROVED_DATE, opt => opt.MapFrom(model => model.ApprovedDate))
+              ;
+            Mapper.CreateMap<CustomService.Data.TARIFF, TariffModel>().IgnoreAllNonExisting()
+                .ForMember(model => model.Id, opt => opt.MapFrom(entity => entity.TARIFF_ID))
+                .ForMember(model => model.ProductTypeCode, opt => opt.MapFrom(entity => entity.PROD_CODE))
+                .ForMember(model => model.MinimumHJE, opt => opt.MapFrom(entity => entity.HJE_FROM))
+                .ForMember(model => model.MaximumHJE, opt => opt.MapFrom(entity => entity.HJE_TO))
+                .ForMember(model => model.ValidStartDate, opt => opt.MapFrom(entity => entity.VALID_FROM))
+                .ForMember(model => model.ValidEndDate, opt => opt.MapFrom(entity => entity.VALID_TO))
+                .ForMember(model => model.Tariff, opt => opt.MapFrom(entity => entity.TARIFF_VALUE))
+                .ForMember(model => model.ProductType, opt => opt.MapFrom(entity => entity.PRODUCT_TYPE))
+                .ForMember(model => model.ApprovalStatus, opt => opt.MapFrom(entity => entity.STATUS_APPROVAL))
+                .ForMember(model => model.ApprovalStatusDescription, opt => opt.MapFrom(entity => entity.APPROVALSTATUS))
+                .ForMember(model => model.CreatedBy, opt => opt.MapFrom(entity => entity.CREATED_BY))
+                .ForMember(model => model.CreatedDate, opt => opt.MapFrom(entity => entity.CREATED_DATE))
+                .ForMember(model => model.Creator, opt => opt.MapFrom(entity => entity.CREATOR))
+                .ForMember(model => model.ModifiedBy, opt => opt.MapFrom(entity => entity.LASTMODIFIED_BY))
+                .ForMember(model => model.ModifiedDate, opt => opt.MapFrom(entity => entity.LASTMODIFIED_DATE))
+                .ForMember(model => model.ApprovedBy, opt => opt.MapFrom(entity => entity.LASTAPPROVED_BY))
+                .ForMember(model => model.ApprovedDate, opt => opt.MapFrom(entity => entity.LASTAPPROVED_DATE))
+                ;
+            #endregion
+
+            #region New NPPBKC
+            Mapper.CreateMap<NewNPPBKCViewModel.KppbcModel, CustomService.Data.MASTER_KPPBC>().IgnoreAllUnmapped()
+                .ForMember(dest => dest.KPPBC_ID, opt => opt.MapFrom(src => src.KppbcId));
+
+            Mapper.CreateMap<CustomService.Data.LFA1, NewNPPBKCViewModel.VendorModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.LIFNR))
+                .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.NAME1))
+                .ForMember(dest => dest.KppbcName, opt => opt.MapFrom(src => src.NAME2))
+                ;
+            Mapper.CreateMap<NewNPPBKCViewModel.VendorModel, CustomService.Data.LFA1>().IgnoreAllUnmapped()
+                .ForMember(dest => dest.LIFNR, opt => opt.MapFrom(src => src.Id));
+            #endregion
+
+#region Master Data Approval
 
             Mapper.CreateMap<MasterDataApprovalSettingDto, MasterDataSetting>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.MasterDataSettingDetails, opt => opt.MapFrom(src => src.Details));
@@ -1200,6 +1560,356 @@ namespace Sampoerna.EMS.Website
 
             #endregion
 
+            #region Market Model
+            Mapper.CreateMap<MarketModel, CustomService.Data.ZAIDM_EX_MARKET>().IgnoreAllUnmapped()
+                .ForMember(entity => entity.MARKET_ID, opt => opt.MapFrom(model => model.Market_Id))
+                .ForMember(entity => entity.MARKET_DESC, opt => opt.MapFrom(model => model.Market_Desc))
+                .ForMember(entity => entity.IS_DELETED, opt => opt.MapFrom(model => model.Is_Deleted))               
+                ;
+            Mapper.CreateMap<CustomService.Data.ZAIDM_EX_MARKET, MarketModel>().IgnoreAllNonExisting()
+                .ForMember(entity => entity.Market_Id, opt => opt.MapFrom(model => model.MARKET_ID))
+                .ForMember(entity => entity.Market_Desc, opt => opt.MapFrom(model => model.MARKET_DESC))
+                .ForMember(entity => entity.Is_Deleted, opt => opt.MapFrom(model => model.IS_DELETED))            
+                ;
+            #endregion
+
+            #region Plant Model
+            Mapper.CreateMap<T001WModel, CustomService.Data.MASTER_PLANT>().IgnoreAllUnmapped()
+                .ForMember(entity => entity.WERKS, opt => opt.MapFrom(model => model.WERKS))
+                .ForMember(entity => entity.NAME1, opt => opt.MapFrom(model => model.NAME1))
+                .ForMember(entity => entity.ADDRESS, opt => opt.MapFrom(model => model.ADDRESS))
+                ;
+            Mapper.CreateMap<CustomService.Data.MASTER_PLANT, T001WModel>().IgnoreAllNonExisting()
+                .ForMember(entity => entity.WERKS, opt => opt.MapFrom(model => model.WERKS))
+                .ForMember(entity => entity.NAME1, opt => opt.MapFrom(model => model.NAME1))
+                .ForMember(entity => entity.ADDRESS, opt => opt.MapFrom(model => model.ADDRESS))
+                ;
+            #endregion
+            #region Product Development ( Brand Registration Transaction - Product Development )
+
+            Mapper.CreateMap<CustomService.Data.PRODUCT_DEVELOPMENT, ProductDevelopmentModel>().IgnoreAllNonExisting()
+                    .ForMember(dest => dest.PD_ID, opt => opt.MapFrom(src => src.PD_ID))
+                    .ForMember(dest=> dest.PD_NO, opt=> opt.MapFrom(src=> src.PD_NO))
+                    .ForMember(dest => dest.Created_By, opt => opt.MapFrom(src => src.CREATED_BY))
+                    .ForMember(dest => dest.Created_Date, opt => opt.MapFrom(src => src.CREATED_DATE))
+                    .ForMember(dest => dest.Modified_By, opt => opt.MapFrom(src => src.LASTMODIFIED_BY))
+                    .ForMember(dest => dest.Modified_Date, opt => opt.MapFrom(src => src.LASTMODIFIED_DATE))                
+                    .ForMember(dest => dest.Next_Action, opt => opt.MapFrom(src => src.NEXT_ACTION))                               
+                    .ForMember(dest => dest.Creator, opt => opt.MapFrom(model => model.CREATOR))
+                    .ForMember(dest => dest.LastEditor, opt => opt.MapFrom(model => model.LAST_EDITOR))
+              ;
+
+            Mapper.CreateMap<ProductDevelopmentModel, CustomService.Data.PRODUCT_DEVELOPMENT>().IgnoreAllUnmapped()
+                  .ForMember(dest => dest.PD_ID, opt => opt.MapFrom(src => src.PD_ID))
+                  .ForMember(dest=> dest.PD_NO, opt => opt.MapFrom(src=> src.PD_NO))
+                  .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.Created_By))
+                  .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.Created_Date))
+                  .ForMember(dest => dest.LASTMODIFIED_BY, opt => opt.MapFrom(src => src.Modified_By))
+                  .ForMember(dest => dest.LASTMODIFIED_DATE, opt => opt.MapFrom(src => src.Modified_Date))            
+                  .ForMember(dest => dest.NEXT_ACTION, opt => opt.MapFrom(src => src.Next_Action))              
+                  .ForMember(dest => dest.CREATOR, opt => opt.MapFrom(src => src.Creator))
+                  .ForMember(dest => dest.LAST_EDITOR, opt => opt.MapFrom(src => src.LastEditor))
+              ;
+
+            Mapper.CreateMap<CustomService.Data.PRODUCT_DEVELOPMENT_DETAIL, ProductDevDetailModel>().IgnoreAllNonExisting()
+                .ForMember(dest=> dest.PD_DETAIL_ID, opt=> opt.MapFrom(src=>src.PD_DETAIL_ID))
+                .ForMember(dest => dest.Fa_Code_Old, opt => opt.MapFrom(src => src.FA_CODE_OLD))
+                .ForMember(dest => dest.Fa_Code_New, opt => opt.MapFrom(src => src.FA_CODE_NEW))
+                .ForMember(dest => dest.Hl_Code, opt => opt.MapFrom(src => src.HL_CODE))
+                .ForMember(dest => dest.Market_Id, opt => opt.MapFrom(src => src.MARKET_ID))
+                .ForMember(dest => dest.Fa_Code_Old_Desc, opt => opt.MapFrom(src => src.FA_CODE_OLD_DESCR))
+                .ForMember(dest => dest.Fa_Code_New_Desc, opt => opt.MapFrom(src => src.FA_CODE_NEW_DESCR))
+                .ForMember(dest => dest.Werks, opt => opt.MapFrom(src => src.WERKS))
+                .ForMember(dest => dest.Is_Import, opt => opt.MapFrom(src => src.IS_IMPORT))
+                .ForMember(dest => dest.PD_ID, opt => opt.MapFrom(src => src.PD_ID))
+                .ForMember(dest => dest.Request_No, opt => opt.MapFrom(src => src.REQUEST_NO))
+                .ForMember(dest => dest.Bukrs, opt => opt.MapFrom(src => src.BUKRS))
+                .ForMember(dest => dest.Approved_By, opt => opt.MapFrom(src => src.LASTAPPROVED_BY))
+                .ForMember(dest => dest.Approved_Date, opt => opt.MapFrom(src => src.LASTAPPROVED_DATE))
+                .ForMember(dest => dest.Approval_Status, opt => opt.MapFrom(src => src.STATUS_APPROVAL))                   
+                .ForMember(dest => dest.Approver, opt => opt.MapFrom(model => model.APPROVER))
+                .ForMember(dest => dest.ApprovalStatusDescription, opt => opt.MapFrom(model => model.APPROVAL_STATUS))
+                .ForMember(dest => dest.Modified_By, opt => opt.MapFrom(src => src.LASTMODIFIED_BY))
+                .ForMember(dest => dest.Modified_Date, opt => opt.MapFrom(src => src.LASTMODIFIED_DATE))
+                .ForMember(dest => dest.Company, opt => opt.MapFrom(model => model.T001))
+                .ForMember(dest => dest.Market, opt => opt.MapFrom(model => model.ZAIDM_EX_MARKET))
+                .ForMember(dest => dest.Plant, opt => opt.MapFrom(model => model.T001W))
+             ;
+
+            Mapper.CreateMap<ProductDevDetailModel, CustomService.Data.PRODUCT_DEVELOPMENT_DETAIL>().IgnoreAllUnmapped()         
+                .ForMember(dest => dest.PD_DETAIL_ID, opt => opt.MapFrom(src => src.PD_DETAIL_ID))
+                .ForMember(dest => dest.FA_CODE_OLD, opt => opt.MapFrom(src => src.Fa_Code_Old))
+                .ForMember(dest => dest.FA_CODE_NEW, opt => opt.MapFrom(src => src.Fa_Code_New))
+                .ForMember(dest => dest.HL_CODE, opt => opt.MapFrom(src => src.Hl_Code))
+                .ForMember(dest => dest.MARKET_ID, opt => opt.MapFrom(src => src.Market_Id))
+                .ForMember(dest => dest.FA_CODE_OLD_DESCR, opt => opt.MapFrom(src => src.Fa_Code_Old_Desc))
+                .ForMember(dest => dest.FA_CODE_NEW_DESCR, opt => opt.MapFrom(src => src.Fa_Code_New_Desc))
+                .ForMember(dest => dest.WERKS, opt => opt.MapFrom(src => src.Werks))
+                .ForMember(dest => dest.IS_IMPORT, opt => opt.MapFrom(src => src.Is_Import))
+                .ForMember(dest => dest.PD_ID, opt => opt.MapFrom(src => src.PD_ID))
+                .ForMember(dest => dest.REQUEST_NO, opt => opt.MapFrom(src => src.Request_No))
+                .ForMember(dest => dest.BUKRS, opt => opt.MapFrom(src => src.Bukrs))
+                .ForMember(dest => dest.LASTAPPROVED_BY, opt => opt.MapFrom(src => src.Approved_By))
+                .ForMember(dest => dest.LASTAPPROVED_DATE, opt => opt.MapFrom(src => src.Approved_Date))
+                .ForMember(dest => dest.STATUS_APPROVAL, opt => opt.MapFrom(src => src.Approval_Status))                 
+                .ForMember(dest => dest.APPROVER, opt => opt.MapFrom(model => model.Approver))
+                .ForMember(dest => dest.APPROVAL_STATUS, opt => opt.MapFrom(model => model.ApprovalStatusDescription))
+                .ForMember(dest => dest.LASTMODIFIED_BY, opt => opt.MapFrom(src => src.Modified_By))
+                .ForMember(dest => dest.LASTMODIFIED_DATE, opt => opt.MapFrom(src => src.Modified_Date))
+                .ForMember(dest => dest.T001, opt => opt.MapFrom(model => model.Company))
+                .ForMember(dest => dest.ZAIDM_EX_MARKET, opt => opt.MapFrom(model => model.Market))
+                .ForMember(dest => dest.T001W, opt => opt.MapFrom(model => model.Plant))
+            ;
+        
+            //  Mapper.CreateMap<CustomService.Data.PRODUCT_DEVELOPMENT_DETAIL, PDSummaryReportItem>().IgnoreAllNonExisting()
+            //   .ForMember(dest => dest.PD_DETAIL_ID, opt => opt.MapFrom(src => src.PD_DETAIL_ID))
+            //   .ForMember(dest => dest.Fa_Code_Old, opt => opt.MapFrom(src => src.FA_CODE_OLD))
+            //   .ForMember(dest => dest.Fa_Code_New, opt => opt.MapFrom(src => src.FA_CODE_NEW))
+            //   .ForMember(dest => dest.Hl_Code, opt => opt.MapFrom(src => src.HL_CODE))
+            //   .ForMember(dest => dest.Market_Id, opt => opt.MapFrom(src => src.MARKET_ID))
+            //   .ForMember(dest => dest.Fa_Code_Old_Desc, opt => opt.MapFrom(src => src.FA_CODE_OLD_DESCR))
+            //   .ForMember(dest => dest.Fa_Code_New_Desc, opt => opt.MapFrom(src => src.FA_CODE_NEW_DESCR))
+            //   .ForMember(dest => dest.Werks, opt => opt.MapFrom(src => src.WERKS))
+            //   .ForMember(dest => dest.Is_Import, opt => opt.MapFrom(src => src.IS_IMPORT))
+            //   .ForMember(dest => dest.PD_ID, opt => opt.MapFrom(src => src.PD_ID))
+            //   .ForMember(dest => dest.Request_No, opt => opt.MapFrom(src => src.REQUEST_NO))
+            //   .ForMember(dest => dest.Bukrs, opt => opt.MapFrom(src => src.BUKRS))
+            //   .ForMember(dest => dest.Approved_By, opt => opt.MapFrom(src => src.LASTAPPROVED_BY))
+            //   .ForMember(dest => dest.Approved_Date, opt => opt.MapFrom(src => src.LASTAPPROVED_DATE))
+            //   .ForMember(dest => dest.Approval_Status, opt => opt.MapFrom(src => src.STATUS_APPROVAL))
+            //   .ForMember(dest => dest.Approver, opt => opt.MapFrom(model => model.APPROVER))
+            //   .ForMember(dest => dest.ApprovalStatusDescription, opt => opt.MapFrom(model => model.APPROVAL_STATUS))
+            //   .ForMember(dest => dest.Modified_By, opt => opt.MapFrom(src => src.LASTMODIFIED_BY))
+            //   .ForMember(dest => dest.Modified_Date, opt => opt.MapFrom(src => src.LASTMODIFIED_DATE))
+            //   .ForMember(dest => dest.CreatedById, opt => opt.MapFrom(src => src.PRODUCT_DEVELOPMENT.CREATED_BY))
+            //   .ForMember(dest => dest.MarketDesc, opt => opt.MapFrom(src => src.ZAIDM_EX_MARKET.MARKET_DESC))
+            //   .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.T001W.NAME1))
+            //   .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.T001.BUTXT))
+            //;
+
+            #endregion
+
+            #region Brand Registration ( Brand Registration Transaction - Map SKEP)
+            Mapper.CreateMap<CustomService.Data.BRAND_REGISTRATION_REQ, BrandRegistrationReqModel>().IgnoreAllNonExisting()
+                  .ForMember(dest => dest.Registration_ID, opt => opt.MapFrom(src => src.REGISTRATION_ID))
+                  .ForMember(dest => dest.Registration_No, opt => opt.MapFrom(src => src.REGISTRATION_NO))
+                  .ForMember(dest => dest.Submission_Date, opt => opt.MapFrom(src => src.SUBMISSION_DATE))
+                  .ForMember(dest => dest.Registration_Type, opt => opt.MapFrom(src => src.REGISTRATION_TYPE))
+                  .ForMember(dest => dest.Nppbkc_ID, opt => opt.MapFrom(src => src.NPPBKC_ID))
+                  .ForMember(dest => dest.Effective_Date, opt => opt.MapFrom(src => src.EFFECTIVE_DATE))
+                  .ForMember(dest => dest.Created_By, opt => opt.MapFrom(src => src.CREATED_BY))
+                  .ForMember(dest => dest.Created_Date, opt => opt.MapFrom(src => src.CREATED_DATE))
+                  .ForMember(dest => dest.LastModified_By, opt => opt.MapFrom(src => src.LASTMODIFIED_BY))
+                  .ForMember(dest => dest.LastModified_Date, opt => opt.MapFrom(src => src.LASTMODIFIED_DATE))
+                  .ForMember(dest => dest.LastApproved_By, opt => opt.MapFrom(src => src.LASTAPPROVED_BY))
+                  .ForMember(dest => dest.LastApproved_Date, opt => opt.MapFrom(src => src.LASTAPPROVED_DATE))
+                  .ForMember(dest => dest.LastApproved_Status, opt => opt.MapFrom(src => src.LASTAPPROVED_STATUS))                  
+                  .ForMember(dest => dest.Decree_Status, opt => opt.MapFrom(src => src.DECREE_STATUS))
+                  .ForMember(dest => dest.Decree_No, opt => opt.MapFrom(src => src.DECREE_NO))
+                  .ForMember(dest => dest.Decree_Date, opt => opt.MapFrom(src => src.DECREE_DATE))
+                  .ForMember(dest => dest.Decree_StartDate, opt => opt.MapFrom(src => src.DECREE_STARTDATE))
+
+                  .ForMember(entity => entity.Creator, opt => opt.MapFrom(model => model.CREATOR))
+                  .ForMember(entity => entity.LastEditor, opt => opt.MapFrom(model => model.LASTEDITOR))
+                  .ForMember(entity => entity.Approver, opt => opt.MapFrom(model => model.APPROVER))
+                  .ForMember(entity => entity.ApprovalStatusDescription, opt => opt.MapFrom(model => model.APPROVAL_STATUS))
+              ;
+
+            Mapper.CreateMap<BrandRegistrationReqModel, CustomService.Data.BRAND_REGISTRATION_REQ>().IgnoreAllUnmapped()
+                 .ForMember(dest => dest.REGISTRATION_ID, opt => opt.MapFrom(src => src.Registration_ID))
+                  .ForMember(dest => dest.REGISTRATION_TYPE, opt => opt.MapFrom(src => src.Registration_Type))
+                  .ForMember(dest => dest.SUBMISSION_DATE, opt => opt.MapFrom(src => src.Submission_Date))
+                  .ForMember(dest => dest.REGISTRATION_TYPE, opt => opt.MapFrom(src => src.Registration_Type))
+                  .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.Nppbkc_ID))
+                  .ForMember(dest => dest.EFFECTIVE_DATE, opt => opt.MapFrom(src => src.Effective_Date))
+                  .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.Created_By))
+                  .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.Created_Date))
+                  .ForMember(dest => dest.LASTMODIFIED_BY, opt => opt.MapFrom(src => src.LastModified_By))
+                  .ForMember(dest => dest.LASTMODIFIED_DATE, opt => opt.MapFrom(src => src.LastApproved_Date))
+                  .ForMember(dest => dest.LASTAPPROVED_BY, opt => opt.MapFrom(src => src.LastApproved_By))
+                  .ForMember(dest => dest.LASTAPPROVED_DATE, opt => opt.MapFrom(src => src.LastModified_Date))
+                  .ForMember(dest => dest.LASTAPPROVED_STATUS, opt => opt.MapFrom(src => src.LastApproved_Status))                  
+                  .ForMember(dest => dest.DECREE_STATUS, opt => opt.MapFrom(src => src.Decree_Status))
+                  .ForMember(dest => dest.DECREE_NO, opt => opt.MapFrom(src => src.Decree_No))
+                  .ForMember(dest => dest.DECREE_DATE, opt => opt.MapFrom(src => src.Decree_Date))
+                  .ForMember(dest => dest.DECREE_STARTDATE, opt => opt.MapFrom(src => src.Decree_StartDate))
+
+                  .ForMember(entity => entity.CREATOR, opt => opt.MapFrom(model => model.Creator))
+                  .ForMember(entity => entity.LASTEDITOR, opt => opt.MapFrom(model => model.LastEditor))
+                  .ForMember(entity => entity.APPROVER, opt => opt.MapFrom(model => model.Approver))
+                  .ForMember(entity => entity.APPROVAL_STATUS, opt => opt.MapFrom(model => model.ApprovalStatusDescription))
+              ;
+
+            Mapper.CreateMap<CustomService.Data.BRAND_REGISTRATION_REQ_DETAIL, BrandRegistrationReqDetailModel>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.PD_Detail_ID, opt => opt.MapFrom(src => src.PD_DETAIL_ID))
+                .ForMember(dest => dest.Brand_Ce, opt => opt.MapFrom(src => src.BRAND_CE))
+                .ForMember(dest => dest.Latest_Skep_No, opt => opt.MapFrom(src => src.LATEST_SKEP_NO))
+                .ForMember(dest => dest.Prod_Code, opt => opt.MapFrom(src => src.PROD_CODE))
+                .ForMember(dest => dest.Company_Tier, opt => opt.MapFrom(src => src.COMPANY_TIER))
+                .ForMember(dest => dest.Hje, opt => opt.MapFrom(src => src.HJE))
+                .ForMember(dest => dest.Unit, opt => opt.MapFrom(src => src.UNIT))
+                .ForMember(dest => dest.Brand_Content, opt => opt.MapFrom(src => src.BRAND_CONTENT))
+                .ForMember(dest => dest.Tariff, opt => opt.MapFrom(src => src.TARIFF))
+                //.ForMember(dest => dest.Packaging_Material, opt => opt.MapFrom(src => src.MATERIAL_PACKAGE))
+                .ForMember(dest => dest.Market_ID, opt => opt.MapFrom(src => src.MARKET_ID))
+                .ForMember(dest => dest.Front_Side, opt => opt.MapFrom(src => src.FRONT_SIDE))
+                .ForMember(dest => dest.Back_Side, opt => opt.MapFrom(src => src.BACK_SIDE))
+                .ForMember(dest => dest.Left_Side, opt => opt.MapFrom(src => src.LEFT_SIDE))
+                .ForMember(dest => dest.Right_Side, opt => opt.MapFrom(src => src.RIGHT_SIDE))
+                .ForMember(dest => dest.Top_Side, opt => opt.MapFrom(src => src.TOP_SIDE))
+                .ForMember(dest => dest.Bottom_Side, opt => opt.MapFrom(src => src.BOTTOM_SIDE))
+                .ForMember(dest => dest.Bottom_Side, opt => opt.MapFrom(src => src.BOTTOM_SIDE))
+                .ForMember(dest => dest.Registration_ID, opt => opt.MapFrom(src => src.REGISTRATION_ID))
+            ;
+
+            Mapper.CreateMap<BrandRegistrationReqDetailModel, CustomService.Data.BRAND_REGISTRATION_REQ_DETAIL>().IgnoreAllUnmapped()
+                  .ForMember(dest => dest.PD_DETAIL_ID, opt => opt.MapFrom(src => src.PD_Detail_ID))
+                .ForMember(dest => dest.BRAND_CE, opt => opt.MapFrom(src => src.Brand_Ce))
+                .ForMember(dest => dest.LATEST_SKEP_NO, opt => opt.MapFrom(src => src.Latest_Skep_No))
+                .ForMember(dest => dest.PROD_CODE, opt => opt.MapFrom(src => src.Prod_Code))
+                .ForMember(dest => dest.COMPANY_TIER, opt => opt.MapFrom(src => src.Company_Tier))
+                .ForMember(dest => dest.HJE, opt => opt.MapFrom(src => src.Hje))
+                .ForMember(dest => dest.UNIT, opt => opt.MapFrom(src => src.Unit))
+                .ForMember(dest => dest.BRAND_CONTENT, opt => opt.MapFrom(src => src.Brand_Content))
+                .ForMember(dest => dest.TARIFF, opt => opt.MapFrom(src => src.Tariff))
+                //.ForMember(dest => dest.MATERIAL_PACKAGE, opt => opt.MapFrom(src => src.Packaging_Material))
+                .ForMember(dest => dest.MARKET_ID, opt => opt.MapFrom(src => src.Market_ID))
+                .ForMember(dest => dest.FRONT_SIDE, opt => opt.MapFrom(src => src.Front_Side))
+                .ForMember(dest => dest.BACK_SIDE, opt => opt.MapFrom(src => src.Back_Side))
+                .ForMember(dest => dest.LEFT_SIDE, opt => opt.MapFrom(src => src.Left_Side))
+                .ForMember(dest => dest.RIGHT_SIDE, opt => opt.MapFrom(src => src.Right_Side))
+                .ForMember(dest => dest.TOP_SIDE, opt => opt.MapFrom(src => src.Top_Side))
+                .ForMember(dest => dest.BOTTOM_SIDE, opt => opt.MapFrom(src => src.Bottom_Side))
+                .ForMember(dest => dest.REGISTRATION_ID, opt => opt.MapFrom(src => src.Registration_ID))
+              ;
+            #endregion
+
+            #region Received Decree ( Brand Registration Transaction - Penetapan SKEP)
+            Mapper.CreateMap<CustomService.Data.RECEIVED_DECREE, ReceivedDecreeModel>().IgnoreAllNonExisting()
+                 .ForMember(dest => dest.Received_ID, opt => opt.MapFrom(src => src.RECEIVED_ID))
+                 .ForMember(dest => dest.Received_No, opt => opt.MapFrom(src => src.RECEIVED_NO))
+                 .ForMember(dest => dest.Nppbkc_ID, opt => opt.MapFrom(src => src.NPPBKC_ID))
+                 .ForMember(dest => dest.Created_By, opt => opt.MapFrom(src => src.CREATED_BY))
+                 .ForMember(dest => dest.Created_Date, opt => opt.MapFrom(src => src.CREATED_DATE))
+                 .ForMember(dest => dest.LastModified_By, opt => opt.MapFrom(src => src.LASTMODIFIED_BY))
+                 .ForMember(dest => dest.LastModified_Date, opt => opt.MapFrom(src => src.LASTMODIFIED_DATE))
+                 .ForMember(dest => dest.LastApproved_By, opt => opt.MapFrom(src => src.LASTAPPROVED_BY))
+                 .ForMember(dest => dest.LastApproved_Date, opt => opt.MapFrom(src => src.LASTAPPROVED_DATE))
+                 .ForMember(dest => dest.LastApproved_Status, opt => opt.MapFrom(src => src.LASTAPPROVED_STATUS))                                  
+                 .ForMember(dest => dest.Decree_No, opt => opt.MapFrom(src => src.DECREE_NO))
+                 .ForMember(dest => dest.Decree_Date, opt => opt.MapFrom(src => src.DECREE_DATE))
+                 .ForMember(dest => dest.Decree_StartDate, opt => opt.MapFrom(src => src.DECREE_STARTDATE))
+
+                 .ForMember(entity => entity.Creator, opt => opt.MapFrom(model => model.CREATOR))
+                 .ForMember(entity => entity.LastEditor, opt => opt.MapFrom(model => model.LASTEDITOR))
+                 .ForMember(entity => entity.Approver, opt => opt.MapFrom(model => model.APPROVER))
+                 .ForMember(entity => entity.ApprovalStatusDescription, opt => opt.MapFrom(model => model.APPROVAL_STATUS))
+             ;
+
+            Mapper.CreateMap<ReceivedDecreeModel, CustomService.Data.RECEIVED_DECREE>().IgnoreAllUnmapped()
+                  .ForMember(dest => dest.RECEIVED_ID, opt => opt.MapFrom(src => src.Received_ID))
+                 .ForMember(dest => dest.RECEIVED_NO, opt => opt.MapFrom(src => src.Received_No))
+                 .ForMember(dest => dest.NPPBKC_ID, opt => opt.MapFrom(src => src.Nppbkc_ID))
+                 .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.Created_By))
+                 .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.Created_Date))
+                 .ForMember(dest => dest.LASTMODIFIED_BY, opt => opt.MapFrom(src => src.LastModified_By))
+                 .ForMember(dest => dest.LASTMODIFIED_DATE, opt => opt.MapFrom(src => src.LastModified_Date))
+                 .ForMember(dest => dest.LASTAPPROVED_BY, opt => opt.MapFrom(src => src.LastApproved_By))
+                 .ForMember(dest => dest.LASTAPPROVED_DATE, opt => opt.MapFrom(src => src.LastApproved_Date))
+                 .ForMember(dest => dest.LASTAPPROVED_STATUS, opt => opt.MapFrom(src => src.LastApproved_Status))                 
+                 .ForMember(dest => dest.DECREE_NO, opt => opt.MapFrom(src => src.Decree_No))
+                 .ForMember(dest => dest.DECREE_DATE, opt => opt.MapFrom(src => src.Decree_Date))
+                 .ForMember(dest => dest.DECREE_STARTDATE, opt => opt.MapFrom(src => src.Decree_StartDate))
+
+                 .ForMember(entity => entity.CREATOR, opt => opt.MapFrom(model => model.Creator))
+                 .ForMember(entity => entity.LASTEDITOR, opt => opt.MapFrom(model => model.LastEditor))
+                 .ForMember(entity => entity.APPROVER, opt => opt.MapFrom(model => model.Approver))
+                 .ForMember(entity => entity.APPROVAL_STATUS, opt => opt.MapFrom(model => model.ApprovalStatusDescription))
+              ;
+
+            Mapper.CreateMap<CustomService.Data.RECEIVED_DECREE_DETAIL, ReceivedDecreeDetailModel>().IgnoreAllNonExisting()
+                 .ForMember(dest => dest.Brand_CE, opt => opt.MapFrom(src => src.BRAND_CE))
+                 .ForMember(dest => dest.Prod_Code, opt => opt.MapFrom(src => src.PROD_CODE))
+                 .ForMember(dest => dest.Company_Tier, opt => opt.MapFrom(src => src.COMPANY_TIER))
+                 .ForMember(dest => dest.Unit, opt => opt.MapFrom(src => src.UNIT))
+                 .ForMember(dest => dest.Brand_Content, opt => opt.MapFrom(src => src.BRAND_CONTENT))
+                 .ForMember(dest => dest.Tariff, opt => opt.MapFrom(src => src.TARIFF))
+                 .ForMember(dest => dest.Received_ID, opt => opt.MapFrom(src => src.RECEIVED_ID))
+                 .ForMember(dest => dest.PD_Detail_ID, opt => opt.MapFrom(src => src.PD_DETAIL_ID))
+                 .ForMember(dest => dest.Received_Detail_ID, opt => opt.MapFrom(src => src.RECEIVED_DETAIL_ID))                             
+             ;
+
+            Mapper.CreateMap<ReceivedDecreeDetailModel, CustomService.Data.RECEIVED_DECREE_DETAIL>().IgnoreAllUnmapped()
+                 .ForMember(dest => dest.BRAND_CE, opt => opt.MapFrom(src => src.Brand_CE))
+                 .ForMember(dest => dest.PROD_CODE, opt => opt.MapFrom(src => src.Prod_Code))
+                 .ForMember(dest => dest.COMPANY_TIER, opt => opt.MapFrom(src => src.Company_Tier))
+                 .ForMember(dest => dest.UNIT, opt => opt.MapFrom(src => src.Unit))
+                 .ForMember(dest => dest.BRAND_CONTENT, opt => opt.MapFrom(src => src.Brand_Content))
+                 .ForMember(dest => dest.TARIFF, opt => opt.MapFrom(src => src.Tariff))
+                 .ForMember(dest => dest.RECEIVED_ID, opt => opt.MapFrom(src => src.Received_ID))
+                 .ForMember(dest => dest.PD_DETAIL_ID, opt => opt.MapFrom(src => src.PD_Detail_ID))
+                 .ForMember(dest => dest.RECEIVED_DETAIL_ID, opt => opt.MapFrom(src => src.Received_Detail_ID))
+              ;
+            #endregion
+
+            #region File Upload
+
+            Mapper.CreateMap<CustomService.Data.FILE_UPLOAD, FileUploadModel>().IgnoreAllNonExisting()
+                   .ForMember(dest => dest.FileID, opt => opt.MapFrom(src => src.FILE_ID))
+                   .ForMember(dest => dest.FormTypeID, opt => opt.MapFrom(src => src.FORM_TYPE_ID))
+                   .ForMember(dest => dest.FormID, opt => opt.MapFrom(src => src.FORM_ID))
+                   .ForMember(dest => dest.PathURL, opt => opt.MapFrom(src => src.PATH_URL))
+                   .ForMember(dest => dest.UploadDate, opt => opt.MapFrom(src => src.UPLOAD_DATE))
+                   .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CREATED_BY))
+                   .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.CREATED_DATE))
+                   .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(src => src.LASTMODIFIED_BY))
+                   .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.LASTMODIFIED_DATE))
+                   .ForMember(dest => dest.DocumentID, opt => opt.MapFrom(src => src.DOCUMENT_ID))
+                   .ForMember(dest => dest.IsGovernmentDoc, opt => opt.MapFrom(src => src.IS_GOVERNMENT_DOC))
+                   .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IS_ACTIVE))
+                   .ForMember(dest => dest.FileName, opt => opt.MapFrom(src => src.FILE_NAME))
+               ;
+
+            Mapper.CreateMap<FileUploadModel, CustomService.Data.FILE_UPLOAD>().IgnoreAllUnmapped()
+                  .ForMember(dest => dest.FILE_ID, opt => opt.MapFrom(src => src.FileID))
+                  .ForMember(dest => dest.FORM_TYPE_ID, opt => opt.MapFrom(src => src.FormTypeID))
+                  .ForMember(dest => dest.FORM_ID, opt => opt.MapFrom(src => src.FormID))
+                  .ForMember(dest => dest.PATH_URL, opt => opt.MapFrom(src => src.PathURL))
+                  .ForMember(dest => dest.UPLOAD_DATE, opt => opt.MapFrom(src => src.UploadDate))
+                  .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedBy))
+                  .ForMember(dest => dest.CREATED_DATE, opt => opt.MapFrom(src => src.CreatedDate))
+                  .ForMember(dest => dest.LASTMODIFIED_BY, opt => opt.MapFrom(src => src.ModifiedBy))
+                  .ForMember(dest => dest.LASTMODIFIED_DATE, opt => opt.MapFrom(src => src.ModifiedDate))
+                  .ForMember(dest => dest.DOCUMENT_ID, opt => opt.MapFrom(src => src.DocumentID))
+                  .ForMember(dest => dest.IS_GOVERNMENT_DOC, opt => opt.MapFrom(src => src.IsGovernmentDoc))
+                  .ForMember(dest => dest.IS_ACTIVE, opt => opt.MapFrom(src => src.IsActive))
+              ;
+            #endregion
+
+            #region Product Development Upload
+
+            Mapper.CreateMap<CustomService.Data.PRODUCT_DEVELOPMENT_UPLOAD, ProductDevelopmentUploadModel>().IgnoreAllNonExisting()
+                  .ForMember(dest => dest.File_ID, opt => opt.MapFrom(src => src.FILE_ID))
+                  .ForMember(dest => dest.PD_Detail_ID, opt => opt.MapFrom(src => src.PD_DETAIL_ID))
+                  .ForMember(dest => dest.Item_ID, opt => opt.MapFrom(src => src.ITEM_ID))
+                  .ForMember(dest => dest.Path_Url, opt => opt.MapFrom(src => src.PATH_URL))
+                  .ForMember(dest => dest.Upload_Date, opt => opt.MapFrom(src => src.UPLOAD_DATE))
+                  .ForMember(dest => dest.Document_ID, opt => opt.MapFrom(src => src.DOCUMENT_ID))                  
+                  .ForMember(dest => dest.Is_Active, opt => opt.MapFrom(src => src.IS_ACTIVE))
+                  .ForMember(dest => dest.File_Name, opt => opt.MapFrom(src => src.FILE_NAME))
+              ;
+
+            Mapper.CreateMap<ProductDevelopmentUploadModel, CustomService.Data.PRODUCT_DEVELOPMENT_UPLOAD>().IgnoreAllUnmapped()
+                  .ForMember(dest => dest.FILE_ID, opt => opt.MapFrom(src => src.File_ID))
+                  .ForMember(dest => dest.PD_DETAIL_ID, opt => opt.MapFrom(src => src.PD_Detail_ID))
+                  .ForMember(dest => dest.ITEM_ID, opt => opt.MapFrom(src => src.Item_ID))
+                  .ForMember(dest => dest.PATH_URL, opt => opt.MapFrom(src => src.Path_Url))
+                  .ForMember(dest => dest.UPLOAD_DATE, opt => opt.MapFrom(src => src.Upload_Date))                  
+                  .ForMember(dest => dest.DOCUMENT_ID, opt => opt.MapFrom(src => src.Document_ID))                  
+                  .ForMember(dest => dest.IS_ACTIVE, opt => opt.MapFrom(src => src.Is_Active))
+                  .ForMember(dest => dest.FILE_NAME, opt => opt.MapFrom(src => src.File_Name))
+              ;
+            #endregion
         }
     }
 

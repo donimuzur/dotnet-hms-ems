@@ -1,0 +1,43 @@
+﻿@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevelopment.PDSummaryReportViewModel
+@using Sampoerna.EMS.Core
+<table id="productTable" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row">&nbsp;No</th>                   
+            <th>No Form</th>
+            <th>Request Date</th>                        
+            <th>Next Action</th>
+            <th>Creator</th>
+        </tr>
+    </thead>
+    <thead class="filters">
+        <tr>
+            <th></th>            
+            <th></th>
+            <th></th>
+            <th></th>            
+            <th></th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int row = 1;
+            foreach (var item in Model.ProductDevelopmentDocuments)
+            {
+
+            <tr>
+                <td>@row</td>             
+                <td>@Html.DisplayFor(model => item.PD_NO)</td>
+                <td>@item.Created_Date.ToString("dd MMM yyyy")</td>          
+                <td>@Sampoerna.EMS.Utils.EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Sampoerna.EMS.Core.Enums.ProductDevelopmentAction), item.Next_Action.ToString()))</td>                      
+                @*<td class="last">@Html.DisplayFor(model => item.ApprovalStatusDescription.Value)</td>*@
+                <td>@Html.DisplayFor(model=>item.Created_By)</td>
+            </tr>
+                    row = row + 1;
+                }
+            }
+    </tbody>
+</table>
+

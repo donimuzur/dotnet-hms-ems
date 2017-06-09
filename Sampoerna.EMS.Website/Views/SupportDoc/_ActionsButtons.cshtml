@@ -1,0 +1,29 @@
+﻿@model Sampoerna.EMS.Website.Models.SupportDoc.SupportViewModel
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="desc">Financial Ratio</h3>
+            @if (!Model.EnableFormInput)
+            {
+                <label class="status">@Model.ViewModel.ApprovalStatusDescription.Value</label>
+            }
+            <div class="action-button">
+                @if (Model.ShowActionOptions && Model.EnableFormInput)
+                {
+                    <input type="submit" class="btn btn-blue" value="Save" id="SaveButton">
+                    if (Model.EditMode)
+                    {
+                        <button type="button" class="btn btn-success" id="SubmitButton">Submit</button>
+                    }
+                    <a href="@Url.Action("Index", "SupportDoc")" class="btn btn-grey">Cancel</a>
+                }
+                else
+                {
+                    <a href="@Url.Action("Index", "SupportDoc")" class="btn btn-grey">Back</a>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+

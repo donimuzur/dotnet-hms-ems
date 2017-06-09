@@ -1,0 +1,156 @@
+﻿@model Sampoerna.EMS.Website.Models.ProductType.ProductTypeIndexViewModel
+
+@{
+    ViewBag.Title = "Add New Product Type Entry";
+}
+
+
+@using (Html.BeginForm("Create", "ProductType", null, FormMethod.Post, new { @class = "form-excise", role = "form", enctype = "multipart/form-data", id = "createForm" }))
+{
+
+@Html.AntiForgeryToken()
+@Html.Partial("_ActionButton", Model)
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    Create Product Type
+                                    <i class="fa fa-caret-down"></i>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                <div class="alert alert-danger" style="display:none" id="CheckExistanceLabel">
+
+                                </div>
+                                @Html.HiddenFor(model => model.ViewModel.ProdCode)
+                                <form class="form-excise" role="form">   
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label>@Html.LabelFor(model => model.ViewModel.ProdCode)<span class="red">*</span></label>
+                                        </div>
+                                        <div class="col-md-6" id="type">
+                                            @Html.TextBoxFor(model => model.ViewModel.ProdCode, new { @class = "form-control", @maxlength = "2", @disabled = "disabled", @id = "ProductCode" })
+                                        </div>
+                                    
+                                    </div>                                
+                                    <div class="row">                                      
+                                        <div class="col-md-2">
+                                            <label>@Html.LabelFor(model => model.ViewModel.ProductType)<span class="red">*</span></label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            @Html.TextBoxFor(model => model.ViewModel.ProductType, new { @class = "form-control", @maxlength = "22", @id = "ProductType" })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.ValidationMessageFor(model => model.ViewModel.ProductType)
+                                        </div>
+                                    </div>
+                                    <div class="row">                                    
+                                        <div class="col-md-2">
+                                            <label>@Html.LabelFor(model => model.ViewModel.ProductAlias)<span class="red">*</span></label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            @Html.TextBoxFor(model => model.ViewModel.ProductAlias, new { @class = "form-control", @maxlength = "22", @id = "ProductAlias" })
+                                        </div>
+                                        <div class="col-md-4">
+                                            @Html.ValidationMessageFor(model => model.ViewModel.ProductAlias)
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label>@Html.LabelFor(model => model.ViewModel.IsCk4CEditable)</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            @Html.CheckBoxFor(model => model.ViewModel.IsCk4CEditable)
+                                        </div>                                                                                                                   
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label>@Html.LabelFor(model => model.ViewModel.IsDeleted)</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            @Html.CheckBoxFor(model => model.ViewModel.IsDeleted) <label>Active</label>
+                                        </div>                                          
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <span class="red">*</span> ) This Field Required
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
+@section scripts
+{
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/autoNumeric.min.js"></script>
+    <script src="~/Scripts/master/producttype.js"></script>
+    <script type="text/javascript">
+        // register events
+        $(document)
+            .on("ready", EntryPoint)
+            .on("unload", Cleanup);
+
+        function EntryPoint() {
+            init();
+          //  attachEvents();
+            //typeElm.on("change", CheckProdExistence);
+            //aliasElm.on("change", CheckProdExistence);
+            //CheckProdExistence();
+        }
+        function Cleanup() {
+        //    detachEvents();
+            //typeElm.off("change", CheckProdExistence);
+            //aliasElm.off("change", CheckProdExistence);
+        }
+
+        function CheckProdExistence() {
+            var typeProd = typeElm.val();
+            var aliasProd = aliasElm.val();
+                        
+                $("#customloader").show();
+                $.ajax({
+                    url: '@Url.Action("IsExist", "ProductType")',
+                    type: 'POST',
+                    data: { type: typeProd.toString(),
+                            alias: aliasProd.toString()},
+                    success: function (response) {
+                        response = JSON.parse(response);
+                        log(response);
+                        if (response.exist) {
+                            checkerElm.html("<span>Information: Product Type Data already exist.</span>");
+                            checkerElm.show();
+                        } else {
+                            checkerElm.hide();
+                        }
+                        saveButton.prop('disabled', response.exist);
+                        $("#customloader").hide();
+                    },
+                    error: function () {
+                        alert("error");
+                        $("#customloader").hide();
+                    }
+                });
+            
+        }
+
+    </script>
+}

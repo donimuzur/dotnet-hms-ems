@@ -1,0 +1,23 @@
+﻿<div class="modal ems-modal fade modal_ChangeStatus" tabindex="-1" role="dialog" aria-labelledby="ReviseModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title"><label id="txt_label_forchangestatus"></label></h4>
+            </div>
+            <div class="modal-body">                
+                <div class="alert alert-danger" style="padding-left: 30px; display:none;" id="div_alert_revise"></div>
+                <div class="form-group">
+                    <label>Note for Creator <span class="red">*</span></label>
+                    <textarea id="txt_changestatus_comment" class="form-control" rows="5" data-val="true" data-val-required="Rejection message should not be empty!" placeholder="Write the reason of rejection to creator" required="required" name="Comment"></textarea>
+                </div>                      
+            </div>
+            <div class="modal-footer">                    
+                <button style="display:none;" type="button" class="btn btn-danger btn_changestatus_submit" data-action="revise" id="btn_changestatus_revise">Reject</button>
+                <button style="display:none;" type="button" class="btn btn-danger btn_changestatus_submit" data-action="reviseskep" id="btn_changestatus_reviseskep">Reject</button>
+                <button style="display:none;" type="button" class="btn btn-danger btn_changestatus_submit" data-action="reject" id="btn_changestatus_reject">Reject</button>
+                <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

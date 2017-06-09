@@ -1,0 +1,580 @@
+﻿@model Sampoerna.EMS.Website.Models.ManufacturingLicense.LicenseRequestModel
+
+<style>
+    fieldset {
+        margin: 10px;
+        border: 1px solid silver;
+        padding: 15px;
+        border-radius: 4px;
+    }
+
+    legend {
+        padding: 2px;
+        font-size: 16px !important;
+    } 
+
+    .currency {
+        padding-left: 12px;
+    }
+
+    .currency-symbol {
+        position: absolute;
+        padding: 2px 5px;
+    }
+    .tablekoe table{
+        background:white;
+    }
+
+    .watermark {
+        opacity: 0.1;
+        color: BLACK;
+        position: fixed;
+        top: auto;
+        left: 40%;
+        top:60%;
+        font-size:50pt;
+        z-index:1;
+
+        /* Safari */
+        -webkit-transform: rotate(-45deg);
+        /* Firefox */
+        -moz-transform: rotate(-45deg);
+        /* IE */
+        -ms-transform: rotate(-45deg);
+        /* Opera */
+        -o-transform: rotate(-45deg);
+        /* Internet Explorer */
+        filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+    }
+
+    #div-print-layout table{
+        background-color:#ffffff;
+    }
+
+</style>
+
+@{
+    //ViewBag.Title = "Edit";
+    System.Globalization.CultureInfo CI = new System.Globalization.CultureInfo("en-US");
+    var StrRequestDate = Model.RequestDate.ToString("dd MMM yyyy", CI);
+    var DecreeDate = Model.DecreeDate ?? DateTime.Now;
+    var StrDecreeDate = DecreeDate.ToString("dd MMM yyyy", CI);
+
+    var actionName = "Save";
+    Model.IsFormSkep = false;
+    if (Model.Status.ToUpper() == "WAITING_GOVERNMENT_APPROVAL")
+    {
+        actionName = "UpdateSkep";
+        Model.IsFormReadOnly = true;
+        Model.IsFormSkep = true;
+
+    }
+}
+
+
+
+@using (Html.BeginForm(actionName, "MLLicenseRequest", FormMethod.Post, new { @id = "SaveLRequestForms", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    //////////// INIT START ////////////
+    @Html.HiddenFor(model => model.MnfRequestID, new { @id = "txt_hd_id" })
+    @Html.HiddenFor(model => model.MnfFormNum)
+    @Html.HiddenFor(model => model.Status, new { @id = "txt_hd_status" })
+    @Html.HiddenFor(model => model.StatusKey, new { @id = "txt_hd_statuskey" })
+    @Html.HiddenFor(model => model.InterviewId, new { @id = "int_interview_id" })
+    @Html.HiddenFor(model => model.MnfRequestID, new { @id = "txt_req_id" })
+    @Html.HiddenFor(model => model.InterviewFormNum, new { @id = "txt_form_num" })
+    @Html.HiddenFor(model => model.IsFormReadOnly, new { @id = "txt_isformreadonly" })
+    @Html.HiddenFor(model => model.File_Size, new { @id = "txt_hd_filesize" })
+    @Html.HiddenFor(model => model.Lampiran_Count, new { @id = "txt_lampirancount" })
+    @Html.HiddenFor(model => model.CreatedBy, new { @id = "txt_hd_createdby" })
+    <input type="hidden" id="hd_toggle" />
+    <input type="hidden" id="hd_toggle_otherdoc" />
+    //////////// INIT END /////////////
+
+    <div class="container-wrap title-page div_licenserequest">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>License Request Form</h3>
+                <label class="status">@Model.Status</label>
+                <label class="status" id="div_form_number">@Model.MnfFormNum</label>
+                <div class="action-button">
+                    @if (Model.Status.ToLower().Contains("draft"))
+                    {
+                        <input type="submit" id="btnSave" class="btn btn-blue" value="Save" />
+                    }
+                    @if (Model.InterviewId != 0 && Model.InterviewId != null && Model.Status.ToLower().Contains("draft"))
+                    {
+                        <input type="button" class="btn btn-blue" data-toggle="modal" data-target=".submit-modal.licenserequest" value="Submit" />
+                    }
+                    @if (Model.InterviewId != 0 && Model.InterviewId != null && Model.Status.ToLower().Contains("draft"))
+                    {
+                        <input type="button" class="btn btn-blue" data-action="cancel"  data-toggle="modal" data-target=".cancel-modal.licenserequest" value="Cancel Request" />
+                    }
+                    @if (Model.InterviewId != 0 && Model.InterviewId != null && Model.Status.ToLower().Contains("government"))
+                    {
+                        <input type="button" id="btnWithdraw_showmodal" class="btn btn-blue" data-action="withdraw" data-toggle="modal" data-target=".withdraw-modal.licenserequest" value="Withdraw" />
+                    }
+                    @if (Model.InterviewId != 0 && Model.InterviewId != null && Model.Status.ToLower().Contains("government"))
+                    {
+                        <input type="button" id="btnSubmitSkep_showmodal" class="hidden" data-toggle="modal" data-target=".submitskep-modal.licenserequest" />
+                        <input type="button" id="btnSubmitSkep_check" class="btn btn-blue" value="Submit SKEP" />
+                    }
+                    <a href="@Url.Action("Index", "MLLicenseRequest")" class="btn btn-grey btn_loader">Back</a>
+                   </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="white-wrapper">
+                    <div class="alert alert-danger" style="padding-left: 30px; display:none;" id="div_alert"></div>
+                        <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" id="home-tab" class="active"><a href="#info" aria-controls="home" role="tab" data-toggle="tab">Information</a></li>
+                            <li role="presentation"><a href="#print" id="btn-tab-print-layout" aria-controls="print" role="tab" data-toggle="tab">Print Out</a></li>
+                    <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab" id="btn-tab-changeslog">Changes Log</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="info">
+                        @if (!Model.Status.ToLower().Contains("draft"))
+                        {
+                            <fieldset disabled="disabled">
+                                @Html.Partial("_PartialEditForm", Model)
+                            </fieldset>
+                        }
+                        else
+                        {
+                            @Html.Partial("_PartialEditForm", Model)
+                        }
+
+
+                        @if (!Model.Status.ToLower().Contains("draft") && !Model.Status.ToLower().Equals("waiting_poa_approval"))
+                        {
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingFour">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                                                FILL SKEP SECTION
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFour">
+                                        <div class="panel-body">
+                                            <div class="form-excise" role="form">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Government Status<span class="red">*</span></label>
+                                                            <div class="col-md-8">
+@if (Model.Status.ToLower().Contains("government"))
+{
+                                                                @Html.DropDownListFor(model => model.DecreeStatus, Model.GovStatus_List, "Select", new { @class = "form-control", @required = "required", @id = "opt_govstatus" })
+}
+else
+{
+    @Html.DropDownListFor(model => model.DecreeStatus, Model.GovStatus_List, "Select", new { @class = "form-control", @id = "opt_govstatus" })
+}
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <label class="col-md-4">Decree Number<span class="red">*</span></label>
+                                                            <div class="col-md-8">
+                                                                @if (Model.Status.ToLower().Contains("government"))
+                                                                {
+                                                                    @Html.TextBoxFor(model => model.DecreeNo, Model.DecreeNo, new { @class = "form-control", @required="required", @id = "decree_number" })
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Html.TextBoxFor(model => model.DecreeNo, Model.DecreeNo, new { @class = "form-control", @id = "decree_number" })
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <label class="col-md-4">Decree Date<span class="red">*</span></label>
+                                                            <div class="col-md-8">
+                                                                <div class="input-group date">
+                                                                    @Html.TextBoxFor(model => model.DecreeDate, StrDecreeDate, new { @class = "form-control", @required="required", @id = "decree_date" })
+                                                                    <span class="input-group-addon">
+                                                                        <i class="fa fa-calendar"></i>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">NPPBKC</label>
+                                                            <div class="col-md-8">
+                                                                
+                                                               @*@if (Model.NppbkcID == "")*@
+                                                                @*{*@
+                                                                @if (Model.Status.ToLower().Contains("government"))
+                                                                {
+                                                                    @Html.TextBoxFor(model => model.NppbkcID, new { @class = "form-control", @required = "required", @id = "nppbkc_id" })
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Html.TextBoxFor(model => model.NppbkcID, new { @class = "form-control", @id = "nppbkc_id" })
+                                                                }
+                                                                @*}
+                                                                else
+                                                                {
+                                                                    @Html.TextBoxFor(model => model.NppbkcID, new { @readonly = "readonly", @class = "form-control" })
+                                                                }*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <div class="row">
+                                                            <label class="col-md-12">Attachment<span class="red">*</span></label>                                                            
+                                                            <div class="col-md-12 div_file div_file_badoc">
+                                                                <div class="col-md-4">
+                                                                    <input type="text" id="txt_bafile_name" class="form-control" placeholder="File Name" />
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <input type="text" id="txt_badocfile_name" class="form-control txt_file_name" readonly placeholder="Select file">
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <button id="btn_browsebaDoc_file" class="btn_browse_file btn btn btn-blue" type="button">Browse</button>
+                                                                    <button class="btn btn-blue" type="button" id="btn_add_badoc">Add</button>
+                                                                </div>
+                                                            </div>                                                            
+                                                        </div>
+                                                        <div class="col-md-12">
+                                                            <table class="display table table-bordered table-striped" cellspacing="0" id="BaDocs">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th class="toggle-row" width="5%">#</th>
+                                                                        <th width="40%">File</th>
+                                                                        <th width="40%">File Name</th>                                                                        
+                                                                        <th width="15%">Actions</th>                                                                        
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody id="div_body_ba_doc">
+                                                                    @{var baIndex = 0;
+                                                                    }
+                                                                    @foreach (var _file in Model.LicenseRequestFileBAList)
+                                                                    {
+                                                                        baIndex++;                                                                        
+                                                                        <tr>
+                                                                            <td class="td_filename_number">@baIndex</td>
+                                                                            <td class="td_filename" data-filename="@_file.Name" data-fileuploadid="@_file.FileId">
+                                                                                <i class="fa fa-file"></i>&nbsp;<a href="@_file.Path" download>@_file.Name</a>
+                                                                            </td>
+                                                                            <td>
+                                                                                @_file.FileName
+                                                                            </td>                                                                            
+                                                                            <td><button type="button" class="btn btn-blue btn_remove_badoc" data-fileuploadid="@_file.FileId">Delete</button></td>
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                                                        }
+                        @if (Model.MnfRequestID != 0)
+                        {
+                            <div class="panel-group" id="accordionFive" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingFive">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="true" aria-controls="collapseFive">
+                                                Workflow History
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseFive" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFive">
+                                        <div class="panel-body">
+                                            <div class="table-container">
+                                                @Html.Partial("_WorkflowHistoryTable", Model.WorkflowHistory)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="print">
+                        <button type="button" class="btn btn-blue pull-right" id="btn_download_printout">Download Printout</button>
+                        <button type="button" id="btn_show_printouteditor" class="btn btn-blue pull-right" data-toggle="modal" data-target=".modal_editprintout">Edit Layout</button>
+                        <div class="col-lg-12 table-container">
+                            <div class="white-wrapper">
+                                <div class="row">
+                                    @if (Model.Status == "DRAFT_EDIT_STATUS" || Model.Status == "DRAFT_NEW_STATUS" || Model.Status == "WAITING_POA_APPROVAL")
+                                    {
+                                        <div class="watermark">DRAFTED</div>
+                                    }
+                                    <div class="table-container" id="div-print-layout"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="changes">
+                        <input type="hidden" id="txt_ischangelog_loaded" value="0" />
+                        <div class="table-container contenttable changelog" id="divChangeLog">
+                            @*@Html.Partial("_ChangesHistoryTable", Model)*@
+                        </div>
+                    </div>
+                </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade in modal_ChangeStatus ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title"><label id="txt_label_forchangestatus"></label></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="table-container">
+                                    <label>Comment<span class="red">*</span></label><br />
+                                    <textarea id="txt_changestatus_comment" class="form-control" name="Comment"></textarea><br />
+                                    <button style="display:none;" type="button" class="btn btn-blue pull-right btn_changestatus_submit" data-action="revise" id="btn_changestatus_revise">Revise</button>
+                                    <button style="display:none;" type="button" class="btn btn-blue pull-right btn_changestatus_submit" data-action="reject" id="btn_changestatus_reject">Reject</button>
+                                    <button style="display:none;" type="button" class="btn btn-blue pull-right btn_changestatus_submit" data-action="finalreject" id="btn_finalreject">Reject</button>
+                                    <button style="display:none;" type="button" class="btn btn-blue pull-right btn_changestatus_submit" data-action="withdraw" id="btn_changestatus_withdraw">Withdraw</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal ems-modal fade modal_editprintout" tabindex="-1" role="dialog" aria-labelledby="EditorModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title"><label>Edit Print Layout</label></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-blue pull-right" data-toggle="modal" data-target=".restoredefault-modal.licenserequest">Restore to Default</button>
+                            <button type="button" class="btn btn-blue pull-right" id="btn_change_printoutlayout">Save Layout</button>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="txt_printoutlayout" class="form-control tinymce-editor"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+}
+        @using (Html.BeginForm("DownloadPrintOut", "MLLicenseRequest", FormMethod.Post, new { @id = "form_DownloadPrintout" }))
+        {
+            @Html.HiddenFor(model => model.MnfRequestID, new { @id = "txt_hd_id_forprint" })
+            @Html.HiddenFor(model => model.MnfFormNum, new { @id = "txt_hd_formnumber_forprint" })
+            @Html.HiddenFor(model => model.StatusKey)
+        }    
+
+@foreach (var confirmation in Model.Confirmation)
+{
+    @Html.Partial("_ConfirmDialog", confirmation)
+}                                                      
+
+@section scripts {
+            <script src="~/Scripts/js/custom.js"></script>
+            <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+            <script src="~/Scripts/manufacture-license/licenserequest-beranda.js?v=0.7.32"></script>
+            <script src="~/scripts/tinymce/tinymce.min.js"></script>
+            <script type="text/javascript" language="javascript">
+
+                $(document).ready(function () {
+                    $('#MenuManufactureLicenseLicenseRequestOpenDocument').addClass('active');
+                    $('#MenuManufactureLicenseInterviewRequestOpenDocument').removeClass('active');
+                    $('#MenuManufactureLicenseInterviewRequestOpenDocument').removeClass('open');
+                    $('#MenuManufactureLicenseChangeRequestOpenDocument').removeClass('active');
+                    $('#MenuManufactureLicenseChangeRequestOpenDocument').removeClass('open');
+                    if ($("#div_form_number").html() == "") {
+                        $("#div_form_number").hide();
+                    }
+                    
+                    var interId = $('#int_interview_id').val();
+                    //if (interId != null)
+                    //{
+                    //    var b = document.getElementById('BANO_link');
+                    //    b.setAttribute("href","/MLInterviewRequest/Detail/" + interId);
+                    //}
+                    //CompletingDetailForm();
+                    var CompId = $("#CompanyId").val();
+                    SupportingDocumentList(CompId);
+                    TinyMceInit();
+                });
+
+                function TinyMceInit() {
+                    tinyMCE.init({
+                        mode: "specific_textareas",
+                        editor_selector: "tinymce-editor",
+                        theme: "modern",
+                        plugins: 'code nonbreaking pagebreak',
+                        menubar: false,
+                        statusbar: false,
+                        toolbar: "undo redo | removeformat | pagebreak nonbreaking | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | justifyleft justifycenter justifyright justifyfull | bullist numlist | outdent indent",
+                        pagebreak_separator: "<br />",
+                        width: '100%',
+                        height: "500",
+                        theme_advanced_toolbar_location: "top",
+                        theme_advanced_toolbar_align: "left",
+                        theme_advanced_statusbar_location: "bottom",
+                        theme_advanced_resizing: true,
+                        setup: function (ed) {
+                            ed.on('keydown', function (e) {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                window.event.cancelBubble = true
+                            });
+                        }
+                    });
+                }
+
+                function getUrl(ActionName) {
+                    var BaseUrl = '@Url.Action("", "MLLicenseRequest")';
+                    var URL = BaseUrl + "/" + ActionName;
+                    return URL;
+                }
+
+                var arrayOther = [];
+                $('#other-prodtype-add-btn').click(function () {
+                    var other = $('#TxtOtherProdCode').val();
+                    if (other !== '') {
+                        $('#TxtOtherProdCode').val("");
+                        var objOther = { other: other };
+                        arrayOther.push(objOther);
+                        CreateOtherList();
+                    }
+                });
+
+                function CreateOtherList() {
+                    for (var j = 0; j < arrayOther.length; j++) {
+                        $('#prodtype-other' + j).remove();
+                    }
+                    var idx = $('#other_idx_max').val();
+                    
+                    if (idx == NaN)
+                    {
+                        idx = 1;    
+                    }
+                    else
+                    {
+                        idx++;
+                    }
+                    
+                    var indx = idx;
+                    for (var i = 0; i < arrayOther.length; i++) {
+                        $('#otherprodtype tbody').append('<tr id="prodtype-other' + i + '"><td>' + indx + '</td><td>' + arrayOther[i].other + '</td><td><input id="OtherPCDetails[' + i + '].OtherProdCode" name="OtherProdCode" type="hidden" value="' + arrayOther[i].other + '"/><a href="javascript:void(0)" onclick="deleteOther(' + i + ')" class="btn btn-blue full">delete</a></td></tr>');
+                        indx++;
+                    }
+                }
+
+                function deleteOther(index) {
+                    arrayOther.splice(index, 1);
+                    $('#prodtype-other' + index).remove();
+                    CreateOtherList();
+                }
+
+                function deleteExistingOther(id) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("RemoveOtherProdType", "MLLicenseRequest")',
+                        data: { OtherProdTypeId: id },
+                        success: function (data) {
+                            $('#other-exist-' + id).remove();
+
+                        }
+                    });
+                }
+                /*
+                $(document).on("click", "#btnSubmit", function () {
+                    $("#txt_hd_status").val("WAITING FOR POA APPROVAL");
+                    $("#SaveLRequestForms").submit();
+                });
+                */
+                $(document).on("change", "#dd_IRformnum", function () {
+                    var IRId = $(this).val();
+                    $.ajax({
+                        type: 'POST',
+                        url: getUrl("GetInterviewRequestDetail"),
+                        data: { IRId: IRId },
+                        success: function (data) {
+                            var result = data.Interview;
+                            if (result != null) {
+                                var a = document.getElementById('BANO_link');
+                                a.setAttribute("href","/MLInterviewRequest/Detail/" + IRId);
+                                $("#label_BANO").text(result.BANumber);
+                                $("#CompType").val(result.Company_Type);
+                                $("#Name").val(result.POAName);
+                                $("#Position").val(result.POAPosition);
+                                $("#KPPBC").val(result.KPPBC_ID);
+                                $("#POAName").val(result.POAName);
+                                $("#KppbcAddress").val(result.KPPBC_Address);
+                                $("#POAAddress").val(result.POAAddress);
+                                $("#Company").val(result.Company_Name);
+                                $("#CompanyId").val(result.Company_ID);
+                                $("#Npwp").val(result.Npwp);
+                                $("#CompanyAddress").val(result.Company_Address);
+                                $("#txt_hd_interviewNumber").val(result.FormNumber);
+                                $("#txt_form_num").val(result.FormNumber);
+                            }
+
+                            var _result = data.InterviewDet;
+                            if (_result != null) {
+                                $("#div_interview_detail").empty();
+                                for (var i = 0; i < _result.length; i++) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: getUrl("GetInterviewRequestDetailFormView"),
+                                        data: {
+                                            IRId: IRId,
+                                            mfi: _result[i].MnfDetailId,
+                                            add: _result[i].MnfAddr,
+                                            village: _result[i].MnfVillage,
+                                            phone: _result[i].MnfPhone,
+                                            fax: _result[i].MnfFax,
+                                            province: _result[i].MnfProvince,
+                                            city: _result[i].MnfCity,
+                                            subdist: _result[i].MnfSubDist,
+                                            index: i
+                                        },
+                                        success: function (html) {                                            
+                                            if (html != null) {
+                                                $("#div_interview_detail").append(html);
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        },
+                        complete: function (data) {
+                            SupportingDocumentList($("#CompanyId").val());
+                        }
+                    });
+                });
+
+            </script>
+                }

@@ -272,6 +272,8 @@ namespace Sampoerna.EMS.BLL.Services
 
             return _repository.Get(queryFilterCk5, null, "CK5_MATERIAL").ToList();
         }
+
+        
     }
 
 }

@@ -1,0 +1,65 @@
+﻿@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.BrandRegistration.BrandRegistrationReqViewModel
+@using Sampoerna.EMS.Core;
+
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="desc">Brand Registration Request</h3>
+
+            @*@if (!Model.EnableFormInput)
+            {*@
+                <label class="status">@Model.ViewModel.strLastApproved_Status</label>
+            @*}*@
+
+            <div class="action-button">
+                @if ((Model.UserAccess.CanEdit) || (Model.UserAccess.CanCreate))
+                {
+                    <input type="button" class="btn btn-blue" id="btnSave" value="Save" />
+                    @*<input type="submit" id="btnSave" class="btn btn-blue" value="Save" />*@
+                }
+                @if (Model.UserAccess.CanSubmit)
+                {
+                    <input type="button" class="btn btn-blue" data-toggle="modal" data-target=".submit-modal.brandregistrationrequest" value="Submit" />
+                }
+                @if (Model.UserAccess.CanSubmitSKEP)
+                {
+                    <input type="button" class="btn btn-blue" data-toggle="modal" data-target=".submitskep-modal.brandregistrationrequest" value="Submit SKEP" />
+                }
+                @if (Model.UserAccess.CanApprove)
+                {
+                    <input type="button" class="btn btn-blue" data-toggle="modal" data-target=".approve-modal.brandregistrationrequest" value="Approve" />
+                    if (Model.ViewModel.LastApproved_Status == 27)
+                    {
+                        <input type="button" class="btn btn-blue btn_showmodal_changestatus" data-toggle="modal" data-target=".modal_ChangeStatus" data-action="FinalRevise" value="Revise" />
+                    }
+                    else
+                    {
+                        <input type="button" class="btn btn-blue btn_showmodal_changestatus" data-toggle="modal" data-target=".modal_ChangeStatus" data-action="Revise" value="Revise" />
+                    }
+                }
+                @if (Model.UserAccess.CanWithdraw)
+                {
+                    <input type="button" class="btn btn-blue" data-toggle="modal" data-target=".withdraw-modal.brandregistrationrequest" value="Withdraw" />
+                }
+                @if (Model.UserAccess.CanCancel)
+                {
+                    <input type="button" class="btn btn-blue" data-toggle="modal" data-target=".cancel-modal.brandregistrationrequest" value="Cancel Document" />
+                }
+
+
+                <a href="@Url.Action("IndexBrandRegistration", "BRBrandRegistration")" class="btn btn-grey">Back</a>
+
+
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            @Html.LabelFor(model=>model.ViewModel.Registration_No, new { @id = "BrNumber", @class="status" })
+            @*<label id="PdNumber"></label>*@
+        </div>
+    </div>
+</div>
+

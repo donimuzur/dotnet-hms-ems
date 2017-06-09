@@ -1,0 +1,227 @@
+﻿
+@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevelopment.ProductDevelopmentViewModel
+<div id="DetailItemLock">
+
+    <div class="modal fade" id="myModalItemLock" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                  
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4 text-right">                    
+                            <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">Close</button>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="container-wrap">
+                        @Html.HiddenFor(model => model.DetailModel.PD_DETAIL_ID)
+                        @Html.HiddenFor(model => model.DetailModel.Werks)
+                        @Html.HiddenFor(model => model.DetailModel.Bukrs)
+                        @Html.HiddenFor(model => model.DetailModel.Request_No)
+                        @Html.HiddenFor(model => model.DetailModel.Is_Import)
+
+                        <div class="panel-group" id="accordion-8" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="heading8">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion-8" href="#collapse8" aria-expanded="true" aria-controls="collapse8">
+                                            Item Information
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapse8" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading8">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-md-4"></div>
+                                            <div class="col-md-8">
+                                                <div class="col-md-3"><label>Request No</label></div>
+                                                <div class="col-md-9">@Html.TextBoxFor(model => model.DetailModel.Request_No, new { @class = "form-control", @readonly = "true", @id = "brandRequestNo", @style = "text-align:right" })</div>
+                                            </div>
+                                        </div>
+                                        <hr width="100%" />
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="col-md-4"><label>Company</label></div>
+                                                @*<div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Bukrs, Model.CompanyList, new { @class = "form-control", @id = "CompanySelector", @disabled = "disabled" })</div>*@
+                                                <div class="col-md-8">@Html.TextBoxFor(model => model.DetailModel.Company.Name, new { @class = "form-control", @type = "text", @id = "CompanySelector", @readonly = "true" })</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="col-md-4"><label>Plant</label></div>
+                                                @*<div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Werks, Model.PlantList, new { @class = "form-control", @id = "PlantSelector", @disabled = "disabled" })</div>*@
+                                                <div class="col-md-8">@Html.TextBoxFor(model => model.DetailModel.Plant.NAME1, new { @class = "form-control", @type = "text", @id = "PlantSelector", @readonly = "true" })</div>
+
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <fieldset>
+                                                    <legend><label>FA Code (Old)</label></legend>
+                                                    <div class="row">
+                                                        <div class="col-md-4"><label>FA Code</label></div>
+                                                        <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Fa_Code_Old, Model.MaterialList, new { @class = " form-control", @id = "OldSelector" , @disabled = "disabled" })</div>
+                                                    </div>
+                                                    &nbsp;
+                                                    <div class="row">
+                                                        <div class="col-md-4"><label>Description</label></div>
+                                                        <div class="col-md-8">@Html.TextArea("FaCodeOldDesc", Model.DetailModel.Fa_Code_Old_Desc, new { @class = "form-control", @maxlength = "22", @readonly = "true" })</div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <fieldset>
+                                                    <legend><label>FA Code (New)</label></legend>
+                                                    <div class="row">
+                                                        <div class="col-md-4"><label>FA Code</label></div>
+                                                        <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Fa_Code_New, Model.MaterialList, new { @class = "form-control", @id = "NewSelector" , @disabled = "disabled" })</div>
+                                                    </div>
+                                                    &nbsp;
+                                                    <div class="row">
+                                                        <div class="col-md-4"><label>Description</label></div>
+                                                        <div class="col-md-8">@Html.TextArea("FaCodeNewDesc", Model.DetailModel.Fa_Code_New_Desc, new { @class = "form-control", @maxlength = "22", @readonly = "true" })</div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="col-md-4"><label>Market</label></div>
+                                                <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Market_Id, Model.MarketList, new { @class = "form-control", @id = "MarketSelector", @disabled = "disabled" })</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="col-md-4"><label>HL Code</label></div>
+                                                <div class="col-md-8">@Html.TextBox("hlCode", Model.DetailModel.Hl_Code, new { @class = "form-control", @maxlength = "22", @readonly = "true" })</div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="col-md-6">@Html.CheckBoxFor(model => model.DetailModel.Is_Import, new { @id = "isImport", @disabled = "disabled" })<label>Import</label></div>
+                                                <div class="col-md-6"></div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="panel-group" id="accordion-1" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="heading1">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion-1" href="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                                            Attachment Document
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapse1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1">
+                                    <div class="panel-body">
+                                        <form role="form">
+                                            @Html.HiddenFor(model => model.FileUploadLimit)
+                                            <div class="form-excise">
+                                                <div class="col-md-12">
+                                                    <div class="col-md-4">
+                                                        <label>Supporting Documents</label>
+                                                    </div>
+                                                    <div class="clearfix"></div>
+                                                    <div class="col-md-12" id="SupportingDocs">
+                                                        <div id="supportDocContainer">
+                                                            @foreach (var doc in Model.SupportingDocuments)
+                                                            {
+                                                                <div class="row">                                                                 
+                                                                    <div class="form-group">
+                                                                        <div class="col-md-3">
+                                                                            <label>Uploaded Files : </label>
+                                                                        </div>
+                                                                        <div class="col-md-8">
+                                                                            <a href="@string.Format("{0}", Url.Content(doc.FileListUpload[0].Path_Url.Remove(0, 1)))" title="@doc.Name" target="_blank"></a>@string.Format("{0} uploaded at {1}", doc.Name, doc.FileListUpload[0].Upload_Date.ToString())<br />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            }
+                                                        </div>
+
+                                                        @if (Model == null || Model.SupportingDocuments.Count <= 0)
+                                                        {
+                                                            <div class="alert alert-info">No Supporting Documents</div>
+                                                        }
+                                                    </div>
+                                                    <div class="clearfix"></div>
+                                                    <hr width="100%" />
+                                                    <div class="col-md-12">
+                                                        <label>Additional Documents</label>
+                                                    </div>
+                                                 
+                                                    <div class="clearfix"></div>
+                                                    <div class="col-md-12">
+                                                        <table class="display table table-bordered table-striped" cellspacing="0" id="OtherDocs">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="toggle-row" width="5%">#</th>
+                                                                    <th width="40%">File Name</th>
+                                                                    <th width="40%">Document Name</th>
+                                                                    <th width="15%">Actions</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="otherDocsBody">
+                                                                <tr id="noOtherFileMsg">
+                                                                    <td colspan="4">
+                                                                        <div class="alert alert-info">No Additonal Documents</div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div role="tabpanel">
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Workflow History</a></li>
+                                    <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                                </ul>
+
+                                <div class="tab-content">
+                                    <div role="tabpanel" class="tab-pane active" id="information">
+                                        <div class="tab-wrapper">
+
+                                            <div class="panel-body">
+                                                <div class="table-container">
+                                                    @Html.Partial("_WorkflowHistoryNewModule", Model.WorkflowHistory)
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div role="tabpanel" class="tab-pane" id="changes">
+                                        <div class="table-container">
+                                            @Html.Partial("_ChangesHistoryTable", Model)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

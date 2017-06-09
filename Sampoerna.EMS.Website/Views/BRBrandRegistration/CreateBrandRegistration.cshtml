@@ -1,0 +1,751 @@
+﻿@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.BrandRegistration.BrandRegistrationReqViewModel
+
+@{
+    System.Globalization.CultureInfo CI = new System.Globalization.CultureInfo("en-US");
+    ViewBag.Title = "Create";
+
+    var HtmlDisabled = "";
+    var closeHtmlDisabled = "";
+
+    //if (Model.IsFormReadOnly)
+    //{
+    //    HtmlDisabled = "<fieldset disabled='disabled'>";
+    //    closeHtmlDisabled = "</fieldset>";
+    //}
+    //if (Model.ButtonCombination == "SubmitSKEP")
+    //{
+    //    actionName = "SubmitSkep";
+    //}
+}
+
+
+
+
+@using (Html.BeginForm(Model.ActionName, "BRBrandRegistration", FormMethod.Post, new { @id = "BrandRegCreateForm", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+
+    @Html.Partial("_ActionButtonBrand", Model)
+    @Html.HiddenFor(model => model.ViewModel.Registration_ID, new { @id = "txt_hd_id" })
+    @Html.HiddenFor(model => model.ViewModel.Registration_No, new { @id = "RegNumber" })
+    @Html.HiddenFor(model => model.ViewModel.Created_By, new { @id = "txt_hd_createdby" })
+    @Html.HiddenFor(model => model.ViewModel.DocExport, new { @id = "txt_hd_docexport" })
+    @Html.HiddenFor(model => model.File_Size, new { @id = "txt_hd_filesize" })
+    @Html.HiddenFor(model => model.ViewModel.LastApproved_Status, new { @id = "txt_hd_lastapproved_status" })
+    @Html.HiddenFor(model => model.ViewModel.NextStatus, new { @id = "txt_hd_next_status" })
+    @Html.HiddenFor(model => model.CurrentAction, new { @id = "txt_hd_current_action" })
+    @Html.HiddenFor(model => model.IsFormReadOnly, new { @id = "txt_hd_isformreadonly" })
+
+    @Html.HiddenFor(model => model.statusDraftNew, new { @id = "statusDraftNew" })
+    @Html.HiddenFor(model => model.statusDraftEdit, new { @id = "statusDraftEdit" })
+    @Html.HiddenFor(model => model.statusWaitingforPOAApproval, new { @id = "statusWaitingforPOAApproval" })
+    @Html.HiddenFor(model => model.statusWaitingforPOASKEPApproval, new { @id = "statusWaitingforPOASKEPApproval" })
+    @Html.HiddenFor(model => model.statusWaitingforGovApproval, new { @id = "statusWaitingforGovApproval" })
+    @Html.HiddenFor(model => model.statusCompleted, new { @id = "statusCompleted" })
+    @Html.HiddenFor(model => model.statusCanceled, new { @id = "statusCanceled" })
+
+
+    @Html.HiddenFor(model => model.ViewModel.Company.Alias)
+    @Html.HiddenFor(model => model.ViewModel.Company.City)
+    @Html.HiddenFor(model => model.BaseUrl, new { @id = "txt_hd_baseurl" })
+
+    <input type="hidden" id="hd_toggle" />
+    <input type="hidden" id="hd_toggle_otherdoc" />
+
+
+<div class="modal fade in ems-modal" id="myModalListItem" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog" style="width:80%;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Item List</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <button type="button" class="btn btn-primary pull-right" id="btn_addItem" data-dismiss="modal">Add</button>
+                    </div>
+                    <div class="col-sm-12">
+                        <div id="contenttable" class="table-container">
+                            <table id="skepTableModal" class="table table-bordered table-striped js-options-table">
+                                <thead>
+                                    <tr>
+                                        <th class="toggle-row"></th>
+                                        <th nowrap>Request Number</th>
+                                        <th nowrap>FA Code (OLD)</th>
+                                        <th nowrap>FA Code (OLD) Description</th>
+                                        <th nowrap>FA Code (NEW)</th>
+                                        <th nowrap>FA Code (NEW) Description</th>
+                                        <th nowrap>Company</th>
+                                        <th>HL Code</th>
+                                        <th>Market</th>
+                                        <th nowrap>Production Center</th>
+                                    </tr>
+                                <thead class="filters">
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody_optitemlist"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in ems-modal" id="myModalDetailItem" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <input type="hidden" id="txt_hd_index" />
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Item Detail</h4>
+            </div>
+            <div class="modal-body">
+                <div class="panel-group" role="tablist" aria-multiselectable="true">
+                    <div class="panel panel-default">
+                        <div class="alert alert-danger" style="padding-left: 30px; display:none;" id="div_alert_item"></div>
+                        <div class="panel-collapse collapse col-lg-12 in" role="tabpanel" aria-labelledby="headingTwo">
+                            <br />
+                            <div class="row" style="margin-bottom:10px;">
+                                <div class="col-md-12">
+                                    <div class="col-md-4"><label>Request Number</label></div>
+                                    <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_requestnumber" tabindex="-1"/></div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom:10px;">
+                                <div class="col-md-12">
+                                    <div class="col-md-4"><label>Brand Name Registration</label></div>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" id="txt_modal_detail_brandname" />
+                                        @*@Html.DropDownList("brand", Model.BrandList, "Select", new { @class = " selectpicker form-control", @id = "txt_modal_detail_brandname" })*@
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom:10px;">
+                                <div class="col-md-6">
+                                    <div class="col-md-4"><label>FA Code (Old)</label></div>
+                                    <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_facodeold" tabindex="-1"/></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="col-md-4"><label>FA Code Desc (Old)</label></div>
+                                    <div class="col-md-8"><textarea class="form-control" readonly="readonly" id="txt_modal_detail_facodeolddesc" tabindex="-1"></textarea></div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom:10px;">
+                                <div class="col-md-6">
+                                    <div class="col-md-4"><label>FA Code (New)</label></div>
+                                    <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_facodenew" tabindex="-1"/></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="col-md-4"><label>FA Code Desc (New)</label></div>
+                                    <div class="col-md-8"><textarea class="form-control" readonly="readonly" id="txt_modal_detail_facodenewdesc" tabindex="-1"></textarea></div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom:10px;">
+                                <div class="col-md-6">
+                                    <div class="col-md-4"><label>Excise Good Type</label></div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownList("producttype", Model.ProductTypeList, "Select", new { @class = " selectpicker form-control change_tariff", @id = "txt_modal_detail_excisegoodtype" })
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="col-md-4"><label>Company Tier</label></div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownList("companytier", Model.CompanyTierList, "Select", new { @class = " selectpicker form-control", @id = "txt_modal_detail_companytier" })
+
+
+                                        @*<select class="selectpicker form-control" id="txt_modal_detail_companytier">
+                                            <option value="">Select</option>
+                                            <option value="1">I</option>
+                                            <option value="2">II</option>
+                                            <option value="3">III</option>
+                                        </select>*@
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom:10px;">
+                                <div class="col-md-6">
+                                    <div class="col-md-4"><label>HJE Per Pack</label></div>
+                                    <div class="col-md-8"><input type="text" class="form-control numeric-form change_tariff change_hjeperbatang" id="txt_modal_detail_hjeperpack" /></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="col-md-4"><label>HJE (Per Batang/Gr)</label></div>
+                                    <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_hjeperbatang" tabindex="-1"/></div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom:10px;">
+                                <div class="col-md-6">
+                                    <div class="col-md-4"><label>Content</label></div>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control change_hjeperbatang numeric-form" id="txt_modal_detail_content" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select class="selectpicker form-control" id="txt_modal_detail_unit">
+                                            <option value="">Select</option>
+                                            <option value="Batang">Batang</option>
+                                            <option value="Gram">Gram</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="col-md-4"><label>Tariff</label></div>
+                                    <div class="col-md-8"><input type="text" class="form-control" id="txt_modal_detail_tariff" /></div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom:10px;">
+                                <div class="col-md-6">
+                                    <div class="col-md-4"><label>Packaging Material</label></div>
+                                    <div class="col-md-8"><input type="text" class="form-control" id="txt_modal_detail_packaging_material" /></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="col-md-4"><label>Market</label></div>
+                                    <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_market" tabindex="-1"/></div>
+                                </div>
+                            </div>
+                            <div class="row div_new_brand" style="margin-bottom:10px;">
+                                <div class="col-md-6">
+                                    <div class="col-md-4"><label>Front Side</label></div>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" id="txt_modal_detail_front_side" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="col-md-4"><label>Back Side</label></div>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" id="txt_modal_detail_back_side" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row div_new_brand" style="margin-bottom:10px;">
+                                <div class="col-md-6">
+                                    <div class="col-md-4"><label>Left Side</label></div>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" id="txt_modal_detail_left_side" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="col-md-4"><label>Right Side</label></div>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" id="txt_modal_detail_right_side" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row div_new_brand" style="margin-bottom:10px;">
+                                <div class="col-md-6">
+                                    <div class="col-md-4"><label>Top Side</label></div>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control change_hjeperbatang" id="txt_modal_detail_top_side" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="col-md-4"><label>Bottom Side</label></div>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" id="txt_modal_detail_bottom_side" />
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <button type="button" class="btn btn-primary pull-right" id="btn_saveDetailItem">Save</button>
+                    <button type="button" class="btn btn-primary pull-right" id="btn_closeDetailItem" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-danger" style="padding-left: 30px; display:none;" id="div_alert"></div>
+
+
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" id="home-tab" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Information</a></li>
+                <li role="presentation"><a href="#print" id="btn-tab-printout"  aria-controls="profile" role="tab" data-toggle="tab">Print Out</a></li>
+                <li role="presentation"><a href="#changes" id="btn-tab-changelog" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="home">
+
+                    @Html.Partial("_RequestForm", Model)
+
+                    @if (Model.UserAccess.CanViewSKEP)
+                    {
+                        <div class="panel-group" id="accordion-4" role="tablist" aria-multiselectable="true">                            
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="heading4">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion-4" href="#collapse4" aria-expanded="true" aria-controls="collapse4">
+                                                Fill SKEP Section
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse4" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading4">
+                                        <fieldset @if (Model.ActionName != "UpdateSKEPBrand") { <text> disabled </text> } style="border:none;">
+                                            <div class="panel-body">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="col-md-7"><label>Government Status</label></div>
+                                                        <div class="col-md-5">
+                                                            @Html.DropDownListFor(model => model.ViewModel.Decree_Status, Model.ListGovStatus, null, new { @class = "selectpicker form-control", @id = "GovStatusSelector" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6"></div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="col-md-7"><label>Decree Number</label></div>
+                                                        <div class="col-md-5">@Html.TextBoxFor(model => model.ViewModel.Decree_No, new { @class = "form-control", @type = "text", @id = "DecreeNumber" })</div>
+                                                    </div>
+                                                    <div class="col-md-6"></div>
+                                                </div>
+                                                <div class="row">
+                                                    <br />
+                                                    <div class="col-md-6">
+                                                        <div class="col-md-7"><label>Decree Date</label></div>
+                                                        <div class="col-md-5">
+                                                            <div @if (Model.ActionName == "UpdateSKEPBrand"){ <text>class="input-group date" </text> }>
+                                                                @Html.TextBoxFor(model => model.ViewModel.Decree_Date, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                                                @if (Model.ActionName == "UpdateSKEPBrand")
+                                                                {
+                                                                <span class="input-group-addon">
+                                                                    <i class="fa fa-calendar"></i>
+                                                                </span>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6"></div>
+                                                    </div>
+                                                </div>
+
+                                                <hr width="100%" />
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <label class="col-md-3">Attachment<span class="red">*</span></label>
+                                                        @if (Model.ActionName == "UpdateSKEPBrand")
+                                                        {
+                                                            <div class="col-md-9 div_file div_file_badoc">
+                                                                <div class="col-md-4">
+                                                                    <input type="text" id="txt_bafile_name" class="form-control" placeholder="File Name" />
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <input type="text" id="txt_badocfile_name" class="form-control txt_file_name" readonly placeholder="Select file">
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <button id="btn_browseSkepDoc_file" class="btn_browse_file btn btn btn-blue" type="button">Browse</button>
+                                                                    <button class="btn btn-blue" type="button" id="btn_add_badoc">Add</button>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <br />
+                                                        <table class="display table table-bordered table-striped" cellspacing="0" id="BaDocs">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="toggle-row" width="5%">#</th>
+                                                                    <th width="40%">File</th>
+                                                                    <th width="40%">File Name</th>
+                                                                    @if (Model.ActionName == "UpdateSKEPBrand")
+                                                                    {
+                                                                        <th width="15%">Actions</th>
+                                                                    }
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="div_body_ba_doc">
+                                                                @{
+                                                                    var skepIndex = 0;
+                                                                }
+                                                                @foreach (var _file in Model.ViewModel.SKEPFileList)
+                                                                {
+                                                                    skepIndex++;
+                                                                    <tr>
+                                                                        <td class="td_filename_number">@skepIndex</td>
+                                                                        <td class="td_filename" data-filename="@_file.Name" data-fileuploadid="@_file.FileId">
+                                                                            <i class="fa fa-file"></i>&nbsp;<a href="@_file.Path" download>@_file.Name</a>
+                                                                        </td>
+                                                                        <td>
+                                                                            @_file.FileName
+                                                                        </td>
+                                                                        @if (Model.ActionName == "UpdateSKEPBrand")
+                                                                        {
+                                                                            <td><button type="button" class="btn btn-blue btn_remove_skepdoc" data-fileuploadid="@_file.FileId">Delete</button></td>
+                                                                        }
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+                                        </fieldset>
+                                          </div>                            
+                        </div>
+                    </div>
+                    }
+
+                    <div class="panel-group" id="accordion-5" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="heading5">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion-5" href="#collapse5" aria-expanded="true" aria-controls="collapse5">
+                                        Workflow History
+                                        <i class="fa fa-caret-down"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapse5" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading5">
+                                <div class="panel-body">
+                                    <div class="table-container">
+                                        @Html.Partial("_WorkflowHistoryTable", Model.WorkflowHistory)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div role="tabpanel" class="tab-pane" id="print">
+                    <button type="button" class="btn btn-blue pull-right" id="btn_download_printout">Download Printout</button>
+                    @if (((Model.UserAccess.CanCreate) && (Model.UserAccess.CanEdit)) || (Model.UserAccess.CanApprove))
+                    {
+                    <button type="button" id="btn_show_printouteditor" class="btn btn-blue pull-right" data-toggle="modal" data-target=".modal_editprintout">Edit Layout</button>
+                    }
+                    <div class="col-lg-12 table-container">
+                        <div class="white-wrapper">
+                            <div class="row">
+                                <div id="div-printout" style="padding:50px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="changes">
+                    <div class="table-container contenttable_changelog" id="divChangeLog">
+                        @*@Html.Partial("_ChangesHistoryTable", Model)*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+foreach (var confirmation in Model.Confirmation)
+{
+    @Html.Partial("_ConfirmDialog", confirmation)
+}
+
+}
+
+
+<div class="modal fade in modal_ChangeStatus ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title"><label id="txt_label_forchangestatus"></label></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="table-container">
+                            <label>Comment<span class="red">*</span></label><br />
+                            <textarea id="txt_changestatus_comment" class="form-control" name="Comment"></textarea><br />
+                            <button style="display:none;" type="button" class="btn btn-warning pull-right btn_changestatus_submit" data-action="revise" id="btn_changestatus_revise">Revise</button>
+                            <button style="display:none;" type="button" class="btn btn-danger pull-right btn_changestatus_submit" data-action="finalrevise" id="btn_finalrevise">Revise</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="modal ems-modal fade modal_editprintout" tabindex="-1" role="dialog" aria-labelledby="EditorModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title"><label>Edit Printout Layout</label></h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <button type="button" class="btn btn-blue pull-right" data-toggle="modal" data-target=".restoredefault-modal.brandregistration" data-dismiss="modal">Restore to Default</button>
+                    <button type="button" class="btn btn-blue pull-right" id="btn_change_printoutlayout">Save Layout</button>
+                </div>
+                <div class="form-group">
+                    <textarea id="txt_printoutlayout" class="form-control tinymce-editor"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@{
+    var baseurl = Request.Url.GetLeftPart(UriPartial.Authority);
+    var templateurl = baseurl + "/files_upload/BrandRegistration/ImportTemplate/Brand Registration Import Items Template.xlsx";
+}
+<div class="modal ems-modal fade modal_import" tabindex="-1" role="dialog" aria-labelledby="ImportModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Import Items</h4>
+            </div>
+            <div class="modal-body">
+                <p align="center"><i class="fa fa-file"></i>&nbsp;<a href="@templateurl" download> Download Template</a></p>
+                <form id="form_ImportItems" method="post" enctype="multipart/form-data">
+                    <div class="col-lg-8">
+                        <input type="hidden" name="submission_date" id="txt_submissiondate_import" />
+                        <input type="hidden" name="item_notin" id="txt_hditemnotin_import" value="" />
+                        <input type="hidden" name="registration_type" id="txt_hdregistration_type" value="" />
+                        <input id="txt_FileImport" name="FileImport" type="file" class="form-control" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+                    </div>
+                    <div class="col-lg-4">
+                        <button type="button" id="btn_startimport" class="btn btn-blue pull-right">Generate Import</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@using (Html.BeginForm("DownloadPrintOut", "BRBrandRegistration", FormMethod.Post, new { @id = "form_DownloadPrintout" }))
+                                                                            {
+@Html.HiddenFor(model => model.ViewModel.Registration_ID, new { @id = "txt_hd_id_forprint" })
+@Html.HiddenFor(model => model.ViewModel.Registration_No, new { @id = "txt_hd_formnumber_forprint" })
+}
+
+@section scripts {
+
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/Scripts/jquery.form.min.js"></script>
+<script src="~/Scripts/autoNumeric.min.js"></script>
+<link rel="stylesheet" type="text/css" href="../../Content/themes/base/all.css">
+
+<script src="~/Scripts/js/custom.js"></script>
+<script src="~/Scripts/brand-registration-trans/main_brand.js?v=16"></script>
+<script src="~/Scripts/tinymce/tinymce.min.js"></script>
+
+<script type="text/javascript" language="javascript" class="init">
+
+    function TinyMceInit() {
+        tinyMCE.init({
+            mode: "specific_textareas",
+            editor_selector: "tinymce-editor",
+            theme: "modern",
+            plugins: 'code autoresize nonbreaking pagebreak',
+            menubar: false,
+            statusbar: false,
+            toolbar: "undo redo | removeformat | pagebreak nonbreaking | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | justifyleft justifycenter justifyright justifyfull | bullist numlist | outdent indent | code",
+            pagebreak_separator: "<br />",
+            width: '100%',
+            height: 400,
+            theme_advanced_toolbar_location: "top",
+            theme_advanced_toolbar_align: "left",
+            theme_advanced_statusbar_location: "bottom",
+            theme_advanced_resizing: true,
+            setup: function (ed) {
+                ed.on('keydown', function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    window.event.cancelBubble = true
+                });
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        $('#MenuBrandRegistration').addClass('active');
+
+        TinyMceInit();
+        var urlBrNumber = '@Url.Action("GetLastRecordBR", "BRBrandRegistration")';
+        var uploadUrlBrand = '@Url.Action("UploadFilesBrand", "BRBrandRegistration")';
+        attach();
+        setupDataTables();
+
+        $('#UploadBrandGenerateBtn').click(function () {
+            @*brandGenerateClick('@Url.Action("UploadFileConversionBrand", "BRBrandRegistration")');*@
+            brandGenerateClick();
+        });
+
+        $('input:radio').change(function () {
+            var selectedRadio = $("input[name='BrandAction']:checked").val();
+            console.log(selectedRadio);
+            $('#TempAction').val(parseInt(selectedRadio));
+
+        });
+
+
+        saveButton.click(function () {
+            create();
+        });
+    });
+
+    ajaxMasterBrand('@Url.Action("ajaxGetBrandList", "BRBrandRegistration")', null);
+
+    function ajaxMasterBrand(url, formData) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: formData,
+            success: function (data) {
+                var availableTags = [];
+                if (data) {
+                    for (i = 1; i <= data.length; i++) {
+                        availableTags.push(data[i - 1].Value);
+                    }
+                }
+                $("#txt_modal_detail_brandname").autocomplete({
+                    source: availableTags
+                });
+            }
+        });
+    }
+
+    function create() {
+
+        @*var createDetailUrl = '@Url.Action("CreateProductDetail", "BRBrandRegistration")';
+        $("#ProductDevCreateForm").validate();
+        var productFormValid = $("#ProductDevCreateForm").valid();*@
+        //var supportDocsInputs = $("form#ProductDevCreateForm input[type=file]");
+        //if (!productFormValid) {
+        //    showErrorDialog("Supporting documents are required.");
+        //    return;
+        //}
+        //var sizeMB = fileUploadLimitElm.val();
+        //for (var key in supportingDocs) {
+        //    if (supportingDocs.hasOwnProperty(key)) {
+        //        if (supportingDocs[key].size > Number(sizeMB) * 1024 * 1024) {
+        //            showErrorDialog("File size is larger than allowed size (" + sizeMB + " MB)");
+        //            return;
+        //        }
+        //    }
+        //}
+        //     if (productFormValid) {
+            populateFormData();
+        $("#customloader").show();
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Save", "BRBrandRegistration")',
+            data: {
+                model: JSON.stringify(brandFormData)
+            },
+            success: function (result) {
+                console.log(result);
+                if (result) {
+                    //createDetail(createDetailUrl, result);
+                    //uploads(result);
+                    $("#customloader").hide();
+                    window.location.href = "/BrandRegistrationTransaction/IndexBrandRegistration";
+
+                } else {
+                    showErrorDialog("Save failed!");
+                    saveButton.prop("disabled", false);
+                    $("#customloader").hide();
+                }
+            },
+            error: function (xhr, status, p3, p4) {
+                var err = "Error " + " " + status + " " + p3 + " " + p4;
+                if (xhr.responseText && xhr.responseText[0] == "{")
+                    err = JSON.parse(xhr.responseText).Message;
+                showErrorDialog(err);
+                $("#customloader").hide();
+            }
+        });
+        //saveButton.prop("disabled", true);
+        //     }
+    }
+
+    function getUrl(ActionName) {
+        var BaseUrl = '@Url.Action("", "BRBrandRegistration")';
+        var URL = BaseUrl + "/" + ActionName;
+        return URL;
+    }
+
+    function nppbkcSelectionChanges() {
+        var _url = '@Url.Action("GetNppbkc", "BRBrandRegistration")';
+        var selectedNppbkc = nppbkc.val();
+        var _company = companyId.val();
+        var _sdUrl = '@Url.Action("GetSupportingDocuments", "BRBrandRegistration")';
+        var urlPlant = '@Url.Action("GetPlant", "BRBrandRegistration")';
+        var urlBrNumber = '@Url.Action("GetLastRecordBR", "BRBrandRegistration")';
+        ajaxNppbkcInfo(urlBrNumber, _url, selectedNppbkc);
+        ajaxPlantInfo(urlPlant, selectedNppbkc);
+
+        var _company = companyId.val();
+        loadSupportingDocuments(selectedNppbkc);
+
+        //SupportingDocumentList(_sdUrl, companyId.val());
+    }
+
+    function setupDataTables() {
+
+        var table = null;
+        if ($.fn.dataTable.isDataTable('#brandTableModal')) {
+            table = $('#brandTableModal').DataTable();
+            table.destroy();
+        }
+
+        table = $('#brandTableModal').DataTable(
+              {
+                  "sDom": "Rlfrtip",
+                  "language": {
+                      "zeroRecords": "No records found",
+                      "infoFiltered": "(filtered from _MAX_ total records)"
+                  }
+              });
+
+
+        $('#brandTableModal .filters th').each(function () {
+            var idx = $(this).index();
+            if (idx != 0) {
+                $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+            }
+        });
+
+
+        table.columns().eq(0).each(function (colIdx) {
+            $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                table
+                    .column(colIdx)
+                    .search(this.value)
+                    .draw();
+            });
+        });
+    }
+</script>
+}

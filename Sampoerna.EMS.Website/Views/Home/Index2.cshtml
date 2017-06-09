@@ -1,0 +1,206 @@
+﻿@using Sampoerna.EMS.BusinessObject
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>EMS - Excise Management System</title>
+    <link rel="shortcut icon" href="../../Content/assets/images/favicon.png" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <!-- Load the site CSS after Boostrap's to override -->
+    @Styles.Render("~/bundles/css")
+    <!-- Load jQuery -->
+    @Scripts.Render("~/bundles/jquery")
+    <!-- Load Modernizr.js -->
+    @Scripts.Render("~/bundles/modernizrmin")
+    <!-- Load Bootstrap JavaScript -->
+    @Scripts.Render("~/bundles/bootstrap")
+    <!-- Load Fixed Header table JavaScript -->
+    @Scripts.Render("~/bundles/fixedheadertable")
+</head>
+<body class="container-fluid" style="background: #416281; left: 0!important; top: 0!important">
+    <div class="row">
+        <div class="main-menu" style="height: 100%!important">
+            <div class="main-header">
+                <div class="main-logo" style="left: 0!important; top: 0!important">
+                    <img src="~/Content/assets/images/logo-large.png" alt="">
+                </div>
+                <h3>Excise Management System</h3>
+            </div>
+            <div class="main-menu-content">
+                <div class="row">
+                    <div class="excise-menu" data-toggle="modal" data-target=".menu-transaction" style="width: 97%;">
+                        <h3>Transaction</h3>
+                        <p>
+                            - Manufacturing License<br>
+                            - Excise Credit<br>
+                            - Brand Registration<br>
+                        </p>
+                        <div class="icon"></div>
+                    </div>
+                    <div class="excise-menu" data-toggle="modal" data-target=".menu-movement">
+                        <h3>Excisable Goods Movement</h3>
+                        <p>
+                            - Goods Quota (PBCK-1)<br>
+                            - Goods Movement (CK-5)<br>
+                            - Goods Usage Report (LACK-1)<br>
+                            - Goods Transfer Report (LACK-2)<br>
+                            - Production Report (CK-4C)
+                        </p>
+                        <div class="icon"></div>
+                    </div>
+                    <div class="excise-menu last" data-toggle="modal" data-target=".menu-claimable">
+                        <h3>Excise Stamp Claimable</h3>
+                        <p>
+                            - Stamp Damage and Return (PBCK-4)<br>
+                            - Refund from Production (PBCK-7)<br>
+                            - Refund from Market (PBCK-3)<br>
+                            - CK-5 Market Return
+                        </p>
+                        <div class="icon"></div>
+                    </div>
+                    <a href="@Url.Action("Index","User")">
+                        <div class="excise-menu small">
+
+                            <h3>Master Data</h3>
+                            <div class="icon"></div>
+
+
+                        </div>
+                    </a>
+                    <a href="@Url.Action("Index", "UserPlantMap")">
+                        <div class="excise-menu small last">
+                            <h3>Setting</h3>
+                            <div class="icon"></div>
+                        </div>
+                    </a>
+                </div>
+                <div class="clearfix"></div>
+                <p style="color: white" class="text-center">© 2015 Excise Management System. PT HM Sampoerna, Tbk</p>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="modal fade main-menu-child menu-transaction" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h3>Transaction</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <a href="@Url.Action("Index", "MLInterviewRequest")" class="child-menu">
+                                    Manufacturing License
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="@Url.Action("Index","ExciseCredit")" class="child-menu">
+                                    Excise Credit
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="@Url.Action("IndexProductDevelopment","BrandRegistrationTransaction")" class="child-menu">
+                                    Brand Registration
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade main-menu-child menu-movement" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h3>Excisable Goods Movement</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-15">
+                                <a href="@Url.Action("Index","PBCK1")" class="child-menu">
+                                    PBCK-1
+                                </a>
+                            </div>
+                            <div class="col-md-15">
+                                <a href="@Url.Action("Index","CK5")" class="child-menu">
+                                    CK-5
+                                </a>
+                            </div>
+                            <div class="col-md-15">
+                                <a href="@Url.Action("Index", "LACK1/ListByPlant")" class="child-menu">
+                                    LACK-1
+                                </a>
+                            </div>
+                            <div class="col-md-15">
+                                <a href="@Url.Action("Index","LACK2")" class="child-menu">
+                                    LACK-2
+                                </a>
+                            </div>
+                            <div class="col-md-15">
+                                <a href="@Url.Action("Index","Production")" class="child-menu">
+                                    CK-4C
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade main-menu-child menu-claimable" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h3>Excise Stamp Claimable</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <a href="@Url.Action("Index","PBCK4")" class="child-menu">
+                                    PBCK-4
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="@Url.Action("Index","PBCK7AndPBCK3")" class="child-menu">
+                                    PBCK-7
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="@Url.Action("ListPbck3Index", "PBCK7AndPBCK3")" class="child-menu">
+                                    PBCK-3
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="@Url.Action("CK5MarketReturn", "CK5")" class="child-menu">
+                                    CK-5
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    @*<footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    © 2015 Excise Management System. PT HM Sampoerna, Tbk
+                </div>
+            </div>
+        </div>
+    </footer>*@
+    <!-- Load custom.js -->
+    @Scripts.Render("~/bundles/customjs")
+</body>
+
+</html>

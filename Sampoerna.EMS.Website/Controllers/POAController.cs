@@ -16,6 +16,9 @@ using Sampoerna.EMS.Website.Code;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.POA;
 using SpreadsheetLight;
+using Sampoerna.EMS.Website.Models.POAExciser;
+using Sampoerna.EMS.CustomService.Services.MasterData;
+using Sampoerna.EMS.CustomService.Data;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -26,11 +29,13 @@ namespace Sampoerna.EMS.Website.Controllers
         private POABLL _poaBll;
         private IUserBLL _userBll;
         private IChangesHistoryBLL _changesHistoryBll;
-        private IMasterDataAprovalBLL _masterDataAprovalBLL;
         private IPOASKBLL _poaskbll;
         private Enums.MenuList _mainMenu;
         private IUnitOfWork _uow;
-        public POAController(IPageBLL pageBLL, IZaidmExPOAMapBLL poadMapBll,IMasterDataAprovalBLL masterDataAprovalBLL, POABLL poaBll, IUserBLL userBll, IChangesHistoryBLL changesHistoryBll
+        private PoaExciserService _poaExciserService;
+      
+
+        public POAController(IPageBLL pageBLL, IZaidmExPOAMapBLL poadMapBll, POABLL poaBll, IUserBLL userBll, IChangesHistoryBLL changesHistoryBll
             , IPOASKBLL poaskbll, IUnitOfWork uow)
             : base(pageBLL, Enums.MenuList.POA)
         {
@@ -38,14 +43,15 @@ namespace Sampoerna.EMS.Website.Controllers
             _poaBll = poaBll;
             _userBll = userBll;
             _changesHistoryBll = changesHistoryBll;
-            _masterDataAprovalBLL = masterDataAprovalBLL;
             _poaskbll = poaskbll;
             _mainMenu = Enums.MenuList.MasterData;
             _uow = uow;
+            _poaExciserService = new PoaExciserService();
+         
         }
 
-        //
-        // GET: /POA/
+
+        #region Index
         public ActionResult Index()
         {
             var poa = new POAViewModel
@@ -59,7 +65,9 @@ namespace Sampoerna.EMS.Website.Controllers
             ViewBag.Message = TempData["message"];
             return View("Index", poa);
         }
+        #endregion
 
+        #region Create
         public ActionResult Create()
         {
             if (CurrentUser.UserRole == Enums.UserRole.Viewer)
@@ -78,14 +86,14 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public ActionResult Create(POAFormModel model)
         {
-
             try
             {
-                bool isExist;
-                var poa = AutoMapper.Mapper.Map<POA>(model.Detail);
+                var poa = AutoMapper.Mapper.Map<BusinessObject.POA>(model.Detail);
                 poa.POA_ID = model.Detail.UserId;
                 poa.CREATED_BY = CurrentUser.USER_ID;
                 poa.CREATED_DATE = DateTime.Now;
+                poa.MODIFIED_BY = CurrentUser.USER_ID;
+                poa.MODIFIED_DATE = DateTime.Now;
                 poa.IS_ACTIVE = true;
                 if (model.Detail.PoaSKFile != null)
                 {
@@ -111,26 +119,79 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
                     }
                 }
-                MASTER_DATA_APPROVAL approvalData;
-                _masterDataAprovalBLL.MasterDataApprovalValidation((int) Enums.MenuList.POA, CurrentUser.USER_ID,
-                    new POA(), poa, out isExist,out approvalData, true);
-                //_poaBll.Save(poa);
-                _masterDataAprovalBLL.SendEmailWorkflow(approvalData.APPROVAL_ID);
+
+                //var exciser = new POA_EXCISER();             
+
+                //exciser.POA_ID = poa.POA_ID;
+                //exciser.IS_ACTIVE_EXCISER = model.Detail.IsExciser;
+
+                // Added: Set Exciser Flag: True or False
+               
+                _poaBll.Save(poa); // Insert only poa
+                _poaBll.InsertChangesLog(poa, (int)Enums.MenuList.POA, (int)Enums.ActionType.Created, (int)CurrentUser.UserRole, CurrentUser.USER_ID);
+
+                var modelExciser = new PoaExciserViewModel();
+                var data = new POA_EXCISER();
+                modelExciser.POA_ID = poa.POA_ID;
+
+                var ExciserData = _poaExciserService.GetByPoaID(poa.POA_ID);
+
+                if (model.Detail.IsExciser == true) // if checked true
+                {
+                    if (ExciserData == null) // if no data with current POA ID
+                    {
+                        data.POA_ID = poa.POA_ID;
+                        data.IS_ACTIVE_EXCISER = true;
+                        _poaExciserService.CreateExciser(data, (int)Enums.MenuList.POA, (int)Enums.ActionType.Created, (int)CurrentUser.UserRole, CurrentUser.USER_ID);
+                    }
+                    if (ExciserData != null) // if data exist
+                    {
+                        if (ExciserData.IS_ACTIVE_EXCISER == false)
+                        {
+                            data.EXCISER_ID = ExciserData.EXCISER_ID;
+                            data.POA_ID = modelExciser.POA_ID;
+                            data.IS_ACTIVE_EXCISER = true;
+                            _poaExciserService.SetActive(data, (int)Enums.MenuList.POA, (int)Enums.ActionType.Modified, (int)CurrentUser.UserRole, CurrentUser.USER_ID);
+                        }
+                    }
+                }
+                else // if checked false
+                {
+                    if (ExciserData == null) // if no data with current POA ID, keep create row
+                    {
+                        data.POA_ID = poa.POA_ID;
+                        data.IS_ACTIVE_EXCISER = false;
+                        _poaExciserService.CreateExciser(data, (int)Enums.MenuList.POA, (int)Enums.ActionType.Created, (int)CurrentUser.UserRole, CurrentUser.USER_ID);
+                    }
+                    if (ExciserData != null) // if data exist
+                    {
+                        if (ExciserData.IS_ACTIVE_EXCISER == true)
+                        {
+                            data.EXCISER_ID = ExciserData.EXCISER_ID;
+                            data.POA_ID = modelExciser.POA_ID;
+                            data.IS_ACTIVE_EXCISER = false;
+                            _poaExciserService.SetActive(data, (int)Enums.MenuList.POA, (int)Enums.ActionType.Modified, (int)CurrentUser.UserRole, CurrentUser.USER_ID);
+                        }
+                    }
+                }
+
+                //    _poaExciserService.CreateExciser(exciser, (int)Enums.MenuList.POA, (int)Enums.ActionType.Created, (int)CurrentUser.UserRole, CurrentUser.USER_ID);
                 AddMessageInfo(Constans.SubmitMessage.Saved, Enums.MessageInfoType.Success);
+
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+
                 return RedirectToAction("Index");
             }
-
-
-
-            return RedirectToAction("Create");
-
+            // return RedirectToAction("Create");
 
         }
+        #endregion
+
+        #region Edit
 
         public ActionResult Edit(string id)
         {
@@ -141,18 +202,29 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var poa = _poaBll.GetById(id);
 
-
             if (poa == null)
             {
 
                 return HttpNotFound();
             }
-
-
+            var changeHistoryList = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.POA, id);
             var model = new POAFormModel();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
+            model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
+
             var detail = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
+
+            //Added : Get Exciser Flag : True or False
+            var ExciserData = _poaExciserService.GetByPoaID(detail.PoaId);
+            if (ExciserData == null)
+            {
+                detail.IsExciser = false;
+            }
+            else
+            {
+                detail.IsExciser = ExciserData.IS_ACTIVE_EXCISER == true ? true : false;
+            }
 
             model.Managers = detail.Manager == null ? GlobalFunctions.GetCreatorList() : GlobalFunctions.GetCreatorList(detail.Manager.USER_ID);
             model.Users = detail.User == null ? GlobalFunctions.GetCreatorList() : GlobalFunctions.GetCreatorList(detail.User.USER_ID);
@@ -160,90 +232,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return View(model);
         }
-        private void SetChanges(POAViewDetailModel origin, POA poa)
-        {
-            var convertBooltoString = poa.IS_ACTIVE == true ? "Yes" : "No";
-
-            var changesData = new Dictionary<string, bool>();
-
-            changesData.Add("TITLE", origin.Title == poa.TITLE);
-            changesData.Add("USER", origin.UserId == poa.LOGIN_AS);
-            changesData.Add("MANAGER", origin.ManagerId == poa.MANAGER_ID);
-            changesData.Add("PHONE", origin.PoaPhone == poa.POA_PHONE);
-            changesData.Add("EMAIL", origin.Email == poa.POA_EMAIL);
-            changesData.Add("ADDRESS", origin.PoaAddress == poa.POA_ADDRESS);
-            changesData.Add("ID CARD", origin.PoaIdCard == poa.ID_CARD);
-            changesData.Add("PRINTED NAME", origin.PoaPrintedName == poa.PRINTED_NAME);
-            changesData.Add("IS ACTIVE", origin.Is_Active.Equals(convertBooltoString));
-
-
-            foreach (var listChange in changesData)
-            {
-                if (listChange.Value == false)
-                {
-                    var changes = new CHANGES_HISTORY();
-                    changes.FORM_TYPE_ID = Enums.MenuList.POA;
-                    changes.FORM_ID = poa.POA_ID.ToString();
-                    changes.FIELD_NAME = listChange.Key;
-                    changes.MODIFIED_BY = CurrentUser.USER_ID;
-                    changes.MODIFIED_DATE = DateTime.Now;
-                    switch (listChange.Key)
-                    {
-                        case "TITLE":
-                            changes.OLD_VALUE = origin.Title;
-                            changes.NEW_VALUE = poa.TITLE;
-                            break;
-                        case "USER":
-                            changes.OLD_VALUE = origin.UserId == null ? null : _userBll.GetUserById(origin.UserId).USER_ID;
-                            changes.NEW_VALUE = string.IsNullOrEmpty(poa.LOGIN_AS) == true ? null : poa.LOGIN_AS;
-                            break;
-                        case "MANAGER":
-                            changes.OLD_VALUE = origin.ManagerId;
-                            changes.NEW_VALUE = poa.MANAGER_ID;
-                            break;
-                        case "PHONE":
-                            changes.OLD_VALUE = origin.PoaPhone;
-                            changes.NEW_VALUE = poa.POA_PHONE;
-                            break;
-                        case "EMAIL":
-                            changes.OLD_VALUE = origin.Email;
-                            changes.NEW_VALUE = poa.POA_EMAIL;
-                            break;
-                        case "ADDRESS":
-                            changes.OLD_VALUE = origin.PoaAddress;
-                            changes.NEW_VALUE = poa.POA_ADDRESS;
-                            break;
-                        case "ID CARD":
-                            changes.OLD_VALUE = origin.PoaIdCard;
-                            changes.NEW_VALUE = poa.ID_CARD;
-                            break;
-                        case "PRINTED NAME":
-                            changes.OLD_VALUE = origin.PoaPrintedName;
-                            changes.NEW_VALUE = poa.PRINTED_NAME;
-                            break;
-                        case "IS ACTIVE":
-                            changes.OLD_VALUE = origin.Is_Active;
-                            changes.NEW_VALUE = convertBooltoString;
-
-                            break;
-                    }
-                    _changesHistoryBll.AddHistory(changes);
-
-
-                }
-            }
-
-
-
-
-        }
 
         [HttpPost]
         public ActionResult Edit(POAFormModel model)
         {
             try
             {
-                bool isExist;
                 var poaId = model.Detail.PoaId;
                 var poa = _poaBll.GetById(poaId);
                 if (model.Detail.PoaSKFile != null)
@@ -270,40 +264,76 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
                     }
                 }
+                poa.MODIFIED_BY = CurrentUser.USER_ID;
+                poa.MODIFIED_DATE = DateTime.Now;
+                                          
+                // Added: Set Exciser Flag: True or False
+                var modelExciser = new PoaExciserViewModel();
+                var data = new POA_EXCISER();
+                modelExciser.POA_ID = poa.POA_ID;
+
+                var ExciserData = _poaExciserService.GetByPoaID(poa.POA_ID);
+
+                if (model.Detail.IsExciser == true) // if checked true
+                {
+                    if (ExciserData == null) // if no data with current POA ID
+                       {
+                        data.POA_ID = poa.POA_ID;
+                        data.IS_ACTIVE_EXCISER = true;
+                        _poaExciserService.CreateExciser(data, (int)Enums.MenuList.POA, (int)Enums.ActionType.Created, (int)CurrentUser.UserRole, CurrentUser.USER_ID);
+                    }
+                    if (ExciserData != null) // if data exist
+                    {
+                        if (ExciserData.IS_ACTIVE_EXCISER == false)
+                        {
+                            data.EXCISER_ID = ExciserData.EXCISER_ID;
+                            data.POA_ID = modelExciser.POA_ID;
+                            data.IS_ACTIVE_EXCISER = true;
+                            _poaExciserService.SetActive(data, (int)Enums.MenuList.POA, (int)Enums.ActionType.Modified, (int)CurrentUser.UserRole, CurrentUser.USER_ID);
+                        }
+                    }
+                }
+                else // if checked false
+                {
+                    if (ExciserData == null) // if no data with current POA ID, keep create row
+                    {
+                        data.POA_ID = poa.POA_ID;
+                        data.IS_ACTIVE_EXCISER = false;
+                        _poaExciserService.CreateExciser(data, (int)Enums.MenuList.POA, (int)Enums.ActionType.Created, (int)CurrentUser.UserRole, CurrentUser.USER_ID);
+                    }
+                    if (ExciserData != null) // if data exist
+                    {
+                        if (ExciserData.IS_ACTIVE_EXCISER == true)
+                        {
+                            data.EXCISER_ID = ExciserData.EXCISER_ID;
+                            data.POA_ID = modelExciser.POA_ID;
+                            data.IS_ACTIVE_EXCISER = false;
+                            _poaExciserService.SetActive(data, (int)Enums.MenuList.POA, (int)Enums.ActionType.Modified, (int)CurrentUser.UserRole, CurrentUser.USER_ID);
+                        }
+                    }
+                }
+
                 var origin = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
-                var newpoa = AutoMapper.Mapper.Map<POA>(model.Detail);
-                newpoa.CREATED_BY = poa.CREATED_BY;
-                newpoa.CREATED_DATE = poa.CREATED_DATE;
-                newpoa.MODIFIED_BY = CurrentUser.USER_ID;
-                newpoa.MODIFIED_DATE = DateTime.Today;
-                newpoa.IS_ACTIVE = poa.IS_ACTIVE;
-                MASTER_DATA_APPROVAL approvalData;
-                newpoa = _masterDataAprovalBLL.MasterDataApprovalValidation((int)Enums.MenuList.POA, CurrentUser.USER_ID, poa,
-                    newpoa,out isExist,out approvalData);
+                AutoMapper.Mapper.Map(model.Detail, poa);
+                SetChanges(origin, poa, model.Detail);
 
-                SetChanges(origin, newpoa);
+                _poaBll.Save(poa);
 
-                _poaBll.Save(newpoa);
-                _masterDataAprovalBLL.SendEmailWorkflow(approvalData.APPROVAL_ID);
                 AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
+
                 return RedirectToAction("Index");
             }
 
             catch (Exception ex)
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
-                model.MainMenu = _mainMenu;
-                model.CurrentMenu = PageInfo;
-                
-
-                model.Managers = model.Detail.Manager == null ? GlobalFunctions.GetCreatorList() : GlobalFunctions.GetCreatorList(model.Detail.Manager.USER_ID);
-                model.Users = model.Detail.User == null ? GlobalFunctions.GetCreatorList() : GlobalFunctions.GetCreatorList(model.Detail.User.USER_ID);
-                
-                return View(model);
+                return View();
             }
-
         }
 
+        #endregion
+
+        #region Detail
         public ActionResult Detail(string id)
         {
             var poa = _poaBll.GetById(id);
@@ -321,11 +351,26 @@ namespace Sampoerna.EMS.Website.Controllers
             model.Managers = GlobalFunctions.GetCreatorList();
             model.Detail = detail;
 
+            //Added : Get Exciser Flag : True or False
+            var ExciserData = _poaExciserService.GetByPoaID(detail.PoaId);
+
+            if (ExciserData == null)
+            {
+                detail.IsExciser = false;
+            }
+            else
+            {
+                detail.IsExciser = ExciserData.IS_ACTIVE_EXCISER == true ? true : false;
+            }
+          
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
 
             return View(model);
 
         }
+        #endregion
+
+        #region Delete
 
         public ActionResult Delete(string id)
         {
@@ -337,8 +382,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             try
             {
-                
-                _poaBll.Delete(id,CurrentUser.USER_ID);
+                _poaBll.Delete(id, CurrentUser.USER_ID);
                 var poa = _poaBll.GetById(id);
                 var updated = AutoMapper.Mapper.Map<POAViewDetailModel>(poa);
                 if (poa.IS_ACTIVE == true)
@@ -349,8 +393,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     updated.Is_Active = "Yes";
                 }
-
-                SetChanges(updated, poa);
+                POAViewDetailModel temp = new POAViewDetailModel();
+                SetChanges(updated, poa, temp);
                 _uow.SaveChanges();
                 TempData[Constans.SubmitType.Delete] = Constans.SubmitMessage.Updated;
             }
@@ -360,19 +404,102 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        #endregion
+
+        #region Helper
+        private void SetChanges(POAViewDetailModel origin, BusinessObject.POA poa, POAViewDetailModel detail)
+        {
+            var convertBooltoString = poa.IS_ACTIVE == true ? "Yes" : "No";
+
+            // For Exciser
+            var ExciserData = _poaExciserService.GetByPoaID(poa.POA_ID);
+            var originExciserState = ExciserData.IS_ACTIVE_EXCISER == true ? "Yes" : "No";
+            var editExciserState = detail.IsExciser == true ? "Yes" : "No";
+
+            var changesData = new Dictionary<string, bool>();
+
+            changesData.Add("TITLE", origin.Title == poa.TITLE);
+            changesData.Add("LOGIN_AS", origin.UserId == poa.LOGIN_AS);
+            changesData.Add("MANAGER_ID", origin.ManagerId == poa.MANAGER_ID);
+            changesData.Add("POA_PHONE", origin.PoaPhone == poa.POA_PHONE);
+            changesData.Add("POA_EMAIL", origin.Email == poa.POA_EMAIL);
+            changesData.Add("POA_ADDRESS", origin.PoaAddress == poa.POA_ADDRESS);
+            changesData.Add("ID_CARD", origin.PoaIdCard == poa.ID_CARD);
+            changesData.Add("PRINTED_NAME", origin.PoaPrintedName == poa.PRINTED_NAME);
+            changesData.Add("IS_ACTIVE", origin.Is_Active.Equals(convertBooltoString));
+          //  changesData.Add("IS_ACTIVE_EXCISER", originExciserState == editExciserState);
+
+            foreach (var listChange in changesData)
+            {
+                if (listChange.Value == false)
+                {
+                    var changes = new BusinessObject.CHANGES_HISTORY();
+                    changes.FORM_TYPE_ID = Enums.MenuList.POA;
+                    changes.FORM_ID = poa.POA_ID.ToString();
+                    changes.FIELD_NAME = listChange.Key;
+                    changes.MODIFIED_BY = CurrentUser.USER_ID;
+                    changes.MODIFIED_DATE = DateTime.Now;
+                    switch (listChange.Key)
+                    {
+                        case "TITLE":
+                            changes.OLD_VALUE = origin.Title;
+                            changes.NEW_VALUE = poa.TITLE;
+                            break;
+                        case "LOGIN_AS":
+                            changes.OLD_VALUE = origin.UserId == null ? null : _userBll.GetUserById(origin.UserId).USER_ID;
+                            changes.NEW_VALUE = string.IsNullOrEmpty(poa.LOGIN_AS) == true ? null : poa.LOGIN_AS;
+                            break;
+                        case "MANAGER_ID":
+                            changes.OLD_VALUE = origin.ManagerId;
+                            changes.NEW_VALUE = poa.MANAGER_ID;
+                            break;
+                        case "POA_PHONE":
+                            changes.OLD_VALUE = origin.PoaPhone;
+                            changes.NEW_VALUE = poa.POA_PHONE;
+                            break;
+                        case "POA_EMAIL":
+                            changes.OLD_VALUE = origin.Email;
+                            changes.NEW_VALUE = poa.POA_EMAIL;
+                            break;
+                        case "POA_ADDRESS":
+                            changes.OLD_VALUE = origin.PoaAddress;
+                            changes.NEW_VALUE = poa.POA_ADDRESS;
+                            break;
+                        case "ID_CARD":
+                            changes.OLD_VALUE = origin.PoaIdCard;
+                            changes.NEW_VALUE = poa.ID_CARD;
+                            break;
+                        case "PRINTED_NAME":
+                            changes.OLD_VALUE = origin.PoaPrintedName;
+                            changes.NEW_VALUE = poa.PRINTED_NAME;
+                            break;
+                        case "IS_ACTIVE":
+                            changes.OLD_VALUE = origin.Is_Active;
+                            changes.NEW_VALUE = convertBooltoString;
+                            break;
+                        //case "IS_ACTIVE_EXCISER":
+                        //    changes.OLD_VALUE = originExciserState;
+                        //    changes.NEW_VALUE = editExciserState;
+                        //    break;
+                    }
+                    _changesHistoryBll.AddHistory(changes);
+                }
+            }
+        }
+
         [HttpPost]
         public JsonResult GetUser(string userId)
         {
-
             return Json(_userBll.GetUserById(userId));
         }
 
         [HttpPost]
         public JsonResult RemoveSk(int skid)
         {
-
             return Json(_poaskbll.RemovePoaSk(skid));
         }
+
 
         private string SaveUploadedFile(HttpPostedFileBase file, string PoaIdCard, int counter)
         {
@@ -394,8 +521,9 @@ namespace Sampoerna.EMS.Website.Controllers
             return sFileName;
         }
 
+        #endregion
 
-        #region export xls
+        #region Export XLS
 
         public void ExportXlsFile()
         {
@@ -493,7 +621,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     if (user != null)
                         manager = user.FIRST_NAME + " " + user.LAST_NAME;
                 }
-               
+
                 slDocument.SetCellValue(iRow, 1, data.PoaIdCard);
                 slDocument.SetCellValue(iRow, 2, data.UserId);
                 slDocument.SetCellValue(iRow, 3, manager);
@@ -521,6 +649,6 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
-
+    
     }
 }

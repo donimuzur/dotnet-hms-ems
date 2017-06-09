@@ -1,0 +1,116 @@
+﻿@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevelopment.ProductDevelopmentViewModel
+@*<div class="row">
+    <div id="contenttableproduct" class="table-container">*@
+@{    
+    var i = 0;
+}
+        <table id="brandTable" class="table table-bordered table-striped js-options-table">
+            <thead>
+                <tr>
+                    <th class="toggle-row"></th>
+                    <th>Action</th>
+                    <th>Status</th>
+                    <th>Import</th>
+                    <th nowrap>Brand Request No</th>
+                    <th>Company</th>
+                    <th nowrap>FA Code (OLD)</th>
+                    <th nowrap>FA Code (OLD) Description</th>
+                    <th nowrap>FA Code (NEW)</th>
+                    <th nowrap>FA Code (NEW) Description</th>
+                    <th nowrap>HL Code</th>
+                    <th>Market</th>
+                    <th>Plant</th>
+                    @*<th nowrap>Brand Reg Status</th>
+                    <th nowrap>Brand Reg No</th>*@
+                </tr>
+
+            <tbody id="tbody_productlistitem">
+                @*@{
+                    var ii = 0;
+                }*@
+
+
+            @if (Model != null)
+            {              
+                    foreach (var row in Model.ListProductDevDetail)
+                    {
+                        i++;
+                        <tr>                            
+                            <td class="action">
+                                @if (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "DetailProduct")
+                                {
+                                    <input type="checkbox" name="checkId" onclick="stateCheckItem(this)" id="check-@i" value="@row.PD_DETAIL_ID" disabled="disabled" />
+                                }
+
+                                else
+                                {
+                                    if (!Model.IsExciser)
+                                    {
+                                        if (row.ApprovalStatusDescription.Value == "DRAFT NEW" || row.ApprovalStatusDescription.Value == "DRAFT EDIT")
+                                        {
+                                            <input type="checkbox" name="checkId" onclick="stateCheckItem(this)" id="check-@i" value="@row.PD_DETAIL_ID" title="Need to Submitted" />
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" name="checkId" onclick="stateCheckItem(this)" id="check-@i" value="@row.PD_DETAIL_ID" disabled="disabled" />
+                                        }
+                                    }
+
+                                    if (Model.IsExciser)
+                                    {
+                                        if (row.ApprovalStatusDescription.Value == "WAITING FOR EXCISE APPROVAL")
+                                        {
+                                            <input type="checkbox" name="checkId" onclick="stateCheckItem(this)" id="check-@i" value="@row.PD_DETAIL_ID" title="Need to Approved/Revised" />
+                                        }
+                                        else if (row.ApprovalStatusDescription.Value == "DRAFT NEW" || row.ApprovalStatusDescription.Value == "DRAFT EDIT")
+                                        {
+                                            <input type="checkbox" name="checkId" onclick="stateCheckItem(this)" id="check-@i" value="@row.PD_DETAIL_ID" title="Need to Submitted" />
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" name="checkId" onclick="stateCheckItem(this)" id="check-@i" value="@row.PD_DETAIL_ID" disabled="disabled" />
+                                        }
+                                    }
+                                }
+                              
+                            
+                            </td>
+                            <td>
+                                @*@if (!Model.IsExciser)
+                                {
+                                    <a data-toggle="modal" data-placement="top" title="Edit" data-id="@row.PD_DETAIL_ID"  data-target="#myModalItem"> <i class="fa fa-pencil-square-o"></i></a>
+                                }*@
+                                @if (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "DetailProduct" || ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "ApproveProduct" || ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "EditProductDevelopment")
+                                {
+                                    <a data-toggle="modal" data-placement="top" title="Detail" data-id="@row.PD_DETAIL_ID" class="itemDisplayLock"><i class="fa fa-eye"></i></a>
+                                }
+                              
+                                @if (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "EditProductDevelopment")
+                                {
+                                    <a data-toggle="modal" data-placement="top" title="Edit" data-id="@row.PD_DETAIL_ID" class="itemDisplay"> <i class="fa fa-pencil-square-o"></i></a>
+                                }
+                                
+                              
+                            </td>
+                            <td nowrap>@row.ApprovalStatusDescription.Value</td>
+                            <td><input type="checkbox" checked="@row.Is_Import" id="@row.PD_DETAIL_ID" disabled /></td>
+                            <td nowrap>@row.Request_No</td>
+                            <td nowrap>@row.Company.Name</td>
+                            <td>@row.Fa_Code_Old</td>
+                            <td nowrap>@row.Fa_Code_Old_Desc</td>
+                            <td>@row.Fa_Code_New</td>
+                            <td nowrap>@row.Fa_Code_New_Desc</td>
+                            <td>@row.Hl_Code</td>
+                            <td>@row.Market.Market_Desc</td>
+                            <td nowrap>@row.Plant.NAME1</td>
+                            @*<td></td>
+                            <td></td>*@
+                        </tr>
+                }              
+            }
+          
+            </tbody>
+        </table>
+@*<input type="hidden" id="txt_index_listitem" value="@ii" />*@
+    @*</div>
+</div>*@

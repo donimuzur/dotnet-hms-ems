@@ -15,7 +15,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPOABLL _poabll;
         private IUserAuthorizationBLL _userAuthorizationBll;
         public LoginController(IUserBLL userBll, IPageBLL pageBll, IPOABLL poabll, IUserAuthorizationBLL userAuthorizationBll)
-            : base(pageBll, Enums.MenuList.LOGIN)
+            : base(pageBll,userBll, Enums.MenuList.LOGIN)
         {
             _userBll = userBll;
             _poabll = poabll;
@@ -26,10 +26,13 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /Login/
         public ActionResult Index()
         {
-            //var model = new LoginFormModel();
-            //model.Users = new SelectList(_userBll.GetUsers(), "USER_ID", "USER_ID");
-            //return View(model);
-            return RedirectToAction("Index", "Home");
+            // Enable Login form => Bypass AD mode
+            var model = new LoginFormModel();
+            model.Users = new SelectList(_userBll.GetUsers(), "USER_ID", "USER_ID");
+            return View(model);
+
+            // Enable AD
+            //return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
@@ -37,7 +40,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             
             var loginResult = _userBll.GetLogin(model.Login.UserId);
-
+            base.param = model.Login.UserId;
             if (loginResult != null)
             {
                 //CurrentUser = loginResult;

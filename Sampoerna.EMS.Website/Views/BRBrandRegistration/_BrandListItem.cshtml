@@ -1,0 +1,75 @@
+﻿@model IEnumerable<Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.BrandRegistration.BrandRegistrationReqDetailModel>
+<div class="row">
+    <div id="contenttable" class="table-container">
+        <table id="brandTable" class="table table-bordered table-striped js-options-table">
+            <thead>
+                <tr>
+                    <th class="toggle-row"></th>
+                    <th nowrap>Request Number</th>
+                    <th nowrap>FA Code (OLD)</th>
+                    <th nowrap>FA Code (OLD) Description</th>
+                    <th nowrap>FA Code (NEW)</th>
+                    <th nowrap>FA Code (NEW) Description</th>
+                    <th>Company</th>
+                    <th nowrap>HL Code</th>
+                    <th>Market</th>
+                    <th>Production Center</th>
+                </tr>
+            <tbody id="tbody_skeplistitem">
+                @{
+                    var ii = 0;
+                }
+                @foreach (var item in Model)
+                {
+                    var hjeperbatang = Convert.ToInt64(item.Hje) / Convert.ToInt32(item.Brand_Content);
+                    <tr class="tr_item_list" id='tr_item_list_@ii'
+                        data-index='@ii'
+                        data-requestnumber='@item.Request_No'
+                        data-facodeold='@item.Fa_Code_Old'
+                        data-facodeolddesc='@item.Fa_Code_Old_Desc'
+                        data-facodenew='@item.Fa_Code_New'
+                        data-facodenewdesc='@item.Fa_Code_New_Desc'
+                        data-market="@item.MarketDesc"
+                        data-pddetailid='@item.PD_Detail_ID'
+                        data-proddevnextaction='@item.ProdDevNextAction'>
+                        <td class='td_inputan'>
+                            <input type='checkbox' class='cb_itemlist' />
+
+                            <input type='hidden' class='txt_hd_itemId' value='@item.PD_Detail_ID' name='Item[@ii].PD_Detail_ID'>
+                            <input type='hidden' class='txt_hd_detailId' value='@item.Registration_Detail_ID' name='Item[@ii].Registration_Detail_ID'>
+                            <input type='hidden' class='txt_hd_isactive' value='true' name='Item[@ii].IsActive'>
+                            <input type='hidden' class='txt_hd_brandname' value='@item.Brand_Ce' name='Item[@ii].Brand_CE'>
+                            <input type='hidden' class='txt_hd_latest_skep_no' value='@item.Latest_Skep_No' name='Item[@ii].Latest_Skep_No'>
+                            <input type='hidden' class='txt_hd_companytier' value='@item.Company_Tier' name='Item[@ii].Company_Tier'>
+                            <input type='hidden' class='txt_hd_excisegood' value='@item.Prod_Code' name='Item[@ii].Prod_Code'>
+                            <input type='hidden' class='txt_hd_hjeperpack' value='@item.Hje' name='Item[@ii].Hje'>
+                            <input type='hidden' class='txt_hd_hjeperbatang' value='@hjeperbatang' name='Item[@ii].HJEperBatang'>
+                            <input type='hidden' class='txt_hd_content' value='@item.Brand_Content' name='Item[@ii].Brand_Content'>
+                            <input type='hidden' class='txt_hd_unit' value='@item.Unit' name='Item[@ii].Unit'>
+                            <input type='hidden' class='txt_hd_tariff' value='@item.Tariff' name='Item[@ii].Tariff'>
+                            <input type='hidden' class='txt_hd_packaging_material' value='@item.Packaging_Material' name='Item[@ii].Packaging_Material'>
+                            <input type='hidden' class='txt_hd_market' value='@item.MarketDesc' name='Item[@ii].Market'>
+                            <input type='hidden' class='txt_hd_front_side' value='@item.Front_Side' name='Item[@ii].Front_Side'>
+                            <input type='hidden' class='txt_hd_back_side' value='@item.Back_Side' name='Item[@ii].Back_Side'>
+                            <input type='hidden' class='txt_hd_left_side' value='@item.Left_Side' name='Item[@ii].Left_Side'>
+                            <input type='hidden' class='txt_hd_right_side' value='@item.Right_Side' name='Item[@ii].Right_Side'>
+                            <input type='hidden' class='txt_hd_top_side' value='@item.Top_Side' name='Item[@ii].Top_Side'>
+                            <input type='hidden' class='txt_hd_bottom_side' value='@item.Bottom_Side' name='Item[@ii].Bottom_Side'>
+                        </td>
+                        <td class='btn_showmodal_detail' style='cursor:pointer'>@item.Request_No</td>
+                        <td class='btn_showmodal_detail' style='cursor:pointer'>@item.Fa_Code_Old</td>
+                        <td class='btn_showmodal_detail' style='cursor:pointer'>@item.Fa_Code_Old_Desc</td>
+                        <td class='btn_showmodal_detail' style='cursor:pointer'>@item.Fa_Code_New</td>
+                        <td class='btn_showmodal_detail' style='cursor:pointer'>@item.Fa_Code_New_Desc</td>
+                        <td class='btn_showmodal_detail' style='cursor:pointer'>@item.CompanyName</td>
+                        <td class='btn_showmodal_detail' style='cursor:pointer'>@item.HlCode</td>
+                        <td class='btn_showmodal_detail' style='cursor:pointer'>@item.MarketDesc</td>
+                        <td class='btn_showmodal_detail' style='cursor:pointer'>@item.ProductionCenter</td>
+                    </tr>
+                    ii++;
+                }
+            </tbody>
+        </table>
+    </div>
+    <input type="hidden" id="txt_index_listitem" value="@ii" />
+</div>

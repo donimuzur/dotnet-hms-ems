@@ -1,0 +1,164 @@
+﻿
+@model Sampoerna.EMS.Website.Models.ExciseCredit.ExciseGovApprovalModel
+
+<div class="tab-wrapper">
+    <div class="col-lg-12">
+        <div class="form-excise" role="form">
+            <div class="row">
+                @Html.HiddenFor(model => Model.Id)
+
+                <div class="col-md-6">
+                    <!-- Government Status Selector -->
+                    <div class="row">
+                        <label class="col-md-4">
+                            @Html.LabelFor(model => model.SkepStatus, "Government Status")
+                        </label>
+                        <div class="col-md-8">
+                            @{
+                                var skepStatusDisplay = (Model.SkepStatus) ? "Approved" : "Rejected";
+                            }
+                            @Html.TextBoxFor(model => skepStatusDisplay, new { @class = "form-control", @readonly = true })
+                        </div>
+                    </div>
+                    <!-- End Government Status Type Selector -->
+                    <!-- Decree Number -->
+                    <div class="row">
+                        <label class="col-md-4">
+                            @Html.LabelFor(model => model.DecreeNumber, "Decree Number")
+                        </label>
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(model => model.DecreeNumber, new { @class = "form-control", @readonly = true })
+                        </div>
+                    </div>
+                    <!-- End Decree Number -->
+                    <!-- Decree Date -->
+                    <div class="row">
+                        <label class="col-md-4">
+                            @Html.LabelFor(model => model.DecreeDate, "Decree Date")
+                        </label>
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(model => model.DecreeDate, "{0:dd MMM yyyy}", new { @class = "form-control", @readonly = true })
+                        </div>
+                    </div>
+                    <!-- End Decree Date -->
+                    <!-- Approved Product Types -->
+                    <div class="row">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th width="30%">Product Type</th>
+                                    <th width="70%">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ProductTypeContainer">
+                                <tr>
+                                    <td colspan="2">
+                                        <div class="alert alert-info">
+                                            No Products Added
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- End Approve Product Types -->
+                    <!-- Credit Amount -->
+                    <div class="row">
+                        <label class="col-md-4">
+                            @Html.LabelFor(model => model.CreditAmount, "Credit Amount")
+                        </label>
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(model => model.CreditAmountDisplay, new { @class = "form-control text-right readonly", @readonly = true })
+                            @Html.HiddenFor(model => model.CreditAmount)
+                        </div>
+
+                    </div>
+                    <!-- End Credit Amount -->
+                    <!-- SKEP Attachment -->
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>SKEP Attachment</label>
+                        </div>
+                        <div class="col-md-8">
+                            @if (Model.SkepFileUpload != null)
+                            {
+                                <a href="@Url.Content(Model.SkepFileUpload.PathURL)" target="_blank"><i class="fa fa-file-o"></i> @Model.SkepFileUpload.FileName</a>
+                            }
+                            else
+                            {
+                                <span>No SKEP Document added</span>
+                            }
+                        </div>
+                    </div>
+                    <!-- End SKEP Attachment -->
+                </div>
+                <div class="col-md-6">
+                    <!-- Start Date -->
+                    <div class="row">
+                        <label class="col-md-4">
+                            @Html.LabelFor(model => model.StartDate, "Start Date")
+                        </label>
+                        <div class="col-md-8">
+
+                            @Html.TextBoxFor(model => model.StartDate, "{0:dd MMM yyyy}", new { @class = "form-control", @readonly = true })
+                        </div>
+
+                    </div>
+                    <!-- End Start Date -->
+                    <!-- BPJ Number -->
+                    <div class="row">
+                        <label class="col-md-4">
+                            @Html.LabelFor(model => model.BpjNumber, "BPJ Number")
+                        </label>
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(model => model.BpjNumber, new { @class = "form-control", @readonly = true })
+                        </div>
+                    </div>
+                    <!-- End BPJ Number -->
+                    <!-- Start BPJ Date -->
+                    <div class="row">
+                        <label class="col-md-4">
+                            @Html.LabelFor(model => model.BpjDate, "Bpj Date")
+                        </label>
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(model => model.BpjDate, "{0:dd MMM yyyy}", new { @class = "form-control", @readonly = true })
+                        </div>
+                    </div>
+                    <!-- End BPJ Date-->
+                    <!-- BPJ Attachment -->
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>BPJ Attachment</label>
+                        </div>
+                        <div class="col-md-8">
+                            @if (Model.BpjFileUpload != null)
+                            {
+                                <a href="@Url.Content(Model.BpjFileUpload.PathURL)" target="_blank"><i class="fa fa-file-o"></i> @Model.BpjFileUpload.FileName</a>
+                            }
+                            else
+                            {
+                                <span>No BPJ Document added</span>
+                            }
+                        </div>
+                    </div>
+                    <!-- End BPJ Attachment -->
+                    <!-- Notes -->
+                    <div class="row">
+                        <label class="col-md-4">
+                            @Html.LabelFor(model => model.Notes, "Notes")
+                        </label>
+                        <div class="col-md-8">
+                            @Html.TextAreaFor(model => model.Notes, new { @class = "form-control", @rows = "7", @readonly = Model.IsDetail })
+                        </div>
+                    </div>
+                    <!-- End Notes -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+

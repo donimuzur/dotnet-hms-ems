@@ -1,0 +1,54 @@
+﻿
+@model Sampoerna.EMS.Website.Models.ManufacturingLicense.InterviewRequestViewModel
+@using Sampoerna.EMS.Core
+<table id="exciseTable" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> Filter </th>
+            <th>Company</th>
+            <th>KPPBC</th>
+            <th>No Form</th>
+            <th>Request Date</th>
+            <th>Perihal</th>
+            <th>Company Type</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <thead class="filters">
+        <tr>
+            <th>Action</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.InterviewRequestDocuments)
+        {
+            <tr>
+                <td class="action">
+                    <a href="@Url.Action("Detail", "MLInterviewRequest", new { id = item.Id})" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye btn_action"></i></a>
+                    @if ((item.ApprovalStatus.ToLower().Contains("draft") || (item.ApprovalStatus.ToUpper().Equals("WAITING FOR GOVERNMENT APPROVAL") && item.LastApprovedBy != Model.CurrentUser)) && item.IsCanEdit)
+                    {
+                        <a href="@Url.Action("Edit", "MLInterviewRequest", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o btn_action"></i></a>
+                    }
+                    @if ((item.ApprovalStatus.ToLower().Contains("poa")) && item.LastModifiedBy != Model.CurrentUser && item.IsApprover)
+                    {
+                        <a href="@Url.Action("Approve", "MLInterviewRequest", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Approval"><i class="fa fa-check"></i></a>
+                    }
+                </td>
+                <td>@Html.DisplayFor(model => item.Company_Name)</td>
+                <td>@Html.DisplayFor(model => item.KPPBC_ID)</td>
+                <td>@Html.DisplayFor(model => item.FormNumber)</td>
+                <td>@Html.DisplayFor(model => item.StrRequestDate)</td>
+                <td>@Html.DisplayFor(model => item.Perihal)</td>
+                <td>@Html.DisplayFor(model => item.Company_Type)</td>
+                <td class="last">@Html.DisplayFor(model => item.ApprovalStatus)</td>
+            </tr>
+        }
+    </tbody>
+</table>

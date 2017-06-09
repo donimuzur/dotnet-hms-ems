@@ -33,6 +33,10 @@
             <h3>Excise Management System</h3>
         </div>
         <div class="main-menu-content">
+            <div class="excise-menu small" data-toggle="modal" data-target=".menu-transaction">
+                <h3>Transaction</h3>
+                <div class="icon"></div>
+            </div>
             <div class="excise-menu" data-toggle="modal" data-target=".menu-movement">
                 <h3>Excisable Goods Movement</h3>
                 <p>
@@ -54,7 +58,7 @@
                 </p>
                 <div class="icon"></div>
             </div>
-            <a href="@Url.Action("Index","MasterApproval")">
+            <a href="@Url.Action("Index","User")">
                 <div class="excise-menu small">
 
                     <h3>Master Data</h3>
@@ -70,6 +74,35 @@
                 </div>
             </a>
 </div>
+    </div>
+    <div class="modal fade main-menu-child menu-transaction" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h3>Transaction</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <a href="@Url.Action("Index", "ManufactureLicense")" class="child-menu">
+                                Manufacturing License
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="@Url.Action("Index","ExciseCredit")" class="child-menu">
+                                Excise Credit
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="@Url.Action("Index", "BrandRegistration")" class="child-menu">
+                                Brand Registration
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="modal fade main-menu-child menu-movement" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">

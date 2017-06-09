@@ -15,13 +15,14 @@
     <AssemblyName>Sampoerna.EMS.Website</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
-    <UseIISExpress>false</UseIISExpress>
+    <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,12 +49,26 @@
     <Reference Include="AutoMapper.Net4">
       <HintPath>..\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.Net4.dll</HintPath>
     </Reference>
-    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="CrystalDecisions.Shared, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.CrystalReports.Engine">
+      <HintPath>..\packages\CrystalDecisions.CrystalReports.Engine.1.0.0\lib\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportSource">
+      <HintPath>..\packages\CrystalDecisions.ReportSource.1.0.0\lib\CrystalDecisions.ReportSource.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.Shared">
+      <HintPath>..\packages\CrystalDecisions.Shared.1.0.0\lib\CrystalDecisions.Shared.dll</HintPath>
+    </Reference>
     <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>references\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="itextsharp, Version=5.5.6.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\iTextSharp.5.5.6\lib\itextsharp.dll</HintPath>
@@ -98,6 +113,10 @@
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -107,6 +126,14 @@
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -149,7 +176,7 @@
       <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
     </Reference>
     <Reference Include="Voxteneo.WebCompoments.NLogLogger">
-      <HintPath>..\packages\NLogLogger.1.3.0\lib\Voxteneo.WebCompoments.NLogLogger.dll</HintPath>
+      <HintPath>..\packages-reference\NLogLogger.1.3.0\lib\Voxteneo.WebCompoments.NLogLogger.dll</HintPath>
     </Reference>
     <Reference Include="Voxteneo.WebComponents.Logger, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -168,12 +195,6 @@
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer">
-      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.1.0\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -221,6 +242,7 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="AspnetWebForms\GenericReportViewer.aspx.cs">
       <DependentUpon>GenericReportViewer.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -228,16 +250,31 @@
     <Compile Include="AspnetWebForms\GenericReportViewer.aspx.designer.cs">
       <DependentUpon>GenericReportViewer.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Controllers\MonthClosingController.cs" />
+    <Compile Include="Code\DecimalModelBinder.cs" />
+    <Compile Include="Code\GenericHelpers.cs" />
+    <Compile Include="Controllers\BrandRegistrationTransactionController.cs" />
+    <Compile Include="Controllers\BRBrandRegistrationController.cs" />
+    <Compile Include="Controllers\BRPenetapanSkepController.cs" />
+    <Compile Include="Controllers\ConfigurationController.cs" />
+    <Compile Include="Controllers\ExciseCreditController.cs" />
+    <Compile Include="Controllers\FinanceRatioController.cs" />
+    <Compile Include="Controllers\ManufactureLicenseController.cs" />
     <Compile Include="Controllers\MasterApprovalController.cs" />
     <Compile Include="Controllers\MasterDataApprovalSettingController.cs" />
+    <Compile Include="Controllers\MLChangeRequestController.cs" />
+    <Compile Include="Controllers\MLInterviewRequestController.cs" />
+    <Compile Include="Controllers\MLLicenseRequestController.cs" />
+    <Compile Include="Controllers\MonthClosingController.cs" />
     <Compile Include="Controllers\PBCK4Controller.cs" />
+    <Compile Include="Controllers\POAController.cs" />
     <Compile Include="Controllers\PoaDelegationController.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Code\PdfResult.cs" />
     <Compile Include="Controllers\ProductTypeController.cs" />
     <Compile Include="Controllers\ReversalController.cs" />
     <Compile Include="Controllers\SchedulerSettingController.cs" />
+    <Compile Include="Controllers\SupportDocController.cs" />
+    <Compile Include="Controllers\TariffController.cs" />
     <Compile Include="Controllers\WasteController.cs" />
     <Compile Include="Controllers\WasteRoleController.cs" />
     <Compile Include="Controllers\WasteStockController.cs" />
@@ -272,7 +309,6 @@
     <Compile Include="Controllers\NPPBKCController.cs" />
     <Compile Include="Controllers\PBCK1Controller.cs" />
     <Compile Include="Controllers\PlantController.cs" />
-    <Compile Include="Controllers\POAController.cs" />
     <Compile Include="Controllers\KPPBCController.cs" />
     <Compile Include="Controllers\POAMapController.cs" />
     <Compile Include="Controllers\UomController.cs" />
@@ -289,21 +325,90 @@
     <Compile Include="EMSWebsiteMapperPBCK4.cs" />
     <Compile Include="EMSWebsiteMapperPBCK7AndPBCK3.cs" />
     <Compile Include="Filters\EncryptedParameterAttribute.cs" />
+    <Compile Include="Filters\PreventDuplicateRequestAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\AuthorizeADAttribute.cs" />
+    <Compile Include="Helpers\AuthorizeGlobalAttribute.cs" />
     <Compile Include="Helpers\HtmlHelperExtention.cs" />
     <Compile Include="Helpers\LDAPHelper.cs" />
+    <Compile Include="Helpers\PdfWriterEvents.cs" />
     <Compile Include="Helpers\UrlHelperExtensions.cs" />
     <Compile Include="Helpers\ValidateAttributes.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BaseModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\BrandRegistration\BrandRegFilterViewModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\BrandRegistration\BrandRegistrationReqDetailModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\BrandRegistration\BrandRegistrationReqDetailViewModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\BrandRegistration\BrandRegistrationReqModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\BrandRegistration\BrandRegistrationReqViewModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\BrandRegistration\BrandRegSummaryReportsViewModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\BrandRegistration\BrandRegSupportingDocumentModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\GeneralModel\NppbkcGeneralModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\GeneralModel\PlantGeneralModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\GeneralModel\POAGeneralModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\MapSKEP\ReceivedDecreeDetailModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\MapSKEP\ReceivedDecreeDetailViewModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\MapSKEP\ReceivedDecreeModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\MapSKEP\ReceivedDecreeViewModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\MapSKEP\SKEPFilterViewModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\MapSKEP\SKEPSupportingDocumentModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\ProductDevelopment\PDSummaryReportViewModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\ProductDevelopment\ProductDevDetailModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\ProductDevelopment\ProductDevDetailViewModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\ProductDevelopment\ProductDevelopmentModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\ProductDevelopment\ProductDevelopmentViewModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\ProductDevelopment\ProductDevFilterViewModel.cs" />
+    <Compile Include="Models\BrandRegistrationTransaction\ProductDevelopment\ProductDevSupportingDocumentModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationCreateViewModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationDetailsViewModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationEditViewModel.cs" />
     <Compile Include="Models\BrandRegistration\BrandRegistrationIndexViewModel.cs" />
     <Compile Include="Models\ChangesHistory\ChangesHistoryViewModel.cs" />
+    <Compile Include="Models\CK5\CK5ItemModel.cs" />
+    <Compile Include="Models\CK5\CK5ListViewModel.cs" />
+    <Compile Include="Models\Configuration\ConfigurationCreateViewModel.cs" />
+    <Compile Include="Models\Configuration\ConfigurationIndexViewModel.cs" />
+    <Compile Include="Models\Configuration\ConfigurationViewModel.cs" />
+    <Compile Include="Models\ExciseCredit\CalculationDetailModel.cs" />
+    <Compile Include="Models\ExciseCredit\ExciseAdjustmentValue.cs" />
+    <Compile Include="Models\ExciseCredit\ExciseApprovedProduct.cs" />
+    <Compile Include="Models\ExciseCredit\ExciseCreditCK1DetailModel.cs" />
+    <Compile Include="Models\ExciseCredit\ExciseCreditCk1Model.cs" />
+    <Compile Include="Models\ExciseCredit\ExciseCreditModel.cs" />
+    <Compile Include="Models\ExciseCredit\ExciseCreditNppbkc.cs" />
+    <Compile Include="Models\ExciseCredit\ExciseCreditPOA.cs" />
+    <Compile Include="Models\ExciseCredit\ExciseCreditFormModel.cs" />
+    <Compile Include="Models\ExciseCredit\ExciseCreditPrintoutModel.cs" />
+    <Compile Include="Models\ExciseCredit\ExciseCreditSupportingDocument.cs" />
+    <Compile Include="Models\ExciseCredit\ExciseCreditViewModel.cs" />
+    <Compile Include="Models\ExciseCredit\ExciseGovApprovalModel.cs" />
+    <Compile Include="Models\FileUpload\FileUploadModel.cs" />
+    <Compile Include="Models\ManufacturingLicense\ChangeRequestFormModel.cs" />
+    <Compile Include="Models\ManufacturingLicense\ChangeRequestModel.cs" />
+    <Compile Include="Models\ManufacturingLicense\ChangeRequestNppbkc.cs" />
+    <Compile Include="Models\ManufacturingLicense\ChangeRequestPOA.cs" />
+    <Compile Include="Models\ManufacturingLicense\ChangeRequestSummaryReportsViewModel.cs" />
+    <Compile Include="Models\ManufacturingLicense\ChangeRequestViewModel.cs" />
+    <Compile Include="Models\ManufacturingLicense\InterviewRequestModel.cs" />
+    <Compile Include="Models\ManufacturingLicense\InterviewRequestSummaryReportsViewModel.cs" />
+    <Compile Include="Models\ManufacturingLicense\InterviewRequestViewModel.cs" />
+    <Compile Include="Models\ManufacturingLicense\LicenseRequestModel.cs" />
+    <Compile Include="Models\ManufacturingLicense\LicenseRequestSummaryReportsViewModel.cs" />
+    <Compile Include="Models\ManufacturingLicense\LicenseRequestViewModel.cs" />
+    <Compile Include="Models\ManufacturingLicense\ManufactureLicenseViewModel.cs" />
+    <Compile Include="Models\Market\MarketModel.cs" />
+    <Compile Include="Models\MasterDataApprovalSetting\MasterDataApprovalSettingEditViewModel.cs" />
+    <Compile Include="Models\MasterDataApprovalSetting\MasterDataApprovalSettingIndexViewModel.cs" />
+    <Compile Include="Models\MasterDataApproval\MasterDataApprovalViewModel.cs" />
+    <Compile Include="Models\MonthClosing\MonthClosingDocModel.cs" />
+    <Compile Include="Models\MonthClosing\MonthClosingIndexViewModel.cs" />
+    <Compile Include="Models\NPPBKC\NewNPPBKCViewModel.cs" />
+    <Compile Include="Models\PBCK1\QuotaMonitoringViewModel.cs" />
+    <Compile Include="Models\POAExciser\PoaExciserViewModel.cs" />
+    <Compile Include="Models\ProductDevUpload\ProductDevelopmentUploadModel.cs" />
+    <Compile Include="Models\Shared\ChangesLogModel.cs" />
     <Compile Include="Models\CK4C\Ck4cDashboardModel.cs" />
     <Compile Include="Models\CK4C\Ck4cDecreeDocModel.cs" />
     <Compile Include="Models\CK4C\Ck4cExportItem.cs" />
@@ -326,6 +431,8 @@
     <Compile Include="Models\CompanyViewModel.cs" />
     <Compile Include="Models\Dashboard\DashboardDetilModel.cs" />
     <Compile Include="Models\EmailTemplate\EmailTemplateModel.cs" />
+    <Compile Include="Models\FinanceRatio\FinanceRatioModel.cs" />
+    <Compile Include="Models\FinanceRatio\FinanceRatioViewModel.cs" />
     <Compile Include="Models\GOODSTYPE\GoodsTypeGroupCreateViewModel.cs" />
     <Compile Include="Models\GOODSTYPE\GoodsTypeGroupDetailsViewModel.cs" />
     <Compile Include="Models\GOODSTYPE\GoodsTypeGroupEditViewModel.cs" />
@@ -377,15 +484,10 @@
     <Compile Include="Models\LACK2\Lack2SummaryReportsViewModel.cs" />
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\MasterDataApprovalSetting\MasterDataApprovalSettingEditViewModel.cs" />
-    <Compile Include="Models\MasterDataApprovalSetting\MasterDataApprovalSettingIndexViewModel.cs" />
-    <Compile Include="Models\MasterDataApproval\MasterDataApprovalViewModel.cs" />
     <Compile Include="Models\Material\MaterialCreatelViewModel.cs" />
     <Compile Include="Models\Material\MaterialDetailViewModel.cs" />
     <Compile Include="Models\Material\MaterialEditViewModel.cs" />
     <Compile Include="Models\Material\MaterialListViewModel.cs" />
-    <Compile Include="Models\MonthClosing\MonthClosingDocModel.cs" />
-    <Compile Include="Models\MonthClosing\MonthClosingIndexViewModel.cs" />
     <Compile Include="Models\NPPBKC\NPPBKCIViewModels.cs" />
     <Compile Include="Models\PBCK1\Pbck1DashboardModel.cs" />
     <Compile Include="Models\PBCK1\Pbck1DecreeDocModel.cs" />
@@ -400,7 +502,6 @@
     <Compile Include="Models\PBCK1\PBCK1ProdPlanModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1SummaryReportViewModel.cs" />
     <Compile Include="Models\PBCK1\PBCK1ViewModel.cs" />
-    <Compile Include="Models\PBCK1\QuotaMonitoringViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4DashBoardViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4FileUploadViewModel.cs" />
     <Compile Include="Models\PBCK4\Pbck4FormViewModel.cs" />
@@ -430,12 +531,28 @@
     <Compile Include="Models\PRODUCTION\ProductionViewModel.cs" />
     <Compile Include="Models\ProductType\ProductTypeIndexViewModel.cs" />
     <Compile Include="Models\ProductType\ProductTypeFormViewModel.cs" />
+    <Compile Include="Models\Shared\CityModel.cs" />
+    <Compile Include="Models\Shared\ConfirmDialogModel.cs" />
+    <Compile Include="Models\Shared\EmailContent.cs" />
+    <Compile Include="Models\Shared\EmailVariable.cs" />
     <Compile Include="Models\Reversal\ReversalIndexViewModel.cs" />
     <Compile Include="Models\SchedulerSetting\SchedulerSettingModel.cs" />
     <Compile Include="Models\SelectItemModel.cs" />
     <Compile Include="Models\Settings\DocumentSequenceModel.cs" />
     <Compile Include="Models\Settings\GlobalSettingModel.cs" />
+    <Compile Include="Models\Shared\CompanyModel.cs" />
     <Compile Include="Models\Shared\DataTable.cs" />
+    <Compile Include="Models\Shared\MasterModel.cs" />
+    <Compile Include="Models\Shared\MasterViewModel.cs" />
+    <Compile Include="Models\Shared\PrintoutLayout.cs" />
+    <Compile Include="Models\Shared\ReferenceModel.cs" />
+    <Compile Include="Models\Shared\ReferenceTypeModel.cs" />
+    <Compile Include="Models\Shared\UserModel.cs" />
+    <Compile Include="Models\SupportDoc\SupportDocModel.cs" />
+    <Compile Include="Models\SupportDoc\SupportDocViewModel.cs" />
+    <Compile Include="Models\Shared\WorkflowHistory.cs" />
+    <Compile Include="Models\Tariff\TariffModel.cs" />
+    <Compile Include="Models\Tariff\TariffViewModel.cs" />
     <Compile Include="Models\UOM\UomDetailViewModel.cs" />
     <Compile Include="Models\UOM\UomIndexViewModel.cs" />
     <Compile Include="Models\UserAuthorization\CreateUserAuthorizationViewModel.cs" />
@@ -621,6 +738,7 @@
     <Content Include="Content\css\vendors\font-awesome.min.css" />
     <Content Include="Content\css\vendors\yamm.css" />
     <Content Include="Content\css\loading.css" />
+    <Content Include="Content\loader.gif" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />
@@ -663,6 +781,9 @@
     <Content Include="ExtLib\itextsharp.xtra.dll" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <Content Include="references\DocumentFormat.OpenXml.dll" />
+    <Content Include="references\DocumentFormat.OpenXml.xml" />
+    <Content Include="Scripts\autoNumeric.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\assets\fonts\bootstrap\glyphicons-halflings-regular.eot" />
@@ -690,8 +811,12 @@
     <Content Include="Content\assets\fonts\opensans-semibold-webfont.woff" />
     <Content Include="Content\assets\fonts\opensans-semibold-webfont.woff2" />
     <Content Include="Content\css\main.min.css.map" />
+    <None Include="Properties\PublishProfiles\itpi-ems-publish.pubxml" />
     <None Include="Properties\PublishProfiles\publish-to-iis.pubxml" />
     <None Include="Properties\PublishProfiles\publish-web.pubxml" />
+    <Content Include="Scripts\brand-registration-trans\main_brand.js" />
+    <Content Include="Scripts\brand-registration-trans\main_product.js" />
+    <Content Include="Scripts\brand-registration-trans\main_skep.js" />
     <Content Include="Scripts\Chart.js" />
     <Content Include="Scripts\chosen.jquery.min.js" />
     <Content Include="Scripts\ck4cscript.js" />
@@ -914,6 +1039,10 @@
       <DependentUpon>HeaderFooterDs.xsd</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
+    <Content Include="Scripts\excise-credit\date.js" />
+    <Content Include="Scripts\excise-credit\main.js" />
+    <Content Include="Scripts\excise-credit\terbilang.js" />
+    <Content Include="Scripts\excise-credit\terbilang.min.js" />
     <Content Include="Scripts\jquery-2.1.4.js" />
     <Content Include="Scripts\jquery-2.1.4.min.js" />
     <Content Include="Scripts\jquery-2.1.4.min.map" />
@@ -941,10 +1070,16 @@
     <Content Include="Scripts\lack1\Lack1Upload.js" />
     <Content Include="Scripts\lack2\form.js" />
     <Content Include="Scripts\lack1\Lack1Scripts.js" />
+    <Content Include="Scripts\manufacture-license\changerequest-main.js" />
+    <Content Include="Scripts\manufacture-license\interviewrequest-form.js" />
+    <Content Include="Scripts\manufacture-license\licenserequest-beranda.js" />
+    <Content Include="Scripts\master\financeratio.js" />
+    <Content Include="Scripts\master\producttype.js" />
+    <Content Include="Scripts\master\supportdoc.js" />
+    <Content Include="Scripts\master\tariff.js" />
     <Content Include="Scripts\modernizr.min.js" />
     <Content Include="Scripts\js\_scripts.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
-    <Content Include="Scripts\monthClosing.js" />
     <Content Include="Scripts\pbck1script.js" />
     <Content Include="Scripts\pbck1\docupload.js" />
     <Content Include="Scripts\Pbck3Script.js" />
@@ -957,13 +1092,154 @@
     <Content Include="Scripts\Pbck7ScriptDocUpload.js" />
     <Content Include="Scripts\pbck7\form.js" />
     <Content Include="Scripts\poa\form.js" />
+    <Content Include="Scripts\Resizable-1.5.min\colReorderWithResize.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\thousand-separator.js" />
+    <Content Include="Scripts\tinymce\jquery.tinymce.min.js" />
+    <Content Include="Scripts\tinymce\license.txt" />
+    <Content Include="Scripts\tinymce\plugins\advlist\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\advlist\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\anchor\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\anchor\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\autolink\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\autolink\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\autoresize\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\autoresize\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\autosave\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\autosave\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\bbcode\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\bbcode\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\charmap\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\charmap\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\codesample\css\prism.css" />
+    <Content Include="Scripts\tinymce\plugins\codesample\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\codesample\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\code\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\code\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\colorpicker\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\colorpicker\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\css\dialog.css" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\img\buttons.png" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\img\icons.gif" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\img\items.gif" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\img\menu_arrow.gif" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\img\menu_check.gif" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\img\progress.gif" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\img\tabs.gif" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\tiny_mce_popup.js" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\utils\editable_selects.js" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\utils\form_utils.js" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\utils\mctabs.js" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\utils\validate.js" />
+    <Content Include="Scripts\tinymce\plugins\contextmenu\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\contextmenu\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\directionality\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\directionality\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-cool.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-cry.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-embarassed.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-foot-in-mouth.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-frown.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-innocent.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-kiss.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-laughing.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-money-mouth.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-sealed.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-smile.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-surprised.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-tongue-out.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-undecided.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-wink.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-yell.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\fullpage\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\fullpage\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\fullscreen\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\fullscreen\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\help\img\logo.png" />
+    <Content Include="Scripts\tinymce\plugins\help\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\help\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\hr\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\hr\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\imagetools\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\imagetools\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\image\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\image\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\importcss\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\importcss\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\insertdatetime\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\insertdatetime\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\legacyoutput\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\legacyoutput\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\link\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\link\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\lists\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\lists\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\media\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\media\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\nonbreaking\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\nonbreaking\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\noneditable\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\noneditable\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\pagebreak\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\pagebreak\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\paste\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\paste\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\preview\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\preview\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\print\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\print\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\save\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\save\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\searchreplace\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\searchreplace\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\spellchecker\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\spellchecker\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\tabfocus\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\tabfocus\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\table\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\table\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\template\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\template\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\textcolor\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\textcolor\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\textpattern\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\textpattern\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\toc\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\toc\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\css\visualblocks.css" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\visualchars\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\visualchars\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\wordcount\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\wordcount\plugin.min.js" />
+    <Content Include="Scripts\tinymce\skins\lightgray\content.inline.min.css" />
+    <Content Include="Scripts\tinymce\skins\lightgray\content.min.css" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.svg" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.svg" />
+    <Content Include="Scripts\tinymce\skins\lightgray\img\anchor.gif" />
+    <Content Include="Scripts\tinymce\skins\lightgray\img\loader.gif" />
+    <Content Include="Scripts\tinymce\skins\lightgray\img\object.gif" />
+    <Content Include="Scripts\tinymce\skins\lightgray\img\trans.gif" />
+    <Content Include="Scripts\tinymce\skins\lightgray\skin.min.css" />
+    <Content Include="Scripts\tinymce\themes\inlite\theme.js" />
+    <Content Include="Scripts\tinymce\themes\inlite\theme.min.js" />
+    <Content Include="Scripts\tinymce\themes\modern\theme.js" />
+    <Content Include="Scripts\tinymce\themes\modern\theme.min.js" />
+    <Content Include="Scripts\tinymce\tinymce.js" />
+    <Content Include="Scripts\tinymce\tinymce.min.js" />
     <Content Include="Scripts\UploadExcel.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Views\CK5\_CK5ListSummaryReport.cshtml" />
     <Content Include="Views\LACK1\PrintDocument.cshtml" />
+    <Content Include="Views\MLChangeRequest\PrintOut.html" />
+    <Content Include="Views\MLInterviewRequest\PrintOut.html" />
+    <Content Include="Views\MLLicenseRequest\PrintLayout.html" />
     <Content Include="Views\PBCK1\_HomeDetails.cshtml" />
     <Content Include="Views\PBCK1\_HomeEdit.cshtml" />
     <Content Include="Web.config">
@@ -1353,23 +1629,188 @@
     <Content Include="Views\LACK1\CfVsFaSummary.cshtml" />
     <Content Include="Views\LACK1\DetailEa.cshtml" />
     <Content Include="Views\LACK1\_Lack1DetailEa.cshtml" />
-    <Content Include="Views\MonthClosing\Index.cshtml" />
-    <Content Include="Views\MonthClosing\Create.cshtml" />
-    <Content Include="Views\MonthClosing\_Upload.cshtml" />
-    <Content Include="Views\MonthClosing\Edit.cshtml" />
-    <Content Include="Views\MonthClosing\Detail.cshtml" />
-    <Content Include="Views\MonthClosing\_Search.cshtml" />
-    <Content Include="Views\MonthClosing\_List.cshtml" />
-    <Content Include="Views\CK5\_CK5UploadCreateMarketReturn.cshtml" />
-    <Content Include="Views\CK5\_CK5UploadListMarketReturn.cshtml" />
-    <Content Include="Views\User\Edit.cshtml" />
-    <Content Include="Views\MasterDataApprovalSetting\Index.cshtml" />
-    <Content Include="Views\MasterDataApprovalSetting\Edit.cshtml" />
-    <Content Include="Views\MasterApproval\Index.cshtml" />
-    <Content Include="Views\MasterApproval\Detail.cshtml" />
-    <Content Include="Views\MasterDataApprovalSetting\Detail.cshtml" />
-    <Content Include="Views\PBCK1\QuotaMonitoring.cshtml" />
-    <Content Include="Views\PBCK1\QuotaMonitoringList.cshtml" />
+    <Content Include="Views\FinanceRatio\Index.cshtml" />
+    <Content Include="Views\FinanceRatio\Create.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\DateTimeYear.cshtml" />
+    <Content Include="Views\FinanceRatio\Detail.cshtml" />
+    <Content Include="Views\FinanceRatio\_Form.cshtml" />
+    <Content Include="Views\FinanceRatio\_ActionButtons.cshtml" />
+    <Content Include="Views\Shared\_WorkflowHistoryNewModule.cshtml" />
+    <Content Include="Views\FinanceRatio\Edit.cshtml" />
+    <Content Include="Views\Configuration\Create.cshtml" />
+    <Content Include="Views\Configuration\Detail.cshtml" />
+    <Content Include="Views\Configuration\Edit.cshtml" />
+    <Content Include="Views\Configuration\Index.cshtml" />
+    <Content Include="Views\FinanceRatio\Approve.cshtml" />
+    <Content Include="Views\FinanceRatio\_ReviseModal.cshtml" />
+    <Content Include="Views\Shared\_ConfirmDialog.cshtml" />
+    <Content Include="Views\Tariff\Index.cshtml" />
+    <Content Include="Views\Tariff\Create.cshtml" />
+    <Content Include="Views\Tariff\_ActionButtons.cshtml" />
+    <Content Include="Views\Tariff\_ReviseModal.cshtml" />
+    <Content Include="Views\Tariff\_Form.cshtml" />
+    <Content Include="Views\Tariff\Edit.cshtml" />
+    <Content Include="Views\Tariff\Detail.cshtml" />
+    <Content Include="Views\Tariff\Approve.cshtml" />
+    <Content Include="Views\NPPBKC\Create.cshtml" />
+    <Content Include="Views\Home\Index2.cshtml" />
+    <Content Include="Views\ExciseCredit\Index.cshtml" />
+    <Content Include="Views\ExciseCredit\_ExciseCreditTable.cshtml" />
+    <Content Include="Views\SupportDoc\Approve.cshtml" />
+    <Content Include="Views\SupportDoc\Create.cshtml" />
+    <Content Include="Views\SupportDoc\Detail.cshtml" />
+    <Content Include="Views\SupportDoc\Edit.cshtml" />
+    <Content Include="Views\SupportDoc\Index.cshtml" />
+    <Content Include="Views\SupportDoc\_ActionButton.cshtml" />
+    <Content Include="Views\SupportDoc\_ActionsButtons.cshtml" />
+    <Content Include="Views\SupportDoc\_Form.cshtml" />
+    <Content Include="Views\SupportDoc\_FormSupport.cshtml" />
+    <Content Include="Views\SupportDoc\_ReviseModal.cshtml" />
+    <Content Include="Views\ExciseCredit\_NewExciseForm.cshtml" />
+    <Content Include="Views\ExciseCredit\Create.cshtml" />
+    <Content Include="Views\ProductType\Approve.cshtml" />
+    <Content Include="Views\ProductType\Create.cshtml" />
+    <Content Include="Views\ProductType\_ActionButton.cshtml" />
+    <Content Include="Views\ProductType\_ReviseModal.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\Index.cshtml" />
+    <Content Include="Views\ExciseCredit\_SupportingDocuments.cshtml" />
+    <Content Include="Views\ExciseCredit\_CalculateNewExcise.cshtml" />
+    <Content Include="Views\ExciseCredit\_CreditRange.cshtml" />
+    <Content Include="Views\ExciseCredit\_Ck1List.cshtml" />
+    <Content Include="Views\ManufactureLicense\Index.cshtml" />
+    <Content Include="Views\MLChangeRequest\Create.cshtml" />
+    <Content Include="Views\MLChangeRequest\index.cshtml" />
+    <Content Include="Views\MLChangeRequest\_ChangeRequestActionButtons.cshtml" />
+    <Content Include="Views\MLChangeRequest\_ChangeRequestTable.cshtml" />
+    <Content Include="Views\MLChangeRequest\_NewChangeRequestForm.cshtml" />
+    <Content Include="Views\MLChangeRequest\_SupportingDocuments.cshtml" />
+    <Content Include="Views\MLInterviewRequest\Create.cshtml" />
+    <Content Include="Views\MLInterviewRequest\index.cshtml" />
+    <Content Include="Views\MLInterviewRequest\_DetailManufactureForm.cshtml" />
+    <Content Include="Views\MLInterviewRequest\_InterviewRequestListTable.cshtml" />
+    <Content Include="Views\MLInterviewRequest\_SupportingDocuments.cshtml" />
+    <Content Include="Views\MLLicenseRequest\Create.cshtml" />
+    <Content Include="Views\MLLicenseRequest\index.cshtml" />
+    <Content Include="Views\MLLicenseRequest\_LicenseRequestInterview.cshtml" />
+    <Content Include="Views\MLLicenseRequest\_LicenseRequestTable.cshtml" />
+    <Content Include="Views\ExciseCredit\SkepInput.cshtml" />
+    <Content Include="Views\ExciseCredit\Edit.cshtml" />
+    <Content Include="Views\ExciseCredit\_EditExciseForm.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\_ActionButtonBrand.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\_ActionButtonMap.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\_ActionButtonProduct.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\ApproveBrand.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\ApprovePenetapanSKEP.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\ApproveProduct.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\_ReviseModalBrand.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\_ReviseModalProduct.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\_ReviseModalSKEP.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\_SupportingDocumentBrand.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\_SupportingDocumentProduct.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\_SupportingDocumentSKEP.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\CompletedDocumentBrandRegistration.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\CompletedDocumentProduct.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\CompletedDocumentSKEP.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\CreateBrandRegistration.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\CreatePenetapanSKEP.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\CreateProductDevelopment.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\DetailBrand.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\DetailPenetapanSKEP.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\DetailProduct.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\EditBrand.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\EditPenetapanSKEP.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\EditProductDevelopment.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\IndexBrandRegistration.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\IndexPenetapanSKEP.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\IndexProductDevelopment.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\SummaryReportsBrandRegistration.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\SummaryReportsPenetapanSKEP.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\SummaryReportsProduct.cshtml" />
+    <Content Include="Views\MLLicenseRequest\Detail.cshtml" />
+    <Content Include="Views\MLLicenseRequest\Edit.cshtml" />
+    <Content Include="Views\MLLicenseRequest\_SupportingDocuments.cshtml" />
+    <Content Include="Views\ExciseCredit\FinancialRatioReport.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\_BrandListItem.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\_ProductListItem.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\_SKEPListItem.cshtml" />
+    <Content Include="Views\MLChangeRequest\SummaryReport.cshtml" />
+    <Content Include="Views\MLChangeRequest\_ChangeRequestTableSummaryReport.cshtml" />
+    <Content Include="Views\MLInterviewRequest\_ReviseModal.cshtml" />
+    <Content Include="Views\MLLicenseRequest\_PartialEditForm.cshtml" />
+    <Content Include="Views\ExciseCredit\_ReviseModal.cshtml" />
+    <Content Include="Scripts\tinymce\langs\readme.md" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.eot" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.ttf" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.woff" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.eot" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.ttf" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.woff" />
+    <Content Include="Views\ExciseCredit\Approve.cshtml" />
+    <Content Include="Views\ExciseCredit\_DetailExciseForm.cshtml" />
+    <Content Include="Views\ExciseCredit\Detail.cshtml" />
+    <Content Include="Views\MLLicenseRequest\_PrintLayout.cshtml" />
+    <Content Include="Views\MLInterviewRequest\SummaryReport.cshtml" />
+    <Content Include="Views\MLInterviewRequest\_InterviewRequestListTableSummaryReport.cshtml" />
+    <Content Include="Views\MLChangeRequest\_PrintLayout.cshtml" />
+    <Content Include="Views\MLLicenseRequest\SummaryReport.cshtml" />
+    <Content Include="Views\MLLicenseRequest\_LicenseRequestTableSummaryReport.cshtml" />
+    <Content Include="Views\ExciseCredit\_SkepForm.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\_DetailModalProduct.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\_PDSummaryReportTable.cshtml" />
+    <Content Include="Views\BRBrandRegistration\ApproveBrand.cshtml" />
+    <Content Include="Views\BRBrandRegistration\ApprovePenetapanSKEP.cshtml" />
+    <Content Include="Views\BRBrandRegistration\ApproveProduct.cshtml" />
+    <Content Include="Views\BRBrandRegistration\CompletedDocumentBrandRegistration.cshtml" />
+    <Content Include="Views\BRBrandRegistration\CompletedDocumentProduct.cshtml" />
+    <Content Include="Views\BRBrandRegistration\CompletedDocumentSKEP.cshtml" />
+    <Content Include="Views\BRBrandRegistration\CreateBrandRegistration.cshtml" />
+    <Content Include="Views\BRBrandRegistration\CreatePenetapanSKEP.cshtml" />
+    <Content Include="Views\BRBrandRegistration\CreateProductDevelopment.cshtml" />
+    <Content Include="Views\BRBrandRegistration\DetailBrand.cshtml" />
+    <Content Include="Views\BRBrandRegistration\DetailPenetapanSKEP.cshtml" />
+    <Content Include="Views\BRBrandRegistration\DetailProduct.cshtml" />
+    <Content Include="Views\BRBrandRegistration\EditBrand.cshtml" />
+    <Content Include="Views\BRBrandRegistration\EditPenetapanSKEP.cshtml" />
+    <Content Include="Views\BRBrandRegistration\EditProductDevelopment.cshtml" />
+    <Content Include="Views\BRBrandRegistration\Index.cshtml" />
+    <Content Include="Views\BRBrandRegistration\IndexBrandRegistration.cshtml" />
+    <Content Include="Views\BRBrandRegistration\IndexPenetapanSKEP.cshtml" />
+    <Content Include="Views\BRBrandRegistration\IndexProductDevelopment.cshtml" />
+    <Content Include="Views\BRBrandRegistration\SummaryReportsBrandRegistration.cshtml" />
+    <Content Include="Views\BRBrandRegistration\SummaryReportsPenetapanSKEP.cshtml" />
+    <Content Include="Views\BRBrandRegistration\SummaryReportsProduct.cshtml" />
+    <Content Include="Views\BRBrandRegistration\_ActionButtonBrand.cshtml" />
+    <Content Include="Views\BRBrandRegistration\_ActionButtonMap.cshtml" />
+    <Content Include="Views\BRBrandRegistration\_ActionButtonProduct.cshtml" />
+    <Content Include="Views\BRBrandRegistration\_BrandListItem.cshtml" />
+    <Content Include="Views\BRBrandRegistration\_ProductListItem.cshtml" />
+    <Content Include="Views\BRBrandRegistration\_ReviseModalBrand.cshtml" />
+    <Content Include="Views\BRBrandRegistration\_ReviseModalProduct.cshtml" />
+    <Content Include="Views\BRBrandRegistration\_ReviseModalSKEP.cshtml" />
+    <Content Include="Views\BRBrandRegistration\_SupportingDocumentBrand.cshtml" />
+    <Content Include="Views\BRBrandRegistration\_SupportingDocumentProduct.cshtml" />
+    <Content Include="Views\BRBrandRegistration\_SupportingDocuments.cshtml" />
+    <Content Include="Views\BRBrandRegistration\_SupportingDocumentSKEP.cshtml" />
+    <Content Include="Views\BRPenetapanSkep\Create.cshtml" />
+    <Content Include="Views\BRPenetapanSkep\Index.cshtml" />
+    <Content Include="Views\BRPenetapanSkep\SummaryReportsPenetapanSKEP.cshtml" />
+    <Content Include="Views\BRPenetapanSkep\_ActionButtonMap.cshtml" />
+    <Content Include="Views\BRPenetapanSkep\_SKEPListItem.cshtml" />
+    <Content Include="Views\BRPenetapanSkep\_SupportingDocument.cshtml" />
+    <Content Include="Views\BRBrandRegistration\_BrandRegistrationTableSummaryReport.cshtml" />
+    <Content Include="Views\BRBrandRegistration\_RequestForm.cshtml" />
+    <Content Include="Views\BRPenetapanSkep\SummaryReports.cshtml" />
+    <Content Include="Views\ExciseCredit\_CalculateAdjustmentExcise.cshtml" />
+    <Content Include="Views\ExciseCredit\_SkepDetail.cshtml" />
+    <Content Include="Views\ExciseCredit\SkepDetail.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\_PDListTable.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\_PDListTableOpen.cshtml" />
+    <Content Include="Views\ExciseCredit\SkepApprove.cshtml" />
+    <Content Include="Views\ExciseCredit\_Printout.cshtml" />
+    <Content Include="Views\ExciseCredit\_PrintoutItem.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\_DetailModalLock.cshtml" />
+    <Content Include="Views\BRPenetapanSkep\_ReviseModal.cshtml" />
+    <Content Include="Views\BRPenetapanSkep\_PenetapanSKEPListTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1384,6 +1825,10 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EMS.CustomService\Sampoerna.EMS.CustomService.csproj">
+      <Project>{2844b4e7-0cfc-4470-acd8-b6fd848f6198}</Project>
+      <Name>Sampoerna.EMS.CustomService</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sampoerna.EMS.AutoMapperExtensions\Sampoerna.EMS.AutoMapperExtensions.csproj">
       <Project>{3cddfd06-1254-4bd5-82ed-283f26c38eea}</Project>
       <Name>Sampoerna.EMS.AutoMapperExtensions</Name>
@@ -1522,6 +1967,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -1536,11 +1984,13 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>57497</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://wwx.hms-ems-dev.voxteneo.com</IISUrl>
+          <IISUrl>http://localhost</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>http://localhost/</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
@@ -1551,12 +2001,12 @@
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+  <!-- Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-  </Target>
+  </Target -->
   <Import Project="..\packages\AutoMapper.3.2.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.2.1\tools\AutoMapper.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

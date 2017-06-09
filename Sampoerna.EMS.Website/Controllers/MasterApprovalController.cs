@@ -94,6 +94,8 @@ namespace Sampoerna.EMS.Website.Controllers
             });
             model.WorkflowHistory.AddRange(Mapper.Map<List<WorkflowHistoryViewModel>>(workflowHistory));
             model.Detail = Mapper.Map<MasterDataApprovalDetailViewModel>(data);
+            var detailObject = _masterDataAprovalBLL.GetObjectDetails(data.FORM_ID, data.PAGE_ID);
+            model.Detail.DetailObject = Mapper.Map<List<MasterDataApprovalDetail>>(detailObject);
             model.IsMasterApprover = _userBLL.IsUserMasterApprover(CurrentUser.USER_ID);
             return View(model);
         }

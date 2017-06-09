@@ -1,0 +1,67 @@
+﻿@model Sampoerna.EMS.Website.Models.ExciseCredit.ExciseCreditFormModel
+<style>
+    .watermark {
+        opacity: 0.1;
+        color: BLACK;
+        position: fixed;
+        top: auto;
+        left: 40%;
+        top: 60%;
+        font-size: 50pt;
+        z-index: 1;
+        /* Safari */
+        -webkit-transform: rotate(-45deg);
+        /* Firefox */
+        -moz-transform: rotate(-45deg);
+        /* IE */
+        -ms-transform: rotate(-45deg);
+        /* Opera */
+        -o-transform: rotate(-45deg);
+        /* Internet Explorer */
+        filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+    }
+</style>
+<div role="tabpanel" class="tab-pane" id="profile">
+    <div class="row">
+        <div class="panel-group" id="accordionPrintout" role="tablist" aria-multiselectable="true">
+            @foreach (var item in Model.Printouts)
+            {
+                Html.RenderPartial("_PrintoutItem", item);
+            }
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function renderTemplate(id, text) {
+        $("#" + id).html(text);
+    }
+
+    function mapResetAction() {
+
+    }
+
+    function resetLayout(key) {
+        var url = '@Url.Action("GetDefaultPrintoutLayout", "ExciseCredit")';
+        var param = {
+            key: key
+        };
+        console.log("reset");
+        $("#customloader").show();
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: JSON.stringify(param),
+            contentType: 'application/json; charset=utf-8',
+        })
+        .success(function (partialResult) {
+            $("#customloader").hide();
+            layoutContainer.val(partialResult);
+
+        })
+        .error(function (error) {
+            $("#customloader").hide();
+            showErrorDialog("Cannot load default template!");
+        });
+    }
+
+</script>

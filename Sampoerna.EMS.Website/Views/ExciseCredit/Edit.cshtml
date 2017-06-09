@@ -1,0 +1,348 @@
+﻿
+@model Sampoerna.EMS.Website.Models.ExciseCredit.ExciseCreditFormModel
+@{
+    ViewBag.Title = "Edit";
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "ExciseEditForm" }))
+{
+    @Html.AntiForgeryToken()
+
+}
+
+@using (Html.BeginForm("Submit", "ExciseCredit", FormMethod.Post, new { @id = "ExciseSubmitForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ViewModel.Id)
+
+}
+@using (Html.BeginForm("Cancel", "ExciseCredit", FormMethod.Post, new { @id = "ExciseCancelForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ViewModel.Id)
+
+}
+@Html.HiddenFor(model => model.ViewModel.DocumentNumber)
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Excise Credit Form</h3>
+            <label class="status">@Model.ViewModel.ApprovalStatus.Value</label>
+            <label class="status" id="docNumber">@Model.ViewModel.DocumentNumber</label>
+            <div class="action-button">
+                @if (Model.IsNotViewer && Model.ViewModel.IsCreator)
+                {
+                    
+                    <input type="button" class="btn btn-blue" value="Save" id="SaveButton" />
+                    if (Model.ViewModel.IsWaitingSkepApproval)
+                    {
+                        <input type="button" class="btn btn-blue" value="Submit SKEP" id="SubmitSkepButton" />
+                    }
+                    else
+                    {
+                        <input type="button" class="btn btn-blue" value="Submit" id="SubmitButton" />
+                        <input type="button" class="btn btn-blue" value="Cancel Request" id="CancelButton" />
+                    }
+                }
+
+                @*<input type="button" class="btn btn-grey" value="Print Preview" />*@
+                <a href="@Url.Action("Index", "ExciseCredit")" class="btn btn-grey">Back</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+
+            <div role="tabpanel">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" id="home-tab" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Information</a></li>
+                    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Print Out</a></li>
+                    <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    @Html.Partial("_EditExciseForm", Model)
+                    @Html.Partial("_Printout", Model)
+                    <div role="tabpanel" class="tab-pane" id="changes">
+                        <div class="table-container">
+                            @Html.Partial("_ChangesHistoryTable", Model)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="ck1List" style="display:none;"></div>
+<div id="errModal" class="modal ems-modal fade bs-example-modal-sm danger" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>*@
+                <h4 class="modal-title" id="errModalTitle"></h4>
+            </div>
+            <div class="modal-body">
+                <p id="errModalContent"></p>
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/UploadExcel.js"></script>
+    @*<script src="~/Scripts/autoNumeric.min.js"></script>*@
+    <script src="~/Scripts/excise-credit/terbilang.js"></script>
+    <script src="~/Scripts/excise-credit/terbilang.min.js"></script>
+    <script src="~/Scripts/excise-credit/date.js"></script>
+    <script src="~/Scripts/excise-credit/main.js"></script>
+    <script type="text/javascript">
+        var formID = '@Model.ViewModel.Id';
+        var formType = '@Convert.ToInt64(Sampoerna.EMS.Core.Enums.FormList.ExciseRequest)';
+        var otherDocMap = {};
+        var otherDocMapName = {};
+        var otherDocsName = [];
+        var fileNameInput = $("#browseOtherDocFileName");
+        var editUrl = '@Url.Action("Edit", "ExciseCredit")';
+        var homeUrl = '@Url.Action("Index", "ExciseCredit")';
+        $(document).ready(function () {
+
+            var amount = Number($("#ViewModel_Amount").val().split(',').join('.'));
+            var _terbilang = terbilang(amount.toString()) + " Rupiah";
+            $("#ExciseCreditAlphaText").html(_terbilang);
+            disableMonthNavigation();
+            supportingDocs = {};
+            existingOtherDocs = {};
+            newOtherDocs = {};
+            newOtherDocsName = {};
+
+            handleBrowseEvent("browseOtherDoc", "browseOtherDocFile", "browseOtherDocText");
+            $("#addOtherDocBtn").on("click", _addOtherDoc);
+            mapBrowseAction();
+            loadOtherDocs();
+
+            $("#SaveButton").on('click', edit);
+            $("#SubmitButton").on('click', function(){
+                //alert("Submit");
+                $("#ExciseSubmitForm").submit();
+                $("#SubmitButton").prop('disabled', true);
+            });
+            $("#CancelButton").on('click', function(){
+                //alert("Submit");
+                $("#ExciseCancelForm").submit();
+                $("#CancelButton").prop('disabled', true);
+            });
+
+        });
+
+        function mapBrowseAction() {
+            console.log("Map additional action");
+            @foreach (var doc in Model.SupportingDocuments)
+            {
+                <text>
+        handleBrowseEvent("supportDoc" + @doc.Id, "supportDocFile" + @doc.Id, "supportDocText" + @doc.Id);
+                $("#supportDocFile" + @doc.Id).change(function(){
+                    var input =document.getElementById("supportDocFile" + @doc.Id);
+                    if (!input) {
+                        showErrorDialog("Um, couldn't find the fileinput element.");
+                    }
+                    else if (!input.files) {
+                        showErrorDialog("This browser doesn't seem to support the `files` property of file inputs.");
+                    }
+                    else if (!input.files[0]) {
+                        showErrorDialog("Please select a file");
+                    }
+                    else {
+                        var file = input.files[0];
+                        if(!supportingDocs) {
+                            supportingDocs = {};
+                        }
+                        supportingDocs[@doc.Id] = file;
+                        console.log(supportingDocs);
+
+                    }
+                });
+
+                </text>
+            }
+        }
+        function loadOtherDocs() {
+
+            $("#customloader").show();
+            $.ajax({
+                url: '@Url.Action("GetOtherDocuments")',
+                type: 'POST',
+                data: JSON.stringify({
+                    type: Number(formType),
+                    id: formID
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    $("#customloader").hide();
+                    if(response && response.length > 0) {
+                        for(var i = 0; i < response.length; i++){
+                            otherDocs[i] = response[i];
+                            otherDocsName[i] = response[i].FileName;
+                            var parts = response[i].PathURL.split('/');
+                            otherDocs[i].name = parts[parts.length - 1];
+                            otherDocs[i].url = response[i].PathURL;
+                            existingOtherDocs[otherDocs[i].FileID] = {
+                                active: true,
+                                index: i
+                            };
+                        }
+                        console.log("Other docs: ");
+                        console.log(otherDocs);
+                        console.log("Existing Other docs: ");
+                        console.log(existingOtherDocs);
+                        _renderFileList();
+
+                    }
+                },
+                error: function () {
+                    $("#customloader").hide();
+                }
+            });
+        }
+        function _addOtherDoc() {
+            var input = document.getElementById('browseOtherDocFile');
+            //console.log(input);
+            if (!input) {
+                showErrorDialog("Couldn't find the fileinput element.");
+            }
+            else if (!input.files) {
+                showErrorDialog("This browser doesn't seem to support the `files` property of file inputs.");
+            }
+            else if (!input.files[0]) {
+                showErrorDialog("Please select a file before clicking 'Add'");
+            }
+            else {
+                var file = input.files[0];
+                var sizeMB = fileUploadLimitElm.val();
+                //console.log("Size Limit: " + sizeMB);
+                var allowedFilesize = Number(sizeMB) * 1024 * 1024;
+                if (file.size > allowedFilesize) {
+                    showErrorDialog("File size is larger than allowed size (" + sizeMB + " MB)");
+                    return;
+                }
+                _addToList(file, fileNameInput.val());
+            }
+        }
+
+        function _removeFromList(index) {
+            if (otherDocs.length > index) {
+                var target = otherDocs[index];
+                if(target && target.FileID) {
+                    existingOtherDocs[target.FileID].active = false;
+                }
+                shift(index);
+                console.log("Other docs map: ");
+                console.log(otherDocMap);
+                console.log(existingOtherDocs);
+                otherDocs.splice(index, 1);
+                otherDocsName.splice(index, 1);
+                _renderFileList();
+
+            }
+        }
+
+
+
+        function shift(start) {
+            var cloneObj = $.extend(true, {}, otherDocMap);
+            var cloneObjName = $.extend(true, {}, otherDocMapName);
+            // delete otherDocMap[start];
+            var count = 0;
+            var first = undefined;
+            for (var key in cloneObj) {
+                if(!first) {
+                    first = parseInt(key);
+                }
+                count++;
+                if (cloneObj.hasOwnProperty(key)) {
+                    //console.log("Key: " + key);
+                    if(key >= start && start >= 0) {
+                        //console.log("Shifting " + key);
+                        if(key > 0) {
+                            otherDocMap[key - 1] = cloneObj[key];
+                            otherDocMapName[key - 1] = cloneObjName[key];
+                        }
+
+                    }
+                }
+            }
+            var idx = (first + count - 1);
+            if(idx >= 0) {
+                delete otherDocMap[idx];
+                delete otherDocMapName[idx];
+            }
+
+            //console.log("First: " + first);
+            //console.log("Count" + count);
+
+        }
+
+        var newOtherDocIdx = 0;
+
+        function _addToList(file, name) {
+            var idx = otherDocs.indexOf(file);
+            var updated = true;
+            for (var i = 0; i < otherDocs.length; i++) {
+                if (file.name == otherDocs[i].name) {
+                    updated = false;
+                    break;
+                }
+            }
+            if (idx < 0 && updated) {
+                otherDocs.push(file);
+                otherDocsName.push(name);
+                newOtherDocs[newOtherDocIdx] = file;
+                newOtherDocsName[newOtherDocIdx] = name;
+                otherDocMap[otherDocs.length - 1] = newOtherDocs[newOtherDocIdx];
+                otherDocMapName[otherDocs.length - 1] = newOtherDocsName[newOtherDocIdx];
+                newOtherDocIdx++;
+                console.log("New other docs: ");
+                console.log(otherDocMap);
+                _renderFileList();
+            }
+        }
+
+        function _renderFileList() {
+            console.log("Other Docs Length: " + otherDocs.length);
+            var container = $("#otherDocsBody");
+            var content = '';
+            if (!otherDocs || otherDocs.length <= 0) {
+                content += '<tr id="noOtherFileMsg">' +
+                            '<td colspan="4"><div class="alert alert-info">No Addional Documents</div>' + '</td></tr>';
+            }
+            for (var i = 0; i < otherDocs.length; i++) {
+                var url = undefined;
+                var linkOpen = "";
+                var linkClose = "";
+                if (otherDocs[i].url) {
+                    url = '@string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"))';
+                    url = url + otherDocs[i].url.replace("~/", "");
+                    linkOpen = '<a href="' + url + '" title="' + otherDocs[i].name  + '" target="_blank"><i class="fa fa-file-o"></i> ';
+                    linkClose = '</a>';
+                }
+                content +=
+                    '<tr>' +
+                    '<td>' + (i + 1) + '</td>' +
+                    '<td>' + linkOpen + otherDocs[i].name + linkClose + '</td>' +
+                    '<td>' + otherDocsName[i] + '</td>' +
+                    '<td><button class="btn btn-danger" onclick="_removeFromList(' + i + ')">Remove</button></td>' +
+                    '</tr>';
+            }
+            container.html(content);
+        }
+
+    </script>
+}

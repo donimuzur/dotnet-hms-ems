@@ -1,0 +1,95 @@
+﻿@model IEnumerable<Sampoerna.EMS.Website.Models.ManufacturingLicense.LicenseRequestSupportingDocModel>
+
+@{
+    Layout = null;
+    var index = 0;
+}
+
+<style>
+.file {
+  visibility: hidden;
+  position: absolute;
+}
+</style>
+@{
+    string supportdoc_list = "";
+    int sdidx = 0;
+    string[] sdnumerator = new string[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" };
+
+}
+
+@foreach (var doc in Model)
+{
+    <div class="row">
+        <div class="form-group">
+            <div class="col-md-4">
+                <span>@doc.Name <i style="color:#ff5555;">*</i></span> 
+                @{ 
+                    supportdoc_list += "<tr><td>" + sdnumerator[sdidx] + ".</td><td>" + doc.Name + "</td></tr>";
+                    sdidx++;
+                }               
+            </div>
+            <div class="col-md-8">
+                <div class="form-group div_file">
+                    <input type="hidden" name="licenseRequestSupportingDoc[@index].Id" value="@doc.Id" />
+                    <input type="file" name="licenseRequestSupportingDoc[@index].File" class="form-control file txt_file supporting_document" id="txt_supportdoc_file@(doc.Id)" accept="application/pdf" />
+                    <div class="col-md-12">
+                        <div class="col-md-10 div_supportdoc_name" @if (!doc.IsBrowseFileEnable) { <text> style="display:none;" </text> } >
+                            <input type="text" class="form-control txt_file_name" disabled placeholder="Select file" id="txt_supportdoc_name@(doc.Id)">
+                        </div>
+                        @*@if (doc.Path != "" && doc.Path != null)
+                        {
+                            var filename    = doc.Path.Replace("/files_upload/", "");
+                            var arrfileext  = filename.Split('.');
+                            var countext    = arrfileext.Count();
+                            var fileext     = "";
+
+                            if (countext > 0)
+                            {
+                                fileext = arrfileext[countext - 1];
+                            }
+                            filename = filename.Replace("=MLR=", "/");
+                            var arrfilename = filename.Split('/');
+                            if (arrfilename.Count() > 0)
+                            {
+                                filename = arrfilename[0] + "." + fileext;
+                            }
+                            <div class="col-md-12 div_file_href">
+                                <i class="fa fa-file"></i>
+                                <a href="@doc.Path" download>@filename</a>
+                                @if (!doc.IsReadonly)
+                                {
+                                <button type="button" class="btn btn-blue pull-right btn_remove_supportdoc" data-fileuploadid="@doc.FileUploadId">Delete</button>
+                                }
+                            </div>
+                        }*@
+                        @if (doc.Path != "" && doc.Path != null)
+                        {
+                            <div class="col-md-12 div_file_href">
+                                <i class="fa fa-file"></i>
+                                <a href="@doc.Path" download>@doc.FileName</a>
+                                @if (!doc.IsReadonly)
+                                {
+                                    <button type="button" class="btn btn-blue pull-right btn_remove_supportdoc" data-fileuploadid="@doc.FileUploadId">Delete</button>
+                                }
+                            </div>
+                        }
+                        <div class="col-md-2 span_browsesupportdoc" @if (!doc.IsBrowseFileEnable || doc.IsReadonly) { <text> style="display:none;" </text> }>
+                           
+                                <button class="browse btn btn-blue btn_browsesupportdoc_file" data-index="@doc.Id" type="button">Browse</button>
+                                                   
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    index++;
+}
+<input type="hidden" id="supportdoc_list" value="@supportdoc_list" />
+<input type="hidden" id="supportdoc_index" value="@index" />
+
+@if (Model == null || Model.Count() <= 0)
+{
+    <div class="alert alert-info">No Supporting Documents</div>
+}

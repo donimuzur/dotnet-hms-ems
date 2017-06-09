@@ -1,0 +1,743 @@
+﻿@model Sampoerna.EMS.Website.Models.ManufacturingLicense.LicenseRequestModel
+
+<style>
+    fieldset {
+        margin: 10px;
+        border: 1px solid silver;
+        padding: 15px;
+        border-radius: 4px;
+    }
+
+    legend {
+        padding: 2px;
+        font-size: 16px !important;
+    } 
+
+    .currency {
+        padding-left: 12px;
+    }
+
+    .currency-symbol {
+        position: absolute;
+        padding: 2px 5px;
+    }
+    #div-print-layout table{
+        background-color:#ffffff;
+    }
+</style>
+
+@{
+    System.Globalization.CultureInfo CI = new System.Globalization.CultureInfo("en-US");
+    var StrRequestDate = Model.RequestDate.ToString("dd MMM yyyy", CI);
+    var DecreeDate = Model.DecreeDate ?? DateTime.Now;
+    var StrDecreeDate = DecreeDate.ToString("dd MMM yyyy", CI);
+
+    ViewBag.Title = "Create";
+}
+
+@using (Html.BeginForm("Save", "MLLicenseRequest", FormMethod.Post, new { @id = "SaveLRequestForms", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    //////////// INIT START ////////////
+    @Html.HiddenFor(model => model.MnfRequestID, new { @id = "txt_hd_id" })
+    @Html.HiddenFor(model => model.MnfFormNum)
+    @Html.HiddenFor(model => model.MnfRequestID , new { @id = "txt_req_id" })
+    @Html.HiddenFor(model => model.InterviewFormNum, new { @id = "txt_form_num" })
+    @Html.HiddenFor(model => model.IsFormReadOnly, new { @id = "txt_isformreadonly" })
+    @Html.HiddenFor(model => model.File_Size, new { @id = "txt_hd_filesize" })
+    @Html.HiddenFor(model => model.Status)
+    <input type="hidden" id="hd_toggle_otherdoc" />
+    //////////// INIT END /////////////
+
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>License Request Form</h3>
+                <label class="status">@Model.Status_Value</label>
+                <label class="status" id="div_form_number">@Model.MnfFormNum</label>
+                <div class="action-button">
+                    <input type="button" id="btnSave" class="btn btn-blue" value="Save" />
+                    <a href="@Url.Action("Index", "MLLicenseRequest")" class="btn btn-grey">Back</a>
+                   </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="alert alert-danger" style="padding-left: 30px; display:none;" id="div_alert"></div>
+                <div class="white-wrapper">
+                    
+                        <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" id="home-tab" class="active"><a href="#info" aria-controls="home" role="tab" data-toggle="tab">Information</a></li>
+                    @*<li role="presentation"><a href="#print" id="btn-tab-print-layout" aria-controls="print" role="tab" data-toggle="tab">Print Out</a></li>
+                    <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab" id="btn-tab-changeslog">Changes Log</a></li>*@
+                </ul>
+
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="info">
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingOne">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            DETAIL LICENSE REQUEST
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                    <div class="panel-body">
+                                        <div class="form-excise" role="form">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Request Date<span class="red">*</span></label>
+                                                        <div class="col-md-8">
+                                                            <div class="input-group date">
+                                                                @Html.TextBoxFor(model=>model.RequestDate, StrRequestDate, new { @id="dd_LRequestDate", @class = "form-control", @data_fieldname = "Request Date", @required = "required" })
+                                                                <span class="input-group-addon">
+                                                                    <i class="fa fa-calendar"></i>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">BA No</label>
+                                                        <div class="col-md-8">
+                                                            <a href="#" id="BANO_link" target="_blank"><span id="label_BANO" class="form-control row-border" style="border:0px;box-shadow:none">BA NO</span></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Interview Number<span class="red">*</span></label>
+                                                        <div class="col-md-8">
+                                                            @Html.DropDownListFor(model => model.InterviewId, Model.FormNumList, "Select", new { @class = "form-control", @id="dd_IRformnum" , @data_fieldname = "Interview Number", @required = "required" })
+                                                            <input type="hidden" id="txt_hd_interviewNumber" value="0" name="InterviewFormNum" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Company Type</label>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBoxFor(model => model.CompType, Model.CompType, new { @readonly = "readonly", @class = "form-control" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingTwo">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                            RESPONSIBLE PERSON & AUTHORIZATION OWNER
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                                    <div class="panel-body">
+                                        <div class="form-excise" role="form">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Name</label>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBox("POAName",Model.POAName, new { @readonly = "readonly", @class = "form-control" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">KPPBC</label>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBox("KPPBC", Model.KPPBC, new { @readonly = "readonly", @class = "form-control" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Position</label>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBox("Position", Model.POAPosition, new { @readonly = "readonly", @class = "form-control" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">KPPBC Address</label>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBox("KppbcAddress", Model.KppbcAddress , new { @readonly = "readonly", @class = "form-control" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Address</label>
+                                                        <div class="col-md-8">
+                                                            @Html.TextArea("POAAddress", Model.POAAddress , new { @readonly = "readonly", @class = "form-control", @rows = "6" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="row">
+                                                        <label class="col-md-4">Company</label>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBox("Company", Model.Company , new { @readonly = "readonly", @class = "form-control" })
+                                                            @Html.HiddenFor(model=>model.CompanyId , new { @id = "CompanyId"})
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <label class="col-md-4">NPWP</label>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBox("Npwp", Model.Npwp , new { @readonly = "readonly", @class = "form-control" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <label class="col-md-4">Company Address</label>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBox("CompanyAddress", Model.CompanyAddress , new { @readonly = "readonly", @class = "form-control" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingThree">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+                                            INTERVIEW & LOCATION VISIT
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="div_interview_detail">
+                                    @{ var Tmpindex = 0; }
+                                    @foreach (var irdetail in Model.IRDetails)
+                                    {
+                                        irdetail.Index = Tmpindex;
+                                        Tmpindex++;
+                                        @Html.Partial("_LicenseRequestInterview", irdetail)
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingFour">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                                            PRODUCTION TYPE
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFour">
+                                    <div class="panel-body">
+                                        <div class="form-excise" role="form">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <label class="col-md-3">Production Type<span class="red">*</span></label>
+                                                        <div class="col-md-9">
+                                                            @foreach (var prodtype in Model.PCDetails)
+                                                            {
+                                                                <div class="col-md-2">
+                                                                    <input id="PCDetails[@prodtype.ptIndex.ToString()].ProdCode)" type="checkbox" class="prodtype_list" name="ProdCode" value="@prodtype.ProdCode" @prodtype.IsChecked>&nbsp;@prodtype.ProdAlias
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <label class="col-md-3">Other Production Type</label>
+                                                        <div class="col-md-7">
+                                                            <input type="text" id="TxtOtherProdCode" class="form-control" />
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <button class="btn btn-blue full" type="button" id="other-prodtype-add-btn">Add</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <div class="col-md-1"></div>
+                                                        <div class="col-md-10">
+                                                            <table id="otherprodtype" class="display table table-bordered table-striped" cellspacing="0">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th class="toggle-row" width="5%">#</th>
+                                                                        <th width="80%">Other Production Type</th>
+                                                                        <th width="15%">Actions</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody></tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="col-md-1"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingFour">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                                            ATTACHMENT DOCUMENT
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFour">
+                                    <div class="panel-body">
+                                        <div class="form-excise" role="form">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>Supporting Document</label>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <div class="col-md-12" id="div_body_supportingdoc">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="clearfix"></div>
+                                                <div class="col-md-12">
+                                                    <label>Additional Documents</label>
+                                                </div>
+                                                <div class="col-md-12" @if (Model.IsFormReadOnly) { <text> style="display:none;" </text>    }>                                                    
+                                                    <div class="form-group div_file div_file_otherdoc">                                                        
+                                                        <div class="col-md-4">
+                                                            <input type="text" id="txt_otherfile_name" class="form-control" placeholder="File Name">
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <input type="text" id="txt_otherdocfile_name" class="form-control txt_file_name" readonly placeholder="Select file">
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <button id="btn_browseOtherDoc_file" class="btn btn-blue btn_browse_file " type="button">Browse</button>
+                                                            <button class="btn btn-blue" type="button" id="btn_add_otherdoc">Add</button>
+                                                        </div>                                                        
+                                                    </div>                                                    
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <table class="display table table-bordered table-striped" cellspacing="0" id="OtherDocs">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="toggle-row" width="5%">#</th>
+                                                                <th width="40%">File</th>
+                                                                <th width="40%">File Name</th>
+                                                                @if (!Model.IsFormReadOnly)
+                                                                {
+                                                                    <th width="15%">Actions</th>
+                                                                }
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="div_otherDocsBody">
+                                                            @{var otherIndex = 0;
+                                                            }
+                                                            @foreach (var _file in Model.LicenseRequestFileOtherList)
+                                                            {
+                                                                otherIndex++;                                                                
+                                                                <tr>
+                                                                    <td class="td_filename_number">@otherIndex</td>
+                                                                    <td class="td_filename" data-filename="@_file.Name" data-fileuploadid="@_file.FileId">
+                                                                        <i class="fa fa-file"></i>&nbsp;<a href="@_file.Path" download>@_file.Name</a>
+                                                                    </td>
+                                                                    <td>
+                                                                        @_file.FileName
+                                                                    </td>
+                                                                    @if (!Model.IsFormReadOnly)
+                                                                    {
+                                                                    <td><button type="button" class="btn btn-blue btn_remove_otherdoc" data-fileuploadid="@_file.FileId">Delete</button></td>
+                                                                    }
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @if (!Model.Status.ToLower().Contains("draft") && !Model.Status.ToLower().Equals("waiting_poa_approval"))
+                        {
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingFour">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                                                FILL SKEP SECTION
+                                                <i class="fa fa-caret-down"></i>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFour">
+                                        <div class="panel-body">
+                                            <div class="form-excise" role="form">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Government Status<span class="red">*</span></label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBox("BANum", Model.MnfFormNum, new { @disabled = "disabled", @class = "form-control" })
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <label class="col-md-4">Decree Number<span class="red">*</span></label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBox("BANum", Model.MnfFormNum, new { @disabled = "disabled", @class = "form-control" })
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <label class="col-md-4">Decree Date<span class="red">*</span></label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBox("BANum", Model.MnfFormNum, new { @disabled = "disabled", @class = "form-control" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">Notes<span class="red">*</span></label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextArea("BAInterviewNo", Model.MnfFormNum, new { @disabled = "disabled", @class = "form-control", @rows = "6" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">NPPBKC<span class="red">*</span></label>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBox("Position", Model.MnfFormNum, new { @disabled = "disabled", @class = "form-control" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-4">SKEP Attachment<span class="red">*</span></label>
+                                                            <div class="col-md-8">
+                                                                <div class="col-md-10">
+                                                                    <input id="browseOtherDocFile" type="file" name="otherDocs[]" class="file" accept="application/pdf">
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <button class="btn btn-blue" type="button" id="addOtherDocBtn">Add</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-8">
+                                                        <div class="row">
+                                                            <div class="col-md-8">
+                                                                <input type="text" id="browseOtherDocText" class="form-control" disabled placeholder="Select file">
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <button id="browseOtherDoc" class="browse btn btn-blue" type="button">Browse</button>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <button id="browseOtherDoc" class="browse btn btn-blue" type="button">Delete</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingFour">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                                            WORKFLOW HISTORY
+                                            <i class="fa fa-caret-down"></i>
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseFour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingFour">
+                                    <div class="panel-body">
+                                        <div class="form-excise" role="form">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <div class="col-md-1"></div>
+                                                        <div class="col-md-12">
+                                                            <table class="display table table-bordered table-striped" cellspacing="0" id="OtherDocs">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th class="toggle-row" width="5%">#</th>
+                                                                        <th width="10%">No</th>
+                                                                        <th width="20%">Date</th>
+                                                                        <th width="40%">Note</th>
+                                                                        <th width="30%">POA Name</th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>*</td>
+                                                                        <td></td>
+                                                                        <td></td>
+                                                                        <td></td>
+                                                                        <td></td>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody id="otherDocsBody"></tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="col-md-1"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>                    
+                    <div role="tabpanel" class="tab-pane" id="print">
+                        <button type="button" class="btn btn-blue pull-right" id="btn_download_printout">Download Printout</button>
+                        <button type="button" id="btn_show_printouteditor" class="btn btn-blue pull-right" data-toggle="modal" data-target=".modal_editprintout">Edit Layout</button>
+                        <div class="col-lg-12 table-container">
+                            <div class="white-wrapper">
+                                <div class="row">
+                                    <div class="table-container" id="div-print-layout"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="changes">
+                        <div class="table-container contenttable changelog" id="divChangeLog">
+                        </div>
+                    </div>
+                </div>
+
+            
+                    </div>
+                </div>
+            </div>
+        </div>
+                }
+
+<div class="modal ems-modal fade modal_editprintout" tabindex="-1" role="dialog" aria-labelledby="EditorModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title"><label>Edit Print Layout</label></h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <button type="button" class="btn btn-blue pull-right" data-toggle="modal" data-target=".restoredefault-modal.licenserequest">Restore to Default</button>
+                    <button type="button" class="btn btn-blue pull-right" id="btn_change_printoutlayout">Save Layout</button>
+                </div>
+                <div class="form-group">
+                    <textarea id="txt_printoutlayout" class="form-control tinymce-editor"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
+@using (Html.BeginForm("DownloadPrintOut", "MLLicenseRequest", FormMethod.Post, new { @id = "form_DownloadPrintout" }))
+{
+    @Html.HiddenFor(model => model.MnfRequestID, new { @id = "txt_hd_id_forprint" })
+    @Html.HiddenFor(model => model.MnfFormNum, new { @id = "txt_hd_formnumber_forprint" })
+    @Html.HiddenFor(model => model.StatusKey, new { @id = "txt_hd_statuskey" })
+}
+
+@foreach (var confirmation in Model.Confirmation)
+{
+    @Html.Partial("_ConfirmDialog", confirmation)
+}
+
+@section scripts {
+            <script src="~/Scripts/js/custom.js"></script>
+            <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+            <script src="~/Scripts/manufacture-license/licenserequest-beranda.js?v=0.7.31"></script>
+            <script src="~/scripts/tinymce/tinymce.min.js"></script>
+            <script type="text/javascript" language="javascript">
+
+
+                $(document).ready(function () {
+
+                    $('#MenuManufactureLicenseInterviewRequestOpenDocument').removeClass('active');
+                    $('#MenuManufactureLicenseInterviewRequestOpenDocument').removeClass('open');
+                    $('#MenuManufactureLicenseChangeRequestOpenDocument').removeClass('active');
+                    $('#MenuManufactureLicenseChangeRequestOpenDocument').removeClass('open');
+                    $('#MenuManufactureLicenseLicenseRequestOpenDocument').addClass('active');
+
+                    if ($("#div_form_number").html() == "") {
+                        $("#div_form_number").hide();
+                    }
+                    CompletingDetailForm();
+                    TinyMceInit();
+                });
+
+                function getUrl(ActionName) {
+                    var BaseUrl = '@Url.Action("", "MLLicenseRequest")';
+                    var URL = BaseUrl + "/" + ActionName;
+                    return URL;
+                }
+
+                function TinyMceInit() {
+                    tinyMCE.init({
+                        mode: "specific_textareas",
+                        editor_selector: "tinymce-editor",
+                        theme: "modern",
+                        plugins: 'code nonbreaking pagebreak',
+                        menubar: false,
+                        statusbar: false,
+                        toolbar: "undo redo | removeformat | pagebreak nonbreaking | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | justifyleft justifycenter justifyright justifyfull | bullist numlist | outdent indent",
+                        pagebreak_separator: "<br />",
+                        width: '100%',
+                        height: "500",
+                        theme_advanced_toolbar_location: "top",
+                        theme_advanced_toolbar_align: "left",
+                        theme_advanced_statusbar_location: "bottom",
+                        theme_advanced_resizing: true,
+                        setup: function (ed) {
+                            ed.on('keydown', function (e) {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                window.event.cancelBubble = true
+                            });
+                        }
+                    });
+                }
+
+                var arrayOther = [];
+                $('#other-prodtype-add-btn').click(function () {
+                    var other = $('#TxtOtherProdCode').val();
+                    if (other != '') {
+                        $('#TxtOtherProdCode').val("");
+                        var objOther = { other: other };
+                        arrayOther.push(objOther);
+                        CreateOtherList();
+                    }
+                });
+
+                function CreateOtherList() {
+                    $('#otherprodtype tbody tr').remove();
+                    var indx = 1;
+                    for (var i = 0; i < arrayOther.length; i++) {
+                        $('#otherprodtype tbody').append('<tr><td>' + indx + '</td><td>' + arrayOther[i].other + '</td><td><input id="OtherPCDetails[' + i + '].OtherProdCode" name="OtherProdCode" type="hidden" value="' + arrayOther[i].other + '"/><a href="javascript:void(0)" class="browse btn btn-blue" onclick="deleteOther(' + i + ')">delete</a></td></tr>');
+                        indx++;
+                    }
+                }
+
+                function deleteOther(index) {
+                    arrayOther.splice(index, 1);
+                    CreateOtherList();
+                }
+
+
+                $(document).on("change", "#dd_IRformnum", function () {
+                    var IRId = $(this).val();
+                    $.ajax({
+                        type: 'POST',
+                        url: getUrl("GetInterviewRequestDetail"),
+                        data: { IRId: IRId },
+                        success: function (data) {
+                            var result = data.Interview;
+                            if (result != null) {
+                                var a = document.getElementById('BANO_link');
+                                @*a.setAttribute("href", '@Url.Action("", "MLInterviewRequest")' + "/Detail/" + IRId);*@
+                                a.href = '@Url.Action("Detail", "MLInterviewRequest")' + "/" + IRId;
+                                $("#label_BANO").text(result.BANumber);
+                                $("#CompType").val(result.Company_Type);
+                                $("#Name").val(result.POAName);
+                                $("#Position").val(result.POAPosition);
+                                $("#KPPBC").val(result.KPPBC_ID);
+                                $("#POAName").val(result.POAName);
+                                $("#KppbcAddress").val(result.KPPBC_Address);
+                                $("#POAAddress").val(result.POAAddress);
+                                $("#Company").val(result.Company_Name);
+                                $("#CompanyId").val(result.Company_ID);
+                                $("#Npwp").val(result.Npwp);
+                                $("#CompanyAddress").val(result.Company_Address);
+                                $("#txt_hd_interviewNumber").val(result.FormNumber);
+                                $("#txt_form_num").val(result.FormNumber);
+                            }
+
+
+                            var _result = data.InterviewDet;
+
+                            if (_result != null) {
+                                $("#div_interview_detail").empty();
+                                var j = 1;
+                                for (var i = 0; i < _result.length; i++) {
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: getUrl("GetInterviewRequestDetailFormView"),
+                                        data: {
+                                            IRId: IRId,
+                                            mfi: _result[i].MnfDetailId,
+                                            add: _result[i].MnfAddr,
+                                            village: _result[i].MnfVillage,
+                                            phone: _result[i].MnfPhone,
+                                            fax: _result[i].MnfFax,
+                                            province: _result[i].MnfProvince,
+                                            city: _result[i].MnfCity,
+                                            subdist: _result[i].MnfSubDist,
+                                            index: i,
+                                            numlist: j
+                                        },
+                                        success: function (html) {
+                                            if (html != null) {
+                                                $("#div_interview_detail").append(html);
+                                            }
+                                        }
+                                    });
+                                    j++;
+                                }
+                            }
+
+                        },
+                        complete: function (data) {
+                            SupportingDocumentList($("#CompanyId").val());
+                        }
+                    });
+                });
+
+            </script>
+                }
