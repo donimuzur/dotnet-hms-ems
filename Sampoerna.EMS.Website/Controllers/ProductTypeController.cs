@@ -165,7 +165,7 @@ namespace Sampoerna.EMS.Website.Controllers
                _productTypeService.GetAll().OrderByDescending(item => item.PROD_CODE)),
                 IsAdminApprover = _refService.IsAdminApprover(CurrentUser.USER_ID)
             };
-            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller);
+            data.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller);
             var list = new List<ProductTypeFormViewModel>(data.ListProductTypes);
 
             data.ListProductTypes = new List<ProductTypeFormViewModel>();
@@ -187,7 +187,7 @@ namespace Sampoerna.EMS.Website.Controllers
         #region Create
         public ActionResult Create()
         {           
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 AddMessageInfo("Operation not allowed", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
