@@ -165,6 +165,11 @@ namespace Sampoerna.EMS.BLL.Services
                 queryFilter = queryFilter.And(c => c.FA_CODE == facode);
             }
 
+            //add filter minus 2 month from current date
+            var filterMonth = DateTime.Now.AddMonths(-2).Date;
+            var filterDate = new DateTime(filterMonth.Year, filterMonth.Month, 1);
+            queryFilter = queryFilter.And(c => c.POSTING_DATE >= filterDate);
+
             var dbData = _repository.Get(queryFilter);
 
             return dbData.ToList();
