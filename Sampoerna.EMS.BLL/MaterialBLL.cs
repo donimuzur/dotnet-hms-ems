@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Sampoerna.EMS.BLL.Services;
 using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.BusinessObject.Outputs;
@@ -461,5 +462,19 @@ namespace Sampoerna.EMS.BLL
 
             return data.ToList();
         }
+
+
+        public List<ZAIDM_EX_MATERIAL> getAllMaterialByListMaterialAndPlant(List<string> materialList,
+            List<string> plantList)
+        {
+            Expression<Func<ZAIDM_EX_MATERIAL, bool>> queryFilter = PredicateHelper.True<ZAIDM_EX_MATERIAL>();
+
+            queryFilter = queryFilter.And(x => materialList.Contains(x.STICKER_CODE));
+            queryFilter = queryFilter.And(x => plantList.Contains(x.WERKS));
+
+            var data = _repository.Get(queryFilter, null, "").ToList();
+
+            return data;
+        } 
     }
 }
