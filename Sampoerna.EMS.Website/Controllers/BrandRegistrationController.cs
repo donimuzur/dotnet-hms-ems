@@ -698,7 +698,10 @@ namespace Sampoerna.EMS.Website.Controllers
             slDocument.SetCellValue(iRow, 23, "Active");
             slDocument.SetCellValue(iRow, 24, "Cut Filler Code");
             slDocument.SetCellValue(iRow, 25, "Deleted");
-            slDocument.SetCellValue(iRow, 26, "Created By - Date");
+            slDocument.SetCellValue(iRow, 26, "Data SAP");
+            slDocument.SetCellValue(iRow, 27, "Bahan Kemasan");
+            slDocument.SetCellValue(iRow, 28, "Packed Adjusted");
+            slDocument.SetCellValue(iRow, 29, "Created By - Date");
             
          
         
@@ -713,7 +716,7 @@ namespace Sampoerna.EMS.Website.Controllers
             headerStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
             headerStyle.Fill.SetPattern(PatternValues.Solid, System.Drawing.Color.LightGray, System.Drawing.Color.LightGray);
 
-            slDocument.SetCellStyle(iRow, 1, iRow, 26, headerStyle);
+            slDocument.SetCellStyle(iRow, 1, iRow, 29, headerStyle);
 
             return slDocument;
 
@@ -765,7 +768,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 slDocument.SetCellValue(iRow, 23, data.IsActive ? "Yes" : "No");
                 slDocument.SetCellValue(iRow, 24, data.CutFilterCode);
                 slDocument.SetCellValue(iRow, 25, data.IsDeleted );
-                slDocument.SetCellValue(iRow, 26, data.CREATED_BY + "-" + ConvertHelper.ConvertDateToStringddMMMyyyy(data.CREATED_DATE));
+                slDocument.SetCellValue(iRow, 26, data.IsFromSap.HasValue && data.IsFromSap.Value ? "Yes" : "No");
+                slDocument.SetCellValue(iRow, 27, data.BahanKemasan);
+                slDocument.SetCellValue(iRow, 28, data.IsPackedAdjusted ? "Yes" : "No");
+                
+                slDocument.SetCellValue(iRow, 29, data.CREATED_BY + "-" + ConvertHelper.ConvertDateToStringddMMMyyyy(data.CREATED_DATE));
                 iRow++;
             }
 
@@ -776,8 +783,8 @@ namespace Sampoerna.EMS.Website.Controllers
             valueStyle.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
             valueStyle.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
 
-            slDocument.AutoFitColumn(1, 26);
-            slDocument.SetCellStyle(3, 1, iRow - 1, 26, valueStyle);
+            slDocument.AutoFitColumn(1, 29);
+            slDocument.SetCellStyle(3, 1, iRow - 1, 29, valueStyle);
 
             return slDocument;
         }
