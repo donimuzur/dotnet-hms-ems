@@ -222,6 +222,22 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
+        public ActionResult Active(int id)
+        {
+            try
+            {
+                _monthClosingBll.Active(id);
+
+                AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
+            }
+            catch (Exception ex)
+            {
+                TempData[Constans.SubmitType.Update] = ex.Message;
+            }
+            return RedirectToAction("Index");
+
+        }
+
         private MonthClosingIndexViewModel InitEdit(int id)
         {
             var currentData = _monthClosingBll.GetById(id);
