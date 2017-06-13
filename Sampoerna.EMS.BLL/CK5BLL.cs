@@ -2120,8 +2120,10 @@ namespace Sampoerna.EMS.BLL
                         var poaData = _poaBll.GetActivePoaById(ck5Dto.CREATED_BY);
                         if (poaData != null)
                         {
+                            if (userPoaApprovalInfo != null)
+                                rc.To.Add(userPoaApprovalInfo.EMAIL);
                             //creator is poa user
-                            rc.To.Add(poaData.POA_EMAIL);
+                            rc.CC.Add(poaData.POA_EMAIL);
                         }
                         else
                         {
@@ -2129,9 +2131,9 @@ namespace Sampoerna.EMS.BLL
                             //var userData = _userBll.GetUserById(ck5Dto.CREATED_BY);
                             //var poaUserData = _userBll.GetUserById(ck5Dto.APPROVED_BY_POA);
 
-                            rc.To.Add(userCreatorInfo.EMAIL);
+                            rc.CC.Add(userCreatorInfo.EMAIL);
                             if (userPoaApprovalInfo != null)
-                                rc.CC.Add(userPoaApprovalInfo.EMAIL);
+                                rc.To.Add(userPoaApprovalInfo.EMAIL);
                         }
                     }
 
@@ -4197,9 +4199,9 @@ namespace Sampoerna.EMS.BLL
 
             //get poa info
             POADto poaInfo;
-            poaInfo = _poaBll.GetDetailsById(dtData.APPROVED_BY_POA);
+            poaInfo = _poaBll.GetDetailsById(dtData.CREATED_BY);
             if (poaInfo == null)
-                poaInfo = _poaBll.GetDetailsById(dtData.CREATED_BY);
+                poaInfo = _poaBll.GetDetailsById(dtData.APPROVED_BY_POA);
 
             if (poaInfo != null)
             {

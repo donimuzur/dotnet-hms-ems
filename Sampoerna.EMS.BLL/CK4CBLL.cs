@@ -392,10 +392,12 @@ namespace Sampoerna.EMS.BLL
                     if (ck4cData.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
                         var poaData = _poabll.GetById(ck4cData.CreatedBy);
+                        var poaApproved = _userBll.GetUserById(ck4cData.ApprovedByPoa);
                         if (poaData != null)
                         {
+                            rc.To.Add(poaApproved.EMAIL);
                             //creator is poa user
-                            rc.To.Add(poaData.POA_EMAIL);
+                            rc.CC.Add(poaData.POA_EMAIL);
                             //first code when manager exists
                             //rc.CC.Add(GetManagerEmail(ck4cData.CreatedBy));
                             foreach (var item in controllerList)
@@ -406,12 +408,10 @@ namespace Sampoerna.EMS.BLL
                         else
                         {
                             //creator is excise executive
-                            var poaApproved = _userBll.GetUserById(ck4cData.ApprovedByPoa);
-
-                            rc.To.Add(userData.EMAIL);
+                            rc.CC.Add(userData.EMAIL);
                             //first code when manager exists
                             //rc.CC.Add(GetManagerEmail(ck4cData.ApprovedByPoa));
-                            rc.CC.Add(poaApproved.EMAIL);
+                            rc.To.Add(poaApproved.EMAIL);
                             foreach (var item in controllerList)
                             {
                                 rc.CC.Add(item.EMAIL);
@@ -1279,8 +1279,8 @@ namespace Sampoerna.EMS.BLL
             var nppbkc = dtData.NPPBKC_ID;
             result.Detail.Nppbkc = nppbkc;
 
-            var creatorPoa = _poabll.GetById(dtData.APPROVED_BY_POA);
-            var poaUser = creatorPoa == null ? dtData.CREATED_BY : dtData.APPROVED_BY_POA;
+            var creatorPoa = _poabll.GetById(dtData.CREATED_BY);
+            var poaUser = creatorPoa == null ? dtData.APPROVED_BY_POA : dtData.CREATED_BY;
 
             var poa = _poabll.GetDetailsById(poaUser);
             if (poa != null)

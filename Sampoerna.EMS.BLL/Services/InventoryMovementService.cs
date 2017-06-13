@@ -452,13 +452,17 @@ namespace Sampoerna.EMS.BLL.Services
 
             string receiving102 = EnumHelper.GetDescription(Enums.MovementTypeCode.Receiving102);
 
+            //add filter minus 2 month from current date
+            var filterMonth = DateTime.Now.AddMonths(-2).Date;
+            var filterDate = new DateTime(filterMonth.Year, filterMonth.Month, 1);
+
             var result = from i in _repository.GetQuery()
                          orderby i.POSTING_DATE descending
                          join b in _zaidmExBrandRepository.GetQuery()
                          on new { i.MATERIAL_ID, i.PLANT_ID }
                          equals new { MATERIAL_ID = b.FA_CODE, PLANT_ID=b.WERKS }
                          where i.MVT == receiving102 && b.PROD_CODE=="05" && b.EXC_GOOD_TYP == "02" &&
-                               i.PLANT_ID==plant && i.MATERIAL_ID == facode
+                               i.PLANT_ID == plant && i.MATERIAL_ID == facode && i.POSTING_DATE >= filterDate
                          select i;
 
             //return result.Where(queryFilter).ToList();
