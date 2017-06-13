@@ -4199,9 +4199,9 @@ namespace Sampoerna.EMS.BLL
 
             //get poa info
             POADto poaInfo;
-            poaInfo = _poaBll.GetDetailsById(dtData.APPROVED_BY_POA);
+            poaInfo = _poaBll.GetDetailsById(dtData.CREATED_BY);
             if (poaInfo == null)
-                poaInfo = _poaBll.GetDetailsById(dtData.CREATED_BY);
+                poaInfo = _poaBll.GetDetailsById(dtData.APPROVED_BY_POA);
 
             if (poaInfo != null)
             {

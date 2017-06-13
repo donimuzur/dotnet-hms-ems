@@ -2048,8 +2048,8 @@ namespace Sampoerna.EMS.BLL
                 rc.Detail.NppbkcCity = nppbkcDetails.CITY;
             }
 
-            var creatorPoa = _poaBll.GetById(dbData.APPROVED_BY_POA);
-            var poaId = creatorPoa == null ? dbData.CREATED_BY : dbData.APPROVED_BY_POA;
+            var creatorPoa = _poaBll.GetById(dbData.CREATED_BY);
+            var poaId = creatorPoa == null ? dbData.APPROVED_BY_POA : dbData.CREATED_BY;
 
             var poaDetails = _poaBll.GetDetailsById(poaId);
             if (poaDetails != null)

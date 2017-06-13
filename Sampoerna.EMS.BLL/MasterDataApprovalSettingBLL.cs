@@ -73,8 +73,7 @@ namespace Sampoerna.EMS.BLL
                         }
 
 
-                    }
-                    else
+                    }else
                     {
                         detail.IS_APPROVAL = isApproval;    
                     }
@@ -99,6 +98,7 @@ namespace Sampoerna.EMS.BLL
                     COLUMN_NAME = "CONVERTION",
                     ColumnDescription = "Convertion",
                     IS_APPROVAL = true,
+                    IsPrimary = true,
                     PAGE_ID = pageId
                 });
             }

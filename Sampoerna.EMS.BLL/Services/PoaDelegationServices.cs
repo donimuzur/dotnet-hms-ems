@@ -290,8 +290,9 @@ namespace Sampoerna.EMS.BLL.Services
                         }
                         else
                         {
-                            if (input.WorkflowHistoryDto.ACTION_BY != input.CurrentUser)
-                                userId = input.WorkflowHistoryDto.ACTION_BY;
+                            //change by ticket 18834
+                            //if (input.WorkflowHistoryDto.ACTION_BY != input.CurrentUser)
+                                //userId = input.WorkflowHistoryDto.ACTION_BY;
                         }
                     }
                     break;
