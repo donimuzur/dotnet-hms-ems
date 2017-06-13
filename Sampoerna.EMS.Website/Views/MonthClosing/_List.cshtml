@@ -8,11 +8,13 @@
             <th>Day</th>
             <th>Month</th>
             <th>Year</th>
+            <th>Active</th>
         </tr>
     </thead>
     <thead class="filters">
         <tr>
             <th>Action</th>
+            <th></th>
             <th></th>
             <th></th>
             <th></th>
@@ -42,6 +44,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(model => model.MonthClosingList[i].ClosingYear)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.MonthClosingList[i].IsActive)
                 </td>
 
             </tr>

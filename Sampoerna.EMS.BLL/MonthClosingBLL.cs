@@ -92,6 +92,7 @@ namespace Sampoerna.EMS.BLL
                         var newModel = new MONTH_CLOSING();
                         newModel = Mapper.Map<MONTH_CLOSING>(newData);
                         newModel.MONTH_FLAG = monthFlag;
+                        newModel.IS_ACTIVE = true;
                         _repository.InsertOrUpdate(newModel);
                     }
                 }
@@ -115,7 +116,7 @@ namespace Sampoerna.EMS.BLL
 
             if (!string.IsNullOrEmpty(param.PlantId))
             {
-                queryFilter = queryFilter.And(c => c.PLANT_ID == param.PlantId);
+                queryFilter = queryFilter.And(c => c.PLANT_ID == param.PlantId && c.IS_ACTIVE == true);
             }
             if (param.ClosingDate != null)
             {
@@ -144,6 +145,23 @@ namespace Sampoerna.EMS.BLL
             var mapResult = Mapper.Map<MonthClosingDto>(dbData);
 
             return mapResult;
+        }
+
+        public void Active(long id)
+        {
+            var dbData = _repository.Get(c => c.MONTH_CLOSING_ID == id).FirstOrDefault();
+
+            if (dbData.IS_ACTIVE == true)
+            {
+                dbData.IS_ACTIVE = false;
+            }
+            else
+            {
+                dbData.IS_ACTIVE = true;
+            }
+            _repository.Update(dbData);
+
+            _uow.SaveChanges();
         }
     }
 }

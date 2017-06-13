@@ -12,6 +12,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string ClosingMonth { get; set; }
         public string ClosingYear { get; set; }
         public DateTime ClosingDate { get; set; }
+        public string IsActive { get; set; }
 
         public List<MonthClosingDocDto> MonthClosingDoc { get; set; }
     }

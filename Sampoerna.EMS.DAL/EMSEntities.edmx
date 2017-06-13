@@ -725,6 +725,7 @@
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="CLOSING_DATE" Type="datetime" />
           <Property Name="MONTH_FLAG" Type="nvarchar" MaxLength="6" />
+          <Property Name="IS_ACTIVE" Type="bit" />
         </EntityType>
         <EntityType Name="MONTH_CLOSING_DOCUMENT">
           <Key>
@@ -9554,6 +9555,7 @@
           <Property Name="CLOSING_DATE" Type="DateTime" Precision="3" />
           <Property Name="MONTH_FLAG" Type="String" MaxLength="6" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="T001W" Relationship="EMSModel.FK_MONTH_CLOSING_T001W" FromRole="MONTH_CLOSING" ToRole="T001W" />
+          <Property Name="IS_ACTIVE" Type="Boolean" />
         </EntityType>
         <EntityType Name="MONTH_CLOSING_DOCUMENT">
           <Key>
@@ -11335,6 +11337,7 @@
           <EntitySetMapping Name="MONTH_CLOSING">
             <EntityTypeMapping TypeName="EMSModel.MONTH_CLOSING">
               <MappingFragment StoreEntitySet="MONTH_CLOSING">
+                <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
                 <ScalarProperty Name="MONTH_FLAG" ColumnName="MONTH_FLAG" />
                 <ScalarProperty Name="CLOSING_DATE" ColumnName="CLOSING_DATE" />
                 <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />

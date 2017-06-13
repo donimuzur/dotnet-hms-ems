@@ -30,6 +30,7 @@ namespace Sampoerna.EMS.Website.Models.MonthClosing
         [Required]
         public DateTime ClosingDate { get; set; }
         public string DisplayDate { get; set; }
+        public string IsActive { get; set; }
 
         public List<HttpPostedFileBase> MonthClosingFiles { get; set; }
         public List<MonthClosingDocModel> MonthClosingDoc { get; set; }
