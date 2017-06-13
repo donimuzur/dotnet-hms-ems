@@ -49,6 +49,7 @@
                                                 <div class="col-md-4">
                                                     @Html.HiddenFor(model => model.Details.MonthClosingId)
                                                     @Html.HiddenFor(model => model.Details.PlantId)
+                                                    @Html.HiddenFor(model => model.Details.IsActive)
                                                     @Html.TextBoxFor(model => model.Details.PlantId, new { @class = "form-control", @disabled = "disabled" })
                                                 </div>
                                             </div>
