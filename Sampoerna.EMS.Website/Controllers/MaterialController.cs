@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using AutoMapper;
 using DocumentFormat.OpenXml.Spreadsheet;
 using iTextSharp.text.pdf.qrcode;
+using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.BrandRegistration;
@@ -16,6 +17,7 @@ using Sampoerna.EMS.BusinessObject;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.BusinessObject.DTOs;
 using Sampoerna.EMS.Utils;
+using Sampoerna.EMS.Website.Models.Shared;
 using SpreadsheetLight;
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -58,11 +60,13 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = new MaterialListViewModel();
             model.MainMenu = _mainMenu;
             model.CurrentMenu = PageInfo;
-            model.GoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
-            model.GoodType = EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau);
+            model.SearchView.GoodTypeList = GlobalFunctions.GetGoodTypeList(_goodTypeBll);
+            model.SearchView.PlantList = GlobalFunctions.GetPlantAll();
+            model.SearchView.UomList = GlobalFunctions.GetUomList(_unitOfMeasurementBll);
+            //model.SearchView.GoodType = EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau);
 
-            var data = _materialBll.getAllMaterial(model.GoodType);
-            model.Details = AutoMapper.Mapper.Map<List<MaterialDetails>>(data);
+            //var data = _materialBll.getAllMaterial(model.GoodType);
+            //model.Details = AutoMapper.Mapper.Map<List<MaterialDetails>>(data);
             model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller ? true : false);
             ViewBag.Message = TempData["message"];
             return View("Index", model);
@@ -358,7 +362,7 @@ namespace Sampoerna.EMS.Website.Controllers
         [HttpPost]
         public PartialViewResult FilterMaterialIndex(MaterialListViewModel model)
         {
-            var data = _materialBll.getAllMaterial(model.GoodType);
+            var data = _materialBll.getAllMaterial(model.SearchView.GoodTypeSource);
             model.Details = AutoMapper.Mapper.Map<List<MaterialDetails>>(data);
             model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller ? true : false);
 
@@ -394,7 +398,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //model = Mapper.Map<MaterialDetailViewModel>(data);
 
             var data = _materialBll.getAll();
-            if(model.GoodType != null) data = data.Where(c=>c.EXC_GOOD_TYP == model.GoodType).ToList();
+            if(model.SearchView.GoodTypeSource != null) data = data.Where(c=>c.EXC_GOOD_TYP == model.SearchView.GoodTypeSource).ToList();
             //get data
             var listData = Mapper.Map<List<MaterialDetailViewModel>>(data);
 
@@ -407,7 +411,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 
             //create filter
             slDocument.SetCellValue(1, 1, "Excisable Goods Type");
-            slDocument.SetCellValue(1, 2, ": " + model.GoodType + goodTypeName);
+            slDocument.SetCellValue(1, 2, ": " + model.SearchView.GoodTypeSource + goodTypeName);
 
             //title
             slDocument.SetCellValue(2, 1, "Material Master");
@@ -521,5 +525,82 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #endregion
+
+        #region ajax
+        [HttpPost]
+        public JsonResult SearchMaterialAjax(DTParameters<MaterialListViewModel> param)
+        {
+            var model = param.ExtraFilter;
+
+            var data = model != null ? SearchDataMaterial(model.SearchView) : SearchDataMaterial();
+            DTResult<MaterialDetails> result = new DTResult<MaterialDetails>();
+            result.draw = param.Draw;
+            result.recordsFiltered = data.Count;
+            result.recordsTotal = data.Count;
+            //param.TotalData = data.Count;
+            //if (param != null && param.Start > 0)
+            //{
+            IEnumerable<MaterialDetails> dataordered;
+            dataordered = data;
+            if (param.Order.Length > 0)
+            {
+                foreach (var ordr in param.Order)
+                {
+                    if (ordr.Column == 0)
+                    {
+                        continue;
+                    }
+                    dataordered = MaterialDataOrder(MaterialDataOrderByIndex(ordr.Column), ordr.Dir, dataordered);
+                }
+            }
+            data = dataordered.ToList();
+            data = data.Skip(param.Start).Take(param.Length).ToList();
+
+            //}
+            result.data = data;
+
+            return Json(result);
+
+        }
+
+        private List<MaterialDetails> SearchDataMaterial(MaterialSearchView searchView = null)
+        {
+            var param = Mapper.Map<MaterialInput>(searchView);
+            var data = _materialBll.GetMaterialByParam(param);
+            return Mapper.Map<List<MaterialDetails>>(data);
+        }
+
+        private IEnumerable<MaterialDetails> MaterialDataOrder(string column, DTOrderDir dir, IEnumerable<MaterialDetails> data)
+        {
+
+            switch (column)
+            {
+                case "PlantName" : return dir == DTOrderDir.ASC ? data.OrderBy(x => x.PlantName).ToList() : data.OrderByDescending(x => x.PlantName).ToList();
+                case "MaterialNumber" : return dir == DTOrderDir.ASC ? data.OrderBy(x => x.MaterialNumber).ToList() : data.OrderByDescending(x => x.MaterialNumber).ToList();
+                case "GoodTypeName" : return dir == DTOrderDir.ASC ? data.OrderBy(x => x.GoodTypeName).ToList() : data.OrderByDescending(x => x.GoodTypeName).ToList();
+                case "UomName" : return dir == DTOrderDir.ASC ? data.OrderBy(x => x.UomName).ToList() : data.OrderByDescending(x => x.UomName).ToList();
+                case "PlantDeletion" : return dir == DTOrderDir.ASC ? data.OrderBy(x => x.PlantDeletion).ToList() : data.OrderByDescending(x => x.PlantDeletion).ToList();
+                case "ClientDeletion" : return dir == DTOrderDir.ASC ? data.OrderBy(x => x.ClientDeletion).ToList() : data.OrderByDescending(x => x.ClientDeletion).ToList();
+                
+
+            }
+            return null;
+        }
+
+        private string MaterialDataOrderByIndex(int index)
+        {
+            Dictionary<int, string> columnDict = new Dictionary<int, string>();
+            columnDict.Add(1, "PlantName");
+            columnDict.Add(2, "MaterialNumber");
+            columnDict.Add(3, "GoodTypeName");
+            columnDict.Add(4, "UomName");
+            columnDict.Add(5, "PlantDeletion");
+            columnDict.Add(6, "ClientDeletion");
+            
+
+            return columnDict[index];
+        }
+        #endregion
+
     }
 }
