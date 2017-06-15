@@ -8,9 +8,17 @@
     <script type="text/javascript" language="javascript" class="init">
         $('#MenuMasterMaterial').addClass('active');
 
+
+        var actionHtml = '';
+        
+        
+        
+
+
         $(document).ready(function() {
             $('#SearchInput_GoodType').addClass('input-validation-error');
-
+            
+            
             setupDataTables();
 
             @if (TempData[Constans.SubmitType.Save] != null)
@@ -82,14 +90,23 @@
         }
 
         function ExportXls() {
-            $('#GoodType').val($('#SearchInput_GoodType').val());
+            $('#Export_MaterialDescSource').val($('#SearchView_MaterialDescSource').val());
+            $('#Export_PlantIdSource').val($('#SearchView_PlantIdSource').val());
+            $('#Export_MaterialNumberSource').val($('#SearchView_MaterialNumberSource').val());
+            $('#Export_UomNameSource').val($('#SearchView_UomNameSource').val());
+            $('#Export_GoodTypeSource').val($('#SearchView_GoodTypeSource').val());
+            $('#Export_PlantDeletionSource').val($('#SearchView_PlantDeletionSource').val());
+            $('#Export_ClientDeletionSource').val($('#SearchView_ClientDeletionSource').val());
+            
             $('#ExportToXls').submit();
         }
 
         function setupColumns() {
-
+            
             var columns = [
-                { "data": null, "orderable": false },
+                
+                
+                { "data": null, "orderable" : false },
                 { "data": "PlantName", "orderable": true },
                 { "data": "MaterialNumber", "orderable": true },
                 { "data": "MaterialDesc", "orderable": true },
@@ -126,15 +143,27 @@
                     },
 
                     "rowCallback": function(row, data, index) {
+                        var isNotViewer = @Html.Raw(@Model.IsNotViewer.ToString().ToLower());
+                        actionHtml = "<a href='/Material/Details?mn="+data.MaterialNumber+"&p="+data.PlantId+"' data-toggle='tooltip' data-placement='top' title='Detail' onclick='ViewDetails(this)'>" +
+                            "<i class='fa fa-eye'></i>" +
+                            "</a>";
+                        if (isNotViewer) {
+                            actionHtml = actionHtml + "<a href='/Material/Edit?mn="+data.MaterialNumber+"&p="+data.PlantId+"' data-toggle='tooltip' data-placement='top' title='Edit' onclick='ViewEdit(this)'>" +
+                                            "<i class='fa fa-pencil-square-o'></i>" +
+                                            "</a>";    
+                        }
 
-                        var info = $('#mydata').DataTable().page.info();
-                        $(row).find("td").first().html((info.page * info.length) + index + 1);
+
+                        var actionRow = $(row).find("td")[0];
+                        $(actionRow).addClass('action');
+                        $(actionRow).html(actionHtml);
                     },
                     "serverSide": true,
                     //"processing": true,
                     "paging": true,
                     "deferRender": true,
                     "columns": setupColumns(),
+                    
                     "ajax": {
                         "url": "@Url.Action("SearchMaterialAjax", "Material")",
                         "type": "POST",
@@ -186,6 +215,14 @@
             table.ajax.reload();
         }
 
+
+        function ViewDetails(obj) {
+            
+        }
+        
+        function ViewEdit(obj) {
+            
+        }
     </script>
 }
 
@@ -260,7 +297,7 @@
                             <div class="row">
                                 <label class="col-md-4">Uom</label>
                                 <div class="col-md-8">
-                                    @Html.DropDownListFor(model => model.SearchView.MaterialDescSource, Model.SearchView.UomList, "All", new { @class = "form-control selectpicker" })
+                                    @Html.DropDownListFor(model => model.SearchView.UomNameSource, Model.SearchView.UomList, "All", new { @class = "form-control selectpicker" })
 
                                 </div>
 
@@ -335,7 +372,13 @@
                 </div>
             @using (Html.BeginForm("ExportXlsFile", "Material", FormMethod.Post, new { @id = "ExportToXls" }))
             {
-                 @Html.HiddenFor(model => model.SearchView.GoodTypeSource)
+                @Html.HiddenFor(model => model.SearchView.GoodTypeSource, new{ @id="Export_GoodTypeSource"})
+                @Html.HiddenFor(model => model.SearchView.MaterialNumberSource, new { @id = "Export_MaterialNumberSource" })
+                @Html.HiddenFor(model => model.SearchView.MaterialDescSource, new { @id = "Export_MaterialDescSource" })
+                @Html.HiddenFor(model => model.SearchView.PlantIdSource, new { @id = "Export_PlantIdSource" })
+                @Html.HiddenFor(model => model.SearchView.UomNameSource, new { @id = "Export_UomNameSource" })
+                @Html.HiddenFor(model => model.SearchView.ClientDeletionSource, new { @id = "Export_ClientDeletionSource" })
+                @Html.HiddenFor(model => model.SearchView.PlantDeletionSource, new { @id = "Export_PlantDeletionSource" })
             }
             <div id="contenttable" class="table-container">
                 @Html.Partial("_MaterialList")

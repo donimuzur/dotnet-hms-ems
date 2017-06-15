@@ -395,23 +395,24 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             //var data = _materialBll.getByID(mn, p);
             ////Mapper.Map(data,model);
-            //model = Mapper.Map<MaterialDetailViewModel>(data);
+            var input = Mapper.Map<MaterialInput>(model.SearchView);
 
-            var data = _materialBll.getAll();
-            if(model.SearchView.GoodTypeSource != null) data = data.Where(c=>c.EXC_GOOD_TYP == model.SearchView.GoodTypeSource).ToList();
+            var tempData = _materialBll.GetMaterialByParam(input);
+            var data = Mapper.Map<List<MaterialDto>>(tempData);
+            //if(model.SearchView.GoodTypeSource != null) data = data.Where(c=>c.EXC_GOOD_TYP == model.SearchView.GoodTypeSource).ToList();
             //get data
             var listData = Mapper.Map<List<MaterialDetailViewModel>>(data);
 
             var slDocument = new SLDocument();
 
-            string goodTypeName = "";
-            if (listData.Count > 0)
-                goodTypeName = "-" + listData[0].GoodTypeName;
+            //string goodTypeName = "";
+            //if (listData.Count > 0)
+            //    goodTypeName = "-" + listData[0].GoodTypeName;
              
                 
             //create filter
-            slDocument.SetCellValue(1, 1, "Excisable Goods Type");
-            slDocument.SetCellValue(1, 2, ": " + model.SearchView.GoodTypeSource + goodTypeName);
+            //slDocument.SetCellValue(1, 1, "Excisable Goods Type");
+            //slDocument.SetCellValue(1, 2, ": " + model.SearchView.GoodTypeSource + goodTypeName);
 
             //title
             slDocument.SetCellValue(2, 1, "Material Master");
