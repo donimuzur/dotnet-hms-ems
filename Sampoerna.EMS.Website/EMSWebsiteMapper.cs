@@ -695,6 +695,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.MaterialDesc, opt => opt.MapFrom(src => src.MATERIAL_DESC))
                 .ForMember(dest => dest.PlantDeletion, opt => opt.MapFrom(src => src.PLANT_DELETION.HasValue && src.PLANT_DELETION.Value ? "yes" : "No"))
                 .ForMember(dest => dest.ClientDeletion, opt => opt.MapFrom(src => src.CLIENT_DELETION.HasValue && src.CLIENT_DELETION.Value ? "yes" : "No"));
+
+            Mapper.CreateMap<MaterialSearchView, MaterialInput>().IgnoreAllNonExisting();
             #endregion
 
             #region UOM
