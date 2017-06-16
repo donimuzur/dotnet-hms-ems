@@ -163,8 +163,8 @@ namespace Sampoerna.EMS.Website.Controllers
                                                 var POAApprover = brandRegistrationService.GetPOAApproverList(NPPBKCId, CreatedBy).ToList();
                                                 if (POAApprover.Count() > 0)
                                                 {
-                                                    List<string> ListPOA = POAApprover.Select(s => s.POA_ID).ToList();
-                                                    if (ListPOA.Contains(CurrentUser.USER_ID))
+                                                    List<string> ListPOA = POAApprover.Select(s => s.POA_ID.ToUpper()).ToList();
+                                                    if (ListPOA.Contains(CurrentUser.USER_ID.ToUpper()))
                                                     {
                                                         result.CanApprove = true;
                                                         result.CanView = true;
@@ -201,8 +201,8 @@ namespace Sampoerna.EMS.Website.Controllers
                                                 var POAApprover = brandRegistrationService.GetPOAApproverList(NPPBKCId, CreatedBy).ToList();
                                                 if (POAApprover.Count() > 0)
                                                 {
-                                                    List<string> ListPOA = POAApprover.Select(s => s.POA_ID).ToList();
-                                                    if (ListPOA.Contains(CurrentUser.USER_ID))
+                                                    List<string> ListPOA = POAApprover.Select(s => s.POA_ID.ToUpper()).ToList();
+                                                    if (ListPOA.Contains(CurrentUser.USER_ID.ToUpper()))
                                                     {
                                                         result.CanView = true;
                                                     }
@@ -236,8 +236,8 @@ namespace Sampoerna.EMS.Website.Controllers
                                                 var POAApprover = brandRegistrationService.GetPOAApproverList(NPPBKCId, CreatedBy).ToList();
                                                 if (POAApprover.Count() > 0)
                                                 {
-                                                    List<string> ListPOA = POAApprover.Select(s => s.POA_ID).ToList();
-                                                    if (ListPOA.Contains(CurrentUser.USER_ID))
+                                                    List<string> ListPOA = POAApprover.Select(s => s.POA_ID.ToUpper()).ToList();
+                                                    if (ListPOA.Contains(CurrentUser.USER_ID.ToUpper()))
                                                     {
                                                         result.CanView = true;
                                                     }
@@ -411,8 +411,8 @@ namespace Sampoerna.EMS.Website.Controllers
                                             var POAApprover = brandRegistrationService.GetPOAApproverList(NPPBKCId, CreatedBy).ToList();
                                             if (POAApprover.Count() > 0)
                                             {
-                                                List<string> ListPOA = POAApprover.Select(s => s.POA_ID).ToList();
-                                                if (ListPOA.Contains(CurrentUser.USER_ID))
+                                                List<string> ListPOA = POAApprover.Select(s => s.POA_ID.ToUpper()).ToList();
+                                                if (ListPOA.Contains(CurrentUser.USER_ID.ToUpper()))
                                                 {
                                                     result.CanApprove = true;
                                                 }
@@ -471,6 +471,7 @@ namespace Sampoerna.EMS.Website.Controllers
             data.EditMode = false;
             data.EnableFormInput = true;
             data.ViewModel.IsCreator = false;
+            data.ViewModel.Registration_Type = 1;
             data.NppbkcList = GetNppbkcListByUser(nppbkclist);
             data.BrandList = GetBrandist(penetapanSKEPService.getMasterBrand());
             data.ProductTypeList = GetProdTypeList(penetapanSKEPService.getMasterProductType());
@@ -705,6 +706,52 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
+        [HttpPost]
+        public PartialViewResult FilterOpenDocument(BrandRegistrationReqViewModel model)
+        {
+            var lists = brandRegistrationService.GetAll().Where(w => ((w.LASTAPPROVED_STATUS != refService.GetRefByKey("COMPLETED").REFF_ID) && (w.LASTAPPROVED_STATUS != refService.GetRefByKey("CANCELED").REFF_ID)));
+
+            if (model.SearchInput.RegistrationType != 0)
+            {
+                lists = lists.Where(w => w.REGISTRATION_TYPE == model.SearchInput.RegistrationType);
+            }
+
+
+            if (model.SearchInput.Creator != null)
+            {
+                lists = lists.Where(w => w.CREATED_BY == model.SearchInput.Creator);
+            }
+
+            var documents = new List<BrandRegistrationReqModel>();
+
+            if (lists.Any())
+            {
+                documents = lists.Select(s => new BrandRegistrationReqModel
+                {
+                    Created_By = s.CREATOR.FIRST_NAME + " " + s.CREATOR.LAST_NAME,
+                    Registration_ID = s.REGISTRATION_ID,
+                    Registration_No = s.REGISTRATION_NO,
+                    strSubmission_Date = Convert.ToDateTime(s.SUBMISSION_DATE).ToString("dd MMMM yyyy"),
+                    strEffective_Date = s.EFFECTIVE_DATE.ToString("dd MMMM yyyy"),
+                    Registration_Type = s.REGISTRATION_TYPE,
+                    strRegistration_Type = EnumHelper.GetDescription((Enums.BrandRegistrationAction)s.REGISTRATION_TYPE),
+                    Nppbkc_ID = s.NPPBKC_ID,
+                    LastApproved_Status = s.LASTAPPROVED_STATUS,
+                    Company = MapNppbkcModel(refService.GetNppbkc(s.NPPBKC_ID)).Company,
+                    strLastApproved_Status = refService.GetReferenceById(s.LASTAPPROVED_STATUS).REFF_VALUE,
+                    LastModified_Date = Convert.ToDateTime(s.LASTMODIFIED_DATE),
+                    //IsApprover = IsPOACanApprove(s.REGISTRATION_ID, CurrentUser.USER_ID, s.LASTAPPROVED_BY == null ? "" : s.LASTAPPROVED_BY),
+                    IsCreator = (s.CREATED_BY == CurrentUser.USER_ID) ? true : false,
+                    UserAccess = GetUserAccess(s.LASTAPPROVED_STATUS, s.CREATED_BY, s.LASTAPPROVED_BY, "Index", s.NPPBKC_ID)
+                }).ToList();
+            }
+
+            model.ListBrandRegistrationReq = documents;
+
+            return PartialView("_BrandRegistrationTable", model);
+        }
+
+
         #endregion
 
         #region Create
@@ -844,6 +891,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 //// Other Doc
                 InsertUploadCommonFile(model.File_Other_Path, model.ViewModel.Registration_ID, false, model.File_Other_Name);
 
+                AddMessageInfo("Successfully Save Brand Registration Document!", Enums.MessageInfoType.Success);
             }
             catch (Exception ex)
             {
@@ -1179,6 +1227,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     InsertUploadCommonFile(model.File_SKEP_Path, data.REGISTRATION_ID, true, model.File_SKEP_Name);
                     ApprovalStatus = ReferenceKeys.ApprovalStatus.AwaitingPoaSkepApproval;
                     ProcessMail(model.ViewModel.Registration_ID, "poa_approver", "approve");
+                    AddMessageInfo("Successfully Submit SKEP Document!", Enums.MessageInfoType.Success);
+
                 }
             }
             catch (Exception ex)
@@ -1251,35 +1301,44 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
+                var ErrMessage = "";
+                var SuccMessage = "";
+
                 if (model.CurrentAction == "submit")
                 {
+                    SuccMessage = "Success Submit Brand Registration Document";
                     ActionType = (int)Enums.ActionType.Submit;
                     ApprovalStatus = ReferenceKeys.ApprovalStatus.AwaitingPoaApproval;
 
                 }
                 else if (model.CurrentAction == "approve")
                 {
+                    SuccMessage = "Success Approve Brand Registration Document";
                     ActionType = (int)Enums.ActionType.Approve;
                     ApprovalStatus = ReferenceKeys.ApprovalStatus.AwaitingGovernmentApproval;
 
                 }
                 else if (model.CurrentAction == "reject")
                 {
+                    SuccMessage = "Success Reject Brand Registration Document";
                     ActionType = (int)Enums.ActionType.Reject;
                     ApprovalStatus = ReferenceKeys.ApprovalStatus.Rejected;
                 }
                 else if (model.CurrentAction == "revise")
                 {
+                    SuccMessage = "Success Revise Brand Registration Document";
                     ActionType = (int)Enums.ActionType.Revise;
                     ApprovalStatus = ReferenceKeys.ApprovalStatus.Rejected;
                 }
                 else if (model.CurrentAction == "cancel")
                 {
+                    SuccMessage = "Success Cancel Brand Registration Document";
                     ActionType = (int)Enums.ActionType.Cancel;
                     ApprovalStatus = ReferenceKeys.ApprovalStatus.Canceled;
                 }
                 else if (model.CurrentAction == "withdraw")
                 {
+                    SuccMessage = "Success Withdraw Brand Registration Document";
                     ActionType = (int)Enums.ActionType.Withdraw;
                     ApprovalStatus = ReferenceKeys.ApprovalStatus.Canceled;
 
@@ -1295,22 +1354,22 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (model.ViewModel.LastApproved_Status == refService.GetRefByKey("COMPLETED").REFF_ID)
                 {
-                    var insert_brand = brandRegistrationService.InsertToBrand(model.ViewModel.Registration_ID);
+                    var insert_brand = brandRegistrationService.InsertToBrand(model.ViewModel.Registration_ID, model.ViewModel.Nppbkc_ID);
                 }
 
-                string msgSuccess = "";
                 if (update)
                 {
                     if(model.CurrentAction == "submit")
                     {
-                        msgSuccess = ProcessMail(model.ViewModel.Registration_ID, "poa_approver", "approve");
+                        SuccMessage += ProcessMail(model.ViewModel.Registration_ID, "poa_approver", "approve");
                     }
                     else
                     {
-                        msgSuccess = ProcessMail(model.ViewModel.Registration_ID, "creator", "notification");
+                        SuccMessage += ProcessMail(model.ViewModel.Registration_ID, "creator", "notification");
                     }
                 }
 
+                AddMessageInfo(SuccMessage, Enums.MessageInfoType.Success);
 
             }
             catch (Exception ex)
@@ -1499,12 +1558,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     case "notification":
                         parameters.Add("url_approve", Url.Action("Edit", "BRBrandRegistration", new { Id = id }, this.Request.Url.Scheme));
-                        parameters.Add("link_message", "CONTINUE PROCESSING");
+                        parameters.Add("link_message", "APPROVE");
                         break;
 
                     default:
-                        parameters.Add("url_approve", Url.Action("Edit", "BRBrandRegistration", new { Id = id }, this.Request.Url.Scheme));
-                        parameters.Add("link_message", "CONTINUE PROCESSING");
+                        parameters.Add("url_approve", Url.Action("Approval", "BRBrandRegistration", new { Id = id }, this.Request.Url.Scheme));
+                        parameters.Add("link_message", "APPROVE");
                         break;
 
                 }
@@ -1582,7 +1641,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     block_details += "<tr><td>Tarif Cukai</td><td>:</td><td>" + item.Tariff + "</td></tr>";
                     block_details += "<tr><td>HJE per pack</td><td>:</td><td>" + item.Hje + "</td></tr>";
-                    block_details += "<tr><td>HJE Per Stick per Gr</td><td>:</td><td>" + item.Hje + "</td></tr>";
+                    block_details += "<tr><td>HJE Per Stick / Gr</td><td>:</td><td>" + item.Hje + "</td></tr>";
                     block_details += "<tr><td>Content</td><td>:</td><td>" + item.Brand_Content + "[" + item.Unit + "]</td></tr>";
                     block_details += "<tr><td>Excisable Good Type</td><td>:</td><td>" + item.ProductType + "</td></tr>";
                     block_details += "<tr><td>Market</td><td>:</td><td>" + item.MarketDesc + "</td></tr>";
@@ -1598,7 +1657,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             }
 
-            msgSuccess = "Success Change Status";
+            msgSuccess = "";
 
             List<string> ListPOA = new List<string>();
             switch (SendTo)
@@ -2355,7 +2414,14 @@ namespace Sampoerna.EMS.Website.Controllers
                             //var ProductdetailAvailable = productDevelopmentService.GetProductDevDetail().Where(w => w.STATUS_APPROVAL == refService.GetRefByKey("COMPLETED").REFF_ID && w.PRODUCT_DEVELOPMENT.NEXT_ACTION == (int)Enums.ProductDevelopmentAction.PenetapanSKEP);
                             var RegistrationType = Convert.ToInt32(Request.Form.Get("registration_type"));
                             var nppbkc = Convert.ToString(Request.Form.Get("ViewModel.Nppbkc_ID"));
-                            var ProductdetailAvailable = brandRegistrationService.GetProductDevDetail(RegistrationType, nppbkc);
+                            long RegID = 0;
+                            var strRegID = Request.Form.Get("ViewModel.Registration_ID");
+                            if (strRegID != "")
+                            {
+                                RegID = Convert.ToInt64(strRegID);
+                            }
+
+                            var ProductdetailAvailable = brandRegistrationService.GetProductDevDetail(RegistrationType, nppbkc, RegID);
 
                             foreach (var datarow in data.DataRows)
                             {
@@ -2464,10 +2530,10 @@ namespace Sampoerna.EMS.Website.Controllers
                                     }
 
 
-                                    var productdev = ProductdetailAvailable.Where(w => w.REQUEST_NO == v_requestNo && w.FA_CODE_OLD == v_facode_old);
-                                    if (productdev.Any())
+                                    var productdev = ProductdetailAvailable.Where(w => w.REQUEST_NO == v_requestNo && w.FA_CODE_OLD == v_facode_old).ToList();
+                                    if (productdev.Count() > 0)
                                     {
-                                        var item = MapProductDetailModelList(productdev, RegistrationType).FirstOrDefault();
+                                        var item = MapProductDetailModelList(productdev , RegistrationType).FirstOrDefault();
                                         if (ItemNotinList.Contains(item.PD_DETAIL_ID.ToString()))
                                         {
                                             err += "* Product with request number " + item.Request_No + " already added before <br/>";
@@ -2581,7 +2647,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             }).ToList();
 
-            var nppbkclist = brandRegistrationService.GetNPPBKCByUser(CurrentUser.USER_ID);
+            List<string> nppbkclist = new List<string>();
 
             foreach (var item in _BRViewModel.Item)
             {
@@ -2596,12 +2662,11 @@ namespace Sampoerna.EMS.Website.Controllers
             _BRViewModel.MainMenu = mainMenu;
             _BRViewModel.CurrentMenu = PageInfo;
             _BRViewModel.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer;
-            _BRViewModel.POA = MapPoaModel(refService.GetPOA(CurrentUser.USER_ID));
+            _BRViewModel.POA = MapPoaModel(refService.GetPOA(_BRViewModel.ViewModel.Created_By));
             _BRViewModel.ShowActionOptions = _BRViewModel.IsNotViewer;
             _BRViewModel.EditMode = false;
             _BRViewModel.EnableFormInput = true;
             _BRViewModel.ViewModel.IsCreator = false;
-            _BRViewModel.NppbkcList = GetNppbkcListByUser(nppbkclist);
             _BRViewModel.BrandList = GetBrandist(penetapanSKEPService.getMasterBrand());
             _BRViewModel.ProductTypeList = GetProdTypeList(penetapanSKEPService.getMasterProductType());
             _BRViewModel.CompanyTierList = GetCompanyTierList(refService.GetRefByType("COMPANY_TIER"));
@@ -2663,23 +2728,29 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (Mode == "Edit")
             {
+                nppbkclist = brandRegistrationService.GetNPPBKCByUser(CurrentUser.USER_ID);
+
                 _BRViewModel.IsFormReadOnly = false;
                 _BRViewModel.IsDetail = false;
                 _BRViewModel.ViewModel.NextStatus = refService.GetRefByKey("DRAFT_EDIT_STATUS").REFF_ID;
             }
-            else if (Mode == "Detail")
+            else if (Mode == "Detail" || Mode == "EditSKEP")
             {
+                nppbkclist.Add(_BRViewModel.ViewModel.Nppbkc_ID);
+                nppbkclist = brandRegistrationService.GetNPPBKCByUser(CurrentUser.USER_ID);
+
                 _BRViewModel.IsFormReadOnly = true;
                 _BRViewModel.IsDetail = true;
             }
             else if (Mode == "Approval")
             {
+                nppbkclist.Add(_BRViewModel.ViewModel.Nppbkc_ID);
                 _BRViewModel.IsFormReadOnly = true;
                 _BRViewModel.IsDetail = false;
                 _BRViewModel.ViewModel.NextStatus = refService.GetRefByKey("WAITING_GOVERNMENT_APPROVAL").REFF_ID;
             }
 
-            //_CRModel.GovStatus_List = GetGovStatusList(service.GetGovStatusList());
+            _BRViewModel.NppbkcList = GetNppbkcListByUser(nppbkclist);
 
             //var history = refService.GetChangesHistory((int)Enums.MenuList.ChangeRequest, ID.ToString()).ToList();
             //_CRModel.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(history);
@@ -2842,6 +2913,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }).FirstOrDefault();
 
                 _CRModel.Company = MapNppbkcModel(refService.GetNppbkc(_CRModel.Nppbkc_ID)).Company;
+                _CRModel.Status = refService.GetReferenceById(_CRModel.LastApproved_Status).REFF_KEYS;
                 _CRModel.strLastApproved_Status = refService.GetReferenceById(_CRModel.LastApproved_Status).REFF_VALUE;
                 _CRModel.CompanyAddress = brandRegistrationService.FindMainPlantByNppbkcID(_CRModel.Nppbkc_ID).ADDRESS;
 
@@ -2855,12 +2927,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
         [HttpPost]
-        public ActionResult GetProductDevelopmentItemList(long[] ItemNotIn, int RegistrationType, string nppbkc)
+        public ActionResult GetProductDevelopmentItemList(long[] ItemNotIn, int RegistrationType, string nppbkc, int RegId)
         {
             try
             {
                 //var theapp = productDevelopmentService.GetProductDevDetail().Where(w => w.STATUS_APPROVAL == refService.GetRefByKey("COMPLETED").REFF_ID && w.PRODUCT_DEVELOPMENT.NEXT_ACTION == RegistrationType);
-                var theapp = brandRegistrationService.GetProductDevDetail(RegistrationType, nppbkc);
+                var theapp = brandRegistrationService.GetProductDevDetail(RegistrationType, nppbkc, RegId);
                 var list = MapProductDetailModelList(theapp, RegistrationType);
                 return Json(list);
             }
@@ -3681,7 +3753,8 @@ namespace Sampoerna.EMS.Website.Controllers
             return data;
         }
 
-        private List<BRProductDevDetailModel> MapProductDetailModelList(IQueryable<vwProductDevDetail> product, int RegistrationType)
+        //private List<BRProductDevDetailModel> MapProductDetailModelList(IQueryable<vwProductDevDetail> product, int RegistrationType)
+        private List<BRProductDevDetailModel> MapProductDetailModelList(List<vwProductDevDetail> product, int RegistrationType)
         {
             var list = product.Select(s => new BRProductDevDetailModel
             {
@@ -3701,10 +3774,11 @@ namespace Sampoerna.EMS.Website.Controllers
             var newList = new List<BRProductDevDetailModel>();
             foreach(var item in list)
             {
-                var brandMaster = brandRegistrationService.FindBrandMaster(item.Fa_Code_Old, item.Fa_Code_New, RegistrationType);
+                //var brandMaster = brandRegistrationService.FindBrandMaster(item.Fa_Code_Old, item.Fa_Code_New, RegistrationType);
+                var brandMaster = brandRegistrationService.FindBrandTransaction(item.Fa_Code_Old, item.Fa_Code_New, RegistrationType);
                 if (brandMaster != null)
                 {
-                    item.HJE = brandMaster.HJE_IDR ?? 0;
+                    item.HJE = brandMaster.HJE;
                     item.BrandContent = Convert.ToInt32(brandMaster.BRAND_CONTENT);
                     if (item.HJE > 0)
                     {
@@ -3715,21 +3789,35 @@ namespace Sampoerna.EMS.Website.Controllers
                         item.HJEperBatang = 0;
                     }
                     item.Tariff = brandMaster.TARIFF ?? 0;
-                    item.PackagingMaterial = brandMaster.BAHAN_KEMASAN == null ? "" : brandMaster.BAHAN_KEMASAN;
+                    item.Unit = brandMaster.UNIT;
+                    item.CompanyTier = brandMaster.COMPANY_TIER;
+                    item.PackagingMaterial = brandMaster.MATERIAL_PACKAGE;
                     item.Market_Id = brandMaster.ZAIDM_EX_MARKET.MARKET_DESC;
                     item.BrandName = brandMaster.BRAND_CE;
                     item.ExciseGoodType = brandMaster.PROD_CODE;
+                    item.FrontSide = brandMaster.FRONT_SIDE;
+                    item.BackSide = brandMaster.BACK_SIDE;
+                    item.LeftSide = brandMaster.LEFT_SIDE;
+                    item.RightSide = brandMaster.RIGHT_SIDE;
+                    item.TopSide = brandMaster.TOP_SIDE;
+                    item.BottomSide = brandMaster.BOTTOM_SIDE;
                 }
                 else
                 {
                     item.HJE = 0;
                     item.HJEperBatang = 0;
+                    item.Unit = "";
                     item.BrandContent = 0;
                     item.Tariff = 0;
                     item.PackagingMaterial = "";
                     item.BrandName = "";
                     item.ExciseGoodType = "";
-
+                    item.FrontSide = "";
+                    item.BackSide = "";
+                    item.LeftSide = "";
+                    item.RightSide = "";
+                    item.TopSide = "";
+                    item.BottomSide = "";
                 }
                 newList.Add(item);
             }
@@ -3837,7 +3925,8 @@ namespace Sampoerna.EMS.Website.Controllers
                         Name = nppbkc.COMPANY.BUTXT,
                         Alias = nppbkc.COMPANY.BUTXT_ALIAS,
                         Npwp = nppbkc.COMPANY.NPWP,
-                        City = nppbkc.CITY
+                        City = nppbkc.CITY,
+                        PKP = nppbkc.COMPANY.PKP
                     } : null
                 };
             }
@@ -4076,10 +4165,20 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var ProductAlias = brandRegistrationService.GetProductAlias(ID);
 
+            var Plants = brandRegistrationService.GetPlantByNPPBKC(_BRViewModel.ViewModel.Nppbkc_ID).ToList();
+
+            var company_address_text = "";
+            foreach (var plant in Plants)
+            {
+                company_address_text += plant.ADDRESS + "<BR/>";
+            }
+
+
             var parameters = new Dictionary<string, string>();
             parameters.Add("REGISTRATION_NO", _BRViewModel.ViewModel.Registration_No);
             parameters.Add("COMPANY_NAME", _BRViewModel.ViewModel.Company.Name);
-            parameters.Add("COMPANY_ADDRESS", _BRViewModel.ViewModel.CompanyAddress);
+            //parameters.Add("COMPANY_ADDRESS", _BRViewModel.ViewModel.CompanyAddress);
+            parameters.Add("COMPANY_ADDRESS", company_address_text);
             parameters.Add("COMPANY_CITY", _BRViewModel.ViewModel.Company.City);
             parameters.Add("SUBMISSION_DATE", Convert.ToDateTime(_BRViewModel.ViewModel.Submission_Date).ToString("dd MMMM yyyy"));
             parameters.Add("TEXT_TO", _BRViewModel.ViewModel.Text_To);
@@ -4089,10 +4188,9 @@ namespace Sampoerna.EMS.Website.Controllers
             parameters.Add("POA_ADDRESS", POAData.POA_ADDRESS);
             parameters.Add("NPPBKC", _BRViewModel.ViewModel.Nppbkc_ID);
             parameters.Add("NPWP", _BRViewModel.ViewModel.Company.Npwp);
-            parameters.Add("PKP", "");
+            parameters.Add("PKP", _BRViewModel.ViewModel.Company.PKP);
             parameters.Add("ATTACHMENTS", attachments);
             parameters.Add("PRODUCT_ALIAS", ProductAlias);
-
 
             var layout_item_updates = "";
             var layout_registration_items = "";
@@ -4103,7 +4201,7 @@ namespace Sampoerna.EMS.Website.Controllers
             foreach (var item in _BRViewModel.Item)
             {
                 item.HJEperBatang = item.Hje / Convert.ToInt32(item.Brand_Content);
-                if (item.Is_Import == false)
+                if (item.Market_ID == "02")
                 {
                     Doc_Export = true;
                 }
@@ -4167,7 +4265,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             parameters.Add("ITEMS", layout_item_updates);
 
-            var list_of_brands = brandRegistrationService.FindBrandByCompany(brandRegistrationService.FindMainPlantByNppbkcID(_BRViewModel.ViewModel.Nppbkc_ID).WERKS).ToList();
+            var list_of_brands = brandRegistrationService.FindBrandByCompanies(Plants).Select(s => new { BrandName = s.BRAND_CE, ProductAlias = s.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS, HJE = s.HJE_IDR, BrandContent = s.BRAND_CONTENT, SKEPNo = s.SKEP_NO, SKEPDate = s.SKEP_DATE, Tarif = s.TARIFF }).Distinct().ToList();
 
             string layout_brands = "";
             no_item_update = 1;
@@ -4175,13 +4273,13 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 layout_brands += "<tr>";
                 layout_brands += "<td>" + no_item_update.ToString() + "</td>";
-                layout_brands += "<td>" + brand.BRAND_CE + "</td>";
-                layout_brands += "<td>" + brand.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS + "</td>";
-                layout_brands += "<td>" + brand.HJE_IDR + "</td>";
-                layout_brands += "<td>" + Convert.ToInt32(brand.BRAND_CONTENT) + "</td>";
-                layout_brands += "<td>" + brand.SKEP_NO + "</td>";
-                layout_brands += "<td>" + brand.SKEP_DATE.Value.ToString("dd MMMM yyyy") + "</td>";
-                layout_brands += "<td>" + brand.TARIFF + "</td>";
+                layout_brands += "<td>" + brand.BrandName + "</td>";
+                layout_brands += "<td>" + brand.ProductAlias + "</td>";
+                layout_brands += "<td>" + brand.HJE + "</td>";
+                layout_brands += "<td>" + Convert.ToInt32(brand.BrandContent) + "</td>";
+                layout_brands += "<td>" + brand.SKEPNo + "</td>";
+                layout_brands += "<td>" + brand.SKEPDate.Value.ToString("dd MMMM yyyy") + "</td>";
+                layout_brands += "<td>" + brand.Tarif + "</td>";
                 layout_brands += "<td></td>";
                 layout_brands += "</tr>";
                 no_item_update++;
@@ -4295,6 +4393,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var uploadToFolder = Server.MapPath("~" + baseFolder);
                 Directory.CreateDirectory(uploadToFolder);
                 uploadToFolder += "PrintOut_BrandRegistration_" + FormNumber + "_" + now + ".pdf";
+
                 FileStream stream = new FileStream(uploadToFolder, FileMode.Create);
                 var leftMargin = iTextSharp.text.Utilities.MillimetersToPoints(25.4f);
                 var rightMargin = iTextSharp.text.Utilities.MillimetersToPoints(25.4f);
@@ -4310,8 +4409,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 XMLWorkerHelper.GetInstance().ParseXHtml(writer, document, srHtml);
                 document.Close();
                 stream.Close();
-                var newFile = new FileInfo(uploadToFolder);
-                var fileName = Path.GetFileName(uploadToFolder);
+
+                var MergeDocs = MergePrintout(uploadToFolder, BrandRegID);
+
+                //var newFile = new FileInfo(uploadToFolder);
+                //var fileName = Path.GetFileName(uploadToFolder);
+                var newFile = new FileInfo(MergeDocs);
+                var fileName = Path.GetFileName(MergeDocs);
+
                 string attachment = string.Format("attachment; filename={0}", fileName);
                 Response.Clear();
                 Response.AddHeader("content-disposition", attachment);
@@ -4327,6 +4432,36 @@ namespace Sampoerna.EMS.Website.Controllers
                 //Response.AddHeader("content-disposition", "attachment;filename=PrintOut_InterviewRequest_" + FormNumber + "_" + now + ".pdf");
                 //Response.BinaryWrite(bytesInStream);
                 //Response.End();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public String MergePrintout(string path, long RegId)
+        {
+            try
+            {
+                var filesupload = brandRegistrationService.GetFileUploadByRegID(RegId).ToList();
+
+                List<String> sourcePaths = new List<string>();
+                sourcePaths.Add(path);
+                var ext = "";
+                foreach (var file_attach in filesupload)
+                {
+                    ext = file_attach.PATH_URL.Substring((file_attach.PATH_URL.Length - 3), 3);
+                    if (ext == "pdf")
+                    {
+                        sourcePaths.Add(Server.MapPath("~" + file_attach.PATH_URL));
+                    }
+                }
+
+                if (PdfMerge.Execute(sourcePaths.ToArray(), path))
+                    return path;
+                else
+                    return null;
+
             }
             catch (Exception ex)
             {

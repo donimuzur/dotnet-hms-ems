@@ -37,6 +37,8 @@ namespace Sampoerna.EMS.CustomService.Services.ManufactureLicense
             govstatusList = new Dictionary<int, string>();
             govstatusList.Add(1, "Approved");
             govstatusList.Add(0, "Rejected");
+            
+
         }
         /* 
         private Dictionary<int, string> exciseCreditType;
@@ -90,21 +92,29 @@ namespace Sampoerna.EMS.CustomService.Services.ManufactureLicense
             }
         }
 
-        public MASTER_NPPBKC InsertNPPBKC(string  nppbkc, string address, string kppbc, string UserId)
+        public MASTER_NPPBKC InsertNPPBKC(string  nppbkc, string address, string city, string city_alias, string text_to, string kppbc, string UserId)
         {
             var NppbkcMas = new MASTER_NPPBKC();
             try
             {
                 context = new EMSDataModel();
 
-                NppbkcMas.NPPBKC_ID = nppbkc;
-                NppbkcMas.ADDR1 = address;
-                NppbkcMas.KPPBC_ID = kppbc;
-                NppbkcMas.CREATED_BY = UserId;
-                NppbkcMas.CREATED_DATE = DateTime.Now;
+                var oldNppbkc = context.ZAIDM_EX_NPPBKC.Where(w => w.NPPBKC_ID == nppbkc).FirstOrDefault();
 
-                context.ZAIDM_EX_NPPBKC.Add(NppbkcMas);
-                context.SaveChanges();
+                if (oldNppbkc == null)
+                {
+                    NppbkcMas.NPPBKC_ID = nppbkc;
+                    NppbkcMas.KPPBC_ADDRESS = address;
+                    NppbkcMas.CITY = city;
+                    NppbkcMas.CITY_ALIAS = city_alias;
+                    NppbkcMas.TEXT_TO = text_to;
+                    NppbkcMas.KPPBC_ID = kppbc;
+                    NppbkcMas.CREATED_BY = UserId;
+                    NppbkcMas.CREATED_DATE = DateTime.Now;
+
+                    context.ZAIDM_EX_NPPBKC.Add(NppbkcMas);
+                    context.SaveChanges();
+                }
 
                 return NppbkcMas;
             }
@@ -1144,6 +1154,29 @@ namespace Sampoerna.EMS.CustomService.Services.ManufactureLicense
             }
         }
 
+        public List<long> GetLicenseLastApproveAfterSubmit(string Approver)
+        {
+            try
+            {
+                context = new EMSDataModel();
+                var listIR = new List<long>();
+                var ApproverAll = context.POA_MAP.Where(w => w.POA_ID == Approver);
+                if (ApproverAll.Any())
+                {
+                    var statusIdWait = refService.GetRefByKey("WAITING_POA_APPROVAL").REFF_ID;
+                    var statusIdGov = refService.GetRefByKey("WAITING_POA_SKEP_APPROVAL").REFF_ID;
+                    var poaid = ApproverAll.Select(s=>s.POA_ID).ToList();
+
+                    listIR = context.MANUFACTURING_LISENCE_REQUEST.Where(w => (w.LASTAPPROVED_STATUS == statusIdWait || w.LASTAPPROVED_STATUS == statusIdGov) && poaid.Contains(w.LASTAPPROVED_BY)).Select(s => s.MNF_REQUEST_ID).ToList();
+                }
+                return listIR;
+            }
+            catch (Exception ex)
+            {
+                throw this.HandleException("Exception occured on Manufacture License Interview Request Get IR Approved With Same NPPBKC. See Inner Exception property to see details", ex);
+            }
+        }
+
         public List<long> GetLicenseNeedApproveWithoutNPPBKC(string Approver)
         {
             try
@@ -1229,7 +1262,7 @@ namespace Sampoerna.EMS.CustomService.Services.ManufactureLicense
                     LRequest.LASTMODIFIED_BY = ModifiedBy;
                     LRequest.LASTMODIFIED_DATE = now;
                     LRequest.LASTAPPROVED_STATUS = LastApprovedStatus;
-                    if (ActionType != (int)Enums.ActionType.Submit)
+                    if (ActionType == (int)Enums.ActionType.Approve || ActionType == (int)Enums.ActionType.Revise)
                     {
                         LRequest.LASTAPPROVED_BY = ModifiedBy;
                         LRequest.LASTAPPROVED_DATE = now;
@@ -1302,15 +1335,17 @@ namespace Sampoerna.EMS.CustomService.Services.ManufactureLicense
                 var ListPOA = new List<POA>();
                 var RealListPOA = new List<POA>();
                 var IRequest = GetLicenseRequestById(IRId).FirstOrDefault();
+                
                 if (IRequest != null)
                 {
-                    var NPPBKCId = IRequest.NPPBKC_ID;
+                    //var NPPBKCId = IRequest.NPPBKC_ID;
+                    var NPPBKCId = GetNPPBKCID(IRequest.VR_FORM_ID);
                     if (IRequest.SYS_REFFERENCES.REFF_KEYS != ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.AwaitingPoaSkepApproval) && IRequest.LASTAPPROVED_BY == null)
                     {
                         var ListPOA_Nppbkc = context.POA_MAP.Where(w => w.NPPBKC_ID.Equals(NPPBKCId) && w.POA.IS_ACTIVE == true && w.POA_ID != IRequest.CREATED_BY).Select(s => s.POA_ID).ToList();
                         var OriexcisePOA = context.POA_EXCISER.Where(w => w.IS_ACTIVE_EXCISER == true).Select(s => s.POA_ID).ToList();
                         var excisePOA = new List<string>();
-                        if (ListPOA_Nppbkc != null)
+                        if (ListPOA_Nppbkc.Count() == 0)
                         {
                             excisePOA = OriexcisePOA.Where(w => ListPOA_Nppbkc.Contains(w)).ToList();
                         }

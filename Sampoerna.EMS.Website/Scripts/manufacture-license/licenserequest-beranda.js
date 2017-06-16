@@ -655,6 +655,12 @@ $(document).on("click", ".btn_showmodal_changestatus", function () {
         $("#btn_changestatus_reviseskep").hide();
         $("#btn_changestatus_reject").show();
     }
+    else if (action == "Withdraw") {
+        $("#txt_label_forchangestatus").text("Withdraw Form Confirmation");
+        $("#btn_changestatus_reject").hide();
+        $("#btn_changestatus_reviseskep").hide();
+        $("#btn_changestatus_withdraw").show();
+    }
 });
 
 $(document).on("click", ".btn_changestatus_submit", function () {
@@ -668,13 +674,19 @@ $(document).on("click", ".btn_changestatus_submit", function () {
     else if (action == "reviseskep") {
         status = "WAITING_GOVERNMENT_APPROVAL";
     }
+    else if (action == "withdraw") {
+        status = "DRAFT_EDIT_STATUS";
+    }
     else{
         status = "CANCELED";
     }
     var comment = $("#txt_changestatus_comment").val();
-    if (comment == "" && (action == "revise" || action == "reviseskep")) {
-        $("#div_alert_revise").show();
-        $("#div_alert_revise").html("* Note/Comment cannot be empty.");
+    if (comment == "") {
+        if (action == "revise" || action == "reviseskep" || action == "withdraw")
+        {
+            $("#div_alert_revise").show();
+            $("#div_alert_revise").html("* Note/Comment cannot be empty.");
+        }
     }
     else {
         $("#customloader").show();
@@ -979,6 +991,12 @@ function UpdatePrintoutLayout() {
 
 $(document).on("click", "#btn-tab-changeslog", function () {
     var isalreadyloaded = $("#txt_ischangelog_loaded").val();
+    var now = new Date();
+    var Token = now.getDate().toString() + now.getDate().toString() + (now.getMonth() + 1).toString()
+                + now.getFullYear().toString()
+                + now.getHours().toString()
+                + now.getMinutes().toString()
+                + now.getSeconds().toString();
     if (isalreadyloaded == "0") {
         var crid = $("#txt_hd_id").val();
         $("#customloader").show();
@@ -986,7 +1004,10 @@ $(document).on("click", "#btn-tab-changeslog", function () {
             //url: '/MLLicenseRequest/ChangeLog',
             url: getUrl("ChangeLog"),
             dataType: 'html',
-            data: { CRID: crid },
+            data: {
+                CRID: crid,
+                Token: Token
+            },
             success: function (data) {
                 $('#divChangeLog').html(data);
                 // DataTable

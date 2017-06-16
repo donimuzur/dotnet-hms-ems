@@ -227,18 +227,13 @@
     <script type="text/javascript" language="javascript">
 
         $(document).ready(function () {
-            $('#MenuManufactureLicenseChangeRequestOpenDocument').addClass('active');
-            $('#MenuManufactureLicenseLicenseRequestOpenDocument').removeClass('active');
-            $('#MenuManufactureLicenseLicenseRequestOpenDocument').removeClass('open');
-            $('#MenuManufactureLicenseInterviewRequestOpenDocument').removeClass('active');
-            $('#MenuManufactureLicenseInterviewRequestOpenDocument').removeClass('open');
+            $('#MenuProduct').removeClass('open');
+            $('#MenuBrand').removeClass('open');
+            $('#MenuSKEP').addClass('open');
+            $('#MenuPenetapanSKEPSummaryReports').addClass('active');
 
             setupDataTables();
-
-            //setupDataTables(true);
-            $('#MenuChangeRequestSummaryReports').addClass('active');
-
-            });
+        });
 
         function setupDataTables() {
             // DataTable

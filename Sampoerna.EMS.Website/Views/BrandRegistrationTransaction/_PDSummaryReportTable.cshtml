@@ -6,12 +6,23 @@
         <tr>
             <th class="toggle-row">&nbsp;No</th>                   
             <th>No Form</th>
-            <th>Request Date</th>                        
             <th>Next Action</th>
+            <th>Request Date</th>                        
             <th>Creator</th>
+            <th>Hl Code</th>
+            <th>Company</th>
+            <th>Market</th>
+            <th>Fa Code Old</th>
+            <th>Fa Code New</th>
+            <th>Fa Code Old Desc</th>
+            <th>Fa Code New Desc</th>
+            <th>Import</th>
+            <th>Request Number</th>
+            <th>Plant Name</th>
+            <th>Status</th>
         </tr>
     </thead>
-    <thead class="filters">
+    @*<thead class="filters">
         <tr>
             <th></th>            
             <th></th>
@@ -20,7 +31,7 @@
             <th></th>
             
         </tr>
-    </thead>
+    </thead>*@
     <tbody>
         @{
             int row = 1;
@@ -29,11 +40,21 @@
 
             <tr>
                 <td>@row</td>             
-                <td>@Html.DisplayFor(model => item.PD_NO)</td>
-                <td>@item.Created_Date.ToString("dd MMM yyyy")</td>          
-                <td>@Sampoerna.EMS.Utils.EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Sampoerna.EMS.Core.Enums.ProductDevelopmentAction), item.Next_Action.ToString()))</td>                      
-                @*<td class="last">@Html.DisplayFor(model => item.ApprovalStatusDescription.Value)</td>*@
+                <td>@Html.DisplayFor(model => item.PD_NO)</td>                      
+                <td>@Sampoerna.EMS.Utils.EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Sampoerna.EMS.Core.Enums.ProductDevelopmentAction), item.Next_Action.ToString()))</td>                                      
+                <td>@item.Created_Date.ToString("dd MMM yyyy")</td>    
                 <td>@Html.DisplayFor(model=>item.Created_By)</td>
+                <td>@item.Hl_Code</td>
+                <td>@item.CompanyName</td>
+                <td>@item.MarketDesc</td>
+                <td>@item.Fa_Code_Old</td>
+                <td>@item.Fa_Code_New</td>
+                <td>@item.Fa_Code_Old_Desc</td>
+                <td>@item.Fa_Code_New_Desc</td>
+                <td>@item.Is_Import</td>
+                <td>@item.Request_No</td>
+                <td>@item.PlantName</td>
+                <td>@item.LastStatus</td>
             </tr>
                     row = row + 1;
                 }

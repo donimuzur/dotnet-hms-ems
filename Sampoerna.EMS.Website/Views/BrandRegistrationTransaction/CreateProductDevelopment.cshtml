@@ -21,7 +21,7 @@
 
 @{
     var baseurl = Request.Url.GetLeftPart(UriPartial.Authority);
-    var templateurl = baseurl + "/files_upload/ProductDevelopment/ImportTemplate/Product_Import_Item_Template.xlsx";
+    var templateurl = baseurl + "/files_upload/ProductDevelopment/ImportItem/Product_Template.xlsx";
 }
 <div class="modal ems-modal fade modal_import" tabindex="-1" role="dialog" aria-labelledby="ImportModal">
     <div class="modal-dialog">
@@ -118,9 +118,13 @@
                                                     <fieldset>
                                                         <legend><label>FA Code (Old)</label></legend>
                                                         <div class="row">
-                                                            <div class="col-md-4"><label>FA Code</label></div>
-                                                            <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Fa_Code_Old, Model.MaterialList, "Select", new { @class = "selectpicker form-control", @id = "FaCodeOldSelector" })</div>
-                                                        </div>
+                                                            <div class="col-md-4"><label>FA Code</label></div>                                                       
+                                                            <div class="col-md-8">
+                                                                <select class="form-control" id="FaOldId" name="FaOldId">
+                                                                    <option value="">Select</option>
+                                                                </select>
+                                                            </div>
+                                                         </div>
                                                         <div class="row">
                                                             <div class="col-md-4"><label>Description</label></div>
                                                             <div class="col-md-8">@Html.TextAreaFor(model => model.DetailModel.Fa_Code_Old_Desc, new { @class = "form-control", @readonly = "true", @id = "FaCodeOldDesc" })</div>
@@ -131,9 +135,12 @@
                                                     <fieldset>
                                                         <legend><label>FA Code (New)</label></legend>
                                                         <div class="row">
-                                                            <div class="col-md-4"><label>FA Code</label></div>
-                                                            <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Fa_Code_New, Model.MaterialList, "Select", new { @class = "selectpicker form-control", @id = "FaCodeNewSelector" })</div>
-
+                                                            <div class="col-md-4"><label>FA Code</label></div>                                                       
+                                                            <div class="col-md-8">
+                                                                    <select class="form-control" id="FaNewId" name="FaNewId">
+                                                                        <option value="">Select</option>
+                                                                    </select>
+                                                                </div>
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-md-4"><label>Description</label></div>
@@ -148,7 +155,7 @@
                                                     <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Market_Id, Model.MarketList, new { @class = "selectpicker form-control", @id = "MarketSelector" })</div>
                                                 </div>
                                                 <div class="col-md-6">                                                
-                                                    <div class="col-md-4"><label>HL Code<span class="red">*</span></label></div>
+                                                    <div class="col-md-4"><label>HL Code</label></div>
                                                     <div class="col-md-8">@Html.TextBoxFor(model => model.DetailModel.Hl_Code, new { @class = "form-control", @maxlength = "22", @id = "hlCode" })</div>
                                                 </div>
                                             </div>
@@ -354,8 +361,9 @@
                                         <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
 
                                             <div class="panel-body">
-                                                <div class="alert alert-danger" style="display:none" id="CheckListLabel">
-                                                </div>
+                                                <div class="alert alert-danger" style="display:none" id="CheckListLabel"> </div>                                               
+                                                <div class="alert alert-danger" style="display:none" id="div_error_importitem"></div>
+
                                                 <div class="row">
                                                     <div class="col-md-4">
                                                         @*<input name="ProdExcelfile" class="form-control" id="ProdExcelfile" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />*@
@@ -466,11 +474,14 @@
             var createDetailUrl = '@Url.Action("CreateProductDetail", "BrandRegistrationTransaction")';
             var compId = $("#CompanySelector :selected").val();
             var homeUrl = '@Url.Action("IndexProductDevelopment", "BrandRegistrationTransaction")';
+            var urlFaCodeByPlant = '@Url.Action("GetMaterialByPlant", "BrandRegistrationTransaction")';
+            var urlFaCodeUsedByPlant = '@Url.Action("GetMaterialUsedByPlant", "BrandRegistrationTransaction")';
+            var urlGetPlantCodeByName = '@Url.Action("GetPlantCodeByName", "BrandRegistrationTransaction")';
 
             ajaxGetPlant(urlPlantNonImport, compId);
             loadSupportingDocuments(urlSupportDoc, compId);
             attach();
-            
+
             $('input:radio').change(function () {
                 radioElm.hide();
                 var selectedRadio = $("input[name='Action']:checked").val();
@@ -505,24 +516,27 @@
                 }
             });
 
-            $('#FaCodeOldSelector').on("change", function () {
-                var compId = $("#FaCodeOldSelector :selected").text();
+            //FaOldId //FaCodeOldSelector
+            $('#FaOldId').on("change", function () {
+                var compId = $("#FaOldId :selected").text();
                 ajaxFaCodeOldDescription(urlOldDescription, compId);
                 faOldElm.hide();
             });
 
-            $('#FaCodeNewSelector').on("change", function () {
-                var compId = $("#FaCodeNewSelector :selected").text();
+            //FaNewId // FaCodeNewSelector
+            $('#FaNewId').on("change", function () {
+                var compId = $("#FaNewId :selected").text();
                 ajaxFaCodeNewDescription(urlNewDescription, compId);
                 faNewElm.hide();
             });
 
             $('#PlantId').on("change", function () {
-                var plant = $("#PlantId :selected").text();
+                var plantName = $("#PlantId :selected").text();
                 var nppbkcId = $("#PlantId :selected").val();
                 plantElm.hide();
                 console.log("nppbkc id :" + nppbkcId);
-                ajaxLoadNppbkcData( urlNppbkc, nppbkcId);
+                ajaxLoadNppbkcData(urlNppbkc, nppbkcId);                
+                ajaxGetPlantCode(urlGetPlantCodeByName, plantName, urlFaCodeByPlant, urlFaCodeUsedByPlant);
             });
 
             $('#isImport').change(function () {
@@ -546,12 +560,12 @@
             saveButton.click(function () {
 
                 // do validation form here
-                if ($("input[name='Action']:checked").val() == null || arrayItem.length == 0) {
+                if ($("input[name='Action']:checked").val() == null || arrayItem.length == 0 || arrayItemSave.length == 0) {
                     if ($("input[name='Action']:checked").val() == null) {
                         radioElm.html("<span>Please choose your next action for this Form.</span>");
                         radioElm.show();
                     }
-                    if (arrayItem.length == 0) {
+                    if (arrayItem.length == 0 || arrayItemSave.length == 0) {
                         listElm.html("<span>No item filled in the list below.</span>");
                         listElm.show();
                     }
@@ -571,7 +585,33 @@
         $(document).unload(function () {
             detach();
         });
-     
+
+        function ClearModalDetail() {
+            $("#brandRequestNo").val("");          
+            $("#CompanySelector").selectpicker("refresh");
+            $("#MarketSelector").selectpicker("refresh");
+            $("#PlantId").selectpicker("refresh");
+            $("#FaNewId").selectpicker("refresh");
+            $("#FaCodeNewDesc").val("");                 
+            $("#FaOldId").selectpicker("refresh");
+            $("#FaCodeOldDesc").val("");
+            $("#hlCode").val("");
+            otherDocs = [];
+            otherDocsName = [];
+            supportingDocs = {};
+            renderFileList();
+        }
+
+        $('#myModalItem').on('show.bs.modal', function () {
+            otherDocs = [];
+            otherDocsName = [];
+            supportingDocs = {};
+            console.log(otherDocs.length);
+            console.log(otherDocsName.length);
+            console.log("supp doc: " + supportingDocs);
+            renderFileList();
+        });
+
         function getUrl(ActionName) {
             var BaseUrl = '@Url.Action("", "BrandRegistrationTransaction")';
             var URL = BaseUrl + "/" + ActionName;
@@ -584,15 +624,6 @@
             console.log("click");
         });
 
-        $('#myModalItem').on('show.bs.modal', function () {
-            otherDocs = [];
-            otherDocsName = [];
-            supportingDocs = {};
-            console.log(otherDocs.length);
-            console.log(otherDocsName.length);
-            console.log("supp doc: " + supportingDocs);
-            renderFileList();
-        });
 
         var productFormData = {};
         function ajaxLoadPDNumber(urlPdNumber) {
@@ -649,6 +680,24 @@
             return count;
         }
 
+        @*function GetPlantCode(name) {
+            var codePlant = "";
+            $.ajax({
+                url: '@Url.Action("GetPlantCodeByName", "BrandRegistrationTransaction")',
+                async: false,
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: { namePlant: name },
+                success: function (data) {
+                    console.log("plant code:" + data);
+                    codePLant = data.ToString();
+                
+               },
+            });
+            return codePlant;
+        }*@
+
+
         function ajaxPlantInfo( nppbkcId) {
             var result = "";
             $.ajax({
@@ -693,10 +742,10 @@
                         if (supportingDocs.hasOwnProperty(key)) {
                             data.append(key, supportingDocs[key], supportingDocs[key].name);
                             console.log(supportingDocs[key]);
-                        }                       
-                    }                                      
+                        }
+                    }
                     data.append("doc_number", $("#PdNumber").val());
-
+                    $("#customloader").show();
                         $.ajax({
                             type: "POST",
                             url: '@Url.Action("UploadFilesProduct", "BrandRegistrationTransaction")',
@@ -706,7 +755,7 @@
                             success: function (result) {
                                 $("#customloader").hide();
                                 console.log("item added.");
-                       
+                               
                             },
                             error: function (xhr, status, p3, p4) {
                                 var err = "Error " + " " + status + " " + p3 + " " + p4;
@@ -714,6 +763,7 @@
                                     err = JSON.parse(xhr.responseText).Message;
                                 console.log(err);
                                 showErrorDialog(err);
+                                $("#customloader").hide();
                             }
                         });
                     } else {
@@ -722,30 +772,30 @@
                 }
             }
 
-        
+
 
             function create() {
 
                 var homeUrl = '@Url.Action("IndexProductDevelopment", "BrandRegistrationTransaction")';
                 var createDetailUrl = '@Url.Action("CreateProductDetail", "BrandRegistrationTransaction")';
-                $("#ProductDevCreateForm").validate();
-                var productFormValid = $("#ProductDevCreateForm").valid();
-                var supportDocsInputs = $("form#ProductDevCreateForm input[type=file]");
-                if (!productFormValid) {
-                    alert("Supporting Document are required.");
-                    showErrorDialog("Supporting documents are required.");
-                    return;
-                }
-                var sizeMB = fileUploadLimitElm.val();
-                for (var key in supportingDocs) {
-                    if (supportingDocs.hasOwnProperty(key)) {
-                        if (supportingDocs[key].size > Number(sizeMB) * 1024 * 1024) {
-                            showErrorDialog("File size is larger than allowed size (" + sizeMB + " MB)");
-                            return;
-                        }
-                    }
-                }
-                if (productFormValid) {
+              //  $("#ProductDevCreateForm").validate();
+               // var productFormValid = $("#ProductDevCreateForm").valid();
+                //var supportDocsInputs = $("form#ProductDevCreateForm input[type=file]");
+                //if (!productFormValid) {
+                //    alert("Supporting Document are required.");
+                //    showErrorDialog("Supporting documents are required.");
+                //    return;
+                //}
+                //var sizeMB = fileUploadLimitElm.val();
+                //for (var key in supportingDocs) {
+                //    if (supportingDocs.hasOwnProperty(key)) {
+                //        if (supportingDocs[key].size > Number(sizeMB) * 1024 * 1024) {
+                //            showErrorDialog("File size is larger than allowed size (" + sizeMB + " MB)");
+                //            return;
+                //        }
+                //    }
+                //}
+              //  if (productFormValid) {
                     populateFormData();
                     $("#customloader").show();
                     $.ajax({
@@ -777,9 +827,9 @@
                     });
                     //saveButton.prop("disabled", true);
                 }
-            }
+          //  }
 
 
-        
+
     </script>
 }

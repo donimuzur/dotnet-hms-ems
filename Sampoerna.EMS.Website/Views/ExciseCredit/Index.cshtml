@@ -26,7 +26,7 @@
 <div class="container-wrap">
     <div class="row">
         <div class="col-sm-12">
-            <div class="white-wrapper" style="display: none;">
+            @*<div class="white-wrapper" style="display: none;">
                 @using (Ajax.BeginForm("FilterOpenDocument", "ExciseCredit",
                 new AjaxOptions
                 {
@@ -91,7 +91,7 @@
                         </div>
                     </div>
                 }
-            </div>
+            </div>*@
             <div id="contenttable" class="table-container">
                 @Html.Partial("_ExciseCreditTable")
             </div>
@@ -107,7 +107,7 @@
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script type="text/javascript" language="javascript">
 
-        $('#MenuExciseOpenDocument').addClass('active');
+        $('#MenuExciseOpenListDocument').addClass('active');
 
        function setupDataTables() {
             $('#btn-reset-filter').click(function () {

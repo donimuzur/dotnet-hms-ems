@@ -120,22 +120,34 @@ namespace Sampoerna.EMS.Website.Controllers
             data.EditMode = false;
             data.EnableFormInput = true;
             data.ViewModel.IsCreator = false;
+            data.IsCreated = false;
 
             var infoUser = productDevelopmentService.FindUserDetail(CurrentUser.USER_ID);
             data.ViewModel.Creator = new UserModel();
             data.ViewModel.Creator.FirstName = infoUser.FIRST_NAME;
             data.ViewModel.Creator.LastName = infoUser.LAST_NAME;
             data.ViewModel.Creator.Email = infoUser.EMAIL;
-         
-            var materialList = productDevelopmentService.GetAllMaterial();
-            var selectMaterialList = from s in materialList
+
+            var materialListOld = productDevelopmentService.GetAllMaterial();
+            var selectMaterialListOld = from s in materialListOld
+                                        select new SelectListItem
+                                        {
+                                            Value = s.STICKER_CODE,
+                                            Text = s.STICKER_CODE
+                                        };
+            var nameMaterialListOld = new SelectList(selectMaterialListOld.GroupBy(p => p.Value).Select(g => g.FirstOrDefault()), "Value", "Text");
+            data.MaterialListOld = nameMaterialListOld;
+
+
+            var materialListNew = productDevelopmentService.GetAllMaterialUsed();
+            var selectMaterialListNew = from s in materialListNew
                                      select new SelectListItem
                                      {
                                          Value = s.STICKER_CODE,
                                          Text = s.STICKER_CODE
                                      };
-            var nameMaterialList = new SelectList(selectMaterialList.GroupBy(p => p.Value).Select(g => g.FirstOrDefault()), "Value", "Text");
-            data.MaterialList = nameMaterialList;
+            var nameMaterialListNew = new SelectList(selectMaterialListNew.GroupBy(p => p.Value).Select(g => g.FirstOrDefault()), "Value", "Text");
+            data.MaterialListNew = nameMaterialListNew;
 
             var limit = refService.GetUploadFileSizeLimit();
             data.FileUploadLimit = (limit != null) ? Convert.ToDecimal(limit.REFF_VALUE) : 0;         
@@ -143,89 +155,6 @@ namespace Sampoerna.EMS.Website.Controllers
             return data;
         }
 
-        //private void ExecuteEditProduct(ProductDevelopmentViewModel model, ReferenceKeys.ApprovalStatus statusApproval, ReferenceKeys.EmailContent emailTemplate, bool sendEmail = false)
-        //{
-        //    try
-        //    {
-        //        var obj = model.ViewModel;
-        //        var data = productDevelopmentService.FindProductDevelopment(model.ViewModel.PD_ID);
-        //        var dataDetail = productDevelopmentService.GetProductDetailByProductID(model.ViewModel.PD_ID);
-        //        var old = Mapper.Map<ProductDevelopmentModel>(data);
-        //        var infoUser = productDevelopmentService.FindUserDetail(data.CREATED_BY);
-        //        obj.Creator = new UserModel();
-        //        obj.Creator.FirstName = infoUser.FIRST_NAME;
-        //        obj.Creator.LastName = infoUser.LAST_NAME;
-        //        obj.Creator.Email = infoUser.EMAIL;
-        //        obj.Created_By = old.Created_By;
-        //        obj.Created_Date = old.Created_Date;
-              
-        //        if (statusApproval == ReferenceKeys.ApprovalStatus.Edited)
-        //        {
-        //            // do nothing
-        //        }
-        //        else if (statusApproval == ReferenceKeys.ApprovalStatus.AwaitingAdminApproval)
-        //        {
-        //            obj = old;
-        //        }
-        //        else if (statusApproval == ReferenceKeys.ApprovalStatus.Completed)
-        //        {
-        //            obj = old;
-        //            //obj.Approved_By = CurrentUser.USER_ID;
-        //            obj.Modified_Date = DateTime.Now;
-        //        }
-        //        obj.Modified_By = CurrentUser.USER_ID;
-        //        obj.Modified_Date = DateTime.Now;
-        //        //obj.Approval_Status = refService.GetReferenceByKey(statusApproval).REFF_ID;
-        //        model.ViewModel = obj;
-
-        //        var parameters = new Dictionary<string, string>();
-        //        //parameters.Add("facodeold", dataDetail.FA_CODE_OLD);
-        //        //parameters.Add("facodeolddesc", dataDetail.FA_CODE_OLD_DESCR);
-        //        //parameters.Add("facodenew", dataDetail.FA_CODE_NEW);
-        //        //parameters.Add("facodenewdesc", dataDetail.FA_CODE_NEW_DESCR);
-        //        //parameters.Add("hl_code", dataDetail.HL_CODE);
-        //        //parameters.Add("market", dataDetail.ZAIDM_EX_MARKET.MARKET_DESC);
-        //        //parameters.Add("creator", String.Format("{0} {1}", data.CREATOR.FIRST_NAME, data.CREATOR.LAST_NAME));
-        //        parameters.Add("approval_status", refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingAdminApproval).REFF_VALUE);
-        //        parameters.Add("url_detail_product", Url.Action("DetailProduct", "BrandRegistrationTransactionController", new { id = data.PD_ID }, this.Request.Url.Scheme));
-        //        parameters.Add("url_approve_product", Url.Action("ApproveProduct", "BrandRegistrationTransactionController", new { id = data.PD_ID }, this.Request.Url.Scheme));
-
-        //        //bool success = productDevelopmentService.Edit(Mapper.Map<CustomService.Data.PRODUCT_DEVELOPMENT>(obj), (int)Enums.MenuList.ProductDevelopment, (int)Enums.ActionType.Modified, (int)CurrentUser.UserRole, CurrentUser.USER_ID);
-        //        bool success = productDevelopmentService.Edit(Mapper.Map<CustomService.Data.PRODUCT_DEVELOPMENT>(obj));
-        //        //if (success)
-        //        //{
-        //        //    if (sendEmail)
-        //        //    {
-        //        //        var mailContent = refService.GetMailContent((int)emailTemplate, parameters);
-        //        //        var sender = refService.GetUserEmail(CurrentUser.USER_ID);
-        //        //        var display = ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.EmailSender.AdminCreator);
-        //        //        var sendToId = refService.GetReferenceByKey(ReferenceKeys.Approver.AdminApprover).REFF_VALUE;
-        //        //        var sendTo = refService.GetUserEmail(sendToId);
-        //        //        AddMessageInfo(Constans.SubmitMessage.Updated + "<br />Sending email", Enums.MessageInfoType.Success);
-        //        //        bool mailStatus = ItpiMailer.Instance.SendEmail(new string[] { sendTo }, null, null, null, mailContent.EMAILSUBJECT, mailContent.EMAILCONTENT, true, sender, display);
-        //        //        if (!mailStatus)
-        //        //        {
-        //        //            AddMessageInfo("Send email failed! Please try again", Enums.MessageInfoType.Warning);
-        //        //        }
-        //        //        else
-        //        //        {
-        //        //            AddMessageInfo("Email sent!", Enums.MessageInfoType.Success);
-        //        //        }
-        //        //    }
-        //        //    else
-        //        //    {
-        //        //        AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
-        //        //    }
-        //        //}
-        //        //else
-        //        //    AddMessageInfo("Submit failed! Please try again", Enums.MessageInfoType.Error);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var msg = String.Format("Message: {0}\nStack Trace: {1}\nInner Exception: {2}", ex.Message, ex.StackTrace, ex.InnerException);
-        //        AddMessageInfo(msg, Enums.MessageInfoType.Error);
-        //    }
-        //}
 
         public ActionResult GetSupportingDocumentsProduct(string company)
         {
@@ -272,7 +201,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var PDSummaryModel = new PDSummaryReportViewModel();
             try
             {
-                if (CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.POA || CurrentUser.UserRole == Enums.UserRole.Viewer || IsCreatorPRD(CurrentUser.USER_ID))
+                if (CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.POA || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.User || IsCreatorPRD(CurrentUser.USER_ID))
                 {
                     var users = refService.GetAllUser();
                     var documents = GetProductListOpen("", "", false, true, null);
@@ -283,7 +212,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         Filter = new ProductDevelopmentFilterModel(),
                         CreatorList = GlobalFunctions.GetCreatorList(),
                         PoaList = GetPoaList(refService.GetAllPOA()),
-                        IsNotViewer = (IsCreatorPRD(CurrentUser.USER_ID)),
+                        IsNotViewer = (IsCreatorPRD(CurrentUser.USER_ID)),//CurrentUser.UserRole == Enums.UserRole.POA || CurrentUser.UserRole == Enums.UserRole.User||
                         IsExciser = productDevelopmentService.IsAdminExciser(CurrentUser.USER_ID),
                         ProductOpenDoc = documents
                     };                 
@@ -412,19 +341,21 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     var detailID = productDevelopmentService.CreateProductDetail(detail, (int)Enums.MenuList.ProductDevelopment, (int)Enums.ActionType.Created, (int)CurrentUser.UserRole, CurrentUser.USER_ID);
 
+                    productDevelopmentService.GetUpdateUsedMaterial(faCodeNew, plant, true, CurrentUser.USER_ID);
+
                     var allItemUpload = productDevelopmentService.GetItemUploadAll();
 
                     var iterator = 0;
                     foreach (var itemFiles in allItemUpload)
                     {
                         iterator++;
-                      
+
                         if (itemFiles.ITEM_ID == iterator)
                         {
                             var fileid = itemFiles.FILE_ID;
                             productDevelopmentService.UpdateItemUpload(Convert.ToInt64(fileid), Convert.ToInt64(detailID), true);
-                        }                                                                     
-                    }                
+                        }
+                    }
 
                 }
                 AddMessageInfo("Data Saved Successfully.", Enums.MessageInfoType.Success);
@@ -496,6 +427,7 @@ namespace Sampoerna.EMS.Website.Controllers
             data.IsExciser = productDevelopmentService.IsAdminExciser(CurrentUser.USER_ID);
             data.EnableFormInput = true;
             data.EditMode = true;
+            data.IsCreated = true;
             return View("EditProductDevelopment", data);
         }   
 
@@ -684,8 +616,13 @@ namespace Sampoerna.EMS.Website.Controllers
                    
                 SendMailApprovalActionProduct(ReferenceKeys.ApprovalStatus.AwaitingExciseApproval, mailContent.EMAILCONTENT, mailContent.EMAILSUBJECT, sender, display, sendTo);
 
+               
+
+
                 AddMessageInfo("Submitted Successfully.", Enums.MessageInfoType.Success);
                 return Json("Item Product Submitted.");
+
+                
             }
             catch (Exception ex)
             {
@@ -695,6 +632,32 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult CancelSubmission (long PD_ID)
+        {
+            try
+            {
+                var obj = productDevelopmentService.FindProductDevelopment(PD_ID);
+                var objDetail = productDevelopmentService.GetProductDetailByProductID(obj.PD_ID);
+                var cancelStatus = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Canceled).REFF_ID;
+
+                foreach (var detail in objDetail)
+                {
+                    productDevelopmentService.GetUpdateUsedMaterial(detail.FA_CODE_NEW, detail.WERKS, false, CurrentUser.USER_ID);
+                    productDevelopmentService.EditDetailStatusApproval(cancelStatus, detail.PD_DETAIL_ID, (int)Enums.MenuList.ProductDevelopment, (int)Enums.ActionType.Modified, (int)CurrentUser.UserRole, CurrentUser.USER_ID);
+                }
+                
+                AddMessageInfo("Form Submission Cancelled.", Enums.MessageInfoType.Success);
+                return Json("Form Submission Cancelled.");
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo("Problem in Cancel Submission", Enums.MessageInfoType.Error);
+                Console.WriteLine(ex.StackTrace);
+                return Json(false);
+            }
+
+        }
 
         #endregion
 
@@ -1092,7 +1055,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var PDSummaryModel = new PDSummaryReportViewModel();
             try
             {
-                if (CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.POA)
+                if (CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.POA || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.User || IsCreatorPRD(CurrentUser.USER_ID))
                 {
                     var users = refService.GetAllUser();
                     var documents = GetProductList("", "", false, true, null);
@@ -1103,7 +1066,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         Filter = new ProductDevelopmentFilterModel(),
                         CreatorList = GlobalFunctions.GetCreatorList(),
                         PoaList = GetPoaList(refService.GetAllPOA()),
-                        IsNotViewer = (CurrentUser.UserRole == Enums.UserRole.POA),
+                        IsNotViewer = (IsCreatorPRD(CurrentUser.USER_ID)),
                         IsExciser = productDevelopmentService.IsAdminExciser(CurrentUser.USER_ID),
                         ProductDocuments = documents
                     };
@@ -1143,7 +1106,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var PDSummaryModel = new PDSummaryReportViewModel();
             try
             {
-                if (CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.POA)
+                if (CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.POA || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.User || IsCreatorPRD(CurrentUser.USER_ID))
                 {
                     var users = refService.GetAllUser();
                     var documents = GetSummaryReportList("","", false, true, null);
@@ -1154,7 +1117,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         Filter = new ProductDevelopmentFilterModel(),
                         CreatorList = GlobalFunctions.GetCreatorList(),
                         PoaList = GetPoaList(refService.GetAllPOA()),
-                        IsNotViewer = (CurrentUser.UserRole == Enums.UserRole.POA),
+                        IsNotViewer = (IsCreatorPRD(CurrentUser.USER_ID)),
                         ProductDevelopmentDocuments = documents
                     };
                 }
@@ -1520,7 +1483,15 @@ namespace Sampoerna.EMS.Website.Controllers
                         LastName=s.CREATOR.LAST_NAME,
                         Email = s.CREATOR.EMAIL                  
                                                 
-                    }).ToList();
+                    }).OrderByDescending(o=>o.Created_Date).ToList();
+                    if (Creator != "" && Creator != null && documents.Count() > 0)
+                    {
+                        documents = documents.Where(w => w.Created_By.Equals(Creator)).ToList();
+                    }
+                    if (POA != "" && POA != null && documents.Count() > 0)
+                    {
+                        documents = documents.Where(w => w.Created_By.Equals(POA)).ToList();
+                    }
                 }
                 return documents;
             }
@@ -1569,12 +1540,37 @@ namespace Sampoerna.EMS.Website.Controllers
 
         List<WorkflowHistoryViewModel> GetWorkflowHistoryProduct(long id)
         {
-
+            var submittedStatus = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingPoaApproval);
+            var itemDetail = productDevelopmentService.FindProductDevDetail(id);
             var workflowInput = new GetByFormTypeAndFormIdInput();
             workflowInput.FormId = id;
             workflowInput.FormType = Enums.FormType.ProductDevelopment;
             var workflow = this._workflowHistoryBLL.GetByFormTypeAndFormId(workflowInput).OrderBy(item => item.WORKFLOW_HISTORY_ID);
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(workflow);
 
+            WORKFLOW_HISTORY additional = new WORKFLOW_HISTORY();
+            if (itemDetail.STATUS_APPROVAL == submittedStatus.REFF_ID)
+            {
+                var poaExciser = productDevelopmentService.GetAdminExciser().ToList();
+                var accounts = "";
+                foreach (var exciser in poaExciser)
+                {
+                    if (accounts == "")
+                    {
+                        accounts += exciser;
+                    }
+                    else
+                    {
+                        accounts += ", " + exciser;
+                    }
+                }
+
+                additional.ACTION_BY = accounts;
+                additional.ACTION = (int)Enums.ActionType.WaitingForApproval;
+                additional.ROLE = (int)Enums.UserRole.POA;
+                //additional.ACTION_DATE = _CRModel.LastModifiedDate;
+                workflowHistory.Add(Mapper.Map<WorkflowHistoryViewModel>(additional));
+            }
             return Mapper.Map<List<WorkflowHistoryViewModel>>(workflow);
 
         }
@@ -1618,7 +1614,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         select new SelectItemModel()
                         {
                             ValueField = x.POA_ID,
-                            TextField = String.Format("{0} {1}", x.USER_LOGIN.FIRST_NAME, x.USER_LOGIN.LAST_NAME)
+                            TextField = x.PRINTED_NAME
                         };
             return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
         }
@@ -1651,33 +1647,33 @@ namespace Sampoerna.EMS.Website.Controllers
 
         }
 
-        //[HttpPost]
-        //public JsonResult GetPlant(string nppbkcId)
-        //{
-        //    try
-        //    {
-        //        var plant = brandRegistrationService.FindPlantByNppbkcID(nppbkcId);
-        //        var mapped = MapPlantModel(plant);
-        //        var serialized = JsonConvert.SerializeObject(mapped);
-        //        var obj = new JObject
-        //        {
-        //            new JProperty("Success", true),
-        //            new JProperty("Data", JObject.Parse(serialized))
-        //        };
-        //        var objStr = obj.ToString();
-        //        return Json(objStr);
+        [HttpPost]
+        public JsonResult GetPlant(string nppbkcId)
+        {
+            try
+            {
+                var plant = productDevelopmentService.FindPlantByNppbkcID(nppbkcId);
+                var mapped = MapPlantModel(plant);
+                var serialized = JsonConvert.SerializeObject(mapped);
+                var obj = new JObject
+                {
+                    new JProperty("Success", true),
+                    new JProperty("Data", JObject.Parse(serialized))
+                };
+                var objStr = obj.ToString();
+                return Json(objStr);
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new JObject()
-        //        {
-        //            new JProperty("Success", false),
-        //            new JProperty("Message", ex.Message)
-        //        });
-        //    }
+            }
+            catch (Exception ex)
+            {
+                return Json(new JObject()
+                {
+                    new JProperty("Success", false),
+                    new JProperty("Message", ex.Message)
+                });
+            }
 
-        //}
+        }
 
         private SelectList GetNppbkcList(IEnumerable<CustomService.Data.MASTER_NPPBKC> nppbkcList)
         {
@@ -1756,6 +1752,21 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
+        public JsonResult GetMaterialByPlant(string plant)
+        {
+            var data = productDevelopmentService.GetAllMaterialByPlant(plant);
+            return Json(new SelectList(data, "WERKS", "STICKER_CODE"));
+        }
+
+        [HttpPost]
+        public JsonResult GetMaterialUsedByPlant(string plant)
+        {
+            var data = productDevelopmentService.GetAllMaterialUsedByPlant(plant);
+            return Json(new SelectList(data, "WERKS", "STICKER_CODE"));
+        }
+
+
+        [HttpPost]
         public JsonResult GetPlantByCompanyNonImport(string bukrs)
         {         
             var data = productDevelopmentService.FindPlantNonImport(bukrs);
@@ -1792,6 +1803,31 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             return Json(result);
         }
+        
+        [HttpPost]
+        public string GetPlantCodeByName(string namePlant)
+        {
+            var tempValue = productDevelopmentService.FindPlantDescriptionByName(namePlant);
+            string result = "";
+
+            if (tempValue != null)
+            {
+                if (tempValue.WERKS == null)
+                {
+                    result = "";
+                }
+                else
+                {
+                    result = tempValue.WERKS.ToString();
+                }
+            }
+            else
+            {
+                result = "";
+            }
+            return result;
+        }
+
 
         public string GetCodeDescUpload(string code)
         {
@@ -1861,6 +1897,30 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             return result;
         }
+
+        public string GetCompanyDescUpload(string code)
+        {
+            var tempValue = productDevelopmentService.FindCompanyDescription(code);
+            string result = "";
+
+            if (tempValue != null)
+            {
+                if (tempValue.BUTXT == null)
+                {
+                    result = "";
+                }
+                else
+                {
+                    result = tempValue.BUTXT.ToString();
+                }
+            }
+            else
+            {
+                result = "";
+            }
+            return result;
+        }
+
 
         public bool IsCreatorPRD(string userID)
         {
@@ -2037,11 +2097,13 @@ namespace Sampoerna.EMS.Website.Controllers
                             }
 
                             long tempCounter = result;
-
+                            long row = 0;
                             foreach (var datarow in data.DataRows)
                             {
+                                
                                 if (datarow != null)
                                 {
+                                    row = row + 1;
                                     tempCounter = tempCounter + 1;
                                     var reqNo = tempCounter.ToString("D10");
                                     var monthCurrent = DateTime.Now.Month;
@@ -2049,44 +2111,70 @@ namespace Sampoerna.EMS.Website.Controllers
                                     var romanMonth = Utils.MonthHelper.ConvertToRomansNumeral(monthCurrent);
 
                                     var tempPlant = datarow[6];                                 
-                                    var getPlantDesc = productDevelopmentService.FindPlantDescription(tempPlant);                                    
-                                    
+                                    var getPlantDesc = productDevelopmentService.FindPlantDescription(tempPlant);                                                                        
                                     var nppbkc = productDevelopmentService.FindNppbkcDetail(getPlantDesc.NPPBKC_ID);
                                     var mapPlant = productDevelopmentService.GetPlantCompanyByPlant(tempPlant);
                                     var company = productDevelopmentService.GetCompany(mapPlant.BUKRS);
                                     var v_requestNo = String.Format("{0}/{1}/{2}/{3}/{4}", reqNo, company.BUTXT_ALIAS, nppbkc.CITY_ALIAS, romanMonth, yearCurrent);
-                                
+                                    var v_requestNoPartial = String.Format("{0}/{1}/{2}/{3}", company.BUTXT_ALIAS, nppbkc.CITY_ALIAS, romanMonth, yearCurrent);
                                     var v_appStatus = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Draft).REFF_ID;
+                                    var v_appStatusDesc = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Draft).REFF_VALUE;
 
+                                    // check company
                                     var v_company = datarow[1];
+                                    var v_company_desc = GetCompanyDescUpload(datarow[1]);
                                     if (v_company == "")
                                     {
-                                        err += "* Company cannot be empty <br/>";
+                                        err += "*Row " + row + ": Company cannot be empty <br/>";
                                     }
 
+                                    // check fa code old
                                     var v_facode_old = datarow[2];
                                     var v_facodedesc_old = GetCodeDescUpload(v_facode_old);
-                                    var v_facode_new = datarow[3];
-                                    var v_facodedesc_new = GetCodeDescUpload(v_facode_new);
+                                    var checkFaOld = productDevelopmentService.IsUnderPlant(datarow[3], datarow[6]);
+                                    if (checkFaOld == false)
+                                    {
+                                        err += "*Row " + row + ": Fa Code Old not under Plant already defined.<br/>";
+                                    }
 
+                                    // check fa code new
+                                    var v_facode_new = datarow[3];                                  
+                                    var v_facodedesc_new = GetCodeDescUpload(v_facode_new);
+                                    var checkFaNew = productDevelopmentService.IsUnderPlant(datarow[3], datarow[6]);
+                                    if (checkFaNew == false)
+                                    {
+                                        err += "*Row " + row + ": Fa Code New not under Plant already defined.<br/>";
+                                    }
+
+                                    // check hl code
                                     var v_hlCode = datarow[4];
                                     if (v_hlCode == "")
                                     {
-                                        err += "* Hl Code cannot be empty <br/>";
+                                        err += "*Row " + row + ": Hl Code cannot be empty <br/>";
                                     }
 
+                                    // check market
                                     var v_market = datarow[5];
+                                    var v_market_desc = GetMarketDescUpload(datarow[5]);
                                     if (v_market == "")
                                     {
-                                        err += "* Market cannot be empty <br/>";
+                                        err += "*Row " + row + ": Market cannot be empty <br/>";
                                     }
 
-                                    var v_plant = datarow[6];
+                                    // check plant
+                                    var v_plant = datarow[6];                                  
+                                    var v_plant_desc = GetPlantDescUpload(datarow[6]);
                                     if (v_plant == "")
                                     {
-                                        err += "* Plant cannot be empty <br/>";
+                                        err += "*Row " + row + ": Plant cannot be empty <br/>";
+                                    }
+                                    var checkPlant = productDevelopmentService.IsUnderCompany(datarow[6], datarow[1]);
+                                    if (checkPlant == false)
+                                    {
+                                        err += "*Row " + row + ": Plant not under Company already defined.<br/>";
                                     }
 
+                                    // check import
                                     var v_import = Convert.ToBoolean(datarow[7]);
                                     
                                     var itemDet = new ProductDevDetailModel
@@ -2101,8 +2189,12 @@ namespace Sampoerna.EMS.Website.Controllers
                                         Hl_Code = v_hlCode,
                                         Market_Id = v_market,
                                         Werks = v_plant,
-                                        Is_Import = v_import
-                                        
+                                        Is_Import = v_import,
+                                        Company_Desc = v_company_desc,
+                                        Market_Desc = v_market_desc,
+                                        Plant_Desc = v_plant_desc,
+                                        App_Status_Desc = v_appStatusDesc, 
+                                        Request_No_Partial = v_requestNoPartial
                                     };
                                     ImportedItem.Add(itemDet);
                                 }
@@ -2223,12 +2315,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     Id = entity.DOCUMENT_ID,
                     Name = entity.SUPPORTING_DOCUMENT_NAME,
-                    Company = new CompanyModel()
+                    Company = (entity.COMPANY != null) ? new CompanyModel()
                     {
                         Id = entity.COMPANY.BUKRS,
                         Name = entity.COMPANY.BUTXT
-                    },
-                    FileList = AutoMapper.Mapper.Map<List<FileUploadModel>>(entity.FILE_UPLOAD).ToList()
+                    } : null,
+                    FileList = (entity.FILE_UPLOAD != null) ? AutoMapper.Mapper.Map<List<FileUploadModel>>(entity.FILE_UPLOAD).ToList() : null
                 };
             }
             catch (Exception ex)
@@ -2244,12 +2336,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     Id = entity.DOCUMENT_ID,
                     Name = entity.SUPPORTING_DOCUMENT_NAME,
-                    Company = new CompanyModel()
+                    Company = (entity.COMPANY != null) ? new CompanyModel()
                     {
                         Id = entity.COMPANY.BUKRS,
                         Name = entity.COMPANY.BUTXT
-                    },
-                    FileListUpload = AutoMapper.Mapper.Map<List<ProductDevelopmentUploadModel>>(entity.PRODUCT_DEVELOPMENT_UPLOAD).ToList()
+                    }:null,           
+                    FileListUpload = (entity.PRODUCT_DEVELOPMENT_UPLOAD != null) ? AutoMapper.Mapper.Map<List<ProductDevelopmentUploadModel>>(entity.PRODUCT_DEVELOPMENT_UPLOAD).ToList() : null
                 };
             }
             catch (Exception ex)

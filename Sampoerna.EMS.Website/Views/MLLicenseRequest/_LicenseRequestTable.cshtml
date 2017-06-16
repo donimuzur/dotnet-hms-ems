@@ -38,7 +38,7 @@
                     {
                         <a href="@Url.Action("Edit", "MLLicenseRequest", new { id = item.MnfRequestID })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                     }
-                   
+                    
                     @if ((item.Status.ToLower().Contains("waiting_poa_approval") || (item.Status.ToLower().Contains("waiting_poa_skep_approval"))) && item.CreatedBy != item.IsCanApprove && item.IsApprover)
                     {
                         @*<a href="@Url.Action("ToApprove", "MLLicenseRequest", new { id = item.MnfRequestID, st = item.LastApprovedStatus })" data-toggle="tooltip" data-placement="top" title="Approve">

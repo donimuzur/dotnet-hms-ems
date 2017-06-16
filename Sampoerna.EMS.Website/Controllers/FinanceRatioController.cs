@@ -177,9 +177,25 @@ namespace Sampoerna.EMS.Website.Controllers
             var workflowInput = new GetByFormTypeAndFormIdInput();
             workflowInput.FormId = id;
             workflowInput.FormType = Enums.FormType.FinanceRatio;
-            var workflow = this.workflowHistoryBLL.GetByFormTypeAndFormId(workflowInput).OrderByDescending(x => x.WORKFLOW_HISTORY_ID);
+            var workflow = this.workflowHistoryBLL.GetByFormTypeAndFormId(workflowInput).OrderBy(x => x.WORKFLOW_HISTORY_ID);
 
-            return Mapper.Map<List<WorkflowHistoryViewModel>>(workflow);
+            var submittedStatus = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingAdminApproval);
+            var workflowList = Mapper.Map<List<WorkflowHistoryViewModel>>(workflow);
+            var fratio = service.Find(id);
+            if (fratio == null)
+            {
+                throw new Exception("Specified financial ratio data not found!");
+            }
+
+            if (fratio.STATUS_APPROVAL == submittedStatus.REFF_ID)
+            {
+                var additional = refService.GetAdminApproverList();
+                workflowList.Add(Mapper.Map<WorkflowHistoryViewModel>(additional));
+            }
+
+
+
+            return workflowList;
 
         }
         #endregion
@@ -384,7 +400,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var reff = refService.GetReferenceByKey(ReferenceKeys.Approver.AdminApprover);
                 var sendToId = reff.REFF_VALUE;
                 var sendTo = refService.GetUserEmail(sendToId);
-                ExecuteApprovalAction(model, ReferenceKeys.ApprovalStatus.AwaitingAdminApproval, Enums.ActionType.WaitingForApproval, mailContent.EMAILCONTENT, mailContent.EMAILSUBJECT, sender, display, sendTo);
+                ExecuteApprovalAction(model, ReferenceKeys.ApprovalStatus.AwaitingAdminApproval, Enums.ActionType.Submit, mailContent.EMAILCONTENT, mailContent.EMAILSUBJECT, sender, display, sendTo);
             }
             catch (Exception ex)
             {
@@ -398,7 +414,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private void ExecuteApprovalAction(FinanceRatioViewModel model, ReferenceKeys.ApprovalStatus statusApproval, Enums.ActionType actionType, string email, string subject, string sender, string display, string sendTo)
         {
             var comment = (model.ViewModel.RevisionData != null) ? model.ViewModel.RevisionData.Comment : null;
-            var updated = service.ChangeStatus(model.ViewModel.Id, statusApproval, (int)Enums.MenuList.FinanceRatio, (int)actionType, (int)CurrentUser.UserRole, CurrentUser.USER_ID, comment);
+            var role = (statusApproval == ReferenceKeys.ApprovalStatus.AwaitingAdminApproval) ? CurrentUser.UserRole : Enums.UserRole.AdminApprover;
+
+            var updated = service.ChangeStatus(model.ViewModel.Id, statusApproval, (int)Enums.MenuList.FinanceRatio, (int)actionType, (int)role, CurrentUser.USER_ID, comment);
 
             if (updated != null)
             {
@@ -422,7 +440,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     foreach (var adm in admins)
                     {
                         var _email = refService.GetUserEmail(adm.USER_ID);
-                        if (!string.IsNullOrEmpty(_email) && _email != sender)
+                        if (!string.IsNullOrEmpty(_email))
                         {
                             mailAddresses.Add(_email);
                         }
@@ -457,7 +475,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     AddMessageInfo("Operation not allowed!. This entry already approved!", Enums.MessageInfoType.Error);
                     //data = GenerateProperties(data, true);
-                    RedirectToAction("Index");
+                    return RedirectToAction("Detail", new { id = data.ViewModel.Id });
                 }
                 data.ApproveConfirm = new ConfirmDialogModel()
                 {

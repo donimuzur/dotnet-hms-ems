@@ -42,21 +42,21 @@ namespace Sampoerna.EMS.Core
 			PoaDelegation = 35,
 			SchedulerSettings = 36,
 			ProductType = 37,
-			FinanceRatio = 38,
+			FinanceRatio = 40,
 			Hint = 1000,
-			Configuration = 39,
-			SupportDoc = 40,
-			Tariff = 41,
-			NewTransaction = 42,
-			ExciseCredit = 43,
-			BrandRegistrationTransaction = 44,
-			ManufactureLicense = 45,
-			InterviewRequest = 46,
-			LicenseRequest = 47,
-			ChangeRequest = 48,         
-			ProductDevelopment = 49,           
-			BrandRegistrationReq = 50,            
-			PenetapanSKEP = 51,
+			Configuration = 41,
+			SupportDoc = 42,
+			Tariff = 43,
+			NewTransaction = 44,
+			ExciseCredit = 45,
+			BrandRegistrationTransaction = 46,
+			ManufactureLicense = 47,
+			InterviewRequest = 48,
+			LicenseRequest = 49,
+			ChangeRequest = 50,         
+			ProductDevelopment = 51,           
+			BrandRegistrationReq = 52,            
+			PenetapanSKEP = 53,
 			MasterDataApproveSetting = 38,
             MasterDataApproval = 39
 		}
@@ -327,15 +327,15 @@ namespace Sampoerna.EMS.Core
 			[Description("Penetapan SKEP")]
 			PenetapanSKEP = 51,
 			[Description("Financial Ratio")]
-			FinanceRatio = 38,
+			FinanceRatio = 40,
 			[Description("Tariff")]
-			Tariff = 41,
+			Tariff = 43,
 			[Description("Supporting Document")]
-			SupportingDocument = 40,
+			SupportingDocument = 42,
 			[Description("Product Type")]
 			ProductType = 37,
 			[Description("Excise Credit")]
-			ExciseCredit = 43
+			ExciseCredit = 45
 
 		}
 
@@ -498,7 +498,8 @@ namespace Sampoerna.EMS.Core
 			Viewer = 4,
 			System = 10,
 			Administrator = 15,
-			SuperAdmin = 16
+			SuperAdmin = 16,
+            AdminApprover = 17
 
 		}
 

@@ -23,6 +23,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevel
         public bool Is_Import { get; set; }
         public long PD_ID { get; set; }
         public string Request_No { get; set; }
+        public string Request_No_Partial { get; set; }
         public string Bukrs { get; set; }
         public string Approved_By { get; set; }
         public DateTime? Approved_Date { get; set; }
@@ -30,6 +31,11 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevel
         public string StatusDesc { get; set; }    
         public UserModel Approver { set; get; }       
         public ReferenceModel ApprovalStatusDescription { set; get; }
+
+        public string Company_Desc { get; set; }
+        public string Market_Desc { get; set; }
+        public string Plant_Desc { get; set; }
+        public string App_Status_Desc { get; set; }
 
         public MarketModel Market { get; set; }
         public CompanyModel Company { set; get; }

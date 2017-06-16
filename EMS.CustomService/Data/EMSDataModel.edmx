@@ -44,12 +44,12 @@
           <Property Name="TARIFF" Type="decimal" Precision="19" Scale="2" />
           <Property Name="MATERIAL_PACKAGE" Type="nvarchar" MaxLength="120" Nullable="false" />
           <Property Name="MARKET_ID" Type="nvarchar" MaxLength="2" Nullable="false" />
-          <Property Name="FRONT_SIDE" Type="nvarchar" MaxLength="300" Nullable="false" />
-          <Property Name="BACK_SIDE" Type="nvarchar" MaxLength="300" Nullable="false" />
-          <Property Name="LEFT_SIDE" Type="nvarchar" MaxLength="300" Nullable="false" />
-          <Property Name="RIGHT_SIDE" Type="nvarchar" MaxLength="300" Nullable="false" />
-          <Property Name="TOP_SIDE" Type="nvarchar" MaxLength="300" Nullable="false" />
-          <Property Name="BOTTOM_SIDE" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="FRONT_SIDE" Type="nvarchar(max)" />
+          <Property Name="BACK_SIDE" Type="nvarchar(max)" />
+          <Property Name="LEFT_SIDE" Type="nvarchar(max)" />
+          <Property Name="RIGHT_SIDE" Type="nvarchar(max)" />
+          <Property Name="TOP_SIDE" Type="nvarchar(max)" />
+          <Property Name="BOTTOM_SIDE" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="BROLE_MAP">
           <Key>
@@ -124,7 +124,7 @@
           <Property Name="CONTENTEMAILID" Type="bigint" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMSDMS.dbo.EXCISE_ADJUSTMENT_CALCULATE' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMSQAS.dbo.EXCISE_ADJUSTMENT_CALCULATE' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="EXCISE_ADJUSTMENT_CALCULATE">
           <Key>
             <PropertyRef Name="RATIO1" />
@@ -147,12 +147,12 @@ warning 6002: The table/view 'EMSDMS.dbo.EXCISE_ADJUSTMENT_CALCULATE' does not h
           <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" Nullable="false" />
           <Property Name="GUARANTEE" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="EXSICE_CREDIT_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="LIQUIDITY_RATIO_1" Type="float" />
-          <Property Name="LIQUIDITY_RATIO_2" Type="float" />
-          <Property Name="SOLVENCY_RATIO_1" Type="float" />
-          <Property Name="SOLVENCY_RATIO_2" Type="float" />
-          <Property Name="RENTABILITY_RATIO_1" Type="float" />
-          <Property Name="RENTABILITY_RATIO_2" Type="float" />
+          <Property Name="LIQUIDITY_RATIO_1" Type="real" />
+          <Property Name="LIQUIDITY_RATIO_2" Type="real" />
+          <Property Name="SOLVENCY_RATIO_1" Type="real" />
+          <Property Name="SOLVENCY_RATIO_2" Type="real" />
+          <Property Name="RENTABILITY_RATIO_1" Type="real" />
+          <Property Name="RENTABILITY_RATIO_2" Type="real" />
           <Property Name="SKEP_STATUS" Type="bit" />
           <Property Name="DECREE_NO" Type="nvarchar" MaxLength="120" />
           <Property Name="DECREE_DATE" Type="datetime" />
@@ -224,7 +224,7 @@ warning 6002: The table/view 'EMSDMS.dbo.EXCISE_ADJUSTMENT_CALCULATE' does not h
           <Property Name="DOCUMENT_ID" Type="bigint" />
           <Property Name="IS_GOVERNMENT_DOC" Type="bit" Nullable="false" />
           <Property Name="IS_ACTIVE" Type="bit" Nullable="false" />
-          <Property Name="FILE_NAME" Type="nvarchar" MaxLength="400" Nullable="false" />
+          <Property Name="FILE_NAME" Type="nvarchar" MaxLength="400" />
         </EntityType>
         <EntityType Name="INTERVIEW_REQUEST">
           <Key>
@@ -249,9 +249,9 @@ warning 6002: The table/view 'EMSDMS.dbo.EXCISE_ADJUSTMENT_CALCULATE' does not h
           <Property Name="BA_STATUS" Type="bit" />
           <Property Name="POA_ID" Type="nvarchar" MaxLength="50" />
           <Property Name="KPPBC" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="KPPBC_ADDRESS" Type="nvarchar" MaxLength="400" />
           <Property Name="CITY" Type="nvarchar" MaxLength="50" />
           <Property Name="CITY_ALIAS" Type="nvarchar" MaxLength="10" />
-          <Property Name="KPPBC_ADDRESS" Type="nvarchar" MaxLength="400" />
           <Property Name="TEXT_TO" Type="nvarchar" MaxLength="150" />
         </EntityType>
         <EntityType Name="INTERVIEW_REQUEST_DETAIL">
@@ -527,7 +527,7 @@ warning 6002: The table/view 'EMSDMS.dbo.EXCISE_ADJUSTMENT_CALCULATE' does not h
           <Key>
             <PropertyRef Name="RECEIVED_ID" />
           </Key>
-          <Property Name="RECEIVED_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RECEIVED_ID" Type="bigint" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="RECEIVED_NO" Type="nvarchar" MaxLength="60" Nullable="false" />
           <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" Nullable="false" />
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -537,9 +537,9 @@ warning 6002: The table/view 'EMSDMS.dbo.EXCISE_ADJUSTMENT_CALCULATE' does not h
           <Property Name="LASTAPPROVED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="LASTAPPROVED_DATE" Type="datetime" />
           <Property Name="LASTAPPROVED_STATUS" Type="bigint" Nullable="false" />
-          <Property Name="DECREE_NO" Type="nvarchar" MaxLength="120" />
-          <Property Name="DECREE_DATE" Type="datetime" />
-          <Property Name="DECREE_STARTDATE" Type="datetime" />
+          <Property Name="DECREE_NO" Type="nvarchar" MaxLength="120" Nullable="false" />
+          <Property Name="DECREE_DATE" Type="datetime" Nullable="false" />
+          <Property Name="DECREE_STARTDATE" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="RECEIVED_DECREE_DETAIL">
           <Key>
@@ -620,6 +620,7 @@ warning 6002: The table/view 'EMSDMS.dbo.EXCISE_ADJUSTMENT_CALCULATE' does not h
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_DELETED" Type="bit" />
           <Property Name="BUTXT_ALIAS" Type="nvarchar" MaxLength="10" />
+          <Property Name="PKP" Type="nvarchar" MaxLength="400" />
         </EntityType>
         <EntityType Name="T001K">
           <Key>
@@ -651,6 +652,7 @@ warning 6002: The table/view 'EMSDMS.dbo.EXCISE_ADJUSTMENT_CALCULATE' does not h
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_DELETED" Type="bit" />
           <Property Name="NPPBKC_IMPORT_ID" Type="nvarchar" MaxLength="15" />
+          <Property Name="ADDRESS_IMPORT" Type="nvarchar" MaxLength="200" />
           <Property Name="CITY_ID" Type="bigint" />
           <Property Name="STATE_ID" Type="bigint" />
         </EntityType>
@@ -687,6 +689,7 @@ warning 6002: The table/view 'EMSDMS.dbo.EXCISE_ADJUSTMENT_CALCULATE' does not h
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="IS_ACTIVE" Type="int" />
           <Property Name="ACCT" Type="nvarchar" MaxLength="10" />
+          <Property Name="IS_MASTER_DATA_APPROVER" Type="bit" />
         </EntityType>
         <EntityType Name="USER_PRINTOUT_LAYOUT">
           <Key>
@@ -804,6 +807,7 @@ warning 6002: The table/view 'EMSDMS.dbo.EXCISE_ADJUSTMENT_CALCULATE' does not h
           <Property Name="TARIFF_CURR" Type="nvarchar" MaxLength="5" />
           <Property Name="PLANT_DELETION" Type="bit" />
           <Property Name="CLIENT_DELETION" Type="bit" />
+          <Property Name="USED_PRODUCT_DEVELOPMENT" Type="bit" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_NPPBKC">
           <Key>
@@ -850,7 +854,7 @@ warning 6002: The table/view 'EMSDMS.dbo.EXCISE_ADJUSTMENT_CALCULATE' does not h
           <Property Name="APPROVED_STATUS" Type="bigint" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMSDMS.dbo.ADMIN_APPROVAL_VIEW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMSQAS.dbo.ADMIN_APPROVAL_VIEW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ADMIN_APPROVAL_VIEW">
           <Key>
             <PropertyRef Name="USER_ID" />
@@ -860,7 +864,7 @@ warning 6002: The table/view 'EMSDMS.dbo.ADMIN_APPROVAL_VIEW' does not have a pr
           <Property Name="NAMA_USER" Type="nvarchar" MaxLength="101" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMSDMS.dbo.CK1_EXCISE_CALCULATE' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMSQAS.dbo.CK1_EXCISE_CALCULATE' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="CK1_EXCISE_CALCULATE">
           <Key>
             <PropertyRef Name="CK1_ID" />
@@ -874,11 +878,34 @@ warning 6002: The table/view 'EMSDMS.dbo.CK1_EXCISE_CALCULATE' does not have a p
           <Property Name="PRODUCT_ALIAS" Type="nvarchar" MaxLength="35" />
           <Property Name="CK1_NUMBER" Type="nvarchar" MaxLength="35" Nullable="false" />
           <Property Name="ORDERQTY" Type="decimal" Precision="38" Scale="6" />
-          <Property Name="NOMINAL" Type="numeric" Precision="38" Scale="4" />
+          <Property Name="NOMINAL" Type="numeric" Precision="38" Scale="6" />
           <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMSDMS.dbo.PRODUCT_DETAIL_VIEW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMSQAS.dbo.CK1_EXCISE_CALCULATE_ADJUST' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="CK1_EXCISE_CALCULATE_ADJUST">
+          <Key>
+            <PropertyRef Name="CK1_ID" />
+            <PropertyRef Name="CK1_DATE" />
+            <PropertyRef Name="CK1_NUMBER" />
+            <PropertyRef Name="BRAND_CE" />
+          </Key>
+          <Property Name="CK1_ID" Type="bigint" Nullable="false" />
+          <Property Name="CK1_DATE" Type="date" Nullable="false" />
+          <Property Name="BULAN" Type="int" />
+          <Property Name="TAHUN" Type="int" />
+          <Property Name="PRODUCT_ALIAS" Type="nvarchar" MaxLength="35" />
+          <Property Name="CK1_NUMBER" Type="nvarchar" MaxLength="35" Nullable="false" />
+          <Property Name="ORDERQTY" Type="decimal" Precision="38" Scale="6" />
+          <Property Name="NOMINAL" Type="numeric" Precision="38" Scale="6" />
+          <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" />
+          <Property Name="BRAND_CONTENT" Type="nvarchar" MaxLength="7" />
+          <Property Name="SERIES_VALUE" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="BRAND_CE" Type="nvarchar" MaxLength="65" Nullable="false" />
+          <Property Name="PRODUCTION" Type="decimal" Precision="38" Scale="6" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'EMSQAS.dbo.PRODUCT_DETAIL_VIEW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="PRODUCT_DETAIL_VIEW">
           <Key>
             <PropertyRef Name="PD_NO" />
@@ -929,7 +956,7 @@ warning 6002: The table/view 'EMSDMS.dbo.PRODUCT_DETAIL_VIEW' does not have a pr
           <Property Name="LASTAPPROVED_STATUS" Type="bigint" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMSDMS.dbo.ROLE_ADMIN_APPROVER_VIEW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMSQAS.dbo.ROLE_ADMIN_APPROVER_VIEW' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ROLE_ADMIN_APPROVER_VIEW">
           <Key>
             <PropertyRef Name="USER_ID" />
@@ -944,7 +971,7 @@ warning 6002: The table/view 'EMSDMS.dbo.ROLE_ADMIN_APPROVER_VIEW' does not have
           <Property Name="PAGE_NAME" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMSDMS.dbo.vwBrandRegistration' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMSQAS.dbo.vwBrandRegistration' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwBrandRegistration">
           <Key>
             <PropertyRef Name="REGISTRATION_ID" />
@@ -1013,7 +1040,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwBrandRegistration' does not have a pr
           <Property Name="BOTTOM_SIDE" Type="nvarchar" MaxLength="300" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMSDMS.dbo.vwMLInterviewRequest' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMSQAS.dbo.vwMLInterviewRequest' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwMLInterviewRequest">
           <Key>
             <PropertyRef Name="VR_FORM_ID" />
@@ -1069,7 +1096,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwMLInterviewRequest' does not have a p
           <Property Name="FAX" Type="nvarchar" MaxLength="60" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMSDMS.dbo.vwMLLicenseRequest' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMSQAS.dbo.vwMLLicenseRequest' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwMLLicenseRequest">
           <Key>
             <PropertyRef Name="MNF_FORM_NUMBER" />
@@ -1124,13 +1151,16 @@ warning 6002: The table/view 'EMSDMS.dbo.vwMLLicenseRequest' does not have a pri
           <Property Name="OWNERSHIP_STATUS" Type="nvarchar" MaxLength="200" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMSDMS.dbo.vwPenetapanSKEP' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMSQAS.dbo.vwPenetapanSKEP' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwPenetapanSKEP">
           <Key>
             <PropertyRef Name="ID" />
             <PropertyRef Name="FORM_NUMBER" />
             <PropertyRef Name="NPPBKC" />
             <PropertyRef Name="PLANT_NAME" />
+            
+            
+            
             <PropertyRef Name="REQUEST_NUMBER" />
             <PropertyRef Name="COMPANY_NAME" />
             <PropertyRef Name="CREATED_BY" />
@@ -1142,9 +1172,9 @@ warning 6002: The table/view 'EMSDMS.dbo.vwPenetapanSKEP' does not have a primar
           <Property Name="KPPBC" Type="nvarchar" MaxLength="10" />
           <Property Name="PLANT_NAME" Type="nvarchar" MaxLength="35" Nullable="false" />
           <Property Name="PLANT_ADDRESS" Type="nvarchar" MaxLength="150" />
-          <Property Name="DECREE_NUMBER" Type="nvarchar" MaxLength="120" />
-          <Property Name="DECREE_DATE" Type="datetime" />
-          <Property Name="DECREE_STARTDATE" Type="datetime" />
+          <Property Name="DECREE_NUMBER" Type="nvarchar" MaxLength="120" Nullable="false" />
+          <Property Name="DECREE_DATE" Type="datetime" Nullable="false" />
+          <Property Name="DECREE_STARTDATE" Type="datetime" Nullable="false" />
           <Property Name="REQUEST_NUMBER" Type="nvarchar" MaxLength="30" Nullable="false" />
           <Property Name="FA_CODE_OLD" Type="nvarchar" MaxLength="18" />
           <Property Name="FA_CODE_OLD_DESCR" Type="nvarchar(max)" />
@@ -1158,7 +1188,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwPenetapanSKEP' does not have a primar
           <Property Name="LASTAPPROVED_BY" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+warning 6002: The table/view 'EMSQAS.dbo.vwProductDevDetail' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vwProductDevDetail">
           <Key>
             <PropertyRef Name="PD_NO" />
@@ -1193,67 +1223,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <Property Name="LASTAPPROVED_STATUS" Type="bigint" Nullable="false" />
           <Property Name="LASTMODIFIED_BY" Type="nvarchar" MaxLength="50" />
         </EntityType>
-        <Association Name="FK__AMENDMENT__CREAT__5C8CB268">
-          <End Role="USER" Type="Self.USER" Multiplicity="1" />
-          <End Role="REPLACEMENT_DOCUMENTS" Type="Self.REPLACEMENT_DOCUMENTS" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="REPLACEMENT_DOCUMENTS">
-              <PropertyRef Name="CREATED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__AMENDMENT__LASTA__5E74FADA">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="REPLACEMENT_DOCUMENTS" Type="Self.REPLACEMENT_DOCUMENTS" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="REPLACEMENT_DOCUMENTS">
-              <PropertyRef Name="LASTAPPROVED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__AMENDMENT__LASTA__5F691F13">
-          <End Role="SYS_REFFERENCES" Type="Self.SYS_REFFERENCES" Multiplicity="1" />
-          <End Role="REPLACEMENT_DOCUMENTS" Type="Self.REPLACEMENT_DOCUMENTS" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SYS_REFFERENCES">
-              <PropertyRef Name="REFF_ID" />
-            </Principal>
-            <Dependent Role="REPLACEMENT_DOCUMENTS">
-              <PropertyRef Name="LASTAPPROVED_STATUS" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__AMENDMENT__LASTM__5D80D6A1">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="REPLACEMENT_DOCUMENTS" Type="Self.REPLACEMENT_DOCUMENTS" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="REPLACEMENT_DOCUMENTS">
-              <PropertyRef Name="LASTMODIFIED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__AMENDMENT__NPPBK__5B988E2F">
-          <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="1" />
-          <End Role="REPLACEMENT_DOCUMENTS" Type="Self.REPLACEMENT_DOCUMENTS" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_NPPBKC">
-              <PropertyRef Name="NPPBKC_ID" />
-            </Principal>
-            <Dependent Role="REPLACEMENT_DOCUMENTS">
-              <PropertyRef Name="NPPBKC_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__BRAND_REG__CREAT__1D66518C">
+        <Association Name="FK__BRAND_REG__CREAT__7993056A">
           <End Role="USER" Type="Self.USER" Multiplicity="1" />
           <End Role="BRAND_REGISTRATION_REQ" Type="Self.BRAND_REGISTRATION_REQ" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1265,7 +1235,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__BRAND_REG__LASTA__1F4E99FE">
+        <Association Name="FK__BRAND_REG__LASTA__7A8729A3">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="BRAND_REGISTRATION_REQ" Type="Self.BRAND_REGISTRATION_REQ" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1277,7 +1247,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__BRAND_REG__LASTA__2042BE37">
+        <Association Name="FK__BRAND_REG__LASTA__7B7B4DDC">
           <End Role="SYS_REFFERENCES" Type="Self.SYS_REFFERENCES" Multiplicity="1" />
           <End Role="BRAND_REGISTRATION_REQ" Type="Self.BRAND_REGISTRATION_REQ" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1289,7 +1259,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__BRAND_REG__LASTM__1E5A75C5">
+        <Association Name="FK__BRAND_REG__LASTM__7C6F7215">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="BRAND_REGISTRATION_REQ" Type="Self.BRAND_REGISTRATION_REQ" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1301,7 +1271,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__BRAND_REG__NPPBK__1B7E091A">
+        <Association Name="FK__BRAND_REG__NPPBK__7D63964E">
           <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="1" />
           <End Role="BRAND_REGISTRATION_REQ" Type="Self.BRAND_REGISTRATION_REQ" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1313,7 +1283,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__EMAILVARI__CONTE__7B9B496D">
+        <Association Name="FK__EMAILVARI__CONTE__35DCF99B">
           <End Role="CONTENTEMAIL" Type="Self.CONTENTEMAIL" Multiplicity="0..1" />
           <End Role="EMAILVARIABEL" Type="Self.EMAILVARIABEL" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1337,7 +1307,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__EXCISE_CR__CK1_I__4D1564AE">
+        <Association Name="FK__EXCISE_CR__CK1_I__6497E884">
           <End Role="CK1" Type="Self.CK1" Multiplicity="1" />
           <End Role="EXCISE_CREDIT_DETAILCK1" Type="Self.EXCISE_CREDIT_DETAILCK1" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1433,7 +1403,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__EXCISE_CR__PROD___186C9245">
+        <Association Name="FK__EXCISE_CR__PROD___61BB7BD9">
           <End Role="ZAIDM_EX_PRODTYP" Type="Self.ZAIDM_EX_PRODTYP" Multiplicity="1" />
           <End Role="EXCISE_CREDIT_APPROVED_DETAIL" Type="Self.EXCISE_CREDIT_APPROVED_DETAIL" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1445,19 +1415,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__EXCISE_CR__PRODU__4C214075">
-          <End Role="ZAIDM_EX_PRODTYP" Type="Self.ZAIDM_EX_PRODTYP" Multiplicity="1" />
-          <End Role="EXCISE_CREDIT_DETAILCK1" Type="Self.EXCISE_CREDIT_DETAILCK1" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ZAIDM_EX_PRODTYP">
-              <PropertyRef Name="PROD_CODE" />
-            </Principal>
-            <Dependent Role="EXCISE_CREDIT_DETAILCK1">
-              <PropertyRef Name="PRODUCT_CODE" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__EXCISE_CR__PRODU__69E6AD86">
+        <Association Name="FK__EXCISE_CR__PRODU__5FD33367">
           <End Role="ZAIDM_EX_PRODTYP" Type="Self.ZAIDM_EX_PRODTYP" Multiplicity="1" />
           <End Role="EXCISE_CREDIT_ADJUST_CALDETAIL" Type="Self.EXCISE_CREDIT_ADJUST_CALDETAIL" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1469,7 +1427,19 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__FILE_UPLO__CREAT__4B622666">
+        <Association Name="FK__EXCISE_CR__PRODU__668030F6">
+          <End Role="ZAIDM_EX_PRODTYP" Type="Self.ZAIDM_EX_PRODTYP" Multiplicity="1" />
+          <End Role="EXCISE_CREDIT_DETAILCK1" Type="Self.EXCISE_CREDIT_DETAILCK1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_PRODTYP">
+              <PropertyRef Name="PROD_CODE" />
+            </Principal>
+            <Dependent Role="EXCISE_CREDIT_DETAILCK1">
+              <PropertyRef Name="PRODUCT_CODE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__FILE_UPLO__CREAT__2F2FFC0C">
           <End Role="USER" Type="Self.USER" Multiplicity="1" />
           <End Role="FILE_UPLOAD" Type="Self.FILE_UPLOAD" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1481,7 +1451,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__FILE_UPLO__DOCUM__3B2BBE9D">
+        <Association Name="FK__FILE_UPLO__DOCUM__30242045">
           <End Role="MASTER_SUPPORTING_DOCUMENT" Type="Self.MASTER_SUPPORTING_DOCUMENT" Multiplicity="0..1" />
           <End Role="FILE_UPLOAD" Type="Self.FILE_UPLOAD" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1505,7 +1475,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__FILE_UPLO__LASTM__4C564A9F">
+        <Association Name="FK__FILE_UPLO__LASTM__3118447E">
           <End Role="USER" Type="Self.USER" Multiplicity="1" />
           <End Role="FILE_UPLOAD" Type="Self.FILE_UPLOAD" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1565,19 +1535,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__FINANCIAL__STATU__542C7691">
-          <End Role="SYS_REFFERENCES" Type="Self.SYS_REFFERENCES" Multiplicity="1" />
-          <End Role="MASTER_FINANCIAL_RATIO" Type="Self.MASTER_FINANCIAL_RATIO" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SYS_REFFERENCES">
-              <PropertyRef Name="REFF_ID" />
-            </Principal>
-            <Dependent Role="MASTER_FINANCIAL_RATIO">
-              <PropertyRef Name="STATUS_APPROVAL" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__INTERVIEW__BUKRS__4E3E9311">
+        <Association Name="FK__INTERVIEW__BUKRS__1CDC41A7">
           <End Role="T001" Type="Self.T001" Multiplicity="1" />
           <End Role="INTERVIEW_REQUEST" Type="Self.INTERVIEW_REQUEST" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1589,7 +1547,19 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__INTERVIEW__CITY___3572E547">
+        <Association Name="FK__INTERVIEW__BUKRS__2942188C">
+          <End Role="T001" Type="Self.T001" Multiplicity="1" />
+          <End Role="INTERVIEW_REQUEST" Type="Self.INTERVIEW_REQUEST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="T001">
+              <PropertyRef Name="BUKRS" />
+            </Principal>
+            <Dependent Role="INTERVIEW_REQUEST">
+              <PropertyRef Name="BUKRS" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__INTERVIEW__CITY___31D75E8D">
           <End Role="MASTER_CITY" Type="Self.MASTER_CITY" Multiplicity="1" />
           <End Role="INTERVIEW_REQUEST_DETAIL" Type="Self.INTERVIEW_REQUEST_DETAIL" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1601,7 +1571,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__INTERVIEW__NPPBK__642DD430">
+        <Association Name="FK__INTERVIEW__NPPBK__1DD065E0">
           <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="0..1" />
           <End Role="INTERVIEW_REQUEST" Type="Self.INTERVIEW_REQUEST" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1613,7 +1583,19 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__INTERVIEW__POA_I__058EC7FB">
+        <Association Name="FK__INTERVIEW__NPPBK__2A363CC5">
+          <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="0..1" />
+          <End Role="INTERVIEW_REQUEST" Type="Self.INTERVIEW_REQUEST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_NPPBKC">
+              <PropertyRef Name="NPPBKC_ID" />
+            </Principal>
+            <Dependent Role="INTERVIEW_REQUEST">
+              <PropertyRef Name="NPPBKC_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__INTERVIEW__POA_I__1EC48A19">
           <End Role="POA" Type="Self.POA" Multiplicity="0..1" />
           <End Role="INTERVIEW_REQUEST" Type="Self.INTERVIEW_REQUEST" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1625,7 +1607,19 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__INTERVIEW__PROVI__3A379A64">
+        <Association Name="FK__INTERVIEW__POA_I__2B2A60FE">
+          <End Role="POA" Type="Self.POA" Multiplicity="0..1" />
+          <End Role="INTERVIEW_REQUEST" Type="Self.INTERVIEW_REQUEST" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="INTERVIEW_REQUEST">
+              <PropertyRef Name="POA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__INTERVIEW__PROVI__32CB82C6">
           <End Role="MASTER_STATE" Type="Self.MASTER_STATE" Multiplicity="1" />
           <End Role="INTERVIEW_REQUEST_DETAIL" Type="Self.INTERVIEW_REQUEST_DETAIL" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1637,7 +1631,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__INTERVIEW__VR_FO__45A94D10">
+        <Association Name="FK__INTERVIEW__VR_FO__33BFA6FF">
           <End Role="INTERVIEW_REQUEST" Type="Self.INTERVIEW_REQUEST" Multiplicity="1" />
           <End Role="INTERVIEW_REQUEST_DETAIL" Type="Self.INTERVIEW_REQUEST_DETAIL" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1649,7 +1643,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__MANUFACTU__MNF_R__24D2692A">
+        <Association Name="FK__MANUFACTU__MNF_R__3E3D3572">
           <End Role="MANUFACTURING_LISENCE_REQUEST" Type="Self.MANUFACTURING_LISENCE_REQUEST" Multiplicity="1" />
           <End Role="MANUFACTURING_BOUND_CONDITION" Type="Self.MANUFACTURING_BOUND_CONDITION" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1661,7 +1655,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__MANUFACTU__MNF_R__28A2FA0E">
+        <Association Name="FK__MANUFACTU__MNF_R__420DC656">
           <End Role="MANUFACTURING_LISENCE_REQUEST" Type="Self.MANUFACTURING_LISENCE_REQUEST" Multiplicity="1" />
           <End Role="MANUFACTURING_PRODUCT_TYPE" Type="Self.MANUFACTURING_PRODUCT_TYPE" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1673,7 +1667,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__MANUFACTU__NPPBK__1D314762">
+        <Association Name="FK__MANUFACTU__NPPBK__369C13AA">
           <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="0..1" />
           <End Role="MANUFACTURING_LISENCE_REQUEST" Type="Self.MANUFACTURING_LISENCE_REQUEST" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1685,7 +1679,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__MANUFACTU__PROD___29971E47">
+        <Association Name="FK__MANUFACTU__PROD___4301EA8F">
           <End Role="ZAIDM_EX_PRODTYP" Type="Self.ZAIDM_EX_PRODTYP" Multiplicity="0..1" />
           <End Role="MANUFACTURING_PRODUCT_TYPE" Type="Self.MANUFACTURING_PRODUCT_TYPE" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1697,7 +1691,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__MANUFACTU__VR_FO__1E256B9B">
+        <Association Name="FK__MANUFACTU__VR_FO__379037E3">
           <End Role="INTERVIEW_REQUEST" Type="Self.INTERVIEW_REQUEST" Multiplicity="1" />
           <End Role="MANUFACTURING_LISENCE_REQUEST" Type="Self.MANUFACTURING_LISENCE_REQUEST" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1709,7 +1703,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__MANUFACTU__VR_FO__25C68D63">
+        <Association Name="FK__MANUFACTU__VR_FO__3F3159AB">
           <End Role="INTERVIEW_REQUEST_DETAIL" Type="Self.INTERVIEW_REQUEST_DETAIL" Multiplicity="1" />
           <End Role="MANUFACTURING_BOUND_CONDITION" Type="Self.MANUFACTURING_BOUND_CONDITION" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1721,7 +1715,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__MASTER_CI__STATE__3943762B">
+        <Association Name="FK__MASTER_CI__STATE__3C89F72A">
           <End Role="MASTER_STATE" Type="Self.MASTER_STATE" Multiplicity="1" />
           <End Role="MASTER_CITY" Type="Self.MASTER_CITY" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1733,7 +1727,19 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__MASTER_SU__BUKRS__7775B2CE">
+        <Association Name="FK__MASTER_FI__STATU__451F3D2B">
+          <End Role="SYS_REFFERENCES" Type="Self.SYS_REFFERENCES" Multiplicity="1" />
+          <End Role="MASTER_FINANCIAL_RATIO" Type="Self.MASTER_FINANCIAL_RATIO" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SYS_REFFERENCES">
+              <PropertyRef Name="REFF_ID" />
+            </Principal>
+            <Dependent Role="MASTER_FINANCIAL_RATIO">
+              <PropertyRef Name="STATUS_APPROVAL" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MASTER_SU__BUKRS__2882FE7D">
           <End Role="T001" Type="Self.T001" Multiplicity="1" />
           <End Role="MASTER_SUPPORTING_DOCUMENT" Type="Self.MASTER_SUPPORTING_DOCUMENT" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1745,7 +1751,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__POA_EXCIS__POA_I__2DD1C37F">
+        <Association Name="FK__POA_EXCIS__POA_I__4AD81681">
           <End Role="POA" Type="Self.POA" Multiplicity="1" />
           <End Role="POA_EXCISER" Type="Self.POA_EXCISER" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1757,7 +1763,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PRODUCT_D__BUKRS__26EFBBC6">
+        <Association Name="FK__PRODUCT_D__BUKRS__6E2152BE">
           <End Role="T001" Type="Self.T001" Multiplicity="1" />
           <End Role="PRODUCT_DEVELOPMENT_DETAIL" Type="Self.PRODUCT_DEVELOPMENT_DETAIL" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1769,7 +1775,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PRODUCT_D__LASTA__2D67AF2B">
+        <Association Name="FK__PRODUCT_D__LASTA__6F1576F7">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="PRODUCT_DEVELOPMENT_DETAIL" Type="Self.PRODUCT_DEVELOPMENT_DETAIL" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1781,7 +1787,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PRODUCT_D__LASTA__2E5BD364">
+        <Association Name="FK__PRODUCT_D__LASTA__70099B30">
           <End Role="SYS_REFFERENCES" Type="Self.SYS_REFFERENCES" Multiplicity="1" />
           <End Role="PRODUCT_DEVELOPMENT_DETAIL" Type="Self.PRODUCT_DEVELOPMENT_DETAIL" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1793,7 +1799,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PRODUCT_D__MARKE__086B34A6">
+        <Association Name="FK__PRODUCT_D__MARKE__70FDBF69">
           <End Role="ZAIDM_EX_MARKET" Type="Self.ZAIDM_EX_MARKET" Multiplicity="1" />
           <End Role="PRODUCT_DEVELOPMENT_DETAIL" Type="Self.PRODUCT_DEVELOPMENT_DETAIL" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1805,7 +1811,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PRODUCT_D__PD_ID__0E240DFC">
+        <Association Name="FK__PRODUCT_D__PD_ID__71F1E3A2">
           <End Role="PRODUCT_DEVELOPMENT" Type="Self.PRODUCT_DEVELOPMENT" Multiplicity="1" />
           <End Role="PRODUCT_DEVELOPMENT_DETAIL" Type="Self.PRODUCT_DEVELOPMENT_DETAIL" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1817,7 +1823,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__PRODUCT_D__WERKS__316D4A39">
+        <Association Name="FK__PRODUCT_D__WERKS__72E607DB">
           <End Role="T001W" Type="Self.T001W" Multiplicity="0..1" />
           <End Role="PRODUCT_DEVELOPMENT_DETAIL" Type="Self.PRODUCT_DEVELOPMENT_DETAIL" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1853,7 +1859,19 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__REPLACEME__FORM___605D434C">
+        <Association Name="FK__REPLACEME__CREAT__45DE573A">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="REPLACEMENT_DOCUMENTS" Type="Self.REPLACEMENT_DOCUMENTS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="REPLACEMENT_DOCUMENTS">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__REPLACEME__FORM___4C8B54C9">
           <End Role="REPLACEMENT_DOCUMENTS" Type="Self.REPLACEMENT_DOCUMENTS" Multiplicity="1" />
           <End Role="REPLACEMENT_DOCUMENTS_DETAIL" Type="Self.REPLACEMENT_DOCUMENTS_DETAIL" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1865,7 +1883,55 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__SYS_REFFE__CREAT__5BCD9859">
+        <Association Name="FK__REPLACEME__LASTA__46D27B73">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="REPLACEMENT_DOCUMENTS" Type="Self.REPLACEMENT_DOCUMENTS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="REPLACEMENT_DOCUMENTS">
+              <PropertyRef Name="LASTAPPROVED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__REPLACEME__LASTA__47C69FAC">
+          <End Role="SYS_REFFERENCES" Type="Self.SYS_REFFERENCES" Multiplicity="1" />
+          <End Role="REPLACEMENT_DOCUMENTS" Type="Self.REPLACEMENT_DOCUMENTS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SYS_REFFERENCES">
+              <PropertyRef Name="REFF_ID" />
+            </Principal>
+            <Dependent Role="REPLACEMENT_DOCUMENTS">
+              <PropertyRef Name="LASTAPPROVED_STATUS" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__REPLACEME__LASTM__48BAC3E5">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="REPLACEMENT_DOCUMENTS" Type="Self.REPLACEMENT_DOCUMENTS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="REPLACEMENT_DOCUMENTS">
+              <PropertyRef Name="LASTMODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__REPLACEME__NPPBK__49AEE81E">
+          <End Role="ZAIDM_EX_NPPBKC" Type="Self.ZAIDM_EX_NPPBKC" Multiplicity="1" />
+          <End Role="REPLACEMENT_DOCUMENTS" Type="Self.REPLACEMENT_DOCUMENTS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ZAIDM_EX_NPPBKC">
+              <PropertyRef Name="NPPBKC_ID" />
+            </Principal>
+            <Dependent Role="REPLACEMENT_DOCUMENTS">
+              <PropertyRef Name="NPPBKC_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SYS_REFFE__CREAT__21D600EE">
           <End Role="USER" Type="Self.USER" Multiplicity="1" />
           <End Role="SYS_REFFERENCES" Type="Self.SYS_REFFERENCES" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1877,7 +1943,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__SYS_REFFE__LASTM__6DEC4894">
+        <Association Name="FK__SYS_REFFE__LASTM__22CA2527">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="SYS_REFFERENCES" Type="Self.SYS_REFFERENCES" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1889,7 +1955,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__SYS_REFFE__REFF___46D27B73">
+        <Association Name="FK__SYS_REFFE__REFF___23BE4960">
           <End Role="SYS_REFFERENCES_TYPE" Type="Self.SYS_REFFERENCES_TYPE" Multiplicity="1" />
           <End Role="SYS_REFFERENCES" Type="Self.SYS_REFFERENCES" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1925,7 +1991,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__TARIFF__CREATED___72B0FDB1">
+        <Association Name="FK__TARIFF__CREATED___4DB4832C">
           <End Role="USER" Type="Self.USER" Multiplicity="1" />
           <End Role="TARIFF" Type="Self.TARIFF" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1937,7 +2003,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__TARIFF__LASTAPPR__74994623">
+        <Association Name="FK__TARIFF__LASTAPPR__4EA8A765">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="TARIFF" Type="Self.TARIFF" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1949,7 +2015,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__TARIFF__LASTMODI__73A521EA">
+        <Association Name="FK__TARIFF__LASTMODI__4F9CCB9E">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="TARIFF" Type="Self.TARIFF" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1961,7 +2027,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__TARIFF__PROD_COD__71BCD978">
+        <Association Name="FK__TARIFF__PROD_COD__5090EFD7">
           <End Role="ZAIDM_EX_PRODTYP" Type="Self.ZAIDM_EX_PRODTYP" Multiplicity="1" />
           <End Role="TARIFF" Type="Self.TARIFF" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1973,7 +2039,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__TARIFF__STATUS_A__758D6A5C">
+        <Association Name="FK__TARIFF__STATUS_A__51851410">
           <End Role="SYS_REFFERENCES" Type="Self.SYS_REFFERENCES" Multiplicity="1" />
           <End Role="TARIFF" Type="Self.TARIFF" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1985,7 +2051,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ZAIDM_EX___APPRO__0E591826">
+        <Association Name="FK__ZAIDM_EX___APPRO__536D5C82">
           <End Role="SYS_REFFERENCES" Type="Self.SYS_REFFERENCES" Multiplicity="0..1" />
           <End Role="ZAIDM_EX_PRODTYP" Type="Self.ZAIDM_EX_PRODTYP" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1997,19 +2063,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ZAIDM_EX___CREAT__10416098">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="ZAIDM_EX_PRODTYP" Type="Self.ZAIDM_EX_PRODTYP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_PRODTYP">
-              <PropertyRef Name="CREATED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__ZAIDM_EX___LASTA__0F4D3C5F">
+        <Association Name="FK__ZAIDM_EX___LASTA__52793849">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="ZAIDM_EX_PRODTYP" Type="Self.ZAIDM_EX_PRODTYP" Multiplicity="*" />
           <ReferentialConstraint>
@@ -2018,18 +2072,6 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Principal>
             <Dependent Role="ZAIDM_EX_PRODTYP">
               <PropertyRef Name="LASTAPPROVED_BY" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__ZAIDM_EX___MODIF__113584D1">
-          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
-          <End Role="ZAIDM_EX_PRODTYP" Type="Self.ZAIDM_EX_PRODTYP" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="USER">
-              <PropertyRef Name="USER_ID" />
-            </Principal>
-            <Dependent Role="ZAIDM_EX_PRODTYP">
-              <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2860,6 +2902,23 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
     [CK1_EXCISE_CALCULATE].[NPPBKC_ID] AS [NPPBKC_ID]
     FROM [dbo].[CK1_EXCISE_CALCULATE] AS [CK1_EXCISE_CALCULATE]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="CK1_EXCISE_CALCULATE_ADJUST" EntityType="Self.CK1_EXCISE_CALCULATE_ADJUST" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [CK1_EXCISE_CALCULATE_ADJUST].[CK1_ID] AS [CK1_ID], 
+    [CK1_EXCISE_CALCULATE_ADJUST].[CK1_DATE] AS [CK1_DATE], 
+    [CK1_EXCISE_CALCULATE_ADJUST].[BULAN] AS [BULAN], 
+    [CK1_EXCISE_CALCULATE_ADJUST].[TAHUN] AS [TAHUN], 
+    [CK1_EXCISE_CALCULATE_ADJUST].[PRODUCT_ALIAS] AS [PRODUCT_ALIAS], 
+    [CK1_EXCISE_CALCULATE_ADJUST].[CK1_NUMBER] AS [CK1_NUMBER], 
+    [CK1_EXCISE_CALCULATE_ADJUST].[ORDERQTY] AS [ORDERQTY], 
+    [CK1_EXCISE_CALCULATE_ADJUST].[NOMINAL] AS [NOMINAL], 
+    [CK1_EXCISE_CALCULATE_ADJUST].[NPPBKC_ID] AS [NPPBKC_ID], 
+    [CK1_EXCISE_CALCULATE_ADJUST].[BRAND_CONTENT] AS [BRAND_CONTENT], 
+    [CK1_EXCISE_CALCULATE_ADJUST].[SERIES_VALUE] AS [SERIES_VALUE], 
+    [CK1_EXCISE_CALCULATE_ADJUST].[BRAND_CE] AS [BRAND_CE], 
+    [CK1_EXCISE_CALCULATE_ADJUST].[PRODUCTION] AS [PRODUCTION]
+    FROM [dbo].[CK1_EXCISE_CALCULATE_ADJUST] AS [CK1_EXCISE_CALCULATE_ADJUST]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="PRODUCT_DETAIL_VIEW" EntityType="Self.PRODUCT_DETAIL_VIEW" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [PRODUCT_DETAIL_VIEW].[PD_NO] AS [PD_NO], 
@@ -3073,47 +3132,27 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
     [vwProductDevDetail].[LASTMODIFIED_BY] AS [LASTMODIFIED_BY]
     FROM [dbo].[vwProductDevDetail] AS [vwProductDevDetail]</DefiningQuery>
           </EntitySet>
-          <AssociationSet Name="FK__AMENDMENT__CREAT__5C8CB268" Association="Self.FK__AMENDMENT__CREAT__5C8CB268">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="REPLACEMENT_DOCUMENTS" EntitySet="REPLACEMENT_DOCUMENTS" />
-          </AssociationSet>
-          <AssociationSet Name="FK__AMENDMENT__LASTA__5E74FADA" Association="Self.FK__AMENDMENT__LASTA__5E74FADA">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="REPLACEMENT_DOCUMENTS" EntitySet="REPLACEMENT_DOCUMENTS" />
-          </AssociationSet>
-          <AssociationSet Name="FK__AMENDMENT__LASTA__5F691F13" Association="Self.FK__AMENDMENT__LASTA__5F691F13">
-            <End Role="SYS_REFFERENCES" EntitySet="SYS_REFFERENCES" />
-            <End Role="REPLACEMENT_DOCUMENTS" EntitySet="REPLACEMENT_DOCUMENTS" />
-          </AssociationSet>
-          <AssociationSet Name="FK__AMENDMENT__LASTM__5D80D6A1" Association="Self.FK__AMENDMENT__LASTM__5D80D6A1">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="REPLACEMENT_DOCUMENTS" EntitySet="REPLACEMENT_DOCUMENTS" />
-          </AssociationSet>
-          <AssociationSet Name="FK__AMENDMENT__NPPBK__5B988E2F" Association="Self.FK__AMENDMENT__NPPBK__5B988E2F">
-            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
-            <End Role="REPLACEMENT_DOCUMENTS" EntitySet="REPLACEMENT_DOCUMENTS" />
-          </AssociationSet>
-          <AssociationSet Name="FK__BRAND_REG__CREAT__1D66518C" Association="Self.FK__BRAND_REG__CREAT__1D66518C">
+          <AssociationSet Name="FK__BRAND_REG__CREAT__7993056A" Association="Self.FK__BRAND_REG__CREAT__7993056A">
             <End Role="USER" EntitySet="USER" />
             <End Role="BRAND_REGISTRATION_REQ" EntitySet="BRAND_REGISTRATION_REQ" />
           </AssociationSet>
-          <AssociationSet Name="FK__BRAND_REG__LASTA__1F4E99FE" Association="Self.FK__BRAND_REG__LASTA__1F4E99FE">
+          <AssociationSet Name="FK__BRAND_REG__LASTA__7A8729A3" Association="Self.FK__BRAND_REG__LASTA__7A8729A3">
             <End Role="USER" EntitySet="USER" />
             <End Role="BRAND_REGISTRATION_REQ" EntitySet="BRAND_REGISTRATION_REQ" />
           </AssociationSet>
-          <AssociationSet Name="FK__BRAND_REG__LASTA__2042BE37" Association="Self.FK__BRAND_REG__LASTA__2042BE37">
+          <AssociationSet Name="FK__BRAND_REG__LASTA__7B7B4DDC" Association="Self.FK__BRAND_REG__LASTA__7B7B4DDC">
             <End Role="SYS_REFFERENCES" EntitySet="SYS_REFFERENCES" />
             <End Role="BRAND_REGISTRATION_REQ" EntitySet="BRAND_REGISTRATION_REQ" />
           </AssociationSet>
-          <AssociationSet Name="FK__BRAND_REG__LASTM__1E5A75C5" Association="Self.FK__BRAND_REG__LASTM__1E5A75C5">
+          <AssociationSet Name="FK__BRAND_REG__LASTM__7C6F7215" Association="Self.FK__BRAND_REG__LASTM__7C6F7215">
             <End Role="USER" EntitySet="USER" />
             <End Role="BRAND_REGISTRATION_REQ" EntitySet="BRAND_REGISTRATION_REQ" />
           </AssociationSet>
-          <AssociationSet Name="FK__BRAND_REG__NPPBK__1B7E091A" Association="Self.FK__BRAND_REG__NPPBK__1B7E091A">
+          <AssociationSet Name="FK__BRAND_REG__NPPBK__7D63964E" Association="Self.FK__BRAND_REG__NPPBK__7D63964E">
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
             <End Role="BRAND_REGISTRATION_REQ" EntitySet="BRAND_REGISTRATION_REQ" />
           </AssociationSet>
-          <AssociationSet Name="FK__EMAILVARI__CONTE__7B9B496D" Association="Self.FK__EMAILVARI__CONTE__7B9B496D">
+          <AssociationSet Name="FK__EMAILVARI__CONTE__35DCF99B" Association="Self.FK__EMAILVARI__CONTE__35DCF99B">
             <End Role="CONTENTEMAIL" EntitySet="CONTENTEMAIL" />
             <End Role="EMAILVARIABEL" EntitySet="EMAILVARIABEL" />
           </AssociationSet>
@@ -3121,7 +3160,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             <End Role="USER" EntitySet="USER" />
             <End Role="EXCISE_CREDIT" EntitySet="EXCISE_CREDIT" />
           </AssociationSet>
-          <AssociationSet Name="FK__EXCISE_CR__CK1_I__4D1564AE" Association="Self.FK__EXCISE_CR__CK1_I__4D1564AE">
+          <AssociationSet Name="FK__EXCISE_CR__CK1_I__6497E884" Association="Self.FK__EXCISE_CR__CK1_I__6497E884">
             <End Role="CK1" EntitySet="CK1" />
             <End Role="EXCISE_CREDIT_DETAILCK1" EntitySet="EXCISE_CREDIT_DETAILCK1" />
           </AssociationSet>
@@ -3153,23 +3192,23 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             <End Role="POA" EntitySet="POA" />
             <End Role="EXCISE_CREDIT" EntitySet="EXCISE_CREDIT" />
           </AssociationSet>
-          <AssociationSet Name="FK__EXCISE_CR__PROD___186C9245" Association="Self.FK__EXCISE_CR__PROD___186C9245">
+          <AssociationSet Name="FK__EXCISE_CR__PROD___61BB7BD9" Association="Self.FK__EXCISE_CR__PROD___61BB7BD9">
             <End Role="ZAIDM_EX_PRODTYP" EntitySet="ZAIDM_EX_PRODTYP" />
             <End Role="EXCISE_CREDIT_APPROVED_DETAIL" EntitySet="EXCISE_CREDIT_APPROVED_DETAIL" />
           </AssociationSet>
-          <AssociationSet Name="FK__EXCISE_CR__PRODU__4C214075" Association="Self.FK__EXCISE_CR__PRODU__4C214075">
-            <End Role="ZAIDM_EX_PRODTYP" EntitySet="ZAIDM_EX_PRODTYP" />
-            <End Role="EXCISE_CREDIT_DETAILCK1" EntitySet="EXCISE_CREDIT_DETAILCK1" />
-          </AssociationSet>
-          <AssociationSet Name="FK__EXCISE_CR__PRODU__69E6AD86" Association="Self.FK__EXCISE_CR__PRODU__69E6AD86">
+          <AssociationSet Name="FK__EXCISE_CR__PRODU__5FD33367" Association="Self.FK__EXCISE_CR__PRODU__5FD33367">
             <End Role="ZAIDM_EX_PRODTYP" EntitySet="ZAIDM_EX_PRODTYP" />
             <End Role="EXCISE_CREDIT_ADJUST_CALDETAIL" EntitySet="EXCISE_CREDIT_ADJUST_CALDETAIL" />
           </AssociationSet>
-          <AssociationSet Name="FK__FILE_UPLO__CREAT__4B622666" Association="Self.FK__FILE_UPLO__CREAT__4B622666">
+          <AssociationSet Name="FK__EXCISE_CR__PRODU__668030F6" Association="Self.FK__EXCISE_CR__PRODU__668030F6">
+            <End Role="ZAIDM_EX_PRODTYP" EntitySet="ZAIDM_EX_PRODTYP" />
+            <End Role="EXCISE_CREDIT_DETAILCK1" EntitySet="EXCISE_CREDIT_DETAILCK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK__FILE_UPLO__CREAT__2F2FFC0C" Association="Self.FK__FILE_UPLO__CREAT__2F2FFC0C">
             <End Role="USER" EntitySet="USER" />
             <End Role="FILE_UPLOAD" EntitySet="FILE_UPLOAD" />
           </AssociationSet>
-          <AssociationSet Name="FK__FILE_UPLO__DOCUM__3B2BBE9D" Association="Self.FK__FILE_UPLO__DOCUM__3B2BBE9D">
+          <AssociationSet Name="FK__FILE_UPLO__DOCUM__30242045" Association="Self.FK__FILE_UPLO__DOCUM__30242045">
             <End Role="MASTER_SUPPORTING_DOCUMENT" EntitySet="MASTER_SUPPORTING_DOCUMENT" />
             <End Role="FILE_UPLOAD" EntitySet="FILE_UPLOAD" />
           </AssociationSet>
@@ -3177,7 +3216,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             <End Role="MASTER_SUPPORTING_DOCUMENT" EntitySet="MASTER_SUPPORTING_DOCUMENT" />
             <End Role="PRODUCT_DEVELOPMENT_UPLOAD" EntitySet="PRODUCT_DEVELOPMENT_UPLOAD" />
           </AssociationSet>
-          <AssociationSet Name="FK__FILE_UPLO__LASTM__4C564A9F" Association="Self.FK__FILE_UPLO__LASTM__4C564A9F">
+          <AssociationSet Name="FK__FILE_UPLO__LASTM__3118447E" Association="Self.FK__FILE_UPLO__LASTM__3118447E">
             <End Role="USER" EntitySet="USER" />
             <End Role="FILE_UPLOAD" EntitySet="FILE_UPLOAD" />
           </AssociationSet>
@@ -3197,91 +3236,103 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             <End Role="USER" EntitySet="USER" />
             <End Role="MASTER_FINANCIAL_RATIO" EntitySet="MASTER_FINANCIAL_RATIO" />
           </AssociationSet>
-          <AssociationSet Name="FK__FINANCIAL__STATU__542C7691" Association="Self.FK__FINANCIAL__STATU__542C7691">
-            <End Role="SYS_REFFERENCES" EntitySet="SYS_REFFERENCES" />
-            <End Role="MASTER_FINANCIAL_RATIO" EntitySet="MASTER_FINANCIAL_RATIO" />
-          </AssociationSet>
-          <AssociationSet Name="FK__INTERVIEW__BUKRS__4E3E9311" Association="Self.FK__INTERVIEW__BUKRS__4E3E9311">
+          <AssociationSet Name="FK__INTERVIEW__BUKRS__1CDC41A7" Association="Self.FK__INTERVIEW__BUKRS__1CDC41A7">
             <End Role="T001" EntitySet="T001" />
             <End Role="INTERVIEW_REQUEST" EntitySet="INTERVIEW_REQUEST" />
           </AssociationSet>
-          <AssociationSet Name="FK__INTERVIEW__CITY___3572E547" Association="Self.FK__INTERVIEW__CITY___3572E547">
+          <AssociationSet Name="FK__INTERVIEW__BUKRS__2942188C" Association="Self.FK__INTERVIEW__BUKRS__2942188C">
+            <End Role="T001" EntitySet="T001" />
+            <End Role="INTERVIEW_REQUEST" EntitySet="INTERVIEW_REQUEST" />
+          </AssociationSet>
+          <AssociationSet Name="FK__INTERVIEW__CITY___31D75E8D" Association="Self.FK__INTERVIEW__CITY___31D75E8D">
             <End Role="MASTER_CITY" EntitySet="MASTER_CITY" />
             <End Role="INTERVIEW_REQUEST_DETAIL" EntitySet="INTERVIEW_REQUEST_DETAIL" />
           </AssociationSet>
-          <AssociationSet Name="FK__INTERVIEW__NPPBK__642DD430" Association="Self.FK__INTERVIEW__NPPBK__642DD430">
+          <AssociationSet Name="FK__INTERVIEW__NPPBK__1DD065E0" Association="Self.FK__INTERVIEW__NPPBK__1DD065E0">
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
             <End Role="INTERVIEW_REQUEST" EntitySet="INTERVIEW_REQUEST" />
           </AssociationSet>
-          <AssociationSet Name="FK__INTERVIEW__POA_I__058EC7FB" Association="Self.FK__INTERVIEW__POA_I__058EC7FB">
+          <AssociationSet Name="FK__INTERVIEW__NPPBK__2A363CC5" Association="Self.FK__INTERVIEW__NPPBK__2A363CC5">
+            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+            <End Role="INTERVIEW_REQUEST" EntitySet="INTERVIEW_REQUEST" />
+          </AssociationSet>
+          <AssociationSet Name="FK__INTERVIEW__POA_I__1EC48A19" Association="Self.FK__INTERVIEW__POA_I__1EC48A19">
             <End Role="POA" EntitySet="POA" />
             <End Role="INTERVIEW_REQUEST" EntitySet="INTERVIEW_REQUEST" />
           </AssociationSet>
-          <AssociationSet Name="FK__INTERVIEW__PROVI__3A379A64" Association="Self.FK__INTERVIEW__PROVI__3A379A64">
+          <AssociationSet Name="FK__INTERVIEW__POA_I__2B2A60FE" Association="Self.FK__INTERVIEW__POA_I__2B2A60FE">
+            <End Role="POA" EntitySet="POA" />
+            <End Role="INTERVIEW_REQUEST" EntitySet="INTERVIEW_REQUEST" />
+          </AssociationSet>
+          <AssociationSet Name="FK__INTERVIEW__PROVI__32CB82C6" Association="Self.FK__INTERVIEW__PROVI__32CB82C6">
             <End Role="MASTER_STATE" EntitySet="MASTER_STATE" />
             <End Role="INTERVIEW_REQUEST_DETAIL" EntitySet="INTERVIEW_REQUEST_DETAIL" />
           </AssociationSet>
-          <AssociationSet Name="FK__INTERVIEW__VR_FO__45A94D10" Association="Self.FK__INTERVIEW__VR_FO__45A94D10">
+          <AssociationSet Name="FK__INTERVIEW__VR_FO__33BFA6FF" Association="Self.FK__INTERVIEW__VR_FO__33BFA6FF">
             <End Role="INTERVIEW_REQUEST" EntitySet="INTERVIEW_REQUEST" />
             <End Role="INTERVIEW_REQUEST_DETAIL" EntitySet="INTERVIEW_REQUEST_DETAIL" />
           </AssociationSet>
-          <AssociationSet Name="FK__MANUFACTU__MNF_R__24D2692A" Association="Self.FK__MANUFACTU__MNF_R__24D2692A">
+          <AssociationSet Name="FK__MANUFACTU__MNF_R__3E3D3572" Association="Self.FK__MANUFACTU__MNF_R__3E3D3572">
             <End Role="MANUFACTURING_LISENCE_REQUEST" EntitySet="MANUFACTURING_LISENCE_REQUEST" />
             <End Role="MANUFACTURING_BOUND_CONDITION" EntitySet="MANUFACTURING_BOUND_CONDITION" />
           </AssociationSet>
-          <AssociationSet Name="FK__MANUFACTU__MNF_R__28A2FA0E" Association="Self.FK__MANUFACTU__MNF_R__28A2FA0E">
+          <AssociationSet Name="FK__MANUFACTU__MNF_R__420DC656" Association="Self.FK__MANUFACTU__MNF_R__420DC656">
             <End Role="MANUFACTURING_LISENCE_REQUEST" EntitySet="MANUFACTURING_LISENCE_REQUEST" />
             <End Role="MANUFACTURING_PRODUCT_TYPE" EntitySet="MANUFACTURING_PRODUCT_TYPE" />
           </AssociationSet>
-          <AssociationSet Name="FK__MANUFACTU__NPPBK__1D314762" Association="Self.FK__MANUFACTU__NPPBK__1D314762">
+          <AssociationSet Name="FK__MANUFACTU__NPPBK__369C13AA" Association="Self.FK__MANUFACTU__NPPBK__369C13AA">
             <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
             <End Role="MANUFACTURING_LISENCE_REQUEST" EntitySet="MANUFACTURING_LISENCE_REQUEST" />
           </AssociationSet>
-          <AssociationSet Name="FK__MANUFACTU__PROD___29971E47" Association="Self.FK__MANUFACTU__PROD___29971E47">
+          <AssociationSet Name="FK__MANUFACTU__PROD___4301EA8F" Association="Self.FK__MANUFACTU__PROD___4301EA8F">
             <End Role="ZAIDM_EX_PRODTYP" EntitySet="ZAIDM_EX_PRODTYP" />
             <End Role="MANUFACTURING_PRODUCT_TYPE" EntitySet="MANUFACTURING_PRODUCT_TYPE" />
           </AssociationSet>
-          <AssociationSet Name="FK__MANUFACTU__VR_FO__1E256B9B" Association="Self.FK__MANUFACTU__VR_FO__1E256B9B">
+          <AssociationSet Name="FK__MANUFACTU__VR_FO__379037E3" Association="Self.FK__MANUFACTU__VR_FO__379037E3">
             <End Role="INTERVIEW_REQUEST" EntitySet="INTERVIEW_REQUEST" />
             <End Role="MANUFACTURING_LISENCE_REQUEST" EntitySet="MANUFACTURING_LISENCE_REQUEST" />
           </AssociationSet>
-          <AssociationSet Name="FK__MANUFACTU__VR_FO__25C68D63" Association="Self.FK__MANUFACTU__VR_FO__25C68D63">
+          <AssociationSet Name="FK__MANUFACTU__VR_FO__3F3159AB" Association="Self.FK__MANUFACTU__VR_FO__3F3159AB">
             <End Role="INTERVIEW_REQUEST_DETAIL" EntitySet="INTERVIEW_REQUEST_DETAIL" />
             <End Role="MANUFACTURING_BOUND_CONDITION" EntitySet="MANUFACTURING_BOUND_CONDITION" />
           </AssociationSet>
-          <AssociationSet Name="FK__MASTER_CI__STATE__3943762B" Association="Self.FK__MASTER_CI__STATE__3943762B">
+          <AssociationSet Name="FK__MASTER_CI__STATE__3C89F72A" Association="Self.FK__MASTER_CI__STATE__3C89F72A">
             <End Role="MASTER_STATE" EntitySet="MASTER_STATE" />
             <End Role="MASTER_CITY" EntitySet="MASTER_CITY" />
           </AssociationSet>
-          <AssociationSet Name="FK__MASTER_SU__BUKRS__7775B2CE" Association="Self.FK__MASTER_SU__BUKRS__7775B2CE">
+          <AssociationSet Name="FK__MASTER_FI__STATU__451F3D2B" Association="Self.FK__MASTER_FI__STATU__451F3D2B">
+            <End Role="SYS_REFFERENCES" EntitySet="SYS_REFFERENCES" />
+            <End Role="MASTER_FINANCIAL_RATIO" EntitySet="MASTER_FINANCIAL_RATIO" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MASTER_SU__BUKRS__2882FE7D" Association="Self.FK__MASTER_SU__BUKRS__2882FE7D">
             <End Role="T001" EntitySet="T001" />
             <End Role="MASTER_SUPPORTING_DOCUMENT" EntitySet="MASTER_SUPPORTING_DOCUMENT" />
           </AssociationSet>
-          <AssociationSet Name="FK__POA_EXCIS__POA_I__2DD1C37F" Association="Self.FK__POA_EXCIS__POA_I__2DD1C37F">
+          <AssociationSet Name="FK__POA_EXCIS__POA_I__4AD81681" Association="Self.FK__POA_EXCIS__POA_I__4AD81681">
             <End Role="POA" EntitySet="POA" />
             <End Role="POA_EXCISER" EntitySet="POA_EXCISER" />
           </AssociationSet>
-          <AssociationSet Name="FK__PRODUCT_D__BUKRS__26EFBBC6" Association="Self.FK__PRODUCT_D__BUKRS__26EFBBC6">
+          <AssociationSet Name="FK__PRODUCT_D__BUKRS__6E2152BE" Association="Self.FK__PRODUCT_D__BUKRS__6E2152BE">
             <End Role="T001" EntitySet="T001" />
             <End Role="PRODUCT_DEVELOPMENT_DETAIL" EntitySet="PRODUCT_DEVELOPMENT_DETAIL" />
           </AssociationSet>
-          <AssociationSet Name="FK__PRODUCT_D__LASTA__2D67AF2B" Association="Self.FK__PRODUCT_D__LASTA__2D67AF2B">
+          <AssociationSet Name="FK__PRODUCT_D__LASTA__6F1576F7" Association="Self.FK__PRODUCT_D__LASTA__6F1576F7">
             <End Role="USER" EntitySet="USER" />
             <End Role="PRODUCT_DEVELOPMENT_DETAIL" EntitySet="PRODUCT_DEVELOPMENT_DETAIL" />
           </AssociationSet>
-          <AssociationSet Name="FK__PRODUCT_D__LASTA__2E5BD364" Association="Self.FK__PRODUCT_D__LASTA__2E5BD364">
+          <AssociationSet Name="FK__PRODUCT_D__LASTA__70099B30" Association="Self.FK__PRODUCT_D__LASTA__70099B30">
             <End Role="SYS_REFFERENCES" EntitySet="SYS_REFFERENCES" />
             <End Role="PRODUCT_DEVELOPMENT_DETAIL" EntitySet="PRODUCT_DEVELOPMENT_DETAIL" />
           </AssociationSet>
-          <AssociationSet Name="FK__PRODUCT_D__MARKE__086B34A6" Association="Self.FK__PRODUCT_D__MARKE__086B34A6">
+          <AssociationSet Name="FK__PRODUCT_D__MARKE__70FDBF69" Association="Self.FK__PRODUCT_D__MARKE__70FDBF69">
             <End Role="ZAIDM_EX_MARKET" EntitySet="ZAIDM_EX_MARKET" />
             <End Role="PRODUCT_DEVELOPMENT_DETAIL" EntitySet="PRODUCT_DEVELOPMENT_DETAIL" />
           </AssociationSet>
-          <AssociationSet Name="FK__PRODUCT_D__PD_ID__0E240DFC" Association="Self.FK__PRODUCT_D__PD_ID__0E240DFC">
+          <AssociationSet Name="FK__PRODUCT_D__PD_ID__71F1E3A2" Association="Self.FK__PRODUCT_D__PD_ID__71F1E3A2">
             <End Role="PRODUCT_DEVELOPMENT" EntitySet="PRODUCT_DEVELOPMENT" />
             <End Role="PRODUCT_DEVELOPMENT_DETAIL" EntitySet="PRODUCT_DEVELOPMENT_DETAIL" />
           </AssociationSet>
-          <AssociationSet Name="FK__PRODUCT_D__WERKS__316D4A39" Association="Self.FK__PRODUCT_D__WERKS__316D4A39">
+          <AssociationSet Name="FK__PRODUCT_D__WERKS__72E607DB" Association="Self.FK__PRODUCT_D__WERKS__72E607DB">
             <End Role="T001W" EntitySet="T001W" />
             <End Role="PRODUCT_DEVELOPMENT_DETAIL" EntitySet="PRODUCT_DEVELOPMENT_DETAIL" />
           </AssociationSet>
@@ -3293,19 +3344,39 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             <End Role="RECEIVED_DECREE" EntitySet="RECEIVED_DECREE" />
             <End Role="RECEIVED_DECREE_DETAIL" EntitySet="RECEIVED_DECREE_DETAIL" />
           </AssociationSet>
-          <AssociationSet Name="FK__REPLACEME__FORM___605D434C" Association="Self.FK__REPLACEME__FORM___605D434C">
+          <AssociationSet Name="FK__REPLACEME__CREAT__45DE573A" Association="Self.FK__REPLACEME__CREAT__45DE573A">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="REPLACEMENT_DOCUMENTS" EntitySet="REPLACEMENT_DOCUMENTS" />
+          </AssociationSet>
+          <AssociationSet Name="FK__REPLACEME__FORM___4C8B54C9" Association="Self.FK__REPLACEME__FORM___4C8B54C9">
             <End Role="REPLACEMENT_DOCUMENTS" EntitySet="REPLACEMENT_DOCUMENTS" />
             <End Role="REPLACEMENT_DOCUMENTS_DETAIL" EntitySet="REPLACEMENT_DOCUMENTS_DETAIL" />
           </AssociationSet>
-          <AssociationSet Name="FK__SYS_REFFE__CREAT__5BCD9859" Association="Self.FK__SYS_REFFE__CREAT__5BCD9859">
+          <AssociationSet Name="FK__REPLACEME__LASTA__46D27B73" Association="Self.FK__REPLACEME__LASTA__46D27B73">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="REPLACEMENT_DOCUMENTS" EntitySet="REPLACEMENT_DOCUMENTS" />
+          </AssociationSet>
+          <AssociationSet Name="FK__REPLACEME__LASTA__47C69FAC" Association="Self.FK__REPLACEME__LASTA__47C69FAC">
+            <End Role="SYS_REFFERENCES" EntitySet="SYS_REFFERENCES" />
+            <End Role="REPLACEMENT_DOCUMENTS" EntitySet="REPLACEMENT_DOCUMENTS" />
+          </AssociationSet>
+          <AssociationSet Name="FK__REPLACEME__LASTM__48BAC3E5" Association="Self.FK__REPLACEME__LASTM__48BAC3E5">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="REPLACEMENT_DOCUMENTS" EntitySet="REPLACEMENT_DOCUMENTS" />
+          </AssociationSet>
+          <AssociationSet Name="FK__REPLACEME__NPPBK__49AEE81E" Association="Self.FK__REPLACEME__NPPBK__49AEE81E">
+            <End Role="ZAIDM_EX_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
+            <End Role="REPLACEMENT_DOCUMENTS" EntitySet="REPLACEMENT_DOCUMENTS" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SYS_REFFE__CREAT__21D600EE" Association="Self.FK__SYS_REFFE__CREAT__21D600EE">
             <End Role="USER" EntitySet="USER" />
             <End Role="SYS_REFFERENCES" EntitySet="SYS_REFFERENCES" />
           </AssociationSet>
-          <AssociationSet Name="FK__SYS_REFFE__LASTM__6DEC4894" Association="Self.FK__SYS_REFFE__LASTM__6DEC4894">
+          <AssociationSet Name="FK__SYS_REFFE__LASTM__22CA2527" Association="Self.FK__SYS_REFFE__LASTM__22CA2527">
             <End Role="USER" EntitySet="USER" />
             <End Role="SYS_REFFERENCES" EntitySet="SYS_REFFERENCES" />
           </AssociationSet>
-          <AssociationSet Name="FK__SYS_REFFE__REFF___46D27B73" Association="Self.FK__SYS_REFFE__REFF___46D27B73">
+          <AssociationSet Name="FK__SYS_REFFE__REFF___23BE4960" Association="Self.FK__SYS_REFFE__REFF___23BE4960">
             <End Role="SYS_REFFERENCES_TYPE" EntitySet="SYS_REFFERENCES_TYPE" />
             <End Role="SYS_REFFERENCES" EntitySet="SYS_REFFERENCES" />
           </AssociationSet>
@@ -3317,39 +3388,31 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             <End Role="MASTER_STATE" EntitySet="MASTER_STATE" />
             <End Role="T001W" EntitySet="T001W" />
           </AssociationSet>
-          <AssociationSet Name="FK__TARIFF__CREATED___72B0FDB1" Association="Self.FK__TARIFF__CREATED___72B0FDB1">
+          <AssociationSet Name="FK__TARIFF__CREATED___4DB4832C" Association="Self.FK__TARIFF__CREATED___4DB4832C">
             <End Role="USER" EntitySet="USER" />
             <End Role="TARIFF" EntitySet="TARIFF" />
           </AssociationSet>
-          <AssociationSet Name="FK__TARIFF__LASTAPPR__74994623" Association="Self.FK__TARIFF__LASTAPPR__74994623">
+          <AssociationSet Name="FK__TARIFF__LASTAPPR__4EA8A765" Association="Self.FK__TARIFF__LASTAPPR__4EA8A765">
             <End Role="USER" EntitySet="USER" />
             <End Role="TARIFF" EntitySet="TARIFF" />
           </AssociationSet>
-          <AssociationSet Name="FK__TARIFF__LASTMODI__73A521EA" Association="Self.FK__TARIFF__LASTMODI__73A521EA">
+          <AssociationSet Name="FK__TARIFF__LASTMODI__4F9CCB9E" Association="Self.FK__TARIFF__LASTMODI__4F9CCB9E">
             <End Role="USER" EntitySet="USER" />
             <End Role="TARIFF" EntitySet="TARIFF" />
           </AssociationSet>
-          <AssociationSet Name="FK__TARIFF__PROD_COD__71BCD978" Association="Self.FK__TARIFF__PROD_COD__71BCD978">
+          <AssociationSet Name="FK__TARIFF__PROD_COD__5090EFD7" Association="Self.FK__TARIFF__PROD_COD__5090EFD7">
             <End Role="ZAIDM_EX_PRODTYP" EntitySet="ZAIDM_EX_PRODTYP" />
             <End Role="TARIFF" EntitySet="TARIFF" />
           </AssociationSet>
-          <AssociationSet Name="FK__TARIFF__STATUS_A__758D6A5C" Association="Self.FK__TARIFF__STATUS_A__758D6A5C">
+          <AssociationSet Name="FK__TARIFF__STATUS_A__51851410" Association="Self.FK__TARIFF__STATUS_A__51851410">
             <End Role="SYS_REFFERENCES" EntitySet="SYS_REFFERENCES" />
             <End Role="TARIFF" EntitySet="TARIFF" />
           </AssociationSet>
-          <AssociationSet Name="FK__ZAIDM_EX___APPRO__0E591826" Association="Self.FK__ZAIDM_EX___APPRO__0E591826">
+          <AssociationSet Name="FK__ZAIDM_EX___APPRO__536D5C82" Association="Self.FK__ZAIDM_EX___APPRO__536D5C82">
             <End Role="SYS_REFFERENCES" EntitySet="SYS_REFFERENCES" />
             <End Role="ZAIDM_EX_PRODTYP" EntitySet="ZAIDM_EX_PRODTYP" />
           </AssociationSet>
-          <AssociationSet Name="FK__ZAIDM_EX___CREAT__10416098" Association="Self.FK__ZAIDM_EX___CREAT__10416098">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="ZAIDM_EX_PRODTYP" EntitySet="ZAIDM_EX_PRODTYP" />
-          </AssociationSet>
-          <AssociationSet Name="FK__ZAIDM_EX___LASTA__0F4D3C5F" Association="Self.FK__ZAIDM_EX___LASTA__0F4D3C5F">
-            <End Role="USER" EntitySet="USER" />
-            <End Role="ZAIDM_EX_PRODTYP" EntitySet="ZAIDM_EX_PRODTYP" />
-          </AssociationSet>
-          <AssociationSet Name="FK__ZAIDM_EX___MODIF__113584D1" Association="Self.FK__ZAIDM_EX___MODIF__113584D1">
+          <AssociationSet Name="FK__ZAIDM_EX___LASTA__52793849" Association="Self.FK__ZAIDM_EX___LASTA__52793849">
             <End Role="USER" EntitySet="USER" />
             <End Role="ZAIDM_EX_PRODTYP" EntitySet="ZAIDM_EX_PRODTYP" />
           </AssociationSet>
@@ -3676,6 +3739,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <NavigationProperty Name="RECEIVED_DECREE1" Relationship="Sampoerna.EMS.CustomService.Data.FK_CREATOR" FromRole="USER" ToRole="RECEIVED_DECREE" />
           <NavigationProperty Name="RECEIVED_DECREE2" Relationship="Sampoerna.EMS.CustomService.Data.FK_LASTEDITOR" FromRole="USER" ToRole="RECEIVED_DECREE" />
           <NavigationProperty Name="USER_PRINTOUT_LAYOUT" Relationship="Sampoerna.EMS.CustomService.Data.FK_USER_PRINTOUT_LAYOUT_USER" FromRole="USER" ToRole="USER_PRINTOUT_LAYOUT" />
+          <Property Name="IS_MASTER_DATA_APPROVER" Type="Boolean" />
           </EntityType>
         <EntityContainer Name="EMSDataModel" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="USER" EntityType="Self.USER" />
@@ -4233,18 +4297,8 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             <End Role="MASTER_NPPBKC" EntitySet="ZAIDM_EX_NPPBKC" />
             <End Role="RECEIVED_DECREE" EntitySet="RECEIVED_DECREE" />
           </AssociationSet>
-          <EntitySet Name="vwBrandRegistration" EntityType="Sampoerna.EMS.CustomService.Data.vwBrandRegistration" />
           <EntitySet Name="vwPenetapanSKEP" EntityType="Sampoerna.EMS.CustomService.Data.vwPenetapanSKEP" />
-          <EntitySet Name="EXCISE_CREDIT_APPROVED_DETAIL" EntityType="Sampoerna.EMS.CustomService.Data.EXCISE_CREDIT_APPROVED_DETAIL" />
-          <AssociationSet Name="FK_EXCISE_CREDIT_APPROVED_DETAIL_EXCISE_CREDIT" Association="Sampoerna.EMS.CustomService.Data.FK_EXCISE_CREDIT_APPROVED_DETAIL_EXCISE_CREDIT">
-            <End Role="EXCISE_CREDIT" EntitySet="EXCISE_CREDIT" />
-            <End Role="EXCISE_CREDIT_APPROVED_DETAIL" EntitySet="EXCISE_CREDIT_APPROVED_DETAIL" />
-          </AssociationSet>
-          <AssociationSet Name="FK__EXCISE_CR__PROD___186C9245" Association="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__PROD___186C9245">
-            <End Role="MASTER_PRODUCT_TYPE" EntitySet="ZAIDM_EX_PRODTYP" />
-            <End Role="EXCISE_CREDIT_APPROVED_DETAIL" EntitySet="EXCISE_CREDIT_APPROVED_DETAIL" />
-          </AssociationSet>
-<EntitySet Name="USER_PRINTOUT_LAYOUT" EntityType="Sampoerna.EMS.CustomService.Data.USER_PRINTOUT_LAYOUT" />
+          <EntitySet Name="USER_PRINTOUT_LAYOUT" EntityType="Sampoerna.EMS.CustomService.Data.USER_PRINTOUT_LAYOUT" />
           <AssociationSet Name="FK_USER_PRINTOUT_LAYOUT_PRINTOUT_LAYOUT" Association="Sampoerna.EMS.CustomService.Data.FK_USER_PRINTOUT_LAYOUT_PRINTOUT_LAYOUT">
             <End Role="PRINTOUT_LAYOUT" EntitySet="PRINTOUT_LAYOUT" />
             <End Role="USER_PRINTOUT_LAYOUT" EntitySet="USER_PRINTOUT_LAYOUT" />
@@ -4264,6 +4318,25 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             <End Role="PRODUCT_DEVELOPMENT_DETAIL" EntitySet="PRODUCT_DEVELOPMENT_DETAIL" />
             <End Role="PRODUCT_DEVELOPMENT_UPLOAD" EntitySet="PRODUCT_DEVELOPMENT_UPLOAD" />
           </AssociationSet>
+          <AssociationSet Name="FK__T001W__CITY_ID__615167851" Association="Sampoerna.EMS.CustomService.Data.FK__T001W__CITY_ID__615167851">
+            <End Role="MASTER_CITY" EntitySet="MASTER_CITY" />
+            <End Role="MASTER_PLANT" EntitySet="T001W" />
+          </AssociationSet>
+          <AssociationSet Name="FK__T001W__STATE_ID__62458BBE1" Association="Sampoerna.EMS.CustomService.Data.FK__T001W__STATE_ID__62458BBE1">
+            <End Role="MASTER_STATE" EntitySet="MASTER_STATE" />
+            <End Role="MASTER_PLANT" EntitySet="T001W" />
+          </AssociationSet>
+          <EntitySet Name="vwBrandRegistration" EntityType="Sampoerna.EMS.CustomService.Data.vwBrandRegistration" />
+          <EntitySet Name="EXCISE_CREDIT_APPROVED_DETAIL" EntityType="Sampoerna.EMS.CustomService.Data.EXCISE_CREDIT_APPROVED_DETAIL" />
+          <AssociationSet Name="FK_EXCISE_CREDIT_APPROVED_DETAIL_EXCISE_CREDIT" Association="Sampoerna.EMS.CustomService.Data.FK_EXCISE_CREDIT_APPROVED_DETAIL_EXCISE_CREDIT">
+            <End Role="EXCISE_CREDIT" EntitySet="EXCISE_CREDIT" />
+            <End Role="EXCISE_CREDIT_APPROVED_DETAIL" EntitySet="EXCISE_CREDIT_APPROVED_DETAIL" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EXCISE_CR__PROD___61BB7BD9" Association="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__PROD___61BB7BD9">
+            <End Role="MASTER_PRODUCT_TYPE" EntitySet="ZAIDM_EX_PRODTYP" />
+            <End Role="EXCISE_CREDIT_APPROVED_DETAIL" EntitySet="EXCISE_CREDIT_APPROVED_DETAIL" />
+          </AssociationSet>
+          <EntitySet Name="CK1_EXCISE_CALCULATE_ADJUST" EntityType="Sampoerna.EMS.CustomService.Data.CK1_EXCISE_CALCULATE_ADJUST" />
           </EntityContainer>
         <EntityType Name="SYS_REFFERENCES">
           <Key>
@@ -4358,6 +4431,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <NavigationProperty Name="NPPBKC" Relationship="Sampoerna.EMS.CustomService.Data.FK_ZAIDM_EX_NPPBKC_T001" FromRole="T001" ToRole="ZAIDM_EX_NPPBKC" />
           <NavigationProperty Name="INTERVIEW_REQUEST" Relationship="Sampoerna.EMS.CustomService.Data.FK__INTERVIEW__BUKRS__4E3E9311" FromRole="T001" ToRole="INTERVIEW_REQUEST" />
           <NavigationProperty Name="PRODUCT_DEVELOPMENT_DETAIL" Relationship="Sampoerna.EMS.CustomService.Data.FK__PRODUCT_D__BUKRS__26EFBBC6" FromRole="T001" ToRole="PRODUCT_DEVELOPMENT_DETAIL" />
+          <Property Name="PKP" Type="String" MaxLength="400" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="MASTER_FINANCIAL_RATIO">
           <Key>
@@ -4642,7 +4716,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <NavigationProperty Name="MANUFACTURING_PRODUCT_TYPE" Relationship="Sampoerna.EMS.CustomService.Data.FK__MANUFACTU__PROD___1E256B9B" FromRole="MASTER_PRODUCT_TYPE" ToRole="MANUFACTURING_PRODUCT_TYPE" />
           <NavigationProperty Name="BRAND_REGISTRATION_REQ_DETAIL" Relationship="Sampoerna.EMS.CustomService.Data.FK_ZAIDM_EX_PRODTYP" FromRole="MASTER_PRODUCT_TYPE" ToRole="BRAND_REGISTRATION_REQ_DETAIL" />
           <NavigationProperty Name="RECEIVED_DECREE_DETAIL" Relationship="Sampoerna.EMS.CustomService.Data.FK__ZAIDM_EX_PRODTYP" FromRole="MASTER_PRODUCT_TYPE" ToRole="RECEIVED_DECREE_DETAIL" />
-          <NavigationProperty Name="EXCISE_CREDIT_APPROVED_DETAIL" Relationship="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__PROD___186C9245" FromRole="MASTER_PRODUCT_TYPE" ToRole="EXCISE_CREDIT_APPROVED_DETAIL" />
+          <NavigationProperty Name="EXCISE_CREDIT_APPROVED_DETAIL" Relationship="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__PROD___61BB7BD9" FromRole="MASTER_PRODUCT_TYPE" ToRole="EXCISE_CREDIT_APPROVED_DETAIL" />
         </EntityType>
         <Association Name="FK__TARIFF__STATUS_A__758D6A5C">
           <End Type="Sampoerna.EMS.CustomService.Data.SYS_REFFERENCES" Role="SYS_REFFERENCES" Multiplicity="1" />
@@ -4820,8 +4894,6 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="IS_DELETED" Type="Boolean" />
           <Property Name="NPPBKC_IMPORT_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="CITY_ID" Type="Int64" />
-          <Property Name="STATE_ID" Type="Int64" />
           <NavigationProperty Name="NPPBKC" Relationship="Sampoerna.EMS.CustomService.Data.FK_T001W_ZAIDM_EX_NPPBKC" FromRole="T001W" ToRole="MASTER_NPPBKC" />
           <NavigationProperty Name="MASTER_CITY" Relationship="Sampoerna.EMS.CustomService.Data.FK__T001W__CITY_ID__61516785" FromRole="MASTER_PLANT" ToRole="MASTER_CITY" />
           <NavigationProperty Name="POA_MAP" Relationship="Sampoerna.EMS.CustomService.Data.FK_POA_MAP_T001W" FromRole="MASTER_PLANT" ToRole="POA_MAP" />
@@ -4829,6 +4901,11 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <NavigationProperty Name="ZAIDM_EX_MATERIAL" Relationship="Sampoerna.EMS.CustomService.Data.FK_ZAIDM_EX_MATERIAL_T001W" FromRole="MASTER_PLANT" ToRole="ZAIDM_EX_MATERIAL" />
           <NavigationProperty Name="MASTER_STATE" Relationship="Sampoerna.EMS.CustomService.Data.FK__T001W__STATE_ID__62458BBE" FromRole="MASTER_PLANT" ToRole="MASTER_STATE" />
           <NavigationProperty Name="PRODUCT_DEVELOPMENT_DETAIL" Relationship="Sampoerna.EMS.CustomService.Data.FK__PRODUCT_D__WERKS__316D4A39" FromRole="MASTER_PLANT" ToRole="PRODUCT_DEVELOPMENT_DETAIL" />
+          <Property Name="ADDRESS_IMPORT" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="CITY_ID" Type="Int64" />
+          <Property Name="STATE_ID" Type="Int64" />
+          <NavigationProperty Name="MASTER_CITY1" Relationship="Sampoerna.EMS.CustomService.Data.FK__T001W__CITY_ID__615167851" FromRole="MASTER_PLANT" ToRole="MASTER_CITY" />
+          <NavigationProperty Name="MASTER_STATE1" Relationship="Sampoerna.EMS.CustomService.Data.FK__T001W__STATE_ID__62458BBE1" FromRole="MASTER_PLANT" ToRole="MASTER_STATE" />
         </EntityType>
         <Association Name="FK_T001W_ZAIDM_EX_NPPBKC">
           <End Type="Sampoerna.EMS.CustomService.Data.MASTER_NPPBKC" Role="MASTER_NPPBKC" Multiplicity="0..1" />
@@ -4969,6 +5046,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <NavigationProperty Name="USER1" Relationship="Sampoerna.EMS.CustomService.Data.FK_MASTER_CITY_LASTM" FromRole="MASTER_CITY" ToRole="USER" />
           <NavigationProperty Name="INTERVIEW_REQUEST_DETAIL" Relationship="Sampoerna.EMS.CustomService.Data.FK__INTERVIEW__CITY___3572E547" FromRole="MASTER_CITY" ToRole="INTERVIEW_REQUEST_DETAIL" />
           <NavigationProperty Name="MASTER_STATE" Relationship="Sampoerna.EMS.CustomService.Data.FK__MASTER_CI__STATE__3943762B" FromRole="MASTER_CITY" ToRole="MASTER_STATE" />
+          <NavigationProperty Name="T001W1" Relationship="Sampoerna.EMS.CustomService.Data.FK__T001W__CITY_ID__615167851" FromRole="MASTER_CITY" ToRole="MASTER_PLANT" />
         </EntityType>
         <EntityType Name="POA">
           <Key>
@@ -5335,6 +5413,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <Property Name="PLANT_DELETION" Type="Boolean" />
           <Property Name="CLIENT_DELETION" Type="Boolean" />
           <NavigationProperty Name="T001W" Relationship="Sampoerna.EMS.CustomService.Data.FK_ZAIDM_EX_MATERIAL_T001W" FromRole="ZAIDM_EX_MATERIAL" ToRole="MASTER_PLANT" />
+          <Property Name="USED_PRODUCT_DEVELOPMENT" Type="Boolean" />
         </EntityType>
         <Association Name="FK__POA_EXCIS__POA_I__2DD1C37F">
           <End Type="Sampoerna.EMS.CustomService.Data.POA" Role="POA" Multiplicity="1" />
@@ -5415,7 +5494,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <NavigationProperty Name="CREATOR" Relationship="Sampoerna.EMS.CustomService.Data.FK__FILE_UPLO__CREAT__4B622666" FromRole="FILE_UPLOAD" ToRole="USER" />
           <NavigationProperty Name="MASTER_SUPPORTING_DOCUMENT" Relationship="Sampoerna.EMS.CustomService.Data.FK__FILE_UPLO__DOCUM__3B2BBE9D" FromRole="FILE_UPLOAD" ToRole="MASTER_SUPPORTING_DOCUMENT" />
           <NavigationProperty Name="EDITOR" Relationship="Sampoerna.EMS.CustomService.Data.FK__FILE_UPLO__LASTM__4C564A9F" FromRole="FILE_UPLOAD" ToRole="USER" />
-          <Property Name="FILE_NAME" Type="String" MaxLength="400" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FILE_NAME" Type="String" MaxLength="400" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK__FILE_UPLO__CREAT__4B622666">
           <End Type="Sampoerna.EMS.CustomService.Data.USER" Role="USER" Multiplicity="1" />
@@ -5998,6 +6077,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <NavigationProperty Name="T001W" Relationship="Sampoerna.EMS.CustomService.Data.FK__T001W__STATE_ID__62458BBE" FromRole="MASTER_STATE" ToRole="MASTER_PLANT" />
           <NavigationProperty Name="USER" Relationship="Sampoerna.EMS.CustomService.Data.FK_MASTER_STATE_LASTM_BY" FromRole="MASTER_STATE" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="Sampoerna.EMS.CustomService.Data.FK_MASTER_STATE_CREAT_BY" FromRole="MASTER_STATE" ToRole="USER" />
+          <NavigationProperty Name="T001W1" Relationship="Sampoerna.EMS.CustomService.Data.FK__T001W__STATE_ID__62458BBE1" FromRole="MASTER_STATE" ToRole="MASTER_PLANT" />
         </EntityType>
         <Association Name="FK__INTERVIEW__PROVI__3A379A64">
           <End Type="Sampoerna.EMS.CustomService.Data.MASTER_STATE" Role="MASTER_STATE" Multiplicity="1" />
@@ -6155,7 +6235,6 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <Property Name="BPJ_ATTACH" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="NOTES" Type="String" MaxLength="400" FixedLength="false" Unicode="true" />
           <Property Name="EXCISE_CREDIT_NO" Type="String" Nullable="false" MaxLength="120" FixedLength="false" Unicode="true" />
-          <Property Name="ADJUSTMENT_CALCULATED" Type="Decimal" Precision="4" Scale="2" />
           <Property Name="LAST_STATUS" Type="Int64" Nullable="false" />
           <Property Name="DECREE_STARTDATE" Type="DateTime" Precision="3" />
           <Property Name="LAST_MODIFIED_DATE" Type="DateTime" Precision="3" />
@@ -6170,8 +6249,9 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <NavigationProperty Name="LASTEDITOR" Relationship="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__LAST___6CC31A31" FromRole="EXCISE_CREDIT" ToRole="USER" />
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__NPPBK__740F363E" FromRole="EXCISE_CREDIT" ToRole="MASTER_NPPBKC" />
           <NavigationProperty Name="POA" Relationship="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__POA_I__049AA3C2" FromRole="EXCISE_CREDIT" ToRole="POA" />
-          <NavigationProperty Name="EXCISE_CREDIT_APPROVED_DETAIL" Relationship="Sampoerna.EMS.CustomService.Data.FK_EXCISE_CREDIT_APPROVED_DETAIL_EXCISE_CREDIT" FromRole="EXCISE_CREDIT" ToRole="EXCISE_CREDIT_APPROVED_DETAIL" />
           <Property Name="SKEP_ATTACHMENT" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ADJUSTMENT_CALCULATED" Type="Decimal" Precision="4" Scale="2" />
+          <NavigationProperty Name="EXCISE_CREDIT_APPROVED_DETAIL" Relationship="Sampoerna.EMS.CustomService.Data.FK_EXCISE_CREDIT_APPROVED_DETAIL_EXCISE_CREDIT" FromRole="EXCISE_CREDIT" ToRole="EXCISE_CREDIT_APPROVED_DETAIL" />
         </EntityType>
         <Association Name="FK__EXCISE_CR__APPRO__6BCEF5F8">
           <End Type="Sampoerna.EMS.CustomService.Data.USER" Role="USER" Multiplicity="0..1" />
@@ -6282,7 +6362,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <Property Name="PRODUCT_ALIAS" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="CK1_NUMBER" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="ORDERQTY" Type="Int32" />
-          <Property Name="NOMINAL" Type="Decimal" Precision="38" Scale="4" />
+          <Property Name="NOMINAL" Type="Decimal" Precision="38" Scale="6" />
           <Property Name="NPPBKC_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="ROLE_ADMIN_APPROVER_VIEW">
@@ -6650,12 +6730,12 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <Property Name="TARIFF" Type="Decimal" Precision="19" Scale="2" />
           <Property Name="MATERIAL_PACKAGE" Type="String" Nullable="false" MaxLength="120" FixedLength="false" Unicode="true" />
           <Property Name="MARKET_ID" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
-          <Property Name="FRONT_SIDE" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="BACK_SIDE" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="LEFT_SIDE" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="RIGHT_SIDE" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="TOP_SIDE" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="BOTTOM_SIDE" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="FRONT_SIDE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="BACK_SIDE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LEFT_SIDE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="RIGHT_SIDE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="TOP_SIDE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="BOTTOM_SIDE" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="BRAND_REGISTRATION_REQ" Relationship="Sampoerna.EMS.CustomService.Data.FK_BRAND_REGISTRATION" FromRole="BRAND_REGISTRATION_REQ_DETAIL" ToRole="BRAND_REGISTRATION_REQ" />
           <NavigationProperty Name="PRODUCT_DEVELOPMENT_DETAIL" Relationship="Sampoerna.EMS.CustomService.Data.FK_PRODUCT_DEVELOPMENT_DETAIL" FromRole="BRAND_REGISTRATION_REQ_DETAIL" ToRole="PRODUCT_DEVELOPMENT_DETAIL" />
           <NavigationProperty Name="ZAIDM_EX_MARKET" Relationship="Sampoerna.EMS.CustomService.Data.FK_ZAIDM_EX_MARKET" FromRole="BRAND_REGISTRATION_REQ_DETAIL" ToRole="ZAIDM_EX_MARKET" />
@@ -6825,9 +6905,9 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <Property Name="LASTAPPROVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="LASTAPPROVED_DATE" Type="DateTime" Precision="3" />
           <Property Name="LASTAPPROVED_STATUS" Type="Int64" Nullable="false" />
-          <Property Name="DECREE_NO" Type="String" MaxLength="120" FixedLength="false" Unicode="true" />
-          <Property Name="DECREE_DATE" Type="DateTime" Precision="3" />
-          <Property Name="DECREE_STARTDATE" Type="DateTime" Precision="3" />
+          <Property Name="DECREE_NO" Type="String" MaxLength="120" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DECREE_DATE" Type="DateTime" Precision="3" Nullable="false" />
+          <Property Name="DECREE_STARTDATE" Type="DateTime" Precision="3" Nullable="false" />
           <NavigationProperty Name="RECEIVED_DECREE_DETAIL" Relationship="Sampoerna.EMS.CustomService.Data.FK__RECEIVED_DECREE" FromRole="RECEIVED_DECREE" ToRole="RECEIVED_DECREE_DETAIL" />
           <NavigationProperty Name="APPROVAL_STATUS" Relationship="Sampoerna.EMS.CustomService.Data.FK_APPROVAL_STATUS" FromRole="RECEIVED_DECREE" ToRole="SYS_REFFERENCES" />
           <NavigationProperty Name="APPROVER" Relationship="Sampoerna.EMS.CustomService.Data.FK_APPROVER" FromRole="RECEIVED_DECREE" ToRole="USER" />
@@ -6907,73 +6987,6 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="vwBrandRegistration">
-          <Key>
-            <PropertyRef Name="REGISTRATION_ID" />
-            <PropertyRef Name="REGISTRATION_NO" />
-            <PropertyRef Name="REGISTRATION_TYPE" />
-            <PropertyRef Name="NPPBKC_ID" />
-            <PropertyRef Name="BUTXT" />
-            <PropertyRef Name="CREATED_BY" />
-            <PropertyRef Name="LASTAPPROVED_STATUS" />
-            <PropertyRef Name="BRAND_CE" />
-            <PropertyRef Name="PROD_CODE" />
-            <PropertyRef Name="COMPANY_TIER" />
-            <PropertyRef Name="HJE" />
-            <PropertyRef Name="UNIT" />
-            <PropertyRef Name="BRAND_CONTENT" />
-            <PropertyRef Name="MATERIAL_PACKAGE" />
-            <PropertyRef Name="MARKET_ID" />
-            <PropertyRef Name="FRONT_SIDE" />
-            <PropertyRef Name="BACK_SIDE" />
-            <PropertyRef Name="LEFT_SIDE" />
-            <PropertyRef Name="RIGHT_SIDE" />
-            <PropertyRef Name="TOP_SIDE" />
-            <PropertyRef Name="BOTTOM_SIDE" />
-          </Key>
-          <Property Name="REGISTRATION_ID" Type="Int64" Nullable="false" />
-          <Property Name="REGISTRATION_NO" Type="String" Nullable="false" MaxLength="60" FixedLength="false" Unicode="true" />
-          <Property Name="SUBMISSION_DATE" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="REGISTRATION_TYPE" Type="Int32" Nullable="false" />
-          <Property Name="NPPBKC_ID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
-          <Property Name="ADDR1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ADDR2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="BUKRS" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="BUTXT" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="BUTXT_ALIAS" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="EFFECTIVE_DATE" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CREATED_DATE" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="LASTMODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="LASTMODIFIED_DATE" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="LASTAPPROVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="LASTAPPROVED_DATE" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="LASTAPPROVED_STATUS" Type="Int64" Nullable="false" />
-          <Property Name="REFF_VALUE" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="DECREE_STATUS" Type="Boolean" />
-          <Property Name="DECREE_NO" Type="String" MaxLength="120" FixedLength="false" Unicode="true" />
-          <Property Name="DECREE_DATE" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="DECREE_STARTDATE" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="BRAND_CE" Type="String" Nullable="false" MaxLength="65" FixedLength="false" Unicode="true" />
-          <Property Name="LATEST_SKEP_NO" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-          <Property Name="PROD_CODE" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
-          <Property Name="PRODUCT_TYPE" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="PRODUCT_ALIAS" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
-          <Property Name="COMPANY_TIER" Type="Int32" Nullable="false" />
-          <Property Name="HJE" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
-          <Property Name="UNIT" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="BRAND_CONTENT" Type="String" Nullable="false" MaxLength="7" FixedLength="false" Unicode="true" />
-          <Property Name="TARIFF" Type="Decimal" Precision="19" Scale="2" />
-          <Property Name="MATERIAL_PACKAGE" Type="String" Nullable="false" MaxLength="120" FixedLength="false" Unicode="true" />
-          <Property Name="MARKET_ID" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
-          <Property Name="MARKET_DESC" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Name="FRONT_SIDE" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="BACK_SIDE" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="LEFT_SIDE" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="RIGHT_SIDE" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="TOP_SIDE" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="BOTTOM_SIDE" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
-        </EntityType>
         <EntityType Name="vwPenetapanSKEP">
           <Key>
             <PropertyRef Name="ID" />
@@ -6991,9 +7004,9 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <Property Name="KPPBC" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_NAME" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="PLANT_ADDRESS" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="DECREE_NUMBER" Type="String" MaxLength="120" FixedLength="false" Unicode="true" />
-          <Property Name="DECREE_DATE" Type="DateTime" Precision="3" />
-          <Property Name="DECREE_STARTDATE" Type="DateTime" Precision="3" />
+          <Property Name="DECREE_NUMBER" Type="String" MaxLength="120" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DECREE_DATE" Type="DateTime" Precision="3" Nullable="false" />
+          <Property Name="DECREE_STARTDATE" Type="DateTime" Precision="3" Nullable="false" />
           <Property Name="REQUEST_NUMBER" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="FA_CODE_OLD" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
           <Property Name="FA_CODE_OLD_DESCR" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -7006,42 +7019,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <Property Name="LASTMODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="LASTAPPROVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="EXCISE_CREDIT_APPROVED_DETAIL">
-          <Key>
-            <PropertyRef Name="EXSICE_CREDIT_ID" />
-            <PropertyRef Name="PROD_CODE" />
-          </Key>
-          <Property Name="EXSICE_CREDIT_ID" Type="Int64" Nullable="false" />
-          <Property Name="AMOUNT_APPROVED" Type="Decimal" Nullable="false" Precision="19" Scale="2" />
-          <Property Name="PROD_CODE" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="EXCISE_CREDIT" Relationship="Sampoerna.EMS.CustomService.Data.FK_EXCISE_CREDIT_APPROVED_DETAIL_EXCISE_CREDIT" FromRole="EXCISE_CREDIT_APPROVED_DETAIL" ToRole="EXCISE_CREDIT" />
-          <NavigationProperty Name="ZAIDM_EX_PRODTYP" Relationship="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__PROD___186C9245" FromRole="EXCISE_CREDIT_APPROVED_DETAIL" ToRole="MASTER_PRODUCT_TYPE" />
-        </EntityType>
-        <Association Name="FK_EXCISE_CREDIT_APPROVED_DETAIL_EXCISE_CREDIT">
-          <End Type="Sampoerna.EMS.CustomService.Data.EXCISE_CREDIT" Role="EXCISE_CREDIT" Multiplicity="1" />
-          <End Type="Sampoerna.EMS.CustomService.Data.EXCISE_CREDIT_APPROVED_DETAIL" Role="EXCISE_CREDIT_APPROVED_DETAIL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="EXCISE_CREDIT">
-              <PropertyRef Name="EXSICE_CREDIT_ID" />
-            </Principal>
-            <Dependent Role="EXCISE_CREDIT_APPROVED_DETAIL">
-              <PropertyRef Name="EXSICE_CREDIT_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__EXCISE_CR__PROD___186C9245">
-          <End Type="Sampoerna.EMS.CustomService.Data.MASTER_PRODUCT_TYPE" Role="MASTER_PRODUCT_TYPE" Multiplicity="1" />
-          <End Type="Sampoerna.EMS.CustomService.Data.EXCISE_CREDIT_APPROVED_DETAIL" Role="EXCISE_CREDIT_APPROVED_DETAIL" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="MASTER_PRODUCT_TYPE">
-              <PropertyRef Name="PROD_CODE" />
-            </Principal>
-            <Dependent Role="EXCISE_CREDIT_APPROVED_DETAIL">
-              <PropertyRef Name="PROD_CODE" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-<EntityType Name="USER_PRINTOUT_LAYOUT">
+        <EntityType Name="USER_PRINTOUT_LAYOUT">
           <Key>
             <PropertyRef Name="USER_PRINTOUT_LAYOUT_ID" />
           </Key>
@@ -7199,6 +7177,153 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__T001W__CITY_ID__615167851">
+          <End Type="Sampoerna.EMS.CustomService.Data.MASTER_CITY" Role="MASTER_CITY" Multiplicity="0..1" />
+          <End Type="Sampoerna.EMS.CustomService.Data.MASTER_PLANT" Role="MASTER_PLANT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MASTER_CITY">
+              <PropertyRef Name="CITY_ID" />
+            </Principal>
+            <Dependent Role="MASTER_PLANT">
+              <PropertyRef Name="CITY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__T001W__STATE_ID__62458BBE1">
+          <End Type="Sampoerna.EMS.CustomService.Data.MASTER_STATE" Role="MASTER_STATE" Multiplicity="0..1" />
+          <End Type="Sampoerna.EMS.CustomService.Data.MASTER_PLANT" Role="MASTER_PLANT" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MASTER_STATE">
+              <PropertyRef Name="STATE_ID" />
+            </Principal>
+            <Dependent Role="MASTER_PLANT">
+              <PropertyRef Name="STATE_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="vwBrandRegistration">
+          <Key>
+            <PropertyRef Name="REGISTRATION_ID" />
+            <PropertyRef Name="REGISTRATION_NO" />
+            <PropertyRef Name="REGISTRATION_TYPE" />
+            <PropertyRef Name="NPPBKC_ID" />
+            <PropertyRef Name="BUTXT" />
+            <PropertyRef Name="CREATED_BY" />
+            <PropertyRef Name="LASTAPPROVED_STATUS" />
+            <PropertyRef Name="BRAND_CE" />
+            <PropertyRef Name="PROD_CODE" />
+            <PropertyRef Name="COMPANY_TIER" />
+            <PropertyRef Name="HJE" />
+            <PropertyRef Name="UNIT" />
+            <PropertyRef Name="BRAND_CONTENT" />
+            <PropertyRef Name="MATERIAL_PACKAGE" />
+            <PropertyRef Name="MARKET_ID" />
+            <PropertyRef Name="FRONT_SIDE" />
+            <PropertyRef Name="BACK_SIDE" />
+            <PropertyRef Name="LEFT_SIDE" />
+            <PropertyRef Name="RIGHT_SIDE" />
+            <PropertyRef Name="TOP_SIDE" />
+            <PropertyRef Name="BOTTOM_SIDE" />
+          </Key>
+          <Property Name="REGISTRATION_ID" Type="Int64" Nullable="false" />
+          <Property Name="REGISTRATION_NO" Type="String" Nullable="false" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="SUBMISSION_DATE" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="REGISTRATION_TYPE" Type="Int32" Nullable="false" />
+          <Property Name="NPPBKC_ID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="ADDR1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ADDR2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BUKRS" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="BUTXT" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="BUTXT_ALIAS" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="EFFECTIVE_DATE" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="LASTMODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LASTMODIFIED_DATE" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="LASTAPPROVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LASTAPPROVED_DATE" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="LASTAPPROVED_STATUS" Type="Int64" Nullable="false" />
+          <Property Name="REFF_VALUE" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="DECREE_STATUS" Type="Boolean" />
+          <Property Name="DECREE_NO" Type="String" MaxLength="120" FixedLength="false" Unicode="true" />
+          <Property Name="DECREE_DATE" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="DECREE_STARTDATE" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="BRAND_CE" Type="String" Nullable="false" MaxLength="65" FixedLength="false" Unicode="true" />
+          <Property Name="LATEST_SKEP_NO" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PROD_CODE" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="PRODUCT_TYPE" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="PRODUCT_ALIAS" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="COMPANY_TIER" Type="Int32" Nullable="false" />
+          <Property Name="HJE" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="UNIT" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="BRAND_CONTENT" Type="String" Nullable="false" MaxLength="7" FixedLength="false" Unicode="true" />
+          <Property Name="TARIFF" Type="Decimal" Precision="19" Scale="2" />
+          <Property Name="MATERIAL_PACKAGE" Type="String" Nullable="false" MaxLength="120" FixedLength="false" Unicode="true" />
+          <Property Name="MARKET_ID" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="MARKET_DESC" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="FRONT_SIDE" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="BACK_SIDE" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="LEFT_SIDE" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="RIGHT_SIDE" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="TOP_SIDE" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="BOTTOM_SIDE" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="EXCISE_CREDIT_APPROVED_DETAIL">
+          <Key>
+            <PropertyRef Name="EXSICE_CREDIT_ID" />
+            <PropertyRef Name="PROD_CODE" />
+          </Key>
+          <Property Name="EXSICE_CREDIT_ID" Type="Int64" Nullable="false" />
+          <Property Name="AMOUNT_APPROVED" Type="Decimal" Nullable="false" Precision="19" Scale="2" />
+          <Property Name="PROD_CODE" Type="String" Nullable="false" MaxLength="2" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="EXCISE_CREDIT" Relationship="Sampoerna.EMS.CustomService.Data.FK_EXCISE_CREDIT_APPROVED_DETAIL_EXCISE_CREDIT" FromRole="EXCISE_CREDIT_APPROVED_DETAIL" ToRole="EXCISE_CREDIT" />
+          <NavigationProperty Name="ZAIDM_EX_PRODTYP" Relationship="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__PROD___61BB7BD9" FromRole="EXCISE_CREDIT_APPROVED_DETAIL" ToRole="MASTER_PRODUCT_TYPE" />
+        </EntityType>
+        <Association Name="FK_EXCISE_CREDIT_APPROVED_DETAIL_EXCISE_CREDIT">
+          <End Type="Sampoerna.EMS.CustomService.Data.EXCISE_CREDIT" Role="EXCISE_CREDIT" Multiplicity="1" />
+          <End Type="Sampoerna.EMS.CustomService.Data.EXCISE_CREDIT_APPROVED_DETAIL" Role="EXCISE_CREDIT_APPROVED_DETAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EXCISE_CREDIT">
+              <PropertyRef Name="EXSICE_CREDIT_ID" />
+            </Principal>
+            <Dependent Role="EXCISE_CREDIT_APPROVED_DETAIL">
+              <PropertyRef Name="EXSICE_CREDIT_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EXCISE_CR__PROD___61BB7BD9">
+          <End Type="Sampoerna.EMS.CustomService.Data.MASTER_PRODUCT_TYPE" Role="MASTER_PRODUCT_TYPE" Multiplicity="1" />
+          <End Type="Sampoerna.EMS.CustomService.Data.EXCISE_CREDIT_APPROVED_DETAIL" Role="EXCISE_CREDIT_APPROVED_DETAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MASTER_PRODUCT_TYPE">
+              <PropertyRef Name="PROD_CODE" />
+            </Principal>
+            <Dependent Role="EXCISE_CREDIT_APPROVED_DETAIL">
+              <PropertyRef Name="PROD_CODE" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="CK1_EXCISE_CALCULATE_ADJUST">
+          <Key>
+            <PropertyRef Name="CK1_ID" />
+            <PropertyRef Name="CK1_DATE" />
+            <PropertyRef Name="CK1_NUMBER" />
+            <PropertyRef Name="BRAND_CE" />
+          </Key>
+          <Property Name="CK1_ID" Type="Int64" Nullable="false" />
+          <Property Name="CK1_DATE" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="BULAN" Type="Int32" />
+          <Property Name="TAHUN" Type="Int32" />
+          <Property Name="PRODUCT_ALIAS" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="CK1_NUMBER" Type="String" Nullable="false" MaxLength="35" FixedLength="false" Unicode="true" />
+          <Property Name="ORDERQTY" Type="Decimal" Precision="38" Scale="6" />
+          <Property Name="NOMINAL" Type="Decimal" Precision="38" Scale="6" />
+          <Property Name="NPPBKC_ID" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="BRAND_CONTENT" Type="String" MaxLength="7" FixedLength="false" Unicode="true" />
+          <Property Name="SERIES_VALUE" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="BRAND_CE" Type="String" Nullable="false" MaxLength="65" FixedLength="false" Unicode="true" />
+          <Property Name="PRODUCTION" Type="Decimal" Precision="38" Scale="6" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -7208,6 +7333,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <EntitySetMapping Name="USER">
             <EntityTypeMapping TypeName="Sampoerna.EMS.CustomService.Data.USER">
               <MappingFragment StoreEntitySet="USER">
+                <ScalarProperty Name="IS_MASTER_DATA_APPROVER" ColumnName="IS_MASTER_DATA_APPROVER" />
                 <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
                 <ScalarProperty Name="FIRST_NAME" ColumnName="FIRST_NAME" />
                 <ScalarProperty Name="LAST_NAME" ColumnName="LAST_NAME" />
@@ -7248,6 +7374,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <EntitySetMapping Name="T001">
             <EntityTypeMapping TypeName="Sampoerna.EMS.CustomService.Data.T001">
               <MappingFragment StoreEntitySet="T001">
+                <ScalarProperty Name="PKP" ColumnName="PKP" />
                 <ScalarProperty Name="BUTXT_ALIAS" ColumnName="BUTXT_ALIAS" />
                 <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
                 <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
@@ -7411,6 +7538,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
               <MappingFragment StoreEntitySet="T001W">
                 <ScalarProperty Name="STATE_ID" ColumnName="STATE_ID" />
                 <ScalarProperty Name="CITY_ID" ColumnName="CITY_ID" />
+                <ScalarProperty Name="ADDRESS_IMPORT" ColumnName="ADDRESS_IMPORT" />
                 <ScalarProperty Name="NPPBKC_IMPORT_ID" ColumnName="NPPBKC_IMPORT_ID" />
                 <ScalarProperty Name="IS_DELETED" ColumnName="IS_DELETED" />
                 <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
@@ -7657,6 +7785,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <EntitySetMapping Name="ZAIDM_EX_MATERIAL">
             <EntityTypeMapping TypeName="Sampoerna.EMS.CustomService.Data.ZAIDM_EX_MATERIAL">
               <MappingFragment StoreEntitySet="ZAIDM_EX_MATERIAL">
+                <ScalarProperty Name="USED_PRODUCT_DEVELOPMENT" ColumnName="USED_PRODUCT_DEVELOPMENT" />
                 <ScalarProperty Name="CLIENT_DELETION" ColumnName="CLIENT_DELETION" />
                 <ScalarProperty Name="PLANT_DELETION" ColumnName="PLANT_DELETION" />
                 <ScalarProperty Name="TARIFF_CURR" ColumnName="TARIFF_CURR" />
@@ -7884,6 +8013,7 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
           <EntitySetMapping Name="EXCISE_CREDIT">
             <EntityTypeMapping TypeName="Sampoerna.EMS.CustomService.Data.EXCISE_CREDIT">
               <MappingFragment StoreEntitySet="EXCISE_CREDIT">
+                <ScalarProperty Name="ADJUSTMENT_CALCULATED" ColumnName="ADJUSTMENT_CALCULATED" />
                 <ScalarProperty Name="SKEP_ATTACHMENT" ColumnName="SKEP_ATTACHMENT" />
                 <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
                 <ScalarProperty Name="EXCISE_CREDIT_AMOUNT" ColumnName="EXCISE_CREDIT_AMOUNT" />
@@ -7891,7 +8021,6 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
                 <ScalarProperty Name="LAST_MODIFIED_DATE" ColumnName="LAST_MODIFIED_DATE" />
                 <ScalarProperty Name="DECREE_STARTDATE" ColumnName="DECREE_STARTDATE" />
                 <ScalarProperty Name="LAST_STATUS" ColumnName="LAST_STATUS" />
-                <ScalarProperty Name="ADJUSTMENT_CALCULATED" ColumnName="ADJUSTMENT_CALCULATED" />
                 <ScalarProperty Name="EXCISE_CREDIT_NO" ColumnName="EXCISE_CREDIT_NO" />
                 <ScalarProperty Name="NOTES" ColumnName="NOTES" />
                 <ScalarProperty Name="BPJ_ATTACH" ColumnName="BPJ_ATTACH" />
@@ -8172,54 +8301,6 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="vwBrandRegistration">
-            <EntityTypeMapping TypeName="Sampoerna.EMS.CustomService.Data.vwBrandRegistration">
-              <MappingFragment StoreEntitySet="vwBrandRegistration">
-                <ScalarProperty Name="BOTTOM_SIDE" ColumnName="BOTTOM_SIDE" />
-                <ScalarProperty Name="TOP_SIDE" ColumnName="TOP_SIDE" />
-                <ScalarProperty Name="RIGHT_SIDE" ColumnName="RIGHT_SIDE" />
-                <ScalarProperty Name="LEFT_SIDE" ColumnName="LEFT_SIDE" />
-                <ScalarProperty Name="BACK_SIDE" ColumnName="BACK_SIDE" />
-                <ScalarProperty Name="FRONT_SIDE" ColumnName="FRONT_SIDE" />
-                <ScalarProperty Name="MARKET_DESC" ColumnName="MARKET_DESC" />
-                <ScalarProperty Name="MARKET_ID" ColumnName="MARKET_ID" />
-                <ScalarProperty Name="MATERIAL_PACKAGE" ColumnName="MATERIAL_PACKAGE" />
-                <ScalarProperty Name="TARIFF" ColumnName="TARIFF" />
-                <ScalarProperty Name="BRAND_CONTENT" ColumnName="BRAND_CONTENT" />
-                <ScalarProperty Name="UNIT" ColumnName="UNIT" />
-                <ScalarProperty Name="HJE" ColumnName="HJE" />
-                <ScalarProperty Name="COMPANY_TIER" ColumnName="COMPANY_TIER" />
-                <ScalarProperty Name="PRODUCT_ALIAS" ColumnName="PRODUCT_ALIAS" />
-                <ScalarProperty Name="PRODUCT_TYPE" ColumnName="PRODUCT_TYPE" />
-                <ScalarProperty Name="PROD_CODE" ColumnName="PROD_CODE" />
-                <ScalarProperty Name="LATEST_SKEP_NO" ColumnName="LATEST_SKEP_NO" />
-                <ScalarProperty Name="BRAND_CE" ColumnName="BRAND_CE" />
-                <ScalarProperty Name="DECREE_STARTDATE" ColumnName="DECREE_STARTDATE" />
-                <ScalarProperty Name="DECREE_DATE" ColumnName="DECREE_DATE" />
-                <ScalarProperty Name="DECREE_NO" ColumnName="DECREE_NO" />
-                <ScalarProperty Name="DECREE_STATUS" ColumnName="DECREE_STATUS" />
-                <ScalarProperty Name="REFF_VALUE" ColumnName="REFF_VALUE" />
-                <ScalarProperty Name="LASTAPPROVED_STATUS" ColumnName="LASTAPPROVED_STATUS" />
-                <ScalarProperty Name="LASTAPPROVED_DATE" ColumnName="LASTAPPROVED_DATE" />
-                <ScalarProperty Name="LASTAPPROVED_BY" ColumnName="LASTAPPROVED_BY" />
-                <ScalarProperty Name="LASTMODIFIED_DATE" ColumnName="LASTMODIFIED_DATE" />
-                <ScalarProperty Name="LASTMODIFIED_BY" ColumnName="LASTMODIFIED_BY" />
-                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
-                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
-                <ScalarProperty Name="EFFECTIVE_DATE" ColumnName="EFFECTIVE_DATE" />
-                <ScalarProperty Name="BUTXT_ALIAS" ColumnName="BUTXT_ALIAS" />
-                <ScalarProperty Name="BUTXT" ColumnName="BUTXT" />
-                <ScalarProperty Name="BUKRS" ColumnName="BUKRS" />
-                <ScalarProperty Name="ADDR2" ColumnName="ADDR2" />
-                <ScalarProperty Name="ADDR1" ColumnName="ADDR1" />
-                <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
-                <ScalarProperty Name="REGISTRATION_TYPE" ColumnName="REGISTRATION_TYPE" />
-                <ScalarProperty Name="SUBMISSION_DATE" ColumnName="SUBMISSION_DATE" />
-                <ScalarProperty Name="REGISTRATION_NO" ColumnName="REGISTRATION_NO" />
-                <ScalarProperty Name="REGISTRATION_ID" ColumnName="REGISTRATION_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="vwPenetapanSKEP">
             <EntityTypeMapping TypeName="Sampoerna.EMS.CustomService.Data.vwPenetapanSKEP">
               <MappingFragment StoreEntitySet="vwPenetapanSKEP">
@@ -8244,15 +8325,6 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
                 <ScalarProperty Name="FORM_NUMBER" ColumnName="FORM_NUMBER" />
                 <ScalarProperty Name="STATUS" ColumnName="STATUS" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="EXCISE_CREDIT_APPROVED_DETAIL">
-            <EntityTypeMapping TypeName="Sampoerna.EMS.CustomService.Data.EXCISE_CREDIT_APPROVED_DETAIL">
-              <MappingFragment StoreEntitySet="EXCISE_CREDIT_APPROVED_DETAIL">
-                <ScalarProperty Name="PROD_CODE" ColumnName="PROD_CODE" />
-                <ScalarProperty Name="AMOUNT_APPROVED" ColumnName="AMOUNT_APPROVED" />
-                <ScalarProperty Name="EXSICE_CREDIT_ID" ColumnName="EXSICE_CREDIT_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -8341,6 +8413,82 @@ warning 6002: The table/view 'EMSDMS.dbo.vwProductDevDetail' does not have a pri
                 <ScalarProperty Name="ITEM_ID" ColumnName="ITEM_ID" />
                 <ScalarProperty Name="PD_DETAIL_ID" ColumnName="PD_DETAIL_ID" />
                 <ScalarProperty Name="FILE_ID" ColumnName="FILE_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vwBrandRegistration">
+            <EntityTypeMapping TypeName="Sampoerna.EMS.CustomService.Data.vwBrandRegistration">
+              <MappingFragment StoreEntitySet="vwBrandRegistration">
+                <ScalarProperty Name="BOTTOM_SIDE" ColumnName="BOTTOM_SIDE" />
+                <ScalarProperty Name="TOP_SIDE" ColumnName="TOP_SIDE" />
+                <ScalarProperty Name="RIGHT_SIDE" ColumnName="RIGHT_SIDE" />
+                <ScalarProperty Name="LEFT_SIDE" ColumnName="LEFT_SIDE" />
+                <ScalarProperty Name="BACK_SIDE" ColumnName="BACK_SIDE" />
+                <ScalarProperty Name="FRONT_SIDE" ColumnName="FRONT_SIDE" />
+                <ScalarProperty Name="MARKET_DESC" ColumnName="MARKET_DESC" />
+                <ScalarProperty Name="MARKET_ID" ColumnName="MARKET_ID" />
+                <ScalarProperty Name="MATERIAL_PACKAGE" ColumnName="MATERIAL_PACKAGE" />
+                <ScalarProperty Name="TARIFF" ColumnName="TARIFF" />
+                <ScalarProperty Name="BRAND_CONTENT" ColumnName="BRAND_CONTENT" />
+                <ScalarProperty Name="UNIT" ColumnName="UNIT" />
+                <ScalarProperty Name="HJE" ColumnName="HJE" />
+                <ScalarProperty Name="COMPANY_TIER" ColumnName="COMPANY_TIER" />
+                <ScalarProperty Name="PRODUCT_ALIAS" ColumnName="PRODUCT_ALIAS" />
+                <ScalarProperty Name="PRODUCT_TYPE" ColumnName="PRODUCT_TYPE" />
+                <ScalarProperty Name="PROD_CODE" ColumnName="PROD_CODE" />
+                <ScalarProperty Name="LATEST_SKEP_NO" ColumnName="LATEST_SKEP_NO" />
+                <ScalarProperty Name="BRAND_CE" ColumnName="BRAND_CE" />
+                <ScalarProperty Name="DECREE_STARTDATE" ColumnName="DECREE_STARTDATE" />
+                <ScalarProperty Name="DECREE_DATE" ColumnName="DECREE_DATE" />
+                <ScalarProperty Name="DECREE_NO" ColumnName="DECREE_NO" />
+                <ScalarProperty Name="DECREE_STATUS" ColumnName="DECREE_STATUS" />
+                <ScalarProperty Name="REFF_VALUE" ColumnName="REFF_VALUE" />
+                <ScalarProperty Name="LASTAPPROVED_STATUS" ColumnName="LASTAPPROVED_STATUS" />
+                <ScalarProperty Name="LASTAPPROVED_DATE" ColumnName="LASTAPPROVED_DATE" />
+                <ScalarProperty Name="LASTAPPROVED_BY" ColumnName="LASTAPPROVED_BY" />
+                <ScalarProperty Name="LASTMODIFIED_DATE" ColumnName="LASTMODIFIED_DATE" />
+                <ScalarProperty Name="LASTMODIFIED_BY" ColumnName="LASTMODIFIED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="EFFECTIVE_DATE" ColumnName="EFFECTIVE_DATE" />
+                <ScalarProperty Name="BUTXT_ALIAS" ColumnName="BUTXT_ALIAS" />
+                <ScalarProperty Name="BUTXT" ColumnName="BUTXT" />
+                <ScalarProperty Name="BUKRS" ColumnName="BUKRS" />
+                <ScalarProperty Name="ADDR2" ColumnName="ADDR2" />
+                <ScalarProperty Name="ADDR1" ColumnName="ADDR1" />
+                <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
+                <ScalarProperty Name="REGISTRATION_TYPE" ColumnName="REGISTRATION_TYPE" />
+                <ScalarProperty Name="SUBMISSION_DATE" ColumnName="SUBMISSION_DATE" />
+                <ScalarProperty Name="REGISTRATION_NO" ColumnName="REGISTRATION_NO" />
+                <ScalarProperty Name="REGISTRATION_ID" ColumnName="REGISTRATION_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EXCISE_CREDIT_APPROVED_DETAIL">
+            <EntityTypeMapping TypeName="Sampoerna.EMS.CustomService.Data.EXCISE_CREDIT_APPROVED_DETAIL">
+              <MappingFragment StoreEntitySet="EXCISE_CREDIT_APPROVED_DETAIL">
+                <ScalarProperty Name="PROD_CODE" ColumnName="PROD_CODE" />
+                <ScalarProperty Name="AMOUNT_APPROVED" ColumnName="AMOUNT_APPROVED" />
+                <ScalarProperty Name="EXSICE_CREDIT_ID" ColumnName="EXSICE_CREDIT_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CK1_EXCISE_CALCULATE_ADJUST">
+            <EntityTypeMapping TypeName="Sampoerna.EMS.CustomService.Data.CK1_EXCISE_CALCULATE_ADJUST">
+              <MappingFragment StoreEntitySet="CK1_EXCISE_CALCULATE_ADJUST">
+                <ScalarProperty Name="PRODUCTION" ColumnName="PRODUCTION" />
+                <ScalarProperty Name="BRAND_CE" ColumnName="BRAND_CE" />
+                <ScalarProperty Name="SERIES_VALUE" ColumnName="SERIES_VALUE" />
+                <ScalarProperty Name="BRAND_CONTENT" ColumnName="BRAND_CONTENT" />
+                <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
+                <ScalarProperty Name="NOMINAL" ColumnName="NOMINAL" />
+                <ScalarProperty Name="ORDERQTY" ColumnName="ORDERQTY" />
+                <ScalarProperty Name="CK1_NUMBER" ColumnName="CK1_NUMBER" />
+                <ScalarProperty Name="PRODUCT_ALIAS" ColumnName="PRODUCT_ALIAS" />
+                <ScalarProperty Name="TAHUN" ColumnName="TAHUN" />
+                <ScalarProperty Name="BULAN" ColumnName="BULAN" />
+                <ScalarProperty Name="CK1_DATE" ColumnName="CK1_DATE" />
+                <ScalarProperty Name="CK1_ID" ColumnName="CK1_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

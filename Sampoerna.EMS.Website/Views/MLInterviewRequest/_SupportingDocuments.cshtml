@@ -30,7 +30,7 @@
                         {                           
                             <div class="col-md-12 div_file_href">
                                 <i class="fa fa-file"></i>
-                                <a href="@doc.Path" download>@doc.FileName</a>
+                                <a href="@doc.Path" target="_blank" download>@doc.FileName</a>
                                 @if (!doc.IsReadonly)
                                 {
                                 <button type="button" class="btn btn-blue pull-right btn_remove_supportdoc" data-fileuploadid="@doc.FileUploadId">Delete</button>

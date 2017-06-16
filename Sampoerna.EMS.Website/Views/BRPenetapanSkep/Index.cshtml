@@ -34,7 +34,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="row">
-                            <label class="col-md-6">Brand Registration Status</label>
+                            <label class="col-md-6">Penetapan SKEP Status</label>
                             <div class="col-md-6">
                                 @Html.DropDownListFor(model => model.SearchInput.Status, Model.SearchInput.StatusList, "All", new { @class = "form-control selectreset selectpicker" })
                             </div>
@@ -87,9 +87,14 @@
     $(document).ready(function () {
         $('#MenuProduct').removeClass('open');
         $('#MenuBrand').removeClass('open');
-
         $('#MenuSKEP').addClass('open');
-        $('#MenuPenetapanSKEP').addClass('active');
+        if ($("#IsCompleted").val() == "True") {
+            $('#MenuPenetapanSKEPCompleted').addClass('active');
+        }
+        else
+        {
+            $('#MenuPenetapanSKEP').addClass('active');
+        }
         setupDataTables();
     });
 

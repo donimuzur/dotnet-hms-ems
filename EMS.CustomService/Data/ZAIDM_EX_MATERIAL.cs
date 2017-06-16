@@ -33,6 +33,7 @@ namespace Sampoerna.EMS.CustomService.Data
         public string TARIFF_CURR { get; set; }
         public Nullable<bool> PLANT_DELETION { get; set; }
         public Nullable<bool> CLIENT_DELETION { get; set; }
+        public Nullable<bool> USED_PRODUCT_DEVELOPMENT { get; set; }
     
         public virtual MASTER_PLANT T001W { get; set; }
     }

@@ -107,13 +107,15 @@ namespace Sampoerna.EMS.CustomService.Core
                 if (ConfigurationManager.AppSettings["UsingDefaultEmail"] == "true")
                 {
                     mailer = new SmtpClient();
-                    // Bypass email sender
-                    from = ConfigurationManager.AppSettings["DefaultSender"];
+                   
                 }
                 else
                 {
                     mailer = ConfigSmtp();
                 }
+                // Bypass email sender
+                from = ConfigurationManager.AppSettings["DefaultSender"];
+                displayName = ConfigurationManager.AppSettings["DefaultDisplay"];
                 MailMessage message = ConfigureEmail(addresses, ccs, bccs, attachments, subject, mailContent, htmlMail, from, displayName);
                 
                 System.IO.File.AppendAllText(root + String.Format("Mailer Log {0}.txt", DateTime.Now.ToString("dd MMM yyyy")), "Log Started at " + DateTime.Now.ToString("dd MMMM yyyy HH:mm:ss") + Environment.NewLine);
@@ -130,7 +132,11 @@ namespace Sampoerna.EMS.CustomService.Core
                 System.IO.File.AppendAllText(root + String.Format("Mailer Log {0}.txt", DateTime.Now.ToString("dd MMM yyyy")), "Email send failed. Exception: " + Environment.NewLine);
                 System.IO.File.AppendAllText(root + String.Format("Mailer Log {0}.txt", DateTime.Now.ToString("dd MMM yyyy")), String.Format("Message: {0}", ex.Message) + Environment.NewLine);
                 System.IO.File.AppendAllText(root + String.Format("Mailer Log {0}.txt", DateTime.Now.ToString("dd MMM yyyy")), String.Format("Stack Trace: {0}", ex.StackTrace) + Environment.NewLine);
-                System.IO.File.AppendAllText(root + String.Format("Mailer Log {0}.txt", DateTime.Now.ToString("dd MMM yyyy")), String.Format("Inner Exception: {0}", ex.InnerException.Message) + Environment.NewLine);
+                if (ex.InnerException != null)
+                {
+                    System.IO.File.AppendAllText(root + String.Format("Mailer Log {0}.txt", DateTime.Now.ToString("dd MMM yyyy")), String.Format("Inner Exception: {0}", ex.InnerException.Message) + Environment.NewLine);
+                }
+                
                 //throw ex;
 
             }

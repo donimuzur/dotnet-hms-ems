@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using AutoMapper;
-using Sampoerna.EMS.BusinessObject;
-using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.ProductType;
@@ -160,12 +157,12 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller),
                 ListProductTypes = Mapper.Map<List<ProductTypeFormViewModel>>(
                _productTypeService.GetAll().OrderByDescending(item => item.PROD_CODE)),
                 IsAdminApprover = _refService.IsAdminApprover(CurrentUser.USER_ID)
             };
-            data.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller);
+
             var list = new List<ProductTypeFormViewModel>(data.ListProductTypes);
 
             data.ListProductTypes = new List<ProductTypeFormViewModel>();
@@ -203,7 +200,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
-                if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+                if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
                 {
                     AddMessageInfo("Operation not allowed", Enums.MessageInfoType.Error);
                     return RedirectToAction("Index");
@@ -258,7 +255,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var obj = _productTypeService.Find(id);
             var approvalStatusSubmitted = _refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingAdminApproval).REFF_ID;
             var approvalStatusApproved = _refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Completed).REFF_ID;
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 AddMessageInfo("Operation not allowed", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
@@ -318,11 +315,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 return View("Edit", model);
 
             }
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer)
-            {
-                AddMessageInfo("Operation not allowed", Enums.MessageInfoType.Error);
-                return RedirectToAction("Index");
-            }
+            //if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
+            //{
+            //    AddMessageInfo("Operation not allowed", Enums.MessageInfoType.Error);
+            //    return RedirectToAction("Index");
+            //}
             ExecuteEdit(model, ReferenceKeys.ApprovalStatus.Edited, ReferenceKeys.EmailContent.ProductTypeApprovalRequest);
             return RedirectToAction("Index");
         }
@@ -568,13 +565,26 @@ namespace Sampoerna.EMS.Website.Controllers
         #region Helper
         List<WorkflowHistoryViewModel> GetWorkflowHistory(long id)
         {
-
             var workflowInput = new GetByFormTypeAndFormIdInput();
             workflowInput.FormId = id;
             workflowInput.FormType = Enums.FormType.ProductType;
             var workflow = this.workflowHistoryBLL.GetByFormTypeAndFormId(workflowInput).OrderBy(x => x.WORKFLOW_HISTORY_ID);
 
-            return Mapper.Map<List<WorkflowHistoryViewModel>>(workflow);
+            var submittedStatus = _refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingAdminApproval);
+            var workflowList = Mapper.Map<List<WorkflowHistoryViewModel>>(workflow);
+            var fratio = _productTypeService.Find(id.ToString());
+            if (fratio == null)
+            {
+                throw new Exception("Specified product type data not found!");
+            }
+
+            if (fratio.APPROVED_STATUS == submittedStatus.REFF_ID)
+            {
+                var additional = _refService.GetAdminApproverList();
+                workflowList.Add(Mapper.Map<WorkflowHistoryViewModel>(additional));
+            }
+
+            return workflowList;
 
         }
 

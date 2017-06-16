@@ -32,10 +32,35 @@ var otherDocs = [];
 var otherDocsName = [];
 var supportingDocs = {};
 var exciseFormData = {};
+var exciseAdjustmentFormData = [];
+var parseObject = {};
+var adjItem = {};
+var adjfacode = [];
 
 function populateFormData() {
     console.log(submitDate.val());
     console.log(new Date(submitDate.val()));
+    var nominal = 0;
+    console.log($("#Adjustment").val());
+    if ($("#Adjustment").val() === undefined || $("#Adjustment").val() === null) {
+        nominal = parseFloat($('#ViewModel_AmountDisplay').val());
+    } else {
+        nominal = parseInt($("#Adjustment").val().split(',').join('.'));
+    }
+    for (var i = 0; i <= Object.keys(adjItem).length - 1; i++) {
+        for (var j = 0; j <= adjItem[Object.keys(adjItem)[i]].length - 1; j++) {
+            console.log("sucess");
+            exciseAdjustmentFormData.push({
+                BRAND_CE: adjItem[Object.keys(adjItem)[i]][j].BRAND,
+                OLD_TARIFF: adjItem[Object.keys(adjItem)[i]][j].OLDTARIFF,
+                NEW_TARIFF: adjItem[Object.keys(adjItem)[i]][j].NEWTARIFF,
+                INCREASE_TARIFF: adjItem[Object.keys(adjItem)[i]][j].INCREASE,
+                CK1_AMOUNT: adjItem[Object.keys(adjItem)[i]][j].CK12MONTH,
+                WEIGHTED_INCREASE: adjItem[Object.keys(adjItem)[i]][j].WEIGHTEDINCREASE,
+                PRODUCT_CODE: adjItem[Object.keys(adjItem)[i]][j].PRODUCTCODE
+            });
+        }
+    }
     exciseFormData = {
         NppbkcId: nppbkc.val(),
         SubmissionDate: submitDate.val(),
@@ -44,20 +69,23 @@ function populateFormData() {
         FinancialRatioIds: $("#ViewModel_FinancialRatioIds").val(),
         Amount: Number($("#ViewModel_Amount").val().split(',').join('.')),
         POA: $("#POA_Id").val(),
-        CalculatedAdjustment: parseInt($("#Adjustment").val().split(',').join('.'))
+        CalculatedAdjustment: nominal,
     };
+    parseObject.Master = exciseFormData;
+    parseObject.Detail = exciseAdjustmentFormData;
 
-    console.log(exciseFormData);
+    console.log(parseObject);
 }
 
 function attach() {
+    $('#MenuExciseOpenListDocument').addClass('active');
     nppbkc.on("change", nppbkcSelectionChanges);
     submitDate.on("change", submitDateSelectionChanges);
     requestType.on("change", exciseTypeSelectionChanges);
     saveButton.on("click", create);
     $("#addOtherDocBtn").on("click", addOtherDoc);
-    //$("#saveCalcResult").off("click", placeResult);
-    //$("#saveCalcResult").on("click", placeResult);
+    $("#saveCalcResult").off("click", placeResult);
+    $("#saveCalcResult").on("click", placeResult);
     $('#ExciseCreditAlpha').terbilang({
         lang: 'id',
         output: $('#ExciseCreditAlphaText')
@@ -264,7 +292,13 @@ function loadFinancialStatement(url, _company, year) {
                     //saveButton.prop("disabled", false);
                     calculateButton.prop("disabled", false);
                     fErrorDiv.hide();
+                    if ($('.requestType').val() === '1') {
+                        console.log("load Calculation Normal", ckUrl);
                     loadCk1Calculation(ckUrl);
+                    } else {
+                        console.log("load calculation adj", adjUrl);
+                        loadCk1Calculation(adjUrl);
+                    }
                 }
             } else {
                 fErrorDiv.html("<span>Financial statement last 2 years data for " + company.val() + " not available!</span>");
@@ -332,19 +366,21 @@ function loadCk1Calculation(url) {
         type: 'POST',
         data: JSON.stringify(param),
         contentType: 'application/json; charset=utf-8',
-    })
-    .success(function (partialResult) {
+    }).success(function (partialResult) {
         $("#customloader").hide();
         modalContainer.html(partialResult);
         $("#ckListButton").off("click", openCkListPopUp);
         $("#ckListButton").on("click", openCkListPopUp);
+        $(".btnAddAdj").off("click", addToAdjList);
+        $(".btnAddAdj").on("click", addToAdjList);
         ckErrorDiv.hide();
         //saveButton.prop("disabled", false);
         calculateButton.prop("disabled", false);
         $("#saveCalcResult").off("click", placeResult);
         $("#saveCalcResult").on("click", placeResult);
-    })
-    .error(function (error) {
+
+    }).error(function (error) {
+        console.log("error calculation");
         $("#customloader").hide();
         ckErrorDiv.html("<span>CK1 Data not available</span>");
         ckErrorDiv.show();
@@ -486,11 +522,131 @@ function openCkListPopUp() {
     return false;
 }
 
+function addToAdjList() {
+    console.log(adjfacode[0]);
+    var updated = true;
+    var sd = new Date(submitDate.val());
+    var year = sd.getYear() + 1900;
+    var month = sd.getMonth() + 1;
+    var date = sd.getDate();
+    var dateStr = year + "-" + month + "-" + date;
+    var param = {
+        nppbkc: nppbkc.val(),
+        submit: dateStr,
+        facode: $(this).closest('.row').find('.itemid').val()
+    };
+    var facode = $(this).closest('.row').find('.itemid').val();
+    var table = $(this).closest('.row').find('.tbladjBody');
+    var tableId = $(this).closest('.row').find('.tblId').val();
+    var pctweightincrease = $(this).closest('.row').find('.pctweightincrease');
+    var subtotal = $(this).closest('.row').find('.subtotal');
+    var subtotal2 = $(this).closest('.row').find('.subtotal2');
+    var SKEPCreditTariff = $(this).closest('.row').find('.SKEPCreditTariff');
+    var wTariff = $(this).closest('.row').find('.wTariff');
+    for (var i = 0; i < adjfacode.length; i++) {
+        if ($(this).closest('.row').find('.itemid').val() === adjfacode[0]) {
+            updated = false;
+            break;
+        }
+    }
+    $.ajax({
+        url: adjItemUrl,
+        type: 'POST',
+        data: JSON.stringify(param),
+        contentType: 'application/json; charset=utf-8',
+    })
+        .success(function (item) {
+            var idx = adjfacode.indexOf(facode);
+            var subtotalck12month = 0;
+            var subtotalweightincreased = 0;
+            if (idx < 0 && updated) {
+                var addItem = {
+                    BRAND: item.BRAND,
+                    OLDTARIFF: item.OLDTARIFF,
+                    NEWTARIFF: item.NEWTARIFF,
+                    INCREASE: item.INCREASE,
+                    CK12MONTH: item.CK12MONTH,
+                    WEIGHTEDINCREASE: item.WEIGHTEDINCREASE,
+                    PRODUCTCODE: item.PRODUCTCODE
+                };
+                adjfacode.push(facode);
+                console.log("show hasil", adjItem, adjItem[tableId]);
+                if (adjItem.hasOwnProperty(tableId)) {
+                    adjItem[tableId].push(addItem);
+                } else {
+                    adjItem[tableId] = [addItem];
+                }
+                console.log("show hasil", adjItem);
+                renderAdjList(table, tableId);
+                for (var i = 0; i < adjItem[tableId].length; i++) {
+                    subtotalck12month += adjItem[tableId][i].CK12MONTH;
+                    subtotalweightincreased += adjItem[tableId][i].WEIGHTEDINCREASE;
+                }
+                console.log("result", (subtotalck12month / subtotalweightincreased * 100))
+                pctweightincrease.val((subtotalck12month / subtotalweightincreased * 100));
+                SKEPCreditTariff.val(subtotalck12month.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+                wTariff.val(subtotalweightincreased.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+                if (subtotalweightincreased === 0) {
+                    subtotal.val(0);
+                    subtotal2.val(0);
+                } else {
+                    subtotal.val((subtotalck12month * parseFloat((subtotalck12month / subtotalweightincreased * 100))).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+                    subtotal2.val((((subtotalck12month / subtotalweightincreased * 100)) / 100 * (subtotalck12month * (subtotalck12month / subtotalweightincreased * 100) / 100)).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+                }
+                var summaryId = '.' + tableId + 'summary';
+                console.log("summaryid", summaryId);
+                var summaryfield = $(summaryId);
+                summaryfield.find(".summaryweightedtariff").val(wTariff.val());
+                summaryfield.find(".summaryskep").val(SKEPCreditTariff.val());
+                summaryfield.find(".summaryTotal").val((subtotalck12month + subtotalweightincreased));
+                summaryfield.find(".summaryTotalTemp").val((subtotalck12month + subtotalweightincreased).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+                var sum = 0;
+                $('.summaryTotal').each(function () {
+                    sum += parseFloat(this.value);
+                });
+                $('#grandtotalValue').val(sum);
+                $('.grandtotalValue').val(sum.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+            }
+        })
+        .error(function (error) {
+            console.log("error", error);
+        });
+}
+function renderAdjList(table, tableId) {
+    var container = table;
+    var content = '';
+    console.log("in renderadjlist", adjfacode);
+    if (!adjfacode || adjfacode.length <= 0) {
+        content += '<tr id="noOtherFileMsg">' +
+            '<td colspan="8"><div class="alert alert-info">No Addional Documents</div>' + '</td></tr>';
+    }
+    console.log(adjItem[tableId].length, adjItem[tableId][0].BRAND);
+    for (var i = 0; i < adjItem[tableId].length; i++) {
+        content +=
+            '<tr>' +
+            '<td>' + (i + 1) + '</td>' +
+            '<td>' + adjItem[tableId][i].BRAND + '</td>' +
+            '<td style="text-align:right">' + adjItem[tableId][i].OLDTARIFF.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + '</td>' +
+            '<td style="text-align:right">' + adjItem[tableId][i].NEWTARIFF.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + '</td>' +
+            '<td style="text-align:right">' + adjItem[tableId][i].INCREASE.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + '</td>' +
+            '<td style="text-align:right">' + adjItem[tableId][i].CK12MONTH.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + '</td>' +
+            '<td style="text-align:right">' + adjItem[tableId][i].WEIGHTEDINCREASE.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + '</td>' +
+            '<td><button class="btn btn-danger" onclick="removeFromList(' + i + ')">Remove</button></td>' +
+            '</tr>';
+    }
+    container.html(content);
+    console.log(container);
+}
 function placeResult() {
     //alert("Place result!");
+    console.log($("#grandTotal").val());
     $("#ViewModel_AmountDisplay").val($("#grandTotal").val());
     $("#ViewModel_Amount").val($("#grandTotalValue").val());
     var amount = Number($("#ViewModel_Amount").val().split(',').join('.'));
+    if (!amount || amount == 0) {
+        var currency = $("#grandTotal").val();
+        amount = Number(currency.replace(/[^0-9\.]+/g, ""));
+    }
     console.log(amount);
     var _terbilang = terbilang(amount.toString()) + " Rupiah"
         .replace(/^([a-z\u00E0-\u00FC])|\s+([a-z\u00E0-\u00FC])/g, function ($1) {
@@ -542,7 +698,7 @@ function create() {
             url: createUrl,
             data: {
                 __RequestVerificationToken: token,
-                model: JSON.stringify(exciseFormData)
+                model: JSON.stringify(parseObject)
             },
             success: function (result) {
                 console.log(result);

@@ -13,5 +13,6 @@ namespace Sampoerna.EMS.Website.Models.Shared
         public string Npwp { set; get; }
         public string City { set; get; }
         public string Address { set; get; }
+        public string PKP { get; set; }
     }
 }

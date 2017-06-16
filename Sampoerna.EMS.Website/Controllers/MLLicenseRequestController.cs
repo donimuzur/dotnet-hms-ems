@@ -103,12 +103,17 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         delegatorname = delegation.Select(s => s.POA_FROM).ToList();
                     }
-                    var IRWhithSameNPPBKC = service.GetLicenseNeedApproveWithSameNPPBKC(CurrentUser.USER_ID);
+                    //var IRWhithSameNPPBKC = service.GetLicenseNeedApproveWithSameNPPBKC(CurrentUser.USER_ID);
                     var IRWhithoutNPPBKC = service.GetLicenseNeedApproveWithoutNPPBKC(CurrentUser.USER_ID);
                     var IRWithNPPBKCButNoExcise = service.GetInterviewNeedApproveWithNPPBKCButNoExcise(CurrentUser.USER_ID);
-                    documents = documents.Where(w => w.CreatedBy.Equals(CurrentUser.USER_ID) || delegatorname.Contains(w.CreatedBy)
-                        || w.LastApprovedBy == CurrentUser.USER_ID 
-                        || IRWhithSameNPPBKC.Contains(w.MnfRequestID) || IRWhithoutNPPBKC.Contains(w.MnfRequestID)
+                    // new
+                    var LastApprover = service.GetLicenseLastApproveAfterSubmit(CurrentUser.USER_ID); 
+                    documents = documents.Where(w => w.CreatedBy.Equals(CurrentUser.USER_ID) 
+                        || delegatorname.Contains(w.CreatedBy)
+                        || LastApprover.Contains(w.MnfRequestID)
+                        //|| w.LastApprovedBy == CurrentUser.USER_ID 
+                        //|| IRWhithSameNPPBKC.Contains(w.MnfRequestID) 
+                        || IRWhithoutNPPBKC.Contains(w.MnfRequestID)
                         || IRWithNPPBKCButNoExcise.Contains(w.MnfRequestID)).ToList();
                 }
                 
@@ -125,7 +130,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     LastApprovedStatusList = GetLastApprovedStatus(service.GetReffValueAll().Where(w => statusidlist.Contains(w.REFF_ID) && w.REFF_KEYS != "COMPLETED" && w.REFF_KEYS != "CANCELED")),
                     //FormNumList = GetFormNumListFilter(service.GetAll().Where(w => iridlist.Contains(w.VR_FORM_ID))),
                     //FormNumList = GetFormNumListFilter(service.GetAll().Where(w => w.CREATED_BY.Equals(CurrentUser.USER_ID))),
-                    FormNumList = GetFormNumListFilter(service.GetAll().Where (w => w.SYS_REFFERENCES.REFF_KEYS != "COMPLETED" && w.SYS_REFFERENCES.REFF_KEYS != "CANCELED")),
+                    //FormNumList = GetFormNumListFilter(service.GetAll().Where(w => w.SYS_REFFERENCES.REFF_KEYS != "COMPLETED" && w.SYS_REFFERENCES.REFF_KEYS != "CANCELED")),
+                    FormNumList = GetListFormNumFilter(documents),
                     CompTypeList = GetCompTypeList(comptplist),
                     ProdTypeList = GetProdTypeList(service.GetAllProductTypeFromLR()),
                     //KPPBCList = GetKPPBCList(nppbkcList),
@@ -191,12 +197,17 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         delegatorname = delegation.Select(s => s.POA_FROM).ToList();
                     }
-                    var IRWhithSameNPPBKC = service.GetLicenseNeedApproveWithSameNPPBKC(CurrentUser.USER_ID);
+                    //var IRWhithSameNPPBKC = service.GetLicenseNeedApproveWithSameNPPBKC(CurrentUser.USER_ID);
                     var IRWhithoutNPPBKC = service.GetLicenseNeedApproveWithoutNPPBKC(CurrentUser.USER_ID);
                     var IRWithNPPBKCButNoExcise = service.GetInterviewNeedApproveWithNPPBKCButNoExcise(CurrentUser.USER_ID);
-                    documents = documents.Where(w => w.CreatedBy.Equals(CurrentUser.USER_ID) || delegatorname.Contains(w.CreatedBy)
-                        || w.LastApprovedBy == CurrentUser.USER_ID
-                        || IRWhithSameNPPBKC.Contains(w.MnfRequestID) || IRWhithoutNPPBKC.Contains(w.MnfRequestID)
+                    // new
+                    var LastApprover = service.GetLicenseLastApproveAfterSubmit(CurrentUser.USER_ID);
+                    documents = documents.Where(w => w.CreatedBy.Equals(CurrentUser.USER_ID) 
+                        || delegatorname.Contains(w.CreatedBy)
+                        || LastApprover.Contains(w.MnfRequestID)
+                        //|| w.LastApprovedBy == CurrentUser.USER_ID
+                        //|| IRWhithSameNPPBKC.Contains(w.MnfRequestID) 
+                        || IRWhithoutNPPBKC.Contains(w.MnfRequestID)
                         || IRWithNPPBKCButNoExcise.Contains(w.MnfRequestID)).ToList();
                 }
 
@@ -212,8 +223,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     Filter = new LicenseRequestFilterModel(),
                     LastApprovedStatusList = GetLastApprovedStatus(service.GetReffValueAll().Where(w => statusidlist.Contains(w.REFF_ID) && w.REFF_KEYS == "COMPLETED" || w.REFF_KEYS == "CANCELED")),
                     //FormNumList = GetFormNumList(interService.GetAll().Where(w => iridlist.Contains(w.VR_FORM_ID))),
-                    FormNumList = GetFormNumListFilter(service.GetAll().Where(w => w.SYS_REFFERENCES.REFF_KEYS == "COMPLETED" || w.SYS_REFFERENCES.REFF_KEYS == "CANCELED")),
+                    //FormNumList = GetFormNumListFilter(service.GetAll().Where(w => w.SYS_REFFERENCES.REFF_KEYS == "COMPLETED" || w.SYS_REFFERENCES.REFF_KEYS == "CANCELED")),
                     //CompTypeList = GetCompTypeList(interService.GetInterviewReqCompanyTypeList()),
+                    FormNumList = GetListFormNumFilter(documents),
                     CompTypeList = GetCompTypeList(comptplist),
                     ProdTypeList = GetProdTypeList(service.GetAllProductTypeFromLR()),
                     KPPBCList = GetKPPBCListForFilter(nppbkclist),
@@ -239,7 +251,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo("You dont have access to Manufacturing License Request page.", Enums.MessageInfoType.Warning);
                 return RedirectToAction("Unauthorized","Error");
             }
-
         }
 
 
@@ -288,8 +299,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 documents = documents.Where(w => w.LASTAPPROVED_STATUS == model.Filter.StatusFilter);
             }
 
-            
-
             var listofDoc = documents.Select(s => new LicenseRequestModel
             {
                 MnfFormNum = s.MNF_FORM_NUMBER,
@@ -319,12 +328,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     delegatorname = delegation.Select(s => s.POA_FROM).ToList();
                 }
-                var IRWhithSameNPPBKC = service.GetLicenseNeedApproveWithSameNPPBKC(CurrentUser.USER_ID);
+                //var IRWhithSameNPPBKC = service.GetLicenseNeedApproveWithSameNPPBKC(CurrentUser.USER_ID);
                 var IRWhithoutNPPBKC = service.GetLicenseNeedApproveWithoutNPPBKC(CurrentUser.USER_ID);
                 var IRWithNPPBKCButNoExcise = service.GetInterviewNeedApproveWithNPPBKCButNoExcise(CurrentUser.USER_ID);
+                // new
+                var LastApprover = service.GetLicenseLastApproveAfterSubmit(CurrentUser.USER_ID);
                 documents = documents.Where(w => w.CREATED_BY.Equals(CurrentUser.USER_ID) || delegatorname.Contains(w.CREATED_BY)
-                    || w.LASTAPPROVED_BY == CurrentUser.USER_ID
-                    || IRWhithSameNPPBKC.Contains(w.MNF_REQUEST_ID) || IRWhithoutNPPBKC.Contains(w.MNF_REQUEST_ID)
+                    || LastApprover.Contains(w.MNF_REQUEST_ID)
+                    //|| w.LASTAPPROVED_BY == CurrentUser.USER_ID
+                    //|| IRWhithSameNPPBKC.Contains(w.MNF_REQUEST_ID) 
+                    || IRWhithoutNPPBKC.Contains(w.MNF_REQUEST_ID)
                     || IRWithNPPBKCButNoExcise.Contains(w.MNF_REQUEST_ID));
             }
 
@@ -680,6 +693,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     CompanyId = s.INTERVIEW_REQUEST.BUKRS,
                     CompType = s.INTERVIEW_REQUEST.COMPANY_TYPE,
                     NppbkcID = s.NPPBKC_ID == null ? "" : s.NPPBKC_ID,
+                    //NppbkcID = s.INTERVIEW_REQUEST.NPPBKC_ID == null ? "" : s.INTERVIEW_REQUEST.NPPBKC_ID,
                     DecreeDate = s.DECREE_DATE,
                     DecreeNo = s.DECREE_NO,
                     DecreeStatus = s.DECREE_STATUS,
@@ -1222,6 +1236,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     var msgSuccess = "";
                     var strreqdate = update.REQUEST_DATE.ToString("dd MMMM yyyy");
                     var strappdate = update.REQUEST_DATE.ToString("dd MMMM yyyy HH:mm");
+                    
                     var Creator = refService.GetPOA(update.CREATED_BY);
                     var CreatorName = Creator.PRINTED_NAME;
                     var CreatorMail = Creator.POA_EMAIL;
@@ -1238,7 +1253,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     model_mail.Mail_Perihal = update.INTERVIEW_REQUEST.PERIHAL;
                     model_mail.Mail_RequestDate = strreqdate;
                     model_mail.Mail_KPPBC = update.INTERVIEW_REQUEST.KPPBC;
-                    model_mail.Mail_Company = update.INTERVIEW_REQUEST.BA_NUMBER;
+                    model_mail.Mail_Company = update.INTERVIEW_REQUEST.T001.BUTXT;
                     model_mail.Mail_Creator = CreatorName;
                     model_mail.Mail_MnfRequestId = LRId;
                     model_mail.Mail_POA_ReceiverList = Sendto;
@@ -1246,7 +1261,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     model_mail.Mail_ApprovedDate = update.LASTAPPROVED_DATE.ToString();
                     model_mail.Mail_Remark = "-";
                     model_mail.Mail_Comment = Comment;
-                    model_mail.Mail_DecreeDate = update.DECREE_DATE.ToString() == null ? "-": update.DECREE_DATE.ToString();
+                    model_mail.Mail_DecreeDate = update.DECREE_DATE.ToString() == null ? "-": Convert.ToDateTime(update.DECREE_DATE).ToString("dd MMMM yyyy");
                     model_mail.Mail_DecreeNo = update.DECREE_NO;
                     model_mail.Mail_BANo = update.INTERVIEW_REQUEST.BA_NUMBER;
                     model_mail.Mail_Status = update.SYS_REFFERENCES.REFF_VALUE;
@@ -1295,7 +1310,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             model_mail.Mail_MailFor = "approve";
                             msgSuccess = "Success Approve License Request";
                             content_footer_body += "<tr><td>&nbsp;DECREE No</td><td>:</td><td>" + update.DECREE_NO + "</td></tr>";
-                            content_footer_body += "<tr><td>&nbsp;DECREE Date</td><td>:</td><td>" + update.DECREE_DATE.ToString() + "</td></tr>";
+                            content_footer_body += "<tr><td>&nbsp;DECREE Date</td><td>:</td><td>" + Convert.ToDateTime(update.DECREE_DATE).ToString("dd MMMM yyyy") + "</td></tr>";
                             model_mail.Mail_Sub = content_footer_body;
                             model_mail.Mail_Status = "approved by Government and " + EmailStatus;
                             sendmail = SendMail(model_mail);
@@ -1344,7 +1359,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         msgSuccess = "Success Revise SKEP License Request";
 
                         content_footer_body += "<tr><td>&nbsp;DECREE Number</td><td>:</td><td>" + update.DECREE_NO + "</td></tr>";
-                        content_footer_body += "<tr><td>&nbsp;DECREE Date</td><td>:</td><td>" + update.DECREE_DATE.ToString() + "</td></tr>";
+                        content_footer_body += "<tr><td>&nbsp;DECREE Date</td><td>:</td><td>" + Convert.ToDateTime(update.DECREE_DATE).ToString("dd MMMM yyyy") + "</td></tr>";
                         content_footer_body += "<tr><td>&nbsp;BA Number Reffence</td><td>:</td><td>" + update.INTERVIEW_REQUEST.BA_NUMBER + "</td></tr>";
                         content_footer_body += "<tr><td>&nbsp;Comment</td><td>:</td><td>" + Comment + "</td></tr>";
                         model_mail.Mail_Sub = content_footer_body;
@@ -1387,6 +1402,18 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         model_mail.Mail_MailFor = "withdraw";
                         msgSuccess = "Success Withdraw License Request";
+
+                        content_footer_body += "<tr><td>&nbsp;BA Number Reffence</td><td>:</td><td>" + update.INTERVIEW_REQUEST.BA_NUMBER + "</td></tr>";
+                        content_footer_body += "<tr><td>&nbsp;Comment</td><td>:</td><td>" + Comment + "</td></tr>";
+                        model_mail.Mail_Sub = content_footer_body;
+                        model_mail.Mail_Status = EmailStatus;
+                        
+                        var sendmail = SendMail(model_mail);
+                        
+                        if (!sendmail)
+                        {
+                            msgSuccess += " , but failed send mail to Creator";
+                        }
                     }
                     else if(Action ==  "cancel")
                     {
@@ -1513,7 +1540,18 @@ namespace Sampoerna.EMS.Website.Controllers
             return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
         }
 
-        private SelectList GetCompTypeList(Dictionary<int, string> types)
+        private SelectList GetListFormNumFilter(List<LicenseRequestModel> FormNumList)
+        {
+            var query = from x in FormNumList
+                        select new SelectItemModel()
+                        {
+                            ValueField = x.InterviewId,
+                            TextField = x.MnfFormNum
+                        };
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+        }
+
+private SelectList GetCompTypeList(Dictionary<int, string> types)
         {
             var query = from x in types
                         select new SelectItemModel()
@@ -2153,8 +2191,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     mailcontentId = (int)ReferenceKeys.EmailContent.ManufacturingLicenseRevisionRequest;
                 }
+                else if(model.Mail_MailFor == "withdraw")
+                {
+                    mailcontentId = (int)ReferenceKeys.EmailContent.ManufacturingLicenseApprovalNotification;
+                }
                 else if (model.Mail_MailFor == "reject")
                 {
+                    mailcontentId = (int)ReferenceKeys.EmailContent.ManufacturingLicenseApprovalNotification;
                 }
 
                 var mailContent = refService.GetMailContent(mailcontentId, parameters);
@@ -2280,7 +2323,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                                 if (model.NppbkcID != "" )
                                 {
-                                    service.InsertNPPBKC(model.NppbkcID, IRmodel.KPPBC_ADDRESS == null ? "" : IRmodel.KPPBC_ADDRESS, model.KPPBC, CurrentUser.USER_ID);
+                                    service.InsertNPPBKC(model.NppbkcID, IRmodel.KPPBC_ADDRESS == null ? "" : IRmodel.KPPBC_ADDRESS, IRmodel.CITY, IRmodel.CITY_ALIAS, IRmodel.TEXT_TO, IRmodel.KPPBC, CurrentUser.USER_ID);
                                 }
 
                                 //// InActiving/Removing Doc
@@ -2294,7 +2337,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                                 var ActionType = 0;
                                 ActionType = (int)Enums.ActionType.Submit;
-                                var updateSKEP = service.UpdateBASKEP(model.MnfRequestID, Convert.ToBoolean(model.DecreeStatus), model.DecreeNo , Convert.ToDateTime(model.DecreeDate ), model.NppbkcID, ApproveStats, CurrentUser.USER_ID, ActionType, (int)CurrentUser.UserRole, model.Comment, model.InterviewId);
+                                var updateSKEP = service.UpdateBASKEP(model.MnfRequestID, Convert.ToBoolean(model.DecreeStatus), model.DecreeNo , Convert.ToDateTime(model.DecreeDate), model.NppbkcID, ApproveStats, CurrentUser.USER_ID, ActionType, (int)CurrentUser.UserRole, model.Comment, model.InterviewId);
                                 if (updateSKEP != null)
                                 {
                                     InsertUploadCommonFile(model.File_BA_Path, model.MnfRequestID, true, model.File_Other_Name);
@@ -2324,7 +2367,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                         model_mail.Mail_ApprovedDate = "";
                                         model_mail.Mail_Remark = "";
                                         model_mail.Mail_BANo = updateSKEP.INTERVIEW_REQUEST.BA_NUMBER;
-                                        model_mail.Mail_DecreeDate = updateSKEP.DECREE_DATE.ToString();
+                                        model_mail.Mail_DecreeDate = Convert.ToDateTime(updateSKEP.DECREE_DATE).ToString("dd MMMM yyyy");
                                         model_mail.Mail_DecreeNo = updateSKEP.DECREE_NO;
 
                                         var License_detail_item = service.GetBoundCondAll().Where(w => w.MNF_REQUEST_ID.Equals(model.MnfRequestID)).ToList();
@@ -2350,7 +2393,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                         var content_footer_body = "";
 
                                         content_footer_body += "<tr><td>&nbsp;DECREE Number</td><td>:</td><td>" + updateSKEP.DECREE_NO + "</td></tr>";
-                                        content_footer_body += "<tr><td>&nbsp;DECREE Date</td><td>:</td><td>" + updateSKEP.DECREE_DATE.ToString() + "</td></tr>";
+                                        content_footer_body += "<tr><td>&nbsp;DECREE Date</td><td>:</td><td>" + Convert.ToDateTime(updateSKEP.DECREE_DATE).ToString("dd MMMM yyyy") + "</td></tr>";
 
                                         model_mail.Mail_Sub = content_footer_body;
                                         //var mailsent = SendMail(updateSKEP.MNF_FORM_NUMBER, PERIHAL, COMPANY_TYPE, strreqdate, CreatorName, model.Status, "", "", "", model.MnfRequestID, poareceiverList, "submit");
@@ -2379,7 +2422,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
-        public ActionResult ChangeLog(int CRID)
+        public ActionResult ChangeLog(int CRID, string Token)
         {
             var licenseRequest = new LicenseRequestModel();
 
@@ -2699,8 +2742,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 XMLWorkerHelper.GetInstance().ParseXHtml(writer, document, srHtml);
                 document.Close();
                 stream.Close();
-                var newFile = new FileInfo(uploadToFolder);
-                var fileName = Path.GetFileName(uploadToFolder);
+                //var newFile = new FileInfo(uploadToFolder);
+                //var fileName = Path.GetFileName(uploadToFolder);
+                var mergeFile = MergePrintout(uploadToFolder, InterviewID);
+                var newFile = new FileInfo(mergeFile);
+                var fileName = Path.GetFileName(mergeFile);
                 string attachment = string.Format("attachment; filename={0}", fileName);
                 Response.Clear();
                 Response.AddHeader("content-disposition", attachment);
@@ -3423,6 +3469,44 @@ namespace Sampoerna.EMS.Website.Controllers
                 filename = arrfilename[0] + "." + fileext;
             }
             return filename;
+        }
+
+        public String MergePrintout(string path, long MnfRegID)
+        {
+            try
+            {
+                var supportingDocs = refService.GetUploadedFiles((int)Enums.FormList.License, MnfRegID.ToString()).Where(x => x.DOCUMENT_ID != null).ToList();
+                var ext = "";
+                List<String> sourcePaths = new List<string>();
+                sourcePaths.Add(path);
+                foreach (var doc in supportingDocs)
+                {
+                    ext = doc.PATH_URL.Substring((doc.PATH_URL.Length - 3), 3);
+                    if (ext.ToLower() == "pdf")
+                    {
+                        sourcePaths.Add(Server.MapPath("~" + doc.PATH_URL));
+                    }
+                }
+
+                var otherDocs = refService.GetUploadedFiles((int)Enums.FormList.License, MnfRegID.ToString()).Where(x => x.DOCUMENT_ID == null && x.IS_GOVERNMENT_DOC == false).ToList();
+                foreach (var doc in otherDocs)
+                {                    
+                    ext = doc.PATH_URL.Substring((doc.PATH_URL.Length - 3), 3);
+                    if (ext.ToLower() == "pdf")
+                    {
+                        sourcePaths.Add(Server.MapPath("~" + doc.PATH_URL));
+                    }
+                }
+
+                if (PdfMerge.Execute(sourcePaths.ToArray(), path))
+                    return path;
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

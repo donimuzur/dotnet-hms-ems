@@ -127,6 +127,34 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
             }
         }
 
+
+        public IQueryable<ZAIDM_EX_MATERIAL> GetAllMaterialUsed()
+        {
+            try
+            {
+                var result = this.uow.MaterialRepository.GetAll().Where(m => m.EXC_GOOD_TYP == "01" && m.USED_PRODUCT_DEVELOPMENT == false);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw this.HandleException("Exception occured on Product Development Service. See Inner Exception property to see details", ex);
+            }
+        }
+
+        public MASTER_PLANT FindPlantByNppbkcID(string Nppbkc_ID)
+        {
+            try
+            {
+                var result = this.uow.PlantRepository.GetFirst(pl => pl.NPPBKC_ID == Nppbkc_ID || pl.NPPBKC_IMPORT_ID == Nppbkc_ID);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw this.HandleException("Exception occured on Brand Registration Request Service. See Inner Exception property to see details", ex);
+            }
+
+        }
+
         public ZAIDM_EX_MATERIAL FindItemDescription(string code)
         {
             try
@@ -158,6 +186,33 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
             try
             {
                 var result = this.uow.PlantRepository.GetFirst(mt => mt.WERKS == code.ToUpper());
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw this.HandleException("Exception occured on Product Development Service. See Inner Exception property to see details", ex);
+            }
+        }
+
+        public MASTER_PLANT FindPlantDescriptionByName(string namePLant)
+        {
+            try
+            {
+                var result = this.uow.PlantRepository.GetFirst(mt => mt.NAME1 == namePLant);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw this.HandleException("Exception occured on Product Development Service. See Inner Exception property to see details", ex);
+            }
+        }
+
+
+        public T001 FindCompanyDescription(string code)
+        {
+            try
+            {
+                var result = this.uow.CompanyRepository.GetFirst(mt => mt.BUKRS == code.ToUpper());
                 return result;
             }
             catch (Exception ex)
@@ -258,6 +313,32 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
             }
         }
 
+        public IQueryable<ZAIDM_EX_MATERIAL> GetAllMaterialByPlant(string werks)
+        {
+            try
+            {
+                var result = this.uow.MaterialRepository.GetAll().Where(m => m.EXC_GOOD_TYP == "01" && m.WERKS == werks);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw this.HandleException("Exception occured on Product Development Service. See Inner Exception property to see details", ex);
+            }
+        }
+
+        public IQueryable<ZAIDM_EX_MATERIAL> GetAllMaterialUsedByPlant(string werks)
+        {
+            try
+            {
+                var result = this.uow.MaterialRepository.GetAll().Where(m => m.EXC_GOOD_TYP == "01" && m.USED_PRODUCT_DEVELOPMENT == false && m.WERKS == werks);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw this.HandleException("Exception occured on Product Development Service. See Inner Exception property to see details", ex);
+            }
+        }
+
         public PRODUCT_DEVELOPMENT GetLastRecordPD()
         {
             try
@@ -324,13 +405,40 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
 
         public bool IsCreatorPRD(string userID)
         {
-            var result = this.uow.RoleMapRepository.GetFirst(us => us.MSACCT == userID && us.BROLE == "10087894");
+            var result = this.uow.RoleMapRepository.GetFirst(us => us.MSACCT.ToUpper() == userID.ToUpper() && us.BROLE == "10087894");
 
             if(result !=null)
             {
                 return true;
             }
             return false;
+        }
+
+        public bool IsUnderPlant (string FaCode, string PlantCode)
+        {          
+            var result = this.uow.MaterialRepository.GetFirst(m => m.STICKER_CODE == FaCode && m.WERKS == PlantCode);
+            if (result != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool IsUnderCompany (string PlantCode, string CompanyCode)
+        {
+            var checkCompany = this.uow.CompanyPlantMappingRepository.GetFirst(c => c.BWKEY == PlantCode && c.BUKRS == CompanyCode);
+            if (checkCompany != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
         }
 
         public IEnumerable<USER> GetAdminExciser()
@@ -419,6 +527,38 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
             }
         }
 
+        public void GetUpdateUsedMaterial(string faCodeNew, string werks, bool isUsed, string user)
+        {
+            using (var context = new EMSDataModel())
+            {
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var old = context.ZAIDM_EX_MATERIAL.SingleOrDefault(a=>a.STICKER_CODE == faCodeNew && a.WERKS == werks);
+                        if (old != null)
+                        {
+                            var data = (ZAIDM_EX_MATERIAL)context.Entry(old).GetDatabaseValues().ToObject();
+
+                            data.WERKS = werks;
+                            data.MODIFIED_BY = user;
+                            data.MODIFIED_DATE = DateTime.Now;
+                            data.USED_PRODUCT_DEVELOPMENT = isUsed;
+
+                            context.Entry(old).CurrentValues.SetValues(data);
+                            context.SaveChanges();
+
+                            transaction.Commit();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw this.HandleException("Exception occured on Product Development Service. See Inner Exception property to see details", ex);
+                    }
+                }
+            }
+        }
         #endregion
 
         #region Create
@@ -540,6 +680,39 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
                             LogsActivity(context, id.ToString(), changes, formType, actionType, role, user);
                             transaction.Commit();
                         }                                        
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw this.HandleException("Exception occured on Product Development Service. See Inner Exception property to see details", ex);
+                    }
+                }
+            }
+        }
+
+        public void EditDetailStatusApproval(long status, long detailId, int formType, int actionType, int role, string user)
+        {
+            using (var context = new EMSDataModel())
+            {
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var old = context.PRODUCT_DEVELOPMENT_DETAIL.Find(detailId);
+                        if (old != null)
+                        {
+                            var data = (PRODUCT_DEVELOPMENT_DETAIL)context.Entry(old).GetDatabaseValues().ToObject();
+                          
+                            data.LASTMODIFIED_BY = user;
+                            data.LASTMODIFIED_DATE = DateTime.Now;                          
+                            data.STATUS_APPROVAL = status;
+
+                            //var changes = GetAllChanges(old, data);
+                            context.Entry(old).CurrentValues.SetValues(data);
+                            context.SaveChanges();
+                            //LogsActivity(context, id.ToString(), changes, formType, actionType, role, user);
+                            transaction.Commit();
+                        }
                     }
                     catch (Exception ex)
                     {

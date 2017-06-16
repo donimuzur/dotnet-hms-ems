@@ -37,7 +37,8 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevel
         public SelectList PlantList { set; get; }
         public SelectList MarketList { set; get; }
         public SelectList BrandList { set; get; }
-        public SelectList MaterialList { set; get; }
+        public SelectList MaterialListOld { set; get; }
+        public SelectList MaterialListNew { get; set; }
         public SelectList PoaList { set; get; }
         public SelectList CreatorList { set; get; }
         public string Plant { set; get; }
@@ -48,6 +49,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevel
         public bool EditMode { get; set; }
         public bool IsAdminApprover { get; set; }
         public bool IsExciser { get; set; }
+        public bool IsCreated { get; set; }
         public ConfirmDialogModel ApproveConfirm { get; set; }
 
         public List<ProductDevSupportingDocumentModel> SupportingDocuments { set; get; }

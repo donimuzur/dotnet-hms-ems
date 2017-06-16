@@ -27,9 +27,6 @@ namespace Sampoerna.EMS.CustomService.Data
         public int NEXT_ACTION { get; set; }
         public long PD_ID { get; set; }
         public string PD_NO { get; set; }
-        public string LASTAPPROVED_BY { get; set; }
-        public Nullable<System.DateTime> LASTAPPROVED_DATE { get; set; }
-        public Nullable<long> STATUS_APPROVAL { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PRODUCT_DEVELOPMENT_DETAIL> PRODUCT_DEVELOPMENT_DETAIL { get; set; }

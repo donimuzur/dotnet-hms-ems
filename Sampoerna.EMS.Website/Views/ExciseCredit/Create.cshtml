@@ -3,7 +3,7 @@
     ViewBag.Title = "Create";
 }
 
-@using (Html.BeginForm(null, null, FormMethod.Post, new { @id ="ExciseCreateForm" }))
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "ExciseCreateForm" }))
 {
     @Html.AntiForgeryToken()
     <div class="container-wrap title-page">
@@ -36,7 +36,7 @@
                     @Html.HiddenFor(model => model.ViewModel.FinancialRatioIds)
                     @Html.HiddenFor(model => model.ViewModel.Amount)
                     @Html.HiddenFor(model => model.ViewModel.POA)
-                    
+
                 </div>
                 <div role="tabpanel">
                     <!-- Nav tabs -->
@@ -99,13 +99,17 @@
         $(document)
             .on("ready", attach)
             .on("unload", detach);
+
         var ckUrl = '@Url.Action("GetCalculationDetail", "ExciseCredit")';
+        var adjUrl = '@Url.Action("GetCalculationAdjustment", "ExciseCredit")';
+        var adjItemUrl = '@Url.Action("GetItemAdjustment", "ExciseCredit")';
         var countUrl = '@Url.Action("GetCurrentDocumentId", "ExciseCredit")';
         var uploadUrl = '@Url.Action("UploadFiles", "ExciseCredit")';
         var sdUrl = '@Url.Action("GetSupportingDocuments", "ExciseCredit")';
         var createUrl = '@Url.Action("Create", "ExciseCredit")';
         var ck1DetaiUrl = '@Url.Action("GetCk1List", "ExciseCredit")';
         var homeUrl = '@Url.Action("Index", "ExciseCredit")';
+
         // action handlers
         function nppbkcSelectionChanges() {
             var _url = '@Url.Action("GetNppbkc", "ExciseCredit")';

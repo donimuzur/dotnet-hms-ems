@@ -197,7 +197,7 @@
                                             </div>
                                             <div class="col-md-8">
                                                 <fieldset style="border:none;margin:0px" @if (isDisabled) { <text> disabled = "disabled" </text> }>
-                                                    @Html.DropDownListFor(model => model.ViewModel.Nppbkc_ID, Model.NppbkcList, "Select", new { @class = " selectpicker form-control", @id = "NppbkcSelector" })
+                                                @Html.DropDownListFor(model => model.ViewModel.Nppbkc_ID, Model.NppbkcList, new { @class = " selectpicker form-control", @id = "NppbkcSelector" })                                                
                                                 </fieldset>
                                             </div>
                                         </div>
@@ -424,6 +424,7 @@
                 <p align="center"><i class="fa fa-file"></i>&nbsp;<a href="@templateurl" download> Download Template</a></p>
                 <form id="form_ImportItems" method="post" enctype="multipart/form-data">
                     <div class="col-lg-8">
+                        @Html.HiddenFor(model => model.ViewModel.Received_ID, new { @id = "txt_Received_ID" })
                         <input type="hidden" name="start_date" id="txt_startdate_import" />
                         <input type="hidden" name="item_notin" id="txt_hditemnotin_import" value="" />
                         <input id="txt_FileImport" name="FileImport" type="file" class="form-control" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
@@ -447,7 +448,7 @@
 @section scripts {
 
     <script src="~/Scripts/js/custom.js"></script>
-    <script src="~/Scripts/brand-registration-trans/main_skep.js?v=0.109"></script>
+    <script src="~/Scripts/brand-registration-trans/main_skep.js?v=0.113"></script>
     <script type="text/javascript" language="javascript" class="init">
 
         $(document).ready(function () {

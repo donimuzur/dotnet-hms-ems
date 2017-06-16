@@ -62,7 +62,7 @@
                     <span class="red">*</span>
                 </div>
                 <div class="col-md-9">
-                    @Html.DropDownListFor(model => model.ViewModel.RequestTypeID, Model.RequestTypes, null, new { @class = "form-control" })
+                    @Html.DropDownListFor(model => model.ViewModel.RequestTypeID, Model.RequestTypes, null, new { @class = "form-control requestType" })
                 </div>
                 <div class="col-md-9 col-md-offset-3">
                     @Html.ValidationMessageFor(model => model.ViewModel.RequestTypeID)
@@ -101,7 +101,7 @@
                                         </div>
                                         <div class="row">
                                             <label class="col-md-4">
-                                                @Html.LabelFor(model => model.POA.Position, "Position")
+                                                @Html.LabelFor(model => model.POA.Position, "Title")
                                             </label>
                                             <div class="col-md-8">
                                                 @Html.TextBoxFor(model => model.POA.Position, new { @class = "form-control", @type = "text", @readonly = true })

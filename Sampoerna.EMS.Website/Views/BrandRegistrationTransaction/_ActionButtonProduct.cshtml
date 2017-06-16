@@ -12,38 +12,25 @@
             <label class="status">@Model.ViewModel.PD_NO</label>
            
             <div class="action-button">                
-                @*@if (Model.IsAdminApprover && Model.IsExciser && ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "Approve")
-                {
-                    <button type="button" class="btn btn-danger" id="ReviseButton" data-toggle="modal" data-target=".revise-modal.product">Revise</button>
-                    <button type="button" class="btn btn-success" id="ApproveButton" data-toggle="modal" data-target=".approve-modal.product">Approve</button>
-                }*@
+               
                 @if (Model.ShowActionOptions && Model.EnableFormInput)
                 {
                     if (Model.EditMode)
-                    {
-                        @*if (!Model.ViewModel.IsSubmitted)
+                    {                  
+                        if (Model.IsCreated)
                         {
-                            <input type="submit" class="btn btn-blue" value="Save" id="SaveButton">
-                            <button type="button" class="btn btn-success" id="SubmitButton">Submit</button>
+                            <button type="button" class="btn btn-blue" title="Cancel this Submission" id="CancelButton">Cancel</button>
                         }
-                        else
-                        {
-                            <button type="button" class="btn btn-grey" disabled>Submitted</button>
-                        }*@
                         <button type="button" class="btn btn-blue" id="EditButton">Save</button>
-                        <a href="@Url.Action("IndexProductDevelopment", "BrandRegistrationTransaction")" class="btn btn-grey">Cancel</a>
+                        <a href="@Url.Action("IndexProductDevelopment", "BrandRegistrationTransaction")" class="btn btn-grey">Back</a>
 
                     }
                     if (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "CreateProductDevelopment")
                     {
                         <button type="button" class="btn btn-blue"  id="SaveButton">Save</button>
-                        <a href="@Url.Action("IndexProductDevelopment", "BrandRegistrationTransaction")" class="btn btn-grey">Cancel</a>
+                        <a href="@Url.Action("IndexProductDevelopment", "BrandRegistrationTransaction")" class="btn btn-grey">Back</a>
                     }
-
-                    @*if (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() != "ApproveProduct")
-                    {
-                        <a href="@Url.Action("IndexProductDevelopment", "BrandRegistrationTransaction")" class="btn btn-grey">Cancel</a>
-                    }*@
+               
                 }
                 else
                 {

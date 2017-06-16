@@ -264,16 +264,17 @@ function GetItemList()
 {
     $("#customloader").show();
     $("#tbody_optitemlist").empty();
+    var ReceivedID = $("#txt_hd_id").val();
     var ItemNotIn = [];    
     $("#tbody_skeplistitem").find("tr").each(function () {
         var ItemIndex = $(this).data("index");
-        var ItemId = $("#txt_hd_itemId_" + ItemIndex).val();
+        var ItemId = $("#txt_hd_itemId_" + ItemIndex).val();        
         ItemNotIn.push(ItemId);        
     });
     $.ajax({
         url: getUrl("GetProductDevelopmentItemList"),
         type: 'POST',        
-        data: JSON.stringify({ 'ItemNotIn': ItemNotIn }),
+        data: JSON.stringify({ 'ItemNotIn': ItemNotIn, 'ReceivedID': ReceivedID }),
         async: false,
         contentType: 'application/json',
         success: function (data) {
@@ -524,11 +525,20 @@ function CheckFieldEmpty() {
     return emptyCount;
 }
 
-function ToggleCheckAll() {    
+function ToggleCheckAll() {
+    var isNowChecked = false;
     $("#tbody_skeplistitem").find(".tr_item_list").each(function () {        
         if ($(this).is(":visible")) {            
             var checkbox = $(this).find(".td_inputan").find(".cb_itemlist");
-            if (checkbox.is(":checked") == true) {                
+            if (checkbox.is(":checked") == true) {
+                isNowChecked = true;
+            }
+        }
+    });
+    $("#tbody_skeplistitem").find(".tr_item_list").each(function () {
+        if ($(this).is(":visible")) {
+            var checkbox = $(this).find(".td_inputan").find(".cb_itemlist");
+            if (isNowChecked == true) {
                 checkbox.attr('checked', false);
                 checkbox.prop("checked", false);
             }

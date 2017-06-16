@@ -55,7 +55,7 @@
                         {
                             <a href="@Url.Action("InputSkep", "ExciseCredit", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Input SKEP"><i class="fa fa-pencil-square-o"></i></a>
                         }
-                        if (Model.IsNotViewer && item.IsApprover)
+                        if (Model.IsNotViewer && item.IsApprover && (item.IsWaitingSkepApproval || item.IsSubmitted))
                         {
                             <a href="@Url.Action("Approve", "ExciseCredit", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Approve"><i class="fa fa-check"></i></a>
                         }

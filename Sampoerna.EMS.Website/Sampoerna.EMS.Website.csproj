@@ -16,7 +16,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort />
+    <IISExpressSSLPort>8000</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
@@ -371,7 +371,9 @@
     <Compile Include="Models\Configuration\ConfigurationCreateViewModel.cs" />
     <Compile Include="Models\Configuration\ConfigurationIndexViewModel.cs" />
     <Compile Include="Models\Configuration\ConfigurationViewModel.cs" />
+    <Compile Include="Models\ExciseCredit\CalculationDetailAdjustmentModel.cs" />
     <Compile Include="Models\ExciseCredit\CalculationDetailModel.cs" />
+    <Compile Include="Models\ExciseCredit\ExciseAdjModel.cs" />
     <Compile Include="Models\ExciseCredit\ExciseAdjustmentValue.cs" />
     <Compile Include="Models\ExciseCredit\ExciseApprovedProduct.cs" />
     <Compile Include="Models\ExciseCredit\ExciseCreditCK1DetailModel.cs" />
@@ -1811,10 +1813,33 @@
     <Content Include="Views\BrandRegistrationTransaction\_DetailModalLock.cshtml" />
     <Content Include="Views\BRPenetapanSkep\_ReviseModal.cshtml" />
     <Content Include="Views\BRPenetapanSkep\_PenetapanSKEPListTable.cshtml" />
+    <Content Include="Views\MasterApproval\Detail.cshtml" />
+    <Content Include="Views\MasterApproval\Index.cshtml" />
+    <Content Include="Views\MasterDataApprovalSetting\Detail.cshtml" />
+    <Content Include="Views\MasterDataApprovalSetting\Edit.cshtml" />
+    <Content Include="Views\MasterDataApprovalSetting\Index.cshtml" />
+    <Content Include="Views\MonthClosing\Create.cshtml" />
+    <Content Include="Views\MonthClosing\Detail.cshtml" />
+    <Content Include="Views\MonthClosing\Edit.cshtml" />
+    <Content Include="Views\MonthClosing\Index.cshtml" />
+    <Content Include="Views\MonthClosing\_List.cshtml" />
+    <Content Include="Views\MonthClosing\_Search.cshtml" />
+    <Content Include="Views\MonthClosing\_Upload.cshtml" />
+    <Content Include="Views\User\Edit.cshtml" />
+    <Content Include="Views\User\ViewDetail.cshtml" />
+    <Content Include="Views\LACK1\_Lack1TableBalance.cshtml" />
+    <Content Include="Views\PBCK1\QuotaMonitoring.cshtml" />
+    <Content Include="Views\PBCK1\QuotaMonitoringList.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\_ApproveModal.cshtml" />
+    <Content Include="Views\BrandRegistrationTransaction\_CancelModal.cshtml" />
+    <Content Include="Views\ExciseCredit\Completed.cshtml" />
+    <Content Include="Views\ExciseCredit\SummaryReport.cshtml" />
+    <Content Include="Views\BRBrandRegistration\_BrandRegistrationTable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\upload\Lack1\" />
+    <Folder Include="files_upload\" />
     <Folder Include="Models\WorkflowHistory\" />
     <Folder Include="Views\AspxReportViewer\" />
     <Folder Include="Views\SettingsGlobal\" />

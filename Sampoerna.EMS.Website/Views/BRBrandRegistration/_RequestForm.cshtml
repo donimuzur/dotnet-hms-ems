@@ -54,10 +54,10 @@
                 <div class="form-group">
                     <div id="divRegistrationType">
                         <div class="col-md-6">
-                            <input type="radio" name="ViewModel.Registration_Type" value="1" id="ViewModel_Registration_Type" checked="checked" />New Brand Registration
+                            <input type="radio" name="ViewModel.Registration_Type" value="1" id="ViewModel_Registration_Type" @{if (Model.ViewModel.Registration_Type == 1) { <text> checked="checked" </text>  } } />New Brand Registration
                         </div>
                         <div class="col-md-6">
-                            <input type="radio" name="ViewModel.Registration_Type" value="2" id="ViewModel_Registration_Type" />Update HJE
+                            <input type="radio" name="ViewModel.Registration_Type" value="2" id="ViewModel_Registration_Type" @{if (Model.ViewModel.Registration_Type == 2) { <text> checked="checked" </text>  } } />Update HJE
                         </div>
                     </div>
 
@@ -181,7 +181,7 @@
                 </a>
             </h4>
         </div>
-        <div id="collapse1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading1" @pointer>
+        <div id="collapse1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading1">
             <div class="panel-body">
                 <div class="row">
                     @*<div class="col-md-4">
@@ -192,12 +192,12 @@
                 </div>
                 <div class="col-md-2"></div>*@
                     <div class="col-md-4">
-                        <button id="btn_showimport_dialog" type="button" class="btn btn-primary" data-toggle="modal" data-target=".modal_import">Import</button>
+                        <button id="btn_showimport_dialog" type="button" class="btn btn-primary" data-toggle="modal" data-target=".modal_import" @pointer>Import</button>
                     </div>
                     <div class="col-md-8 pull-right">
-                        <button type="button" id="btn_myModalListItem" class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#myModalListItem">Add Item</button>
-                        <button type="button" id="delItem" class="btn btn-primary btn-sm pull-right">Delete</button>
-                        <button type="button" id="checkallitem" class="btn btn-primary btn-sm pull-right">Check All</button>
+                        <button type="button" id="btn_myModalListItem" class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#myModalListItem" @pointer>Add Item</button>
+                        <button type="button" id="delItem" class="btn btn-primary btn-sm pull-right" @pointer>Delete</button>
+                        <button type="button" id="checkallitem" class="btn btn-primary btn-sm pull-right" @pointer>Check All</button>
                     </div>
                 </div>
                 <br />

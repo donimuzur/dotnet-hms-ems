@@ -173,8 +173,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                     var SKEPWhithSameNPPBKC = penetapanSKEPService.GetSKEPNeedApproveWithSameNPPBKC(CurrentUser.USER_ID);
                     var SKEPWhithoutNPPBKC = penetapanSKEPService.GetSKEPNeedApproveWithoutNPPBKC(CurrentUser.USER_ID);
+                    var WithNPPBKCButNoExcise = penetapanSKEPService.GetSKEPNeedApproveWithNPPBKCButNoExcise(CurrentUser.USER_ID);
                     data = data.Where(w => w.CREATED_BY == CurrentUser.USER_ID || delegatorname.Contains(w.CREATED_BY)
-                    || w.LASTAPPROVED_BY == CurrentUser.USER_ID || SKEPWhithSameNPPBKC.Contains(w.RECEIVED_ID) || SKEPWhithoutNPPBKC.Contains(w.RECEIVED_ID));
+                    || w.LASTAPPROVED_BY == CurrentUser.USER_ID || SKEPWhithSameNPPBKC.Contains(w.RECEIVED_ID) || SKEPWhithoutNPPBKC.Contains(w.RECEIVED_ID) || WithNPPBKCButNoExcise.Contains(w.RECEIVED_ID));
                 }
                 if (data.Any())
                 {
@@ -409,9 +410,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 };
                 long TheId = model.ViewModel.Received_ID;
                 if (model.Action == "create")
-                {
+                {                    
                     entity.LASTAPPROVED_STATUS = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Draft).REFF_ID;
-                    entity.RECEIVED_NO = penetapanSKEPService.GetFormNumber(entity.NPPBKC_ID);
+                    entity.RECEIVED_NO = penetapanSKEPService.GetFormNumber(entity.NPPBKC_ID);                    
                     TheId = penetapanSKEPService.CreatePenetapanSKEP(entity, (int)Enums.MenuList.PenetapanSKEP, (int)Enums.ActionType.Created, (int)CurrentUser.UserRole, CurrentUser.USER_ID);
                 }
                 else if (model.Action == "update")
@@ -1097,7 +1098,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
-        private List<ProductDevDetailModel> MapProductDetailModelList(IQueryable<PRODUCT_DEVELOPMENT_DETAIL> product)
+        private List<ProductDevDetailModel> MapProductDetailModelList(List<vwProductDevDetail> product)
         {
             var list = product.Select(s => new ProductDevDetailModel
             {
@@ -1107,25 +1108,25 @@ namespace Sampoerna.EMS.Website.Controllers
                 Fa_Code_Old_Desc = s.FA_CODE_OLD_DESCR,
                 Fa_Code_New = s.FA_CODE_NEW,
                 Fa_Code_New_Desc = s.FA_CODE_NEW_DESCR,
-                Company = new CompanyModel { Id = s.BUKRS, Name = s.T001.BUTXT },
+                Company = new CompanyModel { Id = s.BUKRS, Name = s.COMPANY_NAME },
                 Hl_Code = s.HL_CODE,
-                Market = new MarketModel { Market_Id = s.MARKET_ID, Market_Desc = s.ZAIDM_EX_MARKET.MARKET_DESC },
-                Werks = s.T001W.NAME1
+                Market = new MarketModel { Market_Id = s.MARKET_ID, Market_Desc = s.MARKET_DESC },
+                Werks = s.PRODUCTION_CENTER
             }).ToList();
             return list;
         }        
 
         [HttpPost]
-        public ActionResult GetProductDevelopmentItemList(long[] ItemNotIn)
+        public ActionResult GetProductDevelopmentItemList(long[] ItemNotIn, long ReceivedID)
         {
             try
             {
                 var completeId = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Completed).REFF_ID;
-                var theapp = productDevelopmentService.GetProductDevDetail().Where(w => w.STATUS_APPROVAL == completeId && w.PRODUCT_DEVELOPMENT.NEXT_ACTION == (int)Enums.ProductDevelopmentAction.PenetapanSKEP);
+                var theapp = penetapanSKEPService.GetProductDevDetail((int)Enums.ProductDevelopmentAction.PenetapanSKEP, ReceivedID);
                 if(ItemNotIn != null)
                 {
                     var itemnotinlist = ItemNotIn.ToList();
-                    theapp = theapp.Where(w => !ItemNotIn.Contains(w.PD_DETAIL_ID));
+                    theapp = theapp.Where(w => !ItemNotIn.Contains(w.PD_DETAIL_ID)).ToList();
                 }
                 var list = MapProductDetailModelList(theapp);
                 return Json(list);
@@ -1879,7 +1880,14 @@ namespace Sampoerna.EMS.Website.Controllers
                             List<long> addedProductList = new List<long>();
                             var MasterProdtype = penetapanSKEPService.getMasterProductType();
                             var completeId = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Completed).REFF_ID;
-                            var ProductdetailAvailable = productDevelopmentService.GetProductDevDetail().Where(w => w.STATUS_APPROVAL == completeId && w.PRODUCT_DEVELOPMENT.NEXT_ACTION == (int)Enums.ProductDevelopmentAction.PenetapanSKEP);                            
+                            long ReceivedID = 0;
+                            var strReceivedID = Request.Form.Get("ViewModel.Received_ID");
+                            if (strReceivedID != "")
+                            {
+                                ReceivedID = Convert.ToInt64(strReceivedID);
+                            }
+                            //var ProductdetailAvailable = productDevelopmentService.GetProductDevDetail().Where(w => w.STATUS_APPROVAL == completeId && w.PRODUCT_DEVELOPMENT.NEXT_ACTION == (int)Enums.ProductDevelopmentAction.PenetapanSKEP);
+                            var ProductdetailAvailable = penetapanSKEPService.GetProductDevDetail((int)Enums.ProductDevelopmentAction.PenetapanSKEP, ReceivedID);
                             foreach (var datarow in data.DataRows)
                             {
                                 if (datarow != null)
@@ -1947,8 +1955,8 @@ namespace Sampoerna.EMS.Website.Controllers
                                             err += "* Unit must be Batang or Gram <br/>";
                                         }
                                     }
-                                    var productdev = ProductdetailAvailable.Where(w => w.REQUEST_NO == v_requestNo);                                    
-                                    if (productdev.Any())
+                                    var productdev = ProductdetailAvailable.Where(w => w.REQUEST_NO == v_requestNo).ToList();
+                                    if (productdev.Count() > 0)
                                     {                                        
                                         var item = MapProductDetailModelList(productdev).FirstOrDefault();
                                         if (!addedProductList.Contains(item.PD_DETAIL_ID))

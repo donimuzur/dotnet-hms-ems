@@ -45,7 +45,6 @@ namespace Sampoerna.EMS.CustomService.Data
         public string BPJ_ATTACH { get; set; }
         public string NOTES { get; set; }
         public string EXCISE_CREDIT_NO { get; set; }
-        public Nullable<decimal> ADJUSTMENT_CALCULATED { get; set; }
         public long LAST_STATUS { get; set; }
         public Nullable<System.DateTime> DECREE_STARTDATE { get; set; }
         public Nullable<System.DateTime> LAST_MODIFIED_DATE { get; set; }
@@ -53,6 +52,7 @@ namespace Sampoerna.EMS.CustomService.Data
         public decimal EXCISE_CREDIT_AMOUNT { get; set; }
         public string POA_ID { get; set; }
         public string SKEP_ATTACHMENT { get; set; }
+        public Nullable<decimal> ADJUSTMENT_CALCULATED { get; set; }
     
         public virtual USER APPROVER { get; set; }
         public virtual USER USER1 { get; set; }

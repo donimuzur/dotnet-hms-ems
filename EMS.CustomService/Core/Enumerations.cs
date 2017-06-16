@@ -88,24 +88,24 @@ namespace Sampoerna.EMS.CustomService.Core
             ManufacturingLicenseApprovalNotification = 20,
             ManufacturingLicenseRevisionRequest = 21,
 
-            ProductDevelopmentApprovalRequest = 25,
+            ProductDevelopmentApprovalRequest = 32,
             ProductDevelopmentApproved = 33,
-            ProductDevelopmentRejected = 27,
-            BrandRegistrationApprovalRequest = 31,
-            BrandRegistrationApprovedPreGovernmentStatus = 29,
+            ProductDevelopmentRejected = 34,
+            BrandRegistrationApprovalRequest = 28,
+            BrandRegistrationApprovedPreGovernmentStatus = 39,
             BrandRegistrationRejected = 35,
             BrandRegistrationApprovalRequestPostGovernmentStatus = 36,
             BrandRegistrationSKEPRejectedRevise = 37,
             BrandRegistrationApprovedPostGovernmentStatus = 38,
-            PenetapanSKEPApprovalRequest = 28,
-            PenetapanSKEPApproved = 29,
-            PenetapanSKEPRejected = 30,
+            PenetapanSKEPApprovalRequest = 25,
+            PenetapanSKEPApproved = 26,
+            PenetapanSKEPRejected = 27,
             ExciseCreditApprovalRequest = 22,
             ExciseCreditApprovalNotification = 23,
             ExciseCreditRejection = 24,
-            ExciseCreditSKEPApprovalRequest = 25,
-            ExciseCreditSKEPApprovalNotification = 26,
-            ExciseCreditSKEPApprovalRejection = 27
+            ExciseCreditSKEPApprovalRequest = 29,
+            ExciseCreditSKEPApprovalNotification = 30,
+            ExciseCreditSKEPApprovalRejection = 31
 
 
         }
@@ -124,6 +124,9 @@ namespace Sampoerna.EMS.CustomService.Core
 
         public enum PrintoutLayout
         {
+            [Description("Not Found")]
+            None = 0,
+
             [Description("New Excise Credit Printout")]
             ExciseCreditNewRequest,
 
@@ -133,7 +136,9 @@ namespace Sampoerna.EMS.CustomService.Core
             [Description("Excise Financial Ratio Printout")]
             FinanceRatio,
 
+            [Description("List CK1 Printout")]
             DetailExciseCalculation,
+
             ExciseNewRequestDecree,
             ExciseAdjustmentRequestDecree,
             ExciseRequestGuaranteeDecree

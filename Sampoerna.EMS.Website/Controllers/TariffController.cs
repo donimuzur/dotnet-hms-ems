@@ -101,9 +101,25 @@ namespace Sampoerna.EMS.Website.Controllers
             var workflowInput = new GetByFormTypeAndFormIdInput();
             workflowInput.FormId = id;
             workflowInput.FormType = Enums.FormType.Tariff;
-            var workflow = this.workflowBll.GetByFormTypeAndFormId(workflowInput);
+            var workflow = this.workflowBll.GetByFormTypeAndFormId(workflowInput).OrderBy(x => x.WORKFLOW_HISTORY_ID);
+            var workflowList = Mapper.Map<List<WorkflowHistoryViewModel>>(workflow);
+            var submittedStatus = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingAdminApproval);
 
-            return Mapper.Map<List<WorkflowHistoryViewModel>>(workflow);
+            var tariff = service.Find(id);
+            if (tariff == null)
+            {
+                throw new Exception("Specified tariff not found!");
+            }
+
+            if (tariff.STATUS_APPROVAL == submittedStatus.REFF_ID)
+            {
+                var additional = refService.GetAdminApproverList();
+                workflowList.Add(Mapper.Map<WorkflowHistoryViewModel>(additional));
+            }
+
+
+
+            return workflowList;
 
         }
         #endregion
@@ -275,7 +291,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 AddMessageInfo("Operation not allowed!. This entry is awaiting for approval!", Enums.MessageInfoType.Error);
                 //data = GenerateProperties(data, true);
-                RedirectToAction("Index");
+                return RedirectToAction("Detail", new { id = data.ViewModel.Id });
             }
             data.EnableFormInput = true;
             data.EditMode = true;
@@ -344,7 +360,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
 
                 var entity = service.Find(model.ViewModel.Id);
-                bool emailStatus = service.Save(entity, ReferenceKeys.ApprovalStatus.AwaitingAdminApproval, Enums.ActionType.WaitingForApproval, (int)CurrentUser.UserRole, CurrentUser.USER_ID, refService.GetUserEmail(CurrentUser.USER_ID), String.Format("{0} [{1} {2}]", ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.EmailSender.Admin), CurrentUser.FIRST_NAME, CurrentUser.LAST_NAME ));
+                bool emailStatus = service.Save(entity, ReferenceKeys.ApprovalStatus.AwaitingAdminApproval, Enums.ActionType.Submit, (int)CurrentUser.UserRole, CurrentUser.USER_ID, refService.GetUserEmail(CurrentUser.USER_ID), String.Format("{0} [{1} {2}]", ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.EmailSender.Admin), CurrentUser.FIRST_NAME, CurrentUser.LAST_NAME ));
                 if(emailStatus)
                     AddMessageInfo(Constans.SubmitMessage.Updated + " and successfully sending email!", Enums.MessageInfoType.Success);
                 else
@@ -376,7 +392,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (data.ViewModel.IsApproved)
                 {
                     AddMessageInfo("Operation not allowed!. This entry already approved!", Enums.MessageInfoType.Error);
-                    RedirectToAction("Index");
+                    return RedirectToAction("Detail", new { id = data.ViewModel.Id });
                 }
                 data.ApproveConfirm = new ConfirmDialogModel()
                 {
@@ -421,7 +437,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
 
                 var entity = service.Find(model.ViewModel.Id);
-                bool emailStatus = service.Save(entity, ReferenceKeys.ApprovalStatus.Completed, Enums.ActionType.Approve, (int)CurrentUser.UserRole, CurrentUser.USER_ID, refService.GetUserEmail(CurrentUser.USER_ID), String.Format("{0} [{1} {2}]", ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.EmailSender.AdminApprover), CurrentUser.FIRST_NAME, CurrentUser.LAST_NAME));
+                bool emailStatus = service.Save(entity, ReferenceKeys.ApprovalStatus.Completed, Enums.ActionType.Approve, (int)Enums.UserRole.AdminApprover, CurrentUser.USER_ID, refService.GetUserEmail(CurrentUser.USER_ID), String.Format("{0} [{1} {2}]", ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.EmailSender.AdminApprover), CurrentUser.FIRST_NAME, CurrentUser.LAST_NAME));
                 if (emailStatus)
                     AddMessageInfo(Constans.SubmitMessage.Updated + " and successfully sending email!", Enums.MessageInfoType.Success);
                 else
@@ -441,7 +457,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
 
                 var entity = service.Find(model.ViewModel.Id);
-                bool emailStatus = service.Save(entity, ReferenceKeys.ApprovalStatus.Edited, Enums.ActionType.Reject, (int)CurrentUser.UserRole, CurrentUser.USER_ID, refService.GetUserEmail(CurrentUser.USER_ID), String.Format("{0} [{1} {2}]", ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.EmailSender.AdminApprover), CurrentUser.FIRST_NAME, CurrentUser.LAST_NAME), model.ViewModel.RevisionData.Comment);
+                bool emailStatus = service.Save(entity, ReferenceKeys.ApprovalStatus.Edited, Enums.ActionType.Reject, (int)Enums.UserRole.AdminApprover, CurrentUser.USER_ID, refService.GetUserEmail(CurrentUser.USER_ID), String.Format("{0} [{1} {2}]", ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.EmailSender.AdminApprover), CurrentUser.FIRST_NAME, CurrentUser.LAST_NAME), model.ViewModel.RevisionData.Comment);
                 if (emailStatus)
                     AddMessageInfo(Constans.SubmitMessage.Updated + " and successfully send email!", Enums.MessageInfoType.Success);
                 else

@@ -85,6 +85,7 @@ namespace Sampoerna.EMS.CustomService.Data
         public Nullable<System.DateTime> MODIFIED_DATE { get; set; }
         public Nullable<int> IS_ACTIVE { get; set; }
         public string ACCT { get; set; }
+        public Nullable<bool> IS_MASTER_DATA_APPROVER { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SYS_REFFERENCES> SYS_REFFERENCES { get; set; }

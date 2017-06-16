@@ -9,12 +9,17 @@
     </head>
 <body>
     <h2 class="text-center">CK-1 List for 6 Last Months</h2>
-    <h3 class="text-center">(@obj.StartMonth to @obj.EndMonth)</h3>
+    <h3 class="text-center" id="ck1Period">(@obj.StartMonth to @obj.EndMonth)</h3>
     <br />
-    <table class="table table-striped">
+    <div class="row">
+        <div class="col-lg-12">
+            <button class="btn btn-primary" id="exportButton">EXPORT</button>
+        </div>
+    </div>
+    <table class="table table-striped" id="ck1Table">
         <thead>
             <tr>
-                <th width="5%">#</th>
+                <th width="5%">CK-1 Number</th>
                 <th width="10%">Month</th>
                 <th width="15%">Product Type</th>
                 <th width="20%">CK-1 Date</th>
@@ -28,7 +33,7 @@
                 foreach (var data in group.Details)
                 {
                     <tr>
-                        <td>@data.Id</td>
+                        <td>@data.CK1Number</td>
                         <td>@data.PeriodDisplay</td>
                         <td>@data.ProductTypeCode</td>
                         <td>@String.Format("{0:dd/MM/yyyy}", data.CK1Date)</td>
@@ -49,6 +54,51 @@
             }
         </tbody>
     </table>
+    <iframe id="txtArea1" style="display:none"></iframe>
+    <script type="text/javascript" src="@String.Format("{0}://{1}{2}/Scripts/jquery-2.1.4.min.js", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"))"></script>
+    <script type="text/javascript" src="@String.Format("{0}://{1}{2}//Scripts/jquery.unobtrusive-ajax.min.js", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"))"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#exportButton").click(exportXls);
+
+        });
+
+        function exportXls(e) {
+            e.preventDefault();
+            try {
+                fnExcelReport();
+            }
+            catch (err)
+            {
+                alert("Failed to export as Ms Excel Spreadsheet!");
+            }
+            
+        }
+
+        function fnExcelReport() {
+            
+            var table = document.getElementById('ck1Table').outerHTML;
+
+            var ua = window.navigator.userAgent;
+            var msie = ua.indexOf("MSIE ");
+            var period = $("#ck1Period").html();
+            var filename = "CK-1 List last 6 Months " + period;
+            console.log(filename);
+            if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))      // If Internet Explorer
+            {
+                txtArea1.document.open("txt/html", "replace");
+                txtArea1.document.write(table);
+                txtArea1.document.close();
+                txtArea1.focus();
+                sa = txtArea1.document.execCommand("SaveAs", true, filename + ".xlsx");
+            }
+            else                 //other browser not tested on IE 11
+                sa = window.open('data:application/vnd.ms-excel,' + encodeURIComponent(table));
+
+            return (sa);
+        }
+    </script>
 </body>
 </html>
 

@@ -38,6 +38,9 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="itextsharp">
+      <HintPath>..\Sampoerna.EMS.Website\ExtLib\itextsharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -56,6 +59,7 @@
     <Compile Include="Core\ConversionHelper.cs" />
     <Compile Include="Core\Enumerations.cs" />
     <Compile Include="Core\ItpiMailer.cs" />
+    <Compile Include="Core\PdfMerge.cs" />
     <Compile Include="Core\ReferenceLookup.cs" />
     <Compile Include="Data\ADMIN_APPROVAL_VIEW.cs">
       <DependentUpon>EMSDataModel.tt</DependentUpon>
@@ -76,6 +80,9 @@
       <DependentUpon>EMSDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Data\CK1_EXCISE_CALCULATE.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Data\CK1_EXCISE_CALCULATE_ADJUST.cs">
       <DependentUpon>EMSDataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Data\CK1_ITEM.cs">

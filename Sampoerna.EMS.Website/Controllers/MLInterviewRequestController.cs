@@ -65,7 +65,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
-                if (CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.POA || CurrentUser.UserRole == Enums.UserRole.Viewer)
+                if (CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.POA || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller )
                 {
                     var users = refService.GetAllUser();
                     var documents = GetInterviewRequestList("", "", "", "", 0, false, false);
@@ -266,7 +266,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 DataPOA = refService.GetPOA(CurrentUser.USER_ID);
                 IRmodel.RequestDate = DateTime.Now;
                 IRmodel.BADate = DateTime.Now;
-                IRmodel.Status = "DRAFT NEW";
+                IRmodel.Status = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Draft).REFF_VALUE;
                 if (DataPOA != null)
                 {
                     IRmodel.POAID = DataPOA.POA_ID;
@@ -276,7 +276,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 IRmodel.City = "";
                 IRmodel.City_Alias = "";
-                IRmodel.StatusKey = "";
+                IRmodel.StatusKey = ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.Draft);
                 IRmodel.WorkflowHistory = new List<WorkflowHistoryViewModel>();
                 IRmodel.Confirmation = GenerateConfirmDialog(true, false, false);
                 IRmodel.IsCanEditPrintout = false;
@@ -743,24 +743,37 @@ namespace Sampoerna.EMS.Website.Controllers
                         //    }
                         //}
 
-                        if(model.Status.ToUpper() == "DRAFT NEW" && model.Id != 0 && model.Id != null)
-                        {
-                            model.Status = "DRAFT EDIT";
-                        }
+                        //if (model.StatusKey == ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.Draft) && model.Id != 0 && model.Id != null)
+                        //{
+                        //    model.Status = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Edited).REFF_VALUE;
+                        //}
 
+                        //var ActionType = 0;
+                        //if(model.Status.ToUpper().Contains("DRAFT"))
+                        //{
+                        //    ActionType = (int)Enums.ActionType.Modified;
+                        //}
+                        //else if(model.Status.ToUpper().Equals("WAITING FOR POA APPROVAL"))
+                        //{
+                        //    ActionType = (int)Enums.ActionType.Submit;
+                        //}
+
+                        long ApproveStats = 0;
                         var ActionType = 0;
-                        if(model.Status.ToUpper().Contains("DRAFT"))
+                        if (model.Id != 0 && model.Id != null)
                         {
+                            ApproveStats = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Edited).REFF_ID;
                             ActionType = (int)Enums.ActionType.Modified;
                         }
-                        else if(model.Status.ToUpper().Equals("WAITING FOR POA APPROVAL"))
+                        else
                         {
-                            ActionType = (int)Enums.ActionType.Submit;
+                            ApproveStats = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Draft).REFF_ID;
+                            ActionType = (int)Enums.ActionType.Created;
                         }
 
-                        long ApproveStats = GetSysreffApprovalStatus(model.Status);
+                        //long ApproveStats = GetSysreffApprovalStatus(model.Status);                        
                         var InsertIRResult = new INTERVIEW_REQUEST();
-                        if(model.Id == 0 || model.Id == null)
+                        if (model.Id == 0 || model.Id == null)
                         {
                             InsertIRResult = IRservice.InsertInterviewRequest(model.Perihal, model.Company_Type, CurrentUser.USER_ID, ApproveStats, model.NPPBKC_ID, model.Company_ID, model.POAID, model.KPPBC_ID, model.KPPBC_Address, model.City, model.City_Alias, model.Text_To, model.RequestDate, (int)CurrentUser.UserRole);
                         }
@@ -811,52 +824,52 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
 
                         var msgSuccess = "";
-                        if(model.Status.ToUpper() == "DRAFT NEW")
+                        if (ActionType == (int)Enums.ActionType.Created)
                         {
                             msgSuccess = "Success create Interview Request";
                         }
-                        else if (model.Status.ToUpper() == "DRAFT EDIT")
+                        else if (ActionType == (int)Enums.ActionType.Modified)
                         {
                             msgSuccess = "Success update Interview Request";
                         }
-                        else if(model.Status.ToUpper() == "WAITING FOR POA APPROVAL")
-                        {
-                            msgSuccess = "Success submit Interview Request";
-                            var poareceiverlistall = IRservice.GetPOAApproverList(model.Id);
-                            if (poareceiverlistall.Count() > 0)
-                            {
-                                List<string> poareceiverList = poareceiverlistall.Select(s => s.POA_EMAIL).ToList();
-                                var strreqdate = model.RequestDate.ToString("dd MMMM yyyy");
-                                var CreatorName = refService.GetPOA(model.CreatedBy).PRINTED_NAME;
-                                var footer = "<tr>";
-                                footer += "<td>&nbsp;Creator</td>";
-                                footer += "<td>:</td>";
-                                footer += "<td>&nbsp;" + CreatorName + "</td>";
-                                footer += "</tr>";
-                                var sendmail = SendMail("Visit Location &", "Visit Location &", model.FormNumber, "has already submitted", strreqdate, model.Perihal, model.KPPBC_ID, model.Company_ID, footer, model.Id, poareceiverList, "submit");
-                                if (!sendmail)
-                                {
-                                    msgSuccess += " , but failed send mail to POA Approver";
-                                }
-                            }
-                            else
-                            {
-                                msgSuccess += " , but failed send mail to POA Approver";
-                            }
-                        }
+                        //else if(model.Status.ToUpper() == "WAITING FOR POA APPROVAL")
+                        //{
+                        //    msgSuccess = "Success submit Interview Request";
+                        //    var poareceiverlistall = IRservice.GetPOAApproverList(model.Id);
+                        //    if (poareceiverlistall.Count() > 0)
+                        //    {
+                        //        List<string> poareceiverList = poareceiverlistall.Select(s => s.POA_EMAIL).ToList();
+                        //        var strreqdate = model.RequestDate.ToString("dd MMMM yyyy");
+                        //        var CreatorName = refService.GetPOA(model.CreatedBy).PRINTED_NAME;
+                        //        var footer = "<tr>";
+                        //        footer += "<td>&nbsp;Creator</td>";
+                        //        footer += "<td>:</td>";
+                        //        footer += "<td>&nbsp;" + CreatorName + "</td>";
+                        //        footer += "</tr>";
+                        //        var sendmail = SendMail("Visit Location &", "Visit Location &", model.FormNumber, "has already submitted", strreqdate, model.Perihal, model.KPPBC_ID, model.Company_ID, footer, model.Id, poareceiverList, "submit");
+                        //        if (!sendmail)
+                        //        {
+                        //            msgSuccess += " , but failed send mail to POA Approver";
+                        //        }
+                        //    }
+                        //    else
+                        //    {
+                        //        msgSuccess += " , but failed send mail to POA Approver";
+                        //    }
+                        //}
                         AddMessageInfo(msgSuccess, Enums.MessageInfoType.Success);
                         return RedirectToAction("Index");
                     }
                     else
                     {
                         AddMessageInfo("Maximum file size is " + maxFileSize.ToString() + " Mb", Enums.MessageInfoType.Warning);
-                        return View();
+                        return RedirectToAction("Index");
                     }
                 }
                 else
                 {
                     AddMessageInfo("Wrong File Extension", Enums.MessageInfoType.Warning);
-                    return View();
+                    return RedirectToAction("Index");
                 }
             }
             catch (Exception ex)
@@ -910,8 +923,9 @@ namespace Sampoerna.EMS.Website.Controllers
                                 model.File_BA.RemoveAt(i);
                             }
                         }
-                        long ApproveStats = GetSysreffApprovalStatus("WAITING FOR POA SKEP APPROVAL");
-                        if (model.Status == "WAITING FOR GOVERNMENT APPROVAL")
+                        //long ApproveStats = GetSysreffApprovalStatus("WAITING FOR POA SKEP APPROVAL");
+                        long ApproveStats = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingPoaSkepApproval).REFF_ID;
+                        if (model.StatusKey == ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.AwaitingGovernmentApproval))
                         {
                             if (model.Id != 0 && model.Id != null)
                             {
@@ -1103,48 +1117,48 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
-        public long GetSysreffApprovalStatus(string currStatus)
-        {
-            long ApproveStats = 0;
-            var Reff = refService.GetRefByType("APPROVAL_STATUS");
-            if (Reff.Any())
-            {
-                currStatus = currStatus.ToUpper();
-                if ( currStatus == "DRAFT NEW")
-                {
-                    ApproveStats = Reff.Where(w => w.REFF_KEYS.Equals("DRAFT_NEW_STATUS")).Select(s => s.REFF_ID).FirstOrDefault();
-                }
-                else if (currStatus == "DRAFT EDIT")
-                {
-                    ApproveStats = Reff.Where(w => w.REFF_KEYS.Equals("DRAFT_EDIT_STATUS")).Select(s => s.REFF_ID).FirstOrDefault();
-                }
-                else if(currStatus == "WAITING FOR POA APPROVAL")
-                {
-                    ApproveStats = Reff.Where(w => w.REFF_KEYS.Equals("WAITING_POA_APPROVAL")).Select(s => s.REFF_ID).FirstOrDefault();
-                }
-                else if (currStatus == "WAITING FOR GOVERNMENT APPROVAL")
-                {
-                    ApproveStats = Reff.Where(w => w.REFF_KEYS.Equals("WAITING_GOVERNMENT_APPROVAL")).Select(s => s.REFF_ID).FirstOrDefault();
-                }
-                else if (currStatus == "WAITING FOR POA SKEP APPROVAL")
-                {
-                    ApproveStats = Reff.Where(w => w.REFF_KEYS.Equals("WAITING_POA_SKEP_APPROVAL")).Select(s => s.REFF_ID).FirstOrDefault();
-                }
-                else if (currStatus == "REJECTED")
-                {
-                    ApproveStats = Reff.Where(w => w.REFF_KEYS.Equals("REJECTED")).Select(s => s.REFF_ID).FirstOrDefault();
-                }
-                else if (currStatus == "COMPLETED")
-                {
-                    ApproveStats = Reff.Where(w => w.REFF_KEYS.Equals("COMPLETED")).Select(s => s.REFF_ID).FirstOrDefault();
-                }
-                else if (currStatus == "CANCELED")
-                {
-                    ApproveStats = Reff.Where(w => w.REFF_KEYS.Equals("CANCELED")).Select(s => s.REFF_ID).FirstOrDefault();
-                }
-            }
-            return ApproveStats;
-        }
+        //public long GetSysreffApprovalStatus(string currStatus)
+        //{
+        //    long ApproveStats = 0;
+        //    var Reff = refService.GetRefByType("APPROVAL_STATUS");
+        //    if (Reff.Any())
+        //    {
+        //        currStatus = currStatus.ToUpper();
+        //        if ( currStatus == "DRAFT NEW")
+        //        {
+        //            ApproveStats = Reff.Where(w => w.REFF_KEYS.Equals("DRAFT_NEW_STATUS")).Select(s => s.REFF_ID).FirstOrDefault();
+        //        }
+        //        else if (currStatus == "DRAFT EDIT")
+        //        {
+        //            ApproveStats = Reff.Where(w => w.REFF_KEYS.Equals("DRAFT_EDIT_STATUS")).Select(s => s.REFF_ID).FirstOrDefault();
+        //        }
+        //        else if(currStatus == "WAITING FOR POA APPROVAL")
+        //        {
+        //            ApproveStats = Reff.Where(w => w.REFF_KEYS.Equals("WAITING_POA_APPROVAL")).Select(s => s.REFF_ID).FirstOrDefault();
+        //        }
+        //        else if (currStatus == "WAITING FOR GOVERNMENT APPROVAL")
+        //        {
+        //            ApproveStats = Reff.Where(w => w.REFF_KEYS.Equals("WAITING_GOVERNMENT_APPROVAL")).Select(s => s.REFF_ID).FirstOrDefault();
+        //        }
+        //        else if (currStatus == "WAITING FOR POA SKEP APPROVAL")
+        //        {
+        //            ApproveStats = Reff.Where(w => w.REFF_KEYS.Equals("WAITING_POA_SKEP_APPROVAL")).Select(s => s.REFF_ID).FirstOrDefault();
+        //        }
+        //        else if (currStatus == "REJECTED")
+        //        {
+        //            ApproveStats = Reff.Where(w => w.REFF_KEYS.Equals("REJECTED")).Select(s => s.REFF_ID).FirstOrDefault();
+        //        }
+        //        else if (currStatus == "COMPLETED")
+        //        {
+        //            ApproveStats = Reff.Where(w => w.REFF_KEYS.Equals("COMPLETED")).Select(s => s.REFF_ID).FirstOrDefault();
+        //        }
+        //        else if (currStatus == "CANCELED")
+        //        {
+        //            ApproveStats = Reff.Where(w => w.REFF_KEYS.Equals("CANCELED")).Select(s => s.REFF_ID).FirstOrDefault();
+        //        }
+        //    }
+        //    return ApproveStats;
+        //}
 
         public List<NppbkcItemModel> GetNppbkcList()
         {
@@ -1450,33 +1464,45 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 int ActionType = 0;
+                long ApproveStats = 0;
                 Action = Action.ToLower();
-                if(Action == "approve")
+                if (Action == "approve")
                 {
                     ActionType = (int)Enums.ActionType.Approve;
+                    ApproveStats = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingGovernmentApproval).REFF_ID;
                 }
-                else if (Action == "reject")
+                else if (Action == "approve_final")
                 {
-                    ActionType = (int)Enums.ActionType.Reject;
-                }
-                else if (Action == "revise" || Action == "reviseskep")
+                    ActionType = (int)Enums.ActionType.Approve;
+                    ApproveStats = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Completed).REFF_ID;
+                }                
+                else if (Action == "revise")
                 {
                     ActionType = (int)Enums.ActionType.Revise;
+                    ApproveStats = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Edited).REFF_ID;
+                }
+                else if (Action == "reviseskep")
+                {
+                    ActionType = (int)Enums.ActionType.Revise;
+                    ApproveStats = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingGovernmentApproval).REFF_ID;
                 }
                 else if (Action == "cancel")
                 {
                     ActionType = (int)Enums.ActionType.Cancel;
+                    ApproveStats = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Canceled).REFF_ID;
                 }
                 else if (Action == "withdraw")
                 {
                     ActionType = (int)Enums.ActionType.Withdraw;
+                    ApproveStats = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Edited).REFF_ID;
                 }
                 else if (Action == "submit")
                 {
                     ActionType = (int)Enums.ActionType.Submit;
+                    ApproveStats = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingPoaApproval).REFF_ID;
                 }
                 string ErrMsg = "";
-                long ApproveStats = GetSysreffApprovalStatus(Status);
+                //long ApproveStats = GetSysreffApprovalStatus(Status);
                 var update = IRservice.UpdateStatus(IRId, ApproveStats, CurrentUser.USER_ID, ActionType, (int)CurrentUser.UserRole, Comment);
                 if(update != null)
                 {
@@ -1488,10 +1514,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     var Sendto = new List<string>();
                     Sendto.Add(CreatorMail);
                     var sendmail = true;
-                    if (Action == "approve")
+                    if (Action == "approve" || Action == "approve_final")
                     {
                         msgSuccess = "Success approve Interview Request";
-                        if (Status == "WAITING FOR GOVERNMENT APPROVAL")
+                        if (Action == "approve")
                         {
                             var footer = "<tr>";
                             footer += "<td>&nbsp;Creator</td>";
@@ -1578,19 +1604,14 @@ namespace Sampoerna.EMS.Website.Controllers
                             msgSuccess += " , but failed send mail to POA Approver";
                         }
                     }
+                    else if (Action == "withdraw")
+                    {
+                        msgSuccess = "Success withdraw Interview Request";
+                    }
                     else
                     {
                         msgSuccess = "Success cancel Interview Request";
-                    }
-                    //else if (Action == "reject")
-                    //{
-                    //    msgSuccess = "Success reject Interview Request";
-                    //    var sendmail = SendMail(update.FORM_NUMBER, update.PERIHAL, update.COMPANY_TYPE, strreqdate, CreatorName, Status, ApproverName, strappdate, Comment, IRId, Sendto, "reject");
-                    //    if (!sendmail)
-                    //    {
-                    //        msgSuccess += " , but failed send mail to Creator";
-                    //    }
-                    //}
+                    }                    
 
                     if (!sendmail)
                     {
@@ -1871,6 +1892,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 Directory.CreateDirectory(uploadToFolder);
                 uploadToFolder += "PrintOut_InterviewRequest_" + FormNumber + "_" + now + ".pdf";
                 FileStream stream = new FileStream(uploadToFolder, FileMode.Create);
+                var margin = Convert.ToSingle(System.Configuration.ConfigurationManager.AppSettings["DefaultMargin"]);
                 var leftMargin = iTextSharp.text.Utilities.MillimetersToPoints(25.4f);
                 var rightMargin = iTextSharp.text.Utilities.MillimetersToPoints(25.4f);
                 var topMargin = iTextSharp.text.Utilities.MillimetersToPoints(25.4f);
@@ -1888,8 +1910,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 XMLWorkerHelper.GetInstance().ParseXHtml(writer, document, srHtml);
                 document.Close();
                 stream.Close();
-                var newFile = new FileInfo(uploadToFolder);
-                var fileName = Path.GetFileName(uploadToFolder);
+                var mergeFile = MergePrintout(uploadToFolder, InterviewID);
+                var newFile = new FileInfo(mergeFile);
+                var fileName = Path.GetFileName(mergeFile);
                 string attachment = string.Format("attachment; filename={0}", fileName);
                 Response.Clear();
                 Response.AddHeader("content-disposition", attachment);
@@ -1910,7 +1933,55 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 throw ex;
             }
-        }        
+        }
+
+        public String MergePrintout(string path, long InterviewID)
+        {
+            try
+            {
+                var Interview = IRservice.GetInterviewRequestById(InterviewID);
+                var bukrs = "";
+                var ext = "";
+                if (Interview.Any())
+                {
+                    bukrs = Interview.FirstOrDefault().BUKRS;
+                }
+                var supportingDocs = refService.GetSupportingDocuments((int)Enums.FormList.Interview, bukrs, InterviewID.ToString()).ToList();
+                List<String> sourcePaths = new List<string>();
+                sourcePaths.Add(path);
+                foreach (var doc in supportingDocs)
+                {
+                    var files = doc.FILE_UPLOAD.ToList();
+                    if (files.Count > 0)
+                    {
+                        ext = files[0].PATH_URL.Substring((files[0].PATH_URL.Length - 3), 3);
+                        if (ext.ToLower() == "pdf")
+                        {
+                            sourcePaths.Add(Server.MapPath("~" + files[0].PATH_URL));
+                        }
+                    }
+                }
+
+                var otherDocs = refService.GetUploadedFiles((int)Enums.FormList.Interview, InterviewID.ToString()).Where(x => x.DOCUMENT_ID == null && x.IS_GOVERNMENT_DOC == false).ToList();
+                foreach (var doc in otherDocs)
+                {
+                    ext = doc.PATH_URL.Substring((doc.PATH_URL.Length - 3), 3);
+                    if (ext.ToLower() == "pdf")
+                    {
+                        sourcePaths.Add(Server.MapPath("~" + doc.PATH_URL));
+                    }
+                }
+
+                if (PdfMerge.Execute(sourcePaths.ToArray(), path))
+                    return path;
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
         public ActionResult SummaryReport()
         {
@@ -1920,14 +1991,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.POA || CurrentUser.UserRole == Enums.UserRole.Viewer)
                 {
                     var users = refService.GetAllUser();
+                    var model = new InterviewRequestExportSummaryReportsViewModel();                    
                     var documents = GetSummaryReportList("", "", "", "", 0, false, true, null);
                     IRSummarymodel = new InterviewRequestSummaryReportsViewModel()
                     {
                         MainMenu = mainMenu,
                         CurrentMenu = PageInfo,
                         Filter = new InterviewRequestFilterModel(),
-                        CreatorList = GetUserList(users),
-                        KppbcList = GetKppbcList(refService.GetAllNppbkc()),
+                        CreatorList = GetUserList(users),                        
+                        KppbcList = GetSummaryReportKppbcList(documents),
                         PoaList = GetPoaList(refService.GetAllPOA()),
                         CompanyType = GetCompanyTypeList(IRservice.GetInterviewReqCompanyTypeList()),
                         YearList = GetSummaryReportYearList(documents),
@@ -2291,7 +2363,7 @@ namespace Sampoerna.EMS.Website.Controllers
             slDocument.AutoFitColumn(1, iColumn - 1);
             slDocument.SetCellStyle(1, 1, iRow - 1, iColumn - 1, styleBorder);
 
-            var fileName = "InterviewRequest " + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+            var fileName = "SummaryReport_InterviewRequest_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
 
             var path = Path.Combine(Server.MapPath(Constans.MLFolderPath), fileName);
             slDocument.SaveAs(path);
@@ -2416,6 +2488,17 @@ namespace Sampoerna.EMS.Website.Controllers
             return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
         }
 
+        private SelectList GetSummaryReportKppbcList(List<vwMLInterviewRequestModel> interviewrequests)
+        {
+            var query = from x in interviewrequests
+                        select new SelectItemModel()
+                        {
+                            ValueField = x.KPPBC_ID,
+                            TextField = x.KPPBC_ID
+                        };
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+        }
+
         private List<INTERVIEW_REQUEST_DETAIL> MapToInterviewDetail(List<InterviewRequestDetailModel> IReqDet)
         {
             var result = new List<INTERVIEW_REQUEST_DETAIL>();
@@ -2436,7 +2519,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return result;
         }
 
-        public ActionResult ChangeLog(int ID)
+        public ActionResult ChangeLog(int ID, string Token)
         {
             var model = new InterviewRequestModel();
 

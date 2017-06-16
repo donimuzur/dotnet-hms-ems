@@ -38,6 +38,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.BrandRegistr
         public long LastApproved_Status { get; set; }
         public long NextStatus { get; set; }
         public string strLastApproved_Status { get; set; }
+        public string Status { get; set; }
         public long PD_ID { get; set; }
         public bool Decree_Status { get; set; }
         public string Decree_No { get; set; }
@@ -180,11 +181,19 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.BrandRegistr
 
         public decimal HJE { get; set; }
         public decimal HJEperBatang { get; set; }
+        public string Unit { get; set; }
         public int BrandContent { get; set; }
         public decimal Tariff { get; set; }
+        public int CompanyTier { get; set; }
         public string PackagingMaterial { get; set; }
         public string BrandName { get; set; }
         public string ExciseGoodType { get; set; }
+        public string FrontSide { get; set; }
+        public string BackSide { get; set; }
+        public string LeftSide { get; set; }
+        public string RightSide { get; set; }
+        public string TopSide { get; set; }
+        public string BottomSide { get; set; }
 
     }
 

@@ -190,15 +190,11 @@
                             var url = response[i].PathURL;
                             var parts = response[i].PathURL.split('/');
                             otherDocs[i].name = parts[parts.length - 1];
-                            existingOtherDocs[otherDocs[i].FileID] = {
-                                active: true,
-                                index: i
-                            };
+                            otherDocs[i].url = url;
                         }
                         console.log("Other docs: ");
                         console.log(otherDocs);
-                        console.log("Existing Other docs: ");
-                        console.log(existingOtherDocs);
+                        
                         _renderFileList();
 
                     }
@@ -207,6 +203,33 @@
                     $("#customloader").hide();
                 }
             });
+        }
+
+        function _renderFileList() {
+            var container = $("#otherDocsBody");
+            var content = '';
+            if (!otherDocs || otherDocs.length <= 0) {
+                content += '<tr id="noOtherFileMsg">' +
+                            '<td colspan="3"><div class="alert alert-info">No Addional Documents</div>' + '</td></tr>';
+            }
+            for (var i = 0; i < otherDocs.length; i++) {
+                var url = undefined;
+                var linkOpen = "";
+                var linkClose = "";
+                if (otherDocs[i].url) {
+                    url = '@string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"))';
+                    url = url + otherDocs[i].url.replace("~/", "");
+                    linkOpen = '<a href="' + url + '" title="' + otherDocs[i].name + '" target="_blank"><i class="fa fa-file-o"></i> ';
+                    linkClose = '</a>';
+                }
+                content +=
+                    '<tr>' +
+                    '<td>' + (i + 1) + '</td>' +
+                    '<td>' + linkOpen + otherDocs[i].name + linkClose + '</td>' +
+                    '<td>' + otherDocsName[i] + '</td>' +
+                    '</tr>';
+            }
+            container.html(content);
         }
 
         function loadApprovedProducts() {

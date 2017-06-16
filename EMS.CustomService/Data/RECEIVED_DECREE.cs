@@ -31,8 +31,8 @@ namespace Sampoerna.EMS.CustomService.Data
         public Nullable<System.DateTime> LASTAPPROVED_DATE { get; set; }
         public long LASTAPPROVED_STATUS { get; set; }
         public string DECREE_NO { get; set; }
-        public Nullable<System.DateTime> DECREE_DATE { get; set; }
-        public Nullable<System.DateTime> DECREE_STARTDATE { get; set; }
+        public System.DateTime DECREE_DATE { get; set; }
+        public System.DateTime DECREE_STARTDATE { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RECEIVED_DECREE_DETAIL> RECEIVED_DECREE_DETAIL { get; set; }

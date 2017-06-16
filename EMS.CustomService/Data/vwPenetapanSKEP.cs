@@ -22,8 +22,8 @@ namespace Sampoerna.EMS.CustomService.Data
         public string PLANT_NAME { get; set; }
         public string PLANT_ADDRESS { get; set; }
         public string DECREE_NUMBER { get; set; }
-        public Nullable<System.DateTime> DECREE_DATE { get; set; }
-        public Nullable<System.DateTime> DECREE_STARTDATE { get; set; }
+        public System.DateTime DECREE_DATE { get; set; }
+        public System.DateTime DECREE_STARTDATE { get; set; }
         public string REQUEST_NUMBER { get; set; }
         public string FA_CODE_OLD { get; set; }
         public string FA_CODE_OLD_DESCR { get; set; }

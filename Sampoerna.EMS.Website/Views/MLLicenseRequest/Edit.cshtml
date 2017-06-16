@@ -114,7 +114,8 @@
                     }
                     @if (Model.InterviewId != 0 && Model.InterviewId != null && Model.Status.ToLower().Contains("government"))
                     {
-                        <input type="button" id="btnWithdraw_showmodal" class="btn btn-blue" data-action="withdraw" data-toggle="modal" data-target=".withdraw-modal.licenserequest" value="Withdraw" />
+                        @*<input type="button" id="btnWithdraw_showmodal" class="btn btn-blue" data-action="withdraw" data-toggle="modal" data-target=".withdraw-modal.licenserequest" value="Withdraw" />*@
+                        <input type="button" class="btn btn-blue btn_showmodal_changestatus" data-action="Withdraw" data-toggle="modal" data-target=".modal_ChangeStatus" value="Withdraw" />
                     }
                     @if (Model.InterviewId != 0 && Model.InterviewId != null && Model.Status.ToLower().Contains("government"))
                     {
@@ -342,25 +343,25 @@ else
             </div>
         </div>
         <div class="modal fade in modal_ChangeStatus ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-            <div class="modal-dialog modal-sm">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
                         <h4 class="modal-title"><label id="txt_label_forchangestatus"></label></h4>
                     </div>
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="table-container">
-                                    <label>Comment<span class="red">*</span></label><br />
-                                    <textarea id="txt_changestatus_comment" class="form-control" name="Comment"></textarea><br />
-                                    <button style="display:none;" type="button" class="btn btn-blue pull-right btn_changestatus_submit" data-action="revise" id="btn_changestatus_revise">Revise</button>
-                                    <button style="display:none;" type="button" class="btn btn-blue pull-right btn_changestatus_submit" data-action="reject" id="btn_changestatus_reject">Reject</button>
-                                    <button style="display:none;" type="button" class="btn btn-blue pull-right btn_changestatus_submit" data-action="finalreject" id="btn_finalreject">Reject</button>
-                                    <button style="display:none;" type="button" class="btn btn-blue pull-right btn_changestatus_submit" data-action="withdraw" id="btn_changestatus_withdraw">Withdraw</button>
-                                </div>
-                            </div>
+                        <div class="alert alert-danger" style="padding-left: 30px; display:none;" id="div_alert_revise"></div>
+                        <div class="form-group">
+                            <label>Note for Creator <span class="red">*</span></label>
+                            <textarea id="txt_changestatus_comment" class="form-control" rows="5" data-val="true" data-val-required="Comment should not be empty!" placeholder="Write the reason to creator" required="required" name="Comment"></textarea>
                         </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button style="display:none;" type="button" class="btn btn-blue pull-right btn_changestatus_submit" data-action="revise" id="btn_changestatus_revise">Revise</button>
+                        <button style="display:none;" type="button" class="btn btn-blue pull-right btn_changestatus_submit" data-action="reject" id="btn_changestatus_reject">Reject</button>
+                        <button style="display:none;" type="button" class="btn btn-blue pull-right btn_changestatus_submit" data-action="finalreject" id="btn_finalreject">Reject</button>
+                        <button style="display:none;" type="button" class="btn btn-blue pull-right btn_changestatus_submit" data-action="withdraw" id="btn_changestatus_withdraw">Withdraw</button>
+                        <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -401,7 +402,7 @@ else
 @section scripts {
             <script src="~/Scripts/js/custom.js"></script>
             <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-            <script src="~/Scripts/manufacture-license/licenserequest-beranda.js?v=0.7.32"></script>
+            <script src="~/Scripts/manufacture-license/licenserequest-beranda.js?v=0.7.34"></script>
             <script src="~/scripts/tinymce/tinymce.min.js"></script>
             <script type="text/javascript" language="javascript">
 

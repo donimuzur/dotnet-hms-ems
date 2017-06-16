@@ -356,6 +356,22 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
 
         }
 
+        public IQueryable<ZAIDM_EX_BRAND> FindBrandByCompanies(List<MASTER_PLANT> list_of_plants)
+        {
+            try
+            {
+                var plants = list_of_plants.Select(s => s.WERKS).ToList();
+                var result = context.ZAIDM_EX_BRAND.Where(w => plants.Contains(w.WERKS) && w.STATUS == true).Distinct().OrderByDescending(o => o.SKEP_DATE);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw this.HandleException("Exception occured on Brand Registration Request Service. See Inner Exception property to see details", ex);
+            }
+
+        }
+
+
         public ZAIDM_EX_BRAND FindBrandByFACode(string FA_Code)
         {
             try
@@ -383,6 +399,31 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
 
                     case 2:
                         result = context.ZAIDM_EX_BRAND.Where(w => w.FA_CODE == FA_Code_Old).OrderByDescending(o => o.SKEP_DATE).FirstOrDefault();
+                        break;
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw this.HandleException("Exception occured on Brand Registration Request Service. See Inner Exception property to see details", ex);
+            }
+
+        }
+
+        public BRAND_REGISTRATION_REQ_DETAIL FindBrandTransaction(string FA_Code_Old, string FA_Code_New, int RegistrationType)
+        {
+            try
+            {
+                long CancelReffId = refService.GetRefByKey("CANCELED").REFF_ID;
+                var result = new BRAND_REGISTRATION_REQ_DETAIL();
+                switch (RegistrationType)
+                {
+                    case 1:
+                        result = context.BRAND_REGISTRATION_REQ_DETAIL.Where(w => w.PRODUCT_DEVELOPMENT_DETAIL.FA_CODE_NEW == FA_Code_New && w.BRAND_REGISTRATION_REQ.LASTAPPROVED_STATUS != CancelReffId).OrderBy(o => o.BRAND_REGISTRATION_REQ.CREATED_DATE).FirstOrDefault();
+                        break;
+
+                    case 2:
+                        result = context.BRAND_REGISTRATION_REQ_DETAIL.Where(w => w.PRODUCT_DEVELOPMENT_DETAIL.FA_CODE_NEW == FA_Code_Old && w.BRAND_REGISTRATION_REQ.LASTAPPROVED_STATUS != CancelReffId).OrderBy(o => o.BRAND_REGISTRATION_REQ.CREATED_DATE).FirstOrDefault();
                         break;
                 }
                 return result;
@@ -464,12 +505,34 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
             }
         }
 
-        public IQueryable<vwProductDevDetail> GetProductDevDetail(int RegistrationType, string nppbkc)
+        //public IQueryable<vwProductDevDetail> GetProductDevDetail(int RegistrationType, string nppbkc)
+        //{
+        //    try
+        //    {
+        //        var werks = context.T001W.Where(w => w.NPPBKC_ID.Equals(nppbkc)).Select(s => s.WERKS).ToList();
+        //        var result = context.vwProductDevDetail.Where(w => w.NEXT_ACTION == RegistrationType && werks.Contains(w.WERKS));
+        //        return result;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw this.HandleException("Exception occured on Brand Registration Service. See Inner Exception property to see details", ex);
+        //    }
+        //}
+
+        public List<vwProductDevDetail> GetProductDevDetail(int RegistrationType, string nppbkc, long RegId)
         {
             try
             {
-                var werks = context.T001W.Where(w => w.NPPBKC_ID.Equals(nppbkc)).Select(s => s.WERKS).ToList();
-                var result = context.vwProductDevDetail.Where(w => w.NEXT_ACTION == RegistrationType && werks.Contains(w.WERKS));
+                var context = new EMSDataModel();
+                //var werks = context.T001W.Where(w => w.NPPBKC_ID.Equals(nppbkc)).Select(s => s.WERKS).ToList();
+                var result = context.vwProductDevDetail.Where(w => w.NEXT_ACTION == RegistrationType).ToList();
+                var registrationDet = context.BRAND_REGISTRATION_REQ_DETAIL.Where(w => w.REGISTRATION_ID == RegId);
+                var registrationDetList = MapToVWProductDevDetail(registrationDet);
+                foreach (var rece in registrationDetList)
+                {
+                    result.Add(rece);
+                }
+                result = result.Distinct().ToList();
                 return result;
             }
             catch (Exception ex)
@@ -477,6 +540,65 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
                 throw this.HandleException("Exception occured on Brand Registration Service. See Inner Exception property to see details", ex);
             }
         }
+
+        public List<vwProductDevDetail> MapToVWProductDevDetail(IQueryable<BRAND_REGISTRATION_REQ_DETAIL> registrationDetail)
+        {
+            var list = new List<vwProductDevDetail>();
+            foreach (var s in registrationDetail)
+            {
+                var proddevdet = new vwProductDevDetail
+                {
+                    PD_NO = s.PRODUCT_DEVELOPMENT_DETAIL.PRODUCT_DEVELOPMENT.PD_NO,
+                    NEXT_ACTION = s.PRODUCT_DEVELOPMENT_DETAIL.PRODUCT_DEVELOPMENT.NEXT_ACTION,
+                    PD_DETAIL_ID = s.PD_DETAIL_ID,
+                    FA_CODE_OLD = s.PRODUCT_DEVELOPMENT_DETAIL.FA_CODE_OLD,
+                    FA_CODE_OLD_DESCR = s.PRODUCT_DEVELOPMENT_DETAIL.FA_CODE_OLD_DESCR,
+                    FA_CODE_NEW = s.PRODUCT_DEVELOPMENT_DETAIL.FA_CODE_NEW,
+                    FA_CODE_NEW_DESCR = s.PRODUCT_DEVELOPMENT_DETAIL.FA_CODE_NEW_DESCR,
+                    HL_CODE = s.PRODUCT_DEVELOPMENT_DETAIL.HL_CODE,
+                    MARKET_ID = s.PRODUCT_DEVELOPMENT_DETAIL.MARKET_ID,
+                    MARKET_DESC = s.PRODUCT_DEVELOPMENT_DETAIL.ZAIDM_EX_MARKET.MARKET_DESC,
+                    WERKS = s.PRODUCT_DEVELOPMENT_DETAIL.WERKS,
+                    PRODUCTION_CENTER = s.PRODUCT_DEVELOPMENT_DETAIL.T001W.NAME1,
+                    IS_IMPORT = s.PRODUCT_DEVELOPMENT_DETAIL.IS_IMPORT,
+                    PD_ID = s.PRODUCT_DEVELOPMENT_DETAIL.PD_ID,
+                    REQUEST_NO = s.PRODUCT_DEVELOPMENT_DETAIL.REQUEST_NO,
+                    BUKRS = s.PRODUCT_DEVELOPMENT_DETAIL.BUKRS,
+                    COMPANY_NAME = s.PRODUCT_DEVELOPMENT_DETAIL.T001.BUTXT,
+                    LASTAPPROVED_BY = s.PRODUCT_DEVELOPMENT_DETAIL.LASTAPPROVED_BY,
+                    LASTAPPROVED_DATE = s.PRODUCT_DEVELOPMENT_DETAIL.LASTAPPROVED_DATE,
+                    LASTAPPROVED_STATUS = s.PRODUCT_DEVELOPMENT_DETAIL.STATUS_APPROVAL,
+                    LASTMODIFIED_BY = s.PRODUCT_DEVELOPMENT_DETAIL.LASTMODIFIED_BY
+                };
+                list.Add(proddevdet);
+            }
+            //var result = receiveDet.Select(s => new vwProductDevDetail
+            //{
+            //    PD_NO = s.PRODUCT_DEVELOPMENT_DETAIL.PRODUCT_DEVELOPMENT.PD_NO,
+            //    NEXT_ACTION = s.PRODUCT_DEVELOPMENT_DETAIL.PRODUCT_DEVELOPMENT.NEXT_ACTION,
+            //    PD_DETAIL_ID = s.PD_DETAIL_ID,
+            //    FA_CODE_OLD = s.PRODUCT_DEVELOPMENT_DETAIL.FA_CODE_OLD,
+            //    FA_CODE_OLD_DESCR = s.PRODUCT_DEVELOPMENT_DETAIL.FA_CODE_OLD_DESCR,
+            //    FA_CODE_NEW = s.PRODUCT_DEVELOPMENT_DETAIL.FA_CODE_NEW,
+            //    FA_CODE_NEW_DESCR = s.PRODUCT_DEVELOPMENT_DETAIL.FA_CODE_NEW_DESCR,
+            //    HL_CODE = s.PRODUCT_DEVELOPMENT_DETAIL.HL_CODE,
+            //    MARKET_ID = s.PRODUCT_DEVELOPMENT_DETAIL.MARKET_ID,
+            //    MARKET_DESC = s.PRODUCT_DEVELOPMENT_DETAIL.ZAIDM_EX_MARKET.MARKET_DESC,
+            //    WERKS = s.PRODUCT_DEVELOPMENT_DETAIL.WERKS,
+            //    PRODUCTION_CENTER = s.PRODUCT_DEVELOPMENT_DETAIL.T001W.NAME1,
+            //    IS_IMPORT = s.PRODUCT_DEVELOPMENT_DETAIL.IS_IMPORT,
+            //    PD_ID = s.PRODUCT_DEVELOPMENT_DETAIL.PD_ID,
+            //    REQUEST_NO = s.PRODUCT_DEVELOPMENT_DETAIL.REQUEST_NO,
+            //    BUKRS = s.PRODUCT_DEVELOPMENT_DETAIL.BUKRS,
+            //    COMPANY_NAME = s.PRODUCT_DEVELOPMENT_DETAIL.T001.BUTXT,
+            //    LASTAPPROVED_BY = s.PRODUCT_DEVELOPMENT_DETAIL.LASTAPPROVED_BY,
+            //    LASTAPPROVED_DATE = s.PRODUCT_DEVELOPMENT_DETAIL.LASTAPPROVED_DATE,
+            //    LASTAPPROVED_STATUS = s.PRODUCT_DEVELOPMENT_DETAIL.STATUS_APPROVAL,
+            //    LASTMODIFIED_BY = s.PRODUCT_DEVELOPMENT_DETAIL.LASTMODIFIED_BY
+            //}).ToList();
+            return list;
+        }
+
 
 
         public POA_DELEGATION GetPOADelegationOfUser(string UserId)
@@ -546,6 +668,10 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
             }
 
         }
+
+
+
+
 
         #endregion
 
@@ -776,7 +902,7 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
             {
                 var strID = RegId.ToString();
                 var intFormType = Convert.ToInt32(Enums.FormList.BrandReq);
-                return context.FILE_UPLOAD.Where(w => w.FORM_ID == strID && w.FORM_TYPE_ID == intFormType && w.IS_ACTIVE == true);
+                return context.FILE_UPLOAD.Where(w => w.FORM_ID == strID && w.FORM_TYPE_ID == intFormType && w.IS_ACTIVE == true && w.IS_GOVERNMENT_DOC == false);
             }
             catch (Exception ex)
             {
@@ -784,6 +910,21 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
             }
         }
 
+        public List<MASTER_PLANT> GetPlantByNPPBKC(string NPPBKCId)
+        {
+            try
+            {
+                var nppbkc = context.ZAIDM_EX_NPPBKC.Where(w => w.NPPBKC_ID == NPPBKCId.ToString()).FirstOrDefault();
+                var plants = context.T001W.Where(w => w.NPPBKC_ID == nppbkc.NPPBKC_ID).ToList();
+                return plants;
+            }
+            catch (Exception ex)
+            {
+                throw this.HandleException("Exception occured on SystemReferenceService. See Inner Exception property to see details", ex);
+            }
+
+
+        }
 
         //public void DeleteFileUpload(long fileid, string updatedby)
         //{
@@ -1260,44 +1401,49 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
             }
         }
 
-        public Boolean InsertToBrand(long BRId)
+        public Boolean InsertToBrand(long BRId, string nppbkc)
         {
             try
             {
                 context = new EMSDataModel();
                 transaction = context.Database.BeginTransaction();
+                var plants = GetPlantByNPPBKC(nppbkc).ToList();
                 var items = context.BRAND_REGISTRATION_REQ_DETAIL.Where(w => w.REGISTRATION_ID == BRId).ToList();
-                foreach (var item in items)
+
+                foreach (var plant in plants)
                 {
-                    var data = new ZAIDM_EX_BRAND();
-                    data.WERKS = item.PRODUCT_DEVELOPMENT_DETAIL.WERKS;
-                    data.FA_CODE = item.PRODUCT_DEVELOPMENT_DETAIL.FA_CODE_NEW;
-                    data.STICKER_CODE = item.PRODUCT_DEVELOPMENT_DETAIL.FA_CODE_NEW;
-                    data.SERIES_CODE = "0";
-                    data.BRAND_CE = item.BRAND_CE;
-                    data.SKEP_NO = item.BRAND_REGISTRATION_REQ.DECREE_NO;
-                    data.SKEP_DATE = item.BRAND_REGISTRATION_REQ.DECREE_DATE;
-                    data.PROD_CODE = item.PROD_CODE;
-                    data.BRAND_CONTENT = item.BRAND_CONTENT;
-                    data.MARKET_ID = item.MARKET_ID;
-                    data.COUNTRY = "ID";
-                    data.HJE_IDR = item.HJE;
-                    data.HJE_CURR = "IDR";
-                    data.TARIFF = item.TARIFF;
-                    data.TARIF_CURR = "IDR";
-                    data.EXC_GOOD_TYP = item.PROD_CODE;
-                    data.STATUS = true;
-                    data.CREATED_DATE = DateTime.Now;
-                    data.CREATED_BY = item.BRAND_REGISTRATION_REQ.CREATED_BY;
-                    data.MODIFIED_DATE = DateTime.Now;
-                    data.MODIFIED_BY = item.BRAND_REGISTRATION_REQ.CREATED_BY;
-                    data.BAHAN_KEMASAN = item.MATERIAL_PACKAGE;
+                    foreach (var item in items)
+                    {
+                        var data = new ZAIDM_EX_BRAND();
+                        data.WERKS = plant.WERKS;
+                        data.FA_CODE = item.PRODUCT_DEVELOPMENT_DETAIL.FA_CODE_NEW;
+                        data.STICKER_CODE = "0";
+                        data.SERIES_CODE = "0";
+                        data.BRAND_CE = item.BRAND_CE;
+                        data.SKEP_NO = item.BRAND_REGISTRATION_REQ.DECREE_NO;
+                        data.SKEP_DATE = item.BRAND_REGISTRATION_REQ.DECREE_DATE;
+                        data.PROD_CODE = item.PROD_CODE;
+                        data.BRAND_CONTENT = item.BRAND_CONTENT;
+                        data.MARKET_ID = item.MARKET_ID;
+                        data.COUNTRY = "ID";
+                        data.HJE_IDR = item.HJE;
+                        data.HJE_CURR = "IDR";
+                        data.TARIFF = item.TARIFF;
+                        data.TARIF_CURR = "IDR";
+                        data.EXC_GOOD_TYP = item.PROD_CODE;
+                        data.STATUS = true;
+                        data.CREATED_DATE = DateTime.Now;
+                        data.CREATED_BY = item.BRAND_REGISTRATION_REQ.CREATED_BY;
+                        data.MODIFIED_DATE = DateTime.Now;
+                        data.MODIFIED_BY = item.BRAND_REGISTRATION_REQ.CREATED_BY;
+                        data.BAHAN_KEMASAN = item.MATERIAL_PACKAGE;
 
-                    context.ZAIDM_EX_BRAND.Add(data);
-                    context.SaveChanges();
-                    transaction.Commit();
-
+                        context.ZAIDM_EX_BRAND.Add(data);
+                        context.SaveChanges();
+                    }
                 }
+
+                transaction.Commit();
 
                 return true;
             }

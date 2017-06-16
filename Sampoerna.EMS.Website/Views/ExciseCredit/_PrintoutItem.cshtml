@@ -32,10 +32,10 @@
     <div id="@String.Format("printoutCollapse{0}", Model.Layout.LayoutId)" class="panel-collapse collapse" role="tabpanel" aria-labelledby="@String.Format("printoutHeading{0}", Model.Layout.LayoutId)">
         <div class="panel-body">
             <div class="row">
-                <button type="button" class="btn btn-blue pull-right" id="DownloadLayoutButton">Download Printout</button>
+                <button type="button" class="btn btn-blue pull-right" id="@String.Format("DownloadLayout{0}Button", Model.Layout.LayoutId)">Download Printout</button>
                 @if (Model.IsAllowedToEdit)
                 {
-                    <button type="button" id="EditLayoutButton" class="btn btn-blue pull-right" data-toggle="modal" data-target=".@String.Format("excise-modal-edit-{0}", Model.Layout.LayoutId)">Edit Layout</button>
+                    <button type="button" id="@String.Format("EditLayout{0}Button", Model.Layout.LayoutId)" class="btn btn-blue pull-right" data-toggle="modal" data-target=".@String.Format("excise-modal-edit-{0}", Model.Layout.LayoutId)">Edit Layout</button>
                 }
             </div>
             @if (Model.IsDrafted)
@@ -46,7 +46,7 @@
             <div class="col-lg-12 table-container">
                 <div class="row">
                     <div class="white-wrapper">
-                        <div class="col-md-10 col-md-offset-1" id="LayoutContainer">
+                        <div class="col-md-10 col-md-offset-1" id="@String.Format("LayoutContainer{0}", Model.Layout.LayoutId)">
                             @Html.Raw(Model.Layout.CompleteLayout)
                         </div>
                     </div>
@@ -68,7 +68,7 @@
             <div class="modal-body">
                 <div class="form-group">
                     <button type="button" class="btn btn-blue pull-right" data-toggle="modal" data-target="@String.Format(".restore-modal.excise-printout-{0}", Model.Layout.LayoutId)">Restore to Default</button>
-                    <button type="submit" class="btn btn-blue pull-right" id="SaveLayoutButton">Save Layout</button>
+                    <button type="button" class="btn btn-blue pull-right" id="@String.Format("SaveLayout{0}Button", Model.Layout.LayoutId)">Save Layout</button>
                 </div>
                 <div class="form-group">
                     @Html.HiddenFor(model => model.Layout.LayoutId, new { id = String.Format("Printout{0}Id", Model.Layout.LayoutId) })

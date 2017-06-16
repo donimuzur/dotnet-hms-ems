@@ -35,6 +35,7 @@ namespace Sampoerna.EMS.CustomService.Data
         public string CREATED_BY { get; set; }
         public Nullable<bool> IS_DELETED { get; set; }
         public string BUTXT_ALIAS { get; set; }
+        public string PKP { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MASTER_FINANCIAL_RATIO> MASTER_FINANCIAL_RATIO { get; set; }

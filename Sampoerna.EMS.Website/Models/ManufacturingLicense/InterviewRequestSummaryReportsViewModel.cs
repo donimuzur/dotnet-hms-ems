@@ -24,7 +24,7 @@ namespace Sampoerna.EMS.Website.Models.ManufacturingLicense
     }
 
     public class InterviewRequestExportSummaryReportsViewModel
-    {
+    {        
         public bool Status { get; set; }
         public bool FormNo { get; set; }
         public bool RequestDate { get; set; }

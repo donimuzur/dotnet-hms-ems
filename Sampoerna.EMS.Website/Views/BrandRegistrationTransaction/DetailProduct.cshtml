@@ -151,6 +151,7 @@
       
       
         $(document).ready(function () {
+            $('#MenuProduct').addClass('open');
             $('#MenuProductDevelopment').addClass('active');
             attach();                          
            
@@ -213,15 +214,10 @@
                             otherDocsName[i] = response[i].File_Name;
                             var parts = response[i].Path_Url.split('/');
                             otherDocs[i].name = parts[parts.length - 1];
-                            existingOtherDocs[otherDocs[i].File_ID] = {
-                                active: true,
-                                index: i
-                            };
+                            otherDocs[i].url= response[i].Path_Url;
+                          
                         }
-                        console.log("Other docs: ");
-                        console.log(otherDocs);
-                        console.log("Existing Other docs: ");
-                        console.log(existingOtherDocs);
+                      
                         _renderFileList();
 
                     }
@@ -231,141 +227,10 @@
                 }
             });
         }
-        function mapBrowseAction() {
-            console.log("Map additional action");
-          @foreach (var doc in Model.SupportingDocuments)
-            {
-                <text>
-                 handleBrowseEvent("supportDoc" + @doc.Id, "supportDocFile" + @doc.Id, "supportDocText" + @doc.Id);
-                $("#supportDocFile" + @doc.Id).change(function(){
-                    var input =document.getElementById("supportDocFile" + @doc.Id);
-                    if (!input) {
-                        showErrorDialog("Um, couldn't find the fileinput element.");
-                    }
-                    else if (!input.files) {
-                        showErrorDialog("This browser doesn't seem to support the `files` property of file inputs.");
-                    }
-                    else if (!input.files[0]) {
-                        showErrorDialog("Please select a file");
-                    }
-                    else {
-                        var file = input.files[0];
-                        if(!supportingDocs) {
-                            supportingDocs = {};
-                        }
-                        supportingDocs[@doc.Id] = file;
-                        console.log(supportingDocs);
-
-                    }
-                });
-
-                </text>
-            }
-        }
-        
-        function _addOtherDoc() {
-            var input = document.getElementById('browseOtherDocFile');
-            //console.log(input);
-            if (!input) {
-                showErrorDialog("Couldn't find the fileinput element.");
-            }
-            else if (!input.files) {
-                showErrorDialog("This browser doesn't seem to support the `files` property of file inputs.");
-            }
-            else if (!input.files[0]) {
-                showErrorDialog("Please select a file before clicking 'Add'");
-            }
-            else {
-                var file = input.files[0];
-                var sizeMB = fileUploadLimitElm.val();
-                //console.log("Size Limit: " + sizeMB);
-                var allowedFilesize = Number(sizeMB) * 1024 * 1024;
-                if (file.size > allowedFilesize) {
-                    showErrorDialog("File size is larger than allowed size (" + sizeMB + " MB)");
-                    return;
-                }
-                _addToList(file, fileNameInput.val());
-            }
-        }
-
-        function _removeFromList(index) {
-            if (otherDocs.length > index) {
-                var target = otherDocs[index];
-                if(target && target.FileID) {
-                    existingOtherDocs[target.FileID].active = false;
-                }
-                shift(index);
-                console.log("Other docs map: ");
-                console.log(otherDocMap);
-                console.log(existingOtherDocs);
-                otherDocs.splice(index, 1);
-                otherDocsName.splice(index, 1);
-                _renderFileList();
-
-            }
-        }
-
-        function shift(start) {
-            var cloneObj = $.extend(true, {}, otherDocMap);
-            var cloneObjName = $.extend(true, {}, otherDocMapName);
-            // delete otherDocMap[start];
-            var count = 0;
-            var first = undefined;
-            for (var key in cloneObj) {
-                if(!first) {
-                    first = parseInt(key);
-                }
-                count++;
-                if (cloneObj.hasOwnProperty(key)) {
-                    //console.log("Key: " + key);
-                    if(key >= start && start >= 0) {
-                        //console.log("Shifting " + key);
-                        if(key > 0) {
-                            otherDocMap[key - 1] = cloneObj[key];
-                            otherDocMapName[key - 1] = cloneObjName[key];
-                        }
-
-                    }
-                }
-            }
-            var idx = (first + count - 1);
-            if(idx >= 0) {
-                delete otherDocMap[idx];
-                delete otherDocMapName[idx];
-            }
-
-            //console.log("First: " + first);
-            //console.log("Count" + count);
-
-        }
-
-        var newOtherDocIdx = 0;
-
-        function _addToList(file, name) {
-            var idx = otherDocs.indexOf(file);
-            var updated = true;
-            for (var i = 0; i < otherDocs.length; i++) {
-                if (file.name == otherDocs[i].name) {
-                    updated = false;
-                    break;
-                }
-            }
-            if (idx < 0 && updated) {
-                otherDocs.push(file);
-                otherDocsName.push(name);
-                newOtherDocs[newOtherDocIdx] = file;
-                newOtherDocsName[newOtherDocIdx] = name;
-                otherDocMap[otherDocs.length - 1] = newOtherDocs[newOtherDocIdx];
-                otherDocMapName[otherDocs.length - 1] = newOtherDocsName[newOtherDocIdx];
-                newOtherDocIdx++;
-                console.log("New other docs: ");
-                console.log(otherDocMap);
-                _renderFileList();
-            }
-        }
-
+    
+    
         function _renderFileList() {
-            console.log("Other Docs Length: " + otherDocs.length);
+         
             var container = $("#otherDocsBody");
             var content = '';
             if (!otherDocs || otherDocs.length <= 0) {
@@ -373,10 +238,19 @@
                             '<td colspan="4"><div class="alert alert-info">No Additional Documents</div>' + '</td></tr>';
             }
             for (var i = 0; i < otherDocs.length; i++) {
+                var url = undefined;
+                var linkOpen ="";
+                var linkClose ="";
+                if(otherDocs[i].url){
+                    url = '@string.Format("{0}://{1}{2}", Request.Url.Scheme,Request.Url.Authority, Url.Content("~"))';
+                    url = url + otherDocs[i].url.replace("~/", "");
+                    linkOpen ='<a href="'+url+'" title="' + otherDocs[i].name+ '" target="_blank"><i class="fa fa-file-o"></i>';
+                    linkClose ='</a>';
+                }
                 content +=
                     '<tr>' +
                     '<td>' + (i + 1) + '</td>' +
-                    '<td>' + otherDocs[i].name + '</td>' +
+                    '<td>' + linkOpen + otherDocs[i].name + linkClose +'</td>' +
                     '<td>' + otherDocsName[i] + '</td>' +
                     '<td></td>' +
                     '</tr>';

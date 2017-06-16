@@ -233,7 +233,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
-                if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+                if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
                 {
                     AddMessageInfo("You don't have permission to access", Enums.MessageInfoType.Error
                       );

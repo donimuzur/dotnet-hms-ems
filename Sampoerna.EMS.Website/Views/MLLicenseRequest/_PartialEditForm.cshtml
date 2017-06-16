@@ -37,7 +37,7 @@
                             <div class="row">
                                 <label class="col-md-4">BA No</label>
                                 <div class="col-md-8">
-                                    <a href="@Html.DisplayFor(model => model.link_BA)" id="BANO_link" target="_blank"><span id="label_BANO" class="form-control row-border" style="border:0px;box-shadow:none">@Html.DisplayFor(model => model.BANum)</span></a>
+                                    <a href="@Html.DisplayFor(model => model.link_BA)" id="BANO_link" target="_blank"><span id="label_BANO" class="form-control row-border" style="color:blue;border:0px;box-shadow:none">@Html.DisplayFor(model => model.BANum)</span></a>
                                 </div>
                             </div>
                         </div>
@@ -238,7 +238,6 @@
                                         {
                                             product_type_list += "<tr><td>"+numerator[idx] + ".</td><td>" + prodtype.ProdAlias + "</td></tr>";
                                             idx++;
-
                                         }
 
                                         <div class="col-md-2">

@@ -25,7 +25,6 @@
     <div class="row">
         <div class="col-sm-12">
             <div role="tabpanel">
-                @Html.HiddenFor(model => model.ViewModel.PD_ID, new { @id = "PD_ID" })
                 <!-- Tab panes -->
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="information">
@@ -34,6 +33,7 @@
                                 <div class="col-md-3"><label>First Name</label></div>
                                 <div class="col-md-6">@Html.TextBoxFor(model => model.ViewModel.Creator.FirstName, new { @class = "form-control", @maxlength = "22", disabled = "disabled" })</div>
                             </div>
+                            &nbsp;
                             <div class="col-md-6">
                                 <div class="col-md-3"><label>Last Name</label></div>
                                 <div class="col-md-6">@Html.TextBoxFor(model => model.ViewModel.Creator.LastName, new { @class = "form-control", @maxlength = "22", disabled = "disabled" })</div>
@@ -142,32 +142,21 @@
         </div>
     </div>
 </div>
+@Html.Partial("_ApproveModal");
 @Html.Partial("_ReviseModalProduct", Model);
 @section scripts {
 
-    <script src="~/Scripts/js/scripts.min.js"></script>
+    <script src="~/Scripts/js/custom.js"></script>
     <script src="~/Scripts/brand-registration-trans/main_product.js"></script>
-    <script type="text/javascript">
-        $(document)
-            .on("ready", EntryPoint)
-          //  .on("unload", Cleanup);
+    <script type="text/javascript" language="javascript" class="init">
+     
 
-        function EntryPoint() {
-            $('#MenuSKEP').removeClass('open');
-            $('#MenuBrand').removeClass('open');
-
+        $(document).ready(function () {
+           
             $('#MenuProduct').addClass('open');
             $('#MenuProductDevelopment').addClass('active');
-            handleBrowseEvent("browseOtherDoc", "browseOtherDocFile", "browseOtherDocText");
-            $("#ApproveButton").on("click", approve);
-            $("#ReviseButton").on("click", revise);
-        }
-
-        //$(".itemDisplay").click(function () {
-        //    var idItem = $(this).data('id');
-        //    console.log("id item : " + idItem);
-        //    getDetailItem(idItem);
-        //});
+          
+        });
 
         $(".itemDisplayLock").click(function () {
             var idItem = $(this).data('id');
@@ -181,7 +170,7 @@
             console.log("modal lock");
             var docsItemLock = $("#DetailItemLock");
             console.log(idVal);
-          
+
             $.ajax({
                 url: '@Url.Action("GetDetailItemLock", "BrandRegistrationTransaction")',
                 type: 'POST',
@@ -190,13 +179,13 @@
                 },
             })
             .success(function (partialResult) {
-                console.log("load item");               
+                console.log("load item");
                 docsItemLock.html(partialResult);
                 $('#myModalItemLock').modal('show');
-                
+
             })
             .error(function (error) {
-                console.log("failed load item");                
+                console.log("failed load item");
 
             });
         }
@@ -219,15 +208,9 @@
                             otherDocsName[i] = response[i].File_Name;
                             var parts = response[i].Path_Url.split('/');
                             otherDocs[i].name = parts[parts.length - 1];
-                            existingOtherDocs[otherDocs[i].File_ID] = {
-                                active: true,
-                                index: i
-                            };
+                            otherDocs[i].url= response[i].Path_Url;
+
                         }
-                        console.log("Other docs: ");
-                        console.log(otherDocs);
-                        console.log("Existing Other docs: ");
-                        console.log(existingOtherDocs);
                         _renderFileList();
 
                     }
@@ -238,184 +221,37 @@
             });
         }
 
-        function _addOtherDoc() {
-            console.log("add other doc here");
-            var input = document.getElementById('browseOtherDocFile');
-            //console.log(input);
-            if (!input) {
-                showErrorDialog("Couldn't find the fileinput element.");
-            }
-            else if (!input.files) {
-                showErrorDialog("This browser doesn't seem to support the `files` property of file inputs.");
-            }
-            else if (!input.files[0]) {
-                showErrorDialog("Please select a file before clicking 'Add'");
-            }
-            else {
-                var file = input.files[0];
-                var sizeMB = fileUploadLimitElm.val();
-                //console.log("Size Limit: " + sizeMB);
-                var allowedFilesize = Number(sizeMB) * 1024 * 1024;
-                if (file.size > allowedFilesize) {
-                    showErrorDialog("File size is larger than allowed size (" + sizeMB + " MB)");
-                    return;
-                }
-                _addToList(file, fileNameInput.val());
-            }
-        }
-
-        function _removeFromList(index) {
-            if (otherDocs.length > index) {
-                var target = otherDocs[index];
-                if (target && target.FileID) {
-                    existingOtherDocs[target.FileID].active = false;
-                }
-                shift(index);
-                console.log("Other docs map: ");
-                console.log(otherDocMap);
-                console.log(existingOtherDocs);
-                otherDocs.splice(index, 1);
-                otherDocsName.splice(index, 1);
-                _renderFileList();
-
-            }
-        }
-
-        function shift(start) {
-            var cloneObj = $.extend(true, {}, otherDocMap);
-            var cloneObjName = $.extend(true, {}, otherDocMapName);
-            // delete otherDocMap[start];
-            var count = 0;
-            var first = undefined;
-            for (var key in cloneObj) {
-                if (!first) {
-                    first = parseInt(key);
-                }
-                count++;
-                if (cloneObj.hasOwnProperty(key)) {
-                    //console.log("Key: " + key);
-                    if (key >= start && start >= 0) {
-                        //console.log("Shifting " + key);
-                        if (key > 0) {
-                            otherDocMap[key - 1] = cloneObj[key];
-                            otherDocMapName[key - 1] = cloneObjName[key];
-                        }
-
-                    }
-                }
-            }
-            var idx = (first + count - 1);
-            if (idx >= 0) {
-                delete otherDocMap[idx];
-                delete otherDocMapName[idx];
-            }
-
-            //console.log("First: " + first);
-            //console.log("Count" + count);
-
-        }
-
-        var newOtherDocIdx = 0;
-
-        function _addToList(file, name) {
-            var idx = otherDocs.indexOf(file);
-            var updated = true;
-            for (var i = 0; i < otherDocs.length; i++) {
-                if (file.name == otherDocs[i].name) {
-                    updated = false;
-                    break;
-                }
-            }
-            if (idx < 0 && updated) {
-                otherDocs.push(file);
-                otherDocsName.push(name);
-                newOtherDocs[newOtherDocIdx] = file;
-                newOtherDocsName[newOtherDocIdx] = name;
-                otherDocMap[otherDocs.length - 1] = newOtherDocs[newOtherDocIdx];
-                otherDocMapName[otherDocs.length - 1] = newOtherDocsName[newOtherDocIdx];
-                newOtherDocIdx++;
-                console.log("New other docs: ");
-                console.log(otherDocMap);
-                _renderFileList();
-            }
-        }
 
         function _renderFileList() {
-            console.log("Other Docs Length: " + otherDocs.length);
+
             var container = $("#otherDocsBody");
             var content = '';
             if (!otherDocs || otherDocs.length <= 0) {
                 content += '<tr id="noOtherFileMsg">' +
-                            '<td colspan="4"><div class="alert alert-info">No Additonal Documents</div>' + '</td></tr>';
+                            '<td colspan="4"><div class="alert alert-info">No Additional Documents</div>' + '</td></tr>';
             }
             for (var i = 0; i < otherDocs.length; i++) {
+                var url = undefined;
+                var linkOpen ="";
+                var linkClose ="";
+                if(otherDocs[i].url){
+                    url = '@string.Format("{0}://{1}{2}", Request.Url.Scheme,Request.Url.Authority, Url.Content("~"))';
+                    url = url + otherDocs[i].url.replace("~/", "");
+                    linkOpen ='<a href="'+url+'" title="' + otherDocs[i].name+ '" target="_blank"><i class="fa fa-file-o"></i>';
+                    linkClose ='</a>';
+                }
                 content +=
                     '<tr>' +
                     '<td>' + (i + 1) + '</td>' +
-                    '<td>' + otherDocs[i].name + '</td>' +
+                    '<td>' + linkOpen + otherDocs[i].name + linkClose +'</td>' +
                     '<td>' + otherDocsName[i] + '</td>' +
-                    '<td><button class="btn btn-danger" onclick="_removeFromList(' + i + ')">Remove</button></td>' +
+                    '<td></td>' +
                     '</tr>';
             }
             container.html(content);
         }
 
 
-        function mapBrowseAction() {
-            console.log("Map additional action");
-           @foreach (var doc in Model.SupportingDocuments)
-            {
-                <text>
-                 handleBrowseEvent("supportDoc" + @doc.Id, "supportDocFile" + @doc.Id, "supportDocText" + @doc.Id);
-                $("#supportDocFile" + @doc.Id).change(function(){
-                    var input =document.getElementById("supportDocFile" + @doc.Id);
-                    if (!input) {
-                        showErrorDialog("Um, couldn't find the fileinput element.");
-                    }
-                    else if (!input.files) {
-                        showErrorDialog("This browser doesn't seem to support the `files` property of file inputs.");
-                    }
-                    else if (!input.files[0]) {
-                        showErrorDialog("Please select a file");
-                    }
-                    else {
-                        var file = input.files[0];
-                        if(!supportingDocs) {
-                            supportingDocs = {};
-                        }
-                        supportingDocs[@doc.Id] = file;
-                        console.log(supportingDocs);
-
-                    }
-                });
-
-                </text>
-            }
-        }
-
-         @*function getDetailItem(idVal) {
-            console.log("modal lock");
-            var docsItemLock = $("#DetailItemLock");
-            console.log(idVal);
-
-            $.ajax({
-                url: '@Url.Action("GetDetailItemLock", "BrandRegistrationTransaction")',
-                type: 'POST',
-                data: {
-                    detailID: Number(idVal)
-                },
-            })
-            .success(function (partialResult) {
-                console.log("load item");
-                docsItemLock.html(partialResult);
-                $('#myModalItemLock').modal('show');
-
-            })
-            .error(function (error) {
-                console.log("failed load item");
-
-            });
-        }*@
         $('input:checkbox').click(function () {
             if ($(this).is(':checked')) {
                 var idDetail = $(this).val();
@@ -446,25 +282,62 @@
             };
         }
 
-        function approve() {
+        $(document).on('click', '#ApproveButton', function (e) {
+            approve();
+        });
 
-            var homeUrl = '@Url.Action("IndexProductDevelopment", "BrandRegistrationTransaction")';
-            var urlApprove = '@Url.Action("ApproveDetail", "BrandRegistrationTransaction")';
+        $(document).on('click', '#ReviseButton', function (e) {
+            revise();
+        });
+
+        function approve() {
             if (!tempItem.length) {
-                alert("Choose Item to be Approved.");
-                console.log("no item");
+                alert("Choose Item to be Approve.");
+                console.log("no item selected");
             }
             else {
+                $('#modalApprove').modal('show');
+            }
+        }
+
+        $(document).on('click', '#ApproveButtonSubmit', function (e) {
+            console.log("Click Approve");
+            approveProcess();
+        });
+
+        function revise() {
+            if (!tempItem.length) {
+                alert("Choose Item to be Revised.");
+                console.log("no item selected");
+            }
+            else {
+                $('#modalRevise').modal('show');
+            }
+        }
+
+        $(document).on('click', '#ReviseButtonSubmit', function (e) {
+            console.log("Click Reject");
+            reviseProcess();
+        });
+
+
+        function approveProcess() {
+
+                var homeUrl = '@Url.Action("IndexProductDevelopment", "BrandRegistrationTransaction")';
+                var urlApprove = '@Url.Action("ApproveDetail", "BrandRegistrationTransaction")';
+
                 $("#ApproveButton").prop('disabled', true);
                 $("#ReviseButton").prop('disabled', true);
-                console.log("approve here");
+
                 for (var i = 0; i < tempItem.length; i++) {
                     var objDetail = { ProductDetailID: tempItem[i] };
                     arrayDetail.push(objDetail);
-                    console.log(arrayDetail);
-                }
 
+                }
                 var pd_id = $('#PD_ID').val();
+
+                $('#modalApprove').modal('hide');
+                $("#customloader").show();
                 $.ajax({
                     type: 'POST',
                     url: urlApprove,
@@ -476,8 +349,11 @@
                         console.log(result);
                         if (result) {
                             console.log("Approved.");
-                            document.location.href = homeUrl;
-                            //alert("Approve Item Success.");
+                            window.location.href = window.location.href;
+                            $("#ApproveButton").prop('disabled', false);
+                            $("#ReviseButton").prop('disabled', false);
+                            $("#customloader").hide();
+
                         } else {
                             showErrorDialog("Approve failed!");
                             saveButton.prop("disabled", false);
@@ -492,30 +368,23 @@
                         $("#customloader").hide();
                     }
                 });
-            }
+
         }
 
-        function revise() {
-            if (!tempItem.length) {
-                alert("Choose Item to be Revised.");
-                console.log("no item selected");
+        $('#commentText').on('input', function (e) {
+            var validRevise = $("#commentText").val();
+            if (validRevise == "" || validRevise == null) {
+                reviseElm.html("<span>Please fill reason to reject.</span>");
+                reviseElm.show();
             }
             else {
-                //show modal here
-                $('#modalRevise').modal('show');
+                reviseElm.hide();
             }
-        }
-
-        $("#ReviseButtonSubmit").click(function () {
-            console.log("Click Reject");
-            reviseProcess();
         });
 
         function reviseProcess() {
             var homeUrl = '@Url.Action("IndexProductDevelopment", "BrandRegistrationTransaction")';
             var myText = document.getElementById('commentText').value;
-            console.log(myText);
-
             var urlRevise = '@Url.Action("ReviseProduct", "BrandRegistrationTransaction")';
 
             $("#ApproveButton").prop('disabled', true);
@@ -524,16 +393,21 @@
             for (var i = 0; i < tempItem.length; i++) {
                 var objDetail = { ProductDetailID: tempItem[i] };
                 arrayDetail.push(objDetail);
-                console.log(arrayDetail);
             }
 
             var pd_id = $('#PD_ID').val();
+            console.log(pd_id);
             if (myText == null || myText == "")
             {
-                alert("Please fill reason to reject this Item.");
+                reviseElm.html("<span>Please fill reason to reject this item.</span>");
+                reviseElm.show();
             }
             else
             {
+                reviseElm.hide();
+                $('#modalRevise').modal('hide');
+                $("#customloader").show();
+
                 $.ajax({
                     type: 'POST',
                     url: urlRevise,
@@ -543,11 +417,13 @@
                         comment: myText
                     },
                     success: function (result) {
-                        console.log(result);
+
                         if (result) {
                             console.log("Rejected.");
-                            document.location.href = homeUrl;
-                      //      alert("Reject Item Success.");
+                            window.location.href = window.location.href;
+                            $("#ApproveButton").prop('disabled', false);
+                            $("#ReviseButton").prop('disabled', false);
+                            $("#customloader").hide();
                         } else {
                             showErrorDialog("Reject failed!");
                             saveButton.prop("disabled", false);
@@ -565,5 +441,5 @@
             }
         }
 
-    </script>
+</script>
 }

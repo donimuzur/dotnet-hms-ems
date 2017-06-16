@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.Entity;
+using Enums = Sampoerna.EMS.Core.Enums;
+
 
 
 
@@ -90,7 +92,7 @@ namespace Sampoerna.EMS.CustomService.Services
             {
                 var strID = CRId.ToString();
                 var intFormType = Convert.ToInt32(Enums.FormList.Change);
-                return context.FILE_UPLOAD.Where(w => w.FORM_ID == strID && w.FORM_TYPE_ID == intFormType && w.IS_ACTIVE == true);
+                return context.FILE_UPLOAD.Where(w => w.FORM_ID == strID && w.FORM_TYPE_ID == intFormType && w.IS_ACTIVE == true && w.IS_GOVERNMENT_DOC == false);
             }
             catch (Exception ex)
             {
@@ -408,7 +410,7 @@ namespace Sampoerna.EMS.CustomService.Services
         }
 
 
-        public Dictionary<string, string> GetDocumentTypes()
+    public Dictionary<string, string> GetDocumentTypes()
         {
             return DocumentType;
         }
@@ -703,7 +705,7 @@ namespace Sampoerna.EMS.CustomService.Services
                         var ListPOA_Nppbkc = context.POA_MAP.Where(w => w.NPPBKC_ID.Equals(NPPBKCId) && w.POA.IS_ACTIVE == true && w.POA_ID != IRequest.CREATED_BY).Select(s => s.POA_ID).ToList();
                         var OriexcisePOA = context.POA_EXCISER.Where(w => w.IS_ACTIVE_EXCISER == true).Select(s => s.POA_ID).ToList();
                         var excisePOA = new List<string>();
-                        if (ListPOA_Nppbkc != null)
+                        if (ListPOA_Nppbkc.Count() == 0)
                         {
                             excisePOA = OriexcisePOA.Where(w => ListPOA_Nppbkc.Contains(w)).ToList();
                         }

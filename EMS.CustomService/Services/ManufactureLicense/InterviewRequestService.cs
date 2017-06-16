@@ -182,7 +182,7 @@ namespace Sampoerna.EMS.CustomService.Services.ManufactureLicense
                     IRequest.LASTMODIFIED_BY = ModifiedBy;
                     IRequest.LASTMODIFIED_DATE = now;
                     IRequest.LASTAPPROVED_STATUS = LastApprovedStatus;
-                    if (ActionType != (int)Enums.ActionType.Submit)
+                    if (ActionType != (int)Enums.ActionType.Submit && ActionType != (int)Enums.ActionType.Withdraw && ActionType != (int)Enums.ActionType.Cancel)
                     {
                         IRequest.LASTAPPROVED_BY = ModifiedBy;
                         IRequest.LASTAPPROVED_DATE = now;
@@ -400,7 +400,7 @@ namespace Sampoerna.EMS.CustomService.Services.ManufactureLicense
                 var month = ToRoman(now.Month);
                 var year = now.Year.ToString();
                 formnumber = "/" + company_alias + "/" + city_alias + "/" + month + "/" + year;
-                var lastFormNumber = context.INTERVIEW_REQUEST.Where(w => w.FORM_NUMBER.Contains(formnumber)).OrderByDescending(o => o.FORM_NUMBER).Select(s => s.FORM_NUMBER).FirstOrDefault();
+                var lastFormNumber = context.INTERVIEW_REQUEST.Where(w => w.FORM_NUMBER != null).OrderByDescending(o => o.VR_FORM_ID).Select(s => s.FORM_NUMBER).FirstOrDefault();
                 if (lastFormNumber == "" || lastFormNumber == null)
                 {
                     lastFormNumber = "0";
@@ -896,7 +896,7 @@ namespace Sampoerna.EMS.CustomService.Services.ManufactureLicense
                         var ListPOA_Nppbkc = context.POA_MAP.Where(w => w.NPPBKC_ID.Equals(NPPBKCId) && w.POA.IS_ACTIVE == true && w.POA_ID != IRequest.CREATED_BY).Select(s => s.POA_ID).ToList();
                         var OriexcisePOA = context.POA_EXCISER.Where(w => w.IS_ACTIVE_EXCISER == true && w.POA.IS_ACTIVE == true).Select(s => s.POA_ID).ToList();
                         var excisePOA = new List<string>();
-                        if (ListPOA_Nppbkc != null)
+                        if (ListPOA_Nppbkc.Count() == 0)
                         {
                             excisePOA = OriexcisePOA.Where(w => ListPOA_Nppbkc.Contains(w)).ToList();
                         }

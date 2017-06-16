@@ -24,17 +24,17 @@
                         @Html.HiddenFor(model => model.DetailModel.Request_No)
                         @Html.HiddenFor(model => model.DetailModel.Is_Import)
 
-                        <div class="panel-group" id="accordion-8" role="tablist" aria-multiselectable="true">
+                        <div class="panel-group" id="accordion-60" role="tablist" aria-multiselectable="true">
                             <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="heading8">
+                                <div class="panel-heading" role="tab" id="heading60">
                                     <h4 class="panel-title">
-                                        <a data-toggle="collapse" data-parent="#accordion-8" href="#collapse8" aria-expanded="true" aria-controls="collapse8">
+                                        <a data-toggle="collapse" data-parent="#accordion-60" href="#collapse60" aria-expanded="true" aria-controls="collapse60">
                                             Item Information
                                             <i class="fa fa-caret-down"></i>
                                         </a>
                                     </h4>
                                 </div>
-                                <div id="collapse8" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading8">
+                                <div id="collapse60" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading60">
                                     <div class="panel-body">
                                         <div class="row">
                                             <div class="col-md-4"></div>
@@ -63,7 +63,7 @@
                                                     <legend><label>FA Code (Old)</label></legend>
                                                     <div class="row">
                                                         <div class="col-md-4"><label>FA Code</label></div>
-                                                        <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Fa_Code_Old, Model.MaterialList, new { @class = " form-control", @id = "OldSelector" , @disabled = "disabled" })</div>
+                                                        <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Fa_Code_Old, Model.MaterialListOld, new { @class = " form-control", @id = "OldSelector" , @disabled = "disabled" })</div>
                                                     </div>
                                                     &nbsp;
                                                     <div class="row">
@@ -77,7 +77,7 @@
                                                     <legend><label>FA Code (New)</label></legend>
                                                     <div class="row">
                                                         <div class="col-md-4"><label>FA Code</label></div>
-                                                        <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Fa_Code_New, Model.MaterialList, new { @class = "form-control", @id = "NewSelector" , @disabled = "disabled" })</div>
+                                                        <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Fa_Code_New, Model.MaterialListNew, new { @class = "form-control", @id = "NewSelector" , @disabled = "disabled" })</div>
                                                     </div>
                                                     &nbsp;
                                                     <div class="row">
@@ -110,17 +110,17 @@
                         </div>
 
 
-                        <div class="panel-group" id="accordion-1" role="tablist" aria-multiselectable="true">
+                        <div class="panel-group" id="accordion-61" role="tablist" aria-multiselectable="true">
                             <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="heading1">
+                                <div class="panel-heading" role="tab" id="heading61">
                                     <h4 class="panel-title">
-                                        <a data-toggle="collapse" data-parent="#accordion-1" href="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                                        <a data-toggle="collapse" data-parent="#accordion-61" href="#collapse61" aria-expanded="true" aria-controls="collapse61">
                                             Attachment Document
                                             <i class="fa fa-caret-down"></i>
                                         </a>
                                     </h4>
                                 </div>
-                                <div id="collapse1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1">
+                                <div id="collapse61" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading61">
                                     <div class="panel-body">
                                         <form role="form">
                                             @Html.HiddenFor(model => model.FileUploadLimit)
@@ -137,11 +137,14 @@
                                                                 <div class="row">                                                                 
                                                                     <div class="form-group">
                                                                         <div class="col-md-3">
-                                                                            <label>Uploaded Files : </label>
+                                                                            <label>@doc.Name</label>
                                                                         </div>
-                                                                        <div class="col-md-8">
-                                                                            <a href="@string.Format("{0}", Url.Content(doc.FileListUpload[0].Path_Url.Remove(0, 1)))" title="@doc.Name" target="_blank"></a>@string.Format("{0} uploaded at {1}", doc.Name, doc.FileListUpload[0].Upload_Date.ToString())<br />
-                                                                        </div>
+                                                                        @if (doc.FileListUpload != null && doc.FileListUpload.Count > 0)
+                                                                        {
+                                                                            <div class="col-md-8">
+                                                                                <a href="@string.Format("{0}", Url.Content(doc.FileListUpload[0].Path_Url))" title="@doc.Name" target="_blank"><i class="fa fa-file-o"></i> @string.Format("{0} uploaded at {1}", doc.Name, doc.FileListUpload[0].Upload_Date.ToString())</a><br />
+                                                                            </div>
+                                                                        }
                                                                     </div>
                                                                 </div>
 
@@ -173,7 +176,7 @@
                                                             <tbody id="otherDocsBody">
                                                                 <tr id="noOtherFileMsg">
                                                                     <td colspan="4">
-                                                                        <div class="alert alert-info">No Additonal Documents</div>
+                                                                        <div class="alert alert-info">No Additional Documents</div>
                                                                     </td>
                                                                 </tr>
                                                             </tbody>
@@ -190,12 +193,12 @@
                         <div class="row">
                             <div role="tabpanel">
                                 <ul class="nav nav-tabs" role="tablist">
-                                    <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Workflow History</a></li>
-                                    <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                                    <li role="presentation" class="active"><a href="#information6" aria-controls="information" role="tab" data-toggle="tab">Workflow History</a></li>
+                                    <li role="presentation"><a href="#changes6" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
                                 </ul>
 
                                 <div class="tab-content">
-                                    <div role="tabpanel" class="tab-pane active" id="information">
+                                    <div role="tabpanel" class="tab-pane active" id="information6">
                                         <div class="tab-wrapper">
 
                                             <div class="panel-body">
@@ -207,7 +210,7 @@
                                         </div>
                                     </div>
 
-                                    <div role="tabpanel" class="tab-pane" id="changes">
+                                    <div role="tabpanel" class="tab-pane" id="changes6">
                                         <div class="table-container">
                                             @Html.Partial("_ChangesHistoryTable", Model)
                                         </div>
@@ -215,6 +218,8 @@
                                 </div>
                             </div>
                         </div>
+                     
+
 
                     </div>
                 </div>

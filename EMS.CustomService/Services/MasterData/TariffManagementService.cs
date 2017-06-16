@@ -132,7 +132,7 @@ namespace Sampoerna.EMS.CustomService.Services.MasterData
                                 List<string> adminEmails = new List<string>();
                                 foreach (var adm in admins)
                                 {
-                                    if(!string.IsNullOrEmpty(adm.EMAIL) && userEmail != adm.EMAIL)
+                                    if(!string.IsNullOrEmpty(adm.EMAIL))
                                     adminEmails.Add(adm.EMAIL);
                                 }
                                 sendTo = adminEmails.ToArray();
@@ -152,7 +152,7 @@ namespace Sampoerna.EMS.CustomService.Services.MasterData
                                     foreach (var adm in approvers)
                                     {
                                         var appEmail = refService.GetUserEmail(adm.REFF_VALUE);
-                                        if (!string.IsNullOrEmpty(appEmail) && userEmail != appEmail)
+                                        if (!string.IsNullOrEmpty(appEmail))
                                             approverEmails.Add(appEmail);
                                     }
                                     sendTo = approverEmails.ToArray();
@@ -167,7 +167,7 @@ namespace Sampoerna.EMS.CustomService.Services.MasterData
                                     List<string> adminEmails = new List<string>();
                                     foreach (var adm in admins)
                                     {
-                                        if (!string.IsNullOrEmpty(adm.EMAIL) && userEmail != adm.EMAIL)
+                                        if (!string.IsNullOrEmpty(adm.EMAIL))
                                             adminEmails.Add(adm.EMAIL);
                                     }
                                     sendTo = adminEmails.ToArray();

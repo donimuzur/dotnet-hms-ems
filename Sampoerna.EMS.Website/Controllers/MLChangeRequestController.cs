@@ -146,7 +146,7 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
 
-                if (CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.POA)
+                if (CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.POA || CurrentUser.UserRole == Enums.UserRole.Viewer)
                 {
 
                     var users = refService.GetAllUser();
@@ -273,7 +273,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return PartialView("_ChangeRequestTable", model);
         }
 
-        public ActionResult ChangeLog(int CRID)
+        public ActionResult ChangeLog(int CRID, string Token)
         {
             var changeRequest = new ChangeRequestModel();
 
@@ -628,6 +628,25 @@ namespace Sampoerna.EMS.Website.Controllers
                                 ActionType = (int)Enums.ActionType.Reject;
                             }
                             var updateSKEP = service.UpdateBASKEP(model.Id, Convert.ToBoolean(model.DecreeStatus), model.DecreeNumber, DateTime.Now, ApproveStats, CurrentUser.USER_ID, ActionType, (int)CurrentUser.UserRole, "");
+
+                            var dataChangeRequest = GetChangeRequestMasterForm(model.Id);
+                            var nppbkc_data = service.GetNppbkc(dataChangeRequest.NppbkcId);
+                            var mapped_nppbkc = MapNppbkcModel(nppbkc_data);
+
+                            var document_details = service.GetDocumentDetails(dataChangeRequest.Id);
+
+                            var updated_list = "";
+                            if (document_details != null)
+                            {
+                                updated_list = "<ul>";
+                                foreach (var Detail in document_details)
+                                {
+                                    updated_list += "<li>" + Detail.UPDATE_NOTES + "</li>";
+                                }
+                                updated_list += "</ul>";
+
+                            }
+
                             if (updateSKEP != null)
                             {
                                 InsertUploadCommonFile(model.File_BA_Path, model.Id, true, model.File_Other_Name);
@@ -639,11 +658,13 @@ namespace Sampoerna.EMS.Website.Controllers
                                     var strreqdate = updateSKEP.REQUEST_DATE.ToString("dd MMMM yyyy");
                                     var lastapproval_date = Convert.ToDateTime(updateSKEP.LASTAPPROVED_DATE).ToString("dd MMMM yyyy");
                                     var CreatorName = refService.GetPOA(CurrentUser.USER_ID).PRINTED_NAME;
-                                    //var sendmail = SendMail(updateSKEP.FORM_NO, strreqdate, CreatorName, model.LastApprovedStatus, "", lastapproval_date, "", model.Id, poareceiverList, "submit");
-                                    //if (!sendmail)
-                                    //{
-                                    //    msgSuccess += " , but failed send mail to POA Approver";
-                                    //}
+
+                                    var sendmail = SendMail(updateSKEP.FORM_NO, strreqdate, updateSKEP.DOCUMENT_TYPE, updateSKEP.NPPBKC_ID, mapped_nppbkc.KppbcId, mapped_nppbkc.Address, mapped_nppbkc.Region, mapped_nppbkc.City, updated_list, CreatorName, dataChangeRequest.LastApprovedStatus, "", strreqdate, "", dataChangeRequest.Id, poareceiverList, "approve");
+                                    if (!sendmail)
+                                    {
+                                        msgSuccess += " , but failed send mail to POA Approver";
+                                    }
+
                                 }
                                 else
                                 {
@@ -1552,6 +1573,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     CreatedBy = s.CREATED_BY,
                     LastApprovedStatus = s.SYS_REFFERENCES.REFF_VALUE,
                     LastApprovedStatusID = s.LASTAPPROVED_STATUS,
+                    Status = s.SYS_REFFERENCES.REFF_KEYS,
                     LastApprovedBy = s.LASTAPPROVED_BY,
                     DecreeStatus = s.DECREE_STATUS,
                     DecreeNumber = s.DECREE_NUMBER,
@@ -1576,11 +1598,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 _CRModel.DetailCount = _CRModel.ListOfUpdateNotes.Count();
 
-                var nppbkclist = service.GetNPPBKCByUser(CurrentUser.USER_ID);
+                List<string> nppbkclist = new List<string>();
+
+                //_CRModel.NppbkcList = GetNppbkcListByUser(nppbkclist);
 
                 //_CRModel.NppbkcList = GetNppbkcList(refService.GetAllNppbkc());
                 //_CRModel.POA = MapPoaModel(refService.GetPOA(CurrentUser.USER_ID));
-                _CRModel.NppbkcList = GetNppbkcListByUser(nppbkclist);
+
                 _CRModel.POA = MapPoaModel(refService.GetPOA(_CRModel.CreatedBy));
                 _CRModel.DocumentTypes = GetDocumentTypeList(service.GetDocumentTypes());
                 _CRModel.MainMenu = Enums.MenuList.ManufactureLicense;
@@ -1620,24 +1644,43 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 }
 
-                _CRModel.Count_Lamp = filesupload.Count();
+                var ext = "";
+                var count_pdf = 0;
+                foreach (var file_attach in filesupload)
+                {
+                    ext = file_attach.PATH_URL.Substring((file_attach.PATH_URL.Length - 3), 3);
+                    if (ext == "pdf")
+                    {
+                        count_pdf++;
+                    }
+                }
+
+                _CRModel.Count_Lamp = count_pdf;
 
 
                 if (Mode == "Edit")
                 {
+                    nppbkclist = service.GetNPPBKCByUser(CurrentUser.USER_ID);
+
                     _CRModel.IsFormReadOnly = false;
                     _CRModel.IsDetail = false;
                 }
                 else if (Mode == "Detail")
                 {
+                    nppbkclist.Add(_CRModel.NppbkcId);
+
                     _CRModel.IsFormReadOnly = true;
                     _CRModel.IsDetail = true;
                 }
                 else if (Mode == "Approve")
                 {
+                    nppbkclist.Add(_CRModel.NppbkcId);
+
                     _CRModel.IsFormReadOnly = true;
                     _CRModel.IsDetail = false;
                 }
+
+                _CRModel.NppbkcList = GetNppbkcListByUser(nppbkclist);
 
                 _CRModel.GovStatus_List = GetGovStatusList(service.GetGovStatusList());
 
@@ -1930,8 +1973,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     var POAApprover = service.GetPOAApproverList(ID).ToList();
                     if (POAApprover.Count() > 0)
                     {
-                        List<string> ListPOA = POAApprover.Select(s => s.POA_ID).ToList();
-                        if (ListPOA.Contains(CurrentUser.USER_ID))
+                        List<string> ListPOA = POAApprover.Select(s => s.POA_ID.ToUpper()).ToList();
+                        if (ListPOA.Contains(CurrentUser.USER_ID.ToUpper()))
                         {
                             isOk = true;
                         }
@@ -2396,8 +2439,15 @@ namespace Sampoerna.EMS.Website.Controllers
                 XMLWorkerHelper.GetInstance().ParseXHtml(writer, document, srHtml);
                 document.Close();
                 stream.Close();
-                var newFile = new FileInfo(uploadToFolder);
-                var fileName = Path.GetFileName(uploadToFolder);
+
+                //var newFile = new FileInfo(uploadToFolder);
+                //var fileName = Path.GetFileName(uploadToFolder);
+
+                var MergeDocs = MergePrintout(uploadToFolder, InterviewID);
+
+                var newFile = new FileInfo(MergeDocs);
+                var fileName = Path.GetFileName(MergeDocs);
+
                 string attachment = string.Format("attachment; filename={0}", fileName);
                 Response.Clear();
                 Response.AddHeader("content-disposition", attachment);
@@ -2420,6 +2470,35 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
+        public String MergePrintout(string path, long RegId)
+        {
+            try
+            {
+                var filesupload = service.GetFileUploadByCRId(RegId).ToList();
+
+                List<String> sourcePaths = new List<string>();
+                sourcePaths.Add(path);
+                var ext = "";
+                foreach (var file_attach in filesupload)
+                {
+                    ext = file_attach.PATH_URL.Substring((file_attach.PATH_URL.Length - 3), 3);
+                    if (ext.ToLower() == "pdf")
+                    {
+                        sourcePaths.Add(Server.MapPath("~" + file_attach.PATH_URL));
+                    }
+                }
+
+                if (PdfMerge.Execute(sourcePaths.ToArray(), path))
+                    return path;
+                else
+                    return null;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
         //[HttpPost]
         //[ValidateInput(false)]

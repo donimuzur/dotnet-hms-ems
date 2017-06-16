@@ -11,7 +11,7 @@
                 </div>
                 <div class="modal-body">                                        
                     @Html.HiddenFor(model=>model.DetailModel.PD_DETAIL_ID, new { @id="detail_ID" })
-                    
+                    <div class="alert alert-danger" style="display:none;font-size:small;" id="CheckReviseLabel"></div>
                     <div class="row col-md-12">
                         <div class="form-group">
                             <label>Note for Creator <span class="red">*</span></label>

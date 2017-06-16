@@ -101,6 +101,7 @@ namespace Sampoerna.EMS.Website.Models.ChangeRequest
 
         public string LastApprovedStatus { set; get; }
         public long LastApprovedStatusID { set; get; }
+        public string Status { set; get; }
 
         public SelectList DocumentTypes { set; get; }
         public SelectList NppbkcList { set; get; }

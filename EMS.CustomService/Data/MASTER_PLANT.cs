@@ -37,6 +37,7 @@ namespace Sampoerna.EMS.CustomService.Data
         public string CREATED_BY { get; set; }
         public Nullable<bool> IS_DELETED { get; set; }
         public string NPPBKC_IMPORT_ID { get; set; }
+        public string ADDRESS_IMPORT { get; set; }
         public Nullable<long> CITY_ID { get; set; }
         public Nullable<long> STATE_ID { get; set; }
     
@@ -51,5 +52,7 @@ namespace Sampoerna.EMS.CustomService.Data
         public virtual MASTER_STATE MASTER_STATE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PRODUCT_DEVELOPMENT_DETAIL> PRODUCT_DEVELOPMENT_DETAIL { get; set; }
+        public virtual MASTER_CITY MASTER_CITY1 { get; set; }
+        public virtual MASTER_STATE MASTER_STATE1 { get; set; }
     }
 }

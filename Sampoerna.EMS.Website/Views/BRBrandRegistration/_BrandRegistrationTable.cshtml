@@ -1,0 +1,70 @@
+﻿@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.BrandRegistration.BrandRegistrationReqViewModel
+@using Sampoerna.EMS.Core
+<table id="brandRegTable" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> Filter </th>
+            <th>Requestor</th>
+            <th>NPPBKC</th>
+            <th>Submission Date</th>
+            <th>Company</th>
+            <th>Type</th>
+            <th>Effective Date</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <thead class="filters">
+        <tr>
+            <th> Action</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ListBrandRegistrationReq)
+        {
+            if (item.UserAccess.CanView)
+            {
+                <tr>
+                    <td class="action">
+                        <a href="@Url.Action("Details", "BRBrandRegistration", new { id = item.Registration_ID })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                        @if (item.UserAccess.CanEdit)
+                        {
+                            if (item.UserAccess.CanSubmitSKEP)
+                            {
+                                <a href="@Url.Action("EditSKEP", "BRBrandRegistration", new { id = item.Registration_ID })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Edit", "BRBrandRegistration", new { id = item.Registration_ID })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+
+                            }
+
+                        }
+                        @if (item.UserAccess.CanApprove)
+                        {
+                            <a href="@Url.Action("Approval", "BRBrandRegistration", new { id = item.Registration_ID })" data-toggle="tooltip" data-placement="top" title="Approval"><i class="fa fa-check"></i></a>
+                        }
+
+
+                    </td>
+                    <td>@item.Created_By</td>
+                    <td>@item.Nppbkc_ID</td>
+                    <td>@item.strSubmission_Date</td>
+                    <td>@item.Company.Name</td>
+                    <td>@item.strRegistration_Type</td>
+                    <td>@item.strEffective_Date</td>
+                    <td>@item.strLastApproved_Status</td>
+                </tr>
+            }
+
+        }
+    </tbody>
+</table>
+
+

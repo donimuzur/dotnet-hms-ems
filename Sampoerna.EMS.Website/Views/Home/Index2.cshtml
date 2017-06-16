@@ -35,51 +35,62 @@
             </div>
             <div class="main-menu-content">
                 <div class="row">
-                    <div class="excise-menu" data-toggle="modal" data-target=".menu-transaction" style="width: 97%;">
-                        <h3>Transaction</h3>
-                        <p>
-                            - Manufacturing License<br>
-                            - Excise Credit<br>
-                            - Brand Registration<br>
-                        </p>
-                        <div class="icon"></div>
-                    </div>
-                    <div class="excise-menu" data-toggle="modal" data-target=".menu-movement">
-                        <h3>Excisable Goods Movement</h3>
-                        <p>
-                            - Goods Quota (PBCK-1)<br>
-                            - Goods Movement (CK-5)<br>
-                            - Goods Usage Report (LACK-1)<br>
-                            - Goods Transfer Report (LACK-2)<br>
-                            - Production Report (CK-4C)
-                        </p>
-                        <div class="icon"></div>
-                    </div>
-                    <div class="excise-menu last" data-toggle="modal" data-target=".menu-claimable">
-                        <h3>Excise Stamp Claimable</h3>
-                        <p>
-                            - Stamp Damage and Return (PBCK-4)<br>
-                            - Refund from Production (PBCK-7)<br>
-                            - Refund from Market (PBCK-3)<br>
-                            - CK-5 Market Return
-                        </p>
-                        <div class="icon"></div>
-                    </div>
-                    <a href="@Url.Action("Index","User")">
-                        <div class="excise-menu small">
-
-                            <h3>Master Data</h3>
-                            <div class="icon"></div>
-
-
+                    <div class="col-lg-6">
+                        <div class="excise-menu" data-toggle="modal" data-target=".menu-movement">
+                            <h3>Excisable Goods Movement</h3>
+                            <p>
+                                - Goods Quota (PBCK-1)<br>
+                                - Goods Movement (CK-5)<br>
+                                - Goods Usage Report (LACK-1)<br>
+                                - Goods Transfer Report (LACK-2)<br>
+                                - Production Report (CK-4C)
+                            </p>
+                            <div class="icon">
+                            </div>
                         </div>
-                    </a>
-                    <a href="@Url.Action("Index", "UserPlantMap")">
-                        <div class="excise-menu small last">
-                            <h3>Setting</h3>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="excise-menu last" data-toggle="modal" data-target=".menu-claimable">
+                            <h3>Excise Stamp Claimable</h3>
+                            <p>
+                                - Stamp Damage and Return (PBCK-4)<br>
+                                - Refund from Production (PBCK-7)<br>
+                                - Refund from Market (PBCK-3)<br>
+                                - CK-5 Market Return
+                            </p>
                             <div class="icon"></div>
                         </div>
-                    </a>
+                    </div>
+                    <div class="col-lg-6">
+                        <a href="@Url.Action("Index","User")">
+                            <div class="excise-menu small" style="min-height: 100px!important">
+
+                                <h3>Master Data</h3>
+                                <div class="icon"></div>
+
+
+                            </div>
+                        </a>
+                        <a href="@Url.Action("Index", "UserPlantMap")">
+                            <div class="excise-menu small last" style="min-height: 100px!important">
+                                <h3>Setting</h3>
+                                <div class="icon"></div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="excise-menu last" data-toggle="modal" data-target=".menu-transaction" style="width: 100%; max-height: 230px">
+                            <h3>License</h3>
+                            <p>
+                                - Manufacturing License<br>
+                                - Excise Credit<br>
+                                - Brand Registration<br>
+                            </p>
+                            <div class="icon"></div>
+                        </div>
+                    </div>
+
+                    <div class="clearfix"></div>
                 </div>
                 <div class="clearfix"></div>
                 <p style="color: white" class="text-center">© 2015 Excise Management System. PT HM Sampoerna, Tbk</p>
@@ -188,17 +199,17 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
     @*<footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12">
-                    © 2015 Excise Management System. PT HM Sampoerna, Tbk
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        © 2015 Excise Management System. PT HM Sampoerna, Tbk
+                    </div>
                 </div>
             </div>
-        </div>
-    </footer>*@
+        </footer>*@
     <!-- Load custom.js -->
     @Scripts.Render("~/bundles/customjs")
 </body>

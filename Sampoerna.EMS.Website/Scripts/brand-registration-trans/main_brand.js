@@ -300,6 +300,7 @@ function Pad(num, size) {
 function GetItemList() {
     $("#customloader").show();
     var ItemNotIn = [];
+    var RegistrationID = $("#txt_hd_id").val();
     $("#tbody_skeplistitem").find("tr").each(function () {
         var ItemId = $(this).find(".txt_hd_itemid").val();
         ItemNotIn.push(ItemId);
@@ -309,7 +310,7 @@ function GetItemList() {
     $.ajax({
         url: getUrl("GetProductDevelopmentItemList"),
         type: 'POST',
-        data: { ItemNotIn: ItemNotIn, RegistrationType : registrationType, nppbkc : nppbkc_selected },
+        data: { ItemNotIn: ItemNotIn, RegistrationType: registrationType, nppbkc: nppbkc_selected, RegId: RegistrationID },
         success: function (data) {
             $("#tbody_optitemlist").empty();
             if (data != null) {
@@ -329,21 +330,22 @@ function GetItemList() {
                     item += "<td class='td_inputan'>";
                     item += "<input type='checkbox' class='cb_itemlist' />";
                     item += "<input type='hidden' class='txt_hd_itemId' value='0'>";
-                    item += "<input type='hidden' class='txt_hd_companytier' value=''>";
+                    item += "<input type='hidden' class='txt_hd_companytier' value='" + data[i].CompanyTier + "'>";
                     item += "<input type='hidden' class='txt_hd_brandname' value='" + data[i].BrandName + "'>";
                     item += "<input type='hidden' class='txt_hd_hjeperpack' value='" + data[i].HJE + "'>";
                     item += "<input type='hidden' class='txt_hd_hjeperbatang' value='" + data[i].HJEperBatang + "'>";
                     item += "<input type='hidden' class='txt_hd_content' value='" + data[i].BrandContent + "'>";
+                    item += "<input type='hidden' class='txt_hd_unit' value='" + data[i].Unit + "'>";
                     item += "<input type='hidden' class='txt_hd_tariff' value='" + data[i].Tariff + "'>";
                     item += "<input type='hidden' class='txt_hd_packaging_material' value='" + data[i].PackagingMaterial + "'>";
                     item += "<input type='hidden' class='txt_hd_excisegood' value='" + data[i].ExciseGoodType + "'>";
                     item += "<input type='hidden' class='txt_hd_market' value=''>";
-                    item += "<input type='hidden' class='txt_hd_front_side' value=''>";
-                    item += "<input type='hidden' class='txt_hd_back_side' value=''>";
-                    item += "<input type='hidden' class='txt_hd_left_side' value=''>";
-                    item += "<input type='hidden' class='txt_hd_right_side' value=''>";
-                    item += "<input type='hidden' class='txt_hd_top_side' value=''>";
-                    item += "<input type='hidden' class='txt_hd_bottom_side' value=''>";
+                    item += "<input type='hidden' class='txt_hd_front_side' value='" + data[i].FrontSide + "'>";
+                    item += "<input type='hidden' class='txt_hd_back_side' value='" + data[i].BackSide + "'>";
+                    item += "<input type='hidden' class='txt_hd_left_side' value='" + data[i].LeftSide + "'>";
+                    item += "<input type='hidden' class='txt_hd_right_side' value='" + data[i].RightSide + "'>";
+                    item += "<input type='hidden' class='txt_hd_top_side' value='" + data[i].TopSide + "'>";
+                    item += "<input type='hidden' class='txt_hd_bottom_side' value='" + data[i].BottomSide + "'>";
                     item += "</td>";
                     item += "<td class='btn_showmodal_detail' style='cursor:pointer' >" + data[i].Request_No + "</td>";
                     item += "<td class='btn_showmodal_detail' style='cursor:pointer' >" + data[i].Fa_Code_Old + "</td>";
@@ -448,26 +450,28 @@ $(document).on("click", "#btn_addItem", function () {
             itemdetailindex = $("#txt_index_listitem").val();
             var pddetailid = $(this).data("pddetailid");
             var market = $(this).data("market");
+            var frontSide = $(".txt_hd_front_side").val();
+
             var item = "<input type='hidden' class='txt_hd_itemId' value='" + pddetailid + "' name='Item[" + itemdetailindex + "].PD_Detail_ID'>";
             item += "<input type='hidden' class='txt_hd_detailId' value='0' name='Item[" + itemdetailindex + "].Registration_Detail_ID'>";
             item += "<input type='hidden' class='txt_hd_isactive' value='true' name='Item[" + itemdetailindex + "].IsActive'>";
-            item += "<input type='hidden' class='txt_hd_brandname' value='' name='Item[" + itemdetailindex + "].Brand_CE'>";
+            item += "<input type='hidden' class='txt_hd_brandname' value='" + $(".txt_hd_brandname").val() + "' name='Item[" + itemdetailindex + "].Brand_CE'>";
             item += "<input type='hidden' class='txt_hd_latest_skep_no' value='' name='Item[" + itemdetailindex + "].Latest_Skep_No'>";
-            item += "<input type='hidden' class='txt_hd_companytier' value='' name='Item[" + itemdetailindex + "].Company_Tier'>";
-            item += "<input type='hidden' class='txt_hd_excisegood' value='' name='Item[" + itemdetailindex + "].Prod_Code'>";
-            item += "<input type='hidden' class='txt_hd_hjeperpack' value='' name='Item[" + itemdetailindex + "].Hje'>";
-            item += "<input type='hidden' class='txt_hd_hjeperbatang' value='' name='Item[" + itemdetailindex + "].HJEperBatang'>";
-            item += "<input type='hidden' class='txt_hd_content' value='' name='Item[" + itemdetailindex + "].Brand_Content'>";
-            item += "<input type='hidden' class='txt_hd_unit' value='' name='Item[" + itemdetailindex + "].Unit'>";
-            item += "<input type='hidden' class='txt_hd_tariff' value='' name='Item[" + itemdetailindex + "].Tariff'>";
-            item += "<input type='hidden' class='txt_hd_packaging_material' value='' name='Item[" + itemdetailindex + "].Packaging_Material'>";
+            item += "<input type='hidden' class='txt_hd_companytier' value='" + $(".txt_hd_companytier").val() + "' name='Item[" + itemdetailindex + "].Company_Tier'>";
+            item += "<input type='hidden' class='txt_hd_excisegood' value='" + $(".txt_hd_excisegood").val() + "' name='Item[" + itemdetailindex + "].Prod_Code'>";
+            item += "<input type='hidden' class='txt_hd_hjeperpack' value='" + $(".txt_hd_hjeperpack").val() + "' name='Item[" + itemdetailindex + "].Hje'>";
+            item += "<input type='hidden' class='txt_hd_hjeperbatang' value='" + $(".txt_hd_hjeperbatang").val() + "' name='Item[" + itemdetailindex + "].HJEperBatang'>";
+            item += "<input type='hidden' class='txt_hd_content' value='" + $(".txt_hd_content").val() + "' name='Item[" + itemdetailindex + "].Brand_Content'>";
+            item += "<input type='hidden' class='txt_hd_unit' value='" + $(".txt_hd_unit").val() + "' name='Item[" + itemdetailindex + "].Unit'>";
+            item += "<input type='hidden' class='txt_hd_tariff' value='" + $(".txt_hd_tariff").val() + "' name='Item[" + itemdetailindex + "].Tariff'>";
+            item += "<input type='hidden' class='txt_hd_packaging_material' value='" + $(".txt_hd_packaging_material").val() + "' name='Item[" + itemdetailindex + "].Packaging_Material'>";
             item += "<input type='hidden' class='txt_hd_market' value='" + market + "' name='Item[" + itemdetailindex + "].Market'>";
-            item += "<input type='hidden' class='txt_hd_front_side' value='' name='Item[" + itemdetailindex + "].Front_Side'>";
-            item += "<input type='hidden' class='txt_hd_back_side' value='' name='Item[" + itemdetailindex + "].Back_Side'>";
-            item += "<input type='hidden' class='txt_hd_left_side' value='' name='Item[" + itemdetailindex + "].Left_Side'>";
-            item += "<input type='hidden' class='txt_hd_right_side' value='' name='Item[" + itemdetailindex + "].Right_Side'>";
-            item += "<input type='hidden' class='txt_hd_top_side' value='' name='Item[" + itemdetailindex + "].Top_Side'>";
-            item += "<input type='hidden' class='txt_hd_bottom_side' value='' name='Item[" + itemdetailindex + "].Bottom_Side'>";
+            item += "<input type='hidden' class='txt_hd_front_side' value='" + $(".txt_hd_front_side").val() + "' name='Item[" + itemdetailindex + "].Front_Side'>";
+            item += "<input type='hidden' class='txt_hd_back_side' value='" + $(".txt_hd_back_side").val() + "' name='Item[" + itemdetailindex + "].Back_Side'>";
+            item += "<input type='hidden' class='txt_hd_left_side' value='" + $(".txt_hd_left_side").val() + "' name='Item[" + itemdetailindex + "].Left_Side'>";
+            item += "<input type='hidden' class='txt_hd_right_side' value='" + $(".txt_hd_right_side").val() + "' name='Item[" + itemdetailindex + "].Right_Side'>";
+            item += "<input type='hidden' class='txt_hd_top_side' value='" + $(".txt_hd_top_side").val() + "' name='Item[" + itemdetailindex + "].Top_Side'>";
+            item += "<input type='hidden' class='txt_hd_bottom_side' value='" + $(".txt_hd_bottom_side").val() + "' name='Item[" + itemdetailindex + "].Bottom_Side'>";
             $(this).find(".td_inputan").append(item);
             $(this).appendTo("#tbody_skeplistitem");
             itemdetailindex++;
@@ -478,71 +482,88 @@ $(document).on("click", "#btn_addItem", function () {
 });
 
 $(document).on("click", ".btn_showmodal_detail", function () {
-    ClearModalDetail();
     var tr = $(this).closest("tr");
-    var index = tr.data("index");
-    var market = tr.data("market");
-    var requestnumber = tr.data("requestnumber");
-    var brandName = tr.find(".txt_hd_brandname").val();
-    var facodeold = tr.data("facodeold");
-    var facodeolddesc = tr.data("facodeolddesc");
-    var facodenew = tr.data("facodenew");
-    var facodenewdesc = tr.data("facodenewdesc");
-    var companytier = tr.find(".txt_hd_companytier").val();
-    var excisegood = tr.find(".txt_hd_excisegood").val();
-    var hjeperpack = tr.find(".txt_hd_hjeperpack").val();
-    var unit = tr.find(".txt_hd_unit").val();
-    var hjeperbatang = tr.find(".txt_hd_hjeperbatang").val();
-    var content = tr.find(".txt_hd_content").val();
-    var tariff = tr.find(".txt_hd_tariff").val();
-    var packaging_material = tr.find(".txt_hd_packaging_material").val();
-    var front_side = tr.find(".txt_hd_front_side").val();
-    var back_side = tr.find(".txt_hd_back_side").val();
-    var left_side = tr.find(".txt_hd_left_side").val();
-    var right_side = tr.find(".txt_hd_right_side").val();
-    var top_side = tr.find(".txt_hd_top_side").val();
-    var bottom_side = tr.find(".txt_hd_bottom_side").val();
-    $("#txt_hd_index").val(index);
-    $("#txt_modal_detail_requestnumber").val(requestnumber);
-    $("#txt_modal_detail_facodeold").val(facodeold);
-    $("#txt_modal_detail_facodeolddesc").val(facodeolddesc);
-    $("#txt_modal_detail_facodenew").val(facodenew);
-    $("#txt_modal_detail_facodenewdesc").val(facodenewdesc);    
-    $("#txt_modal_detail_companytier").val(companytier);
-    $("#txt_modal_detail_excisegoodtype").val(excisegood);
-    $("#txt_modal_detail_excisegoodtype").selectpicker("refresh");
-    $("#txt_modal_detail_companytier").selectpicker("refresh");
+    if ($(this).closest("tbody").attr("id") != "tbody_optitemlist") {
 
-    $("#txt_modal_detail_hjeperpack").val(hjeperpack);    
-    $("#txt_modal_detail_hjeperbatang").val(hjeperbatang);
-    $("#txt_modal_detail_unit").val(unit);
-    $("#txt_modal_detail_unit").selectpicker("refresh");
-    $("#txt_modal_detail_content").val(content);
-    $("#txt_modal_detail_tariff").val(tariff);
-    $("#txt_modal_detail_packaging_material").val(packaging_material);
-    $("#txt_modal_detail_market").val(market);
-    $("#txt_modal_detail_front_side").val(front_side);
-    $("#txt_modal_detail_back_side").val(back_side);
-    $("#txt_modal_detail_left_side").val(left_side);
-    $("#txt_modal_detail_right_side").val(right_side);
-    $("#txt_modal_detail_top_side").val(top_side);
-    $("#txt_modal_detail_bottom_side").val(bottom_side);
+        ClearModalDetail();
+        var index = tr.data("index");
+        var market = tr.data("market");
+        var requestnumber = tr.data("requestnumber");
+        var brandname = tr.find(".txt_hd_brandname").val();
+        var facodeold = tr.data("facodeold");
+        var facodeolddesc = tr.data("facodeolddesc");
+        var facodenew = tr.data("facodenew");
+        var facodenewdesc = tr.data("facodenewdesc");
+        var companytier = tr.find(".txt_hd_companytier").val();
+        var excisegood = tr.find(".txt_hd_excisegood").val();
+        var hjeperpack = tr.find(".txt_hd_hjeperpack").val();
+        var unit = tr.find(".txt_hd_unit").val();
+        var hjeperbatang = tr.find(".txt_hd_hjeperbatang").val();
+        var content = tr.find(".txt_hd_content").val();
+        var tariff = tr.find(".txt_hd_tariff").val();
+        var packaging_material = tr.find(".txt_hd_packaging_material").val();
+        var front_side = tr.find(".txt_hd_front_side").val();
+        var back_side = tr.find(".txt_hd_back_side").val();
+        var left_side = tr.find(".txt_hd_left_side").val();
+        var right_side = tr.find(".txt_hd_right_side").val();
+        var top_side = tr.find(".txt_hd_top_side").val();
+        var bottom_side = tr.find(".txt_hd_bottom_side").val();
+        $("#txt_hd_index").val(index);
+        $("#txt_modal_detail_requestnumber").val(requestnumber);
+        $("#txt_modal_detail_facodeold").val(facodeold);
+        $("#txt_modal_detail_facodeolddesc").val(facodeolddesc);
+        $("#txt_modal_detail_facodenew").val(facodenew);
+        $("#txt_modal_detail_facodenewdesc").val(facodenewdesc);
+        $("#txt_modal_detail_companytier").val(companytier);
+        $("#txt_modal_detail_excisegoodtype").val(excisegood);
+        $("#txt_modal_detail_excisegoodtype").selectpicker("refresh");
+        $("#txt_modal_detail_companytier").selectpicker("refresh");
 
-    var registrationType = $("#divRegistrationType input[type='radio']:checked").val();
-    if (registrationType == "2")
-    {
-        $("#txt_modal_detail_brandname").val(facodeolddesc);
-        $("#txt_modal_detail_brandname").attr("readonly", true);
-        $(".div_new_brand").hide();
+        $("#txt_modal_detail_hjeperpack").val(hjeperpack);
+        $("#txt_modal_detail_hjeperbatang").val(hjeperbatang);
+        $("#txt_modal_detail_unit").val(unit);
+        $("#txt_modal_detail_unit").selectpicker("refresh");
+        $("#txt_modal_detail_content").val(content);
+        $("#txt_modal_detail_tariff").val(tariff);
+        $("#txt_modal_detail_packaging_material").val(packaging_material);
+        $("#txt_modal_detail_market").val(market);
+        $("#txt_modal_detail_front_side").val(front_side);
+        $("#txt_modal_detail_back_side").val(back_side);
+        $("#txt_modal_detail_left_side").val(left_side);
+        $("#txt_modal_detail_right_side").val(right_side);
+        $("#txt_modal_detail_top_side").val(top_side);
+        $("#txt_modal_detail_bottom_side").val(bottom_side);
+
+        var registrationType = $("#divRegistrationType input[type='radio']:checked").val();
+        $("#txt_modal_detail_brandname").val(brandname);
+        if (brandname == "") {
+            $("#txt_modal_detail_brandname").attr("readonly", false);
+        }
+        else {
+            $("#txt_modal_detail_brandname").attr("readonly", true);
+        }
+
+        if (registrationType == "2") {
+            $(".div_new_brand").hide();
+        }
+        else {
+            $(".div_new_brand").show();
+        }
+
+
+        $("#myModalDetailItem").modal();
     }
     else
     {
-        $("#txt_modal_detail_brandname").val(brandName);
-        $(".div_new_brand").show();
+        var cb = tr.find(".cb_itemlist");
+        if (cb.is(':checked')) {
+            cb.prop('checked', false);
+        }
+        else {
+            cb.prop('checked', true);
+        }
     }
 
-
-    $("#myModalDetailItem").modal();
 });
 
 function CheckFieldItemEmpty() {
@@ -889,42 +910,75 @@ function CheckFieldEmpty() {
             $("#div_alert").append(message + "<br/>");
         }
     }
-
-    //var count_item = $(".file_notes").length;
-    //if (count_item == 0) {
+    var message = "";
+    var detCount = 0;
+    $('.tr_item_list:visible').each(function () {
+        detCount++;
+    });
+    if (detCount == 0) {
+        emptyCount++;
+        message += "* At least 1 Item is required.<br/>";
+    }
+    //var other_doc_count = 0;
+    //$("#div_otherDocsBody").find(".td_filename_number").each(function () {
+    //    other_doc_count++;
+    //});
+    //if (other_doc_count == 0) {
     //    emptyCount++;
-    //    var message = "* Must have at least 1 Item Updates";
-    //    if (arr.indexOf(message) < 0) {
-    //        arr.push(message);
-    //        $("#div_alert").append(message + "<br/>");
-    //    }
+    //    message += "* At least 1 Attachment is required.<br/>";
     //}
-    //else {
-    //    var emptyNotes = 0;
-    //    $(".file_notes").each(function () {
+    var detailempty = 0;
+    if (detCount > 0) {
+        $("#tbody_skeplistitem").find("tr").each(function () {
+            var _isactive = $(this).find(".txt_hd_isactive").val();
+            if (_isactive == "true") {
+                var txt_hd_brandname = $(this).find(".txt_hd_brandname").val();
+                var txt_hd_companytier = $(this).find(".txt_hd_companytier").val();
+                var txt_hd_excisegood = $(this).find(".txt_hd_excisegood").val();
+                var txt_hd_hjeperpack = $(this).find(".txt_hd_hjeperpack").val();
+                var txt_hd_hjeperbatang = $(this).find(".txt_hd_hjeperbatang").val();
+                var txt_hd_content = $(this).find(".txt_hd_content").val();
+                var txt_hd_unit = $(this).find(".txt_hd_unit").val();
+                var txt_hd_tariff = $(this).find(".txt_hd_tariff").val();
+                if (txt_hd_brandname == "") {
+                    detailempty++;
+                }
+                if (txt_hd_companytier == "" || txt_hd_companytier == "0") {
+                    detailempty++;
+                }
+                if (txt_hd_excisegood == "") {
+                    detailempty++;
+                }
+                if (txt_hd_hjeperbatang == "" || txt_hd_hjeperbatang == "0") {
+                    detailempty++;
+                }
+                if (txt_hd_hjeperpack == "" || txt_hd_hjeperpack == "0") {
+                    detailempty++;
+                }
+                if (txt_hd_content == "" || txt_hd_content == "0") {
+                    detailempty++;
+                }
+                if (txt_hd_unit == "") {
+                    detailempty++;
+                }
+                if (txt_hd_tariff == "" || txt_hd_tariff == "0") {
+                    detailempty++;
+                }
+            }
+        });
+    }
 
-    //        if ($(this).val() == "" || $(this).val() == null) {
-    //            emptyNotes++;
-    //        }
-    //        if (emptyNotes > 0) {
-    //            emptyCount++;
-    //            var message = "* The Item Updates field is required";
-    //            if (arr.indexOf(message) < 0) {
-    //                arr.push(message);
-    //                $("#div_alert").append(message + "<br/>");
-    //            }
-
-    //        }
-    //    })
-
-    //}
-
+    if (detailempty > 0) {
+        emptyCount++;
+        message += "* Please make sure product details are not empty.<br/>";
+    }
 
 
     if (emptyCount == 0) {
         $("#div_alert").hide();
     }
     else {
+        $("#div_alert").append(message);
         $("#div_alert").show();
     }
     return emptyCount;
@@ -1062,7 +1116,7 @@ $(document).on("click", "#btnSubmit", function () {
 });
 
 $(document).on("click", "#btnSubmitSkep", function () {
-    $("#txt_hd_next_status").val(27);
+    $("#txt_hd_next_status").val($("#statusWaitingforPOASKEPApproval").val());
     $("#BrandRegCreateForm").submit();
 });
 
@@ -1161,10 +1215,19 @@ $(document).on('keydown', '.numeric-form', function (e) {
 });
 
 function ToggleCheckAll() {
+    var isNowChecked = false;
     $("#tbody_skeplistitem").find(".tr_item_list").each(function () {
         if ($(this).is(":visible")) {
             var checkbox = $(this).find(".td_inputan").find(".cb_itemlist");
             if (checkbox.is(":checked") == true) {
+                isNowChecked = true;
+            }
+        }
+    });
+    $("#tbody_skeplistitem").find(".tr_item_list").each(function () {
+        if ($(this).is(":visible")) {
+            var checkbox = $(this).find(".td_inputan").find(".cb_itemlist");
+            if (isNowChecked == true) {
                 checkbox.attr('checked', false);
                 checkbox.prop("checked", false);
             }

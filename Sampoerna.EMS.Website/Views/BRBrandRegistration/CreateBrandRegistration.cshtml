@@ -1,4 +1,26 @@
 ﻿@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.BrandRegistration.BrandRegistrationReqViewModel
+<style>
+    .watermark {
+        opacity: 0.1;
+        color: BLACK;
+        position: fixed;
+        top: auto;
+        left: 40%;
+        top: 60%;
+        font-size: 50pt;
+        z-index: 1;
+        /* Safari */
+        -webkit-transform: rotate(-45deg);
+        /* Firefox */
+        -moz-transform: rotate(-45deg);
+        /* IE */
+        -ms-transform: rotate(-45deg);
+        /* Opera */
+        -o-transform: rotate(-45deg);
+        /* Internet Explorer */
+        filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+    }
+</style>
 
 @{
     System.Globalization.CultureInfo CI = new System.Globalization.CultureInfo("en-US");
@@ -7,15 +29,13 @@
     var HtmlDisabled = "";
     var closeHtmlDisabled = "";
 
-    //if (Model.IsFormReadOnly)
-    //{
-    //    HtmlDisabled = "<fieldset disabled='disabled'>";
-    //    closeHtmlDisabled = "</fieldset>";
-    //}
-    //if (Model.ButtonCombination == "SubmitSKEP")
-    //{
-    //    actionName = "SubmitSkep";
-    //}
+    string pointer = "";
+    if ((!Model.UserAccess.CanCreate) && (!Model.UserAccess.CanEdit))
+    {
+        pointer = "style =pointer-events:none";
+    }
+
+
 }
 
 
@@ -123,14 +143,14 @@
                             <div class="row" style="margin-bottom:10px;">
                                 <div class="col-md-12">
                                     <div class="col-md-4"><label>Request Number</label></div>
-                                    <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_requestnumber" tabindex="-1"/></div>
+                                    <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_requestnumber" tabindex="-1" @pointer/></div>
                                 </div>
                             </div>
                             <div class="row" style="margin-bottom:10px;">
                                 <div class="col-md-12">
                                     <div class="col-md-4"><label>Brand Name Registration</label></div>
                                     <div class="col-md-8">
-                                        <input type="text" class="form-control" id="txt_modal_detail_brandname" />
+                                        <input type="text" class="form-control" id="txt_modal_detail_brandname" @pointer/>
                                         @*@Html.DropDownList("brand", Model.BrandList, "Select", new { @class = " selectpicker form-control", @id = "txt_modal_detail_brandname" })*@
                                     </div>
                                 </div>
@@ -138,63 +158,69 @@
                             <div class="row" style="margin-bottom:10px;">
                                 <div class="col-md-6">
                                     <div class="col-md-4"><label>FA Code (Old)</label></div>
-                                    <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_facodeold" tabindex="-1"/></div>
+                                    <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_facodeold" tabindex="-1" @pointer/></div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="col-md-4"><label>FA Code Desc (Old)</label></div>
-                                    <div class="col-md-8"><textarea class="form-control" readonly="readonly" id="txt_modal_detail_facodeolddesc" tabindex="-1"></textarea></div>
+                                    <div class="col-md-8"><textarea class="form-control" readonly="readonly" id="txt_modal_detail_facodeolddesc" tabindex="-1" @pointer></textarea></div>
                                 </div>
                             </div>
                             <div class="row" style="margin-bottom:10px;">
                                 <div class="col-md-6">
                                     <div class="col-md-4"><label>FA Code (New)</label></div>
-                                    <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_facodenew" tabindex="-1"/></div>
+                                    <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_facodenew" tabindex="-1" @pointer/></div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="col-md-4"><label>FA Code Desc (New)</label></div>
-                                    <div class="col-md-8"><textarea class="form-control" readonly="readonly" id="txt_modal_detail_facodenewdesc" tabindex="-1"></textarea></div>
+                                    <div class="col-md-8"><textarea class="form-control" readonly="readonly" id="txt_modal_detail_facodenewdesc" tabindex="-1" @pointer></textarea></div>
                                 </div>
                             </div>
                             <div class="row" style="margin-bottom:10px;">
                                 <div class="col-md-6">
                                     <div class="col-md-4"><label>Excise Good Type</label></div>
                                     <div class="col-md-8">
-                                        @Html.DropDownList("producttype", Model.ProductTypeList, "Select", new { @class = " selectpicker form-control change_tariff", @id = "txt_modal_detail_excisegoodtype" })
+                                        @if (pointer != "")
+                                        {
+                                            @Html.DropDownList("producttype", Model.ProductTypeList, "Select", new { @class = " selectpicker form-control change_tariff", @id = "txt_modal_detail_excisegoodtype", @disabled = "true" })
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownList("producttype", Model.ProductTypeList, "Select", new { @class = " selectpicker form-control change_tariff", @id = "txt_modal_detail_excisegoodtype" })
+                                        }
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="col-md-4"><label>Company Tier</label></div>
                                     <div class="col-md-8">
-                                        @Html.DropDownList("companytier", Model.CompanyTierList, "Select", new { @class = " selectpicker form-control", @id = "txt_modal_detail_companytier" })
-
-
-                                        @*<select class="selectpicker form-control" id="txt_modal_detail_companytier">
-                                            <option value="">Select</option>
-                                            <option value="1">I</option>
-                                            <option value="2">II</option>
-                                            <option value="3">III</option>
-                                        </select>*@
+                                        @if (pointer != "")
+                                        {
+                                            @Html.DropDownList("companytier", Model.CompanyTierList, "Select", new { @class = " selectpicker form-control", @id = "txt_modal_detail_companytier", @disabled = "true" })
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownList("companytier", Model.CompanyTierList, "Select", new { @class = " selectpicker form-control", @id = "txt_modal_detail_companytier" })
+                                        }
                                     </div>
                                 </div>
                             </div>
                             <div class="row" style="margin-bottom:10px;">
                                 <div class="col-md-6">
                                     <div class="col-md-4"><label>HJE Per Pack</label></div>
-                                    <div class="col-md-8"><input type="text" class="form-control numeric-form change_tariff change_hjeperbatang" id="txt_modal_detail_hjeperpack" /></div>
+                                    <div class="col-md-8"><input type="text" class="form-control numeric-form change_tariff change_hjeperbatang" id="txt_modal_detail_hjeperpack" @pointer/></div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="col-md-4"><label>HJE (Per Batang/Gr)</label></div>
-                                    <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_hjeperbatang" tabindex="-1"/></div>
+                                    <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_hjeperbatang" tabindex="-1" @pointer/></div>
                                 </div>
                             </div>
                             <div class="row" style="margin-bottom:10px;">
                                 <div class="col-md-6">
                                     <div class="col-md-4"><label>Content</label></div>
                                     <div class="col-md-4">
-                                        <input type="text" class="form-control change_hjeperbatang numeric-form" id="txt_modal_detail_content" />
+                                        <input type="text" class="form-control change_hjeperbatang numeric-form" id="txt_modal_detail_content" @pointer/>
                                     </div>
                                     <div class="col-md-4">
-                                        <select class="selectpicker form-control" id="txt_modal_detail_unit">
+                                        <select class="selectpicker form-control" id="txt_modal_detail_unit" @{if (pointer != "") { <text> disabled </text> } }>
                                             <option value="">Select</option>
                                             <option value="Batang">Batang</option>
                                             <option value="Gram">Gram</option>
@@ -203,13 +229,13 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="col-md-4"><label>Tariff</label></div>
-                                    <div class="col-md-8"><input type="text" class="form-control" id="txt_modal_detail_tariff" /></div>
+                                    <div class="col-md-8"><input type="text" class="form-control" id="txt_modal_detail_tariff" @pointer/></div>
                                 </div>
                             </div>
                             <div class="row" style="margin-bottom:10px;">
                                 <div class="col-md-6">
                                     <div class="col-md-4"><label>Packaging Material</label></div>
-                                    <div class="col-md-8"><input type="text" class="form-control" id="txt_modal_detail_packaging_material" /></div>
+                                    <div class="col-md-8"><input type="text" class="form-control" id="txt_modal_detail_packaging_material" @pointer /></div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="col-md-4"><label>Market</label></div>
@@ -217,44 +243,56 @@
                                 </div>
                             </div>
                             <div class="row div_new_brand" style="margin-bottom:10px;">
-                                <div class="col-md-6">
-                                    <div class="col-md-4"><label>Front Side</label></div>
-                                    <div class="col-md-8">
-                                        <input type="text" class="form-control" id="txt_modal_detail_front_side" />
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="col-md-4"><label>Back Side</label></div>
-                                    <div class="col-md-8">
-                                        <input type="text" class="form-control" id="txt_modal_detail_back_side" />
+                                <div class="col-md-12">
+                                    <div class="col-md-2"><label>Front Side</label></div>
+                                    <div class="col-md-10">
+                                        <textarea class="form-control" id="txt_modal_detail_front_side" cols="40" @pointer></textarea>
+                                        @*<input type="text" class="form-control" id="txt_modal_detail_front_side" />*@
                                     </div>
                                 </div>
                             </div>
                             <div class="row div_new_brand" style="margin-bottom:10px;">
-                                <div class="col-md-6">
-                                    <div class="col-md-4"><label>Left Side</label></div>
-                                    <div class="col-md-8">
-                                        <input type="text" class="form-control" id="txt_modal_detail_left_side" />
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="col-md-4"><label>Right Side</label></div>
-                                    <div class="col-md-8">
-                                        <input type="text" class="form-control" id="txt_modal_detail_right_side" />
+                                <div class="col-md-12">
+                                    <div class="col-md-2"><label>Back Side</label></div>
+                                    <div class="col-md-10">
+                                        <textarea class="form-control" id="txt_modal_detail_back_side" cols="40" @pointer></textarea>
+                                        @*<input type="text" class="form-control" id="txt_modal_detail_back_side" />*@
                                     </div>
                                 </div>
                             </div>
                             <div class="row div_new_brand" style="margin-bottom:10px;">
-                                <div class="col-md-6">
-                                    <div class="col-md-4"><label>Top Side</label></div>
-                                    <div class="col-md-8">
-                                        <input type="text" class="form-control change_hjeperbatang" id="txt_modal_detail_top_side" />
+                                <div class="col-md-12">
+                                    <div class="col-md-2"><label>Left Side</label></div>
+                                    <div class="col-md-10">
+                                        <textarea class="form-control" id="txt_modal_detail_left_side" cols="40" @pointer></textarea>
+                                        @*<input type="text" class="form-control" id="txt_modal_detail_left_side" />*@
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="col-md-4"><label>Bottom Side</label></div>
-                                    <div class="col-md-8">
-                                        <input type="text" class="form-control" id="txt_modal_detail_bottom_side" />
+                            </div>
+                            <div class="row div_new_brand" style="margin-bottom:10px;">
+                                <div class="col-md-12">
+                                    <div class="col-md-2"><label>Right Side</label></div>
+                                    <div class="col-md-10">
+                                        <textarea class="form-control" id="txt_modal_detail_right_side" cols="40" @pointer></textarea>
+                                        @*<input type="text" class="form-control" id="txt_modal_detail_right_side" />*@
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row div_new_brand" style="margin-bottom:10px;">
+                                <div class="col-md-12">
+                                    <div class="col-md-2"><label>Top Side</label></div>
+                                    <div class="col-md-10">
+                                        <textarea class="form-control" id="txt_modal_detail_top_side" cols="40" @pointer></textarea>
+                                        @*<input type="text" class="form-control change_hjeperbatang" id="txt_modal_detail_top_side" />*@
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row div_new_brand" style="margin-bottom:10px;">
+                                <div class="col-md-12">
+                                    <div class="col-md-2"><label>Bottom Side</label></div>
+                                    <div class="col-md-10">
+                                        <textarea class="form-control" id="txt_modal_detail_bottom_side" cols="40" @pointer></textarea>
+                                        @*<input type="text" class="form-control" id="txt_modal_detail_bottom_side" />*@
                                     </div>
                                 </div>
                             </div>
@@ -263,7 +301,11 @@
                     </div>
                 </div>
                 <div class="clearfix">
-                    <button type="button" class="btn btn-primary pull-right" id="btn_saveDetailItem">Save</button>
+                    @{ if (pointer == "")
+                        {
+                            <button type="button" class="btn btn-primary pull-right" id="btn_saveDetailItem">Save</button>
+                        }
+                    }
                     <button type="button" class="btn btn-primary pull-right" id="btn_closeDetailItem" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -303,7 +345,8 @@
                                         </h4>
                                     </div>
                                     <div id="collapse4" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading4">
-                                        <fieldset @if (Model.ActionName != "UpdateSKEPBrand") { <text> disabled </text> } style="border:none;">
+                                        <fieldset @if (Model.ActionName != "UpdateSKEPBrand")
+                                        { <text> disabled </text> } style="border:none;">
                                             <div class="panel-body">
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -326,7 +369,8 @@
                                                     <div class="col-md-6">
                                                         <div class="col-md-7"><label>Decree Date</label></div>
                                                         <div class="col-md-5">
-                                                            <div @if (Model.ActionName == "UpdateSKEPBrand"){ <text>class="input-group date" </text> }>
+                                                            <div @if (Model.ActionName == "UpdateSKEPBrand")
+                                                            { <text>class="input-group date" </text> }>
                                                                 @Html.TextBoxFor(model => model.ViewModel.Decree_Date, "{0:dd MMM yyyy}", new { @class = "form-control" })
                                                                 @if (Model.ActionName == "UpdateSKEPBrand")
                                                                 {
@@ -441,7 +485,13 @@
                     <div class="col-lg-12 table-container">
                         <div class="white-wrapper">
                             <div class="row">
-                                <div id="div-printout" style="padding:50px;"></div>
+                                <div class="row">
+                                    @if (Model.ViewModel.Status == "DRAFT_NEW_STATUS" || Model.ViewModel.Status == "DRAFT_EDIT_STATUS" || Model.ViewModel.Status == "WAITING_POA_APPROVAL")
+                                    {
+                                        <div class="watermark">DRAFTED</div>
+                                    }
+                                    <div id="div-printout" style="padding:50px;"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -457,12 +507,12 @@
 </div>
 
 
-foreach (var confirmation in Model.Confirmation)
-{
-    @Html.Partial("_ConfirmDialog", confirmation)
+    foreach (var confirmation in Model.Confirmation)
+    {
+        @Html.Partial("_ConfirmDialog", confirmation)
+    }
 }
 
-}
 
 
 <div class="modal fade in modal_ChangeStatus ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
@@ -526,6 +576,7 @@ foreach (var confirmation in Model.Confirmation)
                 <p align="center"><i class="fa fa-file"></i>&nbsp;<a href="@templateurl" download> Download Template</a></p>
                 <form id="form_ImportItems" method="post" enctype="multipart/form-data">
                     <div class="col-lg-8">
+                        @Html.HiddenFor(model => model.ViewModel.Registration_ID, new { @id = "txt_Registration_id" })
                         <input type="hidden" name="submission_date" id="txt_submissiondate_import" />
                         <input type="hidden" name="item_notin" id="txt_hditemnotin_import" value="" />
                         <input type="hidden" name="registration_type" id="txt_hdregistration_type" value="" />
@@ -544,7 +595,7 @@ foreach (var confirmation in Model.Confirmation)
 
 
 @using (Html.BeginForm("DownloadPrintOut", "BRBrandRegistration", FormMethod.Post, new { @id = "form_DownloadPrintout" }))
-                                                                            {
+{
 @Html.HiddenFor(model => model.ViewModel.Registration_ID, new { @id = "txt_hd_id_forprint" })
 @Html.HiddenFor(model => model.ViewModel.Registration_No, new { @id = "txt_hd_formnumber_forprint" })
 }
@@ -557,7 +608,7 @@ foreach (var confirmation in Model.Confirmation)
 <link rel="stylesheet" type="text/css" href="../../Content/themes/base/all.css">
 
 <script src="~/Scripts/js/custom.js"></script>
-<script src="~/Scripts/brand-registration-trans/main_brand.js?v=16"></script>
+<script src="~/Scripts/brand-registration-trans/main_brand.js?v=24"></script>
 <script src="~/Scripts/tinymce/tinymce.min.js"></script>
 
 <script type="text/javascript" language="javascript" class="init">
@@ -594,6 +645,7 @@ foreach (var confirmation in Model.Confirmation)
         TinyMceInit();
         var urlBrNumber = '@Url.Action("GetLastRecordBR", "BRBrandRegistration")';
         var uploadUrlBrand = '@Url.Action("UploadFilesBrand", "BRBrandRegistration")';
+
         attach();
         setupDataTables();
 
@@ -614,27 +666,6 @@ foreach (var confirmation in Model.Confirmation)
             create();
         });
     });
-
-    ajaxMasterBrand('@Url.Action("ajaxGetBrandList", "BRBrandRegistration")', null);
-
-    function ajaxMasterBrand(url, formData) {
-        $.ajax({
-            type: 'POST',
-            url: url,
-            data: formData,
-            success: function (data) {
-                var availableTags = [];
-                if (data) {
-                    for (i = 1; i <= data.length; i++) {
-                        availableTags.push(data[i - 1].Value);
-                    }
-                }
-                $("#txt_modal_detail_brandname").autocomplete({
-                    source: availableTags
-                });
-            }
-        });
-    }
 
     function create() {
 

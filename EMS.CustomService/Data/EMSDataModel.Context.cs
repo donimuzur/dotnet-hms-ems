@@ -80,12 +80,13 @@ namespace Sampoerna.EMS.CustomService.Data
         public virtual DbSet<BRAND_REGISTRATION_REQ_DETAIL> BRAND_REGISTRATION_REQ_DETAIL { get; set; }
         public virtual DbSet<RECEIVED_DECREE_DETAIL> RECEIVED_DECREE_DETAIL { get; set; }
         public virtual DbSet<RECEIVED_DECREE> RECEIVED_DECREE { get; set; }
-        public virtual DbSet<vwBrandRegistration> vwBrandRegistration { get; set; }
         public virtual DbSet<vwPenetapanSKEP> vwPenetapanSKEP { get; set; }
-        public virtual DbSet<EXCISE_CREDIT_APPROVED_DETAIL> EXCISE_CREDIT_APPROVED_DETAIL { get; set; }
         public virtual DbSet<USER_PRINTOUT_LAYOUT> USER_PRINTOUT_LAYOUT { get; set; }
         public virtual DbSet<vwProductDevDetail> vwProductDevDetail { get; set; }
         public virtual DbSet<PRODUCT_DETAIL_VIEW> PRODUCT_DETAIL_VIEWSet { get; set; }
         public virtual DbSet<PRODUCT_DEVELOPMENT_UPLOAD> PRODUCT_DEVELOPMENT_UPLOAD { get; set; }
+        public virtual DbSet<vwBrandRegistration> vwBrandRegistration { get; set; }
+        public virtual DbSet<EXCISE_CREDIT_APPROVED_DETAIL> EXCISE_CREDIT_APPROVED_DETAIL { get; set; }
+        public virtual DbSet<CK1_EXCISE_CALCULATE_ADJUST> CK1_EXCISE_CALCULATE_ADJUST { get; set; }
     }
 }

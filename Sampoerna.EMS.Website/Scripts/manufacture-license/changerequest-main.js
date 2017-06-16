@@ -937,6 +937,12 @@ $(document).on("click", "#btn_change_printoutlayout", function () {
 
 $(document).on("click", "#btn-tab-changelog", function () {
     var crid = $("#txt_hd_id").val();
+    var now = new Date();
+    var Token = now.getDate().toString() + now.getDate().toString() + (now.getMonth() + 1).toString()
+                + now.getFullYear().toString()
+                + now.getHours().toString()
+                + now.getMinutes().toString()
+                + now.getSeconds().toString();
 
     $("#customloader").show();
 
@@ -944,7 +950,10 @@ $(document).on("click", "#btn-tab-changelog", function () {
         url: getUrl("ChangeLog"),
         dataType: 'html',
         cache: false,
-        data: { CRID: crid},
+        data: {
+            CRID: crid,
+            Token: Token
+        },
         success: function (data) {
             $('#divChangeLog').html(data);
 

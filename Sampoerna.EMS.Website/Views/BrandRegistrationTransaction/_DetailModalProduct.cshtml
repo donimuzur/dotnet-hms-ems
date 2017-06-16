@@ -20,7 +20,7 @@
                 <div class="modal-body">
                     <div class="container-wrap">
                         @Html.HiddenFor(model => model.DetailModel.PD_DETAIL_ID)
-                        @Html.HiddenFor(model => model.DetailModel.Werks)
+                        @Html.HiddenFor(model => model.DetailModel.Werks, new { @id = "PlantCode" })
                         @Html.HiddenFor(model => model.DetailModel.Bukrs)
                         @Html.HiddenFor(model => model.DetailModel.Request_No)
                         @Html.HiddenFor(model => model.DetailModel.Is_Import)
@@ -54,6 +54,7 @@
                                                                                       
                                             <div class="col-md-6">
                                                 <div class="col-md-4"><label>Plant</label></div>
+                                                
                                                 @*<div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Werks, Model.PlantList, new { @class = "form-control", @id = "PlantSelector", @disabled="disabled" })</div>*@
                                                 <div class="col-md-8">@Html.TextBoxFor(model => model.DetailModel.Plant.NAME1, new { @class = "form-control", @type = "text", @id = "PlantSelector", @readonly = "true" })</div>
                                                     
@@ -65,8 +66,14 @@
                                                     <legend><label>FA Code (Old)</label></legend>
                                                     <div class="row">
                                                         <div class="col-md-4"><label>FA Code</label></div>
-                                                        <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Fa_Code_Old, Model.MaterialList,  new { @class = " form-control", @id = "OldSelector" })</div>
-                                                    </div>
+                                                        @*<div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Fa_Code_Old, Model.MaterialListOld,  new { @class = " form-control", @id = "OldSelector" })</div>*@
+                                                        <div class="col-md-8">
+                                                            @Html.HiddenFor(model => model.DetailModel.Fa_Code_Old)
+                                                            <select class="form-control" id="OldSelector" name="OldSelector">
+                                                                <option value="">@Model.DetailModel.Fa_Code_Old</option>
+                                                            </select>
+                                                        </div>                                                  
+                                                     </div>
                                                     &nbsp;
                                                     <div class="row">
                                                         <div class="col-md-4"><label>Description</label></div>
@@ -79,8 +86,14 @@
                                                     <legend><label>FA Code (New)</label></legend>
                                                     <div class="row">
                                                         <div class="col-md-4"><label>FA Code</label></div>
-                                                        <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Fa_Code_New, Model.MaterialList,  new { @class = "form-control", @id = "NewSelector" })</div>
-                                                    </div>
+                                                        @*<div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Fa_Code_New, Model.MaterialListNew,  new { @class = "form-control", @id = "NewSelector" })</div>*@
+                                                        <div class="col-md-8">
+                                                            @Html.HiddenFor(model => model.DetailModel.Fa_Code_New)
+                                                            <select class="form-control" id="NewSelector" name="NewSelector">
+                                                                <option value="">@Model.DetailModel.Fa_Code_New</option>
+                                                            </select>
+                                                        </div>
+                                                      </div>
                                                     &nbsp;
                                                     <div class="row">
                                                         <div class="col-md-4"><label>Description</label></div>
@@ -90,7 +103,8 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-6">                                                
+                                            <div class="col-md-6">        
+                                                             
                                                 <div class="col-md-4"><label>Market</label></div>
                                                 <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Market_Id, Model.MarketList, new { @class = "form-control", @id = "MarketSelector", @disabled="disabled" })</div>
                                             </div>
@@ -139,15 +153,16 @@
                                                                 <div class="row">
                                                                     <div class="form-group">
                                                                         <div class="col-md-4">
-                                                                            <label for="@String.Format("supportDocFile{0}", doc.Id)">@doc.Name</label>
+                                                                            <label for="@doc.Id">@doc.Name</label>
                                                                         </div>
                                                                         <div class="col-md-8">
                                                                             <div class="form-group">
-                                                                                <input type="file" accept="application/pdf" id="@String.Format("supportDocFile{0}", doc.Id)" class="file" required name="@String.Format("supportDocFile{0}", doc.Id)" />
+                                                                                <input type="file" accept="application/pdf" id="@string.Format("supportDocFile{0}", doc.Id)" class="file" required name="@string.Format("supportDocFile{0}", doc.Id)" />
                                                                                 <div class="col-md-12">
                                                                                     <div class="col-md-10">
                                                                                         <input type="text" class="form-control" readonly placeholder="Select file" id="supportDocText@(doc.Id)" required />
                                                                                     </div>
+                                                                                   
                                                                                     <div class="col-md-2">
                                                                                         <span class="input-group-btn">
                                                                                             <button class="browse btn btn-blue btn-sm" type="button" id="supportDoc@(doc.Id)" style="border-radius:20px!important">Browse</button>
@@ -157,17 +172,18 @@
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="form-group">
-                                                                        <div class="col-md-4">
-                                                                            <label>Uploaded Files : </label>
+                                                                    @if (doc.FileListUpload != null && doc.FileListUpload.Count > 0)
+                                                                    {
+                                                                        <div class="form-group">
+                                                                            <div class="col-md-4">
+                                                                                <label>Uploaded Files : </label>
+                                                                            </div>
+                                                                            <div class="col-md-8">
+                                                                                <a href="@string.Format("{0}", Url.Content(doc.FileListUpload[0].Path_Url))" title="@doc.Name" target="_blank">@string.Format("{0} uploaded at {1}", doc.Name, doc.FileListUpload[0].Upload_Date.ToString())</a><br />
+                                                                            </div>
                                                                         </div>
-                                                                        <div class="col-md-8">
-                                                                            <a href="@string.Format("{0}", Url.Content(doc.FileListUpload[0].Path_Url.Remove(0, 1)))" title="@doc.Name" target="_blank">@string.Format("{0} uploaded at {1}", doc.Name, doc.FileListUpload[0].Upload_Date.ToString())</a><br />
-
-                                                                        </div>
-                                                                    </div>
+                                                                    }                                                                                                                                          
                                                                 </div>
-
                                                             }
                                                         </div>
 
@@ -270,7 +286,7 @@
         </div>
     </div>
 </div>
-@section scripts
+@*@section scripts
 {
 <script src="~/Scripts/js/custom.js"></script>
 <script type="text/javascript" language="javascript">
@@ -386,4 +402,4 @@
     //    });
     //}
 </script>
-}
+}*@

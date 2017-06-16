@@ -20,6 +20,7 @@ namespace Sampoerna.EMS.CustomService.Data
             this.INTERVIEW_REQUEST_DETAIL = new HashSet<INTERVIEW_REQUEST_DETAIL>();
             this.MASTER_CITY = new HashSet<MASTER_CITY>();
             this.T001W = new HashSet<MASTER_PLANT>();
+            this.T001W1 = new HashSet<MASTER_PLANT>();
         }
     
         public long STATE_ID { get; set; }
@@ -37,5 +38,7 @@ namespace Sampoerna.EMS.CustomService.Data
         public virtual ICollection<MASTER_PLANT> T001W { get; set; }
         public virtual USER USER { get; set; }
         public virtual USER USER1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<MASTER_PLANT> T001W1 { get; set; }
     }
 }

@@ -266,7 +266,7 @@
                             <div class="col-lg-12 table-container">
                                 <div class="white-wrapper">
                                     <div class="row">
-                                        @if (Model.LastApprovedStatusID == 23 || Model.LastApprovedStatusID == 24 || Model.LastApprovedStatusID == 26)
+                                        @if (Model.Status == "DRAFT_NEW_STATUS" || Model.Status == "DRAFT_EDIT_STATUS" || Model.Status == "WAITING_POA_APPROVAL")
                                         {
                                             <div class="watermark">DRAFTED</div>
                                         }

@@ -54,7 +54,7 @@
                                     <input id="btn-filter" type="submit" class="btn btn-blue full" value="FILTER" />
                                 </div>
                                 <div class="col-md-6">
-                                    <button type="button" id="btn-reset-filter" class="btn btn-blue full">RESET</button>
+                                    <a href="~/BrandRegistrationTransaction/IndexProductDevelopment" class="btn btn-blue full" id="btn-reset-filter">RESET</a>
                                 </div>
                             </div>
                         </div>
@@ -87,6 +87,12 @@
         });
 
         function setupDataTables() {
+            $('#btn-reset-filter').click(function () {
+                $('.loading').show();
+            });
+            $('#btn-filter').click(function () {
+                $('.loading').show();
+            });
 
             var table = null;
             if ($.fn.dataTable.isDataTable('#proDevTable')) {
@@ -100,7 +106,8 @@
                       "language": {
                           "zeroRecords": "No records found",
                           "infoFiltered": "(filtered from _MAX_ total records)"
-                      }
+                      },
+                      "order": [[4, "desc"]]
                   });
 
 

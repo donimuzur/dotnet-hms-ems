@@ -3350,8 +3350,8 @@ namespace Sampoerna.EMS.BLL
             //set exclude on mapper
             //get POA Data
             string poaId;
-            var poaInfo = _poaBll.GetDetailsById(dbData.APPROVED_BY);
-            poaId = poaInfo == null ? dbData.CREATED_BY : dbData.APPROVED_BY;
+            var poaInfo = _poaBll.GetDetailsById(dbData.CREATED_BY);
+            poaId = poaInfo == null ? dbData.APPROVED_BY : dbData.CREATED_BY;
             //var poaId = string.IsNullOrEmpty(dbData.APPROVED_BY) ? dbData.CREATED_BY : dbData.APPROVED_BY;
             rc = SetPoaData(rc, poaId);
 
@@ -3387,8 +3387,8 @@ namespace Sampoerna.EMS.BLL
             //get POA Data
             //var poaId = string.IsNullOrEmpty(dbData.APPROVED_BY) ? dbData.CREATED_BY : dbData.APPROVED_BY;
             string poaId;
-            var poaInfo = _poaBll.GetDetailsById(dbData.APPROVED_BY);
-            poaId = poaInfo == null ? dbData.CREATED_BY : dbData.APPROVED_BY;
+            var poaInfo = _poaBll.GetDetailsById(dbData.CREATED_BY);
+            poaId = poaInfo == null ? dbData.APPROVED_BY : dbData.CREATED_BY;
             rc = SetPoaData(rc, poaId);
 
 

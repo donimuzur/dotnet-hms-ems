@@ -20,7 +20,7 @@ using System.Web.Mvc;
 using static Sampoerna.EMS.Core.Enums;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.BusinessObject.Inputs;
-
+using Sampoerna.EMS.CustomService.Data;
 namespace Sampoerna.EMS.Website.Controllers
 {
     public class SupportDocController : BaseController
@@ -525,14 +525,26 @@ namespace Sampoerna.EMS.Website.Controllers
         #region Additional Business Logic Handlers
         List<WorkflowHistoryViewModel> GetWorkflowHistory(long id)
         {
-
             var workflowInput = new GetByFormTypeAndFormIdInput();
             workflowInput.FormId = id;
             workflowInput.FormType = Enums.FormType.SupportingDocument;
             var workflow = this.workflowHistoryBLL.GetByFormTypeAndFormId(workflowInput).OrderBy(x => x.WORKFLOW_HISTORY_ID);
 
-            return Mapper.Map<List<WorkflowHistoryViewModel>>(workflow);
+            var submittedStatus = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingAdminApproval);
+            var workflowList = Mapper.Map<List<WorkflowHistoryViewModel>>(workflow);
+            var fratio = service.Find(id);
+            if (fratio == null)
+            {
+                throw new Exception("Specified supporting document data not found!");
+            }
 
+            if (fratio.LASTAPPROVED_STATUS == submittedStatus.REFF_ID)
+            {
+                var additional = refService.GetAdminApproverList();
+                workflowList.Add(Mapper.Map<WorkflowHistoryViewModel>(additional));
+            }
+
+            return workflowList;
         }
 
         [HttpPost]

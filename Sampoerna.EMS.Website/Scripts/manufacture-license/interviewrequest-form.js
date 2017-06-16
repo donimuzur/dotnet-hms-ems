@@ -867,7 +867,7 @@ $(document).on("click", "#btnApprove", function () {
 });
 
 $(document).on("click", "#btnApproveFinal", function () {    
-    ChangeStatus("approve", "COMPLETED", "");
+    ChangeStatus("approve_final", "COMPLETED", "");
 });
 
 $(document).on("click", "#btn_add_newkppbc", function () {    
@@ -972,13 +972,22 @@ $(document).on("click", "#btn_change_printoutlayout", function () {
 
 $(document).on("click", "#btn-tab-changeslog", function () {
     var isalreadyloaded = $("#txt_ischangelog_loaded").val();
+    var now = new Date();
+    var Token = now.getDate().toString() + now.getDate().toString() + (now.getMonth() + 1).toString()
+                + now.getFullYear().toString()
+                + now.getHours().toString()
+                + now.getMinutes().toString()
+                + now.getSeconds().toString();
     if (isalreadyloaded == "0") {
         var ID = $("#txt_hd_id").val();
         $("#customloader").show();
         $.ajax({
             url: getUrl("ChangeLog"),
             dataType: 'html',
-            data: { ID: ID },
+            data: {
+                ID: ID,
+                Token: Token
+            },
             success: function (data) {
                 $('#divChangeLog').html(data);
                 // DataTable
