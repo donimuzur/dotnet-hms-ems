@@ -887,7 +887,7 @@
             setupDataTables();
         }
 
-        @*function mapBrowseAction() {
+        function mapBrowseAction() {
             console.log("Map additional action");
            @foreach (var doc in Model.SupportingDocuments)
             {
@@ -917,7 +917,7 @@
 
                 </text>
             }
-        }*@
+        }
 
 
         function loadOtherDocs(detailID){
@@ -1112,7 +1112,7 @@
             mapBrowseAction();
             loadOtherDocs(idItem);
             $("#addOtherDocBtn").on("click", _addOtherDoc);
-            setupDataTables();
+            
 
         });
 
@@ -1141,6 +1141,7 @@
                 GetFaCodeUsedByPlant(urlFaCodeUsedByPlant, plantCode);
 
                 $('#myModalItemLock').modal('hide');
+                setupDataTables();
             })
             .error(function (error) {
       //          console.log("failed load item");
