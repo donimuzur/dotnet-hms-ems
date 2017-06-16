@@ -1326,11 +1326,11 @@ namespace Sampoerna.EMS.Website.Controllers
             {
 
                 var margin = Convert.ToSingle(System.Configuration.ConfigurationManager.AppSettings["DefaultMargin"]);
-                var leftMargin = iTextSharp.text.Utilities.MillimetersToPoints(margin);
-                var rightMargin = iTextSharp.text.Utilities.MillimetersToPoints(margin);
-                var topMargin = iTextSharp.text.Utilities.MillimetersToPoints(margin);
-                var bottomtMargin = iTextSharp.text.Utilities.MillimetersToPoints(margin);
-                var document = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, leftMargin, rightMargin, topMargin, bottomtMargin);
+                var leftMargin = iTextSharp.text.Utilities.MillimetersToPoints(5);
+                var rightMargin = iTextSharp.text.Utilities.MillimetersToPoints(5);
+                var topMargin = iTextSharp.text.Utilities.MillimetersToPoints(5);
+                var bottomtMargin = iTextSharp.text.Utilities.MillimetersToPoints(5);
+                var document = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4.Rotate(), leftMargin, rightMargin, topMargin, bottomtMargin);
                 var writer = PdfWriter.GetInstance(document, stream);
                 long LastApprovedStatusID = excise.LAST_STATUS;
                 if ((LastApprovedStatusID == refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Draft).REFF_ID) || (LastApprovedStatusID == refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Edited).REFF_ID) || (LastApprovedStatusID == refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingPoaApproval).REFF_ID))
