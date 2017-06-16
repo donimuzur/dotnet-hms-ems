@@ -115,7 +115,7 @@
                                             <div class="toggle-component">
                                                 <div class="checkbox">
                                                     <label>
-                                                        <input type="checkbox" id="selecctall" /><b>Select All</b>
+                                                        <input type="checkbox" id="selecctalldetail" /><b>Select All</b>
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
@@ -209,13 +209,13 @@
             $('.checkexport').each(function () {
                 this.checked = false;
             });
-            //setupDataTables();
+            setupDataTables();
 
-            $('#checkboxDefault1').prop('checked', true);
-            $('#checkboxDefault2').prop('checked', true);
-            $('#checkboxDefault3').prop('checked', true);
-            $('#checkboxDefault4').prop('checked', true);
-            $('#checkboxDefault5').prop('checked', true);
+            //$('#checkboxDefault1').prop('checked', true);
+            //$('#checkboxDefault2').prop('checked', true);
+            //$('#checkboxDefault3').prop('checked', true);
+            //$('#checkboxDefault4').prop('checked', true);
+            //$('#checkboxDefault5').prop('checked', true);
 
             });
 
@@ -261,11 +261,11 @@
                     table.column(i).visible(false);
                 }
 
-                table.column(1).visible(true);
-                table.column(2).visible(true);
-                table.column(3).visible(true);
-                table.column(4).visible(true);
-                table.column(5).visible(true);
+                //table.column(1).visible(true);
+                //table.column(2).visible(true);
+                //table.column(3).visible(true);
+                //table.column(4).visible(true);
+                //table.column(5).visible(true);
                
             } else {
                 $('.checkexport').each(function () {
@@ -284,13 +284,14 @@
             }
 
             $('#selecctall').change(function () {
+                debugger;
                 if ($(this).is(':checked')) {
                     $('.checkexport').prop('checked', this.checked);
                     // Show a column
                     $('#productTable').parents('div.dataTables_wrapper').first().show();
                     var table = $('#productTable').DataTable();
                     for (var i = 0; i < 17; i++) {
-                        table.column(i).visible(true);
+                        table.column(i).visible(this.checked);
 
                     }
                     table.column(0).visible(true);
@@ -304,7 +305,7 @@
                     });
                     var table = $('#productTable').DataTable();
                     for (var i = 0; i < 17; i++) {
-                        table.column(i).visible(false);
+                        table.column(i).visible(this.checked);
 
                     }
                     $('#productTable').parents('div.dataTables_wrapper').first().hide();
