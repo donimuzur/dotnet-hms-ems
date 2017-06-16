@@ -1,10 +1,11 @@
-﻿using Sampoerna.EMS.CustomService.Repositories;
+﻿using Sampoerna.EMS.Core;
+using Sampoerna.EMS.CustomService.Repositories;
 using Sampoerna.EMS.CustomService.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using static Sampoerna.EMS.Core.Enums;
+//using static Sampoerna.EMS.Core.Enums;
 using Sampoerna.EMS.Utils;
 
 namespace Sampoerna.EMS.CustomService.Services.MasterData
@@ -215,7 +216,7 @@ namespace Sampoerna.EMS.CustomService.Services.MasterData
                     if (item.Key == "FORM_ID")
                     {
                         //var text = Enum.GetName(typeof(FormList), item.Value);
-                        var text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(FormList), item.Value.ToString()));
+                        var text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Enums.FormList), item.Value.ToString()));
                         if (item.Value != null)
                             newValue = text;
                     }

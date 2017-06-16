@@ -28,7 +28,7 @@ using System.Web;
 using Sampoerna.EMS.Website.Utility;
 using System.Globalization;
 using Sampoerna.EMS.Utils;
-using static Sampoerna.EMS.Core.Enums;
+//using static Sampoerna.EMS.Core.Enums;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Models.FileUpload;
@@ -594,7 +594,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     if (Action == "approve")
                     {
-                        penetapanSKEPService.InsertToBrand(ReceiveID);
+                        penetapanSKEPService.InsertToBrand(ReceiveID,"");
                     }
                     var Creator = refService.GetPOA(updated.CREATED_BY);
                     var CreatorMail = Creator.POA_EMAIL;

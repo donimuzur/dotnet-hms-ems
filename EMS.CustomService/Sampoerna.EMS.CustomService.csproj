@@ -321,7 +321,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sampoerna.EMS.Core\Sampoerna.EMS.Core.csproj">
-      <Project>{B4021A69-2836-401B-8E06-92E8A6008219}</Project>
+      <Project>{b4021a69-2836-401b-8e06-92e8a6008219}</Project>
       <Name>Sampoerna.EMS.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Sampoerna.EMS.Utils\Sampoerna.EMS.Utils.csproj">
