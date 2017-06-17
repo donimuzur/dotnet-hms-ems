@@ -1370,6 +1370,16 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var documents = new List<vwProductDevelopmentModel>();
                 var data = productDevelopmentService.GetProductDetailView();
+                if(!string.IsNullOrEmpty(Creator))
+                {
+                    data = data.Where(x => x.CREATED_BY == Creator);
+                }
+
+                if (!string.IsNullOrEmpty(POA))
+                {
+                    data = data.Where(x => x.LASTAPPROVED_BY == POA);
+                }
+
                 if (data.Any())
                 {
                     if ((modelExport != null) && (modelExport.DetailExportModel.Request_No || modelExport.DetailExportModel.Fa_Code_Old || modelExport.DetailExportModel.Fa_Code_New || modelExport.DetailExportModel.Hl_Code || modelExport.DetailExportModel.Is_Import || modelExport.DetailExportModel.Market_Id || modelExport.DetailExportModel.Werks) && isNeedDetails)
