@@ -889,9 +889,12 @@
 
         function mapBrowseAction() {
             console.log("Map additional action");
+            debugger;
            @foreach (var doc in Model.SupportingDocuments)
-            {
-                <text>
+           {
+               
+               <text>
+            
                  handleBrowseEvent("supportDoc" + @doc.Id, "supportDocFile" + @doc.Id, "supportDocText" + @doc.Id);
                 $("#supportDocFile" + @doc.Id).change(function(){
                     var input =document.getElementById("supportDocFile" + @doc.Id);
@@ -915,7 +918,8 @@
                     }
                 });
 
-                </text>
+                
+               </text>
             }
         }
 
@@ -1100,6 +1104,7 @@
 
 
         $(document).on('click', '.itemDisplay', function () {
+            
             var idItem = $(this).data('id');
             console.log("id item : " + idItem);
            // setupDataTables();
@@ -1108,16 +1113,14 @@
             existingOtherDocs = {};
             newOtherDocs = {};
             newOtherDocsName = {};
-            handleBrowseEvent("browseOtherDoc", "browseOtherDocFile", "browseOtherDocText");
-            mapBrowseAction();
-            loadOtherDocs(idItem);
-            $("#addOtherDocBtn").on("click", _addOtherDoc);
+            
             
 
         });
 
 
         function getDetailItem(idVal) {
+            
             var docsItem = $("#DetailItem");
            // console.log(idVal);
             $.ajax({
@@ -1142,6 +1145,10 @@
 
                 $('#myModalItemLock').modal('hide');
                 setupDataTables();
+                handleBrowseEvent("browseOtherDoc", "browseOtherDocFile", "browseOtherDocText");
+                mapBrowseAction();
+                loadOtherDocs(idItem);
+                $("#addOtherDocBtn").on("click", _addOtherDoc);
             })
             .error(function (error) {
       //          console.log("failed load item");
@@ -1193,6 +1200,19 @@
             //    alert(val.id);
         }
 
+        //function handleBrowseEvent(id, fileId, textId) {
+        //    console.log("handle browse");
+        //    //console.log("registered: " + id);
+        //    $("#" + id).on('click', function () {
+        //        var file = $("#" + fileId);
+        //        file.trigger('click');
+        //    });
+        //    $("#" + fileId).on('change', function () {
+        //        $("#" + textId).val($(this).val().replace(/C:\\fakepath\\/i, ''));
+        //    });
+        //}
+        
 
+        function handlwBrowseEventAddItem(){}
 </script>
 }
