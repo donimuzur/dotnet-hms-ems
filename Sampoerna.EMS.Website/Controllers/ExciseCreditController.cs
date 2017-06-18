@@ -2047,15 +2047,17 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 case ReferenceKeys.PrintoutLayout.ExciseCreditNewRequest:
                     // Load Sub Template CK-1 Excise Summary
-                    var ck1Tables = GetNewExciseRequestSubTemplate(model, excise);
+                    Dictionary<string,decimal> grandTotal6 = new Dictionary<string, decimal>();
+                    Dictionary<string, decimal> grandTotal3 = new Dictionary<string, decimal>();
+                    var ck1Tables = GetNewExciseRequestSubTemplate(model, excise,out grandTotal6,out grandTotal3);
 
                     // Load CK-1 Excise Summary Average
-                    var ck1Avg6 = GetNewExciseCK1Avg(model, excise, 6);
-                    var ck1Avg3 = GetNewExciseCK1Avg(model, excise, 3);
+                    var ck1Avg6 = GetNewExciseCK1Avg(model, excise, 6,grandTotal6,grandTotal3);
+                    var ck1Avg3 = GetNewExciseCK1Avg(model, excise, 3, grandTotal6, grandTotal3);
 
                     // Load CK-1 Excise Calculation Summary Maximum
-                    var calculationMax = GetNewExciseCK1MaxAvg(model, excise, false);
-                    var additionalMax = GetNewExciseCK1MaxAvg(model, excise, true);
+                    var calculationMax = GetNewExciseCK1MaxAvg(model, excise, false,grandTotal6,grandTotal3);
+                    var additionalMax = GetNewExciseCK1MaxAvg(model, excise, true, grandTotal6, grandTotal3);
                     parameters.Clear();
                     parameters.Add("POA", excise.POA.PRINTED_NAME);
                     parameters.Add("COMPANY_NAME", nppbkc.COMPANY.BUTXT);
@@ -2167,7 +2169,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
-        private String GetNewExciseRequestSubTemplate(CalculationDetailModel model, EXCISE_CREDIT excise)
+        private String GetNewExciseRequestSubTemplate(CalculationDetailModel model, EXCISE_CREDIT excise,out Dictionary<String, Decimal> grandTotal6, out Dictionary<String, Decimal> grandTotal3)
         {
             try
             {
@@ -2178,19 +2180,19 @@ namespace Sampoerna.EMS.Website.Controllers
                 System.Globalization.CultureInfo cultureID = new System.Globalization.CultureInfo("id-ID");
                 var ck1GroupedData = new Dictionary<String, Dictionary<String, Decimal>>();
                 var durations = new List<String>();
-                var grandTotal3 = new Dictionary<String, Decimal>();
-                var grandTotal6 = new Dictionary<String, Decimal>();
+                grandTotal3 = new Dictionary<String, Decimal>();
+                grandTotal6 = new Dictionary<String, Decimal>();
                 var productTypes = model.ProductTypes;
                 var tableBuilder = new StringBuilder();
                 #endregion
 
                 #region Initiate Sub Template
-                tableBuilder.Append("<table style='width: 100%; background-color: white!important;'>")
+                tableBuilder.Append("<table style='width: 100%; background-color: white!important; border-collapse: collapse;border: 1px solid black;' >")
                     .Append("<thead>")
                     .Append("<tr>")
-                    .Append("<td rowspan='2' style='width: 20px; text-align: center;'>No</td>")
-                    .Append("<td rowspan='2' style='width: 25%; text-align: center;'>Bulan</td>")
-                    .AppendFormat("<td colspan='{0}' style='text-align: center;'>Jumlah Cukai (Rp)</td>", productTypeCount + 1)
+                    .Append("<td rowspan='2' style='width: 20px; text-align: center;  border: 1px solid black;'>No</td>")
+                    .Append("<td rowspan='2' style='width: 25%; text-align: center;  border: 1px solid black;'>Bulan</td>")
+                    .AppendFormat("<td colspan='{0}' style='text-align: center; border: 1px solid black;'>Jumlah Cukai (Rp)</td>", productTypeCount + 1)
                     .Append("</tr>");
                 #endregion
 
@@ -2198,7 +2200,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 tableBuilder.Append("<tr>");
                 foreach (var ptype in productTypes)
                 {
-                    tableBuilder.AppendFormat("<td style='width: 25%;text-align: center;'>{0}</td>", ptype.ToUpper());
+                    tableBuilder.AppendFormat("<td style='width: 25%;text-align: center; border: 1px solid black;'>{0}</td>", ptype.ToUpper());
                     var items = service.GetExciseCk1Detail(excise.EXSICE_CREDIT_ID, ptype).OrderBy(x => x.CK1_DATE).ToList();
                     var beginDate = items[0].CK1_DATE;
                     var endDate = items[items.Count - 1].CK1_DATE;
@@ -2227,7 +2229,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     grandTotal6.Add(ptype, Decimal.Zero);
 
                 }
-                tableBuilder.Append("<td style='text-align: center;'>Jumlah</td>")
+                tableBuilder.Append("<td style='text-align: center; border: 1px solid black;'>Jumlah</td>")
                     .Append("</tr>")
                     .Append("</thead>");
                 #endregion
@@ -2238,14 +2240,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 for (var i = 0; i < dataLength; i++)
                 {
                     tableBuilder.Append("<tr>");
-                    tableBuilder.AppendFormat("<td style='text-align: center;'>{0}</td>", i + 1);
-                    tableBuilder.AppendFormat("<td>{0}</td>", durations[i]);
+                    tableBuilder.AppendFormat("<td style='text-align: center;border: 1px solid black;'>{0}</td>", i + 1);
+                    tableBuilder.AppendFormat("<td style='border: 1px solid black;'>{0}</td>", durations[i]);
                     var subTotal = Decimal.Zero;
                     foreach (var ptype in productTypes)
                     {
                         if (ck1GroupedData[ptype].ContainsKey(durations[i]))
                         {
-                            tableBuilder.AppendFormat("<td style='text-align: right;'>{0:N}</td>", ck1GroupedData[ptype][durations[i]]);
+                            tableBuilder.AppendFormat("<td style='text-align: right;border: 1px solid black;'>{0:N}</td>", ck1GroupedData[ptype][durations[i]]);
                             subTotal += ck1GroupedData[ptype][durations[i]];
                             var previousSum = Decimal.Zero;
                             if (i >= 3)
@@ -2257,37 +2259,37 @@ namespace Sampoerna.EMS.Website.Controllers
                             grandTotal6[ptype] = previousSum + ck1GroupedData[ptype][durations[i]];
                         }
                         else
-                            tableBuilder.AppendFormat("<td style='text-align: right;'>{0:N}</td>", Decimal.Zero);
+                            tableBuilder.AppendFormat("<td style='text-align: right;border: 1px solid black;'>{0:N}</td>", Decimal.Zero);
                     }
 
 
-                    tableBuilder.AppendFormat("<td style='text-align: right;'>{0:N}</td>", subTotal);
+                    tableBuilder.AppendFormat("<td style='text-align: right;border: 1px solid black;'>{0:N}</td>", subTotal);
                     tableBuilder.Append("</tr>");
 
                 }
                 #region Grand Total 3 Months
                 tableBuilder.Append("<tr>");
-                tableBuilder.Append("<td colspan='2'>JUMLAH 3 BULAN</td>");
+                tableBuilder.Append("<td colspan='2' style='border: 1px solid black;'>JUMLAH 3 BULAN</td>");
                 var grandTotal = Decimal.Zero;
                 foreach (var ptype in productTypes)
                 {
-                    tableBuilder.AppendFormat("<td style='text-align: right;'>{0:N}</td>", grandTotal3[ptype]);
+                    tableBuilder.AppendFormat("<td style='text-align: right;border: 1px solid black;'>{0:N}</td>", grandTotal3[ptype]);
                     grandTotal += grandTotal3[ptype];
                 }
-                tableBuilder.AppendFormat("<td style='text-align: right;'>{0:N}</td>", grandTotal);
+                tableBuilder.AppendFormat("<td style='text-align: right;border: 1px solid black;'>{0:N}</td>", grandTotal);
                 tableBuilder.Append("</tr>");
                 #endregion
 
                 #region Grand Total 6 Months
                 tableBuilder.Append("<tr>");
-                tableBuilder.Append("<td colspan='2'>JUMLAH 6 BULAN</td>");
+                tableBuilder.Append("<td colspan='2' style='border: 1px solid black;'>JUMLAH 6 BULAN</td>");
                 grandTotal = Decimal.Zero;
                 foreach (var ptype in productTypes)
                 {
-                    tableBuilder.AppendFormat("<td style='text-align: right;'>{0:N}</td>", grandTotal6[ptype]);
+                    tableBuilder.AppendFormat("<td style='text-align: right;border: 1px solid black;'>{0:N}</td>", grandTotal6[ptype]);
                     grandTotal += grandTotal6[ptype];
                 }
-                tableBuilder.AppendFormat("<td style='text-align: right;'>{0:N}</td>", grandTotal);
+                tableBuilder.AppendFormat("<td style='text-align: right;border: 1px solid black;'>{0:N}</td>", grandTotal);
                 tableBuilder.Append("</tr>");
                 #endregion
 
@@ -2304,7 +2306,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
-        private String GetNewExciseCK1Avg(CalculationDetailModel model, EXCISE_CREDIT excise, int duration)
+        private String GetNewExciseCK1Avg(CalculationDetailModel model, EXCISE_CREDIT excise, int duration,Dictionary<string,decimal> grandTotal6,Dictionary<string,decimal> grandTotal3)
         {
             try
             {
@@ -2315,9 +2317,18 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 foreach (var ptype in model.ProductTypes)
                 {
-                    var amount = model.CreditRanges[duration][ptype];
+                    double amount = 0;
+                    if (duration == 6)
+                    {
+                        amount = (double) grandTotal6[ptype];
+                    }
+                    else
+                    {
+                        amount = (double)grandTotal3[ptype];
+                    }
                     calculationData.Add(ptype, amount);
                 }
+
                 #endregion
 
                 #region Build Table
@@ -2329,7 +2340,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     builder.Append("<td style='width: 25px'>&nbsp;</td>");
                     builder.AppendFormat("<td style='width: 30%'>{0} sebesar&nbsp;</td>", ptype);
                     builder.AppendFormat("<td style='width: 30%'>Rp. {0:N}/{1}&nbsp;</td>", calculationData[ptype], duration);
-                    builder.AppendFormat("<td style='width: 30%'>= Rp. {0:N}</td>", Math.Ceiling(calculationData[ptype] / 6));
+                    builder.AppendFormat("<td style='width: 30%'>= Rp. {0:N}</td>", Math.Ceiling(calculationData[ptype] / duration));
                     builder.Append("</tr>");
                 }
                 builder.Append("</tbody>");
@@ -2472,7 +2483,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
-        private String GetNewExciseCK1MaxAvg(CalculationDetailModel model, EXCISE_CREDIT excise, bool additional)
+        private String GetNewExciseCK1MaxAvg(CalculationDetailModel model, EXCISE_CREDIT excise, bool additional,Dictionary<string,decimal> grandTotal6, Dictionary<string,decimal> grandTotal3)
         {
             try
             {
@@ -2480,11 +2491,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 StringBuilder builder = new StringBuilder();
                 var productTypeCount = model.ProductTypes.Count;
                 var calculationData = new Dictionary<String, CalculationDetailModel.CreditAdjustment>();
-
+                var calculationMax = new Dictionary<string,decimal>();
                 foreach (var ptype in model.ProductTypes)
                 {
                     var amount = model.MaxCreditRange[ptype];
                     calculationData.Add(ptype, amount);
+
+                    var amountMax = grandTotal3[ptype] / 3 >= grandTotal6[ptype] /6  ? grandTotal3[ptype] /3 : grandTotal6[ptype] /6;
+                    calculationMax.Add(ptype,amountMax);
                 }
                 #endregion
 
@@ -2498,10 +2512,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     builder.AppendFormat("<td style='width: 30%'>{0} sebesar&nbsp;</td>", ptype);
                     if (!additional)
                     {
-                        builder.AppendFormat("<td style='width: 30%'> : 2 x Rp. {0:N}&nbsp;</td>", calculationData[ptype].Value / 2);
+                        builder.AppendFormat("<td style='width: 30%'> : 2 x Rp. {0:N}&nbsp;</td>", calculationMax[ptype]);
                         builder.Append("<td style='width: 25px'>&nbsp;</td>");
-                        builder.AppendFormat("<td style='width: 30%'>= Rp. {0:N}</td>", Math.Ceiling(calculationData[ptype].Value));
-                        total += Math.Ceiling(calculationData[ptype].Value);
+                        builder.AppendFormat("<td style='width: 30%'>= Rp. {0:N}</td>", calculationMax[ptype] * 2);
+                        total += Math.Ceiling((double)calculationMax[ptype] * 2);
                     }
                     else
                     {
