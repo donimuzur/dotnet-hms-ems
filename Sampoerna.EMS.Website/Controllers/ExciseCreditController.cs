@@ -53,6 +53,7 @@ namespace Sampoerna.EMS.Website.Controllers
         List<WorkflowHistoryViewModel> GetWorkflowHistory(long id)
         {
             var submittedStatus = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingPoaApproval);
+            var waitingGov = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingGovernmentApproval);
             var excise = service.Find(id);
 
             // Remarks for change back Approver to common POA
@@ -75,7 +76,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(workflow);
 
             WORKFLOW_HISTORY additional = new WORKFLOW_HISTORY();
-            if (excise.LAST_STATUS == submittedStatus.REFF_ID)
+            if (excise.LAST_STATUS == submittedStatus.REFF_ID || excise.LAST_STATUS == waitingGov.REFF_ID)
             {
                 var poaApprovers = service.GetApprovers(id);
                 var accounts = "";
@@ -92,7 +93,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
                 additional.ACTION_BY = accounts;
-                additional.ACTION = (int)Enums.ActionType.WaitingForApproval;
+                additional.ACTION = (excise.LAST_STATUS == submittedStatus.REFF_ID) ? (int)Enums.ActionType.WaitingForApproval : (int)Enums.ActionType.WaitingForPOASKEPApproval;
+                
+                
                 additional.ROLE = (int)Enums.UserRole.POA;
                 //additional.ACTION_DATE = _CRModel.LastModifiedDate;
                 workflowHistory.Add(Mapper.Map<WorkflowHistoryViewModel>(additional));
@@ -279,16 +282,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.ViewModel = vm;
                 model.FinancialStatements = vm.FinanceRatios.ToArray();
                 model.SupportingDocuments = refService.GetSupportingDocuments((int)Enums.FormList.ExciseRequest, nppbkc.COMPANY.BUKRS, id).Select(x => MapSupportingDocumentModel(x)).ToList();
-                if (model.ViewModel.RequestTypeID == 1)
-                {
-                    model.Printouts.Add(MapPrintoutModel(result, ReferenceKeys.PrintoutLayout.ExciseCreditNewRequest));
-                }
-                else
-                {
-                    //model.Printouts.Add(MapPrintoutModel(result, ReferenceKeys.PrintoutLayout.ExciseCreditAdjustmentRequest));
-                }
-                model.Printouts.Add(MapPrintoutModel(result, ReferenceKeys.PrintoutLayout.DetailExciseCalculation));
-
+                model.Printouts = GetPrintoutsList(model, result);
                 var changeHistoryList = this.chBLL.GetByFormTypeAndFormId(Enums.MenuList.ExciseCredit, id);
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
                 model.WorkflowHistory = GetWorkflowHistory(model.ViewModel.Id);
@@ -323,7 +317,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.ViewModel = vm;
                 model.FinancialStatements = vm.FinanceRatios.ToArray();
                 model.SupportingDocuments = refService.GetSupportingDocuments((int)Enums.FormList.ExciseRequest, nppbkc.COMPANY.BUKRS, id).Select(x => MapSupportingDocumentModel(x)).ToList();
-                model.Printouts.Add(MapPrintoutModel(result, ReferenceKeys.PrintoutLayout.ExciseCreditNewRequest));
+                model.Printouts = GetPrintoutsList(model, result);
                 var changeHistoryList = this.chBLL.GetByFormTypeAndFormId(Enums.MenuList.ExciseCredit, id);
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
                 model.WorkflowHistory = GetWorkflowHistory(model.ViewModel.Id);
@@ -454,7 +448,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.ViewModel = vm;
                 model.FinancialStatements = vm.FinanceRatios.ToArray();
                 model.SupportingDocuments = refService.GetSupportingDocuments((int)Enums.FormList.ExciseRequest, nppbkc.COMPANY.BUKRS, id).Select(x => MapSupportingDocumentModel(x)).ToList();
-                model.Printouts.Add(MapPrintoutModel(result, ReferenceKeys.PrintoutLayout.ExciseCreditNewRequest));
+                model.Printouts = GetPrintoutsList(model, result);
                 var changeHistoryList = this.chBLL.GetByFormTypeAndFormId(Enums.MenuList.ExciseCredit, id);
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
                 model.WorkflowHistory = GetWorkflowHistory(model.ViewModel.Id);
@@ -553,7 +547,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.ViewModel = vm;
                 model.FinancialStatements = vm.FinanceRatios.ToArray();
                 model.SupportingDocuments = refService.GetSupportingDocuments((int)Enums.FormList.ExciseRequest, nppbkc.COMPANY.BUKRS, id.ToString()).Select(x => MapSupportingDocumentModel(x)).ToList();
-                model.Printouts.Add(MapPrintoutModel(result, ReferenceKeys.PrintoutLayout.ExciseCreditNewRequest));
+                model.Printouts = GetPrintoutsList(model, result);
                 var changeHistoryList = this.chBLL.GetByFormTypeAndFormId(Enums.MenuList.ExciseCredit, id.ToString());
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
                 model.WorkflowHistory = GetWorkflowHistory(model.ViewModel.Id);
@@ -695,7 +689,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.ViewModel = vm;
                 model.FinancialStatements = vm.FinanceRatios.ToArray();
                 model.SupportingDocuments = refService.GetSupportingDocuments((int)Enums.FormList.ExciseRequest, nppbkc.COMPANY.BUKRS, id.ToString()).Select(x => MapSupportingDocumentModel(x)).ToList();
-                model.Printouts.Add(MapPrintoutModel(result, ReferenceKeys.PrintoutLayout.ExciseCreditNewRequest));
+                model.Printouts = GetPrintoutsList(model, result);
                 var changeHistoryList = this.chBLL.GetByFormTypeAndFormId(Enums.MenuList.ExciseCredit, id.ToString());
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
                 model.WorkflowHistory = GetWorkflowHistory(model.ViewModel.Id);
@@ -762,7 +756,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.ViewModel = vm;
                 model.FinancialStatements = vm.FinanceRatios.ToArray();
                 model.SupportingDocuments = refService.GetSupportingDocuments((int)Enums.FormList.ExciseRequest, nppbkc.COMPANY.BUKRS, id.ToString()).Select(x => MapSupportingDocumentModel(x)).ToList();
-                model.Printouts.Add(MapPrintoutModel(result, ReferenceKeys.PrintoutLayout.ExciseCreditNewRequest));
+                model.Printouts = GetPrintoutsList(model, result);
                 var changeHistoryList = this.chBLL.GetByFormTypeAndFormId(Enums.MenuList.ExciseCredit, id.ToString());
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
                 model.WorkflowHistory = GetWorkflowHistory(model.ViewModel.Id);
@@ -1326,11 +1320,11 @@ namespace Sampoerna.EMS.Website.Controllers
             {
 
                 var margin = Convert.ToSingle(System.Configuration.ConfigurationManager.AppSettings["DefaultMargin"]);
-                var leftMargin = iTextSharp.text.Utilities.MillimetersToPoints(5);
-                var rightMargin = iTextSharp.text.Utilities.MillimetersToPoints(5);
-                var topMargin = iTextSharp.text.Utilities.MillimetersToPoints(5);
-                var bottomtMargin = iTextSharp.text.Utilities.MillimetersToPoints(5);
-                var document = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4.Rotate(), leftMargin, rightMargin, topMargin, bottomtMargin);
+                var leftMargin = iTextSharp.text.Utilities.MillimetersToPoints(margin);
+                var rightMargin = iTextSharp.text.Utilities.MillimetersToPoints(margin);
+                var topMargin = iTextSharp.text.Utilities.MillimetersToPoints(margin);
+                var bottomtMargin = iTextSharp.text.Utilities.MillimetersToPoints(margin);
+                var document = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, leftMargin, rightMargin, topMargin, bottomtMargin);
                 var writer = PdfWriter.GetInstance(document, stream);
                 long LastApprovedStatusID = excise.LAST_STATUS;
                 if ((LastApprovedStatusID == refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Draft).REFF_ID) || (LastApprovedStatusID == refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Edited).REFF_ID) || (LastApprovedStatusID == refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingPoaApproval).REFF_ID))
@@ -1981,6 +1975,23 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
+        public List<ExciseCreditPrintoutModel> GetPrintoutsList(ExciseCreditFormModel model, EXCISE_CREDIT excise)
+        {
+            var printouts = new List<ExciseCreditPrintoutModel>();
+            if (model.ViewModel.RequestTypeID == 1)
+            {
+                printouts.Add(MapPrintoutModel(excise, ReferenceKeys.PrintoutLayout.ExciseCreditNewRequest));
+            }
+            else
+            {
+                printouts.Add(MapPrintoutModel(excise, ReferenceKeys.PrintoutLayout.ExciseCreditAdjustmentRequest));
+            }
+            printouts.Add(MapPrintoutModel(excise, ReferenceKeys.PrintoutLayout.DetailExciseCalculation));
+            printouts.Add(MapPrintoutModel(excise, ReferenceKeys.PrintoutLayout.FinanceRatio));
+
+            return printouts;
+        }
+
         #endregion
 
 
@@ -2045,7 +2056,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     // Load CK-1 Excise Calculation Summary Maximum
                     var calculationMax = GetNewExciseCK1MaxAvg(model, excise, false);
                     var additionalMax = GetNewExciseCK1MaxAvg(model, excise, true);
-                    parameters.Add("POA", excise.POA_ID);
+                    parameters.Clear();
+                    parameters.Add("POA", excise.POA.PRINTED_NAME);
                     parameters.Add("COMPANY_NAME", nppbkc.COMPANY.BUTXT);
                     parameters.Add("COMPANY_ADDRESS", nppbkc.DGCE_ADDRESS);
                     parameters.Add("NPPBKC_ID", excise.NPPBKC_ID);
@@ -2056,15 +2068,61 @@ namespace Sampoerna.EMS.Website.Controllers
                     parameters.Add("PRODUCT_AMOUNT_CALCULATION", calculationMax);
                     parameters.Add("PRODUCT_ADDITIONAL_AMOUNT", additionalMax);
                     break;
-
+                case ReferenceKeys.PrintoutLayout.ExciseCreditAdjustmentRequest:
+                    var ck1Detail = GetCalculationExciseAdjustmentCK1Avg(model, excise);
+                    var ck1Calculation = GetNewExciseAdjustmentCK1Avg(model, excise, 12);
+                    var exciseAdjustment = GetAdjustmentExcise(model, excise);
+                    parameters.Clear();
+                    var delayAdjustment = GetDelayAdjustmentExcise(model, excise);
+                    parameters.Add("COMPANY_NAME", nppbkc.COMPANY.BUTXT);
+                    parameters.Add("SKEP_NO", String.IsNullOrEmpty(excise.DECREE_NO) ? "-" : excise.DECREE_NO);
+                    parameters.Add("SKEPDATE", (excise.DECREE_DATE != null) ? excise.DECREE_DATE.Value.ToString("dd MMMM yyyy", cultureID) : "-");
+                    parameters.Add("CITY", nppbkc.CITY);
+                    parameters.Add("CK1_DETAIL_TABLE", ck1Detail);
+                    parameters.Add("CK1_CALCULATION", ck1Calculation);
+                    parameters.Add("CK1_ADJUSTMENT", exciseAdjustment);
+                    parameters.Add("CK1_DELAY_ADJUSTMENT", delayAdjustment);
+                    parameters.Add("PEMOHON", excise.POA.PRINTED_NAME);
+                    break;
                 case ReferenceKeys.PrintoutLayout.DetailExciseCalculation:
                     ck1Tables = this.GetCK1CalculationReport(excise);
-                    parameters.Add("POA", excise.POA_ID);
+                    parameters.Clear();
+                    parameters.Add("POA", excise.POA.PRINTED_NAME);
                     parameters.Add("COMPANY_NAME", nppbkc.COMPANY.BUTXT);
                     parameters.Add("COMPANY_ADDRESS", nppbkc.DGCE_ADDRESS);
                     parameters.Add("NPPBKC", excise.NPPBKC_ID);
-                    parameters.Add("CK1_PERIOD", String.Format(cultureID, "{0:MMMM yyyy} - {1: MMMM yyyy}", excise.SUBMISSION_DATE.AddMonths(-1).AddMonths(-6), excise.SUBMISSION_DATE.AddMonths(-1)));
+                    parameters.Add("CK1_PERIOD", String.Format(cultureID, "{0:MMMM yyyy} - {1: MMMM yyyy}", excise.SUBMISSION_DATE.AddMonths(-6), excise.SUBMISSION_DATE.AddMonths(-1)));
                     parameters.Add("CK1_DETAIL_TABLE", ck1Tables);
+                    break;
+                case ReferenceKeys.PrintoutLayout.FinanceRatio:
+                    parameters.Clear();
+                    parameters.Add("COMPANY_NAME", nppbkc.COMPANY.BUTXT);
+                    var financialRatios = service.GetFinancialStatements
+                        (excise.SUBMISSION_DATE.Year, nppbkc.COMPANY.BUKRS).ToList();
+                    if (financialRatios.Count != 2)
+                    {
+                        break;
+                    }
+                    parameters.Add("YEAR_1", financialRatios[1].YEAR_PERIOD.ToString());
+                    parameters.Add("YEAR_2", financialRatios[0].YEAR_PERIOD.ToString());
+                    parameters.Add("CURRENT_ASSET_1", financialRatios[1].CURRENT_ASSETS.ToString("N"));
+                    parameters.Add("CURRENT_ASSET_2", financialRatios[0].CURRENT_ASSETS.ToString("N"));
+                    parameters.Add("CURRENT_DEBT_1", financialRatios[1].CURRENT_DEBTS.ToString("N"));
+                    parameters.Add("CURRENT_DEBT_2", financialRatios[0].CURRENT_DEBTS.ToString("N"));
+                    parameters.Add("LIQUIDITY_1", financialRatios[1].LIQUIDITY_RATIO.ToString("N"));
+                    parameters.Add("LIQUIDITY_2", financialRatios[0].LIQUIDITY_RATIO.ToString("N"));
+                    parameters.Add("TOTAL_ASSET_1", financialRatios[1].TOTAL_ASSETS.ToString("N"));
+                    parameters.Add("TOTAL_ASSET_2", financialRatios[0].TOTAL_ASSETS.ToString("N"));
+                    parameters.Add("TOTAL_DEBT_1", financialRatios[1].TOTAL_DEBTS.ToString("N"));
+                    parameters.Add("TOTAL_DEBT_2", financialRatios[0].TOTAL_DEBTS.ToString("N"));
+                    parameters.Add("SOLVABILITY_1", financialRatios[1].SOLVENCY_RATIO.ToString("N"));
+                    parameters.Add("SOLVABILITY_2", financialRatios[0].SOLVENCY_RATIO.ToString("N"));
+                    parameters.Add("NET_PROFIT_1", financialRatios[1].NET_PROFIT.ToString("N"));
+                    parameters.Add("NET_PROFIT_2", financialRatios[0].NET_PROFIT.ToString("N"));
+                    parameters.Add("TOTAL_CAPITAL_1", financialRatios[1].TOTAL_CAPITAL.ToString("N"));
+                    parameters.Add("TOTAL_CAPITAL_2", financialRatios[0].TOTAL_CAPITAL.ToString("N"));
+                    parameters.Add("RENTABILITY_1", financialRatios[1].RENTABLE_RATIO.ToString("N"));
+                    parameters.Add("RENTABILITY_2", financialRatios[0].RENTABLE_RATIO.ToString("N"));
                     break;
             }
             return parameters;
