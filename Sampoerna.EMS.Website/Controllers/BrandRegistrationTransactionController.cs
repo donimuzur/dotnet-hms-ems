@@ -203,7 +203,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 if (CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.POA || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.User || IsCreatorPRD(CurrentUser.USER_ID))
                 {
-                    var users = refService.GetAllUser();
+                    //var users = refService.GetAllUser();
                     var documents = GetProductListOpen("", "", false, true, null);
                     PDSummaryModel = new PDSummaryReportViewModel()
                     {
@@ -212,7 +212,8 @@ namespace Sampoerna.EMS.Website.Controllers
                         Filter = new ProductDevelopmentFilterModel(),
                         CreatorList = GlobalFunctions.GetCreatorList(),
                         PoaList = GetPoaList(refService.GetAllPOA()),
-                        IsNotViewer = (IsCreatorPRD(CurrentUser.USER_ID)),//CurrentUser.UserRole == Enums.UserRole.POA || CurrentUser.UserRole == Enums.UserRole.User||
+                        IsCreator = CurrentUser.UserRole == Enums.UserRole.User,
+                        IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller,
                         IsExciser = productDevelopmentService.IsAdminExciser(CurrentUser.USER_ID),
                         ProductOpenDoc = documents
                     };                 
@@ -235,7 +236,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult CreateProductDevelopment()
         {
 
-            if (!IsCreatorPRD(CurrentUser.USER_ID))
+            if (CurrentUser.UserRole != Enums.UserRole.User)
             {                
                 return RedirectToAction("Unauthorized", "Error");
             }
@@ -1363,15 +1364,25 @@ namespace Sampoerna.EMS.Website.Controllers
             return path;
         }
 
-        private List<vwProductDevelopmentModel> GetSummaryReportList( string Creator, string POA, bool IsCompleted, bool IsAllStatus, ProductDevelopmentExportSummaryReportsViewModel modelExport)
+        private List<vwProductDevelopmentModel> GetSummaryReportList( string Creator, string POA, bool IsCompleted, bool IsAllStatus, ProductDevelopmentExportSummaryReportsViewModel modelExport,bool isNeedDetails = true)
         {
             try
             {
                 var documents = new List<vwProductDevelopmentModel>();
                 var data = productDevelopmentService.GetProductDetailView();
+                if(!string.IsNullOrEmpty(Creator))
+                {
+                    data = data.Where(x => x.CREATED_BY == Creator);
+                }
+
+                if (!string.IsNullOrEmpty(POA))
+                {
+                    data = data.Where(x => x.LASTAPPROVED_BY == POA);
+                }
+
                 if (data.Any())
                 {
-                    if ((modelExport != null) && (modelExport.DetailExportModel.Request_No || modelExport.DetailExportModel.Fa_Code_Old || modelExport.DetailExportModel.Fa_Code_New || modelExport.DetailExportModel.Hl_Code || modelExport.DetailExportModel.Is_Import || modelExport.DetailExportModel.Market_Id || modelExport.DetailExportModel.Werks))
+                    if ((modelExport != null) && (modelExport.DetailExportModel.Request_No || modelExport.DetailExportModel.Fa_Code_Old || modelExport.DetailExportModel.Fa_Code_New || modelExport.DetailExportModel.Hl_Code || modelExport.DetailExportModel.Is_Import || modelExport.DetailExportModel.Market_Id || modelExport.DetailExportModel.Werks) && isNeedDetails)
                     {
                         documents = data.Select(s => new vwProductDevelopmentModel
                         {
@@ -1399,6 +1410,36 @@ namespace Sampoerna.EMS.Website.Controllers
                             PlantName = s.NAME1,
                             CompanyName = s.COMPANY_NAME,
                             LastStatus = s.LASTAPPROVED_STATUS_VALUE  
+                        }).ToList();
+                    }
+                    else if (isNeedDetails)
+                    {
+                        documents = data.Select(s => new vwProductDevelopmentModel
+                        {
+                            Next_Action = s.NEXT_ACTION,
+                            PD_NO = s.PD_NO,
+                            Created_By = s.CREATED_BY,
+                            Created_Date = s.CREATED_DATE,
+
+                            Request_No = s.REQUEST_NO,
+                            Bukrs = s.COMPANY_NAME,
+                            Fa_Code_Old = s.FA_CODE_OLD,
+                            Fa_Code_Old_Desc = s.FA_CODE_OLD_DESCR,
+                            Fa_Code_New = s.FA_CODE_NEW,
+                            Fa_Code_New_Desc = s.FA_CODE_NEW_DESCR,
+                            Hl_Code = s.HL_CODE,
+                            Market_Id = s.MARKET_ID,
+                            Werks = s.WERKS,
+                            Is_Import = s.IS_IMPORT,
+                            Modified_By = s.LASTMODIFIED_BY,
+                            Modified_Date = s.LASTMODIFIED_DATE,
+                            Approved_By = s.LASTAPPROVED_BY,
+                            Approved_Date = s.LASTAPPROVED_DATE,
+                            Approval_Status = s.LASTAPPROVED_STATUS,
+                            MarketDesc = s.MARKET_DESC,
+                            PlantName = s.NAME1,
+                            CompanyName = s.COMPANY_NAME,
+                            LastStatus = s.LASTAPPROVED_STATUS_VALUE
                         }).ToList();
                     }
                     else// without detail

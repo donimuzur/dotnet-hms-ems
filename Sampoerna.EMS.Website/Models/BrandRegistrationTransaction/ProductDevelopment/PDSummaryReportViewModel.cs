@@ -14,6 +14,8 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevel
             this.ViewModel = new ProductDevelopmentModel();
         }
         public bool IsExciser { get; set; }
+
+        public bool IsCreator { get; set; }
         public List<vwProductDevelopmentModel> ProductDevelopmentDocuments { get; set; }
         public List<ProductDevDetailModel> ProductDocuments { get; set; }
         public List<ProductDevelopmentModel> ProductOpenDoc { get; set; }
