@@ -18,8 +18,8 @@
 <div class="container-wrap">
     <div class="row">
         <div class="col-sm-12">
-            @*<div class="white-wrapper" style="display: none;">
-                    @using (Ajax.BeginForm("FilterOpenDocument", "ExciseCredit",
+            <div class="white-wrapper">
+                    @using (Ajax.BeginForm("FilterSummaryReports", "ExciseCredit",
                     new AjaxOptions
                     {
                         HttpMethod = "POST",
@@ -76,21 +76,95 @@
                                             <input id="btn-filter" type="submit" class="btn btn-blue full" value="FILTER" />
                                         </div>
                                         <div class="col-md-6">
-                                            <button type="button" id="btn-reset-filter" class="btn btn-blue full">RESET</button>
+                                            <button type="button" id="btnExport" class="btn btn-blue full">EXPORT</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     }
-                </div>*@
-            <div class="row">
-                <div class="col-lg-12">
-                    <button class="btn btn-blue">EXPORT</button>
                 </div>
-            </div>
+
+                @using (Html.BeginForm("ExportXlsSummaryReports", "ExciseCredit", FormMethod.Post, new { @id = "ExportSummaryReportsForms" }))
+                {
+
+                    <div class="white-wrapper toggle-wrapper">
+                        <div class="form-excise" role="form">
+                            <div class="row">
+
+                                <div class="last-form">
+                                    <div class="col-md-12">
+                                        <div>
+
+                                            @Html.HiddenFor(model => model.ExportModel.NPPBKCExport)
+                                            @Html.HiddenFor(model => model.ExportModel.POAExport)
+                                            @Html.HiddenFor(model => model.ExportModel.ExciseCreditTypeExport)
+                                            @Html.HiddenFor(model => model.ExportModel.CreatorExport)
+                                            @Html.HiddenFor(model => model.ExportModel.YearExport)
+
+                                            <div class="row toggle">
+
+                                                <div class="toggle-title">
+                                                    Credit Excise Columns <i class="fa fa-chevron-down"></i>
+                                                </div>
+
+                                                <div class="toggle-component" style="display:block;">
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            <input type="checkbox" id="selectall_master" /><b>Select All</b>
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.Type, new { @checked = "checked", @class = "cb_master checkbox checkexport", @datacolumn = "1" })Type
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.SubmitDate, new { @checked = "checked", @class = "cb_master checkbox checkexport", @datacolumn = "2" })Submit Date
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.Poa, new { @checked = "checked", @class = "cb_master checkbox checkexport", @datacolumn = "3" })Poa
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.NppbkcId, new { @checked = "checked", @class = "cb_master checkbox checkexport", @datacolumn = "4" })Nppbkc Id
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.ExciseNumber, new { @checked = "checked", @class = "cb_master checkbox checkexport", @datacolumn = "5" })Excise Number
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.Amount, new { @checked = "checked", @class = "cb_master checkbox checkexport", @datacolumn = "6" })Amount
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.LastUpdate, new { @checked = "checked", @class = "cb_master checkbox checkexport", @datacolumn = "7" })Last Update
+                                                        </label>
+                                                    </div>
+                                                    <div class="checkbox">
+                                                        <label>
+                                                            @Html.CheckBoxFor(model => model.ExportModel.Status, new { @checked = "checked", @class = "cb_master checkbox checkexport", @datacolumn = "8" })Status
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
             <div id="contenttable" class="table-container">
-                @Html.Partial("_ExciseCreditTable")
+                @Html.Partial("_SummaryReportList")
             </div>
         </div>
     </div>
@@ -106,7 +180,7 @@
 
         $('#MenuExciseSummaryReports').addClass('active');
 
-       function setupDataTables() {
+        function setupDataTables() {
             $('#btn-reset-filter').click(function () {
                 $(".selectpicker").val($(".selectpicker option:first").val());
             });
@@ -133,23 +207,54 @@
                 });
 
 
+            $('#selectall_master').change(function () {
 
-            // Setup - add a text input to each footer cell
-            $('#exciseTable .filters th').each(function () {
-                var idx = $(this).index();
-                if (idx != 0) {
-                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                if ($(this).is(':checked')) {
+                    $('.checkexport').prop('checked', this.checked);
+                    // Show a column
+                    $('#exciseTable').parents('div.dataTables_wrapper').first().show();
+                    var table = $('#exciseTable').DataTable();
+                    for (var i = 0; i < 7; i++) {
+                        table.column(i).visible(true);
+
+                    }
+                    table.column(0).visible(true);
+                    // Show a column
+                    $('#exciseTable').parents('div.dataTables_wrapper').first().show();
+
+                } else {
+                    $('.checkexport').each(function () {
+                        this.checked = false;
+
+                    });
+                    var table = $('#exciseTable').DataTable();
+                    for (var i = 0; i < 7; i++) {
+                        table.column(i).visible(false);
+
+                    }
+                    $('#exciseTable').parents('div.dataTables_wrapper').first().hide();
                 }
             });
 
-            // Apply the search
-            table.columns().eq(0).each(function (colIdx) {
-                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
-                    table
-                        .column(colIdx)
-                        .search(this.value)
-                        .draw();
-                });
+            $('.checkexport').on('click', function (e) {
+                // e.preventDefault();
+                table.column(0).visible(true);
+
+                // Get the column API object
+                var column = table.column($(this).attr('datacolumn'));
+
+                // Toggle the visibility
+                column.visible(!column.visible());
+
+                $('#exciseTable').parents('div.dataTables_wrapper').first().hide();
+
+                for (var i = 0; i < 7; i++) {
+                    if (table.column(i).visible()) {
+                        $('#exciseTable').parents('div.dataTables_wrapper').first().show();
+                        return;
+                    }
+                }
+
             });
         }
 
@@ -201,6 +306,16 @@
             $('.loading').hide();
             setupDataTables();
         }
+
+        $("#btnExport").click(function () {
+            $('#ExportModel_NPPBKCExport').val($('#Filter_NPPBKC').find("option:selected").val());
+            $('#ExportModel_POAExport').val($('#Filter_POA').find("option:selected").val());
+            $('#ExportModel_ExciseCreditTypeExport').val($('#Filter_ExciseCreditType').find("option:selected").val());
+            $('#ExportModel_CreatorExport').val($('#Filter_Creator').find("option:selected").val());
+            $('#ExportModel_YearExport').val($('#Filter_Year').find("option:selected").val());
+
+            $('#ExportSummaryReportsForms').submit();
+        });
 
 
     </script>
