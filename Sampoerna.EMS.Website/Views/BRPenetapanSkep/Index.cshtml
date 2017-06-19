@@ -85,9 +85,9 @@
 <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script type="text/javascript" language="javascript" class="init">
     $(document).ready(function () {
-        $('#MenuProduct').removeClass('open');
-        $('#MenuBrand').removeClass('open');
-        $('#MenuSKEP').addClass('open');
+        $('#MenuProduct').removeClass('active');
+        $('#MenuBrand').removeClass('active');
+        $('#MenuSKEP').addClass('active');
         if ($("#IsCompleted").val() == "True") {
             $('#MenuPenetapanSKEPCompleted').addClass('active');
         }

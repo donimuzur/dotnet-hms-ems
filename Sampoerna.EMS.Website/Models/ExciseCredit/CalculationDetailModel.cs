@@ -75,6 +75,7 @@ namespace Sampoerna.EMS.Website.Models.ExciseCredit
             public double Value { set; get; }
             public double AdditionalValue { set; get; }
             public double Total { set; get; }
+            public String CssClass { set; get; }
             public void Calculate()
             {
                 this.AdditionalValue = Math.Ceiling(this.Adjustment * this.Value);

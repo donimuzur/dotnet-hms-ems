@@ -415,6 +415,7 @@ function AddRemovedFileToList(FileId) {
 }
 
 function ChangeStatus(Action, Comment) {
+    CloseAllModal();
     var ID = $("#txt_hd_id").val();
     $("#customloader").show();
     $.ajax({
@@ -474,7 +475,7 @@ function CheckFieldEmpty() {
         $("#tbody_skeplistitem").find("tr").each(function () {            
             var _isactive = $(this).find(".txt_hd_isactive").val();
             if (_isactive == "true") {
-                var txt_hd_brandname = $(this).find(".txt_hd_brandname").val();                
+                var txt_hd_brandname = $(this).find(".txt_hd_brandname").val();
                 var txt_hd_companytier = $(this).find(".txt_hd_companytier").val();
                 var txt_hd_excisegood = $(this).find(".txt_hd_excisegood").val();
                 var txt_hd_hjeperpack = $(this).find(".txt_hd_hjeperpack").val();
@@ -637,6 +638,7 @@ function GenerateImportItems()
                 for (var i = 0; i < result.length; i++) {                    
                     var tr = GenerateItemRow(trItemIndex, result[i].Item.Request_No, result[i].Item.Fa_Code_Old, result[i].Item.Fa_Code_Old_Desc, result[i].Item.Fa_Code_New, result[i].Item.Fa_Code_New_Desc, result[i].Item.PD_DETAIL_ID, result[i].Item.Company.Name, result[i].Item.Hl_Code, result[i].Item.Market.Market_Desc, result[i].Item.Werks);
                     $("#tbody_skeplistitem").append(tr);
+                    alert(result[i].Brand_CE);
                     var hd = GenerateItemInputHidden(trItemIndex, result[i].Item.PD_DETAIL_ID, result[i].Brand_CE, result[i].Company_Tier, result[i].Prod_Code, result[i].HJEperPack, result[i].HJEperBatang, result[i].Brand_Content, result[i].Unit, result[i].Tariff);                    
                     $("#tr_item_list_" + trItemIndex).find(".td_inputan").append(hd);
                     trItemIndex++;
@@ -672,13 +674,95 @@ function CleaningComma()
 
 function NumberWithComma(number)
 {    
-    return number.toString().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    if (number != "") {
+        //number = number.replace(/\.00/g, '');
+        number = number.toString().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    return number;
 }
 
 function NumberWithoutComma(number)
 {
-    return number.replace(/\./g, '');
+    if (number != "") {
+        number = number.replace(/\,/g, '');
+        //number = number.replace(/\.00/g, '');
+    }
+    return number;
 }
+
+function OptBrandList(FACode) {
+    $.ajax({
+        type: 'POST',
+        url: getUrl("GetBrandByFACode"),
+        data: { FACode: FACode },
+        success: function (data) {
+            var result = data;
+            $("#txt_modal_detail_brandname").val(result);
+        }
+    });
+}
+
+$(document).on("click", "#btn-tab-changeslog", function () {
+    var isalreadyloaded = $("#txt_ischangelog_loaded").val();
+    if (isalreadyloaded == "0") {
+        var now = new Date();
+        var Token = now.getDate().toString() + now.getDate().toString() + (now.getMonth() + 1).toString()
+                    + now.getFullYear().toString()
+                    + now.getHours().toString()
+                    + now.getMinutes().toString()
+                    + now.getSeconds().toString();
+        var ID = $("#txt_hd_id").val();
+        $("#customloader").show();
+        $.ajax({
+            url: getUrl("ChangeLog"),
+            dataType: 'html',
+            data: {
+                ID: ID,
+                Token: Token
+            },
+            success: function (data) {
+                $('#divChangeLog').html(data);
+                // DataTable
+                var table = null;
+                if ($.fn.dataTable.isDataTable('#changesHistoryTable')) {
+                    table = $('#changesHistoryTable').DataTable();
+                    table.destroy();
+                }
+                table = $('#changesHistoryTable').DataTable(
+                    {
+                        "sDom": "Rlfrtip",
+                        "language": {
+                            "zeroRecords": "No records found",
+                            "infoFiltered": "(filtered from _MAX_ total records)"
+                        }
+                    });
+                // Setup - add a text input to each footer cell
+                $('#changesHistoryTable .filters th').each(function () {
+                    var idx = $(this).index();
+                    if (idx != 0) {
+                        $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                    }
+                });
+                // Apply the search
+                table.columns().eq(0).each(function (colIdx) {
+                    $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                        table
+                            .column(colIdx)
+                            .search(this.value)
+                            .draw();
+                    });
+                });
+            },
+            error: function () {
+                $("#customloader").hide();
+            },
+            complete: function () {
+                $("#txt_ischangelog_loaded").val("1")
+                $("#customloader").hide();
+            }
+        });
+    }
+});
 
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -730,6 +814,7 @@ $(document).on("click", ".btn_showmodal_detail", function () {
         }
         tariff = NumberWithComma(tariff);
         var brandname = tr.find(".txt_hd_brandname").val();
+        OptBrandList(facodeold);
         $("#txt_hd_index").val(index);
         $("#txt_modal_detail_requestnumber").val(requestnumber);
         $("#txt_modal_detail_facodeold").val(facodeold);

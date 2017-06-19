@@ -163,7 +163,7 @@
             console.log("id item : " + idItem);
             getDetailItem(idItem);
             loadOtherDocs(idItem);
-            mapBrowseAction();
+          //  mapBrowseAction();
         });
 
         function getDetailItem(idVal) {
@@ -182,14 +182,64 @@
                 console.log("load item");
                 docsItemLock.html(partialResult);
                 $('#myModalItemLock').modal('show');
-
+                setupDataTables();
             })
             .error(function (error) {
                 console.log("failed load item");
 
             });
         }
+        function setupDataTables() {
+            $('#btn-reset-filter').click(function () {
+                $('.loading').show();
+            });
+            $('#btn-filter').click(function () {
+                $('.loading').show();
+            });
 
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#changesHistoryTable')) {
+                table = $('#changesHistoryTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#changesHistoryTable').DataTable(
+                  {
+                      "sDom": "Rlfrtip",
+                      "language": {
+                          "zeroRecords": "No records found",
+                          "infoFiltered": "(filtered from _MAX_ total records)"
+                      },
+                  
+                  });
+
+
+            $('#changesHistoryTable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+        }
+        function ReloadDataTables() {
+            $('.toggle-row').click(function () {
+
+                var filter = $(".filters");
+                filter.slideToggle(100).promise().done(function () { });
+            });
+            $('.loading').hide();
+            setupDataTables();
+        }
         function loadOtherDocs(detailID) {
 
             $("#customloader").show();

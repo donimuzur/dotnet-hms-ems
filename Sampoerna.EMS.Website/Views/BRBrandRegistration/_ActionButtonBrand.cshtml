@@ -40,7 +40,8 @@
                 }
                 @if (Model.UserAccess.CanWithdraw)
                 {
-                    <input type="button" class="btn btn-blue" data-toggle="modal" data-target=".withdraw-modal.brandregistrationrequest" value="Withdraw" />
+                    @*<input type="button" class="btn btn-blue" data-toggle="modal" data-target=".withdraw-modal.brandregistrationrequest" value="Withdraw" />*@
+                    <input type="button" class="btn btn-blue btn_showmodal_changestatus" data-action="Withdraw" data-toggle="modal" data-target=".modal_ChangeStatus" value="Withdraw" />
                 }
                 @if (Model.UserAccess.CanCancel)
                 {

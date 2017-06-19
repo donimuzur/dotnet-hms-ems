@@ -94,6 +94,9 @@
     <Compile Include="Data\CONTENTEMAIL.cs">
       <DependentUpon>EMSDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Data\DOC_NUMBER_SEQ.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Data\EMAILVARIABEL.cs">
       <DependentUpon>EMSDataModel.tt</DependentUpon>
     </Compile>
@@ -321,7 +324,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sampoerna.EMS.Core\Sampoerna.EMS.Core.csproj">
-      <Project>{b4021a69-2836-401b-8e06-92e8a6008219}</Project>
+      <Project>{B4021A69-2836-401B-8E06-92E8A6008219}</Project>
       <Name>Sampoerna.EMS.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Sampoerna.EMS.Utils\Sampoerna.EMS.Utils.csproj">

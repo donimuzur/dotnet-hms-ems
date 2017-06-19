@@ -114,6 +114,16 @@
           <Property Name="EMAILCONTENT" Type="nvarchar(max)" />
           <Property Name="EMAILSUBJECT" Type="nvarchar" MaxLength="64" />
         </EntityType>
+        <EntityType Name="DOC_NUMBER_SEQ">
+          <Key>
+            <PropertyRef Name="DOC_NUMBER_SEQ_ID" />
+          </Key>
+          <Property Name="DOC_NUMBER_SEQ_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DOC_NUMBER_SEQ_LAST" Type="bigint" Nullable="false" />
+          <Property Name="MONTH" Type="int" />
+          <Property Name="YEAR" Type="int" />
+          <Property Name="FORM_TYPE_ID" Type="int" />
+        </EntityType>
         <EntityType Name="EMAILVARIABEL">
           <Key>
             <PropertyRef Name="VARIABELID" />
@@ -2831,6 +2841,7 @@ warning 6002: The table/view 'EMSQAS.dbo.vwProductDevDetail' does not have a pri
           <EntitySet Name="CK1" EntityType="Self.CK1" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK1_ITEM" EntityType="Self.CK1_ITEM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CONTENTEMAIL" EntityType="Self.CONTENTEMAIL" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DOC_NUMBER_SEQ" EntityType="Self.DOC_NUMBER_SEQ" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EMAILVARIABEL" EntityType="Self.EMAILVARIABEL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EXCISE_CREDIT" EntityType="Self.EXCISE_CREDIT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EXCISE_CREDIT_ADJUST_CALDETAIL" EntityType="Self.EXCISE_CREDIT_ADJUST_CALDETAIL" Schema="dbo" store:Type="Tables" />
@@ -4337,6 +4348,7 @@ warning 6002: The table/view 'EMSQAS.dbo.vwProductDevDetail' does not have a pri
             <End Role="EXCISE_CREDIT_APPROVED_DETAIL" EntitySet="EXCISE_CREDIT_APPROVED_DETAIL" />
           </AssociationSet>
           <EntitySet Name="CK1_EXCISE_CALCULATE_ADJUST" EntityType="Sampoerna.EMS.CustomService.Data.CK1_EXCISE_CALCULATE_ADJUST" />
+          <EntitySet Name="DOC_NUMBER_SEQ" EntityType="Sampoerna.EMS.CustomService.Data.DOC_NUMBER_SEQ" />
           </EntityContainer>
         <EntityType Name="SYS_REFFERENCES">
           <Key>
@@ -7324,6 +7336,16 @@ warning 6002: The table/view 'EMSQAS.dbo.vwProductDevDetail' does not have a pri
           <Property Name="BRAND_CE" Type="String" Nullable="false" MaxLength="65" FixedLength="false" Unicode="true" />
           <Property Name="PRODUCTION" Type="Decimal" Precision="38" Scale="6" />
         </EntityType>
+        <EntityType Name="DOC_NUMBER_SEQ">
+          <Key>
+            <PropertyRef Name="DOC_NUMBER_SEQ_ID" />
+          </Key>
+          <Property Name="DOC_NUMBER_SEQ_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DOC_NUMBER_SEQ_LAST" Type="Int64" Nullable="false" />
+          <Property Name="MONTH" Type="Int32" />
+          <Property Name="YEAR" Type="Int32" />
+          <Property Name="FORM_TYPE_ID" Type="Int32" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -8489,6 +8511,17 @@ warning 6002: The table/view 'EMSQAS.dbo.vwProductDevDetail' does not have a pri
                 <ScalarProperty Name="BULAN" ColumnName="BULAN" />
                 <ScalarProperty Name="CK1_DATE" ColumnName="CK1_DATE" />
                 <ScalarProperty Name="CK1_ID" ColumnName="CK1_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DOC_NUMBER_SEQ">
+            <EntityTypeMapping TypeName="Sampoerna.EMS.CustomService.Data.DOC_NUMBER_SEQ">
+              <MappingFragment StoreEntitySet="DOC_NUMBER_SEQ">
+                <ScalarProperty Name="FORM_TYPE_ID" ColumnName="FORM_TYPE_ID" />
+                <ScalarProperty Name="YEAR" ColumnName="YEAR" />
+                <ScalarProperty Name="MONTH" ColumnName="MONTH" />
+                <ScalarProperty Name="DOC_NUMBER_SEQ_LAST" ColumnName="DOC_NUMBER_SEQ_LAST" />
+                <ScalarProperty Name="DOC_NUMBER_SEQ_ID" ColumnName="DOC_NUMBER_SEQ_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

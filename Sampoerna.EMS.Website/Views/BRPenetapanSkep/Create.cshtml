@@ -1,4 +1,7 @@
 ﻿@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.MapSKEP.ReceivedDecreeViewModel
+@{
+    var isDisabled = (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString().ToLower() == "approve" || ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString().ToLower() == "detail");
+}
 
 <div class="modal fade in ems-modal" id="myModalListItem" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog" style="width:80%;" role="document">
@@ -65,91 +68,96 @@
                 <div class="panel-group" role="tablist" aria-multiselectable="true">                                        
                     <div class="panel panel-default">
                         <div class="panel-collapse collapse col-lg-12 in" role="tabpanel" aria-labelledby="headingTwo">
-                            <br />
-                            <div class="row" style="margin-bottom:10px;">
-                                <div class="col-md-12">
-                                    <div class="col-md-4"><label>Request Number</label></div>
-                                    <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_requestnumber" /></div>
-                                </div>
-                            </div>
-                            <div class="row" style="margin-bottom:10px;">
-                                <div class="col-md-12">
-                                    <div class="col-md-4"><label>Brand Name Registration</label></div>                                    
-                                    <div class="col-md-8">                                        
-                                        @Html.DropDownList("brand", Model.BrandList, "Select", new { @class = " selectpicker form-control", @id = "txt_modal_detail_brandname" })
+                            <fieldset style="border:none;margin:0px" @if (isDisabled) { <text> disabled="disabled" </text>   }>
+                                <br />
+                                <div class="row" style="margin-bottom:10px;">
+                                    <div class="col-md-12">
+                                        <div class="col-md-4"><label>Request Number</label></div>
+                                        <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_requestnumber" /></div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row" style="margin-bottom:10px;">
-                                <div class="col-md-6">
-                                    <div class="col-md-4"><label>FA Code (Old)</label></div>
-                                    <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_facodeold" /></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="col-md-4"><label>FA Code Desc (Old)</label></div>
-                                    <div class="col-md-8"><textarea class="form-control" readonly="readonly" id="txt_modal_detail_facodeolddesc"></textarea></div>
-                                </div>
-                            </div>
-                            <div class="row" style="margin-bottom:10px;">
-                                <div class="col-md-6">
-                                    <div class="col-md-4"><label>FA Code (New)</label></div>
-                                    <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_facodenew" /></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="col-md-4"><label>FA Code Desc (New)</label></div>
-                                    <div class="col-md-8"><textarea class="form-control" readonly="readonly" id="txt_modal_detail_facodenewdesc"></textarea></div>
-                                </div>
-                            </div>
-                            <div class="row" style="margin-bottom:10px;">
-                                <div class="col-md-6">
-                                    <div class="col-md-4"><label>Excise Good Type</label></div>
-                                    <div class="col-md-8">                                        
-                                        @Html.DropDownList("producttype", Model.ProductTypeList, "Select", new { @class = " selectpicker form-control change_tariff", @id = "txt_modal_detail_excisegoodtype" })
+                                <div class="row" style="margin-bottom:10px;">
+                                    <div class="col-md-12">
+                                        <div class="col-md-4"><label>Brand Name Registration</label></div>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_brandname" />
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="col-md-4"><label>Company Tier</label></div>
-                                    <div class="col-md-8">
-                                        @Html.DropDownList("companytier", Model.CompanyTierList, "Select", new { @class = " selectpicker form-control", @id = "txt_modal_detail_companytier" })                                        
+                                <div class="row" style="margin-bottom:10px;">
+                                    <div class="col-md-6">
+                                        <div class="col-md-4"><label>FA Code (Old)</label></div>
+                                        <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_facodeold" /></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="col-md-4"><label>FA Code Desc (Old)</label></div>
+                                        <div class="col-md-8"><textarea class="form-control" readonly="readonly" id="txt_modal_detail_facodeolddesc"></textarea></div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row" style="margin-bottom:10px;">
-                                <div class="col-md-6">
-                                    <div class="col-md-4"><label>HJE Per Pack</label></div>
-                                    <div class="col-md-8"><input type="text" class="form-control change_tariff change_hjeperbatang numeric-form" id="txt_modal_detail_hjeperpack" /></div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="col-md-4"><label>HJE (Per Batang/Gr)</label></div>
-                                    <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_hjeperbatang"/></div>
-                                </div>
-                            </div>
-                            <div class="row" style="margin-bottom:10px;">
-                                <div class="col-md-6">
-                                    <div class="col-md-4"><label>Content</label></div>
-                                    <div class="col-md-4">
-                                        <input type="text" class="form-control change_hjeperbatang numeric-form" id="txt_modal_detail_content" />
+                                <div class="row" style="margin-bottom:10px;">
+                                    <div class="col-md-6">
+                                        <div class="col-md-4"><label>FA Code (New)</label></div>
+                                        <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_facodenew" /></div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <select class="selectpicker form-control" id="txt_modal_detail_unit">
-                                            <option>Select</option>
-                                            <option value="Batang">Batang</option>
-                                            <option value="Gram">Gram</option>
-                                        </select>
+                                    <div class="col-md-6">
+                                        <div class="col-md-4"><label>FA Code Desc (New)</label></div>
+                                        <div class="col-md-8"><textarea class="form-control" readonly="readonly" id="txt_modal_detail_facodenewdesc"></textarea></div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="col-md-4"><label>Tariff</label></div>
-                                    <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_tariff"/></div>
+                                <div class="row" style="margin-bottom:10px;">
+                                    <div class="col-md-6">
+                                        <div class="col-md-4"><label>Excise Good Type</label></div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownList("producttype", Model.ProductTypeList, "Select", new { @class = " selectpicker form-control change_tariff", @id = "txt_modal_detail_excisegoodtype" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="col-md-4"><label>Company Tier</label></div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownList("companytier", Model.CompanyTierList, "Select", new { @class = " selectpicker form-control", @id = "txt_modal_detail_companytier" })
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <br />
+                                <div class="row" style="margin-bottom:10px;">
+                                    <div class="col-md-6">
+                                        <div class="col-md-4"><label>HJE Per Pack</label></div>
+                                        <div class="col-md-8"><input type="text" class="form-control change_tariff change_hjeperbatang numeric-form" id="txt_modal_detail_hjeperpack" /></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="col-md-4"><label>HJE (Per Batang/Gr)</label></div>
+                                        <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_hjeperbatang" /></div>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-bottom:10px;">
+                                    <div class="col-md-6">
+                                        <div class="col-md-4"><label>Content</label></div>
+                                        <div class="col-md-4">
+                                            <input type="text" class="form-control change_hjeperbatang numeric-form" id="txt_modal_detail_content" />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <select class="selectpicker form-control" id="txt_modal_detail_unit">
+                                                <option>Select</option>
+                                                <option value="Batang">Batang</option>
+                                                <option value="Gram">Gram</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="col-md-4"><label>Tariff</label></div>
+                                        <div class="col-md-8"><input type="text" class="form-control" readonly="readonly" id="txt_modal_detail_tariff" /></div>
+                                    </div>
+                                </div>
+                                <br />
+                            </fieldset>
                         </div>
                     </div>
                 </div>
+                @if (!isDisabled)
+                {
                 <div class="clearfix">
                     <button type="button" class="btn btn-primary pull-right" id="btn_saveDetailItem" data-dismiss="modal">Save</button>
                 </div>
+                }
             </div>
         </div>
     </div>
@@ -158,8 +166,7 @@
 @{ 
     System.Globalization.CultureInfo CI = new System.Globalization.CultureInfo("en-US");
     var StrDecreeDate = Convert.ToDateTime(Model.ViewModel.Decree_Date).ToString("dd MMM yyyy", CI);
-    var StrDecreeStartDateDate = Convert.ToDateTime(Model.ViewModel.Decree_StartDate).ToString("dd MMM yyyy", CI);
-    var isDisabled = (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString().ToLower() == "approve" || ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString().ToLower() == "detail");
+    var StrDecreeStartDateDate = Convert.ToDateTime(Model.ViewModel.Decree_StartDate).ToString("dd MMM yyyy", CI);    
 }
 
 @using (Html.BeginForm("Save", "BRPenetapanSkep", FormMethod.Post, new { @id = "SavePenetapanSkepForms", enctype = "multipart/form-data", novalidate = "novalidate" }))
@@ -173,6 +180,7 @@
     <input type="hidden" id="hd_toggle_otherdoc" />
     <input type="hidden" id="hd_islistitemloaded" value="0" />
     @Html.HiddenFor(model => model.EnableFormInput, new { @id = "txt_hd_isformenable" })
+    <input type="hidden" id="txt_ischangelog_loaded" value="0" />
     //////////////////////////////
 
     @Html.Partial("_ActionButtonMap", Model)
@@ -184,7 +192,7 @@
                     <div class="alert alert-danger" style="padding-left: 30px; display:none;" id="div_alert"></div>
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" id="home-tab" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Information</a></li>
-                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                        <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab" id="btn-tab-changeslog">Changes Log</a></li>
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content">
@@ -239,62 +247,65 @@
                                                 </h4>
                                             </div>
                                             <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">                                                
-                                                <div class="panel-body">
-                                                    <fieldset style="border:none;margin:0px" @if (isDisabled) { <text> disabled = "disabled" </text> }>
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="col-md-4"><label>Decree Number <span class="red">*</span></label></div>
-                                                            <div class="col-md-8">@Html.TextBoxFor(model => model.ViewModel.Decree_No, new { @class = "form-control", @type = "text", @id = "DecreeNumber", @required = "required", data_fieldname = "Decree Number" })</div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="col-md-4"><label>Decree Date <span class="red">*</span></label></div>
-                                                            <div class="col-md-8">
-                                                                <div class="input-group date">                                                                        
-                                                                    @Html.TextBox("ViewModel.Decree_Date", StrDecreeDate, new { @class = "form-control", @required = "required", data_fieldname = "Decree Date" })
-                                                                    <span class="input-group-addon" @if (isDisabled) { <text> style="display:none;" </text> }>
-                                                                        <i class="fa fa-calendar"></i>
-                                                                    </span>
+                                                <div class="panel-body"> 
+                                                    <fieldset style="border:none;margin:0px" @if (isDisabled) { <text> disabled="disabled" </text> }>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="col-md-4"><label>Decree Number <span class="red">*</span></label></div>
+                                                                <div class="col-md-8">@Html.TextBoxFor(model => model.ViewModel.Decree_No, new { @class = "form-control", @type = "text", @id = "DecreeNumber", @required = "required", data_fieldname = "Decree Number" })</div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="col-md-4"><label>Decree Date <span class="red">*</span></label></div>
+                                                                <div class="col-md-8">
+                                                                    <div class="input-group date">
+                                                                        @Html.TextBox("ViewModel.Decree_Date", StrDecreeDate, new { @class = "form-control", @required = "required", data_fieldname = "Decree Date" })
+                                                                        <span class="input-group-addon" @if (isDisabled) { <text> style="display:none;" </text>  }>
+                                                                            <i class="fa fa-calendar"></i>
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <br />
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="col-md-4"></div>
-                                                            <div class="col-md-8"></div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="col-md-4"><label>Start Date <span class="red">*</span></label></div>
-                                                            <div class="col-md-8">
-                                                                <div class="input-group date">                                                                        
-                                                                    @Html.TextBox("ViewModel.Decree_StartDate", StrDecreeStartDateDate, new { @class = "form-control", @required = "required", data_fieldname = "Start Date" })
-                                                                    <span class="input-group-addon" @if (isDisabled) { <text> style="display:none;" </text> }>
-                                                                        <i class="fa fa-calendar"></i>
-                                                                    </span>
+                                                        <br />
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="col-md-4"></div>
+                                                                <div class="col-md-8"></div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="col-md-4"><label>Start Date <span class="red">*</span></label></div>
+                                                                <div class="col-md-8">
+                                                                    <div class="input-group date">
+                                                                        @Html.TextBox("ViewModel.Decree_StartDate", StrDecreeStartDateDate, new { @class = "form-control", @required = "required", data_fieldname = "Start Date" })
+                                                                        <span class="input-group-addon" @if (isDisabled) { <text> style="display:none;" </text>  }>
+                                                                            <i class="fa fa-calendar"></i>
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <hr width="100%" />
-                                                    <div class="row">
-                                                        <div class="col-md-4">
-                                                            <button id="btn_showimport_dialog" type="button" class="btn btn-blue" data-toggle="modal" data-target=".modal_import">Import</button>
+                                                      </fieldset>
+                                                        <hr width="100%" />
+                                                        <div class="row">
+                                                            @if (!isDisabled)
+                                                            {
+                                                                <div class="col-md-4">
+                                                                    <button id="btn_showimport_dialog" type="button" class="btn btn-blue" data-toggle="modal" data-target=".modal_import">Import</button>
+                                                                </div>
+                                                            }
+                                                            <div class="col-md-3">
+                                                                @*<input id="UploadSKEPGenerateBtn" type="button" class="btn btn-primary btn-sm" value="Generate" />*@
+                                                            </div>
+                                                            <div class="col-md-5" @if (isDisabled) { <text> style="display:none;" </text>  }>
+                                                                <button type="button" id="checkallitem" class="btn btn-blue btn-sm pull-right">Check All</button>
+                                                                <button type="button" id="delItem" class="btn btn-blue btn-sm pull-right">Delete</button>
+                                                                <button type="button" id="btn_myModalListItem" class="btn btn-blue btn-sm pull-right" data-toggle="modal" data-target="#myModalListItem">Add Item</button>
+                                                            </div>
                                                         </div>
-                                                        <div class="col-md-3">
-                                                            @*<input id="UploadSKEPGenerateBtn" type="button" class="btn btn-primary btn-sm" value="Generate" />*@
-                                                        </div>                                                        
-                                                        <div class="col-md-5" @if (isDisabled) { <text> style="display:none;" </text> }>
-                                                            <button type="button" id="checkallitem" class="btn btn-blue btn-sm pull-right">Check All</button>
-                                                            <button type="button" id="delItem" class="btn btn-blue btn-sm pull-right">Delete</button>
-                                                            <button type="button" id="btn_myModalListItem" class="btn btn-blue btn-sm pull-right" data-toggle="modal" data-target="#myModalListItem">Add Item</button>
-                                                        </div>
-                                                    </div>
-                                                    <br />
-                                                    <div class="alert alert-danger" style="padding-left: 30px; display:none;" id="div_error_importitem"></div>
-                                                    @Html.Partial("_SKEPListItem", Model.Item)
-                                                    </fieldset>
-                                                </div>                                                
+                                                        <br />
+                                                        <div class="alert alert-danger" style="padding-left: 30px; display:none;" id="div_error_importitem"></div>
+                                                        @Html.Partial("_SKEPListItem", Model.Item)
+</div>
                                             </div>
                                         </div>
                                     </div>
@@ -356,7 +367,7 @@
                                                                                 <tr>
                                                                                     <td class="td_filename_number">@otherIndex</td>
                                                                                     <td class="td_filename" data-filename="@_file.Name" data-fileuploadid="@_file.FileId">
-                                                                                        <i class="fa fa-file"></i>&nbsp;<a href="@_file.Path" download>@_file.Name</a>
+                                                                                        <i class="fa fa-file"></i>&nbsp;<a href="@_file.Path" target="_blank" download>@_file.Name</a>
                                                                                     </td>
                                                                                     <td>
                                                                                         @_file.FileName
@@ -397,7 +408,7 @@
                                 }
                             </div>                            
                             <div role="tabpanel" class="tab-pane" id="changes">
-                                <div class="table-container">
+                                <div class="table-container" id="divChangeLog">
                                     @Html.Partial("_ChangesHistoryTable", Model)
                                 </div>
                             </div>
@@ -410,7 +421,7 @@
 }
 
 @{ 
-    var baseurl = Request.Url.GetLeftPart(UriPartial.Authority);
+    var baseurl = Request.Url.GetLeftPart(UriPartial.Authority) + Request.ApplicationPath;
     var templateurl = baseurl + "/files_upload/BrandRegistration/ImportTemplate/Penetapan SKEP Import Items Template.xlsx";
 }
 <div class="modal ems-modal fade modal_import" tabindex="-1" role="dialog" aria-labelledby="ImportModal">
@@ -421,7 +432,7 @@
                 <h4 class="modal-title">Import Items</h4>
             </div>
             <div class="modal-body">
-                <p align="center"><i class="fa fa-file"></i>&nbsp;<a href="@templateurl" download> Download Template</a></p>
+                <p align="center"><i class="fa fa-file"></i>&nbsp;<a href="@templateurl" target="_blank" download> Download Template</a></p>
                 <form id="form_ImportItems" method="post" enctype="multipart/form-data">
                     <div class="col-lg-8">
                         @Html.HiddenFor(model => model.ViewModel.Received_ID, new { @id = "txt_Received_ID" })
@@ -448,11 +459,11 @@
 @section scripts {
 
     <script src="~/Scripts/js/custom.js"></script>
-    <script src="~/Scripts/brand-registration-trans/main_skep.js?v=0.113"></script>
+    <script src="~/Scripts/brand-registration-trans/main_skep.js?v=0.124"></script>
     <script type="text/javascript" language="javascript" class="init">
 
         $(document).ready(function () {
-            $('#MenuPenetapanSKEP').addClass('active');            
+            $('#MenuSKEP').addClass('open');
             var urlSKEPNumber = '@Url.Action("GetLastRecordReceivedDecree", "BRPenetapanSkep")';
             var uploadUrlSKEP = '@Url.Action("UploadFilesSKEP", "BRPenetapanSkep")';
             attach();

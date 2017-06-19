@@ -67,12 +67,13 @@
     <script src="~/Scripts/excise-credit/terbilang.min.js"></script>
     <script src="~/Scripts/excise-credit/date.js"></script>
     <script src="~/Scripts/excise-credit/main.js"></script>
+    <script src="~/Scripts/tinymce/tinymce.min.js"></script>
     <script type="text/javascript">
         var formID = '@Model.ViewModel.Id';
         var formType = '@Convert.ToInt64(Sampoerna.EMS.Core.Enums.FormList.ExciseRequest)';
 
         $(document).ready(function () {
-
+            TinyMceInit("tinymce-editor");
             var amount = Number($("#ViewModel_Amount").val().split(',').join('.'));
             var _terbilang = terbilang(amount.toString()) + " Rupiah";
             $("#ExciseCreditAlphaText").html(_terbilang);
@@ -113,15 +114,15 @@
                 contentType: 'application/json; charset=utf-8',
                 success: function (response) {
                     $("#customloader").hide();
-                    if(response && response.length > 0) {
-                        for(var i = 0; i < response.length; i++){
+                    if (response && response.length > 0) {
+                        for (var i = 0; i < response.length; i++) {
                             otherDocs[i] = response[i];
                             otherDocsName[i] = response[i].FileName;
                             var parts = response[i].PathURL.split('/');
                             otherDocs[i].name = parts[parts.length - 1];
                             otherDocs[i].url = response[i].PathURL;
                         }
-                        
+
                         _renderFileList();
 
                     }

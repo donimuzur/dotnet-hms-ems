@@ -1,5 +1,6 @@
 ﻿var docsContainer = $("#SupportingDocs");
 var brNumber = $("#BrNumber");
+var regNumber = $("#RegNumber");
 var kppbc = $("#KppbcText");
 var nppbkc = $("#NppbkcSelector");
 var company = $("#CompanyText");
@@ -254,7 +255,7 @@ function ajaxNppbkcInfo(urlBrNumber,url, id) {
           //      var year = new Date(submitDate.val()).getYear() + 1900;
                 //console.log(new Date(submitDate.val()).getYear());
             
-                formatDocNumber(urlBrNumber, data.Company.Alias, data.CityAlias, new Date(submitDate.val()));
+                //formatDocNumber(urlBrNumber, data.Company.Alias, data.CityAlias, new Date(submitDate.val()));
             } else {
                 kppbc.val("");              
                 company.val("");
@@ -1011,6 +1012,24 @@ function GeneratePrintOut() {
     });
 }
 
+function GeneratePrintOutItem() {
+    $("#customloader").show();
+    $("#div-printout-item").empty();
+    var ID = $("#txt_hd_id").val();
+    $.ajax({
+        type: 'POST',
+        url: getUrl("GeneratePrintoutItem"),
+        data: { ID: ID },
+        success: function (data) {
+            $("#div-printout-item").html(data);
+        },
+        complete: function () {
+            $("#customloader").hide();
+        }
+    });
+}
+
+
 function GeneratePrintOutPDF() {
     $("#form_DownloadPrintout").submit();
 }
@@ -1071,6 +1090,7 @@ function UpdatePrintoutLayout() {
 
 $(document).on("click", "#btn-tab-printout", function () {
     GeneratePrintOut();
+    GeneratePrintOutItem();
 });
 
 $(document).on("click", "#btn_download_printout", function () {
@@ -1086,36 +1106,32 @@ $(document).on("click", "#btn_change_printoutlayout", function () {
 });
 
 $(document).on("click", "#btnSave", function () {
+    CloseAllModal();
+    $("#customloader").show();
     var fieldEmpty = CheckFieldEmpty();
     if (fieldEmpty == 0) {
         $("#txt_hd_next_status").val($("#statusDraftEdit").val());
         $("#BrandRegCreateForm").submit();
     }
     else {
-        CloseAllModal();
+        $("#customloader").hide();
     }
 });
 
 
 $(document).on("click", "#btnSubmit", function () {
+    CloseAllModal();
+    $("#customloader").show();
     var url = $("#txt_hd_baseurl").val() + "BRBrandRegistration/ChangeStatus";
     $("#BrandRegCreateForm").attr("action", url);
     $("#txt_hd_current_action").val("submit");
     $("#txt_hd_next_status").val($("#statusWaitingforPOAApproval").val());
     $("#BrandRegCreateForm").submit();
-
-    //var fieldEmpty = CheckFieldEmpty();
-    //if (fieldEmpty == 0) {
-    //    $("#txt_hd_next_status").val($("#statusWaitingforPOAApproval").val());
-    //    $("#BrandRegCreateForm").submit();
-    //}
-    //else
-    //{
-    //    CloseAllModal();
-    //}
 });
 
 $(document).on("click", "#btnSubmitSkep", function () {
+    CloseAllModal();
+    $("#customloader").show();
     $("#txt_hd_next_status").val($("#statusWaitingforPOASKEPApproval").val());
     $("#BrandRegCreateForm").submit();
 });
@@ -1123,6 +1139,7 @@ $(document).on("click", "#btnSubmitSkep", function () {
 
 $(document).on("click", "#btnApprove", function () {
     CloseAllModal();
+    $("#customloader").show();
     var last_approval_status = $("#txt_hd_lastapproved_status").val();
     $("#txt_hd_current_action").val("approve");
 
@@ -1138,16 +1155,6 @@ $(document).on("click", "#btnApprove", function () {
             $("#txt_hd_next_status").val($("#statusCompleted").val());
         }
     }
-    //switch (last_approval_status)
-    //{
-    //    case 26:
-    //        $("#txt_hd_next_status").val(10040);
-    //        break;
-
-    //    case '27':
-    //        $("#txt_hd_next_status").val(29);
-    //        break;
-    //}
 
     $("#BrandRegCreateForm").submit();
 });
@@ -1163,9 +1170,19 @@ $(document).on("click", ".btn_showmodal_changestatus", function () {
         $("#txt_label_forchangestatus").text("Revise");
         $("#btn_finalrevise").show();
     }
+    else if (action == "Withdraw") {
+        $("#txt_label_forchangestatus").text("Withdraw Form Confirmation");
+        $("#btn_changestatus_reject").hide();
+        $("#btn_changestatus_revise").hide();
+        $("#btn_finalrevise").hide();
+        $("#btn_changestatus_withdraw").show();
+    }
+
 });
 
 $(document).on("click", ".btn_changestatus_submit", function () {
+    CloseAllModal();
+    $("#customloader").show();
     var action = $(this).data("action");
     var status = "";
     switch(action)
@@ -1176,6 +1193,10 @@ $(document).on("click", ".btn_changestatus_submit", function () {
 
         case "finalrevise":
             status = $("#statusWaitingforGovApproval").val();
+            break;
+
+        case "withdraw":
+            status = $("#statusCanceled").val();
             break;
     }
     var comment = $("#txt_changestatus_comment").val();
@@ -1195,11 +1216,12 @@ function ReviseBrand(Action, Status, Comment) {
         },
         success: function (data) {
             var errmessage = data;
-            if (data == "") {
-                window.location.replace(getUrl(""));
-            }
+            window.location.replace(getUrl("IndexBrandRegistration"));
+            //$("#customloader").hide();
         }
     });
+    $("#customloader").show();
+
 }
 
 $(document).on("click", "#checkallitem", function () {
@@ -1253,6 +1275,15 @@ function DeleteCheckedItem() {
 
 $("input[name='ViewModel.Registration_Type']").change(function () {
     var registrationType = $("#divRegistrationType input[type='radio']:checked").val();
+
+    if (registrationType == 1)
+    {
+        $("#divEffectiveDate").hide();
+    }
+    else
+    {
+        $("#divEffectiveDate").show();
+    }
 
     $("#tbody_skeplistitem").find(".tr_item_list").each(function () {
         var proddevnextaction = $(this).data("proddevnextaction");

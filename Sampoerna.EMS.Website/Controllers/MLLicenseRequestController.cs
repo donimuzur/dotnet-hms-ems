@@ -82,7 +82,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     CompType = s.INTERVIEW_REQUEST.COMPANY_TYPE,
                     KPPBC = s.INTERVIEW_REQUEST.KPPBC == null ? "" : s.INTERVIEW_REQUEST.KPPBC,
                     Company = s.INTERVIEW_REQUEST.T001.BUTXT,
-                    List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_TYPE).ToList(),
+                    //List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_TYPE).ToList(),
+                    List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS).ToList(),
                     Count_List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_TYPE).Count(),
                     Status = s.SYS_REFFERENCES.REFF_KEYS,
                     Status_Value = s.SYS_REFFERENCES.REFF_VALUE,
@@ -176,7 +177,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     KPPBC = s.INTERVIEW_REQUEST.KPPBC == null ? "" : s.INTERVIEW_REQUEST.KPPBC,
                     KPBCName = s.NPPBKC_ID == null ? "" : s.ZAIDM_EX_NPPBKC.TEXT_TO,
                     Company = s.INTERVIEW_REQUEST.T001.BUTXT,
-                    List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_TYPE).ToList(),
+                    //List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_TYPE).ToList(),
+                    List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS).ToList(),
                     Count_List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_TYPE).Count(),
                     Status = s.SYS_REFFERENCES.REFF_KEYS,
                     Status_Value = s.SYS_REFFERENCES.REFF_VALUE,
@@ -307,7 +309,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 KPBCName = s.NPPBKC_ID == null ? "" : s.ZAIDM_EX_NPPBKC.TEXT_TO,
                 KPPBC = s.INTERVIEW_REQUEST.KPPBC == null ? "" : s.INTERVIEW_REQUEST.KPPBC,
                 Company = s.INTERVIEW_REQUEST.T001.BUTXT,
-                List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_TYPE).ToList(),
+                //List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_TYPE).ToList(),
+                List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS).ToList(),
                 Count_List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_TYPE).Count(),
                 Status = s.SYS_REFFERENCES.REFF_KEYS == null ? "" : s.SYS_REFFERENCES.REFF_KEYS,
                 Status_Value = s.SYS_REFFERENCES.REFF_VALUE == null ? "" : s.SYS_REFFERENCES.REFF_VALUE,
@@ -653,6 +656,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 KPPBC_Address = s .INTERVIEW_REQUEST.KPPBC_ADDRESS ?? "",
                 Npwp = s.INTERVIEW_REQUEST.T001.NPWP,
                 Company_Address = s.INTERVIEW_REQUEST.T001.SPRAS,
+                Company_City = s.INTERVIEW_REQUEST.T001.ORT01,
                 Company = s.INTERVIEW_REQUEST.T001.BUTXT,
                 BADate = s.INTERVIEW_REQUEST.BA_DATE,
                 BANumber = s.INTERVIEW_REQUEST.BA_NUMBER,
@@ -1619,6 +1623,17 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
             return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
         }
 
+        private SelectList GetOwnerStatusList(Dictionary<string,string> status)
+        {
+            var query = from x in status
+                        select new SelectItemModel()
+                        {
+                            ValueField = x.Key,
+                            TextField = x.Value
+                        };
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+        }
+
         private LicenseRequestModel SetDetailProductType(LicenseRequestModel pcmodel)
         {
 
@@ -1628,7 +1643,8 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
             {
                 var detailsProdType = new ProductTypeDetails();
                 
-                detailsProdType.ProdCode = val.PROD_CODE ;
+                detailsProdType.ProdCode = val.PROD_CODE;
+                detailsProdType.ProductType = val.PRODUCT_TYPE;
                 detailsProdType.ProdAlias = val.PRODUCT_ALIAS;
 
                 var val_detailsProdType = service.GetProductTypeById().Where(w => w.PROD_CODE.Equals(val.PROD_CODE) && w.MNF_REQUEST_ID.Equals(pcmodel.MnfRequestID)).FirstOrDefault();
@@ -2572,19 +2588,21 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
         private string GetPrintout(LicenseRequestModel _LRModel)
         {
             _LRModel = GetLicenseRequestMasterForm(_LRModel);
-            _LRModel.LicenseRequestBoundCondition   = GetLicenseRequestBoundCondition(_LRModel.MnfRequestID);
-            _LRModel.LicenseRequestProductType      = GetProductTypeMaster(_LRModel.MnfRequestID);
-            _LRModel.LicenseRequestOtherProductType = GetOtherProductTypeMaster(_LRModel.MnfRequestID);
-            _LRModel.LicenseSupportingDocumentMaster = GetSupportingDocumentMaster(_LRModel.InterviewId);
+            _LRModel.LicenseRequestBoundCondition       = GetLicenseRequestBoundCondition(_LRModel.MnfRequestID);
+            _LRModel.LicenseRequestProductType          = GetProductTypeMaster(_LRModel.MnfRequestID);
+            _LRModel.LicenseRequestOtherProductType     = GetOtherProductTypeMaster(_LRModel.MnfRequestID);
+            _LRModel.LicenseSupportingDocumentMaster    = GetSupportingDocumentMaster(_LRModel.InterviewId);
 
             var layout = "";
+
+            System.Globalization.CultureInfo CIndo = new System.Globalization.CultureInfo("id-ID");
 
             var parameters = new Dictionary<string, string>();
             parameters.Add("COMPANY_NAME", _LRModel.Company);
             parameters.Add("COMPANY_ADDRESS", _LRModel.Company_Address);
             parameters.Add("COMPANY_NPWP", _LRModel.Npwp);
-            parameters.Add("CITY", _LRModel.City);
-            parameters.Add("REQUEST_DATE", _LRModel.RequestDate.ToString("dd MMMM yyyy"));
+            parameters.Add("CITY", _LRModel.Company_City);
+            parameters.Add("REQUEST_DATE", _LRModel.RequestDate.ToString("dd MMMM yyyy",CIndo));
             parameters.Add("FORM_NUMBER", _LRModel.MnfFormNum);
             parameters.Add("KPPBC", _LRModel.KPBCName);
             parameters.Add("ADDRESS_KPPBC", _LRModel.KPPBC_Address);
@@ -2600,22 +2618,22 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
             int idx_bc = 1;
             foreach (var detlocation in _LRModel.LicenseRequestBoundCondition)
             {
-                location_list += "<table bgcolor='#ffffff'><tr><td width='10pt'></td><td><b>Detil Pabrik " + idx_bc.ToString() + "</b></td></tr></table><table bgcolor='#ffffff'><tr>";
+                location_list += "<table bgcolor='#ffffff' style='font-family:Arial,Calibri,sans-serif;font-size:10pt;'><tr><td width='10pt'></td><td><b>Detil Pabrik " + idx_bc.ToString()  + "</b></td></tr></table><table bgcolor='#ffffff' style='font-family:Arial,Calibri,sans-serif;font-size:10pt;'><tr>";
                 location_list += "<td width='40pt'></td><td>1. Lokasi Pabrik</td></tr></table>";
-                location_list += "<table bgcolor='#ffffff'><tr><td width='50pt'></td><td><table bgcolor='#ffffff'><tr><td>a.</td><td>Alamat Jalan</td><td>:</td><td>"+ detlocation.MnfAddr + "</td></tr>";
+                location_list += "<table bgcolor='#ffffff'><tr><td width='50pt'></td><td><table bgcolor='#ffffff' style='font-family:Arial,Calibri,sans-serif;font-size:10pt;'><tr><td>a.</td><td style='width:100pt'>Alamat Jalan</td><td>:</td><td>" + detlocation.MnfAddr + "</td></tr>";
                 location_list += "<tr><td>b.</td><td>Kelurahan/Desa</td><td>:</td><td>" + detlocation.MnfVillage + "</td></tr><tr><td>c.</td><td>Kecamatan</td><td>:</td><td>" + detlocation.MnfSubDist + "</td></tr><tr><td>d.</td><td>Kabupaten/Kota</td><td>:</td><td>" + detlocation.MnfCity + "</td></tr><tr><td>e.</td><td>Provinsi</td><td>:</td><td>" + detlocation.MnfProvince + "</td></tr><tr><td>f.</td><td>Telepon/Faksimili</td><td>:</td><td>" + detlocation.MnfPhone + "/" + detlocation.MnfFax + "</td></tr></table>";
-                location_list += "</td></tr></table><br/><table bgcolor='#ffffff'><tr><td width='40pt'></td><td>2. Batas-batas</td></tr></table><table bgcolor='#ffffff'><tr><td width='50pt'></td>";
-                location_list += "<td><table bgcolor='#ffffff'><tr><td>a.</td><td>Utara</td><td>:</td><td>"+detlocation.North+"</td></tr><tr><td>b.</td><td>Timur</td><td>:</td><td>"+detlocation.East+"</td></tr><tr><td>c.</td><td>Selatan</td><td>:</td><td>"+detlocation.South+"</td></tr><tr><td>d.</td><td>Barat</td><td>:</td><td>"+detlocation.West+"</td></tr></table></td></tr></table>";
-                location_list += "<br/><table bgcolor='#ffffff'><tr><td width='40pt'></td><td>3. Kondisi&nbsp;" + _LRModel.Company_Type + " :</td></tr></table><table bgcolor='#ffffff'><tr><td width='50pt'></td>";
-                location_list += "<td><table bgcolor='#ffffff'><tr><td>a.</td><td>Luas Tanah</td><td>:</td><td>"+detlocation.LandArea+"</td></tr><tr><td>b.</td><td>Luas Bangunan</td><td>:</td><td>"+detlocation.BuildingArea+"</td></tr><tr><td>c.</td><td>Status kepemilikan</td><td>:</td><td>"+detlocation.OwnershipStatus+"</td></tr></table></td></tr></table>";
+                location_list += "</td></tr></table><br/><table bgcolor='#ffffff'style='font-family:Arial,Calibri,sans-serif;font-size:10pt;'><tr><td width='40pt'></td><td>2. Batas-batas</td></tr></table><table bgcolor='#ffffff'style='font-family:Arial,Calibri,sans-serif;font-size:10pt;'><tr><td width='50pt'></td>";
+                location_list += "<td><table bgcolor='#ffffff'style='font-family:Arial,Calibri,sans-serif;font-size:10pt;'><tr><td>a.</td><td style='width:100pt'>Utara</td><td>:</td><td>" + detlocation.North+"</td></tr><tr><td>b.</td><td>Timur</td><td>:</td><td>"+detlocation.East+"</td></tr><tr><td>c.</td><td>Selatan</td><td>:</td><td>"+detlocation.South+"</td></tr><tr><td>d.</td><td>Barat</td><td>:</td><td>"+detlocation.West+"</td></tr></table></td></tr></table>";
+                location_list += "<br/><table bgcolor='#ffffff'style='font-family:Arial,Calibri,sans-serif;font-size:10pt;'><tr><td width='40pt'></td><td>3. Kondisi&nbsp;" + _LRModel.Company_Type + " :</td></tr></table><table bgcolor='#ffffff'><tr><td width='50pt'></td>";
+                location_list += "<td><table bgcolor='#ffffff'style='font-family:Arial,Calibri,sans-serif;font-size:10pt;'><tr><td>a.</td><td style='width:100pt'>Luas Tanah</td><td>:</td><td>" + detlocation.LandArea+"&nbsp;m<sup>2</sup></td></tr><tr><td>b.</td><td>Luas Bangunan</td><td>:</td><td>"+detlocation.BuildingArea+"&nbsp;m<sup>2</sup></td></tr><tr><td>c.</td><td>Status kepemilikan</td><td>:</td><td>"+detlocation.OwnershipStatus+"</td></tr></table></td></tr></table><br/>";
                 
 
                 mnfcity_list += detlocation.MnfCity;
                 mnfaddr_list += detlocation.MnfAddr + " " + detlocation.MnfCity;
-                if (idx_bc >= 1 && idx_bc < detlocation.MnfCount)
+                if (idx_bc < _LRModel.LicenseRequestBoundCondition.Count)
                 {
-                    mnfcity_list += ",";
-                    mnfaddr_list += ",";
+                    mnfcity_list += ", ";
+                    mnfaddr_list += ", ";
                 }
 
                 idx_bc++;
@@ -2625,7 +2643,7 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
 
             string prodtype_info = "";
 
-            prodtype_info += "<table bgcolor='#ffffff'><tr><td width='10pt'></td><td><table bgcolor='#ffffff'><tr><td></td><td></td></tr>";
+            prodtype_info += "<table bgcolor='#ffffff'><tr><td width='10pt'></td><td><table bgcolor='#ffffff' style='font-family:Arial,Calibri,sans-serif;font-size:10pt;'><tr><td></td><td></td></tr>";
             int ptidx = 0;
             string[] ptnumerator = new string[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" };
             
@@ -2639,7 +2657,7 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
             parameters.Add("PROD_TYPE_LIST", prodtype_info);
 
             string otherprodtype_info = "";
-            otherprodtype_info += "<table bgcolor='#ffffff'><tr><td width='10pt'></td><td><table bgcolor='#ffffff'><tr><td></td><td></td></tr>";
+            otherprodtype_info += "<table bgcolor='#ffffff'><tr><td width='10pt'></td><td><table bgcolor='#ffffff' style='font-family:Arial,Calibri,sans-serif;font-size:10pt;'><tr><td></td><td></td></tr>";
             int otheridx = 0;
 
             foreach (var otherprodtype in _LRModel.LicenseRequestOtherProductType)
@@ -2656,7 +2674,7 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
 
             string supportdoc_info = "";
 
-            supportdoc_info += "<table bgcolor='#ffffff'><tr><td width='10pt'></td><td><table bgcolor='#ffffff'><tr><td></td><td></td></tr>";
+            supportdoc_info += "<table bgcolor='#ffffff'><tr><td width='10pt'></td><td><table bgcolor='#ffffff' style='font-family:Arial,Calibri,sans-serif;font-size:10pt;'><tr><td></td><td></td></tr>";
             int sdidx = 0;
 
             foreach(var supportdoc in _LRModel.LicenseSupportingDocumentMaster )

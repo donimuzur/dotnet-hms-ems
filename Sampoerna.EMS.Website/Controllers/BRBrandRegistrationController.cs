@@ -29,7 +29,7 @@ using System.Web;
 using Sampoerna.EMS.Website.Utility;
 using System.Globalization;
 using Sampoerna.EMS.Utils;
-//using static Sampoerna.EMS.Core.Enums;
+using static Sampoerna.EMS.Core.Enums;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Models.FileUpload;
@@ -41,6 +41,8 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
 using SpreadsheetLight;
+using iTextSharp.text.html.simpleparser;
+using iTextSharp.text;
 
 
 
@@ -60,11 +62,13 @@ namespace Sampoerna.EMS.Website.Controllers
         private IWorkflowHistoryBLL _workflowHistoryBLL;
         private BrandRegistrationReqModel BRModel;
         private BrandRegistrationReqViewModel BRViewModel;
+        private IDocumentSequenceNumberBLL _docbll;
+
 
         int ActionType;
         Enum ApprovalStatus;
 
-        public BRBrandRegistrationController(IPageBLL pageBLL, IZaidmExNPPBKCBLL nppbkcbll, IChangesHistoryBLL changesHistoryBll, IWorkflowHistoryBLL workflowHistoryBLL) : base(pageBLL, Enums.MenuList.BrandRegistrationTransaction)
+        public BRBrandRegistrationController(IPageBLL pageBLL, IZaidmExNPPBKCBLL nppbkcbll, IChangesHistoryBLL changesHistoryBll, IWorkflowHistoryBLL workflowHistoryBLL, IDocumentSequenceNumberBLL docbll) : base(pageBLL, Enums.MenuList.BrandRegistrationTransaction)
         {
             this.mainMenu = Enums.MenuList.BrandRegistrationTransaction;
             this.refService = new SystemReferenceService();
@@ -78,13 +82,15 @@ namespace Sampoerna.EMS.Website.Controllers
             this.ActionType = 0;
             BRModel = new BrandRegistrationReqModel();
             BRViewModel = new BrandRegistrationReqViewModel();
+            _docbll = docbll;
+
         }
 
         #region Brand Registration
 
         #region User Access and Validation
 
-        public BrandAccess GetUserAccess(long intLastApprovedStatus, string CreatedBy, string LastApprovedBy, string Action, string NPPBKCId = "")
+        public BrandAccess GetUserAccess(long BrandRegId, long intLastApprovedStatus, string CreatedBy, string LastApprovedBy, string Action, string NPPBKCId = "")
         {
             BrandAccess result = new BrandAccess();
 
@@ -92,11 +98,11 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 switch (CurrentUser.UserRole)
                 {
-                    case Enums.UserRole.Administrator:
+                    case UserRole.Administrator:
                         result.CanCreate = true;
                         break;
 
-                    case Enums.UserRole.POA:
+                    case UserRole.POA:
                         result.CanCreate = true;
                         break;
 
@@ -106,7 +112,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var LastApprovedStatus = brandRegistrationService.GetReffById(intLastApprovedStatus).REFF_KEYS;
 
-                if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+                if (CurrentUser.UserRole == UserRole.Viewer)
                 {
                     result.CanView = true;
                 }
@@ -117,7 +123,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         case "Index":
                             switch (CurrentUser.UserRole)
                             {
-                                case Enums.UserRole.Administrator:
+                                case UserRole.Administrator:
                                     switch (LastApprovedStatus)
                                     {
                                         //DRAFT
@@ -137,7 +143,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                     }
                                     break;
 
-                                case Enums.UserRole.POA:
+                                case UserRole.POA:
                                     switch (LastApprovedStatus)
                                     {
                                         //DRAFT
@@ -160,7 +166,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                                 result.CanCreate = true;
                                                 //result.CanView = true;
 
-                                                var POAApprover = brandRegistrationService.GetPOAApproverList(NPPBKCId, CreatedBy).ToList();
+                                                var POAApprover = brandRegistrationService.GetPOAApproverList(BrandRegId).ToList();
                                                 if (POAApprover.Count() > 0)
                                                 {
                                                     List<string> ListPOA = POAApprover.Select(s => s.POA_ID.ToUpper()).ToList();
@@ -198,7 +204,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                                 result.CanCreate = true;
                                                 //result.CanView = brandRegistrationService.CheckPOANPPBKC(NPPBKCId, CurrentUser.USER_ID);
 
-                                                var POAApprover = brandRegistrationService.GetPOAApproverList(NPPBKCId, CreatedBy).ToList();
+                                                var POAApprover = brandRegistrationService.GetPOAApproverList(BrandRegId).ToList();
                                                 if (POAApprover.Count() > 0)
                                                 {
                                                     List<string> ListPOA = POAApprover.Select(s => s.POA_ID.ToUpper()).ToList();
@@ -233,7 +239,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                             {
                                                 //result.CanView = brandRegistrationService.CheckPOANPPBKC(NPPBKCId, CurrentUser.USER_ID);
 
-                                                var POAApprover = brandRegistrationService.GetPOAApproverList(NPPBKCId, CreatedBy).ToList();
+                                                var POAApprover = brandRegistrationService.GetPOAApproverList(BrandRegId).ToList();
                                                 if (POAApprover.Count() > 0)
                                                 {
                                                     List<string> ListPOA = POAApprover.Select(s => s.POA_ID.ToUpper()).ToList();
@@ -273,7 +279,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             result.CanView = true;
                             switch (CurrentUser.UserRole)
                             {
-                                case Enums.UserRole.Administrator:
+                                case UserRole.Administrator:
                                     switch (LastApprovedStatus)
                                     {
                                         //WAITING FOR APPROVAL
@@ -285,7 +291,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                     }
                                     break;
 
-                                case Enums.UserRole.POA:
+                                case UserRole.POA:
                                     switch (LastApprovedStatus)
                                     {
                                         case "WAITING_POA_SKEP_APPROVAL":
@@ -305,7 +311,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         case "EditSKEP":
                             switch (CurrentUser.UserRole)
                             {
-                                case Enums.UserRole.Administrator:
+                                case UserRole.Administrator:
                                     switch (LastApprovedStatus)
                                     {
                                         //DRAFT NEW
@@ -329,7 +335,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                     }
                                     break;
 
-                                case Enums.UserRole.POA:
+                                case UserRole.POA:
                                     switch (LastApprovedStatus)
                                     {
                                         case "DRAFT_NEW_STATUS":
@@ -391,7 +397,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         case "Approval":
                             switch (CurrentUser.UserRole)
                             {
-                                case Enums.UserRole.Administrator:
+                                case UserRole.Administrator:
                                     result.CanCreate = false;
                                     result.CanEdit = false;
                                     result.CanSubmit = false;
@@ -399,7 +405,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                     result.CanApprove = false;
                                     break;
 
-                                case Enums.UserRole.POA:
+                                case UserRole.POA:
                                     result.CanCreate = false;
                                     result.CanEdit = false;
                                     result.CanSubmit = false;
@@ -408,7 +414,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                     switch (LastApprovedStatus)
                                     {
                                         case "WAITING_POA_APPROVAL":
-                                            var POAApprover = brandRegistrationService.GetPOAApproverList(NPPBKCId, CreatedBy).ToList();
+                                            var POAApprover = brandRegistrationService.GetPOAApproverList(BrandRegId).ToList();
                                             if (POAApprover.Count() > 0)
                                             {
                                                 List<string> ListPOA = POAApprover.Select(s => s.POA_ID.ToUpper()).ToList();
@@ -483,11 +489,11 @@ namespace Sampoerna.EMS.Website.Controllers
             data.ViewModel.Decree_Date = DateTime.Now;
 
 
-            IEnumerable<Enums.DocumentStatusGovType2> statusTypes = Enum.GetValues(typeof(Enums.DocumentStatusGovType2)).Cast<Enums.DocumentStatusGovType2>();
+            IEnumerable<DocumentStatusGovType2> statusTypes = Enum.GetValues(typeof(DocumentStatusGovType2)).Cast<DocumentStatusGovType2>();
             data.ListGovStatus = from form in statusTypes
                                  select new SelectListItem
                                  {
-                                     Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Enums.DocumentStatusGovType2), form.ToString())),
+                                     Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(DocumentStatusGovType2), form.ToString())),
                                      Value = ((int)form).ToString()
                                  };
 
@@ -630,11 +636,11 @@ namespace Sampoerna.EMS.Website.Controllers
                         nppbkc = new SelectList(filterNppbkc, "Value", "Text");
                     }
 
-                    IEnumerable<Enums.BrandRegistrationAction> actionTypes = Enum.GetValues(typeof(Enums.BrandRegistrationAction)).Cast<Enums.BrandRegistrationAction>();
+                    IEnumerable<BrandRegistrationAction> actionTypes = Enum.GetValues(typeof(BrandRegistrationAction)).Cast<BrandRegistrationAction>();
                     model.SearchInput.ListRegistrationType = from form in actionTypes
                                                              select new SelectListItem
                                                              {
-                                                                 Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Enums.BrandRegistrationAction), form.ToString())),
+                                                                 Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(BrandRegistrationAction), form.ToString())),
                                                                  Value = ((int)form).ToString()
                                                              };
                     model.SearchInput.CreatorList = GlobalFunctions.GetCreatorList();
@@ -682,7 +688,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             LastModified_Date = Convert.ToDateTime(s.LASTMODIFIED_DATE),
                             //IsApprover = IsPOACanApprove(s.REGISTRATION_ID, CurrentUser.USER_ID, s.LASTAPPROVED_BY == null ? "" : s.LASTAPPROVED_BY),
                             IsCreator = (s.CREATED_BY == CurrentUser.USER_ID) ? true : false,
-                            UserAccess = GetUserAccess(s.LASTAPPROVED_STATUS, s.CREATED_BY, s.LASTAPPROVED_BY, "Index", s.NPPBKC_ID)
+                            UserAccess = GetUserAccess(s.REGISTRATION_ID, s.LASTAPPROVED_STATUS, s.CREATED_BY, s.LASTAPPROVED_BY, "Index", s.NPPBKC_ID)
                         }).ToList();
                     }
 
@@ -742,7 +748,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     LastModified_Date = Convert.ToDateTime(s.LASTMODIFIED_DATE),
                     //IsApprover = IsPOACanApprove(s.REGISTRATION_ID, CurrentUser.USER_ID, s.LASTAPPROVED_BY == null ? "" : s.LASTAPPROVED_BY),
                     IsCreator = (s.CREATED_BY == CurrentUser.USER_ID) ? true : false,
-                    UserAccess = GetUserAccess(s.LASTAPPROVED_STATUS, s.CREATED_BY, s.LASTAPPROVED_BY, "Index", s.NPPBKC_ID)
+                    UserAccess = GetUserAccess(s.REGISTRATION_ID, s.LASTAPPROVED_STATUS, s.CREATED_BY, s.LASTAPPROVED_BY, "Index", s.NPPBKC_ID)
                 }).ToList();
             }
 
@@ -765,7 +771,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var data = GeneratePropertiesBrand(null, false);
             data.ActionName = "CreateNew";
-            data.UserAccess = GetUserAccess(0, CurrentUser.USER_ID, "", "");
+            data.UserAccess = GetUserAccess(0, 0, CurrentUser.USER_ID, "", "");
             data.Confirmation = GenerateConfirmDialog(true, false, false);
 
 
@@ -844,6 +850,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
                 var data = MapToTable(model.ViewModel);
+
+
+
 
                 var ActionResult = new BRAND_REGISTRATION_REQ();
                 ActionResult = brandRegistrationService.CreateBrand(data, (int)Enums.MenuList.BrandRegistrationReq, ActionType, (int)CurrentUser.UserRole, CurrentUser.USER_ID);
@@ -1359,13 +1368,19 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (update)
                 {
-                    if(model.CurrentAction == "submit")
+                    switch(model.CurrentAction)
                     {
-                        SuccMessage += ProcessMail(model.ViewModel.Registration_ID, "poa_approver", "approve");
-                    }
-                    else
-                    {
-                        SuccMessage += ProcessMail(model.ViewModel.Registration_ID, "creator", "notification");
+                        case "submit":
+                            SuccMessage += ProcessMail(model.ViewModel.Registration_ID, "poa_approver", "approve");
+                            break;
+
+                        //case "withdraw":
+                        //    SuccMessage += ProcessMail(model.ViewModel.Registration_ID, "poa_approver", "notification");
+                        //    break;
+
+                        default:
+                            SuccMessage += ProcessMail(model.ViewModel.Registration_ID, "creator", "notification");
+                            break;
                     }
                 }
 
@@ -1386,7 +1401,14 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 int ActionType = 0;
-                ActionType = (int)Enums.ActionType.Revise;
+                if (NextStatus != refService.GetRefByKey("CANCELED").REFF_ID)
+                {
+                    ActionType = (int)Enums.ActionType.Revise;
+                }
+                else
+                {
+                    ActionType = (int)Enums.ActionType.Cancel;
+                }
 
                 var update = brandRegistrationService.UpdateStatus(ID, NextStatus, CurrentUser.USER_ID, ActionType, (int)CurrentUser.UserRole, Comment);
 
@@ -1395,8 +1417,52 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (update)
                 {
-                    ApprovalStatus = ReferenceKeys.ApprovalStatus.Rejected;
-                    msgSuccess = ProcessMail(ID, "creator", "notification", Comment);
+                    if (NextStatus != refService.GetRefByKey("CANCELED").REFF_ID)
+                    {
+                        ApprovalStatus = ReferenceKeys.ApprovalStatus.Rejected;
+                        msgSuccess += ProcessMail(ID, "creator", "notification", Comment);
+                    }
+                    else
+                    {
+                        ApprovalStatus = ReferenceKeys.ApprovalStatus.Canceled;
+                        msgSuccess += ProcessMail(ID, "poa_approver", "notification_withdraw", Comment);
+                    }
+                }
+
+
+
+                AddMessageInfo(msgSuccess, Enums.MessageInfoType.Success);
+
+                //return RedirectToAction("IndexBrandRegistration");
+                return Json(true);
+
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                return Json(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult WithdrawBrand(long ID, int NextStatus, string Comment)
+        {
+            try
+            {
+                int ActionType = 0;
+                ActionType = (int)Enums.ActionType.Revise;
+
+                var update = brandRegistrationService.UpdateStatus(ID, NextStatus, CurrentUser.USER_ID, ActionType, (int)CurrentUser.UserRole, Comment);
+
+                string ErrMsg = "";
+                var msgSuccess = "Success Withdraw";
+
+                if (update)
+                {
+                    ActionType = (int)Enums.ActionType.Withdraw;
+                    ApprovalStatus = ReferenceKeys.ApprovalStatus.Canceled;
+
+                    msgSuccess = ProcessMail(ID, "poa_approver", "notification", Comment);
                 }
 
 
@@ -1411,8 +1477,6 @@ namespace Sampoerna.EMS.Website.Controllers
                 return Json(ex.Message);
             }
         }
-
-
 
 
         #endregion
@@ -1443,11 +1507,11 @@ namespace Sampoerna.EMS.Website.Controllers
                         nppbkc = new SelectList(filterNppbkc, "Value", "Text");
                     }
 
-                    IEnumerable<Enums.BrandRegistrationAction> actionTypes = Enum.GetValues(typeof(Enums.BrandRegistrationAction)).Cast<Enums.BrandRegistrationAction>();
+                    IEnumerable<BrandRegistrationAction> actionTypes = Enum.GetValues(typeof(BrandRegistrationAction)).Cast<BrandRegistrationAction>();
                     model.SearchInput.ListRegistrationType = from form in actionTypes
                                                              select new SelectListItem
                                                              {
-                                                                 Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Enums.BrandRegistrationAction), form.ToString())),
+                                                                 Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(BrandRegistrationAction), form.ToString())),
                                                                  Value = ((int)form).ToString()
                                                              };
                     model.SearchInput.CreatorList = GlobalFunctions.GetCreatorList();
@@ -1495,7 +1559,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             LastModified_Date = Convert.ToDateTime(s.LASTMODIFIED_DATE),
                             //IsApprover = IsPOACanApprove(s.REGISTRATION_ID, CurrentUser.USER_ID, s.LASTAPPROVED_BY == null ? "" : s.LASTAPPROVED_BY),
                             IsCreator = (s.CREATED_BY == CurrentUser.USER_ID) ? true : false,
-                            UserAccess = GetUserAccess(s.LASTAPPROVED_STATUS, s.CREATED_BY, s.LASTAPPROVED_BY, "Index")
+                            UserAccess = GetUserAccess(s.REGISTRATION_ID, s.LASTAPPROVED_STATUS, s.CREATED_BY, s.LASTAPPROVED_BY, "Index")
                         }).ToList();
                     }
 
@@ -1561,6 +1625,9 @@ namespace Sampoerna.EMS.Website.Controllers
                         parameters.Add("link_message", "APPROVE");
                         break;
 
+                    case "notification_withdraw":
+                        break;
+
                     default:
                         parameters.Add("url_approve", Url.Action("Approval", "BRBrandRegistration", new { Id = id }, this.Request.Url.Scheme));
                         parameters.Add("link_message", "APPROVE");
@@ -1578,9 +1645,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     mailcontentId = brandRegistrationService.GetMailId("Brand Registration Request Approval");
                 }
-                else if (MailFor == "revise")
+                else if (MailFor == "revise" || MailFor == "notification_withdraw")
                 {
-                    mailcontentId = brandRegistrationService.GetMailId("Brand Registration Revised");
+                    mailcontentId = brandRegistrationService.GetMailId("Brand Registration Request Revised");
                 }
                 else if (MailFor == "reject")
                 {
@@ -1631,29 +1698,44 @@ namespace Sampoerna.EMS.Website.Controllers
                     skep_details = "<tr><td>SKEP</td><td>:</td><td>" + BrandRegistrationData.ViewModel.Decree_No + "</td></tr>";
                     break;
 
+                case "CANCELED":
+                    body_message = "Brand Registration " + BrandRegistrationData.ViewModel.Registration_No + " is ";
+                    //skep_details = "<tr><td>SKEP</td><td>:</td><td>" + BrandRegistrationData.ViewModel.Decree_No + "</td></tr>";
+                    break;
             }
 
             string block_details = "";
             string msgSuccess = "";
+            decimal HJEPerStick = 0;
             foreach (var item in BrandRegistrationData.Item)
             {
                 if (item.PD_Detail_ID > -1)
                 {
-                    block_details += "<tr><td>Tarif Cukai</td><td>:</td><td>" + item.Tariff + "</td></tr>";
-                    block_details += "<tr><td>HJE per pack</td><td>:</td><td>" + item.Hje + "</td></tr>";
-                    block_details += "<tr><td>HJE Per Stick / Gr</td><td>:</td><td>" + item.Hje + "</td></tr>";
-                    block_details += "<tr><td>Content</td><td>:</td><td>" + item.Brand_Content + "[" + item.Unit + "]</td></tr>";
+                    HJEPerStick = item.Hje / Convert.ToInt32(item.Brand_Content);
+
+                    block_details += "<tr><td>Tarif Cukai</td><td>:</td><td>" + item.Tariff.ToString("#,##") + "</td></tr>";
+                    block_details += "<tr><td>HJE per pack</td><td>:</td><td>" + item.Hje.ToString("#,##") + "</td></tr>";
+                    block_details += "<tr><td>HJE Per Stick / Gr</td><td>:</td><td>" + HJEPerStick.ToString("#,##0.00") + "</td></tr>";
+                    block_details += "<tr><td>Content</td><td>:</td><td>" + Convert.ToInt32(item.Brand_Content).ToString("#,##") + " [" + item.Unit + "]</td></tr>";
                     block_details += "<tr><td>Excisable Good Type</td><td>:</td><td>" + item.ProductType + "</td></tr>";
                     block_details += "<tr><td>Market</td><td>:</td><td>" + item.MarketDesc + "</td></tr>";
-                    block_details += "<tr><td>Creator</td><td>:</td><td>" + item.Created_By_Name + "</td></tr>";
                     block_details += "<tr><td colspan='2'>&nbsp;</td></tr>";
                 }
             }
 
+            block_details += "<tr><td>Creator</td><td>:</td><td>" + BrandRegistrationData.ViewModel.Created_By_Name + "</td></tr>";
+
             string rejection_notes = "";
             if (Comment != "")
             {
-                rejection_notes += "<tr><td>Rejection Notes</td><td>:</td><td>" + Comment + "</td></tr>";
+                if (strLastApprovedStatus == "CANCELED")
+                {
+                    rejection_notes += "<tr><td>Withdraw Notes</td><td>:</td><td>" + Comment + "</td></tr>";
+                }
+                else
+                {
+                    rejection_notes += "<tr><td>Rejection Notes</td><td>:</td><td>" + Comment + "</td></tr>";
+                }
 
             }
 
@@ -1667,7 +1749,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     break;
 
                 case "poa_approver":
-                    var POAApprover = brandRegistrationService.GetPOAApproverList(BrandRegistrationData.ViewModel.Nppbkc_ID, BrandRegistrationData.ViewModel.Created_By).ToList();
+                    var POAApprover = brandRegistrationService.GetPOAApproverList(RegistrationID).ToList();
                     if (POAApprover.Count() > 0)
                     {
                         ListPOA = POAApprover.Select(s => s.POA_EMAIL).ToList();
@@ -1742,11 +1824,11 @@ namespace Sampoerna.EMS.Website.Controllers
             //model.SearchView.CompanyTypeList = GetCompTypeList(comptplist);
             //model.SearchView.KPPBCList = GetKPPBCList(nppbkcList);
 
-            IEnumerable<Enums.BrandRegistrationAction> actionTypes = Enum.GetValues(typeof(Enums.BrandRegistrationAction)).Cast<Enums.BrandRegistrationAction>();
+            IEnumerable<BrandRegistrationAction> actionTypes = Enum.GetValues(typeof(BrandRegistrationAction)).Cast<BrandRegistrationAction>();
             model.SearchView.ListRegistrationType = from form in actionTypes
                                                     select new SelectListItem
                                                     {
-                                                        Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Enums.BrandRegistrationAction), form.ToString())),
+                                                        Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(BrandRegistrationAction), form.ToString())),
                                                         Value = ((int)form).ToString()
                                                     };
             model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
@@ -2672,7 +2754,7 @@ namespace Sampoerna.EMS.Website.Controllers
             _BRViewModel.CompanyTierList = GetCompanyTierList(refService.GetRefByType("COMPANY_TIER"));
             _BRViewModel.File_Size = GetMaxFileSize();
             _BRViewModel.CurrentRole = CurrentUser.UserRole;
-            _BRViewModel.UserAccess = GetUserAccess(_BRViewModel.ViewModel.LastApproved_Status, _BRViewModel.ViewModel.Created_By, _BRViewModel.ViewModel.LastApproved_By, Mode);
+            _BRViewModel.UserAccess = GetUserAccess(_BRViewModel.ViewModel.Registration_ID, _BRViewModel.ViewModel.LastApproved_Status, _BRViewModel.ViewModel.Created_By, _BRViewModel.ViewModel.LastApproved_By, Mode);
 
             //IEnumerable<DocumentStatusGovType2> statusTypes = Enum.GetValues(typeof(DocumentStatusGovType2)).Cast<DocumentStatusGovType2>();
             //_BRViewModel.ListGovStatus = from form in statusTypes
@@ -2768,7 +2850,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (_BRViewModel.ViewModel.LastApproved_Status.Equals(refService.GetRefByKey("WAITING_POA_APPROVAL").REFF_ID) || _BRViewModel.ViewModel.LastApproved_Status.Equals(refService.GetRefByKey("WAITING_POA_SKEP_APPROVAL").REFF_ID))
             {
-                var poa_approvers = brandRegistrationService.GetPOAApproverList(_BRViewModel.ViewModel.Nppbkc_ID, _BRViewModel.ViewModel.Created_By);
+                var poa_approvers = brandRegistrationService.GetPOAApproverList(ID);
                 foreach (var poa_approver in poa_approvers)
                 {
                     if (_BRViewModel.ViewModel.LastApproved_Status.Equals(refService.GetRefByKey("WAITING_POA_SKEP_APPROVAL").REFF_ID))
@@ -3704,10 +3786,34 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         #region Helper Model
+        private string ChangeFormnumberCompanyCity(string formnumber, string companyalias, string cityalias)
+        {
+            try
+            {
+                var arr = formnumber.Split('/');
+                if (arr.Count() == 5)
+                {
+                    formnumber = arr[0] + "/" + companyalias + "/" + cityalias + "/" + arr[3] + "/" + arr[4];
+                }
+                return formnumber;
+            }
+            catch (Exception)
+            {
+                return formnumber;
+            }
+        }
+
 
         private BRAND_REGISTRATION_REQ MapToTable(BrandRegistrationReqModel model)
         {
             var now = DateTime.Now;
+
+            var docnumberinput = new GenerateDocNumberInput();
+            docnumberinput.FormType = Enums.FormType.BrandRegistrationTrans;
+            docnumberinput.Month = Convert.ToDateTime(model.Submission_Date).Month;
+            docnumberinput.Year = Convert.ToDateTime(model.Submission_Date).Year;
+            var formnumber = _docbll.GenerateNumber(docnumberinput);
+            formnumber = ChangeFormnumberCompanyCity(formnumber, model.Company.Alias, model.Company.City);
 
             var data = new BRAND_REGISTRATION_REQ();
             if (model.Registration_ID != 0)
@@ -3719,7 +3825,8 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             else
             {
-                data.REGISTRATION_NO = GenerateFormNumber(model.Company.Alias, model.Company.City, now);
+                //data.REGISTRATION_NO = GenerateFormNumber(model.Company.Alias, model.Company.City, now);
+                data.REGISTRATION_NO = formnumber;
                 data.CREATED_BY = CurrentUser.USER_ID;
                 data.CREATED_DATE = now;
                 data.LASTMODIFIED_BY = CurrentUser.USER_ID;
@@ -4097,6 +4204,14 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(layout);
         }
 
+        [HttpPost]
+        public ActionResult GeneratePrintoutItem(long ID)
+        {
+            var _BRViewModel = new BrandRegistrationReqViewModel();
+            var layout = GetPrintoutBrand(_BRViewModel, ID);
+            return Json(layout);
+        }
+
         private string GetPrintout(BrandRegistrationReqViewModel _BRViewModel, long ID)
         {
             _BRViewModel.ViewModel = GetBrandRegistarationMaster(ID);
@@ -4144,14 +4259,14 @@ namespace Sampoerna.EMS.Website.Controllers
             int attachment_number = 1;
             if(filesupload.Count() > 0)
             {
-                attachments += "<table>";
+                attachments += "<table style='vertical-align:top; font-family:Arial;font-size:10pt'>";
 
                 foreach(var file_attach in filesupload)
                 {
                     ext = file_attach.PATH_URL.Substring((file_attach.PATH_URL.Length-3), 3);
                     if (ext == "pdf")
                     {
-                        attachments += "<tr><td>" + attachment_number.ToString() + "</td><td>" + file_attach.FILE_NAME + "</td></tr>";
+                        attachments += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + attachment_number.ToString() + "</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + file_attach.FILE_NAME + "</td></tr>";
                         attachment_number++;
                     }
                 }
@@ -4168,8 +4283,13 @@ namespace Sampoerna.EMS.Website.Controllers
             var Plants = brandRegistrationService.GetPlantByNPPBKC(_BRViewModel.ViewModel.Nppbkc_ID).ToList();
 
             var company_address_text = "";
+            var main_plant_address = "";
             foreach (var plant in Plants)
             {
+                if (plant.IS_MAIN_PLANT == true)
+                {
+                    main_plant_address = plant.ADDRESS;
+                }
                 company_address_text += plant.ADDRESS + "<BR/>";
             }
 
@@ -4177,7 +4297,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var parameters = new Dictionary<string, string>();
             parameters.Add("REGISTRATION_NO", _BRViewModel.ViewModel.Registration_No);
             parameters.Add("COMPANY_NAME", _BRViewModel.ViewModel.Company.Name);
-            //parameters.Add("COMPANY_ADDRESS", _BRViewModel.ViewModel.CompanyAddress);
+            parameters.Add("MAIN_PLANT_ADDRESS", main_plant_address);
             parameters.Add("COMPANY_ADDRESS", company_address_text);
             parameters.Add("COMPANY_CITY", _BRViewModel.ViewModel.Company.City);
             parameters.Add("SUBMISSION_DATE", Convert.ToDateTime(_BRViewModel.ViewModel.Submission_Date).ToString("dd MMMM yyyy"));
@@ -4198,32 +4318,41 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var masterBrand = new ZAIDM_EX_BRAND();
             bool Doc_Export = false;
+            string MarketDescription = "";
+            decimal HJEIDR = 0;
+            decimal HJEIDRPerBatang = 0;
+            decimal Tarif = 0;
             foreach (var item in _BRViewModel.Item)
             {
                 item.HJEperBatang = item.Hje / Convert.ToInt32(item.Brand_Content);
                 if (item.Market_ID == "02")
                 {
+                    MarketDescription = "Luar Negeri";
                     Doc_Export = true;
+                }
+                else
+                {
+                    MarketDescription = "Dalam Negeri";
                 }
 
 
-                layout_item_updates += "<table width='100%' border=1 cellpadding=2 cellspacing=0 style='border-collapse:collapse'>";
-                layout_item_updates += "<tr><td colspan='4'><b>" + no_item_update.ToString() + ". Tarif Cukai</b> Rp. " + item.HJEperBatang + " / " + item.Unit + "</td></tr>";
-                layout_item_updates += "<tr><td width='5%'></td><td width='40%'>Merk</td><td width='5%' align='center'>:</td><td width='50%'> " + item.Brand_Ce + "</td></tr>";
-                layout_item_updates += "<tr><td></td><td>Jenis HT</td><td align='center'>:</td><td> " + item.ProductType + "</td></tr>";
-                layout_item_updates += "<tr><td></td><td>Golongan Pengusaha Pabrik</td><td align='center'>:</td><td> " + item.Company_Tier + "</td></tr>";
-                layout_item_updates += "<tr><td></td><td>HJE (per kemasan)</td><td align='center'>:</td><td> " + item.HJEperPack + "</td></tr>";
-                layout_item_updates += "<tr><td></td><td>HJE (per batang/gram)</td><td align='center'>:</td><td> " + item.HJEperBatang + "</td></tr>";
-                layout_item_updates += "<tr><td></td><td>Isi Kemasan</td><td align='center'>:</td><td> " + item.Brand_Content + "</td></tr>";
-                layout_item_updates += "<tr><td></td><td>Bahan Kemasan</td><td align='center'>:</td><td> " + item.Packaging_Material + "</td></tr>";
-                layout_item_updates += "<tr><td></td><td>Tujuan Pemasaran</td><td align='center'>:</td><td> " + item.MarketDesc + "</td></tr>";
-                layout_item_updates += "<tr><td></td><td colspan='3'><b>Tampilan kemasan :</b></td></tr>";
-                layout_item_updates += "<tr><td></td><td>&#9679;&nbsp;&nbsp;Sisi depan</td><td align='center'>:</td><td> " + item.Front_Side + "</td></tr>";
-                layout_item_updates += "<tr><td></td><td>&#9679;&nbsp;&nbsp;Sisi belakang</td><td align='center'>:</td><td> " + item.Back_Side + "</td></tr>";
-                layout_item_updates += "<tr><td></td><td>&#9679;&nbsp;&nbsp;Sisi kiri</td><td align='center'>:</td><td>  " + item.Left_Side + "</td></tr>";
-                layout_item_updates += "<tr><td></td><td>&#9679;&nbsp;&nbsp;Sisi kanan</td><td align='center'>:</td><td>  " + item.Right_Side + "</td></tr>";
-                layout_item_updates += "<tr><td></td><td>&#9679;&nbsp;&nbsp;Sisi atas</td><td align='center'>:</td><td>  " + item.Top_Side + "</td></tr>";
-                layout_item_updates += "<tr><td></td><td>&#9679;&nbsp;&nbsp;Sisi bawah</td><td align='center'>:</td><td>  " + item.Bottom_Side + "</td></tr>";
+                layout_item_updates += "<table width='100%' border=1 cellpadding=2 cellspacing=0 style='border-collapse:collapse; vertical-align:top; font-family:Arial;font-size:10pt'>";
+                layout_item_updates += "<tr><td colspan='4' style='font-family:Arial;font-size:10pt'><b>" + no_item_update.ToString() + ". Tarif Cukai</b> Rp. " + item.Tariff.ToString("#,##") + " / " + item.Unit + "</td></tr>";
+                layout_item_updates += "<tr><td width='5%'></td><td width='40%' style='vertical-align:top; font-family:Arial;font-size:10pt'>Merk</td><td width='5%' align='center' style='vertical-align:top; font-family:Arial;font-size:10pt'>:</td><td width='50%' style='vertical-align:top; font-family:Arial;font-size:10pt'> " + item.Brand_Ce + "</td></tr>";
+                layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>Jenis HT</td><td align='center'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'> " + item.ProductType + "</td></tr>";
+                layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>Golongan Pengusaha Pabrik</td><td align='center'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'> " + refService.GetReferenceById(item.Company_Tier).REFF_VALUE + "</td></tr>";
+                layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>HJE (per kemasan)</td><td align='center'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'> " + item.HJEperPack.ToString("#,##") + "</td></tr>";
+                layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>HJE (per batang/gram)</td><td align='center'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'> " + item.HJEperBatang.ToString("#,##0.00") + "</td></tr>";
+                layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>Isi Kemasan</td><td align='center'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'> " + item.Brand_Content + "</td></tr>";
+                layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>Bahan Kemasan</td><td align='center'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'> " + item.Packaging_Material + "</td></tr>";
+                layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>Tujuan Pemasaran</td><td align='center'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'> " +  MarketDescription + "</td></tr>";
+                layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td colspan='3' style='vertical-align:top; font-family:Arial;font-size:10pt'><b>Tampilan kemasan :</b></td></tr>";
+                layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>&#9679;&nbsp;&nbsp;Sisi depan</td><td style='vertical-align:top; text-align:center; font-family:Arial;font-size:10pt'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'> " + item.Front_Side + "</td></tr>";
+                layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>&#9679;&nbsp;&nbsp;Sisi belakang</td><td style='vertical-align:top; text-align:center;font-family:Arial;font-size:10pt'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'> " + item.Back_Side + "</td></tr>";
+                layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>&#9679;&nbsp;&nbsp;Sisi kiri</td><td style='vertical-align:top; text-align:center;font-family:Arial;font-size:10pt'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>  " + item.Left_Side + "</td></tr>";
+                layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>&#9679;&nbsp;&nbsp;Sisi kanan</td><td style='vertical-align:top; text-align:center;font-family:Arial;font-size:10pt'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>  " + item.Right_Side + "</td></tr>";
+                layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>&#9679;&nbsp;&nbsp;Sisi atas</td><td style='vertical-align:top; text-align:center;font-family:Arial;font-size:10pt'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>  " + item.Top_Side + "</td></tr>";
+                layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>&#9679;&nbsp;&nbsp;Sisi bawah</td><td style='vertical-align:top; text-align:center;font-family:Arial;font-size:10pt'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>  " + item.Bottom_Side + "</td></tr>";
                 layout_item_updates += "</table><br/>";
 
 
@@ -4231,71 +4360,55 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
                 layout_registration_items += "<tr>";
-                layout_registration_items += "<td>" + no_item_update.ToString() + "</td>";
-                layout_registration_items += "<td>" + item.Brand_Ce + "</td>";
-                layout_registration_items += "<td>" + item.ProductType + "</td>";
-                layout_registration_items += "<td>" + Convert.ToInt32(item.Brand_Content) + "</td>";
+                layout_registration_items += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + no_item_update.ToString() + "</td>";
+                layout_registration_items += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + item.Brand_Ce + "</td>";
+                layout_registration_items += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + item.ProductType + "</td>";
+                layout_registration_items += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + Convert.ToInt32(item.Brand_Content) + "</td>";
                 if (masterBrand != null)
                 {
-                    layout_registration_items += "<td>" + masterBrand.SKEP_NO + "</td>";
-                    layout_registration_items += "<td>" + masterBrand.SKEP_DATE.Value.ToString("dd MMMM yyyy") + "</td>";
-                    layout_registration_items += "<td>" + masterBrand.SERIES_CODE + "</td>";
-                    layout_registration_items += "<td>" + masterBrand.HJE_IDR + "</td>";
-                    layout_registration_items += "<td>" + (masterBrand.HJE_IDR / Convert.ToInt32(masterBrand.BRAND_CONTENT)) + "</td>";
-                    layout_registration_items += "<td>" + masterBrand.TARIFF + "</td>";
+                    HJEIDR = masterBrand.HJE_IDR ?? 0;
+                    HJEIDRPerBatang = HJEIDR / Convert.ToInt32(masterBrand.BRAND_CONTENT);
+                    Tarif = masterBrand.TARIFF ?? 0;
+
+
+                    layout_registration_items += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + masterBrand.SKEP_NO + "</td>";
+                    layout_registration_items += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + masterBrand.SKEP_DATE.Value.ToString("dd MMMM yyyy") + "</td>";
+                    layout_registration_items += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + masterBrand.SERIES_CODE + "</td>";
+                    layout_registration_items += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + HJEIDR.ToString("#,##") + "</td>";
+                    layout_registration_items += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + HJEIDRPerBatang.ToString("#,##0.00") + "</td>";
+                    layout_registration_items += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + Tarif.ToString("#,##") + "</td>";
                 }
                 else
                 {
-                    layout_registration_items += "<td></td>";
-                    layout_registration_items += "<td></td>";
-                    layout_registration_items += "<td></td>";
-                    layout_registration_items += "<td></td>";
-                    layout_registration_items += "<td></td>";
-                    layout_registration_items += "<td></td>";
+                    layout_registration_items += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'></td>";
+                    layout_registration_items += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'></td>";
+                    layout_registration_items += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'></td>";
+                    layout_registration_items += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'></td>";
+                    layout_registration_items += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'></td>";
+                    layout_registration_items += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'></td>";
                 }
 
 
-                layout_registration_items += "<td>" + item.Company_Tier + "</td>";
-                layout_registration_items += "<td>" + item.Hje + "</td>";
-                layout_registration_items += "<td>" + item.HJEperBatang + "</td>";
-                layout_registration_items += "<td>" + item.Tariff + "</td>";
+                layout_registration_items += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + item.Company_Tier + "</td>";
+                layout_registration_items += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + item.Hje.ToString("#,##") + "</td>";
+                layout_registration_items += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + item.HJEperBatang.ToString("#,##0.00") + "</td>";
+                layout_registration_items += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + item.Tariff.ToString("#,##") + "</td>";
                 layout_registration_items += "</tr>";
 
                 no_item_update++;
             }
             parameters.Add("ITEMS", layout_item_updates);
 
-            var list_of_brands = brandRegistrationService.FindBrandByCompanies(Plants).Select(s => new { BrandName = s.BRAND_CE, ProductAlias = s.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS, HJE = s.HJE_IDR, BrandContent = s.BRAND_CONTENT, SKEPNo = s.SKEP_NO, SKEPDate = s.SKEP_DATE, Tarif = s.TARIFF }).Distinct().ToList();
-
-            string layout_brands = "";
-            no_item_update = 1;
-            foreach(var brand in list_of_brands)
-            {
-                layout_brands += "<tr>";
-                layout_brands += "<td>" + no_item_update.ToString() + "</td>";
-                layout_brands += "<td>" + brand.BrandName + "</td>";
-                layout_brands += "<td>" + brand.ProductAlias + "</td>";
-                layout_brands += "<td>" + brand.HJE + "</td>";
-                layout_brands += "<td>" + Convert.ToInt32(brand.BrandContent) + "</td>";
-                layout_brands += "<td>" + brand.SKEPNo + "</td>";
-                layout_brands += "<td>" + brand.SKEPDate.Value.ToString("dd MMMM yyyy") + "</td>";
-                layout_brands += "<td>" + brand.Tarif + "</td>";
-                layout_brands += "<td></td>";
-                layout_brands += "</tr>";
-                no_item_update++;
-            }
-
             var layout = "";
             if (_BRViewModel.ViewModel.Registration_Type == 1)
             {
                 if (Doc_Export)
                 {
-                    parameters.Add("REGISTRATION_ITEMS", layout_brands);
+                    parameters.Add("REGISTRATION_ITEMS", "");
                     layout += refService.GeneratePrintout("BRAND_REGISTRATION_EXPORT", parameters, _BRViewModel.ViewModel.Created_By).LAYOUT + "<br /><br /><br />";
                 }
                 else
                 {
-                    parameters.Add("REGISTRATION_ITEMS", layout_brands);
                     layout += refService.GeneratePrintout("BRAND_REGISTRATION_NEWBRAND", parameters, _BRViewModel.ViewModel.Created_By).LAYOUT + "<br /><br /><br />";
                 }
 
@@ -4303,6 +4416,7 @@ namespace Sampoerna.EMS.Website.Controllers
             else
             {
                 parameters.Add("REGISTRATION_ITEMS", layout_registration_items);
+                parameters.Add("EFFECTIVE_DATE", _BRViewModel.ViewModel.Effective_Date.ToString("dd MMMM yyyy"));
                 layout += refService.GeneratePrintout("BRAND_REGISTRATION_UPDATEHJE", parameters, _BRViewModel.ViewModel.Created_By).LAYOUT + "<br /><br /><br />";
             }
 
@@ -4310,6 +4424,145 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return layout;
         }
+
+        private string GetPrintoutBrand(BrandRegistrationReqViewModel _BRViewModel, long ID)
+        {
+            _BRViewModel.ViewModel = GetBrandRegistarationMaster(ID);
+
+            var detail = brandRegistrationService.GetBrandDetailByRegistrationID(ID);
+            _BRViewModel.Item = detail.Select(s => new BrandRegistrationReqDetailModel
+            {
+                Registration_Detail_ID = s.REGISTRATION_DETAIL_ID,
+                Registration_ID = s.REGISTRATION_ID,
+                Brand_Ce = s.BRAND_CE,
+                Prod_Code = s.PROD_CODE,
+                Company_Tier = s.COMPANY_TIER,
+                Unit = s.UNIT,
+                Brand_Content = s.BRAND_CONTENT,
+                Tariff = s.TARIFF ?? 0,
+                PD_Detail_ID = s.PD_DETAIL_ID,
+                Hje = s.HJE,
+                HJEperPack = s.HJE,
+                HJEperBatang = s.HJE,
+                Packaging_Material = s.MATERIAL_PACKAGE,
+                Front_Side = s.FRONT_SIDE,
+                Back_Side = s.BACK_SIDE,
+                Left_Side = s.LEFT_SIDE,
+                Right_Side = s.RIGHT_SIDE,
+                Top_Side = s.TOP_SIDE,
+                Bottom_Side = s.BOTTOM_SIDE,
+                ProductType = s.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS,
+
+
+                Request_No = s.PRODUCT_DEVELOPMENT_DETAIL.REQUEST_NO,
+                Fa_Code_Old = s.PRODUCT_DEVELOPMENT_DETAIL.FA_CODE_OLD,
+                Fa_Code_Old_Desc = s.PRODUCT_DEVELOPMENT_DETAIL.FA_CODE_OLD_DESCR,
+                Fa_Code_New = s.PRODUCT_DEVELOPMENT_DETAIL.FA_CODE_NEW,
+                Fa_Code_New_Desc = s.PRODUCT_DEVELOPMENT_DETAIL.FA_CODE_NEW_DESCR,
+                CompanyName = s.PRODUCT_DEVELOPMENT_DETAIL.T001.BUTXT,
+                HlCode = s.PRODUCT_DEVELOPMENT_DETAIL.HL_CODE,
+                MarketDesc = s.PRODUCT_DEVELOPMENT_DETAIL.ZAIDM_EX_MARKET.MARKET_DESC,
+                Is_Import = s.PRODUCT_DEVELOPMENT_DETAIL.IS_IMPORT
+            }).ToList();
+
+            var POAData = brandRegistrationService.GetPOAData(_BRViewModel.ViewModel.Created_By);
+            var Plants = brandRegistrationService.GetPlantByNPPBKC(_BRViewModel.ViewModel.Nppbkc_ID).ToList();
+
+            decimal HJEIDR = 0;
+            decimal HJEIDRPerBatang = 0;
+            decimal Tarif = 0;
+
+            string layout_brands = "";
+            int no_item_update = 1;
+            string printout_layout_name = "";
+            if (_BRViewModel.ViewModel.Registration_Type == 1)
+            {
+                printout_layout_name = "BRAND_REGISTRATION_LISTBRAND";
+                var list_of_brands = brandRegistrationService.FindBrandByCompanies(Plants).Select(s => new { BrandName = s.BRAND_CE, ProductAlias = s.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS, HJE = s.HJE_IDR, BrandContent = s.BRAND_CONTENT, SKEPNo = s.SKEP_NO, SKEPDate = s.SKEP_DATE, Tarif = s.TARIFF }).Distinct().OrderByDescending(o => o.SKEPDate).ToList();
+
+                foreach (var brand in list_of_brands)
+                {
+                    HJEIDR = brand.HJE ?? 0;
+                    Tarif = brand.Tarif ?? 0;
+
+                    layout_brands += "<tr>";
+                    layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + no_item_update.ToString() + "</td>";
+                    layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + brand.BrandName + "</td>";
+                    layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + brand.ProductAlias + "</td>";
+                    layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + HJEIDR.ToString("#,##") + "</td>";
+                    layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + Convert.ToInt32(brand.BrandContent).ToString("#,##") + "</td>";
+                    layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + brand.SKEPNo + "</td>";
+                    layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + brand.SKEPDate.Value.ToString("dd MMMM yyyy") + "</td>";
+                    layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + Tarif.ToString("#,##0.00") + "</td>";
+                    layout_brands += "<td></td>";
+                    layout_brands += "</tr>";
+                    no_item_update++;
+                }
+
+            }
+            else
+            {
+                printout_layout_name = "BRAND_REGISTRATION_LISTITEM";
+
+                foreach (var item in _BRViewModel.Item)
+                {
+                    item.HJEperBatang = item.Hje / Convert.ToInt32(item.Brand_Content);
+
+                    var masterBrand = brandRegistrationService.FindBrandByFACode(item.Fa_Code_Old);
+
+                    layout_brands += "<tr>";
+                    layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + no_item_update.ToString() + "</td>";
+                    layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + item.Brand_Ce + "</td>";
+                    layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + item.ProductType + "</td>";
+                    layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + Convert.ToInt32(item.Brand_Content).ToString("#,##") + "</td>";
+                    if (masterBrand != null)
+                    {
+                        HJEIDR = masterBrand.HJE_IDR ?? 0;
+                        HJEIDRPerBatang = HJEIDR / Convert.ToInt32(masterBrand.BRAND_CONTENT);
+                        Tarif = masterBrand.TARIFF ?? 0;
+
+
+                        layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + masterBrand.SKEP_NO + "</td>";
+                        layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + masterBrand.SKEP_DATE.Value.ToString("dd MMMM yyyy") + "</td>";
+                        layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + masterBrand.SERIES_CODE + "</td>";
+                        layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + HJEIDR.ToString("#,##") + "</td>";
+                        layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + HJEIDRPerBatang.ToString("#,##0.00") + "</td>";
+                        layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + Tarif.ToString("#,##") + "</td>";
+                    }
+                    else
+                    {
+                        layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'></td>";
+                        layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'></td>";
+                        layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'></td>";
+                        layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'></td>";
+                        layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'></td>";
+                        layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'></td>";
+                    }
+
+
+                    layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + item.Company_Tier + "</td>";
+                    layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + item.Hje.ToString("#,##") + "</td>";
+                    layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + item.HJEperBatang.ToString("#,##0.00") + "</td>";
+                    layout_brands += "<td style='vertical-align:top; font-family:Arial;font-size:10pt'>" + item.Tariff.ToString("#,##") + "</td>";
+                    layout_brands += "</tr>";
+
+                    no_item_update++;
+                }
+            }
+
+
+            var parameters = new Dictionary<string, string>();
+            parameters.Add("COMPANY_NAME", _BRViewModel.ViewModel.Company.Name);
+            parameters.Add("NPPBKC", _BRViewModel.ViewModel.Nppbkc_ID);
+            parameters.Add("REGISTRATION_ITEMS", layout_brands);
+            parameters.Add("POA_NAME", POAData.PRINTED_NAME);
+
+            var layout = "";
+            layout += refService.GeneratePrintout(printout_layout_name, parameters, _BRViewModel.ViewModel.Created_By).LAYOUT + "<br /><br /><br />";
+
+            return layout;
+        }
+
         public ActionResult GetPrintOutLayout(int RegistrationType, string CreatedBy, bool DocExport)
         {
             if (RegistrationType == 1)
@@ -4382,12 +4635,15 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
+                brandRegistrationService.LogsPrintActivity((int)Enums.MenuList.BrandRegistrationReq, CurrentUser.USER_ID);
+
                 long BrandRegID = _BRVModel.ViewModel.Registration_ID;
                 string FormNumber = _BRVModel.ViewModel.Registration_No;
                 FormNumber = FormNumber.Replace('/', '-');
                 var now = DateTime.Now.ToString("ddMMyyyy");
                 _BRVModel.ViewModel.Registration_ID = BrandRegID;
                 var htmlText = GetPrintout(_BRVModel, BrandRegID);
+                
                 //MemoryStream ms = new MemoryStream();
                 var baseFolder = "/files_upload/BrandRegistration/PrintOut/";
                 var uploadToFolder = Server.MapPath("~" + baseFolder);
@@ -4400,15 +4656,46 @@ namespace Sampoerna.EMS.Website.Controllers
                 var topMargin = iTextSharp.text.Utilities.MillimetersToPoints(25.4f);
                 var bottomtMargin = iTextSharp.text.Utilities.MillimetersToPoints(25.4f);
                 var document = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, leftMargin, rightMargin, topMargin, bottomtMargin);
+
                 var writer = PdfWriter.GetInstance(document, stream);
                 PdfWriterEvents writerEvent = new PdfWriterEvents("D R A F T E D");
                 writer.PageEvent = writerEvent;
                 writer.CloseStream = false;
+
                 document.Open();
                 var srHtml = new StringReader(htmlText);
                 XMLWorkerHelper.GetInstance().ParseXHtml(writer, document, srHtml);
                 document.Close();
                 stream.Close();
+
+                //Print Brand - Landscape
+                var htmlTextItem = GetPrintoutBrand(_BRVModel, BrandRegID);
+
+                //MemoryStream ms = new MemoryStream();
+                var uploadToFolderItem = Server.MapPath("~" + baseFolder);
+                Directory.CreateDirectory(uploadToFolderItem);
+                uploadToFolderItem += "PrintOut_BrandRegistration_Item" + FormNumber + "_" + now + ".pdf";
+
+                FileStream streamItem = new FileStream(uploadToFolderItem, FileMode.Create);
+                var documentItem = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4.Rotate(), leftMargin, rightMargin, topMargin, bottomtMargin);
+
+                var writerItem = PdfWriter.GetInstance(documentItem, streamItem);
+                PdfWriterEvents writerEventItem = new PdfWriterEvents("D R A F T E D");
+                writerItem.PageEvent = writerEventItem;
+                writerItem.CloseStream = false;
+
+                documentItem.Open();
+                var srHtmlItem = new StringReader(htmlTextItem);
+                XMLWorkerHelper.GetInstance().ParseXHtml(writerItem, documentItem, srHtmlItem);
+                documentItem.Close();
+                streamItem.Close();
+
+                //Merge Document & Item
+                List<String> sourcePaths = new List<string>();
+                sourcePaths.Add(uploadToFolder);
+                sourcePaths.Add(uploadToFolderItem);
+
+                PdfMerge.Execute(sourcePaths.ToArray(), uploadToFolder);
 
                 var MergeDocs = MergePrintout(uploadToFolder, BrandRegID);
 
