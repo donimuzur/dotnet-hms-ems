@@ -29,7 +29,7 @@ using System.Web;
 using Sampoerna.EMS.Website.Utility;
 using System.Globalization;
 using Sampoerna.EMS.Utils;
-using static Sampoerna.EMS.Core.Enums;
+//using static Sampoerna.EMS.Core.Enums;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Models.FileUpload;
@@ -98,11 +98,11 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 switch (CurrentUser.UserRole)
                 {
-                    case UserRole.Administrator:
+                    case Sampoerna.EMS.Core.Enums.UserRole.Administrator:
                         result.CanCreate = true;
                         break;
 
-                    case UserRole.POA:
+                    case Sampoerna.EMS.Core.Enums.UserRole.POA:
                         result.CanCreate = true;
                         break;
 
@@ -112,7 +112,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var LastApprovedStatus = brandRegistrationService.GetReffById(intLastApprovedStatus).REFF_KEYS;
 
-                if (CurrentUser.UserRole == UserRole.Viewer)
+                if (CurrentUser.UserRole == Sampoerna.EMS.Core.Enums.UserRole.Viewer)
                 {
                     result.CanView = true;
                 }
@@ -123,7 +123,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         case "Index":
                             switch (CurrentUser.UserRole)
                             {
-                                case UserRole.Administrator:
+                                case Sampoerna.EMS.Core.Enums.UserRole.Administrator:
                                     switch (LastApprovedStatus)
                                     {
                                         //DRAFT
@@ -143,7 +143,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                     }
                                     break;
 
-                                case UserRole.POA:
+                                case Sampoerna.EMS.Core.Enums.UserRole.POA:
                                     switch (LastApprovedStatus)
                                     {
                                         //DRAFT
@@ -279,7 +279,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             result.CanView = true;
                             switch (CurrentUser.UserRole)
                             {
-                                case UserRole.Administrator:
+                                case Sampoerna.EMS.Core.Enums.UserRole.Administrator:
                                     switch (LastApprovedStatus)
                                     {
                                         //WAITING FOR APPROVAL
@@ -291,7 +291,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                     }
                                     break;
 
-                                case UserRole.POA:
+                                case Sampoerna.EMS.Core.Enums.UserRole.POA:
                                     switch (LastApprovedStatus)
                                     {
                                         case "WAITING_POA_SKEP_APPROVAL":
@@ -311,7 +311,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         case "EditSKEP":
                             switch (CurrentUser.UserRole)
                             {
-                                case UserRole.Administrator:
+                                case Sampoerna.EMS.Core.Enums.UserRole.Administrator:
                                     switch (LastApprovedStatus)
                                     {
                                         //DRAFT NEW
@@ -335,7 +335,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                     }
                                     break;
 
-                                case UserRole.POA:
+                                case Sampoerna.EMS.Core.Enums.UserRole.POA:
                                     switch (LastApprovedStatus)
                                     {
                                         case "DRAFT_NEW_STATUS":
@@ -397,7 +397,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         case "Approval":
                             switch (CurrentUser.UserRole)
                             {
-                                case UserRole.Administrator:
+                                case Sampoerna.EMS.Core.Enums.UserRole.Administrator:
                                     result.CanCreate = false;
                                     result.CanEdit = false;
                                     result.CanSubmit = false;
@@ -405,7 +405,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                     result.CanApprove = false;
                                     break;
 
-                                case UserRole.POA:
+                                case Sampoerna.EMS.Core.Enums.UserRole.POA:
                                     result.CanCreate = false;
                                     result.CanEdit = false;
                                     result.CanSubmit = false;
@@ -489,11 +489,11 @@ namespace Sampoerna.EMS.Website.Controllers
             data.ViewModel.Decree_Date = DateTime.Now;
 
 
-            IEnumerable<DocumentStatusGovType2> statusTypes = Enum.GetValues(typeof(DocumentStatusGovType2)).Cast<DocumentStatusGovType2>();
+            IEnumerable<Sampoerna.EMS.Core.Enums.DocumentStatusGovType2> statusTypes = Enum.GetValues(typeof(Sampoerna.EMS.Core.Enums.DocumentStatusGovType2)).Cast<Sampoerna.EMS.Core.Enums.DocumentStatusGovType2>();
             data.ListGovStatus = from form in statusTypes
                                  select new SelectListItem
                                  {
-                                     Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(DocumentStatusGovType2), form.ToString())),
+                                     Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Sampoerna.EMS.Core.Enums.DocumentStatusGovType2), form.ToString())),
                                      Value = ((int)form).ToString()
                                  };
 
@@ -636,11 +636,11 @@ namespace Sampoerna.EMS.Website.Controllers
                         nppbkc = new SelectList(filterNppbkc, "Value", "Text");
                     }
 
-                    IEnumerable<BrandRegistrationAction> actionTypes = Enum.GetValues(typeof(BrandRegistrationAction)).Cast<BrandRegistrationAction>();
+                    IEnumerable<Sampoerna.EMS.Core.Enums.BrandRegistrationAction> actionTypes = Enum.GetValues(typeof(Sampoerna.EMS.Core.Enums.BrandRegistrationAction)).Cast<Sampoerna.EMS.Core.Enums.BrandRegistrationAction>();
                     model.SearchInput.ListRegistrationType = from form in actionTypes
                                                              select new SelectListItem
                                                              {
-                                                                 Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(BrandRegistrationAction), form.ToString())),
+                                                                 Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Sampoerna.EMS.Core.Enums.BrandRegistrationAction), form.ToString())),
                                                                  Value = ((int)form).ToString()
                                                              };
                     model.SearchInput.CreatorList = GlobalFunctions.GetCreatorList();
@@ -1507,11 +1507,11 @@ namespace Sampoerna.EMS.Website.Controllers
                         nppbkc = new SelectList(filterNppbkc, "Value", "Text");
                     }
 
-                    IEnumerable<BrandRegistrationAction> actionTypes = Enum.GetValues(typeof(BrandRegistrationAction)).Cast<BrandRegistrationAction>();
+                    IEnumerable<Sampoerna.EMS.Core.Enums.BrandRegistrationAction> actionTypes = Enum.GetValues(typeof(Sampoerna.EMS.Core.Enums.BrandRegistrationAction)).Cast<Sampoerna.EMS.Core.Enums.BrandRegistrationAction>();
                     model.SearchInput.ListRegistrationType = from form in actionTypes
                                                              select new SelectListItem
                                                              {
-                                                                 Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(BrandRegistrationAction), form.ToString())),
+                                                                 Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Sampoerna.EMS.Core.Enums.BrandRegistrationAction), form.ToString())),
                                                                  Value = ((int)form).ToString()
                                                              };
                     model.SearchInput.CreatorList = GlobalFunctions.GetCreatorList();
@@ -1824,11 +1824,11 @@ namespace Sampoerna.EMS.Website.Controllers
             //model.SearchView.CompanyTypeList = GetCompTypeList(comptplist);
             //model.SearchView.KPPBCList = GetKPPBCList(nppbkcList);
 
-            IEnumerable<BrandRegistrationAction> actionTypes = Enum.GetValues(typeof(BrandRegistrationAction)).Cast<BrandRegistrationAction>();
+            IEnumerable<Sampoerna.EMS.Core.Enums.BrandRegistrationAction> actionTypes = Enum.GetValues(typeof(Sampoerna.EMS.Core.Enums.BrandRegistrationAction)).Cast<Sampoerna.EMS.Core.Enums.BrandRegistrationAction>();
             model.SearchView.ListRegistrationType = from form in actionTypes
                                                     select new SelectListItem
                                                     {
-                                                        Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(BrandRegistrationAction), form.ToString())),
+                                                        Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Sampoerna.EMS.Core.Enums.BrandRegistrationAction), form.ToString())),
                                                         Value = ((int)form).ToString()
                                                     };
             model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();

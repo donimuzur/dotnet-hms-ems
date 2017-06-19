@@ -19,7 +19,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="white-wrapper">
-                    @using (Ajax.BeginForm("FilterOpenDocument", "ExciseCredit",
+                    @using (Ajax.BeginForm("FilterSummaryReports", "ExciseCredit",
                     new AjaxOptions
                     {
                         HttpMethod = "POST",
@@ -119,32 +119,32 @@
                                                     </div>
                                                     <div class="checkbox">
                                                         <label>
-                                                            @Html.CheckBoxFor(model => model.ExportModel.Poa, new { @checked = "checked", @class = "cb_master checkbox checkexport", @datacolumn = "1" })Company Name
+                                                            @Html.CheckBoxFor(model => model.ExportModel.Poa, new { @checked = "checked", @class = "cb_master checkbox checkexport", @datacolumn = "1" })Poa
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label>
-                                                            @Html.CheckBoxFor(model => model.ExportModel.NppbkcId, new { @checked = "checked", @class = "cb_master checkbox checkexport", @datacolumn = "1" })Company Name
+                                                            @Html.CheckBoxFor(model => model.ExportModel.NppbkcId, new { @checked = "checked", @class = "cb_master checkbox checkexport", @datacolumn = "1" })Nppbkc Id
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label>
-                                                            @Html.CheckBoxFor(model => model.ExportModel.ExciseNumber, new { @checked = "checked", @class = "cb_master checkbox checkexport", @datacolumn = "1" })Company Name
+                                                            @Html.CheckBoxFor(model => model.ExportModel.ExciseNumber, new { @checked = "checked", @class = "cb_master checkbox checkexport", @datacolumn = "1" })Excise Number
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label>
-                                                            @Html.CheckBoxFor(model => model.ExportModel.Amount, new { @checked = "checked", @class = "cb_master checkbox checkexport", @datacolumn = "1" })Company Name
+                                                            @Html.CheckBoxFor(model => model.ExportModel.Amount, new { @checked = "checked", @class = "cb_master checkbox checkexport", @datacolumn = "1" })Amount
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label>
-                                                            @Html.CheckBoxFor(model => model.ExportModel.LastUpdate, new { @checked = "checked", @class = "cb_master checkbox checkexport", @datacolumn = "1" })Company Name
+                                                            @Html.CheckBoxFor(model => model.ExportModel.LastUpdate, new { @checked = "checked", @class = "cb_master checkbox checkexport", @datacolumn = "1" })Last Update
                                                         </label>
                                                     </div>
                                                     <div class="checkbox">
                                                         <label>
-                                                            @Html.CheckBoxFor(model => model.ExportModel.Status, new { @checked = "checked", @class = "cb_master checkbox checkexport", @datacolumn = "1" })Company Name
+                                                            @Html.CheckBoxFor(model => model.ExportModel.Status, new { @checked = "checked", @class = "cb_master checkbox checkexport", @datacolumn = "1" })Status
                                                         </label>
                                                     </div>
                                                 </div>
