@@ -564,7 +564,7 @@ function addToAdjList() {
         contentType: 'application/json; charset=utf-8',
     })
         .success(function (item) {
-            debugger;
+            
             var idx = adjfacode.indexOf(facode);
             var subtotalck12month = 0;
             var subtotalweightincreased = 0;
@@ -591,10 +591,10 @@ function addToAdjList() {
                     subtotalck12month += adjItem[tableId][i].CK12MONTH;
                     subtotalweightincreased += adjItem[tableId][i].WEIGHTEDINCREASE;
                 }
-                console.log("result", (subtotalck12month / subtotalweightincreased * 100))
-                pctweightincrease.val((subtotalck12month / subtotalweightincreased * 100));
+                console.log("result", (subtotalweightincreased / subtotalck12month * 100));
+                pctweightincrease.val((subtotalweightincreased / subtotalck12month * 100).toFixed(2).replace(".", ","));
                 SKEPCreditTariff.val(subtotalck12month.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
-                wTariff.val(subtotalweightincreased.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+                wTariff.val(((subtotalweightincreased / subtotalck12month) * subtotalweightincreased).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
                 
                 subtotal.val((subtotalck12month).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
                 if (subtotalweightincreased === 0) {
