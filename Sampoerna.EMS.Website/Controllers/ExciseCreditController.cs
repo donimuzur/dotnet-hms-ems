@@ -2147,13 +2147,15 @@ namespace Sampoerna.EMS.Website.Controllers
                     var ck1Avg3 = GetNewExciseCK1Avg(model, excise, 3, grandTotal6, grandTotal3);
 
                     // Load CK-1 Excise Calculation Summary Maximum
-                    var calculationMax = GetNewExciseCK1MaxAvg(model, excise, false,grandTotal6,grandTotal3);
-                    var additionalMax = GetNewExciseCK1MaxAvg(model, excise, true, grandTotal6, grandTotal3);
+                    decimal totalCalculationMax = 0;
+                    decimal totalAdditionalMax = 0;
+                    var calculationMax = GetNewExciseCK1MaxAvg(model, excise, false, grandTotal6, grandTotal3, out totalCalculationMax);
+                    var additionalMax = GetNewExciseCK1MaxAvg(model, excise, true, grandTotal6, grandTotal3, out totalAdditionalMax);
                     parameters.Add("POA", excise.POA.PRINTED_NAME);
                     parameters.Add("COMPANY_NAME", nppbkc.COMPANY.BUTXT);
                     parameters.Add("COMPANY_ADDRESS", nppbkc.DGCE_ADDRESS);
                     parameters.Add("NPPBKC_ID", excise.NPPBKC_ID);
-                    parameters.Add("TOTAL_AMOUNT", String.Format("Rp. {0:N}", excise.EXCISE_CREDIT_AMOUNT));
+                    parameters.Add("TOTAL_AMOUNT", String.Format("Rp. {0:N}", totalCalculationMax + totalAdditionalMax));
                     parameters.Add("CK1_DETAIL_TABLE", ck1Tables);
                     parameters.Add("CK1_AVG_6", ck1Avg6);
                     parameters.Add("CK1_AVG_3", ck1Avg3);
@@ -2636,7 +2638,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
-        private String GetNewExciseCK1MaxAvg(CalculationDetailModel model, EXCISE_CREDIT excise, bool additional,Dictionary<string,decimal> grandTotal6, Dictionary<string,decimal> grandTotal3)
+        private String GetNewExciseCK1MaxAvg(CalculationDetailModel model, EXCISE_CREDIT excise, bool additional,Dictionary<string,decimal> grandTotal6, Dictionary<string,decimal> grandTotal3,out decimal total)
         {
             try
             {
@@ -2658,7 +2660,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 #region Build Table
                 builder.Append("<table style='width: 100%; padding: 10px; background-color: white!important;' cellspacing='10'>");
                 builder.Append("<tbody>");
-                var total = 0D;
+                total = 0;
                 foreach (var ptype in model.ProductTypes)
                 {
                     builder.Append("<tr>");
@@ -2668,15 +2670,15 @@ namespace Sampoerna.EMS.Website.Controllers
                         builder.AppendFormat("<td style='width: 30%'> : 2 x Rp. {0:N}&nbsp;</td>", calculationMax[ptype]);
                         builder.Append("<td style='width: 25px'>&nbsp;</td>");
                         builder.AppendFormat("<td style='width: 30%'>= Rp. {0:N}</td>", calculationMax[ptype] * 2);
-                        total += Math.Ceiling((double)calculationMax[ptype] * 2);
+                        total += (decimal) Math.Ceiling((double)calculationMax[ptype] * 2);
                     }
                     else
                     {
                         builder.AppendFormat("<td style='width: 30%'> : {0}% x Rp. {1:N}&nbsp;</td>", calculationData[ptype].Adjustment * 100, calculationMax[ptype] * 2);
                         builder.Append("<td style='width: 25px'>&nbsp;</td>");
-                        builder.AppendFormat("<td style='width: 30%'>= Rp. {0:N}</td>", Math.Ceiling((double)calculationMax[ptype] * 2 * calculationData[ptype].Adjustment * 100));
+                        builder.AppendFormat("<td style='width: 30%'>= Rp. {0:N}</td>", Math.Ceiling((double)calculationMax[ptype] * 2 * calculationData[ptype].Adjustment));
                         Math.Ceiling(calculationData[ptype].AdditionalValue);
-                        total += Math.Ceiling((double)calculationMax[ptype] * 2 * calculationData[ptype].Adjustment * 100);
+                        total += (decimal) Math.Ceiling((double)calculationMax[ptype] * 2 * calculationData[ptype].Adjustment);
                     }
 
                     builder.Append("</tr>");
