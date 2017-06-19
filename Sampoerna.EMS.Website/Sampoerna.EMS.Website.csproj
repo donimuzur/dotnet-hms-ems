@@ -16,8 +16,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>false</UseIISExpress>
-    <IISExpressSSLPort>
-    </IISExpressSSLPort>
+    <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
@@ -377,6 +376,7 @@
     <Compile Include="Models\ExciseCredit\ExciseAdjModel.cs" />
     <Compile Include="Models\ExciseCredit\ExciseAdjustmentValue.cs" />
     <Compile Include="Models\ExciseCredit\ExciseApprovedProduct.cs" />
+    <Compile Include="Models\ExciseCredit\ExciseCreditAdjustmentFormModel.cs" />
     <Compile Include="Models\ExciseCredit\ExciseCreditCk1AdjustmentModel.cs" />
     <Compile Include="Models\ExciseCredit\ExciseCreditCK1DetailAdjustmentModel.cs" />
     <Compile Include="Models\ExciseCredit\ExciseCreditCK1DetailModel.cs" />
@@ -1838,6 +1838,8 @@
     <Content Include="Views\ExciseCredit\Completed.cshtml" />
     <Content Include="Views\ExciseCredit\SummaryReport.cshtml" />
     <Content Include="Views\BRBrandRegistration\_BrandRegistrationTable.cshtml" />
+    <Content Include="Views\ExciseCredit\_WithdrawModal.cshtml" />
+    <Content Include="Views\ExciseCredit\_Ck1AdjustmentList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -2017,6 +2019,8 @@
           <DevelopmentServerPort>0</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://wwx.hms-ems-dev.voxteneo.com</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>http://wwx.hms-ems-dev.voxteneo.com</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

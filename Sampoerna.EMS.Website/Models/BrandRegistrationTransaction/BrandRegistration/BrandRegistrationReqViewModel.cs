@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-//using static Sampoerna.EMS.Core.Enums;
 using Sampoerna.EMS.Core;
 
 
@@ -51,7 +50,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.BrandRegistr
             File_SKEP_Name = new List<string>();
         }
 
-        public Sampoerna.EMS.Core.Enums.BrandRegistrationAction brandAction { get; set; }
+        public Enums.BrandRegistrationAction brandAction { get; set; }
 
         public BrandAccess UserAccess { get; set; }
         public IEnumerable<SelectListItem> ListGovStatus { get; set; }
