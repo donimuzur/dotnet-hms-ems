@@ -2674,9 +2674,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         builder.AppendFormat("<td style='width: 30%'> : {0}% x Rp. {1:N}&nbsp;</td>", calculationData[ptype].Adjustment * 100, calculationMax[ptype] * 2);
                         builder.Append("<td style='width: 25px'>&nbsp;</td>");
-                        builder.AppendFormat("<td style='width: 30%'>= Rp. {0:N}</td>", Math.Ceiling(calculationMax[ptype] * 2 * calculationData[ptype].Adjustment * 100));
+                        builder.AppendFormat("<td style='width: 30%'>= Rp. {0:N}</td>", Math.Ceiling((double)calculationMax[ptype] * 2 * calculationData[ptype].Adjustment * 100));
                         Math.Ceiling(calculationData[ptype].AdditionalValue);
-                        total += Math.Ceiling(calculationData[ptype].AdditionalValue);
+                        total += Math.Ceiling((double)calculationMax[ptype] * 2 * calculationData[ptype].Adjustment * 100);
                     }
 
                     builder.Append("</tr>");
