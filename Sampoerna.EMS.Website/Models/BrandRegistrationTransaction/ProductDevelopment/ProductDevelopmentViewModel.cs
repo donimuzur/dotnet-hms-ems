@@ -73,7 +73,6 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevel
         public long PD_ID { get; set; }
         public string Created_By { get; set; }
         public DateTime Created_Date { get; set; }
-
         public string Created_DateString
         {
             get
@@ -81,7 +80,6 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevel
                 return Created_Date.ToString("dd MMM yyyy");
             }
         }
-
         public string Modified_By { get; set; }
         public DateTime? Modified_Date { get; set; }
         public string Creator { set; get; }

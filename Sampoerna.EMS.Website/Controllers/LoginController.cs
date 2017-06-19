@@ -27,12 +27,12 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult Index()
         {
             // Enable Login form => Bypass AD mode
-            var model = new LoginFormModel();
-            model.Users = new SelectList(_userBll.GetUsers(), "USER_ID", "USER_ID");
-            return View(model);
+            //var model = new LoginFormModel();
+            //model.Users = new SelectList(_userBll.GetUsers(), "USER_ID", "USER_ID");
+            //return View(model);
 
             // Enable AD
-            //return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
@@ -40,9 +40,10 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             
             var loginResult = _userBll.GetLogin(model.Login.UserId);
-            base.param = model.Login.UserId;
+            
             if (loginResult != null)
             {
+                base.param = model.Login.UserId;
                 //CurrentUser = loginResult;
                 CurrentUser.UserRole = _poabll.GetUserRole(loginResult.USER_ID);
                 CurrentUser.AuthorizePages = _userAuthorizationBll.GetAuthPages(loginResult.USER_ID);

@@ -130,8 +130,14 @@ namespace Sampoerna.EMS.CustomService.Core
             [Description("New Excise Credit Printout")]
             ExciseCreditNewRequest,
 
+            [Description("New Excise Credit Main Printout")]
+            ExciseCreditNewRequestMain,
+
             [Description("Adjustment Excise Credit Printout")]
             ExciseCreditAdjustmentRequest,
+
+            [Description("Adjustment Excise Credit Main Printout")]
+            ExciseCreditAdjustmentRequestMain,
 
             [Description("Excise Financial Ratio Printout")]
             FinanceRatio,

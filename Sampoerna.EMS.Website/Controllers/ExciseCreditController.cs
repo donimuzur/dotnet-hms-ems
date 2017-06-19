@@ -312,6 +312,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var vm = MapExciseCreditModel(result);
                 vm.IsCreator = service.IsAllowedToModify(CurrentUser.USER_ID, Convert.ToInt64(id));
                 vm.IsWaitingSkepApproval = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingPoaSkepApproval).REFF_ID == vm.LastStatus;
+                vm.Guarantee = service.GetExciseCreditGuaranteeId(result.GUARANTEE).ToString();
                 model.NPPBKC = MapNppbkcModel(nppbkc);
                 model.SubmissionDate = vm.SubmissionDate;
                 model.ViewModel = vm;
@@ -341,6 +342,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var submitDate = DateTime.Parse(formData["submit_date"]);
                 var id = Int64.Parse(formData["excise_id"]);
                 var docNumber = formData["doc_number"];
+                var guarantee = formData["guarantee"];
                 var existingOtherDocs = JObject.Parse(formData["deleted_docs"]);
                 UploadDocuments(uploadedFiles, id.ToString(), docNumber, false);
                 foreach (var pair in existingOtherDocs)
@@ -354,7 +356,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 this.RemovedFiles = new List<long>();
                 var editStatus = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Edited);
                 AddMessageInfo("Successfully save Excise Request Document!", Enums.MessageInfoType.Success);
-                return Json(service.EditExcise(id, submitDate, editStatus, CurrentUser.USER_ID, (int)CurrentUser.UserRole));
+                return Json(service.EditExcise(id, submitDate, editStatus, CurrentUser.USER_ID, (int)CurrentUser.UserRole, guarantee));
             }
             catch (Exception ex)
             {
@@ -412,7 +414,8 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 var withdrawed = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Edited);
-                var status = service.WithdrawExcise(model.ViewModel.Id, withdrawed, CurrentUser.USER_ID, (int)CurrentUser.UserRole);
+
+                var status = service.WithdrawExcise(model.ViewModel.Id, withdrawed, CurrentUser.USER_ID, (int)CurrentUser.UserRole, model.ViewModel.RevisionData.Comment);
                 if (status)
                     AddMessageInfo("Withdrawed Excise Request Document", Enums.MessageInfoType.Success);
                 else
@@ -547,6 +550,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.ViewModel = vm;
                 model.FinancialStatements = vm.FinanceRatios.ToArray();
                 model.SupportingDocuments = refService.GetSupportingDocuments((int)Enums.FormList.ExciseRequest, nppbkc.COMPANY.BUKRS, id.ToString()).Select(x => MapSupportingDocumentModel(x)).ToList();
+                model.ViewModel.RevisionData = new WorkflowHistory()
+                {
+                    FormID = Convert.ToInt64(id),
+                    FormTypeID = (int)Enums.MenuList.ExciseCredit,
+                    Action = (int)Enums.ActionType.Withdraw,
+                    ActionBy = CurrentUser.USER_ID,
+                    Role = (int)CurrentUser.UserRole
+                };
                 model.Printouts = GetPrintoutsList(model, result);
                 var changeHistoryList = this.chBLL.GetByFormTypeAndFormId(Enums.MenuList.ExciseCredit, id.ToString());
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
@@ -1176,6 +1187,29 @@ namespace Sampoerna.EMS.Website.Controllers
                 this.RemovedFiles.Add(fileId);
         }
 
+        public ActionResult GetCk1AdjustmentList(string submit, string nppbkc)
+        {
+            var model = new List<ExciseCreditCk1AdjustmentModel>();
+            var submitDate = DateTime.Parse(submit);
+            var types = service.GetCK1ProductTypes(nppbkc, submitDate);
+            foreach (var product in types)
+            {
+                var entities = service.GetCK1AdjustmentList(nppbkc, DateTime.Parse(submit), product, 12);
+                var details = entities.Select(x => MapToCk1AdjustmentListModel(x));
+                var avgQty = (details == null || details.Count() <= 0) ? 0 : Math.Ceiling((double)details.Sum(x => x.OrderQuantity) / 3);
+                var avgAmount = (details == null || details.Count() <= 0) ? 0 : Math.Ceiling((double)details.Sum(x => x.Amount) / 6);
+                var item = new ExciseCreditCk1AdjustmentModel()
+                {
+                    Details = details,
+                    AverageQuantity12 = avgQty,
+                    AverageAmount12 = avgAmount,
+                    StartMonth = submitDate.AddMonths(-12).ToString("MMMM yyyy"),
+                    EndMonth = submitDate.AddMonths(-1).ToString("MMMM yyyy")
+                };
+                model.Add(item);
+            }
+            return PartialView("_Ck1AdjustmentList", model);
+        }
         public ActionResult GetCk1List(string submit, string nppbkc)
         {
             var model = new List<ExciseCreditCk1Model>();
@@ -1320,11 +1354,11 @@ namespace Sampoerna.EMS.Website.Controllers
             {
 
                 var margin = Convert.ToSingle(System.Configuration.ConfigurationManager.AppSettings["DefaultMargin"]);
-                var leftMargin = iTextSharp.text.Utilities.MillimetersToPoints(margin);
-                var rightMargin = iTextSharp.text.Utilities.MillimetersToPoints(margin);
-                var topMargin = iTextSharp.text.Utilities.MillimetersToPoints(margin);
-                var bottomtMargin = iTextSharp.text.Utilities.MillimetersToPoints(margin);
-                var document = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, leftMargin, rightMargin, topMargin, bottomtMargin);
+                var leftMargin = iTextSharp.text.Utilities.MillimetersToPoints(5);
+                var rightMargin = iTextSharp.text.Utilities.MillimetersToPoints(5);
+                var topMargin = iTextSharp.text.Utilities.MillimetersToPoints(5);
+                var bottomtMargin = iTextSharp.text.Utilities.MillimetersToPoints(5);
+                var document = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4.Rotate(), leftMargin, rightMargin, topMargin, bottomtMargin);
                 var writer = PdfWriter.GetInstance(document, stream);
                 long LastApprovedStatusID = excise.LAST_STATUS;
                 if ((LastApprovedStatusID == refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Draft).REFF_ID) || (LastApprovedStatusID == refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Edited).REFF_ID) || (LastApprovedStatusID == refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingPoaApproval).REFF_ID))
@@ -1829,6 +1863,32 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
+        public ExciseCreditCK1DetailAdjustmentModel MapToCk1AdjustmentListModel(CustomService.Data.CK1_EXCISE_CALCULATE_ADJUST entity)
+        {
+            try
+            {
+                return new ExciseCreditCK1DetailAdjustmentModel()
+                {
+                    Id = entity.CK1_ID,
+                    CK1Date = entity.CK1_DATE,
+                    MonthPeriod = entity.BULAN.Value,
+                    PeriodDisplay = entity.CK1_DATE.ToString("MMMM yyyy"),
+                    YearPeriod = entity.TAHUN.Value,
+                    ProductTypeCode = entity.PRODUCT_ALIAS,
+                    CK1Number = entity.CK1_NUMBER,
+                    OrderQuantity = entity.ORDERQTY.Value,
+                    Amount = entity.NOMINAL.Value,
+                    Brand_Content = entity.BRAND_CONTENT,
+                    Brand_Ce = entity.BRAND_CE,
+                    Series_Value = entity.SERIES_VALUE.Value,
+                    Production = entity.PRODUCTION.Value
+                };
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public ExciseCreditPrintoutModel MapPrintoutModel(EXCISE_CREDIT excise, ReferenceKeys.PrintoutLayout templateId)
         {
             try
@@ -1981,13 +2041,16 @@ namespace Sampoerna.EMS.Website.Controllers
             if (model.ViewModel.RequestTypeID == 1)
             {
                 printouts.Add(MapPrintoutModel(excise, ReferenceKeys.PrintoutLayout.ExciseCreditNewRequest));
+                printouts.Add(MapPrintoutModel(excise, ReferenceKeys.PrintoutLayout.ExciseCreditNewRequestMain));
             }
             else
             {
                 printouts.Add(MapPrintoutModel(excise, ReferenceKeys.PrintoutLayout.ExciseCreditAdjustmentRequest));
+                printouts.Add(MapPrintoutModel(excise, ReferenceKeys.PrintoutLayout.ExciseCreditAdjustmentRequestMain));
             }
             printouts.Add(MapPrintoutModel(excise, ReferenceKeys.PrintoutLayout.DetailExciseCalculation));
             printouts.Add(MapPrintoutModel(excise, ReferenceKeys.PrintoutLayout.FinanceRatio));
+            printouts.Add(MapPrintoutModel(excise, ReferenceKeys.PrintoutLayout.ExciseRequestGuaranteeDecree));
 
             return printouts;
         }
@@ -2045,6 +2108,34 @@ namespace Sampoerna.EMS.Website.Controllers
             System.Globalization.CultureInfo cultureID = new System.Globalization.CultureInfo("id-ID");
             switch (templateId)
             {
+                case ReferenceKeys.PrintoutLayout.ExciseCreditNewRequestMain:
+                    var lampiran = service.GetFileCount(excise.EXSICE_CREDIT_ID);
+                    var index11 = excise.EXCISE_CREDIT_AMOUNT >= 50000000000 ? "Kepala Kantor Wilayah" : "Kepada Yth.";
+                    var amount = excise.EXCISE_CREDIT_AMOUNT;
+                    var amountterbilang = service.Terbilang(amount);
+                    var documentpendukung = service.GetFile(excise.EXSICE_CREDIT_ID);
+                    var documentpendukungstring = "";
+                    foreach (var fileUpload in documentpendukung.ToList())
+                    {
+                        documentpendukungstring += string.Format("<li>{0}</li>", fileUpload.FILE_NAME);
+                    }
+                    parameters.Add("KPPBCAddress", excise.ZAIDM_EX_NPPBKC.KPPBC_ADDRESS);
+                    parameters.Add("SubmissionDate", excise.SUBMISSION_DATE.ToShortDateString());
+                    parameters.Add("jumlahLampiran", string.Format("{0}, ({1}) Lampiran", lampiran, service.Terbilang(lampiran)));
+                    parameters.Add("index11", index11);
+                    parameters.Add("namaalamatkantor", excise.ZAIDM_EX_NPPBKC.KPPBC_ADDRESS);
+                    parameters.Add("REGION_DGCE", excise.ZAIDM_EX_NPPBKC.REGION_DGCE);
+                    parameters.Add("LOCATION", excise.ZAIDM_EX_NPPBKC.LOCATION);
+                    parameters.Add("POAPRINTED_NAME", excise.POA.PRINTED_NAME);
+                    parameters.Add("POATITLE", excise.POA.TITLE);
+                    parameters.Add("POA_ADDRESS", excise.POA.POA_ADDRESS);
+                    parameters.Add("COMPANY", nppbkc.COMPANY.BUTXT);
+                    parameters.Add("NPPBKC", nppbkc.NPPBKC_ID);
+                    parameters.Add("LOKASI_NPPBKC", nppbkc.KPPBC_ADDRESS);
+                    parameters.Add("EXCISE_CREDIT_AMOUNT", string.Format("{0:N}", amount));
+                    parameters.Add("TERBILANG", amountterbilang);
+                    parameters.Add("documentpendukung", documentpendukungstring);
+                    break;
                 case ReferenceKeys.PrintoutLayout.ExciseCreditNewRequest:
                     // Load Sub Template CK-1 Excise Summary
                     Dictionary<string,decimal> grandTotal6 = new Dictionary<string, decimal>();
@@ -2058,7 +2149,6 @@ namespace Sampoerna.EMS.Website.Controllers
                     // Load CK-1 Excise Calculation Summary Maximum
                     var calculationMax = GetNewExciseCK1MaxAvg(model, excise, false,grandTotal6,grandTotal3);
                     var additionalMax = GetNewExciseCK1MaxAvg(model, excise, true, grandTotal6, grandTotal3);
-                    parameters.Clear();
                     parameters.Add("POA", excise.POA.PRINTED_NAME);
                     parameters.Add("COMPANY_NAME", nppbkc.COMPANY.BUTXT);
                     parameters.Add("COMPANY_ADDRESS", nppbkc.DGCE_ADDRESS);
@@ -2070,22 +2160,22 @@ namespace Sampoerna.EMS.Website.Controllers
                     parameters.Add("PRODUCT_AMOUNT_CALCULATION", calculationMax);
                     parameters.Add("PRODUCT_ADDITIONAL_AMOUNT", additionalMax);
                     break;
-                case ReferenceKeys.PrintoutLayout.ExciseCreditAdjustmentRequest:
-                    var ck1Detail = GetCalculationExciseAdjustmentCK1Avg(model, excise);
-                    var ck1Calculation = GetNewExciseAdjustmentCK1Avg(model, excise, 12);
-                    var exciseAdjustment = GetAdjustmentExcise(model, excise);
-                    parameters.Clear();
-                    var delayAdjustment = GetDelayAdjustmentExcise(model, excise);
-                    parameters.Add("COMPANY_NAME", nppbkc.COMPANY.BUTXT);
-                    parameters.Add("SKEP_NO", String.IsNullOrEmpty(excise.DECREE_NO) ? "-" : excise.DECREE_NO);
-                    parameters.Add("SKEPDATE", (excise.DECREE_DATE != null) ? excise.DECREE_DATE.Value.ToString("dd MMMM yyyy", cultureID) : "-");
-                    parameters.Add("CITY", nppbkc.CITY);
-                    parameters.Add("CK1_DETAIL_TABLE", ck1Detail);
-                    parameters.Add("CK1_CALCULATION", ck1Calculation);
-                    parameters.Add("CK1_ADJUSTMENT", exciseAdjustment);
-                    parameters.Add("CK1_DELAY_ADJUSTMENT", delayAdjustment);
-                    parameters.Add("PEMOHON", excise.POA.PRINTED_NAME);
-                    break;
+                //case ReferenceKeys.PrintoutLayout.ExciseCreditAdjustmentRequest:
+                //    var ck1Detail = GetCalculationExciseAdjustmentCK1Avg(model, excise);
+                //    var ck1Calculation = GetNewExciseAdjustmentCK1Avg(model, excise, 12);
+                //    var exciseAdjustment = GetAdjustmentExcise(model, excise);
+                //    parameters.Clear();
+                //    var delayAdjustment = GetDelayAdjustmentExcise(model, excise);
+                //    parameters.Add("COMPANY_NAME", nppbkc.COMPANY.BUTXT);
+                //    parameters.Add("SKEP_NO", String.IsNullOrEmpty(excise.DECREE_NO) ? "-" : excise.DECREE_NO);
+                //    parameters.Add("SKEPDATE", (excise.DECREE_DATE != null) ? excise.DECREE_DATE.Value.ToString("dd MMMM yyyy", cultureID) : "-");
+                //    parameters.Add("CITY", nppbkc.CITY);
+                //    parameters.Add("CK1_DETAIL_TABLE", ck1Detail);
+                //    parameters.Add("CK1_CALCULATION", ck1Calculation);
+                //    parameters.Add("CK1_ADJUSTMENT", exciseAdjustment);
+                //    parameters.Add("CK1_DELAY_ADJUSTMENT", delayAdjustment);
+                //    parameters.Add("PEMOHON", excise.POA.PRINTED_NAME);
+                //    break;
                 case ReferenceKeys.PrintoutLayout.DetailExciseCalculation:
                     ck1Tables = this.GetCK1CalculationReport(excise);
                     parameters.Clear();
@@ -2096,7 +2186,68 @@ namespace Sampoerna.EMS.Website.Controllers
                     parameters.Add("CK1_PERIOD", String.Format(cultureID, "{0:MMMM yyyy} - {1: MMMM yyyy}", excise.SUBMISSION_DATE.AddMonths(-6), excise.SUBMISSION_DATE.AddMonths(-1)));
                     parameters.Add("CK1_DETAIL_TABLE", ck1Tables);
                     break;
-                case ReferenceKeys.PrintoutLayout.FinanceRatio:
+                case ReferenceKeys.PrintoutLayout.ExciseRequestGuaranteeDecree:
+                    parameters.Add("nomor", excise.EXCISE_CREDIT_NO);
+                    parameters.Add("tanggal", excise.SUBMISSION_DATE.ToShortDateString());
+                    parameters.Add("textto", excise.ZAIDM_EX_NPPBKC.TEXT_TO);
+                    parameters.Add("alamat", excise.ZAIDM_EX_NPPBKC.KPPBC_ADDRESS);
+                    parameters.Add("poanama", excise.POA.PRINTED_NAME);
+                    parameters.Add("poajabatan", excise.POA.TITLE);
+                    parameters.Add("poaalamat", excise.POA.POA_ADDRESS);
+                    parameters.Add("company", nppbkc.COMPANY.BUTXT);
+                    parameters.Add("nppbkc", nppbkc.NPPBKC_ID);
+                    break;
+                case ReferenceKeys.PrintoutLayout.ExciseCreditAdjustmentRequest:
+                    var model2 = GetNewExciseRequestData(excise);
+                    var ck1Tablesa = GetNewExciseAdjustmentCK1Avg(model2, excise, 12);
+                    var ck1Calculation = GetCalculationExciseAdjustmentCK1Avg(model2, excise);
+                    var adjustment = GetAdjustmentExcise(model2, excise);
+                    var delayAdjustment = GetDelayAdjustmentExcise(model2, excise);
+                    var nppbkc2 = refService.GetNppbkc(excise.NPPBKC_ID);
+                    parameters.Add("POA", excise.POA_ID);
+                    parameters.Add("COMPANY_NAME", nppbkc2.COMPANY.BUTXT);
+                    parameters.Add("COMPANY_ADDRESS", nppbkc2.DGCE_ADDRESS);
+                    parameters.Add("SKEPNO", excise.DECREE_NO);
+                    parameters.Add("SKEPDATE", string.Format("{0}", excise.DECREE_DATE));
+                    parameters.Add("HASIL", "Hasil Tembakau");
+                    parameters.Add("CITY", nppbkc2.CITY);
+                    parameters.Add("PEMOHON", excise.POA.POA_ID);
+                    parameters.Add("NPPBKC_ID", excise.NPPBKC_ID);
+                    parameters.Add("TOTAL_AMOUNT", String.Format("Rp. {0:N}", excise.EXCISE_CREDIT_AMOUNT));
+                    parameters.Add("CK1_DETAIL_TABLE", ck1Tablesa);
+                    parameters.Add("CK1_CALCULATION", ck1Calculation);
+                    parameters.Add("CK1_ADJUSTMENT", adjustment);
+                    parameters.Add("CK1_DELAY_ADJUSTMENT", delayAdjustment);
+                    break;
+                case ReferenceKeys.PrintoutLayout.ExciseCreditAdjustmentRequestMain:
+                    var lampiranAdjustment = service.GetFileCount(excise.EXSICE_CREDIT_ID);
+                    var index11Adjustment = excise.EXCISE_CREDIT_AMOUNT >= 50000000000 ? "Kepala Kantor Wilayah" : "Kepada Yth.";
+                    var amountAdjustment = excise.EXCISE_CREDIT_AMOUNT;
+                    var amountterbilangAdjustment = service.Terbilang(amountAdjustment);
+                    var documentpendukungAdjustment = service.GetFile(excise.EXSICE_CREDIT_ID);
+                    var documentpendukungstringAdjustment = "";
+                    foreach (var fileUpload in documentpendukungAdjustment.ToList())
+                    {
+                        documentpendukungstringAdjustment += string.Format("<li>{0}</li>", fileUpload.FILE_NAME);
+                    }
+                    parameters.Add("kccpaddress", excise.ZAIDM_EX_NPPBKC.KPPBC_ADDRESS);
+                    parameters.Add("SubmissionDate", excise.SUBMISSION_DATE.ToShortDateString());
+                    parameters.Add("lampiran", string.Format("{0}, ({1}) Lampiran", lampiranAdjustment, service.Terbilang(lampiranAdjustment)));
+                    parameters.Add("index11", index11Adjustment);
+                    parameters.Add("namaalamatkantor", excise.ZAIDM_EX_NPPBKC.KPPBC_ADDRESS);
+                    parameters.Add("regiondgce", excise.ZAIDM_EX_NPPBKC.REGION_DGCE);
+                    parameters.Add("location", excise.ZAIDM_EX_NPPBKC.LOCATION);
+                    parameters.Add("poanama", excise.POA.PRINTED_NAME);
+                    parameters.Add("poajabatan", excise.POA.TITLE);
+                    parameters.Add("poaalamat", excise.POA.POA_ADDRESS);
+                    parameters.Add("company", nppbkc.COMPANY.BUTXT);
+                    parameters.Add("nppbkc", nppbkc.NPPBKC_ID);
+                    parameters.Add("kota", nppbkc.LOCATION);
+                    parameters.Add("nominal", string.Format("{0:N}", amountAdjustment));
+                    parameters.Add("terbilang", amountterbilangAdjustment);
+                    parameters.Add("lastskep", "?");
+                    break;
+					case ReferenceKeys.PrintoutLayout.FinanceRatio:
                     parameters.Clear();
                     parameters.Add("COMPANY_NAME", nppbkc.COMPANY.BUTXT);
                     var financialRatios = service.GetFinancialStatements
@@ -2152,13 +2303,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.AdjustmentDisplay = String.Format("{0}", model.AdjustmentDisplay);
                 Dictionary<string, double> values3 = new Dictionary<string, double>();
                 Dictionary<string, double> values6 = new Dictionary<string, double>();
+                Dictionary<string, double> values12 = new Dictionary<string, double>();
                 foreach (var product in model.ProductTypes)
                 {
                     values3.Add(product, (double)service.GetCK1Average(excise.SUBMISSION_DATE, excise.NPPBKC_ID, product, 3));
                     values6.Add(product, (double)service.GetCK1Average(excise.SUBMISSION_DATE, excise.NPPBKC_ID, product, 6));
+                    values12.Add(product, (double)service.GetCK1Average(excise.SUBMISSION_DATE, excise.NPPBKC_ID, product, 12));
                 }
                 model.CreditRanges.Add(3, values3);
                 model.CreditRanges.Add(6, values6);
+                model.CreditRanges.Add(12, values12);
                 model.CalculateMaxCreditRange();
 
                 return model;
@@ -2328,7 +2482,6 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                     calculationData.Add(ptype, amount);
                 }
-
                 #endregion
 
                 #region Build Table
@@ -2411,7 +2564,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                     number = 0;
 
-                    builder.AppendFormat("<td colspan='8'> Sub total kenaikan cukai yang di berikan penundaan: {0} / {1:N} * 100% : {2:N}</td>", exciseResult.Sum(m => m.INCREASE_TARIFF * m.CK1_AMOUNT), exciseResult.Sum(m => m.CK1_AMOUNT), exciseResult.Sum(m => m.INCREASE_TARIFF * m.CK1_AMOUNT) / exciseResult.Sum(m => m.CK1_AMOUNT) * 100);
+                    builder.AppendFormat("<td colspan='8'> Sub total kenaikan cukai yang di berikan penundaan: {0} / {1:N} * 100% : {2:N}</td>", exciseResult.Sum(m => m.INCREASE_TARIFF * m.CK1_AMOUNT), exciseResult.Sum(m => m.CK1_AMOUNT), (exciseResult.Sum(m => m.CK1_AMOUNT) != 0 ? exciseResult.Sum(m => m.INCREASE_TARIFF * m.CK1_AMOUNT) / exciseResult.Sum(m => m.CK1_AMOUNT) * 100 : 0));
                     //                    builder.Append("<td style='width: 25px'>&nbsp;</td>");
                     //                    builder.AppendFormat("<td style='width: 30%'>= Rp. {0:N}</td>", Math.Ceiling(calculationData[ptype].AdditionalValue));
                     Math.Ceiling(calculationData[ptype].AdditionalValue);

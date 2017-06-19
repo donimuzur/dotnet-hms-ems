@@ -74,12 +74,8 @@ function AddDetailManufacture() {
         cache: false,
         success: function (html) {            
             $("#div_body_interviewdetail").append(html);
-            //$('#opt_city_' + DetManufactIndex.toString()).selectpicker('refresh');
-            //$('#opt_city_' + DetManufactIndex.toString()).removeClass('selectpicker');
-            //$('.selectpicker').selectpicker('refresh');
-            //$('#opt_city_' + DetManufactIndex.toString()).addClass('selectpicker');
-            $('#opt_city_' + DetManufactIndex.toString()).selectpicker();
-            //$('.selectpicker').selectpicker();
+            $('#opt_city_' + DetManufactIndex.toString()).attr("data-live-search", "true");
+            $('#opt_city_' + DetManufactIndex.toString()).selectpicker("refresh");                        
             DetManufactIndex++;
         },
         complete: function()
@@ -148,6 +144,11 @@ function GetFileSize(fileid) {
 function CompletingDetailForm() {
     $('.sub_panel_parentbody').each(function () {
         DetManufactIndex++;
+
+        //var cityid = $(this).find(".txt_hd_cityid").val();
+        //$(this).find(".opt_city").val(cityid);
+        $(this).find(".opt_city").attr("data-live-search", "true");
+        $(this).find(".opt_city").selectpicker('refresh');
 
         var ObjPhone = $(this).find(".txt_phone");
         var phone = ObjPhone.val().split('-');
@@ -284,11 +285,7 @@ function ChangeStatus(Action, Status, Comment)
             Action: Action
         },
         success: function (data) {
-            var errmessage = data;
-            if(data == "")
-            {
-                window.location.replace(getUrl(""));
-            }
+            window.location.replace(getUrl(""));
         }
     });
 }
@@ -451,7 +448,8 @@ function GeneratePrintOutPDF()
     //        $("#customloader").hide();
     //    }
     //});
-    $("#form_DownloadPrintout").submit();
+    $("#txt_ischangelog_loaded").val("0");
+    $("#form_DownloadPrintout").submit();    
 }
 
 function GetPrintoutLayout()
@@ -825,11 +823,12 @@ $(document).on("click", ".btn_showmodal_changestatus", function () {
         $("#btn_changestatus_reject").hide();
         $("#btn_changestatus_reviseskep").show();
     }
-    else if (action == "Reject") {
-        $("#txt_label_forchangestatus").text("Reject Form Confirmation");
-        $("#txt_label_forchangestatus").text("Reject");
+    else if (action == "Withdraw") {
+        $("#txt_label_forchangestatus").text("Withdraw Form Confirmation");
+        $("#txt_label_forchangestatus").text("Withdraw");
         $("#btn_changestatus_reviseskep").hide();
-        $("#btn_changestatus_reject").show();
+        $("#btn_changestatus_reject").hide();
+        $("#btn_changestatus_withdraw").show();
     }
 });
 
@@ -842,12 +841,12 @@ $(document).on("click", ".btn_changestatus_submit", function () {
     else if(action == "reviseskep")
     {
         status = "WAITING FOR GOVERNMENT APPROVAL";
-    }
+    }    
     else {
         status = "CANCELED";
     }
     var comment = $("#txt_changestatus_comment").val();
-    if (comment == "" && (action == "revise" || action == "reviseskep")) {        
+    if (comment == "" && (action == "revise" || action == "reviseskep" || action == "withdraw")) {
         $("#div_alert_revise").show();
         $("#div_alert_revise").html("* Note/Comment cannot be empty.");
     }
@@ -938,9 +937,9 @@ $(document).on("click", "#btnSubmitSkep", function () {
     }
 });
 
-$(document).on("click", "#btnWithdraw", function () {
-    ChangeStatus("withdraw", "DRAFT EDIT", "");
-});
+//$(document).on("click", "#btn_changestatus_withdraw", function () {
+//    ChangeStatus("withdraw", "DRAFT EDIT", "");
+//});
 
 $(document).on("click", ".btn_loader", function () {
     $("#customloader").show();
@@ -1037,3 +1036,26 @@ $(document).on("click", "#btnRestorePrintoutToDefault", function () {
     RestoreDefaultPrintout();
     GeneratePrintOut();
 });
+
+//$(document).on("change", ".opt_city", function () {
+//    $("#customloader").show();
+//    var ID = $(this).val();
+//    var parent = $(this).parents(".sub_panel_parentbody");    
+//    $.ajax({
+//        type: 'POST',
+//        url: getUrl("GetCityDetailById"),
+//        data: { ID: ID },
+//        success: function (data) {
+//            var result = data;
+//            if (result != null) {
+//                var stateId = result.StateId;
+//                var stateName = result.StateName;
+//                parent.find(".txt_hd_stateid").val(stateId);
+//                parent.find(".txt_state").val(stateName);
+//            }
+//        },
+//        complete: function () {
+//            $("#customloader").hide();
+//        }
+//    });
+//});

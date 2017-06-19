@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Sampoerna.EMS.Website.Models.ExciseCredit.ExciseCreditCk1Model>
+﻿@model IEnumerable<Sampoerna.EMS.Website.Models.ExciseCredit.ExciseCreditCk1AdjustmentModel>
 <html>
     <head>
         @{
@@ -9,7 +9,7 @@
     </head>
 <body>
     <div style="-ms-overflow-style: scrollbar; overflow: auto" class="col-lg-12">
-        <h2 class="text-center">CK-1 List for 6 Last Months</h2>
+        <h2 class="text-center">CK-1 List for 12 Last Months</h2>
         <h3 class="text-center" id="ck1Period">(@obj.StartMonth to @obj.EndMonth)</h3>
         <br />
         <div class="row">
@@ -26,6 +26,10 @@
                     <th width="20%">CK-1 Date</th>
                     <th width="20%">Order Qty</th>
                     <th width="30%">Amount (Rp)</th>
+                    <th width="30%">Brand Content</th>
+                    <th width="30%">Series Value</th>
+                    <th width="30%">Brand Ce</th>
+                    <th width="30%">Production</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,17 +44,16 @@
                             <td>@String.Format("{0:dd/MM/yyyy}", data.CK1Date)</td>
                             <td>@data.OrderQuantity</td>
                             <td>@String.Format("{0:N}", data.Amount)</td>
+                            <td>@data.Brand_Content</td>
+                            <td>@String.Format("{0:N}", data.Series_Value)</td>
+                            <td>@data.Brand_Ce)</td>
+                            <td>@String.Format("{0:N}", data.Production)</td>
                         </tr>
                     }
                     <tr class="active">
-                        <td colspan="4">3 Months Average</td>
-                        <td>@String.Format("{0}", group.AverageQuantity3)</td>
-                        <td>@String.Format("{0:N}", group.AverageAmount3)</td>
-                    </tr>
-                    <tr class="active">
-                        <td colspan="4">6 Months Average</td>
-                        <td>@String.Format("{0}", group.AverageQuantity6)</td>
-                        <td>@String.Format("{0:N}", group.AverageAmount6)</td>
+                        <td colspan="10">12 Months Average</td>
+                        <td>@String.Format("{0}", group.AverageQuantity12)</td>
+                        <td>@String.Format("{0:N}", group.AverageAmount12)</td>
                     </tr>
                 }
             </tbody>
@@ -60,7 +63,7 @@
     <script type="text/javascript" src="@String.Format("{0}://{1}{2}/Scripts/jquery-2.1.4.min.js", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"))"></script>
     <script type="text/javascript" src="@String.Format("{0}://{1}{2}//Scripts/jquery.unobtrusive-ajax.min.js", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"))"></script>
     <script type="text/javascript" src="@String.Format("{0}://{1}{2}//Scripts/jquery.table2excel.min.js", Request.Url.Scheme, Request.Url.Authority, Url.Content("~"))"></script>
-    
+
     <script type="text/javascript">
         $(document).ready(function () {
             $("#exportButton").click(exportXls);

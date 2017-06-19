@@ -28,6 +28,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.MapSKEP
         public string CompanyName { get; set; }
         public string HlCode { get; set; }
         public string MarketDesc { get; set; }
+        public string ProductionCenter { get; set; }
         public ProductDevelopment.ProductDevDetailModel Item { get; set; }
 }
 }

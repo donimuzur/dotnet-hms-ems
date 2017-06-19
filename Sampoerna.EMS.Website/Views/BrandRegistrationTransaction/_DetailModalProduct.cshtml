@@ -110,7 +110,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="col-md-4"><label>HL Code</label></div>
-                                                <div class="col-md-8">@Html.TextBox("hlCode", Model.DetailModel.Hl_Code, new { @class = "form-control", @maxlength = "22", @readonly = "true" })</div>
+                                                <div class="col-md-8">@Html.TextBox("hlCode", Model.DetailModel.Hl_Code, new { @class = "form-control", @maxlength = "22"})</div>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -152,6 +152,23 @@
                                                             {
                                                                 <div class="row">
                                                                     <div class="form-group">
+                                                                        <div class="col-md-3">
+                                                                            <label>@doc.Name</label>
+                                                                        </div>
+                                                                        @if (doc.FileListUpload != null && doc.FileListUpload.Count > 0)
+                                                                        {
+                                                                            <div class="col-md-8">
+                                                                                <a href="@string.Format("{0}", Url.Content(doc.FileListUpload[0].Path_Url))" title="@doc.Name" target="_blank"><i class="fa fa-file-o"></i> @string.Format("{0} uploaded at {1}", doc.Name, doc.FileListUpload[0].Upload_Date.ToString())</a><br />
+                                                                            </div>
+                                                                        }
+                                                                    </div>
+                                                                </div>
+
+                                                            }
+                                                            @*@foreach (var doc in Model.SupportingDocuments)
+                                                            {
+                                                                <div class="row">
+                                                                    <div class="form-group">
                                                                         <div class="col-md-4">
                                                                             <label for="@doc.Id">@doc.Name</label>
                                                                         </div>
@@ -184,7 +201,7 @@
                                                                         </div>
                                                                     }                                                                                                                                          
                                                                 </div>
-                                                            }
+                                                            }*@
                                                         </div>
 
                                                         @if (Model == null || Model.SupportingDocuments.Count <= 0)
@@ -194,11 +211,11 @@
                                                     </div>
                                                     <div class="clearfix"></div>
                                                     <hr width="100%" />
-                                                    <div class="alert alert-danger" style="display:none;font-size:small;" id="CheckOtherDocLabel"></div>
+                                                    @*<div class="alert alert-danger" style="display:none;font-size:small;" id="CheckOtherDocLabel"></div>*@
                                                     <div class="col-md-12">
                                                         <label>Additional Documents</label>
                                                     </div>
-                                                    <div class="col-md-12">
+                                                    @*<div class="col-md-12">
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <input id="browseOtherDocFileName" type="text" name="browseOtherDocFileName" class="form-control" placeholder="Document Name" />
@@ -220,7 +237,8 @@
                                                         <div class="col-md-2">
                                                             <button class="btn btn-blue btn-sm" type="button" id="addOtherDocBtn">Add</button>
                                                         </div>
-                                                    </div>
+                                                    </div>*@
+                                                    <div class="clearfix"></div>
                                                     <div class="col-md-12">
                                                         <table class="display table table-bordered table-striped" cellspacing="0" id="OtherDocs">
                                                             <thead>
@@ -286,120 +304,3 @@
         </div>
     </div>
 </div>
-@*@section scripts
-{
-<script src="~/Scripts/js/custom.js"></script>
-<script type="text/javascript" language="javascript">
-    $(document).ready(function () {
-        //supportingDocs = {};
-        //existingOtherDocs = {};
-        //newOtherDocs = {};
-        //newOtherDocsName = {};
-        //handleBrowseEvent("browseOtherDoc", "browseOtherDocFile", "browseOtherDocText");
-        //mapBrowseAction();
-        //loadOtherDocs(idItem);          
-        setupDataTables();
-        //$("#addOtherDocBtn").on("click", _addOtherDoc);
-    });
-    function setupDataTables() {
-
-        var table = null;
-        if ($.fn.dataTable.isDataTable('#changesHistoryTable')) {
-            table = $('#changesHistoryTable').DataTable();
-            table.destroy();
-        }
-
-        table = $('#changesHistoryTable').DataTable(
-              {
-                  "sDom": "Rlfrtip",
-                  "language": {
-                      "zeroRecords": "No records found",
-                      "infoFiltered": "(filtered from _MAX_ total records)"
-                  }
-              });
-
-
-        $('#changesHistoryTable .filters th').each(function () {
-            var idx = $(this).index();
-            if (idx != 0) {
-                $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
-            }
-        });
-
-
-        table.columns().eq(0).each(function (colIdx) {
-            $('input', $('.filters th')[colIdx]).on('keyup change', function () {
-                table
-                    .column(colIdx)
-                    .search(this.value)
-                    .draw();
-            });
-        });
-    }
-    function ReloadDataTables() {
-        $('.toggle-row').click(function () {
-
-            var filter = $(".filters");
-            filter.slideToggle(100).promise().done(function () { });
-        });
-        $('.loading').hide();
-        setupDataTables();
-    }
-
-    //function _addOtherDoc() {
-    //    console.log("add other doc here");
-    //    var input = document.getElementById('browseOtherDocFile');
-    //    //console.log(input);
-    //    if (!input) {
-    //        showErrorDialog("Couldn't find the fileinput element.");
-    //    }
-    //    else if (!input.files) {
-    //        showErrorDialog("This browser doesn't seem to support the `files` property of file inputs.");
-    //    }
-    //    else if (!input.files[0]) {
-    //        showErrorDialog("Please select a file before clicking 'Add'");
-    //    }
-    //    else {
-    //        var file = input.files[0];
-    //        var sizeMB = fileUploadLimitElm.val();
-    //        //console.log("Size Limit: " + sizeMB);
-    //        var allowedFilesize = Number(sizeMB) * 1024 * 1024;
-    //        if (file.size > allowedFilesize) {
-    //            otherDocElm.html("<span>File size is larger than allowed size. Allowed size :" + sizeMB + " MB </span>");
-    //            otherDocElm.show();
-    //            showErrorDialog("File size is larger than allowed size (" + sizeMB + " MB)");
-    //            return;
-    //        }
-    //        _addToList(file, fileNameInput.val());
-    //    }
-    //}
-
-    //function _removeFromList(index) {
-    //    if (otherDocs.length > index) {
-    //        var target = otherDocs[index];
-    //        if (target && target.FileID) {
-    //            existingOtherDocs[target.FileID].active = false;
-    //        }
-    //        shift(index);
-    //        console.log("Other docs map: ");
-    //        console.log(otherDocMap);
-    //        console.log(existingOtherDocs);
-    //        otherDocs.splice(index, 1);
-    //        otherDocsName.splice(index, 1);
-    //        _renderFileList();
-
-    //    }
-    //}
-    //function handleBrowseEvent(id, fileId, textId) {
-    //    console.log("handle browse");
-    //    //console.log("registered: " + id);
-    //    $("#" + id).on('click', function () {
-    //        var file = $("#" + fileId);
-    //        file.trigger('click');
-    //    });
-    //    $("#" + fileId).on('change', function () {
-    //        $("#" + textId).val($(this).val().replace(/C:\\fakepath\\/i, ''));
-    //    });
-    //}
-</script>
-}*@

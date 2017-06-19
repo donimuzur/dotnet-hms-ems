@@ -15,7 +15,10 @@
                 <h3>Excise Credit Form</h3>
                 <label class="status">@Model.ViewModel.ApprovalStatus.Value</label>
                 <label class="status" id="docNumber">@Model.ViewModel.DocumentNumber</label>
-                
+                <div class="clearfix"></div>
+                <div class="action-button">
+                    <a href="@Url.Action("Index", "ExciseCredit")" class="btn btn-grey">Back</a>
+                </div>
             </div>
         </div>
     </div>
@@ -73,13 +76,14 @@
     <script src="~/Scripts/excise-credit/terbilang.min.js"></script>
     <script src="~/Scripts/excise-credit/date.js"></script>
     <script src="~/Scripts/excise-credit/main.js"></script>
+    <script src="~/Scripts/tinymce/tinymce.min.js"></script>
     <script type="text/javascript">
         var formID = '@Model.ViewModel.Id';
         var formType = '@Convert.ToInt64(Sampoerna.EMS.Core.Enums.FormList.ExciseRequest)';
         var totalProducts = '@Model.SkepInput.AvailableProductTypes.Count()';
         var skepAttachment = undefined;
         var bpjAttachment = undefined;
-       
+
         Number.prototype.formatMoney = function (c, d, t) {
             var n = this,
                 c = isNaN(c = Math.abs(c)) ? 2 : c,
@@ -108,6 +112,7 @@
             });
             $("#CreditAmountDisplay").autoNumeric('init');
             $("#ProductAmountInput").autoNumeric('init');
+            TinyMceInit("tinymce-editor");
         });
 
         function generateFormData() {
@@ -194,7 +199,7 @@
                         }
                         console.log("Other docs: ");
                         console.log(otherDocs);
-                        
+
                         _renderFileList();
 
                     }
@@ -279,7 +284,7 @@
                 '<td>' +
                 '<input class="form-control" type="text" name="productsamounts" value="' + registeredProducts[i].amount_display + '" readonly />' +
                 '</td>' +
-                
+
                 '</tr>';
 
             }

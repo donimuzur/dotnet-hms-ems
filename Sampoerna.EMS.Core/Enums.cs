@@ -335,9 +335,19 @@ namespace Sampoerna.EMS.Core
 			[Description("Product Type")]
 			ProductType = 37,
 			[Description("Excise Credit")]
-			ExciseCredit = 45
+			ExciseCredit = 45,
 
-		}
+            [Description("Interview Request")]
+            InterviewRequest = 81,
+            [Description("License Request")]
+            LicenseRequest = 82,
+            [Description("Change Request")]
+            ChangeRequest = 83,
+            [Description("Brand Registration Transaction")]
+            BrandRegistrationTrans = 84,
+            [Description("Brand Registration Penetapan SKEP")]
+            BrandRegistrationSKEP = 85
+        }
 
 		public enum ActionType
 		{
