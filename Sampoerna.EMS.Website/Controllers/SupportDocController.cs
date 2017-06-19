@@ -17,7 +17,7 @@ using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using static Sampoerna.EMS.Core.Enums;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.CustomService.Data;
@@ -58,11 +58,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 data = new SupportDocViewModel();
             }
 
-            IEnumerable<FormList> formTypes = Enum.GetValues(typeof(FormList)).Cast<FormList>();
+            IEnumerable<Enums.FormList> formTypes = Enum.GetValues(typeof(Enums.FormList)).Cast<Enums.FormList>();
             data.ListForm = from form in formTypes
                             select new SelectListItem
                             {
-                                Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(FormList), form.ToString())),
+                                Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Enums.FormList), form.ToString())),
                                 Value = ((int)form).ToString()
                             };
 
