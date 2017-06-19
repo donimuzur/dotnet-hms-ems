@@ -1840,6 +1840,7 @@
     <Content Include="Views\BRBrandRegistration\_BrandRegistrationTable.cshtml" />
     <Content Include="Views\ExciseCredit\_WithdrawModal.cshtml" />
     <Content Include="Views\ExciseCredit\_Ck1AdjustmentList.cshtml" />
+    <Content Include="Views\ExciseCredit\_SummaryReportList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

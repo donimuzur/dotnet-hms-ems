@@ -26,11 +26,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using SpreadsheetLight;
+using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -2918,5 +2922,226 @@ namespace Sampoerna.EMS.Website.Controllers
         #endregion
 
         #endregion
+
+        public void ExportXlsSummaryReports(ExciseCreditViewModel model)
+        {
+            string pathFile = "";
+
+            pathFile = CreateXlsSummaryReports(model);
+
+
+            var newFile = new FileInfo(pathFile);
+
+            var fileName = Path.GetFileName(pathFile);
+
+            string attachment = string.Format("attachment; filename={0}", fileName);
+            Response.Clear();
+            Response.AddHeader("content-disposition", attachment);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.WriteFile(newFile.FullName);
+            Response.Flush();
+            newFile.Delete();
+            Response.End();
+        }
+
+        private string CreateXlsSummaryReports(ExciseCreditViewModel modelExport)
+        {
+            var documents = service.GetAll().Select(x => this.MapExciseCreditModel(x));
+
+            if (!string.IsNullOrEmpty(modelExport.ExportModel.POAExport))
+            {
+                documents = documents.Where(x => x.POA == modelExport.ExportModel.POAExport);
+            }
+            if (!string.IsNullOrEmpty(modelExport.ExportModel.NPPBKCExport))
+            {
+                documents = documents.Where(x => x.NppbkcId == modelExport.ExportModel.NPPBKCExport);
+            }
+            if (modelExport.ExportModel.ExciseCreditTypeExport > 0)
+            {
+                documents = documents.Where(x => x.RequestTypeID == modelExport.ExportModel.ExciseCreditTypeExport);
+            }
+            if (!string.IsNullOrEmpty(modelExport.ExportModel.CreatorExport))
+            {
+                documents = documents.Where(x => x.CreatedBy == modelExport.ExportModel.CreatorExport);
+            }
+            if (modelExport.ExportModel.YearExport > 0)
+            {
+                documents = documents.Where(x => x.SubmissionDate.Year == modelExport.ExportModel.YearExport);
+            }
+
+            int iRow = 1;
+            var slDocument = new SLDocument();
+
+            //create header
+            slDocument = CreateHeaderExcel(slDocument, modelExport.ExportModel);
+
+            iRow++;
+            int iColumn = 1;
+            foreach (var data in documents)
+            {
+
+                iColumn = 1;
+
+
+                if (modelExport.ExportModel.Type)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.RequestType);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.ExportModel.SubmitDate)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.SubmissionDate.ToString("dd MMMM yyyy"));
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.ExportModel.Poa)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CreatedBy);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.ExportModel.NppbkcId)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.NppbkcId);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.ExportModel.ExciseNumber)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.DocumentNumber);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.ExportModel.Amount)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.AmountDisplay);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.ExportModel.LastUpdate)
+                {
+                    var lastUpdate = data.ModifiedDate == null ? data.CreatedDate.ToString("dd MMMM yyyy HH:mm:ss") : data.ModifiedDate.Value.ToString("dd MMMM yyyy HH:mm:ss");
+                    slDocument.SetCellValue(iRow, iColumn, lastUpdate);
+                    iColumn = iColumn + 1;
+                }
+                if (modelExport.ExportModel.Status)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.ApprovalStatus.Value);
+                    iColumn = iColumn + 1;
+                }
+
+                iRow++;
+            }
+
+            return CreateXlsFile(slDocument, iColumn, iRow);
+
+        }
+
+        private SLDocument CreateHeaderExcel(SLDocument slDocument, ExciseCreditSummaryReportsViewModel modelExport)
+        {
+            int iColumn = 1;
+            int iRow = 1;
+
+
+            if (modelExport.Type)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Type");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.SubmitDate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Submit Date");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Poa)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Poa");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.NppbkcId)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Nppbkc Id");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.ExciseNumber)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Excise Number");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Amount)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Amount");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.LastUpdate)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Last Update");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Status)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Status");
+                iColumn = iColumn + 1;
+            }
+
+            return slDocument;
+
+        }
+
+        private string CreateXlsFile(SLDocument slDocument, int iColumn, int iRow)
+        {
+
+            //create style
+            SLStyle styleBorder = slDocument.CreateStyle();
+            styleBorder.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
+            styleBorder.SetWrapText(true);
+
+            slDocument.AutoFitColumn(1, iColumn - 1);
+            slDocument.SetCellStyle(1, 1, iRow - 1, iColumn - 1, styleBorder);
+
+            var fileName = "ExciseCreditSummaryReport_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
+
+            var path = Path.Combine(Server.MapPath(Constans.UploadPath), fileName);
+
+            slDocument.SaveAs(path);
+
+            return path;
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterSummaryReports(ExciseCreditViewModel model)
+        {
+            var documents = service.GetAll().Select(x => this.MapExciseCreditModel(x));
+
+            if (!string.IsNullOrEmpty(model.Filter.POA))
+            {
+                documents = documents.Where(x => x.POA == model.Filter.POA);
+            }
+            if (!string.IsNullOrEmpty(model.Filter.NPPBKC))
+            {
+                documents = documents.Where(x => x.NppbkcId == model.Filter.NPPBKC);
+            }
+            if (model.Filter.ExciseCreditType > 0)
+            {
+                documents = documents.Where(x => x.RequestTypeID == model.Filter.ExciseCreditType);
+            }
+            if (!string.IsNullOrEmpty(model.Filter.Creator))
+            {
+                documents = documents.Where(x => x.CreatedBy == model.Filter.Creator);
+            }
+            if (model.Filter.Year > 0)
+            {
+                documents = documents.Where(x => x.SubmissionDate.Year == model.Filter.Year);
+            }
+
+            model.ExciseCreditDocuments = documents.ToList();
+
+            return PartialView("_SummaryReportList", model);
+        }
     }
 }

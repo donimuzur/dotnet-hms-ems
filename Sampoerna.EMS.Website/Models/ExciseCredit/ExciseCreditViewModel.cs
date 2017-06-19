@@ -37,6 +37,12 @@ namespace Sampoerna.EMS.Website.Models.ExciseCredit
 
     public class ExciseCreditSummaryReportsViewModel
     {
+        public int YearExport { set; get; }
+        public string POAExport { set; get; }
+        public string CreatorExport { set; get; }
+        public string NPPBKCExport { set; get; }
+        public int ExciseCreditTypeExport { set; get; }
+
         public bool Type { get; set; }
         public bool SubmitDate { get; set; }
         public bool Poa { get; set; }
