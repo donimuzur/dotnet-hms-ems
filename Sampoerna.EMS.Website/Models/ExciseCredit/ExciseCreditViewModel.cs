@@ -22,7 +22,7 @@ namespace Sampoerna.EMS.Website.Models.ExciseCredit
         public SelectList TypeList { set; get; }
 
         public ExciseFilterModel Filter { set; get; }
-
+        public ExciseCreditSummaryReportsViewModel ExportModel { get; set; }
 
     }
 
@@ -33,6 +33,18 @@ namespace Sampoerna.EMS.Website.Models.ExciseCredit
         public string Creator { set; get; }
         public string NPPBKC { set; get; }
         public int ExciseCreditType { set; get; }
+    }
+
+    public class ExciseCreditSummaryReportsViewModel
+    {
+        public bool Type { get; set; }
+        public bool SubmitDate { get; set; }
+        public bool Poa { get; set; }
+        public bool NppbkcId { get; set; }
+        public bool ExciseNumber { get; set; }
+        public bool Amount { get; set; }
+        public bool LastUpdate { get; set; }
+        public bool Status { get; set; }
     }
 
 }
