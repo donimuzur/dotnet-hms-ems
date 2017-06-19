@@ -32,7 +32,7 @@
                                     <div class="row">
                                         <label class="col-md-4">Village</label>
                                         <div class="col-md-8">
-                                            @Html.TextBox("IRDetails[" + Model.Index.ToString() + "].MnfVillage", Model.MnfVillage , new { @readonly = "readonly", @class = "txt_manufact_village form-control" })
+                                            @Html.TextBox("IRDetails[" + Model.Index.ToString() + "].MnfVillage", Model.MnfVillage, new { @readonly = "readonly", @class = "txt_manufact_village form-control" })
                                         </div>
                                     </div>
                                     <div class="row">
@@ -88,11 +88,11 @@
                                             <div class="col-md-9">
                                                 @if (Model.ActionName == "Detail")
                                                 {
-                                                    @Html.TextBox("IRDetails[" + Model.Index + "].North", Model.North, new { @readonly="readonly", @class = "txt_manufact_north form-control" })
+                                                    @Html.TextBox("IRDetails[" + Model.Index + "].North", Model.North, new { @readonly = "readonly", @class = "txt_manufact_north form-control" })
                                                 }
                                                 else
                                                 {
-                                                    @Html.TextBox("IRDetails[" + Model.Index + "].North", Model.North, new { @class = "txt_manufact_north form-control", @required = "required",@data_fieldname= "North " + Model.Index })
+                                                    @Html.TextBox("IRDetails[" + Model.Index + "].North", Model.North, new { @class = "txt_manufact_north form-control", @required = "required", @data_fieldname = "North " + Model.Index })
                                                 }
                                             </div>
                                         </div>
@@ -101,12 +101,12 @@
                                             <div class="col-md-9">
                                                 @if (Model.ActionName == "Detail")
                                                 {
-                                                    @Html.TextBox("IRDetails[" + Model.Index + "].East", Model.East, new { @readonly="readonly", @class = "txt_manufact_east form-control" })
+                                                    @Html.TextBox("IRDetails[" + Model.Index + "].East", Model.East, new { @readonly = "readonly", @class = "txt_manufact_east form-control" })
                                                 }
                                                 else
                                                 {
                                                     @Html.TextBox("IRDetails[" + Model.Index + "].East", Model.East, new { @class = "txt_manufact_east form-control", @required = "required", @data_fieldname = "East " + Model.Index })
-                                               }
+                                                }
 
 
                                             </div>
@@ -116,7 +116,7 @@
                                             <div class="col-md-9">
                                                 @if (Model.ActionName == "Detail")
                                                 {
-                                                    @Html.TextBox("IRDetails[" + Model.Index + "].South", Model.South, new { @readonly="readonly",@class = "txt_manufact_south form-control" })
+                                                    @Html.TextBox("IRDetails[" + Model.Index + "].South", Model.South, new { @readonly = "readonly", @class = "txt_manufact_south form-control" })
                                                 }
                                                 else
                                                 {
@@ -129,7 +129,7 @@
                                             <div class="col-md-9">
                                                 @if (Model.ActionName == "Detail")
                                                 {
-                                                @Html.TextBox("IRDetails[" + Model.Index + "].West", Model.West, new { @readonly="readonly",@class = "txt_manufact_west form-control" })
+                                                @Html.TextBox("IRDetails[" + Model.Index + "].West", Model.West, new { @readonly = "readonly", @class = "txt_manufact_west form-control" })
                                                 }
                                                 else
                                                 {
@@ -144,7 +144,7 @@
                                                     @if (Model.ActionName == "Detail")
                                                     {
                                                         <div class="col-md-3">
-                                                            @Html.TextBox("IRDetails[" + Model.Index + "].LandArea", Model.LandArea, new {@readonly = "readonly", @class = "txt_manufact_landarea form-control numeric-form" })
+                                                            @Html.TextBox("IRDetails[" + Model.Index + "].LandArea", Model.LandArea, new { @readonly = "readonly", @class = "txt_manufact_landarea form-control numeric-form" })
                                                         </div>
                                                         <label class="col-md-1">m2</label>
                                                         <label class="col-md-3 text-right">Building Area</label>
@@ -171,14 +171,22 @@
                                         <div class="row">
                                             <label class="col-md-3">Ownership Status<span class="red">*</span></label>
                                             <div class="col-md-9">
+                                                
                                                 @if (Model.ActionName == "Detail")
                                                 {
-                                                    @Html.TextBox("IRDetails[" + Model.Index + "].OwnershipStatus", Model.OwnershipStatus, new { @readonly="readonly", @class = "txt_manufact_owner form-control" })
+                                                    @Html.TextBox("IRDetails[" + Model.Index + "].OwnershipStatus", Model.OwnershipStatus, new { @readonly = "readonly", @class = "txt_manufact_owner form-control" })
                                                 }
                                                 else
                                                 {
-                                                    @Html.TextBox("IRDetails[" + Model.Index + "].OwnershipStatus", Model.OwnershipStatus, new { @class = "txt_manufact_owner form-control", @data_fieldname = "Ownership Status " + Model.Index })
-                                                }
+                                                    @*@Html.TextBox("IRDetails[" + Model.Index + "].OwnershipStatus", Model.OwnershipStatus, new { @class = "txt_manufact_owner form-control", @data_fieldname = "Ownership Status " + Model.Index })*@
+                                                    <select name="IRDetails[@Model.Index].OwnershipStatus" class="txt_manufact_owner form-control" data-field="Ownership Status @Model.Index">
+                                                        <option value="" >Select</option>
+                                                        <option value="Milik Sendiri" @{if (Model.OwnershipStatus == "Milik Sendiri")
+                                                            { <text> selected</text>} }> Milik Sendiri</option>
+                                                        <option value="Sewa" @{if (Model.OwnershipStatus == "Sewa")
+                                                            { <text> selected</text>} }>Sewa</option>
+                                                    </select>
+                                                            }
                                             </div>
                                         </div>
                                     </fieldset>

@@ -442,11 +442,11 @@ function ajaxFaCodeNewDescription(urlNewDescription, type) {
         success: function (data) {
             if (data != null) {
                 document.getElementById("FaCodeNewDesc").value = data;
-                document.getElementById("NewDescUp").value = data;
+               // document.getElementById("NewDescUp").value = data;
             }
             else {
                 document.getElementById("FaCodeNewDesc").value = "";
-                document.getElementById("NewDescUp").value = "";
+             //   document.getElementById("NewDescUp").value = "";
             }
         }
     });
@@ -614,7 +614,7 @@ function ValidateItem() {
     //    }
     //}
 
-    if (validHl != "" &&  validPlant != "Select") {
+    if (validPlant != "Select") {
         $('#myModalItem').modal('hide');
         return true;
     }
@@ -676,7 +676,7 @@ $(document).on('click', '#addItem', function (e) {
         console.log(arrayItemSave);
         $("#customloader").hide();
         CreateItemList();  
-        ClearModalDetail();
+        ClearModalDetailCreate();
 
     }
  
@@ -717,132 +717,132 @@ function CreateItemList()
 
 }
 
-$(document).on('click', '#addItemUp', function (e) {
-    console.log("add item up");
-    $('#modalItemAddUp').modal('hide');
-    var brandReqNoItem = $("#requestNoUp").val();
-    var companyItem = $("#CompanyUp :selected").text();
-    var faCodeOldItem = $("#FaOldId option:selected").text();
-    var faCodeOldDescItem = $("#OldDescUp").val();
-    var faCodeNewItem = $("#FaNewId option:selected").text();
-    var faCodeNewDescItem = $("#NewDescUp").val();
-    var hlCodeItem = $("#HlCodeUp").val();
-    var marketItem = $("#MarketUp option:selected").text();
-    var plantItem = $("#PlantId option:selected").text();
-    var isImportItem = document.getElementById("ImportUp").checked;
+//$(document).on('click', '#addItemUp', function (e) {
+//    console.log("add item up");
+//    $('#modalItemAddUp').modal('hide');
+//    var brandReqNoItem = $("#requestNoUp").val();
+//    var companyItem = $("#CompanyUp :selected").text();
+//    var faCodeOldItem = $("#FaOldId option:selected").text();
+//    var faCodeOldDescItem = $("#OldDescUp").val();
+//    var faCodeNewItem = $("#FaNewId option:selected").text();
+//    var faCodeNewDescItem = $("#NewDescUp").val();
+//    var hlCodeItem = $("#HlCodeUp").val();
+//    var marketItem = $("#MarketUp option:selected").text();
+//    var plantItem = $("#PlantId option:selected").text();
+//    var isImportItem = document.getElementById("ImportUp").checked;
 
-    if (faCodeOldItem == "Select") {
-        faCodeOldItem = "";
-    }
-    if (faCodeNewItem == "Select") {
-        faCodeNewItem = "";
-    }
+//    if (faCodeOldItem == "Select") {
+//        faCodeOldItem = "";
+//    }
+//    if (faCodeNewItem == "Select") {
+//        faCodeNewItem = "";
+//    }
 
-    console.log("old: " + faCodeOldItem);
-    console.log("new: " + faCodeNewItem);
+//    console.log("old: " + faCodeOldItem);
+//    console.log("new: " + faCodeNewItem);
 
-    var companyItemVal = $("#CompanyUp :selected").val();
-    var marketItemVal = $("#MarketUp option:selected").val();
-    var tempItemPlant = $("#PlantId option:selected").val();
-    var plantItemVal = ajaxPlantInfo(tempItemPlant);
+//    var companyItemVal = $("#CompanyUp :selected").val();
+//    var marketItemVal = $("#MarketUp option:selected").val();
+//    var tempItemPlant = $("#PlantId option:selected").val();
+//    var plantItemVal = ajaxPlantInfo(tempItemPlant);
 
-    var localCounter = 0;
-    localCounter = GetLastNumberItem();
+//    var localCounter = 0;
+//    localCounter = GetLastNumberItem();
 
-    itemdetailindex = $("#txt_index_listitem").val();
+//    itemdetailindex = $("#txt_index_listitem").val();
     
-   // for (var i = 0; i < arrayItemUp.length; i++) {
-        var checkImport = '';
-        if (isImportItem == true) {
-            checkImport = '<input type="checkbox" checked disabled="disabled" />';
-        }
-        else {
-            checkImport = '<input type="checkbox" disabled="disabled" />';
-        }
+//   // for (var i = 0; i < arrayItemUp.length; i++) {
+//        var checkImport = '';
+//        if (isImportItem == true) {
+//            checkImport = '<input type="checkbox" checked disabled="disabled" />';
+//        }
+//        else {
+//            checkImport = '<input type="checkbox" disabled="disabled" />';
+//        }
 
-        var newRow = '<tr><td class="td_inputan"><input type="checkbox" /></td>';
-        newRow += '<td> </td> ';
-        newRow += '<td><label id="status">DRAFT NEW</label></td>';
-        newRow += '<td>' + checkImport + '</td>';
-        newRow += '<td nowrap><label id="brandReqNo">' + Pad(localCounter + 1, 10) + "/" + brandReqNoItem + '</label></td>';
-        newRow += '<td nowrap><label id="companyInf">' + companyItem + '</label></td>';
-        newRow += '<td><label id="faCodeOld">' + faCodeOldItem + '</label></td>';
-        newRow += '<td nowrap><label id="faCodeOldDesc">' + faCodeOldDescItem + '</label></td>';
-        newRow += '<td><label id="faCodeNew">' + faCodeNewItem + '</label></td>';
-        newRow += '<td nowrap><label id="faCodeNewDesc">' + faCodeNewDescItem + '</label></td>';
-        newRow += '<td><label id="hlCode">' + hlCodeItem + '</label></td>';
-        newRow += '<td><label id="marketInf">' + marketItem + '</label></td>';
-        newRow += '<td nowrap><label id="plantInf">' + plantItem + '</label></td></tr>';
-        //alert(newRow);
-        $('#tbody_productlistitem').append(newRow);
+//        var newRow = '<tr><td class="td_inputan"><input type="checkbox" /></td>';
+//        newRow += '<td> </td> ';
+//        newRow += '<td><label id="status">DRAFT NEW</label></td>';
+//        newRow += '<td>' + checkImport + '</td>';
+//        newRow += '<td nowrap><label id="brandReqNo">' + Pad(localCounter + 1, 10) + "/" + brandReqNoItem + '</label></td>';
+//        newRow += '<td nowrap><label id="companyInf">' + companyItem + '</label></td>';
+//        newRow += '<td><label id="faCodeOld">' + faCodeOldItem + '</label></td>';
+//        newRow += '<td nowrap><label id="faCodeOldDesc">' + faCodeOldDescItem + '</label></td>';
+//        newRow += '<td><label id="faCodeNew">' + faCodeNewItem + '</label></td>';
+//        newRow += '<td nowrap><label id="faCodeNewDesc">' + faCodeNewDescItem + '</label></td>';
+//        newRow += '<td><label id="hlCode">' + hlCodeItem + '</label></td>';
+//        newRow += '<td><label id="marketInf">' + marketItem + '</label></td>';
+//        newRow += '<td nowrap><label id="plantInf">' + plantItem + '</label></td></tr>';
+//        //alert(newRow);
+//        $('#tbody_productlistitem').append(newRow);
         
-        itemdetailindex++;
-   // }
+//        itemdetailindex++;
+//   // }
 
-    var objItemUp = { brandReqNoItem: brandReqNoItem, companyItem: companyItem, faCodeOldItem: faCodeOldItem, faCodeOldDescItem: faCodeOldDescItem, faCodeNewItem: faCodeNewItem, faCodeNewDescItem: faCodeNewDescItem, hlCodeItem: hlCodeItem, marketItem: marketItem, plantItem: plantItem, isImport: isImportItem };
-    var objItemSaveUp = { brandReqNoItem: brandReqNoItem, companyItem: companyItemVal, faCodeOldItem: faCodeOldItem, faCodeOldDescItem: faCodeOldDescItem, faCodeNewItem: faCodeNewItem, faCodeNewDescItem: faCodeNewDescItem, hlCodeItem: hlCodeItem, marketItem: marketItemVal, plantItem: plantItemVal, isImport: isImportItem };
+//    var objItemUp = { brandReqNoItem: brandReqNoItem, companyItem: companyItem, faCodeOldItem: faCodeOldItem, faCodeOldDescItem: faCodeOldDescItem, faCodeNewItem: faCodeNewItem, faCodeNewDescItem: faCodeNewDescItem, hlCodeItem: hlCodeItem, marketItem: marketItem, plantItem: plantItem, isImport: isImportItem };
+//    var objItemSaveUp = { brandReqNoItem: brandReqNoItem, companyItem: companyItemVal, faCodeOldItem: faCodeOldItem, faCodeOldDescItem: faCodeOldDescItem, faCodeNewItem: faCodeNewItem, faCodeNewDescItem: faCodeNewDescItem, hlCodeItem: hlCodeItem, marketItem: marketItemVal, plantItem: plantItemVal, isImport: isImportItem };
 
-    //uploads();
-    arrayItemUp.push(objItemUp); // this array accomodated for list view
-    arrayItemSaveUp.push(objItemSaveUp); // this array accomodated for saving in table - database                                            
-    console.log(arrayItemSaveUp);
+//    //uploads();
+//    arrayItemUp.push(objItemUp); // this array accomodated for list view
+//    arrayItemSaveUp.push(objItemSaveUp); // this array accomodated for saving in table - database                                            
+//    console.log(arrayItemSaveUp);
 
-   // CreateItemListUp();
-    //ClearModalDetailUp();
-});
+//    CreateItemListUp();
+//    //ClearModalDetailUp();
+//});
 
-function CreateItemListUp() {    
+//function CreateItemListUp() {    
 
-    //var localCounter = 0;
-    //localCounter = GetLastNumberItem();
+//    //var localCounter = 0;
+//    //localCounter = GetLastNumberItem();
 
-    //itemdetailindex = $("#txt_index_listitem").val();
+//    //itemdetailindex = $("#txt_index_listitem").val();
 
-    //$('#brandTable tbody tr').remove();
-    //for (var i = 0; i < arrayItemUp.length; i++) {
-    //    var checkImport = '';
-    //    if (arrayItemUp[i].isImportItem == true) {
-    //        checkImport = '<input type="checkbox" checked disabled="disabled" />';
-    //    }
-    //    else {
-    //        checkImport = '<input type="checkbox" disabled="disabled" />';
-    //    }
+//    //$('#brandTable tbody tr').remove();
+//    //for (var i = 0; i < arrayItemUp.length; i++) {
+//    //    var checkImport = '';
+//    //    if (arrayItemUp[i].isImportItem == true) {
+//    //        checkImport = '<input type="checkbox" checked disabled="disabled" />';
+//    //    }
+//    //    else {
+//    //        checkImport = '<input type="checkbox" disabled="disabled" />';
+//    //    }
 
-    //    var newRow = '<tr><td class="td_inputan"><input type="checkbox" onclick="stateCheckItem(' + i + ')" id="checkAll' + i + '" /></td>' +
-    //   i + '<td> <a data-toggle="modal" data-placement="top" title="Edit"  data-id="' + i + '" class="itemView"> <i class="fa fa-pencil-square-o"></i></a></td> ' +
-    //   i + '<td><label id="status">DRAFT NEW</label></td>' +
-    //   i + '<td>' + checkImport + '</td>' +
-    //   i + '<td nowrap><label id="brandReqNo' + i + '">' + Pad(localCounter + i, 10) + "/" + arrayItemUp[i].brandReqNoItem + '</label></td>' +
-    //   i + '<td nowrap><label id="companyInf">' + arrayItemUp[i].companyItem + '</label></td>' +
-    //   i + '<td><label id="faCodeOld">' + arrayItemUp[i].faCodeOldItem + '</label></td>' +
-    //   i + '<td nowrap><label id="faCodeOldDesc">' + arrayItemUp[i].faCodeOldDescItem + '</label></td>' +
-    //   i + '<td><label id="faCodeNew">' + arrayItemUp[i].faCodeNewItem + '</label></td>' +
-    //   i + '<td nowrap><label id="faCodeNewDesc">' + arrayItemUp[i].faCodeNewDescItem + '</label></td>' +
-    //   i + '<td><label id="hlCode">' + arrayItemUp[i].hlCodeItem + '</label></td>' +
-    //   i + '<td><label id="marketInf">' + arrayItemUp[i].marketItem + '</label></td>' +
-    //   i + '<td nowrap><label id="plantInf">' + arrayItemUp[i].plantItem + '</label></td></tr>';
-    //    $('#brandTable tbody').append(newRow);
-    //    //$("#tbody_productlistitem").find("tr").append(newRow);
-    //    itemdetailindex++;
-    //}   
+//    //    var newRow = '<tr><td class="td_inputan"><input type="checkbox" onclick="stateCheckItem(' + i + ')" id="checkAll' + i + '" /></td>' +
+//    //   i + '<td> <a data-toggle="modal" data-placement="top" title="Edit"  data-id="' + i + '" class="itemView"> <i class="fa fa-pencil-square-o"></i></a></td> ' +
+//    //   i + '<td><label id="status">DRAFT NEW</label></td>' +
+//    //   i + '<td>' + checkImport + '</td>' +
+//    //   i + '<td nowrap><label id="brandReqNo' + i + '">' + Pad(localCounter + i, 10) + "/" + arrayItemUp[i].brandReqNoItem + '</label></td>' +
+//    //   i + '<td nowrap><label id="companyInf">' + arrayItemUp[i].companyItem + '</label></td>' +
+//    //   i + '<td><label id="faCodeOld">' + arrayItemUp[i].faCodeOldItem + '</label></td>' +
+//    //   i + '<td nowrap><label id="faCodeOldDesc">' + arrayItemUp[i].faCodeOldDescItem + '</label></td>' +
+//    //   i + '<td><label id="faCodeNew">' + arrayItemUp[i].faCodeNewItem + '</label></td>' +
+//    //   i + '<td nowrap><label id="faCodeNewDesc">' + arrayItemUp[i].faCodeNewDescItem + '</label></td>' +
+//    //   i + '<td><label id="hlCode">' + arrayItemUp[i].hlCodeItem + '</label></td>' +
+//    //   i + '<td><label id="marketInf">' + arrayItemUp[i].marketItem + '</label></td>' +
+//    //   i + '<td nowrap><label id="plantInf">' + arrayItemUp[i].plantItem + '</label></td></tr>';
+//    //    $('#brandTable tbody').append(newRow);
+//    //    //$("#tbody_productlistitem").find("tr").append(newRow);
+//    //    itemdetailindex++;
+//    //}   
 
-}
+//}
 
-function ClearModalDetailUp() {
-    $("#requestNoUp").val("");
-    $("#CompanyUp").selectpicker("refresh");
-    $("#MarketUp").selectpicker("refresh");
-    $("#PlantId").selectpicker("refresh");
-    $("#FaNewId").selectpicker("refresh");
-    $("#NewDescUp").val("");
-    $("#FaOldId").selectpicker("refresh");
-    $("#OldDescUp").val("");
-    $("#HlCodeUp").val("");
-    otherDocsUp = [];
-    otherDocsNameUp = [];
-    supportingDocs = {};
-    _renderFileList();
-}
+//function ClearModalDetailUp() {
+//    $("#requestNoUp").val("");
+//    $("#CompanyUp").selectpicker("refresh");
+//    $("#MarketUp").selectpicker("refresh");
+//    $("#PlantId").selectpicker("refresh");
+//    $("#FaNewId").selectpicker("refresh");
+//    $("#NewDescUp").val("");
+//    $("#FaOldId").selectpicker("refresh");
+//    $("#OldDescUp").val("");
+//    $("#HlCodeUp").val("");
+//    otherDocsUp = [];
+//    otherDocsNameUp = [];
+//    supportingDocs = {};
+//    _renderFileList();
+//}
 //-------------------------------------------//
 function CheckAllItem() {
     console.log("length: "+ arrayItem.length);

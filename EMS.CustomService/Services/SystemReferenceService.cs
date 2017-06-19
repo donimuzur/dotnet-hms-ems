@@ -383,6 +383,42 @@ namespace Sampoerna.EMS.CustomService.Services
 
             return false;
         }
+
+        public long GetCurrentSequence(Enums.FormType formtype, EMSDataModel context, int? month = null, int? year = null)
+        {
+            try
+            {
+                var current = 0L;
+                var sequencePerForm = context.DOC_NUMBER_SEQ.Where(x => x.FORM_TYPE_ID == (int)formtype).FirstOrDefault();
+
+                if (sequencePerForm == null) // Not present yet
+                {
+                    var sequence = new DOC_NUMBER_SEQ()
+                    {
+                        DOC_NUMBER_SEQ_LAST = current,
+                        FORM_TYPE_ID = (int)formtype,
+                        MONTH = month,
+                        YEAR = year
+                    };
+
+                    context.DOC_NUMBER_SEQ.Add(sequence);
+                }
+                else
+                {
+                    var newSequence = (DOC_NUMBER_SEQ)context.Entry(sequencePerForm).GetDatabaseValues().ToObject();
+                    current = sequencePerForm.DOC_NUMBER_SEQ_LAST;
+                    newSequence.DOC_NUMBER_SEQ_LAST = current + 1;
+                    context.Entry(sequencePerForm).CurrentValues.SetValues(newSequence);
+                }
+                context.SaveChanges();
+
+                return current + 1;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         #endregion
 
         #region Global Data Provider
@@ -635,6 +671,20 @@ namespace Sampoerna.EMS.CustomService.Services
             catch (Exception ex)
             {
                 throw this.HandleException("Exception occured on SystemReferenceService.GetAuthorizedPages(). See Inner Exception property to see details", ex);
+            }
+        }
+
+        public T001 GetCompanyById(string BUKRS)
+        {
+            try
+            {
+                var context = new EMSDataModel();
+                var company = context.T001.Where(w => w.BUKRS.Equals(BUKRS)).FirstOrDefault();
+                return company;
+            }
+            catch (Exception e)
+            {
+                throw; this.HandleException("Exception occured on SystemReferenceService.GetCompanyById(). See Inner Exception property to see details", e);
             }
         }
         #endregion

@@ -264,8 +264,8 @@
                                                         <div class="col-md-9">
                                                             @foreach (var prodtype in Model.PCDetails)
                                                             {
-                                                                <div class="col-md-2">
-                                                                    <input id="PCDetails[@prodtype.ptIndex.ToString()].ProdCode)" type="checkbox" class="prodtype_list" name="ProdCode" value="@prodtype.ProdCode" @prodtype.IsChecked>&nbsp;@prodtype.ProdAlias
+                                                                <div class="col-md-5">
+                                                                    <input id="PCDetails[@prodtype.ptIndex.ToString()].ProdCode)" type="checkbox" class="prodtype_list" name="ProdCode" value="@prodtype.ProdCode" @prodtype.IsChecked>&nbsp;@prodtype.ProductType&nbsp;(@prodtype.ProdAlias)
                                                                 </div>
                                                             }
                                                         </div>
@@ -373,7 +373,7 @@
                                                                 <tr>
                                                                     <td class="td_filename_number">@otherIndex</td>
                                                                     <td class="td_filename" data-filename="@_file.Name" data-fileuploadid="@_file.FileId">
-                                                                        <i class="fa fa-file"></i>&nbsp;<a href="@_file.Path" download>@_file.Name</a>
+                                                                        <i class="fa fa-file"></i>&nbsp;<a href="@_file.Path" target="_blank" download>@_file.Name</a>
                                                                     </td>
                                                                     <td>
                                                                         @_file.FileName

@@ -76,7 +76,11 @@ namespace Sampoerna.EMS.CustomService.Core
 
             #region Printout
             lookupTable.Add(ReferenceKeys.PrintoutLayout.ExciseCreditNewRequest, "EXCISE_CREDIT_NEW_REQUEST");
+            lookupTable.Add(ReferenceKeys.PrintoutLayout.ExciseCreditNewRequestMain, "EXCISE_CREDIT_NEW_REQUEST_MAIN");
+
             lookupTable.Add(ReferenceKeys.PrintoutLayout.ExciseCreditAdjustmentRequest, "EXCISE_CREDIT_ADJUSTMENT_REQUEST");
+            lookupTable.Add(ReferenceKeys.PrintoutLayout.ExciseCreditAdjustmentRequestMain, "EXCISE_CREDIT_ADJUSTMENT_REQUEST_MAIN");
+
             lookupTable.Add(ReferenceKeys.PrintoutLayout.DetailExciseCalculation, "EXCISE_CREDIT_DETAIL_CALCULATION");
             lookupTable.Add(ReferenceKeys.PrintoutLayout.FinanceRatio, "EXCISE_CREDIT_FINANCIAL_RATIO");
             lookupTable.Add(ReferenceKeys.PrintoutLayout.ExciseNewRequestDecree, "EXCISE_CREDIT_NEW_REQUEST_DECREE");

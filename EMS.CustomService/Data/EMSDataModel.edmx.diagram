@@ -201,6 +201,7 @@
         <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_EXCISE_CREDIT_APPROVED_DETAIL_EXCISE_CREDIT" />
         <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__PROD___61BB7BD9" />
         <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.CK1_EXCISE_CALCULATE_ADJUST" Width="1.5" PointX="11.375" PointY="0.75" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.DOC_NUMBER_SEQ" Width="1.5" PointX="12.375" PointY="5.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

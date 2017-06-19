@@ -95,7 +95,7 @@
                                         </div>
                                         <div class="row">
                                             <label class="col-md-4">
-                                                @Html.LabelFor(model => model.POA.Position, "Position")
+                                                @Html.LabelFor(model => model.POA.Position, "Title")
                                             </label>
                                             <div class="col-md-8">
                                                 @Html.TextBoxFor(model => model.POA.Position, new { @class = "form-control", @type = "text", @readonly = true })
@@ -248,7 +248,7 @@
                                         <label>Guarantee</label>
                                     </div>
                                     <div class="col-md-8">
-                                        @Html.TextBoxFor(model => model.ViewModel.Guarantee, new { @class = "form-control", @readonly = true })
+                                        @Html.DropDownListFor(model => model.ViewModel.Guarantee, Model.GuaranteeTypes, null, new { @class = "form-control", @id = "GuaranteeSelector" })
                                     </div>
                                 </div>
                             </div>

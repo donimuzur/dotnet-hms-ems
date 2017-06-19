@@ -486,11 +486,12 @@
                         <div class="white-wrapper">
                             <div class="row">
                                 <div class="row">
-                                    @if (Model.ViewModel.Status == "DRAFT_NEW_STATUS" || Model.ViewModel.Status == "DRAFT_EDIT_STATUS" || Model.ViewModel.Status == "WAITING_POA_APPROVAL")
-                                    {
+                                    @*@if (Model.ViewModel.Status == "DRAFT_NEW_STATUS" || Model.ViewModel.Status == "DRAFT_EDIT_STATUS" || Model.ViewModel.Status == "WAITING_POA_APPROVAL")
+                                    {*@
                                         <div class="watermark">DRAFTED</div>
-                                    }
+                                    @*}*@
                                     <div id="div-printout" style="padding:50px;"></div>
+                                    <div id="div-printout-item" style="padding:50px;">xxxxx</div>
                                 </div>
                             </div>
                         </div>
@@ -523,16 +524,17 @@
                 <h4 class="modal-title"><label id="txt_label_forchangestatus"></label></h4>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="table-container">
-                            <label>Comment<span class="red">*</span></label><br />
-                            <textarea id="txt_changestatus_comment" class="form-control" name="Comment"></textarea><br />
-                            <button style="display:none;" type="button" class="btn btn-warning pull-right btn_changestatus_submit" data-action="revise" id="btn_changestatus_revise">Revise</button>
-                            <button style="display:none;" type="button" class="btn btn-danger pull-right btn_changestatus_submit" data-action="finalrevise" id="btn_finalrevise">Revise</button>
-                        </div>
-                    </div>
+                <div class="alert alert-danger" style="padding-left: 30px; display:none;" id="div_alert_revise"></div>
+                <div class="form-group">
+                    <label>Note for Creator <span class="red">*</span></label>
+                    <textarea id="txt_changestatus_comment" class="form-control" rows="5" data-val="true" data-val-required="Comment should not be empty!" placeholder="Write the reason to creator" required="required" name="Comment"></textarea>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button style="display:none;" type="button" class="btn btn-warning pull-right btn_changestatus_submit" data-action="revise" id="btn_changestatus_revise">Revise</button>
+                <button style="display:none;" type="button" class="btn btn-danger pull-right btn_changestatus_submit" data-action="finalrevise" id="btn_finalrevise">Revise</button>
+                <button style="display:none;" type="button" class="btn btn-blue pull-right btn_changestatus_submit" data-action="withdraw" id="btn_changestatus_withdraw">Withdraw</button>
+                <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -608,7 +610,7 @@
 <link rel="stylesheet" type="text/css" href="../../Content/themes/base/all.css">
 
 <script src="~/Scripts/js/custom.js"></script>
-<script src="~/Scripts/brand-registration-trans/main_brand.js?v=24"></script>
+<script src="~/Scripts/brand-registration-trans/main_brand.js?v=28"></script>
 <script src="~/Scripts/tinymce/tinymce.min.js"></script>
 
 <script type="text/javascript" language="javascript" class="init">
@@ -639,6 +641,8 @@
         });
     }
 
+    $("#BrNumber").html($("#RegNumber").val());
+
     $(document).ready(function () {
         $('#MenuBrandRegistration').addClass('active');
 
@@ -661,11 +665,20 @@
 
         });
 
-
         saveButton.click(function () {
             create();
         });
     });
+
+    var registrationType = $("#divRegistrationType input[type='radio']:checked").val();
+    if (registrationType == 1) {
+        $("#divEffectiveDate").hide();
+    }
+    else {
+        $("#divEffectiveDate").show();
+    }
+
+
 
     function create() {
 
@@ -687,7 +700,7 @@
         //    }
         //}
         //     if (productFormValid) {
-            populateFormData();
+        populateFormData();
         $("#customloader").show();
         $.ajax({
             type: 'POST',

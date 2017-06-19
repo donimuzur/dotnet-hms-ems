@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using Sampoerna.EMS.Core;
 using System.Data.Entity;
+using Sampoerna.EMS.CustomService.Core;
 
 
 namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
@@ -102,44 +103,150 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
             }
         }
 
-        public List<POA> GetPOAApproverList(string NPPBKCId, string CreatedBy)
+        public List<POA> GetPOAApproverList(long Id)
         {
-            var ListPOA = new List<POA>();
-            var POA_Excisers = context.POA_EXCISER.Where(w => w.IS_ACTIVE_EXCISER == true).Select(s => s.POA_ID).ToList();
-
-            var ListPOA_Raw = context.POA_MAP.Where(w => w.NPPBKC_ID.Equals(NPPBKCId) && POA_Excisers.Contains(w.POA_ID) && w.POA.IS_ACTIVE == true && w.POA_ID != CreatedBy);
-            if (ListPOA_Raw.Any())
+            try
             {
-                foreach(var POA_Approver in ListPOA_Raw)
+                var ListPOA = new List<POA>();
+                var RealListPOA = new List<POA>();
+                var BrandRegData = GetBrandRegistrationById(Id).FirstOrDefault();
+                if (BrandRegData != null)
                 {
-                    ListPOA.Add(new POA
+                    var NPPBKCId = BrandRegData.NPPBKC_ID;
+                    if (BrandRegData.APPROVAL_STATUS.REFF_KEYS != ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.AwaitingPoaSkepApproval) && BrandRegData.LASTAPPROVED_BY == null)
                     {
-                        POA_ID = POA_Approver.POA_ID,
-                        POA_EMAIL = POA_Approver.POA.POA_EMAIL,
-                        PRINTED_NAME = POA_Approver.POA.PRINTED_NAME
-                    });
-                }
-            }
-            else
-            {
-                var ListPOAExicser_Raw = context.POA.Where(w => POA_Excisers.Contains(w.POA_ID) && w.IS_ACTIVE == true && w.POA_ID != CreatedBy).ToList();
-                if (ListPOAExicser_Raw.Any())
-                {
-                    foreach (var POA_Approver in ListPOAExicser_Raw)
-                    {
-                        ListPOA.Add(new POA
+                        var ListPOA_Nppbkc = context.POA_MAP.Where(w => w.NPPBKC_ID.Equals(NPPBKCId) && w.POA.IS_ACTIVE == true && w.POA_ID != BrandRegData.CREATED_BY).Select(s => s.POA_ID).ToList();
+                        var OriexcisePOA = context.POA_EXCISER.Where(w => w.IS_ACTIVE_EXCISER == true).Select(s => s.POA_ID).ToList();
+                        var excisePOA = new List<string>();
+                        if (ListPOA_Nppbkc.Count() == 0)
                         {
-                            POA_ID = POA_Approver.POA_ID,
-                            POA_EMAIL = POA_Approver.POA_EMAIL,
-                            PRINTED_NAME = POA_Approver.PRINTED_NAME
-                        });
+                            excisePOA = OriexcisePOA.Where(w => ListPOA_Nppbkc.Contains(w)).ToList();
+                        }
+                        var ListPOAExcise_Raw = context.POA.Where(w => w.POA_ID != BrandRegData.CREATED_BY && w.IS_ACTIVE == true);
+                        if (excisePOA.Count() == 0 || excisePOA == null)
+                        {
+                            ListPOAExcise_Raw = ListPOAExcise_Raw.Where(w => OriexcisePOA.Contains(w.POA_ID));
+                        }
+                        else
+                        {
+                            ListPOAExcise_Raw = ListPOAExcise_Raw.Where(w => excisePOA.Contains(w.POA_ID));
+                        }
+                        foreach (var poaresult in ListPOAExcise_Raw)
+                        {
+                            ListPOA.Add(new POA
+                            {
+                                POA_ID = poaresult.POA_ID,
+                                POA_EMAIL = poaresult.POA_EMAIL,
+                                PRINTED_NAME = poaresult.PRINTED_NAME
+                            });
+                            var poadelegate = GetPOADelegationOfUser(poaresult.POA_ID);
+                            if (poadelegate != null)
+                            {
+                                ListPOA.Add(new POA
+                                {
+                                    POA_ID = poadelegate.POA_TO,
+                                    POA_EMAIL = poadelegate.USER1.EMAIL,
+                                    PRINTED_NAME = poadelegate.USER1.FIRST_NAME
+                                });
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var lastApprover = BrandRegData;
+                        if (lastApprover != null)
+                        {
+                            var CurrentPOA = context.POA.Where(w => w.POA_ID.Equals(lastApprover.LASTAPPROVED_BY)).FirstOrDefault();
+                            ListPOA.Add(new POA
+                            {
+                                POA_ID = lastApprover.LASTAPPROVED_BY,
+                                POA_EMAIL = CurrentPOA.POA_EMAIL,
+                                PRINTED_NAME = CurrentPOA.PRINTED_NAME
+                            });
+                            var poadelegate = GetPOADelegationOfUser(lastApprover.LASTAPPROVED_BY);
+                            if (poadelegate != null)
+                            {
+                                var CurrentPOADelegate = context.POA.Where(w => w.POA_ID.Equals(poadelegate.POA_TO)).FirstOrDefault();
+                                ListPOA.Add(new POA
+                                {
+                                    POA_ID = poadelegate.POA_TO,
+                                    POA_EMAIL = CurrentPOA.POA_EMAIL,
+                                    PRINTED_NAME = CurrentPOA.PRINTED_NAME
+                                });
+                            }
+                        }
+                    }
+                    if (ListPOA.Count() > 0)
+                    {
+                        foreach (var realPoa in ListPOA)
+                        {
+                            if (!RealListPOA.Where(w => w.POA_ID == realPoa.POA_ID).Any())
+                            {
+                                RealListPOA.Add(realPoa);
+                            }
+                        }
                     }
                 }
+                return RealListPOA;
             }
-
-            return ListPOA;
-
+            catch (Exception ex)
+            {
+                throw this.HandleException("Exception occured on BRand Registration Request Get POA Approver. See Inner Exception property to see details", ex);
+            }
         }
+
+        //public List<POA> GetPOAApproverList_Old(string NPPBKCId, string CreatedBy, string LastApprovedBy = "")
+        //{
+        //    var ListPOA = new List<POA>();
+        //    var POA_Excisers = context.POA_EXCISER.Where(w => w.IS_ACTIVE_EXCISER == true).Select(s => s.POA_ID).ToList();
+
+        //    if (LastApprovedBy != "" || LastApprovedBy != null)
+        //    {
+        //        var ListPOA_Raw = context.POA_MAP.Where(w => w.NPPBKC_ID.Equals(NPPBKCId) && POA_Excisers.Contains(w.POA_ID) && w.POA.IS_ACTIVE == true && w.POA_ID != CreatedBy);
+        //        if (ListPOA_Raw.Any())
+        //        {
+        //            foreach (var POA_Approver in ListPOA_Raw)
+        //            {
+        //                ListPOA.Add(new POA
+        //                {
+        //                    POA_ID = POA_Approver.POA_ID,
+        //                    POA_EMAIL = POA_Approver.POA.POA_EMAIL,
+        //                    PRINTED_NAME = POA_Approver.POA.PRINTED_NAME
+        //                });
+        //            }
+        //        }
+        //        else
+        //        {
+        //            var ListPOAExicser_Raw = context.POA.Where(w => POA_Excisers.Contains(w.POA_ID) && w.IS_ACTIVE == true && w.POA_ID != CreatedBy).ToList();
+        //            if (ListPOAExicser_Raw.Any())
+        //            {
+        //                foreach (var POA_Approver in ListPOAExicser_Raw)
+        //                {
+        //                    ListPOA.Add(new POA
+        //                    {
+        //                        POA_ID = POA_Approver.POA_ID,
+        //                        POA_EMAIL = POA_Approver.POA_EMAIL,
+        //                        PRINTED_NAME = POA_Approver.PRINTED_NAME
+        //                    });
+        //                }
+        //            }
+        //        }
+
+        //    }
+        //    else
+        //    {
+        //        var POA_Approver = context.POA.Where(w => w.POA_ID.Equals(LastApprovedBy)).FirstOrDefault();
+        //        ListPOA.Add(new POA
+        //        {
+        //            POA_ID = POA_Approver.POA_ID,
+        //            POA_EMAIL = POA_Approver.POA_EMAIL,
+        //            PRINTED_NAME = POA_Approver.PRINTED_NAME
+        //        });
+        //    }
+
+        //    return ListPOA;
+
+        //}
 
         public bool CheckPOANPPBKC(string NPPBKCId, string CurrentUserId)
         {
@@ -1362,6 +1469,30 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
             }
 
         }
+
+        public void LogsPrintActivity(int formType, string actor)
+        {
+            try
+            {
+                EMSDataModel context = new EMSDataModel();
+                refService.AddChangeLog(context,
+                    formType,
+                    "PRINT",
+                    "",
+                    "",
+                    "",
+                    actor,
+                    DateTime.Now
+                    );
+
+                context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw this.HandleException("Exception occured on Brand Registration Request Service. See Inner Exception property to see details", ex);
+            }
+
+        }
         #endregion
 
         #region Change Status
@@ -1382,8 +1513,12 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
                     BRequest.LASTMODIFIED_BY = ModifiedBy;
                     BRequest.LASTMODIFIED_DATE = now;
                     BRequest.LASTAPPROVED_STATUS = LastApprovedStatus;
-                    BRequest.LASTAPPROVED_BY = ModifiedBy;
-                    BRequest.LASTAPPROVED_DATE = now;
+                    //if (ActionType != (int)Enums.ActionType.Revise && ActionType != (int)Enums.ActionType.Cancel)
+                    if (ActionType == (int)Enums.ActionType.Approve || ActionType == (int)Enums.ActionType.Revise)
+                    {
+                        BRequest.LASTAPPROVED_BY = ModifiedBy;
+                        BRequest.LASTAPPROVED_DATE = now;
+                    }
                 }
                 context.SaveChanges();
                 transaction.Commit();

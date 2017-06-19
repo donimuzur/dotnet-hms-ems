@@ -74,7 +74,7 @@ namespace Sampoerna.EMS.CustomService.Services.ManufactureLicense
             return fileExtList;
         }
 
-        public INTERVIEW_REQUEST InsertInterviewRequest(string Perihal = "", string Company_Type = "", string CreatedBy = "", Int64 LastApprovedStatus = 0, string NPPBCK_Id = null, string BUKRS = null, string POA_Id = null, string KPPBC = "", string KPPBC_ADDRESS = "", string City = "", string City_alias = "", string TextTo = "", DateTime? RequestDate = null, Int32 UserRole = 0)
+        public INTERVIEW_REQUEST InsertInterviewRequest(string Perihal = "", string Company_Type = "", string CreatedBy = "", Int64 LastApprovedStatus = 0, string NPPBCK_Id = null, string BUKRS = null, string POA_Id = null, string KPPBC = "", string KPPBC_ADDRESS = "", string City = "", string City_alias = "", string TextTo = "", DateTime? RequestDate = null, Int32 UserRole = 0, string formnumber = "")
         {
             try
             {
@@ -87,7 +87,8 @@ namespace Sampoerna.EMS.CustomService.Services.ManufactureLicense
                 IRequest.COMPANY_TYPE = Company_Type;
                 IRequest.CREATED_BY = CreatedBy;
                 IRequest.CREATED_DATE = now;
-                IRequest.FORM_NUMBER = GetFormNumber(BUKRS, NPPBCK_Id, City_alias);
+                //IRequest.FORM_NUMBER = GetFormNumber(BUKRS, NPPBCK_Id, City_alias);
+                IRequest.FORM_NUMBER = formnumber;
                 IRequest.LASTAPPROVED_STATUS = LastApprovedStatus;
                 //IRequest.BA_NUMBER = BA_Num;
                 //IRequest.BA_DATE = BA_Date;
@@ -252,8 +253,10 @@ namespace Sampoerna.EMS.CustomService.Services.ManufactureLicense
                 var ApproverNPPBKC = context.POA_MAP.Where(w => w.POA_ID == Approver);
                 if(ApproverNPPBKC.Any())
                 {
+                    var statusdraft_key = ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.Draft);
+                    var statusedit_key = ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.Edited);
                     var NPPBKC = ApproverNPPBKC.Select(s => s.NPPBKC_ID).ToList();
-                    listIR = context.INTERVIEW_REQUEST.Where(w => NPPBKC.Contains(w.NPPBKC_ID)).Select(s => s.VR_FORM_ID).ToList();
+                    listIR = context.INTERVIEW_REQUEST.Where(w => NPPBKC.Contains(w.NPPBKC_ID) && w.SYS_REFFERENCES.REFF_KEYS != statusdraft_key && w.SYS_REFFERENCES.REFF_KEYS != statusedit_key).Select(s => s.VR_FORM_ID).ToList();
                 }
                 return listIR;
             }

@@ -366,8 +366,8 @@
                                                                             product_type_list += "<tr><td>" + numerator[idx] + ".</td><td>" + prodtype.ProdAlias + "</td></tr>";
                                                                             idx++;
                                                                         }
-                                                                        <div class="col-md-2">
-                                                                            <input id="PCDetails[@prodtype.ptIndex.ToString()].ProdCode)" type="checkbox" name="ProdCode" disabled="disabled" value="@prodtype.ProdCode" @prodtype.IsChecked>&nbsp;@prodtype.ProdAlias
+                                                                        <div class="col-md-5">
+                                                                            <input id="PCDetails[@prodtype.ptIndex.ToString()].ProdCode)" type="checkbox" name="ProdCode" disabled="disabled" value="@prodtype.ProdCode" @prodtype.IsChecked>&nbsp;@prodtype.ProductType&nbsp;(@prodtype.ProdAlias)
                                                                         </div>
                                                                     }
                                                                     <input type="hidden" id="product_type_list" value="@product_type_list" />
@@ -499,7 +499,7 @@
                                                                         <tr>
                                                                             <td class="td_filename_number">@otherIndex</td>
                                                                             <td class="td_filename">
-                                                                                <i class="fa fa-file"></i>&nbsp;<a href="@_file.Path" download>@_file.Name</a>
+                                                                                <i class="fa fa-file"></i>&nbsp;<a href="@_file.Path" target="_blank" download>@_file.Name</a>
                                                                             </td>
                                                                             <td>
                                                                                 @_file.FileName
@@ -596,7 +596,7 @@
                                                                                 <tr>
                                                                                     <td class="td_filename_number">@baIndex</td>
                                                                                     <td class="td_filename">
-                                                                                        <i class="fa fa-file"></i>&nbsp;<a href="@_file.Path" download>@_file.Name</a>
+                                                                                        <i class="fa fa-file"></i>&nbsp;<a href="@_file.Path" target="_blank" download>@_file.Name</a>
                                                                                     </td>
                                                                                     <td>
                                                                                         @_file.FileName
@@ -653,7 +653,7 @@
                                             {
                                                 <div class="watermark">DRAFTED</div>
                                             }
-                                            <div class="table-container tablekoe" id="div-print-layout"></div>
+                                            <div class="table-container tablekoe" id="div-print-layout" style="padding:50px;"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -731,7 +731,7 @@
                 @section scripts {
             <script src="~/Scripts/js/custom.js"></script>
             <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-            <script src="~/Scripts/manufacture-license/licenserequest-beranda.js?v=0.7.32"></script>
+            <script src="~/Scripts/manufacture-license/licenserequest-beranda.js?v=0.7.30"></script>
             <script src="~/scripts/tinymce/tinymce.min.js"></script>
             <script type="text/javascript" language="javascript">
                 

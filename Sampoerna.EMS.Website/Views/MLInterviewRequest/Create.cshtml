@@ -96,20 +96,21 @@
                             if (Model.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.AwaitingPoaApproval)))
                             {
                             <input type="button" class="btn btn-blue" data-toggle="modal" data-target=".approve-modal.interviewrequest" value="Approve" />
-                            <input type="button" class="btn_showmodal_changestatus btn btn-warning" data-toggle="modal" data-target=".modal_ChangeStatus" data-action="Revise" value="Revise" />
+                            <input type="button" class="btn_showmodal_changestatus btn btn-blue" data-toggle="modal" data-target=".modal_ChangeStatus" data-action="Revise" value="Revise" />
                             @*<input type="button" class="btn btn-danger btn_showmodal_changestatus" data-toggle="modal" data-target=".modal_ChangeStatus" data-action="Reject" value="Reject" />*@
                             }
                             else if (Model.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.AwaitingPoaSkepApproval)))
                             {
                             <input type="button" class="btn btn-blue" data-toggle="modal" data-target=".approvefinal-modal.interviewrequest" value="Approve" />
-                            <input type="button" class="btn_showmodal_changestatus btn btn-warning" data-toggle="modal" data-target=".modal_ChangeStatus" data-action="ReviseSkep" value="Revise" />
+                            <input type="button" class="btn_showmodal_changestatus btn btn-blue" data-toggle="modal" data-target=".modal_ChangeStatus" data-action="ReviseSkep" value="Revise" />
                             @*<input type="button" class="btn btn-danger btn_showmodal_changestatus" data-toggle="modal" data-target=".modal_ChangeStatus" data-action="Reject" value="Reject" />*@
                             }
                             else if (Model.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.AwaitingGovernmentApproval)))
                             {
                                 <input type="button" id="btnSubmitSkep_showmodal" class="hidden" data-toggle="modal" data-target=".submitskep-modal.interviewrequest"/>
                                 <input type="button" id="btnSubmitSkep_check" class="btn btn-blue" value="Submit BA" />
-                                <input type="button" id="btnWithdraw_showmodal" class="btn btn-blue" data-toggle="modal" data-target=".withdraw-modal.interviewrequest" value="Withdraw" />                                
+                                @*<input type="button" id="btnWithdraw_showmodal" class="btn btn-blue" data-toggle="modal" data-target=".withdraw-modal.interviewrequest" value="Withdraw" />*@
+                                <input type="button" class="btn_showmodal_changestatus btn btn-blue" data-toggle="modal" data-target=".modal_ChangeStatus" data-action="Withdraw" value="Withdraw" />
                             }
                         }
                     }
@@ -126,7 +127,7 @@
                 <div class="alert alert-danger" style="padding-left: 30px; display:none;" id="div_alert"></div>                
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" id="home-tab" class="active"><a href="#info" aria-controls="home" role="tab" data-toggle="tab">Information</a></li>
-                        <li role="presentation"><a href="#print" id="btn-tab-printout" aria-controls="print" role="tab" data-toggle="tab">Printout</a></li>
+                        <li role="presentation"><a href="#print" id="btn-tab-printout" aria-controls="print" role="tab" data-toggle="tab">Print Out</a></li>
                         <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab" id="btn-tab-changeslog">Changes Log</a></li>
                     </ul>
                     <!-- Tab panes -->
@@ -332,6 +333,7 @@
                                             {
                                                 detail.Index = tempIndex;
                                                 tempIndex++;
+                                                //detail.City_List_option = Model.City_List_option;
                                                 detail.City_List = Model.City_List;
                                                 detail.IsFormReadOnly = Model.IsFormReadOnly;
                                                 @Html.Partial("_DetailManufactureForm", detail)
@@ -808,7 +810,7 @@
     <script src="~/Scripts/jquery.validate.min.js"></script>
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/scripts/tinymce/tinymce.min.js"></script>
-    <script src="~/Scripts/manufacture-license/interviewrequest-form.js?v=0.9.38"></script>
+    <script src="~/Scripts/manufacture-license/interviewrequest-form.js?v=0.9.67"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             $('#MenuMLInterviewRequest').addClass('active');
