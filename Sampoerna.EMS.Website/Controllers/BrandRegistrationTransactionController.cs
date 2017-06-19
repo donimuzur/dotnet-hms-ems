@@ -26,7 +26,7 @@ using System.Web;
 using Sampoerna.EMS.Website.Utility;
 using System.Globalization;
 using Sampoerna.EMS.Utils;
-//using static Sampoerna.EMS.Core.Enums;
+using static Sampoerna.EMS.Core.Enums;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Models.FileUpload;
@@ -54,7 +54,8 @@ namespace Sampoerna.EMS.Website.Controllers
         private IChangesHistoryBLL _changesHistoryBll;
         private IWorkflowHistoryBLL _workflowHistoryBLL;
         private ICompanyBLL _companyBll;
-        public BrandRegistrationTransactionController(IPageBLL pageBLL, IZaidmExNPPBKCBLL nppbkcbll, ICompanyBLL companyBll, IChangesHistoryBLL changesHistoryBll, IWorkflowHistoryBLL workflowHistoryBLL) : base(pageBLL, Enums.MenuList.BrandRegistrationTransaction)
+        private IDocumentSequenceNumberBLL _documentSequenceNumberBll;
+        public BrandRegistrationTransactionController(IPageBLL pageBLL,IDocumentSequenceNumberBLL documentSequenceNumberBll, IZaidmExNPPBKCBLL nppbkcbll, ICompanyBLL companyBll, IChangesHistoryBLL changesHistoryBll, IWorkflowHistoryBLL workflowHistoryBLL) : base(pageBLL, Enums.MenuList.BrandRegistrationTransaction)
         {
             this.mainMenu = Enums.MenuList.BrandRegistrationTransaction;
             this.refService = new SystemReferenceService();
@@ -66,6 +67,7 @@ namespace Sampoerna.EMS.Website.Controllers
             this._changesHistoryBll = changesHistoryBll;
             this._workflowHistoryBLL = workflowHistoryBLL;
             this._companyBll = companyBll;
+            this._documentSequenceNumberBll = documentSequenceNumberBll;
         }
 
         #region Product Development
@@ -203,7 +205,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 if (CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.POA || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.User || IsCreatorPRD(CurrentUser.USER_ID))
                 {
-                    //var users = refService.GetAllUser();
+                    var users = refService.GetAllUser();
                     var documents = GetProductListOpen("", "", false, true, null);
                     PDSummaryModel = new PDSummaryReportViewModel()
                     {
@@ -324,9 +326,19 @@ namespace Sampoerna.EMS.Website.Controllers
                     string plant = ((JObject)item).GetValue("plantItem").ToString();
                     bool IsImport = Convert.ToBoolean (((JObject)item).GetValue("isImport"));
 
+                    var detailPLant = productDevelopmentService.FindPlantDescription(plant);
+                    var inputDoc = new GenerateDocNumberInput();
+
+                    inputDoc.Month = DateTime.Now.Month;
+                    inputDoc.Year = DateTime.Now.Year;
+                    inputDoc.NppbkcId = detailPLant.NPPBKC_ID;
+                    inputDoc.FormType = Enums.FormType.ProductDevelopment;
+               
+
                     PRODUCT_DEVELOPMENT_DETAIL detail = new PRODUCT_DEVELOPMENT_DETAIL();
                     detail.PD_ID = productID;
-                    detail.REQUEST_NO = String.Format("{0}/{1}", reqNo.ToString(), brandReqNo);
+                    //    detail.REQUEST_NO = String.Format("{0}/{1}", reqNo.ToString(), brandReqNo);
+                    detail.REQUEST_NO = _documentSequenceNumberBll.GenerateNumber(inputDoc);
                     detail.BUKRS = company;
                     detail.FA_CODE_OLD = faCodeOld;
                     detail.FA_CODE_OLD_DESCR = faCodeOldDesc;
@@ -1364,7 +1376,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return path;
         }
 
-        private List<vwProductDevelopmentModel> GetSummaryReportList( string Creator, string POA, bool IsCompleted, bool IsAllStatus, ProductDevelopmentExportSummaryReportsViewModel modelExport,bool isNeedDetails = true)
+        private List<vwProductDevelopmentModel> GetSummaryReportList( string Creator, string POA, bool IsCompleted, bool IsAllStatus, ProductDevelopmentExportSummaryReportsViewModel modelExport, bool isNeedDetails = false)
         {
             try
             {
@@ -1382,7 +1394,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 if (data.Any())
                 {
-                    if ((modelExport != null) && (modelExport.DetailExportModel.Request_No || modelExport.DetailExportModel.Fa_Code_Old || modelExport.DetailExportModel.Fa_Code_New || modelExport.DetailExportModel.Hl_Code || modelExport.DetailExportModel.Is_Import || modelExport.DetailExportModel.Market_Id || modelExport.DetailExportModel.Werks) && isNeedDetails)
+                    if ((modelExport != null) && (modelExport.DetailExportModel.Request_No || modelExport.DetailExportModel.Fa_Code_Old || modelExport.DetailExportModel.Fa_Code_New || modelExport.DetailExportModel.Hl_Code || modelExport.DetailExportModel.Is_Import || modelExport.DetailExportModel.Market_Id || modelExport.DetailExportModel.Werks))
                     {
                         documents = data.Select(s => new vwProductDevelopmentModel
                         {
@@ -1420,17 +1432,16 @@ namespace Sampoerna.EMS.Website.Controllers
                             PD_NO = s.PD_NO,
                             Created_By = s.CREATED_BY,
                             Created_Date = s.CREATED_DATE,
-
                             Request_No = s.REQUEST_NO,
                             Bukrs = s.COMPANY_NAME,
                             Fa_Code_Old = s.FA_CODE_OLD,
                             Fa_Code_Old_Desc = s.FA_CODE_OLD_DESCR,
-                            Fa_Code_New = s.FA_CODE_NEW,
+                            Fa_Code_New =s.FA_CODE_NEW,
                             Fa_Code_New_Desc = s.FA_CODE_NEW_DESCR,
-                            Hl_Code = s.HL_CODE,
+                            Hl_Code=s.HL_CODE,
                             Market_Id = s.MARKET_ID,
-                            Werks = s.WERKS,
-                            Is_Import = s.IS_IMPORT,
+                            Werks= s.WERKS,
+                            Is_Import=s.IS_IMPORT,
                             Modified_By = s.LASTMODIFIED_BY,
                             Modified_Date = s.LASTMODIFIED_DATE,
                             Approved_By = s.LASTAPPROVED_BY,
@@ -1439,7 +1450,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             MarketDesc = s.MARKET_DESC,
                             PlantName = s.NAME1,
                             CompanyName = s.COMPANY_NAME,
-                            LastStatus = s.LASTAPPROVED_STATUS_VALUE
+                            LastStatus = s.LASTAPPROVED_STATUS_VALUE  
                         }).ToList();
                     }
                     else// without detail

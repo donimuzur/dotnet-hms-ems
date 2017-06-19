@@ -81,6 +81,7 @@ namespace Sampoerna.EMS.Website.Models.ManufacturingLicense
 
         public SelectList FormNumList { get; set; }
         
+        
         public SelectList NPPBKCList { get; set; }
         public SelectList ProdTypeList { get; set; }
         public SelectList GovStatus_List { get; set; }
@@ -113,6 +114,7 @@ namespace Sampoerna.EMS.Website.Models.ManufacturingLicense
         public string KPPBC_ID { get; set; }
         public string KPPBC_Address { get; set; }
         public string Company_Address { get; set; }
+        public string Company_City { get; set; }
         public string Company_ID { get; set; }
         public DateTime? BADate { get; set; }
         public string BANumber { get; set; }
@@ -129,6 +131,7 @@ namespace Sampoerna.EMS.Website.Models.ManufacturingLicense
         public long ProdTypeId { get; set; }
         public string OtherProdCode { get; set; }
         public string ProdCode { get; set; }
+        public string ProductType { get; set; }
         public string ProdAlias { get; set; }
         public string IsChecked { get; set; }
         public int ptIndex { get; set; }

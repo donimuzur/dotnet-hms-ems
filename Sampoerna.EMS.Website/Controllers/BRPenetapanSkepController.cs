@@ -28,13 +28,14 @@ using System.Web;
 using Sampoerna.EMS.Website.Utility;
 using System.Globalization;
 using Sampoerna.EMS.Utils;
-//using static Sampoerna.EMS.Core.Enums;
+using static Sampoerna.EMS.Core.Enums;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Models.FileUpload;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using SpreadsheetLight;
 using DocumentFormat.OpenXml.Spreadsheet;
+using System.Configuration;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -49,8 +50,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private IZaidmExNPPBKCBLL _nppbkcbll;
         private IChangesHistoryBLL _changesHistoryBll;
         private IWorkflowHistoryBLL _workflowHistoryBLL;
+        private IDocumentSequenceNumberBLL _docbll;
 
-        public BRPenetapanSkepController(IPageBLL pageBLL, IZaidmExNPPBKCBLL nppbkcbll, IChangesHistoryBLL changesHistoryBll, IWorkflowHistoryBLL workflowHistoryBLL) : base(pageBLL, Enums.MenuList.BrandRegistrationTransaction)
+        public BRPenetapanSkepController(IPageBLL pageBLL, IZaidmExNPPBKCBLL nppbkcbll, IChangesHistoryBLL changesHistoryBll, IWorkflowHistoryBLL workflowHistoryBLL, IDocumentSequenceNumberBLL docbll) : base(pageBLL, Enums.MenuList.BrandRegistrationTransaction)
         {
             this.mainMenu = Enums.MenuList.BrandRegistrationTransaction;
             this.refService = new SystemReferenceService();
@@ -61,6 +63,7 @@ namespace Sampoerna.EMS.Website.Controllers
             this._nppbkcbll = nppbkcbll;
             this._changesHistoryBll = changesHistoryBll;
             this._workflowHistoryBLL = workflowHistoryBLL;
+            this._docbll = docbll;
         }
                 
         private ReceivedDecreeViewModel GeneratePropertiesSKEP(ReceivedDecreeViewModel source, bool update)
@@ -79,7 +82,7 @@ namespace Sampoerna.EMS.Website.Controllers
             data.EnableFormInput = true;
             data.ViewModel.IsCreator = false;
             data.NppbkcList = GetNppbkcList(refService.GetAllNppbkc().Where(w => usernppbkc.Contains(w.NPPBKC_ID)));
-            data.BrandList = GetBrandist(penetapanSKEPService.getMasterBrand());
+            //data.BrandList = GetBrandist(penetapanSKEPService.getMasterBrand());
             data.ProductTypeList = GetProdTypeList(penetapanSKEPService.getMasterProductType());
             data.CompanyTierList = GetCompanyTierList(refService.GetRefByType("COMPANY_TIER"));
             data.ViewModel.Decree_Date = DateTime.Now;
@@ -412,7 +415,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (model.Action == "create")
                 {                    
                     entity.LASTAPPROVED_STATUS = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Draft).REFF_ID;
-                    entity.RECEIVED_NO = penetapanSKEPService.GetFormNumber(entity.NPPBKC_ID);                    
+                    //entity.RECEIVED_NO = penetapanSKEPService.GetFormNumber(entity.NPPBKC_ID);
+                    var docinput = new GenerateDocNumberInput();
+                    docinput.FormType = Enums.FormType.BrandRegistrationSKEP;
+                    docinput.Month = entity.DECREE_DATE.Month;
+                    docinput.Year = entity.DECREE_DATE.Year;
+                    docinput.NppbkcId = entity.NPPBKC_ID;
+                    entity.RECEIVED_NO = _docbll.GenerateNumber(docinput);
                     TheId = penetapanSKEPService.CreatePenetapanSKEP(entity, (int)Enums.MenuList.PenetapanSKEP, (int)Enums.ActionType.Created, (int)CurrentUser.UserRole, CurrentUser.USER_ID);
                 }
                 else if (model.Action == "update")
@@ -588,13 +597,20 @@ namespace Sampoerna.EMS.Website.Controllers
                     statusApproval = ReferenceKeys.ApprovalStatus.Canceled;
                     actionType = Enums.ActionType.Cancel;
                 }
+                else if (Action == "submit")
+                {
+                    SuccMessage = "Success Submit Penetapan SKEP.";
+                    statusApproval = ReferenceKeys.ApprovalStatus.AwaitingPoaApproval;
+                    actionType = Enums.ActionType.Submit;
+                }
+
                 var updated = penetapanSKEPService.ChangeStatus(ReceiveID.ToString(), statusApproval, (int)Enums.MenuList.PenetapanSKEP, (int)actionType, (int)CurrentUser.UserRole, CurrentUser.USER_ID, Comment);
 
                 if (updated != null)
                 {
                     if (Action == "approve")
                     {
-                        penetapanSKEPService.InsertToBrand(ReceiveID,"");
+                        penetapanSKEPService.InsertToBrand(ReceiveID, updated.NPPBKC_ID);
                     }
                     var Creator = refService.GetPOA(updated.CREATED_BY);
                     var CreatorMail = Creator.POA_EMAIL;
@@ -1323,7 +1339,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 Fa_Code_New_Desc = s.PRODUCT_DEVELOPMENT_DETAIL.FA_CODE_NEW_DESCR,
                 CompanyName = s.PRODUCT_DEVELOPMENT_DETAIL.T001.BUTXT,
                 HlCode = s.PRODUCT_DEVELOPMENT_DETAIL.HL_CODE,
-                MarketDesc = s.PRODUCT_DEVELOPMENT_DETAIL.ZAIDM_EX_MARKET.MARKET_DESC
+                MarketDesc = s.PRODUCT_DEVELOPMENT_DETAIL.ZAIDM_EX_MARKET.MARKET_DESC,
+                ProductionCenter = s.PRODUCT_DEVELOPMENT_DETAIL.T001W.NAME1
             }).ToList();
             return result;
         }
@@ -1439,7 +1456,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 mailcontentId = penetapanSKEPService.GetEmailContentId(emailname);
 
                 var mailContent = refService.GetMailContent(mailcontentId, parameters);
-                var senderMail = refService.GetUserEmail(CurrentUser.USER_ID);
+                var senderMail = ConfigurationManager.AppSettings["DefaultSender"];
+                if (senderMail == null || senderMail == "")
+                {
+                    senderMail = "EMS@pmi.id";
+                }
                 var senderName = CurrentUser.FIRST_NAME + " " + CurrentUser.LAST_NAME;
                 string[] arrSendto = sendto.ToArray();
                 bool mailStatus = ItpiMailer.Instance.SendEmail(arrSendto, null, null, null, mailContent.EMAILSUBJECT, mailContent.EMAILCONTENT, true, senderMail, senderName);
@@ -1462,9 +1483,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private ReceivedDecreeViewModel GenerateLogs(ReceivedDecreeViewModel data)
         {
             try
-            {
-                var history = refService.GetChangesHistory((int)Enums.MenuList.PenetapanSKEP, data.ViewModel.Received_ID.ToString()).ToList();
-                data.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(history);
+            {                
                 var workflow = refService.GetWorkflowHistory((int)Enums.MenuList.PenetapanSKEP, data.ViewModel.Received_ID).OrderBy(o => o.ACTION_DATE).ToList();
                 data.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(workflow);
                 if (data.ViewModel.ApprovalStatusDescription.Key.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.AwaitingPoaApproval)))
@@ -1897,15 +1916,15 @@ namespace Sampoerna.EMS.Website.Controllers
                                     {
                                         err += "* Request Number cannot be empty <br/>";                                        
                                     }
-                                    var v_brandName = datarow[1];
-                                    if (v_brandName != "")
-                                    {
-                                        if (!penetapanSKEPService.IsBrandExist(v_brandName))
-                                        {
-                                            err += "* Brand with name " + v_brandName + " is not exist <br/>";
-                                        }
-                                    }
-                                    var str_v_companyTier = datarow[2];
+                                    //var v_brandName = datarow[1];
+                                    //if (v_brandName != "")
+                                    //{
+                                    //    if (!penetapanSKEPService.IsBrandExist(v_brandName))
+                                    //    {
+                                    //        err += "* Brand with name " + v_brandName + " is not exist <br/>";
+                                    //    }
+                                    //}
+                                    var str_v_companyTier = datarow[1];
                                     var v_companyTier = 0;
                                     if (str_v_companyTier != "")
                                     {
@@ -1920,7 +1939,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                             v_companyTier = Convert.ToInt32(tmp_comptier);
                                         }
                                     }
-                                    var v_prodType = datarow[3];
+                                    var v_prodType = datarow[2];
                                     if (v_prodType != "")
                                     {
                                         var prodtype = MasterProdtype.Where(w => w.PROD_CODE == v_prodType);
@@ -1930,24 +1949,24 @@ namespace Sampoerna.EMS.Website.Controllers
                                         }
                                     }
                                     Int64 v_hjePack = 0;
-                                    if (datarow[4] != "")
+                                    if (datarow[3] != "")
                                     {
-                                        var isHJEnumeric = Int64.TryParse(datarow[4], out v_hjePack);
+                                        var isHJEnumeric = Int64.TryParse(datarow[3], out v_hjePack);
                                         if (!isHJEnumeric)
                                         {
                                             err += "* HJE must be numeric <br/>";
                                         }
                                     }
                                     Int64 v_content = 0;
-                                    if (datarow[5] != "")
+                                    if (datarow[4] != "")
                                     {
-                                        var isContentnumeric = Int64.TryParse(datarow[5], out v_content);
+                                        var isContentnumeric = Int64.TryParse(datarow[4], out v_content);
                                         if (!isContentnumeric)
                                         {
                                             err += "* Content must be numeric <br/>";
                                         }
                                     }
-                                    var v_unit = datarow[6];
+                                    var v_unit = datarow[5];
                                     if(v_unit != "")
                                     {
                                         if(v_unit != "Batang" && v_unit != "Gram")
@@ -1965,7 +1984,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                             if (ItemNotinList.Contains(item.PD_DETAIL_ID.ToString()))
                                             {
                                                 err += "* Product with request number " + item.Request_No + " already added before <br/>";
-                                            }                                            
+                                            }
                                             var str_startDate = Request.Form.Get("start_date");
                                             var startDate = Convert.ToDateTime(str_startDate);
                                             decimal v_tariff = 0;
@@ -1981,7 +2000,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                             var receivedDet = new ReceivedDecreeDetailModel
                                             {
                                                 Item = item,
-                                                Brand_CE = v_brandName,
+                                                Brand_CE = GetBrandNameByFACode(item.Fa_Code_Old),
                                                 Company_Tier = v_companyTier,
                                                 Prod_Code = v_prodType,
                                                 HJEperPack = v_hjePack,
@@ -2024,5 +2043,30 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult GetBrandByFACode(string FACode)
+        {
+            var brandce = GetBrandNameByFACode(FACode);
+            return Json(brandce);
+        }
+
+        private string GetBrandNameByFACode(string FACode)
+        {
+            var brandce = "";
+            var masterBR = penetapanSKEPService.getMasterBrand().Where(w => w.FA_CODE == FACode).OrderByDescending(o => o.SKEP_DATE);
+            if (masterBR.Any())
+            {
+                brandce = masterBR.FirstOrDefault().BRAND_CE;
+            }
+            return brandce;
+        }
+
+        public ActionResult ChangeLog(int ID, string Token)
+        {
+            var data = new BaseModel();
+            var history = refService.GetChangesHistory((int)Enums.MenuList.PenetapanSKEP, ID.ToString()).ToList();
+            data.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(history);
+            return PartialView("_ChangesHistoryTable", data);
+        }
     }
 }

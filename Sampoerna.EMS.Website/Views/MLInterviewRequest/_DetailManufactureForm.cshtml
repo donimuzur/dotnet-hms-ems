@@ -67,6 +67,10 @@
                                                     <option value='@item.Id' data-stateid="@item.StateId" data-statename="@item.StateName" @if (Model.City_Id == item.Id) { <text>selected='selected'</text> }>@item.Name</option>
                                                 }
                                             </select>
+                                            @*<input type="hidden" class="txt_hd_cityid" value="@Model.City_Id" />
+                                            <fieldset style="border:none;margin:0px" @if (Model.IsFormReadOnly) { <text> disabled="disabled" </text>   }>
+                                                @Html.DropDownList("interviewRequestDetail[" + Model.Index.ToString() + "].City_Id", Model.City_List_option, "Select", new { @class = "form-control selectpicker opt_city", @id = "opt_city_" + @Model.Index.ToString(), @data_fieldname = "District / City" })
+                                            </fieldset>*@
                                         </div>
                                     </div>
                                 </div>
@@ -103,8 +107,8 @@
                                     <div class='row'>
                                         <input type="hidden" value="@Model.Province_Id" name='interviewRequestDetail[@Model.Index.ToString()].Province_Id' class="txt_hd_stateid" id='txt_hd_stateid_@Model.Index.ToString()' />                                        
                                         <label class='col-md-4'>Province</label>
-                                        <div class='col-md-8'>                                            
-                                            @Html.TextBox("interviewRequestDetail[" + Model.Index.ToString() + "].Province_Name", Model.Province_Name, new { @class = "form-control txt_state", @id = "txt_state_@Model.Index.ToString()", @readonly = "readonly", @required = "required", @data_fieldname = "Province" })
+                                        <div class='col-md-8'>
+                                            @Html.TextBox("interviewRequestDetail[" + Model.Index.ToString() + "].Province_Name", Model.Province_Name, new { @class = "form-control txt_state", @id = "txt_state_" + @Model.Index.ToString(), @readonly = "readonly", @required = "required", @data_fieldname = "Province" })
                                         </div>
                                     </div>
                                 </div>

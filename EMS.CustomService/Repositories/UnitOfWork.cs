@@ -395,6 +395,14 @@ namespace Sampoerna.EMS.CustomService.Repositories
             }
         }
 
+        public GenericRepository<CK1_EXCISE_CALCULATE_ADJUST> Ck1ExciseCalculateAdjustRepository
+        {
+            get
+            {
+                return RepositoryFactory.GetInstance<CK1_EXCISE_CALCULATE_ADJUST, EMSDataModel>(Context);
+            }
+        }
+
         #endregion
 
         #region Unit of Work Business Methods

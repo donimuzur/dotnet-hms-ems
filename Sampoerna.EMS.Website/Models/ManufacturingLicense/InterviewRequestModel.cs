@@ -84,6 +84,7 @@ namespace Sampoerna.EMS.Website.Models.ManufacturingLicense
         public SelectList Company_TypeList { get; set; }
         public SelectList Perihal_List { get; set; }
         public SelectList GovStatus_List { get; set; }
+        public SelectList City_List_option { get; set; }
         public List<CityModel> City_List { get; set; }
         public List<HttpPostedFileBase> File_Other { get; set; }
         public List<string> File_Other_Name { get; set; }
@@ -117,6 +118,7 @@ namespace Sampoerna.EMS.Website.Models.ManufacturingLicense
         public Int32 Index { get; set; }
         public bool IsFormReadOnly { get; set; }
         public List<CityModel> City_List { get; set; }
+        public SelectList City_List_option { get; set; }
     }
 
     public class InterviewRequestSupportingDocModel

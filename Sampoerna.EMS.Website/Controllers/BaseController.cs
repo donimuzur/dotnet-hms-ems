@@ -16,7 +16,7 @@ using Sampoerna.EMS.Website.Models;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
-    //[AuthorizeAD]
+    [AuthorizeAD]
     public class BaseController : Controller
     {
 
@@ -94,10 +94,10 @@ namespace Sampoerna.EMS.Website.Controllers
             if (Session[Core.Constans.SessionKey.CurrentUser] == null)
             {
                 var userId = User.Identity.Name.Split('\\')[User.Identity.Name.Split('\\').Length - 1]; //User.Identity.Name.Remove(0, 4);
-                if (String.IsNullOrEmpty(userId.Trim())) // Bypass AD auth
-                {
-                    userId = param;
-                }
+                //if (String.IsNullOrEmpty(userId.Trim())) // Bypass AD auth
+                //{
+                //    userId = param;
+                //}
                 IUserBLL userBll = MvcApplication.GetInstance<UserBLL>();
                 IPOABLL poabll = MvcApplication.GetInstance<POABLL>();
                 IUserAuthorizationBLL userAuthorizationBll = MvcApplication.GetInstance<UserAuthorizationBLL>();
@@ -174,14 +174,14 @@ namespace Sampoerna.EMS.Website.Controllers
             if (CurrentUser == null )
             {
 
-                //RedirectToAction("VerifyLogin", "Login", new { filterContext = filterContext });
+                RedirectToAction("VerifyLogin", "Login", new { filterContext = filterContext });
                 //filterContext.Result = new RedirectToRouteResult(
                 //             new RouteValueDictionary { { "controller", "Error" }, { "action", "NotRegistered" } });
 
                 // Bypass AD auth
-                filterContext.Result = new RedirectToRouteResult(
-                           new RouteValueDictionary { { "controller", "Login" }, { "action", "Index" } });
-                return;
+                //filterContext.Result = new RedirectToRouteResult(
+                //           new RouteValueDictionary { { "controller", "Login" }, { "action", "Index" } });
+                //return;
             }
             var isUsePageAuth = ConfigurationManager.AppSettings["UsePageAuth"] != null && Convert.ToBoolean(ConfigurationManager.AppSettings["UsePageAuth"]);
             if (isUsePageAuth)

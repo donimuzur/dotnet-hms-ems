@@ -32,7 +32,7 @@
             <div class="action-button">
                 @if (Model.IsNotViewer && Model.ViewModel.IsCreator)
                 {
-                    
+
                     <input type="button" class="btn btn-blue" value="Save" id="SaveButton" />
                     if (Model.ViewModel.IsWaitingSkepApproval)
                     {
@@ -104,6 +104,7 @@
     <script src="~/Scripts/excise-credit/terbilang.min.js"></script>
     <script src="~/Scripts/excise-credit/date.js"></script>
     <script src="~/Scripts/excise-credit/main.js"></script>
+    <script src="~/Scripts/tinymce/tinymce.min.js"></script>
     <script type="text/javascript">
         var formID = '@Model.ViewModel.Id';
         var formType = '@Convert.ToInt64(Sampoerna.EMS.Core.Enums.FormList.ExciseRequest)';
@@ -141,6 +142,8 @@
                 $("#CancelButton").prop('disabled', true);
             });
 
+            TinyMceInit("tinymce-editor");
+
         });
 
         function mapBrowseAction() {
@@ -148,30 +151,30 @@
             @foreach (var doc in Model.SupportingDocuments)
             {
                 <text>
-        handleBrowseEvent("supportDoc" + @doc.Id, "supportDocFile" + @doc.Id, "supportDocText" + @doc.Id);
-                $("#supportDocFile" + @doc.Id).change(function(){
-                    var input =document.getElementById("supportDocFile" + @doc.Id);
-                    if (!input) {
-                        showErrorDialog("Um, couldn't find the fileinput element.");
+            handleBrowseEvent("supportDoc" + @doc.Id, "supportDocFile" + @doc.Id, "supportDocText" + @doc.Id);
+            $("#supportDocFile" + @doc.Id).change(function(){
+                var input =document.getElementById("supportDocFile" + @doc.Id);
+                if (!input) {
+                    showErrorDialog("Um, couldn't find the fileinput element.");
+                }
+                else if (!input.files) {
+                    showErrorDialog("This browser doesn't seem to support the `files` property of file inputs.");
+                }
+                else if (!input.files[0]) {
+                    showErrorDialog("Please select a file");
+                }
+                else {
+                    var file = input.files[0];
+                    if(!supportingDocs) {
+                        supportingDocs = {};
                     }
-                    else if (!input.files) {
-                        showErrorDialog("This browser doesn't seem to support the `files` property of file inputs.");
-                    }
-                    else if (!input.files[0]) {
-                        showErrorDialog("Please select a file");
-                    }
-                    else {
-                        var file = input.files[0];
-                        if(!supportingDocs) {
-                            supportingDocs = {};
-                        }
-                        supportingDocs[@doc.Id] = file;
-                        console.log(supportingDocs);
+                    supportingDocs[@doc.Id] = file;
+                    console.log(supportingDocs);
 
-                    }
-                });
+                }
+            });
 
-                </text>
+            </text>
             }
         }
         function loadOtherDocs() {

@@ -345,7 +345,7 @@
                                                     <tr>
                                                         <td class="td_filename_number">@otherIndex</td>
                                                         <td class="td_filename" data-filename="@_file.FileName" data-fileuploadid="@_file.FileId">
-                                                            <i class="fa fa-file"></i>&nbsp;<a href="@_file.Path" download>@_file.Name</a>
+                                                            <i class="fa fa-file"></i>&nbsp;<a href="@_file.Path" target="_blank" download>@_file.Name</a>
                                                         </td>
                                                         <td>
                                                             @_file.FileName
@@ -355,7 +355,6 @@
                                                             <td><button type="button" class="btn btn-blue btn_remove_otherdoc" data-fileuploadid="@_file.FileId">Delete</button></td>
                                                         }
                                                     </tr>
-
                                                 }
                                             </tbody>
                                         </table>

@@ -51,20 +51,22 @@ namespace Sampoerna.EMS.Website.Controllers
         private InterviewRequestService IRservice;
         private InterviewRequestModel IRmodel;
         private InterviewRequestViewModel IRViewmodel;
+        private IDocumentSequenceNumberBLL _docbll;
 
-        public MLInterviewRequestController(IPageBLL pageBLL, IChangesHistoryBLL changeHistoryBLL, IWorkflowHistoryBLL workflowHistoryBLL) : base(pageBLL, Enums.MenuList.ManufactureLicense)
+        public MLInterviewRequestController(IPageBLL pageBLL, IChangesHistoryBLL changeHistoryBLL, IWorkflowHistoryBLL workflowHistoryBLL,IDocumentSequenceNumberBLL docbll) : base(pageBLL, Enums.MenuList.ManufactureLicense)
         {
             this.mainMenu = Enums.MenuList.ManufactureLicense;
 
             IRmodel = new InterviewRequestModel();
             IRservice = new InterviewRequestService();
             refService = new SystemReferenceService();
+            _docbll = docbll;
         }
 
         public ActionResult Index()
         {
             try
-            {
+            {                
                 if (CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.POA || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller )
                 {
                     var users = refService.GetAllUser();
@@ -486,7 +488,18 @@ namespace Sampoerna.EMS.Website.Controllers
                 return new List<CityModel>();
             }
         }
-        
+
+        private SelectList GetSelectlistCity(List<CityModel> city)
+        {
+            var query = from x in city
+                        select new SelectItemModel()
+                        {
+                            ValueField = x.Id.ToString(),
+                            TextField = x.Name
+                        };
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+        }
+
         private InterviewRequestModel GetInterviewRequestMasterForm(InterviewRequestModel _IRModel)
         {
             _IRModel = IRservice.GetInterviewRequestById(_IRModel.Id).Select(s => new InterviewRequestModel
@@ -529,6 +542,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 _IRModel = GetInterviewRequestMasterForm(_IRModel);
                 _IRModel.interviewRequestDetail = GetInterviewRequestDetail(_IRModel.Id);
                 _IRModel.City_List = GetCityList();
+                //_IRModel.City_List_option = GetSelectlistCity(GetCityList());
                 _IRModel.MainMenu = mainMenu;
                 _IRModel.CurrentMenu = PageInfo;
                 _IRModel.CompanyList = _GetCompanyList(_IRModel.NPPBKC_ID);
@@ -775,7 +789,13 @@ namespace Sampoerna.EMS.Website.Controllers
                         var InsertIRResult = new INTERVIEW_REQUEST();
                         if (model.Id == 0 || model.Id == null)
                         {
-                            InsertIRResult = IRservice.InsertInterviewRequest(model.Perihal, model.Company_Type, CurrentUser.USER_ID, ApproveStats, model.NPPBKC_ID, model.Company_ID, model.POAID, model.KPPBC_ID, model.KPPBC_Address, model.City, model.City_Alias, model.Text_To, model.RequestDate, (int)CurrentUser.UserRole);
+                            var docnumberinput = new GenerateDocNumberInput();
+                            docnumberinput.FormType = Enums.FormType.InterviewRequest;
+                            docnumberinput.Month = model.RequestDate.Month;
+                            docnumberinput.Year = model.RequestDate.Year;
+                            var formnumber = _docbll.GenerateNumber(docnumberinput);                            
+                            formnumber = ChangeFormnumberCompanyCity(formnumber, model.Company_ID, model.City_Alias);
+                            InsertIRResult = IRservice.InsertInterviewRequest(model.Perihal, model.Company_Type, CurrentUser.USER_ID, ApproveStats, model.NPPBKC_ID, model.Company_ID, model.POAID, model.KPPBC_ID, model.KPPBC_Address, model.City, model.City_Alias, model.Text_To, model.RequestDate, (int)CurrentUser.UserRole, formnumber);
                         }
                         else
                         {
@@ -876,6 +896,24 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
+            }
+        }
+
+        private string ChangeFormnumberCompanyCity(string formnumber,string company, string cityalias)
+        {
+            try
+            {
+                var companyalias = refService.GetCompanyById(company).BUTXT_ALIAS;
+                var arr = formnumber.Split('/');
+                if (arr.Count() == 5)
+                {
+                    formnumber = arr[0] + "/" + companyalias + "/" + cityalias + "/" + arr[3] + "/" + arr[4];
+                }
+                return formnumber;
+            }
+            catch (Exception)
+            {
+                return formnumber;
             }
         }
 
@@ -1071,12 +1109,18 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     mailcontentId = (int)ReferenceKeys.EmailContent.ManufacturingLicenseInterviewRevisionRequest;
                 }
-                else if (MailFor == "reject")
+                else if (MailFor == "withdraw")
                 {
+                    mailcontentId = (int)ReferenceKeys.EmailContent.ManufacturingLicenseInterviewApprovalNotification;
                 }
 
                 var mailContent = refService.GetMailContent(mailcontentId, parameters);
-                var senderMail = refService.GetUserEmail(CurrentUser.USER_ID);
+                //var senderMail = refService.GetUserEmail(CurrentUser.USER_ID);
+                var senderMail = ConfigurationManager.AppSettings["DefaultSender"];
+                if (senderMail == null || senderMail == "")
+                {
+                    senderMail = "EMS@pmi.id";
+                }
                 var senderName = CurrentUser.FIRST_NAME + " " + CurrentUser.LAST_NAME;
                 string[] arrSendto = sendto.ToArray();
                 bool mailStatus = ItpiMailer.Instance.SendEmail(arrSendto, null, null, null, mailContent.EMAILSUBJECT, mailContent.EMAILCONTENT, true, senderMail, senderName);
@@ -1230,6 +1274,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var irDetail = new InterviewRequestDetailModel();
             irDetail.DetId = 0;
             irDetail.Index = Index;
+            //irDetail.City_List_option = GetSelectlistCity(GetCityList());
             irDetail.City_List = GetCityList();
             return PartialView("_DetailManufactureForm", irDetail);
         }
@@ -1511,8 +1556,18 @@ namespace Sampoerna.EMS.Website.Controllers
                     var Creator = refService.GetPOA(update.CREATED_BY);
                     var CreatorName = Creator.PRINTED_NAME;
                     var CreatorMail = Creator.POA_EMAIL;
+                    var ReceiverMail = "";
+                    if (Action == "withdraw")
+                    {
+                        var LastApprover = refService.GetPOA(update.LASTAPPROVED_BY).POA_EMAIL;
+                        ReceiverMail = LastApprover;
+                    }
+                    else
+                    {
+                        ReceiverMail = CreatorMail;
+                    }
                     var Sendto = new List<string>();
-                    Sendto.Add(CreatorMail);
+                    Sendto.Add(ReceiverMail);
                     var sendmail = true;
                     if (Action == "approve" || Action == "approve_final")
                     {
@@ -1523,7 +1578,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             footer += "<td>&nbsp;Creator</td>";
                             footer += "<td>:</td>";
                             footer += "<td>&nbsp;" + CreatorName + "</td>";
-                            footer += "</tr>";                            
+                            footer += "</tr>";
                             sendmail = SendMail("Visit Location", "Interview Request", update.FORM_NUMBER, "Waiting for Government Approval", strreqdate, update.PERIHAL, update.KPPBC, update.BUKRS, footer, IRId, Sendto, "approve");                            
                         }
                         else
@@ -1532,7 +1587,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             if (Convert.ToBoolean(update.BA_STATUS))
                             {
                                 govstatus = "Approved";
-                            }                            
+                            }
                             var status_request = govstatus + " by Government and Completed";
                             var footer = "<tr>";
                             footer += "<td>&nbsp;BA No</td>";
@@ -1543,8 +1598,13 @@ namespace Sampoerna.EMS.Website.Controllers
                             footer += "<td>&nbsp;BA Date</td>";
                             footer += "<td>:</td>";
                             footer += "<td>&nbsp;" + Convert.ToDateTime(update.BA_DATE).ToString("dd MMMM yyyy") + "</td>";
-                            footer += "</tr>";                            
+                            footer += "</tr>";
                             sendmail = SendMail("BA Location Visit", "SKEP Brand Registartion", update.FORM_NUMBER, status_request, strreqdate, update.PERIHAL, update.KPPBC, update.BUKRS, footer, IRId, Sendto, "approve");                            
+                        }
+
+                        if (!sendmail)
+                        {
+                            msgSuccess += " , but failed send mail to Creator";
                         }
                     }
                     else if (Action == "revise" || Action == "reviseskep")
@@ -1556,7 +1616,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             footer += "<td>&nbsp;Comment</td>";
                             footer += "<td>:</td>";
                             footer += "<td>&nbsp;" + Comment + "</td>";
-                            footer += "</tr>";                            
+                            footer += "</tr>";
                             sendmail = SendMail("Interview Request", "Interview Request", update.FORM_NUMBER, "Rejected to Revise", strreqdate, update.PERIHAL, update.KPPBC, update.BUKRS, footer, IRId, Sendto, "revise");
                         }
                         else
@@ -1578,8 +1638,13 @@ namespace Sampoerna.EMS.Website.Controllers
                             footer += "</tr>";
                             sendmail = SendMail("BA Interview Request", "BA Interview Request", update.FORM_NUMBER, "Rejected to Revise", strreqdate, update.PERIHAL, update.KPPBC, update.BUKRS, footer, IRId, Sendto, "revise");
                         }
+
+                        if (!sendmail)
+                        {
+                            msgSuccess += " , but failed send mail to Creator";
+                        }
                     }
-                    else if(Action == "submit")
+                    else if (Action == "submit")
                     {
                         msgSuccess = "Success submit Interview Request";
                         var poareceiverlistall = IRservice.GetPOAApproverList(IRId);
@@ -1593,7 +1658,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             footer += "<td>:</td>";
                             footer += "<td>&nbsp;" + CreatorName + "</td>";
                             footer += "</tr>";
-                            var _sendmail = SendMail("Visit Location &", "Visit Location &", update.FORM_NUMBER, "has already submitted", strreqdate, update.PERIHAL, update.KPPBC, update.BUKRS, footer, IRId, poareceiverList, "submit");
+                            sendmail = SendMail("Visit Location &", "Visit Location &", update.FORM_NUMBER, "has already submitted", strreqdate, update.PERIHAL, update.KPPBC, update.BUKRS, footer, IRId, poareceiverList, "submit");
                             if (!sendmail)
                             {
                                 msgSuccess += " , but failed send mail to POA Approver";
@@ -1607,15 +1672,26 @@ namespace Sampoerna.EMS.Website.Controllers
                     else if (Action == "withdraw")
                     {
                         msgSuccess = "Success withdraw Interview Request";
+                        var footer = "<tr>";
+                        footer += "<td>&nbsp;Creator</td>";
+                        footer += "<td>:</td>";
+                        footer += "<td>&nbsp;" + CreatorName + "</td>";
+                        footer += "</tr>";
+                        footer = "<tr>";
+                        footer += "<td>&nbsp;Reason</td>";
+                        footer += "<td>:</td>";
+                        footer += "<td>&nbsp;" + Comment + "</td>";
+                        footer += "</tr>";
+                        sendmail = SendMail("Visit Location", "Visit Location & Interview Request", update.FORM_NUMBER, "Withdrawn", strreqdate, update.PERIHAL, update.KPPBC, update.BUKRS, footer, IRId, Sendto, "withdraw");
+
+                        if (!sendmail)
+                        {
+                            msgSuccess += " , but failed send mail to Approver";
+                        }
                     }
                     else
                     {
                         msgSuccess = "Success cancel Interview Request";
-                    }                    
-
-                    if (!sendmail)
-                    {
-                        msgSuccess += " , but failed send mail to Creator";
                     }
 
                     AddMessageInfo(msgSuccess, Enums.MessageInfoType.Success);
@@ -1921,6 +1997,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 Response.Flush();
                 newFile.Delete();
                 Response.End();
+
+                var changes = new Dictionary<string, string[]>();
+                changes.Add("DOWNLOAD PRINT OUT", new string[] { "", "" });
+                IRservice.LogsChages(InterviewID, changes, (int)Enums.MenuList.InterviewRequest, CurrentUser.USER_ID);
+
                 //byte[] bytesInStream = ms.ToArray();
                 //ms.Close();
                 //Response.Clear();
@@ -2546,5 +2627,19 @@ namespace Sampoerna.EMS.Website.Controllers
             changes.Add("PRINTOUT LAYOUT", new string[] { "Layout Changes", "Layout Changes" });
             IRservice.LogsChages(IRID, changes, (int)Enums.MenuList.InterviewRequest, CurrentUser.USER_ID);
         }
+
+        //[HttpPost]
+        //public ActionResult GetCityDetailById(long ID)
+        //{
+        //    var citydetail = new CityModel();
+        //    var citys = IRservice.GetCityList().Where(w => w.CITY_ID == ID);
+        //    if (citys.Any())
+        //    {
+        //        var city = citys.FirstOrDefault();
+        //        citydetail.StateName = city.MASTER_STATE.STATE_NAME;
+        //        citydetail.StateId = city.STATE_ID;
+        //    }
+        //    return Json(citydetail);
+        //}
     }
 }

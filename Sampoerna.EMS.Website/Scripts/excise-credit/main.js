@@ -74,7 +74,7 @@ function populateFormData() {
     parseObject.Master = exciseFormData;
     parseObject.Detail = exciseAdjustmentFormData;
 
-    console.log(parseObject);
+    console.log(console.log(exciseFormData));
 }
 
 function attach() {
@@ -410,6 +410,7 @@ function uploads(id) {
             }
             data.append("doc_number", docNumberContainer.html());
             data.append("excise_id", id);
+        console.log(data);
             $.ajax({
                 type: "POST",
                 url: uploadUrl,
@@ -502,6 +503,7 @@ function handleBrowseEvent(id, fileId, textId) {
 var NWin = null;
 
 function openCkListPopUp() {
+    console.log("open ck list popup");
     var nppbkcId = nppbkc.val();
     var sd = new Date(submitDate.val());
     var year = sd.getYear() + 1900;
@@ -510,7 +512,13 @@ function openCkListPopUp() {
     var dateStr = year + "-" + month + "-" + date;
 
     if (!NWin || NWin.closed) {
-        NWin = window.open(ck1DetaiUrl + '?submit=' + dateStr + '&nppbkc=' + nppbkcId, '', 'titlebar=0,width=800,height=800');
+        if ($('.requestType').val() === '1') {
+            console.log("open detail");
+        NWin = window.open(ck1DetaiUrl + '?submit=' + dateStr + '&nppbkc=' + nppbkcId, '', 'titlebar=0,width=800,height=800,scrollbars=yes');
+        } else {
+            console.log("open detail adjustment");
+            NWin = window.open(ck1DetailAdjustmentUrl + '?submit=' + dateStr + '&nppbkc=' + nppbkcId, '', 'titlebar=0,width=800,height=800,scrollbars=yes');
+        }
         NWin.focus();
         $(NWin.document).ready(function () {
             NWin.window.title = "Test 1";
@@ -654,6 +662,7 @@ function placeResult() {
         });
     //$("#ExciseCreditAlpha").val(amount);
     $("#ExciseCreditAlphaText").html(_terbilang);
+    $("#ViewModel_Amount").val(amount);
     console.log("Grand Total: " + $("#ViewModel_Amount").val());
     saveButton.prop("disabled", false);
 }
@@ -703,6 +712,7 @@ function create() {
             success: function (result) {
                 console.log(result);
                 if (result) {
+                    console.log(result);
                     uploads(result);
                     document.location.href = homeUrl;
 
@@ -751,6 +761,7 @@ function edit() {
                 }
             }
             data.append("submit_date", submitDate.val());
+            data.append("guarantee", $("#GuaranteeSelector :selected").text());
             data.append("doc_number", docNumber);
             data.append("excise_id", id);
             data.append("deleted_docs", JSON.stringify(existingOtherDocs));
