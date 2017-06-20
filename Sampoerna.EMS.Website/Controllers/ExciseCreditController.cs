@@ -1069,7 +1069,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var ck12Month = service.GetCK1Average(submitDate, nppbkc, itemfirst.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS, 2);
 
             var itemWeightedIncrease = itemIncreaseTariff * ck12Month;
-
+            var latestSkep = service.GetLatestSkepCredit();
             var dataitem = new
             {
                 BRAND = itemfirst.BRAND_CE,
@@ -1079,7 +1079,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 INCREASE = itemIncreaseTariff,
                 CK12MONTH = ck12Month,
                 WEIGHTEDINCREASE = itemWeightedIncrease,
-                PRODUCTCODE = itemfirst.PROD_CODE
+                PRODUCTCODE = itemfirst.PROD_CODE,
+                LATESTSKEP = latestSkep
             };
 
             return Json(dataitem);

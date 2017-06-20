@@ -1,4 +1,6 @@
-﻿using Sampoerna.EMS.Core;
+﻿using System.Data.Entity.Core.Common.EntitySql;
+using System.Security.Cryptography.X509Certificates;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.CustomService.Core;
 using Sampoerna.EMS.CustomService.Data;
 using Sampoerna.EMS.CustomService.Repositories;
@@ -1292,6 +1294,26 @@ namespace Sampoerna.EMS.CustomService.Services
             //                }).Select(m => new ZAIDM_EX_BRAND { BRAND_CE = m.Key.BRAND_CE, FA_CODE = m.Key.FA_CODE }).Distinct();
 
             return query;
+        }
+
+        public decimal GetLatestSkepCredit()
+        {
+            var query =
+                (from p in
+                    uow.ExciseCreditApprovedDetailRepository.Get()
+                 join q in uow.ExciseCreditRepository.Get() on p.EXSICE_CREDIT_ID equals q.EXSICE_CREDIT_ID
+                 where q.SKEP_STATUS.HasValue && q.SKEP_STATUS.Value
+                 orderby q.DECREE_DATE descending 
+                select p.AMOUNT_APPROVED);
+            if (query.Any())
+            {
+                return query.First();
+            }
+            else
+            {
+                return 0;
+            }
+            
         }
 
         public IEnumerable<ZAIDM_EX_BRAND> GetadjItemFaCode(string facode, string nppbkc)
