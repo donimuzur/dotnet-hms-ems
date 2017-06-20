@@ -568,6 +568,7 @@ function addToAdjList() {
             var idx = adjfacode.indexOf(facode);
             var subtotalck12month = 0;
             var subtotalweightincreased = 0;
+            var latestSkep = item.LATESTSKEP;
             if (idx < 0 && updated) {
                 var addItem = {
                     BRAND: item.BRAND,
@@ -576,7 +577,7 @@ function addToAdjList() {
                     INCREASE: item.INCREASE,
                     CK12MONTH: item.CK12MONTH,
                     WEIGHTEDINCREASE: item.WEIGHTEDINCREASE,
-                    PRODUCTCODE: item.PRODUCTCODE
+                    PRODUCTCODE: item.PRODUCTCODE,
                 };
                 adjfacode.push(facode);
                 console.log("show hasil", adjItem, adjItem[tableId]);
@@ -593,7 +594,7 @@ function addToAdjList() {
                 }
                 console.log("result", (subtotalweightincreased / subtotalck12month * 100));
                 pctweightincrease.val((subtotalweightincreased / subtotalck12month * 100).toFixed(2).replace(".", ","));
-                SKEPCreditTariff.val(subtotalck12month.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+                SKEPCreditTariff.val(latestSkep.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
                 wTariff.val(((subtotalweightincreased / subtotalck12month) * subtotalweightincreased).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
                 
                 subtotal.val((subtotalck12month).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
