@@ -147,7 +147,7 @@ namespace Sampoerna.EMS.XMLReader
             var bodyMail = new StringBuilder();
             var rc = new MailNotification();
 
-            rc.Subject = "Brand " + invalidCk1.BrandName + "Never used on any CK1 in the last 5 months.";
+            rc.Subject = "Brand " + invalidCk1.BrandName + " Never used on any CK1 in the last 5 months.";
             bodyMail.Append("Dear Team,<br />");
 
             bodyMail.Append("Kindly be informed, " + rc.Subject + ". <br />");
@@ -170,31 +170,31 @@ namespace Sampoerna.EMS.XMLReader
         {
             var bodyMail = new StringBuilder();
             //var supplier = dataMonitoring.SUPPLIER_WERKS;
-            bodyMail.Append("<table><thead>" +
+            bodyMail.Append("<table style='border-collapse: collapse; border: 1px solid black;'>" +
                             "<tr>" +
-                            "<td>Fa Code </td>" +
-                            "<td>Plant</td>" +
-                            "<td>Sticker Code</td>" +
-                            "<td>CK1 Number</td>" +
-                            "<td>Ck1 Date</td>" +
-                            "</tr></thead>");
+                            "<th style='border: 1px solid black;'>Fa Code </th>" +
+                            "<th style='border: 1px solid black;'>Plant</th>" +
+                            "<th style='border: 1px solid black;'>Sticker Code</th>" +
+                            "<th style='border: 1px solid black;'>CK1 Number</th>" +
+                            "<th style='border: 1px solid black;'>Ck1 Date</th>" +
+                            "</tr>");
             foreach (var brand in invalidCk1.BrandList)
             {
                 bodyMail.Append("<tr>" +
-                                "<td>" + brand.FaCode + "</td>" +
-                                "<td>" + brand.Werks + "</td>" +
-                                "<td>" + brand.StickerCode + "</td>");
+                                "<td style='border: 1px solid black;'>" + brand.FaCode + "</td>" +
+                                "<td style='border: 1px solid black;'>" + brand.Werks + "</td>" +
+                                "<td style='border: 1px solid black;'>" + brand.StickerCode + "</td>");
                 if (brand.LastCk1 != null)
                 {
                     bodyMail.Append(
-                        "<td>" + brand.LastCk1.CK1_NUMBER + "</td>" +
-                        "<td>" + brand.LastCk1.ORDER_DATE + "</td>" +
+                        "<td style='border: 1px solid black;'>" + brand.LastCk1.CK1_NUMBER + "</td>" +
+                        "<td style='border: 1px solid black;'>" + brand.LastCk1.ORDER_DATE + "</td>" +
                         "</tr>");
                 }
                 else
                 {
                     bodyMail.Append(
-                        "<td colspan='2'>No Ck1 Data found</td>" +
+                        "<td style='border: 1px solid black;' colspan='2'>No Ck1 Data found</td>" +
                         
                         "</tr>");
                 }
