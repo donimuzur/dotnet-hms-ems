@@ -120,57 +120,57 @@
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.DetailExportModel.Hl_Code, new { @id = "checkboxDefault5", @checked = "checked", @class = "checkbox checkexport", @datacolumn = "5" })HL Code
+                                                        @Html.CheckBoxFor(model => model.ExportModel.DetailExportModel.Hl_Code, new { @id = "checkboxDefault5", @checked = "checked", @class = "checkbox checkexport2", @datacolumn = "5" })HL Code
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.DetailExportModel.Bukrs, new {  @class = "checkbox checkexport", @datacolumn = "6" })Company
+                                                        @Html.CheckBoxFor(model => model.ExportModel.DetailExportModel.Bukrs, new {  @class = "checkbox checkexport2", @datacolumn = "6" })Company
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.DetailExportModel.Market_Id, new { @class = "checkbox checkexport", @datacolumn = "7" })Market
+                                                        @Html.CheckBoxFor(model => model.ExportModel.DetailExportModel.Market_Id, new { @class = "checkbox checkexport2", @datacolumn = "7" })Market
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.DetailExportModel.Fa_Code_Old, new { @class = "checkbox checkexport", @datacolumn = "8" })Fa Code Old
+                                                        @Html.CheckBoxFor(model => model.ExportModel.DetailExportModel.Fa_Code_Old, new { @class = "checkbox checkexport2", @datacolumn = "8" })Fa Code Old
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.DetailExportModel.Fa_Code_New, new { @class = "checkbox checkexport", @datacolumn = "9" })Fa Code New
+                                                        @Html.CheckBoxFor(model => model.ExportModel.DetailExportModel.Fa_Code_New, new { @class = "checkbox checkexport2", @datacolumn = "9" })Fa Code New
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.DetailExportModel.Fa_Code_Old_Desc, new { @class = "checkbox checkexport", @datacolumn = "10" })Fa Code Old Desc
+                                                        @Html.CheckBoxFor(model => model.ExportModel.DetailExportModel.Fa_Code_Old_Desc, new { @class = "checkbox checkexport2", @datacolumn = "10" })Fa Code Old Desc
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.DetailExportModel.Fa_Code_New_Desc, new {  @class = "checkbox checkexport", @datacolumn = "11" })Fa Code New Desc
+                                                        @Html.CheckBoxFor(model => model.ExportModel.DetailExportModel.Fa_Code_New_Desc, new {  @class = "checkbox checkexport2", @datacolumn = "11" })Fa Code New Desc
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.DetailExportModel.Is_Import, new { @class = "checkbox checkexport", @datacolumn = "12" })Import
+                                                        @Html.CheckBoxFor(model => model.ExportModel.DetailExportModel.Is_Import, new { @class = "checkbox checkexport2", @datacolumn = "12" })Import
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.DetailExportModel.Request_No, new {  @class = "checkbox checkexport", @datacolumn = "13" })Request Number
+                                                        @Html.CheckBoxFor(model => model.ExportModel.DetailExportModel.Request_No, new {  @class = "checkbox checkexport2", @datacolumn = "13" })Request Number
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.DetailExportModel.Werks, new {   @class = "checkbox checkexport", @datacolumn = "14" })Plant Name
+                                                        @Html.CheckBoxFor(model => model.ExportModel.DetailExportModel.Werks, new {   @class = "checkbox checkexport2", @datacolumn = "14" })Plant Name
                                                     </label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <label>
-                                                        @Html.CheckBoxFor(model => model.ExportModel.DetailExportModel.Status, new {  @class = "checkbox checkexport", @datacolumn = "15" })Status
+                                                        @Html.CheckBoxFor(model => model.ExportModel.DetailExportModel.Status, new {  @class = "checkbox checkexport2", @datacolumn = "15" })Status
                                                     </label>
                                                 </div>
                                             </div>
@@ -209,13 +209,13 @@
             $('.checkexport').each(function () {
                 this.checked = false;
             });
-            setupDataTables();
+            //setupDataTables();
 
-            //$('#checkboxDefault1').prop('checked', true);
-            //$('#checkboxDefault2').prop('checked', true);
-            //$('#checkboxDefault3').prop('checked', true);
-            //$('#checkboxDefault4').prop('checked', true);
-            //$('#checkboxDefault5').prop('checked', true);
+            $('#checkboxDefault1').prop('checked', true);
+            $('#checkboxDefault2').prop('checked', true);
+            $('#checkboxDefault3').prop('checked', true);
+            $('#checkboxDefault4').prop('checked', true);
+            $('#checkboxDefault5').prop('checked', true);
 
             });
 
@@ -256,16 +256,28 @@
                 $('#productTable').parents('div.dataTables_wrapper').first().show();
             });
 
+            $('.checkexport2').on('click', function (e) {
+                //e.preventDefault();
+                table.column(0).visible(true);
+
+                // Get the column API object
+                var column = table.column($(this).attr('datacolumn'));
+
+                // Toggle the visibility
+                column.visible(!column.visible());
+                $('#productTable').parents('div.dataTables_wrapper').first().show();
+            });
+
             if (blFirst) {
-                for (var i = 1; i < 17; i++) {
+                for (var i = 1; i < 16; i++) {
                     table.column(i).visible(false);
                 }
 
-                //table.column(1).visible(true);
-                //table.column(2).visible(true);
-                //table.column(3).visible(true);
-                //table.column(4).visible(true);
-                //table.column(5).visible(true);
+                table.column(1).visible(true);
+                table.column(2).visible(true);
+                table.column(3).visible(true);
+                table.column(4).visible(true);
+                table.column(5).visible(true);
                
             } else {
                 $('.checkexport').each(function () {
@@ -290,7 +302,7 @@
                     // Show a column
                     $('#productTable').parents('div.dataTables_wrapper').first().show();
                     var table = $('#productTable').DataTable();
-                    for (var i = 0; i < 17; i++) {
+                    for (var i = 0; i < 5; i++) {
                         table.column(i).visible(this.checked);
 
                     }
@@ -304,11 +316,40 @@
 
                     });
                     var table = $('#productTable').DataTable();
-                    for (var i = 0; i < 17; i++) {
+                    for (var i = 0; i < 5; i++) {
                         table.column(i).visible(this.checked);
 
                     }
-                    $('#productTable').parents('div.dataTables_wrapper').first().hide();
+                    //$('#productTable').parents('div.dataTables_wrapper').first().hide();
+                }
+            });
+
+            $('#selecctalldetail').change(function () {
+                debugger;
+                if ($(this).is(':checked')) {
+                    $('.checkexport2').prop('checked', this.checked);
+                    // Show a column
+                    $('#productTable').parents('div.dataTables_wrapper').first().show();
+                    var table = $('#productTable').DataTable();
+                    for (var i = 4; i < 16; i++) {
+                        table.column(i).visible(this.checked);
+
+                    }
+                    table.column(0).visible(true);
+                    // Show a column
+                    $('#productTable').parents('div.dataTables_wrapper').first().show();
+
+                } else {
+                    $('.checkexport2').each(function () {
+                        this.checked = false;
+
+                    });
+                    var table = $('#productTable').DataTable();
+                    for (var i = 4; i < 16; i++) {
+                        table.column(i).visible(this.checked);
+
+                    }
+                    //$('#productTable').parents('div.dataTables_wrapper').first().hide();
                 }
             });
             //// Setup - add a text input to each footer cell
