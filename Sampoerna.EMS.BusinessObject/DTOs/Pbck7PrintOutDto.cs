@@ -35,6 +35,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public HEADER_FOOTER_MAPDto HeaderFooter { get; set; }
 
         public List<Pbck73ItemPrintOutDto> Items { get; set; }
+        public bool IsFromCk5 { get; set; }
 
     }
 
