@@ -96,6 +96,11 @@ namespace Sampoerna.EMS.BLL.Services
             return dbData;
         }
 
+        public List<ZAIDM_EX_BRAND> GetAllActiveBrand(string market)
+        {
+            return  _repository.Get(x=> x.STATUS.HasValue && x.STATUS.Value && x.MARKET_ID == market).ToList();
+        }
+
 
         public void Save(ZAIDM_EX_BRAND data)
         {

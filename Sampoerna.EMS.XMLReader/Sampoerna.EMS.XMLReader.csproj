@@ -85,9 +85,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BrandCk1CheckService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SchedulerEmailService.cs" />
+    <Compile Include="SchedulerEnums.cs" />
     <Compile Include="Service.cs" />
     <Compile Include="XmlBrandRegistrationWriter.cs" />
     <Compile Include="XmlCK1DataMappers.cs" />

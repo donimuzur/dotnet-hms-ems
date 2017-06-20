@@ -147,6 +147,11 @@ namespace Sampoerna.EMS.XMLReader
             return null;
         }
 
+        private void DailyOnceFactory()
+        {
+            
+        }
+
         private void SendMailQuotaPending()
         {
             
@@ -237,13 +242,13 @@ namespace Sampoerna.EMS.XMLReader
             return orderedXmlFiles;
         }
 
-        public List<MovedFileOutput> Run(bool isDaily)
+        public List<MovedFileOutput> Run(SchedulerEnums.Schedule isDaily)
         {
             var errorList = new List<string>();
             //var movedFileList = new List<MovedFileOutput>();
             var orderedFile = new List<string>();
             
-            if (!isDaily)
+            if (isDaily != SchedulerEnums.Schedule.Daily)
             {
                 orderedFile = OrderFile();
 
@@ -263,15 +268,20 @@ namespace Sampoerna.EMS.XMLReader
                 {
                     try
                     {
-                        if (isDaily)
+                        if (isDaily == SchedulerEnums.Schedule.Daily)
                         {
                             reader = XmlReaderFactoryDaily(xmlfile);
                             
                         }
-                        else
+                        else if (isDaily == SchedulerEnums.Schedule.MonthLy)
                         {
                             reader = XmlReaderFactoryMonthly(xmlfile);
                         }
+                        else
+                        {
+                            //Dail    
+                        }
+
                         if (reader != null)
                         {
                             var fileIsMoved = reader.InsertToDatabase();

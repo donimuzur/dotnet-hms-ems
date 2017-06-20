@@ -59,7 +59,7 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 {
 
                     logger.Info("Reading XML Monthly start on " + DateTime.Now);
-                    errorFileList.AddRange(_svc.Run(false));
+                    errorFileList.AddRange(_svc.Run(SchedulerEnums.Schedule.MonthLy));
                     foreach (var errorFile in errorFileList)
                     {
                         logger.Warn(String.Format("Error on files : {0}", errorFile.FileName));
