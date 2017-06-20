@@ -1113,6 +1113,15 @@
           <Property Name="MODIFIED_DATE" Type="datetime" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="POA_EXCISER">
+          <Key>
+            <PropertyRef Name="EXCISER_ID" />
+            <PropertyRef Name="POA_ID" />
+          </Key>
+          <Property Name="EXCISER_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="POA_ID" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IS_ACTIVE_EXCISER" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="POA_MAP">
           <Key>
             <PropertyRef Name="POA_MAP_ID" />
@@ -1642,6 +1651,18 @@
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_DELETED" Type="bit" />
         </EntityType>
+        <Association Name="FK__POA_EXCIS__POA_I__00FF1D08">
+          <End Role="POA" Type="Self.POA" Multiplicity="1" />
+          <End Role="POA_EXCISER" Type="Self.POA_EXCISER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="POA_EXCISER">
+              <PropertyRef Name="POA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_BACK1_CK5">
           <End Role="CK5" Type="Self.CK5" Multiplicity="0..1" />
           <End Role="BACK1" Type="Self.BACK1" Multiplicity="*" />
@@ -3761,6 +3782,7 @@
           <EntitySet Name="PLANT_RECEIVE_MATERIAL" EntityType="Self.PLANT_RECEIVE_MATERIAL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="POA" EntityType="Self.POA" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="POA_DELEGATION" EntityType="Self.POA_DELEGATION" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="POA_EXCISER" EntityType="Self.POA_EXCISER" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="POA_MAP" EntityType="Self.POA_MAP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="POA_SK" EntityType="Self.POA_SK" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PRINT_HISTORY" EntityType="Self.PRINT_HISTORY" Schema="dbo" store:Type="Tables" />
@@ -3796,6 +3818,10 @@
           <EntitySet Name="ZAIDM_EX_PCODE" EntityType="Self.ZAIDM_EX_PCODE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_PRODTYP" EntityType="Self.ZAIDM_EX_PRODTYP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_SERIES" EntityType="Self.ZAIDM_EX_SERIES" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__POA_EXCIS__POA_I__00FF1D08" Association="Self.FK__POA_EXCIS__POA_I__00FF1D08">
+            <End Role="POA" EntitySet="POA" />
+            <End Role="POA_EXCISER" EntitySet="POA_EXCISER" />
+          </AssociationSet>
           <AssociationSet Name="FK_BACK1_CK5" Association="Self.FK_BACK1_CK5">
             <End Role="CK5" EntitySet="CK5" />
             <End Role="BACK1" EntitySet="BACK1" />
@@ -5291,6 +5317,11 @@
             <End Role="EX_GROUP_TYPE" EntitySet="EX_GROUP_TYPE" />
             <End Role="QUOTA_MONITORING" EntitySet="QUOTA_MONITORING" />
           </AssociationSet>
+          <EntitySet Name="POA_EXCISER" EntityType="EMSModel.POA_EXCISER" />
+          <AssociationSet Name="FK__POA_EXCIS__POA_I__00FF1D08" Association="EMSModel.FK__POA_EXCIS__POA_I__00FF1D08">
+            <End Role="POA" EntitySet="POA" />
+            <End Role="POA_EXCISER" EntitySet="POA_EXCISER" />
+          </AssociationSet>
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -6696,6 +6727,7 @@
           <NavigationProperty Name="PBCK7" Relationship="EMSModel.FK_PBCK7_POA" FromRole="POA" ToRole="PBCK7" />
           <NavigationProperty Name="PBCK4" Relationship="EMSModel.FK_PBCK4_POA" FromRole="POA" ToRole="PBCK4" />
           <NavigationProperty Name="PBCK3" Relationship="EMSModel.FK_PBCK3_POA" FromRole="POA" ToRole="PBCK3" />
+          <NavigationProperty Name="POA_EXCISER" Relationship="EMSModel.FK__POA_EXCIS__POA_I__00FF1D08" FromRole="POA" ToRole="POA_EXCISER" />
           </EntityType>
         <EntityType Name="POA_MAP">
           <Key>
@@ -9642,6 +9674,28 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="POA_EXCISER">
+          <Key>
+            <PropertyRef Name="EXCISER_ID" />
+            <PropertyRef Name="POA_ID" />
+          </Key>
+          <Property Name="EXCISER_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="POA_ID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IS_ACTIVE_EXCISER" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="POA" Relationship="EMSModel.FK__POA_EXCIS__POA_I__00FF1D08" FromRole="POA_EXCISER" ToRole="POA" />
+        </EntityType>
+        <Association Name="FK__POA_EXCIS__POA_I__00FF1D08">
+          <End Type="EMSModel.POA" Role="POA" Multiplicity="1" />
+          <End Type="EMSModel.POA_EXCISER" Role="POA_EXCISER" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="POA">
+              <PropertyRef Name="POA_ID" />
+            </Principal>
+            <Dependent Role="POA_EXCISER">
+              <PropertyRef Name="POA_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -11377,6 +11431,15 @@
                 <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
                 <ScalarProperty Name="MONITORING_ID" ColumnName="MONITORING_ID" />
                 <ScalarProperty Name="MONITORING_DETAIL_ID" ColumnName="MONITORING_DETAIL_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="POA_EXCISER">
+            <EntityTypeMapping TypeName="EMSModel.POA_EXCISER">
+              <MappingFragment StoreEntitySet="POA_EXCISER">
+                <ScalarProperty Name="IS_ACTIVE_EXCISER" ColumnName="IS_ACTIVE_EXCISER" />
+                <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
+                <ScalarProperty Name="EXCISER_ID" ColumnName="EXCISER_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -286,6 +286,8 @@
         <AssociationConnector Association="EMSModel.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING" />
         <AssociationConnector Association="EMSModel.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING_DETAIL" />
         <AssociationConnector Association="EMSModel.FK_QUOTA_MONITORING_EX_GROUP_TYPE" />
+        <EntityTypeShape EntityType="EMSModel.POA_EXCISER" Width="1.5" PointX="5.875" PointY="28.375" />
+        <AssociationConnector Association="EMSModel.FK__POA_EXCIS__POA_I__00FF1D08" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

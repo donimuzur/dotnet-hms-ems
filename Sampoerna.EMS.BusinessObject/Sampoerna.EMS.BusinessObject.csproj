@@ -461,6 +461,9 @@
     <Compile Include="POA_DELEGATION.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="POA_EXCISER.cs">
+      <DependentUpon>EMSEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="POA_MAP.cs">
       <DependentUpon>EMSEntities.tt</DependentUpon>
     </Compile>

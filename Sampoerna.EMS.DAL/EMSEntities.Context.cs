@@ -131,5 +131,6 @@ namespace Sampoerna.EMS.BusinessObject
         public virtual DbSet<MONTH_CLOSING_DOCUMENT> MONTH_CLOSING_DOCUMENT { get; set; }
         public virtual DbSet<QUOTA_MONITORING> QUOTA_MONITORING { get; set; }
         public virtual DbSet<QUOTA_MONITORING_DETAIL> QUOTA_MONITORING_DETAIL { get; set; }
+        public virtual DbSet<POA_EXCISER> POA_EXCISER { get; set; }
     }
 }
