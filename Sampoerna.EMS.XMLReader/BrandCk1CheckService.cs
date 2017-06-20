@@ -102,6 +102,9 @@ namespace Sampoerna.EMS.XMLReader
             }
         }
 
-//        private void ProcessDataToEmail(List<ZAIDM_EX_BRAND> )
+        private void ProcessDataToEmail(List<InvalidBrandByCk1ForEmail> invalidCk1List)
+        {
+            //do email things here
+        }
     }
 }
