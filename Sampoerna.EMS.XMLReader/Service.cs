@@ -251,7 +251,12 @@ namespace Sampoerna.EMS.XMLReader
             if (isDaily != SchedulerEnums.Schedule.Daily)
             {
                 orderedFile = OrderFile();
-
+                if (isDaily == SchedulerEnums.Schedule.DailyOnce)
+                {
+                    //Daily Once
+                    var ck1Check = new BrandCk1CheckService();
+                    ck1Check.BrandCheckProcessCk1();
+                }
             }
             else
             {
@@ -279,7 +284,7 @@ namespace Sampoerna.EMS.XMLReader
                         }
                         else
                         {
-                            //Dail    
+                            
                         }
 
                         if (reader != null)

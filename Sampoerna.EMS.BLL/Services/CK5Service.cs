@@ -273,6 +273,34 @@ namespace Sampoerna.EMS.BLL.Services
             return _repository.Get(queryFilterCk5, null, "CK5_MATERIAL").ToList();
         }
 
+        public List<CK5_MATERIAL> GetLastXMonthsCk5(int month, bool getBeforeData = false)
+        {
+            DateTime monthfilter = DateTime.Today.AddMonths(-1 * month);
+
+            List<CK5> ck5List = new List<CK5>();
+
+            if (!getBeforeData)
+            {
+                ck5List =
+                    _repository.Get(x => x.REGISTRATION_DATE >= monthfilter && x.REGISTRATION_DATE <= DateTime.Today, null, "CK5_MATERIAL")
+                        .ToList();
+            }
+            else
+            {
+                ck5List = _repository.Get(x => x.REGISTRATION_DATE < monthfilter, null, "CK5_MATERIAL")
+                        .ToList();
+            }
+
+
+            List<CK5_MATERIAL> ck5Items = new List<CK5_MATERIAL>();
+            foreach (var ck5 in ck5List)
+            {
+                ck5Items.AddRange(ck5.CK5_MATERIAL);
+            }
+
+            return ck5Items;
+        }
+
         
     }
 

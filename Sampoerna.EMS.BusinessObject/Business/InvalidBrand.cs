@@ -31,7 +31,9 @@ namespace Sampoerna.EMS.BusinessObject.Business
     {
         public string FaCode { get; set; }
         public string Werks { get; set; }
-        public string StickerCode { get; set; }
+        public string BrandCe { get; set; }
+        public string Hje { get; set; }
+        public string Tariff { get; set; }
 
         public CK1 LastCk1 { get; set; }
     }

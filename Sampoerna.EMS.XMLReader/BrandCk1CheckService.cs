@@ -93,8 +93,10 @@ namespace Sampoerna.EMS.XMLReader
                         invalidBrand.Add(new InvalidCk1Brand()
                         {
                             FaCode = zaidmExBrand.FA_CODE,
-                            Werks = zaidmExBrand.WERKS,
-                            StickerCode = zaidmExBrand.STICKER_CODE,
+                            Werks = zaidmExBrand.WERKS + " - " + zaidmExBrand.T001W.NAME1,
+                            BrandCe = zaidmExBrand.BRAND_CE,
+                            Hje = zaidmExBrand.HJE_IDR.Value.ToString("N2"),
+                            Tariff = zaidmExBrand.TARIFF.Value.ToString("N2"),
                             LastCk1 = lastCk1
                         });
                     }
@@ -118,46 +120,45 @@ namespace Sampoerna.EMS.XMLReader
         private void ProcessDataToEmail(List<InvalidBrandByCk1ForEmail> invalidCk1List)
         {
             //do email things here
-            foreach (var invalidBrandByCk1ForEmail in invalidCk1List)
+            var success = false;
+            var mailNotif = ProcessEmailQuotaNotification(invalidCk1List);
+            if (mailNotif != null)
             {
-                
-                if (invalidBrandByCk1ForEmail.userTo.Count > 0)
+                if (mailNotif.IsCCExist)
                 {
-                    var success = false;
-                    var mailNotif = ProcessEmailQuotaNotification(invalidBrandByCk1ForEmail);
-                    if (mailNotif != null)
-                    {
-                        if (mailNotif.IsCCExist)
-                        {
-                            success = _messageService.SendEmailToListWithCC(mailNotif.To, mailNotif.CC, mailNotif.Subject, mailNotif.Body, false);
-                        }
-                        else
-                        {
-                            success = _messageService.SendEmailToList(mailNotif.To, mailNotif.Subject, mailNotif.Body, false);
-                        }
-                        var emailStatus = success ? Core.Enums.EmailStatus.Sent : Core.Enums.EmailStatus.NotSent;
-                        
-                    }
+                    success = _messageService.SendEmailToListWithCC(mailNotif.To, mailNotif.CC, mailNotif.Subject, mailNotif.Body, false);
                 }
+                else
+                {
+                    success = _messageService.SendEmailToList(mailNotif.To, mailNotif.Subject, mailNotif.Body, false);
+                }
+                var emailStatus = success ? Core.Enums.EmailStatus.Sent : Core.Enums.EmailStatus.NotSent;
+
             }
         }
 
-        private MailNotification ProcessEmailQuotaNotification(InvalidBrandByCk1ForEmail invalidCk1)
+        private MailNotification ProcessEmailQuotaNotification(List<InvalidBrandByCk1ForEmail> invalidCk1List)
         {
             var bodyMail = new StringBuilder();
             var rc = new MailNotification();
+            var toList = new List<String>();
 
-            rc.Subject = "Brand " + invalidCk1.BrandName + " Never used on any CK1 in the last 5 months.";
+            foreach (var invalidCk1 in invalidCk1List)
+            {
+                toList.AddRange(invalidCk1.userTo.Where(x => x.EMAIL != "").Select(x => x.EMAIL).ToList());
+            }
+
+            rc.Subject = "Brands Never used on any CK-1 (domestic) in the last 5 months.";
             bodyMail.Append("Dear Team,<br />");
 
-            bodyMail.Append("Kindly be informed, " + rc.Subject + ". <br />");
+            bodyMail.Append("Kindly be informed, brands below are Never used on any CK-1 (domestic) in the last 5 months. <br />");
 
-            bodyMail.Append(BuildBodyMailForQuotaNotification(invalidCk1));
+            bodyMail.Append(BuildBodyMailForQuotaNotification(invalidCk1List));
 
-            rc.To.AddRange(invalidCk1.userTo.Select(x => x.EMAIL).ToList());
+            rc.To.AddRange(toList.Distinct());
 
             rc.Body = bodyMail.ToString();
-            foreach (var controller in invalidCk1.userCc)
+            foreach (var controller in invalidCk1List.FirstOrDefault().userCc)
             {
                 rc.IsCCExist = true;
                 rc.CC.Add(controller.EMAIL);
@@ -166,42 +167,46 @@ namespace Sampoerna.EMS.XMLReader
             return rc;
         }
 
-        private string BuildBodyMailForQuotaNotification(InvalidBrandByCk1ForEmail invalidCk1)
+        private string BuildBodyMailForQuotaNotification(List<InvalidBrandByCk1ForEmail> invalidCk1List)
         {
             var bodyMail = new StringBuilder();
             //var supplier = dataMonitoring.SUPPLIER_WERKS;
             bodyMail.Append("<table style='border-collapse: collapse; border: 1px solid black;'>" +
                             "<tr>" +
-                            "<th style='border: 1px solid black;'>Fa Code </th>" +
                             "<th style='border: 1px solid black;'>Plant</th>" +
-                            "<th style='border: 1px solid black;'>Sticker Code</th>" +
+                            "<th style='border: 1px solid black;'>FA Code </th>" +
+                            "<th style='border: 1px solid black;'>Brand Description</th>" +
+                            "<th style='border: 1px solid black;'>HJE</th>" +
+                            "<th style='border: 1px solid black;'>Tariff</th>" +
                             "<th style='border: 1px solid black;'>CK1 Number</th>" +
                             "<th style='border: 1px solid black;'>Ck1 Date</th>" +
                             "</tr>");
-            foreach (var brand in invalidCk1.BrandList)
-            {
-                bodyMail.Append("<tr>" +
-                                "<td style='border: 1px solid black;'>" + brand.FaCode + "</td>" +
-                                "<td style='border: 1px solid black;'>" + brand.Werks + "</td>" +
-                                "<td style='border: 1px solid black;'>" + brand.StickerCode + "</td>");
-                if (brand.LastCk1 != null)
+
+            foreach (var invalidCk1 in invalidCk1List) { 
+                foreach (var brand in invalidCk1.BrandList)
                 {
-                    bodyMail.Append(
-                        "<td style='border: 1px solid black;'>" + brand.LastCk1.CK1_NUMBER + "</td>" +
-                        "<td style='border: 1px solid black;'>" + brand.LastCk1.ORDER_DATE + "</td>" +
-                        "</tr>");
-                }
-                else
-                {
-                    bodyMail.Append(
-                        "<td style='border: 1px solid black;' colspan='2'>No Ck1 Data found</td>" +
+                    bodyMail.Append("<tr>" +
+                                    "<td style='border: 1px solid black;'>" + brand.Werks + "</td>" +
+                                    "<td style='border: 1px solid black;'>" + brand.FaCode + "</td>" +
+                                    "<td style='border: 1px solid black;'>" + brand.BrandCe + "</td>" +
+                                    "<td style='border: 1px solid black;'>" + brand.Hje + "</td>" +
+                                    "<td style='border: 1px solid black;'>" + brand.Tariff + "</td>");
+                    if (brand.LastCk1 != null)
+                    {
+                        bodyMail.Append(
+                            "<td style='border: 1px solid black;'>" + brand.LastCk1.CK1_NUMBER + "</td>" +
+                            "<td style='border: 1px solid black;'>" + brand.LastCk1.ORDER_DATE.Value.ToString("dd MMM yyyy") + "</td>" +
+                            "</tr>");
+                    }
+                    else
+                    {
+                        bodyMail.Append(
+                            "<td style='border: 1px solid black;' colspan='2'>No Ck1 Data found</td>" +
                         
-                        "</tr>");
+                            "</tr>");
+                    }
                 }
             }
-            
-            
-
 
             bodyMail.Append("</table>");
             bodyMail.AppendLine();
@@ -235,6 +240,77 @@ namespace Sampoerna.EMS.XMLReader
             return excisersList;
         }
 
-        
+
+        public void BrandCheckProcessCk5()
+        {
+            var allActiveBrand = _brandRegistrationService.GetAllActiveBrand("02"); //domestic is "01" , export is "02"
+            var allLastCk1ItemXmonths = _ck1Services.GetLastXMonthsCk1(xMonth);
+
+            var allCk1ItemCode = allLastCk1ItemXmonths.Select(x => x.FA_CODE + "-" + x.WERKS + "-" + x.MATERIAL_ID).ToList();
+
+            var brandSoonInvalidTemp =
+                allActiveBrand.Where(x => !allCk1ItemCode.Contains((x.FA_CODE + "-" + x.WERKS + "-" + x.STICKER_CODE)))
+                    .ToList();
+
+
+            var brandNameSoonInvalid = brandSoonInvalidTemp.Select(x => x.BRAND_CE).Distinct().ToList();
+
+            var brandSoonInvalid = brandSoonInvalidTemp.Where(x => brandNameSoonInvalid.Contains(x.BRAND_CE)).ToList();
+
+            var brandSoonInvalidFinal = brandSoonInvalid.Where(x => !allCk1ItemCode.Contains((x.FA_CODE + "-" + x.WERKS + "-" + x.STICKER_CODE)));
+
+            var allPreviousCk1ItemXmonths = _ck1Services.GetLastXMonthsCk1(xMonth, true);
+
+            //Dictionary<ZAIDM_EX_BRAND,List<CK1>> dictBrandCk1 = new Dictionary<ZAIDM_EX_BRAND, List<CK1>>();
+            List<InvalidBrandByCk1ForEmail> invalidCk1List = new List<InvalidBrandByCk1ForEmail>();
+
+            var controllers = GetControllers();
+            foreach (var brandInvalid in brandNameSoonInvalid)
+            {
+
+
+                var invalidCk1 = invalidCk1List.FirstOrDefault(x => x.BrandName == brandInvalid);
+
+
+                if (invalidCk1 == null)
+                {
+                    var brandList = brandSoonInvalidFinal.Where(x => x.BRAND_CE == brandInvalid);
+                    List<InvalidCk1Brand> invalidBrand = new List<InvalidCk1Brand>();
+                    foreach (var zaidmExBrand in brandList)
+                    {
+                        var ck1IdList = allPreviousCk1ItemXmonths.Where(x => x.FA_CODE == zaidmExBrand.FA_CODE
+                                                                             && x.WERKS == zaidmExBrand.WERKS
+                                                                             && x.MATERIAL_ID == zaidmExBrand.STICKER_CODE
+                                                                             && x.CK1_ID.HasValue
+                                                                             )
+                            .Select(x => x.CK1_ID.Value)
+                            .ToList();
+                        var lastCk1 = _ck1Services.GetCk1ByListContainIds(ck1IdList).OrderByDescending(x => x.ORDER_DATE).FirstOrDefault();
+                        invalidBrand.Add(new InvalidCk1Brand()
+                        {
+                            FaCode = zaidmExBrand.FA_CODE,
+                            Werks = zaidmExBrand.WERKS,
+                            BrandCe = zaidmExBrand.BRAND_CE,
+                            Hje = zaidmExBrand.HJE_IDR.Value.ToString("N2"),
+                            Tariff = zaidmExBrand.TARIFF.Value.ToString("N2"),
+                            LastCk1 = lastCk1
+                        });
+                    }
+
+                    invalidCk1 = new InvalidBrandByCk1ForEmail()
+                    {
+                        BrandName = brandInvalid,
+                        BrandList = invalidBrand
+                    };
+
+                    invalidCk1List.Add(invalidCk1);
+                    invalidCk1.userCc = controllers;
+                    var listPlantBrand = brandList.Select(x => x.WERKS).Distinct().ToList();
+                    invalidCk1.userTo = GetPoaExcisersByPlant(listPlantBrand);
+                }
+            }
+
+            ProcessDataToEmail(invalidCk1List);
+        }
     }
 }

@@ -98,7 +98,7 @@ namespace Sampoerna.EMS.BLL.Services
 
         public List<ZAIDM_EX_BRAND> GetAllActiveBrand(string market)
         {
-            return  _repository.Get(x=> x.STATUS.HasValue && x.STATUS.Value && x.MARKET_ID == market).ToList();
+            return _repository.Get(x => x.STATUS.HasValue && x.STATUS.Value && x.MARKET_ID == market, null, "T001W").ToList();
         }
 
 

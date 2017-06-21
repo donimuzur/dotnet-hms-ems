@@ -33,6 +33,6 @@ namespace Sampoerna.EMS.Contract.Services
 
         List<CK5> GetCk5ForLack1DetailEa(Ck5GetForLack1DetailEa input);
 
-        
+        List<CK5_MATERIAL> GetLastXMonthsCk5(int month, bool getBeforeData = false);
     }
 }
