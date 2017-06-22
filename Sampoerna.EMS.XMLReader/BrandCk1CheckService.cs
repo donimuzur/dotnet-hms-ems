@@ -119,21 +119,24 @@ namespace Sampoerna.EMS.XMLReader
 
         private void ProcessDataToEmail(List<InvalidBrandByCk1ForEmail> invalidCk1List)
         {
-            //do email things here
-            var success = false;
-            var mailNotif = ProcessEmailQuotaNotification(invalidCk1List);
-            if (mailNotif != null)
+            if (invalidCk1List.Count > 0)
             {
-                if (mailNotif.IsCCExist)
+                //do email things here
+                var success = false;
+                var mailNotif = ProcessEmailQuotaNotification(invalidCk1List);
+                if (mailNotif != null)
                 {
-                    success = _messageService.SendEmailToListWithCC(mailNotif.To, mailNotif.CC, mailNotif.Subject, mailNotif.Body, false);
-                }
-                else
-                {
-                    success = _messageService.SendEmailToList(mailNotif.To, mailNotif.Subject, mailNotif.Body, false);
-                }
-                var emailStatus = success ? Core.Enums.EmailStatus.Sent : Core.Enums.EmailStatus.NotSent;
+                    if (mailNotif.IsCCExist)
+                    {
+                        success = _messageService.SendEmailToListWithCC(mailNotif.To, mailNotif.CC, mailNotif.Subject, mailNotif.Body, false);
+                    }
+                    else
+                    {
+                        success = _messageService.SendEmailToList(mailNotif.To, mailNotif.Subject, mailNotif.Body, false);
+                    }
+                    var emailStatus = success ? Core.Enums.EmailStatus.Sent : Core.Enums.EmailStatus.NotSent;
 
+                }
             }
         }
 
@@ -179,7 +182,7 @@ namespace Sampoerna.EMS.XMLReader
                             "<th style='border: 1px solid black;'>HJE</th>" +
                             "<th style='border: 1px solid black;'>Tariff</th>" +
                             "<th style='border: 1px solid black;'>CK1 Number</th>" +
-                            "<th style='border: 1px solid black;'>Ck1 Date</th>" +
+                            "<th style='border: 1px solid black;'>CK1 Date</th>" +
                             "</tr>");
 
             foreach (var invalidCk1 in invalidCk1List) { 

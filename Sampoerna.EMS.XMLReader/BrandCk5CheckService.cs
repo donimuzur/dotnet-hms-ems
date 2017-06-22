@@ -22,7 +22,6 @@ namespace Sampoerna.EMS.XMLReader
         public ILogger logger;
         public IUnitOfWork uow;
 
-        private ICK1Services _ck1Services;
         private ICK5Service _ck5Services;
         private IBrandRegistrationService _brandRegistrationService;
         private MessageService _messageService;
@@ -45,131 +44,6 @@ namespace Sampoerna.EMS.XMLReader
             _repositoryPOAExciser = uow.GetGenericRepository<POA_EXCISER>();
             _repositoryPoaMapRepository = uow.GetGenericRepository<POA_MAP>();
         }
-
-        private void ProcessDataToEmail(List<InvalidBrandByCk5ForEmail> invalidCk5List)
-        {
-            //do email things here
-            var success = false;
-            var mailNotif = ProcessEmailQuotaNotification(invalidCk5List);
-            if (mailNotif != null)
-            {
-                if (mailNotif.IsCCExist)
-                {
-                    success = _messageService.SendEmailToListWithCC(mailNotif.To, mailNotif.CC, mailNotif.Subject, mailNotif.Body, false);
-                }
-                else
-                {
-                    success = _messageService.SendEmailToList(mailNotif.To, mailNotif.Subject, mailNotif.Body, false);
-                }
-                var emailStatus = success ? Core.Enums.EmailStatus.Sent : Core.Enums.EmailStatus.NotSent;
-
-            }
-        }
-
-        private MailNotification ProcessEmailQuotaNotification(List<InvalidBrandByCk5ForEmail> invalidCk5List)
-        {
-            var bodyMail = new StringBuilder();
-            var rc = new MailNotification();
-            var toList = new List<String>();
-
-            foreach (var invalidCk1 in invalidCk5List)
-            {
-                toList.AddRange(invalidCk1.userTo.Where(x => x.EMAIL != "").Select(x => x.EMAIL).ToList());
-            }
-
-            rc.Subject = "Brands Never used on any CK-1 (domestic) in the last 5 months.";
-            bodyMail.Append("Dear Team,<br />");
-
-            bodyMail.Append("Kindly be informed, brands below are Never used on any CK-1 (domestic) in the last 5 months. <br />");
-
-            bodyMail.Append(BuildBodyMailForQuotaNotification(invalidCk5List));
-
-            rc.To.AddRange(toList.Distinct());
-
-            rc.Body = bodyMail.ToString();
-            foreach (var controller in invalidCk5List.FirstOrDefault().userCc)
-            {
-                rc.IsCCExist = true;
-                rc.CC.Add(controller.EMAIL);
-            }
-
-            return rc;
-        }
-
-        private string BuildBodyMailForQuotaNotification(List<InvalidBrandByCk5ForEmail> invalidCk5List)
-        {
-            var bodyMail = new StringBuilder();
-            //var supplier = dataMonitoring.SUPPLIER_WERKS;
-            bodyMail.Append("<table style='border-collapse: collapse; border: 1px solid black;'>" +
-                            "<tr>" +
-                            "<th style='border: 1px solid black;'>Plant</th>" +
-                            "<th style='border: 1px solid black;'>FA Code </th>" +
-                            "<th style='border: 1px solid black;'>Brand Description</th>" +
-                            "<th style='border: 1px solid black;'>HJE</th>" +
-                            "<th style='border: 1px solid black;'>Tariff</th>" +
-                            "<th style='border: 1px solid black;'>CK1 Number</th>" +
-                            "<th style='border: 1px solid black;'>Ck1 Date</th>" +
-                            "</tr>");
-
-            foreach (var invalidCk5 in invalidCk5List)
-            {
-                foreach (var brand in invalidCk5.BrandList)
-                {
-                    bodyMail.Append("<tr>" +
-                                    "<td style='border: 1px solid black;'>" + brand.Werks + "</td>" +
-                                    "<td style='border: 1px solid black;'>" + brand.FaCode + "</td>" +
-                                    "<td style='border: 1px solid black;'>" + brand.BrandCe + "</td>" +
-                                    "<td style='border: 1px solid black;'>" + brand.Hje + "</td>" +
-                                    "<td style='border: 1px solid black;'>" + brand.Tariff + "</td>");
-                    if (brand.LastCk5 != null)
-                    {
-                        bodyMail.Append(
-                            "<td style='border: 1px solid black;'>" + brand.LastCk5.SUBMISSION_NUMBER + "</td>" +
-                            "<td style='border: 1px solid black;'>" + brand.LastCk5.REGISTRATION_DATE.Value.ToString("dd MMM yyyy") + "</td>" +
-                            "</tr>");
-                    }
-                    else
-                    {
-                        bodyMail.Append(
-                            "<td style='border: 1px solid black;' colspan='2'>-</td>" +
-
-                            "</tr>");
-                    }
-                }
-            }
-
-            bodyMail.Append("</table>");
-            bodyMail.AppendLine();
-            bodyMail.Append("<br />Regards,<br />");
-
-            return bodyMail.ToString();
-        }
-
-        private List<USER> GetControllers()
-        {
-            var controllersList = new List<USER>();
-
-            var data = _repositoryUser.Get(x => (!x.IS_ACTIVE.HasValue || x.IS_ACTIVE != 0) && x.BROLE_MAP.Any(y => y.ROLEID == Sampoerna.EMS.Core.Enums.UserRole.Controller && y.MSACCT.ToLower() == x.USER_ID.ToLower()), null, "BROLE_MAP").ToList();
-
-
-            controllersList.AddRange(data);
-            return controllersList;
-        }
-
-        private List<USER> GetPoaExcisersByPlant(List<string> werks)
-        {
-            var excisersList = new List<USER>();
-
-            var data = _repositoryPOAExciser.Get(null, null, "").Select(x => x.POA_ID.ToUpper()).ToList();
-            var poaByPlant =
-                _repositoryPoaMapRepository.Get(x => werks.Contains(x.WERKS) && data.Contains(x.POA_ID.ToUpper()), null, "")
-                    .Select(x => x.POA_ID.ToUpper())
-                    .ToList();
-            excisersList = _repositoryUser.Get(x => poaByPlant.Contains(x.USER_ID), null, "").ToList();
-
-            return excisersList;
-        }
-
 
         public void BrandCheckProcessCk5()
         {
@@ -239,6 +113,133 @@ namespace Sampoerna.EMS.XMLReader
             }
 
             ProcessDataToEmail(invalidCk5List);
+        }
+
+        private void ProcessDataToEmail(List<InvalidBrandByCk5ForEmail> invalidCk5List)
+        {
+            if (invalidCk5List.Count > 0)
+            {
+                //do email things here
+                var success = false;
+                var mailNotif = ProcessEmailQuotaNotification(invalidCk5List);
+                if (mailNotif != null)
+                {
+                    if (mailNotif.IsCCExist)
+                    {
+                        success = _messageService.SendEmailToListWithCC(mailNotif.To, mailNotif.CC, mailNotif.Subject, mailNotif.Body, false);
+                    }
+                    else
+                    {
+                        success = _messageService.SendEmailToList(mailNotif.To, mailNotif.Subject, mailNotif.Body, false);
+                    }
+                    var emailStatus = success ? Core.Enums.EmailStatus.Sent : Core.Enums.EmailStatus.NotSent;
+
+                }
+            }
+        }
+
+        private MailNotification ProcessEmailQuotaNotification(List<InvalidBrandByCk5ForEmail> invalidCk5List)
+        {
+            var bodyMail = new StringBuilder();
+            var rc = new MailNotification();
+            var toList = new List<String>();
+
+            foreach (var invalidCk5 in invalidCk5List)
+            {
+                toList.AddRange(invalidCk5.userTo.Where(x => x.EMAIL != "").Select(x => x.EMAIL).ToList());
+            }
+
+            rc.Subject = "Brands Never used on any CK-5 (export) in the last 5 months.";
+            bodyMail.Append("Dear Team,<br />");
+
+            bodyMail.Append("Kindly be informed, brands below are Never used on any CK-5 (export) in the last 5 months. <br />");
+
+            bodyMail.Append(BuildBodyMailForQuotaNotification(invalidCk5List));
+
+            rc.To.AddRange(toList.Distinct());
+
+            rc.Body = bodyMail.ToString();
+            foreach (var controller in invalidCk5List.FirstOrDefault().userCc)
+            {
+                rc.IsCCExist = true;
+                rc.CC.Add(controller.EMAIL);
+            }
+
+            return rc;
+        }
+
+        private string BuildBodyMailForQuotaNotification(List<InvalidBrandByCk5ForEmail> invalidCk5List)
+        {
+            var bodyMail = new StringBuilder();
+            //var supplier = dataMonitoring.SUPPLIER_WERKS;
+            bodyMail.Append("<table style='border-collapse: collapse; border: 1px solid black;'>" +
+                            "<tr>" +
+                            "<th style='border: 1px solid black;'>Plant</th>" +
+                            "<th style='border: 1px solid black;'>FA Code </th>" +
+                            "<th style='border: 1px solid black;'>Brand Description</th>" +
+                            "<th style='border: 1px solid black;'>HJE</th>" +
+                            "<th style='border: 1px solid black;'>Tariff</th>" +
+                            "<th style='border: 1px solid black;'>CK5 Number</th>" +
+                            "<th style='border: 1px solid black;'>Registration Date</th>" +
+                            "</tr>");
+
+            foreach (var invalidCk5 in invalidCk5List)
+            {
+                foreach (var brand in invalidCk5.BrandList)
+                {
+                    bodyMail.Append("<tr>" +
+                                    "<td style='border: 1px solid black;'>" + brand.Werks + "</td>" +
+                                    "<td style='border: 1px solid black;'>" + brand.FaCode + "</td>" +
+                                    "<td style='border: 1px solid black;'>" + brand.BrandCe + "</td>" +
+                                    "<td style='border: 1px solid black;'>" + brand.Hje + "</td>" +
+                                    "<td style='border: 1px solid black;'>" + brand.Tariff + "</td>");
+                    if (brand.LastCk5 != null)
+                    {
+                        bodyMail.Append(
+                            "<td style='border: 1px solid black;'>" + brand.LastCk5.SUBMISSION_NUMBER + "</td>" +
+                            "<td style='border: 1px solid black;'>" + brand.LastCk5.REGISTRATION_DATE.Value.ToString("dd MMM yyyy") + "</td>" +
+                            "</tr>");
+                    }
+                    else
+                    {
+                        bodyMail.Append(
+                            "<td style='border: 1px solid black;' colspan='2'>-</td>" +
+
+                            "</tr>");
+                    }
+                }
+            }
+
+            bodyMail.Append("</table>");
+            bodyMail.AppendLine();
+            bodyMail.Append("<br />Regards,<br />");
+
+            return bodyMail.ToString();
+        }
+
+        private List<USER> GetControllers()
+        {
+            var controllersList = new List<USER>();
+
+            var data = _repositoryUser.Get(x => (!x.IS_ACTIVE.HasValue || x.IS_ACTIVE != 0) && x.BROLE_MAP.Any(y => y.ROLEID == Sampoerna.EMS.Core.Enums.UserRole.Controller && y.MSACCT.ToLower() == x.USER_ID.ToLower()), null, "BROLE_MAP").ToList();
+
+
+            controllersList.AddRange(data);
+            return controllersList;
+        }
+
+        private List<USER> GetPoaExcisersByPlant(List<string> werks)
+        {
+            var excisersList = new List<USER>();
+
+            var data = _repositoryPOAExciser.Get(null, null, "").Select(x => x.POA_ID.ToUpper()).ToList();
+            var poaByPlant =
+                _repositoryPoaMapRepository.Get(x => werks.Contains(x.WERKS) && data.Contains(x.POA_ID.ToUpper()), null, "")
+                    .Select(x => x.POA_ID.ToUpper())
+                    .ToList();
+            excisersList = _repositoryUser.Get(x => poaByPlant.Contains(x.USER_ID), null, "").ToList();
+
+            return excisersList;
         }
     }
 }

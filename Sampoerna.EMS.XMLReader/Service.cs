@@ -256,6 +256,9 @@ namespace Sampoerna.EMS.XMLReader
                     //Daily Once
                     var ck1Check = new BrandCk1CheckService();
                     ck1Check.BrandCheckProcessCk1();
+
+                    var ck5Check = new BrandCk5CheckService();
+                    ck5Check.BrandCheckProcessCk5();
                 }
             }
             else
