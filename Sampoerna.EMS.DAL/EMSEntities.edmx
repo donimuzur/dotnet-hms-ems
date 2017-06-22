@@ -1510,6 +1510,7 @@
           <Property Name="PER_CODE_DESC" Type="nvarchar" MaxLength="30" />
           <Property Name="BAHAN_KEMASAN" Type="nvarchar" MaxLength="100" />
           <Property Name="PACKED_ADJUSTED" Type="bit" />
+          <Property Name="IS_SENT_CHECK_BRAND" Type="bit" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_GOODTYP">
           <Key>
@@ -1651,7 +1652,7 @@
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_DELETED" Type="bit" />
         </EntityType>
-        <Association Name="FK__POA_EXCIS__POA_I__00FF1D08">
+        <Association Name="FK__POA_EXCIS__POA_I__2116E6DF">
           <End Role="POA" Type="Self.POA" Multiplicity="1" />
           <End Role="POA_EXCISER" Type="Self.POA_EXCISER" Multiplicity="*" />
           <ReferentialConstraint>
@@ -3818,7 +3819,7 @@
           <EntitySet Name="ZAIDM_EX_PCODE" EntityType="Self.ZAIDM_EX_PCODE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_PRODTYP" EntityType="Self.ZAIDM_EX_PRODTYP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_SERIES" EntityType="Self.ZAIDM_EX_SERIES" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__POA_EXCIS__POA_I__00FF1D08" Association="Self.FK__POA_EXCIS__POA_I__00FF1D08">
+          <AssociationSet Name="FK__POA_EXCIS__POA_I__2116E6DF" Association="Self.FK__POA_EXCIS__POA_I__2116E6DF">
             <End Role="POA" EntitySet="POA" />
             <End Role="POA_EXCISER" EntitySet="POA_EXCISER" />
           </AssociationSet>
@@ -5717,6 +5718,7 @@
               <LongDescription>Packed Adjusted</LongDescription>
             </Documentation>
           </Property>
+          <Property Name="IS_SENT_CHECK_BRAND" Type="Boolean" />
           </EntityType>
         <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET">
           <End Type="EMSModel.ZAIDM_EX_MARKET" Role="ZAIDM_EX_MARKET" Multiplicity="0..1" />
@@ -9883,7 +9885,8 @@
     <EntitySetMapping Name="ZAIDM_EX_BRAND">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.ZAIDM_EX_BRAND)">
         <MappingFragment StoreEntitySet="ZAIDM_EX_BRAND">
-          <ScalarProperty Name="PACKED_ADJUSTED" ColumnName="PACKED_ADJUSTED" />
+          <ScalarProperty Name="IS_SENT_CHECK_BRAND" ColumnName="IS_SENT_CHECK_BRAND" />
+                <ScalarProperty Name="PACKED_ADJUSTED" ColumnName="PACKED_ADJUSTED" />
                 <ScalarProperty Name="BAHAN_KEMASAN" ColumnName="BAHAN_KEMASAN" />
                 <ScalarProperty Name="PER_CODE_DESC" ColumnName="PER_CODE_DESC" />
                 <ScalarProperty Name="WERKS" ColumnName="WERKS" />

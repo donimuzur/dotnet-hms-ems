@@ -81,12 +81,12 @@ namespace Sampoerna.EMS.BLL.Services
            if (!getBeforeData)
            {
                ck1List =
-                   _repository.Get(x => x.ORDER_DATE >= monthfilter && x.ORDER_DATE <= DateTime.Today, null, "CK1_ITEM")
+                   _repository.Get(x => x.CK1_DATE >= monthfilter && x.CK1_DATE <= DateTime.Today, null, "CK1_ITEM")
                        .ToList();
            }
            else
            {
-               ck1List = _repository.Get(x => x.ORDER_DATE < monthfilter, null, "CK1_ITEM")
+               ck1List = _repository.Get(x => x.CK1_DATE < monthfilter, null, "CK1_ITEM")
                        .ToList();
            }
            

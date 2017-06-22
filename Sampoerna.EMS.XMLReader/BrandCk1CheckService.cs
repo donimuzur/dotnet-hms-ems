@@ -52,6 +52,12 @@ namespace Sampoerna.EMS.XMLReader
 
             var allCk1ItemCode = allLastCk1ItemXmonths.Select(x => x.FA_CODE + "-" + x.WERKS + "-" + x.MATERIAL_ID).ToList();
 
+            var brandSoonValidTemp =
+                allActiveBrand.Where(x => allCk1ItemCode.Contains((x.FA_CODE + "-" + x.WERKS + "-" + x.STICKER_CODE)))
+                    .ToList();
+
+            DeleteFlagSentForBrand(brandSoonValidTemp);
+
             var brandSoonInvalidTemp =
                 allActiveBrand.Where(x => !allCk1ItemCode.Contains((x.FA_CODE + "-" + x.WERKS + "-" + x.STICKER_CODE)))
                     .ToList();
@@ -89,14 +95,17 @@ namespace Sampoerna.EMS.XMLReader
                                                                              )
                             .Select(x =>  x.CK1_ID.Value)
                             .ToList();
-                        var lastCk1 = _ck1Services.GetCk1ByListContainIds(ck1IdList).OrderByDescending(x=> x.ORDER_DATE).FirstOrDefault();
+                        var lastCk1 = _ck1Services.GetCk1ByListContainIds(ck1IdList).OrderByDescending(x=> x.CK1_DATE).FirstOrDefault();
                         invalidBrand.Add(new InvalidCk1Brand()
                         {
                             FaCode = zaidmExBrand.FA_CODE,
                             Werks = zaidmExBrand.WERKS + " - " + zaidmExBrand.T001W.NAME1,
+                            PlantId = zaidmExBrand.WERKS,
+                            StickerCode = zaidmExBrand.STICKER_CODE,
                             BrandCe = zaidmExBrand.BRAND_CE,
                             Hje = zaidmExBrand.HJE_IDR.Value.ToString("N2"),
                             Tariff = zaidmExBrand.TARIFF.Value.ToString("N2"),
+                            SentFlag = zaidmExBrand.IS_SENT_CHECK_BRAND == null ? false : zaidmExBrand.IS_SENT_CHECK_BRAND.Value,
                             LastCk1 = lastCk1
                         });
                     }
@@ -114,17 +123,17 @@ namespace Sampoerna.EMS.XMLReader
                 }
             }
 
-            ProcessDataToEmail(invalidCk1List);
+            ProcessDataToEmail(invalidCk1List, allActiveBrand);
         }
 
-        private void ProcessDataToEmail(List<InvalidBrandByCk1ForEmail> invalidCk1List)
+        private void ProcessDataToEmail(List<InvalidBrandByCk1ForEmail> invalidCk1List, List<ZAIDM_EX_BRAND> allActiveBrand)
         {
             if (invalidCk1List.Count > 0)
             {
                 //do email things here
                 var success = false;
                 var mailNotif = ProcessEmailQuotaNotification(invalidCk1List);
-                if (mailNotif != null)
+                if (mailNotif != null && mailNotif.IsDataExist)
                 {
                     if (mailNotif.IsCCExist)
                     {
@@ -136,6 +145,10 @@ namespace Sampoerna.EMS.XMLReader
                     }
                     var emailStatus = success ? Core.Enums.EmailStatus.Sent : Core.Enums.EmailStatus.NotSent;
 
+                    if (success)
+                    {
+                        SetFlagSentForBrand(invalidCk1List, allActiveBrand);
+                    }
                 }
             }
         }
@@ -167,6 +180,17 @@ namespace Sampoerna.EMS.XMLReader
                 rc.CC.Add(controller.EMAIL);
             }
 
+            foreach (var invalidCk1 in invalidCk1List)
+            {
+                foreach (var brand in invalidCk1.BrandList)
+                {
+                    if (!brand.SentFlag)
+                    {
+                        rc.IsDataExist = true;
+                    }
+                }
+            }
+
             return rc;
         }
 
@@ -188,25 +212,28 @@ namespace Sampoerna.EMS.XMLReader
             foreach (var invalidCk1 in invalidCk1List) { 
                 foreach (var brand in invalidCk1.BrandList)
                 {
-                    bodyMail.Append("<tr>" +
+                    if (!brand.SentFlag)
+                    {
+                        bodyMail.Append("<tr>" +
                                     "<td style='border: 1px solid black;'>" + brand.Werks + "</td>" +
                                     "<td style='border: 1px solid black;'>" + brand.FaCode + "</td>" +
                                     "<td style='border: 1px solid black;'>" + brand.BrandCe + "</td>" +
                                     "<td style='border: 1px solid black;'>" + brand.Hje + "</td>" +
                                     "<td style='border: 1px solid black;'>" + brand.Tariff + "</td>");
-                    if (brand.LastCk1 != null)
-                    {
-                        bodyMail.Append(
-                            "<td style='border: 1px solid black;'>" + brand.LastCk1.CK1_NUMBER + "</td>" +
-                            "<td style='border: 1px solid black;'>" + brand.LastCk1.CK1_DATE.ToString("dd MMM yyyy") + "</td>" +
-                            "</tr>");
-                    }
-                    else
-                    {
-                        bodyMail.Append(
-                            "<td style='border: 1px solid black;' colspan='2'>-</td>" +
-                        
-                            "</tr>");
+                        if (brand.LastCk1 != null)
+                        {
+                            bodyMail.Append(
+                                "<td style='border: 1px solid black;'>" + brand.LastCk1.CK1_NUMBER + "</td>" +
+                                "<td style='border: 1px solid black;'>" + brand.LastCk1.CK1_DATE.ToString("dd MMM yyyy") + "</td>" +
+                                "</tr>");
+                        }
+                        else
+                        {
+                            bodyMail.Append(
+                                "<td style='border: 1px solid black;' colspan='2'>-</td>" +
+
+                                "</tr>");
+                        }
                     }
                 }
             }
@@ -241,6 +268,35 @@ namespace Sampoerna.EMS.XMLReader
             excisersList = _repositoryUser.Get(x => poaByPlant.Contains(x.USER_ID), null, "").ToList();
 
             return excisersList;
+        }
+
+        private void SetFlagSentForBrand(List<InvalidBrandByCk1ForEmail> invalidCk1List, List<ZAIDM_EX_BRAND> allActiveBrand)
+        {
+            foreach (var invalidCk1 in invalidCk1List)
+            {
+                foreach (var brand in invalidCk1.BrandList)
+                {
+                    var item = allActiveBrand.Where(x => x.WERKS == brand.PlantId && x.FA_CODE == brand.FaCode && x.STICKER_CODE == brand.StickerCode).FirstOrDefault();
+
+                    item.IS_SENT_CHECK_BRAND = true;
+
+                    _brandRegistrationService.Save(item);
+                }
+            }
+
+            uow.SaveChanges();
+        }
+
+        private void DeleteFlagSentForBrand(List<ZAIDM_EX_BRAND> allValidBrand)
+        {
+            foreach (var item in allValidBrand)
+            {
+                item.IS_SENT_CHECK_BRAND = false;
+
+                _brandRegistrationService.Save(item);
+            }
+
+            uow.SaveChanges();
         }
     }
 }

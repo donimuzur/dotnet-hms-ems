@@ -52,6 +52,12 @@ namespace Sampoerna.EMS.XMLReader
 
             var allCk5ItemCode = allLastCk5ItemXmonths.Select(x => x.BRAND + "-" + x.PLANT_ID).ToList();
 
+            var brandSoonValidTemp =
+                allActiveBrand.Where(x => allCk5ItemCode.Contains((x.FA_CODE + "-" + x.WERKS)))
+                    .ToList();
+
+            DeleteFlagSentForBrand(brandSoonValidTemp);
+
             var brandSoonInvalidTemp =
                 allActiveBrand.Where(x => !allCk5ItemCode.Contains((x.FA_CODE + "-" + x.WERKS)))
                     .ToList();
@@ -91,10 +97,13 @@ namespace Sampoerna.EMS.XMLReader
                         invalidBrand.Add(new InvalidCk5Brand()
                         {
                             FaCode = zaidmExBrand.FA_CODE,
-                            Werks = zaidmExBrand.WERKS,
+                            Werks = zaidmExBrand.WERKS + " - " + zaidmExBrand.T001W.NAME1,
+                            PlantId = zaidmExBrand.WERKS,
+                            StickerCode = zaidmExBrand.STICKER_CODE,
                             BrandCe = zaidmExBrand.BRAND_CE,
                             Hje = zaidmExBrand.HJE_IDR.Value.ToString("N2"),
                             Tariff = zaidmExBrand.TARIFF.Value.ToString("N2"),
+                            SentFlag = zaidmExBrand.IS_SENT_CHECK_BRAND == null ? false : zaidmExBrand.IS_SENT_CHECK_BRAND.Value,
                             LastCk5 = lastCk5
                         });
                     }
@@ -112,17 +121,17 @@ namespace Sampoerna.EMS.XMLReader
                 }
             }
 
-            ProcessDataToEmail(invalidCk5List);
+            ProcessDataToEmail(invalidCk5List, allActiveBrand);
         }
 
-        private void ProcessDataToEmail(List<InvalidBrandByCk5ForEmail> invalidCk5List)
+        private void ProcessDataToEmail(List<InvalidBrandByCk5ForEmail> invalidCk5List, List<ZAIDM_EX_BRAND> allActiveBrand)
         {
             if (invalidCk5List.Count > 0)
             {
                 //do email things here
                 var success = false;
                 var mailNotif = ProcessEmailQuotaNotification(invalidCk5List);
-                if (mailNotif != null)
+                if (mailNotif != null && mailNotif.IsDataExist)
                 {
                     if (mailNotif.IsCCExist)
                     {
@@ -134,6 +143,10 @@ namespace Sampoerna.EMS.XMLReader
                     }
                     var emailStatus = success ? Core.Enums.EmailStatus.Sent : Core.Enums.EmailStatus.NotSent;
 
+                    if (success)
+                    {
+                        SetFlagSentForBrand(invalidCk5List, allActiveBrand);
+                    }
                 }
             }
         }
@@ -165,6 +178,17 @@ namespace Sampoerna.EMS.XMLReader
                 rc.CC.Add(controller.EMAIL);
             }
 
+            foreach (var invalidCk5 in invalidCk5List)
+            {
+                foreach (var brand in invalidCk5.BrandList)
+                {
+                    if (!brand.SentFlag)
+                    {
+                        rc.IsDataExist = true;
+                    }
+                }
+            }
+
             return rc;
         }
 
@@ -187,25 +211,28 @@ namespace Sampoerna.EMS.XMLReader
             {
                 foreach (var brand in invalidCk5.BrandList)
                 {
-                    bodyMail.Append("<tr>" +
-                                    "<td style='border: 1px solid black;'>" + brand.Werks + "</td>" +
-                                    "<td style='border: 1px solid black;'>" + brand.FaCode + "</td>" +
-                                    "<td style='border: 1px solid black;'>" + brand.BrandCe + "</td>" +
-                                    "<td style='border: 1px solid black;'>" + brand.Hje + "</td>" +
-                                    "<td style='border: 1px solid black;'>" + brand.Tariff + "</td>");
-                    if (brand.LastCk5 != null)
+                    if (!brand.SentFlag)
                     {
-                        bodyMail.Append(
-                            "<td style='border: 1px solid black;'>" + brand.LastCk5.SUBMISSION_NUMBER + "</td>" +
-                            "<td style='border: 1px solid black;'>" + brand.LastCk5.REGISTRATION_DATE.Value.ToString("dd MMM yyyy") + "</td>" +
-                            "</tr>");
-                    }
-                    else
-                    {
-                        bodyMail.Append(
-                            "<td style='border: 1px solid black;' colspan='2'>-</td>" +
+                        bodyMail.Append("<tr>" +
+                                        "<td style='border: 1px solid black;'>" + brand.Werks + "</td>" +
+                                        "<td style='border: 1px solid black;'>" + brand.FaCode + "</td>" +
+                                        "<td style='border: 1px solid black;'>" + brand.BrandCe + "</td>" +
+                                        "<td style='border: 1px solid black;'>" + brand.Hje + "</td>" +
+                                        "<td style='border: 1px solid black;'>" + brand.Tariff + "</td>");
+                        if (brand.LastCk5 != null)
+                        {
+                            bodyMail.Append(
+                                "<td style='border: 1px solid black;'>" + brand.LastCk5.SUBMISSION_NUMBER + "</td>" +
+                                "<td style='border: 1px solid black;'>" + brand.LastCk5.REGISTRATION_DATE.Value.ToString("dd MMM yyyy") + "</td>" +
+                                "</tr>");
+                        }
+                        else
+                        {
+                            bodyMail.Append(
+                                "<td style='border: 1px solid black;' colspan='2'>-</td>" +
 
-                            "</tr>");
+                                "</tr>");
+                        }
                     }
                 }
             }
@@ -240,6 +267,42 @@ namespace Sampoerna.EMS.XMLReader
             excisersList = _repositoryUser.Get(x => poaByPlant.Contains(x.USER_ID), null, "").ToList();
 
             return excisersList;
+        }
+
+        private void SetFlagSentForBrand(List<InvalidBrandByCk5ForEmail> invalidCk5List, List<ZAIDM_EX_BRAND> allActiveBrand)
+        {
+            foreach (var invalidCk5 in invalidCk5List)
+            {
+                foreach (var brand in invalidCk5.BrandList)
+                {
+                    var item = allActiveBrand.Where(x => x.WERKS == brand.PlantId && x.FA_CODE == brand.FaCode && x.STICKER_CODE == brand.StickerCode).FirstOrDefault();
+
+                    item.IS_SENT_CHECK_BRAND = true;
+
+                    _brandRegistrationService.Save(item);
+                }
+            }
+
+            uow.SaveChanges();
+        }
+
+        private void DeleteFlagSentForBrand(List<ZAIDM_EX_BRAND> allValidBrand)
+        {
+            foreach (var item in allValidBrand)
+            {
+                try
+                {
+                    item.IS_SENT_CHECK_BRAND = false;
+
+                    _brandRegistrationService.Save(item);
+                }
+                catch (Exception ex)
+                {
+                    var error = ex.InnerException;
+                }
+            }
+
+            uow.SaveChanges();
         }
     }
 }
