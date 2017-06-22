@@ -7,6 +7,7 @@ using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Contract.Services;
 using Sampoerna.EMS.Utils;
 using Voxteneo.WebComponents.Logger;
+using Enums = Sampoerna.EMS.Core.Enums;
 
 namespace Sampoerna.EMS.BLL.Services
 {
@@ -98,7 +99,9 @@ namespace Sampoerna.EMS.BLL.Services
 
         public List<ZAIDM_EX_BRAND> GetAllActiveBrand(string market)
         {
-            return _repository.Get(x => x.STATUS.HasValue && x.STATUS.Value && x.MARKET_ID == market, null, "T001W").ToList();
+            var goodsType = EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau);
+
+            return _repository.Get(x => x.STATUS.HasValue && x.STATUS.Value && x.EXC_GOOD_TYP == goodsType && x.MARKET_ID == market, null, "T001W").ToList();
         }
 
 

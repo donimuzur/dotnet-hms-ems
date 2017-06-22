@@ -282,12 +282,13 @@ namespace Sampoerna.EMS.BLL.Services
             if (!getBeforeData)
             {
                 ck5List =
-                    _repository.Get(x => x.REGISTRATION_DATE >= monthfilter && x.REGISTRATION_DATE <= DateTime.Today, null, "CK5_MATERIAL")
+                    _repository.Get(x => x.REGISTRATION_DATE >= monthfilter && x.REGISTRATION_DATE <= DateTime.Today
+                                        && x.STATUS_ID == Enums.DocumentStatus.Completed, null, "CK5_MATERIAL")
                         .ToList();
             }
             else
             {
-                ck5List = _repository.Get(x => x.REGISTRATION_DATE < monthfilter, null, "CK5_MATERIAL")
+                ck5List = _repository.Get(x => x.REGISTRATION_DATE < monthfilter && x.STATUS_ID == Enums.DocumentStatus.Completed, null, "CK5_MATERIAL")
                         .ToList();
             }
 
@@ -301,7 +302,10 @@ namespace Sampoerna.EMS.BLL.Services
             return ck5Items;
         }
 
-        
+        public List<CK5> GetCk5ByListContainIds(List<long> listCk5Id)
+        {
+            return _repository.Get(x => listCk5Id.Contains(x.CK5_ID)).ToList();
+        }
     }
 
 }
