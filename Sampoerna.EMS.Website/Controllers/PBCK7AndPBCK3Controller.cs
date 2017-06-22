@@ -2530,7 +2530,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     //model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
                 }
 
-                model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
+                model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck3Status);
                 
                 if (model.Pbck3Status == Enums.DocumentStatus.Completed
                    && CurrentUser.UserRole == Enums.UserRole.Administrator)
@@ -2644,7 +2644,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
 
-                model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
+                model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck3Status);
             }
             catch (Exception ex)
             {
