@@ -282,13 +282,16 @@ namespace Sampoerna.EMS.BLL.Services
             if (!getBeforeData)
             {
                 ck5List =
-                    _repository.Get(x => x.REGISTRATION_DATE >= monthfilter && x.REGISTRATION_DATE <= DateTime.Today
+                    _repository.Get(x => x.REGISTRATION_DATE >= monthfilter && x.REGISTRATION_DATE <= DateTime.Today 
+                                        && x.CK5_TYPE != Enums.CK5Type.MarketReturn
                                         && x.STATUS_ID == Enums.DocumentStatus.Completed, null, "CK5_MATERIAL")
                         .ToList();
             }
             else
             {
-                ck5List = _repository.Get(x => x.REGISTRATION_DATE < monthfilter && x.STATUS_ID == Enums.DocumentStatus.Completed, null, "CK5_MATERIAL")
+                ck5List = _repository.Get(x => x.REGISTRATION_DATE < monthfilter
+                    && x.CK5_TYPE != Enums.CK5Type.MarketReturn
+                    && x.STATUS_ID == Enums.DocumentStatus.Completed, null, "CK5_MATERIAL")
                         .ToList();
             }
 

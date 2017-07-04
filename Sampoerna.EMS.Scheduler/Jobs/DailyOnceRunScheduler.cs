@@ -56,7 +56,7 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 try
                 {
 
-                    logger.Info("Reading XML Daily start on " + DateTime.Now);
+                    logger.Info("Scheduler Daily start on " + DateTime.Now);
                     errorFileList.AddRange(_svc.Run(SchedulerEnums.Schedule.DailyOnce));
                     foreach (var errorFile in errorFileList)
                     {
@@ -73,7 +73,7 @@ namespace Sampoerna.HMS.Scheduler.Jobs
 
                         logger.Error(EmailUtility.Email(body, null));
                     }
-                    logger.Info("Reading XML Daily ended On " + DateTime.Now);
+                    logger.Info("Scheduler Daily ended On " + DateTime.Now);
 
                 }
                 catch (Exception ex)

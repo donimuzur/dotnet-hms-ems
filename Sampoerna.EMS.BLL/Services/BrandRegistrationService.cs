@@ -101,7 +101,7 @@ namespace Sampoerna.EMS.BLL.Services
         {
             var goodsType = EnumHelper.GetDescription(Enums.GoodsType.HasilTembakau);
 
-            return _repository.Get(x => x.STATUS.HasValue && x.STATUS.Value && x.EXC_GOOD_TYP == goodsType && x.MARKET_ID == market, null, "T001W").ToList();
+            return _repository.Get(x => x.STATUS.HasValue && x.STATUS.Value && x.EXC_GOOD_TYP == goodsType && x.MARKET_ID == market, null, "T001W,T001W.ZAIDM_EX_NPPBKC").ToList();
         }
 
 

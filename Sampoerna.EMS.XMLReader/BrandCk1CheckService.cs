@@ -100,6 +100,7 @@ namespace Sampoerna.EMS.XMLReader
                         {
                             FaCode = zaidmExBrand.FA_CODE,
                             Werks = zaidmExBrand.WERKS + " - " + zaidmExBrand.T001W.NAME1,
+                            NppbkcId = zaidmExBrand.T001W.NPPBKC_ID,
                             PlantId = zaidmExBrand.WERKS,
                             StickerCode = zaidmExBrand.STICKER_CODE,
                             BrandCe = zaidmExBrand.BRAND_CE,
@@ -200,13 +201,15 @@ namespace Sampoerna.EMS.XMLReader
             //var supplier = dataMonitoring.SUPPLIER_WERKS;
             bodyMail.Append("<table style='border-collapse: collapse; border: 1px solid black;'>" +
                             "<tr>" +
-                            "<th style='border: 1px solid black;'>Plant</th>" +
-                            "<th style='border: 1px solid black;'>FA Code </th>" +
-                            "<th style='border: 1px solid black;'>Brand Description</th>" +
+                            "<th style='border: 1px solid black; width : 320px'>Plant</th>" +
+                            "<th style='border: 1px solid black;'>NPPBKC</th>" +
+                            "<th style='border: 1px solid black; width : 150px'>FA Code </th>" +
+                            "<th style='border: 1px solid black; width : 400px'>Brand Description</th>" +
                             "<th style='border: 1px solid black;'>HJE</th>" +
                             "<th style='border: 1px solid black;'>Tariff</th>" +
+                            "<th style='border: 1px solid black;'>PO Number</th>" +
                             "<th style='border: 1px solid black;'>CK1 Number</th>" +
-                            "<th style='border: 1px solid black;'>CK1 Date</th>" +
+                            "<th style='border: 1px solid black; width : 120px'>CK1 Date</th>" +
                             "</tr>");
 
             foreach (var invalidCk1 in invalidCk1List) { 
@@ -216,21 +219,24 @@ namespace Sampoerna.EMS.XMLReader
                     {
                         bodyMail.Append("<tr>" +
                                     "<td style='border: 1px solid black;'>" + brand.Werks + "</td>" +
+                                    "<td style='border: 1px solid black; padding : 5px'>" + brand.NppbkcId + "</td>" +
                                     "<td style='border: 1px solid black;'>" + brand.FaCode + "</td>" +
                                     "<td style='border: 1px solid black;'>" + brand.BrandCe + "</td>" +
-                                    "<td style='border: 1px solid black;'>" + brand.Hje + "</td>" +
-                                    "<td style='border: 1px solid black;'>" + brand.Tariff + "</td>");
+                                    "<td style='border: 1px solid black; padding : 5px'>" + brand.Hje + "</td>" +
+                                    "<td style='border: 1px solid black; padding : 5px'>" + brand.Tariff + "</td>");
                         if (brand.LastCk1 != null)
                         {
                             bodyMail.Append(
-                                "<td style='border: 1px solid black;'>" + brand.LastCk1.CK1_NUMBER + "</td>" +
-                                "<td style='border: 1px solid black;'>" + brand.LastCk1.CK1_DATE.ToString("dd MMM yyyy") + "</td>" +
+                                "<td style='border: 1px solid black; padding : 5px'>" + brand.LastCk1.CK1_SAP_NUMBER + "</td>" +
+                                "<td style='border: 1px solid black; padding : 5px'>" + brand.LastCk1.CK1_NUMBER + "</td>" +
+                                
+                                "<td style='border: 1px solid black; padding : 5px'>" + brand.LastCk1.CK1_DATE.ToString("dd MMM yyyy") + "</td>" +
                                 "</tr>");
                         }
                         else
                         {
                             bodyMail.Append(
-                                "<td style='border: 1px solid black;' colspan='2'>-</td>" +
+                                "<td style='border: 1px solid black;' colspan='3'>-</td>" +
 
                                 "</tr>");
                         }
