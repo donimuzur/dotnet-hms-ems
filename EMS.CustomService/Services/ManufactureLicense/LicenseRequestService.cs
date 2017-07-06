@@ -60,7 +60,7 @@ namespace Sampoerna.EMS.CustomService.Services.ManufactureLicense
             return fileExtList;
         }
 
-        public MANUFACTURING_LISENCE_REQUEST InsertLicenseRequest(DateTime reqdate, Int64 IRId, string IRformNumb, Int64 StatusId, string UserId, Int32 UserRole = 0)
+        public MANUFACTURING_LISENCE_REQUEST InsertLicenseRequest(DateTime reqdate, Int64 IRId, string IRformNumb, Int64 StatusId, string UserId, Int32 UserRole = 0, string formNumber = "")
         {
             var licenseReq = new MANUFACTURING_LISENCE_REQUEST();
             try
@@ -73,7 +73,8 @@ namespace Sampoerna.EMS.CustomService.Services.ManufactureLicense
                 //}
                 licenseReq.VR_FORM_ID = IRId;
                 licenseReq.REQUEST_DATE = reqdate;
-                licenseReq.MNF_FORM_NUMBER = GetFormNumber(IRformNumb);
+                //licenseReq.MNF_FORM_NUMBER = GetFormNumber(IRformNumb);
+                licenseReq.MNF_FORM_NUMBER = formNumber;
                 licenseReq.CREATED_BY = UserId;
                 licenseReq.CREATED_DATE = DateTime.Now;
                 licenseReq.LASTAPPROVED_STATUS = StatusId;

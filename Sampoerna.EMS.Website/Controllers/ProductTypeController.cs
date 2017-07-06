@@ -14,6 +14,7 @@ using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Models.Shared;
 using Newtonsoft.Json.Linq;
 using Sampoerna.EMS.BusinessObject.Inputs;
+using Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -25,7 +26,7 @@ namespace Sampoerna.EMS.Website.Controllers
          private SystemReferenceService _refService;
          private IChangesHistoryBLL _changesHistoryBll;
          private IWorkflowHistoryBLL workflowHistoryBLL;
-
+         private ProductDevelopmentService productDevelopmentService;
         public ProductTypeController(IZaidmExProdTypeBLL exProdTypeBll, IChangesHistoryBLL changesHistoryBll, IWorkflowHistoryBLL workflowHistoryBLL, IPageBLL pageBLL)
             : base(pageBLL, Enums.MenuList.ProductType)
         {
@@ -35,6 +36,7 @@ namespace Sampoerna.EMS.Website.Controllers
             this._refService = new SystemReferenceService();
             this._changesHistoryBll = changesHistoryBll;
             this.workflowHistoryBLL = workflowHistoryBLL;
+            this.productDevelopmentService = new ProductDevelopmentService();
         }
 
         #region Local Help
@@ -157,7 +159,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller),
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer && !IsCreatorPRD(CurrentUser.USER_ID) && CurrentUser.UserRole != Enums.UserRole.Controller),
                 ListProductTypes = Mapper.Map<List<ProductTypeFormViewModel>>(
                _productTypeService.GetAll().OrderByDescending(item => item.PROD_CODE)),
                 IsAdminApprover = _refService.IsAdminApprover(CurrentUser.USER_ID)
@@ -184,7 +186,7 @@ namespace Sampoerna.EMS.Website.Controllers
         #region Create
         public ActionResult Create()
         {           
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || IsCreatorPRD(CurrentUser.USER_ID)|| CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 AddMessageInfo("Operation not allowed", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
@@ -200,7 +202,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
-                if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
+                if (CurrentUser.UserRole == Enums.UserRole.Viewer || IsCreatorPRD(CurrentUser.USER_ID) || CurrentUser.UserRole == Enums.UserRole.Controller)
                 {
                     AddMessageInfo("Operation not allowed", Enums.MessageInfoType.Error);
                     return RedirectToAction("Index");
@@ -255,7 +257,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var obj = _productTypeService.Find(id);
             var approvalStatusSubmitted = _refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingAdminApproval).REFF_ID;
             var approvalStatusApproved = _refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Completed).REFF_ID;
-            if (CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
+            if (CurrentUser.UserRole == Enums.UserRole.Viewer || IsCreatorPRD(CurrentUser.USER_ID))//CurrentUser.UserRole == Enums.UserRole.Controller)
             {
                 AddMessageInfo("Operation not allowed", Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
@@ -271,7 +273,7 @@ namespace Sampoerna.EMS.Website.Controllers
             data.ViewModel.IsApproved = data.ViewModel.ApprovalStatusDescription.Id == approvalStatusApproved;
 
             data.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(history);
-            data.WorkflowHistory = GetWorkflowHistory(Convert.ToInt64(id));
+            data.WorkflowHistory = GetWorkflowHistory(id);
          
 
             if (data.ViewModel.IsDeleted == true)
@@ -310,7 +312,7 @@ namespace Sampoerna.EMS.Website.Controllers
                              
                 var history = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.ProductType, model.ViewModel.ProdCode.ToString()).ToList();
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(history);
-                model.WorkflowHistory = GetWorkflowHistory(Int64.Parse(model.ViewModel.ProdCode));
+                model.WorkflowHistory = GetWorkflowHistory(model.ViewModel.ProdCode);
 
                 return View("Edit", model);
 
@@ -382,7 +384,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //var workflow = _refService.GetWorkflowHistory((int)Enums.MenuList.ProductType, Int64.Parse(id)).ToList();
 
             data.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(history);
-            data.WorkflowHistory = GetWorkflowHistory(Convert.ToInt64(id));
+            data.WorkflowHistory = GetWorkflowHistory(id);
             data.EnableFormInput = false;
             data.EditMode = true;            
 
@@ -448,7 +450,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 var history = _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.ProductType, id);            
                 data.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(history);
-                data.WorkflowHistory = GetWorkflowHistory(Convert.ToInt64(id));
+                data.WorkflowHistory = GetWorkflowHistory(id);
                 data.EnableFormInput = false;
                 data.EditMode = true;                
                 data.IsAdminApprover = _refService.IsAdminApprover(CurrentUser.USER_ID);
@@ -563,16 +565,16 @@ namespace Sampoerna.EMS.Website.Controllers
         #endregion
 
         #region Helper
-        List<WorkflowHistoryViewModel> GetWorkflowHistory(long id)
+        List<WorkflowHistoryViewModel> GetWorkflowHistory(string id)
         {
             var workflowInput = new GetByFormTypeAndFormIdInput();
-            workflowInput.FormId = id;
+            workflowInput.FormId = Convert.ToInt64(id);
             workflowInput.FormType = Enums.FormType.ProductType;
             var workflow = this.workflowHistoryBLL.GetByFormTypeAndFormId(workflowInput).OrderBy(x => x.WORKFLOW_HISTORY_ID);
 
             var submittedStatus = _refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingAdminApproval);
             var workflowList = Mapper.Map<List<WorkflowHistoryViewModel>>(workflow);
-            var fratio = _productTypeService.Find(id.ToString());
+            var fratio = _productTypeService.Find(id);
             if (fratio == null)
             {
                 throw new Exception("Specified product type data not found!");
@@ -580,8 +582,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (fratio.APPROVED_STATUS == submittedStatus.REFF_ID)
             {
-                var additional = _refService.GetAdminApproverList();
-                workflowList.Add(Mapper.Map<WorkflowHistoryViewModel>(additional));
+                //var additional = _refService.GetAdminApproverList();
+                //workflowList.Add(Mapper.Map<WorkflowHistoryViewModel>(additional));
             }
 
             return workflowList;
@@ -603,7 +605,12 @@ namespace Sampoerna.EMS.Website.Controllers
             };
             return Json(obj.ToString());
         }
-
+        public bool IsCreatorPRD(string userID)
+        {
+            var isCreatorPrd = false;
+            isCreatorPrd = productDevelopmentService.IsCreatorPRD(userID);
+            return isCreatorPrd;
+        }
         public string GenerateCodeSequence()
         {
             var lastData = _productTypeService.GetLastRecord();

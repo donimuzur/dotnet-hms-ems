@@ -42,7 +42,7 @@
                             <input type='hidden' class='txt_hd_latest_skep_no' value='@item.Latest_Skep_No' name='Item[@ii].Latest_Skep_No'>
                             <input type='hidden' class='txt_hd_companytier' value='@item.Company_Tier' name='Item[@ii].Company_Tier'>
                             <input type='hidden' class='txt_hd_excisegood' value='@item.Prod_Code' name='Item[@ii].Prod_Code'>
-                            <input type='hidden' class='txt_hd_hjeperpack' value='@item.Hje' name='Item[@ii].Hje'>
+                            <input type='hidden' class='txt_hd_hjeperpack' value='@Convert.ToInt64(item.Hje)' name='Item[@ii].Hje'>
                             <input type='hidden' class='txt_hd_hjeperbatang' value='@hjeperbatang' name='Item[@ii].HJEperBatang'>
                             <input type='hidden' class='txt_hd_content' value='@item.Brand_Content' name='Item[@ii].Brand_Content'>
                             <input type='hidden' class='txt_hd_unit' value='@item.Unit' name='Item[@ii].Unit'>

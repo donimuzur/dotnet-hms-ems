@@ -1,6 +1,4 @@
-﻿using System.Data.Entity.Core.Common.EntitySql;
-using System.Security.Cryptography.X509Certificates;
-using Sampoerna.EMS.Core;
+﻿using Sampoerna.EMS.Core;
 using Sampoerna.EMS.CustomService.Core;
 using Sampoerna.EMS.CustomService.Data;
 using Sampoerna.EMS.CustomService.Repositories;
@@ -108,8 +106,35 @@ namespace Sampoerna.EMS.CustomService.Services
                 fromMonth = DateTime.Parse(string.Format("{0}-{1}-{2}", fromMonth.Year, fromMonth.Month, 1));
                 var toMonth = submitDate.AddMonths(-1);
                 toMonth = DateTime.Parse(string.Format("{0}-{1}-{2}", toMonth.Year, toMonth.Month, DateTime.DaysInMonth(toMonth.Year, toMonth.Month)));
-                var ck1List = this.uow.CK1Repository.GetManyQueryable(ck1 => ck1.NPPBKC_ID == nppbkcId && (ck1.CK1_DATE >= fromMonth && ck1.CK1_DATE <= toMonth)).Select(x => x.CK1_ID).ToList();
-                var result = this.uow.Ck1ExciseCalculateAdjustRepository.GetMany(x => ck1List.Contains(x.CK1_ID)).Where(x => x.PRODUCT_ALIAS == productType).OrderBy(x => x.CK1_DATE).ThenBy(x => x.TAHUN).ThenBy(x => x.BULAN).ToList();
+
+
+                var result = this.uow.Ck1ExciseCalculateAdjustRepository.GetAll()
+                    .Where(x => x.BRAND_CE == productType && x.CK1_DATE >= fromMonth && x.CK1_DATE <= toMonth && x.NPPBKC_ID == nppbkcId)
+                    .OrderBy(x => x.CK1_DATE)
+                    .ThenBy(x => x.TAHUN)
+                    .ThenBy(x => x.BULAN).ToList();
+                //Debug.Write(result.Count);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw this.HandleException("Exception occured on ExciseCreditService. See Inner Exception property to see details", ex);
+            }
+        }
+        public IEnumerable<CK1_EXCISE_CALCULATE_ADJUST> GetCK1AdjustmentListWithAlias(string nppbkcId, DateTime submitDate, string productType, int period, string prodAlias)
+        {
+            try
+            {
+                var fromMonth = submitDate.AddMonths(-1 * period);
+                fromMonth = DateTime.Parse(string.Format("{0}-{1}-{2}", fromMonth.Year, fromMonth.Month, 1));
+                var toMonth = submitDate.AddMonths(-1);
+                toMonth = DateTime.Parse(string.Format("{0}-{1}-{2}", toMonth.Year, toMonth.Month, DateTime.DaysInMonth(toMonth.Year, toMonth.Month)));
+                var result =
+                    (from x in this.uow.Ck1ExciseCalculateAdjustRepository.GetAll()
+                    where x.BRAND_CE == productType && x.CK1_DATE >= fromMonth && x.CK1_DATE <= toMonth &&
+                               x.PRODUCT_ALIAS == prodAlias && x.NPPBKC_ID == nppbkcId
+                     select x).ToList();
+                //Debug.Write(result.Count());
                 return result;
             }
             catch (Exception ex)
@@ -139,12 +164,12 @@ namespace Sampoerna.EMS.CustomService.Services
                 throw this.HandleException("Exception occured on ExciseCreditService. See Inner Exception property to see details", ex);
             }
         }
-        public Decimal GetCK1AverageAdjustment(DateTime submitDate, string nppbkc, string productType, int monthCount)
+        public Decimal GetCK1AverageAdjustment(DateTime submitDate, string nppbkc, string productType, int monthCount, string prodalias = "")
         {
             try
             {
                 Decimal result = Decimal.Zero;
-                var resultSet = GetCK1List(nppbkc, submitDate, productType, monthCount).ToList();
+                var resultSet = GetCK1AdjustmentListWithAlias(nppbkc, submitDate, productType, monthCount, prodalias).ToList();
                 if (resultSet == null)
                     return result;
                 DateTime from = DateTime.Parse(string.Format("{0}-{1}-{2}", submitDate.Year, submitDate.Month, DateTime.DaysInMonth(submitDate.Year, submitDate.Month)));
@@ -152,7 +177,7 @@ namespace Sampoerna.EMS.CustomService.Services
                 to = DateTime.Parse(string.Format("{0}-{1}-{2}", to.Year, to.Month, DateTime.DaysInMonth(to.Year, to.Month)));
                 if (resultSet.Count > 0)
                 {
-                    result = resultSet.Sum(x => x.NOMINAL).Value / monthCount;
+                    result = resultSet.Sum(x => x.PRODUCTION).Value;
                 }
 
                 return result;
@@ -187,6 +212,22 @@ namespace Sampoerna.EMS.CustomService.Services
                 var ck1List = this.uow.Ck1ExciseCalculatRepository.GetManyQueryable(ck1 => ck1.NPPBKC_ID == nppbkc && (ck1.CK1_DATE >= fromMonth && ck1.CK1_DATE <= toMonth)).ToList();
 
                 return ck1List.Select(x => x.PRODUCT_ALIAS).Distinct().ToList();
+            }
+            catch (Exception ex)
+            {
+                throw this.HandleException("Exception occured on ExciseCreditService. See Inner Exception property to see details", ex);
+            }
+        }
+        public List<string> GetCK1AdjustmentProductTypes(string nppbkc, DateTime submitDate)
+        {
+            try
+            {
+                var fromMonth = submitDate.AddMonths(-12);
+                fromMonth = DateTime.Parse(string.Format("{0}-{1}-{2}", fromMonth.Year, fromMonth.Month, 1));
+                var toMonth = submitDate.AddMonths(-1);
+                toMonth = DateTime.Parse(string.Format("{0}-{1}-{2}", toMonth.Year, toMonth.Month, DateTime.DaysInMonth(toMonth.Year, toMonth.Month)));
+                var ck1List = this.uow.Ck1ExciseCalculateAdjustRepository.GetManyQueryable(ck1 => ck1.NPPBKC_ID == nppbkc && (ck1.CK1_DATE >= fromMonth && ck1.CK1_DATE <= toMonth)).ToList();
+                return ck1List.Select(x => x.BRAND_CE).Distinct().ToList();
 
             }
             catch (Exception ex)
@@ -246,11 +287,14 @@ namespace Sampoerna.EMS.CustomService.Services
 
                 var documentsRequireApproval = this.uow.ExciseCreditRepository.GetMany(item => item.LAST_STATUS == submittedStatus.REFF_ID && String.IsNullOrEmpty(item.APPROVED_BY));
 
-                var documentsRequiredMyAttention = this.uow.ExciseCreditRepository.GetMany(item => item.APPROVED_BY == POA);
+                var documentsRequiredMyAttention = this.uow.ExciseCreditRepository.GetMany(item => item.APPROVED_BY == POA && (item.LAST_STATUS != canceled.REFF_ID && item.LAST_STATUS != completed.REFF_ID));
                 foreach (var doc in documentsRequireApproval)
                 {
-                    if (IsAllowedToApprove(POA, doc.EXSICE_CREDIT_ID))
+                    if (IsAllowedToApprove(POA, doc.EXSICE_CREDIT_ID) && doc.LAST_STATUS != completed.REFF_ID)
+                    {
                         openDocuments.Add(doc);
+                    }
+                        
                 }
 
                 openDocuments.AddRange(documentsRequiredMyAttention);
@@ -281,6 +325,9 @@ namespace Sampoerna.EMS.CustomService.Services
                     var delegatedDocuments = this.uow.ExciseCreditRepository.GetMany(item => poaDelegatedMeIds.Contains(item.POA_ID) && (item.LAST_STATUS == completed.REFF_ID || item.LAST_STATUS == canceled.REFF_ID)).ToList();
                     completedDocuments.AddRange(delegatedDocuments);
                 }
+
+                var approvedDocuments = this.uow.ExciseCreditRepository.GetMany(item => item.APPROVED_BY == POA && item.LAST_STATUS == completed.REFF_ID);
+                completedDocuments.AddRange(approvedDocuments);
                 return completedDocuments;
             }
             catch (Exception ex)
@@ -536,15 +583,15 @@ namespace Sampoerna.EMS.CustomService.Services
                             data.LAST_MODIFIED_BY = user;
                             data.APPROVAL_STATUS = status;
                             data.LAST_STATUS = status.REFF_ID;
-                            data.NOTES = notes;
+                            //data.NOTES = notes;
                             var changes = GetAllChanges(old, data);
                             context.Entry(old).CurrentValues.SetValues(data);
                             context.SaveChanges();
                             var formType = (int)Enums.MenuList.ExciseCredit;
-                            refService.LogsActivity(context, data.EXSICE_CREDIT_ID.ToString(), changes, formType, (int)Enums.ActionType.Withdraw, role, user, null, data.EXCISE_CREDIT_NO);
+                            refService.LogsActivity(context, data.EXSICE_CREDIT_ID.ToString(), changes, formType, (int)Enums.ActionType.Withdraw, role, user, notes, data.EXCISE_CREDIT_NO);
                             transaction.Commit();
 
-                            return true;
+                            return SendEmail(data, ReferenceKeys.EmailContent.ExciseCreditWithdrawNotice, notes);
                         }
                     }
                     catch (Exception ex)
@@ -620,7 +667,7 @@ namespace Sampoerna.EMS.CustomService.Services
                             context.Entry(old).CurrentValues.SetValues(data);
                             context.SaveChanges();
                             var formType = (int)Enums.MenuList.ExciseCredit;
-                            refService.LogsActivity(context, data.EXSICE_CREDIT_ID.ToString(), changes, formType, (int)Enums.ActionType.SubmitSkep, role, user, null, data.EXCISE_CREDIT_NO);
+                            refService.LogsActivity(context, data.EXSICE_CREDIT_ID.ToString(), changes, formType, (int)Enums.ActionType.Submit, role, user, null, data.EXCISE_CREDIT_NO);
                             transaction.Commit();
 
                             return SendEmail(data, ReferenceKeys.EmailContent.ExciseCreditSKEPApprovalRequest);
@@ -881,6 +928,10 @@ namespace Sampoerna.EMS.CustomService.Services
 
                 var lastApprovedBy = refService.GetUser(data.APPROVED_BY);
                 var recipients = new List<string>();
+                if (lastApprovedBy != null)
+                {
+                    data.APPROVER = lastApprovedBy;
+                }
                 if (content == ReferenceKeys.EmailContent.ExciseCreditApprovalRequest)
                 {
                     var approvers = this.GetApprovers(data.EXSICE_CREDIT_ID);
@@ -902,16 +953,13 @@ namespace Sampoerna.EMS.CustomService.Services
                             recipients.Add(address);
                     }
                 }
-                else if (content == ReferenceKeys.EmailContent.ExciseCreditSKEPApprovalRequest)
+                else if (content == ReferenceKeys.EmailContent.ExciseCreditSKEPApprovalRequest || content == ReferenceKeys.EmailContent.ExciseCreditWithdrawNotice)
                 {
                     recipients.Add(data.APPROVER.EMAIL);
                 }
 
 
-                if (lastApprovedBy != null)
-                {
-                    data.APPROVER = lastApprovedBy;
-                }
+                
                 var contentEmail = GetEmailContent(content, data, remarks);
                 return ItpiMailer.Instance.SendEmail(recipients.ToArray(), null, null, null, contentEmail.EMAILSUBJECT, contentEmail.EMAILCONTENT, true);
             }
@@ -941,7 +989,7 @@ namespace Sampoerna.EMS.CustomService.Services
                     parameters.Add("approval_status", refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingPoaApproval).REFF_VALUE);
                     parameters.Add("url_detail", String.Format("{0}/ExciseCredit/Detail/{1}", ConfigurationManager.AppSettings["WebRootUrl"], data.EXSICE_CREDIT_ID));
                 }
-                else if (template == ReferenceKeys.EmailContent.ExciseCreditApprovalNotification || template == ReferenceKeys.EmailContent.ExciseCreditRejection)
+                else if (template == ReferenceKeys.EmailContent.ExciseCreditApprovalNotification || template == ReferenceKeys.EmailContent.ExciseCreditRejection || template == ReferenceKeys.EmailContent.ExciseCreditWithdrawNotice)
                 {
                     parameters.Add("approver", String.Format("{0} {1}", data.APPROVER.FIRST_NAME, data.APPROVER.LAST_NAME));
                     parameters.Add("url_detail", String.Format("{0}/ExciseCredit/Detail/{1}", ConfigurationManager.AppSettings["WebRootUrl"], data.EXSICE_CREDIT_ID));
@@ -949,6 +997,11 @@ namespace Sampoerna.EMS.CustomService.Services
                     {
                         parameters.Add("approval_status", refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Rejected).REFF_VALUE);
                         parameters.Add("url_edit", String.Format("{0}/ExciseCredit/Edit/{1}", ConfigurationManager.AppSettings["WebRootUrl"], data.EXSICE_CREDIT_ID));
+                        parameters.Add("remarks", remarks);
+                    }
+                    else if (template == ReferenceKeys.EmailContent.ExciseCreditWithdrawNotice)
+                    {
+                        parameters.Add("approval_status", refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Edited).REFF_VALUE);
                         parameters.Add("remarks", remarks);
                     }
                     else
@@ -973,7 +1026,7 @@ namespace Sampoerna.EMS.CustomService.Services
                     {
                         parameters.Add("approval_status", refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Completed).REFF_VALUE);
                     }
-
+                    parameters.Add("approver", String.Format("{0} {1}", data.APPROVER.FIRST_NAME, data.APPROVER.LAST_NAME));
                     parameters.Add("url_detail", String.Format("{0}/ExciseCredit/DetailSkep/{1}", ConfigurationManager.AppSettings["WebRootUrl"], data.EXSICE_CREDIT_ID));
                     parameters.Add("gov_status", data.SKEP_STATUS.HasValue && data.SKEP_STATUS.Value ? "Approved" : "Rejected");
                     parameters.Add("skep_number", data.DECREE_NO);
@@ -1296,44 +1349,26 @@ namespace Sampoerna.EMS.CustomService.Services
             return query;
         }
 
-        public decimal GetLatestSkepCredit()
+        public IEnumerable<BrandModel> GetadjItemFaCode(string facode, string nppbkc, string prodCode)
         {
+            var model = new EMSDataModel();
             var query =
-                (from p in
-                    uow.ExciseCreditApprovedDetailRepository.Get()
-                 join q in uow.ExciseCreditRepository.Get() on p.EXSICE_CREDIT_ID equals q.EXSICE_CREDIT_ID
-                 where q.SKEP_STATUS.HasValue && q.SKEP_STATUS.Value
-                 orderby q.DECREE_DATE descending 
-                select p.AMOUNT_APPROVED);
-            if (query.Any())
-            {
-                return query.First();
-            }
-            else
-            {
-                return 0;
-            }
-            
-        }
-
-        public IEnumerable<ZAIDM_EX_BRAND> GetadjItemFaCode(string facode, string nppbkc)
-        {
-            var query = (from p in uow.BrandRepository.GetMany(m => m.BRAND_CE == facode)// && m.STATUS == true)
-                         join q in uow.PlantRepository.GetMany(m => m.NPPBKC_ID == nppbkc) on p.WERKS equals q.WERKS
-                         select new ZAIDM_EX_BRAND()
+            (from p in model.ZAIDM_EX_BRAND // && m.STATUS == true)
+             join q in model.T001W on p.WERKS equals q.WERKS
+             where p.BRAND_CE == facode && q.NPPBKC_ID == nppbkc && p.PROD_CODE == prodCode
+             orderby p.SKEP_DATE descending
+             select new BrandModel
                          {
                              BRAND_CE = p.BRAND_CE,
                              FA_CODE = p.FA_CODE,
                              TARIFF = p.TARIFF,
                              SKEP_DATE = p.SKEP_DATE,
                              PROD_CODE = p.PROD_CODE,
-                             ZAIDM_EX_PRODTYP = new MASTER_PRODUCT_TYPE()
-                             {
-                                 PRODUCT_ALIAS = p.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS
-                             }
-                         }).Distinct().OrderByDescending(m => m.SKEP_DATE).ToList();
+                 ZAIDM_EX_PRODTYP = p.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS
+             }).Distinct().ToList();
+            var queryfix = query.OrderByDescending(m => m.SKEP_DATE);
 
-            return query;
+            return queryfix.Take(2);
         }
 
         public ZAIDM_EX_BRAND GetBrand(string obj)
@@ -1361,14 +1396,14 @@ namespace Sampoerna.EMS.CustomService.Services
         string[] belasan = new string[10] { "sepuluh", "sebelas", "dua belas", "tiga belas", "empat belas", "lima belas", "enam belas", "tujuh belas", "delapan belas", "sembilan belas" };
         string[] puluhan = new string[10] { "", "", "dua puluh", "tiga puluh", "empat puluh", "lima puluh", "enam puluh", "tujuh puluh", "delapan puluh", "sembilan puluh" };
         string[] ribuan = new string[5] { "", "ribu", "juta", "milyar", "triliyun" };
-        public string Terbilang(Decimal d)
+        public string Terbilang(Decimal d, bool usingCurrency = true)
         {
             string strHasil = "";
             Decimal frac = d - Decimal.Truncate(d);
             if (Decimal.Compare(frac, 0.0m) != 0)
                 strHasil = Terbilang(Decimal.Round(frac * 100)) + " sen";
             else
-                strHasil = "rupiah";
+                strHasil = (usingCurrency) ? "rupiah" : "";
             int xDigit = 0;
             int xPosisi = 0;
             string strTemp = Decimal.Truncate(d).ToString();
@@ -1431,5 +1466,45 @@ namespace Sampoerna.EMS.CustomService.Services
             var exciseCreditIDString = exciseExsiceCreditID.ToString();
             return this.uow.FileUploadRepository.GetMany(m => m.FORM_TYPE_ID == 1 && m.FORM_ID == exciseCreditIDString);
         }
+        public decimal GetLatestSkepCreditTariff(string prodCode)
+        {
+            var item = (from p in uow.ExciseCreditApprovedDetailRepository.GetAll()
+                        where p.EXCISE_CREDIT.SKEP_STATUS == true && p.PROD_CODE == prodCode
+                        select p);
+            return item.OrderByDescending(m => m.EXCISE_CREDIT.DECREE_DATE).FirstOrDefault() == null
+                ? 0
+                : item.OrderByDescending(m => m.EXCISE_CREDIT.DECREE_DATE).FirstOrDefault().AMOUNT_APPROVED;
+        }
+        public List<EXCISE_CREDIT_ADJUST_CALDETAIL> GetExciseAdjustmentItem(int id, string productFaCode, string item)
+        {
+            return (from p in uow.ExciseCreditAdjustmentCalcDetailRepository.GetAll()
+                    where p.EXCISE_CREDIT_ID == id && p.PRODUCT_CODE == productFaCode && p.BRAND_CE == item
+                    select p).ToList();
+        }
+        public decimal GetAmountApproved(string product, DateTime submitDate)
+        {
+            var q = (from p in uow.ExciseCreditApprovedDetailRepository.GetAll()
+                    where p.PROD_CODE == product && p.EXCISE_CREDIT.DECREE_DATE <= submitDate
+                    orderby p.EXCISE_CREDIT.DECREE_DATE descending 
+                    select p).ToList();
+            return q.Count > 0 ? q[0].AMOUNT_APPROVED : Decimal.Zero;
+        }
+        public decimal GetAmountApprovedAlias(string product, DateTime submitDate)
+        {
+            var q = (from p in uow.ExciseCreditApprovedDetailRepository.GetAll()
+                     where p.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS == product && p.EXCISE_CREDIT.DECREE_DATE <= submitDate
+                     orderby p.EXCISE_CREDIT.DECREE_DATE descending
+                     select p).ToList();
+            return q.Count > 0 ? q[0].AMOUNT_APPROVED : Decimal.Zero;
+        }
+    }
+    public class BrandModel
+    {
+        public string BRAND_CE { get; set; }
+        public string FA_CODE { get; set; }
+        public decimal? TARIFF { get; set; }
+        public DateTime? SKEP_DATE { get; set; }
+        public string PROD_CODE { get; set; }
+        public string ZAIDM_EX_PRODTYP { get; set; }
     }
 }

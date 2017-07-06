@@ -1,4 +1,5 @@
 ﻿using Sampoerna.EMS.Website.Models.BrandRegistration;
+using Sampoerna.EMS.Website.Models.Country;
 using Sampoerna.EMS.Website.Models.Market;
 using Sampoerna.EMS.Website.Models.PLANT;
 using Sampoerna.EMS.Website.Models.Shared;
@@ -31,6 +32,9 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevel
         public string StatusDesc { get; set; }    
         public UserModel Approver { set; get; }       
         public ReferenceModel ApprovalStatusDescription { set; get; }
+        public int? CountryID { get; set; }
+        public string CountryName { get; set; }
+        public string Week { get; set; }
 
         public string Company_Desc { get; set; }
         public string Market_Desc { get; set; }
@@ -40,6 +44,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevel
         public MarketModel Market { get; set; }
         public CompanyModel Company { set; get; }
         public T001WModel Plant { get; set; }
+        public CountryModel Country { get; set;}
 
         public bool IsSubmitted { set; get; }
         public bool IsApproved { set; get; }

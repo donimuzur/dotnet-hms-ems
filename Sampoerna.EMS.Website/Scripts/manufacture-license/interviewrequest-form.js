@@ -424,7 +424,29 @@ function GeneratePrintOut() {
         url: getUrl("GeneratePrintout"),
         data: { InterviewID: ID },
         success: function (data) {
-            $("#div-printout").html(data);            
+            var _html = "";
+            for (var i = 0; i < data.length; i++) {
+                _html += "<div class='panel-group' id='accordionOne" + i + "' role='tablist' aria-multiselectable='true'>";
+                _html += "<div class='panel panel-default'>";
+                _html += "<div class='panel-heading' role='tab' id='headingOne" + i + "'>";
+                _html += "<h4 class='panel-title'>";
+                _html += "<a data-toggle='collapse' data-parent='#accordion" + i + "' href='#collapseOne" + i + "' aria-expanded='true' aria-controls='collapseOne" + i + "'>";
+                _html += "Interview &amp; Location Visit " + (i + 1).toString();
+                _html += "<i class='fa fa-caret-down'></i>";
+                _html += "</a>";
+                _html += "</h4>";
+                _html += "</div>";
+                _html += "<div id='collapseOne" + i + "' class='panel-collapse collapse in' role='tabpanel' aria-labelledby='headingOne" + i + "'>";
+                _html += "<div class='panel-body'>";
+                _html += "<div class='form-excise' role='form'>";
+                _html += data[i];
+                _html += "</div>";
+                _html += "</div>";
+                _html += "</div>";
+                _html += "</div>";
+                _html += "</div>";
+            }
+            $("#div-printout").html(_html);
         },
         complete: function () {
             $("#customloader").hide();

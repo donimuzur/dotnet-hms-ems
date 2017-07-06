@@ -114,6 +114,14 @@
           <Property Name="EMAILCONTENT" Type="nvarchar(max)" />
           <Property Name="EMAILSUBJECT" Type="nvarchar" MaxLength="64" />
         </EntityType>
+        <EntityType Name="COUNTRY">
+          <Key>
+            <PropertyRef Name="COUNTRY_ID" />
+          </Key>
+          <Property Name="COUNTRY_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="COUNTRY_CODE" Type="nvarchar" MaxLength="5" />
+          <Property Name="COUNTRY_NAME" Type="nvarchar" MaxLength="30" />
+        </EntityType>
         <EntityType Name="DOC_NUMBER_SEQ">
           <Key>
             <PropertyRef Name="DOC_NUMBER_SEQ_ID" />
@@ -171,7 +179,7 @@ warning 6002: The table/view 'EMSQAS.dbo.EXCISE_ADJUSTMENT_CALCULATE' does not h
           <Property Name="BPJ_ATTACH" Type="nvarchar" MaxLength="300" />
           <Property Name="NOTES" Type="nvarchar" MaxLength="400" />
           <Property Name="EXCISE_CREDIT_NO" Type="nvarchar" MaxLength="120" Nullable="false" />
-          <Property Name="ADJUSTMENT_CALCULATED" Type="decimal" Precision="4" Scale="2" />
+          <Property Name="ADJUSTMENT_CALCULATED" Type="decimal" Precision="8" Scale="2" />
           <Property Name="LAST_STATUS" Type="bigint" Nullable="false" />
           <Property Name="DECREE_STARTDATE" Type="datetime" />
           <Property Name="LAST_MODIFIED_DATE" Type="datetime" />
@@ -519,6 +527,8 @@ warning 6002: The table/view 'EMSQAS.dbo.EXCISE_ADJUSTMENT_CALCULATE' does not h
           <Property Name="LASTAPPROVED_STATUS" Type="bigint" Nullable="false" />
           <Property Name="LASTMODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="LASTMODIFIED_DATE" Type="datetime" />
+          <Property Name="COUNTRY_ID" Type="int" />
+          <Property Name="WEEK" Type="nvarchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="PRODUCT_DEVELOPMENT_UPLOAD">
           <Key>
@@ -2617,6 +2627,18 @@ warning 6002: The table/view 'EMSQAS.dbo.vwProductDevDetail' does not have a pri
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PRODUCT_DEVELOPMENT_DETAIL_COUNTRY">
+          <End Role="COUNTRY" Type="Self.COUNTRY" Multiplicity="0..1" />
+          <End Role="PRODUCT_DEVELOPMENT_DETAIL" Type="Self.PRODUCT_DEVELOPMENT_DETAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="COUNTRY">
+              <PropertyRef Name="COUNTRY_ID" />
+            </Principal>
+            <Dependent Role="PRODUCT_DEVELOPMENT_DETAIL">
+              <PropertyRef Name="COUNTRY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PRODUCT_DEVELOPMENT_UPLOAD_PRODUCT_DEVELOPMENT_DETAIL">
           <End Role="PRODUCT_DEVELOPMENT_DETAIL" Type="Self.PRODUCT_DEVELOPMENT_DETAIL" Multiplicity="0..1" />
           <End Role="PRODUCT_DEVELOPMENT_UPLOAD" Type="Self.PRODUCT_DEVELOPMENT_UPLOAD" Multiplicity="*" />
@@ -2841,6 +2863,7 @@ warning 6002: The table/view 'EMSQAS.dbo.vwProductDevDetail' does not have a pri
           <EntitySet Name="CK1" EntityType="Self.CK1" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CK1_ITEM" EntityType="Self.CK1_ITEM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CONTENTEMAIL" EntityType="Self.CONTENTEMAIL" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="COUNTRY" EntityType="Self.COUNTRY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DOC_NUMBER_SEQ" EntityType="Self.DOC_NUMBER_SEQ" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EMAILVARIABEL" EntityType="Self.EMAILVARIABEL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EXCISE_CREDIT" EntityType="Self.EXCISE_CREDIT" Schema="dbo" store:Type="Tables" />
@@ -3603,6 +3626,10 @@ warning 6002: The table/view 'EMSQAS.dbo.vwProductDevDetail' does not have a pri
             <End Role="PRODUCT_DEVELOPMENT_DETAIL" EntitySet="PRODUCT_DEVELOPMENT_DETAIL" />
             <End Role="BRAND_REGISTRATION_REQ_DETAIL" EntitySet="BRAND_REGISTRATION_REQ_DETAIL" />
           </AssociationSet>
+          <AssociationSet Name="FK_PRODUCT_DEVELOPMENT_DETAIL_COUNTRY" Association="Self.FK_PRODUCT_DEVELOPMENT_DETAIL_COUNTRY">
+            <End Role="COUNTRY" EntitySet="COUNTRY" />
+            <End Role="PRODUCT_DEVELOPMENT_DETAIL" EntitySet="PRODUCT_DEVELOPMENT_DETAIL" />
+          </AssociationSet>
           <AssociationSet Name="FK_PRODUCT_DEVELOPMENT_UPLOAD_PRODUCT_DEVELOPMENT_DETAIL" Association="Self.FK_PRODUCT_DEVELOPMENT_UPLOAD_PRODUCT_DEVELOPMENT_DETAIL">
             <End Role="PRODUCT_DEVELOPMENT_DETAIL" EntitySet="PRODUCT_DEVELOPMENT_DETAIL" />
             <End Role="PRODUCT_DEVELOPMENT_UPLOAD" EntitySet="PRODUCT_DEVELOPMENT_UPLOAD" />
@@ -4349,6 +4376,11 @@ warning 6002: The table/view 'EMSQAS.dbo.vwProductDevDetail' does not have a pri
           </AssociationSet>
           <EntitySet Name="CK1_EXCISE_CALCULATE_ADJUST" EntityType="Sampoerna.EMS.CustomService.Data.CK1_EXCISE_CALCULATE_ADJUST" />
           <EntitySet Name="DOC_NUMBER_SEQ" EntityType="Sampoerna.EMS.CustomService.Data.DOC_NUMBER_SEQ" />
+          <EntitySet Name="COUNTRY" EntityType="Sampoerna.EMS.CustomService.Data.COUNTRY" />
+          <AssociationSet Name="FK_PRODUCT_DEVELOPMENT_DETAIL_COUNTRY" Association="Sampoerna.EMS.CustomService.Data.FK_PRODUCT_DEVELOPMENT_DETAIL_COUNTRY">
+            <End Role="COUNTRY" EntitySet="COUNTRY" />
+            <End Role="PRODUCT_DEVELOPMENT_DETAIL" EntitySet="PRODUCT_DEVELOPMENT_DETAIL" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="SYS_REFFERENCES">
           <Key>
@@ -6262,7 +6294,7 @@ warning 6002: The table/view 'EMSQAS.dbo.vwProductDevDetail' does not have a pri
           <NavigationProperty Name="ZAIDM_EX_NPPBKC" Relationship="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__NPPBK__740F363E" FromRole="EXCISE_CREDIT" ToRole="MASTER_NPPBKC" />
           <NavigationProperty Name="POA" Relationship="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__POA_I__049AA3C2" FromRole="EXCISE_CREDIT" ToRole="POA" />
           <Property Name="SKEP_ATTACHMENT" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-          <Property Name="ADJUSTMENT_CALCULATED" Type="Decimal" Precision="4" Scale="2" />
+          <Property Name="ADJUSTMENT_CALCULATED" Type="Decimal" Precision="8" Scale="2" />
           <NavigationProperty Name="EXCISE_CREDIT_APPROVED_DETAIL" Relationship="Sampoerna.EMS.CustomService.Data.FK_EXCISE_CREDIT_APPROVED_DETAIL_EXCISE_CREDIT" FromRole="EXCISE_CREDIT" ToRole="EXCISE_CREDIT_APPROVED_DETAIL" />
         </EntityType>
         <Association Name="FK__EXCISE_CR__APPRO__6BCEF5F8">
@@ -6420,6 +6452,9 @@ warning 6002: The table/view 'EMSQAS.dbo.vwProductDevDetail' does not have a pri
           <NavigationProperty Name="BRAND_REGISTRATION_REQ_DETAIL" Relationship="Sampoerna.EMS.CustomService.Data.FK_PRODUCT_DEVELOPMENT_DETAIL" FromRole="PRODUCT_DEVELOPMENT_DETAIL" ToRole="BRAND_REGISTRATION_REQ_DETAIL" />
           <NavigationProperty Name="RECEIVED_DECREE_DETAIL" Relationship="Sampoerna.EMS.CustomService.Data.FK__PRODUCT_DEVELOPMENT_DETAIL" FromRole="PRODUCT_DEVELOPMENT_DETAIL" ToRole="RECEIVED_DECREE_DETAIL" />
           <NavigationProperty Name="PRODUCT_DEVELOPMENT_UPLOAD" Relationship="Sampoerna.EMS.CustomService.Data.FK_PRODUCT_DEVELOPMENT_UPLOAD_PRODUCT_DEVELOPMENT_DETAIL" FromRole="PRODUCT_DEVELOPMENT_DETAIL" ToRole="PRODUCT_DEVELOPMENT_UPLOAD" />
+          <Property Name="COUNTRY_ID" Type="Int32" />
+          <Property Name="WEEK" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="COUNTRY" Relationship="Sampoerna.EMS.CustomService.Data.FK_PRODUCT_DEVELOPMENT_DETAIL_COUNTRY" FromRole="PRODUCT_DEVELOPMENT_DETAIL" ToRole="COUNTRY" />
         </EntityType>
         <Association Name="FK__PRODUCT_D__BUKRS__26EFBBC6">
           <End Type="Sampoerna.EMS.CustomService.Data.T001" Role="T001" Multiplicity="1" />
@@ -7346,6 +7381,27 @@ warning 6002: The table/view 'EMSQAS.dbo.vwProductDevDetail' does not have a pri
           <Property Name="YEAR" Type="Int32" />
           <Property Name="FORM_TYPE_ID" Type="Int32" />
         </EntityType>
+        <EntityType Name="COUNTRY">
+          <Key>
+            <PropertyRef Name="COUNTRY_ID" />
+          </Key>
+          <Property Name="COUNTRY_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="COUNTRY_CODE" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="COUNTRY_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="PRODUCT_DEVELOPMENT_DETAIL" Relationship="Sampoerna.EMS.CustomService.Data.FK_PRODUCT_DEVELOPMENT_DETAIL_COUNTRY" FromRole="COUNTRY" ToRole="PRODUCT_DEVELOPMENT_DETAIL" />
+        </EntityType>
+        <Association Name="FK_PRODUCT_DEVELOPMENT_DETAIL_COUNTRY">
+          <End Type="Sampoerna.EMS.CustomService.Data.COUNTRY" Role="COUNTRY" Multiplicity="0..1" />
+          <End Type="Sampoerna.EMS.CustomService.Data.PRODUCT_DEVELOPMENT_DETAIL" Role="PRODUCT_DEVELOPMENT_DETAIL" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="COUNTRY">
+              <PropertyRef Name="COUNTRY_ID" />
+            </Principal>
+            <Dependent Role="PRODUCT_DEVELOPMENT_DETAIL">
+              <PropertyRef Name="COUNTRY_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -8099,6 +8155,8 @@ warning 6002: The table/view 'EMSQAS.dbo.vwProductDevDetail' does not have a pri
           <EntitySetMapping Name="PRODUCT_DEVELOPMENT_DETAIL">
             <EntityTypeMapping TypeName="Sampoerna.EMS.CustomService.Data.PRODUCT_DEVELOPMENT_DETAIL">
               <MappingFragment StoreEntitySet="PRODUCT_DEVELOPMENT_DETAIL">
+                <ScalarProperty Name="WEEK" ColumnName="WEEK" />
+                <ScalarProperty Name="COUNTRY_ID" ColumnName="COUNTRY_ID" />
                 <ScalarProperty Name="LASTMODIFIED_DATE" ColumnName="LASTMODIFIED_DATE" />
                 <ScalarProperty Name="LASTMODIFIED_BY" ColumnName="LASTMODIFIED_BY" />
                 <ScalarProperty Name="STATUS_APPROVAL" ColumnName="LASTAPPROVED_STATUS" />
@@ -8522,6 +8580,15 @@ warning 6002: The table/view 'EMSQAS.dbo.vwProductDevDetail' does not have a pri
                 <ScalarProperty Name="MONTH" ColumnName="MONTH" />
                 <ScalarProperty Name="DOC_NUMBER_SEQ_LAST" ColumnName="DOC_NUMBER_SEQ_LAST" />
                 <ScalarProperty Name="DOC_NUMBER_SEQ_ID" ColumnName="DOC_NUMBER_SEQ_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="COUNTRY">
+            <EntityTypeMapping TypeName="Sampoerna.EMS.CustomService.Data.COUNTRY">
+              <MappingFragment StoreEntitySet="COUNTRY">
+                <ScalarProperty Name="COUNTRY_NAME" ColumnName="COUNTRY_NAME" />
+                <ScalarProperty Name="COUNTRY_CODE" ColumnName="COUNTRY_CODE" />
+                <ScalarProperty Name="COUNTRY_ID" ColumnName="COUNTRY_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -36,6 +36,8 @@ var exciseAdjustmentFormData = [];
 var parseObject = {};
 var adjItem = {};
 var adjfacode = [];
+var adjTable = [];
+var currentProductCode = "";
 
 function populateFormData() {
     console.log(submitDate.val());
@@ -110,7 +112,7 @@ function init() {
             $(element).valid();
         }
     });
-    
+
     //disableMonthNavigation();
     errorDiv.hide();
     exciseFormData.SubmissionDate = new Date(submitDate.val());
@@ -294,7 +296,7 @@ function loadFinancialStatement(url, _company, year) {
                     fErrorDiv.hide();
                     if ($('.requestType').val() === '1') {
                         console.log("load Calculation Normal", ckUrl);
-                    loadCk1Calculation(ckUrl);
+                        loadCk1Calculation(ckUrl);
                     } else {
                         console.log("load calculation adj", adjUrl);
                         loadCk1Calculation(adjUrl);
@@ -392,50 +394,50 @@ function loadCk1Calculation(url) {
 function uploads(id) {
     //console.log("Uploading");
     var files = otherDocs;
-    if(!files) {
+    if (!files) {
         files = [];
     }
     $("#customloader").show();
     if (window.FormData !== undefined) {
-            var data = new FormData();
-            var others = [];
-            for (var x = 0; x < files.length; x++) {
-                
-                data.append("other_" + otherDocsName[x], files[x], files[x].name);
-            }
-            for (var key in supportingDocs) {
-                if (supportingDocs.hasOwnProperty(key)) {
-                    data.append(key, supportingDocs[key], supportingDocs[key].name);
-                }
-            }
-            data.append("doc_number", docNumberContainer.html());
-            data.append("excise_id", id);
-        console.log(data);
-            $.ajax({
-                type: "POST",
-                url: uploadUrl,
-                contentType: false,
-                processData: false,
-                data: data,
-                success: function (result) {
-                    $("#customloader").hide();
-                    document.location.href = homeUrl;
-                    //create();
-                },
-                error: function (xhr, status, p3, p4) {
-                    $("#customloader").hide();
-                    var err = "Error " + " " + status + " " + p3 + " " + p4;
-                    if (xhr.responseText && xhr.responseText[0] == "{")
-                        err = JSON.parse(xhr.responseText).Message;
-                    console.log(err);
-                    showErrorDialog(err);
-                }
-            });
-        } else {
-            showErrorDialog("This browser doesn't support HTML5 file uploads!");
+        var data = new FormData();
+        var others = [];
+        for (var x = 0; x < files.length; x++) {
+
+            data.append("other_" + otherDocsName[x], files[x], files[x].name);
         }
+        for (var key in supportingDocs) {
+            if (supportingDocs.hasOwnProperty(key)) {
+                data.append(key, supportingDocs[key], supportingDocs[key].name);
+            }
+        }
+        data.append("doc_number", docNumberContainer.html());
+        data.append("excise_id", id);
+        console.log(data);
+        $.ajax({
+            type: "POST",
+            url: uploadUrl,
+            contentType: false,
+            processData: false,
+            data: data,
+            success: function (result) {
+                $("#customloader").hide();
+                document.location.href = homeUrl;
+                //create();
+            },
+            error: function (xhr, status, p3, p4) {
+                $("#customloader").hide();
+                var err = "Error " + " " + status + " " + p3 + " " + p4;
+                if (xhr.responseText && xhr.responseText[0] == "{")
+                    err = JSON.parse(xhr.responseText).Message;
+                console.log(err);
+                showErrorDialog(err);
+            }
+        });
+    } else {
+        showErrorDialog("This browser doesn't support HTML5 file uploads!");
+    }
     if (files && files.length > 0) {
-        
+
     } else {
         //create();
     }
@@ -484,7 +486,7 @@ function renderFileList() {
             '<td>' + (i + 1) + '</td>' +
             '<td>' + otherDocs[i].name + '</td>' +
             '<td>' + otherDocsName[i] + '</td>' +
-            '<td><button class="btn btn-danger" onclick="removeFromList(' + i + ')">Remove</button></td>' +
+            '<td><button class="btn btn-blue" onclick="removeFromList(' + i + ')">Remove</button></td>' +
             '</tr>';
     }
     container.html(content);
@@ -505,19 +507,23 @@ var NWin = null;
 function openCkListPopUp() {
     console.log("open ck list popup");
     var nppbkcId = nppbkc.val();
+    if (!nppbkcId) {
+        nppbkcId = $("#ViewModel_NppbkcId").val();
+    }
     var sd = new Date(submitDate.val());
     var year = sd.getYear() + 1900;
     var month = sd.getMonth() + 1;
     var date = sd.getDate();
     var dateStr = year + "-" + month + "-" + date;
-
+    var requestType = $('#ViewModel_RequestTypeID').val();
+    console.log("Request Type : " + requestType);
     if (!NWin || NWin.closed) {
-        if ($('.requestType').val() === '1') {
+        if (requestType == '1') {
             console.log("open detail");
-        NWin = window.open(ck1DetaiUrl + '?submit=' + dateStr + '&nppbkc=' + nppbkcId, '', 'titlebar=0,width=800,height=800,scrollbars=yes');
+            NWin = window.open(ck1DetaiUrl + '?submit=' + dateStr + '&nppbkc=' + nppbkcId, '', 'titlebar=0,width=' + screen.availWidth + ',height=' + screen.availHeight + ',scrollbars=yes');
         } else {
             console.log("open detail adjustment");
-            NWin = window.open(ck1DetailAdjustmentUrl + '?submit=' + dateStr + '&nppbkc=' + nppbkcId, '', 'titlebar=0,width=800,height=800,scrollbars=yes');
+            NWin = window.open(ck1DetailAdjustmentUrl + '?submit=' + dateStr + '&nppbkc=' + nppbkcId, '', 'titlebar=0,width=' + screen.availWidth + ',height=' + screen.availHeight + ',scrollbars=yes');
         }
         NWin.focus();
         $(NWin.document).ready(function () {
@@ -531,7 +537,8 @@ function openCkListPopUp() {
 }
 
 function addToAdjList() {
-    console.log(adjfacode[0]);
+    console.log(adjfacode);
+    console.log(adjfacode);
     var updated = true;
     var sd = new Date(submitDate.val());
     var year = sd.getYear() + 1900;
@@ -541,22 +548,21 @@ function addToAdjList() {
     var param = {
         nppbkc: nppbkc.val(),
         submit: dateStr,
-        facode: $(this).closest('.row').find('.itemid').val()
+        facode: $(this).closest('.row').find('.itemid').val(),
+        prodCode: $(this).closest('.row').find('.prodCode').val()
     };
     var facode = $(this).closest('.row').find('.itemid').val();
     var table = $(this).closest('.row').find('.tbladjBody');
     var tableId = $(this).closest('.row').find('.tblId').val();
-    var pctweightincrease = $(this).closest('.row').find('.pctweightincrease');
-    var subtotal = $(this).closest('.row').find('.subtotal');
-    var subtotal2 = $(this).closest('.row').find('.subtotal2');
-    var SKEPCreditTariff = $(this).closest('.row').find('.SKEPCreditTariff');
-    var wTariff = $(this).closest('.row').find('.wTariff');
-    for (var i = 0; i < adjfacode.length; i++) {
-        if ($(this).closest('.row').find('.itemid').val() === adjfacode[0]) {
-            updated = false;
-            break;
+    var object = this;
+    if (adjItem[tableId] !== undefined)
+        for (var i = 0; i < adjItem[tableId].length; i++) {
+            if ($(this).closest('.row').find('.itemid').find('option:selected').text() === adjItem[tableId][i].BRAND) {
+                updated = false;
+                break;
+            }
         }
-    }
+
     $.ajax({
         url: adjItemUrl,
         type: 'POST',
@@ -564,11 +570,56 @@ function addToAdjList() {
         contentType: 'application/json; charset=utf-8',
     })
         .success(function (item) {
-            
-            var idx = adjfacode.indexOf(facode);
-            var subtotalck12month = 0;
-            var subtotalweightincreased = 0;
-            var latestSkep = item.LATESTSKEP;
+            //var idx = adjfacode.indexOf(facode);
+            //var subtotalck12month = 0;
+            //var subtotalweightincreased = 0;
+            //var latestSkep = item.LATESTSKEP;
+            //    var addItem = {
+            //        BRAND: item.BRAND,
+            //        OLDTARIFF: item.OLDTARIFF,
+            //        NEWTARIFF: item.NEWTARIFF,
+            //        INCREASE: item.INCREASE,
+            //        CK12MONTH: item.CK12MONTH,
+            //        WEIGHTEDINCREASE: item.WEIGHTEDINCREASE,
+            //        PRODUCTCODE: item.PRODUCTCODE,
+            //        FACODE: item.FACODE
+            //    };
+            //    adjfacode.push(facode);
+            //    console.log("show hasil", adjItem, adjItem[tableId]);
+            //    if (adjItem.hasOwnProperty(tableId)) {
+            //        adjItem[tableId].push(addItem);
+            //    } else {
+            //        adjItem[tableId] = [addItem];
+            //    }
+            //    console.log("show hasil", adjItem);
+            //    renderAdjList(table, tableId);
+            //    for (var i = 0; i < adjItem[tableId].length; i++) {
+            //        subtotalck12month += adjItem[tableId][i].CK12MONTH;
+            //        subtotalweightincreased += adjItem[tableId][i].WEIGHTEDINCREASE;
+            //    }
+            //    console.log("result", (subtotalweightincreased / subtotalck12month * 100));
+            //    pctweightincrease.val((subtotalweightincreased / subtotalck12month * 100).toFixed(2).replace(".", ","));
+            //    if (subtotalweightincreased === 0) {
+            //        //subtotal.val(0);
+            //        subtotal2.val(0);
+            //    } else {
+            //    }
+            //    var summaryId = '.' + tableId + 'summary';
+            //    console.log("summaryid", summaryId);
+            //    var summaryfield = $(summaryId);
+            //    summaryfield.find(".summaryweightedtariff").val(wTariff.val());
+            //    summaryfield.find(".summaryskep").val(SKEPCreditTariff.val());
+            //    summaryfield.find(".summaryTotal").val((subtotalck12month + subtotalweightincreased));
+            //    var sum = 0;
+            //    $('.summaryTotal').each(function () {
+            //        sum += parseFloat(this.value);
+            //    });
+            //    $('#grandtotalValue').val(sum);
+            var idx = -1;
+            if (adjItem[tableId] != undefined) {
+                // replace code
+                idx = adjItem[tableId].indexOf(item.BRAND);
+            }
             if (idx < 0 && updated) {
                 var addItem = {
                     BRAND: item.BRAND,
@@ -578,76 +629,170 @@ function addToAdjList() {
                     CK12MONTH: item.CK12MONTH,
                     WEIGHTEDINCREASE: item.WEIGHTEDINCREASE,
                     PRODUCTCODE: item.PRODUCTCODE,
+                    FACODE: item.FACODE
                 };
-                adjfacode.push(facode);
-                console.log("show hasil", adjItem, adjItem[tableId]);
+
                 if (adjItem.hasOwnProperty(tableId)) {
                     adjItem[tableId].push(addItem);
                 } else {
                     adjItem[tableId] = [addItem];
                 }
-                console.log("show hasil", adjItem);
-                renderAdjList(table, tableId);
-                for (var i = 0; i < adjItem[tableId].length; i++) {
-                    subtotalck12month += adjItem[tableId][i].CK12MONTH;
-                    subtotalweightincreased += adjItem[tableId][i].WEIGHTEDINCREASE;
-                }
-                console.log("result", (subtotalweightincreased / subtotalck12month * 100));
-                pctweightincrease.val((subtotalweightincreased / subtotalck12month * 100).toFixed(2).replace(".", ","));
-                SKEPCreditTariff.val(latestSkep.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
-                wTariff.val(((subtotalweightincreased / subtotalck12month) * subtotalweightincreased).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
-                
-                subtotal.val((subtotalck12month).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
-                if (subtotalweightincreased === 0) {
-                    //subtotal.val(0);
-                    subtotal2.val(0);
-                } else {
-                    
-                    subtotal2.val(subtotalweightincreased.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
-                }
-                var summaryId = '.' + tableId + 'summary';
-                console.log("summaryid", summaryId);
-                var summaryfield = $(summaryId);
-                summaryfield.find(".summaryweightedtariff").val(wTariff.val());
-                summaryfield.find(".summaryskep").val(SKEPCreditTariff.val());
-                summaryfield.find(".summaryTotal").val((subtotalck12month + subtotalweightincreased));
-                summaryfield.find(".summaryTotalTemp").val((subtotalck12month + subtotalweightincreased).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
-                var sum = 0;
-                $('.summaryTotal').each(function () {
-                    sum += parseFloat(this.value);
-                });
-                $('#grandtotalValue').val(sum);
-                $('.grandtotalValue').val(sum.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+
+                renderAdjList(table, tableId, object, addItem.PRODUCTCODE);
             }
         })
         .error(function (error) {
             console.log("error", error);
         });
 }
-function renderAdjList(table, tableId) {
+function renderAdjList(table, tableId, object, prodCode) {
     var container = table;
     var content = '';
-    console.log("in renderadjlist", adjfacode);
-    if (!adjfacode || adjfacode.length <= 0) {
+    var subtotalck12month = 0;
+    var subtotalweightincreased = 0;
+    var pctweightincrease = $(object).closest('.row').find('.pctweightincrease');
+    var subtotal = $(object).closest('.row').find('.subtotal');
+    var subtotal2 = $(object).closest('.row').find('.subtotal2');
+    var SKEPCreditTariff = $(object).closest('.row').find('.SKEPCreditTariff');
+    var wTariff = $(object).closest('.row').find('.wTariff');
+    var sum;
+    var param2;
+    if (!adjItem[tableId] || adjItem[tableId].length <= 0) {
         content += '<tr id="noOtherFileMsg">' +
-            '<td colspan="8"><div class="alert alert-info">No Addional Documents</div>' + '</td></tr>';
+            '<td colspan="8"><div class="alert alert-info">No Addional Brand</div>' +
+            '</td></tr>';
+        var summaryId = '.' + tableId + 'summary';
+        console.log("summaryid", summaryId);
+        var summaryfield = $(summaryId);
+        subtotal.val(0);
+        subtotal2.val(0);
+        pctweightincrease.val(0);
+        console.log("go to 0")
+        summaryfield.find(".summaryweightedtariff").val(0);
+        summaryfield.find(".summaryskep").val(0);
+        summaryfield.find(".summaryTotal").val(0);
+        summaryfield.find(".summaryTotalTemp").val(0);
+        SKEPCreditTariff.val(0);
+        wTariff.val(0);
+        param2 = {
+            prodCode: prodCode
+        };
+        $.ajax({
+            url: ceklatestskepurl,
+            type: 'POST',
+            data: JSON.stringify(param2),
+            contentType: 'application/json; charset=utf-8',
+        }).success(function (amount) {
+            var pct = (subtotalweightincreased / subtotalck12month * 100);
+            pct = Math.round(pct * 100)/100;
+            amount = Math.round(amount * 100)/100;
+            SKEPCreditTariff.val(amount.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+            wTariff.val((pct * amount / 100));
+
+            var summaryId = '.' + tableId + 'summary';
+            var summaryfield = $(summaryId);
+            summaryfield.find(".summaryweightedtariff").val(0);
+            summaryfield.find(".summaryskep").val(0);
+            summaryfield.find(".summaryTotal").val(0);
+            summaryfield.find(".summaryTotalTemp").val(0);
+            sum = 0;
+            $('.summaryTotal').each(function () {
+                sum += parseFloat(this.value);
+            });
+            $('#grandtotalValue').val(sum);
+            $('.grandtotalValue').val(sum);
+        });
+    } else {
+        for (var i = 0; i < adjItem[tableId].length; i++) {
+            console.log(adjTable);
+            content +=
+                '<tr>' +
+                '<td>' + (i + 1) + '</td>' +
+                '<td>' + adjItem[tableId][i].BRAND + '</td>' +
+                '<td style="text-align:right">' + adjItem[tableId][i].OLDTARIFF.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + '</td>' +
+                '<td style="text-align:right">' + adjItem[tableId][i].NEWTARIFF.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + '</td>' +
+                '<td style="text-align:right">' + adjItem[tableId][i].INCREASE.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + '</td>' +
+                '<td style="text-align:right">' + adjItem[tableId][i].CK12MONTH.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + '</td>' +
+                '<td style="text-align:right">' + adjItem[tableId][i].WEIGHTEDINCREASE.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + '</td>' +
+                '<td><button class="btn btn-blue btnRemoveAdjfromList" onclick="removeFromAdjList(' + i + ', \'' + tableId + '\',\'' + adjItem[tableId][i].FACODE + '\',  this, \'' + adjItem[tableId][i].PRODUCTCODE + '\')">Remove</button></td>' +
+                '</tr>';
+        }
+        for (var i = 0; i < adjItem[tableId].length; i++) {
+            subtotalck12month += adjItem[tableId][i].CK12MONTH;
+            subtotalweightincreased += adjItem[tableId][i].WEIGHTEDINCREASE;
+        }
+        console.log("pctweight", subtotalweightincreased / subtotalck12month * 100);
+
+        //        SKEPCreditTariff.val(subtotalck12month.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+        //        wTariff.val((pct * subtotalck12month / 100).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+        //                    subtotal.val((subtotalck12month * parseFloat((subtotalck12month / subtotalweightincreased * 100))).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+        //                    subtotal2.val((((subtotalck12month / subtotalweightincreased * 100)) / 100 * (subtotalck12month * (subtotalck12month / subtotalweightincreased * 100) / 100)).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+
+        param2 = {
+            prodCode: prodCode
+        };
+        $.ajax({
+            url: ceklatestskepurl,
+            type: 'POST',
+            data: JSON.stringify(param2),
+            contentType: 'application/json; charset=utf-8',
+        }).success(function (amount) {
+            amount = Math.round(amount * 100)/100;
+            subtotalck12month = Math.round(subtotalck12month * 100) / 100;
+            subtotalweightincreased = Math.round(subtotalweightincreased * 100)/100;
+            subtotal.val(subtotalck12month.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+            subtotal2.val(subtotalweightincreased.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+            var pct = subtotalweightincreased * 100 / subtotalck12month;
+            pct = Math.round(pct * 100)/100;
+            
+            if (isNaN(pct)) {
+                pct = 0;
+            }
+            
+            console.log("pct", pct);
+            console.log(pct * subtotalck12month / 100);
+            pctweightincrease.val(pct.toFixed(2));
+
+            SKEPCreditTariff.val(amount.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+            console.log("SKEPCreditTariff", amount);
+            var wTariffAmount = Math.round(pct * amount)/100;
+            wTariff.val(wTariffAmount.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+            console.log("wtariff", pct, pct * amount, wTariff.val());
+            var summaryId = '.' + tableId + 'summary';
+            var summaryfield = $(summaryId);
+            summaryfield.find(".summaryweightedtariff").val(wTariff.val());
+            summaryfield.find(".summaryskep").val(SKEPCreditTariff.val());
+            summaryfield.find(".summaryTotal").val(((pct * amount / 100) + amount));
+            summaryfield.find(".summaryTotalTemp").val(((pct * amount / 100) + amount).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+            sum = 0;
+            $('.summaryTotal').each(function () {
+                sum += parseFloat(this.value);
+            });
+            sum = Math.round(sum);
+            $('#grandtotalValue').val(sum);
+            $('.grandtotalValue').val(sum.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+        });
+
+
+        //        $('.summaryTotal').each(function () {
+        //            sum += parseFloat(this.value);
+        //        });
+
+        //        $('.grandtotalValue').val(sum.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
     }
-    console.log(adjItem[tableId].length, adjItem[tableId][0].BRAND);
-    for (var i = 0; i < adjItem[tableId].length; i++) {
-        content +=
-            '<tr>' +
-            '<td>' + (i + 1) + '</td>' +
-            '<td>' + adjItem[tableId][i].BRAND + '</td>' +
-            '<td style="text-align:right">' + adjItem[tableId][i].OLDTARIFF.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + '</td>' +
-            '<td style="text-align:right">' + adjItem[tableId][i].NEWTARIFF.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + '</td>' +
-            '<td style="text-align:right">' + adjItem[tableId][i].INCREASE.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + '</td>' +
-            '<td style="text-align:right">' + adjItem[tableId][i].CK12MONTH.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + '</td>' +
-            '<td style="text-align:right">' + adjItem[tableId][i].WEIGHTEDINCREASE.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,') + '</td>' +
-            '<td><button class="btn btn-danger" onclick="removeFromList(' + i + ')">Remove</button></td>' +
-            '</tr>';
-    }
+
+
     container.html(content);
-    console.log(container);
+    //    console.log(container);
+}
+function removeFromAdjList(index, tableid, facode, control, prodCode) {
+    console.log($(control).find('.tbladjBody'));
+    if (adjItem[tableid].length > index) {
+        adjItem[tableid].splice(index, 1);
+        var row = adjfacode.indexOf(facode);
+        adjfacode.splice(row, 1);
+    }
+    renderAdjList($(control).closest('table').find('.tbladjBody'), tableid, control, prodCode);
 }
 function placeResult() {
     //alert("Place result!");
@@ -659,8 +804,8 @@ function placeResult() {
         var currency = $("#grandTotal").val();
         amount = Number(currency.replace(/[^0-9\.]+/g, ""));
     }
-    console.log(amount);
-    var _terbilang = terbilang(amount.toString()) + " Rupiah"
+    console.log("terbilang", Math.round(amount), terbilang(amount.toString()));
+    var _terbilang = terbilang(Math.round(amount).toString()) + " Rupiah"
         .replace(/^([a-z\u00E0-\u00FC])|\s+([a-z\u00E0-\u00FC])/g, function ($1) {
             return $1.toUpperCase();
         });
@@ -674,7 +819,8 @@ function placeResult() {
 function showErrorDialog(msg) {
     $("#errModalTitle").html("REQUEST FAILED");
     $("#errModalContent").html(msg);
-    $("#errModal").modal("show");
+    //$("#errModal").modal("show");
+    alert(msg);
 }
 
 
@@ -751,49 +897,49 @@ function edit() {
     var files = otherDocMap;
     console.log(files);
     $("#customloader").show();
-    
-        if (window.FormData !== undefined) {
-            var data = new FormData();
-            for (var key in otherDocMap) {
-                if (otherDocMap.hasOwnProperty(key)) {
-                    data.append("other_" + otherDocMapName[key], otherDocMap[key], otherDocMap[key].name);
-                }
+
+    if (window.FormData !== undefined) {
+        var data = new FormData();
+        for (var key in otherDocMap) {
+            if (otherDocMap.hasOwnProperty(key)) {
+                data.append("other_" + otherDocMapName[key], otherDocMap[key], otherDocMap[key].name);
             }
-            for (var key in supportingDocs) {
-                if (supportingDocs.hasOwnProperty(key)) {
-                    data.append(key, supportingDocs[key], supportingDocs[key].name);
-                }
-            }
-            data.append("submit_date", submitDate.val());
-            data.append("guarantee", $("#GuaranteeSelector :selected").text());
-            data.append("doc_number", docNumber);
-            data.append("excise_id", id);
-            data.append("deleted_docs", JSON.stringify(existingOtherDocs));
-            data.append("__RequestVerificationToken", token);
-            $.ajax({
-                type: "POST",
-                url: editUrl,
-                contentType: false,
-                processData: false,
-                data: data,
-                success: function (result) {
-                    $("#customloader").hide();
-                    //console.log(result);
-                    document.location.href = homeUrl;
-                },
-                error: function (xhr, status, p3, p4) {
-                    $("#customloader").hide();
-                    var err = "Error " + " " + status + " " + p3 + " " + p4;
-                    if (xhr.responseText && xhr.responseText[0] == "{")
-                        err = JSON.parse(xhr.responseText).Message;
-                    console.log(err);
-                    showErrorDialog(err);
-                }
-            });
-        } else {
-            showErrorDialog("This browser doesn't support HTML5 file uploads!");
         }
-    
+        for (var key in supportingDocs) {
+            if (supportingDocs.hasOwnProperty(key)) {
+                data.append(key, supportingDocs[key], supportingDocs[key].name);
+            }
+        }
+        data.append("submit_date", submitDate.val());
+        data.append("guarantee", $("#GuaranteeSelector :selected").text());
+        data.append("doc_number", docNumber);
+        data.append("excise_id", id);
+        data.append("deleted_docs", JSON.stringify(existingOtherDocs));
+        data.append("__RequestVerificationToken", token);
+        $.ajax({
+            type: "POST",
+            url: editUrl,
+            contentType: false,
+            processData: false,
+            data: data,
+            success: function (result) {
+                $("#customloader").hide();
+                //console.log(result);
+                document.location.href = homeUrl;
+            },
+            error: function (xhr, status, p3, p4) {
+                $("#customloader").hide();
+                var err = "Error " + " " + status + " " + p3 + " " + p4;
+                if (xhr.responseText && xhr.responseText[0] == "{")
+                    err = JSON.parse(xhr.responseText).Message;
+                console.log(err);
+                showErrorDialog(err);
+            }
+        });
+    } else {
+        showErrorDialog("This browser doesn't support HTML5 file uploads!");
+    }
+
 }
 
 function TinyMceInit(selector) {

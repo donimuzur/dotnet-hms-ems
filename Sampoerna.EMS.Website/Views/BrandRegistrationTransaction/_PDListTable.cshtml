@@ -26,12 +26,9 @@
     <tbody>
         @foreach (var item in Model.ProductDocuments)
         {
-            if (item.StatusDesc != "COMPLETED")
+            if (item.StatusDesc == "COMPLETED" || item.StatusDesc == "CANCELED")
             {
-                <tr style="display:none; border-collapse:collapse;"></tr>
-            }
-            else
-            {
+                @*<tr style="display:none; border-collapse:collapse;"></tr>*@
                 <tr>
                     <td class="action">
                         <a href="@Url.Action("DetailProduct", "BrandRegistrationTransaction", new { id = item.PD_ID })" data-toggle="tooltip" data-placement="top" title="Details"><i class="fa fa-eye"></i></a>
@@ -48,6 +45,10 @@
                     <td>@Html.DisplayFor(model => item.StatusDesc)</td>
                 </tr>
             }
+            //else
+            //{
+
+            //}
         }
 
     </tbody>

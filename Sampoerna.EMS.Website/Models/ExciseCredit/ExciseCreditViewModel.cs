@@ -42,7 +42,6 @@ namespace Sampoerna.EMS.Website.Models.ExciseCredit
         public string CreatorExport { set; get; }
         public string NPPBKCExport { set; get; }
         public int ExciseCreditTypeExport { set; get; }
-
         public bool Type { get; set; }
         public bool SubmitDate { get; set; }
         public bool Poa { get; set; }
@@ -52,5 +51,4 @@ namespace Sampoerna.EMS.Website.Models.ExciseCredit
         public bool LastUpdate { get; set; }
         public bool Status { get; set; }
     }
-
 }

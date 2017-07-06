@@ -55,6 +55,7 @@ using Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.BrandRegistratio
 using Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.MapSKEP;
 using Sampoerna.EMS.Website.Models.ProductDevUpload;
 using Sampoerna.EMS.Website.Models.Market;
+using Sampoerna.EMS.Website.Models.Country;
 //using Sampoerna.EMS.Website.Models.POAExciser;
 using Sampoerna.EMS.Website.Models.MonthClosing;
 using Sampoerna.EMS.Website.Models.MasterDataApproval;
@@ -1585,6 +1586,8 @@ namespace Sampoerna.EMS.Website
                 .ForMember(entity => entity.ADDRESS, opt => opt.MapFrom(model => model.ADDRESS))
                 ;
             #endregion
+
+         
             #region Product Development ( Brand Registration Transaction - Product Development )
 
             Mapper.CreateMap<CustomService.Data.PRODUCT_DEVELOPMENT, ProductDevelopmentModel>().IgnoreAllNonExisting()
@@ -1631,9 +1634,12 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.ApprovalStatusDescription, opt => opt.MapFrom(model => model.APPROVAL_STATUS))
                 .ForMember(dest => dest.Modified_By, opt => opt.MapFrom(src => src.LASTMODIFIED_BY))
                 .ForMember(dest => dest.Modified_Date, opt => opt.MapFrom(src => src.LASTMODIFIED_DATE))
+                .ForMember(dest => dest.CountryID, opt => opt.MapFrom(src => src.COUNTRY_ID))
+                .ForMember(dest => dest.Week, opt => opt.MapFrom(src => src.WEEK))
                 .ForMember(dest => dest.Company, opt => opt.MapFrom(model => model.T001))
                 .ForMember(dest => dest.Market, opt => opt.MapFrom(model => model.ZAIDM_EX_MARKET))
                 .ForMember(dest => dest.Plant, opt => opt.MapFrom(model => model.T001W))
+                .ForMember(dest => dest.Country, opt => opt.MapFrom(model => model.COUNTRY))                
              ;
 
             Mapper.CreateMap<ProductDevDetailModel, CustomService.Data.PRODUCT_DEVELOPMENT_DETAIL>().IgnoreAllUnmapped()         
@@ -1656,9 +1662,12 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.APPROVAL_STATUS, opt => opt.MapFrom(model => model.ApprovalStatusDescription))
                 .ForMember(dest => dest.LASTMODIFIED_BY, opt => opt.MapFrom(src => src.Modified_By))
                 .ForMember(dest => dest.LASTMODIFIED_DATE, opt => opt.MapFrom(src => src.Modified_Date))
+                .ForMember(dest => dest.COUNTRY_ID, opt => opt.MapFrom(src => src.CountryID))
+                .ForMember(dest => dest.WEEK, opt => opt.MapFrom(src => src.Week))
                 .ForMember(dest => dest.T001, opt => opt.MapFrom(model => model.Company))
                 .ForMember(dest => dest.ZAIDM_EX_MARKET, opt => opt.MapFrom(model => model.Market))
                 .ForMember(dest => dest.T001W, opt => opt.MapFrom(model => model.Plant))
+                .ForMember(dest => dest.COUNTRY, opt => opt.MapFrom(model => model.Country))
             ;
         
             //  Mapper.CreateMap<CustomService.Data.PRODUCT_DEVELOPMENT_DETAIL, PDSummaryReportItem>().IgnoreAllNonExisting()
@@ -1910,6 +1919,20 @@ namespace Sampoerna.EMS.Website
                   .ForMember(dest => dest.FILE_NAME, opt => opt.MapFrom(src => src.File_Name))
               ;
             #endregion
+
+            #region Country Model
+            Mapper.CreateMap<CountryModel, CustomService.Data.COUNTRY>().IgnoreAllUnmapped()
+                .ForMember(entity => entity.COUNTRY_ID, opt => opt.MapFrom(model => model.CountryID))
+                .ForMember(entity => entity.COUNTRY_CODE, opt => opt.MapFrom(model => model.CountryCode))
+                .ForMember(entity => entity.COUNTRY_NAME, opt => opt.MapFrom(model => model.CountryName))
+            ;
+            Mapper.CreateMap<CustomService.Data.COUNTRY, CountryModel>().IgnoreAllNonExisting()
+                .ForMember(entity => entity.CountryID, opt => opt.MapFrom(model => model.COUNTRY_ID))
+                .ForMember(entity => entity.CountryCode, opt => opt.MapFrom(model => model.COUNTRY_CODE))
+                .ForMember(entity => entity.CountryName, opt => opt.MapFrom(model => model.COUNTRY_NAME))
+                ;
+            #endregion
+
         }
     }
 

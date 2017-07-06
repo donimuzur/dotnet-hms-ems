@@ -26,6 +26,7 @@ using SpreadsheetLight;
 using DocumentFormat.OpenXml.Spreadsheet;
 using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
+using Sampoerna.EMS.BusinessObject.Inputs;
 
 
 namespace Sampoerna.EMS.Website.Controllers
@@ -40,13 +41,19 @@ namespace Sampoerna.EMS.Website.Controllers
         private ChangeRequestModel CRmodel;
         private ChangeRequestViewModel CRViewmodel;
         private ChangeRequestFormModel CRFormmodel;
+        private IDocumentSequenceNumberBLL _docbll;
 
-        public MLChangeRequestController(IPageBLL pageBLL, IChangesHistoryBLL changeHistoryBLL, IWorkflowHistoryBLL workflowHistoryBLL) : base(pageBLL, Enums.MenuList.ManufactureLicense)
+
+        public MLChangeRequestController(IPageBLL pageBLL, IChangesHistoryBLL changeHistoryBLL, IWorkflowHistoryBLL workflowHistoryBLL, IDocumentSequenceNumberBLL docbll) : base(pageBLL, Enums.MenuList.ManufactureLicense)
         {
             this.mainMenu = Enums.MenuList.ManufactureLicense;
             this.service = new ChangeRequestService();
             this.refService = new SystemReferenceService();
             CRmodel = new ChangeRequestModel();
+            this.chBLL = changeHistoryBLL;
+            this.whBLL = workflowHistoryBLL;
+            _docbll = docbll;
+
 
             //this.chBLL = changeHistoryBLL;
             //this.whBLL = workflowHistoryBLL;
@@ -94,7 +101,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             Id = s.FORM_ID,
                             DocumentNumber = s.FORM_NO,
                             RequestDate = s.REQUEST_DATE,
-                            strRequestDate = s.REQUEST_DATE.ToString("dd MMMM yyyy"),
+                            strRequestDate = s.REQUEST_DATE.ToString("dd MMM yyyy"),
                             DocumentType = s.DOCUMENT_TYPE,
                             NppbkcId = s.NPPBKC_ID,
                             CreatedBy = s.CREATED_BY,
@@ -165,7 +172,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             DocumentNumber = s.FORM_NO,
                             RequestDate = s.REQUEST_DATE,
                             DocumentType = s.DOCUMENT_TYPE,
-                            strRequestDate = s.REQUEST_DATE.ToString("dd MMMM yyyy"),
+                            strRequestDate = s.REQUEST_DATE.ToString("dd MMM yyyy"),
                             //RequestType = this.GetRequestTypeName(entity.REQUEST_TYPE),
                             NppbkcId = s.NPPBKC_ID,
                             CreatedBy = s.CREATED_BY,
@@ -277,8 +284,12 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var changeRequest = new ChangeRequestModel();
 
-            var history = refService.GetChangesHistory((int)Enums.MenuList.ChangeRequest, CRID.ToString()).ToList();
-            changeRequest.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(history);
+            //var history = refService.GetChangesHistory((int)Enums.MenuList.ChangeRequest, CRID.ToString()).ToList();
+            //changeRequest.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(history);
+
+            var changeHistoryList = this.chBLL.GetByFormTypeAndFormId(Enums.MenuList.ChangeRequest, CRID.ToString());
+            changeRequest.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
+
 
             return PartialView("_ChangesHistoryTable", changeRequest);
         }
@@ -654,7 +665,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                 var poareceiverlistall = service.GetPOAApproverList(model.Id);
                                 if (poareceiverlistall.Count() > 0)
                                 {
-                                    List<string> poareceiverList = poareceiverlistall.Select(s => s.POA_EMAIL).ToList();
+                                    List<string> poareceiverList = poareceiverlistall.Where(w => w.POA_EMAIL != "").Select(s => s.POA_EMAIL).ToList();
                                     var strreqdate = updateSKEP.REQUEST_DATE.ToString("dd MMMM yyyy");
                                     var lastapproval_date = Convert.ToDateTime(updateSKEP.LASTAPPROVED_DATE).ToString("dd MMMM yyyy");
                                     var CreatorName = refService.GetPOA(CurrentUser.USER_ID).PRINTED_NAME;
@@ -1278,9 +1289,16 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
 
 
-                    if (Action == "submit")
+                    if ((Action == "submit") || (Action == "withdraw"))
                     {
-                        msgSuccess = "Success Submit Change Request";
+                        if (Action == "submit")
+                        {
+                            msgSuccess = "Success Submit Change Request";
+                        }
+                        else
+                        {
+                            msgSuccess = "Success Withdraw Change Request";
+                        }
 
                         //var poareceiverlistall = service.GetPOAApproverList(update.NPPBKC_ID, update.CREATED_BY);
                         var poareceiverlistall = service.GetPOAApproverList(CRId);
@@ -1289,7 +1307,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             List<string> poareceiverList = poareceiverlistall.Select(s => s.POA_EMAIL).ToList();
 
                             //var sendmail = SendMail(model.DocumentNumber, strreqdate, model.DocumentType, model.NppbkcId, model.NPPBKC.KppbcId, mapped_nppbkc.Address, mapped_nppbkc.Region, mapped_nppbkc.City, updated_list, CreatorName, model.LastApprovedStatus, "", strreqdate, "", model.Id, poareceiverList, "submit");
-                            var sendmail = SendMail(update.FORM_NO, strreqdate, update.DOCUMENT_TYPE, update.NPPBKC_ID, mapped_nppbkc.KppbcId, mapped_nppbkc.Address, mapped_nppbkc.Region, mapped_nppbkc.City, updated_list, CreatorName, Status, "", strreqdate, "", CRId, poareceiverList, "submit");
+                            var sendmail = SendMail(update.FORM_NO, strreqdate, update.DOCUMENT_TYPE, update.NPPBKC_ID, mapped_nppbkc.KppbcId, mapped_nppbkc.Address, mapped_nppbkc.Region, mapped_nppbkc.City, updated_list, CreatorName, Status, "", strreqdate, Comment, CRId, poareceiverList, "submit");
                             if (!sendmail)
                             {
                                 msgSuccess += " , but failed send mail to POA Approver";
@@ -1687,7 +1705,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 //var history = refService.GetChangesHistory((int)Enums.MenuList.ChangeRequest, ID.ToString()).ToList();
                 //_CRModel.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(history);
 
-                var workflow = refService.GetWorkflowHistory((int)Enums.MenuList.ChangeRequest, ID).ToList();
+                //var workflow = refService.GetWorkflowHistory((int)Enums.MenuList.ChangeRequest, ID).ToList();
+                var workflowInput = new GetByFormTypeAndFormIdInput();
+                workflowInput.FormId = ID;
+                workflowInput.FormType = Enums.FormType.ChangeRequestWorkflow;
+                var workflow = this.whBLL.GetByFormTypeAndFormId(workflowInput).OrderBy(x => x.WORKFLOW_HISTORY_ID).ToList();
 
                 string account_name = "";
                 string role = "";
@@ -2086,6 +2108,12 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var now = DateTime.Now;
 
+            var docinput = new GenerateDocNumberInput();
+            docinput.FormType = Enums.FormType.ChangeRequest;
+            docinput.Month = model.RequestDate.Month;
+            docinput.Year = model.RequestDate.Year;
+            docinput.NppbkcId = model.NppbkcId;
+
             var data = new REPLACEMENT_DOCUMENTS();
             if (model.Id != 0)
             {
@@ -2096,7 +2124,8 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             else
             {
-                data.FORM_NO = GenerateFormNumber(model.CompanyAlias, model.CityAlias, now);
+                //data.FORM_NO = GenerateFormNumber(model.CompanyAlias, model.CityAlias, now);
+                data.FORM_NO = _docbll.GenerateNumber(docinput);
                 data.CREATED_BY = CurrentUser.USER_ID;
                 data.CREATED_DATE = now;
                 data.LASTMODIFIED_BY = CurrentUser.USER_ID;
@@ -2289,7 +2318,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 CompanyAlias = s.ZAIDM_EX_NPPBKC.COMPANY.BUTXT == null ? "-" : s.ZAIDM_EX_NPPBKC.COMPANY.BUTXT,
                 TextTo = s.ZAIDM_EX_NPPBKC.TEXT_TO,
                 CityAlias = s.ZAIDM_EX_NPPBKC.CITY,
-                CompanyAddress = s.ZAIDM_EX_NPPBKC.COMPANY.SPRAS
+                CompanyAddress = s.ZAIDM_EX_NPPBKC.COMPANY.SPRAS,
+                DocumentType = s.DOCUMENT_TYPE
             }).FirstOrDefault();
 
             _CRModel.POA = MapPoaModel(refService.GetPOA(_CRModel.CreatedBy));
@@ -2343,15 +2373,35 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             _CRModel = GetChangeRequestMasterForm(_CRModel.Id);
             _CRModel.ListOfUpdateNotes = GetChangeRequestDetail(_CRModel.Id);
-
+            System.Globalization.CultureInfo CI = new System.Globalization.CultureInfo("id-ID");
+            var _docType = "";
+            var _docType2 = "";
+            if (_CRModel.DocumentType.ToLower() == "layout")
+            {
+                _docType = "<i>Lay Out</i> / <span style='text-decoration: line-through;'>Data Perijinan</span> / <span style='text-decoration: line-through;'>POA Excise</span>";
+                _docType2 = "<i>Lay Out</i> pabrik dengan tidak merubah luas tanah bangunan / <span style='text-decoration: line-through;'>data perijinan</span> / <span style='text-decoration: line-through;'>kuasa perusahaan</span>";
+            }
+            else if (_CRModel.DocumentType.ToLower() == "data perijinan")
+            {
+                _docType = "<span style='text-decoration: line-through;'><i>Lay Out</i></span> / Data Perijinan / <span style='text-decoration: line-through;'>POA Excise</span>";
+                _docType2 = "<span style='text-decoration: line-through;'><i>Lay Out</i> pabrik dengan tidak merubah luas tanah bangunan</span> / data perijinan / <span style='text-decoration: line-through;'>kuasa perusahaan</span>";
+            }
+            else
+            {
+                _docType = "<span style='text-decoration: line-through;'><i>Lay Out</i></span> / <span style='text-decoration: line-through;'>Data Perijinan</span> / POA Excise";
+                _docType2 = "<span style='text-decoration: line-through;'><i>Lay Out</i> pabrik dengan tidak merubah luas tanah bangunan</span> / <span style='text-decoration: line-through;'>data perijinan</span> / kuasa perusahaan";
+            }
+            
+            var terbilang_lampiran_count = TerbilangLong(_CRModel.Count_Lamp);
             var parameters = new Dictionary<string, string>();
+            parameters.Add("BODY_DOCUMENT_TYPE", _docType2);
             parameters.Add("COMPANY_NAME", _CRModel.Company.Name);
             parameters.Add("COMPANY_ADDRESS", _CRModel.Company.Name);
             parameters.Add("COMPANY_CITY", _CRModel.CityAlias);
-            parameters.Add("REQUEST_DATE", _CRModel.RequestDate.ToString("dd MMMM yyyy"));
+            parameters.Add("REQUEST_DATE", Convert.ToDateTime(_CRModel.RequestDate).ToString("dd MMMM yyyy", CI));
             parameters.Add("FORM_NUMBER", _CRModel.DocumentNumber);
-            parameters.Add("LAMPIRAN_COUNT", Convert.ToString(_CRModel.Count_Lamp));
-            parameters.Add("DOCUMENT_TYPE", _CRModel.DocumentType);
+            parameters.Add("LAMPIRAN_COUNT", Convert.ToString(_CRModel.Count_Lamp) + " (" + terbilang_lampiran_count + ")");
+            parameters.Add("DOCUMENT_TYPE", _docType);
             parameters.Add("KPPBC_TEXT_TO", _CRModel.TextTo);
             parameters.Add("POA_NAME", _CRModel.POA.Name);
             parameters.Add("POA_ROLE", _CRModel.POA.Position);
@@ -2359,7 +2409,7 @@ namespace Sampoerna.EMS.Website.Controllers
             parameters.Add("NPPBKC", _CRModel.NppbkcId);
 
             var layout = "";
-            var layout_item_updates = "<br /><table>";
+            var layout_item_updates = "<br /><table style='background: none; border-collapse: collapse; font-family: Arial; font-size: 10pt; '>";
             int no_item_update = 1;
             foreach (var itemUpdate in _CRModel.ListOfUpdateNotes)
             {
@@ -2405,6 +2455,8 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
+                service.LogsPrintActivity(_CRModel.Id, (int)Enums.MenuList.ChangeRequest, CurrentUser.USER_ID);
+
                 long InterviewID = _CRModel.Id;
                 string FormNumber = _CRModel.DocumentNumber;
                 FormNumber = FormNumber.Replace('/', '-');
@@ -2694,6 +2746,93 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var ErrMessage = refService.RestorePrintoutToDefault("CHANGE_REQUEST_PRINTOUT", CreatedBy);
             return Json(ErrMessage);
+        }
+
+        public string TerbilangLong(double amount)
+        {
+            string word = "";
+            double divisor = 1000000000000.00; double large_amount = 0;
+            double tiny_amount = 0;
+            double dividen = 0; double dummy = 0;
+            string weight1 = ""; string unit = ""; string follower = "";
+            string[] prefix = { "SE", "DUA ", "TIGA ", "EMPAT ", "LIMA ",
+ "ENAM ", "TUJUH ", "DELAPAN ", "SEMBILAN " };
+            string[] sufix = { "SATU ", "DUA ", "TIGA ", "EMPAT ", "LIMA ",
+ "ENAM ", "TUJUH ", "DELAPAN ", "SEMBILAN " };
+            large_amount = Math.Abs(Math.Truncate(amount));
+            tiny_amount = Math.Round((Math.Abs(amount) - large_amount) * 100);
+            if (large_amount > divisor)
+                return "OUT OF RANGE";
+            while (divisor >= 1)
+            {
+                dividen = Math.Truncate(large_amount / divisor);
+                large_amount = large_amount % divisor;
+                unit = "";
+                if (dividen > 0)
+                {
+                    if (divisor == 1000000000000.00)
+                        unit = "TRILYUN ";
+                    else
+                    if (divisor == 1000000000.00)
+                        unit = "MILYAR ";
+                    else
+                    if (divisor == 1000000.00)
+                        unit = "JUTA ";
+                    else
+                    if (divisor == 1000.00)
+                        unit = "RIBU ";
+                }
+                weight1 = "";
+                dummy = dividen;
+                if (dummy >= 100)
+                    weight1 = prefix[(int)Math.Truncate(dummy / 100) - 1] + "RATUS ";
+                dummy = dividen % 100;
+                if (dummy < 10)
+                {
+                    if (dummy == 1 && unit == "RIBU ")
+                        weight1 += "SE";
+                    else
+                    if (dummy > 0)
+                        weight1 += sufix[(int)dummy - 1];
+                }
+                else
+                if (dummy >= 11 && dummy <= 19)
+                {
+                    weight1 += prefix[(int)(dummy % 10) - 1] + "BELAS ";
+                }
+                else
+                {
+                    weight1 += prefix[(int)Math.Truncate(dummy / 10) - 1] + "PULUH ";
+                    if (dummy % 10 > 0)
+                        weight1 += sufix[(int)(dummy % 10) - 1];
+                }
+                word += weight1 + unit;
+                divisor /= 1000.00;
+            }
+            if (Math.Truncate(amount) == 0)
+                word = "NOL ";
+            follower = "";
+            if (tiny_amount < 10)
+            {
+                if (tiny_amount > 0)
+                    follower = "KOMA NOL " + sufix[(int)tiny_amount - 1];
+            }
+            else
+            {
+                follower = "KOMA " + sufix[(int)Math.Truncate(tiny_amount / 10) - 1];
+                if (tiny_amount % 10 > 0)
+                    follower += sufix[(int)(tiny_amount % 10) - 1];
+            }
+            word += follower;
+            //if (amount < 0)
+            //{
+            //    word = "MINUS " + word + " RUPIAH";
+            //}
+            //else
+            //{
+            //    word = word + " RUPIAH";
+            //}
+            return word.Trim();
         }
 
         #endregion

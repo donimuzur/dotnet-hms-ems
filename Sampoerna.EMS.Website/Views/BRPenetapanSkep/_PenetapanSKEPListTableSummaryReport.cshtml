@@ -1,0 +1,36 @@
+﻿@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.MapSKEP.ReceivedDecreeViewModel
+<table id="exciseTable" class="table-condensed display compact nowrap" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"></th>
+            <th>Status</th>
+            <th>Requestor</th>
+            <th>Form Number</th>
+            <th>NPPBKC</th>
+            <th>KPPBC</th>
+            <th>Company Name</th>
+            <th>Address Plant</th>
+            <th>Decree Number</th>
+            <th>Decree Date</th>
+            <th>Start Decree Date</th>
+        </tr>
+    </thead>    
+    <tbody>
+        @foreach (var item in Model.ListReceivedDecree)
+        {
+            <tr>
+                <td></td>
+                <td>@item.StrLastApproved_Status</td>
+                <td>@item.CreatorName</td>
+                <td>@item.Received_No</td>
+                <td>@item.Nppbkc_ID</td>
+                <td>@item.Kppbc</td>
+                <td>@item.CompanyName</td>
+                <td>@item.AddressPlant</td>
+                <td>@item.Decree_No</td>
+                <td>@item.strDecree_Date</td>
+                <td>@item.strDecree_StartDate</td>                
+            </tr>
+        }
+    </tbody>
+</table>

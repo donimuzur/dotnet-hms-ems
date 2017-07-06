@@ -7,7 +7,7 @@
 }
 
 @Html.HiddenFor(model => model.ViewModel.DocumentNumber)
-@using (Html.BeginForm("Approve", "ExcisCredit", null, FormMethod.Post, new { id = "ApproveSkepForm", @class = "form-excise", role = "form", enctype = "multipart/form-data" }))
+@using (Html.BeginForm("ApproveSkep", "ExciseCredit", null, FormMethod.Post, new { id = "ApproveSkepForm", @class = "form-excise", role = "form", enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => Model.SkepInput.Id)
@@ -27,7 +27,7 @@
                     @if (Model.ViewModel.IsApprover && Model.ViewModel.IsWaitingSkepApproval)
                     {
                         <button class="btn btn-blue" id="RejectButton" type="button">Reject</button>
-                        <button class="btn btn-blue" id="ApproveButton" type="button" data-target=".approve-modal.excisecredit-skep">Approve</button>
+                        <button class="btn btn-blue" id="ApproveButton" type="button" data-target=".approve-modal.excisecredit-skep" data-toggle="modal">Approve</button>
                         <a href="@Url.Action("Index", "ExciseCredit")" class="btn btn-grey">Cancel</a>
                     }
                     else
@@ -48,22 +48,23 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" id="home-tab" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Information</a></li>
-                        <li role="presentation"><a href="#skep" aria-controls="profile" role="tab" data-toggle="tab">SKEP Input</a></li>
+                        <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Print Out</a></li>
                         <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
                     </ul>
                     <!-- Tab panes -->
                     <div class="tab-content">
-                        @Html.Partial("_DetailExciseForm", Model)
-                        @*<div role="tabpanel" class="tab-pane" id="skep">
-                                <div class="row">
-                                    <div class="col-md-12">
-
-                                        @Html.Partial("_SkepDetail", Model.SkepInput)
-
-                                    </div>
-                                </div>
-                            </div>*@
                         @Html.Partial("_Printout", Model)
+                        @Html.Partial("_DetailExciseForm", Model)
+                        <div role="tabpanel" class="tab-pane" id="skep">
+                            <div class="row">
+                                <div class="col-md-12">
+
+                                    @Html.Partial("_SkepDetail", Model.SkepInput)
+
+                                </div>
+                            </div>
+                        </div>
+
                         <div role="tabpanel" class="tab-pane" id="changes">
                             <div class="table-container">
                                 @Html.Partial("_ChangesHistoryTable", Model)

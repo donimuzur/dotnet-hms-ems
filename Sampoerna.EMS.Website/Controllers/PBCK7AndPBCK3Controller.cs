@@ -855,8 +855,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     try
                     {
                         item.FaCode = datarow[0];
-                        item.Pbck7Qty = datarow[1];// Convert.ToDecimal(datarow[1]);
-                        item.FiscalYear = datarow[2];// Convert.ToInt32(datarow[2]);
+                        item.StickerCode = datarow[1];
+                        item.Pbck7Qty = datarow[2];// Convert.ToDecimal(datarow[1]);
+                        item.FiscalYear = datarow[3];// Convert.ToInt32(datarow[2]);
 
                         item.PlantId = plantId;
 
@@ -2529,7 +2530,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     //model.AllowManagerReject = _workflowBll.AllowManagerReject(input);
                 }
 
-                model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
+                model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck3Status);
                 
                 if (model.Pbck3Status == Enums.DocumentStatus.Completed
                    && CurrentUser.UserRole == Enums.UserRole.Administrator)
@@ -2643,7 +2644,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
 
 
-                model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck7Status);
+                model.AllowPrintDocument = _workflowBll.AllowPrint(model.Pbck3Status);
             }
             catch (Exception ex)
             {
@@ -3168,10 +3169,12 @@ namespace Sampoerna.EMS.Website.Controllers
         private Stream GetReport(Pbck73PrintOutDto data, string printTitle, bool isPbck7)
         {
             var dataSet = SetDataSetReport(data, printTitle, isPbck7);
+            var selectedReport = "PBCK7\\Pbck7Report.rpt";
+            if (data.IsFromCk5) { selectedReport = "PBCK7\\Pbck7ReportFromCk5.rpt"; }
 
             var rpt = new ReportClass
             {
-                FileName = ConfigurationManager.AppSettings["Report_Path"] + "PBCK7\\Pbck7Report.rpt"
+                FileName = ConfigurationManager.AppSettings["Report_Path"] + selectedReport
             };
             rpt.Load();
             rpt.SetDataSource(dataSet);

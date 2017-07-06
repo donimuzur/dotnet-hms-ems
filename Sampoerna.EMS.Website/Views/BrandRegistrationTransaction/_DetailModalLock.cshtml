@@ -97,6 +97,17 @@
                                                 <div class="col-md-8">@Html.TextBox("hlCode", Model.DetailModel.Hl_Code, new { @class = "form-control", @maxlength = "22", @readonly = "true" })</div>
                                             </div>
                                         </div>
+                                        &nbsp;
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="col-md-4"><label>Country</label></div>
+                                                <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.CountryID, Model.CountryList, null, new { @class = "form-control", @id = "CountrySelector", @disabled ="disabled" })</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="col-md-4"><label>Week</label></div>
+                                                <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Week, Model.WeekList, null, new { @class = "form-control", @id = "WeekSelector" , @disabled = "disabled" })</div>
+                                            </div>
+                                        </div>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="col-md-6">@Html.CheckBoxFor(model => model.DetailModel.Is_Import, new { @id = "isImport", @disabled = "disabled" })<label>Import</label></div>

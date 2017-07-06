@@ -65,8 +65,8 @@
                             <div class="col-md-6">
                                 <input id="btn-filter" type="submit" class="btn btn-blue full" value="FILTER" />
                             </div>
-                            <div class="col-md-6">
-                                <button type="button" id="btn-reset-filter" class="btn btn-blue full">RESET</button>
+                            <div class="col-md-6">                                
+                                <a href="~/BRBrandRegistration/IndexBrandRegistration" class="btn btn-blue full" id="btn-reset-filter">RESET</a>
                             </div>
                         </div>
                     </div>
@@ -97,7 +97,11 @@
                 $(".selectreset").val($(".selectreset option:first").val());
             });
 
-        setupDataTables();
+            setupDataTables();
+
+            $('#btn-reset-filter').click(function () {
+                $('.loading').show();
+            });
     });
 
 

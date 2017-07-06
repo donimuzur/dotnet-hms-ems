@@ -1,7 +1,7 @@
 ﻿@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.BrandRegistration.BrandRegistrationReqViewModel
 <style>
     .watermark {
-        opacity: 0.1;
+        opacity: 0.3;
         color: BLACK;
         position: fixed;
         top: auto;
@@ -478,23 +478,104 @@
                 </div>
                 <div role="tabpanel" class="tab-pane" id="print">
                     <button type="button" class="btn btn-blue pull-right" id="btn_download_printout">Download Printout</button>
-                    @if (((Model.UserAccess.CanCreate) && (Model.UserAccess.CanEdit)) || (Model.UserAccess.CanApprove))
-                    {
-                    <button type="button" id="btn_show_printouteditor" class="btn btn-blue pull-right" data-toggle="modal" data-target=".modal_editprintout">Edit Layout</button>
-                    }
                     <div class="col-lg-12 table-container">
                         <div class="white-wrapper">
                             <div class="row">
-                                <div class="row">
-                                    @*@if (Model.ViewModel.Status == "DRAFT_NEW_STATUS" || Model.ViewModel.Status == "DRAFT_EDIT_STATUS" || Model.ViewModel.Status == "WAITING_POA_APPROVAL")
-                                    {*@
-                                        <div class="watermark">DRAFTED</div>
-                                    @*}*@
-                                    <div id="div-printout" style="padding:50px;"></div>
-                                    <div id="div-printout-item" style="padding:50px;">xxxxx</div>
+                                    <div class="watermark">DRAFTED</div>
+                                    <div class="panel-group" id="accordionprint" role="tablist" aria-multiselectable="true">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="headingOnePrint">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordionprint" href="#collapsePrintOne" aria-expanded="true" aria-controls="collapsePrintOne">
+                                                        Surat Pengantar
+                                                        @if (((Model.UserAccess.CanCreate) && (Model.UserAccess.CanEdit)) || (Model.UserAccess.CanApprove))
+                                                        {
+                                                            <button type="button" id="btn_show_printouteditor" class="btn btn-blue pull-right" data-layout="main" data-toggle="modal" data-target=".modal_editprintout">Edit Layout</button>
+                                                        }
+
+                                                        @*<i class="fa fa-caret-down"></i>*@
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapsePrintOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOnePrint">
+                                                <div id="div-printout" style="padding:50px;"></div>
+                                            </div>
+                                         </div>
+                                  </div>
+
+                                <div class="panel-group" id="accordionprint2" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingTwoPrint">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordionprint2" href="#collapsePrintTwo" aria-expanded="true" aria-controls="collapsePrintTwo">
+                                                    Surat Pernyataan
+                                                    @if (((Model.UserAccess.CanCreate) && (Model.UserAccess.CanEdit)) || (Model.UserAccess.CanApprove))
+                                                    {
+                                                        <button type="button" id="btn_show_printouteditor" class="btn btn-blue pull-right" data-layout="surat_pernyataan" data-toggle="modal" data-target=".modal_editprintout">Edit Layout</button>
+                                                    }
+
+                                                    @*<i class="fa fa-caret-down"></i>*@
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapsePrintTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwoPrint">
+                                            <div id="div-printout_surat_pernyataan" style="padding:50px;"></div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
+
+                                @if (Model.ViewModel.DocExport)
+                                {
+                                    <div class="panel-group" id="accordionprint4" role="tablist" aria-multiselectable="true">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="headingfourPrint">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordionprint4" href="#collapsePrintfour" aria-expanded="true" aria-controls="collapsePrintfour">
+                                                        Surat Keterangan Ekspor
+                                                        @if (((Model.UserAccess.CanCreate) && (Model.UserAccess.CanEdit)) || (Model.UserAccess.CanApprove))
+                                                        {
+                                                            <button type="button" id="btn_show_printouteditor" class="btn btn-blue pull-right" data-layout="export" data-toggle="modal" data-target=".modal_editprintout">Edit Layout</button>
+                                                        }
+
+                                                        @*<i class="fa fa-caret-down"></i>*@
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapsePrintfour" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingfourPrint">
+                                                <div id="div-printout-export" style="padding:50px;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                }
+
+                                <div class="panel-group" id="accordionprint3" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingThreePrint">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordionprint3" href="#collapsePrintThree" aria-expanded="true" aria-controls="collapsePrintThree">
+                                                    Daftar Item
+                                                    @if (((Model.UserAccess.CanCreate) && (Model.UserAccess.CanEdit)) || (Model.UserAccess.CanApprove))
+                                                    {
+                                                        <button type="button" id="btn_show_printouteditor" class="btn btn-blue pull-right" data-layout="item" data-toggle="modal" data-target=".modal_editprintout">Edit Layout</button>
+                                                    }
+
+                                                    @*<i class="fa fa-caret-down"></i>*@
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapsePrintThree" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingThreePrint">
+                                            <div id="div-printout-item" style="padding:50px;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+                                    </div>
+                                </div>
                     </div>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="changes">
@@ -517,7 +598,7 @@
 
 
 <div class="modal fade in modal_ChangeStatus ems-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
@@ -556,6 +637,7 @@
                     <button type="button" class="btn btn-blue pull-right" id="btn_change_printoutlayout">Save Layout</button>
                 </div>
                 <div class="form-group">
+                    <input type="hidden" id="PrintLayoutName" value="" />
                     <textarea id="txt_printoutlayout" class="form-control tinymce-editor"></textarea>
                 </div>
             </div>
@@ -599,6 +681,7 @@
 @using (Html.BeginForm("DownloadPrintOut", "BRBrandRegistration", FormMethod.Post, new { @id = "form_DownloadPrintout" }))
 {
 @Html.HiddenFor(model => model.ViewModel.Registration_ID, new { @id = "txt_hd_id_forprint" })
+@Html.HiddenFor(model => model.ViewModel.DocExport, new { @id = "txt_hd_doc_exports" })
 @Html.HiddenFor(model => model.ViewModel.Registration_No, new { @id = "txt_hd_formnumber_forprint" })
 }
 
@@ -610,7 +693,7 @@
 <link rel="stylesheet" type="text/css" href="../../Content/themes/base/all.css">
 
 <script src="~/Scripts/js/custom.js"></script>
-<script src="~/Scripts/brand-registration-trans/main_brand.js?v=28"></script>
+<script src="~/Scripts/brand-registration-trans/main_brand.js?v=32"></script>
 <script src="~/Scripts/tinymce/tinymce.min.js"></script>
 
 <script type="text/javascript" language="javascript" class="init">

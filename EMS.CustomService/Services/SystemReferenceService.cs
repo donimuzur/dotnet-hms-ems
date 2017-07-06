@@ -389,7 +389,7 @@ namespace Sampoerna.EMS.CustomService.Services
             try
             {
                 var current = 0L;
-                var sequencePerForm = context.DOC_NUMBER_SEQ.Where(x => x.FORM_TYPE_ID == (int)formtype).FirstOrDefault();
+                var sequencePerForm = context.DOC_NUMBER_SEQ.Where(x => !x.FORM_TYPE_ID.HasValue).FirstOrDefault();
 
                 if (sequencePerForm == null) // Not present yet
                 {
@@ -906,11 +906,12 @@ namespace Sampoerna.EMS.CustomService.Services
                     var layout = printout.LAYOUT;
                     foreach (var variable in printoutvariable)
                     {
-                        if (!layout.Contains(variable.NAME))
+                        if (!NewLayout.Contains(variable.NAME))
                         {
                             isVariableOk = false;
                         }
                     }
+                    isVariableOk = true;
                     if (isVariableOk)
                     {
                         printout.LAYOUT = NewLayout;

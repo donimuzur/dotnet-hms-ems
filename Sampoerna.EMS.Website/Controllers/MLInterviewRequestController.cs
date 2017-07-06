@@ -52,6 +52,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private InterviewRequestModel IRmodel;
         private InterviewRequestViewModel IRViewmodel;
         private IDocumentSequenceNumberBLL _docbll;
+        private IChangesHistoryBLL chBLL;
+        private IWorkflowHistoryBLL whBLL;
+
 
         public MLInterviewRequestController(IPageBLL pageBLL, IChangesHistoryBLL changeHistoryBLL, IWorkflowHistoryBLL workflowHistoryBLL,IDocumentSequenceNumberBLL docbll) : base(pageBLL, Enums.MenuList.ManufactureLicense)
         {
@@ -60,6 +63,8 @@ namespace Sampoerna.EMS.Website.Controllers
             IRmodel = new InterviewRequestModel();
             IRservice = new InterviewRequestService();
             refService = new SystemReferenceService();
+            this.chBLL = changeHistoryBLL;
+            this.whBLL = workflowHistoryBLL;
             _docbll = docbll;
         }
 
@@ -158,8 +163,10 @@ namespace Sampoerna.EMS.Website.Controllers
                         var IRWhithSameNPPBKC = IRservice.GetInterviewNeedApproveWithSameNPPBKC(CurrentUser.USER_ID);
                         var IRWhithoutNPPBKC = IRservice.GetInterviewNeedApproveWithoutNPPBKC(CurrentUser.USER_ID);
                         var IRWithNPPBKCButNoExcise = IRservice.GetInterviewNeedApproveWithNPPBKCButNoExcise(CurrentUser.USER_ID);
+                        var drafstatus = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Draft).REFF_ID;
+                        var editstatus = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Edited).REFF_ID;
                         data = data.Where(w => w.CREATED_BY == CurrentUser.USER_ID || delegatorname.Contains(w.CREATED_BY) 
-                        || w.LASTAPPROVED_BY == CurrentUser.USER_ID || IRWhithSameNPPBKC.Contains(w.VR_FORM_ID) || IRWhithoutNPPBKC.Contains(w.VR_FORM_ID) 
+                        || (w.LASTAPPROVED_BY == CurrentUser.USER_ID && w.LASTAPPROVED_STATUS != drafstatus && w.LASTAPPROVED_STATUS != editstatus) || IRWhithSameNPPBKC.Contains(w.VR_FORM_ID) || IRWhithoutNPPBKC.Contains(w.VR_FORM_ID) 
                         || IRWithNPPBKCButNoExcise.Contains(w.VR_FORM_ID));
                     }
                     if (!IsAllStatus)
@@ -186,6 +193,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             Perihal = s.PERIHAL,
                             Company_Type = s.COMPANY_TYPE,
                             ApprovalStatus = s.SYS_REFFERENCES.REFF_VALUE,
+                            StatusKey = s.SYS_REFFERENCES.REFF_KEYS,
                             POAID = s.POA_ID,
                             POAName = s.POA.PRINTED_NAME,
                             POAAddress = s.POA.POA_ADDRESS,
@@ -223,7 +231,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
                         foreach(var doc in documents)
                         {
-                            doc.StrRequestDate = doc.RequestDate.ToString("dd MMMM yyyy");
+                            doc.StrRequestDate = doc.RequestDate.ToString("dd MMM yyyy");
                             doc.IsCanEdit = (doc.CreatedBy == CurrentUser.USER_ID || delegatorname.Contains(doc.CreatedBy) || CurrentUser.UserRole == Enums.UserRole.Administrator);
                             doc.IsApprover = IsPOACanApprove(doc.Id, CurrentUser.USER_ID);
                         }
@@ -595,7 +603,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     _IRModel.IsDetail = false;                    
                 }                
                 _IRModel.ChangesHistoryList = new List<ChangesHistoryItemModel>();
-                var workflow = refService.GetWorkflowHistory((int)Enums.MenuList.InterviewRequest, ID).OrderBy(o => o.ACTION_DATE).ToList();
+
+                //var workflow = refService.GetWorkflowHistory((int)Enums.MenuList.InterviewRequest, ID).OrderBy(o => o.ACTION_DATE).ToList();
+                var workflowInput = new GetByFormTypeAndFormIdInput();
+                workflowInput.FormId = ID;
+                workflowInput.FormType = Enums.FormType.InterviewRequestWorkflow;
+                var workflow = this.whBLL.GetByFormTypeAndFormId(workflowInput).OrderBy(x => x.WORKFLOW_HISTORY_ID).ToList();
+
                 _IRModel.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(workflow);
                 if (_IRModel.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.AwaitingPoaApproval)) || _IRModel.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.AwaitingPoaSkepApproval)))
                 {
@@ -989,7 +1003,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                         {
                                             govstatus = "Approved";
                                         }
-                                        List<string> poareceiverList = poareceiverlistall.Select(s => s.POA_EMAIL).ToList();
+                                        List<string> poareceiverList = poareceiverlistall.Where(w => w.POA_EMAIL != "" && w.POA_EMAIL != null).Select(s => s.POA_EMAIL).ToList();
                                         var strreqdate = updateSKEP.REQUEST_DATE.ToString("dd MMMM yyyy");
                                         var CreatorName = refService.GetPOA(CurrentUser.USER_ID).PRINTED_NAME;
                                         var status_request = govstatus + " by Government and Waiting For POA SKEP Approval.";
@@ -1122,8 +1136,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     senderMail = "EMS@pmi.id";
                 }
                 var senderName = CurrentUser.FIRST_NAME + " " + CurrentUser.LAST_NAME;
+                sendto = sendto.Where(w => w != "" && w != null).ToList();
                 string[] arrSendto = sendto.ToArray();
-                bool mailStatus = ItpiMailer.Instance.SendEmail(arrSendto, null, null, null, mailContent.EMAILSUBJECT, mailContent.EMAILCONTENT, true, senderMail, senderName);
+                bool mailStatus = true;
+                if (arrSendto.Count() > 0)
+                {
+                    mailStatus = ItpiMailer.Instance.SendEmail(arrSendto, null, null, null, mailContent.EMAILSUBJECT, mailContent.EMAILCONTENT, true, senderMail, senderName);
+                }
                 return mailStatus;
             }
             catch (Exception e)
@@ -1893,30 +1912,38 @@ namespace Sampoerna.EMS.Website.Controllers
             return Json(layout);
         }
 
-        private string GetPrintout(InterviewRequestModel _IRModel)
+        private List<string> GetPrintout(InterviewRequestModel _IRModel)
         {
             _IRModel = GetInterviewRequestMasterForm(_IRModel);
             _IRModel.interviewRequestDetail = GetInterviewRequestDetail(_IRModel.Id);
             var lampiran_count = IRservice.GetFileUploadByIRId(_IRModel.Id).Where(w => w.IS_GOVERNMENT_DOC == false).Count();
-            var layout = "";
+            var terbilang_lampiran_count = TerbilangLong(lampiran_count);
+            var listLayout = new List<string>();
+            var _companyType = _IRModel.Company_Type + " / <span style='text-decoration: line-through;'>Importir Hasil Tembakau</span>";
+            if (_IRModel.Company_Type.ToLower() == "importir hasil tembakau")
+            {
+                _companyType = "<span style='text-decoration: line-through;'>Pabrik Hasil Tembakau</span> / " + _IRModel.Company_Type;
+            }
+            System.Globalization.CultureInfo CI = new System.Globalization.CultureInfo("id-ID");
             foreach (var interview in _IRModel.interviewRequestDetail)
             {
                 var parameters = new Dictionary<string, string>();
                 parameters.Add("COMPANY_NAME", _IRModel.Company_Name);
-                parameters.Add("COMPANY_TYPE", _IRModel.Company_Type);
+                parameters.Add("COMPANY_TYPE", _companyType);
                 parameters.Add("COMPANY_ADDRESS", interview.Manufacture_Address);
                 parameters.Add("COMPANY_CITY", interview.City_Name);
-                parameters.Add("REQUEST_DATE", _IRModel.RequestDate.ToString("dd MMMM yyyy"));
+                parameters.Add("REQUEST_DATE", Convert.ToDateTime(_IRModel.RequestDate).ToString("dd MMMM yyyy", CI));
                 parameters.Add("FORM_NUMBER", _IRModel.FormNumber);
-                parameters.Add("LAMPIRAN_COUNT", lampiran_count.ToString());
+                parameters.Add("LAMPIRAN_COUNT", lampiran_count.ToString() + " (" + terbilang_lampiran_count + ")");
                 parameters.Add("PERIHAL", _IRModel.Perihal);
                 parameters.Add("KPPBC_TEXT_TO", _IRModel.Text_To);
                 parameters.Add("POA_NAME", _IRModel.POAName);
                 parameters.Add("POA_ROLE", _IRModel.POAPosition);
                 parameters.Add("POA_ADDRESS", _IRModel.POAAddress);
-                layout += refService.GeneratePrintout("INTERVIEW_REQUEST_PRINTOUT", parameters, _IRModel.CreatedBy).LAYOUT + "<br /><br /><br />";
+                var layout = refService.GeneratePrintout("INTERVIEW_REQUEST_PRINTOUT", parameters, _IRModel.CreatedBy).LAYOUT;
+                listLayout.Add(layout);
             }
-            return layout;
+            return listLayout;
         }
 
         [HttpPost]
@@ -1961,32 +1988,41 @@ namespace Sampoerna.EMS.Website.Controllers
                 FormNumber = FormNumber.Replace('/', '-');
                 var now = DateTime.Now.ToString("ddMMyyyy");                
                 _IRModel.Id = InterviewID;
-                var htmlText = GetPrintout(_IRModel);
+                var listhtmlText = GetPrintout(_IRModel);
                 //MemoryStream ms = new MemoryStream();
                 var baseFolder = "/files_upload/Manufacture/InterviewRequest/PrintOut/";
                 var uploadToFolder = Server.MapPath("~" + baseFolder);
-                Directory.CreateDirectory(uploadToFolder);
-                uploadToFolder += "PrintOut_InterviewRequest_" + FormNumber + "_" + now + ".pdf";
-                FileStream stream = new FileStream(uploadToFolder, FileMode.Create);
+                Directory.CreateDirectory(uploadToFolder);                
                 var margin = Convert.ToSingle(System.Configuration.ConfigurationManager.AppSettings["DefaultMargin"]);
                 var leftMargin = iTextSharp.text.Utilities.MillimetersToPoints(25.4f);
                 var rightMargin = iTextSharp.text.Utilities.MillimetersToPoints(25.4f);
                 var topMargin = iTextSharp.text.Utilities.MillimetersToPoints(25.4f);
                 var bottomtMargin = iTextSharp.text.Utilities.MillimetersToPoints(25.4f);
-                var document = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, leftMargin, rightMargin, topMargin, bottomtMargin);                
-                var writer = PdfWriter.GetInstance(document, stream);
-                if (_IRModel.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.Draft)) || _IRModel.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.Edited)) || _IRModel.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.Canceled)) || _IRModel.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.AwaitingPoaApproval)))
+
+                var _listPath = new List<string>();
+                var index = 0;
+                foreach (var htmlText in listhtmlText)
                 {
-                    PdfWriterEvents writerEvent = new PdfWriterEvents("D R A F T E D");
-                    writer.PageEvent = writerEvent;
+                    var _path = uploadToFolder + "PrintOut_InterviewRequest_" + FormNumber + "_" + now + index.ToString() + ".pdf";
+                    FileStream stream = new FileStream(_path, FileMode.Create);
+                    var document = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, leftMargin, rightMargin, topMargin, bottomtMargin);
+                    var writer = PdfWriter.GetInstance(document, stream);
+                    if (_IRModel.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.Draft)) || _IRModel.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.Edited)) || _IRModel.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.Canceled)) || _IRModel.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.AwaitingPoaApproval)))
+                    {
+                        PdfWriterEvents writerEvent = new PdfWriterEvents(" D R A F T E D");
+                        writer.PageEvent = writerEvent;
+                    }
+                    writer.CloseStream = false;
+                    document.Open();
+                    var srHtml = new StringReader(htmlText);
+                    XMLWorkerHelper.GetInstance().ParseXHtml(writer, document, srHtml);
+                    document.Close();
+                    stream.Close();
+                    _listPath.Add(_path);
+                    index++;
                 }
-                writer.CloseStream = false;
-                document.Open();
-                var srHtml = new StringReader(htmlText);
-                XMLWorkerHelper.GetInstance().ParseXHtml(writer, document, srHtml);
-                document.Close();
-                stream.Close();
-                var mergeFile = MergePrintout(uploadToFolder, InterviewID);
+                
+                var mergeFile = MergePrintout(_listPath, InterviewID);
                 var newFile = new FileInfo(mergeFile);
                 var fileName = Path.GetFileName(mergeFile);
                 string attachment = string.Format("attachment; filename={0}", fileName);
@@ -2016,7 +2052,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
-        public String MergePrintout(string path, long InterviewID)
+        public String MergePrintout(List<string> path, long InterviewID)
         {
             try
             {
@@ -2029,7 +2065,17 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 var supportingDocs = refService.GetSupportingDocuments((int)Enums.FormList.Interview, bukrs, InterviewID.ToString()).ToList();
                 List<String> sourcePaths = new List<string>();
-                sourcePaths.Add(path);
+                var filePath = "";
+                var i = 0;
+                foreach (var realPath in path)
+                {
+                    if (i == 0)
+                    {
+                        filePath = realPath;
+                    }
+                    sourcePaths.Add(realPath);
+                    i++;
+                }
                 foreach (var doc in supportingDocs)
                 {
                     var files = doc.FILE_UPLOAD.ToList();
@@ -2053,8 +2099,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
 
-                if (PdfMerge.Execute(sourcePaths.ToArray(), path))
-                    return path;
+                if (PdfMerge.Execute(sourcePaths.ToArray(), filePath))
+                    return filePath;
                 else
                     return null;
             }
@@ -2604,7 +2650,8 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new InterviewRequestModel();
 
-            var history = refService.GetChangesHistory((int)Enums.MenuList.InterviewRequest, ID.ToString()).ToList();
+            //var history = refService.GetChangesHistory((int)Enums.MenuList.InterviewRequest, ID.ToString()).ToList();
+            var history = this.chBLL.GetByFormTypeAndFormId(Enums.MenuList.InterviewRequest, ID.ToString());
             model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(history);
 
             return PartialView("_ChangesHistoryTable", model);
@@ -2641,5 +2688,92 @@ namespace Sampoerna.EMS.Website.Controllers
         //    }
         //    return Json(citydetail);
         //}
+
+        public string TerbilangLong(double amount)
+        {
+            string word = "";
+            double divisor = 1000000000000.00; double large_amount = 0;
+            double tiny_amount = 0;
+            double dividen = 0; double dummy = 0;
+            string weight1 = ""; string unit = ""; string follower = "";
+            string[] prefix = { "SE", "DUA ", "TIGA ", "EMPAT ", "LIMA ",
+ "ENAM ", "TUJUH ", "DELAPAN ", "SEMBILAN " };
+            string[] sufix = { "SATU ", "DUA ", "TIGA ", "EMPAT ", "LIMA ",
+ "ENAM ", "TUJUH ", "DELAPAN ", "SEMBILAN " };
+            large_amount = Math.Abs(Math.Truncate(amount));
+            tiny_amount = Math.Round((Math.Abs(amount) - large_amount) * 100);
+            if (large_amount > divisor)
+                return "OUT OF RANGE";
+            while (divisor >= 1)
+            {
+                dividen = Math.Truncate(large_amount / divisor);
+                large_amount = large_amount % divisor;
+                unit = "";
+                if (dividen > 0)
+                {
+                    if (divisor == 1000000000000.00)
+                        unit = "TRILYUN ";
+                    else
+                    if (divisor == 1000000000.00)
+                        unit = "MILYAR ";
+                    else
+                    if (divisor == 1000000.00)
+                        unit = "JUTA ";
+                    else
+                    if (divisor == 1000.00)
+                        unit = "RIBU ";
+                }
+                weight1 = "";
+                dummy = dividen;
+                if (dummy >= 100)
+                    weight1 = prefix[(int)Math.Truncate(dummy / 100) - 1] + "RATUS ";
+                dummy = dividen % 100;
+                if (dummy < 10)
+                {
+                    if (dummy == 1 && unit == "RIBU ")
+                        weight1 += "SE";
+                    else
+                    if (dummy > 0)
+                        weight1 += sufix[(int)dummy - 1];
+                }
+                else
+                if (dummy >= 11 && dummy <= 19)
+                {
+                    weight1 += prefix[(int)(dummy % 10) - 1] + "BELAS ";
+                }
+                else
+                {
+                    weight1 += prefix[(int)Math.Truncate(dummy / 10) - 1] + "PULUH ";
+                    if (dummy % 10 > 0)
+                        weight1 += sufix[(int)(dummy % 10) - 1];
+                }
+                word += weight1 + unit;
+                divisor /= 1000.00;
+            }
+            if (Math.Truncate(amount) == 0)
+                word = "NOL ";
+            follower = "";
+            if (tiny_amount < 10)
+            {
+                if (tiny_amount > 0)
+                    follower = "KOMA NOL " + sufix[(int)tiny_amount - 1];
+            }
+            else
+            {
+                follower = "KOMA " + sufix[(int)Math.Truncate(tiny_amount / 10) - 1];
+                if (tiny_amount % 10 > 0)
+                    follower += sufix[(int)(tiny_amount % 10) - 1];
+            }
+            word += follower;
+            //if (amount < 0)
+            //{
+            //    word = "MINUS " + word + " RUPIAH";
+            //}
+            //else
+            //{
+            //    word = word + " RUPIAH";
+            //}
+            return word.Trim();
+        }
     }
 }

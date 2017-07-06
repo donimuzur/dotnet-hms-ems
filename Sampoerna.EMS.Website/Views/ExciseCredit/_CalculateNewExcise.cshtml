@@ -13,6 +13,16 @@
         min-height: 100%;
         border-radius: 0;
     }
+
+    .text-green {
+        color: green;
+    }
+
+    .text-blue {
+        color: blue;
+    }
+
+    
 </style>
 <div class="modal ems-modal fade" tabindex="-1" role="dialog" aria-labelledby="calcDetail" id="calcDetailModal">
     <div class="modal-dialog modal-lg">
@@ -94,7 +104,7 @@
                     }
                     @foreach (var pair in Model.MaxCreditRange)
                     {
-                       grandTotal += pair.Value.Total;
+                        grandTotal += pair.Value.Total;
                         <div class="row">
                             <div class="col-md-2">
                                 <div class="row">
@@ -170,10 +180,53 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" id="calculationAction">
                 <button type="button" class="btn btn-success" id="saveCalcResult" data-dismiss="modal">Save</button>
                 <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
+<script type="text/javascript" src="~/Scripts/jquery-2.1.4.min.js"></script>
+<script type="text/javascript">
+    function assignStyle() {
+        var elms;
+        var selector;
+        @{
+            var credit6 = Model.CreditRanges[6];
+            var credit3 = Model.CreditRanges[3];
+
+            foreach (var pair in credit3)
+            {
+                if (credit3[pair.Key] > credit6[pair.Key])
+                {
+                    <text>
+        $("#credit3").find(".form-group." + '@pair.Key').addClass("has-success text-green");
+        </text>
+                }
+                else
+                {
+                    <text>
+        $("#credit6").find(".form-group." + '@pair.Key').addClass("has-success text-green");
+
+                    </text>
+                }
+            }
+        }
+        //var elm = document.getElementById("credit3").getElementsByTagName("input");
+        //for (var i = 0; i < elm.length; i++) {
+        //    elm[i].className += " text-red";
+        //    //console.log(elm[i].classList);
+        //}
+
+        //var elm = document.getElementById("credit6").getElementsByTagName("input");
+        //for (var i = 0; i < elm.length; i++) {
+        //    elm[i].className += " text-blue";
+        //    //console.log(elm[i].classList);
+        //}
+    }
+
+
+
+    assignStyle();
+</script>

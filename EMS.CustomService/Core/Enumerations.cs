@@ -93,7 +93,7 @@ namespace Sampoerna.EMS.CustomService.Core
             ProductDevelopmentRejected = 34,
             BrandRegistrationApprovalRequest = 28,
             BrandRegistrationApprovedPreGovernmentStatus = 39,
-            BrandRegistrationRejected = 35,
+            BrandRegistrationRejected = 45,
             BrandRegistrationApprovalRequestPostGovernmentStatus = 36,
             BrandRegistrationSKEPRejectedRevise = 37,
             BrandRegistrationApprovedPostGovernmentStatus = 38,
@@ -105,7 +105,8 @@ namespace Sampoerna.EMS.CustomService.Core
             ExciseCreditRejection = 24,
             ExciseCreditSKEPApprovalRequest = 29,
             ExciseCreditSKEPApprovalNotification = 30,
-            ExciseCreditSKEPApprovalRejection = 31
+            ExciseCreditSKEPApprovalRejection = 31, 
+            ExciseCreditWithdrawNotice = 35
 
 
         }
@@ -147,6 +148,8 @@ namespace Sampoerna.EMS.CustomService.Core
 
             ExciseNewRequestDecree,
             ExciseAdjustmentRequestDecree,
+
+            [Description("Excise Credit Request Guarantee Decree")]
             ExciseRequestGuaranteeDecree
         }
 

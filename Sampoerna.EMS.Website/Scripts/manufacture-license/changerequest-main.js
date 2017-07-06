@@ -721,6 +721,14 @@ $(document).on("click", ".btn_showmodal_changestatus", function () {
         $("#txt_label_forchangestatus").text("Reject");
         $("#btn_finalreject").show();
     }
+    else if (action == "Withdraw") {
+        $("#txt_label_forchangestatus").text("Withdraw Form Confirmation");
+        $("#txt_label_forchangestatus").text("Withdraw");
+        $("#btn_changestatus_reviseskep").hide();
+        $("#btn_changestatus_reject").hide();
+        $("#btn_changestatus_withdraw").show();
+    }
+
 });
 
 $(document).on("click", ".btn_changestatus_submit", function () {
@@ -728,19 +736,28 @@ $(document).on("click", ".btn_changestatus_submit", function () {
     //$("#customloader").show();
     var action = $(this).data("action");
     var status = "";
-    if (action == "revise") {
-        status = "DRAFT EDIT";
-    }
-    else {
-        if (action == "reject") {
+
+    switch(action)
+    {
+        case "revise":
+            status = "DRAFT EDIT";
+            break;
+
+        case "reject":
             status = "REJECTED";
-        }
-        else {
+            break;
+
+        case "finalreject":
             status = "WAITING FOR GOVERNMENT APPROVAL";
-        }
+            break;
+
+        case "withdraw":
+            status = "CANCELED";
+            break;
     }
+
     var comment = $("#txt_changestatus_comment").val();
-    if (comment == "" && (action == "revise" || action == "reviseskep")) {        
+    if (comment == "" && (action == "revise" || action == "reviseskep" || action == "withdraw")) {
         $("#div_alert_revise").show();
         $("#div_alert_revise").html("* Note/Comment cannot be empty.");
     }

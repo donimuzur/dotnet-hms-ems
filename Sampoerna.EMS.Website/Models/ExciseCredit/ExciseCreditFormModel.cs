@@ -55,6 +55,7 @@ namespace Sampoerna.EMS.Website.Models.ExciseCredit
 
         public ExciseGovApprovalModel SkepInput { set; get; }
 
+        public CalculationAdjustmentModel AdjustmentModel { get; set; }
         public List<ExciseCreditPrintoutModel> Printouts { set; get; }
 
     }

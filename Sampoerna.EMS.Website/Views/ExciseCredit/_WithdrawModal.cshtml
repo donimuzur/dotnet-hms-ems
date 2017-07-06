@@ -5,7 +5,7 @@
 @using (Html.BeginForm("Withdraw", "ExciseCredit", null, FormMethod.Post, new { @class = "form-excise", role = "form", enctype = "multipart/form-data", id = "withdrawForm" }))
 {
     @Html.AntiForgeryToken()
-    <div class="modal ems-modal fade withdraw-modal excisecredit" tabindex="-1" role="dialog" aria-labelledby="WithdrawModal" id="withdrawModal">
+    <div class="modal ems-modal fade withdraw-modal excise-credit" tabindex="-1" role="dialog" aria-labelledby="WithdrawModal" id="withdrawModal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -16,8 +16,8 @@
                     @Html.HiddenFor(model => model.ViewModel.Id)
                     <div class="row col-md-12">
                         <div class="form-group">
-                            <label>Note for Creator <span class="red">*</span></label>
-                            <textarea class="form-control" rows="5" data-val="true" data-val-required="Withdraw reason should not be empty!" name="ViewModel.RevisionData.Comment" placeholder="Write the reason of withdrawal to approver" required>@Model.ViewModel.RevisionData.Comment</textarea>
+                            <label>Note for Approver <span class="red">*</span></label>
+                            <textarea class="form-control" rows="5" data-val="true" data-val-required="Withdraw reason should not be empty!" name="ViewModel.RevisionData.Comment" placeholder="Write the reason of withdrawal to approver" required id="ViewModel_RevisionData_Comment">@Model.ViewModel.RevisionData.Comment</textarea>
                         </div>
                     </div>
                     <div class="row col-md-12">
@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-blue" id="WithdrawAction">Withdraw</button>
+                    <button type="button" class="btn btn-blue" id="WithdrawAction" disabled>Withdraw</button>
                     <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
                 </div>
             </div>

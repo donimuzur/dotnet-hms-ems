@@ -89,5 +89,6 @@ namespace Sampoerna.EMS.CustomService.Data
         public virtual DbSet<EXCISE_CREDIT_APPROVED_DETAIL> EXCISE_CREDIT_APPROVED_DETAIL { get; set; }
         public virtual DbSet<CK1_EXCISE_CALCULATE_ADJUST> CK1_EXCISE_CALCULATE_ADJUST { get; set; }
         public virtual DbSet<DOC_NUMBER_SEQ> DOC_NUMBER_SEQ { get; set; }
+        public virtual DbSet<COUNTRY> COUNTRY { get; set; }
     }
 }

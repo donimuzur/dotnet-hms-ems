@@ -57,12 +57,12 @@
         </div>
     </div>
 }
-@using (Html.BeginForm("Withdraw", "ExciseCredit", FormMethod.Post, new { @id = "ExciseWithdrawlForm" }))
+@*@using (Html.BeginForm("Withdraw", "ExciseCredit", FormMethod.Post, new { @id = "ExciseWithdrawForm" }))
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.ViewModel.Id)
 
-}
+}*@
 @Html.Partial("_WithdrawModal", Model)
 <div id="ck1List" style="display:none;"></div>
 <div id="errModal" class="modal ems-modal fade bs-example-modal-sm danger" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
@@ -139,11 +139,28 @@
                 submit();
 
             });
-
-            $("#WithdrawButton").on('click', function (e) {
+            
+            var withdrawButton = $("#WithdrawAction");
+            //$("#withdrawForm").validate();
+            withdrawButton.on('click', function (e) {
                 e.preventDefault();
-                withdraw();
-            })
+                //var form = $("#withdrawForm");
+                //console.log(form);
+                var notes = $("#ViewModel_RevisionData_Comment").val();
+                //console.log(notes);
+                if (notes) {
+                    document.getElementById('withdrawForm').submit();
+                    $("#WithdrawButton").prop('disabled', true);
+                    $('#withdrawModal').modal('toggle');
+                    //return false;
+                } else showErrorDialog("Please add notes to approver!");
+
+            });
+
+            $("#ViewModel_RevisionData_Comment").bind('input propertychange', function () {
+                var comment = $(this).val();
+                $("#WithdrawAction").prop('disabled', !comment);
+            });
 
             handleBrowseEvent("skepDocument", "skepDocumentFile", "skepDocumentText");
             handleBrowseEvent("bpjDocument", "bpjDocumentFile", "bpjDocumentText");
@@ -277,9 +294,17 @@
             $("#SubmitButton").prop("disabled", true);
         }
 
-        function withdraw() {
-            $("#ExciseWithdrawForm").submit();
-            $("#WithdrawButton").prop("disabled", true);
+        function withdraw(e) {
+            
+            var form = $("#withdrawForm");
+            console.log(form);
+            if (form.valid()) {
+                $("#withdrawForm").submit();
+                $("#WithdrawButton").prop("disabled", true);
+                $("#withdrawModal").modal("toggle");
+            } else
+                alert("Please add notes for approver!");
+            
         }
 
         function loadOtherDocs() {
@@ -359,12 +384,13 @@
                         registeredProducts = [];
                         for (var i = 0; i < response.length; i++) {
                             registeredProducts[i] = {
-                                id: response[i].ExciseId,
+                                id: response[i].ProductCode,
                                 alias: response[i].ProductAlias,
                                 amount: response[i].Amount,
                                 amount_display: Number(response[i].Amount).formatMoney(2)
                             };
                         }
+                        renderProducts();
 
                     }
                 },
@@ -429,7 +455,7 @@
                 '<input class="form-control" type="text" name="productsamounts" value="' + registeredProducts[i].amount_display + '" readonly />' +
                 '</td>' +
                 '<td>' +
-                '<button type="button" class="btn btn-danger" onclick="removeProduct(' + i + ')">Remove</button>'
+                '<button type="button" class="btn btn-blue" onclick="removeProduct(' + i + ')">Remove</button>'
                 '</td>' +
                 '</tr>';
 

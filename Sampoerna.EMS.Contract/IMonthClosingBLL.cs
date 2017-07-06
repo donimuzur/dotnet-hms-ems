@@ -11,5 +11,6 @@ namespace Sampoerna.EMS.Contract
         bool Save(MonthClosingDto item);
         MonthClosingDto GetDataByParam(MonthClosingGetByParam param);
         MonthClosingDto GetById(long id);
+        void Active(long id);
     }
 }

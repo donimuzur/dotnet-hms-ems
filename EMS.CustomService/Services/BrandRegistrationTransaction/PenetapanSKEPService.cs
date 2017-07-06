@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.CustomService.Core;
 
 namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
 {
@@ -848,8 +849,10 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
                 var ApproverNPPBKC = context.POA_MAP.Where(w => w.POA_ID == Approver);
                 if (ApproverNPPBKC.Any())
                 {
+                    var drafstatus = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Draft).REFF_ID;
+                    var editstatus = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Edited).REFF_ID;
                     var NPPBKC = ApproverNPPBKC.Select(s => s.NPPBKC_ID).ToList();
-                    listIR = context.RECEIVED_DECREE.Where(w => NPPBKC.Contains(w.NPPBKC_ID)).Select(s => s.RECEIVED_ID).ToList();
+                    listIR = context.RECEIVED_DECREE.Where(w => NPPBKC.Contains(w.NPPBKC_ID) && w.LASTAPPROVED_STATUS != drafstatus && w.LASTAPPROVED_STATUS != editstatus).Select(s => s.RECEIVED_ID).ToList();
                 }
                 return listIR;
             }
@@ -909,7 +912,12 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
         public IQueryable<vwPenetapanSKEP> GetViewPenetapanSKEPByCreator(string CreatedBy)
         {            
             var context = new EMSDataModel();
-            return context.vwPenetapanSKEP.Where(w => w.CREATED_BY == CreatedBy);
+            var penetapanskeplist = context.vwPenetapanSKEP.Where(w => w.ID != 0);
+            if(CreatedBy != "" && CreatedBy != null)
+            {
+                penetapanskeplist = penetapanskeplist.Where(w => w.CREATED_BY == CreatedBy);
+            }
+            return penetapanskeplist;
         }
 
         public IQueryable<POA_MAP> GetUserNPPBKC(string UserID)

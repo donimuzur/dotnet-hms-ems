@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.Routing;
+using Sampoerna.EMS.BLL;
 using Sampoerna.EMS.Contract;
 using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models;
@@ -13,7 +15,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private IPOABLL _poabll;
         private IUserAuthorizationBLL _userAuthorizationBll;
         public LoginController(IUserBLL userBll, IPageBLL pageBll, IPOABLL poabll, IUserAuthorizationBLL userAuthorizationBll)
-            : base(pageBll, Enums.MenuList.LOGIN)
+            : base(pageBll,userBll, Enums.MenuList.LOGIN)
         {
             _userBll = userBll;
             _poabll = poabll;
@@ -24,9 +26,13 @@ namespace Sampoerna.EMS.Website.Controllers
         // GET: /Login/
         public ActionResult Index()
         {
-            var model = new LoginFormModel();
-            model.Users = new SelectList(_userBll.GetUsers(), "USER_ID", "USER_ID");
-            return View(model);
+            // Enable Login form => Bypass AD mode
+            //var model = new LoginFormModel();
+            //model.Users = new SelectList(_userBll.GetUsers(), "USER_ID", "USER_ID");
+            //return View(model);
+
+            // Enable AD
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
@@ -34,10 +40,11 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             
             var loginResult = _userBll.GetLogin(model.Login.UserId);
-
+            
             if (loginResult != null)
             {
-                CurrentUser = loginResult;
+                base.param = model.Login.UserId;
+                //CurrentUser = loginResult;
                 CurrentUser.UserRole = _poabll.GetUserRole(loginResult.USER_ID);
                 CurrentUser.AuthorizePages = _userAuthorizationBll.GetAuthPages(loginResult.USER_ID);
                 CurrentUser.NppbckPlants = _userAuthorizationBll.GetNppbckPlants(loginResult.USER_ID);
@@ -79,5 +86,33 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = GetListMessageInfo();
             return PartialView("_MessageInfo", model);
         }
-	}
+
+        public ActionResult Logout()
+        {
+            Session[Core.Constans.SessionKey.CurrentUser] = null;
+            return RedirectToAction("Index", "Home");
+        }
+
+
+        public ActionResult VerifyLogin(ActionExecutingContext filterContext)
+        {
+            var descriptor = filterContext.ActionDescriptor;
+            var actionName = descriptor.ActionName;
+            var controllerName = descriptor.ControllerDescriptor.ControllerName;
+
+            SetLoginSession();
+            if (CurrentUser == null)
+            {
+                filterContext.Result = new RedirectToRouteResult(
+                    new RouteValueDictionary {{"controller", "Error"}, {"action", "Unauthorized"}});
+
+            }
+            else
+            {
+                filterContext.Result = new RedirectToRouteResult(
+                    new RouteValueDictionary { { "controller", controllerName }, { "action", actionName } });
+            }
+            return filterContext.Result;
+        }
+    }
 }

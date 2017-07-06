@@ -33,6 +33,7 @@ using System.Web.Mvc;
 using Sampoerna.EMS.CustomService.Data;
 using Sampoerna.EMS.CustomService.Core;
 using SpreadsheetLight;
+using Sampoerna.EMS.BusinessObject.Inputs;
 
 
 
@@ -49,7 +50,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private ProductTypeService prodtypeService;
         private IChangesHistoryBLL chBLL;
         private IWorkflowHistoryBLL whBLL;
-        public MLLicenseRequestController(IPageBLL pageBLL, IChangesHistoryBLL changeHistoryBLL, IWorkflowHistoryBLL workflowHistoryBLL) : base(pageBLL, Enums.MenuList.ManufactureLicense)
+        private IDocumentSequenceNumberBLL _docbll;
+
+        public MLLicenseRequestController(IPageBLL pageBLL, IChangesHistoryBLL changeHistoryBLL, IWorkflowHistoryBLL workflowHistoryBLL, IDocumentSequenceNumberBLL docbll) : base(pageBLL, Enums.MenuList.ManufactureLicense)
         { 
             this.mainMenu = Enums.MenuList.ManufactureLicense;
             this.service = new LicenseRequestService();
@@ -59,9 +62,11 @@ namespace Sampoerna.EMS.Website.Controllers
             this.prodtypeService = new ProductTypeService();
             this.chBLL = changeHistoryBLL;
             this.whBLL = workflowHistoryBLL;
-            
+            _docbll = docbll;
+
+
         }
-        
+
 
 
         public ActionResult Index()
@@ -144,7 +149,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 foreach (var doc in documents)
                 {
-                    doc.StrRequestDate = doc.RequestDate.ToString("dd MMMM yyyy"); //dd MMMM yyyy HH:mm:ss
+                    doc.StrRequestDate = doc.RequestDate.ToString("dd MMM yyyy"); //dd MMMM yyyy HH:mm:ss
                     doc.IsApprover = IsPOACanApprove(doc.MnfRequestID, CurrentUser.USER_ID);
                     doc.IsAdministrator = (CurrentUser.UserRole == Enums.UserRole.Administrator);
                     doc.IsViewer = (CurrentUser.UserRole == Enums.UserRole.Viewer);
@@ -238,7 +243,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 foreach (var doc in documents)
                 {
-                    doc.StrRequestDate = doc.RequestDate.ToString("dd MMMM yyyy"); //dd MMMM yyyy HH:mm:ss
+                    doc.StrRequestDate = doc.RequestDate.ToString("dd MMM yyyy"); //dd MMMM yyyy HH:mm:ss
                     doc.IsApprover = IsPOACanApprove(doc.MnfRequestID, CurrentUser.USER_ID);
                     doc.IsAdministrator = (CurrentUser.UserRole == Enums.UserRole.Administrator);
                     doc.IsViewer = (CurrentUser.UserRole == Enums.UserRole.Viewer);
@@ -752,7 +757,12 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 //var history = refService.GetChangesHistory((int)Enums.MenuList.LicenseRequest, ID.ToString()).ToList();
                 //model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(history);
-                var workflow = refService.GetWorkflowHistory((int)Enums.MenuList.LicenseRequest, ID).ToList();
+                //var workflow = refService.GetWorkflowHistory((int)Enums.MenuList.LicenseRequest, ID).ToList();
+                var workflowInput = new GetByFormTypeAndFormIdInput();
+                workflowInput.FormId = ID;
+                workflowInput.FormType = Enums.FormType.LicenseRequestWorkflow;
+                var workflow = this.whBLL.GetByFormTypeAndFormId(workflowInput).OrderBy(x => x.WORKFLOW_HISTORY_ID).ToList();
+
                 model.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(workflow);
                 if (model.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.AwaitingPoaApproval)) || model.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.AwaitingPoaSkepApproval)))
                 {
@@ -1027,8 +1037,16 @@ namespace Sampoerna.EMS.Website.Controllers
                         {
 
                             statusid = refService.GetRefByKey("DRAFT_NEW_STATUS").REFF_ID;
+                            var interviewData = interService.GetInterviewRequestById(model.InterviewId).FirstOrDefault();
 
-                            var licenseReq = service.InsertLicenseRequest(model.RequestDate, model.InterviewId, model.InterviewFormNum, statusid, userid, (int)userrole);
+                            var docnumberinput = new GenerateDocNumberInput();
+                            docnumberinput.FormType = Enums.FormType.LicenseRequest;
+                            docnumberinput.Month = model.RequestDate.Month;
+                            docnumberinput.Year = model.RequestDate.Year;
+                            var formnumber = _docbll.GenerateNumber(docnumberinput);
+                            formnumber = ChangeFormnumberCompanyCity(formnumber, interviewData.BUKRS, interviewData.CITY_ALIAS);
+
+                            var licenseReq = service.InsertLicenseRequest(model.RequestDate, model.InterviewId, model.InterviewFormNum, statusid, userid, (int)userrole, formnumber);
                             if (licenseReq != null)
                             {
                                 //var licenseReqID = service.GetAll().Where(w =>w.MNF_FORM_NUMBER.Equals(licenseReq.MNF_FORM_NUMBER)).Select(s => s.MNF_REQUEST_ID).FirstOrDefault();
@@ -2442,7 +2460,8 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
         {
             var licenseRequest = new LicenseRequestModel();
 
-            var history = refService.GetChangesHistory((int)Enums.MenuList.LicenseRequest , CRID.ToString()).ToList();
+            //var history = refService.GetChangesHistory((int)Enums.MenuList.LicenseRequest , CRID.ToString()).ToList();
+            var history = this.chBLL.GetByFormTypeAndFormId(Enums.MenuList.LicenseRequest, CRID.ToString());
             licenseRequest.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(history);
 
             return PartialView("_ChangesHistoryTable", licenseRequest);
@@ -3526,5 +3545,24 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
                 throw ex;
             }
         }
+
+        private string ChangeFormnumberCompanyCity(string formnumber, string company, string cityalias)
+        {
+            try
+            {
+                var companyalias = refService.GetCompanyById(company).BUTXT_ALIAS;
+                var arr = formnumber.Split('/');
+                if (arr.Count() == 5)
+                {
+                    formnumber = arr[0] + "/" + companyalias + "/" + cityalias + "/" + arr[3] + "/" + arr[4];
+                }
+                return formnumber;
+            }
+            catch (Exception)
+            {
+                return formnumber;
+            }
+        }
+
     }
 }

@@ -1195,6 +1195,12 @@ namespace Sampoerna.EMS.BLL
                 if (dbBrand == null)
                     messageList.Add("FA Code Not Exist");
 
+                if (pbck7ItemInput.StickerCode != null)
+                {
+                    dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCodeStickerCode(pbck7ItemInput.Plant, pbck7ItemInput.FaCode, pbck7ItemInput.StickerCode);
+                    if (dbBrand == null)
+                        messageList.Add("Sticker Code Not Exist");
+                }
 
                 if (!ConvertHelper.IsNumeric(pbck7ItemInput.Pbck7Qty))
                     messageList.Add("PBCK-7 Qty not valid");
