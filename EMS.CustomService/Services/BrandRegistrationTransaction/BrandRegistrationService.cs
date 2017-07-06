@@ -1470,15 +1470,15 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
 
         }
 
-        public void LogsPrintActivity(int formType, string actor)
+        public void LogsPrintActivity(long Id, int formType, string actor)
         {
             try
             {
                 EMSDataModel context = new EMSDataModel();
                 refService.AddChangeLog(context,
                     formType,
-                    "PRINT",
-                    "",
+                    Id.ToString(),
+                    "DOWNLOAD PRINT OUT",
                     "",
                     "",
                     actor,

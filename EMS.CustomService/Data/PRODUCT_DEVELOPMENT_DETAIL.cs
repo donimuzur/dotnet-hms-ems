@@ -39,6 +39,8 @@ namespace Sampoerna.EMS.CustomService.Data
         public long STATUS_APPROVAL { get; set; }
         public string LASTMODIFIED_BY { get; set; }
         public Nullable<System.DateTime> LASTMODIFIED_DATE { get; set; }
+        public Nullable<int> COUNTRY_ID { get; set; }
+        public string WEEK { get; set; }
     
         public virtual T001 T001 { get; set; }
         public virtual ZAIDM_EX_MARKET ZAIDM_EX_MARKET { get; set; }
@@ -52,5 +54,6 @@ namespace Sampoerna.EMS.CustomService.Data
         public virtual ICollection<RECEIVED_DECREE_DETAIL> RECEIVED_DECREE_DETAIL { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PRODUCT_DEVELOPMENT_UPLOAD> PRODUCT_DEVELOPMENT_UPLOAD { get; set; }
+        public virtual COUNTRY COUNTRY { get; set; }
     }
 }

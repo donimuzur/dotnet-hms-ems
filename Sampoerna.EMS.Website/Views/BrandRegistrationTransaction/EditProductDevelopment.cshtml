@@ -23,6 +23,7 @@
 @Html.Partial("_ActionButtonProduct", Model)
 @*@using (Html.BeginForm("EditProductDevelopment", "BrandRegistrationController", null, FormMethod.Post, new { @class = "form-excise", role = "form", enctype = "multipart/form-data" }))
 {*@
+    @Html.HiddenFor(model => model.ViewModel.PD_NO, new { @id = "PD_NO" })
     @Html.HiddenFor(model=>model.ViewModel.PD_ID, new { @id="PD_ID" })
     @Html.HiddenFor(model => model.ViewModel.Next_Action, new { @id = "TempAction" })
     @Html.Partial("_DetailModalProduct")
@@ -133,6 +134,16 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6">
+                                            <div class="col-md-4"><label>Country<span class="red">*</span></label></div>
+                                            <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.CountryID, Model.CountryList, null, new { @class = "selectpicker form-control", @id = "CountryUp" })</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="col-md-4"><label>Week<span class="red">*</span></label></div>
+                                            <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Week, Model.WeekList, null, new { @class = "form-control", @id = "WeekUp" })</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
                                             <div class="col-md-6">@Html.CheckBoxFor(model => model.DetailModel.Is_Import, new { @id = "ImportUp" })<label>Import</label></div>
                                             <div class="col-md-6"></div>
                                         </div>
@@ -187,23 +198,23 @@
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <input id="browseOtherDocFile" type="file" name="otherDocsUp[]" class="file" accept="application/pdf">
+                                                            <input id="browseOtherDocFileUp" type="file" name="otherDocsUp[]" class="file" accept="application/pdf">
                                                             <div class="col-md-9">
-                                                                <input type="text" id="browseOtherDocText" class="form-control" disabled placeholder="Select file">
+                                                                <input type="text" id="browseOtherDocTextUp" class="form-control" disabled placeholder="Select file">
                                                             </div>
                                                             <div class="col-md-3">
                                                                 <span class="input-group-btn">
-                                                                    <button id="browseOtherDoc" class="btn btn-primary btn-sm" type="button" style="border-radius:20px!important">Browse</button>
+                                                                    <button id="browseOtherDocUp" class="btn btn-primary btn-sm" type="button" style="border-radius:20px!important">Browse</button>
                                                                 </span>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <button class="btn btn-primary btn-sm" type="button" id="addOtherDocBtn">Add</button>
+                                                        <button class="btn btn-primary btn-sm" type="button" id="addOtherDocBtnUp">Add</button>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-12">
-                                                    <table class="display table table-bordered table-striped" cellspacing="0" id="OtherDocs">
+                                                    <table class="display table table-bordered table-striped" cellspacing="0" id="OtherDocsUp">
                                                         <thead>
                                                             <tr>
                                                                 <th class="toggle-row" width="5%">#</th>
@@ -212,8 +223,8 @@
                                                                 <th width="15%">Actions</th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody id="otherDocsBody">
-                                                            <tr id="noOtherFileMsg">
+                                                        <tbody id="otherDocsBodyUp">
+                                                            <tr id="noOtherFileMsgUp">
                                                                 <td colspan="4">
                                                                     <div class="alert alert-info">No Additional Documents</div>
                                                                 </td>
@@ -420,31 +431,38 @@
         var urlFaCodeByPlant = '@Url.Action("GetMaterialByPlant", "BrandRegistrationTransaction")';
         var urlFaCodeUsedByPlant = '@Url.Action("GetMaterialUsedByPlant", "BrandRegistrationTransaction")';
 
-        loadSupportingDocuments(urlSupportDoc, compId);
+        loadSupportingDocuments(urlSupportDoc, compId,"edit");
         ajaxGetPlant(urlPlantNonImport, compId);
 
         $(document).ready(function () {
 
-            attach();           
+            attach();
+
+            $("#addOtherDocBtn").on("click", _addOtherDoc);
 
             $('input:radio').change(function () {
                 var selectedRadio = $("input[name='Action']:checked").val();
                 console.log(selectedRadio);
                 $('#TempAction').val(parseInt(selectedRadio));
-            });
-
+            });        
+          
         });
 
         $(document).unload(function () {
-            //$("#addOtherDocBtn").off("click", _addOtherDoc);
+            $("#addOtherDocBtn").off("click", _addOtherDoc);
         });
 
         $(document).on('change', '#CompanyUp', function (e) {
             var compId = $("#CompanyUp :selected").val();
             $('#PlantId').html('');
             $('#PlantId').append('<option value="">Select</option>');
+            $("#FaOldId").val("Select");
+            $("#FaNewId").val("Select");
+            $("#NewDescUp").val("");                
+            $("#OldDescUp").val("");
+            $("#HlCodeUp").val("");
             console.log(compId);
-            loadSupportingDocuments(urlSupportDoc, compId);
+            loadSupportingDocuments(urlSupportDoc, compId, "edit");
 
             if ($('#isImport').is(":checked")) {
                 // For Import
@@ -458,27 +476,28 @@
                 $('#PlantId').append('<option value="">Select</option>');
                 ajaxGetPlant(urlPlantNonImport, compId);
             }
-        });
-
+        });         
+        
         $(document).on('change', '#FaOldId', function (e) {
-            var compId = $("#FaOldId :selected").text();
+            var compId = $("#FaOldId :selected").text();                 
             ajaxFaCodeOldDescription(urlOldDescription, compId);
             faOldElm.hide();
         });
 
         $(document).on('change', '#FaNewId', function (e) {
-            var compId = $("#FaNewId :selected").text();
+            var compId = $("#FaNewId :selected").text();                 
             ajaxFaCodeNewDescription(urlNewDescription, compId);
             faNewElm.hide();
         });
 
         $(document).on('change', '#PlantId', function (e) {
             var plantName = $("#PlantId :selected").text();
-            var nppbkcId = $("#PlantId :selected").val();
+            var plantCode = $("#PlantId :selected").val();
             plantElm.hide();
-            console.log("nppbkc id :" + nppbkcId);
-            ajaxLoadNppbkcData(urlNppbkc, nppbkcId);
-            ajaxGetPlantCode(urlGetPlantCodeByName, plantName, urlFaCodeByPlant, urlFaCodeUsedByPlant);
+            console.log("plant code :" + plantCode);     
+
+            ajaxGetFaCodeByPlant(urlFaCodeByPlant, plantCode);
+            ajaxGetFaCodeUsedByPlant(urlFaCodeUsedByPlant, plantCode);
         });
 
         $(document).on('change', '#isImport', function (e) {
@@ -495,7 +514,7 @@
                 $('#PlantId').append('<option value="">Select</option>');
                 ajaxGetPlant(urlPlantNonImport, compId);
             }
-        });
+        });                  
 
         $(document).on('click', '#itemDeleteUp', function (e) {
             console.log("delete item");
@@ -528,10 +547,10 @@
             edit();
         });
 
-        //$(document).on('click', '#AddItemUp', function (e) {
-        //    addItemUp();
-        //});
-
+        $(document).on('click', '#AddItemUp', function (e) {
+            addItemUp();
+        });
+        
         $(document).on('click', '#CancelButtonSubmit', function (e) {
             console.log("Click Cancel");
             cancelProcess();
@@ -553,13 +572,147 @@
             var compId = $("#MarketSelector :selected").text();
         });
 
+        function uploads() {
+            var files = otherDocs;
+            if (!files) {
+                files = [];
+            }
+            if (files && files.length > 0) {
+                if (window.FormData !== undefined) {
+                    var data = new FormData();
+                    var others = [];
+                    for (var x = 0; x < files.length; x++) {
+                        data.append("other_" + otherDocsName[x], files[x], files[x].name);
+                    }
+                    for (var key in supportingDocs) {
+                        if (supportingDocs.hasOwnProperty(key)) {
+                            data.append(key, supportingDocs[key], supportingDocs[key].name);
+                            console.log(supportingDocs[key]);
+                        }
+                    }
+                    data.append("doc_number", $("#PdNumber").val());
+                    $("#customloader").show();
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("UploadFilesProduct", "BrandRegistrationTransaction")',
+                        contentType: false,
+                        processData: false,
+                        data: data,
+                        success: function (result) {
+                            $("#customloader").hide();
+                            console.log("item added.");
+                               
+                        },
+                        error: function (xhr, status, p3, p4) {
+                            var err = "Error " + " " + status + " " + p3 + " " + p4;
+                            if (xhr.responseText && xhr.responseText[0] == "{")
+                                err = JSON.parse(xhr.responseText).Message;
+                            console.log(err);
+                            showErrorDialog(err);
+                            $("#customloader").hide();
+                        }
+                    });
+                } else {
+                    showErrorDialog("This browser doesn't support HTML5 file uploads!");
+                }
+            }
+        }
+
+        function uploadsUp() {
+            var files = otherDocsUp;
+            if (!files) {
+                files = [];
+            }
+            if (files && files.length > 0) {
+                if (window.FormData !== undefined) {
+                    var data = new FormData();
+                    var others = [];
+                    for (var x = 0; x < files.length; x++) {
+                        data.append("other_" + otherDocsNameUp[x], files[x], files[x].name);
+                    }
+                    for (var key in supportingDocs) {
+                        if (supportingDocs.hasOwnProperty(key)) {
+                            data.append(key, supportingDocs[key], supportingDocs[key].name);
+                            console.log(supportingDocs[key]);
+                        }
+                    }
+                    data.append("doc_number", $('#PD_NO').val());
+                    $("#customloader").show();
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("UploadFilesProduct", "BrandRegistrationTransaction")',
+                        contentType: false,
+                        processData: false,
+                        data: data,
+                        success: function (result) {
+                            $("#customloader").hide();
+                            console.log("item added.");
+                               
+                        },
+                        error: function (xhr, status, p3, p4) {
+                            var err = "Error " + " " + status + " " + p3 + " " + p4;
+                            if (xhr.responseText && xhr.responseText[0] == "{")
+                                err = JSON.parse(xhr.responseText).Message;
+                            console.log(err);
+                            showErrorDialog(err);
+                            $("#customloader").hide();
+                        }
+                    });
+                } else {
+                    showErrorDialog("This browser doesn't support HTML5 file uploads!");
+                }
+            }
+        }
+
         function edit() {
+
+
             var urlUpdateDetail = '@Url.Action("EditProduct", "BrandRegistrationTransaction")';
-            var productID = $("#ViewModel_PD_ID").val();
+            var createDetailUrl = '@Url.Action("CreateProductDetail", "BrandRegistrationTransaction")';
+
+            var productID = $('#PD_ID').val();
+            var productNo = $('#PD_NO').val();
+            console.log(productID);
+            console.log(productNo);
             productData = {
                 Next_Action: parseInt($("#TempAction").val()),
             };
             console.log(JSON.stringify(productData));
+
+            if(arrayItemUp.length > 0 || arrayItemSaveUp.length > 0){
+                //createDetailUp(createDetailUrl, productID);
+                console.log(productID);
+
+                    var detail = arrayItemSaveUp;
+                    var data = new FormData();
+                    $("#customloader").show();
+                    $.ajax({
+                        type: 'POST',
+                        url: createDetailUrl,
+                        data: {
+                            model: JSON.stringify(arrayItemSaveUp),
+                            pdID: Number(productID)
+                        },
+                        success: function (result) {
+                            if (result) {
+                                console.log("Detail Saved.");
+                                $("#customloader").hide();
+                            } else {
+                                showErrorDialog("Save Detail failed!");
+                                saveButton.prop("disabled", false);
+                                $("#customloader").hide();
+                            }
+                        },
+                        error: function (xhr, status, p3, p4) {
+                            var err = "Error " + " " + status + " " + p3 + " " + p4;
+                            if (xhr.responseText && xhr.responseText[0] == "{")
+                                err = JSON.parse(xhr.responseText).Message;
+                            showErrorDialog(err);
+                            $("#customloader").hide();
+                        }
+                    });
+            }
+         
 
             $.ajax({
                 type: 'POST',
@@ -586,6 +739,8 @@
                 }
             });
         }
+
+      
 
         function submit() {
             var homeUrl = '@Url.Action("IndexProductDevelopment", "BrandRegistrationTransaction")';
@@ -647,7 +802,7 @@
         function cancel() {
             $('#modalCancel').modal('show');
         }
-
+    
         function cancelProcess() {
 
             var urlCancelForm = '@Url.Action("CancelSubmission", "BrandRegistrationTransaction")';
@@ -702,7 +857,7 @@
             });
             return result;
         }
-
+      
         function GetLastNumberItem() {
             var count = 0;
             $.ajax({
@@ -757,7 +912,6 @@
             });
         }
 
-        // edit detail item
         $(document).on('click', '#saveItem', function () {
 
             var urlUpdateDetail = '@Url.Action("EditDetailTable", "BrandRegistrationTransaction")';
@@ -772,6 +926,7 @@
             var faCodeNewDescItem = $("#FaCodeNewDesc").val();
             var detailID = $("#DetailModel_PD_DETAIL_ID").val();
 
+           
             itemFormData = {
                 Bukrs: $("#DetailModel_Bukrs").val(),
                 Is_Import: $("#DetailModel_Is_Import").val(),
@@ -783,8 +938,10 @@
                 Fa_Code_New: $("#NewSelector :selected").text(),
                 Fa_Code_Old_Desc: $("#FaCodeOldDesc").val(),
                 Fa_Code_Old: $("#OldSelector :selected").text(),
+                CountryID: $("#CountrySelector :selected").val(),
+                Week: $("#WeekSelector :selected").val(),
             };
-
+        
             $("#customloader").show();
             $.ajax({
                 type: 'POST',
@@ -813,7 +970,7 @@
             });
 
         });
-
+      
         $('input:checkbox').click(function () {
             if ($(this).is(':checked')) {
                 var idDetail = $(this).val();
@@ -886,11 +1043,14 @@
             setupDataTables();
         }
 
-        @*function mapBrowseAction() {
+        function mapBrowseAction() {
             console.log("Map additional action");
+            
            @foreach (var doc in Model.SupportingDocuments)
-            {
-                <text>
+           {
+               
+               <text>
+            
                  handleBrowseEvent("supportDoc" + @doc.Id, "supportDocFile" + @doc.Id, "supportDocText" + @doc.Id);
                 $("#supportDocFile" + @doc.Id).change(function(){
                     var input =document.getElementById("supportDocFile" + @doc.Id);
@@ -914,13 +1074,14 @@
                     }
                 });
 
-                </text>
+                
+               </text>
             }
-        }*@
+        }
 
 
         function loadOtherDocs(detailID){
-
+            console.log("load other docs");
             $("#customloader").show();
             $.ajax({
                 url: '@Url.Action("GetOtherDocsProduct", "BrandRegistrationTransaction")',
@@ -932,8 +1093,7 @@
                 success: function (response) {
                     $("#customloader").hide();
                     if(response && response.length > 0) {
-                        for (var i = 0; i < response.length; i++) {
-                            console.log(response[i]);
+                        for(var i = 0; i < response.length; i++){
                             otherDocs[i] = response[i];
                             otherDocsName[i] = response[i].File_Name;
                             var parts = response[i].Path_Url.split('/');
@@ -944,7 +1104,12 @@
                                 index: i
                             };
                         }
+                        //console.log("Other docs: ");
+                        //console.log(otherDocs);
+                        //console.log("Existing Other docs: ");
+                        //console.log(existingOtherDocs);
                         _renderFileList();
+
                     }
                 },
                 error: function () {
@@ -953,57 +1118,72 @@
             });
         }
 
-        //function _addOtherDoc() {
-        //    console.log("add other doc here");
-        //    var input = document.getElementById('browseOtherDocFile');
-        //    //console.log(input);
-        //    if (!input) {
-        //        showErrorDialog("Couldn't find the fileinput element.");
-        //    }
-        //    else if (!input.files) {
-        //        showErrorDialog("This browser doesn't seem to support the `files` property of file inputs.");
-        //    }
-        //    else if (!input.files[0]) {
-        //        showErrorDialog("Please select a file before clicking 'Add'");
-        //    }
-        //    else {
-        //        var file = input.files[0];
-        //        var sizeMB = fileUploadLimitElm.val();
-        //        //console.log("Size Limit: " + sizeMB);
-        //        var allowedFilesize = Number(sizeMB) * 1024 * 1024;
-        //        if (file.size > allowedFilesize) {
-        //            otherDocElm.html("<span>File size is larger than allowed size. Allowed size :" + sizeMB + " MB </span>");
-        //            otherDocElm.show();
-        //            showErrorDialog("File size is larger than allowed size (" + sizeMB + " MB)");
-        //            return;
-        //        }
-        //        _addToList(file, fileNameInput.val());
-        //    }
-        //}
-
-        //function _removeFromList(index) {
-        //    if (otherDocs.length > index) {
-        //        var target = otherDocs[index];
-        //   //     console.log("file id other doc: " + target.File_ID);
-        //        if(target && target.File_ID) {
-        //            existingOtherDocs[target.File_ID].active = false;
-        //        }
-        //        shift(index);
-        //        //console.log("Other docs map: ");
-        //        //console.log(otherDocMap);
-        //        //console.log(existingOtherDocs);
-        //        otherDocs.splice(index, 1);
-        //        otherDocsName.splice(index, 1);
-
-        //        changeStatusOtherDoc();
-        //        _renderFileList();
-
-        //    }
-        //}
-
-        @*function changeStatusOtherDoc(){
-            alert("change status other doc");
+        function _addOtherDoc() {
+            console.log("add other doc here");
+            var input = document.getElementById('browseOtherDocFile');
+            //console.log(input);
+            if (!input) {
+                showErrorDialog("Couldn't find the fileinput element.");
+            }
+            else if (!input.files) {
+                showErrorDialog("This browser doesn't seem to support the `files` property of file inputs.");
+            }
+            else if (!input.files[0]) {
+                showErrorDialog("Please select a file before clicking 'Add'");
+            }
+            else {
+                var file = input.files[0];
+                var sizeMB = fileUploadLimitElm.val();
+                //console.log("Size Limit: " + sizeMB);
+                var allowedFilesize = Number(sizeMB) * 1024 * 1024;
+                if (file.size > allowedFilesize) {
+                    otherDocElm.html("<span>File size is larger than allowed size. Allowed size :" + sizeMB + " MB </span>");
+                    otherDocElm.show();
+                    showErrorDialog("File size is larger than allowed size (" + sizeMB + " MB)");
+                    return;
+                }
+                _addToList(file, $("#browseOtherDocFileName").val());
+            }
         }
+
+        function _removeFromList(index) {
+            if (otherDocs.length > index) {
+                var target = otherDocs[index];
+           //     console.log("file id other doc: " + target.File_ID);
+                if(target && target.File_ID) {
+                    existingOtherDocs[target.File_ID].active = false;
+                }
+                shift(index);
+                //console.log("Other docs map: ");
+                //console.log(otherDocMap);
+                //console.log(existingOtherDocs);
+                otherDocs.splice(index, 1);
+                otherDocsName.splice(index, 1);
+                console.log(target.File_ID);
+                changeStatusOtherDoc(target.File_ID);               
+                _renderFileList();
+
+            }
+        }
+
+        function changeStatusOtherDoc(fileID){
+            console.log("change status other doc");
+            console.log(fileID);
+            $.ajax({
+                url: '@Url.Action("EditOtherDocStatus", "BrandRegistrationTransaction")',
+                type: 'POST',
+                data: {
+                    fileId: Number(fileID)
+                },             
+                success: function (response) {
+                   console.log("File Status Updated.");                  
+                },
+                error: function () {
+                 
+                }
+            });
+        }
+     
 
         function shift(start) {
             var cloneObj = $.extend(true, {}, otherDocMap);
@@ -1051,6 +1231,8 @@
                 }
             }
             if (idx < 0 && updated) {
+                otherDocsUp.push(file);
+                otherDocsNameUp.push(name);
                 otherDocs.push(file);
                 otherDocsName.push(name);
                 newOtherDocs[newOtherDocIdx] = file;
@@ -1062,7 +1244,7 @@
                 //console.log(otherDocMap);
                 _renderFileList();
             }
-        } *@
+        }
 
         function _renderFileList() {
 
@@ -1079,7 +1261,7 @@
                 if(otherDocs[i].url){
                     url = '@string.Format("{0}://{1}{2}", Request.Url.Scheme,Request.Url.Authority, Url.Content("~"))';
                     url = url + otherDocs[i].url.replace("~/", "");
-                    linkOpen ='<a href="'+url+'" title="' + otherDocs[i].name+ '" target="_blank"><i class="fa fa-file-o"></i>';
+                    linkOpen ='<a href="'+url+'" title="' + otherDocs[i].name + '" target="_blank"><i class="fa fa-file-o"></i>';
                     linkClose ='</a>';
                 }
                 content +=
@@ -1087,33 +1269,31 @@
                     '<td>' + (i + 1) + '</td>' +
                     '<td>' + linkOpen + otherDocs[i].name + linkClose +'</td>' +
                     '<td>' + otherDocsName[i] + '</td>' +
-                    //'<td><button class="btn btn-primary btn-sm" onclick="_removeFromList(' + i + ')">Remove</button></td>' +
-                    '<td></td>' +
+                    '<td><button class="btn btn-primary btn-sm" onclick="_removeFromList(' + i + ')">Remove</button></td>' +
                     '</tr>';
             }
             container.html(content);
         }
 
 
-        $(document).on('click', '.itemDisplay', function () {
+        $(".itemDisplay").click(function () {
+            
             var idItem = $(this).data('id');
             console.log("id item : " + idItem);
-           // setupDataTables();
+   
             getDetailItem(idItem);
-            supportingDocs = {};
+      
             existingOtherDocs = {};
             newOtherDocs = {};
             newOtherDocsName = {};
-            handleBrowseEvent("browseOtherDoc", "browseOtherDocFile", "browseOtherDocText");
-           // mapBrowseAction();
             loadOtherDocs(idItem);
-            //$("#addOtherDocBtn").on("click", _addOtherDoc);
-            setupDataTables();
+            
 
         });
 
 
         function getDetailItem(idVal) {
+            
             var docsItem = $("#DetailItem");
            // console.log(idVal);
             $.ajax({
@@ -1131,27 +1311,32 @@
                 var plantCode=$('#PlantCode').val();
 
                 var urlFaCodeByPlant = '@Url.Action("GetMaterialByPlant", "BrandRegistrationTransaction")';
-                var urlFaCodeUsedByPlant = '@Url.Action("GetMaterialUsedByPlant", "BrandRegistrationTransaction")';             
+                var urlFaCodeUsedByPlant = '@Url.Action("GetMaterialUsedByPlant", "BrandRegistrationTransaction")';
+             //   console.log("plant code:" + plantCode);
                 GetFaCodeByPlant(urlFaCodeByPlant, plantCode);
                 GetFaCodeUsedByPlant(urlFaCodeUsedByPlant, plantCode);
 
                 $('#myModalItemLock').modal('hide');
                 setupDataTables();
+                handleBrowseEvent("browseOtherDoc", "browseOtherDocFile", "browseOtherDocText");
+                mapBrowseAction();
+              
+                $("#addOtherDocBtn").on("click", _addOtherDoc);
             })
             .error(function (error) {
       //          console.log("failed load item");
             });
         }
-     
-        $(document).on('click', '.itemDisplayLock', function () {
+       // for detail modal lock
+       $(".itemDisplayLock").click(function () {
             var idItem = $(this).data('id');
             console.log("id item : " + idItem);
             getDetailItemLock(idItem);
-            supportingDocs = {};
+        //    supportingDocs = {};
             existingOtherDocs = {};
             newOtherDocs = {};
             newOtherDocsName = {};
-           // mapBrowseAction();
+            mapBrowseAction();
             loadOtherDocs(idItem);
 
         });
@@ -1188,6 +1373,19 @@
             //    alert(val.id);
         }
 
+        function handleBrowseEvent(id, fileId, textId) {
+            console.log("handle browse");
+            //console.log("registered: " + id);
+            $("#" + id).on('click', function () {
+                var file = $("#" + fileId);
+                file.trigger('click');
+            });
+            $("#" + fileId).on('change', function () {
+                $("#" + textId).val($(this).val().replace(/C:\\fakepath\\/i, ''));
+            });
+        }
+        
 
+       
 </script>
 }

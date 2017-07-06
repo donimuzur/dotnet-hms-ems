@@ -371,6 +371,7 @@
     <Compile Include="Models\Configuration\ConfigurationCreateViewModel.cs" />
     <Compile Include="Models\Configuration\ConfigurationIndexViewModel.cs" />
     <Compile Include="Models\Configuration\ConfigurationViewModel.cs" />
+    <Compile Include="Models\Country\CountryModel.cs" />
     <Compile Include="Models\ExciseCredit\CalculationDetailAdjustmentModel.cs" />
     <Compile Include="Models\ExciseCredit\CalculationDetailModel.cs" />
     <Compile Include="Models\ExciseCredit\ExciseAdjModel.cs" />
@@ -701,6 +702,9 @@
       <DependentUpon>Pbck4PrintOut.rpt</DependentUpon>
       <SubType>Component</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Reports\PBCK7\Pbck7ReportFromCk5.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Startup.cs" />
     <Compile Include="Utility\ExcelData.cs" />
@@ -1043,6 +1047,7 @@
     <Content Include="Reports\HeaderFooter\HeaderFooterDs.xss">
       <DependentUpon>HeaderFooterDs.xsd</DependentUpon>
     </Content>
+    <Content Include="Reports\PBCK7\Pbck7ReportFromCk5.rpt" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\excise-credit\date.js" />
     <Content Include="Scripts\excise-credit\main.js" />
@@ -1054,6 +1059,7 @@
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-1.11.3.min.js" />
     <Content Include="Scripts\jquery.form.min.js" />
+    <Content Include="Scripts\jquery.table2excel.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery-ui-1.11.4.js" />
     <Content Include="Scripts\jquery-ui-1.11.4.min.js" />
@@ -1841,6 +1847,23 @@
     <Content Include="Views\ExciseCredit\_WithdrawModal.cshtml" />
     <Content Include="Views\ExciseCredit\_Ck1AdjustmentList.cshtml" />
     <Content Include="Views\ExciseCredit\_SummaryReportList.cshtml" />
+    <Content Include="Views\BRPenetapanSkep\_PenetapanSKEPListTableSummaryReport.cshtml" />
+    <Content Include="Views\CK5\_CK5ListSummaryReportExport.cshtml" />
+    <Content Include="Views\CK5\_CK5ListSummaryReportImport.cshtml" />
+    <Content Include="Views\CK5\_CK5ListSummaryReportIntercompany.cshtml" />
+    <Content Include="Views\CK5\_CK5ListSummaryReportManual.cshtml" />
+    <Content Include="Views\CK5\_CK5SummaryReportModalExport.cshtml" />
+    <Content Include="Views\CK5\_CK5SummaryReportModalImport.cshtml" />
+    <Content Include="Views\CK5\_CK5SummaryReportModalIntercompany.cshtml" />
+    <Content Include="Views\CK5\_CK5SummaryReportModalManual.cshtml" />
+    <Content Include="Views\CK5\_CK5SummaryReportToggleExport.cshtml" />
+    <Content Include="Views\CK5\_CK5SummaryReportToggleImport.cshtml" />
+    <Content Include="Views\CK5\_CK5SummaryReportToggleIntercompany.cshtml" />
+    <Content Include="Views\CK5\_CK5SummaryReportToggleManual.cshtml" />
+    <Content Include="Views\CK5\CK5DomesticAlcohol.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadCreateMarketReturn.cshtml" />
+    <Content Include="Views\CK5\_CK5UploadListMarketReturn.cshtml" />
+    <Content Include="Views\ExciseCredit\_CalculateAdjustmentExciseDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -2015,13 +2038,11 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerPort>57497</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://wwx.hms-ems-dev.voxteneo.com</IISUrl>
-          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
-          <IISAppRootUrl>http://wwx.hms-ems-dev.voxteneo.com</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

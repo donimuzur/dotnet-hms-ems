@@ -402,7 +402,20 @@ namespace Sampoerna.EMS.CustomService.Repositories
                 return RepositoryFactory.GetInstance<CK1_EXCISE_CALCULATE_ADJUST, EMSDataModel>(Context);
             }
         }
-
+        public GenericRepository<COUNTRY> CountryRepository
+        {
+            get
+            {
+                return RepositoryFactory.GetInstance<COUNTRY, EMSDataModel>(Context);
+            }
+        }
+        public GenericRepository<EXCISE_CREDIT_ADJUST_CALDETAIL> ExciseCreditAdjustmentCalcDetailRepository
+        {
+            get
+            {
+                return RepositoryFactory.GetInstance<EXCISE_CREDIT_ADJUST_CALDETAIL, EMSDataModel>(Context);
+            }
+        }
         #endregion
 
         #region Unit of Work Business Methods

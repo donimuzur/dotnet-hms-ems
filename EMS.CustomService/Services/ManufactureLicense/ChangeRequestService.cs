@@ -508,6 +508,30 @@ namespace Sampoerna.EMS.CustomService.Services
 
         }
 
+        public void LogsPrintActivity(long Id, int formType, string actor)
+        {
+            try
+            {
+                EMSDataModel context = new EMSDataModel();
+                refService.AddChangeLog(context,
+                    formType,
+                    Id.ToString(),
+                    "DOWNLOAD PRINT OUT",
+                    "",
+                    "",
+                    actor,
+                    DateTime.Now
+                    );
+
+                context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw this.HandleException("Exception occured on Change Document Request Service. See Inner Exception property to see details", ex);
+            }
+
+        }
+
         private void LogsChanges(long Id, Dictionary<string, string[]> changes, int formType, string actor)
         {
             try

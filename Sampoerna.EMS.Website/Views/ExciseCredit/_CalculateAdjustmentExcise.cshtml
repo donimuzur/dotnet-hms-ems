@@ -86,6 +86,8 @@
                                     <div class="col-md-3">
                                         @Html.DropDownListFor(n => n.FaCodeId, new SelectList(item.FaCode, "ItemId", "ItemString", 1),
                                             "Please select an item", new { @class = "form-control itemid" })
+
+                                        @Html.Hidden("productCode", item.ProductCode, new { @class = "prodCode" })
                                     </div>
                                     <div class="col-md-1">
                                         <button class="btn btn-blue btnAddAdj" type="button">Add</button>
@@ -114,41 +116,47 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="col-md-3">
-                                        <label class="bold">
-                                            % Weighted Tariff Increase
-                                        </label>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <label class="bold">
+                                                % Weighted Tariff Increase
+                                            </label>
+                                            <span class="help-block">sub total WI dibagi sub total CK-1 12 month * 100%</span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            @Html.TextBox("pctweightincrease", "0.00", new { @class = "form-control c text-right disabled pctweightincrease", @readonly = true })
+                                          
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="bold">
+                                                Sub Total
+                                            </label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            @Html.TextBox("subtotal", "0.00", new { @class = "form-control subtotal text-right disabled", @readonly = true })
+                                        </div>
+                                        <div class="col-md-2">
+                                            @Html.TextBox("subtotal2", "0.00", new { @class = "form-control subtotal2 text-right disabled", @readonly = true })
+                                        </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        @Html.TextBox("pctweightincrease", "0.00", new { @class = "form-control pctweightincrease text-right disabled", @readonly = true })
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label class="bold">
-                                            Sub Total
-                                        </label>
-                                    </div>
-                                    <div class="col-md-2">
-                                        @Html.TextBox("subtotal", "0.00", new { @class = "form-control subtotal text-right disabled", @readonly = true })
-                                    </div>
-                                    <div class="col-md-2">
-                                        @Html.TextBox("subtotal2", "0.00", new { @class = "form-control subtotal2 text-right disabled", @readonly = true })
-                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <label class="bold">
+                                                Latest SKEP Credit Tariff
+                                            </label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            @Html.TextBox("SKEPCreditTariff ", "0.00", new { @class = "form-control SKEPCreditTariff text-right disabled", @readonly = true })
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="bold">
+                                                Weighted Tariff
+                                            </label>
+                                        </div>
 
-                                    <div class="col-md-3">
-                                        <label class="bold">
-                                            Latest SKEP Credit Tariff
-                                        </label>
-                                    </div>
-                                    <div class="col-md-2">
-                                        @Html.TextBox("SKEPCreditTariff ", "0.00", new { @class = "form-control SKEPCreditTariff text-right disabled", @readonly = true })
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="bold">
-                                            Weighted Tariff
-                                        </label>
-                                    </div>
-                                    <div class="col-md-2">
-                                        @Html.TextBox("wTariff", "0.00", new { @class = "form-control wTariff text-right disabled", @readonly = true })
+                                        <div class="col-md-2">
+                                            @Html.TextBox("wTariff", "0.00", new { @class = "form-control wTariff text-right disabled", @readonly = true })
+                                        </div>
                                     </div>
                                 </div>
                                 <br />
@@ -157,7 +165,7 @@
                     </div>
                     <br />
                     <h4>Credit Adjustment</h4>
-                    
+
                     @foreach (var pair in Model.MaxCreditRange)
                     {
                         {

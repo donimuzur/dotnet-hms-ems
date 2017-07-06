@@ -54,7 +54,8 @@ namespace Sampoerna.EMS.Website.Models.ExciseCredit
                 var adjustment = new CreditAdjustment()
                 {
                     Adjustment = this.Adjustment / 100.0,
-                    Value = max * 2
+                    Value = max * 2,
+                    CssClass = (amounts[0] > amounts[1]) ? "color: black;" : "color: green;"
                 };
                 adjustment.Calculate();
 

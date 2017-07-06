@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Sampoerna.EMS.CustomService.Data;
 
 namespace Sampoerna.EMS.Website.Models.ExciseCredit
 {
@@ -100,9 +101,24 @@ namespace Sampoerna.EMS.Website.Models.ExciseCredit
         public string ProductAlias { get; set; }
         public string ProductCode { get; set; }
         public List<ProductItem> FaCode { get; set; }
+        public List<ExciseCreditAdjustmentItemDetail> itemDetail { get; set; }
+        public decimal Summary { get; set; }
+        public decimal Skep { get; set; }
+        public decimal LatestSkep { set; get; }
 
     }
 
+    public class ExciseCreditAdjustmentItemDetail
+    {
+        public string BRAND_CE { get; set; }
+        public string PRODUCT_CODE { get; set; }
+        public decimal OLD_TARIFF { get; set; }
+        public decimal NEW_TARIFF { get; set; }
+        public decimal INCREASE_TARIFF { get; set; }
+        public decimal CK1_AMOUNT { get; set; }
+        public decimal WEIGHTED_INCREASE { get; set; }
+        public long EXCISE_CREDIT_ID { get; set; }
+    }
     public class ProductItem
     {
         public string ItemId { get; set; }

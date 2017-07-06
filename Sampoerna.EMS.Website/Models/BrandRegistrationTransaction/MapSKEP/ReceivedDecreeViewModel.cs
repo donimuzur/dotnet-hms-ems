@@ -68,6 +68,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.MapSKEP
 
     public class PenetapanSKEPExportSummaryReportsViewModel
     {
+        public bool Creator { get; set; }
         public bool Status { get; set; }
         public bool FormNo { get; set; }
         public bool Nppbkc { get; set; }

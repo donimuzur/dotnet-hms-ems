@@ -18,6 +18,8 @@
                     <th nowrap>HL Code</th>
                     <th>Market</th>
                     <th>Plant</th>
+                    <th nowrap>Country</th>
+                    <th>Week</th>
                     @*<th nowrap>Brand Reg Status</th>
                     <th nowrap>Brand Reg No</th>*@
                 </tr>
@@ -53,31 +55,34 @@
 
                                 else
                                 {
-                                    if (!Model.IsExciser)
+                                    if (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "ApproveProduct")
                                     {
-                                        if (row.ApprovalStatusDescription.Value == "DRAFT NEW" || row.ApprovalStatusDescription.Value == "DRAFT EDIT")
+                                        if (Model.IsExciser)
                                         {
-                                            <input type="checkbox" name="checkId" onclick="stateCheckItem(this)" id="check-@i" value="@row.PD_DETAIL_ID" title="Need to Submitted" />
-                                        }
-                                        else
-                                        {
-                                            <input type="checkbox" name="checkId" onclick="stateCheckItem(this)" id="check-@i" value="@row.PD_DETAIL_ID" disabled="disabled" />
+                                            if (row.ApprovalStatusDescription.Value == "WAITING FOR EXCISE APPROVAL")
+                                            {
+                                                <input type="checkbox" name="checkId" onclick="stateCheckItem(this)" id="check-@i" value="@row.PD_DETAIL_ID" title="Need to Approved/Revised" />
+                                            }
+                                          
+                                            else
+                                            {
+                                                 <input type="checkbox" name="checkId" onclick="stateCheckItem(this)" id="check-@i" value="@row.PD_DETAIL_ID" disabled="disabled" />
+                                            }
                                         }
                                     }
 
-                                    if (Model.IsExciser)
+                                    if (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "EditProductDevelopment")
                                     {
-                                        if (row.ApprovalStatusDescription.Value == "WAITING FOR EXCISE APPROVAL")
+                                        if (!Model.IsExciser)
                                         {
-                                            <input type="checkbox" name="checkId" onclick="stateCheckItem(this)" id="check-@i" value="@row.PD_DETAIL_ID" title="Need to Approved/Revised" />
-                                        }
-                                        else if (row.ApprovalStatusDescription.Value == "DRAFT NEW" || row.ApprovalStatusDescription.Value == "DRAFT EDIT")
-                                        {
-                                            <input type="checkbox" name="checkId" onclick="stateCheckItem(this)" id="check-@i" value="@row.PD_DETAIL_ID"  />
-                                        }
-                                        else
-                                        {
-                                            <input type="checkbox" name="checkId" onclick="stateCheckItem(this)" id="check-@i" value="@row.PD_DETAIL_ID" disabled="disabled" />
+                                            if (row.ApprovalStatusDescription.Value == "DRAFT NEW" || row.ApprovalStatusDescription.Value == "DRAFT EDIT")
+                                            {
+                                                <input type="checkbox" name="checkId" onclick="stateCheckItem(this)" id="check-@i" value="@row.PD_DETAIL_ID" title="Need to Submitted" />
+                                            }
+                                            else
+                                            {
+                                                <input type="checkbox" name="checkId" onclick="stateCheckItem(this)" id="check-@i" value="@row.PD_DETAIL_ID" disabled="disabled" />
+                                            }
                                         }
                                     }
                                 }
@@ -89,14 +94,23 @@
                                 {
                                     <a data-toggle="modal" data-placement="top" title="Edit" data-id="@row.PD_DETAIL_ID"  data-target="#myModalItem"> <i class="fa fa-pencil-square-o"></i></a>
                                 }*@
-                                @if (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "DetailProduct" || ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "ApproveProduct" || ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "EditProductDevelopment")
+                                @if (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "DetailProduct" || ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "ApproveProduct" )
                                 {
                                     <a data-toggle="modal" data-placement="top" title="Detail" data-id="@row.PD_DETAIL_ID" class="itemDisplayLock"><i class="fa fa-eye"></i></a>
                                 }
                               
                                 @if (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "EditProductDevelopment")
                                 {
-                                    <a data-toggle="modal" data-placement="top" title="Edit" data-id="@row.PD_DETAIL_ID" class="itemDisplay" data-backdrop="static" data-keyboard="false" > <i class="fa fa-pencil-square-o"></i></a>
+                                    if (row.ApprovalStatusDescription.Value == "WAITING FOR EXCISE APPROVAL")
+                                    {
+                                        <a data-toggle="modal" data-placement="top" title="Detail" data-id="@row.PD_DETAIL_ID" class="itemDisplayLock"><i class="fa fa-eye"></i></a>
+                                    }
+                                    else
+                                    {
+                                        <a data-toggle="modal" data-placement="top" title="Detail" data-id="@row.PD_DETAIL_ID" class="itemDisplayLock"><i class="fa fa-eye"></i></a>
+                                        <a data-toggle="modal" data-placement="top" title="Edit" data-id="@row.PD_DETAIL_ID" class="itemDisplay" data-backdrop="static" data-keyboard="false"> <i class="fa fa-pencil-square-o"></i></a>
+                                    }
+
                                 }
                                 
                               
@@ -112,6 +126,13 @@
                             <td><label>@row.Hl_Code</label> </td>
                             <td><label>@row.Market.Market_Desc</label></td>
                             <td nowrap><label>@row.Plant.NAME1</label></td>
+                            <td>
+                            @if (row.CountryID == null)
+                            { <label>@string.Empty</label>}
+                            else
+                            { <label>@row.Country.CountryName</label>}
+                            </td>
+                            <td><label>@row.Week</label></td>
                             @*<td></td>
                             <td></td>*@
                         </tr>

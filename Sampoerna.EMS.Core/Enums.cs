@@ -321,11 +321,11 @@ namespace Sampoerna.EMS.Core
 			[Description("CK-5 Market Return")]
             MasterDataApproval = 10,
 			[Description("Product Development")]
-			ProductDevelopment = 49,
+			ProductDevelopment = 51,
 			[Description("Brand Registration")]
-			BrandRegistrationReq = 50,
+			BrandRegistrationReq = 52,
 			[Description("Penetapan SKEP")]
-			PenetapanSKEP = 51,
+			PenetapanSKEP = 53,
 			[Description("Financial Ratio")]
 			FinanceRatio = 40,
 			[Description("Tariff")]
@@ -336,6 +336,13 @@ namespace Sampoerna.EMS.Core
 			ProductType = 37,
 			[Description("Excise Credit")]
 			ExciseCredit = 45,
+
+            [Description("Interview Request Workflow")]
+            InterviewRequestWorkflow = 48,
+            [Description("License Request Workflow")]
+            LicenseRequestWorkflow = 49,
+            [Description("Change Request Workflow")]
+            ChangeRequestWorkflow = 50,
 
             [Description("Interview Request")]
             InterviewRequest = 81,

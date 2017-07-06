@@ -75,14 +75,7 @@
         });
 
         function setupDataTables() {
-            $('#btn-reset-filter').click(function () {
-                $(".selectpicker").val($(".selectpicker option:first").val());
-            });
 
-            $('#btn-filter').click(function () {
-                $('.loading').show();
-            });
-            // DataTable
             var table = null;
             if ($.fn.dataTable.isDataTable('#listCompletedTable')) {
                 table = $('#listCompletedTable').DataTable();
@@ -90,16 +83,15 @@
             }
 
             table = $('#listCompletedTable').DataTable(
-                {
-                    "sDom": "Rlfrtip",
-                    "language": {
-                        "zeroRecords": "No records found",
-                        "infoFiltered": "(filtered from _MAX_ total records)"
-                    },
-                    "order": [[4, "desc"]]
-                });
+                  {
+                      "sDom": "Rlfrtip",
+                      "language": {
+                          "zeroRecords": "No records found",
+                          "infoFiltered": "(filtered from _MAX_ total records)"
+                      }
+                  });
 
-            // Setup - add a text input to each footer cell
+
             $('#listCompletedTable .filters th').each(function () {
                 var idx = $(this).index();
                 if (idx != 0) {
@@ -107,7 +99,7 @@
                 }
             });
 
-            // Apply the search
+
             table.columns().eq(0).each(function (colIdx) {
                 $('input', $('.filters th')[colIdx]).on('keyup change', function () {
                     table
@@ -117,7 +109,6 @@
                 });
             });
         }
-
         function ReloadDataTables() {
             $('.toggle-row').click(function () {
 
@@ -127,6 +118,7 @@
             $('.loading').hide();
             setupDataTables();
         }
+
 
     </script>
 }

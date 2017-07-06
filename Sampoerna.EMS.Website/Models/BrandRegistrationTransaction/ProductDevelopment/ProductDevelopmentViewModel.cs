@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-//using static Sampoerna.EMS.Core.Enums;
+
 
 namespace Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevelopment
 {
@@ -42,6 +42,8 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevel
         public SelectList MaterialListNew { get; set; }
         public SelectList PoaList { set; get; }
         public SelectList CreatorList { set; get; }
+        public SelectList CountryList { get; set; }
+        public SelectList WeekList { set; get; }
         public string Plant { set; get; }
     
         public bool ShowActionOptions { get; set; }

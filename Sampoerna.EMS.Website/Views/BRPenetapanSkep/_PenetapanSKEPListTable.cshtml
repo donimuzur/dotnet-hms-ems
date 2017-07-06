@@ -5,6 +5,7 @@
     <thead>
         <tr>
             <th class="toggle-row"> Filter </th>
+            <th>Document No.</th>
             <th>Requestor</th>
             <th>NPPBKC</th>
             <th>SKEP Date</th>
@@ -16,6 +17,7 @@
     <thead class="filters">
         <tr>
             <th> Action</th>
+            <th></th>
             <th></th>
             <th></th>
             <th></th>
@@ -39,6 +41,7 @@
                         <a href="@Url.Action("Approve", "BRPenetapanSkep", new { id = item.Received_ID })" data-toggle="tooltip" data-placement="top" title="Approval"><i class="fa fa-check"></i></a>
                     }
                 </td>
+                <td>@item.Received_No</td>
                 <td>@item.CreatorName</td>
                 <td>@item.Nppbkc_ID</td>
                 <td>@item.strDecree_Date</td>

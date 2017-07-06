@@ -94,6 +94,9 @@
     <Compile Include="Data\CONTENTEMAIL.cs">
       <DependentUpon>EMSDataModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Data\COUNTRY.cs">
+      <DependentUpon>EMSDataModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Data\DOC_NUMBER_SEQ.cs">
       <DependentUpon>EMSDataModel.tt</DependentUpon>
     </Compile>

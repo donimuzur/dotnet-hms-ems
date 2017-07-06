@@ -35,6 +35,7 @@ using System.Web.Mvc;
 using SpreadsheetLight;
 using DocumentFormat.OpenXml.EMMA;
 using DocumentFormat.OpenXml.Spreadsheet;
+using System.Threading;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -57,7 +58,7 @@ namespace Sampoerna.EMS.Website.Controllers
         List<WorkflowHistoryViewModel> GetWorkflowHistory(long id)
         {
             var submittedStatus = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingPoaApproval);
-            var waitingGov = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingGovernmentApproval);
+            var submittedSkep = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingPoaSkepApproval);
             var excise = service.Find(id);
 
             // Remarks for change back Approver to common POA
@@ -80,7 +81,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(workflow);
 
             WORKFLOW_HISTORY additional = new WORKFLOW_HISTORY();
-            if (excise.LAST_STATUS == submittedStatus.REFF_ID || excise.LAST_STATUS == waitingGov.REFF_ID)
+            if (excise.LAST_STATUS == submittedStatus.REFF_ID || excise.LAST_STATUS == submittedSkep.REFF_ID)
             {
                 var poaApprovers = service.GetApprovers(id);
                 var accounts = "";
@@ -98,8 +99,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 additional.ACTION_BY = accounts;
                 additional.ACTION = (excise.LAST_STATUS == submittedStatus.REFF_ID) ? (int)Enums.ActionType.WaitingForApproval : (int)Enums.ActionType.WaitingForPOASKEPApproval;
-                
-                
+
+
                 additional.ROLE = (int)Enums.UserRole.POA;
                 //additional.ACTION_DATE = _CRModel.LastModifiedDate;
                 workflowHistory.Add(Mapper.Map<WorkflowHistoryViewModel>(additional));
@@ -130,7 +131,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     documents = data;
                 }
-                
+
 
                 var model = new ExciseCreditViewModel()
                 {
@@ -154,7 +155,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 Console.WriteLine(ex.StackTrace);
                 return RedirectToAction("Unauthorized", "Error");
             }
-            
+
 
         }
 
@@ -254,7 +255,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 long json = 0;
                 if (viewModelDetail.Any())
                 {
-                    json = service.SaveAdjustment(entity, adj, CurrentUser.USER_ID, (int) CurrentUser.UserRole);
+                    json = service.SaveAdjustment(entity, adj, CurrentUser.USER_ID, (int)CurrentUser.UserRole);
                 }
                 else
                 {
@@ -285,6 +286,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.SubmissionDate = vm.SubmissionDate;
                 model.ViewModel = vm;
                 model.FinancialStatements = vm.FinanceRatios.ToArray();
+                model.CalculationDetail = GetCalculationDetailInfo(vm.NppbkcId, vm.SubmissionDate, vm.FinanceRatios[0].LiquidityRatio);
+                if (model.ViewModel.RequestTypeID == 2)
+                {
+                    model.AdjustmentModel = GetCalculationAdjustmentInfo(vm.NppbkcId, vm.SubmissionDate, vm.FinanceRatios[0].LiquidityRatio, id);
+                }
                 model.SupportingDocuments = refService.GetSupportingDocuments((int)Enums.FormList.ExciseRequest, nppbkc.COMPANY.BUKRS, id).Select(x => MapSupportingDocumentModel(x)).ToList();
                 model.Printouts = GetPrintoutsList(model, result);
                 var changeHistoryList = this.chBLL.GetByFormTypeAndFormId(Enums.MenuList.ExciseCredit, id);
@@ -320,12 +326,17 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.NPPBKC = MapNppbkcModel(nppbkc);
                 model.SubmissionDate = vm.SubmissionDate;
                 model.ViewModel = vm;
+                model.CalculationDetail = GetCalculationDetailInfo(vm.NppbkcId, vm.SubmissionDate, vm.FinanceRatios[0].LiquidityRatio);
                 model.FinancialStatements = vm.FinanceRatios.ToArray();
                 model.SupportingDocuments = refService.GetSupportingDocuments((int)Enums.FormList.ExciseRequest, nppbkc.COMPANY.BUKRS, id).Select(x => MapSupportingDocumentModel(x)).ToList();
                 model.Printouts = GetPrintoutsList(model, result);
                 var changeHistoryList = this.chBLL.GetByFormTypeAndFormId(Enums.MenuList.ExciseCredit, id);
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
                 model.WorkflowHistory = GetWorkflowHistory(model.ViewModel.Id);
+                if (model.ViewModel.RequestTypeID == 2)
+                {
+                    model.AdjustmentModel = GetCalculationAdjustmentInfo(vm.NppbkcId, vm.SubmissionDate, vm.FinanceRatios[0].LiquidityRatio, id);
+                }
                 return View("Edit", model);
             }
             catch (Exception ex)
@@ -421,9 +432,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 var status = service.WithdrawExcise(model.ViewModel.Id, withdrawed, CurrentUser.USER_ID, (int)CurrentUser.UserRole, model.ViewModel.RevisionData.Comment);
                 if (status)
-                    AddMessageInfo("Withdrawed Excise Request Document", Enums.MessageInfoType.Success);
+                    AddMessageInfo("Withdrawed Excise Request Document and send email!", Enums.MessageInfoType.Success);
                 else
-                    AddMessageInfo("Failed to Withdraw Excise Request Document", Enums.MessageInfoType.Error);
+                    AddMessageInfo("Withdrawed Excise Request Document", Enums.MessageInfoType.Success);
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -454,6 +465,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.SubmissionDate = vm.SubmissionDate;
                 model.ViewModel = vm;
                 model.FinancialStatements = vm.FinanceRatios.ToArray();
+                model.CalculationDetail = GetCalculationDetailInfo(vm.NppbkcId, vm.SubmissionDate, vm.FinanceRatios[0].LiquidityRatio);
                 model.SupportingDocuments = refService.GetSupportingDocuments((int)Enums.FormList.ExciseRequest, nppbkc.COMPANY.BUKRS, id).Select(x => MapSupportingDocumentModel(x)).ToList();
                 model.Printouts = GetPrintoutsList(model, result);
                 var changeHistoryList = this.chBLL.GetByFormTypeAndFormId(Enums.MenuList.ExciseCredit, id);
@@ -482,6 +494,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     ActionBy = CurrentUser.USER_ID,
                     Role = (int)CurrentUser.UserRole
                 };
+                if (model.ViewModel.RequestTypeID == 2)
+                {
+                    model.AdjustmentModel = GetCalculationAdjustmentInfo(vm.NppbkcId, vm.SubmissionDate, vm.FinanceRatios[0].LiquidityRatio, id);
+                }
+
                 return View("Approve", model);
             }
             catch (Exception ex)
@@ -553,6 +570,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.SubmissionDate = vm.SubmissionDate;
                 model.ViewModel = vm;
                 model.FinancialStatements = vm.FinanceRatios.ToArray();
+                model.CalculationDetail = GetCalculationDetailInfo(vm.NppbkcId, vm.SubmissionDate, vm.FinanceRatios[0].LiquidityRatio);
                 model.SupportingDocuments = refService.GetSupportingDocuments((int)Enums.FormList.ExciseRequest, nppbkc.COMPANY.BUKRS, id.ToString()).Select(x => MapSupportingDocumentModel(x)).ToList();
                 model.ViewModel.RevisionData = new WorkflowHistory()
                 {
@@ -572,6 +590,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 foreach (var prod in productTypes)
                 {
                     list.Add(prod.PROD_CODE, String.Format("{0}", prod.PRODUCT_ALIAS, prod.PRODUCT_TYPE));
+                }
+                if (model.ViewModel.RequestTypeID == 2)
+                {
+                    model.AdjustmentModel = GetCalculationAdjustmentInfo(vm.NppbkcId, vm.SubmissionDate, vm.FinanceRatios[0].LiquidityRatio, id.ToString());
                 }
                 var skepModel = new ExciseGovApprovalModel();
 
@@ -626,8 +648,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     throw new Exception("Excise Credit Data not found for id " + id);
                 }
                 var urls = UploadGovDocument(files, forms["id"], entity.EXCISE_CREDIT_NO);
+                if (urls.ContainsKey("skep"))
+                {
+                    entity.SKEP_ATTACHMENT = urls["skep"];
+                }
 
-                entity.SKEP_ATTACHMENT = urls["skep"];
                 entity.SKEP_STATUS = Convert.ToInt32(forms["status"]) == 1;
                 entity.DECREE_NO = forms["decree_number"];
                 entity.DECREE_DATE = DateTime.Parse(forms["decree_date"]);
@@ -640,7 +665,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     entity.BPJ_DATE = DateTime.Parse(forms["bpj_date"]);
                 }
-                if (urls.ContainsKey("bpj") && !String.IsNullOrEmpty(urls["bpj"]))
+                if (urls.ContainsKey("bpj") && urls.ContainsKey("bpj") && !String.IsNullOrEmpty(urls["bpj"]))
                 {
                     entity.BPJ_ATTACH = urls["bpj"];
                 }
@@ -671,8 +696,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 entity.EXCISE_CREDIT_APPROVED_DETAIL = approvedProducts;
 
                 var emailResult = service.SubmitSkep(entity, CurrentUser.USER_ID, (int)CurrentUser.UserRole);
-                if(emailResult)
-                AddMessageInfo("Successfully submit SKEP data and send email", Enums.MessageInfoType.Success);
+                if (emailResult)
+                    AddMessageInfo("Successfully submit SKEP data and send email", Enums.MessageInfoType.Success);
                 else
                     AddMessageInfo("Successfully submit SKEP data but failed to send email", Enums.MessageInfoType.Success);
 
@@ -703,6 +728,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.SubmissionDate = vm.SubmissionDate;
                 model.ViewModel = vm;
                 model.FinancialStatements = vm.FinanceRatios.ToArray();
+                model.CalculationDetail = GetCalculationDetailInfo(vm.NppbkcId, vm.SubmissionDate, vm.FinanceRatios[0].LiquidityRatio);
                 model.SupportingDocuments = refService.GetSupportingDocuments((int)Enums.FormList.ExciseRequest, nppbkc.COMPANY.BUKRS, id.ToString()).Select(x => MapSupportingDocumentModel(x)).ToList();
                 model.Printouts = GetPrintoutsList(model, result);
                 var changeHistoryList = this.chBLL.GetByFormTypeAndFormId(Enums.MenuList.ExciseCredit, id.ToString());
@@ -714,6 +740,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 foreach (var prod in productTypes)
                 {
                     list.Add(prod.PROD_CODE, String.Format("{0}", prod.PRODUCT_ALIAS, prod.PRODUCT_TYPE));
+                }
+                if (model.ViewModel.RequestTypeID == 2)
+                {
+                    model.AdjustmentModel = GetCalculationAdjustmentInfo(vm.NppbkcId, vm.SubmissionDate, vm.FinanceRatios[0].LiquidityRatio, id.ToString());
                 }
                 var skepModel = new ExciseGovApprovalModel();
 
@@ -771,6 +801,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.ViewModel = vm;
                 model.FinancialStatements = vm.FinanceRatios.ToArray();
                 model.SupportingDocuments = refService.GetSupportingDocuments((int)Enums.FormList.ExciseRequest, nppbkc.COMPANY.BUKRS, id.ToString()).Select(x => MapSupportingDocumentModel(x)).ToList();
+                model.CalculationDetail = GetCalculationDetailInfo(vm.NppbkcId, vm.SubmissionDate, vm.FinanceRatios[0].LiquidityRatio);
                 model.Printouts = GetPrintoutsList(model, result);
                 var changeHistoryList = this.chBLL.GetByFormTypeAndFormId(Enums.MenuList.ExciseCredit, id.ToString());
                 model.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(changeHistoryList);
@@ -808,8 +839,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     if (bpjAttachment != null)
                         skepModel.BpjFileUpload = Mapper.Map<FileUploadModel>(bpjAttachment);
                 }
-                skepModel.IsDetail = false;
+                skepModel.IsDetail = true;
                 model.SkepInput = skepModel;
+                if (model.ViewModel.RequestTypeID == 2)
+                {
+                    model.AdjustmentModel = GetCalculationAdjustmentInfo(vm.NppbkcId, vm.SubmissionDate, vm.FinanceRatios[0].LiquidityRatio, id.ToString());
+                }
                 model.ApproveConfirm = new ConfirmDialogModel()
                 {
                     Action = new ConfirmDialogModel.Button()
@@ -826,7 +861,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 };
 
-                return View("SkepDetail", model);
+                return View("SkepApprove", model);
             }
             catch (Exception ex)
             {
@@ -837,7 +872,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public String ApproveSkep(ExciseCreditFormModel model)
+        public ActionResult ApproveSkep(ExciseCreditFormModel model)
         {
             try
             {
@@ -856,13 +891,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
 
-                return Url.Action("Index", "ExciseCredit");
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.StackTrace);
-                AddMessageInfo("Failed to load Excise Request Document", Enums.MessageInfoType.Error);
-                return "";
+                AddMessageInfo("Failed to load Approve Request Document", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
             }
         }
 
@@ -1000,6 +1035,99 @@ namespace Sampoerna.EMS.Website.Controllers
             return PartialView("_CalculateNewExcise", model);
         }
 
+        public CalculationAdjustmentModel GetCalculationAdjustmentInfo(String nppbkc, DateTime submitDate, Decimal liquidity, string id)
+        {
+            var model = new CalculationAdjustmentModel()
+            {
+                LiquidityRatio = Convert.ToDouble(liquidity),
+                NppbkcId = nppbkc,
+                Year = submitDate.Year,
+                ProductTypes = service.GetCK1ProductTypes(nppbkc, submitDate),
+                Adjustment = service.GetExciseAdjustment(Convert.ToDouble(liquidity))
+            };
+            if (model.ProductTypes.Count <= 0)
+            {
+                throw new Exception("CK 1 Data not available!");
+            }
+            model.AdjustmentDisplay = String.Format("{0}%", model.Adjustment);
+            Dictionary<string, double> values12 = new Dictionary<string, double>();
+            var productFaCode = new ProductFaCode();
+            foreach (var product in model.ProductTypes)
+            {
+                values12.Add(product, (double)service.GetCK1Average(submitDate, nppbkc, product, 12));
+
+                productFaCode = new ProductFaCode()
+                {
+                    ProductAlias = product,
+                    ProductCode = service.GetCK1ProductCode(product)
+                };
+
+                var latestSkepValue = service.GetAmountApproved(productFaCode.ProductCode, submitDate);
+
+                productFaCode.LatestSkep = latestSkepValue;
+                var listvmItemDetail = new List<ExciseCreditAdjustmentItemDetail>();
+                foreach (var itm in service.GetFaCode(productFaCode.ProductCode, nppbkc))
+                {
+                    var pitem = new ProductItem()
+                    {
+                        ItemString = itm,
+                        ItemId = itm
+                        //,
+                        //LatestSkep = latestSkepValue
+                    };
+                    productFaCode.FaCode.Add(pitem);
+                    var itemInExciseDetail = service.GetExciseAdjustmentItem(int.Parse(id), productFaCode.ProductCode, itm);
+                    foreach (var exciseCreditAdjustCaldetail in itemInExciseDetail)
+                    {
+                        var vmitemDetail = new ExciseCreditAdjustmentItemDetail()
+                        {
+                            BRAND_CE = exciseCreditAdjustCaldetail.BRAND_CE,
+                            CK1_AMOUNT = exciseCreditAdjustCaldetail.CK1_AMOUNT,
+                            OLD_TARIFF = exciseCreditAdjustCaldetail.OLD_TARIFF,
+                            INCREASE_TARIFF = exciseCreditAdjustCaldetail.INCREASE_TARIFF,
+                            NEW_TARIFF = exciseCreditAdjustCaldetail.NEW_TARIFF,
+                            PRODUCT_CODE = exciseCreditAdjustCaldetail.PRODUCT_CODE,
+                            WEIGHTED_INCREASE = exciseCreditAdjustCaldetail.WEIGHTED_INCREASE
+                        };
+                        listvmItemDetail.Add(vmitemDetail);
+                    }
+                    productFaCode.itemDetail = listvmItemDetail;
+                }
+                model.Product.Add(productFaCode);
+            }
+            model.CreditRanges.Add(12, values12);
+            model.CalculateMaxCreditRange();
+            return model;
+        }
+        public CalculationDetailModel GetCalculationDetailInfo(String nppbkc, DateTime submitDate, Decimal liquidity)
+        {
+            var model = new CalculationDetailModel()
+            {
+                LiquidityRatio = Convert.ToDouble(liquidity),
+                NppbkcId = nppbkc,
+                Year = submitDate.Year,
+                ProductTypes = service.GetCK1ProductTypes(nppbkc, submitDate),
+                Adjustment = service.GetExciseAdjustment(Convert.ToDouble(liquidity))
+            };
+            if (model.ProductTypes.Count <= 0)
+            {
+                throw new Exception("CK 1 Data not available!");
+            }
+            model.AdjustmentDisplay = String.Format("{0}%", model.Adjustment);
+            Dictionary<string, double> values3 = new Dictionary<string, double>();
+            Dictionary<string, double> values6 = new Dictionary<string, double>();
+            foreach (var product in model.ProductTypes)
+            {
+                values3.Add(product, (double)service.GetCK1Average(submitDate, nppbkc, product, 3));
+                values6.Add(product, (double)service.GetCK1Average(submitDate, nppbkc, product, 6));
+            }
+            model.CreditRanges.Add(3, values3);
+            model.CreditRanges.Add(6, values6);
+            model.CalculateMaxCreditRange();
+
+            return model;
+        }
+
         [HttpPost]
         public ActionResult GetCalculationAdjustment(string nppbkc, string submit)
         {
@@ -1022,7 +1150,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var productFaCode = new ProductFaCode();
             foreach (var product in model.ProductTypes)
             {
-                values12.Add(product, (double)service.GetCK1Average(submitDate, nppbkc, product, 12));
+                values12.Add(product, (double)service.GetCK1AverageAdjustment(submitDate, nppbkc, product, 12));
 
                 productFaCode = new ProductFaCode()
                 {
@@ -1055,14 +1183,14 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public ActionResult GetItemAdjustment(string facode, string nppbkc, string submit)
+        public ActionResult GetItemAdjustment(string facode, string prodCode, string nppbkc, string submit)
         {
-            var item = service.GetadjItemFaCode(facode, nppbkc);
+            var item = service.GetadjItemFaCode(facode, nppbkc, prodCode);
             var submitDate = DateTime.Parse(submit);
             var itemfirst = item.First();
-            Debug.Write(item.Count());
-            Debug.Write(item.OrderBy(m => m.SKEP_DATE).FirstOrDefault());
-            Debug.Write(item.OrderByDescending(m => m.SKEP_DATE).FirstOrDefault());
+            //Debug.Write(item.Count());
+            //Debug.Write(item.OrderBy(m => m.SKEP_DATE).FirstOrDefault());
+            //Debug.Write(item.OrderByDescending(m => m.SKEP_DATE).FirstOrDefault());
             var itemoldTariff = item.OrderBy(m => m.SKEP_DATE).FirstOrDefault() == null
                 ? 0
                 : item.OrderBy(m => m.SKEP_DATE).FirstOrDefault().TARIFF;
@@ -1070,10 +1198,10 @@ namespace Sampoerna.EMS.Website.Controllers
             var itemIncreaseTariff = (itemfirst.TARIFF -
                                      itemoldTariff) / itemoldTariff;
 
-            var ck12Month = service.GetCK1Average(submitDate, nppbkc, itemfirst.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS, 2);
-
+            var ck12Month = service.GetCK1AverageAdjustment(submitDate, nppbkc, itemfirst.BRAND_CE, 12, itemfirst.ZAIDM_EX_PRODTYP);
+            itemIncreaseTariff = Math.Round(itemIncreaseTariff.Value, 2);
             var itemWeightedIncrease = itemIncreaseTariff * ck12Month;
-            var latestSkep = service.GetLatestSkepCredit();
+
             var dataitem = new
             {
                 BRAND = itemfirst.BRAND_CE,
@@ -1083,11 +1211,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 INCREASE = itemIncreaseTariff,
                 CK12MONTH = ck12Month,
                 WEIGHTEDINCREASE = itemWeightedIncrease,
-                PRODUCTCODE = itemfirst.PROD_CODE,
-                LATESTSKEP = latestSkep
+                PRODUCTCODE = itemfirst.PROD_CODE
             };
 
             return Json(dataitem);
+        }
+        [HttpPost]
+        public ActionResult GetLastSkepCreditAmount(string prodCode)
+        {
+            var item = service.GetLatestSkepCreditTariff(prodCode);
+            return Json(item);
         }
 
         [HttpPost]
@@ -1196,13 +1329,13 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var model = new List<ExciseCreditCk1AdjustmentModel>();
             var submitDate = DateTime.Parse(submit);
-            var types = service.GetCK1ProductTypes(nppbkc, submitDate);
+            var types = service.GetCK1AdjustmentProductTypes(nppbkc, submitDate);
             foreach (var product in types)
             {
                 var entities = service.GetCK1AdjustmentList(nppbkc, DateTime.Parse(submit), product, 12);
                 var details = entities.Select(x => MapToCk1AdjustmentListModel(x));
-                var avgQty = (details == null || details.Count() <= 0) ? 0 : Math.Ceiling((double)details.Sum(x => x.OrderQuantity) / 3);
-                var avgAmount = (details == null || details.Count() <= 0) ? 0 : Math.Ceiling((double)details.Sum(x => x.Amount) / 6);
+                var avgQty = (details == null || details.Count() <= 0) ? 0 : Math.Ceiling((double)details.Sum(x => x.OrderQuantity));
+                var avgAmount = (details == null || details.Count() <= 0) ? 0 : Math.Ceiling((double)details.Sum(x => x.Amount));
                 var item = new ExciseCreditCk1AdjustmentModel()
                 {
                     Details = details,
@@ -1226,10 +1359,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 var entities3 = service.GetCK1List(nppbkc, DateTime.Parse(submit), product, 3);
                 var details3 = entities3.Select(x => MapToCk1ListModel(x));
                 var details6 = entities6.Select(x => MapToCk1ListModel(x));
-                var avgQty3 = (details3 == null || details3.Count() <= 0) ? 0 : Math.Ceiling((double)details3.Sum(x => x.OrderQuantity)/3);
-                var avgQty6 = (details6 == null || details6.Count() <= 0) ? 0 : Math.Ceiling((double)details6.Sum(x => x.OrderQuantity)/3);
-                var avgAmount3 = (details3 == null || details3.Count() <= 0) ? 0 : Math.Ceiling((double)details3.Sum(x => x.Amount)/3);
-                var avgAmount6 = (details6 == null || details6.Count() <= 0) ? 0 : Math.Ceiling((double)details6.Sum(x => x.Amount)/6);
+                var avgQty3 = (details3 == null || details3.Count() <= 0) ? 0 : Math.Ceiling((double)details3.Sum(x => x.OrderQuantity) / 3);
+                var avgQty6 = (details6 == null || details6.Count() <= 0) ? 0 : Math.Ceiling((double)details6.Sum(x => x.OrderQuantity) / 3);
+                var avgAmount3 = (details3 == null || details3.Count() <= 0) ? 0 : Math.Ceiling((double)details3.Sum(x => x.Amount) / 3);
+                var avgAmount6 = (details6 == null || details6.Count() <= 0) ? 0 : Math.Ceiling((double)details6.Sum(x => x.Amount) / 6);
                 var item = new ExciseCreditCk1Model()
                 {
                     Details = details6,
@@ -1251,7 +1384,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
-                var data = refService.GetUploadedFiles(type, id).Where(x => x.DOCUMENT_ID == null).ToList();
+                var data = refService.GetUploadedFiles(type, id).Where(x => x.DOCUMENT_ID == null && !x.IS_GOVERNMENT_DOC).ToList();
                 var result = data.Select(x => new FileUploadModel()
                 {
                     FileID = x.FILE_ID,
@@ -1342,42 +1475,89 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private String GeneratePrintout(EXCISE_CREDIT excise, String template)
         {
-            var layoutId = EnumHelper.GetValueFromDescription<ReferenceKeys.PrintoutLayout>(template);
-            if (layoutId == ReferenceKeys.PrintoutLayout.None)
+            try
             {
-                throw new Exception("The spesified printout template not available!");
-            }
-            var printout = this.GetPrintoutLayoutModel(excise, layoutId);
-            var docNumber = excise.EXCISE_CREDIT_NO;
-            var urlPath = String.Format("~/{0}{1}/Printouts/", System.Configuration.ConfigurationManager.AppSettings["ExciseCreditDocPath"], docNumber);
-            var path = Server.MapPath(urlPath);
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
+                var templateList = new List<ReferenceKeys.PrintoutLayout>();
 
-            var fileName = String.Format("{2}_{0}_Printout_{1}.pdf", template, DateTime.Now.ToString("yyyyMMddHHmmss"), docNumber.Replace('/', '_'));
-            using (FileStream stream = new FileStream(path + fileName, FileMode.Create))
-            {
-
-                var margin = Convert.ToSingle(System.Configuration.ConfigurationManager.AppSettings["DefaultMargin"]);
-                var leftMargin = iTextSharp.text.Utilities.MillimetersToPoints(5);
-                var rightMargin = iTextSharp.text.Utilities.MillimetersToPoints(5);
-                var topMargin = iTextSharp.text.Utilities.MillimetersToPoints(5);
-                var bottomtMargin = iTextSharp.text.Utilities.MillimetersToPoints(5);
-                var document = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4.Rotate(), leftMargin, rightMargin, topMargin, bottomtMargin);
-                var writer = PdfWriter.GetInstance(document, stream);
-                long LastApprovedStatusID = excise.LAST_STATUS;
-                if ((LastApprovedStatusID == refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Draft).REFF_ID) || (LastApprovedStatusID == refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Edited).REFF_ID) || (LastApprovedStatusID == refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingPoaApproval).REFF_ID))
+                if (excise.REQUEST_TYPE == 1)
                 {
-                    PdfWriterEvents writerEvent = new PdfWriterEvents("D R A F T E D");
-                    writer.PageEvent = writerEvent;
+                    templateList.Add(ReferenceKeys.PrintoutLayout.ExciseCreditNewRequest);
+                    templateList.Add(ReferenceKeys.PrintoutLayout.ExciseCreditNewRequestMain);
+                    templateList.Add(ReferenceKeys.PrintoutLayout.DetailExciseCalculation);
+                    templateList.Add(ReferenceKeys.PrintoutLayout.FinanceRatio);
+                    templateList.Add(ReferenceKeys.PrintoutLayout.ExciseRequestGuaranteeDecree);
                 }
-                writer.CloseStream = false;
-                document.Open();
-                var srHtml = new StringReader(printout.Layout.CompleteLayout);
-                XMLWorkerHelper.GetInstance().ParseXHtml(writer, document, srHtml);
-                document.Close();
+                else
+                {
+                    templateList.Add(ReferenceKeys.PrintoutLayout.ExciseCreditAdjustmentRequest);
+                    templateList.Add(ReferenceKeys.PrintoutLayout.ExciseCreditAdjustmentRequestMain);
+                    templateList.Add(ReferenceKeys.PrintoutLayout.DetailExciseCalculation);
+                }
+
+                var docNumber = excise.EXCISE_CREDIT_NO;
+                var urlPath = String.Format("~/{0}{1}/Printouts/", System.Configuration.ConfigurationManager.AppSettings["ExciseCreditDocPath"], docNumber.Replace('/', '-'));
+                var path = Server.MapPath(urlPath);
+                if (!Directory.Exists(path))
+                    Directory.CreateDirectory(path);
+                List<String> mainPrintouts = new List<string>();
+                foreach (var tpl in templateList)
+                {
+                    var layoutId = tpl;
+                    if (layoutId == ReferenceKeys.PrintoutLayout.None)
+                    {
+                        throw new Exception("The spesified printout template not available!");
+                    }
+                    var printout = this.GetPrintoutLayoutModel(excise, layoutId);
+                    var fileName = String.Format("{0}_Printout_{1}.pdf", EnumHelper.GetDescription(layoutId), DateTime.Now.ToString("yyyyMMddHHmmss"));
+                    using (FileStream stream = new FileStream(path + fileName, FileMode.Create))
+                    {
+
+                        var margin = Convert.ToSingle(System.Configuration.ConfigurationManager.AppSettings["DefaultMargin"]);
+                        var leftMargin = iTextSharp.text.Utilities.MillimetersToPoints(margin);
+                        var rightMargin = iTextSharp.text.Utilities.MillimetersToPoints(margin);
+                        var topMargin = iTextSharp.text.Utilities.MillimetersToPoints(margin);
+                        var bottomtMargin = iTextSharp.text.Utilities.MillimetersToPoints(margin);
+                        var document = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, leftMargin, rightMargin, topMargin, bottomtMargin);
+                        var writer = PdfWriter.GetInstance(document, stream);
+                        long LastApprovedStatusID = excise.LAST_STATUS;
+                        if ((LastApprovedStatusID == refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Draft).REFF_ID) || (LastApprovedStatusID == refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Edited).REFF_ID) || (LastApprovedStatusID == refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingPoaApproval).REFF_ID))
+                        {
+                            PdfWriterEvents writerEvent = new PdfWriterEvents("D R A F T E D");
+                            writer.PageEvent = writerEvent;
+                        }
+                        writer.CloseStream = false;
+                        document.Open();
+                        var srHtml = new StringReader(printout.Layout.CompleteLayout);
+                        XMLWorkerHelper.GetInstance().ParseXHtml(writer, document, srHtml);
+                        document.Close();
+                        mainPrintouts.Add(path + fileName);
+
+                    }
+
+                }
+
+                var mainFileName = String.Format("Excise_Credit_Printout_{0}.pdf", DateTime.Now.ToString("yyyyMMddHHmmss"));
+                var targetPrintout = System.IO.File.Create(path + mainFileName);
+                if (targetPrintout != null)
+                {
+                    targetPrintout.Close();
+                    targetPrintout.Dispose();
+                }
+                
+                bool mergeResult = PdfMerge.Execute(mainPrintouts.ToArray(), path + mainFileName);
+                if (!mergeResult)
+                {
+                    throw new Exception("Printout generation failed!");
+                }
+
+                return MergePrintout(path + mainFileName, excise);
             }
-            return MergePrintout(path + fileName, excise);
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                return null;
+            }
+
         }
 
         public String MergePrintout(string path, EXCISE_CREDIT excise)
@@ -1996,7 +2176,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public void DownloadPrintout(ExciseCreditFormModel model)
+        public ActionResult DownloadPrintout(ExciseCreditFormModel model)
         {
             try
             {
@@ -2025,18 +2205,21 @@ namespace Sampoerna.EMS.Website.Controllers
                 var fileName = Path.GetFileName(path);
                 string attachment = string.Format("attachment; filename={0}", fileName);
                 Response.Clear();
+                Response.ClearContent();
+                Response.ClearHeaders();
                 Response.AddHeader("content-disposition", attachment);
                 Response.ContentType = "application/pdf";
                 Response.WriteFile(newFile.FullName);
                 Response.Flush();
                 newFile.Delete();
                 Response.End();
-
+                return null;
 
             }
             catch (Exception ex)
             {
                 AddMessageInfo(String.Format("Cannot download printout!. Reason: {0}", ex.Message), Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
             }
         }
 
@@ -2047,15 +2230,19 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 printouts.Add(MapPrintoutModel(excise, ReferenceKeys.PrintoutLayout.ExciseCreditNewRequest));
                 printouts.Add(MapPrintoutModel(excise, ReferenceKeys.PrintoutLayout.ExciseCreditNewRequestMain));
+
+                printouts.Add(MapPrintoutModel(excise, ReferenceKeys.PrintoutLayout.DetailExciseCalculation));
+                printouts.Add(MapPrintoutModel(excise, ReferenceKeys.PrintoutLayout.FinanceRatio));
+                printouts.Add(MapPrintoutModel(excise, ReferenceKeys.PrintoutLayout.ExciseRequestGuaranteeDecree));
+
             }
             else
             {
                 printouts.Add(MapPrintoutModel(excise, ReferenceKeys.PrintoutLayout.ExciseCreditAdjustmentRequest));
                 printouts.Add(MapPrintoutModel(excise, ReferenceKeys.PrintoutLayout.ExciseCreditAdjustmentRequestMain));
+
+                printouts.Add(MapPrintoutModel(excise, ReferenceKeys.PrintoutLayout.DetailExciseCalculation));
             }
-            printouts.Add(MapPrintoutModel(excise, ReferenceKeys.PrintoutLayout.DetailExciseCalculation));
-            printouts.Add(MapPrintoutModel(excise, ReferenceKeys.PrintoutLayout.FinanceRatio));
-            printouts.Add(MapPrintoutModel(excise, ReferenceKeys.PrintoutLayout.ExciseRequestGuaranteeDecree));
 
             return printouts;
         }
@@ -2104,6 +2291,10 @@ namespace Sampoerna.EMS.Website.Controllers
             return template;
         }
 
+        private String Ucwords(String word)
+        {
+            return Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(word.ToLower());
+        }
         private Dictionary<string, string> GetPrintoutParameters(ReferenceKeys.PrintoutLayout templateId, EXCISE_CREDIT excise)
         {
             Dictionary<string, string> parameters = new Dictionary<string, string>();
@@ -2111,12 +2302,14 @@ namespace Sampoerna.EMS.Website.Controllers
             var model = GetNewExciseRequestData(excise);
             var nppbkc = refService.GetNppbkc(excise.NPPBKC_ID);
             System.Globalization.CultureInfo cultureID = new System.Globalization.CultureInfo("id-ID");
+            var plantAddress = String.Empty;
+            var plantAddresses = nppbkc.PLANTS;
             switch (templateId)
             {
                 case ReferenceKeys.PrintoutLayout.ExciseCreditNewRequestMain:
                     var lampiran = service.GetFileCount(excise.EXSICE_CREDIT_ID);
                     var index11 = excise.EXCISE_CREDIT_AMOUNT >= 50000000000 ? "Kepala Kantor Wilayah" : "Kepada Yth.";
-                    var amount = excise.EXCISE_CREDIT_AMOUNT;
+                    var amount = Math.Ceiling(excise.EXCISE_CREDIT_AMOUNT);
                     var amountterbilang = service.Terbilang(amount);
                     var documentpendukung = service.GetFile(excise.EXSICE_CREDIT_ID);
                     var documentpendukungstring = "";
@@ -2124,12 +2317,18 @@ namespace Sampoerna.EMS.Website.Controllers
                     {
                         documentpendukungstring += string.Format("<li>{0}</li>", fileUpload.FILE_NAME);
                     }
-                    parameters.Add("KPPBCAddress", excise.ZAIDM_EX_NPPBKC.KPPBC_ADDRESS);
-                    parameters.Add("SubmissionDate", excise.SUBMISSION_DATE.ToShortDateString());
-                    parameters.Add("jumlahLampiran", string.Format("{0}, ({1}) Lampiran", lampiran, service.Terbilang(lampiran)));
+                    var regionDgce = "";
+                    if (excise.EXCISE_CREDIT_AMOUNT >= 50000000000)
+                    {
+                        regionDgce = "Melalui<br />" + excise.ZAIDM_EX_NPPBKC.REGION_DGCE;
+                    }
+                    parameters.Add("autonumber", excise.EXCISE_CREDIT_NO);
+                    parameters.Add("KPPBCAddress", Ucwords(excise.ZAIDM_EX_NPPBKC.CITY));
+                    parameters.Add("SubmissionDate", excise.SUBMISSION_DATE.ToString("dd MMMM yyyy", cultureID));
+                    parameters.Add("jumlahLampiran", string.Format("{0} ({1}) Lampiran", lampiran, service.Terbilang(lampiran, false)));
                     parameters.Add("index11", index11);
-                    parameters.Add("namaalamatkantor", excise.ZAIDM_EX_NPPBKC.KPPBC_ADDRESS);
-                    parameters.Add("REGION_DGCE", excise.ZAIDM_EX_NPPBKC.REGION_DGCE);
+                    parameters.Add("namaalamatkantor", excise.ZAIDM_EX_NPPBKC.TEXT_TO);
+                    parameters.Add("REGION_DGCE", regionDgce);
                     parameters.Add("LOCATION", excise.ZAIDM_EX_NPPBKC.LOCATION);
                     parameters.Add("POAPRINTED_NAME", excise.POA.PRINTED_NAME);
                     parameters.Add("POATITLE", excise.POA.TITLE);
@@ -2137,18 +2336,18 @@ namespace Sampoerna.EMS.Website.Controllers
                     parameters.Add("COMPANY", nppbkc.COMPANY.BUTXT);
                     parameters.Add("NPPBKC", nppbkc.NPPBKC_ID);
                     parameters.Add("LOKASI_NPPBKC", nppbkc.KPPBC_ADDRESS);
-                    parameters.Add("EXCISE_CREDIT_AMOUNT", string.Format("{0:N}", amount));
+                    parameters.Add("EXCISE_CREDIT_AMOUNT", string.Format("{0:N0}", amount));
                     parameters.Add("TERBILANG", amountterbilang);
                     parameters.Add("documentpendukung", documentpendukungstring);
                     break;
                 case ReferenceKeys.PrintoutLayout.ExciseCreditNewRequest:
                     // Load Sub Template CK-1 Excise Summary
-                    Dictionary<string,decimal> grandTotal6 = new Dictionary<string, decimal>();
+                    Dictionary<string, decimal> grandTotal6 = new Dictionary<string, decimal>();
                     Dictionary<string, decimal> grandTotal3 = new Dictionary<string, decimal>();
-                    var ck1Tables = GetNewExciseRequestSubTemplate(model, excise,out grandTotal6,out grandTotal3);
+                    var ck1Tables = GetNewExciseRequestSubTemplate(model, excise, out grandTotal6, out grandTotal3);
 
                     // Load CK-1 Excise Summary Average
-                    var ck1Avg6 = GetNewExciseCK1Avg(model, excise, 6,grandTotal6,grandTotal3);
+                    var ck1Avg6 = GetNewExciseCK1Avg(model, excise, 6, grandTotal6, grandTotal3);
                     var ck1Avg3 = GetNewExciseCK1Avg(model, excise, 3, grandTotal6, grandTotal3);
 
                     // Load CK-1 Excise Calculation Summary Maximum
@@ -2156,11 +2355,30 @@ namespace Sampoerna.EMS.Website.Controllers
                     decimal totalAdditionalMax = 0;
                     var calculationMax = GetNewExciseCK1MaxAvg(model, excise, false, grandTotal6, grandTotal3, out totalCalculationMax);
                     var additionalMax = GetNewExciseCK1MaxAvg(model, excise, true, grandTotal6, grandTotal3, out totalAdditionalMax);
+                    plantAddress = String.Empty;
+                    plantAddresses = nppbkc.PLANTS;
+                    if (plantAddresses.Any())
+                    {
+                        if (plantAddresses.Count == 1)
+                        {
+                            plantAddress += plantAddresses.First().ADDRESS + "<br />";
+                        }
+                        else
+                        {
+                            plantAddress += "<ol>";
+                            foreach (var plant in plantAddresses)
+                            {
+                                plantAddress += "<li>" + plant.ADDRESS + "</li>";
+                            }
+                            plantAddress += "</ol>";
+                        }
+                        
+                    }
                     parameters.Add("POA", excise.POA.PRINTED_NAME);
                     parameters.Add("COMPANY_NAME", nppbkc.COMPANY.BUTXT);
-                    parameters.Add("COMPANY_ADDRESS", nppbkc.DGCE_ADDRESS);
+                    parameters.Add("COMPANY_ADDRESS", plantAddress);
                     parameters.Add("NPPBKC_ID", excise.NPPBKC_ID);
-                    parameters.Add("TOTAL_AMOUNT", String.Format("Rp. {0:N}", totalCalculationMax + totalAdditionalMax));
+                    parameters.Add("TOTAL_AMOUNT", String.Format("Rp. {0:N0}", totalCalculationMax + totalAdditionalMax));
                     parameters.Add("CK1_DETAIL_TABLE", ck1Tables);
                     parameters.Add("CK1_AVG_6", ck1Avg6);
                     parameters.Add("CK1_AVG_3", ck1Avg3);
@@ -2186,16 +2404,38 @@ namespace Sampoerna.EMS.Website.Controllers
                 case ReferenceKeys.PrintoutLayout.DetailExciseCalculation:
                     ck1Tables = this.GetCK1CalculationReport(excise);
                     parameters.Clear();
+                    plantAddress = String.Empty;
+                    plantAddresses = nppbkc.PLANTS;
+                    if (plantAddresses.Any())
+                    {
+                        if (plantAddresses.Count == 1)
+                        {
+                            plantAddress += plantAddresses.First().ADDRESS + "<br />";
+                        }
+                        else
+                        {
+                            plantAddress += "<ol>";
+                            foreach (var plant in plantAddresses)
+                            {
+                                plantAddress += "<li>" + plant.ADDRESS + "</li>";
+                            }
+                            plantAddress += "</ol>";
+                        }
+                    }
                     parameters.Add("POA", excise.POA.PRINTED_NAME);
                     parameters.Add("COMPANY_NAME", nppbkc.COMPANY.BUTXT);
-                    parameters.Add("COMPANY_ADDRESS", nppbkc.DGCE_ADDRESS);
+                    parameters.Add("COMPANY_ADDRESS", plantAddress);
                     parameters.Add("NPPBKC", excise.NPPBKC_ID);
                     parameters.Add("CK1_PERIOD", String.Format(cultureID, "{0:MMMM yyyy} - {1: MMMM yyyy}", excise.SUBMISSION_DATE.AddMonths(-6), excise.SUBMISSION_DATE.AddMonths(-1)));
                     parameters.Add("CK1_DETAIL_TABLE", ck1Tables);
                     break;
                 case ReferenceKeys.PrintoutLayout.ExciseRequestGuaranteeDecree:
+                    var guaranteeTranslation = new Dictionary<String, String>();
+                    guaranteeTranslation.Add("Company Guarantee", "Jaminan Perusahaan");
+                    guaranteeTranslation.Add("Bank Guarantee", "Jaminan Bank");
+                    guaranteeTranslation.Add("Excise Bond", "Excise Bond");
                     parameters.Add("nomor", excise.EXCISE_CREDIT_NO);
-                    parameters.Add("tanggal", excise.SUBMISSION_DATE.ToShortDateString());
+                    parameters.Add("tanggal", excise.SUBMISSION_DATE.ToString("dd MMMM yyyy", cultureID));
                     parameters.Add("textto", excise.ZAIDM_EX_NPPBKC.TEXT_TO);
                     parameters.Add("alamat", excise.ZAIDM_EX_NPPBKC.KPPBC_ADDRESS);
                     parameters.Add("poanama", excise.POA.PRINTED_NAME);
@@ -2203,6 +2443,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     parameters.Add("poaalamat", excise.POA.POA_ADDRESS);
                     parameters.Add("company", nppbkc.COMPANY.BUTXT);
                     parameters.Add("nppbkc", nppbkc.NPPBKC_ID);
+                    parameters.Add("jaminan", guaranteeTranslation[excise.GUARANTEE]);
+                    parameters.Add("kota", nppbkc.CITY);
+                    parameters.Add("poa", excise.POA.PRINTED_NAME);
                     break;
                 case ReferenceKeys.PrintoutLayout.ExciseCreditAdjustmentRequest:
                     var model2 = GetNewExciseRequestData(excise);
@@ -2218,9 +2461,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     parameters.Add("SKEPDATE", string.Format("{0}", excise.DECREE_DATE));
                     parameters.Add("HASIL", "Hasil Tembakau");
                     parameters.Add("CITY", nppbkc2.CITY);
-                    parameters.Add("PEMOHON", excise.POA.POA_ID);
+                    parameters.Add("PEMOHON", excise.POA.PRINTED_NAME);
                     parameters.Add("NPPBKC_ID", excise.NPPBKC_ID);
-                    parameters.Add("TOTAL_AMOUNT", String.Format("Rp. {0:N}", excise.EXCISE_CREDIT_AMOUNT));
+                    parameters.Add("TOTAL_AMOUNT", String.Format("Rp. {0:N0}", excise.EXCISE_CREDIT_AMOUNT));
                     parameters.Add("CK1_DETAIL_TABLE", ck1Tablesa);
                     parameters.Add("CK1_CALCULATION", ck1Calculation);
                     parameters.Add("CK1_ADJUSTMENT", adjustment);
@@ -2229,20 +2472,26 @@ namespace Sampoerna.EMS.Website.Controllers
                 case ReferenceKeys.PrintoutLayout.ExciseCreditAdjustmentRequestMain:
                     var lampiranAdjustment = service.GetFileCount(excise.EXSICE_CREDIT_ID);
                     var index11Adjustment = excise.EXCISE_CREDIT_AMOUNT >= 50000000000 ? "Kepala Kantor Wilayah" : "Kepada Yth.";
-                    var amountAdjustment = excise.EXCISE_CREDIT_AMOUNT;
+                    regionDgce = "";
+                    if (excise.EXCISE_CREDIT_AMOUNT >= 50000000000)
+                    {
+                        regionDgce = "Melalui<br />" + excise.ZAIDM_EX_NPPBKC.REGION_DGCE;
+                    }
+                    var amountAdjustment = Math.Ceiling(excise.EXCISE_CREDIT_AMOUNT);
                     var amountterbilangAdjustment = service.Terbilang(amountAdjustment);
                     var documentpendukungAdjustment = service.GetFile(excise.EXSICE_CREDIT_ID);
                     var documentpendukungstringAdjustment = "";
                     foreach (var fileUpload in documentpendukungAdjustment.ToList())
                     {
-                        documentpendukungstringAdjustment += string.Format("<li>{0}</li>", fileUpload.FILE_NAME);
+                        documentpendukungstringAdjustment += string.Format("<span style='font-family: Arial; font-size: 10pt;'>{0}</span>", fileUpload.FILE_NAME);
                     }
-                    parameters.Add("kccpaddress", excise.ZAIDM_EX_NPPBKC.KPPBC_ADDRESS);
-                    parameters.Add("SubmissionDate", excise.SUBMISSION_DATE.ToShortDateString());
-                    parameters.Add("lampiran", string.Format("{0}, ({1}) Lampiran", lampiranAdjustment, service.Terbilang(lampiranAdjustment)));
-                    parameters.Add("index11", index11Adjustment);
-                    parameters.Add("namaalamatkantor", excise.ZAIDM_EX_NPPBKC.KPPBC_ADDRESS);
-                    parameters.Add("regiondgce", excise.ZAIDM_EX_NPPBKC.REGION_DGCE);
+                    parameters.Add("autonumber", excise.EXCISE_CREDIT_NO);
+                    parameters.Add("kccpaddress", Ucwords(excise.ZAIDM_EX_NPPBKC.CITY));
+                    parameters.Add("SubmissionDate", excise.SUBMISSION_DATE.ToString("dd MMMM yyyy", cultureID));
+                    parameters.Add("lampiran", string.Format("{0} ({1}) Lampiran", lampiranAdjustment, service.Terbilang(lampiranAdjustment, false)));
+                    parameters.Add("index11", string.Format("{0}", nppbkc.TEXT_TO));
+                    parameters.Add("namaalamatkantor", excise.ZAIDM_EX_NPPBKC.TEXT_TO);
+                    parameters.Add("regiondgce", regionDgce);
                     parameters.Add("location", excise.ZAIDM_EX_NPPBKC.LOCATION);
                     parameters.Add("poanama", excise.POA.PRINTED_NAME);
                     parameters.Add("poajabatan", excise.POA.TITLE);
@@ -2250,11 +2499,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     parameters.Add("company", nppbkc.COMPANY.BUTXT);
                     parameters.Add("nppbkc", nppbkc.NPPBKC_ID);
                     parameters.Add("kota", nppbkc.LOCATION);
-                    parameters.Add("nominal", string.Format("{0:N}", amountAdjustment));
+                    parameters.Add("nominal", string.Format("{0:N0}", amountAdjustment));
                     parameters.Add("terbilang", amountterbilangAdjustment);
-                    parameters.Add("lastskep", "?");
+                    parameters.Add("lastskep", excise.DECREE_NO);
                     break;
-					case ReferenceKeys.PrintoutLayout.FinanceRatio:
+                case ReferenceKeys.PrintoutLayout.FinanceRatio:
                     parameters.Clear();
                     parameters.Add("COMPANY_NAME", nppbkc.COMPANY.BUTXT);
                     var financialRatios = service.GetFinancialStatements
@@ -2283,6 +2532,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     parameters.Add("TOTAL_CAPITAL_2", financialRatios[0].TOTAL_CAPITAL.ToString("N"));
                     parameters.Add("RENTABILITY_1", financialRatios[1].RENTABLE_RATIO.ToString("N"));
                     parameters.Add("RENTABILITY_2", financialRatios[0].RENTABLE_RATIO.ToString("N"));
+                    parameters.Add("POA", excise.POA.PRINTED_NAME);
                     break;
             }
             return parameters;
@@ -2307,7 +2557,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     throw new Exception("CK 1 Data not available!");
                 }
-                model.AdjustmentDisplay = String.Format("{0}", model.AdjustmentDisplay);
+                model.AdjustmentDisplay = String.Format("{0:N0}", model.AdjustmentDisplay);
                 Dictionary<string, double> values3 = new Dictionary<string, double>();
                 Dictionary<string, double> values6 = new Dictionary<string, double>();
                 Dictionary<string, double> values12 = new Dictionary<string, double>();
@@ -2330,7 +2580,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
-        private String GetNewExciseRequestSubTemplate(CalculationDetailModel model, EXCISE_CREDIT excise,out Dictionary<String, Decimal> grandTotal6, out Dictionary<String, Decimal> grandTotal3)
+        private String GetNewExciseRequestSubTemplate(CalculationDetailModel model, EXCISE_CREDIT excise, out Dictionary<String, Decimal> grandTotal6, out Dictionary<String, Decimal> grandTotal3)
         {
             try
             {
@@ -2348,12 +2598,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 #endregion
 
                 #region Initiate Sub Template
-                tableBuilder.Append("<table style='width: 100%; background-color: white!important; border-collapse: collapse;border: 1px solid black;' >")
+                tableBuilder.Append("<table style='width: 100%; background: none;background-color: none; border-collapse: collapse;border-spacing: 10px' border='1px'>")
                     .Append("<thead>")
                     .Append("<tr>")
-                    .Append("<td rowspan='2' style='width: 20px; text-align: center;  border: 1px solid black;'>No</td>")
-                    .Append("<td rowspan='2' style='width: 25%; text-align: center;  border: 1px solid black;'>Bulan</td>")
-                    .AppendFormat("<td colspan='{0}' style='text-align: center; border: 1px solid black;'>Jumlah Cukai (Rp)</td>", productTypeCount + 1)
+                    .Append("<td rowspan='2' style='width: 40px; text-align: center;font-family: Arial; font-size: 10pt;'>No</td>")
+                    .Append("<td rowspan='2' style='width: 20%; text-align: center; font-family: Arial; font-size: 10pt;'>Bulan</td>")
+                    .AppendFormat("<td colspan='{0}' style='text-align: center; font-family: Arial; font-size: 10pt;'>Jumlah Cukai (Rp)</td>", productTypeCount + 1)
                     .Append("</tr>");
                 #endregion
 
@@ -2361,10 +2611,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 tableBuilder.Append("<tr>");
                 foreach (var ptype in productTypes)
                 {
-                    tableBuilder.AppendFormat("<td style='width: 25%;text-align: center; border: 1px solid black;'>{0}</td>", ptype.ToUpper());
+                    tableBuilder.AppendFormat("<td style='text-align: center; font-size: 10pt;'>{0}</td>", ptype.ToUpper());
                     var items = service.GetExciseCk1Detail(excise.EXSICE_CREDIT_ID, ptype).OrderBy(x => x.CK1_DATE).ToList();
                     var beginDate = items[0].CK1_DATE;
-                    var endDate = items[items.Count - 1].CK1_DATE;
+                    var endDate = excise.SUBMISSION_DATE.AddMonths(-1);
                     var current = DateTime.Parse(String.Format("{0}-{1}-{2}", beginDate.Year, beginDate.Month, DateTime.DaysInMonth(beginDate.Year, beginDate.Month)));
                     endDate = DateTime.Parse(String.Format("{0}-{1}-{2}", endDate.Year, endDate.Month, DateTime.DaysInMonth(endDate.Year, endDate.Month)));
                     var ck1Info = new Dictionary<String, Decimal>();
@@ -2381,7 +2631,9 @@ namespace Sampoerna.EMS.Website.Controllers
                             durations.Add(key);
 
                         current = current.AddMonths(1);
+                        current = DateTime.Parse(String.Format("{0}-{1}-{2}", current.Year, current.Month, DateTime.DaysInMonth(current.Year, current.Month)));
                         previous = previous.AddMonths(1);
+                        previous = DateTime.Parse(String.Format("{0}-{1}-{2}", previous.Year, previous.Month, DateTime.DaysInMonth(previous.Year, previous.Month)));
                     }
                     dataLength = Math.Max(dataLength, durations.Count);
                     ck1Data.Add(ptype, items);
@@ -2390,7 +2642,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     grandTotal6.Add(ptype, Decimal.Zero);
 
                 }
-                tableBuilder.Append("<td style='text-align: center; border: 1px solid black;'>Jumlah</td>")
+                tableBuilder.Append("<td style='text-align: center; font-family: Arial; font-size: 10pt;'>Jumlah</td>")
                     .Append("</tr>")
                     .Append("</thead>");
                 #endregion
@@ -2401,14 +2653,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 for (var i = 0; i < dataLength; i++)
                 {
                     tableBuilder.Append("<tr>");
-                    tableBuilder.AppendFormat("<td style='text-align: center;border: 1px solid black;'>{0}</td>", i + 1);
-                    tableBuilder.AppendFormat("<td style='border: 1px solid black;'>{0}</td>", durations[i]);
+                    tableBuilder.AppendFormat("<td style='text-align: center;font-family: Arial; font-size: 10pt;'>{0}</td>", i + 1);
+                    tableBuilder.AppendFormat("<td style='font-family: Arial; font-size: 10pt;'>{0}</td>", durations[i]);
                     var subTotal = Decimal.Zero;
                     foreach (var ptype in productTypes)
                     {
                         if (ck1GroupedData[ptype].ContainsKey(durations[i]))
                         {
-                            tableBuilder.AppendFormat("<td style='text-align: right;border: 1px solid black;'>{0:N}</td>", ck1GroupedData[ptype][durations[i]]);
+                            tableBuilder.AppendFormat("<td style='text-align: right;font-family: Arial; font-size: 10pt;'>{0:N0}</td>", ck1GroupedData[ptype][durations[i]]);
                             subTotal += ck1GroupedData[ptype][durations[i]];
                             var previousSum = Decimal.Zero;
                             if (i >= 3)
@@ -2420,37 +2672,37 @@ namespace Sampoerna.EMS.Website.Controllers
                             grandTotal6[ptype] = previousSum + ck1GroupedData[ptype][durations[i]];
                         }
                         else
-                            tableBuilder.AppendFormat("<td style='text-align: right;border: 1px solid black;'>{0:N}</td>", Decimal.Zero);
+                            tableBuilder.AppendFormat("<td style='text-align: right;font-family: Arial; font-size: 10pt;'>{0:N0}</td>", Decimal.Zero);
                     }
 
 
-                    tableBuilder.AppendFormat("<td style='text-align: right;border: 1px solid black;'>{0:N}</td>", subTotal);
+                    tableBuilder.AppendFormat("<td style='text-align: right;font-family: Arial; font-size: 10pt;'>{0:N0}</td>", subTotal);
                     tableBuilder.Append("</tr>");
 
                 }
                 #region Grand Total 3 Months
                 tableBuilder.Append("<tr>");
-                tableBuilder.Append("<td colspan='2' style='border: 1px solid black;'>JUMLAH 3 BULAN</td>");
+                tableBuilder.Append("<td colspan='2' style='font-family: Arial; font-size: 10pt;'>JUMLAH 3 BULAN</td>");
                 var grandTotal = Decimal.Zero;
                 foreach (var ptype in productTypes)
                 {
-                    tableBuilder.AppendFormat("<td style='text-align: right;border: 1px solid black;'>{0:N}</td>", grandTotal3[ptype]);
+                    tableBuilder.AppendFormat("<td style='text-align: right;font-family: Arial; font-size: 10pt;'>{0:N0}</td>", grandTotal3[ptype]);
                     grandTotal += grandTotal3[ptype];
                 }
-                tableBuilder.AppendFormat("<td style='text-align: right;border: 1px solid black;'>{0:N}</td>", grandTotal);
+                tableBuilder.AppendFormat("<td style='text-align: right;font-family: Arial; font-size: 10pt;'>{0:N0}</td>", grandTotal);
                 tableBuilder.Append("</tr>");
                 #endregion
 
                 #region Grand Total 6 Months
                 tableBuilder.Append("<tr>");
-                tableBuilder.Append("<td colspan='2' style='border: 1px solid black;'>JUMLAH 6 BULAN</td>");
+                tableBuilder.Append("<td colspan='2' style='font-family: Arial; font-size: 10pt;'>JUMLAH 6 BULAN</td>");
                 grandTotal = Decimal.Zero;
                 foreach (var ptype in productTypes)
                 {
-                    tableBuilder.AppendFormat("<td style='text-align: right;border: 1px solid black;'>{0:N}</td>", grandTotal6[ptype]);
+                    tableBuilder.AppendFormat("<td style='text-align: right;font-family: Arial; font-size: 10pt;'>{0:N0}</td>", grandTotal6[ptype]);
                     grandTotal += grandTotal6[ptype];
                 }
-                tableBuilder.AppendFormat("<td style='text-align: right;border: 1px solid black;'>{0:N}</td>", grandTotal);
+                tableBuilder.AppendFormat("<td style='text-align: right;font-family: Arial; font-size: 10pt;'>{0:N0}</td>", grandTotal);
                 tableBuilder.Append("</tr>");
                 #endregion
 
@@ -2467,7 +2719,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
-        private String GetNewExciseCK1Avg(CalculationDetailModel model, EXCISE_CREDIT excise, int duration,Dictionary<string,decimal> grandTotal6,Dictionary<string,decimal> grandTotal3)
+        private String GetNewExciseCK1Avg(CalculationDetailModel model, EXCISE_CREDIT excise, int duration, Dictionary<string, decimal> grandTotal6, Dictionary<string, decimal> grandTotal3)
         {
             try
             {
@@ -2481,7 +2733,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     double amount = 0;
                     if (duration == 6)
                     {
-                        amount = (double) grandTotal6[ptype];
+                        amount = (double)grandTotal6[ptype];
                     }
                     else
                     {
@@ -2492,15 +2744,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 #endregion
 
                 #region Build Table
-                builder.Append("<table style='width: 100%; padding: 10px; background-color: white!important;' cellspacing='10'>");
+                builder.Append("<table style='width: 100%; padding: 10px; background: none; background-color: none;margin-left: -8px;'>");
                 builder.Append("<tbody>");
                 foreach (var ptype in model.ProductTypes)
                 {
                     builder.Append("<tr>");
-                    builder.Append("<td style='width: 25px'>&nbsp;</td>");
-                    builder.AppendFormat("<td style='width: 30%'>{0} sebesar&nbsp;</td>", ptype);
-                    builder.AppendFormat("<td style='width: 30%'>Rp. {0:N}/{1}&nbsp;</td>", calculationData[ptype], duration);
-                    builder.AppendFormat("<td style='width: 30%'>= Rp. {0:N}</td>", Math.Ceiling(calculationData[ptype] / duration));
+                    builder.Append("<td style='width: 25px;font-family: Arial; font-size: 10pt;'>&nbsp;</td>");
+                    builder.AppendFormat("<td style='width: 20%;font-family: Arial; font-size: 10pt;'>{0} sebesar&nbsp;</td>", ptype);
+                    builder.AppendFormat("<td style='width: 40%;font-family: Arial; font-size: 10pt;'>Rp. {0:N0} / {1}&nbsp;</td>", calculationData[ptype], duration);
+                    builder.Append("<td style='width: 25px;text-align: right;'>=</td>");
+                    builder.AppendFormat("<td style='width: 40%;font-family: Arial; font-size: 10pt;text-align: right;'>&nbsp;Rp. {0:N0}</td>", Math.Ceiling(calculationData[ptype] / duration));
                     builder.Append("</tr>");
                 }
                 builder.Append("</tbody>");
@@ -2537,18 +2790,18 @@ namespace Sampoerna.EMS.Website.Controllers
                 foreach (var ptype in model.ProductTypes)
                 {
                     builder.AppendFormat("Jenis BKC:{0}", ptype);
-                    builder.Append("<table style='width: 100%; padding: 10px' cellspacing='10'>");
+                    builder.Append("<table style='width: 100%; padding: 10px; border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;' cellspacing='10' >");
                     builder.Append("<thead>");
                     builder.Append("<tr>");
-                    builder.Append("<th>No</th>");
-                    builder.Append("<th>MEREK</th>");
-                    builder.Append("<th>ISI</th>");
-                    builder.Append("<th>HJE</th>");
-                    builder.Append("<th>Tarif Cukai(Lama)</th>");
-                    builder.Append("<th>Tarif Cukai(Baru)</th>");
-                    builder.Append("<th>Perubahan</th>");
-                    builder.Append("<th>Produksi 2 Bulan Terakhir</th>");
-                    builder.Append("<th>Kenaikan Tertimbang</th>");
+                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>No</th>");
+                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>MEREK</th>");
+                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>ISI</th>");
+                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>HJE</th>");
+                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>Tarif Cukai(Lama)</th>");
+                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>Tarif Cukai(Baru)</th>");
+                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>Perubahan</th>");
+                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>Produksi 12 Bulan Terakhir</th>");
+                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>Kenaikan Tertimbang</th>");
                     builder.Append("</tr>");
                     builder.Append("</thead>");
                     builder.Append("<tbody>");
@@ -2558,27 +2811,34 @@ namespace Sampoerna.EMS.Website.Controllers
                         number += 1;
                         var brand = service.GetBrand(md.BRAND_CE);
                         builder.Append("<tr>");
-                        builder.AppendFormat("<td>{0}</td>", number);
-                        builder.AppendFormat("<td>{0}</td>", md.BRAND_CE);
-                        builder.AppendFormat("<td>{0}</td>", brand.BRAND_CONTENT);
-                        builder.AppendFormat("<td>{0}</td>", string.Format("{0} {1:N}", brand.HJE_CURR, brand.HJE_IDR));
-                        builder.AppendFormat("<td>{0}</td>", md.OLD_TARIFF);
-                        builder.AppendFormat("<td>{0}</td>", md.NEW_TARIFF);
-                        builder.AppendFormat("<td>{0}</td>", md.INCREASE_TARIFF);
-                        builder.AppendFormat("<td>{0}</td>", md.CK1_AMOUNT);
-                        builder.AppendFormat("<td>{0}</td>", (md.INCREASE_TARIFF * md.CK1_AMOUNT));
+                        builder.AppendFormat("<td style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt; text-align: center;'>{0}</td>", number);
+                        builder.AppendFormat("<td style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt; text-align: center;'>{0}</td>", md.BRAND_CE);
+                        builder.AppendFormat("<td style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt; text-align: center;'>{0}</td>", brand.BRAND_CONTENT);
+                        builder.AppendFormat("<td style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt; text-align: center;'>{0}</td>", string.Format("{0:N0}", brand.HJE_IDR));
+                        builder.AppendFormat("<td style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;text-align: center;'>{0:N0}</td>", md.OLD_TARIFF);
+                        builder.AppendFormat("<td style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>{0:N0}</td>", md.NEW_TARIFF);
+                        builder.AppendFormat("<td style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>{0:N0}</td>", md.INCREASE_TARIFF);
+                        builder.AppendFormat("<td style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>{0:N0}</td>", md.CK1_AMOUNT);
+                        builder.AppendFormat("<td style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>{0:N0}</td>", (md.INCREASE_TARIFF * md.CK1_AMOUNT));
                         builder.Append("</tr>");
                     }
                     number = 0;
+                    builder.Append("<tr>");
+                    builder.AppendFormat("<td colspan='7' style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>{0}</td>", "Jumlah");
+                    builder.AppendFormat("<td style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>{0:N0}</td>", (exciseResult.Sum(m => m.CK1_AMOUNT)));
+                    builder.AppendFormat("<td style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>{0:N0}</td>", (exciseResult.Sum(m => m.WEIGHTED_INCREASE)));
+                    builder.Append("</tr>");
 
-                    builder.AppendFormat("<td colspan='8'> Sub total kenaikan cukai yang di berikan penundaan: {0} / {1:N} * 100% : {2:N}</td>", exciseResult.Sum(m => m.INCREASE_TARIFF * m.CK1_AMOUNT), exciseResult.Sum(m => m.CK1_AMOUNT), (exciseResult.Sum(m => m.CK1_AMOUNT) != 0 ? exciseResult.Sum(m => m.INCREASE_TARIFF * m.CK1_AMOUNT) / exciseResult.Sum(m => m.CK1_AMOUNT) * 100 : 0));
+                    builder.Append("<tr>");
+                    builder.AppendFormat("<td colspan='9' style='font-family: Arial; font-size: 10pt;'> Sub total kenaikan cukai yang di berikan penundaan: ({0:N0} / {1:N0}) x 100% : {2:N} %</td>", exciseResult.Sum(m => m.INCREASE_TARIFF * m.CK1_AMOUNT), exciseResult.Sum(m => m.CK1_AMOUNT), (exciseResult.Sum(m => m.CK1_AMOUNT) != 0 ? exciseResult.Sum(m => m.INCREASE_TARIFF * m.CK1_AMOUNT) / exciseResult.Sum(m => m.CK1_AMOUNT) * 100 : 0));
+                    builder.Append("</tr>");
                     //                    builder.Append("<td style='width: 25px'>&nbsp;</td>");
                     //                    builder.AppendFormat("<td style='width: 30%'>= Rp. {0:N}</td>", Math.Ceiling(calculationData[ptype].AdditionalValue));
                     Math.Ceiling(calculationData[ptype].AdditionalValue);
                     total += Math.Ceiling(calculationData[ptype].AdditionalValue);
                     builder.Append("</tbody>");
                     builder.Append("</table>");
-                    builder.AppendFormat("Jenis BKC:{0}", ptype);
+                    //                    builder.AppendFormat("Jenis BKC:{0}", ptype);
                 }
 
                 //                builder.Append("<td>&nbsp;</td>");
@@ -2613,24 +2873,32 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 int count = 0;
                 #region Build Table
-                builder.Append("<table style='width: 100%; padding: 10px' cellspacing='10'>");
+                builder.Append("<table style='width: 100%; border:black solid 1px; border-collapse:collapse; padding: 10px; background-color: none;' cellspacing='10'>");
                 builder.Append("<thead>");
                 builder.Append("<tr>");
-                builder.Append("<th style='width:10px'>No</th>");
-                builder.Append("<th style='width: 30%'>Jenis BKC</th>");
-                builder.Append("<th style='width: 30%'>Nilai Penundaan</th>");
+                builder.Append("<th style='width:25px; font-family: Arial; font-size: 10pt;border:black solid 1px; border-collapse:collapse; '>No</th>");
+                builder.Append("<th style='width: 30%; font-family: Arial; font-size: 10pt;border:black solid 1px; border-collapse:collapse; '>Jenis BKC</th>");
+                builder.Append("<th style='width: 30%; font-family: Arial; font-size: 10pt; border:black solid 1px; border-collapse:collapse; '>Nilai Penundaan</th>");
                 builder.Append("</tr>");
                 builder.Append("</thead>");
                 builder.Append("<tbody>");
+                decimal amt = 0;
                 foreach (var ptype in model.ProductTypes)
                 {
+                    var productCode = service.GetCK1ProductCode(ptype);
+                    var skep = service.GetAmountApproved(productCode, excise.SUBMISSION_DATE);
                     count += 1;
                     builder.Append("<tr>");
-                    builder.AppendFormat("<td style='width: 10px'>{0}</td>", count);
-                    builder.AppendFormat("<td style='width: 30%'>{0}</td>", ptype);
-                    builder.AppendFormat("<td style='width: 30%'>Rp. {0:N}&nbsp;</td>", calculationData[ptype]);
+                    builder.AppendFormat("<td style='width: 25px; font-family: Arial; font-size: 10pt;border:black solid 1px; border-collapse:collapse; '>{0}</td>", count);
+                    builder.AppendFormat("<td style='width: 30%; font-family: Arial; font-size: 10pt;border:black solid 1px; border-collapse:collapse; '>{0}</td>", ptype);
+                    builder.AppendFormat("<td style='width: 30%; font-family: Arial; font-size: 10pt;border:black solid 1px; border-collapse:collapse; '>Rp. {0:N0}&nbsp;</td>", excise.EXCISE_CREDIT_ADJUST_CALDETAIL.Any(m => m.PRODUCT_CODE == productCode) ? skep : 0);
                     builder.Append("</tr>");
+                    amt += excise.EXCISE_CREDIT_ADJUST_CALDETAIL.Any(m => m.PRODUCT_CODE == productCode) ? skep : 0;
                 }
+                builder.Append("<tr>");
+                builder.AppendFormat("<td colspan='2' style='font-family: Arial; font-size: 10pt;border:black solid 1px; border-collapse:collapse; '>{0}</td>", "Total");
+                builder.AppendFormat("<td style='font-family: Arial; font-size: 10pt;border:black solid 1px; border-collapse:collapse; '>Rp. {0:N0}&nbsp;</td>", amt);
+                builder.Append("</tr>");
                 builder.Append("</tbody>");
                 builder.Append("</table>");
                 #endregion
@@ -2643,7 +2911,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
-        private String GetNewExciseCK1MaxAvg(CalculationDetailModel model, EXCISE_CREDIT excise, bool additional,Dictionary<string,decimal> grandTotal6, Dictionary<string,decimal> grandTotal3,out decimal total)
+        private String GetNewExciseCK1MaxAvg(CalculationDetailModel model, EXCISE_CREDIT excise, bool additional, Dictionary<string, decimal> grandTotal6, Dictionary<string, decimal> grandTotal3, out decimal total)
         {
             try
             {
@@ -2651,49 +2919,54 @@ namespace Sampoerna.EMS.Website.Controllers
                 StringBuilder builder = new StringBuilder();
                 var productTypeCount = model.ProductTypes.Count;
                 var calculationData = new Dictionary<String, CalculationDetailModel.CreditAdjustment>();
-                var calculationMax = new Dictionary<string,decimal>();
+                var calculationMax = new Dictionary<string, decimal>();
                 foreach (var ptype in model.ProductTypes)
                 {
                     var amount = model.MaxCreditRange[ptype];
                     calculationData.Add(ptype, amount);
 
-                    var amountMax = grandTotal3[ptype] / 3 >= grandTotal6[ptype] /6  ? grandTotal3[ptype] /3 : grandTotal6[ptype] /6;
-                    calculationMax.Add(ptype,amountMax);
+                    var amountMax = grandTotal3[ptype] / 3 >= grandTotal6[ptype] / 6 ? grandTotal3[ptype] / 3 : grandTotal6[ptype] / 6;
+                    calculationMax.Add(ptype, amountMax);
                 }
                 #endregion
 
                 #region Build Table
-                builder.Append("<table style='width: 100%; padding: 10px; background-color: white!important;' cellspacing='10'>");
+                builder.Append("<table style='width: 100%; padding: 10px; background-color: none; background: none; margin-left: -8px;'>");
                 builder.Append("<tbody>");
                 total = 0;
                 foreach (var ptype in model.ProductTypes)
                 {
                     builder.Append("<tr>");
-                    builder.AppendFormat("<td style='width: 30%'>{0} sebesar&nbsp;</td>", ptype);
+                    builder.AppendFormat("<td style='width: 20%;font-family: Arial; font-size: 10pt;'>{0} sebesar&nbsp;</td>", ptype);
                     if (!additional)
                     {
-                        builder.AppendFormat("<td style='width: 30%'> : 2 x Rp. {0:N}&nbsp;</td>", calculationMax[ptype]);
-                        builder.Append("<td style='width: 25px'>&nbsp;</td>");
-                        builder.AppendFormat("<td style='width: 30%'>= Rp. {0:N}</td>", calculationMax[ptype] * 2);
-                        total += (decimal) Math.Ceiling((double)calculationMax[ptype] * 2);
+                        builder.AppendFormat("<td style='width: 40%;font-family: Arial; font-size: 10pt;'> : 2 x Rp. {0:N0}&nbsp;</td>", calculationMax[ptype]);
+                        builder.Append("<td style='width: 25px; text-align: right;'>=</td>");
+                        builder.AppendFormat("<td style='width: 40%;font-family: Arial; font-size: 10pt;text-align: right;'>Rp. {0:N0}</td>", calculationMax[ptype] * 2);
+                        total += (decimal)Math.Ceiling((double)calculationMax[ptype] * 2);
                     }
                     else
                     {
-                        builder.AppendFormat("<td style='width: 30%'> : {0}% x Rp. {1:N}&nbsp;</td>", calculationData[ptype].Adjustment * 100, calculationMax[ptype] * 2);
-                        builder.Append("<td style='width: 25px'>&nbsp;</td>");
-                        builder.AppendFormat("<td style='width: 30%'>= Rp. {0:N}</td>", Math.Ceiling((double)calculationMax[ptype] * 2 * calculationData[ptype].Adjustment));
+                        builder.AppendFormat("<td style='width: 40%;font-family: Arial; font-size: 10pt;'> : {0:N}% x Rp. {1:N0}&nbsp;</td>", calculationData[ptype].Adjustment * 100, calculationMax[ptype] * 2);
+                        builder.Append("<td style='width: 25px;font-family: Arial; font-size: 10pt;'>&nbsp;</td>");
+                        builder.Append("<td style='width: 25px;text-align: right;'>=</td>");
+                        builder.AppendFormat("<td style='width: 40%;font-family: Arial; font-size: 10pt;text-align: right;'>Rp. {0:N0}</td>", Math.Ceiling((double)calculationMax[ptype] * 2 * calculationData[ptype].Adjustment));
                         Math.Ceiling(calculationData[ptype].AdditionalValue);
-                        total += (decimal) Math.Ceiling((double)calculationMax[ptype] * 2 * calculationData[ptype].Adjustment);
+                        total += (decimal)Math.Ceiling((double)calculationMax[ptype] * 2 * calculationData[ptype].Adjustment);
                     }
 
                     builder.Append("</tr>");
                 }
-                builder.Append("<tr>");
-                builder.Append("<td>&nbsp;</td>");
-                builder.Append("<td>&nbsp;</td>");
-                builder.Append("<td>&nbsp;</td>");
-                builder.AppendFormat("<td>= Rp. {0:N}</td>", total);
-                builder.Append("</tr>");
+                if (productTypeCount > 1)
+                {
+                    builder.Append("<tr>");
+                    builder.Append("<td>&nbsp;</td>");
+                    builder.Append("<td>&nbsp;</td>");
+                    builder.Append("<td>&nbsp;</td>");
+                    builder.Append("<td>=</td>");
+                    builder.AppendFormat("<td style='border-top: solid black 2 px; font-family: Arial; font-size: 10pt;text-align: right;'>Rp. {0:N0}</td>", total);
+                    builder.Append("</tr>");
+                }
                 builder.Append("</tbody>");
                 builder.Append("</table>");
                 #endregion
@@ -2723,20 +2996,25 @@ namespace Sampoerna.EMS.Website.Controllers
                 #endregion
 
                 #region Build Table
-                builder.Append("<table style='width: 100%; padding: 10px' cellspacing='10'>");
+                builder.Append("<table style='width: 100%; padding: 10px; background-color: none; background: none;' cellspacing='10'>");
                 builder.Append("<tbody>");
-                var total = 0D;
+                var total = Decimal.Zero;
                 foreach (var ptype in model.ProductTypes)
                 {
+                    var productCode = service.GetCK1ProductCode(ptype);
+                    var skep = service.GetAmountApproved(productCode, excise.SUBMISSION_DATE);
                     var exciseResult = excise.EXCISE_CREDIT_ADJUST_CALDETAIL.Where(m => m.PRODUCT_TYPE.PRODUCT_ALIAS == ptype);
-                    var sumck1 = exciseResult.Sum(m => m.CK1_AMOUNT);
-                    var sumweightincreased = exciseResult.Sum(m => m.CK1_AMOUNT * m.INCREASE_TARIFF);
                     builder.Append("<tr>");
-                    builder.AppendFormat("<td style='width: 30%'>{0}</td>", ptype);
+                    builder.AppendFormat("<td style='width: 30%; font-family: Arial; font-size: 10pt; '>{0}</td>", ptype);
 
-                    builder.AppendFormat("<td style='width: 30%'> : {0:N} + {1:N}&nbsp;</td>", exciseResult.Sum(m => m.INCREASE_TARIFF * m.CK1_AMOUNT) / exciseResult.Sum(m => m.CK1_AMOUNT) * 100, sumck1);
-                    builder.Append("<td style='width: 25px'>&nbsp;</td>");
-                    builder.AppendFormat("<td style='width: 30%'>= Rp. {0:N}</td>", (exciseResult.Sum(m => m.INCREASE_TARIFF * m.CK1_AMOUNT) / exciseResult.Sum(m => m.CK1_AMOUNT) * 100 * sumck1) / 100);
+                    builder.AppendFormat("<td style='width: 30%; font-family: Arial; font-size: 10pt; '> = {0:N0}% x Rp. {1:N0}&nbsp;</td>",
+                        exciseResult.Sum(m => m.CK1_AMOUNT) != 0 ?
+                        exciseResult.Sum(m => m.INCREASE_TARIFF * m.CK1_AMOUNT) / exciseResult.Sum(m => m.CK1_AMOUNT) * 100 : 0,
+                        excise.EXCISE_CREDIT_ADJUST_CALDETAIL.Any(m => m.PRODUCT_CODE == productCode) ? skep : 0);
+                    builder.Append("<td style='width: 25px; font-family: Arial; font-size: 10pt; '>&nbsp;</td>");
+                    var adjTotal = (exciseResult.Sum(m => m.CK1_AMOUNT) != 0 ? exciseResult.Sum(m => m.INCREASE_TARIFF * m.CK1_AMOUNT) / exciseResult.Sum(m => m.CK1_AMOUNT) * 100 * (excise.EXCISE_CREDIT_ADJUST_CALDETAIL.Any(m => m.PRODUCT_CODE == productCode) ? skep : 0) : 0) / 100;
+                    total += adjTotal;
+                    builder.AppendFormat("<td style='width: 30%; font-family: Arial; font-size: 10pt; text-align: right;'> = Rp. {0:N0}</td>", adjTotal);
 
                     builder.Append("</tr>");
                 }
@@ -2744,7 +3022,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 builder.Append("<td>&nbsp;</td>");
                 builder.Append("<td>&nbsp;</td>");
                 builder.Append("<td>&nbsp;</td>");
-                builder.AppendFormat("<td>= Rp. {0:N}</td>", (excise.EXCISE_CREDIT_ADJUST_CALDETAIL.Sum(m => m.INCREASE_TARIFF * m.CK1_AMOUNT) / excise.EXCISE_CREDIT_ADJUST_CALDETAIL.Sum(m => m.CK1_AMOUNT) * 100 * excise.EXCISE_CREDIT_ADJUST_CALDETAIL.Sum(m => m.CK1_AMOUNT)) / 100);
+                builder.AppendFormat("<td style='font-family: Arial; font-size: 10pt; text-align:right;'> Total = Rp. {0:N0}</td>", Math.Round(total));
                 builder.Append("</tr>");
                 builder.Append("</tbody>");
                 builder.Append("</table>");
@@ -2774,21 +3052,25 @@ namespace Sampoerna.EMS.Website.Controllers
                 #endregion
 
                 #region Build Table
-                builder.Append("<table style='width: 100%; padding: 10px' cellspacing='10'>");
+                builder.Append("<table style='width: 100%; padding: 10px; background-color: none; background: none;' cellspacing='10'>");
                 builder.Append("<tbody>");
-                var total = 0D;
+                var total = Decimal.Zero;
                 foreach (var ptype in model.ProductTypes)
                 {
-
+                    var productCode = service.GetCK1ProductCode(ptype);
+                    var skep = service.GetAmountApproved(productCode, excise.SUBMISSION_DATE);
                     var exciseResult = excise.EXCISE_CREDIT_ADJUST_CALDETAIL.Where(m => m.PRODUCT_TYPE.PRODUCT_ALIAS == ptype);
-                    var sumck1 = exciseResult.Sum(m => m.CK1_AMOUNT);
-                    var sumweightincreased = exciseResult.Sum(m => m.CK1_AMOUNT * m.INCREASE_TARIFF);
+                    //var sumweightincreased = service.GetAmountApprovedAlias(ptype, excise.SUBMISSION_DATE);
+                    // var sumck1 = (exciseResult.Sum(m => m.CK1_AMOUNT) != 0 ? exciseResult.Sum(m => m.INCREASE_TARIFF * m.CK1_AMOUNT) / exciseResult.Sum(m => m.CK1_AMOUNT) * 100 * sumweightincreased : 0) / 100;
+                    var adjTotal = (exciseResult.Sum(m => m.CK1_AMOUNT) != 0 ? exciseResult.Sum(m => m.INCREASE_TARIFF * m.CK1_AMOUNT) / exciseResult.Sum(m => m.CK1_AMOUNT) * 100 * (excise.EXCISE_CREDIT_ADJUST_CALDETAIL.Any(m => m.PRODUCT_CODE == productCode) ? skep : 0) : 0) / 100;
+                   
                     builder.Append("<tr>");
-                    builder.AppendFormat("<td style='width: 30%'>{0}</td>", ptype);
+                    builder.AppendFormat("<td style='width: 30%; font-family: Arial; font-size: 10pt;'>{0}</td>", ptype);
 
-                    builder.AppendFormat("<td style='width: 30%'> : {0:N} + {1:N}&nbsp;</td>", sumck1, sumweightincreased);
+                    builder.AppendFormat("<td style='width: 30%; font-family: Arial; font-size: 10pt;'> = Rp. {0:N0} + Rp. {1:N0}&nbsp; </td>", adjTotal, excise.EXCISE_CREDIT_ADJUST_CALDETAIL.Any(m => m.PRODUCT_CODE == productCode) ? skep : 0);
                     builder.Append("<td style='width: 25px'>&nbsp;</td>");
-                    builder.AppendFormat("<td style='width: 30%'>= Rp. {0:N}</td>", sumck1 + sumweightincreased);
+                    builder.AppendFormat("<td style='width: 30%; font-family: Arial; font-size: 10pt;text-align:right;'> = Rp. {0:N0}</td>", adjTotal + (excise.EXCISE_CREDIT_ADJUST_CALDETAIL.Any(m => m.PRODUCT_CODE == productCode) ? skep : 0));
+                    total += (adjTotal + (excise.EXCISE_CREDIT_ADJUST_CALDETAIL.Any(m => m.PRODUCT_CODE == productCode) ? skep : 0));
 
                     builder.Append("</tr>");
                 }
@@ -2796,7 +3078,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 builder.Append("<td>&nbsp;</td>");
                 builder.Append("<td>&nbsp;</td>");
                 builder.Append("<td>&nbsp;</td>");
-                builder.AppendFormat("<td>= Rp. {0:N}</td>", excise.EXCISE_CREDIT_ADJUST_CALDETAIL.Sum(m => m.CK1_AMOUNT + (m.CK1_AMOUNT * m.INCREASE_TARIFF)));
+                builder.AppendFormat("<td style='text-align:right;font-family: Arial; font-size: 10pt;'>Total = Rp. {0:N0}</td>", Math.Round(total));
                 builder.Append("</tr>");
                 builder.Append("</tbody>");
                 builder.Append("</table>");
@@ -2819,87 +3101,114 @@ namespace Sampoerna.EMS.Website.Controllers
                 System.Globalization.CultureInfo cultureID = new System.Globalization.CultureInfo("id-ID");
                 var submitDate = excise.SUBMISSION_DATE;
                 var end = DateTime.Parse(String.Format("{0}-{1}-{2}", submitDate.Year, submitDate.Month, 1)).AddDays(-1);
-                var start = end.AddMonths(-1 *(period)).AddDays(1);
+                var start = end.AddMonths(-1 * (period)).AddDays(1);
                 var headers = new string[]
                     {
                         "No Urut", "Bulan", "Tanggal CK-1", "Nomor CK-1", "Jumlah Pesanan (lembar)", "Jumlah Cukai (Rp)", "Keterangan"
                     };
                 var headerWidth = new string[]
                     {
-                        "50px", "15%", "15%", "10%", "15%", "30%", "15%"
+                        "50px", "20%", "15%", "10%", "15%", "25%", "15%"
                     };
                 #endregion
 
                 #region Build Table
-                builder.Append("<table style='width: 100%; background-color: white!important; border: black solid 2px'>");
-
+                builder.Append("<table style=\"width: 100%; background-color: none; background: none; border: black solid 1px; border-collapse: collapse;\">");
+                builder.Append(Environment.NewLine);
                 #region Headers
                 builder.Append("<thead>");
+                builder.Append(Environment.NewLine);
                 builder.Append("<tr>");
+                builder.Append(Environment.NewLine);
                 for (var i = 0; i < headers.Length; i++)
                 {
-                    builder.AppendFormat("<th style='width: {0}; text-align: center; border: black solid 2px;' valign='middle'>{1}<br />({2})</th>", headerWidth[i], headers[i], i + 1);
+                    builder.AppendFormat("<th style=\"width: {0}; text-align: center; border: black solid 1px; border-collapse: collapse; font-family: Arial; font-size: 10pt;\" valign=\"middle\">{1}<br />({2})</th>", headerWidth[i], headers[i], i + 1);
+                    builder.Append(Environment.NewLine);
                 }
                 builder.Append("</tr>");
+                builder.Append(Environment.NewLine);
                 builder.Append("</thead>");
+                builder.Append(Environment.NewLine);
                 #endregion
 
                 #region Content
+                builder.Append(Environment.NewLine);
                 builder.Append("<tbody>");
+                builder.Append(Environment.NewLine);
                 var list = service.GetCk1ExciseCalculate(excise.NPPBKC_ID, start, end);
                 var current = start;
                 var number = 1;
                 var totalQty = 0;
                 var totalAmount = Decimal.Zero;
-                
+
                 while (current < end)
                 {
                     var nextMonth = current.AddMonths(1);
-                    var monthlyCk1 = list.Where(x => x.CK1_DATE < nextMonth && x.CK1_DATE >= current).ToList();
+                    var monthlyCk1 = list.Where(x => x.CK1_DATE <= nextMonth && x.CK1_DATE > current).ToList();
                     var qty = monthlyCk1.Sum(x => x.ORDERQTY);
                     var amount = monthlyCk1.Sum(x => x.NOMINAL);
                     bool first = true;
-                   
+                    var middle = monthlyCk1.Count / 2;
+                    var position = 0;
                     foreach (var item in monthlyCk1)
                     {
+                        builder.Append(Environment.NewLine);
                         builder.Append("<tr>");
-                        builder.AppendFormat("<td style='text-align: left;  border: black solid 1px'>{0}</td>", number++);
+                        builder.AppendFormat("<td style=\"text-align: center;  border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0}</td>", number++);
                         if (first)
                         {
-                            builder.AppendFormat("<td style='text-align: left; border: black solid 1px' rowspan='{0}'>{1}</td>", monthlyCk1.Count, current.ToString("MMMM yyyy", cultureID));
+                            //builder.Append("<td style='border-top: black solid 1px'>&nbsp;</td>");
+                            builder.AppendFormat("<td style=\"text-align: center; font-family: Arial; font-size: 10pt; border-top: 1px solid black; border-left: 1px solid black; border-right: 1px solid black;\">{0}</td>", nextMonth.ToString("MMMM yyyy", cultureID));
                             first = false;
                         }
-                        builder.AppendFormat("<td style='text-align: left;border: black solid 1px'>{0}</td>", item.CK1_DATE.ToString("dd MMMM yyyy", cultureID));
-                        builder.AppendFormat("<td style='text-align: right;border: black solid 1px'>{0}</td>", item.CK1_NUMBER);
-                        builder.AppendFormat("<td style='text-align: right;border: black solid 1px'>{0}</td>", item.ORDERQTY);
-                        builder.AppendFormat("<td style='text-align: right;border: black solid 1px'>{0:N}</td>", item.NOMINAL);
-                        builder.Append("<td style='text-align: left;border: black solid 1px'>&nbsp;</td>");
+                        else if (position++ == monthlyCk1.Count)
+                        {
+                            builder.AppendFormat("<td style=\"text-align: left; border-bottom: 1px solid black; border-left: 1px solid black; border-right: 1px solid black; \">&nbsp;</td>");
+                        }
+                        else
+                        {
+                            builder.Append("<td style='border-left: 1px solid black; border-right: 1px solid black;'>&nbsp;</td>");
+                        }
+                        builder.AppendFormat("<td style=\"text-align: left;border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0}</td>", item.CK1_DATE.ToString("dd MMMM yyyy", cultureID));
+                        builder.AppendFormat("<td style=\"text-align: right;border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0}</td>", item.CK1_NUMBER);
+                        builder.AppendFormat("<td style=\"text-align: right;border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0}</td>", item.ORDERQTY);
+                        builder.AppendFormat("<td style=\"text-align: right;border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0:N0}</td>", item.NOMINAL);
+                        builder.Append("<td style=\"text-align: left;border: black solid 1px; font-family: Arial; font-size: 10pt;\">&nbsp;</td>");
                         builder.Append("</tr>");
+                        builder.Append(Environment.NewLine);
                     }
-                    
+
                     #region Subtotal
-                    builder.Append("<tr>");
-                    builder.AppendFormat("<td colspan='4'><b>Jumlah</b></td>");
-                    builder.AppendFormat("<td style='text-align: right;border: black solid 1px'>{0}</td>", qty);
-                    builder.AppendFormat("<td style='text-align: right;border: black solid 1px'>{0:N}</td>", amount);
-                    builder.Append("<td style='text-align: left;border: black solid 1px'>&nbsp;</td>");
-                    builder.Append("</tr>");
-                    totalQty += qty.Value;
-                    totalAmount += amount.Value;
+                    if (monthlyCk1.Count > 0)
+                    {
+                        builder.Append("<tr>");
+                        builder.AppendFormat("<td colspan=\"4\" style='font-family: Arial; font-size: 10pt; border-top: solid black 1px;'><b>Jumlah</b></td>");
+                        builder.AppendFormat("<td style=\"text-align: right;border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0}</td>", qty);
+                        builder.AppendFormat("<td style=\"text-align: right;border: black solid 1px;font-family: Arial; font-size: 10pt;\">{0:N0}</td>", amount);
+                        builder.Append("<td style=\"text-align: left;border: black solid 1px;font-family: Arial; font-size: 10pt;\">&nbsp;</td>");
+                        builder.Append("</tr>");
+                        builder.Append(Environment.NewLine);
+                        totalQty += qty.Value;
+                        totalAmount += amount.Value;
+                    }
                     #endregion
                     current = current.AddMonths(1);
+                    current = DateTime.Parse(String.Format("{0}-{1}-{2}", current.Year, current.Month, DateTime.DaysInMonth(current.Year, current.Month)));
                 }
                 #region Grand Total
                 builder.Append("<tr>");
-                builder.AppendFormat("<td colspan='4' style='text-align: center;  border: black solid 2px'><b>Total</b></td>");
-                builder.AppendFormat("<td style='text-align: right;  border: black solid 2px'>{0}</td>", totalQty);
-                builder.AppendFormat("<td style='text-align: right;  border: black solid 2px'>{0:N}</td>", totalAmount);
-                builder.Append("<td style='text-align: left;  border: black solid 2px'>&nbsp;</td>");
+                builder.AppendFormat("<td colspan=\"4\" style=\"text-align: center;  border: black solid 1px; font-family: Arial; font-size: 10pt;\"><b>Total</b></td>");
+                builder.AppendFormat("<td style=\"text-align: right;  border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0}</td>", totalQty);
+                builder.AppendFormat("<td style=\"text-align: right;  border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0:N0}</td>", totalAmount);
+                builder.Append("<td style=\"text-align: left;  border: black solid 1px; font-family: Arial; font-size: 10pt;\">&nbsp;</td>");
                 builder.Append("</tr>");
+                builder.Append(Environment.NewLine);
                 #endregion
                 builder.Append("</tbody>");
+                builder.Append(Environment.NewLine);
                 #endregion
                 builder.Append("</table>");
+                builder.Append(Environment.NewLine);
                 #endregion
 
                 return builder.ToString();
@@ -2925,18 +3234,12 @@ namespace Sampoerna.EMS.Website.Controllers
         #endregion
 
         #endregion
-
         public void ExportXlsSummaryReports(ExciseCreditViewModel model)
         {
             string pathFile = "";
-
             pathFile = CreateXlsSummaryReports(model);
-
-
             var newFile = new FileInfo(pathFile);
-
             var fileName = Path.GetFileName(pathFile);
-
             string attachment = string.Format("attachment; filename={0}", fileName);
             Response.Clear();
             Response.AddHeader("content-disposition", attachment);
@@ -2946,11 +3249,9 @@ namespace Sampoerna.EMS.Website.Controllers
             newFile.Delete();
             Response.End();
         }
-
         private string CreateXlsSummaryReports(ExciseCreditViewModel modelExport)
         {
             var documents = service.GetAll().Select(x => this.MapExciseCreditModel(x));
-
             if (!string.IsNullOrEmpty(modelExport.ExportModel.POAExport))
             {
                 documents = documents.Where(x => x.POA == modelExport.ExportModel.POAExport);
@@ -2971,21 +3272,14 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 documents = documents.Where(x => x.SubmissionDate.Year == modelExport.ExportModel.YearExport);
             }
-
             int iRow = 1;
             var slDocument = new SLDocument();
-
-            //create header
             slDocument = CreateHeaderExcel(slDocument, modelExport.ExportModel);
-
             iRow++;
             int iColumn = 1;
             foreach (var data in documents)
             {
-
                 iColumn = 1;
-
-
                 if (modelExport.ExportModel.Type)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.RequestType);
@@ -3027,100 +3321,75 @@ namespace Sampoerna.EMS.Website.Controllers
                     slDocument.SetCellValue(iRow, iColumn, data.ApprovalStatus.Value);
                     iColumn = iColumn + 1;
                 }
-
                 iRow++;
             }
-
             return CreateXlsFile(slDocument, iColumn, iRow);
-
         }
-
         private SLDocument CreateHeaderExcel(SLDocument slDocument, ExciseCreditSummaryReportsViewModel modelExport)
         {
             int iColumn = 1;
             int iRow = 1;
-
-
             if (modelExport.Type)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Type");
                 iColumn = iColumn + 1;
             }
-
             if (modelExport.SubmitDate)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Submit Date");
                 iColumn = iColumn + 1;
             }
-
             if (modelExport.Poa)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Poa");
                 iColumn = iColumn + 1;
             }
-
             if (modelExport.NppbkcId)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Nppbkc Id");
                 iColumn = iColumn + 1;
             }
-
             if (modelExport.ExciseNumber)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Excise Number");
                 iColumn = iColumn + 1;
             }
-
             if (modelExport.Amount)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Amount");
                 iColumn = iColumn + 1;
             }
-
             if (modelExport.LastUpdate)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Last Update");
                 iColumn = iColumn + 1;
             }
-
             if (modelExport.Status)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Status");
                 iColumn = iColumn + 1;
             }
-
             return slDocument;
-
         }
-
         private string CreateXlsFile(SLDocument slDocument, int iColumn, int iRow)
         {
-
-            //create style
             SLStyle styleBorder = slDocument.CreateStyle();
             styleBorder.Border.LeftBorder.BorderStyle = BorderStyleValues.Thin;
             styleBorder.Border.RightBorder.BorderStyle = BorderStyleValues.Thin;
             styleBorder.Border.TopBorder.BorderStyle = BorderStyleValues.Thin;
             styleBorder.Border.BottomBorder.BorderStyle = BorderStyleValues.Thin;
             styleBorder.SetWrapText(true);
-
             slDocument.AutoFitColumn(1, iColumn - 1);
             slDocument.SetCellStyle(1, 1, iRow - 1, iColumn - 1, styleBorder);
-
             var fileName = "ExciseCreditSummaryReport_" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
-
             var path = Path.Combine(Server.MapPath(Constans.UploadPath), fileName);
-
             slDocument.SaveAs(path);
-
             return path;
         }
-
         [HttpPost]
         public PartialViewResult FilterSummaryReports(ExciseCreditViewModel model)
         {
             var documents = service.GetAll().Select(x => this.MapExciseCreditModel(x));
-
             if (!string.IsNullOrEmpty(model.Filter.POA))
             {
                 documents = documents.Where(x => x.POA == model.Filter.POA);
@@ -3141,9 +3410,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 documents = documents.Where(x => x.SubmissionDate.Year == model.Filter.Year);
             }
-
             model.ExciseCreditDocuments = documents.ToList();
-
             return PartialView("_SummaryReportList", model);
         }
     }

@@ -26,7 +26,6 @@ using System.Web;
 using Sampoerna.EMS.Website.Utility;
 using System.Globalization;
 using Sampoerna.EMS.Utils;
-using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Models.FileUpload;
@@ -39,6 +38,7 @@ using SpreadsheetLight;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Sampoerna.EMS.Website.Models.ProductDevUpload;
 using Sampoerna.EMS.Website.Models.PLANT;
+using Sampoerna.EMS.Website.Models.Country;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -81,6 +81,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 Name = item.BUTXT
             });
 
+            var countryList = productDevelopmentService.GetCountry().Select(item => new CountryModel()
+            {
+                CountryID = item.COUNTRY_ID,                
+                CountryName = item.COUNTRY_NAME
+            });
+
             var brandList = productDevelopmentService.GetBrand().Select(item => new BrandRegistrationDetail()
             {
                 PlantName = item.WERKS,
@@ -117,6 +123,8 @@ namespace Sampoerna.EMS.Website.Controllers
             data.CompanyList = GenericHelpers<CompanyModel>.GenerateList(companyList, item => item.Id, item => item.Name);            
             data.BrandList = GenericHelpers<BrandRegistrationDetail>.GenerateList(brandList, item => item.PlantName, item => item.FaCode);
             data.MarketList = GenericHelpers<MarketModel>.GenerateList(marketList, item => item.Market_Id, item => item.Market_Desc);
+            data.CountryList = GenericHelpers<CountryModel>.GenerateList(countryList, item => item.CountryID, item => item.CountryName);
+            data.WeekList = GetWeekList(productDevelopmentService.GetWeek());
 
             data.ShowActionOptions = data.IsNotViewer;
             data.EditMode = false;
@@ -215,7 +223,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         CreatorList = GlobalFunctions.GetCreatorList(),
                         PoaList = GetPoaList(refService.GetAllPOA()),
                         IsCreator = CurrentUser.UserRole == Enums.UserRole.User,
-                        IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller,
+                        IsNotViewer = IsCreatorPRD(CurrentUser.USER_ID), //CurrentUser.UserRole != Enums.UserRole.Viewer,// && CurrentUser.UserRole != Enums.UserRole.Controller,
                         IsExciser = productDevelopmentService.IsAdminExciser(CurrentUser.USER_ID),
                         ProductOpenDoc = documents
                     };                 
@@ -314,8 +322,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     var reqNo = tempCounter.ToString("D10");
                     
                     long productID = pdID;
-
-                    string brandReqNo = ((JObject)item).GetValue("brandReqNoItem").ToString();
+         
                     string company = ((JObject)item).GetValue("companyItem").ToString();
                     string faCodeOld = ((JObject)item).GetValue("faCodeOldItem").ToString();                
                     string faCodeOldDesc = ((JObject)item).GetValue("faCodeOldDescItem").ToString();
@@ -325,7 +332,9 @@ namespace Sampoerna.EMS.Website.Controllers
                     string market = ((JObject)item).GetValue("marketItem").ToString();
                     string plant = ((JObject)item).GetValue("plantItem").ToString();
                     bool IsImport = Convert.ToBoolean (((JObject)item).GetValue("isImport"));
-
+                    Int16 country = Convert.ToInt16 (((JObject)item).GetValue("countryItem"));
+                    string week  = ((JObject)item).GetValue("weekItem").ToString();
+                    
                     var detailPLant = productDevelopmentService.FindPlantDescription(plant);
                     var inputDoc = new GenerateDocNumberInput();
 
@@ -336,8 +345,7 @@ namespace Sampoerna.EMS.Website.Controllers
                
 
                     PRODUCT_DEVELOPMENT_DETAIL detail = new PRODUCT_DEVELOPMENT_DETAIL();
-                    detail.PD_ID = productID;
-                    //    detail.REQUEST_NO = String.Format("{0}/{1}", reqNo.ToString(), brandReqNo);
+                    detail.PD_ID = productID;                
                     detail.REQUEST_NO = _documentSequenceNumberBll.GenerateNumber(inputDoc);
                     detail.BUKRS = company;
                     detail.FA_CODE_OLD = faCodeOld;
@@ -351,8 +359,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     detail.STATUS_APPROVAL = draftStatus;
                     detail.LASTMODIFIED_BY = CurrentUser.USER_ID;
                     detail.LASTMODIFIED_DATE = DateTime.Now;
+                    detail.COUNTRY_ID = country;
+                    detail.WEEK = week;
 
-                    var detailID = productDevelopmentService.CreateProductDetail(detail, (int)Enums.MenuList.ProductDevelopment, (int)Enums.ActionType.Created, (int)CurrentUser.UserRole, CurrentUser.USER_ID);
+                    var detailID = productDevelopmentService.CreateProductDetail(detail, (int)Enums.FormType.ProductDevelopment, (int)Enums.ActionType.Created, (int)CurrentUser.UserRole, CurrentUser.USER_ID);
 
                     productDevelopmentService.GetUpdateUsedMaterial(faCodeNew, plant, true, CurrentUser.USER_ID);
 
@@ -466,6 +476,21 @@ namespace Sampoerna.EMS.Website.Controllers
                 return Json(false);
             }
         }
+        [HttpPost]
+        public JsonResult EditOtherDocStatus(long fileId)
+        {
+            try
+            {
+                productDevelopmentService.UpdateOtherDocStatus(Convert.ToInt64(fileId), false);
+
+                return Json("Update Successfully.");
+            }
+            catch (Exception ex)
+            {             
+                Console.WriteLine(ex.StackTrace);
+                return Json(false);
+            }
+        }
 
         //[HttpPost]
         //public JsonResult EditProductDetail (ProductDevelopmentViewModel model, long PD_ID)
@@ -542,7 +567,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var appStatus = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Edited).REFF_ID;
                 var detail = JsonConvert.DeserializeObject<ProductDevDetailModel>(modelObj.ToString());
                
-                productDevelopmentService.EditProductDetail(appStatus, PD_DetailID, detail.Fa_Code_Old, detail.Fa_Code_New, detail.Fa_Code_Old_Desc, detail.Fa_Code_New_Desc, detail.Hl_Code, detail.Market_Id,(int)Enums.MenuList.ProductDevelopment, (int)Enums.ActionType.Modified, (int)CurrentUser.UserRole, CurrentUser.USER_ID);
+                productDevelopmentService.EditProductDetail(appStatus, PD_DetailID, detail.Fa_Code_Old, detail.Fa_Code_New, detail.Fa_Code_Old_Desc, detail.Fa_Code_New_Desc, detail.Hl_Code, detail.Market_Id,(int)Enums.MenuList.ProductDevelopment, (int)Enums.ActionType.Modified, (int)CurrentUser.UserRole, CurrentUser.USER_ID, detail.CountryID, detail.Week);
 
                 return Json("Detail Product Updated.");
             }
@@ -628,10 +653,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var sendTo = refService.GetUserEmail(sendToId);
                    
                 SendMailApprovalActionProduct(ReferenceKeys.ApprovalStatus.AwaitingExciseApproval, mailContent.EMAILCONTENT, mailContent.EMAILSUBJECT, sender, display, sendTo);
-
                
-
-
                 AddMessageInfo("Submitted Successfully.", Enums.MessageInfoType.Success);
                 return Json("Item Product Submitted.");
 
@@ -744,7 +766,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     mailAddresses.Add(sendTo);
                 }
 
-                AddMessageInfo("Success for Submission.", Enums.MessageInfoType.Success);
+                AddMessageInfo("Success sending Email.", Enums.MessageInfoType.Success);
 
                 bool mailStatus = ItpiMailer.Instance.SendEmail(mailAddresses.ToArray(), null, null, null, subject, email, true, sender, display);
                 if (!mailStatus)
@@ -949,9 +971,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 var sendToId = reff.REFF_VALUE;
                 var sendTo = data.CREATOR.EMAIL;
 
-                SendMailApprovalActionProduct(ReferenceKeys.ApprovalStatus.Completed, mailContent.EMAILCONTENT, mailContent.EMAILSUBJECT, sender, display, sendTo);
-              
                 AddMessageInfo("Approved Successfully.", Enums.MessageInfoType.Success);
+                SendMailApprovalActionProduct(ReferenceKeys.ApprovalStatus.Completed, mailContent.EMAILCONTENT, mailContent.EMAILSUBJECT, sender, display, sendTo);
+                              
                 return Json("Item Product Approved.");
             }
             catch (Exception ex)
@@ -1047,8 +1069,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 var sendToId = reff.REFF_VALUE;
                 var sendTo = data.CREATOR.EMAIL;
 
-                SendMailApprovalActionProduct(ReferenceKeys.ApprovalStatus.Edited, mailContent.EMAILCONTENT, mailContent.EMAILSUBJECT, sender, display, sendTo);               
                 AddMessageInfo("Rejected Successfully.", Enums.MessageInfoType.Success);
+                SendMailApprovalActionProduct(ReferenceKeys.ApprovalStatus.Edited, mailContent.EMAILCONTENT, mailContent.EMAILSUBJECT, sender, display, sendTo);               
+            
                 return Json("Item Product Rejected.");
             }
             catch (Exception ex)
@@ -1376,7 +1399,7 @@ namespace Sampoerna.EMS.Website.Controllers
             return path;
         }
 
-        private List<vwProductDevelopmentModel> GetSummaryReportList( string Creator, string POA, bool IsCompleted, bool IsAllStatus, ProductDevelopmentExportSummaryReportsViewModel modelExport, bool isNeedDetails = false)
+        private List<vwProductDevelopmentModel> GetSummaryReportList( string Creator, string POA, bool IsCompleted, bool IsAllStatus, ProductDevelopmentExportSummaryReportsViewModel modelExport,bool isNeedDetails = true)
         {
             try
             {
@@ -1592,38 +1615,38 @@ namespace Sampoerna.EMS.Website.Controllers
 
         List<WorkflowHistoryViewModel> GetWorkflowHistoryProduct(long id)
         {
-            var submittedStatus = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingPoaApproval);
+            var submittedStatus = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingExciseApproval);
             var itemDetail = productDevelopmentService.FindProductDevDetail(id);
             var workflowInput = new GetByFormTypeAndFormIdInput();
             workflowInput.FormId = id;
             workflowInput.FormType = Enums.FormType.ProductDevelopment;
             var workflow = this._workflowHistoryBLL.GetByFormTypeAndFormId(workflowInput).OrderBy(item => item.WORKFLOW_HISTORY_ID);
-            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(workflow);
-
-            WORKFLOW_HISTORY additional = new WORKFLOW_HISTORY();
+            var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(workflow);                      
+        
             if (itemDetail.STATUS_APPROVAL == submittedStatus.REFF_ID)
-            {
+            {             
                 var poaExciser = productDevelopmentService.GetAdminExciser().ToList();
                 var accounts = "";
                 foreach (var exciser in poaExciser)
                 {
                     if (accounts == "")
                     {
-                        accounts += exciser;
+                        accounts += exciser.USER_ID;
                     }
                     else
                     {
-                        accounts += ", " + exciser;
+                        accounts += ", " + exciser.USER_ID;
                     }
                 }
-
-                additional.ACTION_BY = accounts;
-                additional.ACTION = (int)Enums.ActionType.WaitingForApproval;
-                additional.ROLE = (int)Enums.UserRole.POA;
-                //additional.ACTION_DATE = _CRModel.LastModifiedDate;
-                workflowHistory.Add(Mapper.Map<WorkflowHistoryViewModel>(additional));
+            
+                workflowHistory.Add(new WorkflowHistoryViewModel
+                {
+                    ACTION = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingExciseApproval).REFF_VALUE,
+                    USERNAME = accounts
+                });              
             }
-            return Mapper.Map<List<WorkflowHistoryViewModel>>(workflow);
+                       
+            return workflowHistory;
 
         }
     
@@ -1822,14 +1845,14 @@ namespace Sampoerna.EMS.Website.Controllers
         public JsonResult GetPlantByCompanyNonImport(string bukrs)
         {         
             var data = productDevelopmentService.FindPlantNonImport(bukrs);
-            return Json(new SelectList(data, "NPPBKC_ID", "NAME1"));
+            return Json(new SelectList(data, "WERKS", "NAME1"));
         }
 
         [HttpPost]
         public JsonResult GetPlantByCompanyImport(string bukrs)
         {
             var data = productDevelopmentService.FindPlantImport(bukrs);
-            return Json(new SelectList(data, "NPPBKC_IMPORT_ID", "NAME1"));
+            return Json(new SelectList(data, "WERKS", "NAME1"));
         }
 
         [HttpPost]
@@ -2314,9 +2337,22 @@ namespace Sampoerna.EMS.Website.Controllers
 
             return PartialView("_ProductListItem", model);
         }
+
+        private SelectList GetWeekList(Dictionary<string, string> weeks)
+        {
+            var query = from x in weeks
+                        select new SelectItemModel()
+                        {
+                            ValueField = x.Key,
+                            TextField = x.Value
+                        };
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+        }
+
         #endregion
 
         #region Helper Model
+
         public SKEPSupportingDocumentModel MapSupportingDocumentModelSKEP(CustomService.Data.MASTER_SUPPORTING_DOCUMENT entity)
         {
             try

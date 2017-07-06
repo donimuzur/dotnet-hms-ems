@@ -113,6 +113,17 @@
                                                 <div class="col-md-8">@Html.TextBox("hlCode", Model.DetailModel.Hl_Code, new { @class = "form-control", @maxlength = "22"})</div>
                                             </div>
                                         </div>
+                                        &nbsp;
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="col-md-4"><label>Country</label></div>
+                                                <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.CountryID, Model.CountryList, new { @class = "form-control", @id = "CountrySelector" })</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="col-md-4"><label>Week</label></div>
+                                                <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Week, Model.WeekList,  new { @class = "form-control", @id = "WeekSelector" })</div>
+                                            </div>
+                                        </div>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="col-md-6">@Html.CheckBoxFor(model => model.DetailModel.Is_Import, new { @id = "isImport", @disabled="disabled" })<label>Import</label></div>
@@ -215,7 +226,7 @@
                                                     <div class="col-md-12">
                                                         <label>Additional Documents</label>
                                                     </div>
-                                                    @*<div class="col-md-12">
+                                                    <div class="col-md-12">
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <input id="browseOtherDocFileName" type="text" name="browseOtherDocFileName" class="form-control" placeholder="Document Name" />
@@ -237,7 +248,7 @@
                                                         <div class="col-md-2">
                                                             <button class="btn btn-blue btn-sm" type="button" id="addOtherDocBtn">Add</button>
                                                         </div>
-                                                    </div>*@
+                                                    </div>
                                                     <div class="clearfix"></div>
                                                     <div class="col-md-12">
                                                         <table class="display table table-bordered table-striped" cellspacing="0" id="OtherDocs">

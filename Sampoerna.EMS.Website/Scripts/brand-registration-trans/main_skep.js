@@ -339,7 +339,7 @@ function SetTariff()
     var hje = NumberWithoutComma($("#txt_modal_detail_hjeperpack").val());    
     var startDate = $("#ViewModel_Decree_StartDate").val();
     var GoodType = $("#txt_modal_detail_excisegoodtype").val();    
-    $("#customloader").show();
+    //$("#customloader").show();
     $.ajax({
         url: getUrl("GetTariff"),
         type: 'POST',
@@ -349,7 +349,7 @@ function SetTariff()
             GoodType: GoodType
         },
         success: function (data) {
-            $("#customloader").hide();
+            //$("#customloader").hide();
             $("#txt_modal_detail_tariff").val("0");            
             if (data != null)
             {
@@ -357,10 +357,10 @@ function SetTariff()
             }            
         },
         error: function () {
-            $("#customloader").hide();
+            //$("#customloader").hide();
         },
         complete: function () {
-            $("#customloader").hide();
+            //$("#customloader").hide();
         }
     });
 }
@@ -557,6 +557,7 @@ function DeleteCheckedItem() {
             var checkbox = $(this).find(".td_inputan").find(".cb_itemlist");            
             if (checkbox.is(":checked") == true) {
                 $(this).hide();
+                $(this).find(".txt_hd_isactive").val("false");
                 $(this).find(".td_inputan").find(".txt_hd_itemId").val("-1");
             }
         }
@@ -867,11 +868,11 @@ $(document).on("click", "#btn_saveDetailItem", function () {
     tr.find(".txt_hd_tariff").val(tariff);
 });
 
-$(document).on("change", ".change_hjeperbatang", function () {
+$(document).on("input", ".change_hjeperbatang", function () {
     CountHJEperBatang();
 });
 
-$(document).on("change", ".change_tariff", function () {
+$(document).on("input", ".change_tariff", function () {
     SetTariff();
 });
 
@@ -971,6 +972,8 @@ $(document).on("click", ".btn_remove_supportdoc", function () {
 
 $(document).on("click", "#SubmitButtonConfirm", function () {
     if (CheckFieldEmpty() == 0) {
+        CloseAllModal();
+        $("#customloader").show();        
         CleaningComma();
         $("#txt_hd_action").val("submit");
         $("#SavePenetapanSkepForms").submit();

@@ -29,6 +29,8 @@ var listElm = idToElement("CheckListLabel");
 var faOldElm = idToElement("CheckFaOldLabel");
 var faNewElm = idToElement("CheckFaNewLabel");
 var plantElm = idToElement("CheckPlantLabel");
+var countryElm = idToElement("CheckCountryLabel");
+var weekElm = idToElement("CheckWeekLabel");
 var hlElm = idToElement("CheckHlLabel");
 var existSuppDocElm = idToElement("CheckExistSuppDocLabel");
 var otherDocElm = idToElement("CheckOtherDocLabel");
@@ -203,13 +205,15 @@ function idToElement(id) {
 function attach() {
     $('#MenuProductDevelopment').addClass('active');    
     $("#addOtherDocBtn").on("click", addOtherDoc);
+    $("#addOtherDocBtnUp").on("click", addOtherDocUp);
     handleBrowseEvent("browseOtherDoc", "browseOtherDocFile", "browseOtherDocText");
-    
+    handleBrowseEventUp("browseOtherDocUp", "browseOtherDocFileUp", "browseOtherDocTextUp");
   //  init();  
 }
 
 function detach() {     
-    $("#addOtherDocBtn").off("click", addOtherDoc);    
+    $("#addOtherDocBtn").off("click", addOtherDoc);
+    $("#addOtherDocBtnUp").off("click", addOtherDocUp);
 }
 
 function createDetail(url, pdID) {   
@@ -277,6 +281,37 @@ function addOtherDoc() {
     }
 }
 
+function addOtherDocUp() {
+
+    var input = document.getElementById("browseOtherDocFileUp");
+    //console.log(input);
+    if (!input) {
+        showErrorDialog("Couldn't find the fileinput element.");
+    }
+    else if (!input.files) {
+        showErrorDialog("This browser doesn't seem to support the `files` property of file inputs.");
+    }
+    else if (!input.files[0]) {
+        showErrorDialog("Please select a file before clicking 'Add'");
+    }
+    else {
+        var file = input.files[0];
+        var sizeMB = fileUploadLimitElm.val();
+        console.log("Size Limit: " + sizeMB);
+        var allowedFilesize = Number(sizeMB) * 1024 * 1024;
+        if (file.size > allowedFilesize) {
+            otherDocElm.html("<span>File size is larger than allowed size. Allowed size :" + sizeMB + " MB </span>");
+            otherDocElm.show();
+            showErrorDialog("File size is larger than allowed size (" + sizeMB + " MB)");
+            return;
+        }
+        if (file.size < allowedFilesize) {
+            otherDocElm.hide();
+        }
+
+        addToListUp(file, $("#browseOtherDocFileNameUp").val());
+    }
+}
 function removeFromList(index) {
     if (otherDocs.length > index) {
         otherDocs.splice(index, 1);
@@ -284,7 +319,13 @@ function removeFromList(index) {
         renderFileList();
     }
 }
-
+function removeFromListUp(index) {
+    if (otherDocsUp.length > index) {
+        otherDocsUp.splice(index, 1);
+        otherDocsNameUp.splice(index, 1);
+        renderFileListUp();
+    }
+}
 function addToList(file, name) {
     if(!name){
         showErrorDialog("Document name is required.");
@@ -305,7 +346,26 @@ function addToList(file, name) {
         renderFileList();
     }
 }
+function addToListUp(file, name) {
+    if (!name) {
+        showErrorDialog("Document name is required.");
+        return;
+    }
+    var idx = otherDocsUp.indexOf(file);
+    var updated = true;
+    for (var i = 0; i < otherDocsUp.length; i++) {
+        if (file.name == otherDocsUp[i].name) {
+            updated = false;
+            break;
+        }
+    }
+    if (idx < 0 && updated) {
+        otherDocsUp.push(file);
+        otherDocsNameUp.push(name);
 
+        renderFileListUp();
+    }
+}
 function renderFileList() {
     var container = $("#otherDocsBody");
     var content = '';
@@ -324,6 +384,24 @@ function renderFileList() {
     }
     container.html(content);
 }
+function renderFileListUp() {
+    var container = $("#otherDocsBodyUp");
+    var content = '';
+    if (!otherDocsUp || otherDocsUp.length <= 0) {
+        content += '<tr id="noOtherFileMsgUp">' +
+                    '<td colspan="4"><div class="alert alert-info">No Additional Documents</div>' + '</td></tr>';
+    }
+    for (var i = 0; i < otherDocsUp.length; i++) {
+        content +=
+            '<tr>' +
+            '<td>' + (i + 1) + '</td>' +
+            '<td>' + otherDocsUp[i].name +
+            '<td>' + otherDocsNameUp[i] + '</td>' +
+            '<td><button class="btn btn-primary btn-sm" onclick="removeFromListUp(' + i + ')">Remove</button></td>' +
+            '</tr>';
+    }
+    container.html(content);
+}
 
 function handleBrowseEvent(id, fileId, textId) {
     //console.log("registered: " + id);
@@ -336,13 +414,23 @@ function handleBrowseEvent(id, fileId, textId) {
     });
 }
 
+function handleBrowseEventUp(id, fileId, textId) {
+    //console.log("registered: " + id);
+    $("#" + id).on('click', function () {
+        var file = $("#" + fileId);
+        file.trigger('click');
+    });
+    $("#" + fileId).on('change', function () {
+        $("#" + textId).val($(this).val().replace(/C:\\fakepath\\/i, ''));
+    });
+}
 function showErrorDialog(msg) {
     $("#errModalTitle").html("REQUEST FAILED");
     $("#errModalContent").html(msg);
     $("#errModal").modal("show");
 }
 
-function loadSupportingDocuments(url, company) {
+function loadSupportingDocuments(url, company, type) {
     //var param = {
     //    formId: 2, bukrs: code
     //};
@@ -356,8 +444,14 @@ function loadSupportingDocuments(url, company) {
     })
     .success(function (partialResult) {
         $("#customloader").hide();
-        docsContainer.html(partialResult);
-        docsContainerUp.html(partialResult);
+        if (type == "create") {
+            docsContainer.html(partialResult);
+        }
+        if (type == "edit") {
+            docsContainerUp.html(partialResult);
+        }
+
+     
         sErrorDiv.hide();
       //  saveButton.prop("disabled", false);
    
@@ -393,7 +487,7 @@ function ajaxLoadNppbkcData( urlNppbkc, nppbkcId)
                 var nppbkcId = data.NppbkcId;
                 //FormatDocNumber(countUrl, data.Company.Alias, data.CityAlias);
                 console.log(data);
-                FormatDocNumberPartial(data.Company.Alias, data.CityAlias);
+               // FormatDocNumberPartial(data.Company.Alias, data.CityAlias);
             }
         
         },
@@ -442,11 +536,11 @@ function ajaxFaCodeNewDescription(urlNewDescription, type) {
         success: function (data) {
             if (data != null) {
                 document.getElementById("FaCodeNewDesc").value = data;
-               // document.getElementById("NewDescUp").value = data;
+                document.getElementById("NewDescUp").value = data;
             }
             else {
                 document.getElementById("FaCodeNewDesc").value = "";
-             //   document.getElementById("NewDescUp").value = "";
+                document.getElementById("NewDescUp").value = "";
             }
         }
     });
@@ -459,7 +553,7 @@ function ajaxGetPlant(urlPlantNonImport, type) {
         data: { bukrs: type },
         success: function (data) {                 
             for (var i = 0; i < data.length; i++) {
-                $('#PlantId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
+                $('#PlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + ' - ' + data[i].Text + '</option>');
             }
         }
     });
@@ -472,36 +566,20 @@ function ajaxGetPlantImport(urlPlantImport, type) {
         data: { bukrs: type },
         success: function (data) {
             for (var i = 0; i < data.length; i++) {
-                $('#PlantId').append('<option value=' + data[i].Value + '>' +  data[i].Text + '</option>');         
+                $('#PlantId').append('<option value=' + data[i].Value + '>' + data[i].Value + ' - ' + data[i].Text + '</option>');
             }         
         }
     });
 }
-function ajaxGetPlantCode(urlPlantCode, name, urlFaCodeByPlant, urlFaCodeUsedByPlant)
-{
-    $.ajax({
-        url: urlPlantCode,
-        type: 'POST',
-        data: { namePlant: name },
-        success: function (data) {
-            console.log("plant code:" + data);
 
-            $('#FaOldId').html('');
-            $('#FaOldId').append('<option value="">Select</option>');
-            $('#FaNewId').html('');
-            $('#FaNewId').append('<option value="">Select</option>');
 
-            ajaxGetFaCodeByPlant(urlFaCodeByPlant, data);
-            ajaxGetFaCodeUsedByPlant(urlFaCodeUsedByPlant, data);
-        }
-    });
-}
-
-function ajaxGetFaCodeByPlant(urlFaCodeByPlant, plant) {
+function ajaxGetFaCodeByPlant(urlFaCodeByPlant, code) {
+    $('#FaOldId').html('');
+    $('#FaOldId').append('<option value="">Select</option>');
     $.ajax({
         url: urlFaCodeByPlant,
         type: 'POST',
-        data: { plant: plant },
+        data: { plant: code },
         success: function (data) {
             for (var i = 0; i < data.length; i++) {
                 $('#FaOldId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
@@ -510,11 +588,13 @@ function ajaxGetFaCodeByPlant(urlFaCodeByPlant, plant) {
     });
 }
 
-function ajaxGetFaCodeUsedByPlant(urlFaCodeUsedByPlant, plant) {
+function ajaxGetFaCodeUsedByPlant(urlFaCodeUsedByPlant, code) {
+    $('#FaNewId').html('');
+    $('#FaNewId').append('<option value="">Select</option>');
     $.ajax({
         url: urlFaCodeUsedByPlant,
         type: 'POST',
-        data: { plant: plant },
+        data: { plant: code },
         success: function (data) {
             for (var i = 0; i < data.length; i++) {
                 $('#FaNewId').append('<option value=' + data[i].Value + '>' + data[i].Text + '</option>');
@@ -541,17 +621,10 @@ function ValidateItem() {
     var validFaNewDesc = $("#FaCodeNewDesc").val();
     var validMarket = $("#MarketSelector option:selected").text();
     var validHl = $("#hlCode").val();
-    var supportDocsInputs = $("form#ProductDevCreateForm input[type=file]");
+    var validCountry = $("#CountrySelector :selected").text(); // Select
+    var validWeek = $("#WeekSelector :selected").text(); // Select
 
-    //if (!productFormValid) {
-    //    alert("Supporting Document are required.");
-    //    showErrorDialog("Supporting documents are required.");
-    //    existSuppDocElm.html("<span>Supporting Document are required.</span>");
-    //    existSuppDocElm.show();
-    //}
-    //else {
-    //    existSuppDocElm.hide();
-    //}
+   
     if (validPlant == "Select") {
         console.log("Select Plant first")
         plantElm.html("<span>Plant not Selected.</span>");
@@ -561,76 +634,31 @@ function ValidateItem() {
         plantElm.hide();
     }
 
-    //if (validFaOld == "Select" ) {
-    //    console.log("Fa Code Old not Selected");
-    //    faOldElm.html("<span>Fa Code Old not Selected.</span>");
-    //    faOldElm.show();
-    //}
-    //else {
-    //    faOldElm.hide();
-    //}
-     
-    //if (validFaNew == "Select") {
-    //    console.log("Fa Code New not Selected");
-    //    faNewElm.html("<span>Fa Code New not Selected.</span>");
-    //    faNewElm.show();
-    //}
-    //else {
-    //    faNewElm.hide();
-    //}
+    if (validCountry == "Select") {
+        console.log("Select Plant first")
+        countryElm.html("<span>Country not Selected.</span>");
+        countryElm.show();
+    }
+    else {
+        countryElm.hide();
+    }
 
-    //if (validHl == "") {
-    //    console.log("Hl Code empty");
-    //    hlElm.html("<span>Hl Code is Empty.</span>");
-    //    hlElm.show();        
-    //}
-    //else {
-    //    hlElm.hide();
-    //}
+    if (validWeek == "Select") {
+        console.log("Select Week first")
+        weekElm.html("<span>Week not Selected.</span>");
+        weekElm.show();
+    }
+    else {
+        weekElm.hide();
+    }
 
-  
-    //if (supportingDocs == {} || supportingDocs == null) {
-    //    console.log("supp doc check :" + supportingDocs);
-    //    existSuppDocElm.html("<span>Supporting Document may not be empty.</span>");
-    //    existSuppDocElm.show();
-    //}
-    //else{
-    //      existSuppDocElm.hide();
-    //}
 
-    //for (var key in supportingDocs) {
-    //    if (supportingDocs.hasOwnProperty(key)) {
-    //        if (supportingDocs[key] == "" || supportingDocs[key] == null || supportingDocs[key] == "undefined") {
-    //            existSuppDocElm.html("<span>Supporting Document may not be empty.</span>");
-    //            existSuppDocElm.show();
-    //        }
-    //        if (supportingDocs[key] != "") {
-    //            existSuppDocElm.hide();
-    //         //   data.append(key, supportingDocs[key], supportingDocs[key].name);
-    //        }
-    //    }
-    //    else {
-    //        console.log("supp doc empty");
-    //    }
-    //}
-
-    if (validPlant != "Select") {
+    if (validPlant != "Select" && validCountry != "Select" && validWeek != "Select") {
         $('#myModalItem').modal('hide');
         return true;
     }
 }
 
-//$('#hlCode').on('input', function (e) {
-//    var validHl = $("#hlCode").val();
-//    if (validHl == "") {
-//        hlElm.html("<span>Hl Code is Empty.</span>");
-//        hlElm.show();
-//    }
-//    else {
-//        hlElm.hide();
-//    }
-
-//});
 
 $(document).on('click', '#addItem', function (e) {
     listElm.hide();
@@ -641,7 +669,7 @@ $(document).on('click', '#addItem', function (e) {
         console.log("item field valid");
         //console.log('success');
         $("#customloader").show();
-        var brandReqNoItem = $("#brandRequestNo").val();
+    
         var companyItem = $("#CompanySelector :selected").text();
         var faCodeOldItem = $("#FaOldId option:selected").text();
         var faCodeOldDescItem = $("#FaCodeOldDesc").val();
@@ -651,23 +679,29 @@ $(document).on('click', '#addItem', function (e) {
         var marketItem = $("#MarketSelector option:selected").text();    
         var plantItem = $("#PlantId option:selected").text();
         var isImportItem = document.getElementById("isImport").checked;
+        var countryItem = $("#CountrySelector :selected").text();
+        var weekItem = $("#WeekSelector :selected").text();
 
         if (faCodeOldItem == "Select") {
             faCodeOldItem = "";
         }
         if (faCodeNewItem == "Select") {
             faCodeNewItem = "";
+        }       
+        if (countryItem == "Select") {
+            countryItem = "";
         }
-        console.log("old: " + faCodeOldItem);
-        console.log("new: " + faCodeNewItem);
+        if (weekItem == "Select") {
+            weekItem = "";
+        }
         var companyItemVal = $("#CompanySelector :selected").val();
-        var marketItemVal = $("#MarketSelector option:selected").val();
+        var marketItemVal = $("#MarketSelector option:selected").val();   
+        var plantItemVal = $("#PlantId option:selected").val();
+        var countryItemVal = $("#CountrySelector :selected").val();
+        var weekItemVal = $("#WeekSelector :selected").val();
 
-        var tempItemPlant = $("#PlantId option:selected").val();
-        var plantItemVal = ajaxPlantInfo(tempItemPlant);
-
-        var objItem = { brandReqNoItem: brandReqNoItem, companyItem: companyItem, faCodeOldItem: faCodeOldItem, faCodeOldDescItem: faCodeOldDescItem, faCodeNewItem: faCodeNewItem, faCodeNewDescItem: faCodeNewDescItem, hlCodeItem: hlCodeItem, marketItem: marketItem, plantItem: plantItem, isImport: isImportItem  };
-        var objItemSave = { brandReqNoItem: brandReqNoItem, companyItem: companyItemVal, faCodeOldItem: faCodeOldItem, faCodeOldDescItem: faCodeOldDescItem, faCodeNewItem: faCodeNewItem, faCodeNewDescItem: faCodeNewDescItem, hlCodeItem: hlCodeItem, marketItem: marketItemVal, plantItem: plantItemVal, isImport: isImportItem };
+        var objItem = { companyItem: companyItem, faCodeOldItem: faCodeOldItem, faCodeOldDescItem: faCodeOldDescItem, faCodeNewItem: faCodeNewItem, faCodeNewDescItem: faCodeNewDescItem, hlCodeItem: hlCodeItem, marketItem: marketItem, plantItem: plantItem, isImport: isImportItem, countryItem:countryItem, weekItem: weekItem  };
+        var objItemSave = { companyItem: companyItemVal, faCodeOldItem: faCodeOldItem, faCodeOldDescItem: faCodeOldDescItem, faCodeNewItem: faCodeNewItem, faCodeNewDescItem: faCodeNewDescItem, hlCodeItem: hlCodeItem, marketItem: marketItemVal, plantItem: plantItemVal, isImport: isImportItem, countryItem: countryItemVal, weekItem: weekItemVal };
 
         uploads();
 
@@ -697,12 +731,12 @@ function CreateItemList()
         else {
             checkImport = '<input type="checkbox" disabled="disabled" />';
         }
-
+        //<td> <a data-toggle="modal" data-placement="top" title="Edit"  data-id="' + i + '" class="itemView"> <i class="fa fa-pencil-square-o"></i></a></td>
         var newRow = '<tr><td class="action"><input type="checkbox" onclick="stateCheckItem(' + i + ')" id="checkAll' + i + '" /></td>'+
-            i + '<td> <a data-toggle="modal" data-placement="top" title="Edit"  data-id="' + i + '" class="itemView"> <i class="fa fa-pencil-square-o"></i></a></td> ' +
-            i + '<td><label id="status">DRAFT NEW</label></td>' + 
+            i + '<td> </td>' +
+            i + '<td nowrap><label id="status">DRAFT NEW</label></td>' + 
             i + '<td>' + checkImport + '</td>' +
-            i + '<td nowrap><label id="brandReqNo' + i + '">' + Pad(localCounter + i, 10) + "/" + arrayItem[i].brandReqNoItem + '</label></td>' +
+            i + '<td nowrap><label id="brandReqNo' + i + '"></label></td>' +
             i + '<td nowrap><label id="companyInf">' + arrayItem[i].companyItem + '</label></td>' +
             i + '<td><label id="faCodeOld">' + arrayItem[i].faCodeOldItem + '</label></td>' +
             i + '<td nowrap><label id="faCodeOldDesc">' + arrayItem[i].faCodeOldDescItem + '</label></td>' +
@@ -710,123 +744,86 @@ function CreateItemList()
             i + '<td nowrap><label id="faCodeNewDesc">' + arrayItem[i].faCodeNewDescItem + '</label></td>' +
             i + '<td><label id="hlCode">' + arrayItem[i].hlCodeItem + '</label></td>' +
             i + '<td><label id="marketInf">' + arrayItem[i].marketItem + '</label></td>' +
-            i + '<td nowrap><label id="plantInf">' + arrayItem[i].plantItem + '</label></td></tr>' ;
+            i + '<td nowrap><label id="plantInf">' + arrayItem[i].plantItem + '</label></td>' +
+            i + '<td><label id="countryInf">' + arrayItem[i].countryItem + '</label></td>' +
+            i + '<td><label id="weekInf">' + arrayItem[i].weekItem + '</label></td></tr>';
         $('#brandTable tbody').append(newRow);
      
     }
 
 }
 
-//$(document).on('click', '#addItemUp', function (e) {
-//    console.log("add item up");
-//    $('#modalItemAddUp').modal('hide');
-//    var brandReqNoItem = $("#requestNoUp").val();
-//    var companyItem = $("#CompanyUp :selected").text();
-//    var faCodeOldItem = $("#FaOldId option:selected").text();
-//    var faCodeOldDescItem = $("#OldDescUp").val();
-//    var faCodeNewItem = $("#FaNewId option:selected").text();
-//    var faCodeNewDescItem = $("#NewDescUp").val();
-//    var hlCodeItem = $("#HlCodeUp").val();
-//    var marketItem = $("#MarketUp option:selected").text();
-//    var plantItem = $("#PlantId option:selected").text();
-//    var isImportItem = document.getElementById("ImportUp").checked;
+$(document).on('click', '#addItemUp', function (e) {
+    console.log("add item up");
+    $('#modalItemAddUp').modal('hide');
+   // var brandReqNoItem = $("#requestNoUp").val();
+    var companyItem = $("#CompanyUp :selected").text();
+    var faCodeOldItem = $("#FaOldId option:selected").text();
+    var faCodeOldDescItem = $("#OldDescUp").val();
+    var faCodeNewItem = $("#FaNewId option:selected").text();
+    var faCodeNewDescItem = $("#NewDescUp").val();
+    var hlCodeItem = $("#HlCodeUp").val();
+    var marketItem = $("#MarketUp option:selected").text();
+    var plantItem = $("#PlantId option:selected").text();
+    var isImportItem = document.getElementById("ImportUp").checked;
+    var countryItem = $("#CountryUp :selected").text();
+    var weekItem = $("#WeekUp :selected").text();
 
-//    if (faCodeOldItem == "Select") {
-//        faCodeOldItem = "";
-//    }
-//    if (faCodeNewItem == "Select") {
-//        faCodeNewItem = "";
-//    }
+    if (faCodeOldItem == "Select") {
+        faCodeOldItem = "";
+    }
+    if (faCodeNewItem == "Select") {
+        faCodeNewItem = "";
+    }
+  
+    var companyItemVal = $("#CompanyUp :selected").val();
+    var marketItemVal = $("#MarketUp option:selected").val();    
+    var plantItemVal = $("#PlantId option:selected").val();
+    var countryItemVal = $("#CountryUp :selected").val();
+    var weekItemVal = $("#WeekUp :selected").val();
 
-//    console.log("old: " + faCodeOldItem);
-//    console.log("new: " + faCodeNewItem);
+    var objItemUp = { companyItem: companyItem, faCodeOldItem: faCodeOldItem, faCodeOldDescItem: faCodeOldDescItem, faCodeNewItem: faCodeNewItem, faCodeNewDescItem: faCodeNewDescItem, hlCodeItem: hlCodeItem, marketItem: marketItem, plantItem: plantItem, isImport: isImportItem, countryItem: countryItem, weekItem: weekItem };
+    var objItemSaveUp = { companyItem: companyItemVal, faCodeOldItem: faCodeOldItem, faCodeOldDescItem: faCodeOldDescItem, faCodeNewItem: faCodeNewItem, faCodeNewDescItem: faCodeNewDescItem, hlCodeItem: hlCodeItem, marketItem: marketItemVal, plantItem: plantItemVal, isImport: isImportItem, countryItem: countryItemVal, weekItem: weekItemVal };
 
-//    var companyItemVal = $("#CompanyUp :selected").val();
-//    var marketItemVal = $("#MarketUp option:selected").val();
-//    var tempItemPlant = $("#PlantId option:selected").val();
-//    var plantItemVal = ajaxPlantInfo(tempItemPlant);
+    uploadsUp();
+    arrayItemUp.push(objItemUp); // this array accomodated for list view
+    arrayItemSaveUp.push(objItemSaveUp); // this array accomodated for saving in table - database                                            
+    console.log(arrayItemSaveUp);
 
-//    var localCounter = 0;
-//    localCounter = GetLastNumberItem();
+    itemdetailindex = $("#txt_index_listitem").val();
+      
+    var checkImport = '';
+    if (isImportItem == true) {
+        checkImport = '<input type="checkbox" checked disabled="disabled" />';
+    }
+    else {
+        checkImport = '<input type="checkbox" disabled="disabled" />';
+    }
 
-//    itemdetailindex = $("#txt_index_listitem").val();
-    
-//   // for (var i = 0; i < arrayItemUp.length; i++) {
-//        var checkImport = '';
-//        if (isImportItem == true) {
-//            checkImport = '<input type="checkbox" checked disabled="disabled" />';
-//        }
-//        else {
-//            checkImport = '<input type="checkbox" disabled="disabled" />';
-//        }
-
-//        var newRow = '<tr><td class="td_inputan"><input type="checkbox" /></td>';
-//        newRow += '<td> </td> ';
-//        newRow += '<td><label id="status">DRAFT NEW</label></td>';
-//        newRow += '<td>' + checkImport + '</td>';
-//        newRow += '<td nowrap><label id="brandReqNo">' + Pad(localCounter + 1, 10) + "/" + brandReqNoItem + '</label></td>';
-//        newRow += '<td nowrap><label id="companyInf">' + companyItem + '</label></td>';
-//        newRow += '<td><label id="faCodeOld">' + faCodeOldItem + '</label></td>';
-//        newRow += '<td nowrap><label id="faCodeOldDesc">' + faCodeOldDescItem + '</label></td>';
-//        newRow += '<td><label id="faCodeNew">' + faCodeNewItem + '</label></td>';
-//        newRow += '<td nowrap><label id="faCodeNewDesc">' + faCodeNewDescItem + '</label></td>';
-//        newRow += '<td><label id="hlCode">' + hlCodeItem + '</label></td>';
-//        newRow += '<td><label id="marketInf">' + marketItem + '</label></td>';
-//        newRow += '<td nowrap><label id="plantInf">' + plantItem + '</label></td></tr>';
-//        //alert(newRow);
-//        $('#tbody_productlistitem').append(newRow);
+    var newRow = '<tr><td class="td_inputan"><input type="checkbox" /></td>';
+    newRow += '<td> </td> ';
+    newRow += '<td nowrap><label id="status">DRAFT NEW</label></td>';
+    newRow += '<td>' + checkImport + '</td>';
+    newRow += '<td nowrap><label id="brandReqNo"></label></td>';
+    newRow += '<td nowrap><label id="companyInf">' + companyItem + '</label></td>';
+    newRow += '<td><label id="faCodeOld">' + faCodeOldItem + '</label></td>';
+    newRow += '<td nowrap><label id="faCodeOldDesc">' + faCodeOldDescItem + '</label></td>';
+    newRow += '<td><label id="faCodeNew">' + faCodeNewItem + '</label></td>';
+    newRow += '<td nowrap><label id="faCodeNewDesc">' + faCodeNewDescItem + '</label></td>';
+    newRow += '<td><label id="hlCode">' + hlCodeItem + '</label></td>';
+    newRow += '<td><label id="marketInf">' + marketItem + '</label></td>';
+    newRow += '<td nowrap><label id="plantInf">' + plantItem + '</label></td>';
+    newRow += '<td><label id="countryInf">' + countryItem + '</label></td>';
+    newRow += '<td><label id="weekInf">' + weekItem + '</label></td></tr>';
+    //alert(newRow);
+    $('#tbody_productlistitem').append(newRow);
         
-//        itemdetailindex++;
-//   // }
+    itemdetailindex++;
+ 
 
-//    var objItemUp = { brandReqNoItem: brandReqNoItem, companyItem: companyItem, faCodeOldItem: faCodeOldItem, faCodeOldDescItem: faCodeOldDescItem, faCodeNewItem: faCodeNewItem, faCodeNewDescItem: faCodeNewDescItem, hlCodeItem: hlCodeItem, marketItem: marketItem, plantItem: plantItem, isImport: isImportItem };
-//    var objItemSaveUp = { brandReqNoItem: brandReqNoItem, companyItem: companyItemVal, faCodeOldItem: faCodeOldItem, faCodeOldDescItem: faCodeOldDescItem, faCodeNewItem: faCodeNewItem, faCodeNewDescItem: faCodeNewDescItem, hlCodeItem: hlCodeItem, marketItem: marketItemVal, plantItem: plantItemVal, isImport: isImportItem };
-
-//    //uploads();
-//    arrayItemUp.push(objItemUp); // this array accomodated for list view
-//    arrayItemSaveUp.push(objItemSaveUp); // this array accomodated for saving in table - database                                            
-//    console.log(arrayItemSaveUp);
-
-//    CreateItemListUp();
-//    //ClearModalDetailUp();
-//});
-
-//function CreateItemListUp() {    
-
-//    //var localCounter = 0;
-//    //localCounter = GetLastNumberItem();
-
-//    //itemdetailindex = $("#txt_index_listitem").val();
-
-//    //$('#brandTable tbody tr').remove();
-//    //for (var i = 0; i < arrayItemUp.length; i++) {
-//    //    var checkImport = '';
-//    //    if (arrayItemUp[i].isImportItem == true) {
-//    //        checkImport = '<input type="checkbox" checked disabled="disabled" />';
-//    //    }
-//    //    else {
-//    //        checkImport = '<input type="checkbox" disabled="disabled" />';
-//    //    }
-
-//    //    var newRow = '<tr><td class="td_inputan"><input type="checkbox" onclick="stateCheckItem(' + i + ')" id="checkAll' + i + '" /></td>' +
-//    //   i + '<td> <a data-toggle="modal" data-placement="top" title="Edit"  data-id="' + i + '" class="itemView"> <i class="fa fa-pencil-square-o"></i></a></td> ' +
-//    //   i + '<td><label id="status">DRAFT NEW</label></td>' +
-//    //   i + '<td>' + checkImport + '</td>' +
-//    //   i + '<td nowrap><label id="brandReqNo' + i + '">' + Pad(localCounter + i, 10) + "/" + arrayItemUp[i].brandReqNoItem + '</label></td>' +
-//    //   i + '<td nowrap><label id="companyInf">' + arrayItemUp[i].companyItem + '</label></td>' +
-//    //   i + '<td><label id="faCodeOld">' + arrayItemUp[i].faCodeOldItem + '</label></td>' +
-//    //   i + '<td nowrap><label id="faCodeOldDesc">' + arrayItemUp[i].faCodeOldDescItem + '</label></td>' +
-//    //   i + '<td><label id="faCodeNew">' + arrayItemUp[i].faCodeNewItem + '</label></td>' +
-//    //   i + '<td nowrap><label id="faCodeNewDesc">' + arrayItemUp[i].faCodeNewDescItem + '</label></td>' +
-//    //   i + '<td><label id="hlCode">' + arrayItemUp[i].hlCodeItem + '</label></td>' +
-//    //   i + '<td><label id="marketInf">' + arrayItemUp[i].marketItem + '</label></td>' +
-//    //   i + '<td nowrap><label id="plantInf">' + arrayItemUp[i].plantItem + '</label></td></tr>';
-//    //    $('#brandTable tbody').append(newRow);
-//    //    //$("#tbody_productlistitem").find("tr").append(newRow);
-//    //    itemdetailindex++;
-//    //}   
-
-//}
+ 
+   
+});
 
 //function ClearModalDetailUp() {
 //    $("#requestNoUp").val("");
@@ -865,6 +862,13 @@ function DeleteItem() {
             arrayItem.splice(i, 1);                    
          }   
     }
+    console.log("length save: " + arrayItem.length);
+    for (var i = arrayItemSave.length; i--;) {
+        if ($('#checkAll' + i + '').is(':checked')) {
+            arrayItemSave.splice(i, 1);
+        }
+    }
+    console.log("length save: " + arrayItemSave.length);
     CreateItemList();    
 }
 

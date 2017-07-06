@@ -528,12 +528,14 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ClosingDay, opt => opt.MapFrom(src => src.CLOSING_DATE.Value.Day))
                 .ForMember(dest => dest.ClosingMonth, opt => opt.MapFrom(src => src.CLOSING_DATE.Value.ToString("MMMM")))
                 .ForMember(dest => dest.ClosingYear, opt => opt.MapFrom(src => src.CLOSING_DATE.Value.Year))
-                .ForMember(dest => dest.ClosingDate, opt => opt.MapFrom(src => src.CLOSING_DATE));
+                .ForMember(dest => dest.ClosingDate, opt => opt.MapFrom(src => src.CLOSING_DATE))
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IS_ACTIVE == false || src.IS_ACTIVE == null ? "No" : "Yes"));
 
             Mapper.CreateMap<MonthClosingDto, MONTH_CLOSING>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.MONTH_CLOSING_ID, opt => opt.MapFrom(src => src.MonthClosingId))
                 .ForMember(dest => dest.PLANT_ID, opt => opt.MapFrom(src => src.PlantId))
-                .ForMember(dest => dest.CLOSING_DATE, opt => opt.MapFrom(src => src.ClosingDate));
+                .ForMember(dest => dest.CLOSING_DATE, opt => opt.MapFrom(src => src.ClosingDate))
+                .ForMember(dest => dest.IS_ACTIVE, opt => opt.ResolveUsing<StringToBooleanResolver>().FromMember(src => src.IsActive));
 
             Mapper.CreateMap<MONTH_CLOSING_DOCUMENT, MonthClosingDocDto>().IgnoreAllNonExisting();
 

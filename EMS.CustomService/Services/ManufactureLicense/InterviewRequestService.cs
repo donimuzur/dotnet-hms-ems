@@ -276,7 +276,7 @@ namespace Sampoerna.EMS.CustomService.Services.ManufactureLicense
                 if (isExciser.Any())
                 {
                     var statusId = refService.GetRefByKey("WAITING_POA_APPROVAL").REFF_ID;
-                    listIR = context.INTERVIEW_REQUEST.Where(w => w.LASTAPPROVED_STATUS == statusId && w.NPPBKC_ID == null).Select(s => s.VR_FORM_ID).ToList();
+                    listIR = context.INTERVIEW_REQUEST.Where(w => w.LASTAPPROVED_STATUS == statusId && w.NPPBKC_ID == null && w.LASTAPPROVED_BY == null).Select(s => s.VR_FORM_ID).ToList();
                 }
                 return listIR;
             }

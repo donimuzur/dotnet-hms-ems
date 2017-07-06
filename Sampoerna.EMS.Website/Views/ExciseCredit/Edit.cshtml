@@ -95,6 +95,12 @@
     </div>
 </div>
 
+@Html.Partial("_CalculateNewExcise", Model.CalculationDetail)
+@if (Model.ViewModel.RequestTypeID == 2)
+{
+    @Html.Partial("_CalculateAdjustmentExciseDetail", Model.AdjustmentModel)
+}
+
 @section scripts {
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/jquery.form.min.js"></script>
@@ -114,6 +120,8 @@
         var fileNameInput = $("#browseOtherDocFileName");
         var editUrl = '@Url.Action("Edit", "ExciseCredit")';
         var homeUrl = '@Url.Action("Index", "ExciseCredit")';
+        var ck1DetaiUrl = '@Url.Action("GetCk1List", "ExciseCredit")';
+        var ck1DetailAdjustmentUrl = '@Url.Action("GetCk1AdjustmentList", "ExciseCredit")';
         $(document).ready(function () {
 
             var amount = Number($("#ViewModel_Amount").val().split(',').join('.'));
@@ -142,6 +150,9 @@
                 $("#CancelButton").prop('disabled', true);
             });
 
+            $("#ckListButton").on("click", openCkListPopUp);
+
+            $("#calculationAction").hide();
             TinyMceInit("tinymce-editor");
 
         });

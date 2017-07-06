@@ -42,7 +42,7 @@
 
                         <a href="@Url.Action("Detail", "ExciseCredit", new { id = item.Id})" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
                     }
-                   
+
                     @if (!item.IsCanceled)
                     {
                         var editable = !item.IsSubmitted && !item.IsWaitingForGovernment && !item.IsWaitingSkepApproval;
@@ -51,13 +51,18 @@
                             <a href="@Url.Action("Edit", "ExciseCredit", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
                         }
 
-                        if (Model.IsNotViewer && item.IsWaitingForGovernment)
+                        if (Model.IsNotViewer && item.IsWaitingForGovernment && item.IsCreator)
                         {
                             <a href="@Url.Action("InputSkep", "ExciseCredit", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Input SKEP"><i class="fa fa-pencil-square-o"></i></a>
                         }
-                        if (Model.IsNotViewer && item.IsApprover && (item.IsWaitingSkepApproval || item.IsSubmitted))
+                        if (Model.IsNotViewer && item.IsApprover &&  item.IsSubmitted)
                         {
                             <a href="@Url.Action("Approve", "ExciseCredit", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Approve"><i class="fa fa-check"></i></a>
+                        }
+
+                        if (Model.IsNotViewer && item.IsApprover && item.IsWaitingSkepApproval)
+                        {
+                            <a href="@Url.Action("ApproveSkep", "ExciseCredit", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Approve"><i class="fa fa-check"></i></a>
                         }
                     }
                 </td>

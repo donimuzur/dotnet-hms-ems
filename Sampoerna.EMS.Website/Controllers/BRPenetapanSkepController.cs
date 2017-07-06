@@ -28,7 +28,6 @@ using System.Web;
 using Sampoerna.EMS.Website.Utility;
 using System.Globalization;
 using Sampoerna.EMS.Utils;
-using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Models.FileUpload;
@@ -51,6 +50,9 @@ namespace Sampoerna.EMS.Website.Controllers
         private IChangesHistoryBLL _changesHistoryBll;
         private IWorkflowHistoryBLL _workflowHistoryBLL;
         private IDocumentSequenceNumberBLL _docbll;
+        private IChangesHistoryBLL chBLL;
+        private IWorkflowHistoryBLL whBLL;
+
 
         public BRPenetapanSkepController(IPageBLL pageBLL, IZaidmExNPPBKCBLL nppbkcbll, IChangesHistoryBLL changesHistoryBll, IWorkflowHistoryBLL workflowHistoryBLL, IDocumentSequenceNumberBLL docbll) : base(pageBLL, Enums.MenuList.BrandRegistrationTransaction)
         {
@@ -64,8 +66,11 @@ namespace Sampoerna.EMS.Website.Controllers
             this._changesHistoryBll = changesHistoryBll;
             this._workflowHistoryBLL = workflowHistoryBLL;
             this._docbll = docbll;
+            this.chBLL = changesHistoryBll;
+            this.whBLL = workflowHistoryBLL;
+
         }
-                
+
         private ReceivedDecreeViewModel GeneratePropertiesSKEP(ReceivedDecreeViewModel source, bool update)
         {
             var usernppbkc = penetapanSKEPService.GetUserNPPBKC(CurrentUser.USER_ID).Select(s => s.NPPBKC_ID).ToList();
@@ -177,8 +182,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     var SKEPWhithSameNPPBKC = penetapanSKEPService.GetSKEPNeedApproveWithSameNPPBKC(CurrentUser.USER_ID);
                     var SKEPWhithoutNPPBKC = penetapanSKEPService.GetSKEPNeedApproveWithoutNPPBKC(CurrentUser.USER_ID);
                     var WithNPPBKCButNoExcise = penetapanSKEPService.GetSKEPNeedApproveWithNPPBKCButNoExcise(CurrentUser.USER_ID);
+                    var drafstatus = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Draft).REFF_ID;
+                    var editstatus = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Edited).REFF_ID;
                     data = data.Where(w => w.CREATED_BY == CurrentUser.USER_ID || delegatorname.Contains(w.CREATED_BY)
-                    || w.LASTAPPROVED_BY == CurrentUser.USER_ID || SKEPWhithSameNPPBKC.Contains(w.RECEIVED_ID) || SKEPWhithoutNPPBKC.Contains(w.RECEIVED_ID) || WithNPPBKCButNoExcise.Contains(w.RECEIVED_ID));
+                    || (w.LASTAPPROVED_BY == CurrentUser.USER_ID && w.LASTAPPROVED_STATUS != drafstatus && w.LASTAPPROVED_STATUS != editstatus) || SKEPWhithSameNPPBKC.Contains(w.RECEIVED_ID) || SKEPWhithoutNPPBKC.Contains(w.RECEIVED_ID) || WithNPPBKCButNoExcise.Contains(w.RECEIVED_ID));
                 }
                 if (data.Any())
                 {
@@ -502,45 +509,48 @@ namespace Sampoerna.EMS.Website.Controllers
         
         public ActionResult Edit(long id)
         {
-            var data = GeneratePropertiesSKEP(null, false);
-            var obj = penetapanSKEPService.FindPenetapanSKEP(id);
-            var approvalStatusSubmitted = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingAdminApproval).REFF_ID;
-            var approvalStatusApproved = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Completed).REFF_ID;
-            if (obj.CREATED_BY != CurrentUser.USER_ID)
+            if (CurrentUser.UserRole == Enums.UserRole.Administrator || IsPOACanAccess(id, CurrentUser.USER_ID))
             {
-                AddMessageInfo("Operation not allowed!. You are not the Creator of this entry", Enums.MessageInfoType.Error);                
-                RedirectToAction("Index");
-            }
-            data.ViewModel = Mapper.Map<ReceivedDecreeModel>(obj);            
-            data.ViewModel.IsCreator = true;
-            data.ViewModel.IsSubmitted = data.ViewModel.ApprovalStatusDescription.Id == approvalStatusSubmitted;
-            data.ViewModel.IsApproved = data.ViewModel.ApprovalStatusDescription.Id == approvalStatusApproved;
-            if (data.ViewModel.IsApproved)
-            {
-                AddMessageInfo("Operation not allowed!. This entry already approved!", Enums.MessageInfoType.Error);                
-                RedirectToAction("Index");
-            }            
-            data.EnableFormInput = true;
-            data.EditMode = true;
-            data.Item = GenerateDecreeDetail(id);
-            var filesupload = penetapanSKEPService.GetFileUploadByReceiveID(id);
-            var Othersfileupload = filesupload.Where(w => w.DOCUMENT_ID == null && w.IS_GOVERNMENT_DOC == false);
-            data.SKEPFileOther = Othersfileupload.Select(s => new SKEPFileOtherModel
-            {
-                FileId = s.FILE_ID,
-                Path = s.PATH_URL,
-                FileName = s.FILE_NAME
-            }).ToList();
-            foreach (var file in data.SKEPFileOther)
-            {
-                file.Name = GenerateFileName(file.Path);
-                file.Path = GenerateURL(file.Path);
-            }
-            data.ApproveConfirm = GenerateConfirmDialog("update");
-            data.Action = "update";
-            data = GenerateLogs(data);
+                var data = GeneratePropertiesSKEP(null, false);
+                var obj = penetapanSKEPService.FindPenetapanSKEP(id);
+                var approvalStatusSubmitted = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingAdminApproval).REFF_ID;
+                var approvalStatusApproved = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Completed).REFF_ID;                
+                data.ViewModel = Mapper.Map<ReceivedDecreeModel>(obj);
+                data.ViewModel.IsCreator = true;
+                data.ViewModel.IsSubmitted = data.ViewModel.ApprovalStatusDescription.Id == approvalStatusSubmitted;
+                data.ViewModel.IsApproved = data.ViewModel.ApprovalStatusDescription.Id == approvalStatusApproved;
+                if (data.ViewModel.IsApproved)
+                {
+                    AddMessageInfo("Operation not allowed!. This entry already approved!", Enums.MessageInfoType.Error);
+                    RedirectToAction("Index");
+                }
+                data.EnableFormInput = true;
+                data.EditMode = true;
+                data.Item = GenerateDecreeDetail(id);
+                var filesupload = penetapanSKEPService.GetFileUploadByReceiveID(id);
+                var Othersfileupload = filesupload.Where(w => w.DOCUMENT_ID == null && w.IS_GOVERNMENT_DOC == false);
+                data.SKEPFileOther = Othersfileupload.Select(s => new SKEPFileOtherModel
+                {
+                    FileId = s.FILE_ID,
+                    Path = s.PATH_URL,
+                    FileName = s.FILE_NAME
+                }).ToList();
+                foreach (var file in data.SKEPFileOther)
+                {
+                    file.Name = GenerateFileName(file.Path);
+                    file.Path = GenerateURL(file.Path);
+                }
+                data.ApproveConfirm = GenerateConfirmDialog("update");
+                data.Action = "update";
+                data = GenerateLogs(data);
 
-            return View("Create", data);
+                return View("Create", data);
+            }
+            else
+            {
+                AddMessageInfo("Operation not allowed!", Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
         }        
                 
         public ActionResult Detail(long id)
@@ -649,7 +659,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     AddMessageInfo("Operation not allowed!. This entry already approved!", Enums.MessageInfoType.Error);
                     return RedirectToAction("Index");
                 }
-                else
+                else if (CurrentUser.UserRole == Enums.UserRole.Administrator || IsPOACanApprove(id, CurrentUser.USER_ID))
                 {
                     data.Item = GenerateDecreeDetail(id);
                     var filesupload = penetapanSKEPService.GetFileUploadByReceiveID(id);
@@ -669,6 +679,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     data.Action = "revise";
                     data = GenerateLogs(data);
                     return View("Create", data);
+                }
+                else
+                {
+                    AddMessageInfo("Operation not allowed!", Enums.MessageInfoType.Error);
+                    return RedirectToAction("Index");
                 }
             }
             catch (Exception ex)
@@ -1462,8 +1477,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     senderMail = "EMS@pmi.id";
                 }
                 var senderName = CurrentUser.FIRST_NAME + " " + CurrentUser.LAST_NAME;
+                sendto = sendto.Where(w => w != "" && w != null).ToList();
                 string[] arrSendto = sendto.ToArray();
-                bool mailStatus = ItpiMailer.Instance.SendEmail(arrSendto, null, null, null, mailContent.EMAILSUBJECT, mailContent.EMAILCONTENT, true, senderMail, senderName);
+                bool mailStatus = true;
+                if (arrSendto.Count() > 0)
+                {
+                    mailStatus = ItpiMailer.Instance.SendEmail(arrSendto, null, null, null, mailContent.EMAILSUBJECT, mailContent.EMAILCONTENT, true, senderMail, senderName);
+                }
                 return mailStatus;
             }
             catch (Exception e)
@@ -1483,8 +1503,14 @@ namespace Sampoerna.EMS.Website.Controllers
         private ReceivedDecreeViewModel GenerateLogs(ReceivedDecreeViewModel data)
         {
             try
-            {                
-                var workflow = refService.GetWorkflowHistory((int)Enums.MenuList.PenetapanSKEP, data.ViewModel.Received_ID).OrderBy(o => o.ACTION_DATE).ToList();
+            {
+                //var workflow = refService.GetWorkflowHistory((int)Enums.MenuList.PenetapanSKEP, data.ViewModel.Received_ID).OrderBy(o => o.ACTION_DATE).ToList();
+                var workflowInput = new GetByFormTypeAndFormIdInput();
+                workflowInput.FormId = data.ViewModel.Received_ID;
+                workflowInput.FormType = Enums.FormType.PenetapanSKEP;
+                var workflow = this.whBLL.GetByFormTypeAndFormId(workflowInput).OrderBy(x => x.WORKFLOW_HISTORY_ID).ToList();
+
+
                 data.WorkflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(workflow);
                 if (data.ViewModel.ApprovalStatusDescription.Key.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.AwaitingPoaApproval)))
                 {
@@ -1511,6 +1537,14 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
                 return null;
             }
+        }
+
+        [HttpPost]
+        public PartialViewResult FilterSummaryReports(ReceivedDecreeViewModel search)
+        {
+            var model = new ReceivedDecreeViewModel();
+            model.ListReceivedDecree = GetSummaryReportList(search.SearchInput.Creator, search.SearchInput.Status.ToString());
+            return PartialView("_PenetapanSKEPListTableSummaryReport", model);
         }
 
         public ActionResult SummaryReports()
@@ -1596,6 +1630,12 @@ namespace Sampoerna.EMS.Website.Controllers
                     iColumn = iColumn + 1;
                 }
 
+                if (modelExport.Creator)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, data.CreatorName);
+                    iColumn = iColumn + 1;
+                }
+                                    
                 if (modelExport.FormNo)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.Received_No);
@@ -1706,6 +1746,12 @@ namespace Sampoerna.EMS.Website.Controllers
             if (modelExport.Status)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Last Approved Status");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.Creator)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Creator");
                 iColumn = iColumn + 1;
             }
 
@@ -1832,11 +1878,12 @@ namespace Sampoerna.EMS.Website.Controllers
             try
             {
                 var documents = new List<ReceivedDecreeModel>();
-                var data = penetapanSKEPService.GetViewPenetapanSKEPByCreator(CurrentUser.USER_ID);
+                var data = penetapanSKEPService.GetViewPenetapanSKEPByCreator(src_Creator);
                 if(data.Any())
                 {
                     documents = data.Select(s => new ReceivedDecreeModel
                     {
+                        Created_By = s.CREATED_BY,
                         StrLastApproved_Status = s.STATUS,
                         Received_No = s.FORM_NUMBER,
                         Nppbkc_ID = s.NPPBKC,
@@ -1858,6 +1905,14 @@ namespace Sampoerna.EMS.Website.Controllers
                             MarketDesc = s.MARKET
                         }
                     }).ToList();
+
+                    foreach (var document in documents)
+                    {
+                        var _user = refService.GetUser(document.Created_By);
+                        document.CreatorName = _user.FIRST_NAME + " " + _user.LAST_NAME;
+                        document.strDecree_Date = Convert.ToDateTime(document.Decree_Date).ToString("dd MMM yyyy");
+                        document.strDecree_StartDate = Convert.ToDateTime(document.Decree_StartDate).ToString("dd MMM yyyy");
+                    }
                 }
                 return documents;
             }
@@ -2064,9 +2119,62 @@ namespace Sampoerna.EMS.Website.Controllers
         public ActionResult ChangeLog(int ID, string Token)
         {
             var data = new BaseModel();
-            var history = refService.GetChangesHistory((int)Enums.MenuList.PenetapanSKEP, ID.ToString()).ToList();
+            //var history = refService.GetChangesHistory((int)Enums.MenuList.PenetapanSKEP, ID.ToString()).ToList();
+            var history = this.chBLL.GetByFormTypeAndFormId(Enums.MenuList.PenetapanSKEP, ID.ToString());
             data.ChangesHistoryList = Mapper.Map<List<ChangesHistoryItemModel>>(history);
             return PartialView("_ChangesHistoryTable", data);
+        }
+
+        public bool IsPOACanApprove(long ID, string UserId)
+        {
+            var isOk = false;
+            if (ID != 0)
+            {
+                var approverlist = penetapanSKEPService.GetPOAApproverList(ID);
+                if (approverlist.Count() > 0)
+                {
+                    var isexist = approverlist.Where(w => w.POA_ID.Equals(UserId)).ToList();
+                    if (isexist.Count() > 0)
+                    {
+                        isOk = true;
+                    }
+                }
+            }
+            return isOk;
+        }
+
+        public bool IsPOACanAccess(long ID, string UserId)
+        {
+            var isOk = true;
+            var CreatorId = "";
+            var ReceivedDec = penetapanSKEPService.FindPenetapanSKEP(ID);
+            if (ReceivedDec != null)
+            {
+                CreatorId = ReceivedDec.CREATED_BY;
+            }
+            if (CreatorId != "")
+            {
+                if (UserId != CreatorId)
+                {
+                    /////// Check delegation ///////
+                    isOk = IsPOADelegate(UserId, CreatorId);
+                }
+            }
+            return isOk;
+        }
+
+        private bool IsPOADelegate(string UserId, string CreatorId)
+        {
+            var isOk = false;
+            var poadelegate = penetapanSKEPService.GetPOADelegationOfUser(CreatorId);
+            if (poadelegate != null)
+            {
+                if (UserId == poadelegate.POA_TO)
+                {
+                    isOk = true;
+                }
+            }
+            return isOk;
         }
     }
 }

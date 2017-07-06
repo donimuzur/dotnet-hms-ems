@@ -1,4 +1,4 @@
-﻿
+﻿@using Sampoerna.EMS.CustomService.Core;
 @model Sampoerna.EMS.Website.Models.ManufacturingLicense.InterviewRequestViewModel
 @using Sampoerna.EMS.Core
 <table id="exciseTable" class="display" cellspacing="0" width="100%">
@@ -32,11 +32,11 @@
             <tr>
                 <td class="action">
                     <a href="@Url.Action("Detail", "MLInterviewRequest", new { id = item.Id})" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye btn_action"></i></a>
-                    @if ((item.ApprovalStatus.ToLower().Contains("draft") || (item.ApprovalStatus.ToUpper().Equals("WAITING FOR GOVERNMENT APPROVAL") && item.LastApprovedBy != Model.CurrentUser)) && item.IsCanEdit)
+                    @if ((item.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.Draft)) || item.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.Edited)) || (item.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.AwaitingGovernmentApproval)) && item.LastApprovedBy != Model.CurrentUser)) && item.IsCanEdit)
                     {
                         <a href="@Url.Action("Edit", "MLInterviewRequest", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o btn_action"></i></a>
                     }
-                    @if ((item.ApprovalStatus.ToLower().Contains("poa")) && item.LastModifiedBy != Model.CurrentUser && item.IsApprover)
+                    @if ((item.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.AwaitingPoaApproval)) || item.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.AwaitingPoaSkepApproval))) && item.LastModifiedBy != Model.CurrentUser && (item.IsApprover || item.LastApprovedBy == Model.CurrentUser))
                     {
                         <a href="@Url.Action("Approve", "MLInterviewRequest", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Approval"><i class="fa fa-check"></i></a>
                     }

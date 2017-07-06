@@ -1406,10 +1406,12 @@ namespace Sampoerna.EMS.BLL
                     if (lack1Data.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
                         var poaData = _poaBll.GetActivePoaById(lack1Data.CreateBy);
+                        var poaApprove = _poaBll.GetById(lack1Data.ApprovedByPoa);
                         if (poaData != null)
                         {
+                            rc.To.Add(poaApprove.POA_EMAIL);
                             //creator is poa user
-                            rc.To.Add(poaData.POA_EMAIL);
+                            rc.CC.Add(poaData.POA_EMAIL);
                             //first code when manager exists
                             //rc.CC.Add(GetManagerEmail(lackData.CreatedBy));
 
@@ -1422,8 +1424,8 @@ namespace Sampoerna.EMS.BLL
                         {
                             //creator is excise executive
 
-                            rc.To.Add(userData.EMAIL);
-                            rc.CC.Add(_poaBll.GetById(lack1Data.ApprovedByPoa).POA_EMAIL);
+                            rc.CC.Add(userData.EMAIL);
+                            rc.To.Add(poaApprove.POA_EMAIL);
                             //first code when manager exists
                             //rc.CC.Add(GetManagerEmail(lackData.ApprovedBy));
 
@@ -3871,7 +3873,11 @@ namespace Sampoerna.EMS.BLL
 
             rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
 
-            rc.Lack1UomId = ck5Data.FirstOrDefault().PACKAGE_UOM_ID;
+            if (rc.Lack1UomId == null)
+            {
+                rc.Lack1UomId = ck5Data.FirstOrDefault().PACKAGE_UOM_ID;    
+            }
+            
 
             rc.TotalWaste = rc.Ck5RemarkData.Ck5WasteData.Sum(x => x.Amount);
             rc.TotalReturn = rc.Ck5RemarkData.Ck5ReturnData.Sum(x => x.Amount);
@@ -3932,7 +3938,10 @@ namespace Sampoerna.EMS.BLL
 
             rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
 
-            rc.Lack1UomId = ck5Data.FirstOrDefault().PACKAGE_UOM_ID;
+            if (rc.Lack1UomId == null)
+            {
+                rc.Lack1UomId = ck5Data.FirstOrDefault().PACKAGE_UOM_ID;
+            }
 
             rc.TotalWaste = rc.Ck5RemarkData.Ck5WasteData.Sum(x => x.Amount);
             rc.TotalReturn = rc.Ck5RemarkData.Ck5ReturnData.Sum(x => x.Amount);

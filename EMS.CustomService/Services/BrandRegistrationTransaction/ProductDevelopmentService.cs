@@ -13,14 +13,31 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
     {
         private SystemReferenceService refService;
         private EMSDataModel context;
+        private Dictionary<string, string> weekType;
 
         public ProductDevelopmentService() : base()
         {
             this.refService = new SystemReferenceService();
             context = new EMSDataModel();
+
+            weekType = new Dictionary<string, string>();
+            weekType.Add("1", "1"); weekType.Add("2", "2"); weekType.Add("3", "3"); weekType.Add("4", "4"); weekType.Add("5", "5");
+            weekType.Add("6", "6"); weekType.Add("7", "7"); weekType.Add("8", "8"); weekType.Add("9", "9"); weekType.Add("10", "10");
+            weekType.Add("11", "11"); weekType.Add("12", "12"); weekType.Add("13", "13"); weekType.Add("14", "14"); weekType.Add("15", "15");
+            weekType.Add("16", "16"); weekType.Add("17", "17"); weekType.Add("18", "18"); weekType.Add("19", "19"); weekType.Add("20", "20");
+            weekType.Add("21", "21"); weekType.Add("22", "22"); weekType.Add("23", "23"); weekType.Add("24", "24"); weekType.Add("25", "25");
+            weekType.Add("26", "26"); weekType.Add("27", "27"); weekType.Add("28", "28"); weekType.Add("29", "29"); weekType.Add("30", "30");
+            weekType.Add("31", "31"); weekType.Add("32", "32"); weekType.Add("33", "33"); weekType.Add("34", "34"); weekType.Add("35", "35");
+            weekType.Add("36", "36"); weekType.Add("37", "37"); weekType.Add("38", "38"); weekType.Add("39", "39"); weekType.Add("40", "40");
+            weekType.Add("41", "41"); weekType.Add("42", "42"); weekType.Add("43", "43"); weekType.Add("44", "44"); weekType.Add("45", "45");
+            weekType.Add("46", "46"); weekType.Add("47", "47"); weekType.Add("48", "48"); weekType.Add("49", "49"); weekType.Add("50", "50");
+            weekType.Add("51", "51"); weekType.Add("52", "52"); weekType.Add("53", "53"); weekType.Add("54", "54");             
         }
 
-
+        public Dictionary<string, string> GetWeek()
+        {
+            return weekType;
+        }
         #region Get Data & Find Detail
 
         public IQueryable<USER> GetAllUser()
@@ -67,6 +84,19 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
             try
             {
                 var result = this.uow.CompanyRepository.GetAll();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw this.HandleException("Exception occured on Product Development Service. See Inner Exception property to see details", ex);
+            }
+        }
+
+        public IQueryable<COUNTRY> GetCountry()
+        {
+            try
+            {
+                var result = this.uow.CountryRepository.GetAll();
                 return result;
             }
             catch (Exception ex)
@@ -651,7 +681,7 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
             }         
         }
 
-        public void EditProductDetail(long status, long id, string oldCode, string newCode, string oldDesc, string newDesc, string hl, string marketId,  int formType, int actionType, int role, string user)
+        public void EditProductDetail(long status, long id, string oldCode, string newCode, string oldDesc, string newDesc, string hl, string marketId,  int formType, int actionType, int role, string user, int? country, string week)
         {
             using (var context = new EMSDataModel())
             {
@@ -673,6 +703,8 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
                             data.LASTMODIFIED_DATE = DateTime.Now;
                             data.HL_CODE = hl;
                             data.STATUS_APPROVAL = status;
+                            data.COUNTRY_ID = country;
+                            data.WEEK = week;
 
                             var changes = GetAllChanges(old, data);
                             context.Entry(old).CurrentValues.SetValues(data);
@@ -746,7 +778,9 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
                      "IS_IMPORT",
                      "PD_ID",
                      "BUKRS",
-                     "STATUS_APPROVAL"
+                     "STATUS_APPROVAL",
+                     "COUNTRY_ID",
+                     "WEEK"
                      };
                 var oldProps = new Dictionary<string, object>();
                 var props = new Dictionary<string, object>();
@@ -811,6 +845,18 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
                         if (oldProps[item.Key] != null)                            
                             oldValue = old.STATUS_APPROVAL == 0 ? "N/A" : refService.GetReferenceById(old.STATUS_APPROVAL).REFF_VALUE;
 
+                        if (oldValue.Trim().ToUpper() != newValue.Trim().ToUpper())
+                            changes.Add(item.Key, new string[] { oldValue, newValue });
+                        continue;
+                    }
+                    if (item.Key == "COUNTRY_ID")
+                    {
+                        context = new EMSDataModel();
+                        var TheCountry = context.COUNTRY;
+                        if (item.Value != null)
+                            newValue = updated.COUNTRY_ID == null ? "N/A" : TheCountry.Where(w => w.COUNTRY_ID == updated.COUNTRY_ID).FirstOrDefault().COUNTRY_NAME;
+                        if (oldProps[item.Key] != null)
+                            oldValue = old.COUNTRY_ID == null ? "N/A" : TheCountry.Where(w => w.COUNTRY_ID == old.COUNTRY_ID).FirstOrDefault().COUNTRY_NAME;
                         if (oldValue.Trim().ToUpper() != newValue.Trim().ToUpper())
                             changes.Add(item.Key, new string[] { oldValue, newValue });
                         continue;
@@ -1073,6 +1119,36 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
                             transaction.Commit();
                         }
                     }                   
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw this.HandleException("Exception occured on Product Development Service. See Inner Exception property to see details", ex);
+                    }
+                }
+            }
+        }
+        public void UpdateOtherDocStatus(long fileID, bool isActive)
+        {
+            using (var context = new EMSDataModel())
+            {
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var old = context.PRODUCT_DEVELOPMENT_UPLOAD.Find(fileID);
+                        if (old != null)
+                        {
+                            var data = (PRODUCT_DEVELOPMENT_UPLOAD)context.Entry(old).GetDatabaseValues().ToObject();
+                            
+                            data.UPLOAD_DATE = DateTime.Now;
+                            data.IS_ACTIVE = isActive;
+
+                            context.Entry(old).CurrentValues.SetValues(data);
+                            context.SaveChanges();
+
+                            transaction.Commit();
+                        }
+                    }
                     catch (Exception ex)
                     {
                         transaction.Rollback();

@@ -88,9 +88,8 @@
                                     <div id="collapse8" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading8">
                                         <div class="panel-body">
                                             <div class="alert alert-danger" style="display:none;font-size:small;" id="CheckPlantLabel"></div>
-                                            <div class="alert alert-danger" style="display:none;font-size:small;" id="CheckFaOldLabel"></div>
-                                            <div class="alert alert-danger" style="display:none;font-size:small;" id="CheckFaNewLabel"></div>
-                                            <div class="alert alert-danger" style="display:none;font-size:small;" id="CheckHlLabel"></div>
+                                            <div class="alert alert-danger" style="display:none;font-size:small;" id="CheckCountryLabel"></div>
+                                            <div class="alert alert-danger" style="display:none;font-size:small;" id="CheckWeekLabel"></div>
                                             <div class="row">
                                                 <div class="col-md-4"></div>
                                                 <div class="col-md-8">
@@ -157,6 +156,16 @@
                                                 <div class="col-md-6">                                                
                                                     <div class="col-md-4"><label>HL Code</label></div>
                                                     <div class="col-md-8">@Html.TextBoxFor(model => model.DetailModel.Hl_Code, new { @class = "form-control", @maxlength = "22", @id = "hlCode" })</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="col-md-4"><label>Country<span class="red">*</span></label></div>
+                                                    <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.CountryID, Model.CountryList,"Select", new { @class = "selectpicker form-control", @id = "CountrySelector" })</div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="col-md-4"><label>Week<span class="red">*</span></label></div>
+                                                    <div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Week, Model.WeekList, "Select", new { @class = "form-control", @id = "WeekSelector" })</div>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -479,7 +488,7 @@
             var urlGetPlantCodeByName = '@Url.Action("GetPlantCodeByName", "BrandRegistrationTransaction")';
 
             ajaxGetPlant(urlPlantNonImport, compId);
-            loadSupportingDocuments(urlSupportDoc, compId);
+            loadSupportingDocuments(urlSupportDoc, compId,"create");
             attach();
 
             $('input:radio').change(function () {
@@ -499,8 +508,13 @@
                 var compId = $("#CompanySelector :selected").val();
                 $('#PlantId').html('');
                 $('#PlantId').append('<option value="">Select</option>');
+                $("#FaOldId").val("Select");
+                $("#FaNewId").val("Select");
+                $("#FaCodeNewDesc").val("");                
+                $("#FaCodeOldDesc").val("");
+                $("#hlCode").val("");
                 console.log(compId);
-                loadSupportingDocuments(urlSupportDoc, compId);
+                loadSupportingDocuments(urlSupportDoc, compId,"create");
 
                 if ($('#isImport').is(":checked")) {
                     // For Import
@@ -532,11 +546,20 @@
 
             $('#PlantId').on("change", function () {
                 var plantName = $("#PlantId :selected").text();
-                var nppbkcId = $("#PlantId :selected").val();
+                var plantCode = $("#PlantId :selected").val();
                 plantElm.hide();
-                console.log("nppbkc id :" + nppbkcId);
-                ajaxLoadNppbkcData(urlNppbkc, nppbkcId);                
-                ajaxGetPlantCode(urlGetPlantCodeByName, plantName, urlFaCodeByPlant, urlFaCodeUsedByPlant);
+                console.log("plant code :" + plantCode);           
+                       
+                ajaxGetFaCodeByPlant(urlFaCodeByPlant, plantCode);
+                ajaxGetFaCodeUsedByPlant(urlFaCodeUsedByPlant, plantCode);
+            });
+
+            $('#CountrySelector').on("change", function () {
+                countryElm.hide();                        
+            });
+
+            $('#WeekSelector').on("change", function () {
+                weekElm.hide();               
             });
 
             $('#isImport').change(function () {
@@ -586,14 +609,12 @@
             detach();
         });
 
-        function ClearModalDetail() {
+        function ClearModalDetailCreate() {
             $("#brandRequestNo").val("");
-            $("#CompanySelector").selectpicker("refresh");
-            $("#MarketSelector").selectpicker("refresh");
-            $("#PlantId").selectpicker("refresh");
-            $("#FaNewId").selectpicker("refresh");
+            $("#PlantId").val("Select");
+            $("#FaNewId").val("Select");
             $("#FaCodeNewDesc").val("");                 
-            $("#FaOldId").selectpicker("refresh");
+            $("#FaOldId").val("Select");
             $("#FaCodeOldDesc").val("");
             $("#hlCode").val("");
 
@@ -611,19 +632,31 @@
             console.log(otherDocsName.length);
             console.log("supp doc: " + supportingDocs);
             renderFileList();
+          
         });
-
+      
         function getUrl(ActionName) {
             var BaseUrl = '@Url.Action("", "BrandRegistrationTransaction")';
             var URL = BaseUrl + "/" + ActionName;
             return URL;
         }
 
-        $(".itemView").click(function () {
-            var idItem = $(this).data('id');
-            console.log("id item : " + idItem);
-            console.log("click");
-        });
+        //$(document).on('click', '.itemView', function () {
+        //    $('#myModalItem').modal('show');
+        //    var idItem = $(this).data('id');
+        //    console.log("id item : " + idItem);
+        //    console.log("modal edit");
+
+        //    $("#CompanySelector").text(arrayItem[idItem].companyItem);
+        //    $("#FaOldId").text(arrayItem[idItem].faCodeOldItem);
+        //    $("#FaCodeOldDesc").text(arrayItem[idItem].faCodeOldDescItem);
+        //    $("#FaNewId").text(arrayItem[idItem].faCodeNewItem);
+        //    $("#FaCodeNewDesc").text(arrayItem[idItem].faCodeNewItem);         
+        //    $("#hlCode").text(arrayItem[idItem].hlCodeItem);
+        //    $("#PlantId").text(arrayItem[idItem].plantItem);
+        //    $("#MarketSelector").text(arrayItem[idItem].marketItem);
+        //    document.getElementById("isImport").checked = arrayItem[idItem].isImport;
+        //});
 
 
         var productFormData = {};
@@ -680,7 +713,7 @@
             });
             return count;
         }
-
+      
         @*function GetPlantCode(name) {
             var codePlant = "";
             $.ajax({

@@ -10,6 +10,7 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
     {
         public string Plant { get; set; }
         public string FaCode { get; set; }
+        public string StickerCode { get; set; }
         public string Pbck7Qty { get; set; }
         public string FiscalYear { get; set; }
     }

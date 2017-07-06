@@ -408,14 +408,14 @@ $(document).on("change", ".change_tariff", function () {
 
 
 function CountHJEperBatang() {
-    var hje = $("#txt_modal_detail_hjeperpack").val();
-    var content = $("#txt_modal_detail_content").val();
+    var hje = NumberWithoutComma($("#txt_modal_detail_hjeperpack").val());
+    var content = NumberWithoutComma($("#txt_modal_detail_content").val());
     var hjePerBatang = hje / content;
-    $("#txt_modal_detail_hjeperbatang").val(hjePerBatang);
+    $("#txt_modal_detail_hjeperbatang").val(NumberWithComma(hjePerBatang));
 }
 
 function SetTariff() {
-    var hje = $("#txt_modal_detail_hjeperpack").val();
+    var hje = NumberWithoutComma($("#txt_modal_detail_hjeperpack").val());
     var startDate = $("#ViewModel_Submission_Date").val();
     var GoodType = $("#txt_modal_detail_excisegoodtype").val();
     $("#customloader").show();
@@ -430,7 +430,7 @@ function SetTariff() {
         success: function (data) {
             $("#txt_modal_detail_tariff").val("0");
             if (data != null) {
-                $("#txt_modal_detail_tariff").val(data.attribute.Tariff);
+                $("#txt_modal_detail_tariff").val(NumberWithComma(data.attribute.Tariff));
             }
         },
         complete: function () {
@@ -498,10 +498,20 @@ $(document).on("click", ".btn_showmodal_detail", function () {
         var companytier = tr.find(".txt_hd_companytier").val();
         var excisegood = tr.find(".txt_hd_excisegood").val();
         var hjeperpack = tr.find(".txt_hd_hjeperpack").val();
+        hjeperpack = NumberWithComma(NumberWithoutComma(hjeperpack));
         var unit = tr.find(".txt_hd_unit").val();
         var hjeperbatang = tr.find(".txt_hd_hjeperbatang").val();
+        hjeperbatang = NumberWithComma(NumberWithoutComma(hjeperbatang));
         var content = tr.find(".txt_hd_content").val();
-        var tariff = tr.find(".txt_hd_tariff").val();
+        content = NumberWithComma(NumberWithoutComma(content));
+        var strTariff = tr.find(".txt_hd_tariff").val();
+        var tariff = 0;
+        if (strTariff != "") {
+            strTariff = NumberWithoutComma(strTariff);
+            tariff = parseInt(strTariff);
+        }
+        tariff = NumberWithComma(tariff);
+
         var packaging_material = tr.find(".txt_hd_packaging_material").val();
         var front_side = tr.find(".txt_hd_front_side").val();
         var back_side = tr.find(".txt_hd_back_side").val();
@@ -509,6 +519,7 @@ $(document).on("click", ".btn_showmodal_detail", function () {
         var right_side = tr.find(".txt_hd_right_side").val();
         var top_side = tr.find(".txt_hd_top_side").val();
         var bottom_side = tr.find(".txt_hd_bottom_side").val();
+
         $("#txt_hd_index").val(index);
         $("#txt_modal_detail_requestnumber").val(requestnumber);
         $("#txt_modal_detail_facodeold").val(facodeold);
@@ -1012,6 +1023,25 @@ function GeneratePrintOut() {
     });
 }
 
+function GeneratePrintOutSuratPernyataan() {
+    $("#customloader").show();
+    $("#div-printout_surat_pernyataan").empty();
+    var ID = $("#txt_hd_id").val();
+    $.ajax({
+        type: 'POST',
+        url: getUrl("GeneratePrintoutSuratPernyataan"),
+        data: { ID: ID },
+        success: function (data) {
+            $("#div-printout_surat_pernyataan").html(data);
+        },
+        complete: function () {
+            $("#customloader").hide();
+        }
+    });
+}
+
+
+
 function GeneratePrintOutItem() {
     $("#customloader").show();
     $("#div-printout-item").empty();
@@ -1029,15 +1059,32 @@ function GeneratePrintOutItem() {
     });
 }
 
+function GeneratePrintOutExport() {
+    $("#customloader").show();
+    $("#div-printout-export").empty();
+    var ID = $("#txt_hd_id").val();
+    $.ajax({
+        type: 'POST',
+        url: getUrl("GeneratePrintoutExport"),
+        data: { ID: ID },
+        success: function (data) {
+            $("#div-printout-export").html(data);
+        },
+        complete: function () {
+            $("#customloader").hide();
+        }
+    });
+}
+
 
 function GeneratePrintOutPDF() {
     $("#form_DownloadPrintout").submit();
 }
 
-function GetPrintoutLayout() {
+function GetPrintoutLayout(layout) {
     $("#customloader").show();
     var registrationType = $("#divRegistrationType input[type='radio']:checked").val();
-
+    $("#PrintLayoutName").val(layout);
     $.ajax({
         type: 'POST',
         url: getUrl("GetPrintOutLayout"),
@@ -1045,6 +1092,7 @@ function GetPrintoutLayout() {
             RegistrationType: registrationType,
             CreatedBy: $('#txt_hd_createdby').val(),
             DocExport: $('#txt_hd_docexport').val(),
+            LayoutName: layout
         },
         success: function (html) {
             tinyMCE.activeEditor.setContent(html);
@@ -1058,8 +1106,29 @@ function CloseAllModal() {
     $('.ems-modal').modal('hide');
 }
 
+function GetPrintoutLayoutSuratPernyataan() {
+    $("#customloader").show();
+    var registrationType = $("#divRegistrationType input[type='radio']:checked").val();
 
-function UpdatePrintoutLayout() {
+    $.ajax({
+        type: 'POST',
+        url: getUrl("GetPrintOutLayoutSuratPernyataan"),
+        data: {
+            RegistrationType: registrationType,
+            CreatedBy: $('#txt_hd_createdby').val(),
+            DocExport: $('#txt_hd_docexport').val(),
+        },
+        success: function (html) {
+            tinyMCE.activeEditor.setContent(html);
+        },
+        complete: function () {
+            $("#customloader").hide();
+        }
+    });
+}
+
+
+function UpdatePrintoutLayout(layoutName) {
     $("#customloader").show();
     CloseAllModal();
     var layout = tinyMCE.get('txt_printoutlayout').getContent();
@@ -1073,6 +1142,7 @@ function UpdatePrintoutLayout() {
             RegistrationType: registrationType,
             CreatedBy: $('#txt_hd_createdby').val(),
             DocExport: $('#txt_hd_docexport').val(),
+            LayoutName: layoutName
         },
         success: function (result) {
             if (result == "") {
@@ -1090,7 +1160,14 @@ function UpdatePrintoutLayout() {
 
 $(document).on("click", "#btn-tab-printout", function () {
     GeneratePrintOut();
+    GeneratePrintOutSuratPernyataan();
     GeneratePrintOutItem();
+
+    if($("#txt_hd_docexport").val() == "True")
+    {
+        GeneratePrintOutExport();
+
+    }
 });
 
 $(document).on("click", "#btn_download_printout", function () {
@@ -1098,16 +1175,24 @@ $(document).on("click", "#btn_download_printout", function () {
 });
 
 $(document).on("click", "#btn_show_printouteditor", function () {
-    GetPrintoutLayout();
+    var layout = $(this).data("layout");
+
+    GetPrintoutLayout(layout);
 });
 
+$(document).on("click", "#btn_show_printouteditor_suratpernyataan", function () {
+    GetPrintoutLayoutSuratPernyataan();
+});
+
+
 $(document).on("click", "#btn_change_printoutlayout", function () {
-    UpdatePrintoutLayout();
+    UpdatePrintoutLayout($("#PrintLayoutName").val());
 });
 
 $(document).on("click", "#btnSave", function () {
     CloseAllModal();
     $("#customloader").show();
+    CleaningComma();
     var fieldEmpty = CheckFieldEmpty();
     if (fieldEmpty == 0) {
         $("#txt_hd_next_status").val($("#statusDraftEdit").val());
@@ -1122,6 +1207,7 @@ $(document).on("click", "#btnSave", function () {
 $(document).on("click", "#btnSubmit", function () {
     CloseAllModal();
     $("#customloader").show();
+    CleaningComma();
     var url = $("#txt_hd_baseurl").val() + "BRBrandRegistration/ChangeStatus";
     $("#BrandRegCreateForm").attr("action", url);
     $("#txt_hd_current_action").val("submit");
@@ -1133,6 +1219,17 @@ $(document).on("click", "#btnSubmitSkep", function () {
     CloseAllModal();
     $("#customloader").show();
     $("#txt_hd_next_status").val($("#statusWaitingforPOASKEPApproval").val());
+    $("#BrandRegCreateForm").submit();
+});
+
+$(document).on("click", "#btnCancel", function () {
+    CloseAllModal();
+    $("#customloader").show();
+    var url = $("#txt_hd_baseurl").val() + "BRBrandRegistration/ChangeStatus";
+    $("#BrandRegCreateForm").attr("action", url);
+    var last_approval_status = $("#txt_hd_lastapproved_status").val();
+    $("#txt_hd_current_action").val("cancel");
+    $("#txt_hd_next_status").val($("#statusCanceled").val());
     $("#BrandRegCreateForm").submit();
 });
 
@@ -1181,8 +1278,6 @@ $(document).on("click", ".btn_showmodal_changestatus", function () {
 });
 
 $(document).on("click", ".btn_changestatus_submit", function () {
-    CloseAllModal();
-    $("#customloader").show();
     var action = $(this).data("action");
     var status = "";
     switch(action)
@@ -1200,7 +1295,16 @@ $(document).on("click", ".btn_changestatus_submit", function () {
             break;
     }
     var comment = $("#txt_changestatus_comment").val();
-    ReviseBrand(action, status, comment);
+
+    if (comment != "") {
+        CloseAllModal();
+        $("#customloader").show();
+        ReviseBrand(action, status, comment);
+    }
+    else {
+        $("#div_alert_revise").show();
+        $("#div_alert_revise").html("* Note/Comment cannot be empty.");
+    }
 });
 
 
@@ -1235,6 +1339,27 @@ $(document).on("click", "#delItem", function () {
 $(document).on('keydown', '.numeric-form', function (e) {
     { -1 !== $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) || /65|67|86|88/.test(e.keyCode) && (!0 === e.ctrlKey || !0 === e.metaKey) || 35 <= e.keyCode && 40 >= e.keyCode || (e.shiftKey || 48 > e.keyCode || 57 < e.keyCode) && (96 > e.keyCode || 105 < e.keyCode) && e.preventDefault() }
 });
+
+$(document).on("keyup", ".numeric-form", function () {
+    var number = NumberWithComma($(this).val());
+    $(this).val(number);
+});
+
+function NumberWithComma(number) {
+    if (number != "") {
+        //number = number.replace(/\.00/g, '');
+        number = number.toString().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    return number;
+}
+
+function NumberWithoutComma(number) {
+    if (number != "") {
+        number = number.replace(/\,/g, '');
+        //number = number.replace(/\.00/g, '');
+    }
+    return number;
+}
 
 function ToggleCheckAll() {
     var isNowChecked = false;
@@ -1477,14 +1602,15 @@ function GenerateItemInputHidden(indexForid, pddetailid, brandname, companytier,
 function RestoreDefaultPrintout() {
     $("#customloader").show();
     var registrationType = $("#divRegistrationType input[type='radio']:checked").val();
-
+    var layoutName = $("#PrintLayoutName").val();
     $.ajax({
         type: 'POST',
         url: getUrl("RestorePrintoutToDefault"),
         data: {
             RegistrationType: registrationType,
             CreatedBy: $('#txt_hd_createdby').val(),
-            DocExport: $('#txt_hd_docexport').val()
+            DocExport: $('#txt_hd_docexport').val(),
+            LayoutName: layoutName
         },
         success: function (data) {
             if (data != "") {
@@ -1577,3 +1703,19 @@ $(document).on("click", ".btn_remove_supportdoc", function () {
     parent.find(".supporting_document").prop('required', true);
     AddRemovedFileToList(fileuploadid);
 });
+
+function CleaningComma() {
+    $("#tbody_skeplistitem").find("tr").each(function () {
+        var _isactive = $(this).find(".txt_hd_isactive").val();
+        if (_isactive == "true") {
+            var txt_hd_hjeperpack = $(this).find(".txt_hd_hjeperpack").val();
+            var txt_hd_hjeperbatang = $(this).find(".txt_hd_hjeperbatang").val();
+            var txt_hd_content = $(this).find(".txt_hd_content").val();
+            var txt_hd_tariff = $(this).find(".txt_hd_tariff").val();
+            $(this).find(".txt_hd_hjeperpack").val(NumberWithoutComma(txt_hd_hjeperpack));
+            $(this).find(".txt_hd_hjeperbatang").val(NumberWithoutComma(txt_hd_hjeperbatang));
+            $(this).find(".txt_hd_content").val(NumberWithoutComma(txt_hd_content));
+            $(this).find(".txt_hd_tariff").val(NumberWithoutComma(txt_hd_tariff));
+        }
+    });
+}
