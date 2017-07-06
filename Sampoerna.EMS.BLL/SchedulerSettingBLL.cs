@@ -64,6 +64,8 @@ namespace Sampoerna.EMS.BLL
                     var cronExpression = cron.Descendants().First(x => x.Name.LocalName == "cron-expression");//.Element("cron-expression");
                     var cronName = GetElementValue(cron.Descendants().First(x => x.Name.LocalName == "job-name")); //Element("job-name"));
 
+                    if(cronName.ToLower().Contains("dailyonce")) continue;
+
                     var minutes = GetMinutesFromCronExpression(GetElementValue(cronExpression));
                     if (cronName.ToLower().Contains("daily"))
                     {
@@ -100,7 +102,7 @@ namespace Sampoerna.EMS.BLL
 
 
                     var cronName = GetElementValue(cron.Descendants().First(x => x.Name.LocalName == "job-name"));
-
+                    if (cronName.ToLower().Contains("dailyonce")) continue;
                     var minuteExpression = "";
                     var element = cron.Descendants().First(x => x.Name.LocalName == "cron-expression");//cron.Element("cron-expression");
                     if (cronName.ToLower().Contains("daily"))
