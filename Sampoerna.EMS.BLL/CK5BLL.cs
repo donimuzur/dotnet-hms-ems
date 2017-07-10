@@ -5363,7 +5363,7 @@ namespace Sampoerna.EMS.BLL
         {
             var output = new GetQuotaAndRemainOutput();
 
-            var pbck1 = _pbck1Bll.GetById(pbckId);
+            var pbck1 = _pbck1Bll.GetById(pbckId,true);
             if (pbck1 == null)
                 throw new BLLException(ExceptionCodes.BLLExceptions.Pbck1PeriodNotFound);
 
@@ -6476,7 +6476,7 @@ namespace Sampoerna.EMS.BLL
 
             if (quotaDetail.Pbck1Id.HasValue)
             {
-                pbck1Data = _pbck1Bll.GetById(quotaDetail.Pbck1Id.Value);
+                pbck1Data = _pbck1Bll.GetById(quotaDetail.Pbck1Id.Value,true);
                 var userCreatorInfo = _userBll.GetUserById(pbck1Data.CreatedById);
                 var userPoaApprovalInfo = _userBll.GetUserById(pbck1Data.ApprovedByPoaId);
                 var controllerList = _userBll.GetControllers();
