@@ -68,7 +68,7 @@ namespace Sampoerna.EMS.XMLReader
 
                 
                 writer.WriteElementString("EXC_GOOD_TYP",SetNullToSlash(brandReg.EXC_GOOD_TYP));
-                writer.WriteElementString("EXC_TYP_DESC", SetNullToSlash(brandReg.EXC_TYP_DESC));
+                //writer.WriteElementString("EXC_TYP_DESC", SetNullToSlash(brandReg.EXC_TYP_DESC));
 
                 writer.WriteElementString("START_DATE",SetNullToSlash(GetDateFormat(brandReg.START_DATE)));
                 writer.WriteElementString("END_DATE",SetNullToSlash(GetDateFormat(brandReg.END_DATE)));
