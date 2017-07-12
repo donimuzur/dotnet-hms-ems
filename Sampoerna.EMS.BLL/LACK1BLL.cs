@@ -1653,6 +1653,13 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData = _lack1Service.GetDetailsById(id);
             var dtToReturn = Mapper.Map<Lack1PrintOutDto>(dbData);
+
+            if (dtToReturn.IsSupplierNppbkcImport)
+            {
+                var supplierPlant = _t001WServices.GetById(dtToReturn.SupplierPlantId);
+                dtToReturn.SupplierPlantAddress = supplierPlant.ADDRESS_IMPORT;
+            }
+
             dtToReturn.FusionSummaryProductionByProdTypeList =
                 GetProductionDetailSummaryByProdType(dtToReturn.Lack1ProductionDetail);
 
