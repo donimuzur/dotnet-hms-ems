@@ -266,10 +266,10 @@
         }
 
         function supplierPortOnChange() {
-            if ($("#Detail_SupplierPortId").length) {
-                var port_id = $('#Detail_SupplierPortId').find("option:selected").val();
-                var port_name = $('#Detail_SupplierPortId').find("option:selected").text();
-                console.log(port_id);
+            if ($("#Detail_SupplierPortName").length) {
+                //var port_id = $('#Detail_SupplierPortId').find("option:selected").val();
+                //var port_name = $('#Detail_SupplierPortId').find("option:selected").text();
+                //console.log(port_id);
                 $('#Detail_SupplierPlant').remove();
                 if ($("#Detail_IsExternalSupplier").is(':checked')) {
                     //
@@ -277,7 +277,7 @@
                     disableSupplierFormInput(false);
                     setSupplierPlantEmpty();
                 } else {
-                    $('#Detail_SupplierPortName').val(port_name);
+                    //$('#Detail_SupplierPortName').val(port_name);
                     loadSupplierPlant();
                     disableSupplierFormInput(true);
                 }

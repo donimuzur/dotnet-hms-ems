@@ -622,9 +622,9 @@
         }
 
         function supplierPortOnChange() {
-            if ($("#Detail_SupplierPortId").length) {
-                var port_id = $('#Detail_SupplierPortId').find("option:selected").val();
-                console.log(port_id);
+            if ($("#Detail_SupplierPortName").length) {
+                //var port_id = $('#Detail_SupplierPortId').find("option:selected").val();
+                //console.log(port_id);
                 $('#Detail_SupplierPlant').remove();
                 if ($("#Detail_IsExternalSupplier").is(':checked')) {
                     $('#supp-plant').html('<input class="form-control" id="Detail_SupplierPlant" name="Detail.SupplierPlant" type="text" maxlength="4"/>');

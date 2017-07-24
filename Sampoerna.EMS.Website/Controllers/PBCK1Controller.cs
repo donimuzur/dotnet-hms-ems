@@ -2627,7 +2627,7 @@ namespace Sampoerna.EMS.Website.Controllers
         private dsPbck1 AddDataRealisasiP3Bkc(dsPbck1 ds, Pbck1ReportDto reportDto, List<Pbck1SummaryRealisasiProductionDetailDto> summaryData)
         {
             var data = reportDto.RealisasiP3Bkc;
-            //var convertedUomId = reportDto.Detail.ConvertedUomId;
+            var convertedUomId = reportDto.Detail.ConvertedUomId;
             var realisasiUomId = reportDto.Detail.RealisasiUomId;
             var bkcExcisableGoodsTypeDesc = reportDto.Detail.RealisasiBkcExcisableGoodsTypeDesc;
             var sumPemasukan = 0m;
@@ -2843,13 +2843,33 @@ namespace Sampoerna.EMS.Website.Controllers
                 detailRow.SaldoAkhirDisplay = "";
                 detailRow.Uom = "";
                 detailRow.UomBKC = "";
-                detailRow.VisibilityUomJumlahBkc = "l";
-                detailRow.VisibilityUomPemasukan = "l";
-                detailRow.VisibilityUomPenggunaan = "l";
+                detailRow.VisibilityUomJumlahBkc = "g";
+                detailRow.VisibilityUomPemasukan = "g";
+                detailRow.VisibilityUomPenggunaan = "g";
                 detailRow.SummaryJenis = "";
                 detailRow.SummaryJumlah = "";
                 detailRow.SumAllPemasukan = String.Format("{0:n}", sumPemasukan);
                 detailRow.SumAllPenggunaan = String.Format("{0:n}", sumPenggunaan);
+
+                if (reportDto.Detail.ExcisableGoodsDescription == EnumHelper.GetDescription(Enums.ExGoodsType.EtilAlcohol))
+                {
+                    detailRow.VisibilityUomPemasukan = "l";
+                    detailRow.VisibilityUomPenggunaan = "l";
+                }
+
+                if (convertedUomId.ToLower() == "btg")
+                {
+                    detailRow.VisibilityUomJumlahBkc = "b";//Batang
+                }
+                else if (convertedUomId.ToLower() == "g" || convertedUomId.ToLower() == "kg")
+                {
+                    detailRow.VisibilityUomJumlahBkc = "k";//Kilogram
+                }
+                else if (convertedUomId.ToLower() == "l")
+                {
+                    detailRow.VisibilityUomJumlahBkc = "l";//Liter
+                }
+
                 ds.RealisasiP3BKC.AddRealisasiP3BKCRow(detailRow);
             }
             return ds;
