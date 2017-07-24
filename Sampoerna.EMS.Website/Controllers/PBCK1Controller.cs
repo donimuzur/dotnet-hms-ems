@@ -2851,7 +2851,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 detailRow.SumAllPemasukan = String.Format("{0:n}", sumPemasukan);
                 detailRow.SumAllPenggunaan = String.Format("{0:n}", sumPenggunaan);
 
-                if (reportDto.Detail.ExcisableGoodsDescription == EnumHelper.GetDescription(Enums.ExGoodsType.EtilAlcohol))
+                if (reportDto.Detail.ExcisableGoodsDescription.ToLower().Contains("alkohol"))
                 {
                     detailRow.VisibilityUomPemasukan = "l";
                     detailRow.VisibilityUomPenggunaan = "l";
