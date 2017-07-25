@@ -312,6 +312,11 @@ namespace Sampoerna.EMS.XMLReader
             if (reader != null)
             {
                 errorList.AddRange(reader.GetErrorList());
+                if (errorList.Count > 0)
+                {
+                    var generalError = new MovedFileOutput("General error", true, errorList);
+                    filesMoved.Add(generalError);
+                }
             }
             return filesMoved;
         }

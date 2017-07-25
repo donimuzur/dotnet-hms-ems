@@ -81,7 +81,9 @@ namespace Sampoerna.HMS.Scheduler.Jobs
                 catch (Exception ex)
                 {
                     logger.Error("Reading XML crashed", ex);
-                    var body = ex.Message;
+                    var body = String.Format("<p>{0}</p>",ex.Message);
+                    body += String.Format("<p>{0}</p>", ex.StackTrace);
+
                     if (!String.IsNullOrEmpty(body))
                         logger.Error(EmailUtility.Email(body,"Scheduler is down"));
                     
