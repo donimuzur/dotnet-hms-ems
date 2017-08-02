@@ -334,6 +334,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Noted, opt => opt.MapFrom(src => src.NOTED))
                 .ForMember(dest => dest.DocumentNoted, opt => opt.MapFrom(src => src.DOCUMENT_NOTED))
                 .ForMember(dest => dest.IsTisToTis, opt => opt.MapFrom(src => src.IS_TIS_TO_TIS))
+                .ForMember(dest => dest.IsSupplierNppbkcImport, opt => opt.MapFrom(src => src.IS_SUPPLIER_IMPORT))
                 ;
 
             Mapper.CreateMap<InvMovementItemWithConvertion, Lack1GeneratedTrackingDto>().IgnoreAllNonExisting()

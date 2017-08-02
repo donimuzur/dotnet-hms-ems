@@ -115,7 +115,12 @@
                                                                             @Html.HiddenFor(x=> x.Detail.MasterDataSettingDetails[i].PAGE_ID)
                                                                             @Html.HiddenFor(x => x.Detail.MasterDataSettingDetails[i].COLUMN_NAME)
                                                                             @Html.HiddenFor(x => x.Detail.MasterDataSettingDetails[i].ColumnDescription)
-
+                                                                            @Html.HiddenFor(x => x.Detail.MasterDataSettingDetails[i].IsPrimary)
+                                                                            @if (Model.Detail.MasterDataSettingDetails[i].IsPrimary)
+                                                                            {
+                                                                                @Html.HiddenFor(x => x.Detail.MasterDataSettingDetails[i].IS_APPROVAL)    
+                                                                            }
+                                                                            
                                                                             <td>
                                                                                 <span id="field1">@Html.DisplayTextFor(x=> x.Detail.MasterDataSettingDetails[i].ColumnDescription)</span>
 
@@ -126,7 +131,16 @@
                                                                             </td>
                                                                             <td>
                                                                                 @*<span id="field2">@Html.Raw(Model.MaterialUom[i].UmrenStr)</span>*@
-                                                                                @Html.CheckBoxFor(x => x.Detail.MasterDataSettingDetails[i].IS_APPROVAL)
+                                                                                @if (Model.Detail.MasterDataSettingDetails[i].IsPrimary)
+                                                                                {
+                                                                                    @Html.CheckBoxFor(x => x.Detail.MasterDataSettingDetails[i].IS_APPROVAL, new Dictionary<string, object>{ {"disabled", "disabled"} })
+                                                                                    
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    @Html.CheckBoxFor(x => x.Detail.MasterDataSettingDetails[i].IS_APPROVAL)    
+                                                                                }
+                                                                                
                                                                             </td>
                                                                         </tr>
 

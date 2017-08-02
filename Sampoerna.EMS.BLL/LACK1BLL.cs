@@ -1406,10 +1406,12 @@ namespace Sampoerna.EMS.BLL
                     if (lack1Data.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
                         var poaData = _poaBll.GetActivePoaById(lack1Data.CreateBy);
+                        var poaApprove = _poaBll.GetById(lack1Data.ApprovedByPoa);
                         if (poaData != null)
                         {
+                            rc.To.Add(poaApprove.POA_EMAIL);
                             //creator is poa user
-                            rc.To.Add(poaData.POA_EMAIL);
+                            rc.CC.Add(poaData.POA_EMAIL);
                             //first code when manager exists
                             //rc.CC.Add(GetManagerEmail(lackData.CreatedBy));
 
@@ -1422,8 +1424,8 @@ namespace Sampoerna.EMS.BLL
                         {
                             //creator is excise executive
 
-                            rc.To.Add(userData.EMAIL);
-                            rc.CC.Add(_poaBll.GetById(lack1Data.ApprovedByPoa).POA_EMAIL);
+                            rc.CC.Add(userData.EMAIL);
+                            rc.To.Add(poaApprove.POA_EMAIL);
                             //first code when manager exists
                             //rc.CC.Add(GetManagerEmail(lackData.ApprovedBy));
 
@@ -1651,6 +1653,13 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData = _lack1Service.GetDetailsById(id);
             var dtToReturn = Mapper.Map<Lack1PrintOutDto>(dbData);
+
+            if (dtToReturn.IsSupplierNppbkcImport)
+            {
+                var supplierPlant = _t001WServices.GetById(dtToReturn.SupplierPlantId);
+                dtToReturn.SupplierPlantAddress = supplierPlant.ADDRESS_IMPORT;
+            }
+
             dtToReturn.FusionSummaryProductionByProdTypeList =
                 GetProductionDetailSummaryByProdType(dtToReturn.Lack1ProductionDetail);
 
@@ -1760,8 +1769,8 @@ namespace Sampoerna.EMS.BLL
 
             if (!string.IsNullOrEmpty(dbData.APPROVED_BY_POA))
             {
-                var poa = _poaBll.GetDetailsById(dbData.APPROVED_BY_POA);
-                if (poa == null) poa = _poaBll.GetDetailsById(dbData.CREATED_BY);
+                var poa = _poaBll.GetDetailsById(dbData.CREATED_BY);
+                if (poa == null) poa = _poaBll.GetDetailsById(dbData.APPROVED_BY_POA);
 
                 dtToReturn.PoaPrintedName = poa.PRINTED_NAME;
             }
@@ -2695,7 +2704,7 @@ namespace Sampoerna.EMS.BLL
             //{
             //    strCsv += ObjectToCsvData(data) + "\r\n";
             //}
-            var productionTypeId = finalgoodlistGrouped.Any() ? finalgoodlistGrouped.FirstOrDefault().ExGoodsTypeId : EnumHelper.GetDescription(Enums.GoodsType.EtilAlkohol);
+            var productionTypeId = finalgoodlistGrouped.Any(x => x.IsFinalGoodsType) ? finalgoodlistGrouped.Where(x=> x.IsFinalGoodsType).FirstOrDefault().ExGoodsTypeId : EnumHelper.GetDescription(Enums.GoodsType.EtilAlkohol);
 
             var productionList = new List<Lack1GeneratedProductionDataDto>();
             
@@ -3871,7 +3880,11 @@ namespace Sampoerna.EMS.BLL
 
             rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
 
-            rc.Lack1UomId = ck5Data.FirstOrDefault().PACKAGE_UOM_ID;
+            if (rc.Lack1UomId == null)
+            {
+                rc.Lack1UomId = ck5Data.FirstOrDefault().PACKAGE_UOM_ID;    
+            }
+            
 
             rc.TotalWaste = rc.Ck5RemarkData.Ck5WasteData.Sum(x => x.Amount);
             rc.TotalReturn = rc.Ck5RemarkData.Ck5ReturnData.Sum(x => x.Amount);
@@ -3932,7 +3945,10 @@ namespace Sampoerna.EMS.BLL
 
             rc.TotalIncome = rc.IncomeList.Sum(d => d.Amount);
 
-            rc.Lack1UomId = ck5Data.FirstOrDefault().PACKAGE_UOM_ID;
+            if (rc.Lack1UomId == null)
+            {
+                rc.Lack1UomId = ck5Data.FirstOrDefault().PACKAGE_UOM_ID;
+            }
 
             rc.TotalWaste = rc.Ck5RemarkData.Ck5WasteData.Sum(x => x.Amount);
             rc.TotalReturn = rc.Ck5RemarkData.Ck5ReturnData.Sum(x => x.Amount);

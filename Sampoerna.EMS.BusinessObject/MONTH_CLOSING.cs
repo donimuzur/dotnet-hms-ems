@@ -18,6 +18,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string PLANT_ID { get; set; }
         public Nullable<System.DateTime> CLOSING_DATE { get; set; }
         public string MONTH_FLAG { get; set; }
+        public Nullable<bool> IS_ACTIVE { get; set; }
     
         public virtual T001W T001W { get; set; }
     }

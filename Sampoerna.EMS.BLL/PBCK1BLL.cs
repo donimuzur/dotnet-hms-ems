@@ -272,6 +272,15 @@ namespace Sampoerna.EMS.BLL
             return mapResult;
         }
 
+        public Pbck1Dto GetById(long id,bool noRelation)
+        {
+            
+            var dbData = _repository.Get(c => c.PBCK1_ID == id, null, "").FirstOrDefault();
+            var mapResult = Mapper.Map<Pbck1Dto>(dbData);
+            
+            return mapResult;
+        }
+
         public SavePbck1Output Save(Pbck1SaveInput input)
         {
             PBCK1 dbData;
@@ -2048,8 +2057,8 @@ namespace Sampoerna.EMS.BLL
                 rc.Detail.NppbkcCity = nppbkcDetails.CITY;
             }
 
-            var creatorPoa = _poaBll.GetById(dbData.APPROVED_BY_POA);
-            var poaId = creatorPoa == null ? dbData.CREATED_BY : dbData.APPROVED_BY_POA;
+            var creatorPoa = _poaBll.GetById(dbData.CREATED_BY);
+            var poaId = creatorPoa == null ? dbData.APPROVED_BY_POA : dbData.CREATED_BY;
 
             var poaDetails = _poaBll.GetDetailsById(poaId);
             if (poaDetails != null)

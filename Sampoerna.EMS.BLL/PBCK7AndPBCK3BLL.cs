@@ -1195,6 +1195,12 @@ namespace Sampoerna.EMS.BLL
                 if (dbBrand == null)
                     messageList.Add("FA Code Not Exist");
 
+                if (pbck7ItemInput.StickerCode != null)
+                {
+                    dbBrand = _brandRegistrationServices.GetByPlantIdAndFaCodeStickerCode(pbck7ItemInput.Plant, pbck7ItemInput.FaCode, pbck7ItemInput.StickerCode);
+                    if (dbBrand == null)
+                        messageList.Add("Sticker Code Not Exist");
+                }
 
                 if (!ConvertHelper.IsNumeric(pbck7ItemInput.Pbck7Qty))
                     messageList.Add("PBCK-7 Qty not valid");
@@ -3350,8 +3356,8 @@ namespace Sampoerna.EMS.BLL
             //set exclude on mapper
             //get POA Data
             string poaId;
-            var poaInfo = _poaBll.GetDetailsById(dbData.APPROVED_BY);
-            poaId = poaInfo == null ? dbData.CREATED_BY : dbData.APPROVED_BY;
+            var poaInfo = _poaBll.GetDetailsById(dbData.CREATED_BY);
+            poaId = poaInfo == null ? dbData.APPROVED_BY : dbData.CREATED_BY;
             //var poaId = string.IsNullOrEmpty(dbData.APPROVED_BY) ? dbData.CREATED_BY : dbData.APPROVED_BY;
             rc = SetPoaData(rc, poaId);
 
@@ -3387,8 +3393,8 @@ namespace Sampoerna.EMS.BLL
             //get POA Data
             //var poaId = string.IsNullOrEmpty(dbData.APPROVED_BY) ? dbData.CREATED_BY : dbData.APPROVED_BY;
             string poaId;
-            var poaInfo = _poaBll.GetDetailsById(dbData.APPROVED_BY);
-            poaId = poaInfo == null ? dbData.CREATED_BY : dbData.APPROVED_BY;
+            var poaInfo = _poaBll.GetDetailsById(dbData.CREATED_BY);
+            poaId = poaInfo == null ? dbData.APPROVED_BY : dbData.CREATED_BY;
             rc = SetPoaData(rc, poaId);
 
 

@@ -31,6 +31,8 @@ namespace Sampoerna.EMS.Website.Models.MasterDataApprovalSetting
         public string COLUMN_NAME { get; set; }
         public bool IS_APPROVAL { get; set; }
 
+        public bool IsPrimary { get; set; }
+
         public string ColumnDescription { get; set; }
     }
 }

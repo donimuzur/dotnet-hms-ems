@@ -69,6 +69,12 @@ namespace Sampoerna.EMS.BLL
             isExist = false;
 
             var needApprovalFields = approvalSettings.Details.Where(x => x.IS_APPROVAL.HasValue && x.IS_APPROVAL.Value);
+
+            if (isCommit)
+            {
+                needApprovalFields = approvalSettings.Details;
+            }
+
             var needApprovalList = new List<MASTER_DATA_APPROVAL_DETAIL>();
             foreach (var isneedApprove in needApprovalFields)
             {
