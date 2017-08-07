@@ -30,6 +30,7 @@ namespace Sampoerna.EMS.XMLReader
         private IGenericRepository<POA_MAP> _repositoryPoaMapRepository;
 
         private static int xMonth = 5;
+        private static int xCompesationDay = 2;
 
         public BrandCk1CheckService()
         {
@@ -48,7 +49,7 @@ namespace Sampoerna.EMS.XMLReader
         public void BrandCheckProcessCk1()
         {
             var allActiveBrand = _brandRegistrationService.GetAllActiveBrand("01"); //domestic is "01" , export is "02"
-            var allLastCk1ItemXmonths = _ck1Services.GetLastXMonthsCk1(xMonth);
+            var allLastCk1ItemXmonths = _ck1Services.GetLastXMonthsCk1(xMonth,xCompesationDay);
 
             var allCk1ItemCode = allLastCk1ItemXmonths.Select(x => x.FA_CODE + "-" + x.WERKS + "-" + x.MATERIAL_ID).ToList();
 
@@ -69,7 +70,7 @@ namespace Sampoerna.EMS.XMLReader
 
             var brandSoonInvalidFinal =  brandSoonInvalid.Where(x => !allCk1ItemCode.Contains((x.FA_CODE + "-" + x.WERKS + "-" + x.STICKER_CODE)));
 
-            var allPreviousCk1ItemXmonths = _ck1Services.GetLastXMonthsCk1(xMonth, true);
+            var allPreviousCk1ItemXmonths = _ck1Services.GetLastXMonthsCk1(xMonth, xCompesationDay, true);
 
             //Dictionary<ZAIDM_EX_BRAND,List<CK1>> dictBrandCk1 = new Dictionary<ZAIDM_EX_BRAND, List<CK1>>();
             List<InvalidBrandByCk1ForEmail> invalidCk1List = new List<InvalidBrandByCk1ForEmail>();
@@ -106,6 +107,8 @@ namespace Sampoerna.EMS.XMLReader
                             BrandCe = zaidmExBrand.BRAND_CE,
                             Hje = zaidmExBrand.HJE_IDR.Value.ToString("N2"),
                             Tariff = zaidmExBrand.TARIFF.Value.ToString("N2"),
+                            SkepDate = zaidmExBrand.SKEP_DATE,
+                            SkepNumber = zaidmExBrand.SKEP_NO,
                             SentFlag = zaidmExBrand.IS_SENT_CHECK_BRAND == null ? false : zaidmExBrand.IS_SENT_CHECK_BRAND.Value,
                             LastCk1 = lastCk1
                         });
@@ -198,8 +201,24 @@ namespace Sampoerna.EMS.XMLReader
         private string BuildBodyMailForQuotaNotification(List<InvalidBrandByCk1ForEmail> invalidCk1List)
         {
             var bodyMail = new StringBuilder();
+            var bodyMailDeactivated = new StringBuilder();
+
+            var tresHoldEndDate = DateTime.Today.AddMonths(-1 * (xMonth + 1));
             //var supplier = dataMonitoring.SUPPLIER_WERKS;
             bodyMail.Append("<table style='border-collapse: collapse; border: 1px solid black;'>" +
+                            "<tr>" +
+                            "<th style='border: 1px solid black; width : 320px'>Plant</th>" +
+                            "<th style='border: 1px solid black;'>NPPBKC</th>" +
+                            "<th style='border: 1px solid black; width : 150px'>FA Code </th>" +
+                            "<th style='border: 1px solid black; width : 400px'>Brand Description</th>" +
+                            "<th style='border: 1px solid black;'>HJE</th>" +
+                            "<th style='border: 1px solid black;'>Tariff</th>" +
+                            "<th style='border: 1px solid black;'>PO Number</th>" +
+                            "<th style='border: 1px solid black;'>CK1 Number</th>" +
+                            "<th style='border: 1px solid black; width : 120px'>CK1 Date</th>" +
+                            "</tr>");
+
+            bodyMailDeactivated.Append("<table style='border-collapse: collapse; border: 1px solid black;'>" +
                             "<tr>" +
                             "<th style='border: 1px solid black; width : 320px'>Plant</th>" +
                             "<th style='border: 1px solid black;'>NPPBKC</th>" +
@@ -217,28 +236,79 @@ namespace Sampoerna.EMS.XMLReader
                 {
                     if (!brand.SentFlag)
                     {
-                        bodyMail.Append("<tr>" +
-                                    "<td style='border: 1px solid black;'>" + brand.Werks + "</td>" +
-                                    "<td style='border: 1px solid black; padding : 5px'>" + brand.NppbkcId + "</td>" +
-                                    "<td style='border: 1px solid black;'>" + brand.FaCode + "</td>" +
-                                    "<td style='border: 1px solid black;'>" + brand.BrandCe + "</td>" +
-                                    "<td style='border: 1px solid black; padding : 5px'>" + brand.Hje + "</td>" +
-                                    "<td style='border: 1px solid black; padding : 5px'>" + brand.Tariff + "</td>");
+                        var regDateTable = "";
+                        brand.IsDeactivated = false;
+
+                        //bodyMail.Append("<tr>" +
+                        //            "<td style='border: 1px solid black;'>" + brand.Werks + "</td>" +
+                        //            "<td style='border: 1px solid black; padding : 5px'>" + brand.NppbkcId + "</td>" +
+                        //            "<td style='border: 1px solid black;'>" + brand.FaCode + "</td>" +
+                        //            "<td style='border: 1px solid black;'>" + brand.BrandCe + "</td>" +
+                        //            "<td style='border: 1px solid black; padding : 5px'>" + brand.Hje + "</td>" +
+                        //            "<td style='border: 1px solid black; padding : 5px'>" + brand.Tariff + "</td>");
                         if (brand.LastCk1 != null)
                         {
-                            bodyMail.Append(
-                                "<td style='border: 1px solid black; padding : 5px'>" + brand.LastCk1.CK1_SAP_NUMBER + "</td>" +
+                            regDateTable = "<td style='border: 1px solid black; padding : 5px'>" + brand.LastCk1.CK1_SAP_NUMBER + "</td>" +
                                 "<td style='border: 1px solid black; padding : 5px'>" + brand.LastCk1.CK1_NUMBER + "</td>" +
-                                
+
                                 "<td style='border: 1px solid black; padding : 5px'>" + brand.LastCk1.CK1_DATE.ToString("dd MMM yyyy") + "</td>" +
-                                "</tr>");
+                                "</tr>";
+
+                            if (brand.LastCk1.ORDER_DATE != null && brand.LastCk1.ORDER_DATE.Value <= tresHoldEndDate)
+                            {
+                                brand.IsDeactivated = true;
+                            }
+                            
                         }
                         else
                         {
-                            bodyMail.Append(
-                                "<td style='border: 1px solid black;' colspan='3'>-</td>" +
 
-                                "</tr>");
+                            if (brand.SkepDate != null)
+                            {
+                                regDateTable = "<td style='border: 1px solid black;' colspan='2'> Skep : " +
+                                               brand.SkepNumber + "</td>" +
+                                               "<td style='border: 1px solid black; padding : 5px'>" +
+                                               brand.SkepDate.Value.ToString("dd MMM yyyy") + "</td>" +
+                                               "</tr>";
+
+                                if (brand.SkepDate <= tresHoldEndDate)
+                                {
+                                    brand.IsDeactivated = true;
+                                }
+                            }
+                            else
+                            {
+                                regDateTable = "<td style='border: 1px solid black;' colspan='3'>-</td>" +
+                                               "</tr>";
+                            }
+                            
+                        }
+
+                        if (!brand.IsDeactivated)
+                        {
+                            bodyMail.Append("<tr>" +
+                                            "<td style='border: 1px solid black;'>" + brand.Werks + "</td>" +
+                                            "<td style='border: 1px solid black; padding : 5px'>" + brand.NppbkcId + "</td>" +
+                                            "<td style='border: 1px solid black;'>" + brand.FaCode + "</td>" +
+                                            "<td style='border: 1px solid black;'>" + brand.BrandCe + "</td>" +
+                                            "<td style='border: 1px solid black; padding : 5px'>" + brand.Hje + "</td>" +
+                                            "<td style='border: 1px solid black; padding : 5px'>" + brand.Tariff +
+                                            "</td>");
+
+                            bodyMail.Append(regDateTable);
+                        }
+                        else
+                        {
+                            bodyMailDeactivated.Append("<tr>" +
+                                            "<td style='border: 1px solid black;'>" + brand.Werks + "</td>" +
+                                            "<td style='border: 1px solid black; padding : 5px'>" + brand.NppbkcId + "</td>" +
+                                            "<td style='border: 1px solid black;'>" + brand.FaCode + "</td>" +
+                                            "<td style='border: 1px solid black;'>" + brand.BrandCe + "</td>" +
+                                            "<td style='border: 1px solid black; padding : 5px'>" + brand.Hje + "</td>" +
+                                            "<td style='border: 1px solid black; padding : 5px'>" + brand.Tariff +
+                                            "</td>");
+
+                            bodyMailDeactivated.Append(regDateTable);
                         }
                     }
                 }
@@ -246,6 +316,16 @@ namespace Sampoerna.EMS.XMLReader
 
             bodyMail.Append("</table>");
             bodyMail.AppendLine();
+
+            bodyMail.Append("<br /><br />");
+            bodyMail.Append("Brands below are Never used on any CK1  in more than 6 months, Brands listed below will be deactivated Automatically.");
+
+            bodyMailDeactivated.Append("</table>");
+            bodyMailDeactivated.AppendLine();
+
+
+            bodyMail.Append(bodyMailDeactivated);
+
             bodyMail.Append("<br />Regards,<br />");
 
             return bodyMail.ToString();
@@ -285,7 +365,7 @@ namespace Sampoerna.EMS.XMLReader
                     var item = allActiveBrand.Where(x => x.WERKS == brand.PlantId && x.FA_CODE == brand.FaCode && x.STICKER_CODE == brand.StickerCode).FirstOrDefault();
 
                     item.IS_SENT_CHECK_BRAND = true;
-
+                    item.STATUS = !brand.IsDeactivated;
                     _brandRegistrationService.Save(item);
                 }
             }
