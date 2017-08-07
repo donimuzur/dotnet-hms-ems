@@ -39,7 +39,12 @@ namespace Sampoerna.EMS.BusinessObject.Business
         public string Hje { get; set; }
         public string Tariff { get; set; }
 
+        public DateTime? SkepDate { get; set; }
+        public string SkepNumber { get; set; }
+
         public bool SentFlag { get; set; }
+
+        public bool IsDeactivated { get; set; }
 
         public CK1 LastCk1 { get; set; }
     }
@@ -75,8 +80,12 @@ namespace Sampoerna.EMS.BusinessObject.Business
         public string Hje { get; set; }
         public string Tariff { get; set; }
 
+        public DateTime? SkepDate { get; set; }
+        public string SkepNumber { get; set; }
+
         public bool SentFlag { get; set; }
 
+        public bool IsDeactivated { get; set; }
         public CK5 LastCk5 { get; set; }
     }
 }

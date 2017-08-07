@@ -72,9 +72,9 @@ namespace Sampoerna.EMS.BLL.Services
            }).ToList();
        }
 
-       public List<CK1_ITEM> GetLastXMonthsCk1(int month,bool getBeforeData = false)
+       public List<CK1_ITEM> GetLastXMonthsCk1(int month, int compesationDays, bool getBeforeData = false)
        {
-           DateTime monthfilter = DateTime.Today.AddMonths(-1 * month);
+           DateTime monthfilter = DateTime.Today.AddMonths(-1 * month).AddDays(-1 * compesationDays);
 
            List<CK1> ck1List = new List<CK1>();
 
