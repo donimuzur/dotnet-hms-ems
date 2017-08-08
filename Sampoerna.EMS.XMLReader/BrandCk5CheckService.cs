@@ -205,6 +205,7 @@ namespace Sampoerna.EMS.XMLReader
             var bodyMailDeactivated = new StringBuilder();
 
             var tresHoldEndDate = DateTime.Today.AddMonths(-1*(xMonth + 1));
+            var tresHoldBeginDate = DateTime.Today.AddMonths(-1 * xMonth).AddDays(-1 * xCompesationDay);
             
             bodyMail.Append("<table style='border-collapse: collapse; border: 1px solid black;'>" +
                             "<tr>" +
@@ -241,6 +242,7 @@ namespace Sampoerna.EMS.XMLReader
 
                         if (brand.LastCk5 != null)
                         {
+                            if (brand.LastCk5.REGISTRATION_DATE >= tresHoldBeginDate) continue;
 
                             regDateTable = "<td style='border: 1px solid black; padding : 5px'>" +
                                            brand.LastCk5.SUBMISSION_NUMBER + "</td>" +
@@ -259,6 +261,8 @@ namespace Sampoerna.EMS.XMLReader
                         {
                             if (brand.SkepDate != null)
                             {
+                                if (brand.SkepDate >= tresHoldBeginDate) continue;
+
                                 regDateTable = "<td style='border: 1px solid black;' colspan='2'> Skep : " +
                                                brand.SkepNumber + "</td>" +
                                                "<td style='border: 1px solid black; padding : 5px'>" +

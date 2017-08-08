@@ -204,6 +204,7 @@ namespace Sampoerna.EMS.XMLReader
             var bodyMailDeactivated = new StringBuilder();
 
             var tresHoldEndDate = DateTime.Today.AddMonths(-1 * (xMonth + 1));
+            var tresHoldBeginDate = DateTime.Today.AddMonths(-1 * xMonth).AddDays(-1 * xCompesationDay);
             //var supplier = dataMonitoring.SUPPLIER_WERKS;
             bodyMail.Append("<table style='border-collapse: collapse; border: 1px solid black;'>" +
                             "<tr>" +
@@ -236,6 +237,7 @@ namespace Sampoerna.EMS.XMLReader
                 {
                     if (!brand.SentFlag)
                     {
+                        
                         var regDateTable = "";
                         brand.IsDeactivated = false;
 
@@ -248,6 +250,9 @@ namespace Sampoerna.EMS.XMLReader
                         //            "<td style='border: 1px solid black; padding : 5px'>" + brand.Tariff + "</td>");
                         if (brand.LastCk1 != null)
                         {
+
+                            if(brand.LastCk1.ORDER_DATE >= tresHoldBeginDate) continue;
+
                             regDateTable = "<td style='border: 1px solid black; padding : 5px'>" + brand.LastCk1.CK1_SAP_NUMBER + "</td>" +
                                 "<td style='border: 1px solid black; padding : 5px'>" + brand.LastCk1.CK1_NUMBER + "</td>" +
 
@@ -265,6 +270,8 @@ namespace Sampoerna.EMS.XMLReader
 
                             if (brand.SkepDate != null)
                             {
+                                if (brand.SkepDate >= tresHoldBeginDate) continue;
+
                                 regDateTable = "<td style='border: 1px solid black;' colspan='2'> Skep : " +
                                                brand.SkepNumber + "</td>" +
                                                "<td style='border: 1px solid black; padding : 5px'>" +
