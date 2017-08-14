@@ -137,11 +137,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 if (brandXmlDto != null)
                 {
                     
+                        var rand = (new Random()).Next(999).ToString("0000");
                         
-                        var fileName = ConfigurationManager.AppSettings["PathXmlTemp"] + "BRANDREG" +
-                           DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
-                        var outboundFilePath = ConfigurationManager.AppSettings["CK5PathXml"] + "BRANDREG" +
-                           DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".xml";
+                        var fileName = ConfigurationManager.AppSettings["PathXmlTemp"] + DateTime.Now.ToString("yyyyMMdd-hhmmss-") + rand +
+                           "_EMS_BRAND_REG" + ".xml";
+                        var outboundFilePath = ConfigurationManager.AppSettings["CK5PathXml"] + DateTime.Now.ToString("yyyyMMdd-hhmmss-") + rand +
+                           "_EMS_BRAND_REG" + ".xml";
                         brandXmlDto.XmlPath = fileName;
 
                         _xmlWriter.CreateBrandRegXml(brandXmlDto);
