@@ -44,6 +44,7 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.BrandRegistr
         public string Decree_No { get; set; }
         public DateTime? Decree_Date { get; set; }
         public DateTime? Decree_StartDate { get; set; }
+        public string RegNum { get; set; }
 
         public CompanyModel Company { set; get; }
         public string CompanyName { get; set; }

@@ -97,9 +97,13 @@
 
 
         $(document)
-            .on("ready", attach)
+            .on("ready", ready)
             .on("unload", detach);
 
+        function ready() {
+            attach();
+            assignStyle();
+        }
         var ckUrl = '@Url.Action("GetCalculationDetail", "ExciseCredit")';
         var adjUrl = '@Url.Action("GetCalculationAdjustment", "ExciseCredit")';
         var adjItemUrl = '@Url.Action("GetItemAdjustment", "ExciseCredit")';
@@ -144,6 +148,8 @@
             var _year = new Date(submitDate.val()).getYear() + 1900;
             loadFinancialStatement(_url, _company, _year);
         }
+        
+        
 
     </script>
 }

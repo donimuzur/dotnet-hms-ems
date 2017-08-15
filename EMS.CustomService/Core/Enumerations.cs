@@ -153,6 +153,14 @@ namespace Sampoerna.EMS.CustomService.Core
             ExciseRequestGuaranteeDecree
         }
 
+        public enum RegulationNumber
+        {
+            [Description("Excise Credit Regulation Number")]
+            ExciseCredit,
+            [Description("Brand Registration Regulation Number")]
+            BrandRegistration
+        }
+
 
     }
 }

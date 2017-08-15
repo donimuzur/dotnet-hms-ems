@@ -260,6 +260,20 @@ namespace Sampoerna.EMS.CustomService.Services
                 throw this.HandleException("Exception occured on ExciseCreditService. See Inner Exception property to see details", ex);
             }
         }
+        public IEnumerable<EXCISE_CREDIT> GetOpenDocuments()
+        {
+            try
+            {
+                var completed = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Completed);
+                var canceled = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Canceled);
+                return this.uow.ExciseCreditRepository.GetMany(x => x.LAST_STATUS != completed.REFF_ID && x.LAST_STATUS != canceled.REFF_ID);
+            }
+            catch (Exception ex)
+            {
+                throw this.HandleException("Exception occured on ExciseCreditService. See Inner Exception property to see details", ex);
+            }
+        }
+
 
         public IEnumerable<EXCISE_CREDIT> GetOpenDocuments(string POA)
         {
@@ -306,7 +320,19 @@ namespace Sampoerna.EMS.CustomService.Services
                 throw this.HandleException("Exception occured on ExciseCreditService. See Inner Exception property to see details", ex);
             }
         }
-
+        public IEnumerable<EXCISE_CREDIT> GetCompletedDocuments()
+        {
+            try
+            {
+                var completed = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Completed);
+                var canceled = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Canceled);
+                return this.uow.ExciseCreditRepository.GetMany(x => x.LAST_STATUS == completed.REFF_ID || x.LAST_STATUS == canceled.REFF_ID);
+            }
+            catch (Exception ex)
+            {
+                throw this.HandleException("Exception occured on ExciseCreditService. See Inner Exception property to see details", ex);
+            }
+        }
         public IEnumerable<EXCISE_CREDIT> GetCompletedDocuments(string POA)
         {
             try
@@ -405,6 +431,7 @@ namespace Sampoerna.EMS.CustomService.Services
 
                         //var lastCount = (context.EXCISE_CREDIT.Count() + 1).ToString("D10");
                         entity.EXCISE_CREDIT_NO = String.Format("{0}/{1}/{2}/{3}/{4}", lastSeq, company.BUTXT_ALIAS, nppbkc.CITY_ALIAS, Utils.MonthHelper.ConvertToRomansNumeral(entity.SUBMISSION_DATE.Month), entity.SUBMISSION_DATE.Year);
+                        //entity.REGULATION_NUMBER = refService.GetRegulationNumber(ReferenceKeys.RegulationNumber.ExciseCredit);
                         context.EXCISE_CREDIT.Add(entity);
                         context.SaveChanges();
                         if (entity.APPROVAL_STATUS == null)
@@ -463,6 +490,7 @@ namespace Sampoerna.EMS.CustomService.Services
                         var company = nppbkc.COMPANY;
                         var lastSeq = refService.GetCurrentSequence(Enums.FormType.ExciseCredit, context).ToString("D10");
                         entity.EXCISE_CREDIT_NO = String.Format("{0}/{1}/{2}/{3}/{4}", lastSeq, company.BUTXT_ALIAS, nppbkc.CITY_ALIAS, Utils.MonthHelper.ConvertToRomansNumeral(entity.SUBMISSION_DATE.Month), entity.SUBMISSION_DATE.Year);
+                        //entity.REGULATION_NUMBER = refService.GetRegulationNumber(ReferenceKeys.RegulationNumber.ExciseCredit);
                         context.EXCISE_CREDIT.Add(entity);
                         context.SaveChanges();
                         if (entity.APPROVAL_STATUS == null)
@@ -879,12 +907,12 @@ namespace Sampoerna.EMS.CustomService.Services
                             data.APPROVAL_STATUS = status;
                             data.APPROVED_DATE = DateTime.Now;
                             data.LAST_STATUS = status.REFF_ID;
-                            data.NOTES = notes;
+                            //data.NOTES = notes;
                             var changes = GetAllChanges(old, data);
                             context.Entry(old).CurrentValues.SetValues(data);
                             context.SaveChanges();
                             var formType = (int)Enums.MenuList.ExciseCredit;
-                            refService.LogsActivity(context, data.EXSICE_CREDIT_ID.ToString(), changes, formType, (int)Enums.ActionType.Revise, role, user, null, data.EXCISE_CREDIT_NO);
+                            refService.LogsActivity(context, data.EXSICE_CREDIT_ID.ToString(), changes, formType, (int)Enums.ActionType.Revise, role, user, notes, data.EXCISE_CREDIT_NO);
                             transaction.Commit();
 
                             return SendEmail(data, ReferenceKeys.EmailContent.ExciseCreditSKEPApprovalRejection, notes);
@@ -1464,7 +1492,17 @@ namespace Sampoerna.EMS.CustomService.Services
         public IEnumerable<FILE_UPLOAD> GetFile(long exciseExsiceCreditID)
         {
             var exciseCreditIDString = exciseExsiceCreditID.ToString();
-            return this.uow.FileUploadRepository.GetMany(m => m.FORM_TYPE_ID == 1 && m.FORM_ID == exciseCreditIDString);
+            var allDocs = new List<FILE_UPLOAD>();
+            var otherDocs = this.uow.FileUploadRepository.GetMany(m => m.FORM_TYPE_ID == 1 && m.FORM_ID == exciseCreditIDString && m.IS_ACTIVE && !m.IS_GOVERNMENT_DOC && !m.DOCUMENT_ID.HasValue);
+            var supportingDocGroups = this.uow.FileUploadRepository.GetMany(m => m.FORM_TYPE_ID == 1 && m.FORM_ID == exciseCreditIDString && m.IS_ACTIVE && !m.IS_GOVERNMENT_DOC && m.DOCUMENT_ID.HasValue).OrderByDescending(x => x.CREATED_DATE).GroupBy(x => x.DOCUMENT_ID, x => x).ToList();
+            foreach (var group in supportingDocGroups)
+            {
+                var supportingDocs = group.OrderBy(x => x.DOCUMENT_ID).ToList();
+                if(supportingDocs.Count > 0)
+                    allDocs.Add(supportingDocs.First());
+            }
+            allDocs.AddRange(otherDocs);
+            return allDocs;
         }
         public decimal GetLatestSkepCreditTariff(string prodCode)
         {
@@ -1496,6 +1534,12 @@ namespace Sampoerna.EMS.CustomService.Services
                      orderby p.EXCISE_CREDIT.DECREE_DATE descending
                      select p).ToList();
             return q.Count > 0 ? q[0].AMOUNT_APPROVED : Decimal.Zero;
+        }
+
+        public EXCISE_CREDIT GetLastApprovedSkep(DateTime submissionDate)
+        {
+            var completed = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.Completed);
+            return this.uow.ExciseCreditRepository.GetMany(x => x.DECREE_DATE <= submissionDate && x.LAST_STATUS == completed.REFF_ID).OrderByDescending(x=> x.DECREE_DATE).FirstOrDefault();
         }
     }
     public class BrandModel

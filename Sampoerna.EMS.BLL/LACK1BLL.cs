@@ -1653,6 +1653,13 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData = _lack1Service.GetDetailsById(id);
             var dtToReturn = Mapper.Map<Lack1PrintOutDto>(dbData);
+
+            if (dtToReturn.IsSupplierNppbkcImport)
+            {
+                var supplierPlant = _t001WServices.GetById(dtToReturn.SupplierPlantId);
+                dtToReturn.SupplierPlantAddress = supplierPlant.ADDRESS_IMPORT;
+            }
+
             dtToReturn.FusionSummaryProductionByProdTypeList =
                 GetProductionDetailSummaryByProdType(dtToReturn.Lack1ProductionDetail);
 
@@ -2697,7 +2704,7 @@ namespace Sampoerna.EMS.BLL
             //{
             //    strCsv += ObjectToCsvData(data) + "\r\n";
             //}
-            var productionTypeId = finalgoodlistGrouped.Any() ? finalgoodlistGrouped.FirstOrDefault().ExGoodsTypeId : EnumHelper.GetDescription(Enums.GoodsType.EtilAlkohol);
+            var productionTypeId = finalgoodlistGrouped.Any(x => x.IsFinalGoodsType) ? finalgoodlistGrouped.Where(x=> x.IsFinalGoodsType).FirstOrDefault().ExGoodsTypeId : EnumHelper.GetDescription(Enums.GoodsType.EtilAlkohol);
 
             var productionList = new List<Lack1GeneratedProductionDataDto>();
             

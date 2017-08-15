@@ -17,6 +17,7 @@ using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Sampoerna.EMS.Core;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.CustomService.Data;
@@ -367,7 +368,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (updated != null)
             {
-                AddMessageInfo(Constans.SubmitMessage.Updated + " and sending email", Enums.MessageInfoType.Success);
+                //AddMessageInfo(Constans.SubmitMessage.Updated + " and sending email", Enums.MessageInfoType.Success);
                 List<string> mailAddresses = new List<string>();
                 if (statusApproval == ReferenceKeys.ApprovalStatus.AwaitingAdminApproval)
                 {

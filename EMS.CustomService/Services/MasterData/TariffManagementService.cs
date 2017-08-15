@@ -144,7 +144,7 @@ namespace Sampoerna.EMS.CustomService.Services.MasterData
                                 data.LASTMODIFIED_DATE = DateTime.Now;
                                 if (status == ReferenceKeys.ApprovalStatus.AwaitingAdminApproval)
                                 {
-                                    var reff = refService.GetReferenceByKey(ReferenceKeys.Approver.AdminApprover);
+                                    //var reff = refService.GetReferenceByKey(ReferenceKeys.Approver.AdminApprover);
                                     data.APPROVALSTATUS = refService.GetReferenceByKey(status);
                                     data.LASTEDITOR = refService.GetUser(data.LASTMODIFIED_BY);
                                     var approvers = refService.GetAdminApprovers();

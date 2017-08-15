@@ -26,7 +26,7 @@
                 <div class="action-button">
                     @if (Model.ViewModel.IsApprover && Model.ViewModel.IsWaitingSkepApproval)
                     {
-                        <button class="btn btn-blue" id="RejectButton" type="button">Reject</button>
+                        <button type="button" class="btn btn-blue" id="ReviseButton" data-toggle="modal" data-target=".revise-modal.excisecredit">Revise</button>
                         <button class="btn btn-blue" id="ApproveButton" type="button" data-target=".approve-modal.excisecredit-skep" data-toggle="modal">Approve</button>
                         <a href="@Url.Action("Index", "ExciseCredit")" class="btn btn-grey">Cancel</a>
                     }
@@ -78,6 +78,7 @@
 }
 <!-- Modals -->
 @Html.Partial("_ConfirmDialog", Model.ApproveConfirm)
+@Html.Partial("_ReviseSkepModal", Model)
 
 <div id="errModal" class="modal ems-modal fade bs-example-modal-sm danger" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
     <div class="modal-dialog modal-sm">
@@ -148,21 +149,40 @@
                 approve();
             });
 
-            $('#RejectButton').on('click', function (e) {
+            //$('#RejectButton').on('click', function (e) {
+            //    e.preventDefault();
+            //    rejectSkep();
+            //});
+            var reviseButton = $("#ReviseButtonSubmit");
+            console.log(reviseButton);
+            //$("#reviseForm").validate();
+            reviseButton.on('click', function (e) {
                 e.preventDefault();
-                rejectSkep();
+                var form = $("#reviseForm");
+                console.log(form);
+                var notes = $("#ViewModel_RevisionData_Comment");
+                console.log("Notes: " + notes);
+                if (notes) {
+                    document.getElementById('reviseForm').submit();
+                    $("#ReviseButtonSubmit").prop('disabled', true);
+                    $('#reviseModal').modal('toggle');
+                    return false;
+                } else
+                    showErrorDialog("Please add notes for creator!");
+                $("#ReviseButton").prop("disabled", true);
+
             });
             TinyMceInit("tinymce-editor");
         });
 
         function generateFormData() {
             var id = $("#Id").val();
-            var notes = $("#Notes").val();
+            //var notes = $("#Notes").val();
 
-            if (!notes) {
-                showErrorDialog("SKEP rejection notes is required!");
-                return;
-            }
+            //if (!notes) {
+            //    showErrorDialog("SKEP rejection notes is required!");
+            //    return;
+            //}
 
             var form = $("#SkepForm");
             var token = $('input[name="__RequestVerificationToken"]', form).val();
@@ -171,7 +191,7 @@
                 var data = new FormData();
                 data.append("__RequestVerificationToken", token);
                 data.append("id", id);
-                data.append("notes", notes);
+                //data.append("notes", notes);
 
                 return data;
             }
@@ -181,7 +201,7 @@
         function rejectSkep() {
             var data = generateFormData();
             if (!data) {
-                showErrorDialog('Form data not available!');
+                showErrorDialog('Form data not valid!');
                 return;
             }
             $.ajax({
@@ -204,7 +224,7 @@
                     showErrorDialog(err);
                 }
             });
-            $("#RejectButton").prop("disabled", true);
+           
         }
 
         function approve() {

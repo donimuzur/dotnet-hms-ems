@@ -752,7 +752,7 @@ $(document).on("click", ".btn_changestatus_submit", function () {
             break;
 
         case "withdraw":
-            status = "CANCELED";
+            status = "DRAFT EDIT";
             break;
     }
 
@@ -886,6 +886,40 @@ function GeneratePrintOut() {
     });
 }
 
+function GeneratePrintOut_license2() {
+    $("#customloader").show();
+    $("#div-printout").empty();
+    var ID = $("#txt_hd_id").val();
+    $.ajax({
+        type: 'POST',
+        url: getUrl("GeneratePrintout_License2"),
+        data: { ChangeID: ID },
+        success: function (data) {
+            $("#div-printout").html(data);
+        },
+        complete: function () {
+            $("#customloader").hide();
+        }
+    });
+}
+
+function GeneratePrintOut_license3() {
+    $("#customloader").show();
+    $("#div-printout").empty();
+    var ID = $("#txt_hd_id").val();
+    $.ajax({
+        type: 'POST',
+        url: getUrl("GeneratePrintout_License3"),
+        data: { ChangeID: ID },
+        success: function (data) {
+            $("#div-printout").html(data);
+        },
+        complete: function () {
+            $("#customloader").hide();
+        }
+    });
+}
+
 function GeneratePrintOutPDF() {
     $("#form_DownloadPrintout").submit();
 }
@@ -920,7 +954,8 @@ function UpdatePrintoutLayout() {
         url: getUrl("UpdatePrintOutLayout"),
         data: {
             NewPrintout: layout,
-            CreatedBy: $("#txt_hd_createdby").val()
+            CreatedBy: $("#txt_hd_createdby").val(),
+            Id: $("#txt_hd_id").val()
         },
         success: function (result) {
             if (result == "") {
@@ -1027,7 +1062,8 @@ function RestoreDefaultPrintout() {
         type: 'POST',
         url: getUrl("RestorePrintoutToDefault"),
         data: {
-            CreatedBy: $("#txt_hd_createdby").val()
+            CreatedBy: $("#txt_hd_createdby").val(),
+            Id: $("#txt_hd_id").val()
         },
         success: function (data) {
             if (data != "") {

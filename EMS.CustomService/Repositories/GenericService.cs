@@ -15,5 +15,10 @@ namespace Sampoerna.EMS.CustomService.Repositories
         {
             return new Exception(message, inner);
         }
+
+        public void Dispose()
+        {
+            this.uow.Dispose();
+        }
     }
 }

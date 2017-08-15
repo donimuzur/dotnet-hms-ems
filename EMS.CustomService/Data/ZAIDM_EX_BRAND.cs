@@ -47,6 +47,7 @@ namespace Sampoerna.EMS.CustomService.Data
         public string PER_CODE_DESC { get; set; }
         public string BAHAN_KEMASAN { get; set; }
         public Nullable<bool> PACKED_ADJUSTED { get; set; }
+        public Nullable<bool> IS_SENT_CHECK_BRAND { get; set; }
     
         public virtual MASTER_PLANT T001W { get; set; }
         public virtual ZAIDM_EX_MARKET ZAIDM_EX_MARKET { get; set; }

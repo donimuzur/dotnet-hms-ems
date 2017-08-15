@@ -631,8 +631,8 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
             try
             {
                 var context = new EMSDataModel();
-                //var werks = context.T001W.Where(w => w.NPPBKC_ID.Equals(nppbkc)).Select(s => s.WERKS).ToList();
-                var result = context.vwProductDevDetail.Where(w => w.NEXT_ACTION == RegistrationType).ToList();
+                var werks = context.T001W.Where(w => w.NPPBKC_ID.Equals(nppbkc)).Select(s => s.WERKS).ToList();
+                var result = context.vwProductDevDetail.Where(w => w.NEXT_ACTION == RegistrationType && werks.Contains(w.WERKS)).ToList();
                 var registrationDet = context.BRAND_REGISTRATION_REQ_DETAIL.Where(w => w.REGISTRATION_ID == RegId);
                 var registrationDetList = MapToVWProductDevDetail(registrationDet);
                 foreach (var rece in registrationDetList)

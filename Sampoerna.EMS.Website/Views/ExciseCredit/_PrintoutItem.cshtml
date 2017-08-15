@@ -32,7 +32,7 @@
     <div id="@String.Format("printoutCollapse{0}", Model.Layout.LayoutId)" class="panel-collapse collapse" role="tabpanel" aria-labelledby="@String.Format("printoutHeading{0}", Model.Layout.LayoutId)">
         <div class="panel-body">
             <div class="row">
-                <button type="button" class="btn btn-blue pull-right" id="@String.Format("DownloadLayout{0}Button", Model.Layout.LayoutId)">Download Printout</button>
+                @*<button type="button" class="btn btn-blue pull-right" id="@String.Format("DownloadLayout{0}Button", Model.Layout.LayoutId)">Download Printout</button>*@
                 @if (Model.IsAllowedToEdit)
                 {
                     <button type="button" id="@String.Format("EditLayout{0}Button", Model.Layout.LayoutId)" class="btn btn-blue pull-right" data-toggle="modal" data-target=".@String.Format("excise-modal-edit-{0}", Model.Layout.LayoutId)">Edit Layout</button>

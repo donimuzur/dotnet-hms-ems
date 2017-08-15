@@ -34,9 +34,9 @@ namespace Sampoerna.EMS.CustomService.Data
         public string TOP_SIDE { get; set; }
         public string BOTTOM_SIDE { get; set; }
     
-        public virtual BRAND_REGISTRATION_REQ BRAND_REGISTRATION_REQ { get; set; }
         public virtual PRODUCT_DEVELOPMENT_DETAIL PRODUCT_DEVELOPMENT_DETAIL { get; set; }
         public virtual ZAIDM_EX_MARKET ZAIDM_EX_MARKET { get; set; }
         public virtual MASTER_PRODUCT_TYPE ZAIDM_EX_PRODTYP { get; set; }
+        public virtual BRAND_REGISTRATION_REQ BRAND_REGISTRATION_REQ { get; set; }
     }
 }

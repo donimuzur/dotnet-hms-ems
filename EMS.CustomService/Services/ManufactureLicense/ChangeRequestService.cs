@@ -18,9 +18,9 @@ namespace Sampoerna.EMS.CustomService.Services
 {
     public class ChangeRequestService : GenericService
     {
-        private DbContextTransaction transaction;
+        //private DbContextTransaction transaction;
         private SystemReferenceService refService;
-        private EMSDataModel context;
+        //private EMSDataModel context;
         private Dictionary<string, string> DocumentType;
         private Dictionary<int, string> govstatusList;
         private List<String> fileExtList;
@@ -28,8 +28,8 @@ namespace Sampoerna.EMS.CustomService.Services
         public ChangeRequestService() : base()
         {
             refService = new SystemReferenceService();
-            context = new EMSDataModel();
-            transaction = context.Database.BeginTransaction();
+            //context = new EMSDataModel();
+            //transaction = context.Database.BeginTransaction();
 
             DocumentType = new Dictionary<string, string>();
             DocumentType.Add("Layout", "Layout");
@@ -54,40 +54,52 @@ namespace Sampoerna.EMS.CustomService.Services
         #region FileUpload
         public void InsertFileUpload(long CRId, string Path, string CreatedBy, long DocId, bool IsGovDoc, string FileName)
         {
-            try
+            using (var context = new EMSDataModel())
             {
-                var now = DateTime.Now;
-                context = new EMSDataModel();
-                transaction = context.Database.BeginTransaction();
-                var UploadFile = new FILE_UPLOAD();
-                UploadFile.FORM_TYPE_ID = Convert.ToInt32(Enums.FormList.Change);
-                UploadFile.FORM_ID = CRId.ToString();
-                UploadFile.PATH_URL = Path;
-                UploadFile.UPLOAD_DATE = now;
-                UploadFile.CREATED_BY = CreatedBy;
-                UploadFile.CREATED_DATE = now;
-                UploadFile.LASTMODIFIED_BY = CreatedBy;
-                UploadFile.LASTMODIFIED_DATE = now;
-                if (DocId != 0)
+                using (var transaction = context.Database.BeginTransaction())
                 {
-                    UploadFile.DOCUMENT_ID = DocId;
+                    try
+                    {
+                        var now = DateTime.Now;
+                        var UploadFile = new FILE_UPLOAD();
+                        UploadFile.FORM_TYPE_ID = Convert.ToInt32(Enums.FormList.Change);
+                        UploadFile.FORM_ID = CRId.ToString();
+                        UploadFile.PATH_URL = Path;
+                        UploadFile.UPLOAD_DATE = now;
+                        UploadFile.CREATED_BY = CreatedBy;
+                        UploadFile.CREATED_DATE = now;
+                        UploadFile.LASTMODIFIED_BY = CreatedBy;
+                        UploadFile.LASTMODIFIED_DATE = now;
+                        if (DocId != 0)
+                        {
+                            UploadFile.DOCUMENT_ID = DocId;
+                        }
+                        UploadFile.IS_GOVERNMENT_DOC = IsGovDoc;
+                        UploadFile.IS_ACTIVE = true;
+                        UploadFile.FILE_NAME = FileName;
+                        context.FILE_UPLOAD.Add(UploadFile);
+                        context.SaveChanges();
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw this.HandleException("Exception occured on Manufacture License Interview Request Detail Upload File. See Inner Exception property to see details", ex);
+                    }
+                    finally
+                    {
+                        transaction.Dispose();
+                        context.Dispose();
+                    }
                 }
-                UploadFile.IS_GOVERNMENT_DOC = IsGovDoc;
-                UploadFile.IS_ACTIVE = true;
-                UploadFile.FILE_NAME = FileName;
-                context.FILE_UPLOAD.Add(UploadFile);
-                context.SaveChanges();
-                transaction.Commit();
             }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                throw this.HandleException("Exception occured on Manufacture License Interview Request Detail Upload File. See Inner Exception property to see details", ex);
-            }
+
         }
 
         public IQueryable<FILE_UPLOAD> GetFileUploadByCRId(long CRId)
         {
+            var context = new EMSDataModel();
+
             try
             {
                 var strID = CRId.ToString();
@@ -96,46 +108,72 @@ namespace Sampoerna.EMS.CustomService.Services
             }
             catch (Exception ex)
             {
+                context.Dispose();
                 throw this.HandleException("Exception occured on Manufacture License Change Request Detail File Upload List. See Inner Exception property to see details", ex);
             }
         }
 
         public void DeleteFileUpload(long fileid, string updatedby)
         {
-            try
+            using (var context = new EMSDataModel())
             {
-                context = new EMSDataModel();
-                transaction = context.Database.BeginTransaction();
-                var now = DateTime.Now;
-                var fileupload = new FILE_UPLOAD();
-                var Where = context.FILE_UPLOAD.Where(w => w.FILE_ID.Equals(fileid));
-                if (Where.Count() > 0)
+                using (var transaction = context.Database.BeginTransaction())
                 {
-                    fileupload = Where.FirstOrDefault();
-                    fileupload.LASTMODIFIED_BY = updatedby;
-                    fileupload.LASTMODIFIED_DATE = now;
-                    fileupload.IS_ACTIVE = false;
-                    context.SaveChanges();
+                    try
+                    {
+                        var now = DateTime.Now;
+                        var fileupload = new FILE_UPLOAD();
+                        var Where = context.FILE_UPLOAD.Where(w => w.FILE_ID.Equals(fileid));
+                        if (Where.Count() > 0)
+                        {
+                            fileupload = Where.FirstOrDefault();
+                            fileupload.LASTMODIFIED_BY = updatedby;
+                            fileupload.LASTMODIFIED_DATE = now;
+                            fileupload.IS_ACTIVE = false;
+                            context.SaveChanges();
+                        }
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw this.HandleException("Exception occured on Manufacture License Change Request Delete File. See Inner Exception property to see details", ex);
+                    }
+                    finally
+                    {
+                        transaction.Dispose();
+                        context.Dispose();
+                    }
                 }
-                transaction.Commit();
             }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                throw this.HandleException("Exception occured on Manufacture License Change Request Delete File. See Inner Exception property to see details", ex);
-            }
+
+
         }
 
         public string GetSupportingDocName(long Id)
         {
-            var docname = "";
-            context = new EMSDataModel();
-            var doc = context.MASTER_SUPPORTING_DOCUMENT.Where(w => w.DOCUMENT_ID == Id);
-            if (doc.Any())
+            using (var context = new EMSDataModel())
             {
-                docname = doc.Select(s => s.SUPPORTING_DOCUMENT_NAME).FirstOrDefault();
+                try
+                {
+                    var docname = "";
+                    var doc = context.MASTER_SUPPORTING_DOCUMENT.Where(w => w.DOCUMENT_ID == Id);
+                    if (doc.Any())
+                    {
+                        docname = doc.Select(s => s.SUPPORTING_DOCUMENT_NAME).FirstOrDefault();
+                    }
+                    return docname;
+                }
+                catch (Exception ex)
+                {
+                    throw this.HandleException("Exception occured on Manufacture License Change Request Delete File. See Inner Exception property to see details", ex);
+                }
+                finally
+                {
+                    context.Dispose();
+                }
+
             }
-            return docname;
         }
 
         #endregion
@@ -162,6 +200,11 @@ namespace Sampoerna.EMS.CustomService.Services
                         transaction.Rollback();
                         throw this.HandleException("Exception occured on FinanceRatioManagementService. See Inner Exception property to see details", ex);
                     }
+                    finally
+                    {
+                        transaction.Dispose();
+                        context.Dispose();
+                    }
 
                 }
             }
@@ -171,216 +214,302 @@ namespace Sampoerna.EMS.CustomService.Services
 
         public REPLACEMENT_DOCUMENTS Save(REPLACEMENT_DOCUMENTS data, Int32 UserRole = 0)
         {
-            context.REPLACEMENT_DOCUMENTS.Add(data);
-            context.SaveChanges();
-            transaction.Commit();
+            using (var context = new EMSDataModel())
+            {
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        context.REPLACEMENT_DOCUMENTS.Add(data);
+                        context.SaveChanges();
+                        transaction.Commit();
 
 
-            Dictionary<string, string[]> changes = GetAllChanges(new REPLACEMENT_DOCUMENTS(), data);
-            LogsActivity(data, changes, (int)Enums.MenuList.ChangeRequest, (int)Enums.ActionType.Created, UserRole, data.CREATED_BY, "");
+                        Dictionary<string, string[]> changes = GetAllChanges(new REPLACEMENT_DOCUMENTS(), data);
+                        LogsActivity(data, changes, (int)Enums.MenuList.ChangeRequest, (int)Enums.ActionType.Created, UserRole, data.CREATED_BY, "");
+
+                        transaction.Dispose();
+                        context.Dispose();
+
+                        return data;
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw this.HandleException("Exception occured on Manufacture License Change Request Update. See Inner Exception property to see details", ex);
+                    }
+                    finally
+                    {
+                        transaction.Dispose();
+                        context.Dispose();
+                    }
+
+                }
 
 
-
-            return data;
+            }
         }
 
         public REPLACEMENT_DOCUMENTS Update(REPLACEMENT_DOCUMENTS updateData, int ActionType = 0, Int32 UserRole = 0)
         {
-            try
+            using (var context = new EMSDataModel())
             {
-                context = new EMSDataModel();
-                transaction = context.Database.BeginTransaction();
-                Dictionary<string, string[]> changes = new Dictionary<string, string[]>();
-                var now = DateTime.Now;
-                var OldCRequest = new REPLACEMENT_DOCUMENTS();
-                var CRequest = new REPLACEMENT_DOCUMENTS();
-                var Where = context.REPLACEMENT_DOCUMENTS.Where(w => w.FORM_ID.Equals(updateData.FORM_ID));
-                if (Where.Count() > 0)
+                using (var transaction = context.Database.BeginTransaction())
                 {
-                    CRequest = Where.FirstOrDefault();
-                    OldCRequest = SetOldValueToTempModel(CRequest);
-                    CRequest.REQUEST_DATE = updateData.REQUEST_DATE;
-                    CRequest.DOCUMENT_TYPE = updateData.DOCUMENT_TYPE;
-                    CRequest.NPPBKC_ID = updateData.NPPBKC_ID;
-                    CRequest.LASTMODIFIED_DATE = now;
-                    CRequest.LASTAPPROVED_STATUS = updateData.LASTAPPROVED_STATUS;
-                    changes = GetAllChanges(OldCRequest, CRequest);
-                    context.SaveChanges();
-                }
-                transaction.Commit();
-                if (Where.Count() > 0)
-                {
-                    LogsActivity(CRequest, changes, (int)Enums.MenuList.ChangeRequest, ActionType, UserRole, updateData.LASTMODIFIED_BY, "");
-                }
+                    try
+                    {
+                        Dictionary<string, string[]> changes = new Dictionary<string, string[]>();
+                        var now = DateTime.Now;
+                        var OldCRequest = new REPLACEMENT_DOCUMENTS();
+                        var CRequest = new REPLACEMENT_DOCUMENTS();
+                        var Where = context.REPLACEMENT_DOCUMENTS.Where(w => w.FORM_ID.Equals(updateData.FORM_ID));
+                        if (Where.Count() > 0)
+                        {
+                            CRequest = Where.FirstOrDefault();
+                            OldCRequest = SetOldValueToTempModel(CRequest);
+                            CRequest.REQUEST_DATE = updateData.REQUEST_DATE;
+                            CRequest.DOCUMENT_TYPE = updateData.DOCUMENT_TYPE;
+                            CRequest.NPPBKC_ID = updateData.NPPBKC_ID;
+                            CRequest.LASTMODIFIED_DATE = now;
+                            CRequest.LASTAPPROVED_STATUS = updateData.LASTAPPROVED_STATUS;
+                            changes = GetAllChanges(OldCRequest, CRequest);
+                            context.SaveChanges();
+                        }
+                        transaction.Commit();
+                        if (Where.Count() > 0)
+                        {
+                            LogsActivity(CRequest, changes, (int)Enums.MenuList.ChangeRequest, ActionType, UserRole, updateData.LASTMODIFIED_BY, "");
+                        }
 
-                return CRequest;
-            }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                throw this.HandleException("Exception occured on Manufacture License Change Request Update. See Inner Exception property to see details", ex);
+                        return CRequest;
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw this.HandleException("Exception occured on Manufacture License Change Request Update. See Inner Exception property to see details", ex);
+                    }
+                    finally
+                    {
+                        transaction.Dispose();
+                        context.Dispose();
+                    }
+                }
             }
         }
 
         public REPLACEMENT_DOCUMENTS_DETAIL InsertChangeRequestDetail(Int64 FormId = 0, string UpdateNotes = "", REPLACEMENT_DOCUMENTS_DETAIL Old = null, string CreatedBy = "")
         {
-            try
+            using (var context = new EMSDataModel())
             {
-                context = new EMSDataModel();
-                transaction = context.Database.BeginTransaction();
-                var CReqDet = new REPLACEMENT_DOCUMENTS_DETAIL();
-                CReqDet.FORM_ID = FormId;
-                CReqDet.UPDATE_NOTES = UpdateNotes;
-
-                context.REPLACEMENT_DOCUMENTS_DETAIL.Add(CReqDet);
-                context.SaveChanges();
-                transaction.Commit();
-
-                if (Old == null)
+                using (var transaction = context.Database.BeginTransaction())
                 {
-                    Old = new REPLACEMENT_DOCUMENTS_DETAIL();
-                }
-                Dictionary<string, string[]> changes = GetAllDetailChanges(Old, CReqDet);
-                LogsChanges(FormId, changes, (int)Enums.MenuList.ChangeRequest, CreatedBy);
+                    try
+                    {
+                        var CReqDet = new REPLACEMENT_DOCUMENTS_DETAIL();
+                        CReqDet.FORM_ID = FormId;
+                        CReqDet.UPDATE_NOTES = UpdateNotes;
 
-                return CReqDet;
+                        context.REPLACEMENT_DOCUMENTS_DETAIL.Add(CReqDet);
+                        context.SaveChanges();
+                        transaction.Commit();
+
+                        if (Old == null)
+                        {
+                            Old = new REPLACEMENT_DOCUMENTS_DETAIL();
+                        }
+                        Dictionary<string, string[]> changes = GetAllDetailChanges(Old, CReqDet);
+                        LogsChanges(FormId, changes, (int)Enums.MenuList.ChangeRequest, CreatedBy);
+
+                        return CReqDet;
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw this.HandleException("Exception occured on Manufacture License Change Request Detail. See Inner Exception property to see details", ex);
+                    }
+                    finally
+                    {
+                        transaction.Dispose();
+                        context.Dispose();
+                    }
+
+                }
+
             }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                throw this.HandleException("Exception occured on Manufacture License Change Request Detail. See Inner Exception property to see details", ex);
-            }
+
+
+
         }
 
         public IQueryable<REPLACEMENT_DOCUMENTS_DETAIL> GetDocumentDetails(Int64 FormId = 0)
         {
+            var context = new EMSDataModel();
             try
             {
                 return context.REPLACEMENT_DOCUMENTS_DETAIL.Where(w => w.FORM_ID == FormId);
             }
             catch (Exception ex)
             {
+                context.Dispose();
                 throw this.HandleException("Exception occured on Manufacture License Change Request Detail Document List. See Inner Exception property to see details", ex);
             }
+
 
         }
 
 
         public void DeleteChangeRequestDetail(Int64 FormId, string Createdby, List<REPLACEMENT_DOCUMENTS_DETAIL> DeletedList)
         {
-            try
+            using (var context = new EMSDataModel())
             {
-                context = new EMSDataModel();
-                transaction = context.Database.BeginTransaction();
-
-                var deleteList = context.REPLACEMENT_DOCUMENTS_DETAIL.Where(w => w.FORM_ID.Equals(FormId));
-                if (deleteList.Count() > 0)
+                using (var transaction = context.Database.BeginTransaction())
                 {
-                    foreach (var delete in deleteList)
+                    try
                     {
-                        var oldData = DeletedList.Where(w => w.FORM_DET_ID == delete.FORM_DET_ID).FirstOrDefault();
-                        if (oldData != null)
+
+                        var deleteList = context.REPLACEMENT_DOCUMENTS_DETAIL.Where(w => w.FORM_ID.Equals(FormId));
+                        if (deleteList.Count() > 0)
                         {
-                            Dictionary<string, string[]> changes = GetAllDetailChanges(oldData, new REPLACEMENT_DOCUMENTS_DETAIL());
-                            LogsChanges(FormId, changes, (int)Enums.MenuList.ChangeRequest, Createdby);
+                            foreach (var delete in deleteList)
+                            {
+                                var oldData = DeletedList.Where(w => w.FORM_DET_ID == delete.FORM_DET_ID).FirstOrDefault();
+                                if (oldData != null)
+                                {
+                                    Dictionary<string, string[]> changes = GetAllDetailChanges(oldData, new REPLACEMENT_DOCUMENTS_DETAIL());
+                                    LogsChanges(FormId, changes, (int)Enums.MenuList.ChangeRequest, Createdby);
+                                }
+                            }
+
+
+                            var deleteList2 = context.REPLACEMENT_DOCUMENTS_DETAIL.Where(w => w.FORM_ID.Equals(FormId));
+                            foreach (var delete in deleteList2)
+                            {
+                                context.REPLACEMENT_DOCUMENTS_DETAIL.Remove(delete);
+                            }
+                            context.SaveChanges();
+                            transaction.Commit();
                         }
                     }
-                    context = new EMSDataModel();
-                    transaction = context.Database.BeginTransaction();
-                    var deleteList2 = context.REPLACEMENT_DOCUMENTS_DETAIL.Where(w => w.FORM_ID.Equals(FormId));
-                    foreach (var delete in deleteList2)
+                    catch (Exception ex)
                     {
-                        context.REPLACEMENT_DOCUMENTS_DETAIL.Remove(delete);
+                        transaction.Rollback();
+                        throw this.HandleException("Exception occured on Manufacture License Interview Request Detail Delete. See Inner Exception property to see details", ex);
                     }
-                    context.SaveChanges();
-                    transaction.Commit();
+                    finally
+                    {
+                        transaction.Dispose();
+                        context.Dispose();
+                    }
                 }
             }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                throw this.HandleException("Exception occured on Manufacture License Interview Request Detail Delete. See Inner Exception property to see details", ex);
-            }
+
+
+
 
         }
 
         public REPLACEMENT_DOCUMENTS UpdateStatus(long CRId, Int64 LastApprovedStatus = 0, string ModifiedBy = "", int ActionType = 0, Int32 UserRole = 0, string Comment = "")
         {
-            try
+            using (var context = new EMSDataModel())
             {
-                context = new EMSDataModel();
-                transaction = context.Database.BeginTransaction();
-                var now = DateTime.Now;
-                var CRequest = new REPLACEMENT_DOCUMENTS();
-                var OldCRequest = new REPLACEMENT_DOCUMENTS();
-                var Where = context.REPLACEMENT_DOCUMENTS.Where(w => w.FORM_ID.Equals(CRId));
-                if (Where.Count() > 0)
+                using (var transaction = context.Database.BeginTransaction())
                 {
-                    CRequest = Where.FirstOrDefault();
-                    OldCRequest = SetOldValueToTempModel(CRequest);
-                    CRequest.LASTMODIFIED_BY = ModifiedBy;
-                    CRequest.LASTMODIFIED_DATE = now;
-                    CRequest.LASTAPPROVED_STATUS = LastApprovedStatus;
-                    //if ((LastApprovedStatus != refService.GetRefByKey("DRAFT_EDIT_STATUS").REFF_ID) && (LastApprovedStatus != refService.GetRefByKey("WAITING_POA_APPROVAL").REFF_ID) && (LastApprovedStatus != refService.GetRefByKey("CANCELED").REFF_ID))
-                    if (ActionType == (int)Enums.ActionType.Approve || ActionType == (int)Enums.ActionType.Reject || ActionType == (int)Enums.ActionType.Revise)
+                    try
                     {
-                        CRequest.LASTAPPROVED_BY = ModifiedBy;
-                        CRequest.LASTAPPROVED_DATE = now;
+                        var now = DateTime.Now;
+                        var CRequest = new REPLACEMENT_DOCUMENTS();
+                        var OldCRequest = new REPLACEMENT_DOCUMENTS();
+                        var Where = context.REPLACEMENT_DOCUMENTS.Where(w => w.FORM_ID.Equals(CRId));
+                        if (Where.Count() > 0)
+                        {
+                            CRequest = Where.FirstOrDefault();
+                            OldCRequest = SetOldValueToTempModel(CRequest);
+                            CRequest.LASTMODIFIED_BY = ModifiedBy;
+                            CRequest.LASTMODIFIED_DATE = now;
+                            CRequest.LASTAPPROVED_STATUS = LastApprovedStatus;
+                            //if ((LastApprovedStatus != refService.GetRefByKey("DRAFT_EDIT_STATUS").REFF_ID) && (LastApprovedStatus != refService.GetRefByKey("WAITING_POA_APPROVAL").REFF_ID) && (LastApprovedStatus != refService.GetRefByKey("CANCELED").REFF_ID))
+                            if (ActionType == (int)Enums.ActionType.Approve || ActionType == (int)Enums.ActionType.Reject || ActionType == (int)Enums.ActionType.Revise)
+                            {
+                                CRequest.LASTAPPROVED_BY = ModifiedBy;
+                                CRequest.LASTAPPROVED_DATE = now;
+                            }
+                            context.SaveChanges();
+                        }
+                        transaction.Commit();
+                        if (Where.Count() > 0)
+                        {
+                            Dictionary<string, string[]> changes = GetAllChanges(OldCRequest, CRequest);
+                            LogsActivity(CRequest, changes, (int)Enums.MenuList.ChangeRequest, ActionType, UserRole, ModifiedBy, Comment);
+                        }
+                        return CRequest;
                     }
-                    context.SaveChanges();
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw this.HandleException("Exception occured on Manufacture License Change Request Update. See Inner Exception property to see details", ex);
+                    }
+                    finally
+                    {
+                        transaction.Dispose();
+                        context.Dispose();
+                    }
                 }
-                transaction.Commit();
-                if (Where.Count() > 0)
-                {
-                    Dictionary<string, string[]> changes = GetAllChanges(OldCRequest, CRequest);
-                    LogsActivity(CRequest, changes, (int)Enums.MenuList.ChangeRequest, ActionType, UserRole, ModifiedBy, Comment);
-                }
-                return CRequest;
+
             }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                throw this.HandleException("Exception occured on Manufacture License Change Request Update. See Inner Exception property to see details", ex);
-            }
+
+
+
         }
 
         public REPLACEMENT_DOCUMENTS UpdateBASKEP(long CRId, bool BAStatus, string BANumber, DateTime BADate, Int64 LastApprovedStatus, string ModifiedBy, int ActionType, Int32 UserRole, string Comment)
         {
-            try
+            using (var context = new EMSDataModel())
             {
-                context = new EMSDataModel();
-                transaction = context.Database.BeginTransaction();
-                var now = DateTime.Now;
-                var CRequest = new REPLACEMENT_DOCUMENTS();
-                var OldCRequest = new REPLACEMENT_DOCUMENTS();
-                var Where = context.REPLACEMENT_DOCUMENTS.Where(w => w.FORM_ID.Equals(CRId));
-                if (Where.Count() > 0)
+                using (var transaction = context.Database.BeginTransaction())
                 {
-                    CRequest = Where.FirstOrDefault();
-                    OldCRequest = SetOldValueToTempModel(CRequest);
-                    CRequest.LASTMODIFIED_BY = ModifiedBy;
-                    CRequest.LASTMODIFIED_DATE = now;
-                    CRequest.LASTAPPROVED_STATUS = LastApprovedStatus;
-                    //CRequest.LASTAPPROVED_BY = ModifiedBy;
-                    //CRequest.LASTAPPROVED_DATE = now;
-                    CRequest.DECREE_STATUS = BAStatus;
-                    CRequest.DECREE_NUMBER = BANumber;
-                    //IRequest.BA_DATE = BADate;
-                    context.SaveChanges();
+                    try
+                    {
+                        var now = DateTime.Now;
+                        var CRequest = new REPLACEMENT_DOCUMENTS();
+                        var OldCRequest = new REPLACEMENT_DOCUMENTS();
+                        var Where = context.REPLACEMENT_DOCUMENTS.Where(w => w.FORM_ID.Equals(CRId));
+                        if (Where.Count() > 0)
+                        {
+                            CRequest = Where.FirstOrDefault();
+                            OldCRequest = SetOldValueToTempModel(CRequest);
+                            CRequest.LASTMODIFIED_BY = ModifiedBy;
+                            CRequest.LASTMODIFIED_DATE = now;
+                            CRequest.LASTAPPROVED_STATUS = LastApprovedStatus;
+                            //CRequest.LASTAPPROVED_BY = ModifiedBy;
+                            //CRequest.LASTAPPROVED_DATE = now;
+                            CRequest.DECREE_STATUS = BAStatus;
+                            CRequest.DECREE_NUMBER = BANumber;
+                            //IRequest.BA_DATE = BADate;
+                            context.SaveChanges();
+                        }
+                        transaction.Commit();
+                        if (Where.Count() > 0)
+                        {
+                            Dictionary<string, string[]> changes = GetAllChanges(OldCRequest, CRequest);
+                            LogsActivity(CRequest, changes, (int)Enums.MenuList.ChangeRequest, ActionType, UserRole, ModifiedBy, Comment);
+                        }
+                        return CRequest;
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw this.HandleException("Exception occured on Manufacture License Change Request Update. See Inner Exception property to see details", ex);
+                    }
+                    finally
+                    {
+                        transaction.Dispose();
+                        context.Dispose();
+                    }
                 }
-                transaction.Commit();
-                if (Where.Count() > 0)
-                {
-                    Dictionary<string, string[]> changes = GetAllChanges(OldCRequest, CRequest);
-                    LogsActivity(CRequest, changes, (int)Enums.MenuList.ChangeRequest, ActionType, UserRole, ModifiedBy, Comment);
-                }
-                return CRequest;
             }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                throw this.HandleException("Exception occured on Manufacture License Change Request Update. See Inner Exception property to see details", ex);
-            }
+
+
+
         }
 
 
@@ -395,18 +524,32 @@ namespace Sampoerna.EMS.CustomService.Services
 
         public string SetNewFormNumber(string partial_number)
         {
-            var lastFormNumber = context.REPLACEMENT_DOCUMENTS.Where(x => x.FORM_NO.Contains(partial_number)).OrderByDescending(o => o.FORM_NO).Select(s => s.FORM_NO).FirstOrDefault();
-            if (lastFormNumber == "" || lastFormNumber == null)
+            using (var context = new EMSDataModel())
             {
-                lastFormNumber = "0";
+                try
+                {
+                    var lastFormNumber = context.REPLACEMENT_DOCUMENTS.Where(x => x.FORM_NO.Contains(partial_number)).OrderByDescending(o => o.FORM_NO).Select(s => s.FORM_NO).FirstOrDefault();
+                    if (lastFormNumber == "" || lastFormNumber == null)
+                    {
+                        lastFormNumber = "0";
+                    }
+                    else
+                    {
+                        lastFormNumber = lastFormNumber.Substring(0, 10);
+                    }
+                    var numb = Convert.ToInt32(lastFormNumber) + 1;
+                    var finalNumb = numb.ToString().PadLeft(10, '0');
+                    return finalNumb + "/" + partial_number;
+                }
+                catch (Exception ex)
+                {
+                    throw this.HandleException("Exception occured on Manufacture License Change Request Update. See Inner Exception property to see details", ex);
+                }
+                finally
+                {
+                    context.Dispose();
+                }
             }
-            else
-            {
-                lastFormNumber = lastFormNumber.Substring(0, 10);
-            }
-            var numb = Convert.ToInt32(lastFormNumber) + 1;
-            var finalNumb = numb.ToString().PadLeft(10, '0');
-            return finalNumb + "/" + partial_number;
         }
 
 
@@ -443,6 +586,8 @@ namespace Sampoerna.EMS.CustomService.Services
 
         public IQueryable<REPLACEMENT_DOCUMENTS> GetChangeRequestById(Int64 Id)
         {
+            var context = new EMSDataModel();
+
             try
             {
                 var result = context.REPLACEMENT_DOCUMENTS.Where(w => w.FORM_ID.Equals(Id));
@@ -450,12 +595,37 @@ namespace Sampoerna.EMS.CustomService.Services
             }
             catch (Exception ex)
             {
+                context.Dispose();
                 throw HandleException("Exception occured on Manufacture License Interview Request. See Inner Exception property to see details", ex);
             }
+            finally
+            {
+                //context.Dispose();
+            }
+
+
+            //using (var context = new EMSDataModel())
+            //{
+            //    try
+            //    {
+            //        var result = context.REPLACEMENT_DOCUMENTS.Where(w => w.FORM_ID.Equals(Id));
+            //        return result;
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        throw HandleException("Exception occured on Manufacture License Interview Request. See Inner Exception property to see details", ex);
+            //    }
+            //    finally
+            //    {
+            //        //context.Dispose();
+            //    }
+            //}
+
         }
 
         public IQueryable<REPLACEMENT_DOCUMENTS_DETAIL> GetChangeRequestDetailByFormId(Int64 FormId)
         {
+            var context = new EMSDataModel();
             try
             {
                 var result = context.REPLACEMENT_DOCUMENTS_DETAIL.Where(w => w.FORM_ID.Equals(FormId));
@@ -463,8 +633,16 @@ namespace Sampoerna.EMS.CustomService.Services
             }
             catch (Exception ex)
             {
+                context.Dispose();
                 throw HandleException("Exception occured on Manufacture License Channge Request. See Inner Exception property to see details", ex);
             }
+            finally
+            {
+                //context.Dispose();
+            }
+
+
+
         }
 
         public List<string> GetFileExtList()
@@ -474,87 +652,114 @@ namespace Sampoerna.EMS.CustomService.Services
 
         private void LogsActivity(REPLACEMENT_DOCUMENTS data, Dictionary<string, string[]> changes, int formType, int actionType, int role, string actor, string comment = null)
         {
-            try
+            using (var context = new EMSDataModel())
             {
-                context = new EMSDataModel();
-                foreach (var map in changes)
+                try
                 {
-                    refService.AddChangeLog(context,
+                    foreach (var map in changes)
+                    {
+                        refService.AddChangeLog(context,
+                            formType,
+                            data.FORM_ID.ToString(),
+                            map.Key,
+                            map.Value[0],
+                            map.Value[1],
+                           actor,
+                           DateTime.Now
+                            );
+                    }
+
+                    refService.AddWorkflowHistory(context,
                         formType,
-                        data.FORM_ID.ToString(),
-                        map.Key,
-                        map.Value[0],
-                        map.Value[1],
-                       actor,
-                       DateTime.Now
+                        Convert.ToInt64(data.FORM_ID),
+                        actionType,
+                        actor,
+                        DateTime.Now,
+                        role,
+                        comment
                         );
+                    context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    throw this.HandleException("Exception occured on Manufacture License Change Request Save Log. See Inner Exception property to see details", ex);
+                }
+                finally
+                {
+                    context.Dispose();
                 }
 
-                refService.AddWorkflowHistory(context,
-                    formType,
-                    Convert.ToInt64(data.FORM_ID),
-                    actionType,
-                    actor,
-                    DateTime.Now,
-                    role,
-                    comment
-                    );
-                context.SaveChanges();
             }
-            catch (Exception ex)
-            {
-                throw this.HandleException("Exception occured on Manufacture License Change Request Save Log. See Inner Exception property to see details", ex);
-            }
+
+
 
         }
 
         public void LogsPrintActivity(long Id, int formType, string actor)
         {
-            try
+            using (var context = new EMSDataModel())
             {
-                EMSDataModel context = new EMSDataModel();
-                refService.AddChangeLog(context,
-                    formType,
-                    Id.ToString(),
-                    "DOWNLOAD PRINT OUT",
-                    "",
-                    "",
-                    actor,
-                    DateTime.Now
-                    );
-
-                context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                throw this.HandleException("Exception occured on Change Document Request Service. See Inner Exception property to see details", ex);
-            }
-
-        }
-
-        private void LogsChanges(long Id, Dictionary<string, string[]> changes, int formType, string actor)
-        {
-            try
-            {
-                context = new EMSDataModel();
-                foreach (var map in changes)
+                try
                 {
                     refService.AddChangeLog(context,
                         formType,
                         Id.ToString(),
-                        map.Key,
-                        map.Value[0],
-                        map.Value[1],
-                       actor,
-                       DateTime.Now
+                        "DOWNLOAD PRINT OUT",
+                        "",
+                        "",
+                        actor,
+                        DateTime.Now
                         );
+
+                    context.SaveChanges();
                 }
-                context.SaveChanges();
+                catch (Exception ex)
+                {
+                    throw this.HandleException("Exception occured on Change Document Request Service. See Inner Exception property to see details", ex);
+                }
+                finally
+                {
+                    context.Dispose();
+                }
+
             }
-            catch (Exception ex)
+
+
+
+        }
+
+        public void LogsChanges(long Id, Dictionary<string, string[]> changes, int formType, string actor)
+        {
+            using (var context = new EMSDataModel())
             {
-                throw this.HandleException("Exception occured on Manufacture License Interview Request Save Log. See Inner Exception property to see details", ex);
+                try
+                {
+                    foreach (var map in changes)
+                    {
+                        refService.AddChangeLog(context,
+                            formType,
+                            Id.ToString(),
+                            map.Key,
+                            map.Value[0],
+                            map.Value[1],
+                           actor,
+                           DateTime.Now
+                            );
+                    }
+                    context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    throw this.HandleException("Exception occured on Manufacture License Interview Request Save Log. See Inner Exception property to see details", ex);
+                }
+                finally
+                {
+                    context.Dispose();
+                }
+
             }
+
+
 
         }
 
@@ -703,204 +908,251 @@ namespace Sampoerna.EMS.CustomService.Services
 
         public POA_DELEGATION GetPOADelegationOfUser(string UserId)
         {
-            try
+            using (var context = new EMSDataModel())
             {
-                var now = DateTime.Now.Date;
-                return context.POA_DELEGATION.Where(w => w.DATE_FROM <= now && w.DATE_TO >= now && w.POA_FROM.Equals(UserId)).FirstOrDefault();
-            }
-            catch (Exception ex)
-            {
-                throw this.HandleException("Exception occured on Manufacture License Interview Request Get Delegate. See Inner Exception property to see details", ex);
+
+                try
+                {
+                    var now = DateTime.Now.Date;
+                    return context.POA_DELEGATION.Where(w => w.DATE_FROM <= now && w.DATE_TO >= now && w.POA_FROM.Equals(UserId)).FirstOrDefault();
+                }
+                catch (Exception ex)
+                {
+                    throw this.HandleException("Exception occured on Manufacture License Interview Request Get Delegate. See Inner Exception property to see details", ex);
+                }
+                finally
+                {
+                    context.Dispose();
+                }
             }
         }
 
         public List<POA> GetPOAApproverList(long IRId)
         {
-            try
+            using (var context = new EMSDataModel())
             {
-                var ListPOA = new List<POA>();
-                var RealListPOA = new List<POA>();
-                var IRequest = GetChangeRequestById(IRId).FirstOrDefault();
-                if (IRequest != null)
+
+                try
                 {
-                    var NPPBKCId = IRequest.NPPBKC_ID;
-                    if (IRequest.SYS_REFFERENCES.REFF_KEYS != ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.AwaitingPoaSkepApproval) && IRequest.LASTAPPROVED_BY == null)
+                    var ListPOA = new List<POA>();
+                    var RealListPOA = new List<POA>();
+                    var IRequest = GetChangeRequestById(IRId).FirstOrDefault();
+                    if (IRequest != null)
                     {
-                        var ListPOA_Nppbkc = context.POA_MAP.Where(w => w.NPPBKC_ID.Equals(NPPBKCId) && w.POA.IS_ACTIVE == true && w.POA_ID != IRequest.CREATED_BY).Select(s => s.POA_ID).ToList();
-                        var OriexcisePOA = context.POA_EXCISER.Where(w => w.IS_ACTIVE_EXCISER == true).Select(s => s.POA_ID).ToList();
-                        var excisePOA = new List<string>();
-                        if (ListPOA_Nppbkc.Count() == 0)
+                        var NPPBKCId = IRequest.NPPBKC_ID;
+                        if (IRequest.SYS_REFFERENCES.REFF_KEYS != ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.AwaitingPoaSkepApproval) && IRequest.LASTAPPROVED_BY == null)
                         {
-                            excisePOA = OriexcisePOA.Where(w => ListPOA_Nppbkc.Contains(w)).ToList();
-                        }
-                        var ListPOAExcise_Raw = context.POA.Where(w => w.POA_ID != IRequest.CREATED_BY && w.IS_ACTIVE == true);
-                        if (excisePOA.Count() == 0 || excisePOA == null)
-                        {
-                            ListPOAExcise_Raw = ListPOAExcise_Raw.Where(w => OriexcisePOA.Contains(w.POA_ID));
+                            var ListPOA_Nppbkc = context.POA_MAP.Where(w => w.NPPBKC_ID.Equals(NPPBKCId) && w.POA.IS_ACTIVE == true && w.POA_ID != IRequest.CREATED_BY).Select(s => s.POA_ID).ToList();
+                            var OriexcisePOA = context.POA_EXCISER.Where(w => w.IS_ACTIVE_EXCISER == true).Select(s => s.POA_ID).ToList();
+                            var excisePOA = new List<string>();
+                            if (ListPOA_Nppbkc.Count() == 0)
+                            {
+                                excisePOA = OriexcisePOA.Where(w => ListPOA_Nppbkc.Contains(w)).ToList();
+                            }
+                            var ListPOAExcise_Raw = context.POA.Where(w => w.POA_ID != IRequest.CREATED_BY && w.IS_ACTIVE == true);
+                            if (excisePOA.Count() == 0 || excisePOA == null)
+                            {
+                                ListPOAExcise_Raw = ListPOAExcise_Raw.Where(w => OriexcisePOA.Contains(w.POA_ID));
+                            }
+                            else
+                            {
+                                ListPOAExcise_Raw = ListPOAExcise_Raw.Where(w => excisePOA.Contains(w.POA_ID));
+                            }
+                            foreach (var poaresult in ListPOAExcise_Raw)
+                            {
+                                ListPOA.Add(new POA
+                                {
+                                    POA_ID = poaresult.POA_ID,
+                                    POA_EMAIL = poaresult.POA_EMAIL,
+                                    PRINTED_NAME = poaresult.PRINTED_NAME
+                                });
+                                var poadelegate = GetPOADelegationOfUser(poaresult.POA_ID);
+                                if (poadelegate != null)
+                                {
+                                    ListPOA.Add(new POA
+                                    {
+                                        POA_ID = poadelegate.POA_TO,
+                                        POA_EMAIL = poadelegate.USER1.EMAIL,
+                                        PRINTED_NAME = poadelegate.USER1.FIRST_NAME
+                                    });
+                                }
+                            }
                         }
                         else
                         {
-                            ListPOAExcise_Raw = ListPOAExcise_Raw.Where(w => excisePOA.Contains(w.POA_ID));
-                        }
-                        foreach (var poaresult in ListPOAExcise_Raw)
-                        {
-                            ListPOA.Add(new POA
-                            {
-                                POA_ID = poaresult.POA_ID,
-                                POA_EMAIL = poaresult.POA_EMAIL,
-                                PRINTED_NAME = poaresult.PRINTED_NAME
-                            });
-                            var poadelegate = GetPOADelegationOfUser(poaresult.POA_ID);
-                            if (poadelegate != null)
+                            var lastApprover = IRequest;
+                            if (lastApprover != null)
                             {
                                 ListPOA.Add(new POA
                                 {
-                                    POA_ID = poadelegate.POA_TO,
-                                    POA_EMAIL = poadelegate.USER1.EMAIL,
-                                    PRINTED_NAME = poadelegate.USER1.FIRST_NAME
+                                    POA_ID = lastApprover.LASTAPPROVED_BY,
+                                    POA_EMAIL = lastApprover.USER1.EMAIL,
+                                    PRINTED_NAME = lastApprover.USER1.FIRST_NAME
                                 });
-                            }
-                        }
-                    }
-                    else
-                    {
-                        var lastApprover = IRequest;
-                        if (lastApprover != null)
-                        {
-                            ListPOA.Add(new POA
-                            {
-                                POA_ID = lastApprover.LASTAPPROVED_BY,
-                                POA_EMAIL = lastApprover.USER1.EMAIL,
-                                PRINTED_NAME = lastApprover.USER1.FIRST_NAME
-                            });
-                            var poadelegate = GetPOADelegationOfUser(lastApprover.LASTAPPROVED_BY);
-                            if (poadelegate != null)
-                            {
-                                ListPOA.Add(new POA
+                                var poadelegate = GetPOADelegationOfUser(lastApprover.LASTAPPROVED_BY);
+                                if (poadelegate != null)
                                 {
-                                    POA_ID = poadelegate.POA_TO,
-                                    POA_EMAIL = poadelegate.USER1.EMAIL,
-                                    PRINTED_NAME = poadelegate.USER1.FIRST_NAME
-                                });
+                                    ListPOA.Add(new POA
+                                    {
+                                        POA_ID = poadelegate.POA_TO,
+                                        POA_EMAIL = poadelegate.USER1.EMAIL,
+                                        PRINTED_NAME = poadelegate.USER1.FIRST_NAME
+                                    });
+                                }
                             }
                         }
-                    }
-                    if (ListPOA.Count() > 0)
-                    {
-                        foreach (var realPoa in ListPOA)
+                        if (ListPOA.Count() > 0)
                         {
-                            if (!RealListPOA.Where(w => w.POA_ID == realPoa.POA_ID).Any())
+                            foreach (var realPoa in ListPOA)
                             {
-                                RealListPOA.Add(realPoa);
+                                if (!RealListPOA.Where(w => w.POA_ID == realPoa.POA_ID).Any())
+                                {
+                                    RealListPOA.Add(realPoa);
+                                }
                             }
                         }
                     }
+                    return RealListPOA;
                 }
-                return RealListPOA;
-            }
-            catch (Exception ex)
-            {
-                throw this.HandleException("Exception occured on Manufacture License Interview Request Get POA Approver. See Inner Exception property to see details", ex);
+                catch (Exception ex)
+                {
+                    throw this.HandleException("Exception occured on Manufacture License Interview Request Get POA Approver. See Inner Exception property to see details", ex);
+                }
+                finally
+                {
+                    context.Dispose();
+                }
             }
         }
 
         public List<POA> GetPOAInNPPBKCList(string NPPBKCId)
         {
-            try
+            using (var context = new EMSDataModel())
             {
-                var ListPOA = new List<POA>();
 
-                var ListPOA_Nppbkc = context.POA_MAP.Where(w => w.NPPBKC_ID.Equals(NPPBKCId) && w.POA.IS_ACTIVE == true).Select(s => s.POA_ID).ToList();
-                foreach (var poaresult in ListPOA_Nppbkc)
+                try
                 {
-                    ListPOA.Add(new POA
-                    {
-                        POA_ID = poaresult,
-                    });
-                    var poadelegate = GetPOADelegationOfUser(poaresult);
-                    if (poadelegate != null)
+                    var ListPOA = new List<POA>();
+
+                    var ListPOA_Nppbkc = context.POA_MAP.Where(w => w.NPPBKC_ID.Equals(NPPBKCId) && w.POA.IS_ACTIVE == true).Select(s => s.POA_ID).ToList();
+                    foreach (var poaresult in ListPOA_Nppbkc)
                     {
                         ListPOA.Add(new POA
                         {
-                            POA_ID = poadelegate.POA_TO
+                            POA_ID = poaresult,
                         });
+                        var poadelegate = GetPOADelegationOfUser(poaresult);
+                        if (poadelegate != null)
+                        {
+                            ListPOA.Add(new POA
+                            {
+                                POA_ID = poadelegate.POA_TO
+                            });
+                        }
                     }
+
+                    return ListPOA;
                 }
-                
-                return ListPOA;
-            }
-            catch (Exception ex)
-            {
-                throw this.HandleException("Exception occured on Manufacture License Interview Request Get POA Approver. See Inner Exception property to see details", ex);
+                catch (Exception ex)
+                {
+                    throw this.HandleException("Exception occured on Manufacture License Interview Request Get POA Approver. See Inner Exception property to see details", ex);
+                }
+                finally
+                {
+                    //context.Dispose();
+                }
             }
         }
 
         public List<string> GetNPPBKCByUser(string UserId)
         {
-            try
+            using (var con = new EMSDataModel())
             {
-                var ListNPPBKC = new List<string>();
-                var ListNPPBKC_Raw = context.POA_MAP.Where(w => w.POA.IS_ACTIVE == true && w.POA_ID.Equals(UserId));
-                if (ListNPPBKC_Raw.Any())
+                try
                 {
-                    foreach (var dataResult in ListNPPBKC_Raw)
+                    var ListNPPBKC = new List<string>();
+                    var ListNPPBKC_Raw = con.POA_MAP.Where(w => w.POA.IS_ACTIVE == true && w.POA_ID.Equals(UserId));
+                    if (ListNPPBKC_Raw.Any())
                     {
-                        ListNPPBKC.Add(dataResult.NPPBKC_ID);
+                        foreach (var dataResult in ListNPPBKC_Raw)
+                        {
+                            ListNPPBKC.Add(dataResult.NPPBKC_ID);
+                        }
                     }
-                }
-                //var poadelegate = GetPOADelegationOfUser(UserId);
-                //if (poadelegate != null)
-                //{
-                //    ListNPPBKC.Add(poadelegate.POA_FROM);
-                //}
+                    //var poadelegate = GetPOADelegationOfUser(UserId);
+                    //if (poadelegate != null)
+                    //{
+                    //    ListNPPBKC.Add(poadelegate.POA_FROM);
+                    //}
 
-                if (ListNPPBKC.Count() > 0)
-                {
-                    ListNPPBKC = ListNPPBKC.Distinct().ToList();
+                    if (ListNPPBKC.Count() > 0)
+                    {
+                        ListNPPBKC = ListNPPBKC.Distinct().ToList();
+                    }
+                    return ListNPPBKC;
                 }
-                return ListNPPBKC;
+                catch (Exception ex)
+                {
+                    throw this.HandleException("Exception occured on Manufacture License Change Request Get NPPBKC from POA Map. See Inner Exception property to see details", ex);
+                }
+                finally
+                {
+                    con.Dispose();
+                }
+
             }
-            catch (Exception ex)
-            {
-                throw this.HandleException("Exception occured on Manufacture License Change Request Get NPPBKC from POA Map. See Inner Exception property to see details", ex);
-            }
+
         }
 
         public MASTER_NPPBKC GetNppbkc(object id)
         {
-            try
+            using (var con = new EMSDataModel())
             {
-                var nppbkc = context.ZAIDM_EX_NPPBKC.Where(w => w.NPPBKC_ID == id.ToString()).FirstOrDefault();
-                var plants = context.T001W.Where(w => w.NPPBKC_ID == nppbkc.NPPBKC_ID).Select(s => s.WERKS).ToList();
-                var plantsMap = context.T001K.Where(w => plants.Contains(w.BWKEY)).FirstOrDefault();
-                var companyMap = context.T001.Where(w => w.BUKRS == plantsMap.BUKRS).FirstOrDefault();
-                nppbkc.COMPANY = companyMap;
+                try
+                {
+                    var nppbkc = con.ZAIDM_EX_NPPBKC.Where(w => w.NPPBKC_ID == id.ToString()).FirstOrDefault();
+                    var plants = con.T001W.Where(w => w.NPPBKC_ID == nppbkc.NPPBKC_ID).Select(s => s.WERKS).ToList();
+                    var plantsMap = con.T001K.Where(w => plants.Contains(w.BWKEY)).FirstOrDefault();
+                    var companyMap = con.T001.Where(w => w.BUKRS == plantsMap.BUKRS).FirstOrDefault();
+                    nppbkc.COMPANY = companyMap;
 
-                //var nppbkc = this.uow.NppbkcRepository.Find(id);
-                //var plants = this.uow.PlantRepository.GetMany(x => id.ToString() == nppbkc.NPPBKC_ID).Select(x => x.WERKS);
-                //var plantsMap = this.uow.CompanyPlantMappingRepository.GetManyQueryable(x => plants.Contains(x.BWKEY)).FirstOrDefault();
-                //nppbkc.COMPANY = (plantsMap != null) ? plantsMap.COMPANY : null;
-                return nppbkc;
-            }
-            catch (Exception ex)
-            {
-                throw this.HandleException("Exception occured on SystemReferenceService. See Inner Exception property to see details", ex);
+                    //var nppbkc = this.uow.NppbkcRepository.Find(id);
+                    //var plants = this.uow.PlantRepository.GetMany(x => id.ToString() == nppbkc.NPPBKC_ID).Select(x => x.WERKS);
+                    //var plantsMap = this.uow.CompanyPlantMappingRepository.GetManyQueryable(x => plants.Contains(x.BWKEY)).FirstOrDefault();
+                    //nppbkc.COMPANY = (plantsMap != null) ? plantsMap.COMPANY : null;
+                    return nppbkc;
+                }
+                catch (Exception ex)
+                {
+                    throw this.HandleException("Exception occured on SystemReferenceService. See Inner Exception property to see details", ex);
+                }
+                finally
+                {
+                    //con.Dispose();
+                }
             }
         }
 
         public List<MASTER_PLANT> GetPlantByNPPBKC(string NPPBKCId)
         {
-            try
+            using (var context = new EMSDataModel())
             {
-                var nppbkc = context.ZAIDM_EX_NPPBKC.Where(w => w.NPPBKC_ID == NPPBKCId.ToString()).FirstOrDefault();
-                var plants = context.T001W.Where(w => w.NPPBKC_ID == nppbkc.NPPBKC_ID).ToList();
-                return plants;
-            }
-            catch (Exception ex)
-            {
-                throw this.HandleException("Exception occured on SystemReferenceService. See Inner Exception property to see details", ex);
-            }
 
+                try
+                {
+                    var nppbkc = context.ZAIDM_EX_NPPBKC.Where(w => w.NPPBKC_ID == NPPBKCId.ToString()).FirstOrDefault();
+                    var plants = context.T001W.Where(w => w.NPPBKC_ID == nppbkc.NPPBKC_ID).ToList();
+                    return plants;
+                }
+                catch (Exception ex)
+                {
+                    throw this.HandleException("Exception occured on SystemReferenceService. See Inner Exception property to see details", ex);
+                }
+                finally
+                {
+                    context.Dispose();
+                }
+            }
 
         }
 

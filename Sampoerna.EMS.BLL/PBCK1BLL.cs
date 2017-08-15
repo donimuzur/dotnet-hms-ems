@@ -272,6 +272,15 @@ namespace Sampoerna.EMS.BLL
             return mapResult;
         }
 
+        public Pbck1Dto GetById(long id,bool noRelation)
+        {
+            
+            var dbData = _repository.Get(c => c.PBCK1_ID == id, null, "").FirstOrDefault();
+            var mapResult = Mapper.Map<Pbck1Dto>(dbData);
+            
+            return mapResult;
+        }
+
         public SavePbck1Output Save(Pbck1SaveInput input)
         {
             PBCK1 dbData;

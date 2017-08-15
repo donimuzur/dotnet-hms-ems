@@ -131,7 +131,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     };
 
                     CRViewmodel.FilterInput.LastApprovedStatus = 0;
-
+                    
                 }
                 else
                 {
@@ -139,13 +139,21 @@ namespace Sampoerna.EMS.Website.Controllers
                     return RedirectToAction("Unauthorized", "Error");
 
                 }
+
+                return View(CRViewmodel);
+
             }
             catch (Exception ex)
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                return null;
+            }
+            finally
+            {
+                //refService.Dispose();
+                service.Dispose();
             }
 
-            return View(CRViewmodel);
         }
 
         public ActionResult CompletedDocument()
@@ -213,6 +221,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
             }
 
+            service.Dispose();
             return View("Index", CRViewmodel);
 
         }
@@ -222,11 +231,13 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var nppbkclist = service.GetNPPBKCByUser(CurrentUser.USER_ID);
 
-            var documents = service.GetAll().Where(w => (nppbkclist.Contains(w.NPPBKC_ID)) || (w.LASTAPPROVED_BY != null ? (w.CREATED_BY.Equals(CurrentUser.USER_ID) || w.LASTAPPROVED_BY.Equals(CurrentUser.USER_ID)) : w.CREATED_BY.Equals(CurrentUser.USER_ID)));
+            //var documents = service.GetAll().Where(w => (nppbkclist.Contains(w.NPPBKC_ID)) || (w.LASTAPPROVED_BY != null ? (w.CREATED_BY.Equals(CurrentUser.USER_ID) || w.LASTAPPROVED_BY.Equals(CurrentUser.USER_ID)) : w.CREATED_BY.Equals(CurrentUser.USER_ID)));
+            var documents = service.GetAll();
 
             if (model.FilterInput.LastApprovedStatus != 0)
             {
-                documents = documents.Where(w => w.LASTAPPROVED_STATUS == model.FilterInput.LastApprovedStatus);
+                //documents = documents.Where(w => w.LASTAPPROVED_STATUS == model.FilterInput.LastApprovedStatus);
+                documents = documents.Where(w => w.LASTAPPROVED_STATUS == refService.GetRefByKey("COMPLETED").REFF_ID || w.LASTAPPROVED_STATUS == refService.GetRefByKey("CANCELED").REFF_ID);
             }
             else
             {
@@ -241,7 +252,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             else
             {
-                documents = documents.Where(w => nppbkclist.Contains(w.NPPBKC_ID));
+                //documents = documents.Where(w => nppbkclist.Contains(w.NPPBKC_ID));
             }
 
             if (model.FilterInput.DocumentType != null)
@@ -269,7 +280,10 @@ namespace Sampoerna.EMS.Website.Controllers
                     CreatedBy = s.CREATED_BY,
                     KPPBCAddress = service.GetNppbkc(s.NPPBKC_ID).KPPBC_ADDRESS,
                     LastApprovedStatus = s.SYS_REFFERENCES.REFF_VALUE,
-                    LastModifiedDate = Convert.ToDateTime(s.LASTMODIFIED_DATE)
+                    LastModifiedDate = Convert.ToDateTime(s.LASTMODIFIED_DATE),
+                    IsApprover = IsPOACanApprove(s.NPPBKC_ID, s.CREATED_BY, s.LASTAPPROVED_BY == null ? "" : s.LASTAPPROVED_BY, s.FORM_ID),
+                    IsCreator = (s.CREATED_BY == CurrentUser.USER_ID) ? true : false,
+                    IsViewer = IsPOACanView(s.NPPBKC_ID, s.FORM_ID)
                 }).ToList();
 
             }
@@ -277,6 +291,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.ChangeRequestDocuments = listofDoc;
 
+            service.Dispose();
             return PartialView("_ChangeRequestTable", model);
         }
 
@@ -320,6 +335,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 Console.WriteLine(ex.StackTrace);
                 return View("Index");
             }
+            finally
+            {
+                service.Dispose();
+            }
         }
 
         public ActionResult Details(Int64 Id = 0)
@@ -330,6 +349,8 @@ namespace Sampoerna.EMS.Website.Controllers
             CRmodel = new ChangeRequestModel();
             CRmodel = GetChangeRequestDetail(Id, "Detail");
             CRmodel.Confirmation = GenerateConfirmDialog(false, false, false);
+            //refService.Dispose();
+            service.Dispose();
             return View("Create", CRmodel);
             //}
             //else
@@ -349,11 +370,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 CRmodel = GetChangeRequestDetail(Id, "Edit");
                 CRmodel.Confirmation = GenerateConfirmDialog(true, true, false);
 
+                refService.Dispose();
+                service.Dispose();
+
                 return View("Create", CRmodel);
             }
             else
             {
                 AddMessageInfo("You dont have access to edit this Manufacturing License Request document.", Enums.MessageInfoType.Warning);
+                refService.Dispose();
+                service.Dispose();
                 return RedirectToAction("Index");
             }
         }
@@ -367,11 +393,17 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if ((CRmodel.CreatedBy != CurrentUser.USER_ID) && (CurrentUser.UserRole == Enums.UserRole.Administrator || IsPOACanApprove(CRmodel.NppbkcId, CRmodel.CreatedBy, CRmodel.LastApprovedBy == null ? "" : CRmodel.LastApprovedBy, Id)))
             {
+                refService.Dispose();
+                service.Dispose();
+
                 return View("Create", CRmodel);
             }
             else
             {
                 AddMessageInfo("You dont have access to approve this Manufacturing License Request document.", Enums.MessageInfoType.Warning);
+                refService.Dispose();
+                service.Dispose();
+
                 return RedirectToAction("Index");
             }
         }
@@ -579,12 +611,18 @@ namespace Sampoerna.EMS.Website.Controllers
                     else
                     {
                         AddMessageInfo("Maximum file size is " + maxFileSize.ToString() + " Mb", Enums.MessageInfoType.Warning);
+                        refService.Dispose();
+                        service.Dispose();
+
                         return View();
                     }
                 }
                 else
                 {
                     AddMessageInfo("Wrong File Extension", Enums.MessageInfoType.Warning);
+                    refService.Dispose();
+                    service.Dispose();
+
                     return View();
                 }
                 
@@ -594,6 +632,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo("Save Failed : " + ex.Message, Enums.MessageInfoType.Error);
             }
             //model = GenerateModelProperties(model);
+            refService.Dispose();
+            service.Dispose();
+
             return View("Index", model);
         }
 
@@ -626,7 +667,8 @@ namespace Sampoerna.EMS.Website.Controllers
                                 }
                             }
                         }
-                        long ApproveStats = GetSysreffApprovalStatus(model.LastApprovedStatus);
+                        //long ApproveStats = GetSysreffApprovalStatus(model.LastApprovedStatus);
+                        long ApproveStats = refService.GetRefByKey("WAITING_POA_SKEP_APPROVAL").REFF_ID;
                         if (model.Id != 0 && model.Id != null)
                         {
                             var ActionType = 0;
@@ -686,11 +728,17 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
                 AddMessageInfo(msgSuccess, Enums.MessageInfoType.Success);
+                refService.Dispose();
+                service.Dispose();
+
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                refService.Dispose();
+                service.Dispose();
+
                 return RedirectToAction("Index");
             }
         }
@@ -721,6 +769,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 model.MainMenu = Enums.MenuList.ChangeRequest;
                 model.CurrentMenu = PageInfo;
             }
+            //refService.Dispose();
+            service.Dispose();
+
 
             return View("SummaryReport", model);
         }
@@ -800,6 +851,9 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
             model.ChangeRequestDocuments = listofDoc;
+            refService.Dispose();
+            service.Dispose();
+
 
             return PartialView("_ChangeRequestTableSummaryReport", model);
         }
@@ -823,6 +877,9 @@ namespace Sampoerna.EMS.Website.Controllers
             Response.Flush();
             newFile.Delete();
             Response.End();
+            refService.Dispose();
+            service.Dispose();
+
         }
 
 
@@ -1505,6 +1562,10 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 throw;
             }
+            finally
+            {
+                service.Dispose();
+            }
         }
 
         public void InsertUploadCommonFile(List<string> FilePath, long CRId, bool IsGov, List<string> FileName)
@@ -1561,6 +1622,10 @@ namespace Sampoerna.EMS.Website.Controllers
             catch (Exception e)
             {
                 throw;
+            }
+            finally
+            {
+                service.Dispose();
             }
         }
 
@@ -1752,7 +1817,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
 
-                _CRModel.ButtonCombination = GetButtonCombination(_CRModel.LastApprovedStatus);
+                _CRModel.ButtonCombination = GetButtonCombination(_CRModel.LastApprovedStatusID);
 
                 if ((_CRModel.ButtonCombination != "Create") && (_CRModel.ButtonCombination != "Edit"))
                 {
@@ -1767,31 +1832,38 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 return new ChangeRequestModel();
             }
+            finally
+            {
+                service.Dispose();
+            }
+
         }
 
-        private string GetButtonCombination(string LastApprovedStatus)
+        private string GetButtonCombination(long LastApprovedStatus)
         {
             string result = "Create";
 
-            switch(LastApprovedStatus.ToUpper())
+            var LastApprovedStatus_Key = refService.GetReferenceById(LastApprovedStatus).REFF_KEYS;
+
+            switch (LastApprovedStatus_Key)
             {
-                case "DRAFT NEW":
+                case "DRAFT_NEW_STATUS":
                     result = "Create";
                     break;
 
-                case "DRAFT EDIT":
+                case "DRAFT_EDIT_STATUS":
                     result = "Edit";
                     break;
 
-                case "WAITING FOR POA APPROVAL":
+                case "WAITING_POA_APPROVAL":
                     result = "ApproveReject";
                     break;
 
-                case "WAITING FOR GOVERNMENT APPROVAL":
+                case "WAITING_GOVERNMENT_APPROVAL":
                     result = "SubmitSKEP";
                     break;
 
-                case "WAITING FOR POA SKEP APPROVAL":
+                case "WAITING_POA_SKEP_APPROVAL":
                     result = "ApproveRejectFinal";
                     break;
 
@@ -1978,17 +2050,21 @@ namespace Sampoerna.EMS.Website.Controllers
         public bool IsPOACanApprove(string NPPBKCId, string CreatedBy, string LastApprovedBy = "", long ID = 0)
         {
             var isOk = false;
+            var CRequest = service.GetChangeRequestById(ID).FirstOrDefault();
+
             if (LastApprovedBy != "")
             {
                 if (LastApprovedBy == CurrentUser.USER_ID)
                 {
-                    isOk = true;
+                    if (CRequest.LASTAPPROVED_STATUS != refService.GetRefByKey("DRAFT_EDIT_STATUS").REFF_ID)
+                    {
+                        isOk = true;
+                    }
                 }
             }
             else
             {
                 //var POAApprover = service.GetPOAApproverList(NPPBKCId, CreatedBy).ToList();
-                var CRequest = service.GetChangeRequestById(ID).FirstOrDefault();
 
                 if ((CRequest.LASTAPPROVED_STATUS != refService.GetRefByKey("DRAFT_NEW_STATUS").REFF_ID) && (CRequest.LASTAPPROVED_STATUS != refService.GetRefByKey("DRAFT_EDIT_STATUS").REFF_ID))
                 {
@@ -2440,18 +2516,23 @@ namespace Sampoerna.EMS.Website.Controllers
 
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult UpdatePrintOutLayout(string NewPrintout, string CreatedBy)
+        public ActionResult UpdatePrintOutLayout(string NewPrintout, string CreatedBy, long Id)
         {
             if (CreatedBy == "")
             {
                 CreatedBy = CurrentUser.USER_ID;
             }
             var ErrMessage = refService.UpdatePrintoutLayout("CHANGE_REQUEST_PRINTOUT", NewPrintout, CreatedBy);
+            if (ErrMessage == "")
+            {
+                PrintoutChangelog(Id);
+            }
+
             return Json(ErrMessage);
         }
 
         [HttpPost]
-        public void DownloadPrintOut(ChangeRequestModel _CRModel)
+        public ActionResult DownloadPrintOut(ChangeRequestModel _CRModel)
         {
             try
             {
@@ -2515,10 +2596,16 @@ namespace Sampoerna.EMS.Website.Controllers
                 //Response.AddHeader("content-disposition", "attachment;filename=PrintOut_InterviewRequest_" + FormNumber + "_" + now + ".pdf");
                 //Response.BinaryWrite(bytesInStream);
                 //Response.End();
+                return null;
             }
             catch (Exception ex)
             {
-                throw ex;
+                AddMessageInfo(String.Format("Cannot download printout!. Reason: {0}", ex.Message), Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+            finally
+            {
+                service.Dispose();
             }
         }
 
@@ -2548,7 +2635,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception("Missing supporting documents! ");
             }
         }
 
@@ -2737,7 +2824,7 @@ namespace Sampoerna.EMS.Website.Controllers
         //}
 
         [HttpPost]
-        public ActionResult RestorePrintoutToDefault(string CreatedBy)
+        public ActionResult RestorePrintoutToDefault(string CreatedBy, long Id)
         {
             if (CreatedBy == "")
             {
@@ -2745,6 +2832,11 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var ErrMessage = refService.RestorePrintoutToDefault("CHANGE_REQUEST_PRINTOUT", CreatedBy);
+            if (ErrMessage == "")
+            {
+                PrintoutChangelog(Id);
+            }
+
             return Json(ErrMessage);
         }
 
@@ -2834,6 +2926,14 @@ namespace Sampoerna.EMS.Website.Controllers
             //}
             return word.Trim();
         }
+
+        private void PrintoutChangelog(long IRID)
+        {
+            Dictionary<string, string[]> changes = new Dictionary<string, string[]>();
+            changes.Add("PRINTOUT LAYOUT", new string[] { "Layout Changes", "Layout Changes" });
+            service.LogsChanges(IRID, changes, (int)Enums.MenuList.ChangeRequest, CurrentUser.USER_ID);
+        }
+
 
         #endregion
 

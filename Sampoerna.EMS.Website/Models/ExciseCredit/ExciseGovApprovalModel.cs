@@ -29,6 +29,7 @@ namespace Sampoerna.EMS.Website.Models.ExciseCredit
         public long Id { set; get; }
         [Required(ErrorMessage = "Government approval status is required")]
         public bool SkepStatus { set; get; }
+        public int SkepStatusId { set; get; }
         public string DecreeNumber { set; get; }
         public DateTime DecreeDate { set; get; }
         public decimal CreditAmount { set; get; }
@@ -44,6 +45,8 @@ namespace Sampoerna.EMS.Website.Models.ExciseCredit
         public string Notes { set; get; }
         public bool IsNewEntry { set; get; }
         public bool IsDetail { set; get; }
+        public bool IsWaitingSkepApproval { set; get; }
+        public bool IsApprover { set; get; }
 
         public List<ExciseApprovedProduct> ApprovedProducts { set; get; }
     }

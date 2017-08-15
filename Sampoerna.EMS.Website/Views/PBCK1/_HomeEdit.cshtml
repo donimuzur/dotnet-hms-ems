@@ -148,8 +148,9 @@
                                     <div class="row">
                                         <label class="col-md-4">Supplier Port</label>
                                         <div class="col-md-8">
-                                            @Html.HiddenFor(model => model.Detail.SupplierPortName)
-                                            @Html.DropDownListFor(model => model.Detail.SupplierPortId, Model.SupplierPortList, "None", new { @class = "form-control" })
+                                            @*@Html.HiddenFor(model => model.Detail.SupplierPortName)
+                                            @Html.DropDownListFor(model => model.Detail.SupplierPortId, Model.SupplierPortList, "None", new { @class = "form-control" })*@
+                                            @Html.TextBoxFor(model => model.Detail.SupplierPortName, new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>

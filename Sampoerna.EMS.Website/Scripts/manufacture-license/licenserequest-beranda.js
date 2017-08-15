@@ -897,31 +897,70 @@ $(document).on("click", "#btn_show_printouteditor", function () {
 */
 $(document).on("click", "#btn-tab-print-layout", function () {
     
-    GeneratePrintOut();
+    GeneratePrintOut_License1();
+    GeneratePrintOut_License2();
+    GeneratePrintOut_License3();
 });
 
 $(document).on("click", "#btn_download_printout", function () {
     GeneratePrintOutPDF();
 });
 
-$(document).on("click", "#btn_show_printouteditor", function () {
-    GetPrintoutLayout();
+$(document).on("click", ".btn_show_printouteditor", function () {
+    var a = $(this).data("action");
+    $("#txt_printout_temp").val(a);
+    GetPrintoutLayout(a);
 });
 
 $(document).on("click", "#btn_change_printoutlayout", function () {
     UpdatePrintoutLayout();
 });
 
-function GeneratePrintOut() {
+
+function GeneratePrintOut_License1() {
     $("#customloader").show();
-    $("#div-print-layout").empty();
+    $("#div-print-layout_1").empty();
     var ID = $("#txt_hd_id").val();
     $.ajax({
         type: 'POST',
-        url: getUrl("GeneratePrintout"),
+        url: getUrl("GeneratePrintout_License1"),
         data: { MnfRequestID: ID },
         success: function (data) {
-            $("#div-print-layout").html(data);
+            $("#div-print-layout_1").html(data);
+        },
+        complete: function () {
+            $("#customloader").hide();
+        }
+    });
+}
+
+function GeneratePrintOut_License2() {
+    $("#customloader").show();
+    $("#div-print-layout_2").empty();
+    var ID = $("#txt_hd_id").val();
+    $.ajax({
+        type: 'POST',
+        url: getUrl("GeneratePrintout_License2"),
+        data: { MnfRequestID: ID },
+        success: function (data) {
+            $("#div-print-layout_2").html(data);
+        },
+        complete: function () {
+            $("#customloader").hide();
+        }
+    });
+}
+
+function GeneratePrintOut_License3() {
+    $("#customloader").show();
+    $("#div-print-layout_3").empty();
+    var ID = $("#txt_hd_id").val();
+    $.ajax({
+        type: 'POST',
+        url: getUrl("GeneratePrintout_License3"),
+        data: { MnfRequestID: ID },
+        success: function (data) {
+            $("#div-print-layout_3").html(data);
         },
         complete: function () {
             $("#customloader").hide();
@@ -947,13 +986,15 @@ function GeneratePrintOutPDF() {
     $("#form_DownloadPrintout").submit();
 }
 
-function GetPrintoutLayout() {
+function GetPrintoutLayout(a) {
+    
     $("#customloader").show();
     var Creator = $("#txt_hd_createdby").val();
+    var report_page = a;
     $.ajax({
         type: 'POST',
         url: getUrl("GetPrintOutLayout"),
-        data: { Creator: Creator },
+        data: { Creator: Creator, Report: report_page },
         success: function (html) {
             tinyMCE.activeEditor.setContent(html);
         },
@@ -965,11 +1006,74 @@ function GetPrintoutLayout() {
 
 function UpdatePrintoutLayout() {
     $("#customloader").show();
-    CloseAllModal();
+    var a = $("#txt_printout_temp").val();
+    CloseAllModal(); 
     var layout = tinyMCE.get('txt_printoutlayout').getContent();
     $.ajax({
         type: 'POST',
         url: getUrl("UpdatePrintOutLayout"),
+        data: {
+            NewPrintout: layout,
+            CreatedBy: $("#txt_hd_createdby").val(),
+            ReportPage: a,
+            Id: $('#txt_hd_id').val()
+        },
+        success: function (result) {
+            if (result == "") {
+                //GeneratePrintOut();
+                if (a == "license1")
+                {
+                    GeneratePrintOut_License1();
+                } else if (a == "license2")
+                {
+                    GeneratePrintOut_License2();
+                }else if (a == "license3")
+                {
+                    GeneratePrintOut_License3();
+                }
+            }
+            else {
+                alert(result);
+            }
+        },
+        complete: function () {
+            $("#customloader").hide();
+        }
+    });
+}
+
+function UpdatePrintoutLayout_license2() {
+    $("#customloader").show();
+    CloseAllModal();
+    var layout = tinyMCE.get('txt_printoutlayout_license2').getContent();
+    $.ajax({
+        type: 'POST',
+        url: getUrl("UpdatePrintOutLayout_license2"),
+        data: {
+            NewPrintout: layout,
+            CreatedBy: $("#txt_hd_createdby").val()
+        },
+        success: function (result) {
+            if (result == "") {
+                GeneratePrintOut();
+            }
+            else {
+                alert(result);
+            }
+        },
+        complete: function () {
+            $("#customloader").hide();
+        }
+    });
+}
+
+function UpdatePrintoutLayout_license3() {
+    $("#customloader").show();
+    CloseAllModal();
+    var layout = tinyMCE.get('txt_printoutlayout_license3').getContent();
+    $.ajax({
+        type: 'POST',
+        url: getUrl("UpdatePrintOutLayout_license3"),
         data: {
             NewPrintout: layout,
             CreatedBy: $("#txt_hd_createdby").val()
@@ -1085,9 +1189,51 @@ function CleaningUnUseFileOther(TBodyId, DivId) {
 
 function RestoreDefaultPrintout() {
     $("#customloader").show();
+    var a = $("#txt_printout_temp").val();
     $.ajax({
         type: 'POST',
         url: getUrl("RestorePrintoutToDefault"),
+        data: { ReportPage: a, Id : $('#txt_hd_id').val()},
+        success: function (data) {
+            if (data != "") {
+                alert(data);
+            } else {
+                if (a == "license1") {
+                    GeneratePrintOut_License1();
+                } else if (a == "license2")
+                { GeneratePrintOut_License2(); }
+                else if (a == "license3")
+                { GeneratePrintOut_License3(); }
+            }
+        },
+        complete: function () {
+            $("#customloader").hide();
+        }
+    });
+}
+
+function RestoreDefaultPrintout_license2() {
+    $("#customloader").show();
+    $.ajax({
+        type: 'POST',
+        url: getUrl("RestorePrintoutToDefault_license2"),
+        data: {},
+        success: function (data) {
+            if (data != "") {
+                alert(data);
+            }
+        },
+        complete: function () {
+            $("#customloader").hide();
+        }
+    });
+}
+
+function RestoreDefaultPrintout_license3() {
+    $("#customloader").show();
+    $.ajax({
+        type: 'POST',
+        url: getUrl("RestorePrintoutToDefault_license3"),
         data: {},
         success: function (data) {
             if (data != "") {
@@ -1105,6 +1251,7 @@ $(document).on("click", "#btnRestorePrintoutToDefault", function () {
     RestoreDefaultPrintout();
     GeneratePrintOut();
 });
+
 
 $(document).on('keydown', '.numeric-form', function (e) {
     { -1 !== $.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) || /65|67|86|88/.test(e.keyCode) && (!0 === e.ctrlKey || !0 === e.metaKey) || 35 <= e.keyCode && 40 >= e.keyCode || (e.shiftKey || 48 > e.keyCode || 57 < e.keyCode) && (96 > e.keyCode || 105 < e.keyCode) && e.preventDefault() }

@@ -66,13 +66,13 @@ namespace Sampoerna.EMS.CustomService.Data
             this.PRODUCT_DEVELOPMENT = new HashSet<PRODUCT_DEVELOPMENT>();
             this.PRODUCT_DEVELOPMENT1 = new HashSet<PRODUCT_DEVELOPMENT>();
             this.PRINT_HISTORY = new HashSet<PRINT_HISTORY>();
-            this.BRAND_REGISTRATION_REQ = new HashSet<BRAND_REGISTRATION_REQ>();
-            this.BRAND_REGISTRATION_REQ1 = new HashSet<BRAND_REGISTRATION_REQ>();
-            this.BRAND_REGISTRATION_REQ2 = new HashSet<BRAND_REGISTRATION_REQ>();
             this.RECEIVED_DECREE = new HashSet<RECEIVED_DECREE>();
             this.RECEIVED_DECREE1 = new HashSet<RECEIVED_DECREE>();
             this.RECEIVED_DECREE2 = new HashSet<RECEIVED_DECREE>();
             this.USER_PRINTOUT_LAYOUT = new HashSet<USER_PRINTOUT_LAYOUT>();
+            this.BRAND_REGISTRATION_REQ = new HashSet<BRAND_REGISTRATION_REQ>();
+            this.BRAND_REGISTRATION_REQ1 = new HashSet<BRAND_REGISTRATION_REQ>();
+            this.BRAND_REGISTRATION_REQ2 = new HashSet<BRAND_REGISTRATION_REQ>();
         }
     
         public string USER_ID { get; set; }
@@ -186,12 +186,6 @@ namespace Sampoerna.EMS.CustomService.Data
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PRINT_HISTORY> PRINT_HISTORY { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<BRAND_REGISTRATION_REQ> BRAND_REGISTRATION_REQ { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<BRAND_REGISTRATION_REQ> BRAND_REGISTRATION_REQ1 { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<BRAND_REGISTRATION_REQ> BRAND_REGISTRATION_REQ2 { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RECEIVED_DECREE> RECEIVED_DECREE { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RECEIVED_DECREE> RECEIVED_DECREE1 { get; set; }
@@ -199,5 +193,11 @@ namespace Sampoerna.EMS.CustomService.Data
         public virtual ICollection<RECEIVED_DECREE> RECEIVED_DECREE2 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<USER_PRINTOUT_LAYOUT> USER_PRINTOUT_LAYOUT { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BRAND_REGISTRATION_REQ> BRAND_REGISTRATION_REQ { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BRAND_REGISTRATION_REQ> BRAND_REGISTRATION_REQ1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BRAND_REGISTRATION_REQ> BRAND_REGISTRATION_REQ2 { get; set; }
     }
 }

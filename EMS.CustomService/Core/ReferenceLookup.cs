@@ -62,7 +62,7 @@ namespace Sampoerna.EMS.CustomService.Core
 
             #region Approver
             lookupTable.Add(ReferenceKeys.KeyGroup.ApproverUser, "ADMIN_APPROVER");
-            lookupTable.Add(ReferenceKeys.Approver.AdminApprover, "APPROVER_ADMIN");
+            lookupTable.Add(ReferenceKeys.Approver.AdminApprover, "ADMIN_APPROVER");
             #endregion
 
             #region Email Sender
@@ -88,6 +88,10 @@ namespace Sampoerna.EMS.CustomService.Core
             lookupTable.Add(ReferenceKeys.PrintoutLayout.ExciseRequestGuaranteeDecree, "EXCISE_CREDIT_GUARANTEE_DECREE");
             #endregion
 
+            #region Registration Number
+            lookupTable.Add(ReferenceKeys.RegulationNumber.ExciseCredit, "REGULATION_EXCISE_CREDIT");
+            lookupTable.Add(ReferenceKeys.RegulationNumber.BrandRegistration, "REGULATION_BRAND_REGISTRATION");
+            #endregion
 
             #endregion
         }

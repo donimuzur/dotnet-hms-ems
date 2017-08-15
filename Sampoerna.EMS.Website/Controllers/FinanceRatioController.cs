@@ -194,7 +194,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
 
-
+            service.Dispose();
             return workflowList;
 
         }
@@ -225,6 +225,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 item.IsSubmitted = /*false; */item.ApprovalStatus == approvalStatusSubmitted;
                 data.ListFinanceRatios.Add(item);
             }
+            refService.Dispose();
+            service.Dispose();
             return View("Index", data);
         }
 
@@ -245,6 +247,8 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var data = GenerateProperties(null, false);
+            refService.Dispose();
+            service.Dispose();
             return View(data);
 
         }
@@ -539,6 +543,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 AddMessageInfo("Submit Failed : " + ex.Message, Enums.MessageInfoType.Error);
             }
+            
             return RedirectToAction("Index");
         }
 
