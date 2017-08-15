@@ -49,7 +49,7 @@ namespace Sampoerna.EMS.XMLReader
                 //writer.WriteElementString("PRODUCT_ALIAS", SetNullToSlash(brandReg.PRODUCT_ALIAS));
 
                 
-                writer.WriteElementString("SERIES_CODE",SetNullToSlash(brandReg.SERIES_CODE));
+                writer.WriteElementString("SERIES_CODE",Utils.ConvertHelper.GetNumeralFromRomanValue(brandReg.SERIES_CODE));
                 //writer.WriteElementString("SERIES_VALUE", SetNullToSlash(brandReg.SERIES_VALUE));
 
                 writer.WriteElementString("CONTENT",SetNullToSlash(brandReg.BRAND_CONTENT));
