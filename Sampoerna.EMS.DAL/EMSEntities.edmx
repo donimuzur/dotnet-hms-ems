@@ -307,6 +307,7 @@
           <Property Name="FLAG_NPPBKC_IMPORT" Type="bit" />
           <Property Name="MATDOC" Type="varchar" MaxLength="50" />
           <Property Name="FLAG_NPPBKC_IMPORT_DEST" Type="bit" />
+          <Property Name="FLAG_FOR_LACK1_LAB" Type="bit" />
         </EntityType>
         <EntityType Name="CK5_FILE_UPLOAD">
           <Key>
@@ -1501,6 +1502,7 @@
           <Property Name="PER_CODE_DESC" Type="nvarchar" MaxLength="30" />
           <Property Name="BAHAN_KEMASAN" Type="nvarchar" MaxLength="100" />
           <Property Name="PACKED_ADJUSTED" Type="bit" />
+          <Property Name="IS_SENT_CHECK_BRAND" Type="bit" />
         </EntityType>
         <EntityType Name="ZAIDM_EX_GOODTYP">
           <Key>
@@ -5686,6 +5688,7 @@
               <LongDescription>Packed Adjusted</LongDescription>
             </Documentation>
           </Property>
+          <Property Name="IS_SENT_CHECK_BRAND" Type="Boolean" />
           </EntityType>
         <Association Name="FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET">
           <End Type="EMSModel.ZAIDM_EX_MARKET" Role="ZAIDM_EX_MARKET" Multiplicity="0..1" />
@@ -5924,6 +5927,7 @@
           <Property Name="FLAG_NPPBKC_IMPORT" Type="Boolean" />
           <Property Name="MATDOC" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="FLAG_NPPBKC_IMPORT_DEST" Type="Boolean" />
+          <Property Name="FLAG_FOR_LACK1_LAB" Type="Boolean" />
         </EntityType>
         <Association Name="FK_CK5_MATERIAL_CK5">
           <End Type="EMSModel.CK5" Role="CK5" Multiplicity="0..1" />
@@ -9829,7 +9833,8 @@
     <EntitySetMapping Name="ZAIDM_EX_BRAND">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.ZAIDM_EX_BRAND)">
         <MappingFragment StoreEntitySet="ZAIDM_EX_BRAND">
-          <ScalarProperty Name="PACKED_ADJUSTED" ColumnName="PACKED_ADJUSTED" />
+          <ScalarProperty Name="IS_SENT_CHECK_BRAND" ColumnName="IS_SENT_CHECK_BRAND" />
+                <ScalarProperty Name="PACKED_ADJUSTED" ColumnName="PACKED_ADJUSTED" />
                 <ScalarProperty Name="BAHAN_KEMASAN" ColumnName="BAHAN_KEMASAN" />
                 <ScalarProperty Name="PER_CODE_DESC" ColumnName="PER_CODE_DESC" />
                 <ScalarProperty Name="WERKS" ColumnName="WERKS" />
@@ -9969,7 +9974,8 @@
     <EntitySetMapping Name="CK5">
       <EntityTypeMapping TypeName="IsTypeOf(EMSModel.CK5)">
         <MappingFragment StoreEntitySet="CK5">
-          <ScalarProperty Name="FLAG_NPPBKC_IMPORT_DEST" ColumnName="FLAG_NPPBKC_IMPORT_DEST" />
+          <ScalarProperty Name="FLAG_FOR_LACK1_LAB" ColumnName="FLAG_FOR_LACK1_LAB" />
+                <ScalarProperty Name="FLAG_NPPBKC_IMPORT_DEST" ColumnName="FLAG_NPPBKC_IMPORT_DEST" />
                 <ScalarProperty Name="MATDOC" ColumnName="MATDOC" />
                 <ScalarProperty Name="FLAG_NPPBKC_IMPORT" ColumnName="FLAG_NPPBKC_IMPORT" />
                 <ScalarProperty Name="FLAG_FOR_LACK1" ColumnName="FLAG_FOR_LACK1" />
