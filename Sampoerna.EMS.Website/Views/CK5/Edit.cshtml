@@ -1066,6 +1066,7 @@
                         }
                     }
                 });
+                $("#ck5ManualLab").show();
             } else {
                 $("input[name='PbckDecreeId']").val('');
                 $("input[name='PbckDecreeNumber']").val('');
@@ -1074,6 +1075,9 @@
                 $("input[name='Ck5TotalExciseable']").val('0');
                 $("input[name='RemainQuota']").val('0');
                 $("input[name='PbckUom']").val('');
+                
+                $("#IsLack1Lab").prop('checked', false);
+                $("#ck5ManualLab").hide();
             }
 
         });

@@ -84,5 +84,7 @@ namespace Sampoerna.EMS.Website.Models.POA
         public List<HttpPostedFileBase> PoaSKFile { get; set; }
 
         public List<POA_SK> PoaSk { get; set; } 
+
+        public bool IsExciser { get; set; }
     }
 }

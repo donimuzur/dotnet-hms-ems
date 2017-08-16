@@ -122,5 +122,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public bool? FLAG_NPPBKC_IMPORT_DEST { get; set; }
 
         public string MatDoc { get; set; }
+
+        public bool? FLAG_FOR_LACK1_LAB { get; set; }
     }
 }

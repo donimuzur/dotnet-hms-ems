@@ -1,0 +1,42 @@
+﻿@model Dictionary<string, double>
+
+@foreach (var data in Model)
+{
+    <div class="col-md-12">
+        <div class="row">
+            <div class="form-group @data.Key">
+                <div class="col-md-3">
+                    <label>@data.Key</label>
+                </div>
+                <div class="col-md-3">
+                    @{ 
+                        var valueDisplay = String.Format("{0:N}", Math.Ceiling(data.Value));
+                    }
+                    @Html.TextBoxFor(model => valueDisplay, new { @class = "form-control text-right", @readonly = true })
+                </div>
+                <div class="col-md-3">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>x</label>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" value="2" readonly class="form-control text-right" />
+                        </div>
+                        <div class="col-md-2">
+                            <label>=</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    @{
+                        var result = Math.Ceiling(data.Value) * 2;
+                        var resultDisplay = String.Format("{0:N}", Math.Ceiling(result));
+
+                    }
+                    @Html.TextBoxFor(model => resultDisplay, new { @class = "form-control text-right", @readonly = true })
+                </div>
+            </div>
+        </div>
+    </div>
+    
+}

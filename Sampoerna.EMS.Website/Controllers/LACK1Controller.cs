@@ -1590,11 +1590,6 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 _lack1Bll.UpdateSomeField(input);
 
-                //Lack1WorkflowGovApprove(model, model.GovApprovalActionType, string.Empty);
-
-                
-
-                
                 
                 isSuccess = true;
             }

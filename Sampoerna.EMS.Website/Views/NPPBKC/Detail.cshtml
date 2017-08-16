@@ -1,4 +1,4 @@
-﻿@model Sampoerna.EMS.Website.Models.NPPBKC.NppbkcFormModel
+﻿@model Sampoerna.EMS.Website.Models.NPPBKC.NewNPPBKCViewModel.NppbkcModel
 @section scripts {
     <script src="~/Scripts/js/scripts.min.js"></script>
     <script type="text/javascript">
@@ -169,6 +169,31 @@
                                                             <label class="col-md-3 long">Flaging For LACK-1</label>
                                                             <div class="col-md-8">
                                                                @Html.CheckBoxFor(model => model.Detail.FlagForLack1, new {@disabled="disabled"})
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="clearfix"></div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-3">DGCE Address</label>
+                                                            <div class="col-md-9">
+                                                                @Html.TextAreaFor(model => model.Detail.DgceAddress, new { @class = "form-control", rows = "5", disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-3">Location</label>
+                                                            <div class="col-md-9">
+                                                                @Html.TextAreaFor(model => model.Detail.Location, new { @class = "form-control", rows = "5", disabled = "disabled" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="row">
+                                                            <label class="col-md-3">KPPBC Address</label>
+                                                            <div class="col-md-9">
+                                                                @Html.TextAreaFor(model => model.Detail.KppbcAddress, new { @class = "form-control", rows = "5", disabled = "disabled" })
                                                             </div>
                                                         </div>
                                                     </div>

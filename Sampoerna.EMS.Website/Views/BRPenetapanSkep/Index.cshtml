@@ -1,0 +1,151 @@
+﻿@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.MapSKEP.ReceivedDecreeViewModel
+@using Sampoerna.EMS.CustomService.Core
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 id="lblTitle">Penetapan SKEP List</h3>
+            @if (Model.IsNotViewer)
+            {
+                <div class="action-button new">
+                    <a href="@Url.Action("Create", "BRPenetapanSkep")">
+                        <button class="btn btn-blue">New</button>
+                    </a>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+            @using (Ajax.BeginForm("FilterDocument", "BRPenetapanSkep",
+            new AjaxOptions
+            {
+                HttpMethod = "POST",
+                InsertionMode = InsertionMode.Replace,
+                UpdateTargetId = "contenttable",
+                OnComplete = "ReloadDataTables"
+            }, new { @class = "form-excise", role = "form" }))
+            {
+                @Html.HiddenFor(model => model.IsCompleted)
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-md-6">Penetapan SKEP Status</label>
+                            <div class="col-md-6">
+                                @Html.DropDownListFor(model => model.SearchInput.Status, Model.SearchInput.StatusList, "All", new { @class = "form-control selectreset selectpicker" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-md-6">NPPBKC ID</label>
+                            <div class="col-md-6">
+                                @Html.DropDownListFor(model => model.SearchInput.NppbkcId, Model.SearchInput.NppbkcIdList, "All", new { @class = "form-control selectreset selectpicker" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-md-6">Creator</label>
+                            <div class="col-md-6">
+                                @Html.DropDownListFor(model => model.SearchInput.Creator, Model.SearchInput.CreatorList, "All", new { @class = "form-control selectreset selectpicker" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input id="btn-filter" type="submit" class="btn btn-blue full" value="FILTER" />
+                            </div>
+                            <div class="col-md-6">                                
+                                <a href="~/BRPenetapanSkep" class="btn btn-blue full" id="btn-reset-filter">RESET</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            </div>
+            <div id="contenttable" class="table-container">
+                @Html.Partial("_PenetapanSKEPListTable")
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/js/custom.js"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+    $(document).ready(function () {
+        $('#MenuProduct').removeClass('active');
+        $('#MenuBrand').removeClass('active');
+        $('#MenuSKEP').addClass('active');
+        if ($("#IsCompleted").val() == "True") {
+            $('#MenuPenetapanSKEPCompleted').addClass('active');
+        }
+        else
+        {
+            $('#MenuPenetapanSKEP').addClass('active');
+        }
+        setupDataTables();
+    });
+
+    function setupDataTables() {
+
+        var table = null;
+        if ($.fn.dataTable.isDataTable('#penSKEPTable')) {
+            table = $('#penSKEPTable').DataTable();
+            table.destroy();
+        }
+
+        table = $('#penSKEPTable').DataTable(
+              {
+                  "sDom": "Rlfrtip",
+                  "language": {
+                      "zeroRecords": "No records found",
+                      "infoFiltered": "(filtered from _MAX_ total records)"
+                  }
+              });
+
+
+        $('#penSKEPTable .filters th').each(function () {
+            var idx = $(this).index();
+            if (idx != 0) {
+                $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+            }
+        });
+
+
+        table.columns().eq(0).each(function (colIdx) {
+            $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                table
+                    .column(colIdx)
+                    .search(this.value)
+                    .draw();
+            });
+        });
+    }
+
+    function ReloadDataTables() {
+        $('.toggle-row').click(function () {
+
+            var filter = $(".filters");
+            filter.slideToggle(100).promise().done(function () {
+
+            });
+        });
+        $('.loading').hide();
+        setupDataTables();
+    }
+    </script>
+
+}
+

@@ -1,0 +1,124 @@
+﻿@model Sampoerna.EMS.Website.Models.Configuration.ConfigurationIndexViewModel
+@{    
+    ViewBag.Title = "Master Configuration";
+    string state="" ;    
+}
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="desc">Master Configuration</h3>
+                @if (Model.IsNotViewer)
+                {
+                    <div class="action-button new">
+                        <a href="@Url.Action("Create", "Configuration")">
+                            <button class="btn btn-blue">New</button>
+                        </a>                                               
+                    </div>
+                }            
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="contenttable" class="table-container">
+                <table id="configurationTable" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th class="toggle-row"> Filter </th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Value</th>      
+                            <th>Active</th>                      
+                        </tr>
+                    </thead>
+                    <thead class="filters">
+                        <tr>
+                            <th> Action</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>              
+                            <th></th>             
+                        </tr>
+                    </thead>
+                    <tbody>
+                       @foreach(var item in Model.Detail)
+                       {
+                           <tr>
+                               <td class="action">
+                                   <a href="@Url.Action("Detail", "Configuration", new { id = item.REFF_ID })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                                   @if (Model.IsNotViewer)
+                                   {
+                                    <a href="@Url.Action("Edit", "Configuration", new { id = item.REFF_ID })" data-toggle="tooltip" data-placement="top" title="Edit"> <i class="fa fa-pencil-square-o"></i></a>
+                                   }
+                               </td>
+                               <td>@item.REFF_NAME</td>
+                               <td>@item.REFF_TYPE</td>                               
+                               <td>@item.REFF_VALUE</td>
+                               <td>                                   
+                                   @if (item.IS_ACTIVE == true)
+                                   { state = "Yes"; }
+                                   else
+                                   { state = "No"; }
+                                   @state                                   
+                               </td>
+                           </tr>                          
+                       }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+
+    <script src="~/Scripts/js/custom.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+
+        $(document).ready(function () {
+            $('#MenuMasterConfiguration').addClass('active');
+            setupDataTables();
+        });
+
+        function setupDataTables() {
+            
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#configurationTable')) {
+                table = $('#configurationTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#configurationTable').DataTable(
+                  {
+                      "sDom": "Rlfrtip",
+                      "language": {
+                          "zeroRecords": "No records found",
+                          "infoFiltered": "(filtered from _MAX_ total records)"
+                      }
+                  });
+
+
+            $('#configurationTable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+        }
+
+    </script>
+
+}
