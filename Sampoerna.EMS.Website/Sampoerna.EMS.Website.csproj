@@ -710,9 +710,7 @@
       <SubType>Component</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Reports\PBCK7\Pbck7ReportFromCk5.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    
     <Compile Include="Startup.cs" />
     <Compile Include="Utility\ExcelData.cs" />
     <Compile Include="Utility\ExcelReader.cs" />
@@ -2031,6 +2029,13 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+    <Content Include="Reports\PBCK7\Pbck7ReportFromCk5.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Pbck7ReportFromCk5.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Reports\PBCK7\Pbck7ReportFromCk5.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Pbck7ReportFromCk5.cs</LastGenOutput>
