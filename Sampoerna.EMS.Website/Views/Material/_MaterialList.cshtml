@@ -1,9 +1,11 @@
 ﻿@model Sampoerna.EMS.Website.Models.Material.MaterialListViewModel
-
+<input type="hidden" id="returnTotalData" value="@Model.TotalData" />
+<input type="hidden" id="returnTotalPerPage" value="@Model.TotalDataPerPage" />
+<input type="hidden" id="returnCurrentPage" value="@Model.CurrentPage" />
 <table id="mydata" class="table cell-border display no-wrap" cellspacing="0" width="100%">
     <thead>
         <tr>
-            <th class="toggle-row"> Filter </th>
+            <th > Action </th>
             <th> Plant </th>
             <th> Material Number </th>
             <th> Material Desc</th>
@@ -14,7 +16,7 @@
         </tr>
 
     </thead>
-    <thead class="filters">
+    @*<thead class="filters">
         <tr>
             <th> Action </th>
             <th> Plant </th>
@@ -26,7 +28,7 @@
             <th> Plant Deletion </th>
             <th> Client Deletion </th>
         </tr>
-    </thead>
+    </thead>*@
 
     <tbody>
 

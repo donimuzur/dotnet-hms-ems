@@ -951,10 +951,12 @@ namespace Sampoerna.EMS.BLL
                     if (lackData.Status == Enums.DocumentStatus.WaitingGovApproval)
                     {
                         var poaData = _poaBll.GetActivePoaById(lackData.CreatedBy);
+                        var poaApprove = _poaBll.GetById(lackData.ApprovedBy);
                         if (poaData != null)
                         {
                             //creator is poa user
-                            rc.To.Add(poaData.POA_EMAIL);
+                            rc.To.Add(poaApprove.POA_EMAIL);
+                            rc.CC.Add(poaData.POA_EMAIL);
                             //first code when manager exists
                             //rc.CC.Add(GetManagerEmail(lackData.CreatedBy));
                             foreach (var item in controllerList)
@@ -966,8 +968,8 @@ namespace Sampoerna.EMS.BLL
                         {
                             //creator is excise executive
 
-                            rc.To.Add(userData.EMAIL);
-                            rc.CC.Add(_poaBll.GetById(lackData.ApprovedBy).POA_EMAIL);
+                            rc.CC.Add(userData.EMAIL);
+                            rc.To.Add(poaApprove.POA_EMAIL);
                             //first code when manager exists
                             //rc.CC.Add(GetManagerEmail(lackData.ApprovedBy));
                             foreach (var item in controllerList)

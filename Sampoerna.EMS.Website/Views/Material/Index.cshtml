@@ -3,15 +3,23 @@
 
 @section scripts {
 
-<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/js/custom.js"></script>
     <script type="text/javascript" language="javascript" class="init">
         $('#MenuMasterMaterial').addClass('active');
 
-        $(document).ready(function () {
-            $('#SearchInput_GoodType').addClass('input-validation-error');
 
-            setupDataTables();           
+        var actionHtml = '';
+        
+        
+        
+
+
+        $(document).ready(function() {
+            $('#SearchInput_GoodType').addClass('input-validation-error');
+            
+            
+            setupDataTables();
 
             @if (TempData[Constans.SubmitType.Save] != null)
             {
@@ -33,46 +41,46 @@
             }
         });
 
-        function setupDataTables() {
-            $('#btn-reset-filter').click(function () {
-                $(".selectreset").val($(".selectreset option:first").val());
-            });
+        //function setupDataTables() {
+        //    $('#btn-reset-filter').click(function() {
+        //        $(".selectreset").val($(".selectreset option:first").val());
+        //    });
 
-            $('#btn-filter').click(function () {
-                $('.loading').show();
-            });
+        //    $('#btn-filter').click(function() {
+        //        $('.loading').show();
+        //    });
 
-            // Setup - add a text input to each footer cell
-            $('#mydata .filters th').each(function () {
-                var idx = $(this).index();
-                if (idx != 0 && idx != 0) {
-                    var title = $('#mydata thead th').eq($(this).index()).text();
-                    $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
+        //    // Setup - add a text input to each footer cell
+        //    $('#mydata .filters th').each(function() {
+        //        var idx = $(this).index();
+        //        if (idx != 0 && idx != 0) {
+        //            var title = $('#mydata thead th').eq($(this).index()).text();
+        //            $(this).html('<input type="text" placeholder="Search" style="width:100%" >');
 
-                }
-            });
+        //        }
+        //    });
 
-            // DataTable
-            var table = $('#mydata').DataTable();
+        //    // DataTable
+        //    var table = $('#mydata').DataTable();
 
-            // Apply the search
-            table.columns().eq(0).each(function (colIdx) {
-                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
-                    table
-                        .column(colIdx)
-                        .search(this.value)
-                        .draw();
-                });
-            });
-            $("#mydata_filter").hide();
-            $('#mydata_length').hide();
-        }
+        //    // Apply the search
+        //    table.columns().eq(0).each(function(colIdx) {
+        //        $('input', $('.filters th')[colIdx]).on('keyup change', function() {
+        //            table
+        //                .column(colIdx)
+        //                .search(this.value)
+        //                .draw();
+        //        });
+        //    });
+        //    $("#mydata_filter").hide();
+        //    $('#mydata_length').hide();
+        //}
 
         function ReloadDataTables() {
-            $('.toggle-row').click(function () {
+            $('.toggle-row').click(function() {
 
                 var filter = $(".filters");
-                filter.slideToggle(100).promise().done(function () {
+                filter.slideToggle(100).promise().done(function() {
 
                 });
             });
@@ -82,10 +90,139 @@
         }
 
         function ExportXls() {
-            $('#GoodType').val($('#SearchInput_GoodType').val());
+            $('#Export_MaterialDescSource').val($('#SearchView_MaterialDescSource').val());
+            $('#Export_PlantIdSource').val($('#SearchView_PlantIdSource').val());
+            $('#Export_MaterialNumberSource').val($('#SearchView_MaterialNumberSource').val());
+            $('#Export_UomNameSource').val($('#SearchView_UomNameSource').val());
+            $('#Export_GoodTypeSource').val($('#SearchView_GoodTypeSource').val());
+            $('#Export_PlantDeletionSource').val($('#SearchView_PlantDeletionSource').val());
+            $('#Export_ClientDeletionSource').val($('#SearchView_ClientDeletionSource').val());
+            
             $('#ExportToXls').submit();
         }
+
+        function setupColumns() {
+            
+            var columns = [
+                
+                
+                { "data": null, "orderable" : false },
+                { "data": "PlantName", "orderable": true },
+                { "data": "MaterialNumber", "orderable": true },
+                { "data": "MaterialDesc", "orderable": true },
+                { "data": "GoodTypeName", "orderable": true },
+                { "data": "UomName", "orderable": true },
+                { "data": "PlantDeletion", "orderable": true },
+                { "data": "ClientDeletion", "orderable": true }
+                
+            ];
+
+            return columns;
+
+
+        }
+
+
+        function setupDataTables(blFirst) {
+
+            // DataTable
+            
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#mydata')) {
+                table = $('#mydata').DataTable();
+                table.destroy();
+            }
+
+            table = $('#mydata').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "sPaginationType": "full_numbers",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    },
+
+                    "rowCallback": function(row, data, index) {
+                        var isNotViewer = @Html.Raw(@Model.IsNotViewer.ToString().ToLower());
+                        actionHtml = "<a href='/Material/Details?mn="+data.MaterialNumber+"&p="+data.PlantId+"' data-toggle='tooltip' data-placement='top' title='Detail' onclick='ViewDetails(this)'>" +
+                            "<i class='fa fa-eye'></i>" +
+                            "</a>";
+                        if (isNotViewer) {
+                            actionHtml = actionHtml + "<a href='/Material/Edit?mn="+data.MaterialNumber+"&p="+data.PlantId+"' data-toggle='tooltip' data-placement='top' title='Edit' onclick='ViewEdit(this)'>" +
+                                            "<i class='fa fa-pencil-square-o'></i>" +
+                                            "</a>";    
+                        }
+
+
+                        var actionRow = $(row).find("td")[0];
+                        $(actionRow).addClass('action');
+                        $(actionRow).html(actionHtml);
+                    },
+                    "serverSide": true,
+                    //"processing": true,
+                    "paging": true,
+                    "deferRender": true,
+                    "columns": setupColumns(),
+                    
+                    "ajax": {
+                        "url": "@Url.Action("SearchMaterialAjax", "Material")",
+                        "type": "POST",
+
+                        "data": function(d) {
+                            return $.extend({}, d, {
+                                "ExtraFilter": {
+                                    "SearchView": {
+                                        "PlantIdSource": $("#SearchView_PlantIdSource").val(),
+                                        "MaterialNumberSource": $("#SearchView_MaterialNumberSource").val(),
+                                        "MaterialDescSource": $("#SearchView_MaterialDescSource").val(),
+                                        "UomNameSource": $("#SearchView_UomNameSource").val(),
+                                        "GoodTypeSource": $("#SearchView_GoodTypeSource").val(),
+                                        "PlantDeletionSource": $("#SearchView_PlantDeletionSource").val(),
+                                        "ClientDeletionSource": $("#SearchView_ClientDeletionSource").val()
         
+            
+
+            
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            table.on('preXhr', function(e, settings, data) {
+                $(".loading").show();
+            });
+
+            table.on('xhr', function(e, settings, data) {
+                $(".loading").hide();
+            });
+        }
+        
+        function ReloadDataTables1() {
+            setupDataTables(false);
+            setpaginglink();
+            $('#SearchView_Month').removeClass('input-validation-error');
+            $('#SearchView_Year').removeClass('input-validation-error');
+        }
+
+        function setpaginglink() {
+
+        }
+
+        function OnFilter() {
+            var table = $('#mydata').DataTable();
+
+            table.ajax.reload();
+        }
+
+
+        function ViewDetails(obj) {
+            
+        }
+        
+        function ViewEdit(obj) {
+            
+        }
     </script>
 }
 
@@ -109,7 +246,7 @@
         <div class="col-sm-12">
 
             <div class="white-wrapper">
-                @using (Ajax.BeginForm("FilterMaterialIndex", "Material",
+                @*@using (Ajax.BeginForm("FilterMaterialIndex", "Material",
                     new AjaxOptions
                     {
                         HttpMethod = "POST",
@@ -117,36 +254,131 @@
                         UpdateTargetId = "contenttable",
                         OnComplete = "ReloadDataTables",
                     }, new { @class = "form-excise", role = "form" }))
-                {
-
+                {*@
+                <div class="form-excise" role="form">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="row">
-                                <label class="col-md-3">Excisable Goods Type</label>
-                                <div class="col-md-4">
-                                    @Html.DropDownListFor(model => model.GoodType, Model.GoodTypeList, "All", new { @class = " form-control selectreset", id = "SearchInput_GoodType" })
+                                <label class="col-md-4">Plant</label>
+                                <div class="col-md-8">
+
+                                    @Html.DropDownListFor(model => model.SearchView.PlantIdSource, Model.SearchView.PlantList, "All", new { @class = "form-control selectpicker" })
+
                                 </div>
-                               
-                                <div class="col-md-5">
-                                    <div class="col-md-3">
-                                        <input id ="btn-filter" type="submit" class="btn btn-blue" value="FILTER" />
-                                    </div>
-                                    <div class="col-md-3">
-                                        <button type="button" id="btn-reset-filter" class="btn btn-blue">RESET</button>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <input id="btnExport" type="button" class="btn btn-blue" onclick="ExportXls();" value="EXPORT" />
-                                    </div>
+
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Material Number</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.SearchView.MaterialNumberSource, new { @class = "form-control" })
+
                                 </div>
+
+
                             </div>
                         </div>
                     </div>
-                   
-                }
-            </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Material Description</label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.SearchView.MaterialDescSource, new { @class = "form-control" })
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Uom</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.SearchView.UomNameSource, Model.SearchView.UomList, "All", new { @class = "form-control selectpicker" })
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Good Types</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.SearchView.GoodTypeSource, Model.SearchView.GoodTypeList, "All", new { @class = "form-control selectpicker" })
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Plant Deletion</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.SearchView.PlantDeletionSource,Model.SearchView.DeletionFlag,"All", new { @class = "form-control" })
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <label class="col-md-4">Client Deletion</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.SearchView.ClientDeletionSource, Model.SearchView.DeletionFlag, "All", new { @class = "form-control" })
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            
+                        </div>
+                            <div class="col-md-4">
+
+                                <div class="col-md-6">
+                                    <input id="btn-filter" type="button" class="btn btn-blue" value="FILTER" onclick="OnFilter();" />
+                                </div>
+                                @*<div class="col-md-4">
+                                    <button type="button" id="btn-reset-filter" class="btn btn-blue">RESET</button>
+                                </div>*@
+                                <div class="col-md-6">
+                                    <input id="btnExport" type="button" class="btn btn-blue" onclick="ExportXls();" value="EXPORT" />
+                                </div>
+
+                            </div>
+
+                        </div>
+                 </div>
+
+
+
+
+
+                    @*}*@
+                </div>
             @using (Html.BeginForm("ExportXlsFile", "Material", FormMethod.Post, new { @id = "ExportToXls" }))
             {
-                 @Html.HiddenFor(model => model.GoodType)
+                @Html.HiddenFor(model => model.SearchView.GoodTypeSource, new{ @id="Export_GoodTypeSource"})
+                @Html.HiddenFor(model => model.SearchView.MaterialNumberSource, new { @id = "Export_MaterialNumberSource" })
+                @Html.HiddenFor(model => model.SearchView.MaterialDescSource, new { @id = "Export_MaterialDescSource" })
+                @Html.HiddenFor(model => model.SearchView.PlantIdSource, new { @id = "Export_PlantIdSource" })
+                @Html.HiddenFor(model => model.SearchView.UomNameSource, new { @id = "Export_UomNameSource" })
+                @Html.HiddenFor(model => model.SearchView.ClientDeletionSource, new { @id = "Export_ClientDeletionSource" })
+                @Html.HiddenFor(model => model.SearchView.PlantDeletionSource, new { @id = "Export_PlantDeletionSource" })
             }
             <div id="contenttable" class="table-container">
                 @Html.Partial("_MaterialList")

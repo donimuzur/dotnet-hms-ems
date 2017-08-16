@@ -131,14 +131,14 @@ namespace Sampoerna.EMS.Website.Controllers
             return Mapper.Map<List<CK5Item>>(dbData);
         }
 
-        private CK5IndexViewModel CreateInitModelView(Enums.MenuList menulist, Enums.CK5Type ck5Type)
+        private CK5IndexViewModel CreateInitModelView(Enums.MenuList menulist, Enums.CK5Type ck5Type, bool isCompleted)
         {
             var model = new CK5IndexViewModel();
 
             model.MainMenu = menulist;
             model.CurrentMenu = PageInfo;
             model.Ck5Type = ck5Type;
-            model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
+            model.IsShowNewButton = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false);
             model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller;
 
             //List<CK5Dto> listCk5Dto;
@@ -206,7 +206,7 @@ namespace Sampoerna.EMS.Website.Controllers
             CK5IndexViewModel model;
             try
             {
-                model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Domestic);
+                model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Domestic, false);
 
 
             }
@@ -226,7 +226,7 @@ namespace Sampoerna.EMS.Website.Controllers
             CK5IndexViewModel model;
             try
             {
-                model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Intercompany);
+                model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Intercompany, false);
                 model.Ck5Type = Enums.CK5Type.Intercompany;
             }
             catch (Exception ex)
@@ -245,7 +245,7 @@ namespace Sampoerna.EMS.Website.Controllers
             CK5IndexViewModel model;
             try
             {
-                model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.DomesticAlcohol);
+                model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.DomesticAlcohol, false);
                 model.Ck5Type = Enums.CK5Type.DomesticAlcohol;
             }
             catch (Exception ex)
@@ -271,7 +271,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 ck5Type = Enums.CK5Type.ImporterToPlant;
 
             model.DetailList2 = GetCk5Items(ck5Type, model.SearchView);
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Administrator;
             return PartialView("_CK5IntercompanyTablePartial", model);
         }
 
@@ -285,7 +285,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 ck5Type = Enums.CK5Type.DomesticAlcohol;
 
             model.DetailList3 = GetCk5Items(ck5Type, model.SearchView);
-            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller;
+            model.IsNotViewer = CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Administrator;
             return PartialView("_CK5DomesticAlcoholTablePartial", model);
         }
 
@@ -299,34 +299,34 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult CK5Manual()
         {
-            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Manual);
+            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Manual, false);
             return View(model);
         }
 
         public ActionResult CK5Export()
         {
-            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Export);
+            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Export, false);
             return View(model);
         }
 
 
         public ActionResult CK5Completed()
         {
-            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Completed);
+            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Completed, true);
             model.IsCompletedType = true;
             return View(model);
         }
 
         public ActionResult CK5Import()
         {
-            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.PortToImporter);
+            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.PortToImporter, false);
             model.Ck5Type = Enums.CK5Type.PortToImporter;
             return View("CK5Import", model);
         }
 
         public ActionResult CK5ImportPlant()
         {
-            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.PortToImporter);
+            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.PortToImporter, false);
             model.Ck5Type = Enums.CK5Type.ImporterToPlant;
 
             return View("CK5Import", model);
@@ -375,19 +375,19 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult CK5MarketReturn()
         {
-            var model = CreateInitModelView(Enums.MenuList.CK5MRETURN, Enums.CK5Type.MarketReturn);
+            var model = CreateInitModelView(Enums.MenuList.CK5MRETURN, Enums.CK5Type.MarketReturn, false);
             return View("CK5MarketReturn", model);
         }
 
         public ActionResult CK5TriggerSto()
         {
-            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Return);
+            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Return, false);
             return View("CK5TriggerSto", model);
         }
 
         public ActionResult CK5Waste()
         {
-            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Waste);
+            var model = CreateInitModelView(Enums.MenuList.CK5, Enums.CK5Type.Waste, false);
             return View("CK5Waste", model);
         }
 
@@ -1000,13 +1000,14 @@ namespace Sampoerna.EMS.Website.Controllers
                     try
                     {
                         uploadItem.Brand = datarow[0];
-                        uploadItem.Qty = datarow[1];
-                        uploadItem.Uom = datarow[2];
-                        uploadItem.Convertion = datarow[3];
-                        uploadItem.ConvertedUom = datarow[4];
-                        uploadItem.UsdValue = datarow[5];
-                        if (datarow.Count > 6)
-                            uploadItem.Note = datarow[6];
+                        uploadItem.StickerCode = datarow[1];
+                        uploadItem.Qty = datarow[2];
+                        uploadItem.Uom = datarow[3];
+                        uploadItem.Convertion = datarow[4];
+                        uploadItem.ConvertedUom = datarow[5];
+                        uploadItem.UsdValue = datarow[6];
+                        if (datarow.Count > 7)
+                            uploadItem.Note = datarow[7];
                         //uploadItem.ExGoodsType = groupType;
                         uploadItem.Plant = plantId;
 
@@ -1028,7 +1029,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             model.UploadItemModels = Mapper.Map<List<CK5UploadViewModel>>(outputResult);
 
-            return PartialView("_CK5UploadList", model.UploadItemModels);
+            return PartialView("_CK5UploadListMarketReturn", model.UploadItemModels);
         }
 
         [HttpPost]

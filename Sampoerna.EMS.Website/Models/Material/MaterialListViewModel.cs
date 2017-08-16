@@ -12,10 +12,58 @@ namespace Sampoerna.EMS.Website.Models.Material
         public MaterialListViewModel()
         {
             Details = new List<MaterialDetails>();
+            SearchView = new MaterialSearchView();
         }
+
+        public MaterialSearchView SearchView { get; set; }
         public List<MaterialDetails> Details { get; set; }
-        public string GoodType { get; set; }
+        //public string GoodType { get; set; }
+        
+
+        public int TotalData { get; set; }
+        public int TotalDataPerPage { get; set; }
+
+        public int CurrentPage { get; set; }
+    }
+
+
+    public class MaterialSearchView
+    {
+        public string PlantIdSource { get; set; }
+
+        public string PlantNameSource { get; set; }
+        public SelectList PlantList { get; set; }
+        
+        public string MaterialNumberSource { get; set; }
+
+        public string MaterialDescSource { get; set; }
+
+
+
+        public string BaseUomSource { get; set; }
+
+        public string UomNameSource { get; set; }
+        public SelectList UomList { get; set; }
+
+        public string GoodTypeSource { get; set; }
         public SelectList GoodTypeList { get; set; }
+        public string GoodTypeNameSource { get; set; }
+
+        public SelectList DeletionFlag {
+            get
+            {
+                var items = new List<SelectListItem>()
+                {
+                    new SelectListItem(){ Text = "Yes", Value = "True"},
+                    new SelectListItem(){ Text = "No", Value = "False"}
+                };
+                return new SelectList(items,"Value","Text");
+            }
+            
+        }
+
+        public bool? PlantDeletionSource { get; set; }
+        public bool? ClientDeletionSource { get; set; }
     }
 
     public class MaterialUomDetails
