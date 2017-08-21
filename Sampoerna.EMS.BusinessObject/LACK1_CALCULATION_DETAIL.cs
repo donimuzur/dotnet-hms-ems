@@ -23,7 +23,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string FA_CODE { get; set; }
         public Nullable<decimal> AMOUNT_PRODUCTION { get; set; }
         public Nullable<decimal> PROPORTIONAL { get; set; }
-        public Nullable<int> TYPE { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.Lack1Calculation> TYPE { get; set; }
     
         public virtual LACK1 LACK1 { get; set; }
     }

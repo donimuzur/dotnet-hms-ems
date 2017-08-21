@@ -296,6 +296,20 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Converted_Uom { get; set; }
     }
 
+
+    public class Lack1CalculationDetail
+    {
+        public string MaterialId { get; set; }
+        public string PlantId { get; set; }
+        public decimal AmountUsage { get; set; }
+
+        public string Ordr { get; set; }
+        public string FaCode { get; set; }
+        public decimal AmountProduction { get; set; }
+        public decimal Proportional { get; set; }
+        public Enums.Lack1Calculation Type { get; set; }
+    }
+
     //public class Lack1CFUsagevsFaDetailDtoWaste
     //{
         

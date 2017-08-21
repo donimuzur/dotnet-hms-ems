@@ -9796,7 +9796,7 @@
           <Property Name="FA_CODE" Type="String" MaxLength="18" FixedLength="false" Unicode="true" />
           <Property Name="AMOUNT_PRODUCTION" Type="Decimal" Precision="18" Scale="3" />
           <Property Name="PROPORTIONAL" Type="Decimal" Precision="18" Scale="8" />
-          <Property Name="TYPE" Type="Int32" />
+          <Property Name="TYPE" Type="EMSModel.Lack1Calculation" />
           <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_CALCULATION_DETAIL_LACK1" FromRole="LACK1_CALCULATION_DETAIL" ToRole="LACK1" />
         </EntityType>
         <Association Name="FK_LACK1_CALCULATION_DETAIL_LACK1">
@@ -9904,6 +9904,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EnumType Name="Lack1Calculation" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.Lack1Calculation" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
