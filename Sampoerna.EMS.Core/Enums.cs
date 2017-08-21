@@ -824,5 +824,14 @@ namespace Sampoerna.EMS.Core
             Read = 3
         }
 
+
+	    public enum Lack1Calculation
+	    {
+            [Description("Without Convertion")]
+            WithoutConvertion = 1,
+            [Description("With Convertion")]
+            WithConvertion = 2
+	    }
+
 	}
 }
