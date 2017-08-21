@@ -45,6 +45,10 @@ namespace Sampoerna.EMS.XMLReader
                             item.MODIFIED_BY = Constans.PI;
                             item.CK4CEDITABLE = existingProdType.CK4CEDITABLE;
 
+                            //DMS
+                            item.LASTAPPROVED_BY = existingProdType.LASTAPPROVED_BY;
+                            item.LASTAPPROVED_DATE = existingProdType.LASTAPPROVED_DATE;
+                            item.APPROVED_STATUS = existingProdType.APPROVED_STATUS;
                             items.Add(item);
 
                         }
