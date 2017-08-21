@@ -434,7 +434,9 @@
                     $('#IsFreeTextDestination').attr("disabled", true);
                     if ('@Model.IsReducePbck1Ck5Trial' == 'True') {
                         $('#IsReducePbck1Ck5Trial').prop('checked', true);
+                        $('#ck5ManualLab').show();
                     }
+                    
 
                 } else if ('@Model.IsFreeTextSource' == 'True') {
                     $('#IsFreeTextDestination').attr("disabled", true);

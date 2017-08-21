@@ -476,6 +476,11 @@
                 $('#collapseOne').removeClass('in');
                 $("#collapseOne").css({ height: "0" });
             }
+
+            if ('@Model.IsReducePbck1Ck5Trial' == 'True') {
+                $('#ck5TrialPbck1Reduce').show();
+                $('#ck5ManualLab').show();
+            }
         });
 
         function openGovStatusBlock() {
