@@ -67,6 +67,11 @@ namespace Sampoerna.EMS.XMLReader
                                 item.MODIFIED_BY = Constans.PI;
                                 item.CREATED_BY = exisitingNppbkc.CREATED_BY;
                                 item.FLAG_FOR_LACK1 = exisitingNppbkc.FLAG_FOR_LACK1;
+
+                                //DMS
+                                item.DGCE_ADDRESS = exisitingNppbkc.DGCE_ADDRESS;
+                                item.LOCATION = exisitingNppbkc.LOCATION;
+                                item.KPPBC_ADDRESS = exisitingNppbkc.KPPBC_ADDRESS;
                                 items.Add(item);
 
                             }

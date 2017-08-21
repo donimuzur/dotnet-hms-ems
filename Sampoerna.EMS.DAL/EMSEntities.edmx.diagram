@@ -9,7 +9,6 @@
         <EntityTypeShape EntityType="EMSModel.EMAIL_TEMPLATE" Width="1.5" PointX="0.75" PointY="3.75" />
         <EntityTypeShape EntityType="EMSModel.EX_GROUP_TYPE" Width="1.75" PointX="11.25" PointY="70.625" />
         <EntityTypeShape EntityType="EMSModel.EX_GROUP_TYPE_DETAILS" Width="1.875" PointX="13.5" PointY="63.5" />
-        <EntityTypeShape EntityType="EMSModel.FILE_UPLOAD" Width="1.5" PointX="2.75" PointY="3.75" />
         <EntityTypeShape EntityType="EMSModel.HEADER_FOOTER" Width="1.5" PointX="7.5" PointY="54.875" />
         <EntityTypeShape EntityType="EMSModel.HEADER_FOOTER_FORM_MAP" Width="1.5" PointX="9.75" PointY="59.75" />
         <EntityTypeShape EntityType="EMSModel.MENGETAHUI" Width="1.5" PointX="4.75" PointY="0.75" />
@@ -251,7 +250,6 @@
         <AssociationConnector Association="EMSModel.FK_WASTE_STOCK_T001W" />
         <EntityTypeShape EntityType="EMSModel.WASTE" Width="1.5" PointX="5.375" PointY="11.75" />
         <EntityTypeShape EntityType="EMSModel.GOOD_PROD_TYPE" Width="1.5" PointX="11.375" PointY="0.75" />
-        <EntityTypeShape EntityType="EMSModel.NlogLogs" Width="1.5" PointX="13.375" PointY="0.75" />
         <EntityTypeShape EntityType="EMSModel.LACK1_TRACKING_ALCOHOL" Width="1.5" PointX="15.75" PointY="16.125" />
         <AssociationConnector Association="EMSModel.FK_LACK1_TRACKING_ALCOHOL_LACK1" />
         <EntityTypeShape EntityType="EMSModel.XML_LOGS" Width="1.5" PointX="13.375" PointY="14" />
@@ -286,6 +284,15 @@
         <AssociationConnector Association="EMSModel.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING" />
         <AssociationConnector Association="EMSModel.FK_QUOTA_MONITORING_DETAIL_QUOTA_MONITORING_DETAIL" />
         <AssociationConnector Association="EMSModel.FK_QUOTA_MONITORING_EX_GROUP_TYPE" />
+        <EntityTypeShape EntityType="EMSModel.LACK1_CALCULATION_DETAIL" Width="1.5" PointX="15.75" PointY="73.75" />
+        <AssociationConnector Association="EMSModel.FK_LACK1_CALCULATION_DETAIL_LACK1" />
+        <AssociationConnector Association="EMSModel.FK__ZAIDM_EX___LASTA__3B95D2F1" />
+        <EntityTypeShape EntityType="EMSModel.FILE_UPLOAD" Width="1.5" PointX="3.625" PointY="28.875" />
+        <EntityTypeShape EntityType="EMSModel.NlogLogs" Width="1.5" PointX="7.375" PointY="15.75" />
+        <AssociationConnector Association="EMSModel.FK__FILE_UPLO__CREAT__66EA454A" />
+        <AssociationConnector Association="EMSModel.FK__FILE_UPLO__LASTM__68D28DBC" />
+        <EntityTypeShape EntityType="EMSModel.POA_EXCISER" Width="1.5" PointX="5.875" PointY="28.375" />
+        <AssociationConnector Association="EMSModel.FK__POA_EXCIS__POA_I__60083D91" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
