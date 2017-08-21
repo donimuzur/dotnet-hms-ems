@@ -68,6 +68,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public List<Lack1GeneratedInvMovementProductionStepTracingItem> AlcoholTrackingList { get; set; }
 
+        public List<Lack1CalculationDetail> CalculationDetails { get; set; } 
+
         public Lack1GeneratedRemarkDto Ck5RemarkData { get; set; }
 
     }

@@ -585,6 +585,10 @@ namespace Sampoerna.EMS.BLL
                 }
                 dbData.NOTED = generatedData.Data.Noted;
                 dbData.DOCUMENT_NOTED = generatedData.Data.DocumentNoted;
+
+
+                dbData.LACK1_CALCULATION_DETAIL =
+                    Mapper.Map<List<LACK1_CALCULATION_DETAIL>>(generatedData.Data.CalculationDetails);
             }
             else
             {
