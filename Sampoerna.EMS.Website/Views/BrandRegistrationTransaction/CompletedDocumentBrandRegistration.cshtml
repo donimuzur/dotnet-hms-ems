@@ -1,0 +1,155 @@
+﻿@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.BrandRegistration.BrandRegistrationReqViewModel
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>Brand Registration Completed Document</h3>
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                @*<div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-md-6">NPPBKC ID</label>
+                            <div class="col-md-6">
+                                @Html.DropDownListFor(model => model.SearchInput.NppbkcId, Model.SearchInput.NppbkcIdList, "All", new { @class = "form-control selectreset" })
+                            </div>
+                        </div>
+                    </div>
+                </div>*@
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-md-6">Registration Type</label>
+                            <div class="col-md-6">
+                                @Html.DropDownListFor(model => model.SearchInput.RegistrationType, Model.SearchInput.ListRegistrationType, null, new { @class = "selectpicker form-control", @id = "FormNameSelector" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <label class="col-md-6">Creator</label>
+                            <div class="col-md-6">
+                                @Html.DropDownListFor(model => model.SearchInput.Creator, Model.SearchInput.CreatorList, "All", new { @class = "form-control selectreset" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input id="btn-filter" type="submit" class="btn btn-blue full" value="FILTER" />
+                            </div>
+                            <div class="col-md-6">
+                                <button type="button" id="btn-reset-filter" class="btn btn-blue full">RESET</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="contenttable" class="table-container">
+                    <table id="brandRegTable" class="display" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th class="toggle-row"> Filter </th>
+                                <th>Requestor</th>
+                                <th>NPPBKC</th>
+                                <th>Submission Date</th>
+                                <th>Company</th>
+                                <th>Type</th>
+                                <th>Effective Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <thead class="filters">
+                            <tr>
+                                <th> Action</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.ListBrandRegistrationReq)
+                            {
+                                <tr>
+                                    <td class="action"></td>
+                                    <td>@item.Creator.FirstName @item.Creator.LastName</td>
+                                    <td>@item.Nppbkc_ID</td>
+                                    <td>@item.Submission_Date</td>
+                                    <td>@item.Company.Name</td>
+                                    <td>@item.Registration_Type</td>
+                                    <td>@item.ApprovalStatusDescription</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/js/custom.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+    $(document).ready(function () {
+        $('#MenuProduct').removeClass('open');
+        $('#MenuSKEP').removeClass('open');
+
+        $('#MenuBrand').addClass('open');
+        $('#MenuBrandRegistrationCompleted').addClass('active');
+        setupDataTables();
+    });
+
+    function setupDataTables() {
+
+        var table = null;
+        if ($.fn.dataTable.isDataTable('#brandRegTable')) {
+            table = $('#brandRegTable').DataTable();
+            table.destroy();
+        }
+
+        table = $('#brandRegTable').DataTable(
+              {
+                  "sDom": "Rlfrtip",
+                  "language": {
+                      "zeroRecords": "No records found",
+                      "infoFiltered": "(filtered from _MAX_ total records)"
+                  }
+              });
+
+
+        $('#brandRegTable .filters th').each(function () {
+            var idx = $(this).index();
+            if (idx != 0) {
+                $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+            }
+        });
+
+
+        table.columns().eq(0).each(function (colIdx) {
+            $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                table
+                    .column(colIdx)
+                    .search(this.value)
+                    .draw();
+            });
+        });
+    }
+    </script>
+
+}
+
+
+

@@ -1237,7 +1237,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 AdditionalDocumentData = new Pbck1WorkflowDocumentData()
                 {
                     DecreeDate = pbck1Data.DecreeDate.Value,
-                    QtyApproved = pbck1Data.QtyApproved == null ? 0 : Convert.ToDecimal(pbck1Data.QtyApproved),
+                    QtyApproved = pbck1Data.QtyApprovedTemp == null ? 0 : Convert.ToDecimal(pbck1Data.QtyApprovedTemp),
                     Pbck1DecreeDoc = Mapper.Map<List<Pbck1DecreeDocDto>>(pbck1Data.Pbck1DecreeDoc)
                 }
             };

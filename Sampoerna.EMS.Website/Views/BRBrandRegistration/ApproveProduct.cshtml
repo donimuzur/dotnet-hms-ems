@@ -1,0 +1,72 @@
+﻿@using Microsoft.Ajax.Utilities
+@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevelopment.ProductDevelopmentViewModel
+@section scripts {
+
+    <script src="~/Scripts/js/scripts.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(entryPoint);
+
+        function entryPoint() {
+            $('#MenuProductDevelopment').addClass('active');
+            $('#ApproveButtonConfirm').on('click', function () {
+                $("#ApproveFormProduct").submit();
+            });
+        }
+
+
+    </script>
+}
+@{
+    ViewBag.Title = "Detail Product Type";
+}
+@Html.Partial("_ActionButtonProduct", Model)
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div role="tabpanel">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="information">
+                        <div class="tab-wrapper">
+                            <div class="white-wrapper">
+                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingOne">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                    Detail Product Type
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                       
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Forms -->
+            @using (Html.BeginForm("ApproveProduct", "BrandRegistrationTransaction", null, FormMethod.Post, new { @class = "form-excise", role = "form", enctype = "multipart/form-data", @id = "ApproveFormProduct" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.ViewModel.PD_ID)
+            }
+            <!-- Modals -->
+            @Html.Partial("_ConfirmDialog", Model.ApproveConfirm)
+            @Html.Partial("_ReviseModal", Model);
+        </div>
+    </div>
+</div>
+@*@if (Model.IsExciser)
+{
+    <button type="button" class="btn btn-danger btn-sm" id="ReviseButton" data-toggle="modal" data-target=".revise-modal.product">Revise</button>
+                                                            <button type="button" class="btn btn-success btn-sm" id="ApproveButton" data-toggle="modal" data-target=".approve-modal.product">Approve</button>
+
+}*@    

@@ -70,7 +70,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.CK5.DEST_PLANT_COMPANY_NAME))
                 .ForMember(dest => dest.CompanyAddress, opt => opt.MapFrom(src => src.CK5.DEST_PLANT_ADDRESS))
                .ForMember(dest => dest.CompanyNppbkc, opt => opt.MapFrom(src => src.CK5.DEST_PLANT_NPPBKC_ID))
-                .ForMember(dest => dest.Ck5ItemQty, opt => opt.MapFrom(src => src.CK5.GRAND_TOTAL_EX));
+               .ForMember(dest => dest.CompanyNpwp, opt => opt.MapFrom(src => src.CK5.DEST_PLANT_NPWP))
+               .ForMember(dest => dest.Ck5ItemQty, opt => opt.MapFrom(src => src.CK5.PACKAGE_UOM_ID.ToLower() == "g" ? src.CK5.GRAND_TOTAL_EX / 1000 : src.CK5.GRAND_TOTAL_EX));
 
             Mapper.CreateMap<LACK2_DOCUMENT, Lack2DocumentDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.LACK2_DOCUMENT_ID, opt => opt.MapFrom(src => src.LACK2_DOCUMENT_ID))

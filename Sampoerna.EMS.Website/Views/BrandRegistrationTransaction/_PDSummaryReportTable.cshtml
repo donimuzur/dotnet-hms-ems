@@ -1,0 +1,64 @@
+﻿@using Sampoerna.EMS.Website.Helpers
+@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevelopment.PDSummaryReportViewModel
+@using Sampoerna.EMS.Core
+<table id="productTable" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row">&nbsp;No</th>                   
+            <th>No Form</th>
+            <th>Next Action</th>
+            <th>Request Date</th>                        
+            <th>Creator</th>
+            <th>Hl Code</th>
+            <th>Company</th>
+            <th>Market</th>
+            <th>Fa Code Old</th>
+            <th>Fa Code New</th>
+            <th>Fa Code Old Desc</th>
+            <th>Fa Code New Desc</th>
+            <th>Import</th>
+            <th>Request Number</th>
+            <th>Plant Name</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    @*<thead class="filters">
+        <tr>
+            <th></th>            
+            <th></th>
+            <th></th>
+            <th></th>            
+            <th></th>
+            
+        </tr>
+    </thead>*@
+    <tbody>
+        @{
+            int row = 1;
+            foreach (var item in Model.ProductDevelopmentDocuments)
+            {
+
+            <tr>
+                <td>@row</td>
+                <td>@Html.DisplayFor(model => item.PD_NO)</td>
+                <td>@Sampoerna.EMS.Utils.EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Sampoerna.EMS.Core.Enums.ProductDevelopmentAction), item.Next_Action.ToString()))</td>
+                <td>@Html.Raw(item.Created_DateString)</td>
+                <td>@Html.DisplayFor(model=>item.Created_By)</td>
+                <td>@Html.DisplayFor(model => item.Hl_Code)</td>
+                <td>@Html.Raw(item.CompanyName)</td>
+                <td>@Html.DisplayFor(model => model.ProductDevelopmentDocuments[row - 1].MarketDesc)</td>
+                <td>@Html.DisplayFor(model => model.ProductDevelopmentDocuments[row - 1].Fa_Code_Old)</td>
+                <td>@Html.DisplayFor(model => model.ProductDevelopmentDocuments[row - 1].Fa_Code_New)</td>
+                <td>@Html.DisplayFor(model => model.ProductDevelopmentDocuments[row - 1].Fa_Code_Old_Desc)</td>
+                <td>@Html.DisplayFor(model => model.ProductDevelopmentDocuments[row - 1].Fa_Code_New_Desc)</td>
+                <td>@Html.DisplayFor(model => model.ProductDevelopmentDocuments[row - 1].Is_Import)</td>
+                <td>@Html.DisplayFor(model => model.ProductDevelopmentDocuments[row - 1].Request_No)</td>
+                <td>@Html.DisplayFor(model => model.ProductDevelopmentDocuments[row - 1].PlantName)</td>
+                <td>@Html.DisplayFor(model => model.ProductDevelopmentDocuments[row - 1].LastStatus)</td>
+            </tr>
+                    row = row + 1;
+                }
+            }
+    </tbody>
+</table>
+

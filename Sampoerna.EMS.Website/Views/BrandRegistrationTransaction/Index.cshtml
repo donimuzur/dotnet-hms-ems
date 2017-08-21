@@ -1,0 +1,89 @@
+﻿@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevelopmentModel
+
+
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="contenttable" class="table-container">
+                <table id="brandRegTable" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th class="toggle-row"> Filter </th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <thead class="filters">
+                        <tr>
+                            <th> Action</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@section scripts {
+
+    <script src="~/Scripts/js/custom.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+        
+        $(document).ready(function () {
+            $('#MenuBrandRegList').addClass('active');
+            setupDataTables();
+        });
+
+        function setupDataTables() {
+
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#brandRegTable')) {
+                table = $('#brandRegTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#brandRegTable').DataTable(
+                  {
+                      "sDom": "Rlfrtip",
+                      "language": {
+                          "zeroRecords": "No records found",
+                          "infoFiltered": "(filtered from _MAX_ total records)"
+                      }
+                  });
+
+
+            $('#brandRegTable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+        }
+
+    </script>
+}

@@ -1,0 +1,147 @@
+﻿@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevelopment.ProductDevelopmentViewModel
+@*<div class="row">
+    <div id="contenttableproduct" class="table-container">*@
+
+        <table id="brandTable" class="table table-bordered table-striped js-options-table">
+            <thead>
+                <tr>
+                    <th class="toggle-row"></th>
+                    <th>Action</th>
+                    <th>Status</th>
+                    <th>Import</th>
+                    <th nowrap>Request No</th>
+                    <th nowrap>Company</th>
+                    <th nowrap>FA Code (OLD)</th>
+                    <th nowrap>FA Code (OLD) Description</th>
+                    <th nowrap>FA Code (NEW)</th>
+                    <th nowrap>FA Code (NEW) Description</th>
+                    <th nowrap>HL Code</th>
+                    <th>Market</th>
+                    <th>Plant</th>
+                    <th nowrap>Country</th>
+                    <th>Week</th>
+                    @*<th nowrap>Brand Reg Status</th>
+                    <th nowrap>Brand Reg No</th>*@
+                </tr>
+
+            <tbody id="tbody_productlistitem">
+                @{
+                    var i = 0;
+                }
+
+
+            @if (Model != null)
+            {              
+                    foreach (var row in Model.ListProductDevDetail)
+                    {
+                      
+                        <tr class="tr_item_list" id='tr_item_list_@i'
+                            data-index='@i'
+                            data-reqnumber='@row.Request_No'
+                            data-company='@row.Bukrs'
+                            data-plant='@row.Werks'
+                            data-facodeold='@row.Fa_Code_Old'
+                            data-facodeolddesc='@row.Fa_Code_Old_Desc'
+                            data-facodenew='@row.Fa_Code_New'
+                            data-facodenewdesc='@row.Fa_Code_New_Desc'
+                            data-market='@row.Market'                            
+                            data-isImport='@row.Is_Import'>
+                                                        
+                            <td class="td_inputan">
+                                @if (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "DetailProduct")
+                                {
+                                    <input type="checkbox" name="checkId" onclick="stateCheckItem(this)" id="check-@i" value="@row.PD_DETAIL_ID" disabled="disabled" />
+                                }
+
+                                else
+                                {
+                                    if (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "ApproveProduct")
+                                    {
+                                        if (Model.IsExciser)
+                                        {
+                                            if (row.ApprovalStatusDescription.Value == "WAITING FOR EXCISE APPROVAL")
+                                            {
+                                                <input type="checkbox" name="checkId" onclick="stateCheckItem(this)" id="check-@i" value="@row.PD_DETAIL_ID" title="Need to Approved/Revised" />
+                                            }
+                                          
+                                            else
+                                            {
+                                                 <input type="checkbox" name="checkId" onclick="stateCheckItem(this)" id="check-@i" value="@row.PD_DETAIL_ID" disabled="disabled" />
+                                            }
+                                        }
+                                    }
+
+                                    if (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "EditProductDevelopment")
+                                    {
+                                        if (!Model.IsExciser)
+                                        {
+                                            if (row.ApprovalStatusDescription.Value == "DRAFT NEW" || row.ApprovalStatusDescription.Value == "DRAFT EDIT")
+                                            {
+                                                <input type="checkbox" name="checkId" onclick="stateCheckItem(this)" id="check-@i" value="@row.PD_DETAIL_ID" title="Need to Submitted" />
+                                            }
+                                            else
+                                            {
+                                                <input type="checkbox" name="checkId" onclick="stateCheckItem(this)" id="check-@i" value="@row.PD_DETAIL_ID" disabled="disabled" />
+                                            }
+                                        }
+                                    }
+                                }
+                              
+                            
+                            </td>
+                            <td>
+                                @*@if (!Model.IsExciser)
+                                {
+                                    <a data-toggle="modal" data-placement="top" title="Edit" data-id="@row.PD_DETAIL_ID"  data-target="#myModalItem"> <i class="fa fa-pencil-square-o"></i></a>
+                                }*@
+                                @if (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "DetailProduct" || ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "ApproveProduct" )
+                                {
+                                    <a data-toggle="modal" data-placement="top" title="Detail" data-id="@row.PD_DETAIL_ID" class="itemDisplayLock"><i class="fa fa-eye"></i></a>
+                                }
+                              
+                                @if (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "EditProductDevelopment")
+                                {
+                                    if (row.ApprovalStatusDescription.Value == "WAITING FOR EXCISE APPROVAL")
+                                    {
+                                        <a data-toggle="modal" data-placement="top" title="Detail" data-id="@row.PD_DETAIL_ID" class="itemDisplayLock"><i class="fa fa-eye"></i></a>
+                                    }
+                                    else
+                                    {
+                                        <a data-toggle="modal" data-placement="top" title="Detail" data-id="@row.PD_DETAIL_ID" class="itemDisplayLock"><i class="fa fa-eye"></i></a>
+                                        <a data-toggle="modal" data-placement="top" title="Edit" data-id="@row.PD_DETAIL_ID" class="itemDisplay" data-backdrop="static" data-keyboard="false"> <i class="fa fa-pencil-square-o"></i></a>
+                                    }
+
+                                }
+                                
+                              
+                            </td>
+                            <td nowrap><label>@row.ApprovalStatusDescription.Value</label></td>
+                            <td><input type="checkbox" checked="@row.Is_Import" id="@row.PD_DETAIL_ID" disabled /></td>
+                            <td nowrap><label>@row.Request_No</label></td>
+                            <td nowrap><label>@row.Company.Name</label></td>
+                            <td><label>@row.Fa_Code_Old</label></td>
+                            <td nowrap><label>@row.Fa_Code_Old_Desc</label></td>
+                            <td><label>@row.Fa_Code_New</label></td>
+                            <td nowrap><label>@row.Fa_Code_New_Desc</label></td>
+                            <td><label>@row.Hl_Code</label> </td>
+                            <td><label>@row.Market.Market_Desc</label></td>
+                            <td nowrap><label>@row.Plant.NAME1</label></td>
+                            <td>
+                            @if (row.CountryID == null)
+                            { <label>@string.Empty</label>}
+                            else
+                            { <label>@row.Country.CountryName</label>}
+                            </td>
+                            <td><label>@row.Week</label></td>
+                            @*<td></td>
+                            <td></td>*@
+                        </tr>
+                    i++;
+                }
+            }
+          
+            </tbody>
+        </table>
+<input type="hidden" id="txt_index_listitem" value="@i" />
+    @*</div>
+</div>*@

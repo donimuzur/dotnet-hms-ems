@@ -1,0 +1,56 @@
+﻿
+@model Sampoerna.EMS.Website.Models.ManufacturingLicense.InterviewRequestSummaryReportsViewModel
+@using Sampoerna.EMS.Core
+<table id="exciseTable" class="table-condensed display compact nowrap" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row">&nbsp;</th>
+            <th>Company</th>
+            <th>KPPBC</th>
+            <th>Form Number</th>
+            <th>Request Date</th>
+            <th>Perihal</th>
+            <th>Company Type</th>
+            <th>Status</th>
+            <th>POA Name</th>
+            <th>POA Position</th>
+            <th>POA Address</th>
+            <th>KPPBC Address</th>
+            <th>NPWP</th>
+            <th>Company Address</th>
+            <th>Government Status</th>
+            <th>BA Number</th>
+            <th>BA Date</th>
+        </tr>
+    </thead>    
+    <tbody>
+        @foreach (var item in Model.InterviewRequestDocuments)
+        {
+            var strBADate = "-";
+            if (item.BADate != null)
+            {
+                strBADate = Convert.ToDateTime(item.BADate).ToString("dd MMMM yyyy");
+            }
+            <tr>
+                <td></td>
+                <td>@Html.DisplayFor(model => item.Company_Name)</td>
+                <td>@Html.DisplayFor(model => item.KPPBC_ID)</td>
+                <td>@Html.DisplayFor(model => item.FormNumber)</td>
+                <td>@Html.DisplayFor(model => item.StrRequestDate)</td>
+                <td>@Html.DisplayFor(model => item.Perihal)</td>
+                <td>@Html.DisplayFor(model => item.Company_Type)</td>
+                <td>@Html.DisplayFor(model => item.ApprovalStatus)</td>
+                <td>@Html.DisplayFor(model => item.POAName)</td>
+                <td>@Html.DisplayFor(model => item.POAPosition)</td>
+                <td>@Html.DisplayFor(model => item.POAAddress)</td>
+                <td>@Html.DisplayFor(model => item.KPPBC_Address)</td>
+                <td>@Html.DisplayFor(model => item.Npwp)</td>
+                <td>@Html.DisplayFor(model => item.Company_Address)</td>
+                <td>@Html.DisplayFor(model => item.BAStatus)</td>
+                <td>@Html.DisplayFor(model => item.BANumber)</td>
+                <td>@strBADate</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

@@ -1,0 +1,21 @@
+﻿<div class="modal ems-modal fade modal_revise" tabindex="-1" role="dialog" aria-labelledby="ReviseModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">Revise Confirmation</h4>
+            </div>
+            <div class="modal-body">                
+                <div class="alert alert-danger" style="padding-left: 30px; display:none;" id="div_alert_revise"></div>
+                <div class="form-group">
+                    <label>Note for Creator <span class="red">*</span></label>
+                    <textarea id="txt_revise_comment" class="form-control" rows="5" data-val="true" data-val-required="Rejection message should not be empty!" placeholder="Write the reason of rejection to creator" required="required" name="Comment"></textarea>
+                </div>                      
+            </div>
+            <div class="modal-footer">                    
+                <button type="button" class="btn btn-danger" data-action="revise" id="ReviseButton">Reject</button>
+                <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

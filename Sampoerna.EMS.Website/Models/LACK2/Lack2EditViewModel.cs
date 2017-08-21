@@ -63,6 +63,8 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public string PoaList { get; set; }
         public string PoaListHidden { get; set; }
 
+        public string Npwp { get; set; }
+
         public Enums.DocumentStatusGovType2 DocGovStatusList { get; set; }
 
         public List<HttpPostedFileBase> DecreeFiles { get; set; }

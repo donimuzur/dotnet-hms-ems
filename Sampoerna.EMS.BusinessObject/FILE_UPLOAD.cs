@@ -15,9 +15,20 @@ namespace Sampoerna.EMS.BusinessObject
     public partial class FILE_UPLOAD
     {
         public long FILE_ID { get; set; }
-        public int FORM_TYEP_ID { get; set; }
-        public string FORM_NO { get; set; }
+        public int FORM_TYPE_ID { get; set; }
+        public string FORM_ID { get; set; }
+        public string PATH_URL { get; set; }
+        public System.DateTime UPLOAD_DATE { get; set; }
+        public string CREATED_BY { get; set; }
+        public System.DateTime CREATED_DATE { get; set; }
+        public string LASTMODIFIED_BY { get; set; }
+        public System.DateTime LASTMODIFIED_DATE { get; set; }
+        public Nullable<long> DOCUMENT_ID { get; set; }
+        public bool IS_GOVERNMENT_DOC { get; set; }
+        public bool IS_ACTIVE { get; set; }
         public string FILE_NAME { get; set; }
-        public Nullable<System.DateTime> UPLOAD_DATE { get; set; }
+    
+        public virtual USER USER { get; set; }
+        public virtual USER USER1 { get; set; }
     }
 }

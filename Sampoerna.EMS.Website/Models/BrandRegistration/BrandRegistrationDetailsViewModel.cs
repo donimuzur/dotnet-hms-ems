@@ -60,7 +60,6 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public System.DateTime CREATED_DATE { get; set; }
         public string BahanKemasan { get; set; }
         public bool IsPackedAdjusted { get; set; }
-
         public string SAPBrandDescription { get; set; }
         
     }
