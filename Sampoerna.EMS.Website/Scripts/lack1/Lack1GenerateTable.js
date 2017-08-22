@@ -22,6 +22,26 @@
     return rc;
 }
 
+function generateHeaderDetailsTable() {
+    var rc =  /*start header*/
+        '<thead>' +
+            '<tr>' +
+                '<th >Process Order</th>' +
+                '<th >Material</th>' +
+                '<th >Amount Usage</th>' +
+                
+                '<th >FA Code</th>' +
+                '<th >Amount Production</th>' +
+                '<th >Uom</th>' +
+                
+                
+            '</tr>' +
+            
+        '</thead>';
+    /*end of header*/
+    return rc;
+}
+
 function generateHeaderTableDataCsVsFA(issummary) {
     var rc =  /*start header*/
         '<thead>' +
@@ -245,6 +265,42 @@ function generateRowDataCsVsFa(item,issummary,indexUtama) {
 function generateRowDataCsVsFaWaste(item, issummary) {
 
 
+}
+
+
+function generateTableDetails(data)
+{
+    console.log('Calculation Details 1');
+    var rc = '<table border="0" class="table table-bordered">' + generateHeaderDetailsTable();
+    rc = rc + '<tbody>';
+    if (data.CalculationDetails != null && data.CalculationDetails.length > 0) {
+        if (data.CalculationDetails) {
+            var rowIndex = 1;
+            var rowCount = data.CalculationDetails.length;
+            for (var i = 1; i < data.CalculationDetails.length; i++) {
+                rowIndex = rowIndex + 1;
+                var item = '<tr>'+
+                    '<td>' + data.CalculationDetails[i].Ordr + '</td>' +
+                    '<td>' + data.CalculationDetails[i].MaterialId + '</td>' +
+                    '<td>' + ThausandSeperator(data.CalculationDetails[i].AmountUsage) + '</td>'+
+                    '<td>' + data.CalculationDetails[i].FaCode + '</td>' +
+                    
+                    '<td>' + ThausandSeperator(data.CalculationDetails[i].AmountProduction) + '</td>'+
+                    '<td>' + data.CalculationDetails[i].UomProduction + '</td>' +
+                    '</tr>';
+                
+                rc = rc + item;
+                
+            }
+            
+            /*footer*/
+            
+            
+        }
+    }
+    rc = rc + '</tbody></table>';
+
+    return rc;
 }
 
 function generateTable(data) {
@@ -559,6 +615,25 @@ function generatePbck1Mapping(data) {
     } else {
         rc = "-";
     }
+    return rc;
+}
+
+function generateEmptyDetailsTable() {
+    var rc = '<table border="0" class="table table-bordered">' + generateHeaderDetailsTable();
+    rc = rc + '<tbody>';
+    var item = '<tr>' +
+                    '<td></td>' +
+                    '<td></td>' +
+                    '<td></td>' +
+                    '<td></td>' +
+
+                    '<td></td>' +
+                    '<td></td>' +
+                    '</tr>';
+
+    rc = rc + item;
+    /*footer*/
+    rc = rc + '</tbody></table>';
     return rc;
 }
 

@@ -85,6 +85,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     {
         public Lack1GeneratedInventoryMovementDto InvetoryMovementData { get; set; }
         public Lack1GeneratedProductionDto ProductionData { get; set; }
+
+        public List<Lack1CalculationDetail> CalculationDetails { get; set; } 
     }
 
     public class Lack1GeneratedProductionDto
@@ -305,9 +307,15 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string PlantId { get; set; }
         public decimal AmountUsage { get; set; }
 
+        public string UomUsage { get; set; }
+
         public string Ordr { get; set; }
         public string FaCode { get; set; }
+
+        public DateTime ProductionDate { get; set; }
         public decimal AmountProduction { get; set; }
+
+        public string UomProduction { get; set; }
         public decimal Proportional { get; set; }
         public Enums.Lack1Calculation Type { get; set; }
     }

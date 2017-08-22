@@ -110,6 +110,7 @@ function generateDataClick(lackLevel, url) {
             if (response.Success) {
                 
                 $('#generated-data-container').html("");
+                $('#generated-details-container').html('');
                 var data = response.Data;
                 //console.log(response.IsWithTisToTisReport);
                 if (response.IsEtilAlcohol) {
@@ -128,6 +129,8 @@ function generateDataClick(lackLevel, url) {
                         $('#generated-data-container').append(tableGenerated2);
                     }
                 }
+                var tableCalculationsDetail = generateTableDetails(data);
+                $('#generated-details-container').append(tableCalculationsDetail);
 
                 if (response.HasWasteData) {
                     //$('#WasteQty').prop('disabled', false);

@@ -2520,7 +2520,7 @@ namespace Sampoerna.EMS.BLL
 
             //set begining balance
             rc = SetBeginingBalanceBySelectionCritera(rc, input);
-
+            
             //format for noted
             //LOGS POINT 19 : replace with new logic for remark
             //var noteTemp = new List<string>();
@@ -2542,7 +2542,9 @@ namespace Sampoerna.EMS.BLL
             //rc.DocumentNoted = string.Join(Environment.NewLine, noteTemp).Replace(Environment.NewLine, "<br />");
             rc.Noted = input.Noted;
 
-           
+           rc.CalculationDetails = new List<Lack1CalculationDetail>();
+           rc.CalculationDetails.AddRange(rc.InventoryProductionTisToFa.CalculationDetails);
+           //rc.CalculationDetails.AddRange(rc.InventoryProductionTisToTis.CalculationDetails);
             
 
             rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - (rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0)) - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
@@ -3012,6 +3014,8 @@ namespace Sampoerna.EMS.BLL
                 rc.FusionSummaryProductionList = GetFusionSummaryGroupedProductionList(rc.FusionSummaryProductionList);
             }
 
+            
+
             return new Lack1GeneratedOutput()
             {
                 Success = true,
@@ -3066,7 +3070,6 @@ namespace Sampoerna.EMS.BLL
                     .GroupBy(x => new { x.Order })
                     .Select(p => new InvMovementUsageProportional()
                     {
-
                         Order = p.Key.Order,
                         //Batch = p.Key.Batch,
                         Qty = p.Sum(x => x.Qty),
@@ -3119,8 +3122,11 @@ namespace Sampoerna.EMS.BLL
             zaapShiftReportInputForAllOrder.AllowedOrder = null;
 
             var completeZaapDataAllOrder = _zaapShiftRptService.GetCompleteData(zaapShiftReportInputForAllOrder).ToList();
+
+
+            var calculationData = new List<Lack1CalculationDetail>();
             var usgProportionalBrand = CalculateInvMovementUsageProportionalBrand(invMovementOutput.IncludeInCk5List, invMovementOutput.AllUsageList,
-                invMovementOutput.Mvt201List, completeZaapDataAllOrder);
+                invMovementOutput.Mvt201List, completeZaapDataAllOrder,out calculationData);
             var totalFaZaapShiftRpt = completeZaapData.GroupBy(x => new { x.FA_CODE }).Select(y => new
             {
                 FaCode = y.Key.FA_CODE,
@@ -3300,6 +3306,55 @@ namespace Sampoerna.EMS.BLL
                 productionList.Add(itemToInsert);
             }
 
+            //var calculationDetailsMaterial =
+            //    invMovementOutput.UsageProportionalList.GroupBy(x => new {x.Order, x.MaterialId})
+            //        .Select(p => new Lack1CalculationDetail()
+            //        {
+            //            MaterialId = p.Key.MaterialId,
+            //            Ordr = p.Key.Order,
+            //            AmountUsage = p.Sum(x=> x.Qty),
+
+            //        });
+
+            //var calculationDetailsFA =
+            //    productionList.GroupBy(x => new {x.FaCode, x.Ordr}).Select(p => new Lack1CalculationDetail()
+            //    {
+            //        FaCode = p.Key.FaCode,
+            //        Ordr = p.Key.Ordr,
+            //        AmountProduction = p.Sum(x=> x.Amount),
+            //        UomProduction = p.FirstOrDefault() != null ? p.FirstOrDefault().UomId : "Btg"
+            //    });
+
+            //var calculationData = from mat in calculationDetailsMaterial
+            //                    join fa in calculationDetailsMaterial on mat.Ordr equals fa.Ordr
+            //                    select new Lack1CalculationDetail()
+            //                    {
+            //                        MaterialId = mat.MaterialId,
+            //                        AmountUsage = mat.AmountUsage,
+            //                        Ordr = mat.Ordr,
+            //                        FaCode = fa.FaCode,
+            //                        AmountProduction = fa.AmountProduction,
+            //                        UomProduction = fa.UomProduction,
+            //                        Type = Enums.Lack1Calculation.WithoutConvertion
+            //                    };
+            var calculationDataCk4c = from ck4c in ck4CItemData
+                                      join calc in calculationData on new {ck4c.WERKS, ck4c.FA_CODE, ck4c.PROD_DATE} equals
+                                        new {WERKS = calc.PlantId, FA_CODE = calc.FaCode, PROD_DATE = calc.ProductionDate}
+                                      select new Lack1CalculationDetail()
+                                      {
+                                          FaCode = ck4c.FA_CODE,
+                                          PlantId = ck4c.WERKS,
+                                          ProductionDate = ck4c.PROD_DATE,
+                                          Ordr = calc.Ordr,
+                                          AmountProduction = ck4c.PROD_QTY,
+                                          MaterialId = calc.MaterialId,
+                                          AmountUsage = calc.AmountUsage,
+                                          Type = calc.Type,
+                                          UomUsage = calc.UomUsage,
+                                          UomProduction = calc.UomProduction,
+                                          
+                                      };
+            rc.InventoryProductionTisToFa.CalculationDetails = calculationDataCk4c.ToList();
             var zaapShiftRptforNonZaap = zaapShiftRpt.GroupBy(x => new { x.ORDR, x.COMPANY_CODE, x.WERKS, x.FA_CODE }).Select(x =>
             {
                 var data = x.FirstOrDefault();
@@ -4537,15 +4592,15 @@ namespace Sampoerna.EMS.BLL
         private List<InvMovementUsageProportionalBrand> CalculateInvMovementUsageProportionalBrand(
             IEnumerable<INVENTORY_MOVEMENT> usageReceivingAll, IEnumerable<INVENTORY_MOVEMENT> usageAll,
             IEnumerable<INVENTORY_MOVEMENT> usage201,
-            List<ZAAP_SHIFT_RPT> zaapList )
+            List<ZAAP_SHIFT_RPT> zaapList,out List<Lack1CalculationDetail> calculationDetails )
         {
             var ordrList = zaapList.GroupBy(x => x.ORDR).Select(x => x.Key).ToList();
             var inventoryMovements = usageReceivingAll.ToList();
             var inventoryMovementUsageAll = usageAll.Where(x=> ordrList.Contains(x.ORDR)).ToList();
-
+            //var inventoryMovementForCalc = usageAll.Where(x => ordrList.Contains(x.ORDR)).ToList();
             var invUsage201 = usage201.ToList();
 
-
+            calculationDetails = new List<Lack1CalculationDetail>();
 
             if (!inventoryMovements.Any()) return new List<InvMovementUsageProportionalBrand>();
             inventoryMovementUsageAll.AddRange(invUsage201);
@@ -4614,6 +4669,31 @@ namespace Sampoerna.EMS.BLL
                     Qty = x.Qty,
                     TotalUsagePerFaCode = y.TotalUsagePerFaCode
 
+                }).ToList();
+
+            var zaapListCalc = zaapList.GroupBy(x => new {x.FA_CODE, x.ORDR, x.PRODUCTION_DATE, x.WERKS, x.UOM}).Select(x => new
+            {
+                x.Key.FA_CODE,
+                x.Key.ORDR,
+                x.Key.PRODUCTION_DATE,
+                x.Key.UOM,
+                x.Key.WERKS,
+                QTY = x.Sum(y=> y.QTY)
+            });
+            calculationDetails = (from x in invMovementAllByOrder
+                                  join y in zaapListCalc on new { x.ORDR } equals new { y.ORDR }
+                select new Lack1CalculationDetail()
+                {
+                    MaterialId = x.MATERIAL_ID,
+                    PlantId = y.WERKS,
+                    FaCode = y.FA_CODE,
+                    AmountUsage = x.QTY.HasValue ? x.QTY.Value * -1 : 0,
+                    Ordr = x.ORDR,
+                    UomUsage = x.BUN,
+                    AmountProduction = y.QTY.HasValue ? y.QTY.Value * 1000 : 0,
+                    UomProduction = "Btg",
+                    ProductionDate = y.PRODUCTION_DATE,
+                    Type = Enums.Lack1Calculation.WithoutConvertion
                 }).ToList();
             return output;
         }
