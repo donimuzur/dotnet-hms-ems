@@ -111,11 +111,14 @@ function generateDataClick(lackLevel, url) {
                 
                 $('#generated-data-container').html("");
                 $('#generated-details-container').html('');
+                $('#generated-detailsconvertion-container').html('');
+                $("#generated-ck5-container").html("");
+                
                 var data = response.Data;
                 //console.log(response.IsWithTisToTisReport);
                 if (response.IsEtilAlcohol) {
                     /*force to use tis to fa generate table*/
-                    var tableGeneratedEtilAlcohol = generateTable(data);
+                    var tableGeneratedEtilAlcohol = generateTableNew(data);
                     /*console.log(tableGenerated2);*/
                     $('#generated-data-container').append(tableGeneratedEtilAlcohol);
                 } else {
@@ -124,14 +127,19 @@ function generateDataClick(lackLevel, url) {
                         /*console.log(tableGenerated1);*/
                         $('#generated-data-container').append(tableGenerated1);
                     } else {
-                        var tableGenerated2 = generateTable(data);
+                        var tableGenerated2 = generateTableNew(data);
                         /*console.log(tableGenerated2);*/
                         $('#generated-data-container').append(tableGenerated2);
                     }
                 }
                 var tableCalculationsDetail = generateTableDetails(data);
-                $('#generated-details-container').append(tableCalculationsDetail);
+                
+                $('#generated-details-container').append(tableCalculationsDetail.noconvertion);
 
+                var tableck5 = generateTableCk5(data);
+                $("#generated-ck5-container").append(tableck5);
+
+                $('#generated-detailsconvertion-container').append(tableCalculationsDetail.convertion);
                 if (response.HasWasteData) {
                     //$('#WasteQty').prop('disabled', false);
                     //$('#WasteUom').prop('disabled', false);

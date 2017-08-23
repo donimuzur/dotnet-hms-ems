@@ -130,6 +130,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     public class Lack1GeneratedPbck1DataDto
     {
         public int Pbck1Id { get; set; }
+
+        public List<Pbck1ProdConverterDto> Pbck1Convertion { get; set; }
     }
 
     public class Lack1GeneratedIncomeDataDto
@@ -312,11 +314,13 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public string Ordr { get; set; }
         public string FaCode { get; set; }
 
-        public DateTime ProductionDate { get; set; }
+        public string BrandCe { get; set; }
         public decimal AmountProduction { get; set; }
 
         public string UomProduction { get; set; }
         public decimal Proportional { get; set; }
+
+        public decimal Convertion { get; set; }
         public Enums.Lack1Calculation Type { get; set; }
     }
 

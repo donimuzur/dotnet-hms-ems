@@ -61,10 +61,13 @@ namespace Sampoerna.EMS.BusinessObject.Outputs
     public class InvMovementUsageProportionalBrand
     {
         public string MaterialId { get; set; }
+
+        public string PlantId { get; set; }
+
         public string FaCode { get; set; }
         public decimal Qty { get; set; }
         public decimal TotalUsagePerFaCode { get; set; }
 
-        
+        public string Uom { get; set; }
     }
 }

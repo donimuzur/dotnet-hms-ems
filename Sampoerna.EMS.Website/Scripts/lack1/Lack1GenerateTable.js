@@ -22,11 +22,51 @@
     return rc;
 }
 
+function generateHeaderTableNew() {
+    var rc =  /*start header*/
+        '<thead>' +
+            '<tr>' +
+                '<th rowspan="2">Uraian</th>' +
+                '<th rowspan="2">Pemasukan</th>' +
+                '<th colspan="2">Penggunaan</th>' +
+                
+                '<th rowspan="2">Pengembalian</th>' +
+                '<th rowspan="2">Saldo</th>' +
+                '<th rowspan="2">Saldo(SAP)</th>' +
+            '</tr>' +
+            '<tr>' +
+                '<th>Bahan Baku/Penolong</th>' +
+                '<th>Laboratorium</th>' +
+                
+            '</tr>' +
+        '</thead>';
+    /*end of header*/
+    return rc;
+}
+
+function generateHeaderTableCK5() {
+    var rc =  /*start header*/
+        '<thead>' +
+            '<tr>' +
+                '<th >No</th>' +
+                '<th >No. CK5</th>' +
+                '<th >Tanggal CK5</th>' +
+
+                '<th>Jumlah</th>' +
+                
+            '</tr>' +
+            
+        '</thead>';
+    /*end of header*/
+    return rc;
+}
+
+
 function generateHeaderDetailsTable() {
     var rc =  /*start header*/
         '<thead>' +
             '<tr>' +
-                '<th >Process Order</th>' +
+                //'<th >Process Order</th>' +
                 '<th >Material</th>' +
                 '<th >Amount Usage</th>' +
                 
@@ -268,19 +308,25 @@ function generateRowDataCsVsFaWaste(item, issummary) {
 }
 
 
-function generateTableDetails(data)
-{
+function generateTableDetails(data) {
+    var tables = {};
+    
+    tables.noconvertion = '<table border="0" class="table table-bordered">' + generateHeaderDetailsTable();
+    tables.noconvertion = tables.noconvertion + '<tbody>';
+
+    tables.convertion = '<table border="0" class="table table-bordered">' + generateHeaderDetailsTable();
+    tables.convertion = tables.noconvertion + '<tbody>';
+
     console.log('Calculation Details 1');
-    var rc = '<table border="0" class="table table-bordered">' + generateHeaderDetailsTable();
-    rc = rc + '<tbody>';
+    
     if (data.CalculationDetails != null && data.CalculationDetails.length > 0) {
         if (data.CalculationDetails) {
             var rowIndex = 1;
             var rowCount = data.CalculationDetails.length;
-            for (var i = 1; i < data.CalculationDetails.length; i++) {
+            for (var i = 0; i < data.CalculationDetails.length; i++) {
                 rowIndex = rowIndex + 1;
                 var item = '<tr>'+
-                    '<td>' + data.CalculationDetails[i].Ordr + '</td>' +
+                    //'<td>' + data.CalculationDetails[i].Ordr + '</td>' +
                     '<td>' + data.CalculationDetails[i].MaterialId + '</td>' +
                     '<td>' + ThausandSeperator(data.CalculationDetails[i].AmountUsage) + '</td>'+
                     '<td>' + data.CalculationDetails[i].FaCode + '</td>' +
@@ -289,7 +335,12 @@ function generateTableDetails(data)
                     '<td>' + data.CalculationDetails[i].UomProduction + '</td>' +
                     '</tr>';
                 
-                rc = rc + item;
+                if (data.CalculationDetails[i].Type == 1) {
+                    tables.noconvertion = tables.noconvertion + item;
+                } else {
+                    tables.convertion = tables.convertion + item;
+                }
+                
                 
             }
             
@@ -298,9 +349,9 @@ function generateTableDetails(data)
             
         }
     }
-    rc = rc + '</tbody></table>';
-
-    return rc;
+    tables.noconvertion = tables.noconvertion + '</tbody></table>';
+    tables.convertion = tables.convertion + '</tbody></table>';
+    return tables;
 }
 
 function generateTable(data) {
@@ -382,6 +433,86 @@ function generateTable(data) {
     //if (data.Lack1Pbck1Mapping) {
     //    rc = rc + generatePbck1Mapping(data.Lack1Pbck1Mapping);
     //}
+
+    return rc;
+}
+
+function generateTableNew(data) {
+    console.log('Only Tis To Fa New');
+    var rc = '<table border="0" class="table table-bordered">' + generateHeaderTableNew();
+    
+    //bulan lalu here
+    rc = rc +
+                /*First Record*/
+                '<td >s.d sebelum bulan pelaporan</td>' +
+
+
+                '<td>' +
+                ((data.TotalIncome == 0) ? '-' : ThausandSeperator(data.TotalIncome, 2)) + '</td>' +
+                '<td >' + ThausandSeperator(data.TotalUsage, 2) + '</td>' +
+                '<td >Lab here</td>' +
+                '<td >' + ThausandSeperator(data.TotalReturn, 2) + '</td>' +
+                '<td ></td>' +
+                '<td ></td>' +
+
+                '</tr>';
+
+
+    //bulan pelaporan here
+    rc = rc +
+                /*First Record*/
+                '<td >bulan pelaporan</td>' +
+
+
+                '<td>' +
+                ((data.TotalIncome == 0) ? '-' : ThausandSeperator(data.TotalIncome, 2)) + '</td>' +
+                '<td >' + ThausandSeperator(data.TotalUsage, 2) + '</td>' +
+                '<td >Lab here</td>' +
+                '<td >' + ThausandSeperator(data.TotalReturn,2) + '</td>' +
+                '<td ></td>' +
+                '<td ></td>' +
+        
+                '</tr>';
+    
+    //s.d bulan pelaporan here
+    
+
+    /*footer*/
+    rc = rc + '</tbody></table>';
+
+    //rc = rc + generatePlant(data.Lack1Plant);
+    //if (data.Lack1Pbck1Mapping) {
+    //    rc = rc + generatePbck1Mapping(data.Lack1Pbck1Mapping);
+    //}
+
+    return rc;
+}
+
+
+function generateTableCk5(data) {
+    var rc = '<table border="0" class="table table-bordered">' + generateHeaderTableCK5();
+    rc = rc + '<tbody><tr><td>(1)</td><td>(2)</td><td>(3)</td><td>(4)</td></tr>';
+    var rowIndex = 0;
+    var rowCount = data.IncomeList.length;
+    if (data.IncomeList != null && data.IncomeList.length > 0) {
+        for (var i = 0; i < data.IncomeList.length; i++) {
+            rowIndex = rowIndex + 1;
+            var item = '<tr>' +
+                '<td>' + rowIndex + '</td>' +
+                '<td>' + data.IncomeList[i].RegistrationNumber + '</td>' +
+                '<td>' + data.IncomeList[i].StringRegistrationDate + '</td>' +
+                
+                '<td>' + ThausandSeperator(data.IncomeList[i].Amount) + '</td></tr>';
+            /*rc.append(item);*/
+            rc = rc + item;
+        }
+    }
+    rc = rc + '<tr>' +
+        '<td colspan=3>Total</td>' +
+        '<td>' + ((data.TotalIncome == 0) ? '-' : ThausandSeperator(data.TotalIncome, 2)) + '</td>' +
+        '</tr>'+
+        '<tr style="display:none"><td>Total : ' + '<input name="TotalIncome" type="hidden" value = "' + data.TotalIncome + '" /></td></tr>'+
+        '</tbody></table>';
 
     return rc;
 }
@@ -618,11 +749,36 @@ function generatePbck1Mapping(data) {
     return rc;
 }
 
+
+function generateEmptyck5Table() {
+    var rc = '<table border="0" class="table table-bordered">' + generateHeaderTableCK5();
+    rc = rc + '<tbody><tr><td>(1)</td><td>(2)</td><td>(3)</td><td>(4)</td></tr>';
+    
+            
+            var item = '<tr>' +
+                '<td></td>' +
+                '<td></td>' +
+                '<td></td>' +
+
+                '<td></td></tr>';
+            /*rc.append(item);*/
+            rc = rc + item;
+    
+    rc = rc + '<tr>' +
+        '<td colspan=3>Total</td>' +
+        '<td>-</td>' +
+        '</tr>' +
+        '<tr style="display:none"><td>Total : ' + '<input name="TotalIncome" type="hidden" value = "0" /></td></tr>' +
+        '</tbody></table>';
+
+    return rc;
+}
+
 function generateEmptyDetailsTable() {
     var rc = '<table border="0" class="table table-bordered">' + generateHeaderDetailsTable();
     rc = rc + '<tbody>';
     var item = '<tr>' +
-                    '<td></td>' +
+                    //'<td></td>' +
                     '<td></td>' +
                     '<td></td>' +
                     '<td></td>' +
