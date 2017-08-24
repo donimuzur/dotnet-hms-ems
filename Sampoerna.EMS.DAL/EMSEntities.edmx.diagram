@@ -293,6 +293,8 @@
         <AssociationConnector Association="EMSModel.FK__FILE_UPLO__LASTM__68D28DBC" />
         <EntityTypeShape EntityType="EMSModel.POA_EXCISER" Width="1.5" PointX="5.875" PointY="28.375" />
         <AssociationConnector Association="EMSModel.FK__POA_EXCIS__POA_I__60083D91" />
+        <EntityTypeShape EntityType="EMSModel.LACK1_PERIOD_SUMMARY" Width="1.5" PointX="15.75" PointY="82" />
+        <AssociationConnector Association="EMSModel.FK_LACK1_PERIOD_SUMMARY_LACK1" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
