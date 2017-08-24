@@ -2612,6 +2612,23 @@ namespace Sampoerna.EMS.BLL
             oReturn.Data = rc;
             oReturn.IsEtilAlcohol = outProcess.IsEtilAlcohol;
 
+
+            var lastLack1 = _lack1Service.GetLatestLack1ByParam(new Lack1GetLatestLack1ByParamInput()
+            {
+                CompanyCode = input.CompanyCode,
+
+                NppbkcId = input.NppbkcId,
+                ExcisableGoodsType = input.ExcisableGoodsType,
+
+                SupplierPlantId = input.SupplierPlantId,
+
+                Lack1Level = input.Lack1Level,
+                //ExcludeLack1Id = input.Lack1Id,
+                PeriodTo = new DateTime(input.PeriodYear, input.PeriodMonth, 1),
+                ReceivedPlantId = input.ReceivedPlantId,
+                ExcludeLack1Id = input.Lack1Id
+            });
+
             return oReturn;
         }
 
@@ -3020,7 +3037,7 @@ namespace Sampoerna.EMS.BLL
             var outGenerateLack1InventoryMovementTisToFa = SetGenerateLack1InventoryMovement(rc, input, plantIdList, false, out invMovementTisToFaOutput, bkcUomId);
             if (!outGenerateLack1InventoryMovementTisToFa.Success) return outGenerateLack1InventoryMovementTisToFa;
 
-            rc.CalculationDetails = outGenerateLack1InventoryMovementTisToFa.Data.CalculationDetails;
+            //rc.CalculationDetails = outGenerateLack1InventoryMovementTisToFa.Data.CalculationDetails;
 
             //normal report, normal logic
             if (invMovementTisToFaOutput.IncludeInCk5List.Count == 0)
@@ -4504,17 +4521,17 @@ namespace Sampoerna.EMS.BLL
             }
 
             invMovementOutput = getInventoryMovementByParamOutput;
-            oRet.Data.CalculationDetails =
-                getInventoryMovementByParamOutput.IncludeInCk5List.GroupBy(x => new {x.ORDR, x.MATERIAL_ID, x.PLANT_ID, x.BUN})
-                    .Select(x => new Lack1CalculationDetail()
-                    {
-                        MaterialId = x.Key.MATERIAL_ID,
-                        PlantId = x.Key.PLANT_ID,
-                        Ordr = x.Key.ORDR,
-                        UomUsage = x.Key.BUN,
-                        AmountUsage = x.Sum(y=> y.QTY.HasValue ? y.QTY.Value : 0)
-                    })
-                    .ToList();
+            //oRet.Data.CalculationDetails =
+            //    getInventoryMovementByParamOutput.IncludeInCk5List.GroupBy(x => new {x.ORDR, x.MATERIAL_ID, x.PLANT_ID, x.BUN})
+            //        .Select(x => new Lack1CalculationDetail()
+            //        {
+            //            MaterialId = x.Key.MATERIAL_ID,
+            //            PlantId = x.Key.PLANT_ID,
+            //            Ordr = x.Key.ORDR,
+            //            UomUsage = x.Key.BUN,
+            //            AmountUsage = x.Sum(y=> y.QTY.HasValue ? y.QTY.Value : 0)
+            //        })
+            //        .ToList();
             return oRet;
         }
 

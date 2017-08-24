@@ -68,7 +68,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public List<Lack1GeneratedInvMovementProductionStepTracingItem> AlcoholTrackingList { get; set; }
 
-        public List<Lack1CalculationDetail> CalculationDetails { get; set; } 
+        public List<Lack1CalculationDetail> CalculationDetails { get; set; }
+
+        public List<LastPeriodSummary> PeriodSummaries { get; set; }
 
         public Lack1GeneratedRemarkDto Ck5RemarkData { get; set; }
 
@@ -322,6 +324,28 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public decimal Convertion { get; set; }
         public Enums.Lack1Calculation Type { get; set; }
+    }
+
+
+    public class LastPeriodSummary
+    {
+        public decimal Income { get; set; }
+        public decimal Usage { get; set; }
+
+        public decimal Laboratorium { get; set; }
+
+        public decimal Return { get; set; }
+
+        public decimal Saldo
+        {
+            get
+            {
+                return Income - Usage - Laboratorium - Return;
+            }
+        }
+
+
+        public LastPeriodSummary Type { get; set; }
     }
 
     //public class Lack1CFUsagevsFaDetailDtoWaste

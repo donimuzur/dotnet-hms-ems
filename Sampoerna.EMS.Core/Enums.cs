@@ -833,5 +833,13 @@ namespace Sampoerna.EMS.Core
             WithConvertion = 2
 	    }
 
+        public enum Lack1SummaryPeriod
+        {
+            [Description("Last Period")]
+            Last = 1,
+            [Description("Current Period")]
+            Current = 2
+        }
+
 	}
 }
