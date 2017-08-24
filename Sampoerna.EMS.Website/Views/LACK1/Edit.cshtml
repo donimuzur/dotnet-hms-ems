@@ -194,7 +194,7 @@
                 /*console.log(tableGenerated2);*/
                 $('#generated-data-container').append(tableGeneratedEtilAlcohol);
             } else {
-                if (response.IsWithTisToTisReport) {
+                if (jsonData.IsWithTisToTisReport) {
                     var tableGenerated1 = generateTableWithTisToTis(jsonData);
                     /*console.log(tableGenerated1);*/
                     $('#generated-data-container').append(tableGenerated1);
@@ -204,6 +204,15 @@
                     $('#generated-data-container').append(tableGenerated2);
                 }
             }
+            
+            var tableCalculationsDetail = generateTableDetails(jsonData);
+                
+            $('#generated-details-container').append(tableCalculationsDetail.noconvertion);
+
+            var tableck5 = generateTableCk5(jsonData);
+            $("#generated-ck5-container").append(tableck5);
+
+            $('#generated-detailsconvertion-container').append(tableCalculationsDetail.convertion);
             //if (jsonData.IsEtilAlcohol) {
             //    /*Force to use generate table without tis to tis*/
             //    var generateTableEtilAlcohol = generateTable(jsonData);

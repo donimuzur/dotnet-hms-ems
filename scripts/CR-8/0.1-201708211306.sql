@@ -1,4 +1,4 @@
-/****** Object:  Table [dbo].[LACK1_CALCULATION_DETAIL]    Script Date: 8/24/2017 4:17:18 PM ******/
+/****** Object:  Table [dbo].[LACK1_CALCULATION_DETAIL]    Script Date: 8/25/2017 1:24:57 AM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -7,7 +7,7 @@ GO
 
 CREATE TABLE [dbo].[LACK1_CALCULATION_DETAIL](
 	[LACK1_CALCULATION_DETAIL_ID] [int] IDENTITY(1,1) NOT NULL,
-	[LACK1_ID] [int] NOT NULL,
+	[LACK1_ID] [int] NULL,
 	[MATERIAL_ID] [nvarchar](18) NULL,
 	[PLANT_ID] [nvarchar](4) NULL,
 	[AMOUNT_USAGE] [decimal](18, 3) NULL,

@@ -78,7 +78,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public List<Lack1SummaryProductionItemModel> FusionSummaryProductionList { get; set; }//set by controller
         public List<Lack1ProductionDetailItemSummaryByProdTypeModel> FusionSummaryProductionByProdTypeList { get; set; }
 
-        public List<Lack1CalculationModel> CalculationDetail { get; set; }
+        public List<Lack1CalculationModel> CalculationDetails { get; set; }
 
         public List<Lack1PeriodSummaryModel> PeriodSummaries { get; set; }
 

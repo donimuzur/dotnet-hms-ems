@@ -312,6 +312,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
     public class Lack1CalculationDetail
     {
+
+        public int LACK1_ID { get; set; }
         public string MaterialId { get; set; }
         public string PlantId { get; set; }
         public decimal AmountUsage { get; set; }

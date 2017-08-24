@@ -180,7 +180,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.InventoryProductionTisToFa, opt => opt.MapFrom(src => Mapper.Map<Lack1InventoryAndProductionModel>(src.InventoryProductionTisToFa)))
                 .ForMember(dest => dest.InventoryProductionTisToTis, opt => opt.MapFrom(src => Mapper.Map<Lack1InventoryAndProductionModel>(src.InventoryProductionTisToTis)))
                 .ForMember(dest => dest.FusionSummaryProductionByProdTypeList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailItemSummaryByProdTypeModel>>(src.FusionSummaryProductionByProdTypeList)))
-                .ForMember(dest => dest.CalculationDetail, opt => opt.MapFrom(src=> Mapper.Map<List<Lack1CalculationModel>>(src.CalculationDetails)))
+                .ForMember(dest => dest.CalculationDetails, opt => opt.MapFrom(src=> Mapper.Map<List<Lack1CalculationModel>>(src.CalculationDetails)))
                 .ForMember(dest => dest.PeriodSummaries, opt => opt.MapFrom(src => Mapper.Map<List<Lack1PeriodSummaryModel>>(src.PeriodSummaries)))
                 .ForMember(dest => dest.StartPeriodData, opt => opt.MapFrom(src => Mapper.Map<Lack1PeriodSummaryModel>(src.StartPeriodData)))
                 .ForMember(dest => dest.CurrentPeriodData, opt => opt.MapFrom(src => Mapper.Map<Lack1PeriodSummaryModel>(src.CurrentPeriodData)))
@@ -260,7 +260,7 @@ namespace Sampoerna.EMS.Website
                     opt => opt.MapFrom(src => Mapper.Map<List<Lack1DocumentDto>>(src.Lack1Document)))
                 .ForMember(dest => dest.Lack1IncomeDetail,
                     opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.IncomeList)))
-                .ForMember(dest => dest.CalculationDetails, opt => opt.MapFrom(src => Mapper.Map<List<Lack1CalculationDetail>>(src.CalculationDetail)))
+                .ForMember(dest => dest.CalculationDetails, opt => opt.MapFrom(src => Mapper.Map<List<Lack1CalculationDetail>>(src.CalculationDetails)))
 
                 .ForMember(dest => dest.PeriodSummaries, opt => opt.MapFrom(src => Mapper.Map<List<PeriodSummary>>(src.PeriodSummaries)))
                 .ForMember(dest => dest.StartPeriodData, opt => opt.MapFrom(src => Mapper.Map<PeriodSummary>(src.StartPeriodData)))

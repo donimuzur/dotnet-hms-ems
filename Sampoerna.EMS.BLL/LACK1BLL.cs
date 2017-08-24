@@ -446,6 +446,8 @@ namespace Sampoerna.EMS.BLL
 
                 //delete first
                 _lack1TrackingService.DeleteByLack1Id(dbData.LACK1_ID);
+                //_lack1TrackingService.DeleteCalculationDetails(dbData.LACK1_ID);
+                _lack1TrackingService.DeletePeriodSummary(dbData.LACK1_ID);
                 _lack1IncomeDetailService.DeleteByLack1Id(dbData.LACK1_ID);
                 _lack1Pbck1MappingService.DeleteByLack1Id(dbData.LACK1_ID);
                 _lack1PlantService.DeleteByLack1Id(dbData.LACK1_ID);
@@ -489,6 +491,9 @@ namespace Sampoerna.EMS.BLL
                 dbData.LACK1_PLANT = null;
                 dbData.LACK1_PRODUCTION_DETAIL = null;
                 dbData.LACK1_TRACKING = null;
+                dbData.LACK1_PERIOD_SUMMARY = null;
+                //dbData.LACK1_CALCULATION_DETAIL = null;
+                //dbData.LACK1_
 
                 //set from input
                 dbData.LACK1_INCOME_DETAIL = Mapper.Map<List<LACK1_INCOME_DETAIL>>(generatedData.Data.AllIncomeList);
@@ -590,8 +595,10 @@ namespace Sampoerna.EMS.BLL
                 dbData.DOCUMENT_NOTED = generatedData.Data.DocumentNoted;
 
 
-                dbData.LACK1_CALCULATION_DETAIL =
-                    Mapper.Map<List<LACK1_CALCULATION_DETAIL>>(generatedData.Data.CalculationDetails);
+                //dbData.LACK1_CALCULATION_DETAIL =
+                //    Mapper.Map<List<LACK1_CALCULATION_DETAIL>>(generatedData.Data.CalculationDetails);
+                dbData.LACK1_PERIOD_SUMMARY =
+                    Mapper.Map<List<LACK1_PERIOD_SUMMARY>>(generatedData.Data.PeriodSummaries);
             }
             else
             {
@@ -658,6 +665,8 @@ namespace Sampoerna.EMS.BLL
 
             _uow.SaveChanges();
 
+            //_lack1TrackingService.DeleteCalculationDetails(null);
+            //_lack1TrackingService.DeletePeriodSummary(null);
             _lack1TrackingService.DeleteByLack1Id(null);
             _lack1IncomeDetailService.DeleteByLack1Id(null);
             _lack1Pbck1MappingService.DeleteByLack1Id(null);
