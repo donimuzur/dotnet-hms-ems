@@ -189,18 +189,34 @@
             var jsonData = @(Html.Raw(@Model.JsonData));
             //console.log(jsonData);
             if (jsonData.IsEtilAlcohol) {
-                /*Force to use generate table without tis to tis*/
-                var generateTableEtilAlcohol = generateTable(jsonData);
-                $('#generated-data-container').append(generateTableEtilAlcohol);
+                /*force to use tis to fa generate table*/
+                var tableGeneratedEtilAlcohol = generateTableNew(jsonData);
+                /*console.log(tableGenerated2);*/
+                $('#generated-data-container').append(tableGeneratedEtilAlcohol);
             } else {
-                if (jsonData.IsTisToTisReport) {
-                    var generateTableE = generateTableWithTisToTis(jsonData);
-                    $('#generated-data-container').append(generateTableE);
+                if (response.IsWithTisToTisReport) {
+                    var tableGenerated1 = generateTableWithTisToTis(jsonData);
+                    /*console.log(tableGenerated1);*/
+                    $('#generated-data-container').append(tableGenerated1);
                 } else {
-                    var generateTableD = generateTable(jsonData);
-                    $('#generated-data-container').append(generateTableD);
+                    var tableGenerated2 = generateTableNew(jsonData);
+                    /*console.log(tableGenerated2);*/
+                    $('#generated-data-container').append(tableGenerated2);
                 }
             }
+            //if (jsonData.IsEtilAlcohol) {
+            //    /*Force to use generate table without tis to tis*/
+            //    var generateTableEtilAlcohol = generateTable(jsonData);
+            //    $('#generated-data-container').append(generateTableEtilAlcohol);
+            //} else {
+            //    if (jsonData.IsTisToTisReport) {
+            //        var generateTableE = generateTableWithTisToTis(jsonData);
+            //        $('#generated-data-container').append(generateTableE);
+            //    } else {
+            //        var generateTableD = generateTableNew(jsonData);
+            //        $('#generated-data-container').append(generateTableD);
+            //    }
+            //}
             
             $('#Bukrs').on('change', function () {
                 BukrsOnChange();

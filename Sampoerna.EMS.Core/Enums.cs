@@ -840,7 +840,7 @@ namespace Sampoerna.EMS.Core
             [Description("Current Period")]
             Current = 2,
             [Description("Current Period")]
-            End = 2
+            End = 3
         }
 
 	}

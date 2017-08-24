@@ -216,6 +216,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.LACK1_PRODUCTION_DETAIL, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(src.Lack1ProductionDetail)))
                 .ForMember(dest => dest.LACK1_PBCK1_MAPPING, opt => opt.MapFrom(src => Mapper.Map<List<LACK1_PBCK1_MAPPING>>(src.Lack1Pbck1Mapping)))
                 .ForMember(dest => dest.IS_SUPPLIER_IMPORT, opt => opt.MapFrom(src => src.IsSupplierNppbkcImport))
+                .ForMember(dest => dest.LACK1_PERIOD_SUMMARY, opt => opt.MapFrom(src => Mapper.Map<List<PeriodSummary>>(src.PeriodSummaries)))
+                .ForMember(dest => dest.LACK1_CALCULATION_DETAIL, opt => opt.MapFrom(src => Mapper.Map<List<Lack1CalculationDetail>>(src.CalculationDetails)))
                 ;
 
             Mapper.CreateMap<T001W, LACK1_PLANT>().IgnoreAllNonExisting()
@@ -283,6 +285,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.DocumentNoted, opt => opt.MapFrom(src => src.DOCUMENT_NOTED))
                 .ForMember(dest => dest.IsTisToTis, opt => opt.MapFrom(src => src.IS_TIS_TO_TIS.HasValue && src.IS_TIS_TO_TIS.Value))
                 .ForMember(dest => dest.IsSupplierNppbkcImport, opt => opt.MapFrom(src => src.IS_SUPPLIER_IMPORT.HasValue && src.IS_SUPPLIER_IMPORT.Value))
+                .ForMember(dest=> dest.PeriodSummaries, opt=> opt.MapFrom(src=> Mapper.Map<List<PeriodSummary>>(src.LACK1_PERIOD_SUMMARY)))
+                .ForMember(dest => dest.CalculationDetails, opt => opt.MapFrom(src => Mapper.Map<List<Lack1CalculationDetail>>(src.LACK1_CALCULATION_DETAIL)))
                 ;
 
             Mapper.CreateMap<LACK1, Lack1PrintOutDto>().IgnoreAllNonExisting()

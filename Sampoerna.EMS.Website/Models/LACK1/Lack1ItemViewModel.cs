@@ -116,6 +116,13 @@ namespace Sampoerna.EMS.Website.Models.LACK1
 
         public string JsonData { get; set; }
 
+        public List<Lack1CalculationModel> CalculationDetail { get; set; }
+        public List<Lack1PeriodSummaryModel> PeriodSummaries { get; set; }
+
+        public Lack1PeriodSummaryModel StartPeriodData { get; set; }
+        public Lack1PeriodSummaryModel CurrentPeriodData { get; set; }
+        public Lack1PeriodSummaryModel EndPeriodData { get; set; }
+
         #endregion
 
         public List<WorkflowHistoryViewModel> WorkflowHistory { get; set; }
@@ -213,6 +220,49 @@ namespace Sampoerna.EMS.Website.Models.LACK1
         public List<Lack1ProductionDetailItemModel> ProductionList { get; set; }
         public List<Lack1ProductionDetailItemSummaryByProdTypeModel> ProductionSummaryByProdTypeList { get; set; }
         public List<Lack1SummaryProductionItemModel> SummaryProductionList { get; set; }//todo: set manually from controller to create summary of ProductionList
+    }
+
+    public class Lack1PeriodSummaryModel
+    {
+        public int LACK1_ID { get; set; }
+        public decimal Income { get; set; }
+        public decimal Usage { get; set; }
+
+        public decimal Laboratorium { get; set; }
+
+        public decimal Return { get; set; }
+
+        public decimal Saldo
+        {
+            get;
+            set;
+
+
+        }
+
+
+        public Enums.Lack1SummaryPeriod Type { get; set; }
+    }
+
+    public class Lack1CalculationModel
+    {
+        public string MaterialId { get; set; }
+        public string PlantId { get; set; }
+        public decimal AmountUsage { get; set; }
+
+        public string UomUsage { get; set; }
+
+        public string Ordr { get; set; }
+        public string FaCode { get; set; }
+
+        public string BrandCe { get; set; }
+        public decimal AmountProduction { get; set; }
+
+        public string UomProduction { get; set; }
+        public decimal Proportional { get; set; }
+
+        public decimal Convertion { get; set; }
+        public Enums.Lack1Calculation Type { get; set; }
     }
 
     #endregion

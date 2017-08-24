@@ -125,6 +125,12 @@ namespace Sampoerna.EMS.Website
             Mapper.CreateMap<Lack1ProductionSummaryByProdTypeDto, Lack1ProductionDetailItemSummaryByProdTypeModel>()
                 .IgnoreAllNonExisting();
 
+            Mapper.CreateMap<Lack1CalculationDetail, Lack1CalculationModel>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Lack1CalculationModel, Lack1CalculationDetail>().IgnoreAllNonExisting();
+
+            Mapper.CreateMap<PeriodSummary, Lack1PeriodSummaryModel>().IgnoreAllNonExisting();
+            Mapper.CreateMap<Lack1PeriodSummaryModel, PeriodSummary>().IgnoreAllNonExisting();
+
             Mapper.CreateMap<Lack1DetailsDto, Lack1ItemViewModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.DisplayLevelPlantName, opt => opt.MapFrom(src => src.LevelPlantId + '-' + src.LevelPlantName))
                 .ForMember(dest => dest.ExGoodsTypeId, opt => opt.MapFrom(src => src.ExGoodsType))
@@ -142,7 +148,11 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Ck5RemarkData, opt => opt.MapFrom(src => Mapper.Map<Lack1RemarkModel>(src.Ck5RemarkData)))
                 .ForMember(dest => dest.Lack1Pbck1Mapping, opt => opt.MapFrom(src => Mapper.Map<List<Lack1Pbck1MappingItemModel>>(src.Lack1Pbck1Mapping)))
                 .ForMember(dest => dest.Lack1Plant, opt => opt.MapFrom(src => Mapper.Map<List<Lack1PlantItemModel>>(src.Lack1Plant)))
-                ;
+                .ForMember(dest => dest.CalculationDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1CalculationModel>>(src.CalculationDetails)))
+                .ForMember(dest => dest.PeriodSummaries, opt => opt.MapFrom(src => Mapper.Map<List<Lack1PeriodSummaryModel>>(src.PeriodSummaries)))
+                .ForMember(dest => dest.StartPeriodData, opt => opt.MapFrom(src => Mapper.Map<Lack1PeriodSummaryModel>(src.StartPeriodData)))
+                .ForMember(dest => dest.CurrentPeriodData, opt => opt.MapFrom(src => Mapper.Map<Lack1PeriodSummaryModel>(src.CurrentPeriodData)))
+                .ForMember(dest => dest.EndPeriodData, opt => opt.MapFrom(src => Mapper.Map<Lack1PeriodSummaryModel>(src.EndPeriodData)));
 
             Mapper.CreateMap<Lack1RemarkDto, Lack1RemarkModel>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Ck5WasteData, opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailItemModel>>(src.Ck5WasteData)))
@@ -170,6 +180,11 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.InventoryProductionTisToFa, opt => opt.MapFrom(src => Mapper.Map<Lack1InventoryAndProductionModel>(src.InventoryProductionTisToFa)))
                 .ForMember(dest => dest.InventoryProductionTisToTis, opt => opt.MapFrom(src => Mapper.Map<Lack1InventoryAndProductionModel>(src.InventoryProductionTisToTis)))
                 .ForMember(dest => dest.FusionSummaryProductionByProdTypeList, opt => opt.MapFrom(src => Mapper.Map<List<Lack1ProductionDetailItemSummaryByProdTypeModel>>(src.FusionSummaryProductionByProdTypeList)))
+                .ForMember(dest => dest.CalculationDetail, opt => opt.MapFrom(src=> Mapper.Map<List<Lack1CalculationModel>>(src.CalculationDetails)))
+                .ForMember(dest => dest.PeriodSummaries, opt => opt.MapFrom(src => Mapper.Map<List<Lack1PeriodSummaryModel>>(src.PeriodSummaries)))
+                .ForMember(dest => dest.StartPeriodData, opt => opt.MapFrom(src => Mapper.Map<Lack1PeriodSummaryModel>(src.StartPeriodData)))
+                .ForMember(dest => dest.CurrentPeriodData, opt => opt.MapFrom(src => Mapper.Map<Lack1PeriodSummaryModel>(src.CurrentPeriodData)))
+                .ForMember(dest => dest.EndPeriodData, opt => opt.MapFrom(src => Mapper.Map<Lack1PeriodSummaryModel>(src.EndPeriodData)))
                 ;
 
             Mapper.CreateMap<Lack1ProductionSummaryByProdTypeDto, Lack1ProductionDetailItemSummaryByProdTypeModel>()
@@ -245,7 +260,12 @@ namespace Sampoerna.EMS.Website
                     opt => opt.MapFrom(src => Mapper.Map<List<Lack1DocumentDto>>(src.Lack1Document)))
                 .ForMember(dest => dest.Lack1IncomeDetail,
                     opt => opt.MapFrom(src => Mapper.Map<List<Lack1IncomeDetailDto>>(src.IncomeList)))
-                ;
+                .ForMember(dest => dest.CalculationDetails, opt => opt.MapFrom(src => Mapper.Map<List<Lack1CalculationDetail>>(src.CalculationDetail)))
+
+                .ForMember(dest => dest.PeriodSummaries, opt => opt.MapFrom(src => Mapper.Map<List<PeriodSummary>>(src.PeriodSummaries)))
+                .ForMember(dest => dest.StartPeriodData, opt => opt.MapFrom(src => Mapper.Map<PeriodSummary>(src.StartPeriodData)))
+                .ForMember(dest => dest.CurrentPeriodData, opt => opt.MapFrom(src => Mapper.Map<PeriodSummary>(src.CurrentPeriodData)))
+                .ForMember(dest => dest.EndPeriodData, opt => opt.MapFrom(src => Mapper.Map<PeriodSummary>(src.EndPeriodData)));
 
 
             #region ----------- Summary Report -----------

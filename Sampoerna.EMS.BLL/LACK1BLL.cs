@@ -674,6 +674,12 @@ namespace Sampoerna.EMS.BLL
             var dbData = _lack1Service.GetDetailsById(id);
             var rc = Mapper.Map<Lack1DetailsDto>(dbData);
 
+            
+            rc.StartPeriodData = rc.PeriodSummaries.Where(x=> x.Type == Enums.Lack1SummaryPeriod.Start).FirstOrDefault();
+            rc.CurrentPeriodData = rc.PeriodSummaries.Where(x => x.Type == Enums.Lack1SummaryPeriod.Current).FirstOrDefault();
+            rc.EndPeriodData = rc.PeriodSummaries.Where(x => x.Type == Enums.Lack1SummaryPeriod.End).FirstOrDefault();
+
+
             if (string.IsNullOrEmpty(rc.SupplierPlant))
             {
                 var plant = _t001WServices.GetById(rc.SupplierPlantId);
