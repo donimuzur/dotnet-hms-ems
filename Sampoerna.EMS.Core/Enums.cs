@@ -836,9 +836,11 @@ namespace Sampoerna.EMS.Core
         public enum Lack1SummaryPeriod
         {
             [Description("Last Period")]
-            Last = 1,
+            Start = 1,
             [Description("Current Period")]
-            Current = 2
+            Current = 2,
+            [Description("Current Period")]
+            End = 2
         }
 
 	}

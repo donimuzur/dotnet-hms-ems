@@ -512,12 +512,13 @@
           <Property Name="DOCUMENT_NOTED" Type="nvarchar" MaxLength="255" />
           <Property Name="USAGE_TISTOTIS" Type="decimal" Precision="18" Scale="5" />
           <Property Name="IS_SUPPLIER_IMPORT" Type="bit" />
+          <Property Name="LABORATORIUM" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="LACK1_CALCULATION_DETAIL">
           <Key>
             <PropertyRef Name="LACK1_CALCULATION_DETAIL_ID" />
           </Key>
-          <Property Name="LACK1_CALCULATION_DETAIL_ID" Type="int" Nullable="false" />
+          <Property Name="LACK1_CALCULATION_DETAIL_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="LACK1_ID" Type="int" Nullable="false" />
           <Property Name="MATERIAL_ID" Type="nvarchar" MaxLength="18" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
@@ -7791,6 +7792,7 @@
           <Property Name="IS_SUPPLIER_IMPORT" Type="Boolean" />
           <NavigationProperty Name="LACK1_CALCULATION_DETAIL" Relationship="EMSModel.FK_LACK1_CALCULATION_DETAIL_LACK1" FromRole="LACK1" ToRole="LACK1_CALCULATION_DETAIL" />
           <NavigationProperty Name="LACK1_PERIOD_SUMMARY" Relationship="EMSModel.FK_LACK1_PERIOD_SUMMARY_LACK1" FromRole="LACK1" ToRole="LACK1_PERIOD_SUMMARY" />
+          <Property Name="LABORATORIUM" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
         <Association Name="FK_LACK1_MONTH">
           <End Type="EMSModel.MONTH" Role="MONTH" Multiplicity="0..1" />
@@ -9960,7 +9962,7 @@
           <Property Name="LABORATORIUM" Type="Decimal" Precision="18" Scale="3" />
           <Property Name="CK5_RETURN" Type="Decimal" Precision="18" Scale="3" />
           <Property Name="SALDO" Type="Decimal" Precision="18" Scale="3" />
-          <Property Name="TYPE" Type="Int32" />
+          <Property Name="TYPE" Type="EMSModel.Lack1SummaryPeriod" />
           <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_PERIOD_SUMMARY_LACK1" FromRole="LACK1_PERIOD_SUMMARY" ToRole="LACK1" />
         </EntityType>
         <Association Name="FK_LACK1_PERIOD_SUMMARY_LACK1">
@@ -9975,6 +9977,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EnumType Name="Lack1SummaryPeriod" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.Lack1SummaryPeriod" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -10834,6 +10837,7 @@
           <EntitySetMapping Name="LACK1">
             <EntityTypeMapping TypeName="EMSModel.LACK1">
               <MappingFragment StoreEntitySet="LACK1">
+                <ScalarProperty Name="LABORATORIUM" ColumnName="LABORATORIUM" />
                 <ScalarProperty Name="IS_SUPPLIER_IMPORT" ColumnName="IS_SUPPLIER_IMPORT" />
                 <ScalarProperty Name="USAGE_TISTOTIS" ColumnName="USAGE_TISTOTIS" />
                 <ScalarProperty Name="DOCUMENT_NOTED" ColumnName="DOCUMENT_NOTED" />

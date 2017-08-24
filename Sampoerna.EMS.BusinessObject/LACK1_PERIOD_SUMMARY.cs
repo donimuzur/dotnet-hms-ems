@@ -21,7 +21,7 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<decimal> LABORATORIUM { get; set; }
         public Nullable<decimal> CK5_RETURN { get; set; }
         public Nullable<decimal> SALDO { get; set; }
-        public Nullable<int> TYPE { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.Lack1SummaryPeriod> TYPE { get; set; }
     
         public virtual LACK1 LACK1 { get; set; }
     }

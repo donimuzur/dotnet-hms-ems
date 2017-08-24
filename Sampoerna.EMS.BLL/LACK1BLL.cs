@@ -373,8 +373,11 @@ namespace Sampoerna.EMS.BLL
             newdata.LACK1_PRODUCTION_DETAIL =
                 Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(productionDetail.Distinct().ToList());
 
-            
-            
+
+            newdata.LACK1_CALCULATION_DETAIL =
+                Mapper.Map<List<LACK1_CALCULATION_DETAIL>>(generatedData.Data.CalculationDetails);
+            newdata.LACK1_PERIOD_SUMMARY = Mapper.Map<List<LACK1_PERIOD_SUMMARY>>(generatedData.Data.PeriodSummaries);
+
 
             //add workflow history for create document
             var getUserRole = _poaBll.GetUserRole(input.UserId);
@@ -2629,6 +2632,78 @@ namespace Sampoerna.EMS.BLL
                 ExcludeLack1Id = input.Lack1Id
             });
 
+            var lastPeriodSummary = lastLack1.LACK1_PERIOD_SUMMARY.FirstOrDefault(x => x.TYPE == Enums.Lack1SummaryPeriod.Current);
+            PeriodSummary startPeriodData = Mapper.Map<PeriodSummary>(lastPeriodSummary);
+            if (startPeriodData != null)
+            {
+                
+                startPeriodData.Type = Enums.Lack1SummaryPeriod.Start;
+                
+            }
+            else
+            {
+                startPeriodData = new PeriodSummary()
+                {
+                    Income = 0,
+                    Usage = 0,
+                    Laboratorium = 0,
+                    Return = 0,
+                    Saldo = 0,
+                    Type = Enums.Lack1SummaryPeriod.Start
+                };
+
+                
+            }
+
+
+
+            var currentPeriodData = new PeriodSummary()
+            {
+                Income = rc.TotalIncome,
+                Usage = rc.TotalUsage,
+                Laboratorium = rc.TotalLaboratorium,
+                Return = rc.TotalReturn,
+                Saldo = rc.TotalIncome - rc.TotalUsage - rc.TotalLaboratorium - rc.TotalReturn,
+                Type = Enums.Lack1SummaryPeriod.Current
+            };
+
+            if (input.PeriodMonth == 1)
+            {
+                currentPeriodData.Income += startPeriodData.Saldo;
+
+                startPeriodData = new PeriodSummary()
+                {
+                    Income = 0,
+                    Usage = 0,
+                    Laboratorium = 0,
+                    Return = 0,
+                    Saldo = 0,
+                    Type = Enums.Lack1SummaryPeriod.Start
+                };
+            }
+
+            var endPeriodData = new PeriodSummary()
+            {
+                Income = startPeriodData.Income + currentPeriodData.Income,
+                Usage = startPeriodData.Usage + currentPeriodData.Usage,
+                Laboratorium = startPeriodData.Income + currentPeriodData.Laboratorium,
+                Return = startPeriodData.Income + currentPeriodData.Return,
+                Saldo = 0,
+                Type = Enums.Lack1SummaryPeriod.End
+            };
+
+            endPeriodData.Saldo = endPeriodData.Income - endPeriodData.Usage - endPeriodData.Laboratorium -
+                                  endPeriodData.Return;
+
+            rc.PeriodSummaries = new List<PeriodSummary>();
+            rc.PeriodSummaries.Add(startPeriodData);
+            rc.PeriodSummaries.Add(currentPeriodData);
+            rc.PeriodSummaries.Add(endPeriodData);
+
+            rc.StartPeriodData = startPeriodData;
+            rc.CurrentPeriodData = currentPeriodData;
+            rc.EndPeriodData = endPeriodData;
+            
             return oReturn;
         }
 

@@ -441,6 +441,7 @@ function generateTableNew(data) {
     console.log('Only Tis To Fa New');
     var rc = '<table border="0" class="table table-bordered">' + generateHeaderTableNew();
     
+
     //bulan lalu here
     rc = rc +
                 /*First Record*/
@@ -448,12 +449,12 @@ function generateTableNew(data) {
 
 
                 '<td>' +
-                ((data.TotalIncome == 0) ? '-' : ThausandSeperator(data.TotalIncome, 2)) + '</td>' +
-                '<td >' + ThausandSeperator(data.TotalUsage, 2) + '</td>' +
-                '<td >Lab here</td>' +
-                '<td >' + ThausandSeperator(data.TotalReturn, 2) + '</td>' +
-                '<td ></td>' +
-                '<td ></td>' +
+                ((data.StartPeriodData.Income == 0) ? '-' : ThausandSeperator(data.StartPeriodData.Income, 2)) + '</td>' +
+                '<td >' + ThausandSeperator(data.StartPeriodData.Usage, 2) + '</td>' +
+                '<td >' + ThausandSeperator(data.StartPeriodData.Laboratorium, 2) + '</td>' +
+                '<td >' + ThausandSeperator(data.StartPeriodData.Return, 2) + '</td>' +
+                '<td >' + ThausandSeperator(data.StartPeriodData.Saldo, 2) + '</td>' +
+                '<td >' + ThausandSeperator(data.BeginingBalance, 2) + '</td>' +
 
                 '</tr>';
 
@@ -465,17 +466,30 @@ function generateTableNew(data) {
 
 
                 '<td>' +
-                ((data.TotalIncome == 0) ? '-' : ThausandSeperator(data.TotalIncome, 2)) + '</td>' +
-                '<td >' + ThausandSeperator(data.TotalUsage, 2) + '</td>' +
-                '<td >Lab here</td>' +
-                '<td >' + ThausandSeperator(data.TotalReturn,2) + '</td>' +
+                ((data.CurrentPeriodData.Income == 0) ? '-' : ThausandSeperator(data.CurrentPeriodData.Income, 2)) + '</td>' +
+                '<td >' + ThausandSeperator(data.CurrentPeriodData.Usage, 2) + '</td>' +
+                '<td >' + ThausandSeperator(data.CurrentPeriodData.Laboratorium, 2) + '</td>' +
+                '<td >' + ThausandSeperator(data.CurrentPeriodData.Return, 2) + '</td>' +
                 '<td ></td>' +
                 '<td ></td>' +
         
                 '</tr>';
     
     //s.d bulan pelaporan here
-    
+    rc = rc +
+                /*First Record*/
+                '<td >s.d bulan pelaporan</td>' +
+
+
+                '<td>' +
+                ((data.EndPeriodData.Income == 0) ? '-' : ThausandSeperator(data.EndPeriodData.Income, 2)) + '</td>' +
+                '<td >' + ThausandSeperator(data.EndPeriodData.Usage, 2) + '</td>' +
+                '<td >' + ThausandSeperator(data.EndPeriodData.Laboratorium, 2) + '</td>' +
+                '<td >' + ThausandSeperator(data.EndPeriodData.Return, 2) + '</td>' +
+                '<td >' + ThausandSeperator(data.EndPeriodData.Saldo, 2) + '</td>' +
+                '<td >' + ThausandSeperator(data.CloseBalance, 2) + '</td>' +
+
+                '</tr>';
 
     /*footer*/
     rc = rc + '</tbody></table>';

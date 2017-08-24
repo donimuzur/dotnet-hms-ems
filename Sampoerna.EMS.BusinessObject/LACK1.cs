@@ -67,6 +67,7 @@ namespace Sampoerna.EMS.BusinessObject
         public string DOCUMENT_NOTED { get; set; }
         public Nullable<decimal> USAGE_TISTOTIS { get; set; }
         public Nullable<bool> IS_SUPPLIER_IMPORT { get; set; }
+        public Nullable<decimal> LABORATORIUM { get; set; }
     
         public virtual MONTH MONTH { get; set; }
         public virtual UOM UOM { get; set; }

@@ -57,6 +57,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal TotalWaste { get; set; }
 
         public decimal TotalReturn { get; set; }
+        public decimal TotalLaboratorium { get; set; }
         
         public string Noted { get; set; }
         public string DocumentNoted { get; set; }
@@ -70,7 +71,11 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public List<Lack1CalculationDetail> CalculationDetails { get; set; }
 
-        public List<LastPeriodSummary> PeriodSummaries { get; set; }
+        public List<PeriodSummary> PeriodSummaries { get; set; }
+
+        public PeriodSummary StartPeriodData { get; set; }
+        public PeriodSummary CurrentPeriodData { get; set; }
+        public PeriodSummary EndPeriodData { get; set; }
 
         public Lack1GeneratedRemarkDto Ck5RemarkData { get; set; }
 
@@ -327,8 +332,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     }
 
 
-    public class LastPeriodSummary
+    public class PeriodSummary
     {
+        public int LACK1_ID { get; set; }
         public decimal Income { get; set; }
         public decimal Usage { get; set; }
 
@@ -338,14 +344,14 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public decimal Saldo
         {
-            get
-            {
-                return Income - Usage - Laboratorium - Return;
-            }
+            get; 
+            set;
+
+
         }
 
 
-        public LastPeriodSummary Type { get; set; }
+        public Enums.Lack1SummaryPeriod Type { get; set; }
     }
 
     //public class Lack1CFUsagevsFaDetailDtoWaste

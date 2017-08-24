@@ -587,6 +587,50 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.Qty, opt => opt.MapFrom(src => src.ConvertedQty))
                 .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.ConvertedUomId));
 
+            Mapper.CreateMap<LACK1_PERIOD_SUMMARY, PeriodSummary>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.Income, opt => opt.MapFrom(src => src.INCOME))
+                .ForMember(dest => dest.Laboratorium, opt => opt.MapFrom(src => src.LABORATORIUM))
+                .ForMember(dest => dest.Return, opt => opt.MapFrom(src => src.CK5_RETURN))
+                .ForMember(dest => dest.Saldo, opt => opt.MapFrom(src => src.SALDO))
+                .ForMember(dest => dest.Usage, opt => opt.MapFrom(src => src.USAGE))
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.TYPE));
+
+            Mapper.CreateMap<PeriodSummary, LACK1_PERIOD_SUMMARY>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.INCOME, opt => opt.MapFrom(src => src.Income))
+                .ForMember(dest => dest.LABORATORIUM, opt => opt.MapFrom(src => src.Laboratorium))
+                .ForMember(dest => dest.CK5_RETURN, opt => opt.MapFrom(src => src.Return))
+                .ForMember(dest => dest.SALDO, opt => opt.MapFrom(src => src.Saldo))
+                .ForMember(dest => dest.USAGE, opt => opt.MapFrom(src => src.Usage))
+                .ForMember(dest => dest.TYPE, opt => opt.MapFrom(src => src.Type));
+
+            Mapper.CreateMap<LACK1_CALCULATION_DETAIL, Lack1CalculationDetail>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.MaterialId, opt => opt.MapFrom(src => src.MATERIAL_ID))
+                .ForMember(dest => dest.Ordr, opt => opt.MapFrom(src => src.ORDR))
+                .ForMember(dest => dest.PlantId, opt => opt.MapFrom(src => src.PLANT_ID))
+                .ForMember(dest => dest.Proportional, opt => opt.MapFrom(src => src.PROPORTIONAL))
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.TYPE))
+                .ForMember(dest => dest.UomProduction, opt => opt.MapFrom(src => src.UOM_PRODUCTION))
+                .ForMember(dest => dest.UomUsage, opt => opt.MapFrom(src => src.UOM_USAGE))
+                .ForMember(dest => dest.AmountProduction, opt => opt.MapFrom(src => src.AMOUNT_PRODUCTION))
+                .ForMember(dest => dest.AmountUsage, opt => opt.MapFrom(src => src.AMOUNT_USAGE))
+                .ForMember(dest => dest.BrandCe, opt => opt.MapFrom(src => src.BRAND_CE))
+                .ForMember(dest => dest.Convertion, opt => opt.MapFrom(src => src.CONVERTION))
+                .ForMember(dest => dest.FaCode, opt => opt.MapFrom(src => src.FA_CODE));
+
+            Mapper.CreateMap<Lack1CalculationDetail, LACK1_CALCULATION_DETAIL>().IgnoreAllNonExisting()
+                .ForMember(dest => dest.MATERIAL_ID, opt => opt.MapFrom(src => src.MaterialId))
+                .ForMember(dest => dest.ORDR, opt => opt.MapFrom(src => src.Ordr))
+                .ForMember(dest => dest.PLANT_ID, opt => opt.MapFrom(src => src.PlantId))
+                .ForMember(dest => dest.PROPORTIONAL, opt => opt.MapFrom(src => src.Proportional))
+                .ForMember(dest => dest.TYPE, opt => opt.MapFrom(src => src.Type))
+                .ForMember(dest => dest.UOM_PRODUCTION, opt => opt.MapFrom(src => src.UomProduction))
+                .ForMember(dest => dest.UOM_USAGE, opt => opt.MapFrom(src => src.UomUsage))
+                .ForMember(dest => dest.AMOUNT_PRODUCTION, opt => opt.MapFrom(src => src.AmountProduction))
+                .ForMember(dest => dest.AMOUNT_USAGE, opt => opt.MapFrom(src => src.AmountUsage))
+                .ForMember(dest => dest.BRAND_CE, opt => opt.MapFrom(src => src.BrandCe))
+                .ForMember(dest => dest.CONVERTION, opt => opt.MapFrom(src => src.Convertion))
+                .ForMember(dest => dest.FA_CODE, opt => opt.MapFrom(src => src.FaCode));
+
             #region LACK1 Detail EA
 
             Mapper.CreateMap<Lack1GetDetailEaByParamInput, Ck5GetForLack1DetailEa>().IgnoreAllNonExisting();

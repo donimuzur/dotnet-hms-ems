@@ -1,4 +1,4 @@
-/****** Object:  Table [dbo].[LACK1_CALCULATION_DETAIL]    Script Date: 8/24/2017 10:46:07 AM ******/
+/****** Object:  Table [dbo].[LACK1_CALCULATION_DETAIL]    Script Date: 8/24/2017 4:17:18 PM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -6,7 +6,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[LACK1_CALCULATION_DETAIL](
-	[LACK1_CALCULATION_DETAIL_ID] [int] NOT NULL,
+	[LACK1_CALCULATION_DETAIL_ID] [int] IDENTITY(1,1) NOT NULL,
 	[LACK1_ID] [int] NOT NULL,
 	[MATERIAL_ID] [nvarchar](18) NULL,
 	[PLANT_ID] [nvarchar](4) NULL,
