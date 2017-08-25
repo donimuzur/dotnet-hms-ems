@@ -682,7 +682,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             var rpt = new ReportClass
             {
-                FileName = ConfigurationManager.AppSettings["Report_Path"] + "LACK1\\Lack1PrintOut.rpt"
+                FileName = ConfigurationManager.AppSettings["Report_Path"] + "LACK1\\Lack1PrintOutNew.rpt"
+                //"E:\\Source code\\vox teneo\\net_hms_ems\\Sampoerna.EMS.Website\\Reports\\LACK1\\Lack1PrintOutNew.rpt"
             };
             rpt.Load();
             rpt.SetDataSource(dataSet);
