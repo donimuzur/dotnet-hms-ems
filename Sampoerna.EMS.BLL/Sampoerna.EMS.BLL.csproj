@@ -83,6 +83,7 @@
     <Compile Include="BLLMapperCK4C.cs" />
     <Compile Include="BLLMapperCK5.cs" />
     <Compile Include="BLLMapperLack1.cs" />
+    <Compile Include="BLLMapperLACK10.cs" />
     <Compile Include="BLLMapperLack2.cs" />
     <Compile Include="BLLMapperPBCK1.cs" />
     <Compile Include="BLLMapperPBCK4.cs" />
@@ -95,6 +96,9 @@
     <Compile Include="CK5BLL.cs" />
     <Compile Include="BrandRegistrationBLL.cs" />
     <Compile Include="CountryBLL.cs" />
+    <Compile Include="LACK10BLL.cs" />
+    <Compile Include="LACK10DecreeDocBLL.cs" />
+    <Compile Include="LACK10ItemBLL.cs" />
     <Compile Include="LFA1BLL.cs" />
     <Compile Include="MasterDataApprovalBLL.cs" />
     <Compile Include="MasterDataApprovalSettingBLL.cs" />

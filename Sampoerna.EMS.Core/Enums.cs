@@ -58,7 +58,8 @@ namespace Sampoerna.EMS.Core
 			BrandRegistrationReq = 52,            
 			PenetapanSKEP = 53,
 			MasterDataApproveSetting = 38,
-            MasterDataApproval = 39
+            MasterDataApproval = 39,
+            LACK10 = 54
 		}
 		public enum PBCK1Type
 		{
@@ -353,7 +354,10 @@ namespace Sampoerna.EMS.Core
             [Description("Brand Registration Transaction")]
             BrandRegistrationTrans = 84,
             [Description("Brand Registration Penetapan SKEP")]
-            BrandRegistrationSKEP = 85
+            BrandRegistrationSKEP = 85,
+
+            [Description("LACK-10")]
+            LACK10 = 61
         }
 
 		public enum ActionType
@@ -832,6 +836,14 @@ namespace Sampoerna.EMS.Core
             [Description("With Convertion")]
             WithConvertion = 2
 	    }
+
+        public enum Lack10ReportType
+        {
+            [Description("Musnah")]
+            Musnah = 1,
+            [Description("Rusak")]
+            Rusak = 2
+        }
 
 	}
 }

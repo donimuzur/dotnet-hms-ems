@@ -103,6 +103,7 @@ namespace Sampoerna.EMS.Website
             container.Register<IMonthClosingDocBLL, MonthClosingDocBLL>();
             container.Register<IMasterDataApprovalSettingBLL,MasterDataApprovalSettingBLL>();
             container.Register<IMasterDataAprovalBLL,MasterDataApprovalBLL>();
+            container.Register<ILACK10BLL, LACK10BLL>();
 
             // 3. Optionally verify the container's configuration.
             container.Verify();
