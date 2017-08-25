@@ -1,17 +1,17 @@
 ﻿@using Sampoerna.EMS.Core
 @using Sampoerna.EMS.Website.Helpers
-@model Sampoerna.EMS.Website.Models.CK4C.Ck4CIndexDocumentListViewModel
+@model Sampoerna.EMS.Website.Models.LACK10.Lack10IndexViewModel
 @{
     ViewBag.Title = "Detail";
 }
 
-@using (Html.BeginForm("", "CK4C", FormMethod.Post, new { @id = "DetailForm"}))
+@using (Html.BeginForm("", "LACK10", FormMethod.Post, new { @id = "DetailForm" }))
 {
     @Html.AntiForgeryToken()
     <div class="container-wrap title-page">
         <div class="row">
             <div class="col-sm-12">
-                <h3>CK-4C Form</h3>
+                <h3>LACK-10 Form</h3>
                 <label class="status">@Model.Details.StatusName</label>
                 <div class="action-button">
                     <input type="button" class="btn btn-grey" value="Print Preview" id="btnPrintPreview" />
@@ -38,10 +38,6 @@
                         <li class="active" role="presentation"><a data-toggle="tab" role="tab" aria-controls="information" href="#information">Information</a></li>
                         <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Print Out</a></li>
                         <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Changes Log</a></li>
-                        @if (Model.OldDetails != null)
-                        {
-                            <li role="presentation"><a href="#informationold" aria-controls="informationold" role="tab" data-toggle="tab">Old Information</a></li>
-                        }
                     </ul>
 
                     <!-- Tab panes -->
@@ -49,11 +45,6 @@
                         @Html.Partial("_HomeDetails")
                         @Html.Partial("_PrintOut")
                         @Html.Partial("_ChangeLog")
-                        @if (Model.OldDetails != null)
-                        {
-                            @Html.Partial("_HomeDetailsOld")
-                        }
-                        
                     </div>
                 </div>
             </div>
@@ -64,44 +55,33 @@
 
 @section scripts
 {
-    <script src="~/Scripts/ck4cscript.js"></script>
+    <script src="~/Scripts/lack10script.js"></script>
     <script type="text/javascript" language="javascript" class="init">
     $(document).ready(function () {
         SetBasedOn();
-        
+
         SetPoaList();
 
         $('#divComment').hide();
 
         $('#btnCancel').click(function (e) {
-            location.href = '@Url.Action("DocumentList", "CK4C")';
+            location.href = '@Url.Action("Index", "LACK10")';
         });
 
         $('#btnCancelCompleted').click(function (e) {
-            location.href = '@Url.Action("CompletedDocument", "CK4C")';
+            location.href = '@Url.Action("CompletedDocument", "LACK10")';
         });
 
         $('#btnExportCk4cItem').click(function (e) {
-            location.href = '@Url.Action("ExportXlsCk4cItem", "CK4C", new { id = @Model.Details.Ck4CId })';
-        });
-
-        $('#btnExportCk4cItemOld').click(function (e) {
-            location.href = '@Url.Action("ExportXlsCk4cItemOld", "CK4C", new { id = @Model.Details.Ck4CId })';
+            location.href = '@Url.Action("ExportXlsCk4cItem", "CK4C", new { id = @Model.Details.Lack10Id })';
         });
 
         $('#btnPrintPreview').click(function (e) {
-            var activeTab = $('li.active a').html();
-
-            if (activeTab == 'Old Information') {
-                printPreview('@Url.EncryptedAction("PrintPreviewOld", "CK4C", new { id = @Model.Details.Ck4CId })');
-            } else {
-                printPreview('@Url.EncryptedAction("PrintPreview", "CK4C", new { id = @Model.Details.Ck4CId })');
-            }
-
+            printPreview('@Url.EncryptedAction("PrintPreview", "CK4C", new { id = @Model.Details.Lack10Id })');
         });
 
         $('#btn-changelog-export-xls').click(function () {
-            location.href = '@Url.Action("ExportClientsListToExcel", "CK4C", new { id = Model.Details.Ck4CId })';
+            location.href = '@Url.Action("ExportClientsListToExcel", "LACK10", new { id = Model.Details.Lack10Id })';
         });
     });
 

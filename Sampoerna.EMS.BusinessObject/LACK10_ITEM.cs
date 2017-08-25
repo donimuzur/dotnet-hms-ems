@@ -21,6 +21,8 @@ namespace Sampoerna.EMS.BusinessObject
         public string TYPE { get; set; }
         public Nullable<decimal> WASTE_VALUE { get; set; }
         public string UOM { get; set; }
+        public string BRAND_DESCRIPTION { get; set; }
+        public string PLANT_NAME { get; set; }
     
         public virtual LACK10 LACK10 { get; set; }
         public virtual UOM UOM1 { get; set; }

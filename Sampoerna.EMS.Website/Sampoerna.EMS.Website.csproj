@@ -258,6 +258,7 @@
     <Compile Include="Controllers\ConfigurationController.cs" />
     <Compile Include="Controllers\ExciseCreditController.cs" />
     <Compile Include="Controllers\FinanceRatioController.cs" />
+    <Compile Include="Controllers\LACK10Controller.cs" />
     <Compile Include="Controllers\ManufactureLicenseController.cs" />
     <Compile Include="Controllers\MasterApprovalController.cs" />
     <Compile Include="Controllers\MasterDataApprovalSettingController.cs" />
@@ -320,6 +321,7 @@
     <Compile Include="EMSWebsiteMapper.cs" />
     <Compile Include="EMSWebsiteMapperCK5.cs" />
     <Compile Include="EMSWebsiteMapperLack1.cs" />
+    <Compile Include="EMSWebsiteMapperLACK10.cs" />
     <Compile Include="EMSWebsiteMapperLack2.cs" />
     <Compile Include="EMSWebsiteMapperPBCK1.cs" />
     <Compile Include="EMSWebsiteMapperPBCK4.cs" />
@@ -391,6 +393,8 @@
     <Compile Include="Models\ExciseCredit\ExciseCreditViewModel.cs" />
     <Compile Include="Models\ExciseCredit\ExciseGovApprovalModel.cs" />
     <Compile Include="Models\FileUpload\FileUploadModel.cs" />
+    <Compile Include="Models\LACK10\Lack10DecreeDocModel.cs" />
+    <Compile Include="Models\LACK10\Lack10IndexViewModel.cs" />
     <Compile Include="Models\ManufacturingLicense\ChangeRequestFormModel.cs" />
     <Compile Include="Models\ManufacturingLicense\ChangeRequestModel.cs" />
     <Compile Include="Models\ManufacturingLicense\ChangeRequestNppbkc.cs" />
@@ -710,7 +714,6 @@
       <SubType>Component</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    
     <Compile Include="Startup.cs" />
     <Compile Include="Utility\ExcelData.cs" />
     <Compile Include="Utility\ExcelReader.cs" />
@@ -1082,6 +1085,9 @@
     <Content Include="Scripts\js\vendors\jquery.dataTables.min.js" />
     <Content Include="Scripts\js\vendors\jquery.fixedheadertable.min.js" />
     <Content Include="Scripts\js\vendors\jquery.table2excel.js" />
+    <Content Include="Scripts\lack10script.js" />
+    <Content Include="Scripts\lack10\doccompleted.js" />
+    <Content Include="Scripts\lack10\docupload.js" />
     <Content Include="Scripts\lack1\Lack1GenerateTable.js" />
     <Content Include="Scripts\lack1\Lack1Upload.js" />
     <Content Include="Scripts\lack2\form.js" />
@@ -1870,6 +1876,23 @@
     <Content Include="Views\CK5\_CK5UploadListMarketReturn.cshtml" />
     <Content Include="Views\ExciseCredit\_CalculateAdjustmentExciseDetail.cshtml" />
     <Content Include="Views\ExciseCredit\_ReviseSkepModal.cshtml" />
+    <Content Include="Views\LACK10\Index.cshtml" />
+    <Content Include="Views\LACK10\_LACK10List.cshtml" />
+    <Content Include="Views\LACK10\Create.cshtml" />
+    <Content Include="Views\LACK10\_HomeCreate.cshtml" />
+    <Content Include="Views\LACK10\Detail.cshtml" />
+    <Content Include="Views\LACK10\_HomeDetails.cshtml" />
+    <Content Include="Views\LACK10\_PrintOut.cshtml" />
+    <Content Include="Views\LACK10\_ChangeLog.cshtml" />
+    <Content Include="Views\LACK10\Edit.cshtml" />
+    <Content Include="Views\LACK10\_HomeEdit.cshtml" />
+    <Content Include="Views\LACK10\Details.cshtml" />
+    <Content Include="Views\LACK10\_HomeGovApproval.cshtml" />
+    <Content Include="Views\LACK10\_DecreeDocUpload.cshtml" />
+    <Content Include="Views\LACK10\CompletedDocument.cshtml" />
+    <Content Include="Views\LACK10\_Lack10Completed.cshtml" />
+    <Content Include="Views\LACK10\_HomeCompleted.cshtml" />
+    <Content Include="Views\LACK10\_DecreeDocCompleted.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

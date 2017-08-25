@@ -31,9 +31,9 @@ namespace Sampoerna.EMS.BusinessObject
         public string PLANT_ID { get; set; }
         public string PLANT_NAME { get; set; }
         public System.DateTime SUBMISSION_DATE { get; set; }
-        public int REPORT_TYPE { get; set; }
-        public int STATUS { get; set; }
-        public Nullable<int> GOV_STATUS { get; set; }
+        public Sampoerna.EMS.Core.Enums.Lack10ReportType REPORT_TYPE { get; set; }
+        public Sampoerna.EMS.Core.Enums.DocumentStatus STATUS { get; set; }
+        public Nullable<Sampoerna.EMS.Core.Enums.DocumentStatusGovType2> GOV_STATUS { get; set; }
         public Nullable<System.DateTime> DECREE_DATE { get; set; }
         public string REASON { get; set; }
         public string REMARK { get; set; }
