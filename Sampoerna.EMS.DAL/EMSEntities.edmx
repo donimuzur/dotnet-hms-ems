@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EMSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="BACK1">
           <Key>
             <PropertyRef Name="BACK1_ID" />
@@ -2944,6 +2944,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_PBCK4_ITEM_CK1">
+          <End Role="CK1" Type="Self.CK1" Multiplicity="0..1" />
+          <End Role="PBCK4_ITEM" Type="Self.PBCK4_ITEM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CK1">
+              <PropertyRef Name="CK1_ID" />
+            </Principal>
+            <Dependent Role="PBCK4_ITEM">
+              <PropertyRef Name="CK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PBCK4_ITEM_PBCK4">
           <End Role="PBCK4" Type="Self.PBCK4" Multiplicity="1" />
           <End Role="PBCK4_ITEM" Type="Self.PBCK4_ITEM" Multiplicity="*" />
@@ -4332,6 +4344,10 @@
           <AssociationSet Name="FK_PBCK4_DOCUMENT_PBCK4" Association="Self.FK_PBCK4_DOCUMENT_PBCK4">
             <End Role="PBCK4" EntitySet="PBCK4" />
             <End Role="PBCK4_DOCUMENT" EntitySet="PBCK4_DOCUMENT" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PBCK4_ITEM_CK1" Association="Self.FK_PBCK4_ITEM_CK1">
+            <End Role="CK1" EntitySet="CK1" />
+            <End Role="PBCK4_ITEM" EntitySet="PBCK4_ITEM" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK4_ITEM_PBCK4" Association="Self.FK_PBCK4_ITEM_PBCK4">
             <End Role="PBCK4" EntitySet="PBCK4" />
