@@ -424,6 +424,12 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnBKCUom;
             
+            private global::System.Data.DataColumn columnTotalCk5;
+            
+            private global::System.Data.DataColumn columnTotalUsage;
+            
+            private global::System.Data.DataColumn columnProdUom;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public Lack1DataTable() {
@@ -619,6 +625,30 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn TotalCk5Column {
+                get {
+                    return this.columnTotalCk5;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn TotalUsageColumn {
+                get {
+                    return this.columnTotalUsage;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn ProdUomColumn {
+                get {
+                    return this.columnProdUom;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -674,7 +704,10 @@ namespace Sampoerna.EMS.ReportingData {
                         byte[] Header, 
                         string Footer, 
                         string Npwp, 
-                        string BKCUom) {
+                        string BKCUom, 
+                        string TotalCk5, 
+                        string TotalUsage, 
+                        string ProdUom) {
                 Lack1Row rowLack1Row = ((Lack1Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Lack1Id,
@@ -696,7 +729,10 @@ namespace Sampoerna.EMS.ReportingData {
                         Header,
                         Footer,
                         Npwp,
-                        BKCUom};
+                        BKCUom,
+                        TotalCk5,
+                        TotalUsage,
+                        ProdUom};
                 rowLack1Row.ItemArray = columnValuesArray;
                 this.Rows.Add(rowLack1Row);
                 return rowLack1Row;
@@ -739,6 +775,9 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnFooter = base.Columns["Footer"];
                 this.columnNpwp = base.Columns["Npwp"];
                 this.columnBKCUom = base.Columns["BKCUom"];
+                this.columnTotalCk5 = base.Columns["TotalCk5"];
+                this.columnTotalUsage = base.Columns["TotalUsage"];
+                this.columnProdUom = base.Columns["ProdUom"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -784,6 +823,12 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnNpwp);
                 this.columnBKCUom = new global::System.Data.DataColumn("BKCUom", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnBKCUom);
+                this.columnTotalCk5 = new global::System.Data.DataColumn("TotalCk5", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTotalCk5);
+                this.columnTotalUsage = new global::System.Data.DataColumn("TotalUsage", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTotalUsage);
+                this.columnProdUom = new global::System.Data.DataColumn("ProdUom", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnProdUom);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2309,6 +2354,54 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string TotalCk5 {
+                get {
+                    try {
+                        return ((string)(this[this.tableLack1.TotalCk5Column]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'TotalCk5\' in table \'Lack1\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableLack1.TotalCk5Column] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string TotalUsage {
+                get {
+                    try {
+                        return ((string)(this[this.tableLack1.TotalUsageColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'TotalUsage\' in table \'Lack1\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableLack1.TotalUsageColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string ProdUom {
+                get {
+                    try {
+                        return ((string)(this[this.tableLack1.ProdUomColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'ProdUom\' in table \'Lack1\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableLack1.ProdUomColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsLack1IdNull() {
                 return this.IsNull(this.tableLack1.Lack1IdColumn);
             }
@@ -2545,6 +2638,42 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetBKCUomNull() {
                 this[this.tableLack1.BKCUomColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsTotalCk5Null() {
+                return this.IsNull(this.tableLack1.TotalCk5Column);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetTotalCk5Null() {
+                this[this.tableLack1.TotalCk5Column] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsTotalUsageNull() {
+                return this.IsNull(this.tableLack1.TotalUsageColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetTotalUsageNull() {
+                this[this.tableLack1.TotalUsageColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsProdUomNull() {
+                return this.IsNull(this.tableLack1.ProdUomColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetProdUomNull() {
+                this[this.tableLack1.ProdUomColumn] = global::System.Convert.DBNull;
             }
         }
         

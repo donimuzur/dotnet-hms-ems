@@ -835,11 +835,11 @@ namespace Sampoerna.EMS.Core
 
         public enum Lack1SummaryPeriod
         {
-            [Description("Last Period")]
+            [Description("s.d sebelum bulan pelaporan")]
             Start = 1,
-            [Description("Current Period")]
+            [Description("bulan pelaporan")]
             Current = 2,
-            [Description("Current Period")]
+            [Description("s.d bulan pelaporan")]
             End = 3
         }
 

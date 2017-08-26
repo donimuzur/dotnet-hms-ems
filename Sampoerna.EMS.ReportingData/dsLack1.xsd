@@ -35,6 +35,9 @@
               <xs:element name="Footer" msprop:Generator_ColumnVarNameInTable="columnFooter" msprop:Generator_ColumnPropNameInRow="Footer" msprop:Generator_ColumnPropNameInTable="FooterColumn" msprop:Generator_UserColumnName="Footer" type="xs:string" minOccurs="0" />
               <xs:element name="Npwp" msprop:Generator_ColumnVarNameInTable="columnNpwp" msprop:Generator_ColumnPropNameInRow="Npwp" msprop:Generator_ColumnPropNameInTable="NpwpColumn" msprop:Generator_UserColumnName="Npwp" type="xs:string" minOccurs="0" />
               <xs:element name="BKCUom" msprop:Generator_ColumnVarNameInTable="columnBKCUom" msprop:Generator_ColumnPropNameInRow="BKCUom" msprop:Generator_ColumnPropNameInTable="BKCUomColumn" msprop:Generator_UserColumnName="BKCUom" type="xs:string" minOccurs="0" />
+              <xs:element name="TotalCk5" msprop:Generator_ColumnVarNameInTable="columnTotalCk5" msprop:Generator_ColumnPropNameInRow="TotalCk5" msprop:Generator_ColumnPropNameInTable="TotalCk5Column" msprop:Generator_UserColumnName="TotalCk5" type="xs:string" minOccurs="0" />
+              <xs:element name="TotalUsage" msprop:Generator_ColumnVarNameInTable="columnTotalUsage" msprop:Generator_ColumnPropNameInRow="TotalUsage" msprop:Generator_ColumnPropNameInTable="TotalUsageColumn" msprop:Generator_UserColumnName="TotalUsage" type="xs:string" minOccurs="0" />
+              <xs:element name="ProdUom" msprop:Generator_ColumnVarNameInTable="columnProdUom" msprop:Generator_ColumnPropNameInRow="ProdUom" msprop:Generator_ColumnPropNameInTable="ProdUomColumn" msprop:Generator_UserColumnName="ProdUom" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

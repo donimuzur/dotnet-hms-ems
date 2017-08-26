@@ -1675,6 +1675,7 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData = _lack1Service.GetDetailsById(id);
             var dtToReturn = Mapper.Map<Lack1PrintOutDto>(dbData);
+            
 
             if (dtToReturn.IsSupplierNppbkcImport)
             {
@@ -1731,6 +1732,12 @@ namespace Sampoerna.EMS.BLL
                 }
             }
 
+            //var plantList = dbData.LACK1_PLANT.Select(x => x.PLANT_ID).ToList();
+            
+            //var brandList = _brandRegService.GetByFaCodeListAndPlantList(materialList, plantList);
+            //var prodType = _goodProdTypeService.GetGoodTypeByProdCode(dbData.EX_GOODTYP);
+
+            
 
             //set header footer data by CompanyCode and FormTypeId
             var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()
@@ -1767,6 +1774,7 @@ namespace Sampoerna.EMS.BLL
                 if (mainPlant != null)
                 {
                     dtToReturn.NppbkcCity = mainPlant.ORT01;
+                    dtToReturn.Npwp = mainPlant.T001K.T001.NPWP;
                 }
             }
             else
@@ -1776,6 +1784,7 @@ namespace Sampoerna.EMS.BLL
                 if (plant != null)
                 {
                     dtToReturn.NppbkcCity = plant.ORT01;
+                    dtToReturn.Npwp = plant.T001K.T001.NPWP;
                 }
             }
 
@@ -1816,7 +1825,7 @@ namespace Sampoerna.EMS.BLL
                         ((c.CK5_TYPE != Enums.CK5Type.Waste ) && c.CK5_TYPE != Enums.CK5Type.Return)).ToList();
 
             
-
+            
             
 
             return dtToReturn;

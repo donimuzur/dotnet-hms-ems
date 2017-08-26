@@ -340,6 +340,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.DocumentNoted, opt => opt.MapFrom(src => src.DOCUMENT_NOTED))
                 .ForMember(dest => dest.IsTisToTis, opt => opt.MapFrom(src => src.IS_TIS_TO_TIS))
                 .ForMember(dest => dest.IsSupplierNppbkcImport, opt => opt.MapFrom(src => src.IS_SUPPLIER_IMPORT))
+                .ForMember(dest => dest.PeriodSummaries, opt => opt.MapFrom(src => Mapper.Map<List<PeriodSummary>>(src.LACK1_PERIOD_SUMMARY)))
+                .ForMember(dest => dest.CalculationDetails, opt => opt.MapFrom(src => Mapper.Map<List<Lack1CalculationDetail>>(src.LACK1_CALCULATION_DETAIL)))
                 ;
 
             Mapper.CreateMap<InvMovementItemWithConvertion, Lack1GeneratedTrackingDto>().IgnoreAllNonExisting()
