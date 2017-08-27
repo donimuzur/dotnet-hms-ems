@@ -116,7 +116,7 @@ namespace Sampoerna.EMS.Website.Models.LACK1
 
         public string JsonData { get; set; }
 
-        public List<Lack1CalculationModel> CalculationDetail { get; set; }
+        public List<Lack1CalculationModel> CalculationDetails { get; set; }
         public List<Lack1PeriodSummaryModel> PeriodSummaries { get; set; }
 
         public Lack1PeriodSummaryModel StartPeriodData { get; set; }

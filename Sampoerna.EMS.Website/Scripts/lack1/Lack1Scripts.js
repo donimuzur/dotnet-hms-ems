@@ -108,7 +108,7 @@ function generateDataClick(lackLevel, url) {
         success: function (response) {
             $('.loading').hide();
             if (response.Success) {
-                
+                debugger;
                 $('#generated-data-container').html("");
                 $('#generated-details-container').html('');
                 $('#generated-detailsconvertion-container').html('');
@@ -123,7 +123,7 @@ function generateDataClick(lackLevel, url) {
                     $('#generated-data-container').append(tableGeneratedEtilAlcohol);
                 } else {
                     if (response.IsWithTisToTisReport) {
-                        var tableGenerated1 = generateTableWithTisToTis(data);
+                        var tableGenerated1 = generateTableNew(data);
                         /*console.log(tableGenerated1);*/
                         $('#generated-data-container').append(tableGenerated1);
                     } else {

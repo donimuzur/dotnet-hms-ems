@@ -2569,8 +2569,15 @@ namespace Sampoerna.EMS.BLL
             //rc.DocumentNoted = string.Join(Environment.NewLine, noteTemp).Replace(Environment.NewLine, "<br />");
             rc.Noted = input.Noted;
 
+            var faCodeList = new List<string>();
+            if (rc.InventoryProductionTisToFa.CalculationDetails != null)
+            {
+                faCodeList.AddRange(rc.InventoryProductionTisToFa.CalculationDetails.GroupBy(x => x.FaCode).Select(x => x.Key));
+            }
 
-            var faCodeList = rc.InventoryProductionTisToFa.CalculationDetails.GroupBy(x => x.FaCode).Select(x => x.Key).ToList();
+            
+            
+            
             var brandList = _brandRegService.GetByFaCodeListAndPlantList(faCodeList, plantIdList).GroupBy(x=> new { x.FA_CODE, x.WERKS }).Select(x=> new ZAIDM_EX_BRAND()
             {
                 FA_CODE = x.Key.FA_CODE,
@@ -2579,26 +2586,48 @@ namespace Sampoerna.EMS.BLL
 
             }).Distinct().ToList();
 
+            
 
-            rc.CalculationDetails = (from calc in rc.InventoryProductionTisToFa.CalculationDetails
-                join brand in brandList on new { calc.FaCode, calc.PlantId } equals new { FaCode = brand.FA_CODE, PlantId = brand.WERKS }
-                select new Lack1CalculationDetail()
+            rc.CalculationDetails = new List<Lack1CalculationDetail>();
+            if (rc.InventoryProductionTisToFa.CalculationDetails != null)
+            {
+                rc.CalculationDetails.AddRange( from calc in rc.InventoryProductionTisToFa.CalculationDetails
+                                         join brand in brandList on new { calc.FaCode, calc.PlantId } equals new { FaCode = brand.FA_CODE, PlantId = brand.WERKS }
+                                         select new Lack1CalculationDetail()
+                                         {
+                                             PlantId = calc.PlantId,
+                                             MaterialId = calc.MaterialId,
+                                             //Ordr = calc.Ordr,
+                                             FaCode = calc.FaCode,
+                                             UomProduction = calc.UomProduction,
+                                             AmountProduction = calc.AmountProduction,
+                                             AmountUsage = calc.AmountUsage,
+                                             Proportional = calc.Proportional,
+                                             Type = calc.Type,
+                                             UomUsage = calc.UomUsage,
+                                             BrandCe = brand.BRAND_CE
+
+                                         });
+            }
+
+
+
+            if (input.IsTisToTis)
+            {
+                var pbck1Convertion = rc.Pbck1List.FirstOrDefault().Pbck1Convertion.Where(x => x.ProdAlias == "TIS").FirstOrDefault();
+                if (rc.InventoryProductionTisToTis.CalculationDetails != null)
                 {
-                    PlantId = calc.PlantId,
-                    MaterialId = calc.MaterialId,
-                    //Ordr = calc.Ordr,
-                    FaCode = calc.FaCode,
-                    UomProduction = calc.UomProduction,
-                    AmountProduction = calc.AmountProduction,
-                    AmountUsage = calc.AmountUsage,
-                    Proportional = calc.Proportional,
-                    Type = calc.Type,
-                    UomUsage = calc.UomUsage,
-                    BrandCe = brand.BRAND_CE
-                    
-                }).ToList();
 
+                    foreach (var calc in rc.InventoryProductionTisToTis.CalculationDetails)
+                    {
+                        calc.BrandCe = pbck1Convertion.BrandCE;
+                    }
 
+                }
+
+                rc.CalculationDetails.AddRange(rc.InventoryProductionTisToTis.CalculationDetails);
+            }
+            
            
 
             if (rc.Pbck1List.Count > 0)
@@ -2628,6 +2657,7 @@ namespace Sampoerna.EMS.BLL
                                 BrandCe = calc.BrandCe
                             }).ToList();
 
+                        
                         rc.CalculationDetails.AddRange(calculationConvertion);
                     }
             }
@@ -2679,12 +2709,13 @@ namespace Sampoerna.EMS.BLL
                 
             }
 
+            rc.TotalReturn = (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
 
 
             var currentPeriodData = new PeriodSummary()
             {
                 Income = rc.TotalIncome,
-                Usage = rc.TotalUsage,
+                Usage = rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value - (rc.TotalLaboratorium) : 0),
                 Laboratorium = rc.TotalLaboratorium,
                 Return = rc.TotalReturn,
                 Saldo = rc.TotalIncome - rc.TotalUsage - rc.TotalLaboratorium - rc.TotalReturn,
@@ -3183,6 +3214,66 @@ namespace Sampoerna.EMS.BLL
 
                 if (rc.InventoryProductionTisToTis.ProductionData != null)
                     rc.FusionSummaryProductionList.AddRange(rc.InventoryProductionTisToTis.ProductionData.SummaryProductionList);
+
+
+                
+                rc.InventoryProductionTisToTis.CalculationDetails = new List<Lack1CalculationDetail>();
+
+                //regular CK5
+                var calculationsFromCk5 = invMovementTisToTisOutput.IncludeInCk5List.GroupBy(x => new { x.MATERIAL_ID, x.PLANT_ID, x.ConvertedUomId }).Select(x => new Lack1CalculationDetail()
+                {
+                    AmountProduction = x.Sum(y => y.ConvertedQty) * -1,
+                    AmountUsage = x.Sum(y => y.ConvertedQty) * -1,
+                    Convertion = 1,
+                    FaCode = x.Key.MATERIAL_ID,
+                    MaterialId = x.Key.MATERIAL_ID,
+                    PlantId = x.Key.PLANT_ID,
+                    Proportional = 1,
+                    Type = Enums.Lack1Calculation.WithoutConvertion,
+                    UomProduction = x.Key.ConvertedUomId,
+                    UomUsage = x.Key.ConvertedUomId
+
+
+                }).ToList();
+
+
+                
+                
+                //adding logic ck5 reduce trial
+                var ck5IdList = ck5ReduceTrial.Select(x => x.Ck5Id).ToList();
+                var ck5Manual = _ck5MaterialService.GetByCk5IdList(ck5IdList);
+                var calculationsFromCk5Manual = ck5Manual.GroupBy(x => new { x.BRAND, x.PLANT_ID, x.CONVERTED_UOM }).Select(x => new Lack1CalculationDetail()
+                {
+                    AmountProduction = x.Sum(y => y.CONVERTED_QTY.HasValue? y.CONVERTED_QTY.Value : 0),
+                    AmountUsage = x.Sum(y => y.CONVERTED_QTY.HasValue ? y.CONVERTED_QTY.Value : 0),
+                    Convertion = 1,
+                    FaCode = x.Key.BRAND,
+                    MaterialId = x.Key.BRAND,
+                    PlantId = x.Key.PLANT_ID,
+                    Proportional = 1,
+                    Type = Enums.Lack1Calculation.WithoutConvertion,
+                    UomProduction = x.Key.CONVERTED_UOM,
+                    UomUsage = x.Key.CONVERTED_UOM
+
+
+                });
+
+                calculationsFromCk5.AddRange(calculationsFromCk5Manual);
+
+                rc.InventoryProductionTisToTis.CalculationDetails.AddRange(calculationsFromCk5
+                    .GroupBy(x => new { x.PlantId, x.MaterialId, x.FaCode, x.UomProduction, x.UomUsage })
+                    .Select(x => new Lack1CalculationDetail() {
+                        AmountProduction = x.Sum(y => y.AmountProduction),
+                        AmountUsage = x.Sum(y => y.AmountUsage),
+                        Convertion = 1,
+                        FaCode = x.Key.FaCode,
+                        MaterialId = x.Key.MaterialId,
+                        PlantId = x.Key.PlantId,
+                        Proportional = 1,
+                        Type = Enums.Lack1Calculation.WithoutConvertion,
+                        UomProduction = x.Key.UomProduction,
+                        UomUsage = x.Key.UomUsage
+                }).ToList());
             }
 
             //process FusionSummaryProductionList
@@ -3969,6 +4060,8 @@ namespace Sampoerna.EMS.BLL
                 SummaryProductionList = GetSummaryGroupedProductionList(productionList)//calculate summary by UOM ID
             };
 
+            
+
             return new Lack1GeneratedOutput()
             {
                 Success = true,
@@ -4597,6 +4690,7 @@ namespace Sampoerna.EMS.BLL
                 };
                 totalUsage = totalUsage + mvt201 - mvt201Asigned;
                 rc.TotalUsageTisToTis = totalUsage;
+                rc.TotalLaboratorium = mvt201 - mvt201Asigned;
             }
             else
             {

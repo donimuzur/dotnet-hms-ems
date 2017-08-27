@@ -148,7 +148,7 @@ namespace Sampoerna.EMS.Website
                 .ForMember(dest => dest.Ck5RemarkData, opt => opt.MapFrom(src => Mapper.Map<Lack1RemarkModel>(src.Ck5RemarkData)))
                 .ForMember(dest => dest.Lack1Pbck1Mapping, opt => opt.MapFrom(src => Mapper.Map<List<Lack1Pbck1MappingItemModel>>(src.Lack1Pbck1Mapping)))
                 .ForMember(dest => dest.Lack1Plant, opt => opt.MapFrom(src => Mapper.Map<List<Lack1PlantItemModel>>(src.Lack1Plant)))
-                .ForMember(dest => dest.CalculationDetail, opt => opt.MapFrom(src => Mapper.Map<List<Lack1CalculationModel>>(src.CalculationDetails)))
+                .ForMember(dest => dest.CalculationDetails, opt => opt.MapFrom(src => Mapper.Map<List<Lack1CalculationModel>>(src.CalculationDetails)))
                 .ForMember(dest => dest.PeriodSummaries, opt => opt.MapFrom(src => Mapper.Map<List<Lack1PeriodSummaryModel>>(src.PeriodSummaries)))
                 .ForMember(dest => dest.StartPeriodData, opt => opt.MapFrom(src => Mapper.Map<Lack1PeriodSummaryModel>(src.StartPeriodData)))
                 .ForMember(dest => dest.CurrentPeriodData, opt => opt.MapFrom(src => Mapper.Map<Lack1PeriodSummaryModel>(src.CurrentPeriodData)))

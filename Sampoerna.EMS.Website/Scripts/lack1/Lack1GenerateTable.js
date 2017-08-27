@@ -329,7 +329,7 @@ function generateTableDetails(data) {
                     //'<td>' + data.CalculationDetails[i].Ordr + '</td>' +
                     '<td>' + data.CalculationDetails[i].MaterialId + '</td>' +
                     '<td>' + ThausandSeperator(data.CalculationDetails[i].AmountUsage) + '</td>'+
-                    '<td>' + data.CalculationDetails[i].FaCode + '</td>' +
+                    '<td>' + data.CalculationDetails[i].BrandCe + '</td>' +
                     
                     '<td>' + ThausandSeperator(data.CalculationDetails[i].AmountProduction) + '</td>'+
                     '<td>' + data.CalculationDetails[i].UomProduction + '</td>' +
