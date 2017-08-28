@@ -617,6 +617,73 @@ namespace Sampoerna.EMS.Website.Controllers
             }
         }
 
+        public ActionResult Edits(int? id)
+        {
+            if (!id.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var lack10Data = _lack10Bll.GetById(id.Value);
+
+            if (lack10Data == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (CurrentUser.UserRole != Enums.UserRole.Administrator)
+            {
+                return RedirectToAction("Detail", new { id });
+            }
+
+            try
+            {
+                var plant = _plantBll.GetT001WById(lack10Data.PlantId);
+                var nppbkcId = lack10Data.NppbkcId;
+
+                //workflow history
+                var workflowInput = new GetByFormNumberInput();
+                workflowInput.FormNumber = lack10Data.Lack10Number;
+                workflowInput.DocumentStatus = lack10Data.Status;
+                workflowInput.NppbkcId = nppbkcId;
+                workflowInput.DocumentCreator = lack10Data.CreatedBy;
+                if (plant != null)
+                {
+                    workflowInput.PlantId = lack10Data.PlantId;
+                }
+
+                var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(_workflowHistoryBll.GetByFormNumber(workflowInput));
+
+                var changesHistory =
+                    Mapper.Map<List<ChangesHistoryItemModel>>(
+                        _changesHistoryBll.GetByFormTypeAndFormId(Enums.MenuList.LACK10,
+                        id.Value.ToString()));
+
+                var printHistory = Mapper.Map<List<PrintHistoryItemModel>>(_printHistoryBll.GetByFormNumber(lack10Data.Lack10Number));
+
+                var model = new Lack10IndexViewModel()
+                {
+                    MainMenu = _mainMenu,
+                    CurrentMenu = PageInfo,
+                    Details = Mapper.Map<DataDocumentList>(lack10Data),
+                    WorkflowHistory = workflowHistory,
+                    ChangesHistoryList = changesHistory,
+                    PrintHistoryList = printHistory
+                };
+
+                model.ActionType = "GovCompletedDocumentSuperAdmin";
+
+                model.AllowPrintDocument = _workflowBll.AllowPrint(model.Details.Status);
+
+                return View(model);
+            }
+            catch (Exception exception)
+            {
+                AddMessageInfo(exception.Message, Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+        }
+
         #endregion
 
         #region Completed Document
@@ -636,7 +703,7 @@ namespace Sampoerna.EMS.Website.Controllers
         public PartialViewResult FilterCompletedDocument(Lack10IndexViewModel model)
         {
             model.Detail = GetListDocument(model);
-            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false);
+            model.IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false);
             return PartialView("_Lack10Completed", model);
         }
 
@@ -957,6 +1024,92 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 _lack10Bll.Lack10Workflow(input);
             }
+        }
+
+        [HttpPost]
+        public ActionResult GovCompletedDocumentSuperAdmin(Lack10IndexViewModel model)
+        {
+            bool isSuccess = false;
+            var currentUserId = CurrentUser;
+            var message = "Document has been saved";
+            var actionResult = "CompletedDocument";
+
+            try
+            {
+                if (model.Details.Status == Enums.DocumentStatus.Completed)
+                {
+                    model.Details.Lack10DecreeDoc = new List<Lack10DecreeDocModel>();
+
+                    if (model.Details.Lack10DecreeFiles != null)
+                    {
+                        int counter = 0;
+                        foreach (var item in model.Details.Lack10DecreeFiles)
+                        {
+                            if (item != null)
+                            {
+                                var filenamecheck = item.FileName;
+
+                                if (filenamecheck.Contains("\\"))
+                                {
+                                    filenamecheck = filenamecheck.Split('\\')[filenamecheck.Split('\\').Length - 1];
+                                }
+
+                                var decreeDoc = new Lack10DecreeDocModel()
+                                {
+                                    FILE_NAME = filenamecheck,
+                                    FILE_PATH = SaveUploadedFile(item, model.Details.Lack10Id, counter),
+                                    CREATED_BY = currentUserId.USER_ID,
+                                    CREATED_DATE = DateTime.Now
+                                };
+                                model.Details.Lack10DecreeDoc.Add(decreeDoc);
+                                counter += 1;
+                            }
+                        }
+                    }
+
+                    if (model.Details.Lack10UploadedDoc != null)
+                    {
+                        foreach (var item in model.Details.Lack10UploadedDoc)
+                        {
+                            if (item != null)
+                            {
+                                var valueDoc = item.Split('|').ToArray();
+
+                                var decreeDoc = new Lack10DecreeDocModel()
+                                {
+                                    FILE_NAME = valueDoc[1],
+                                    FILE_PATH = valueDoc[0],
+                                    CREATED_BY = currentUserId.USER_ID,
+                                    CREATED_DATE = DateTime.Now
+                                };
+                                model.Details.Lack10DecreeDoc.Add(decreeDoc);
+                            }
+                        }
+                    }
+
+                    var input = new Lack10UpdateSubmissionDate()
+                    {
+                        Id = model.Details.Lack10Id,
+                        SubmissionDate = model.Details.SubmissionDate,
+                        DecreeDate = model.Details.DecreeDate
+                    };
+
+                    _lack10Bll.UpdateSubmissionDate(input);
+                }
+
+                Lack10WorkflowCompleted(model.Details, model.Details.GovApprovalActionType, string.Empty);
+                isSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+            }
+
+            if (!isSuccess) return RedirectToAction("Edits", "LACK10", new { id = model.Details.Lack10Id });
+
+            AddMessageInfo(message, Enums.MessageInfoType.Success);
+
+            return RedirectToAction(actionResult);
         }
 
         #endregion
