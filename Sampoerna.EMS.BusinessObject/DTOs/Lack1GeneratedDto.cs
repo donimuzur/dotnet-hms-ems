@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.BusinessObject.Outputs;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
@@ -57,6 +58,7 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal TotalWaste { get; set; }
 
         public decimal TotalReturn { get; set; }
+        public decimal TotalLaboratorium { get; set; }
         
         public string Noted { get; set; }
         public string DocumentNoted { get; set; }
@@ -67,6 +69,14 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public List<Lack1GeneratedSummaryProductionDataDto> FusionSummaryProductionList { get; set; }
 
         public List<Lack1GeneratedInvMovementProductionStepTracingItem> AlcoholTrackingList { get; set; }
+
+        public List<Lack1CalculationDetail> CalculationDetails { get; set; }
+
+        public List<PeriodSummary> PeriodSummaries { get; set; }
+
+        public PeriodSummary StartPeriodData { get; set; }
+        public PeriodSummary CurrentPeriodData { get; set; }
+        public PeriodSummary EndPeriodData { get; set; }
 
         public Lack1GeneratedRemarkDto Ck5RemarkData { get; set; }
 
@@ -83,6 +93,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     {
         public Lack1GeneratedInventoryMovementDto InvetoryMovementData { get; set; }
         public Lack1GeneratedProductionDto ProductionData { get; set; }
+
+        public List<Lack1CalculationDetail> CalculationDetails { get; set; }
+
+        public List<ProportionalUsageCalculationNew> ProportionalUsageCalculations { get; set; }
     }
 
     public class Lack1GeneratedProductionDto
@@ -126,6 +140,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     public class Lack1GeneratedPbck1DataDto
     {
         public int Pbck1Id { get; set; }
+
+        public List<Pbck1ProdConverterDto> Pbck1Convertion { get; set; }
     }
 
     public class Lack1GeneratedIncomeDataDto
@@ -294,6 +310,56 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public decimal Converted_Qty { get; set; }
         public string Uom { get; set; }
         public string Converted_Uom { get; set; }
+    }
+
+
+    public class Lack1CalculationDetail
+    {
+
+        public int LACK1_ID { get; set; }
+        public string MaterialId { get; set; }
+
+        
+
+        public string PlantId { get; set; }
+        public decimal AmountUsage { get; set; }
+
+        public string UomUsage { get; set; }
+
+        public string Ordr { get; set; }
+        public string FaCode { get; set; }
+
+        public string BrandCe { get; set; }
+        public decimal AmountProduction { get; set; }
+
+        public string UomProduction { get; set; }
+        public decimal Proportional { get; set; }
+
+        public decimal Convertion { get; set; }
+        public Enums.Lack1Calculation Type { get; set; }
+    }
+
+
+    public class PeriodSummary
+    {
+        public int LACK1_ID { get; set; }
+        public decimal Income { get; set; }
+        public decimal Usage { get; set; }
+
+        public decimal Laboratorium { get; set; }
+
+        public decimal Return { get; set; }
+
+        public decimal Saldo
+        {
+            get; 
+            set;
+
+
+        }
+
+
+        public Enums.Lack1SummaryPeriod Type { get; set; }
     }
 
     //public class Lack1CFUsagevsFaDetailDtoWaste

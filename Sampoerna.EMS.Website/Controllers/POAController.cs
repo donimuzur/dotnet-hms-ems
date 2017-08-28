@@ -19,6 +19,7 @@ using SpreadsheetLight;
 using Sampoerna.EMS.Website.Models.POAExciser;
 using Sampoerna.EMS.CustomService.Services.MasterData;
 using Sampoerna.EMS.CustomService.Data;
+using POA_EXCISER = Sampoerna.EMS.CustomService.Data.POA_EXCISER;
 
 namespace Sampoerna.EMS.Website.Controllers
 {

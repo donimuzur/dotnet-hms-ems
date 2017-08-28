@@ -16,14 +16,14 @@ namespace Sampoerna.EMS.Website.Reports.LACK1 {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class Lack1Items : ReportClass {
+    public class Lack1ItemsIncome : ReportClass {
         
-        public Lack1Items() {
+        public Lack1ItemsIncome() {
         }
         
         public override string ResourceName {
             get {
-                return "Lack1Items.rpt";
+                return "Lack1ItemsIncome.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace Sampoerna.EMS.Website.Reports.LACK1 {
         
         public override string FullResourceName {
             get {
-                return "Sampoerna.EMS.Website.Reports.LACK1.Lack1Items.rpt";
+                return "Sampoerna.EMS.Website.Reports.LACK1.Lack1ItemsIncome.rpt";
             }
             set {
                 // Do nothing
@@ -66,7 +66,7 @@ namespace Sampoerna.EMS.Website.Reports.LACK1 {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GroupHeaderSection1 {
+        public CrystalDecisions.CrystalReports.Engine.Section Section3 {
             get {
                 return this.ReportDefinition.Sections[2];
             }
@@ -74,7 +74,7 @@ namespace Sampoerna.EMS.Website.Reports.LACK1 {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section3 {
+        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
             get {
                 return this.ReportDefinition.Sections[3];
             }
@@ -82,33 +82,17 @@ namespace Sampoerna.EMS.Website.Reports.LACK1 {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section GroupFooterSection1 {
-            get {
-                return this.ReportDefinition.Sections[4];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
-            get {
-                return this.ReportDefinition.Sections[5];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public CrystalDecisions.CrystalReports.Engine.Section Section5 {
             get {
-                return this.ReportDefinition.Sections[6];
+                return this.ReportDefinition.Sections[4];
             }
         }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedLack1Items : Component, ICachedReport {
+    public class CachedLack1ItemsIncome : Component, ICachedReport {
         
-        public CachedLack1Items() {
+        public CachedLack1ItemsIncome() {
         }
         
         [Browsable(false)]
@@ -145,7 +129,7 @@ namespace Sampoerna.EMS.Website.Reports.LACK1 {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            Lack1Items rpt = new Lack1Items();
+            Lack1ItemsIncome rpt = new Lack1ItemsIncome();
             rpt.Site = this.Site;
             return rpt;
         }

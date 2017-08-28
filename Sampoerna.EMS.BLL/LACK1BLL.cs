@@ -373,8 +373,11 @@ namespace Sampoerna.EMS.BLL
             newdata.LACK1_PRODUCTION_DETAIL =
                 Mapper.Map<List<LACK1_PRODUCTION_DETAIL>>(productionDetail.Distinct().ToList());
 
-            
-            
+
+            newdata.LACK1_CALCULATION_DETAIL =
+                Mapper.Map<List<LACK1_CALCULATION_DETAIL>>(generatedData.Data.CalculationDetails);
+            newdata.LACK1_PERIOD_SUMMARY = Mapper.Map<List<LACK1_PERIOD_SUMMARY>>(generatedData.Data.PeriodSummaries);
+
 
             //add workflow history for create document
             var getUserRole = _poaBll.GetUserRole(input.UserId);
@@ -443,6 +446,8 @@ namespace Sampoerna.EMS.BLL
 
                 //delete first
                 _lack1TrackingService.DeleteByLack1Id(dbData.LACK1_ID);
+                _lack1TrackingService.DeleteCalculationDetails(dbData.LACK1_ID);
+                _lack1TrackingService.DeletePeriodSummary(dbData.LACK1_ID);
                 _lack1IncomeDetailService.DeleteByLack1Id(dbData.LACK1_ID);
                 _lack1Pbck1MappingService.DeleteByLack1Id(dbData.LACK1_ID);
                 _lack1PlantService.DeleteByLack1Id(dbData.LACK1_ID);
@@ -486,6 +491,9 @@ namespace Sampoerna.EMS.BLL
                 dbData.LACK1_PLANT = null;
                 dbData.LACK1_PRODUCTION_DETAIL = null;
                 dbData.LACK1_TRACKING = null;
+                dbData.LACK1_PERIOD_SUMMARY = null;
+                dbData.LACK1_CALCULATION_DETAIL = null;
+                //dbData.LACK1_
 
                 //set from input
                 dbData.LACK1_INCOME_DETAIL = Mapper.Map<List<LACK1_INCOME_DETAIL>>(generatedData.Data.AllIncomeList);
@@ -585,6 +593,12 @@ namespace Sampoerna.EMS.BLL
                 }
                 dbData.NOTED = generatedData.Data.Noted;
                 dbData.DOCUMENT_NOTED = generatedData.Data.DocumentNoted;
+
+
+                dbData.LACK1_CALCULATION_DETAIL =
+                    Mapper.Map<List<LACK1_CALCULATION_DETAIL>>(generatedData.Data.CalculationDetails);
+                dbData.LACK1_PERIOD_SUMMARY =
+                    Mapper.Map<List<LACK1_PERIOD_SUMMARY>>(generatedData.Data.PeriodSummaries);
             }
             else
             {
@@ -651,6 +665,8 @@ namespace Sampoerna.EMS.BLL
 
             _uow.SaveChanges();
 
+            _lack1TrackingService.DeleteCalculationDetails(null);
+            _lack1TrackingService.DeletePeriodSummary(null);
             _lack1TrackingService.DeleteByLack1Id(null);
             _lack1IncomeDetailService.DeleteByLack1Id(null);
             _lack1Pbck1MappingService.DeleteByLack1Id(null);
@@ -666,6 +682,12 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData = _lack1Service.GetDetailsById(id);
             var rc = Mapper.Map<Lack1DetailsDto>(dbData);
+
+            
+            rc.StartPeriodData = rc.PeriodSummaries.Where(x=> x.Type == Enums.Lack1SummaryPeriod.Start).FirstOrDefault();
+            rc.CurrentPeriodData = rc.PeriodSummaries.Where(x => x.Type == Enums.Lack1SummaryPeriod.Current).FirstOrDefault();
+            rc.EndPeriodData = rc.PeriodSummaries.Where(x => x.Type == Enums.Lack1SummaryPeriod.End).FirstOrDefault();
+
 
             if (string.IsNullOrEmpty(rc.SupplierPlant))
             {
@@ -1653,6 +1675,7 @@ namespace Sampoerna.EMS.BLL
         {
             var dbData = _lack1Service.GetDetailsById(id);
             var dtToReturn = Mapper.Map<Lack1PrintOutDto>(dbData);
+            
 
             if (dtToReturn.IsSupplierNppbkcImport)
             {
@@ -1709,6 +1732,12 @@ namespace Sampoerna.EMS.BLL
                 }
             }
 
+            //var plantList = dbData.LACK1_PLANT.Select(x => x.PLANT_ID).ToList();
+            
+            //var brandList = _brandRegService.GetByFaCodeListAndPlantList(materialList, plantList);
+            //var prodType = _goodProdTypeService.GetGoodTypeByProdCode(dbData.EX_GOODTYP);
+
+            
 
             //set header footer data by CompanyCode and FormTypeId
             var headerFooterData = _headerFooterBll.GetByComanyAndFormType(new HeaderFooterGetByComanyAndFormTypeInput()
@@ -1745,6 +1774,7 @@ namespace Sampoerna.EMS.BLL
                 if (mainPlant != null)
                 {
                     dtToReturn.NppbkcCity = mainPlant.ORT01;
+                    dtToReturn.Npwp = mainPlant.T001K.T001.NPWP;
                 }
             }
             else
@@ -1754,6 +1784,7 @@ namespace Sampoerna.EMS.BLL
                 if (plant != null)
                 {
                     dtToReturn.NppbkcCity = plant.ORT01;
+                    dtToReturn.Npwp = plant.T001K.T001.NPWP;
                 }
             }
 
@@ -1794,7 +1825,7 @@ namespace Sampoerna.EMS.BLL
                         ((c.CK5_TYPE != Enums.CK5Type.Waste ) && c.CK5_TYPE != Enums.CK5Type.Return)).ToList();
 
             
-
+            
             
 
             return dtToReturn;
@@ -2516,7 +2547,7 @@ namespace Sampoerna.EMS.BLL
 
             //set begining balance
             rc = SetBeginingBalanceBySelectionCritera(rc, input);
-
+            
             //format for noted
             //LOGS POINT 19 : replace with new logic for remark
             //var noteTemp = new List<string>();
@@ -2538,7 +2569,202 @@ namespace Sampoerna.EMS.BLL
             //rc.DocumentNoted = string.Join(Environment.NewLine, noteTemp).Replace(Environment.NewLine, "<br />");
             rc.Noted = input.Noted;
 
+            var faCodeList = new List<string>();
+            if (rc.InventoryProductionTisToFa.CalculationDetails != null)
+            {
+                faCodeList.AddRange(rc.InventoryProductionTisToFa.CalculationDetails.GroupBy(x => x.FaCode).Select(x => x.Key));
+            }
+
+            
+            
+            
+            var brandList = _brandRegService.GetByFaCodeListAndPlantList(faCodeList, plantIdList).GroupBy(x=> new { x.FA_CODE, x.WERKS }).Select(x=> new ZAIDM_EX_BRAND()
+            {
+                FA_CODE = x.Key.FA_CODE,
+                WERKS = x.Key.WERKS,
+                BRAND_CE = x.FirstOrDefault() != null ? x.FirstOrDefault().BRAND_CE : ""
+
+            }).Distinct().ToList();
+
+            
+
+            rc.CalculationDetails = new List<Lack1CalculationDetail>();
+            
+            
            
+
+            if (rc.Pbck1List.Count > 0)
+            {
+                //var calculationOri = rc.CalculationDetails;
+                var pbck1Convertion = rc.Pbck1List.FirstOrDefault().Pbck1Convertion;
+            
+                    if (pbck1Convertion != null)
+                    {
+                        var calcuLationFa = new List<Lack1CalculationDetail>();
+                        var calcuLationTis = new List<Lack1CalculationDetail>();
+                        if (rc.InventoryProductionTisToFa.CalculationDetails != null)
+                        {
+                            calcuLationFa.AddRange(from calc in rc.InventoryProductionTisToFa.CalculationDetails
+                                                           join brand in brandList on new { calc.FaCode, calc.PlantId } equals new { FaCode = brand.FA_CODE, PlantId = brand.WERKS }
+                                                           select new Lack1CalculationDetail()
+                                                           {
+                                                               PlantId = calc.PlantId,
+                                                               MaterialId = calc.MaterialId,
+                                                               //Ordr = calc.Ordr,
+                                                               FaCode = calc.FaCode,
+                                                               UomProduction = calc.UomProduction,
+                                                               AmountProduction = calc.AmountProduction,
+                                                               AmountUsage = calc.AmountUsage,
+                                                               Proportional = calc.Proportional,
+                                                               Type = calc.Type,
+                                                               UomUsage = calc.UomUsage,
+                                                               BrandCe = brand.BRAND_CE
+
+                                                           });
+                            var calculationFaConvertionTemp = new List<Lack1CalculationDetail>();
+                            foreach (var propCalc in rc.InventoryProductionTisToFa.ProportionalUsageCalculations)
+                            {
+                                //var totalProductionUsage = propCalc.ProductionList.Sum(x => x.TotalQtyOrdr);
+
+                                foreach (var prod in propCalc.ProductionList) {
+                                    var brandConvertion = from br in brandList
+                                                          join conv in pbck1Convertion on br.BRAND_CE.ToUpper() equals conv.BrandCE.ToUpper()
+                                                          select new {
+                                                            FaCode = br.FA_CODE,
+                                                            PlantId = br.WERKS,
+                                                            BrandCe = br.BRAND_CE,
+                                                            Convertion = conv.ConverterOutput.HasValue ? conv.ConverterOutput.Value : 0
+                                                          };
+                                    var dataConvertion = brandConvertion.Where(x => x.FaCode == prod.FaCode && x.PlantId == prod.PlantId).FirstOrDefault();
+                                    if (dataConvertion != null)
+                                    {
+                                        prod.brandCe = dataConvertion.BrandCe;
+                                        prod.Convertion = dataConvertion.Convertion;
+                                        
+                                    }
+                                                                        
+                                }
+
+                                var totalQtyMaterialProd = propCalc.ProductionList.Sum(x => x.Convertion * x.TotalQtyOrdr);
+                                foreach (var prod in propCalc.ProductionList) {
+                                    if (totalQtyMaterialProd != 0)
+                                    {
+                                        prod.Proportional = (prod.TotalQtyOrdr * prod.Convertion) / totalQtyMaterialProd;
+                                    }
+                                    
+                                    var oriCalc= rc.InventoryProductionTisToFa.CalculationDetails.Where(x=> x.FaCode == prod.FaCode && x.MaterialId == propCalc.MaterialId).FirstOrDefault();
+                                    calculationFaConvertionTemp.Add(new Lack1CalculationDetail
+                                    {
+                                       AmountUsage = prod.Proportional * propCalc.QtyUsage,
+                                       AmountProduction = oriCalc.AmountProduction,
+                                       BrandCe = prod.brandCe,
+                                       Convertion = prod.Convertion,
+                                       FaCode = prod.FaCode,
+                                       MaterialId = propCalc.MaterialId,
+                                       Ordr = propCalc.Ordr,
+                                       PlantId = prod.PlantId,
+                                       Proportional = prod.Proportional,
+                                       Type = Enums.Lack1Calculation.WithConvertion,
+                                       UomProduction = oriCalc != null ? oriCalc.UomProduction : "",
+                                       UomUsage = propCalc.Uom,
+                                       
+                                       
+                                    });
+                                }
+
+                                
+
+                            }
+
+                            //var calculationConvertion = (from calc in calcuLationFa
+
+                            //                             join conv in pbck1Convertion on calc.BrandCe.ToUpper() equals conv.BrandCE.ToUpper()
+                            //                             select new Lack1CalculationDetail()
+                            //                             {
+                            //                                 PlantId = calc.PlantId,
+                            //                                 MaterialId = calc.MaterialId,
+                            //                                 //Ordr = calc.Ordr,
+                            //                                 FaCode = calc.FaCode,
+                            //                                 UomProduction = calc.UomProduction,
+                            //                                 AmountProduction = calc.AmountProduction,
+                            //                                 AmountUsage = calc.AmountUsage,
+                            //                                 Proportional = calc.Proportional,
+                            //                                 Type = Enums.Lack1Calculation.WithConvertion,
+                            //                                 UomUsage = calc.UomUsage,
+                            //                                 Convertion = conv.ConverterOutput.HasValue ? conv.ConverterOutput.Value : 1,
+                            //                                 BrandCe = calc.BrandCe
+                            //                             }).ToList();
+                            var calculationConvertion = calculationFaConvertionTemp
+                                .GroupBy(x => new { x.FaCode, x.MaterialId, x.BrandCe, x.PlantId, x.Type, x.UomProduction, x.UomUsage, x.Convertion, x.AmountProduction })
+                                .Select(x => new Lack1CalculationDetail()
+                                {
+                                    PlantId = x.Key.PlantId,
+                                    MaterialId = x.Key.MaterialId,
+                                    //Ordr = calc.Ordr,
+                                    FaCode = x.Key.FaCode,
+                                    UomProduction = x.Key.UomProduction,
+                                    AmountProduction = x.Key.AmountProduction,
+                                    AmountUsage = x.Sum(y=> x.Key.UomUsage == "KG" ? y.AmountUsage * -1000 : y.AmountUsage * -1),
+                                    //Proportional = x.Key.Proportional,
+                                    Type = Enums.Lack1Calculation.WithConvertion,
+                                    UomUsage = x.Key.UomUsage,
+                                    Convertion = x.Key.Convertion,
+                                    BrandCe = x.Key.BrandCe
+                                });
+
+                            calcuLationFa.AddRange(calculationConvertion);
+
+                            rc.CalculationDetails.AddRange(calcuLationFa);
+                        }
+                        
+
+
+                        if (input.IsTisToTis)
+                        {
+                            var pbck1ConvertionTis = pbck1Convertion.Where(x => x.ProdAlias == "TIS").FirstOrDefault();
+                            if (rc.InventoryProductionTisToTis.CalculationDetails != null)
+                            {
+
+                                foreach (var calc in rc.InventoryProductionTisToTis.CalculationDetails)
+                                {
+                                    calc.BrandCe = pbck1ConvertionTis.BrandCE;
+                                    calcuLationTis.Add(calc);
+
+                                    //add with convertion tis-to-tis
+                                    var witConvertionTis = new Lack1CalculationDetail() { 
+                                        AmountProduction = calc.AmountProduction,
+                                        AmountUsage = calc.AmountUsage,
+                                        BrandCe = calc.BrandCe,
+                                        Convertion = 1,
+                                        FaCode = calc.FaCode,
+                                        MaterialId = calc.MaterialId,
+                                        Ordr = calc.Ordr,
+                                        PlantId = calc.PlantId,
+                                        Proportional = calc.Proportional,
+                                        Type = Enums.Lack1Calculation.WithConvertion,
+                                        UomProduction = calc.UomProduction,
+                                        UomUsage = calc.UomUsage
+                                        
+                                    };
+                                    calcuLationTis.Add(witConvertionTis);
+                                }
+
+                                rc.CalculationDetails.AddRange(calcuLationTis);
+
+                            }
+
+                            
+                        }
+
+                        
+                        
+
+                        
+                        
+
+                        
+                    }
+            }
             
 
             rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - (rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0)) - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
@@ -2547,6 +2773,96 @@ namespace Sampoerna.EMS.BLL
             oReturn.Data = rc;
             oReturn.IsEtilAlcohol = outProcess.IsEtilAlcohol;
 
+
+            var lastLack1 = _lack1Service.GetLatestLack1ByParam(new Lack1GetLatestLack1ByParamInput()
+            {
+                CompanyCode = input.CompanyCode,
+
+                NppbkcId = input.NppbkcId,
+                ExcisableGoodsType = input.ExcisableGoodsType,
+
+                SupplierPlantId = input.SupplierPlantId,
+
+                Lack1Level = input.Lack1Level,
+                //ExcludeLack1Id = input.Lack1Id,
+                PeriodTo = new DateTime(input.PeriodYear, input.PeriodMonth, 1),
+                ReceivedPlantId = input.ReceivedPlantId,
+                ExcludeLack1Id = input.Lack1Id
+            });
+
+            var lastPeriodSummary = lastLack1.LACK1_PERIOD_SUMMARY.FirstOrDefault(x => x.TYPE == Enums.Lack1SummaryPeriod.Current);
+            PeriodSummary startPeriodData = Mapper.Map<PeriodSummary>(lastPeriodSummary);
+            if (startPeriodData != null)
+            {
+                
+                startPeriodData.Type = Enums.Lack1SummaryPeriod.Start;
+                
+            }
+            else
+            {
+                startPeriodData = new PeriodSummary()
+                {
+                    Income = 0,
+                    Usage = 0,
+                    Laboratorium = 0,
+                    Return = 0,
+                    Saldo = 0,
+                    Type = Enums.Lack1SummaryPeriod.Start
+                };
+
+                
+            }
+
+            rc.TotalReturn = (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
+
+
+            var currentPeriodData = new PeriodSummary()
+            {
+                Income = rc.TotalIncome,
+                Usage = rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value - (rc.TotalLaboratorium) : 0),
+                Laboratorium = rc.TotalLaboratorium,
+                Return = rc.TotalReturn,
+                Saldo = rc.TotalIncome - rc.TotalUsage - rc.TotalLaboratorium - rc.TotalReturn,
+                Type = Enums.Lack1SummaryPeriod.Current
+            };
+
+            if (input.PeriodMonth == 1)
+            {
+                currentPeriodData.Income += startPeriodData.Saldo;
+
+                startPeriodData = new PeriodSummary()
+                {
+                    Income = 0,
+                    Usage = 0,
+                    Laboratorium = 0,
+                    Return = 0,
+                    Saldo = 0,
+                    Type = Enums.Lack1SummaryPeriod.Start
+                };
+            }
+
+            var endPeriodData = new PeriodSummary()
+            {
+                Income = startPeriodData.Income + currentPeriodData.Income,
+                Usage = startPeriodData.Usage + currentPeriodData.Usage,
+                Laboratorium = startPeriodData.Income + currentPeriodData.Laboratorium,
+                Return = startPeriodData.Income + currentPeriodData.Return,
+                Saldo = 0,
+                Type = Enums.Lack1SummaryPeriod.End
+            };
+
+            endPeriodData.Saldo = endPeriodData.Income - endPeriodData.Usage - endPeriodData.Laboratorium -
+                                  endPeriodData.Return;
+
+            rc.PeriodSummaries = new List<PeriodSummary>();
+            rc.PeriodSummaries.Add(startPeriodData);
+            rc.PeriodSummaries.Add(currentPeriodData);
+            rc.PeriodSummaries.Add(endPeriodData);
+
+            rc.StartPeriodData = startPeriodData;
+            rc.CurrentPeriodData = currentPeriodData;
+            rc.EndPeriodData = endPeriodData;
+            
             return oReturn;
         }
 
@@ -2955,6 +3271,8 @@ namespace Sampoerna.EMS.BLL
             var outGenerateLack1InventoryMovementTisToFa = SetGenerateLack1InventoryMovement(rc, input, plantIdList, false, out invMovementTisToFaOutput, bkcUomId);
             if (!outGenerateLack1InventoryMovementTisToFa.Success) return outGenerateLack1InventoryMovementTisToFa;
 
+            //rc.CalculationDetails = outGenerateLack1InventoryMovementTisToFa.Data.CalculationDetails;
+
             //normal report, normal logic
             if (invMovementTisToFaOutput.IncludeInCk5List.Count == 0)
             {
@@ -3000,6 +3318,66 @@ namespace Sampoerna.EMS.BLL
 
                 if (rc.InventoryProductionTisToTis.ProductionData != null)
                     rc.FusionSummaryProductionList.AddRange(rc.InventoryProductionTisToTis.ProductionData.SummaryProductionList);
+
+
+                
+                rc.InventoryProductionTisToTis.CalculationDetails = new List<Lack1CalculationDetail>();
+
+                //regular CK5
+                var calculationsFromCk5 = invMovementTisToTisOutput.IncludeInCk5List.GroupBy(x => new { x.MATERIAL_ID, x.PLANT_ID, x.ConvertedUomId }).Select(x => new Lack1CalculationDetail()
+                {
+                    AmountProduction = x.Sum(y => y.ConvertedQty) * -1,
+                    AmountUsage = x.Sum(y => y.ConvertedQty) * -1,
+                    Convertion = 1,
+                    FaCode = x.Key.MATERIAL_ID,
+                    MaterialId = x.Key.MATERIAL_ID,
+                    PlantId = x.Key.PLANT_ID,
+                    Proportional = 1,
+                    Type = Enums.Lack1Calculation.WithoutConvertion,
+                    UomProduction = x.Key.ConvertedUomId,
+                    UomUsage = x.Key.ConvertedUomId
+
+
+                }).ToList();
+
+
+                
+                
+                //adding logic ck5 reduce trial
+                var ck5IdList = ck5ReduceTrial.Select(x => x.Ck5Id).ToList();
+                var ck5Manual = _ck5MaterialService.GetByCk5IdList(ck5IdList);
+                var calculationsFromCk5Manual = ck5Manual.GroupBy(x => new { x.BRAND, x.PLANT_ID, x.CONVERTED_UOM }).Select(x => new Lack1CalculationDetail()
+                {
+                    AmountProduction = x.Sum(y => y.CONVERTED_QTY.HasValue? y.CONVERTED_QTY.Value : 0),
+                    AmountUsage = x.Sum(y => y.CONVERTED_QTY.HasValue ? y.CONVERTED_QTY.Value : 0),
+                    Convertion = 1,
+                    FaCode = x.Key.BRAND,
+                    MaterialId = x.Key.BRAND,
+                    PlantId = x.Key.PLANT_ID,
+                    Proportional = 1,
+                    Type = Enums.Lack1Calculation.WithoutConvertion,
+                    UomProduction = x.Key.CONVERTED_UOM,
+                    UomUsage = x.Key.CONVERTED_UOM
+
+
+                });
+
+                calculationsFromCk5.AddRange(calculationsFromCk5Manual);
+
+                rc.InventoryProductionTisToTis.CalculationDetails.AddRange(calculationsFromCk5
+                    .GroupBy(x => new { x.PlantId, x.MaterialId, x.FaCode, x.UomProduction, x.UomUsage })
+                    .Select(x => new Lack1CalculationDetail() {
+                        AmountProduction = x.Sum(y => y.AmountProduction),
+                        AmountUsage = x.Sum(y => y.AmountUsage),
+                        Convertion = 1,
+                        FaCode = x.Key.FaCode,
+                        MaterialId = x.Key.MaterialId,
+                        PlantId = x.Key.PlantId,
+                        Proportional = 1,
+                        Type = Enums.Lack1Calculation.WithoutConvertion,
+                        UomProduction = x.Key.UomProduction,
+                        UomUsage = x.Key.UomUsage
+                }).ToList());
             }
 
             //process FusionSummaryProductionList
@@ -3007,6 +3385,8 @@ namespace Sampoerna.EMS.BLL
             {
                 rc.FusionSummaryProductionList = GetFusionSummaryGroupedProductionList(rc.FusionSummaryProductionList);
             }
+
+            
 
             return new Lack1GeneratedOutput()
             {
@@ -3062,7 +3442,6 @@ namespace Sampoerna.EMS.BLL
                     .GroupBy(x => new { x.Order })
                     .Select(p => new InvMovementUsageProportional()
                     {
-
                         Order = p.Key.Order,
                         //Batch = p.Key.Batch,
                         Qty = p.Sum(x => x.Qty),
@@ -3115,8 +3494,13 @@ namespace Sampoerna.EMS.BLL
             zaapShiftReportInputForAllOrder.AllowedOrder = null;
 
             var completeZaapDataAllOrder = _zaapShiftRptService.GetCompleteData(zaapShiftReportInputForAllOrder).ToList();
+
+
+            List<Lack1CalculationDetail> calculationDataProd;
             var usgProportionalBrand = CalculateInvMovementUsageProportionalBrand(invMovementOutput.IncludeInCk5List, invMovementOutput.AllUsageList,
-                invMovementOutput.Mvt201List, completeZaapDataAllOrder);
+                invMovementOutput.Mvt201List, completeZaapDataAllOrder
+                //,out calculationDataProd
+                );
             var totalFaZaapShiftRpt = completeZaapData.GroupBy(x => new { x.FA_CODE }).Select(y => new
             {
                 FaCode = y.Key.FA_CODE,
@@ -3126,10 +3510,11 @@ namespace Sampoerna.EMS.BLL
 
 
 
-            var totalOrderZaapShiftRpt = completeZaapData.GroupBy(x => new { x.FA_CODE, x.ORDR }).Select(y => new
+            var totalOrderZaapShiftRpt = completeZaapData.GroupBy(x => new { x.FA_CODE, x.WERKS, x.ORDR }).Select(y => new
             {
                 FaCode = y.Key.FA_CODE,
                 //ProductionDate = y.Key.PRODUCTION_DATE,
+                PlantId = y.Key.WERKS,
                 y.Key.ORDR,
                 TotalQtyOrdr = y.Sum(x => x.QTY.HasValue ? x.QTY.Value : 0)
             }).ToList();
@@ -3146,11 +3531,59 @@ namespace Sampoerna.EMS.BLL
                                               TotalQtyOrdr = usgprop.TotalQtyPerMaterialId != 0 ? zaapOrder.TotalQtyOrdr * (usgprop.Qty / usgprop.TotalQtyPerMaterialId) : zaapOrder.TotalQtyOrdr
                                           }).ToList();
 
-            var totalProportionalOrder = orderBatchProportional.GroupBy(x => x.FaCode).Select(y => new
-            {
-                FaCode = y.Key,
-                TotalQtyOrdr = y.Sum(x => x.TotalQtyOrdr)
-            }).ToList();
+            //new logic calculation detail convertion
+           var propUsageCalculationTemp = invMovementOutput.UsageProportionalList
+                    .GroupBy(x => new { x.MaterialId, x.Order, x.Uom })
+                    .Select(p => new ProportionalUsageCalculationNew()
+                    {
+                        Ordr = p.Key.Order,
+                        Uom = p.Key.Uom,
+                        QtyUsage = p.Sum(x => x.Qty),
+                        MaterialId = p.Key.MaterialId
+                        
+                    }).ToList();
+
+           Dictionary<string, List<ProductionPerOrder>> dictproductionPerOrder = new Dictionary<string, List<ProductionPerOrder>>();
+           foreach (var usageOrder in propUsageCalculationTemp)
+           {
+               if (!dictproductionPerOrder.Keys.Contains(usageOrder.MaterialId))
+               {
+                   dictproductionPerOrder.Add(usageOrder.MaterialId, new List<ProductionPerOrder>());
+               }
+
+               
+
+               var prodListPerUsage = (totalOrderZaapShiftRpt.Where(x => x.ORDR == usageOrder.Ordr).Select(x => new ProductionPerOrder()
+               { 
+                FaCode = x.FaCode,
+                Ordr = x.ORDR,
+                PlantId = x.PlantId,
+                TotalQtyOrdr = x.TotalQtyOrdr
+               }));
+
+               dictproductionPerOrder[usageOrder.MaterialId].AddRange(prodListPerUsage);
+           }
+
+           rc.InventoryProductionTisToFa.ProportionalUsageCalculations = new List<ProportionalUsageCalculationNew>();
+           foreach (var data in dictproductionPerOrder)
+           {
+               rc.InventoryProductionTisToFa.ProportionalUsageCalculations.Add(new ProportionalUsageCalculationNew() { 
+                    MaterialId = data.Key,
+                    QtyUsage = propUsageCalculationTemp.Where(x=> x.MaterialId == data.Key).Sum(x=> x.QtyUsage),
+                    Uom = propUsageCalculationTemp.Where(x=> x.MaterialId == data.Key).FirstOrDefault().Uom,
+                    ProductionList = data.Value
+               });
+           }
+
+
+
+
+            //old logic
+            //var totalProportionalOrder = orderBatchProportional.GroupBy(x => x.FaCode).Select(y => new
+            //{
+            //    FaCode = y.Key,
+            //    TotalQtyOrdr = y.Sum(x => x.TotalQtyOrdr)
+            //}).ToList();
 
             //change this with totalProportionalOrder or totalOrderZaapShiftRptFaOnly
             var proportionalOrderPerFa = (from faZaap in totalFaZaapShiftRpt
@@ -3296,6 +3729,26 @@ namespace Sampoerna.EMS.BLL
                 productionList.Add(itemToInsert);
             }
 
+            var calculationData = from calcMaterial in usgProportionalBrand
+                                  join calcProd in joinedWithUomData on calcMaterial.FaCode equals calcProd.FA_CODE
+                select new Lack1CalculationDetail()
+                {
+                    FaCode = calcProd.FA_CODE,
+                    PlantId = calcMaterial.PlantId,
+                    //ProductionDate = calcProd.ProductionDate,
+                    //Ordr = calcMaterial.,
+                    Proportional = calcProd.ProportionalOrder,
+                    AmountProduction = Math.Round(calcProd.ProportionalOrder * calcProd.PROD_QTY, 0),
+                    MaterialId = calcMaterial.MaterialId,
+                    AmountUsage = calcMaterial.Qty,
+                    Type = Enums.Lack1Calculation.WithoutConvertion,
+                    UomUsage = calcMaterial.Uom,
+                    UomProduction = calcProd.UOM,
+                };
+
+            
+            rc.InventoryProductionTisToFa.CalculationDetails = calculationData.ToList();
+            
             var zaapShiftRptforNonZaap = zaapShiftRpt.GroupBy(x => new { x.ORDR, x.COMPANY_CODE, x.WERKS, x.FA_CODE }).Select(x =>
             {
                 var data = x.FirstOrDefault();
@@ -3759,6 +4212,8 @@ namespace Sampoerna.EMS.BLL
                 ProductionSummaryByProdTypeList = GetProductionGroupedByProdTypeList(productionList),
                 SummaryProductionList = GetSummaryGroupedProductionList(productionList)//calculate summary by UOM ID
             };
+
+            
 
             return new Lack1GeneratedOutput()
             {
@@ -4388,6 +4843,7 @@ namespace Sampoerna.EMS.BLL
                 };
                 totalUsage = totalUsage + mvt201 - mvt201Asigned;
                 rc.TotalUsageTisToTis = totalUsage;
+                rc.TotalLaboratorium = mvt201 - mvt201Asigned;
             }
             else
             {
@@ -4411,7 +4867,17 @@ namespace Sampoerna.EMS.BLL
             }
 
             invMovementOutput = getInventoryMovementByParamOutput;
-
+            //oRet.Data.CalculationDetails =
+            //    getInventoryMovementByParamOutput.IncludeInCk5List.GroupBy(x => new {x.ORDR, x.MATERIAL_ID, x.PLANT_ID, x.BUN})
+            //        .Select(x => new Lack1CalculationDetail()
+            //        {
+            //            MaterialId = x.Key.MATERIAL_ID,
+            //            PlantId = x.Key.PLANT_ID,
+            //            Ordr = x.Key.ORDR,
+            //            UomUsage = x.Key.BUN,
+            //            AmountUsage = x.Sum(y=> y.QTY.HasValue ? y.QTY.Value : 0)
+            //        })
+            //        .ToList();
             return oRet;
         }
 
@@ -4533,15 +4999,17 @@ namespace Sampoerna.EMS.BLL
         private List<InvMovementUsageProportionalBrand> CalculateInvMovementUsageProportionalBrand(
             IEnumerable<INVENTORY_MOVEMENT> usageReceivingAll, IEnumerable<INVENTORY_MOVEMENT> usageAll,
             IEnumerable<INVENTORY_MOVEMENT> usage201,
-            List<ZAAP_SHIFT_RPT> zaapList )
+            List<ZAAP_SHIFT_RPT> zaapList
+            //,out List<Lack1CalculationDetail> calculationDetailsProd 
+            )
         {
             var ordrList = zaapList.GroupBy(x => x.ORDR).Select(x => x.Key).ToList();
             var inventoryMovements = usageReceivingAll.ToList();
             var inventoryMovementUsageAll = usageAll.Where(x=> ordrList.Contains(x.ORDR)).ToList();
-
+            
             var invUsage201 = usage201.ToList();
 
-
+            //calculationDetailsProd = new List<Lack1CalculationDetail>();
 
             if (!inventoryMovements.Any()) return new List<InvMovementUsageProportionalBrand>();
             inventoryMovementUsageAll.AddRange(invUsage201);
@@ -4553,9 +5021,10 @@ namespace Sampoerna.EMS.BLL
             }).ToList();
 
             var invMovementByOrder =
-                inventoryMovements.GroupBy(x => new {x.MATERIAL_ID, x.ORDR}).Select(x => new INVENTORY_MOVEMENT()
+                inventoryMovements.GroupBy(x => new {x.MATERIAL_ID,x.PLANT_ID, x.ORDR}).Select(x => new INVENTORY_MOVEMENT()
                 {
                     MATERIAL_ID = x.Key.MATERIAL_ID,
+                    PLANT_ID = x.Key.PLANT_ID,
                     ORDR = x.Key.ORDR,
                     QTY = x.Sum(y => y.QTY)
                 }).ToList();
@@ -4565,15 +5034,17 @@ namespace Sampoerna.EMS.BLL
                                             select new InvMovementUsageProportionalBrand()
                                             {
                                                 MaterialId = x.MATERIAL_ID,
-                                                
+                                                Uom = x.BUN,
+                                                PlantId = x.PLANT_ID,
                                                 FaCode = y.FA_CODE,
                                                 Qty = x.QTY.HasValue? x.QTY.Value : 0
                                                 
-                                            }).GroupBy(x=> new {x.FaCode, x.MaterialId})
+                                            }).GroupBy(x=> new {x.FaCode, x.MaterialId, x.Uom, x.PlantId})
                                             .Select(x=> new InvMovementUsageProportionalBrand()
                                             {
                                                 MaterialId = x.Key.MaterialId,
-
+                                                Uom = x.Key.Uom,
+                                                PlantId = x.Key.PlantId,
                                                 FaCode = x.Key.FaCode,
                                                 Qty = x.Sum(y=> y.Qty) * (-1000)
                                             }).ToList();
@@ -4605,12 +5076,36 @@ namespace Sampoerna.EMS.BLL
                 select new InvMovementUsageProportionalBrand()
                 {
                     MaterialId = x.MaterialId,
-
+                    Uom = x.Uom,
+                    PlantId = x.PlantId,
                     FaCode = y.FaCode,
                     Qty = x.Qty,
                     TotalUsagePerFaCode = y.TotalUsagePerFaCode
 
                 }).ToList();
+
+            //var zaapListCalc = zaapList.GroupBy(x => new {x.FA_CODE, x.ORDR, x.PRODUCTION_DATE, x.WERKS, x.UOM}).Select(x => new
+            //{
+            //    x.Key.FA_CODE,
+            //    x.Key.ORDR,
+            //    x.Key.PRODUCTION_DATE,
+            //    x.Key.UOM,
+            //    x.Key.WERKS,
+            //    QTY = x.Sum(y=> y.QTY)
+            //});
+            //calculationDetailsProd = zaapListCalc.GroupBy(x=> new { x.FA_CODE, x.WERKS,x.ORDR, x.UOM, x.PRODUCTION_DATE}).Select(y=> new Lack1CalculationDetail()
+            //    {
+                    
+            //        PlantId = y.Key.WERKS,
+            //        FaCode = y.Key.FA_CODE,
+                    
+            //        Ordr = y.Key.ORDR,
+                    
+            //        AmountProduction = y.Sum(x=> x.QTY.HasValue ? x.QTY.Value * 1000 : 0),
+            //        UomProduction = "Btg",
+            //        ProductionDate = y.Key.PRODUCTION_DATE,
+            //        Type = Enums.Lack1Calculation.WithoutConvertion
+            //    }).ToList();
             return output;
         }
 
@@ -4632,12 +5127,14 @@ namespace Sampoerna.EMS.BLL
             var listTotalPerMaterialId = inventoryMovementUsageAll.GroupBy(p => new
             {
                 p.MATERIAL_ID,
-                p.ORDR
+                p.ORDR,
+                p.BUN
             }).Select(g => new
             {
                 MaterialId = g.Key.MATERIAL_ID,
                 Order = g.Key.ORDR,
-                TotalQty = g.Sum(p => p.QTY.HasValue ? p.QTY.Value : 0)
+                TotalQty = g.Sum(p => p.QTY.HasValue ? p.QTY.Value : 0),
+                Uom = g.Key.BUN
             }).ToList();
 
             //grouped by MAT_DOC, MVT, MATERIAL_ID, PLANT_ID, BATCH and ORDR
@@ -4648,6 +5145,7 @@ namespace Sampoerna.EMS.BLL
                 //p.MAT_DOC,
                 //p.MVT,
                 p.MATERIAL_ID,
+                p.BUN,
                 //p.PLANT_ID,
                 p.BATCH,
                 p.ORDR
@@ -4656,6 +5154,7 @@ namespace Sampoerna.EMS.BLL
                 //MatDoc = g.Key.MAT_DOC,
                 //Mvt = g.Key.MVT,
                 MaterialId = g.Key.MATERIAL_ID,
+                Uom = g.Key.BUN,
                 //PlantId = g.Key.PLANT_ID,
                 Batch = g.Key.BATCH,
                 Ordr = g.Key.ORDR,
@@ -4667,6 +5166,7 @@ namespace Sampoerna.EMS.BLL
                       select new InvMovementUsageProportional()
                       {
                           MaterialId = x.MaterialId,
+                          Uom = x.Uom,
                           Batch = x.Batch,
                           Qty = x.TotalQty,
                           TotalQtyPerMaterialId = y.TotalQty,

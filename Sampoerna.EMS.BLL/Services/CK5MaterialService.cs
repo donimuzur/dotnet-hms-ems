@@ -69,5 +69,13 @@ namespace Sampoerna.EMS.BLL.Services
 
             return _repository.Get(queryFilterCk5, null, includeTables).ToList();
         }
+
+
+        public List<CK5_MATERIAL> GetByCk5IdList(List<long> ck5IdList){
+            Expression<Func<CK5_MATERIAL, bool>> queryFilterCk5 = c => ck5IdList.Contains(c.CK5_ID.Value);
+
+            return _repository.Get(queryFilterCk5, null, "").ToList();
+        
+        }
     }
 }

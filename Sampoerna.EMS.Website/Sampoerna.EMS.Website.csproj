@@ -661,9 +661,16 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Reports\LACK1\Lack1PrintOut.cs">
+      <DependentUpon>Lack1PrintOut.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Reports\LACK1\Lack1PrintOutOld.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Lack1PrintOut.rpt</DependentUpon>
+      <DependentUpon>Lack1PrintOutOld.rpt</DependentUpon>
       <SubType>Component</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
@@ -2018,9 +2025,9 @@
       <LastGenOutput>Preview.cs</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Reports\LACK1\Lack1PrintOut.rpt">
+    <Content Include="Reports\LACK1\Lack1PrintOutOld.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>Lack1PrintOut.cs</LastGenOutput>
+      <LastGenOutput>Lack1PrintOutOld.cs</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Reports\LACK2\Lack2ItemsReport.rpt">
@@ -2082,6 +2089,13 @@
     <Content Include="Reports\LACK10\Preview.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Preview.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Reports\LACK1\Lack1PrintOut.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Lack1PrintOut.cs</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
