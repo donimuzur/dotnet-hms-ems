@@ -1904,6 +1904,8 @@
     <Content Include="Views\LACK10\_DecreeDocCompleted.cshtml" />
     <Content Include="Views\LACK10\SummaryReport.cshtml" />
     <Content Include="Views\LACK10\_ListSummaryReport.cshtml" />
+    <Content Include="Views\LACK10\Edits.cshtml" />
+    <Content Include="Views\LACK10\_HomeCompletedSuperAdmin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -166,7 +166,7 @@ namespace Sampoerna.EMS.BLL
                          select new Lack10Item()
                          {
                              FaCode = w.FA_CODE,
-                             BrandDescription = b.BRAND_CE,
+                             BrandDescription = w.BRAND_DESC,
                              Werks = w.WERKS,
                              PlantName = t.NAME1,
                              Type = "Hasil Tembakau",
@@ -181,7 +181,7 @@ namespace Sampoerna.EMS.BLL
                          select new Lack10Item()
                          {
                              FaCode = w.FA_CODE,
-                             BrandDescription = b.BRAND_CE,
+                             BrandDescription = w.BRAND_DESC,
                              Werks = w.WERKS,
                              PlantName = t.NAME1,
                              Type = "TIS",
@@ -197,7 +197,7 @@ namespace Sampoerna.EMS.BLL
                          select new Lack10Item()
                          {
                              FaCode = w.FA_CODE,
-                             BrandDescription = b.BRAND_CE,
+                             BrandDescription = w.BRAND_DESC,
                              Werks = w.WERKS,
                              PlantName = n.NAME1,
                              Type = "Hasil Tembakau",
@@ -211,7 +211,7 @@ namespace Sampoerna.EMS.BLL
                             select new Lack10Item()
                             {
                                 FaCode = w.FA_CODE,
-                                BrandDescription = b.BRAND_CE,
+                                BrandDescription = w.BRAND_DESC,
                                 Werks = w.WERKS,
                                 PlantName = n.NAME1,
                                 Type = "TIS",
@@ -220,7 +220,37 @@ namespace Sampoerna.EMS.BLL
                             };
             }
 
-            var groupList = dbData
+            var distinctDbData = dbData
+                .GroupBy(x => new { x.Lack10ItemId, x.Lack10Id, x.FaCode, x.BrandDescription, x.Werks, x.PlantName, x.Type, x.Uom, x.WasteValue })
+                .Select(p => new Lack10Item()
+                {
+                    Lack10ItemId = p.FirstOrDefault().Lack10ItemId,
+                    Lack10Id = p.FirstOrDefault().Lack10Id,
+                    FaCode = p.FirstOrDefault().FaCode,
+                    BrandDescription = p.FirstOrDefault().BrandDescription,
+                    Werks = p.FirstOrDefault().Werks,
+                    PlantName = p.FirstOrDefault().PlantName,
+                    Type = p.FirstOrDefault().Type,
+                    Uom = p.FirstOrDefault().Uom,
+                    WasteValue = p.FirstOrDefault().WasteValue
+                });
+
+            var distinctDbDataTis = dbDataTis
+                .GroupBy(x => new { x.Lack10ItemId, x.Lack10Id, x.FaCode, x.BrandDescription, x.Werks, x.PlantName, x.Type, x.Uom, x.WasteValue })
+                .Select(p => new Lack10Item()
+                {
+                    Lack10ItemId = p.FirstOrDefault().Lack10ItemId,
+                    Lack10Id = p.FirstOrDefault().Lack10Id,
+                    FaCode = p.FirstOrDefault().FaCode,
+                    BrandDescription = p.FirstOrDefault().BrandDescription,
+                    Werks = p.FirstOrDefault().Werks,
+                    PlantName = p.FirstOrDefault().PlantName,
+                    Type = p.FirstOrDefault().Type,
+                    Uom = p.FirstOrDefault().Uom,
+                    WasteValue = p.FirstOrDefault().WasteValue
+                });
+
+            var groupList = distinctDbData
                 .GroupBy(x => new { x.Werks, x.FaCode })
                 .Select(p => new Lack10Item()
                 {
@@ -233,7 +263,7 @@ namespace Sampoerna.EMS.BLL
                     WasteValue = p.Sum(c => c.WasteValue)
                 });
 
-            var groupListTis = dbDataTis
+            var groupListTis = distinctDbDataTis
                 .GroupBy(x => new { x.Werks, x.FaCode })
                 .Select(p => new Lack10Item()
                 {
