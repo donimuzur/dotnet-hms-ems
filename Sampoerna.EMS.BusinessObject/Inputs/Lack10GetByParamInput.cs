@@ -57,4 +57,21 @@ namespace Sampoerna.EMS.BusinessObject.Inputs
         public DateTime? SubmissionDate { get; set; }
         public DateTime? DecreeDate { get; set; }
     }
+
+    public class Lack10GetSummaryReportByParamInput
+    {
+        public string Lack10No { get; set; }
+
+        public string NppbkcId { get; set; }
+
+        public bool isForExport { get; set; }
+
+        public List<string> ListNppbkc { get; set; }
+        public List<string> ListUserPlant { get; set; }
+        public Enums.UserRole UserRole { get; set; }
+        public string Poa { get; set; }
+        public string Creator { get; set; }
+        public int Month { get; set; }
+        public int Year { get; set; }
+    }
 }

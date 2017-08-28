@@ -64,6 +64,19 @@ namespace Sampoerna.EMS.BLL
 
             Mapper.CreateMap<LACK10_DECREE_DOC, Lack10DecreeDocDto>().IgnoreAllNonExisting();
 
+            Mapper.CreateMap<LACK10_ITEM, Lack10ItemExportDto>().IgnoreAllNonExisting()
+                .ForMember(src => src.FaCode, opt => opt.MapFrom(dest => dest.FA_CODE))
+                .ForMember(src => src.Werks, opt => opt.MapFrom(dest => dest.WERKS))
+                .ForMember(src => src.Type, opt => opt.MapFrom(dest => dest.TYPE))
+                .ForMember(src => src.WasteValue, opt => opt.MapFrom(dest => dest.WASTE_VALUE));
+
+            Mapper.CreateMap<LACK10, Lack10ExportDto>().IgnoreAllNonExisting()
+                .ForMember(src => src.CompanyName, opt => opt.MapFrom(dest => dest.COMPANY_NAME))
+                .ForMember(src => src.Nppbkc, opt => opt.MapFrom(dest => dest.NPPBKC_ID))
+                .ForMember(src => src.MonthName, opt => opt.MapFrom(dest => dest.MONTH.MONTH_NAME_IND))
+                .ForMember(src => src.Year, opt => opt.MapFrom(dest => dest.PERIOD_YEAR))
+                .ForMember(src => src.ItemList, opt => opt.MapFrom(src => Mapper.Map<List<Lack10ItemExportDto>>(src.LACK10_ITEM)));
+
             #endregion
 
             #region Create

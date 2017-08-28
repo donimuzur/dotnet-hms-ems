@@ -379,7 +379,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.ModifiedDate, opt => opt.MapFrom(src => src.MODIFIED_DATE))
                 .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.CREATED_BY))
                 .ForMember(dest => dest.ModifiedBy, opt => opt.MapFrom(dest => dest.MODIFIED_BY))
-                .ForMember(dest => dest.StampWasteQty, opt => opt.MapFrom(dest=> dest.STAMP_WASTE_QTY));
+                .ForMember(dest => dest.StampWasteQty, opt => opt.MapFrom(dest=> dest.STAMP_WASTE_QTY))
+                .ForMember(dest => dest.UseForLack10, opt => opt.MapFrom(src => src.USE_FOR_LACK10));
 
 
             Mapper.CreateMap<WasteDto, WASTE>().IgnoreAllNonExisting()
@@ -400,7 +401,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.MODIFIED_DATE, opt => opt.MapFrom(src => src.ModifiedDate))
                 .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedBy))
                 .ForMember(dest => dest.MODIFIED_BY, opt => opt.MapFrom(dest => dest.ModifiedBy))
-                .ForMember(dest => dest.STAMP_WASTE_QTY, opt => opt.MapFrom(dest => dest.StampWasteQty));
+                .ForMember(dest => dest.STAMP_WASTE_QTY, opt => opt.MapFrom(dest => dest.StampWasteQty))
+                .ForMember(dest => dest.USE_FOR_LACK10, opt => opt.MapFrom(dest => dest.UseForLack10));
 
 
             Mapper.CreateMap<WasteUploadItems, WASTE>().IgnoreAllNonExisting()
@@ -421,6 +423,7 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.MODIFIED_DATE, opt => opt.MapFrom(src => src.ModifiedDate))
                 .ForMember(dest => dest.CREATED_BY, opt => opt.MapFrom(src => src.CreatedBy))
                 .ForMember(dest => dest.MODIFIED_BY, opt => opt.MapFrom(src => src.ModifiedBy))
+                .ForMember(dest => dest.USE_FOR_LACK10, opt => opt.MapFrom(src => src.UseForLack10 == "no" ? false : true))
                 .ForMember(dest => dest.STAMP_WASTE_QTY, opt => opt.MapFrom(src =>src.StampWasteQty));
 
 

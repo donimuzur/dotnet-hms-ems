@@ -216,12 +216,12 @@
             }
         });
 
-        $('#btnExportCk4cItem').click(function (e) {
-            location.href = '@Url.Action("ExportXlsCk4cItem", "CK4C", new { id = @Model.Details.Lack10Id })';
+        $('#btnExportLack10Item').click(function (e) {
+            location.href = '@Url.Action("ExportXlsLack10Item", "LACK10", new { id = @Model.Details.Lack10Id })';
         });
 
         $('#btnPrintPreview').click(function (e) {
-            printPreview('@Url.EncryptedAction("PrintPreview", "CK4C", new { id = @Model.Details.Lack10Id })');
+            printPreview('@Url.EncryptedAction("PrintPreview", "LACK10", new { id = @Model.Details.Lack10Id })');
         });
 
         $('#btn-changelog-export-xls').click(function () {

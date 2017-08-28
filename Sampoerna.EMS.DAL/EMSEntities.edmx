@@ -522,11 +522,15 @@
           <Property Name="MATERIAL_ID" Type="nvarchar" MaxLength="18" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
           <Property Name="AMOUNT_USAGE" Type="decimal" Precision="18" Scale="3" />
+          <Property Name="UOM_USAGE" Type="nvarchar" MaxLength="5" />
           <Property Name="ORDR" Type="nvarchar" MaxLength="10" />
           <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" />
+          <Property Name="BRAND_CE" Type="nvarchar" MaxLength="65" />
           <Property Name="AMOUNT_PRODUCTION" Type="decimal" Precision="18" Scale="3" />
+          <Property Name="UOM_PRODUCTION" Type="nvarchar" MaxLength="5" />
           <Property Name="PROPORTIONAL" Type="decimal" Precision="18" Scale="8" />
           <Property Name="TYPE" Type="int" />
+          <Property Name="CONVERTION" Type="decimal" Precision="18" Scale="5" />
         </EntityType>
         <EntityType Name="LACK1_DOCUMENT">
           <Key>
@@ -1447,6 +1451,7 @@
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="STAMP_WASTE_QTY" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="USE_FOR_LACK10" Type="bit" />
         </EntityType>
         <EntityType Name="WASTE_ROLE">
           <Key>
@@ -9503,6 +9508,7 @@
           <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="STAMP_WASTE_QTY" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="USE_FOR_LACK10" Type="Boolean" />
         </EntityType>
         <EntityType Name="GOOD_PROD_TYPE">
           <Key>
@@ -10011,6 +10017,10 @@
           <Property Name="PROPORTIONAL" Type="Decimal" Precision="18" Scale="8" />
           <Property Name="TYPE" Type="Int32" />
           <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_CALCULATION_DETAIL_LACK1" FromRole="LACK1_CALCULATION_DETAIL" ToRole="LACK1" />
+          <Property Name="UOM_USAGE" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="BRAND_CE" Type="String" MaxLength="65" FixedLength="false" Unicode="true" />
+          <Property Name="UOM_PRODUCTION" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="CONVERTION" Type="Decimal" Precision="18" Scale="5" />
         </EntityType>
         <Association Name="FK_LACK1_CALCULATION_DETAIL_LACK1">
           <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="1" />
@@ -11720,6 +11730,7 @@
           <EntitySetMapping Name="WASTE">
             <EntityTypeMapping TypeName="EMSModel.WASTE">
               <MappingFragment StoreEntitySet="WASTE">
+                <ScalarProperty Name="USE_FOR_LACK10" ColumnName="USE_FOR_LACK10" />
                 <ScalarProperty Name="STAMP_WASTE_QTY" ColumnName="STAMP_WASTE_QTY" />
                 <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
                 <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
@@ -12007,6 +12018,10 @@
           <EntitySetMapping Name="LACK1_CALCULATION_DETAIL">
             <EntityTypeMapping TypeName="EMSModel.LACK1_CALCULATION_DETAIL">
               <MappingFragment StoreEntitySet="LACK1_CALCULATION_DETAIL">
+                <ScalarProperty Name="CONVERTION" ColumnName="CONVERTION" />
+                <ScalarProperty Name="UOM_PRODUCTION" ColumnName="UOM_PRODUCTION" />
+                <ScalarProperty Name="BRAND_CE" ColumnName="BRAND_CE" />
+                <ScalarProperty Name="UOM_USAGE" ColumnName="UOM_USAGE" />
                 <ScalarProperty Name="TYPE" ColumnName="TYPE" />
                 <ScalarProperty Name="PROPORTIONAL" ColumnName="PROPORTIONAL" />
                 <ScalarProperty Name="AMOUNT_PRODUCTION" ColumnName="AMOUNT_PRODUCTION" />

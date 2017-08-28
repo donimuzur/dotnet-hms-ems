@@ -72,12 +72,12 @@
             location.href = '@Url.Action("CompletedDocument", "LACK10")';
         });
 
-        $('#btnExportCk4cItem').click(function (e) {
-            location.href = '@Url.Action("ExportXlsCk4cItem", "CK4C", new { id = @Model.Details.Lack10Id })';
+        $('#btnExportLack10Item').click(function (e) {
+            location.href = '@Url.Action("ExportXlsLack10Item", "LACK10", new { id = @Model.Details.Lack10Id })';
         });
 
         $('#btnPrintPreview').click(function (e) {
-            printPreview('@Url.EncryptedAction("PrintPreview", "CK4C", new { id = @Model.Details.Lack10Id })');
+            printPreview('@Url.EncryptedAction("PrintPreview", "LACK10", new { id = @Model.Details.Lack10Id })');
         });
 
         $('#btn-changelog-export-xls').click(function () {
@@ -89,8 +89,8 @@
         var poa = '@Model.Details.ApprovedByPoa';
         var nppbkc = '@Model.Details.NppbkcId';
         var plant = '@Model.Details.PlantId';
-        var url = '@Url.Action("PoaListPartial", "CK4C")';
-        var urlPlant = '@Url.Action("GetPoaByPlantId", "CK4C")';
+        var url = '@Url.Action("PoaListPartial", "LACK10")';
+        var urlPlant = '@Url.Action("GetPoaByPlantId", "LACK10")';
 
         if (poa == '') {
             if (plant != '') {
