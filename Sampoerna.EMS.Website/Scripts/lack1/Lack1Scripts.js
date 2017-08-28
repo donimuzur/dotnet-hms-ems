@@ -121,15 +121,24 @@ function generateDataClick(lackLevel, url) {
                     var tableGeneratedEtilAlcohol = generateTableNew(data);
                     /*console.log(tableGenerated2);*/
                     $('#generated-data-container').append(tableGeneratedEtilAlcohol);
+
+                    var tableOldGenerated = generateTable(data);
+                    $('#generated-data-container-old').append(tableOldGenerated);
                 } else {
                     if (response.IsWithTisToTisReport) {
                         var tableGenerated1 = generateTableNew(data);
                         /*console.log(tableGenerated1);*/
                         $('#generated-data-container').append(tableGenerated1);
+
+                        var tableOldGenerated1 = generateTableWithTisToTis(data);
+                        $('#generated-data-container-old').append(tableOldGenerated1);
                     } else {
                         var tableGenerated2 = generateTableNew(data);
                         /*console.log(tableGenerated2);*/
                         $('#generated-data-container').append(tableGenerated2);
+
+                        var tableOldGenerated2 = generateTable(data);
+                        $('#generated-data-container-old').append(tableOldGenerated2);
                     }
                 }
                 var tableCalculationsDetail = generateTableDetails(data);

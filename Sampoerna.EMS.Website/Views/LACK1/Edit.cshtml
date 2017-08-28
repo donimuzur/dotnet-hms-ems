@@ -193,15 +193,27 @@
                 var tableGeneratedEtilAlcohol = generateTableNew(jsonData);
                 /*console.log(tableGenerated2);*/
                 $('#generated-data-container').append(tableGeneratedEtilAlcohol);
+
+                var tableGeneratedEtilAlcoholOld = generateTableNew(jsonData);
+                /*console.log(tableGenerated2);*/
+                $('#generated-data-container-old').append(tableGeneratedEtilAlcoholOld);
             } else {
                 if (jsonData.IsWithTisToTisReport) {
                     var tableGenerated1 = generateTableNew(jsonData);
                     /*console.log(tableGenerated1);*/
                     $('#generated-data-container').append(tableGenerated1);
+
+                    var tableOldGenerated1 = generateTableWithTisToTis(jsonData);
+                    /*console.log(tableGenerated1);*/
+                    $('#generated-data-container-old').append(tableOldGenerated1);
                 } else {
                     var tableGenerated2 = generateTableNew(jsonData);
                     /*console.log(tableGenerated2);*/
                     $('#generated-data-container').append(tableGenerated2);
+
+                    var tableOldGenerated2 = generateTable(jsonData);
+                    /*console.log(tableGenerated2);*/
+                    $('#generated-data-container-old').append(tableOldGenerated2);
                 }
             }
             

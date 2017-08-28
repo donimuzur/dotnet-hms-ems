@@ -110,6 +110,10 @@
             $('#ExGoodsTypeId').on('change', function () {
                 ExGoodsTypeOnChange();
             });
+
+            $('#generated-data-container-old').html('');
+            $('#generated-data-container-pld').append(generateEmptyTable());
+
             $('#generated-data-container').html('');
             $('#generated-data-container').append(generateEmptyTable());
             $('#generated-details-container').html('');
