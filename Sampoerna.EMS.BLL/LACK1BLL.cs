@@ -2656,6 +2656,7 @@ namespace Sampoerna.EMS.BLL
                                     calculationFaConvertionTemp.Add(new Lack1CalculationDetail
                                     {
                                        AmountUsage = prod.Proportional * propCalc.QtyUsage,
+                                       AmountProduction = oriCalc.AmountProduction,
                                        BrandCe = prod.brandCe,
                                        Convertion = prod.Convertion,
                                        FaCode = prod.FaCode,
@@ -2665,7 +2666,7 @@ namespace Sampoerna.EMS.BLL
                                        Proportional = prod.Proportional,
                                        Type = Enums.Lack1Calculation.WithConvertion,
                                        UomProduction = oriCalc != null ? oriCalc.UomProduction : "",
-                                       UomUsage = oriCalc!= null ? oriCalc.UomUsage : "",
+                                       UomUsage = propCalc.Uom,
                                        
                                        
                                     });
@@ -2694,7 +2695,7 @@ namespace Sampoerna.EMS.BLL
                             //                                 BrandCe = calc.BrandCe
                             //                             }).ToList();
                             var calculationConvertion = calculationFaConvertionTemp
-                                .GroupBy(x => new { x.FaCode, x.MaterialId, x.BrandCe, x.PlantId, x.Type, x.UomProduction, x.UomUsage, x.Convertion })
+                                .GroupBy(x => new { x.FaCode, x.MaterialId, x.BrandCe, x.PlantId, x.Type, x.UomProduction, x.UomUsage, x.Convertion, x.AmountProduction })
                                 .Select(x => new Lack1CalculationDetail()
                                 {
                                     PlantId = x.Key.PlantId,
@@ -2702,8 +2703,8 @@ namespace Sampoerna.EMS.BLL
                                     //Ordr = calc.Ordr,
                                     FaCode = x.Key.FaCode,
                                     UomProduction = x.Key.UomProduction,
-                                    AmountProduction = x.Sum(y=> y.AmountProduction),
-                                    AmountUsage = x.Sum(y=> y.AmountUsage),
+                                    AmountProduction = x.Key.AmountProduction,
+                                    AmountUsage = x.Sum(y=> x.Key.UomUsage == "KG" ? y.AmountUsage * -1000 : y.AmountUsage * -1),
                                     //Proportional = x.Key.Proportional,
                                     Type = Enums.Lack1Calculation.WithConvertion,
                                     UomUsage = x.Key.UomUsage,
@@ -3532,11 +3533,11 @@ namespace Sampoerna.EMS.BLL
 
             //new logic calculation detail convertion
            var propUsageCalculationTemp = invMovementOutput.UsageProportionalList
-                    .GroupBy(x => new { x.MaterialId, x.Order })
+                    .GroupBy(x => new { x.MaterialId, x.Order, x.Uom })
                     .Select(p => new ProportionalUsageCalculationNew()
                     {
                         Ordr = p.Key.Order,
-                        
+                        Uom = p.Key.Uom,
                         QtyUsage = p.Sum(x => x.Qty),
                         MaterialId = p.Key.MaterialId
                         
@@ -3569,6 +3570,7 @@ namespace Sampoerna.EMS.BLL
                rc.InventoryProductionTisToFa.ProportionalUsageCalculations.Add(new ProportionalUsageCalculationNew() { 
                     MaterialId = data.Key,
                     QtyUsage = propUsageCalculationTemp.Where(x=> x.MaterialId == data.Key).Sum(x=> x.QtyUsage),
+                    Uom = propUsageCalculationTemp.Where(x=> x.MaterialId == data.Key).FirstOrDefault().Uom,
                     ProductionList = data.Value
                });
            }
@@ -5125,12 +5127,14 @@ namespace Sampoerna.EMS.BLL
             var listTotalPerMaterialId = inventoryMovementUsageAll.GroupBy(p => new
             {
                 p.MATERIAL_ID,
-                p.ORDR
+                p.ORDR,
+                p.BUN
             }).Select(g => new
             {
                 MaterialId = g.Key.MATERIAL_ID,
                 Order = g.Key.ORDR,
-                TotalQty = g.Sum(p => p.QTY.HasValue ? p.QTY.Value : 0)
+                TotalQty = g.Sum(p => p.QTY.HasValue ? p.QTY.Value : 0),
+                Uom = g.Key.BUN
             }).ToList();
 
             //grouped by MAT_DOC, MVT, MATERIAL_ID, PLANT_ID, BATCH and ORDR
@@ -5141,6 +5145,7 @@ namespace Sampoerna.EMS.BLL
                 //p.MAT_DOC,
                 //p.MVT,
                 p.MATERIAL_ID,
+                p.BUN,
                 //p.PLANT_ID,
                 p.BATCH,
                 p.ORDR
@@ -5149,6 +5154,7 @@ namespace Sampoerna.EMS.BLL
                 //MatDoc = g.Key.MAT_DOC,
                 //Mvt = g.Key.MVT,
                 MaterialId = g.Key.MATERIAL_ID,
+                Uom = g.Key.BUN,
                 //PlantId = g.Key.PLANT_ID,
                 Batch = g.Key.BATCH,
                 Ordr = g.Key.ORDR,
@@ -5160,6 +5166,7 @@ namespace Sampoerna.EMS.BLL
                       select new InvMovementUsageProportional()
                       {
                           MaterialId = x.MaterialId,
+                          Uom = x.Uom,
                           Batch = x.Batch,
                           Qty = x.TotalQty,
                           TotalQtyPerMaterialId = y.TotalQty,
