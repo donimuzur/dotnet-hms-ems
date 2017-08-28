@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Sampoerna.EMS.Core;
+using Sampoerna.EMS.BusinessObject.Outputs;
 
 namespace Sampoerna.EMS.BusinessObject.DTOs
 {
@@ -93,7 +94,9 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public Lack1GeneratedInventoryMovementDto InvetoryMovementData { get; set; }
         public Lack1GeneratedProductionDto ProductionData { get; set; }
 
-        public List<Lack1CalculationDetail> CalculationDetails { get; set; } 
+        public List<Lack1CalculationDetail> CalculationDetails { get; set; }
+
+        public List<ProportionalUsageCalculationNew> ProportionalUsageCalculations { get; set; }
     }
 
     public class Lack1GeneratedProductionDto
