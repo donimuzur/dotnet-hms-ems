@@ -394,7 +394,9 @@
     <Compile Include="Models\ExciseCredit\ExciseGovApprovalModel.cs" />
     <Compile Include="Models\FileUpload\FileUploadModel.cs" />
     <Compile Include="Models\LACK10\Lack10DecreeDocModel.cs" />
+    <Compile Include="Models\LACK10\Lack10ExportItem.cs" />
     <Compile Include="Models\LACK10\Lack10IndexViewModel.cs" />
+    <Compile Include="Models\LACK10\SummaryReportViewModel.cs" />
     <Compile Include="Models\ManufacturingLicense\ChangeRequestFormModel.cs" />
     <Compile Include="Models\ManufacturingLicense\ChangeRequestModel.cs" />
     <Compile Include="Models\ManufacturingLicense\ChangeRequestNppbkc.cs" />
@@ -650,6 +652,13 @@
       <DependentUpon>HeaderFooterPreview.rpt</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\LACK10\Preview.cs">
+      <DependentUpon>Preview.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Reports\LACK1\Lack1PrintOut.cs">
       <AutoGen>True</AutoGen>
@@ -1893,6 +1902,8 @@
     <Content Include="Views\LACK10\_Lack10Completed.cshtml" />
     <Content Include="Views\LACK10\_HomeCompleted.cshtml" />
     <Content Include="Views\LACK10\_DecreeDocCompleted.cshtml" />
+    <Content Include="Views\LACK10\SummaryReport.cshtml" />
+    <Content Include="Views\LACK10\_ListSummaryReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -2063,6 +2074,13 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Pbck7ReportFromCk5.cs</LastGenOutput>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Reports\LACK10\Preview.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Preview.cs</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <PropertyGroup>

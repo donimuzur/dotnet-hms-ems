@@ -90,7 +90,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4"><input name="based-on" type="radio" checked value="1" disabled> Plant Id</label>
+                                        <label class="col-md-4"><input name="based-on" type="radio" checked value="1" id="basedPlant" disabled> Plant Id</label>
                                         <div class="col-md-8">
                                             @Html.HiddenFor(model => model.Details.PlantId)
                                             @Html.TextBoxFor(model => model.Details.PlantName, new { @class = "form-control", @disabled = "disabled" })
@@ -101,7 +101,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4"><input name="based-on" type="radio" value="2" disabled> NPPBKC</label>
+                                        <label class="col-md-4"><input name="based-on" type="radio" value="2" id="basedNppbkc" disabled> NPPBKC</label>
                                         <div class="col-md-8">
                                             @Html.TextBoxFor(model => model.Details.NppbkcId, new { @class = "form-control", @disabled = "disabled" })
                                         </div>
@@ -175,7 +175,7 @@
                 </div>
                 <div aria-labelledby="heading6" role="tabpanel" class="panel-collapse collapse" id="collapse6">
                     <div class="panel-body">
-                        <input id="btnExportCk4cItem" class="btn btn-blue" type="button" value="Export">
+                        <input id="btnExportLack10Item" class="btn btn-blue" type="button" value="Export">
                         <div class="table-container">
                             <table class="table table-bordered table-striped js-options-table">
                                 <thead>

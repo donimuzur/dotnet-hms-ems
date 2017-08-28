@@ -156,6 +156,8 @@
     <Compile Include="DTOs\InventoryMovementDto.cs" />
     <Compile Include="DTOs\Lack10DecreeDocDto.cs" />
     <Compile Include="DTOs\Lack10Dto.cs" />
+    <Compile Include="DTOs\Lack10ItemExportDto.cs" />
+    <Compile Include="DTOs\Lack10SummaryReportDto.cs" />
     <Compile Include="DTOs\Lack1DailyProdDto.cs" />
     <Compile Include="DTOs\Lack1DetailEaDto.cs" />
     <Compile Include="DTOs\Lack1DetailReportDto.cs" />

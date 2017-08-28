@@ -24,6 +24,10 @@ namespace Sampoerna.EMS.BusinessObject
         public Nullable<decimal> AMOUNT_PRODUCTION { get; set; }
         public Nullable<decimal> PROPORTIONAL { get; set; }
         public Nullable<int> TYPE { get; set; }
+        public string UOM_USAGE { get; set; }
+        public string BRAND_CE { get; set; }
+        public string UOM_PRODUCTION { get; set; }
+        public Nullable<decimal> CONVERTION { get; set; }
     
         public virtual LACK1 LACK1 { get; set; }
     }

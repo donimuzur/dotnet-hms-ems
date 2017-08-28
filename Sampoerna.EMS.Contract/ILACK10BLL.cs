@@ -16,5 +16,7 @@ namespace Sampoerna.EMS.Contract
         Lack10Dto GetById(long id);
         bool AllowEditCompletedDocument(Lack10Dto item, string userId);
         void UpdateSubmissionDate(Lack10UpdateSubmissionDate input);
+        Lack10ExportDto GetLack10ExportById(int id);
+        List<Lack10SummaryReportDto> GetSummaryReportsByParam(Lack10GetSummaryReportByParamInput input);
     }
 }

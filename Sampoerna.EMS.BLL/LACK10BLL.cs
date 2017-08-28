@@ -43,6 +43,7 @@ namespace Sampoerna.EMS.BLL
         private ILACK10ItemBLL _lack10ItemBll;
         private ILACK10DecreeDocBLL _lack10DecreeDocBll;
         private IZaidmExNPPBKCBLL _nppbkcbll;
+        private IPlantBLL _plantbll;
 
         private string includeTables = "MONTH, LACK10_ITEM, LACK10_DECREE_DOC";
 
@@ -68,6 +69,7 @@ namespace Sampoerna.EMS.BLL
             _lack10DecreeDocBll = new LACK10DecreeDocBLL(_uow, _logger);
             _lfaBll = new LFA1BLL(_uow, _logger);
             _nppbkcbll = new ZaidmExNPPBKCBLL(_uow, _logger);
+            _plantbll = new PlantBLL(_uow, _logger);
         }
 
         public List<Lack10Dto> GetByParam(Lack10GetByParamInput input)
@@ -158,7 +160,7 @@ namespace Sampoerna.EMS.BLL
         public List<Lack10Item> GenerateWasteData(Lack10GetWasteDataInput input)
         {
             //get Hasil Tembakau
-            var dbData = from w in _repositoryWaste.Get(w => w.COMPANY_CODE == input.CompanyId && w.WERKS == input.PlantId && w.WASTE_PROD_DATE.Month == input.Month && w.WASTE_PROD_DATE.Year == input.Year)
+            var dbData = from w in _repositoryWaste.Get(w => w.COMPANY_CODE == input.CompanyId && w.WERKS == input.PlantId && w.WASTE_PROD_DATE.Month == input.Month && w.WASTE_PROD_DATE.Year == input.Year && w.USE_FOR_LACK10 == true)
                          join b in _repositoryBrand.Get(b => b.STATUS == true && (b.IS_DELETED == null || b.IS_DELETED == false)) on new { w.FA_CODE, w.WERKS } equals new { b.FA_CODE, b.WERKS }
                          join t in _repositoryPlant.GetQuery() on w.WERKS equals t.WERKS
                          select new Lack10Item()
@@ -173,7 +175,7 @@ namespace Sampoerna.EMS.BLL
                          };
 
             //get TIS
-            var dbDataTis = from w in _repositoryWaste.Get(w => w.COMPANY_CODE == input.CompanyId && w.WERKS == input.PlantId && w.WASTE_PROD_DATE.Month == input.Month && w.WASTE_PROD_DATE.Year == input.Year)
+            var dbDataTis = from w in _repositoryWaste.Get(w => w.COMPANY_CODE == input.CompanyId && w.WERKS == input.PlantId && w.WASTE_PROD_DATE.Month == input.Month && w.WASTE_PROD_DATE.Year == input.Year && w.USE_FOR_LACK10 == true)
                          join b in _repositoryBrand.Get(b => b.STATUS == true && (b.IS_DELETED == null || b.IS_DELETED == false)) on new { w.FA_CODE, w.WERKS } equals new { b.FA_CODE, b.WERKS }
                          join t in _repositoryPlant.GetQuery() on w.WERKS equals t.WERKS
                          select new Lack10Item()
@@ -189,7 +191,7 @@ namespace Sampoerna.EMS.BLL
 
             if (input.NppbkcId != string.Empty && input.IsNppbkc)
             {
-                dbData = from w in _repositoryWaste.Get(w => w.COMPANY_CODE == input.CompanyId && w.WASTE_PROD_DATE.Month == input.Month && w.WASTE_PROD_DATE.Year == input.Year)
+                dbData = from w in _repositoryWaste.Get(w => w.COMPANY_CODE == input.CompanyId && w.WASTE_PROD_DATE.Month == input.Month && w.WASTE_PROD_DATE.Year == input.Year && w.USE_FOR_LACK10 == true)
                          join b in _repositoryBrand.Get(b => b.STATUS == true && (b.IS_DELETED == null || b.IS_DELETED == false)) on new { w.FA_CODE, w.WERKS } equals new { b.FA_CODE, b.WERKS }
                          join n in _repositoryPlant.Get(n => n.NPPBKC_ID == input.NppbkcId) on w.WERKS equals n.WERKS
                          select new Lack10Item()
@@ -203,7 +205,7 @@ namespace Sampoerna.EMS.BLL
                              WasteValue = w.MARKER_REJECT_STICK_QTY.Value + w.PACKER_REJECT_STICK_QTY.Value
                          };
 
-                dbDataTis = from w in _repositoryWaste.Get(w => w.COMPANY_CODE == input.CompanyId && w.WASTE_PROD_DATE.Month == input.Month && w.WASTE_PROD_DATE.Year == input.Year)
+                dbDataTis = from w in _repositoryWaste.Get(w => w.COMPANY_CODE == input.CompanyId && w.WASTE_PROD_DATE.Month == input.Month && w.WASTE_PROD_DATE.Year == input.Year && w.USE_FOR_LACK10 == true)
                             join b in _repositoryBrand.Get(b => b.STATUS == true && (b.IS_DELETED == null || b.IS_DELETED == false)) on new { w.FA_CODE, w.WERKS } equals new { b.FA_CODE, b.WERKS }
                             join n in _repositoryPlant.Get(n => n.NPPBKC_ID == input.NppbkcId) on w.WERKS equals n.WERKS
                             select new Lack10Item()
@@ -564,17 +566,12 @@ namespace Sampoerna.EMS.BLL
             if (!isOperationAllow)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
 
-            //todo: gk boleh loncat approval nya, creator->poa->manager atau poa(creator)->manager
-            //dbData.APPROVED_BY_POA = input.UserId;
-            //dbData.APPROVED_DATE_POA = DateTime.Now;
-            //Add Changes
-            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
-
             if (input.UserRole == Enums.UserRole.POA)
             {
                 if (dbData.STATUS == Enums.DocumentStatus.WaitingForApproval)
                 {
                     WorkflowPoaChanges(input, dbData.APPROVED_BY, input.UserId);
+                    WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingForApprovalController);
 
                     //first code when manager exists
                     dbData.STATUS = Enums.DocumentStatus.WaitingForApprovalController;
@@ -589,6 +586,8 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
+                WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
+
                 dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
                 dbData.APPROVED_BY_MANAGER = input.UserId;
                 dbData.APPROVED_BY_MANAGER_DATE = DateTime.Now;
@@ -801,22 +800,14 @@ namespace Sampoerna.EMS.BLL
 
             if (dbData.STATUS != Enums.DocumentStatus.Completed)
                 throw new BLLException(ExceptionCodes.BLLExceptions.OperationNotAllowed);
-
-            //Add Changes
-            WorkflowStatusAddChanges(input, dbData.STATUS, Enums.DocumentStatus.WaitingGovApproval);
-
-            dbData.STATUS = Enums.DocumentStatus.WaitingGovApproval;
-
-            //todo: update remaining quota and necessary data
-            dbData.LACK10_DECREE_DOC = null;
-            dbData.DECREE_DATE = null;
-            dbData.GOV_STATUS = null;
-
+            
             _lack10DecreeDocBll.DeleteByLack10Id(dbData.LACK10_ID);
+
+            dbData.LACK10_DECREE_DOC = null;
+            dbData.LACK10_DECREE_DOC = Mapper.Map<List<LACK10_DECREE_DOC>>(input.AdditionalDocumentData.Lack10DecreeDoc);
 
             //input.ActionType = Enums.ActionType.Completed;
             input.DocumentNumber = dbData.LACK10_NUMBER;
-            input.ActionType = Enums.ActionType.Modified;
 
             //delegate
             input.Comment = _poaDelegationServices.CommentDelegatedUserSaveOrSubmit(dbData.CREATED_BY, input.UserId,
@@ -1149,6 +1140,205 @@ namespace Sampoerna.EMS.BLL
             }
 
             _uow.SaveChanges();
+        }
+
+
+        public Lack10ExportDto GetLack10ExportById(int id)
+        {
+            var rc = _repository.Get(c => c.LACK10_ID == id, null, includeTables).FirstOrDefault();
+
+            if (rc == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+
+            var data = Mapper.Map<Lack10ExportDto>(rc);
+
+            data.CompanyAddress = _plantbll.GetMainPlantByNppbkcId(rc.NPPBKC_ID).ADDRESS;
+
+            //get address of plant
+            if (!string.IsNullOrEmpty(rc.PLANT_ID))
+            {
+                data.CompanyAddress = _repositoryPlant.GetQuery(x => x.WERKS == rc.PLANT_ID).FirstOrDefault().ADDRESS;
+            }
+
+            return data;
+        }
+
+
+        public List<Lack10SummaryReportDto> GetSummaryReportsByParam(Lack10GetSummaryReportByParamInput input)
+        {
+            Expression<Func<LACK10, bool>> queryFilter = PredicateHelper.True<LACK10>();
+
+            if (input.UserRole == Enums.UserRole.POA)
+            {
+                queryFilter = queryFilter.And(c => input.ListNppbkc.Contains(c.NPPBKC_ID));
+            }
+            else if (input.UserRole == Enums.UserRole.Administrator)
+            {
+                queryFilter = queryFilter.And(c => c.COMPANY_ID != null);
+            }
+            else
+            {
+                queryFilter = queryFilter.And(c => input.ListUserPlant.Contains(c.PLANT_ID) ||
+                                                    (input.ListNppbkc.Contains(c.NPPBKC_ID) && string.IsNullOrEmpty(c.PLANT_ID)));
+            }
+
+            if (!string.IsNullOrEmpty(input.Lack10No))
+            {
+                queryFilter = queryFilter.And(c => c.LACK10_NUMBER == input.Lack10No);
+            }
+
+
+            if (!string.IsNullOrEmpty(input.NppbkcId))
+            {
+                queryFilter = queryFilter.And(c => c.NPPBKC_ID == input.NppbkcId);
+            }
+
+            if (!string.IsNullOrEmpty(input.Poa))
+            {
+                queryFilter = queryFilter.And(c => c.APPROVED_BY == input.Poa);
+            }
+
+            if (!string.IsNullOrEmpty(input.Creator))
+            {
+                queryFilter = queryFilter.And(c => c.CREATED_BY == input.Creator);
+            }
+            if (input.Month > 0)
+            {
+                queryFilter = queryFilter.And(c => c.PERIOD_MONTH == input.Month);
+            }
+            if (input.Year > 0)
+            {
+                queryFilter = queryFilter.And(c => c.PERIOD_YEAR == input.Year);
+            }
+
+            var rc = _repository.Get(queryFilter, null, includeTables).ToList();
+            if (rc == null)
+            {
+                throw new BLLException(ExceptionCodes.BLLExceptions.DataNotFound);
+            }
+
+            var data = SetDataSummaryReport(rc);
+
+            if (input.isForExport)
+                data = SetDataSummaryForExport(rc);
+
+            data = data.OrderBy(x => x.LicenseNumber).ToList();
+
+            return data;
+        }
+
+        private List<Lack10SummaryReportDto> SetDataSummaryReport(List<LACK10> listLack10)
+        {
+            var result = new List<Lack10SummaryReportDto>();
+
+            foreach (var dtData in listLack10)
+            {
+                var summaryDto = new Lack10SummaryReportDto();
+
+                summaryDto.Lack10No = dtData.LACK10_NUMBER;
+                summaryDto.CeOffice = dtData.COMPANY_ID;
+                summaryDto.BasedOn = dtData.PLANT_ID == null ? "NPPBKC" : "PLANT";
+                summaryDto.LicenseNumber = dtData.NPPBKC_ID;
+                summaryDto.Kppbc = _lfaBll.GetById(_nppbkcbll.GetDetailsById(dtData.NPPBKC_ID).KPPBC_ID).NAME1;
+                summaryDto.SubmissionDate = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.SUBMISSION_DATE);
+                summaryDto.Month = dtData.MONTH.MONTH_NAME_ENG;
+                summaryDto.Year = dtData.PERIOD_YEAR.ToString();
+                summaryDto.PoaApproved = dtData.APPROVED_BY == null ? "-" : dtData.APPROVED_BY;
+                summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
+                summaryDto.CompletedDate = dtData.STATUS == Enums.DocumentStatus.Completed ?
+                    (dtData.MODIFIED_DATE == null ? ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.DECREE_DATE) :
+                    ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.MODIFIED_DATE)) : "-";
+                summaryDto.Creator = dtData.CREATED_BY;
+
+                var faCode = new List<string>();
+                var brandDesc = new List<string>();
+                var werks = new List<string>();
+                var plantName = new List<string>();
+                var type = new List<string>();
+                var wasteValue = new List<string>();
+                var uom = new List<string>();
+
+                foreach (var lack10Item in dtData.LACK10_ITEM)
+                {
+                    faCode.Add(lack10Item.FA_CODE);
+                    brandDesc.Add(lack10Item.BRAND_DESCRIPTION);
+                    werks.Add(lack10Item.WERKS);
+                    plantName.Add(lack10Item.PLANT_NAME);
+                    type.Add(lack10Item.TYPE);
+                    wasteValue.Add(String.Format("{0:n}", lack10Item.WASTE_VALUE));
+                    uom.Add(lack10Item.UOM);
+                }
+
+                summaryDto.FaCode = faCode;
+                summaryDto.BrandDesc = brandDesc;
+                summaryDto.Werks = werks;
+                summaryDto.PlantName = plantName;
+                summaryDto.Type = type;
+                summaryDto.WasteValue = wasteValue;
+                summaryDto.Uom = uom;
+
+                result.Add(summaryDto);
+            }
+
+            return result;
+        }
+
+        private List<Lack10SummaryReportDto> SetDataSummaryForExport(List<LACK10> listLack10)
+        {
+            var result = new List<Lack10SummaryReportDto>();
+
+            foreach (var dtData in listLack10)
+            {
+                foreach (var lack10Item in dtData.LACK10_ITEM)
+                {
+                    var summaryDto = new Lack10SummaryReportDto();
+
+                    summaryDto.Lack10No = dtData.LACK10_NUMBER;
+                    summaryDto.CeOffice = dtData.COMPANY_ID;
+                    summaryDto.BasedOn = dtData.PLANT_ID == null ? "NPPBKC" : "PLANT";
+                    summaryDto.LicenseNumber = dtData.NPPBKC_ID;
+                    summaryDto.Kppbc = _lfaBll.GetById(_nppbkcbll.GetDetailsById(dtData.NPPBKC_ID).KPPBC_ID).NAME1;
+                    summaryDto.SubmissionDate = ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.SUBMISSION_DATE);
+                    summaryDto.Month = dtData.MONTH.MONTH_NAME_ENG;
+                    summaryDto.Year = dtData.PERIOD_YEAR.ToString();
+                    summaryDto.PoaApproved = dtData.APPROVED_BY == null ? "-" : dtData.APPROVED_BY;
+                    summaryDto.Status = EnumHelper.GetDescription(dtData.STATUS);
+                    summaryDto.CompletedDate = dtData.STATUS == Enums.DocumentStatus.Completed ?
+                        (dtData.MODIFIED_DATE == null ? ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.DECREE_DATE) :
+                        ConvertHelper.ConvertDateToStringddMMMyyyy(dtData.MODIFIED_DATE)) : "-";
+                    summaryDto.Creator = dtData.CREATED_BY;
+
+                    var faCode = new List<string>();
+                    var brandDesc = new List<string>();
+                    var werks = new List<string>();
+                    var plantName = new List<string>();
+                    var type = new List<string>();
+                    var wasteValue = new List<string>();
+                    var uom = new List<string>();
+
+                    faCode.Add(lack10Item.FA_CODE);
+                    brandDesc.Add(lack10Item.BRAND_DESCRIPTION);
+                    werks.Add(lack10Item.WERKS);
+                    plantName.Add(lack10Item.PLANT_NAME);
+                    type.Add(lack10Item.TYPE);
+                    wasteValue.Add(String.Format("{0:n}", lack10Item.WASTE_VALUE));
+                    uom.Add(lack10Item.UOM);
+
+                    summaryDto.FaCode = faCode;
+                    summaryDto.BrandDesc = brandDesc;
+                    summaryDto.Werks = werks;
+                    summaryDto.PlantName = plantName;
+                    summaryDto.Type = type;
+                    summaryDto.WasteValue = wasteValue;
+                    summaryDto.Uom = uom;
+
+                    result.Add(summaryDto);
+                }
+            }
+
+            return result;
         }
     }
 }

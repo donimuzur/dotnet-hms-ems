@@ -974,6 +974,7 @@ namespace Sampoerna.EMS.Website
                     opt => opt.MapFrom(src => src.DustWasteStickQty + src.FloorWasteStickQty))
                 .ForMember(dest => dest.WasteProductionDate,
                     opt => opt.MapFrom(src => src.WasteProductionDate.ToString("dd MMM yyyy")))
+                .ForMember(dest => dest.UseForLack10Name, opt => opt.MapFrom(src => src.UseForLack10 == true ? "Yes" : "No"))
                 .ForMember(dest => dest.PlantName, opt => opt.MapFrom(src => src.PlantWerks + " - " + src.PlantName));
 
 

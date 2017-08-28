@@ -81,7 +81,7 @@ namespace Sampoerna.EMS.Website.Models.LACK10
         public List<Lack10ItemData> Lack10ItemData { get; set; }
         public List<HttpPostedFileBase> Lack10DecreeFiles { get; set; }
         public List<Lack10DecreeDocModel> Lack10DecreeDoc { get; set; }
-        public List<string> Ck4cUploadedDoc { get; set; }
+        public List<string> Lack10UploadedDoc { get; set; }
         public string IsSaveSubmit { get; set; }
         public string Comment { get; set; }
     }

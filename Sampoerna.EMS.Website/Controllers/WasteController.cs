@@ -167,6 +167,7 @@ namespace Sampoerna.EMS.Website.Controllers
             if (CurrentUser.UserRole == Enums.UserRole.POA) distinctCompany = company.Where(x => poaMapCompany.Contains(x.Value));
             var getCompany = new SelectList(distinctCompany, "Value", "Text");
 
+            model.UseForLack10 = true;
             model.CompanyCodeList = getCompany;
             model.PlantWerkList = GlobalFunctions.GetPlantByCompanyId("");
             model.FacodeList = GlobalFunctions.GetFaCodeByPlant("");
@@ -452,6 +453,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     item.CompanyName = company.BUTXT;
                     item.PlantName = plant.NAME1;
+                    item.UseForLack10 = item.UseForLack10.ToLower();
 
                     if (item.BrandDescription != brandCe.BRAND_CE)
                     {
@@ -524,7 +526,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     //item.DustWasteStickQty = dataRow[8];
                     //item.FloorWasteStickQty = dataRow[9];
                     item.StampWasteQty = dataRow[7];
-                    item.WasteProductionDate = dataRow[8]; 
+                    item.WasteProductionDate = dataRow[8];
+                    item.UseForLack10 = dataRow[9];
 
                     {
                         model.Add(item);

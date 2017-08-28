@@ -94,7 +94,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4"><input name="based-on" type="radio" checked value="1"> Plant Id</label>
+                                        <label class="col-md-4"><input name="based-on" type="radio" id="basedPlant" checked value="1"> Plant Id</label>
                                         <div class="col-md-8">
                                             @Html.DropDownListFor(model => model.Details.PlantId, Model.PlanList, "select", new { @class = "form-control" })
                                         </div>
@@ -104,7 +104,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <label class="col-md-4"><input name="based-on" type="radio" value="2"> NPPBKC</label>
+                                        <label class="col-md-4"><input name="based-on" type="radio" id="basedNppbkc" value="2"> NPPBKC</label>
                                         <div class="col-md-8">
                                             @Html.DropDownListFor(model => model.Details.NppbkcId, Model.NppbkcIdList, "select", new { @class = "form-control", @disabled = "disabled" })
                                         </div>
@@ -181,7 +181,7 @@
                 </div>
                 <div aria-labelledby="heading6" role="tabpanel" class="panel-collapse in" id="collapse6">
                     <div class="panel-body">
-                        <input id="btnExportCk4cItem" class="btn btn-blue" type="button" value="Export">
+                        <input id="btnExportLack10Item" class="btn btn-blue" type="button" value="Export">
                         <div class="table-container">
                             <table class="table table-bordered table-striped js-options-table">
                                 <thead>
