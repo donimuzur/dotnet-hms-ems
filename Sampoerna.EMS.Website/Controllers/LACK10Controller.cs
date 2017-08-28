@@ -694,7 +694,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 MainMenu = _mainMenu,
                 CurrentMenu = PageInfo,
-                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator ? true : false)
+                IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Viewer ? true : false)
             });
             return View("CompletedDocument", data);
         }
