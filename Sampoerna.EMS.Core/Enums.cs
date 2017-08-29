@@ -845,5 +845,15 @@ namespace Sampoerna.EMS.Core
             Rusak = 2
         }
 
+        public enum Lack1SummaryPeriod
+        {
+            [Description("s.d sebelum bulan pelaporan")]
+            Start = 1,
+            [Description("bulan pelaporan")]
+            Current = 2,
+            [Description("s.d bulan pelaporan")]
+            End = 3
+        }
+
 	}
 }

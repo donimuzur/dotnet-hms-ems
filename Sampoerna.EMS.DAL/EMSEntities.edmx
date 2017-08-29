@@ -512,13 +512,14 @@
           <Property Name="DOCUMENT_NOTED" Type="nvarchar" MaxLength="255" />
           <Property Name="USAGE_TISTOTIS" Type="decimal" Precision="18" Scale="5" />
           <Property Name="IS_SUPPLIER_IMPORT" Type="bit" />
+          <Property Name="LABORATORIUM" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="LACK1_CALCULATION_DETAIL">
           <Key>
             <PropertyRef Name="LACK1_CALCULATION_DETAIL_ID" />
           </Key>
-          <Property Name="LACK1_CALCULATION_DETAIL_ID" Type="int" Nullable="false" />
-          <Property Name="LACK1_ID" Type="int" Nullable="false" />
+          <Property Name="LACK1_CALCULATION_DETAIL_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LACK1_ID" Type="int" />
           <Property Name="MATERIAL_ID" Type="nvarchar" MaxLength="18" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
           <Property Name="AMOUNT_USAGE" Type="decimal" Precision="18" Scale="3" />
@@ -559,6 +560,19 @@
           <Property Name="LACK1_PBCK1_MAPPING_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="LACK1_ID" Type="int" />
           <Property Name="PBCK1_ID" Type="int" />
+        </EntityType>
+        <EntityType Name="LACK1_PERIOD_SUMMARY">
+          <Key>
+            <PropertyRef Name="LACK1_SUMMARY_ID" />
+          </Key>
+          <Property Name="LACK1_SUMMARY_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LACK1_ID" Type="int" />
+          <Property Name="INCOME" Type="decimal" Precision="18" Scale="3" />
+          <Property Name="USAGE" Type="decimal" Precision="18" Scale="3" />
+          <Property Name="LABORATORIUM" Type="decimal" Precision="18" Scale="3" />
+          <Property Name="CK5_RETURN" Type="decimal" Precision="18" Scale="3" />
+          <Property Name="SALDO" Type="decimal" Precision="18" Scale="3" />
+          <Property Name="TYPE" Type="int" />
         </EntityType>
         <EntityType Name="LACK1_PLANT">
           <Key>
@@ -2205,7 +2219,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_LACK1_CALCULATION_DETAIL_LACK1">
-          <End Role="LACK1" Type="Self.LACK1" Multiplicity="1" />
+          <End Role="LACK1" Type="Self.LACK1" Multiplicity="0..1" />
           <End Role="LACK1_CALCULATION_DETAIL" Type="Self.LACK1_CALCULATION_DETAIL" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="LACK1">
@@ -2285,6 +2299,18 @@
             </Principal>
             <Dependent Role="LACK1_PBCK1_MAPPING">
               <PropertyRef Name="PBCK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_PERIOD_SUMMARY_LACK1">
+          <End Role="LACK1" Type="Self.LACK1" Multiplicity="0..1" />
+          <End Role="LACK1_PERIOD_SUMMARY" Type="Self.LACK1_PERIOD_SUMMARY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LACK1">
+              <PropertyRef Name="LACK1_ID" />
+            </Principal>
+            <Dependent Role="LACK1_PERIOD_SUMMARY">
+              <PropertyRef Name="LACK1_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3976,6 +4002,7 @@
           <EntitySet Name="LACK1_DOCUMENT" EntityType="Self.LACK1_DOCUMENT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK1_INCOME_DETAIL" EntityType="Self.LACK1_INCOME_DETAIL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK1_PBCK1_MAPPING" EntityType="Self.LACK1_PBCK1_MAPPING" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LACK1_PERIOD_SUMMARY" EntityType="Self.LACK1_PERIOD_SUMMARY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK1_PLANT" EntityType="Self.LACK1_PLANT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK1_PRODUCTION_DETAIL" EntityType="Self.LACK1_PRODUCTION_DETAIL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK1_TRACKING" EntityType="Self.LACK1_TRACKING" Schema="dbo" store:Type="Tables" />
@@ -4230,6 +4257,10 @@
           <AssociationSet Name="FK_LACK1_PBCK1_MAPPING_PBCK1" Association="Self.FK_LACK1_PBCK1_MAPPING_PBCK1">
             <End Role="PBCK1" EntitySet="PBCK1" />
             <End Role="LACK1_PBCK1_MAPPING" EntitySet="LACK1_PBCK1_MAPPING" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK1_PERIOD_SUMMARY_LACK1" Association="Self.FK_LACK1_PERIOD_SUMMARY_LACK1">
+            <End Role="LACK1" EntitySet="LACK1" />
+            <End Role="LACK1_PERIOD_SUMMARY" EntitySet="LACK1_PERIOD_SUMMARY" />
           </AssociationSet>
           <AssociationSet Name="FK_LACK1_PLANT_LACK1" Association="Self.FK_LACK1_PLANT_LACK1">
             <End Role="LACK1" EntitySet="LACK1" />
@@ -5592,11 +5623,6 @@
             <End Role="EX_GROUP_TYPE" EntitySet="EX_GROUP_TYPE" />
             <End Role="QUOTA_MONITORING" EntitySet="QUOTA_MONITORING" />
           </AssociationSet>
-          <EntitySet Name="LACK1_CALCULATION_DETAIL" EntityType="EMSModel.LACK1_CALCULATION_DETAIL" />
-          <AssociationSet Name="FK_LACK1_CALCULATION_DETAIL_LACK1" Association="EMSModel.FK_LACK1_CALCULATION_DETAIL_LACK1">
-            <End Role="LACK1" EntitySet="LACK1" />
-            <End Role="LACK1_CALCULATION_DETAIL" EntitySet="LACK1_CALCULATION_DETAIL" />
-          </AssociationSet>
           <AssociationSet Name="FK__ZAIDM_EX___LASTA__3B95D2F1" Association="EMSModel.FK__ZAIDM_EX___LASTA__3B95D2F1">
             <End Role="USER" EntitySet="USER" />
             <End Role="ZAIDM_EX_PRODTYP" EntitySet="ZAIDM_EX_PRODTYP" />
@@ -5651,6 +5677,17 @@
             <End Role="LACK10_ITEM" EntitySet="LACK10_ITEM" />
           </AssociationSet>
           <EntitySet Name="NlogLogs" EntityType="EMSModel.NlogLogs" />
+          <EntitySet Name="LACK1_PERIOD_SUMMARY" EntityType="EMSModel.LACK1_PERIOD_SUMMARY" />
+          <AssociationSet Name="FK_LACK1_PERIOD_SUMMARY_LACK1" Association="EMSModel.FK_LACK1_PERIOD_SUMMARY_LACK1">
+            <End Role="LACK1" EntitySet="LACK1" />
+            <End Role="LACK1_PERIOD_SUMMARY" EntitySet="LACK1_PERIOD_SUMMARY" />
+          </AssociationSet>
+          <EntitySet Name="LACK1_CALCULATION_DETAIL" EntityType="EMSModel.LACK1_CALCULATION_DETAIL" />
+          <AssociationSet Name="FK_LACK1_CALCULATION_DETAIL_LACK1" Association="EMSModel.FK_LACK1_CALCULATION_DETAIL_LACK1">
+            <End Role="LACK1" EntitySet="LACK1" />
+            <End Role="LACK1_CALCULATION_DETAIL" EntitySet="LACK1_CALCULATION_DETAIL" />
+          </AssociationSet>
+          
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -7968,6 +8005,8 @@
           <Property Name="USAGE_TISTOTIS" Type="Decimal" Precision="18" Scale="5" />
           <NavigationProperty Name="LACK1_TRACKING_ALCOHOL" Relationship="EMSModel.FK_LACK1_TRACKING_ALCOHOL_LACK1" FromRole="LACK1" ToRole="LACK1_TRACKING_ALCOHOL" />
           <Property Name="IS_SUPPLIER_IMPORT" Type="Boolean" />
+          <NavigationProperty Name="LACK1_PERIOD_SUMMARY" Relationship="EMSModel.FK_LACK1_PERIOD_SUMMARY_LACK1" FromRole="LACK1" ToRole="LACK1_PERIOD_SUMMARY" />
+          <Property Name="LABORATORIUM" Type="Decimal" Precision="18" Scale="2" />
           <NavigationProperty Name="LACK1_CALCULATION_DETAIL" Relationship="EMSModel.FK_LACK1_CALCULATION_DETAIL_LACK1" FromRole="LACK1" ToRole="LACK1_CALCULATION_DETAIL" />
         </EntityType>
         <Association Name="FK_LACK1_MONTH">
@@ -10291,6 +10330,36 @@
           <Property Name="FileName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EnumType Name="Lack10ReportType" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.Lack10ReportType" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <EnumType Name="Lack1Calculation" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.Lack1Calculation" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <EntityType Name="LACK1_PERIOD_SUMMARY">
+          <Key>
+            <PropertyRef Name="LACK1_SUMMARY_ID" />
+          </Key>
+          <Property Name="LACK1_SUMMARY_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LACK1_ID" Type="Int32" />
+          <Property Name="INCOME" Type="Decimal" Precision="18" Scale="3" />
+          <Property Name="USAGE" Type="Decimal" Precision="18" Scale="3" />
+          <Property Name="LABORATORIUM" Type="Decimal" Precision="18" Scale="3" />
+          <Property Name="CK5_RETURN" Type="Decimal" Precision="18" Scale="3" />
+          <Property Name="SALDO" Type="Decimal" Precision="18" Scale="3" />
+          <Property Name="TYPE" Type="EMSModel.Lack1SummaryPeriod" />
+          <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_PERIOD_SUMMARY_LACK1" FromRole="LACK1_PERIOD_SUMMARY" ToRole="LACK1" />
+        </EntityType>
+        <Association Name="FK_LACK1_PERIOD_SUMMARY_LACK1">
+          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="0..1" />
+          <End Type="EMSModel.LACK1_PERIOD_SUMMARY" Role="LACK1_PERIOD_SUMMARY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LACK1">
+              <PropertyRef Name="LACK1_ID" />
+            </Principal>
+            <Dependent Role="LACK1_PERIOD_SUMMARY">
+              <PropertyRef Name="LACK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EnumType Name="Lack1SummaryPeriod" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.Lack1SummaryPeriod" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        
+        
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -11150,6 +11219,7 @@
           <EntitySetMapping Name="LACK1">
             <EntityTypeMapping TypeName="EMSModel.LACK1">
               <MappingFragment StoreEntitySet="LACK1">
+                <ScalarProperty Name="LABORATORIUM" ColumnName="LABORATORIUM" />
                 <ScalarProperty Name="IS_SUPPLIER_IMPORT" ColumnName="IS_SUPPLIER_IMPORT" />
                 <ScalarProperty Name="USAGE_TISTOTIS" ColumnName="USAGE_TISTOTIS" />
                 <ScalarProperty Name="DOCUMENT_NOTED" ColumnName="DOCUMENT_NOTED" />
@@ -12015,26 +12085,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="LACK1_CALCULATION_DETAIL">
-            <EntityTypeMapping TypeName="EMSModel.LACK1_CALCULATION_DETAIL">
-              <MappingFragment StoreEntitySet="LACK1_CALCULATION_DETAIL">
-                <ScalarProperty Name="CONVERTION" ColumnName="CONVERTION" />
-                <ScalarProperty Name="UOM_PRODUCTION" ColumnName="UOM_PRODUCTION" />
-                <ScalarProperty Name="BRAND_CE" ColumnName="BRAND_CE" />
-                <ScalarProperty Name="UOM_USAGE" ColumnName="UOM_USAGE" />
-                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
-                <ScalarProperty Name="PROPORTIONAL" ColumnName="PROPORTIONAL" />
-                <ScalarProperty Name="AMOUNT_PRODUCTION" ColumnName="AMOUNT_PRODUCTION" />
-                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
-                <ScalarProperty Name="ORDR" ColumnName="ORDR" />
-                <ScalarProperty Name="AMOUNT_USAGE" ColumnName="AMOUNT_USAGE" />
-                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
-                <ScalarProperty Name="MATERIAL_ID" ColumnName="MATERIAL_ID" />
-                <ScalarProperty Name="LACK1_ID" ColumnName="LACK1_ID" />
-                <ScalarProperty Name="LACK1_CALCULATION_DETAIL_ID" ColumnName="LACK1_CALCULATION_DETAIL_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="FILE_UPLOAD">
             <EntityTypeMapping TypeName="EMSModel.FILE_UPLOAD">
               <MappingFragment StoreEntitySet="FILE_UPLOAD">
@@ -12060,6 +12110,40 @@
                 <ScalarProperty Name="IS_ACTIVE_EXCISER" ColumnName="IS_ACTIVE_EXCISER" />
                 <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
                 <ScalarProperty Name="EXCISER_ID" ColumnName="EXCISER_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LACK1_PERIOD_SUMMARY">
+            <EntityTypeMapping TypeName="EMSModel.LACK1_PERIOD_SUMMARY">
+              <MappingFragment StoreEntitySet="LACK1_PERIOD_SUMMARY">
+                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
+                <ScalarProperty Name="SALDO" ColumnName="SALDO" />
+                <ScalarProperty Name="CK5_RETURN" ColumnName="CK5_RETURN" />
+                <ScalarProperty Name="LABORATORIUM" ColumnName="LABORATORIUM" />
+                <ScalarProperty Name="USAGE" ColumnName="USAGE" />
+                <ScalarProperty Name="INCOME" ColumnName="INCOME" />
+                <ScalarProperty Name="LACK1_ID" ColumnName="LACK1_ID" />
+                <ScalarProperty Name="LACK1_SUMMARY_ID" ColumnName="LACK1_SUMMARY_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LACK1_CALCULATION_DETAIL">
+            <EntityTypeMapping TypeName="EMSModel.LACK1_CALCULATION_DETAIL">
+              <MappingFragment StoreEntitySet="LACK1_CALCULATION_DETAIL">
+                <ScalarProperty Name="CONVERTION" ColumnName="CONVERTION" />
+                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
+                <ScalarProperty Name="PROPORTIONAL" ColumnName="PROPORTIONAL" />
+                <ScalarProperty Name="UOM_PRODUCTION" ColumnName="UOM_PRODUCTION" />
+                <ScalarProperty Name="AMOUNT_PRODUCTION" ColumnName="AMOUNT_PRODUCTION" />
+                <ScalarProperty Name="BRAND_CE" ColumnName="BRAND_CE" />
+                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
+                <ScalarProperty Name="ORDR" ColumnName="ORDR" />
+                <ScalarProperty Name="UOM_USAGE" ColumnName="UOM_USAGE" />
+                <ScalarProperty Name="AMOUNT_USAGE" ColumnName="AMOUNT_USAGE" />
+                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
+                <ScalarProperty Name="MATERIAL_ID" ColumnName="MATERIAL_ID" />
+                <ScalarProperty Name="LACK1_ID" ColumnName="LACK1_ID" />
+                <ScalarProperty Name="LACK1_CALCULATION_DETAIL_ID" ColumnName="LACK1_CALCULATION_DETAIL_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
