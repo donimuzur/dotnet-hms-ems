@@ -43,7 +43,8 @@
                                 - Goods Movement (CK-5)<br>
                                 - Goods Usage Report (LACK-1)<br>
                                 - Goods Transfer Report (LACK-2)<br>
-                                - Production Report (CK-4C)
+                                - Production Report (CK-4C)<br>
+                                - Damaged Goods Report (LACK-10)
                             </p>
                             <div class="icon">
                             </div>
@@ -56,8 +57,7 @@
                                 - Stamp Damage and Return (PBCK-4)<br>
                                 - Refund from Production (PBCK-7)<br>
                                 - Refund from Market (PBCK-3)<br>
-                                - CK-5 Market Return<br>
-                                - Damaged Goods Report (LACK-10)
+                                - CK-5 Market Return
                             </p>
                             <div class="icon"></div>
                         </div>
@@ -161,6 +161,11 @@
                                     CK-4C
                                 </a>
                             </div>
+                            <div class="col-md-15" style="padding-top:10px !important">
+                                <a href="@Url.Action("Index", "LACK10")" class="child-menu">
+                                    LACK-10
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -175,29 +180,24 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-md-15">
+                            <div class="col-md-3">
                                 <a href="@Url.Action("Index","PBCK4")" class="child-menu">
                                     PBCK-4
                                 </a>
                             </div>
-                            <div class="col-md-15">
+                            <div class="col-md-3">
                                 <a href="@Url.Action("Index","PBCK7AndPBCK3")" class="child-menu">
                                     PBCK-7
                                 </a>
                             </div>
-                            <div class="col-md-15">
+                            <div class="col-md-3">
                                 <a href="@Url.Action("ListPbck3Index", "PBCK7AndPBCK3")" class="child-menu">
                                     PBCK-3
                                 </a>
                             </div>
-                            <div class="col-md-15">
+                            <div class="col-md-3">
                                 <a href="@Url.Action("CK5MarketReturn", "CK5")" class="child-menu">
                                     CK-5
-                                </a>
-                            </div>
-                            <div class="col-md-15">
-                                <a href="@Url.Action("Index", "LACK10")" class="child-menu">
-                                    LACK-10
                                 </a>
                             </div>
                         </div>

@@ -12,7 +12,7 @@
   <xs:element name="dsLack10" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="dsLack10" msprop:Generator_UserDSName="dsLack10">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="Lack10" msprop:Generator_TableClassName="Lack10DataTable" msprop:Generator_TableVarName="tableLack10" msprop:Generator_TablePropName="Lack10" msprop:Generator_RowDeletingName="Lack10RowDeleting" msprop:Generator_RowChangingName="Lack10RowChanging" msprop:Generator_RowEvHandlerName="Lack10RowChangeEventHandler" msprop:Generator_RowDeletedName="Lack10RowDeleted" msprop:Generator_UserTableName="Lack10" msprop:Generator_RowChangedName="Lack10RowChanged" msprop:Generator_RowEvArgName="Lack10RowChangeEvent" msprop:Generator_RowClassName="Lack10Row">
+        <xs:element name="Lack10" msprop:Generator_TableClassName="Lack10DataTable" msprop:Generator_TableVarName="tableLack10" msprop:Generator_RowChangedName="Lack10RowChanged" msprop:Generator_TablePropName="Lack10" msprop:Generator_RowDeletingName="Lack10RowDeleting" msprop:Generator_RowChangingName="Lack10RowChanging" msprop:Generator_RowEvHandlerName="Lack10RowChangeEventHandler" msprop:Generator_RowDeletedName="Lack10RowDeleted" msprop:Generator_RowClassName="Lack10Row" msprop:Generator_UserTableName="Lack10" msprop:Generator_RowEvArgName="Lack10RowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="CompanyName" msprop:Generator_ColumnVarNameInTable="columnCompanyName" msprop:Generator_ColumnPropNameInRow="CompanyName" msprop:Generator_ColumnPropNameInTable="CompanyNameColumn" msprop:Generator_UserColumnName="CompanyName" type="xs:string" minOccurs="0" />
@@ -34,6 +34,8 @@
               <xs:element name="Reason" msprop:Generator_ColumnVarNameInTable="columnReason" msprop:Generator_ColumnPropNameInRow="Reason" msprop:Generator_ColumnPropNameInTable="ReasonColumn" msprop:Generator_UserColumnName="Reason" type="xs:string" minOccurs="0" />
               <xs:element name="Remark" msprop:Generator_ColumnVarNameInTable="columnRemark" msprop:Generator_ColumnPropNameInRow="Remark" msprop:Generator_ColumnPropNameInTable="RemarkColumn" msprop:Generator_UserColumnName="Remark" type="xs:string" minOccurs="0" />
               <xs:element name="TypeTable" msprop:Generator_ColumnVarNameInTable="columnTypeTable" msprop:Generator_ColumnPropNameInRow="TypeTable" msprop:Generator_ColumnPropNameInTable="TypeTableColumn" msprop:Generator_UserColumnName="TypeTable" type="xs:string" minOccurs="0" />
+              <xs:element name="TisCase" msprop:Generator_ColumnVarNameInTable="columnTisCase" msprop:Generator_ColumnPropNameInRow="TisCase" msprop:Generator_ColumnPropNameInTable="TisCaseColumn" msprop:Generator_UserColumnName="TisCase" type="xs:string" minOccurs="0" />
+              <xs:element name="TisCaseTotal" msprop:Generator_ColumnVarNameInTable="columnTisCaseTotal" msprop:Generator_ColumnPropNameInRow="TisCaseTotal" msprop:Generator_ColumnPropNameInTable="TisCaseTotalColumn" msprop:Generator_UserColumnName="TisCaseTotal" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

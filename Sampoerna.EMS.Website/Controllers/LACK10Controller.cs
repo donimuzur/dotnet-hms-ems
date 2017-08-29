@@ -232,12 +232,13 @@ namespace Sampoerna.EMS.Website.Controllers
                 item.CreatedDate = DateTime.Now;
                 item.Status = Enums.DocumentStatus.Draft;
 
-                if (item.Lack10Item.Count == 0)
-                {
-                    AddMessageInfo("No item found", Enums.MessageInfoType.Warning);
-                    model = InitialModel(model);
-                    return View(model);
-                }
+                //same as lack10
+                //if (item.Lack10Item.Count == 0)
+                //{
+                //    AddMessageInfo("No item found", Enums.MessageInfoType.Warning);
+                //    model = InitialModel(model);
+                //    return View(model);
+                //}
 
                 var existLack10 = _lack10Bll.GetByItem(item);
                 if (existLack10 != null)
@@ -1968,23 +1969,41 @@ namespace Sampoerna.EMS.Website.Controllers
 
             }
 
-            var totalTembakau = lack10.Lack10Item.Where(x => x.Type == "Hasil Tembakau").Sum(x => x.WasteValue).ToString("N3");
-            var totalTis = lack10.Lack10Item.Where(x => x.Type == "TIS").Sum(x => x.WasteValue).ToString("N3");
+            var totalTembakau = lack10.Lack10Item.Where(x => x.Type == "Hasil Tembakau").Sum(x => x.WasteValue);
+            var totalTis = lack10.Lack10Item.Where(x => x.Type == "TIS").Sum(x => x.WasteValue);
+            var totalTisCase = lack10.Lack10Item.Where(x => x.Type != "TIS" && x.Type != "Hasil Tembakau").Sum(x => x.WasteValue);
+            var total = totalTembakau.ToString("N3") + " Batang , " + totalTis.ToString("N3") + " Kg";
+            if (totalTis == 0) total = totalTembakau.ToString("N3") + " Batang";
+            if (totalTembakau == 0) total = totalTis.ToString("N3") + " Kg";
 
             drow[11] = lack10.CompanyNpwp;
-            drow[12] = totalTembakau + " Batang , " + totalTis + " Kg";
-            drow[13] = totalTembakau;
-            drow[14] = totalTis;
+            drow[12] = total;
+            drow[13] = totalTembakau.ToString("N3");
+            drow[14] = totalTis.ToString("N3");
             drow[15] = EnumHelper.GetDescription(lack10.ReportType).ToUpper();
             drow[16] = lack10.Reason;
             drow[17] = lack10.Remark;
             drow[18] = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(EnumHelper.GetDescription(lack10.ReportType));
 
+            var typeRpt = "Preview.rpt";
+            if (totalTembakau == 0) typeRpt = "PreviewTis.rpt";
+            if (totalTis == 0) typeRpt = "PreviewHt.rpt";
+            if (lack10.Lack10Item.Count == 0) typeRpt = "PreviewNoData.rpt";
+            if (totalTisCase > 0)
+            {
+                typeRpt = "PreviewTisCase.rpt";
+                total = lack10.Lack10Item.Where(x => x.Type != "Hasil Tembakau").Sum(x => x.WasteValue).ToString("N3") + " Kg";
+
+                drow[12] = total;
+                drow[19] = lack10.Lack10Item.Where(x => x.Type != "TIS" && x.Type != "Hasil Tembakau").FirstOrDefault().Type;
+                drow[20] = totalTisCase.ToString("N3");
+            }
+
             dt.Rows.Add(drow);
 
             ReportClass rpt = new ReportClass();
             string report_path = ConfigurationManager.AppSettings["Report_Path"];
-            rpt.FileName = report_path + "LACK10\\Preview.rpt";
+            rpt.FileName = report_path + "LACK10\\" + typeRpt;
             rpt.Load();
             rpt.SetDataSource(dsLack10);
 
@@ -2017,6 +2036,8 @@ namespace Sampoerna.EMS.Website.Controllers
             dt.Columns.Add("Reason", System.Type.GetType("System.String"));
             dt.Columns.Add("Remark", System.Type.GetType("System.String"));
             dt.Columns.Add("TypeTable", System.Type.GetType("System.String"));
+            dt.Columns.Add("TisCase", System.Type.GetType("System.String"));
+            dt.Columns.Add("TisCaseTotal", System.Type.GetType("System.String"));
 
             ds.Tables.Add(dt);
             return ds;
