@@ -108,27 +108,47 @@ function generateDataClick(lackLevel, url) {
         success: function (response) {
             $('.loading').hide();
             if (response.Success) {
-                
+                debugger;
                 $('#generated-data-container').html("");
+                $('#generated-details-container').html('');
+                $('#generated-detailsconvertion-container').html('');
+                $("#generated-ck5-container").html("");
+                
                 var data = response.Data;
                 //console.log(response.IsWithTisToTisReport);
                 if (response.IsEtilAlcohol) {
                     /*force to use tis to fa generate table*/
-                    var tableGeneratedEtilAlcohol = generateTable(data);
+                    var tableGeneratedEtilAlcohol = generateTableNew(data);
                     /*console.log(tableGenerated2);*/
                     $('#generated-data-container').append(tableGeneratedEtilAlcohol);
+
+                    var tableOldGenerated = generateTable(data);
+                    $('#generated-data-container-old').append(tableOldGenerated);
                 } else {
                     if (response.IsWithTisToTisReport) {
-                        var tableGenerated1 = generateTableWithTisToTis(data);
+                        var tableGenerated1 = generateTableNew(data);
                         /*console.log(tableGenerated1);*/
                         $('#generated-data-container').append(tableGenerated1);
+
+                        var tableOldGenerated1 = generateTableWithTisToTis(data);
+                        $('#generated-data-container-old').append(tableOldGenerated1);
                     } else {
-                        var tableGenerated2 = generateTable(data);
+                        var tableGenerated2 = generateTableNew(data);
                         /*console.log(tableGenerated2);*/
                         $('#generated-data-container').append(tableGenerated2);
+
+                        var tableOldGenerated2 = generateTable(data);
+                        $('#generated-data-container-old').append(tableOldGenerated2);
                     }
                 }
+                var tableCalculationsDetail = generateTableDetails(data);
+                
+                $('#generated-details-container').append(tableCalculationsDetail.noconvertion);
 
+                var tableck5 = generateTableCk5(data);
+                $("#generated-ck5-container").append(tableck5);
+
+                $('#generated-detailsconvertion-container').append(tableCalculationsDetail.convertion);
                 if (response.HasWasteData) {
                     //$('#WasteQty').prop('disabled', false);
                     //$('#WasteUom').prop('disabled', false);

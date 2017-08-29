@@ -10,5 +10,7 @@
         public string NppbkcCity { get; set; }
 
         public string PoaPrintedName { get; set; }
+
+        public string Npwp { get; set; }
     }
 }

@@ -44,6 +44,13 @@ namespace Sampoerna.EMS.BLL.Services
             return _repository.Get(queryFilter, null, "UOM").ToList();
         }
 
+        public List<ZAIDM_EX_MATERIAL> GetByMaterialListAndPlantList(List<string> materialList, List<string> plantList)
+        {
+            Expression<Func<ZAIDM_EX_MATERIAL, bool>> queryFilter =
+                c => plantList.Contains(c.WERKS) && materialList.Contains(c.STICKER_CODE);
+            return _repository.Get(queryFilter, null, "UOM,ZAIDM_EX_GOODTYP").ToList();
+        }
+
         public List<ZAIDM_EX_MATERIAL> GetByPlantIdAndExGoodType(List<string> plantId, string exGoodType)
         {
             return _repository.Get(c => plantId.Contains(c.WERKS) && c.EXC_GOOD_TYP == exGoodType).ToList();

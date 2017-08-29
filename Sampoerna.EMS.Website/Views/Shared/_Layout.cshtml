@@ -679,6 +679,37 @@
 
 
                             break;
+                            
+                        case Enums.MenuList.LACK10:
+                            <div class="list-group">
+                                <a href="@Url.Action("Dashboard", "LACK10")" class="list-group-item" style="display: none;">
+                                    <i class="fa fa-tachometer"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                                <div id="MenuLack10Document" class="collapse-menu open">
+                                    <a href="#" class="list-group-item list-parent">
+                                        <i class="fa fa-clipboard"></i>
+                                        <span>Document List</span>
+                                        <i class="down fa fa-caret-down"></i>
+                                    </a>
+                                    <ul class="child list">
+                                        <li><a id="MenuLack10OpenDocument" href="@Url.Action("Index","LACK10")"><i class="fa fa-angle-right"></i>Open Document</a></li>
+                                        <li><a id="MenuLack10CompletedDocument" href="@Url.Action("CompletedDocument", "LACK10")"><i class="fa fa-angle-right"></i> Completed Document</a></li>
+                                    </ul>
+                                </div>
+                                <div id="MenuLack10Report" class="collapse-menu">
+                                    <a href="#" class="list-group-item list-parent">
+                                        <i class="fa fa-signal"></i>
+                                        <span>Report</span>
+                                        <i class="down fa fa-caret-down"></i>
+                                    </a>
+                                    <ul class="child list">
+                                        <li><a id="MenuLack10SummaryReport" href="@Url.Action("SummaryReports", "LACK10")"><i class="fa fa-angle-right"></i>Summary Report</a></li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                            break;
                     }
                 }
             </div>

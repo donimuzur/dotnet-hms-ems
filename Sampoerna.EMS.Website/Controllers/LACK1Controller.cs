@@ -651,6 +651,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             // ReSharper disable once PossibleInvalidOperationException
             var lack1Data = _lack1Bll.GetPrintOutData(id.Value);
+            
             if (lack1Data == null)
                 HttpNotFound();
 
@@ -683,6 +684,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var rpt = new ReportClass
             {
                 FileName = ConfigurationManager.AppSettings["Report_Path"] + "LACK1\\Lack1PrintOut.rpt"
+                //"E:\\Source code\\vox teneo\\net_hms_ems\\Sampoerna.EMS.Website\\Reports\\LACK1\\Lack1PrintOutNew.rpt"
             };
             rpt.Load();
             rpt.SetDataSource(dataSet);
@@ -738,13 +740,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
             }
 
-            dsReport.Lack1.AddLack1Row(dMasterRow);
-            
-            //for total
-            var prodList = Mapper.Map<List<Lack1ProductionDetailItemSummaryByProdTypeModel>>(data.FusionSummaryProductionByProdTypeList);
-            var summaryProductionList = ProcessSummaryProductionDetails(prodList);
-            var totalSummaryProductionList = string.Join(Environment.NewLine,
-                summaryProductionList.Select(d => d.Amount.ToString("N2") + " " + d.UomDesc).ToList());
+            var usage = data.Usage;
+            var totalAmount = data.Lack1IncomeDetail.Sum(d => d.AMOUNT);
 
             //for each Excisable Goods Type per tis to tis and tis to fa
             //process tis to fa first
@@ -762,10 +759,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
                 loopCountForUsage = prodTisToFa.ProductionSummaryByProdTypeList.Count;
             }
-            
 
 
-            var usage = data.Usage;
+
+
 
             /*skip this logic for etil alcohol, although IsTisToTis flag is checked*/
             if (data.IsTisToTis && !data.IsEtilAlcohol)
@@ -790,10 +787,29 @@ namespace Sampoerna.EMS.Website.Controllers
 
             }
 
+            if(data.Lack1UomId == "L"){
+                dMasterRow.BKCUom = "liter";
+            }else{
+                dMasterRow.BKCUom = "kg";
+                usage = usage / 1000;
+                totalAmount = totalAmount / 1000;
+            }
+            dMasterRow.TotalUsage = usage.ToString("N2"); ;
+            dMasterRow.TotalCk5 = totalAmount.ToString("N2");
+            
+            
+            //for total
+            var prodList = Mapper.Map<List<Lack1ProductionDetailItemSummaryByProdTypeModel>>(data.FusionSummaryProductionByProdTypeList);
+            var summaryProductionList = ProcessSummaryProductionDetails(prodList);
+            var totalSummaryProductionList = string.Join(Environment.NewLine,
+                summaryProductionList.Select(d => d.Amount.ToString("N2") + " " + d.UomDesc).ToList());
+
+            
+
             //set detail item
             //if (data.Lack1IncomeDetail.Count <= 0) return dsReport;
 
-            var totalAmount = data.Lack1IncomeDetail.Sum(d => d.AMOUNT);
+            
             //var endingBalance = (data.BeginingBalance - (data.Usage + (data.UsageTisToTis.HasValue ? data.UsageTisToTis.Value  : 0)) + data.TotalIncome - data.ReturnQty);
             var endingBalance = data.CloseBalance;
             var noted = !string.IsNullOrEmpty(data.Noted) ? data.Noted.Replace("<br />", Environment.NewLine) : string.Empty;
@@ -813,47 +829,153 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (data.Lack1IncomeDetail.Count > 0)
             {
+                var row = 0;
                 foreach (var item in data.Lack1IncomeDetail)
                 {
+                    row++;
                     var detailRow = dsReport.Lack1Items.NewLack1ItemsRow();
                     detailRow.BeginningBalance = data.BeginingBalance.ToString("N2");
                     detailRow.Ck5RegNumber = item.REGISTRATION_NUMBER;
                     detailRow.Ck5RegDate = item.REGISTRATION_DATE.HasValue
                         ? item.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy")
                         : string.Empty;
-                    detailRow.Ck5Amount = item.AMOUNT.ToString("N2");
-                    detailRow.Usage = usage.ToString("N2");
+
+                    var amount = item.AMOUNT;
+                    if (data.Lack1UomId != "L")
+                    
+                    {
+                        
+                        amount = item.AMOUNT / 1000;
+                        
+                    }
+                    detailRow.Ck5Amount = amount.ToString("N3");
+                    detailRow.Usage = usage.ToString("N3");
                     detailRow.ListJenisBKC = summaryProductionJenis;
                     detailRow.ListJumlahBKC = summaryProductionAmount;
-                    detailRow.EndingBalance = endingBalance.ToString("N2");
+                    detailRow.EndingBalance = endingBalance.ToString("N3");
                     detailRow.Noted = docToDisplay;
-                    detailRow.Ck5TotalAmount = totalAmount.ToString("N2");
+                    detailRow.Ck5TotalAmount = totalAmount.ToString("N3");
                     detailRow.ListTotalJumlahBKC = totalSummaryProductionList;
+                    detailRow.NoUrut = row.ToString();
 
                     dsReport.Lack1Items.AddLack1ItemsRow(detailRow);
 
                 }
             }
-            else
+            //else
+            //{
+            //    var detailRow = dsReport.Lack1Items.NewLack1ItemsRow();
+            //    detailRow.BeginningBalance = data.BeginingBalance.ToString("N2");
+            //    detailRow.Ck5RegNumber = string.Empty;
+            //    detailRow.Ck5RegDate = string.Empty;
+            //    detailRow.Ck5Amount = "0";
+            //    detailRow.Usage = usage.ToString("N2");
+            //    detailRow.ListJenisBKC = summaryProductionJenis;
+            //    detailRow.ListJumlahBKC = summaryProductionAmount;
+            //    detailRow.EndingBalance = endingBalance.ToString("N2");
+            //    detailRow.Noted = docToDisplay;
+            //    detailRow.Ck5TotalAmount = totalAmount.ToString("N2");
+            //    detailRow.ListTotalJumlahBKC = string.IsNullOrEmpty(totalSummaryProductionList) ? "0" : totalSummaryProductionList;
+            //    //detailRow.NoUrut = Row;
+            //    dsReport.Lack1Items.AddLack1ItemsRow(detailRow);
+            //}
+            var dataCalculations = data.CalculationDetails.Where(x => x.Type == Enums.Lack1Calculation.WithConvertion).ToList();
+            if (dataCalculations.Count > 0)
             {
-                var detailRow = dsReport.Lack1Items.NewLack1ItemsRow();
-                detailRow.BeginningBalance = data.BeginingBalance.ToString("N2");
-                detailRow.Ck5RegNumber = string.Empty;
-                detailRow.Ck5RegDate = string.Empty;
-                detailRow.Ck5Amount = "0";
-                detailRow.Usage = usage.ToString("N2");
-                detailRow.ListJenisBKC = summaryProductionJenis;
-                detailRow.ListJumlahBKC = summaryProductionAmount;
-                detailRow.EndingBalance = endingBalance.ToString("N2");
-                detailRow.Noted = docToDisplay;
-                detailRow.Ck5TotalAmount = totalAmount.ToString("N2");
-                detailRow.ListTotalJumlahBKC = string.IsNullOrEmpty(totalSummaryProductionList) ? "0" : totalSummaryProductionList;
+                var row = 0;
+                foreach (var item in dataCalculations)
+                {
+                    row++;
+                    var detailRow = dsReport.Lack1Calculations.NewLack1CalculationsRow();
+                    detailRow.NoUrut = row.ToString();
+                    detailRow.JenisMaterial = data.ExGoodsTypeDesc;
 
-                dsReport.Lack1Items.AddLack1ItemsRow(detailRow);
+                    var amountUsage = item.AmountUsage;
+                    var amountProd = item.AmountProduction;
+                    if (data.Lack1UomId != "L")
+                    {
+                        amountUsage = item.AmountUsage / 1000;
+                    }
+
+                    if (item.UomProduction == "G")
+                    {
+                        amountProd = item.AmountProduction / 1000;
+                    }
+
+                    detailRow.AmountMaterial = amountUsage.ToString("N3");
+                    detailRow.JenisProduksi = item.BrandCe;
+                    detailRow.JumlahProduksi = amountProd.ToString("N3");
+
+
+                    dsReport.Lack1Calculations.AddLack1CalculationsRow(detailRow);
+
+                }
+
+                var uomProdList = dataCalculations.Select(x => x.UomProduction).Distinct().ToList();
+
+                dMasterRow.ProdUom = "";
+                if (uomProdList.Contains("G"))
+                {
+                    dMasterRow.ProdUom = "kg";
+                }
+
+                if (uomProdList.Contains("Btg"))
+                {
+                    if (dMasterRow.ProdUom != "") dMasterRow.ProdUom = "kg/batang";
+                    else dMasterRow.ProdUom = "batang";
+                }
             }
 
+            dMasterRow.Npwp = data.Npwp;
+
+            dsReport.Lack1.AddLack1Row(dMasterRow);
+
+            if (data.PeriodSummaries.Count > 0)
+            {
+
+                foreach (var item in data.PeriodSummaries)
+                {
+
+                    var detailRow = dsReport.Lack1ItemsNew.NewLack1ItemsNewRow();
+                    var saldo = item.Saldo;
+                    if (data.Lack1UomId == "L")
+                    {
+                        detailRow.Uraian = EnumHelper.GetDescription(item.Type);
+                        detailRow.Pemasukan = item.Income.ToString("N3");
+                        detailRow.Penggunaan = item.Usage.ToString("N3");
+                        detailRow.Lab = item.Laboratorium.ToString("N3");
+                        detailRow.Return = item.Return.ToString("N3");
+                    }
+                    else
+                    {
+                        detailRow.Uraian = EnumHelper.GetDescription(item.Type);
+                        detailRow.Pemasukan = (item.Income / 1000).ToString("N3");
+                        detailRow.Penggunaan = (item.Usage / 1000).ToString("N3");
+                        detailRow.Lab = (item.Laboratorium / 1000).ToString("N3");
+                        detailRow.Return = (item.Return / 1000).ToString("N3");
+                        saldo = item.Saldo / 1000;
+                    }
 
 
+                    
+
+                    if (item.Type == Enums.Lack1SummaryPeriod.Current)
+                    {
+                        detailRow.Saldo = "";
+                    }
+                    else
+                    {
+                        detailRow.Saldo = saldo.ToString("N3");
+
+                    }
+
+
+
+
+                    dsReport.Lack1ItemsNew.AddLack1ItemsNewRow(detailRow);
+
+                }
+            }
 
             return dsReport;
         }

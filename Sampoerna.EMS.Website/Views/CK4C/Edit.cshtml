@@ -251,6 +251,10 @@
             }
 
         });
+
+        $('#btn-changelog-export-xls').click(function () {
+            location.href = '@Url.Action("ExportClientsListToExcel", "CK4C", new { id = Model.Details.Ck4CId })';
+        });
     });
 
     function ChangeCompany(comp, plant, nppbkc) {

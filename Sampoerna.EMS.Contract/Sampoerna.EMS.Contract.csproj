@@ -56,6 +56,9 @@
     <Compile Include="ICK4CItemBLL.cs" />
     <Compile Include="ICK5BLL.cs" />
     <Compile Include="ICountryBLL.cs" />
+    <Compile Include="ILACK10BLL.cs" />
+    <Compile Include="ILACK10DecreeDocBLL.cs" />
+    <Compile Include="ILACK10ItemBLL.cs" />
     <Compile Include="ILFA1BLL.cs" />
     <Compile Include="ILACK2BLL.cs" />
     <Compile Include="IMasterDataApprovalSettingBLL.cs" />

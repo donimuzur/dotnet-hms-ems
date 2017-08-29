@@ -512,21 +512,26 @@
           <Property Name="DOCUMENT_NOTED" Type="nvarchar" MaxLength="255" />
           <Property Name="USAGE_TISTOTIS" Type="decimal" Precision="18" Scale="5" />
           <Property Name="IS_SUPPLIER_IMPORT" Type="bit" />
+          <Property Name="LABORATORIUM" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="LACK1_CALCULATION_DETAIL">
           <Key>
             <PropertyRef Name="LACK1_CALCULATION_DETAIL_ID" />
           </Key>
-          <Property Name="LACK1_CALCULATION_DETAIL_ID" Type="int" Nullable="false" />
-          <Property Name="LACK1_ID" Type="int" Nullable="false" />
+          <Property Name="LACK1_CALCULATION_DETAIL_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LACK1_ID" Type="int" />
           <Property Name="MATERIAL_ID" Type="nvarchar" MaxLength="18" />
           <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
           <Property Name="AMOUNT_USAGE" Type="decimal" Precision="18" Scale="3" />
+          <Property Name="UOM_USAGE" Type="nvarchar" MaxLength="5" />
           <Property Name="ORDR" Type="nvarchar" MaxLength="10" />
           <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" />
+          <Property Name="BRAND_CE" Type="nvarchar" MaxLength="65" />
           <Property Name="AMOUNT_PRODUCTION" Type="decimal" Precision="18" Scale="3" />
+          <Property Name="UOM_PRODUCTION" Type="nvarchar" MaxLength="5" />
           <Property Name="PROPORTIONAL" Type="decimal" Precision="18" Scale="8" />
           <Property Name="TYPE" Type="int" />
+          <Property Name="CONVERTION" Type="decimal" Precision="18" Scale="5" />
         </EntityType>
         <EntityType Name="LACK1_DOCUMENT">
           <Key>
@@ -555,6 +560,19 @@
           <Property Name="LACK1_PBCK1_MAPPING_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="LACK1_ID" Type="int" />
           <Property Name="PBCK1_ID" Type="int" />
+        </EntityType>
+        <EntityType Name="LACK1_PERIOD_SUMMARY">
+          <Key>
+            <PropertyRef Name="LACK1_SUMMARY_ID" />
+          </Key>
+          <Property Name="LACK1_SUMMARY_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LACK1_ID" Type="int" />
+          <Property Name="INCOME" Type="decimal" Precision="18" Scale="3" />
+          <Property Name="USAGE" Type="decimal" Precision="18" Scale="3" />
+          <Property Name="LABORATORIUM" Type="decimal" Precision="18" Scale="3" />
+          <Property Name="CK5_RETURN" Type="decimal" Precision="18" Scale="3" />
+          <Property Name="SALDO" Type="decimal" Precision="18" Scale="3" />
+          <Property Name="TYPE" Type="int" />
         </EntityType>
         <EntityType Name="LACK1_PLANT">
           <Key>
@@ -617,6 +635,63 @@
           <Property Name="CONVERTED_QTY" Type="decimal" Precision="18" Scale="5" />
           <Property Name="CONVERTED_UOM_ID" Type="nvarchar" MaxLength="5" />
           <Property Name="CONVERTED_UOM_DESC" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="LACK10">
+          <Key>
+            <PropertyRef Name="LACK10_ID" />
+          </Key>
+          <Property Name="LACK10_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LACK10_NUMBER" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="COMPANY_ID" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="COMPANY_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="COMPANY_NPWP" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="PERIOD_MONTH" Type="int" Nullable="false" />
+          <Property Name="PERIOD_YEAR" Type="int" Nullable="false" />
+          <Property Name="NPPBKC_ID" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="PLANT_ID" Type="nvarchar" MaxLength="4" />
+          <Property Name="PLANT_NAME" Type="nvarchar" MaxLength="30" />
+          <Property Name="SUBMISSION_DATE" Type="datetime" Nullable="false" />
+          <Property Name="REPORT_TYPE" Type="int" Nullable="false" />
+          <Property Name="STATUS" Type="int" Nullable="false" />
+          <Property Name="GOV_STATUS" Type="int" />
+          <Property Name="DECREE_DATE" Type="datetime" />
+          <Property Name="REASON" Type="nvarchar" MaxLength="250" />
+          <Property Name="REMARK" Type="nvarchar" MaxLength="250" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="APPROVED_DATE" Type="datetime" />
+          <Property Name="APPROVED_BY_MANAGER" Type="nvarchar" MaxLength="50" />
+          <Property Name="APPROVED_BY_MANAGER_DATE" Type="datetime" />
+          <Property Name="REJECTED_BY" Type="nvarchar" MaxLength="50" />
+          <Property Name="REJECTED_DATE" Type="datetime" />
+        </EntityType>
+        <EntityType Name="LACK10_DECREE_DOC">
+          <Key>
+            <PropertyRef Name="LACK10_DECREE_DOC_ID" />
+          </Key>
+          <Property Name="LACK10_DECREE_DOC_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LACK10_ID" Type="int" Nullable="false" />
+          <Property Name="FILE_NAME" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="FILE_PATH" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="CREATED_DATE" Type="datetime" Nullable="false" />
+          <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LACK10_ITEM">
+          <Key>
+            <PropertyRef Name="LACK10_ITEM_ID" />
+          </Key>
+          <Property Name="LACK10_ITEM_ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LACK10_ID" Type="int" Nullable="false" />
+          <Property Name="FA_CODE" Type="nvarchar" MaxLength="18" Nullable="false" />
+          <Property Name="BRAND_DESCRIPTION" Type="nvarchar" MaxLength="65" />
+          <Property Name="WERKS" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="PLANT_NAME" Type="nvarchar" MaxLength="30" />
+          <Property Name="TYPE" Type="nvarchar" MaxLength="50" />
+          <Property Name="WASTE_VALUE" Type="decimal" Precision="18" Scale="3" />
+          <Property Name="UOM" Type="nvarchar" MaxLength="5" />
         </EntityType>
         <EntityType Name="LACK2">
           <Key>
@@ -1390,6 +1465,7 @@
           <Property Name="CREATED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="STAMP_WASTE_QTY" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="USE_FOR_LACK10" Type="bit" />
         </EntityType>
         <EntityType Name="WASTE_ROLE">
           <Key>
@@ -1686,7 +1762,7 @@
           <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="50" />
           <Property Name="IS_DELETED" Type="bit" />
         </EntityType>
-        <Association Name="FK__FILE_UPLO__CREAT__66EA454A">
+        <Association Name="FK__FILE_UPLO__CREAT__7167D3BD">
           <End Role="USER" Type="Self.USER" Multiplicity="1" />
           <End Role="FILE_UPLOAD" Type="Self.FILE_UPLOAD" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1698,7 +1774,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__FILE_UPLO__LASTM__68D28DBC">
+        <Association Name="FK__FILE_UPLO__LASTM__73501C2F">
           <End Role="USER" Type="Self.USER" Multiplicity="1" />
           <End Role="FILE_UPLOAD" Type="Self.FILE_UPLOAD" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1710,7 +1786,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__POA_EXCIS__POA_I__60083D91">
+        <Association Name="FK__POA_EXCIS__POA_I__6A85CC04">
           <End Role="POA" Type="Self.POA" Multiplicity="1" />
           <End Role="POA_EXCISER" Type="Self.POA_EXCISER" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1722,7 +1798,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ZAIDM_EX___LASTA__3B95D2F1">
+        <Association Name="FK__ZAIDM_EX___LASTA__46136164">
           <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
           <End Role="ZAIDM_EX_PRODTYP" Type="Self.ZAIDM_EX_PRODTYP" Multiplicity="*" />
           <ReferentialConstraint>
@@ -2143,7 +2219,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_LACK1_CALCULATION_DETAIL_LACK1">
-          <End Role="LACK1" Type="Self.LACK1" Multiplicity="1" />
+          <End Role="LACK1" Type="Self.LACK1" Multiplicity="0..1" />
           <End Role="LACK1_CALCULATION_DETAIL" Type="Self.LACK1_CALCULATION_DETAIL" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="LACK1">
@@ -2223,6 +2299,18 @@
             </Principal>
             <Dependent Role="LACK1_PBCK1_MAPPING">
               <PropertyRef Name="PBCK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK1_PERIOD_SUMMARY_LACK1">
+          <End Role="LACK1" Type="Self.LACK1" Multiplicity="0..1" />
+          <End Role="LACK1_PERIOD_SUMMARY" Type="Self.LACK1_PERIOD_SUMMARY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LACK1">
+              <PropertyRef Name="LACK1_ID" />
+            </Principal>
+            <Dependent Role="LACK1_PERIOD_SUMMARY">
+              <PropertyRef Name="LACK1_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2357,6 +2445,102 @@
             </Principal>
             <Dependent Role="LACK1">
               <PropertyRef Name="WASTE_UOM" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK10_DECREE_DOC_LACK10">
+          <End Role="LACK10" Type="Self.LACK10" Multiplicity="1" />
+          <End Role="LACK10_DECREE_DOC" Type="Self.LACK10_DECREE_DOC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LACK10">
+              <PropertyRef Name="LACK10_ID" />
+            </Principal>
+            <Dependent Role="LACK10_DECREE_DOC">
+              <PropertyRef Name="LACK10_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK10_DECREE_DOC_USER">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="LACK10_DECREE_DOC" Type="Self.LACK10_DECREE_DOC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="LACK10_DECREE_DOC">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK10_ITEM_LACK10">
+          <End Role="LACK10" Type="Self.LACK10" Multiplicity="1" />
+          <End Role="LACK10_ITEM" Type="Self.LACK10_ITEM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LACK10">
+              <PropertyRef Name="LACK10_ID" />
+            </Principal>
+            <Dependent Role="LACK10_ITEM">
+              <PropertyRef Name="LACK10_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK10_ITEM_UOM">
+          <End Role="UOM" Type="Self.UOM" Multiplicity="0..1" />
+          <End Role="LACK10_ITEM" Type="Self.LACK10_ITEM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="LACK10_ITEM">
+              <PropertyRef Name="UOM" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK10_MONTH">
+          <End Role="MONTH" Type="Self.MONTH" Multiplicity="1" />
+          <End Role="LACK10" Type="Self.LACK10" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MONTH">
+              <PropertyRef Name="MONTH_ID" />
+            </Principal>
+            <Dependent Role="LACK10">
+              <PropertyRef Name="PERIOD_MONTH" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK10_USER_APPROVED_BY">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="LACK10" Type="Self.LACK10" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="LACK10">
+              <PropertyRef Name="APPROVED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK10_USER_CREATED_BY">
+          <End Role="USER" Type="Self.USER" Multiplicity="1" />
+          <End Role="LACK10" Type="Self.LACK10" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="LACK10">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK10_USER_MODIFIED_BY">
+          <End Role="USER" Type="Self.USER" Multiplicity="0..1" />
+          <End Role="LACK10" Type="Self.LACK10" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="LACK10">
+              <PropertyRef Name="MODIFIED_BY" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2911,18 +3095,6 @@
             </Principal>
             <Dependent Role="PBCK4_DOCUMENT">
               <PropertyRef Name="PBCK4_ID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PBCK4_ITEM_CK1">
-          <End Role="CK1" Type="Self.CK1" Multiplicity="0..1" />
-          <End Role="PBCK4_ITEM" Type="Self.PBCK4_ITEM" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CK1">
-              <PropertyRef Name="CK1_ID" />
-            </Principal>
-            <Dependent Role="PBCK4_ITEM">
-              <PropertyRef Name="CK1_ID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3830,10 +4002,14 @@
           <EntitySet Name="LACK1_DOCUMENT" EntityType="Self.LACK1_DOCUMENT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK1_INCOME_DETAIL" EntityType="Self.LACK1_INCOME_DETAIL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK1_PBCK1_MAPPING" EntityType="Self.LACK1_PBCK1_MAPPING" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LACK1_PERIOD_SUMMARY" EntityType="Self.LACK1_PERIOD_SUMMARY" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK1_PLANT" EntityType="Self.LACK1_PLANT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK1_PRODUCTION_DETAIL" EntityType="Self.LACK1_PRODUCTION_DETAIL" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK1_TRACKING" EntityType="Self.LACK1_TRACKING" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK1_TRACKING_ALCOHOL" EntityType="Self.LACK1_TRACKING_ALCOHOL" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LACK10" EntityType="Self.LACK10" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LACK10_DECREE_DOC" EntityType="Self.LACK10_DECREE_DOC" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LACK10_ITEM" EntityType="Self.LACK10_ITEM" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK2" EntityType="Self.LACK2" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK2_DOCUMENT" EntityType="Self.LACK2_DOCUMENT" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LACK2_ITEM" EntityType="Self.LACK2_ITEM" Schema="dbo" store:Type="Tables" />
@@ -3902,19 +4078,19 @@
           <EntitySet Name="ZAIDM_EX_PCODE" EntityType="Self.ZAIDM_EX_PCODE" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_PRODTYP" EntityType="Self.ZAIDM_EX_PRODTYP" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ZAIDM_EX_SERIES" EntityType="Self.ZAIDM_EX_SERIES" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__FILE_UPLO__CREAT__66EA454A" Association="Self.FK__FILE_UPLO__CREAT__66EA454A">
+          <AssociationSet Name="FK__FILE_UPLO__CREAT__7167D3BD" Association="Self.FK__FILE_UPLO__CREAT__7167D3BD">
             <End Role="USER" EntitySet="USER" />
             <End Role="FILE_UPLOAD" EntitySet="FILE_UPLOAD" />
           </AssociationSet>
-          <AssociationSet Name="FK__FILE_UPLO__LASTM__68D28DBC" Association="Self.FK__FILE_UPLO__LASTM__68D28DBC">
+          <AssociationSet Name="FK__FILE_UPLO__LASTM__73501C2F" Association="Self.FK__FILE_UPLO__LASTM__73501C2F">
             <End Role="USER" EntitySet="USER" />
             <End Role="FILE_UPLOAD" EntitySet="FILE_UPLOAD" />
           </AssociationSet>
-          <AssociationSet Name="FK__POA_EXCIS__POA_I__60083D91" Association="Self.FK__POA_EXCIS__POA_I__60083D91">
+          <AssociationSet Name="FK__POA_EXCIS__POA_I__6A85CC04" Association="Self.FK__POA_EXCIS__POA_I__6A85CC04">
             <End Role="POA" EntitySet="POA" />
             <End Role="POA_EXCISER" EntitySet="POA_EXCISER" />
           </AssociationSet>
-          <AssociationSet Name="FK__ZAIDM_EX___LASTA__3B95D2F1" Association="Self.FK__ZAIDM_EX___LASTA__3B95D2F1">
+          <AssociationSet Name="FK__ZAIDM_EX___LASTA__46136164" Association="Self.FK__ZAIDM_EX___LASTA__46136164">
             <End Role="USER" EntitySet="USER" />
             <End Role="ZAIDM_EX_PRODTYP" EntitySet="ZAIDM_EX_PRODTYP" />
           </AssociationSet>
@@ -4082,6 +4258,10 @@
             <End Role="PBCK1" EntitySet="PBCK1" />
             <End Role="LACK1_PBCK1_MAPPING" EntitySet="LACK1_PBCK1_MAPPING" />
           </AssociationSet>
+          <AssociationSet Name="FK_LACK1_PERIOD_SUMMARY_LACK1" Association="Self.FK_LACK1_PERIOD_SUMMARY_LACK1">
+            <End Role="LACK1" EntitySet="LACK1" />
+            <End Role="LACK1_PERIOD_SUMMARY" EntitySet="LACK1_PERIOD_SUMMARY" />
+          </AssociationSet>
           <AssociationSet Name="FK_LACK1_PLANT_LACK1" Association="Self.FK_LACK1_PLANT_LACK1">
             <End Role="LACK1" EntitySet="LACK1" />
             <End Role="LACK1_PLANT" EntitySet="LACK1_PLANT" />
@@ -4125,6 +4305,38 @@
           <AssociationSet Name="FK_LACK1_WASTE_UOM" Association="Self.FK_LACK1_WASTE_UOM">
             <End Role="UOM" EntitySet="UOM" />
             <End Role="LACK1" EntitySet="LACK1" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK10_DECREE_DOC_LACK10" Association="Self.FK_LACK10_DECREE_DOC_LACK10">
+            <End Role="LACK10" EntitySet="LACK10" />
+            <End Role="LACK10_DECREE_DOC" EntitySet="LACK10_DECREE_DOC" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK10_DECREE_DOC_USER" Association="Self.FK_LACK10_DECREE_DOC_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="LACK10_DECREE_DOC" EntitySet="LACK10_DECREE_DOC" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK10_ITEM_LACK10" Association="Self.FK_LACK10_ITEM_LACK10">
+            <End Role="LACK10" EntitySet="LACK10" />
+            <End Role="LACK10_ITEM" EntitySet="LACK10_ITEM" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK10_ITEM_UOM" Association="Self.FK_LACK10_ITEM_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="LACK10_ITEM" EntitySet="LACK10_ITEM" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK10_MONTH" Association="Self.FK_LACK10_MONTH">
+            <End Role="MONTH" EntitySet="MONTH" />
+            <End Role="LACK10" EntitySet="LACK10" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK10_USER_APPROVED_BY" Association="Self.FK_LACK10_USER_APPROVED_BY">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="LACK10" EntitySet="LACK10" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK10_USER_CREATED_BY" Association="Self.FK_LACK10_USER_CREATED_BY">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="LACK10" EntitySet="LACK10" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK10_USER_MODIFIED_BY" Association="Self.FK_LACK10_USER_MODIFIED_BY">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="LACK10" EntitySet="LACK10" />
           </AssociationSet>
           <AssociationSet Name="FK_LACK2_DOCUMENT_LACK2" Association="Self.FK_LACK2_DOCUMENT_LACK2">
             <End Role="LACK2" EntitySet="LACK2" />
@@ -4309,10 +4521,6 @@
           <AssociationSet Name="FK_PBCK4_DOCUMENT_PBCK4" Association="Self.FK_PBCK4_DOCUMENT_PBCK4">
             <End Role="PBCK4" EntitySet="PBCK4" />
             <End Role="PBCK4_DOCUMENT" EntitySet="PBCK4_DOCUMENT" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PBCK4_ITEM_CK1" Association="Self.FK_PBCK4_ITEM_CK1">
-            <End Role="CK1" EntitySet="CK1" />
-            <End Role="PBCK4_ITEM" EntitySet="PBCK4_ITEM" />
           </AssociationSet>
           <AssociationSet Name="FK_PBCK4_ITEM_PBCK4" Association="Self.FK_PBCK4_ITEM_PBCK4">
             <End Role="PBCK4" EntitySet="PBCK4" />
@@ -5415,17 +5623,11 @@
             <End Role="EX_GROUP_TYPE" EntitySet="EX_GROUP_TYPE" />
             <End Role="QUOTA_MONITORING" EntitySet="QUOTA_MONITORING" />
           </AssociationSet>
-          <EntitySet Name="LACK1_CALCULATION_DETAIL" EntityType="EMSModel.LACK1_CALCULATION_DETAIL" />
-          <AssociationSet Name="FK_LACK1_CALCULATION_DETAIL_LACK1" Association="EMSModel.FK_LACK1_CALCULATION_DETAIL_LACK1">
-            <End Role="LACK1" EntitySet="LACK1" />
-            <End Role="LACK1_CALCULATION_DETAIL" EntitySet="LACK1_CALCULATION_DETAIL" />
-          </AssociationSet>
           <AssociationSet Name="FK__ZAIDM_EX___LASTA__3B95D2F1" Association="EMSModel.FK__ZAIDM_EX___LASTA__3B95D2F1">
             <End Role="USER" EntitySet="USER" />
             <End Role="ZAIDM_EX_PRODTYP" EntitySet="ZAIDM_EX_PRODTYP" />
           </AssociationSet>
           <EntitySet Name="FILE_UPLOAD" EntityType="EMSModel.FILE_UPLOAD" />
-          <EntitySet Name="NlogLogs" EntityType="EMSModel.NlogLogs" />
           <AssociationSet Name="FK__FILE_UPLO__CREAT__66EA454A" Association="EMSModel.FK__FILE_UPLO__CREAT__66EA454A">
             <End Role="USER" EntitySet="USER" />
             <End Role="FILE_UPLOAD" EntitySet="FILE_UPLOAD" />
@@ -5439,6 +5641,53 @@
             <End Role="POA" EntitySet="POA" />
             <End Role="POA_EXCISER" EntitySet="POA_EXCISER" />
           </AssociationSet>
+          <EntitySet Name="LACK10" EntityType="EMSModel.LACK10" />
+          <EntitySet Name="LACK10_DECREE_DOC" EntityType="EMSModel.LACK10_DECREE_DOC" />
+          <EntitySet Name="LACK10_ITEM" EntityType="EMSModel.LACK10_ITEM" />
+          <AssociationSet Name="FK_LACK10_DECREE_DOC_LACK10" Association="EMSModel.FK_LACK10_DECREE_DOC_LACK10">
+            <End Role="LACK10" EntitySet="LACK10" />
+            <End Role="LACK10_DECREE_DOC" EntitySet="LACK10_DECREE_DOC" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK10_ITEM_LACK10" Association="EMSModel.FK_LACK10_ITEM_LACK10">
+            <End Role="LACK10" EntitySet="LACK10" />
+            <End Role="LACK10_ITEM" EntitySet="LACK10_ITEM" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK10_MONTH" Association="EMSModel.FK_LACK10_MONTH">
+            <End Role="MONTH" EntitySet="MONTH" />
+            <End Role="LACK10" EntitySet="LACK10" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK10_USER_APPROVED_BY" Association="EMSModel.FK_LACK10_USER_APPROVED_BY">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="LACK10" EntitySet="LACK10" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK10_USER_CREATED_BY" Association="EMSModel.FK_LACK10_USER_CREATED_BY">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="LACK10" EntitySet="LACK10" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK10_USER_MODIFIED_BY" Association="EMSModel.FK_LACK10_USER_MODIFIED_BY">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="LACK10" EntitySet="LACK10" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK10_DECREE_DOC_USER" Association="EMSModel.FK_LACK10_DECREE_DOC_USER">
+            <End Role="USER" EntitySet="USER" />
+            <End Role="LACK10_DECREE_DOC" EntitySet="LACK10_DECREE_DOC" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LACK10_ITEM_UOM" Association="EMSModel.FK_LACK10_ITEM_UOM">
+            <End Role="UOM" EntitySet="UOM" />
+            <End Role="LACK10_ITEM" EntitySet="LACK10_ITEM" />
+          </AssociationSet>
+          <EntitySet Name="NlogLogs" EntityType="EMSModel.NlogLogs" />
+          <EntitySet Name="LACK1_PERIOD_SUMMARY" EntityType="EMSModel.LACK1_PERIOD_SUMMARY" />
+          <AssociationSet Name="FK_LACK1_PERIOD_SUMMARY_LACK1" Association="EMSModel.FK_LACK1_PERIOD_SUMMARY_LACK1">
+            <End Role="LACK1" EntitySet="LACK1" />
+            <End Role="LACK1_PERIOD_SUMMARY" EntitySet="LACK1_PERIOD_SUMMARY" />
+          </AssociationSet>
+          <EntitySet Name="LACK1_CALCULATION_DETAIL" EntityType="EMSModel.LACK1_CALCULATION_DETAIL" />
+          <AssociationSet Name="FK_LACK1_CALCULATION_DETAIL_LACK1" Association="EMSModel.FK_LACK1_CALCULATION_DETAIL_LACK1">
+            <End Role="LACK1" EntitySet="LACK1" />
+            <End Role="LACK1_CALCULATION_DETAIL" EntitySet="LACK1_CALCULATION_DETAIL" />
+          </AssociationSet>
+          
           </EntityContainer>
         <EnumType Name="CK5Type" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.CK5Type" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
         <EnumType Name="DocumentStatus" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.DocumentStatus" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
@@ -5543,6 +5792,7 @@
           <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_MONTH" FromRole="MONTH" ToRole="LACK1" />
           <NavigationProperty Name="CK4C" Relationship="EMSModel.FK_CK4C_MONTH" FromRole="MONTH" ToRole="CK4C" />
           <NavigationProperty Name="LACK2" Relationship="EMSModel.FK_LACK2_MONTH" FromRole="MONTH" ToRole="LACK2" />
+          <NavigationProperty Name="LACK10" Relationship="EMSModel.FK_LACK10_MONTH" FromRole="MONTH" ToRole="LACK10" />
         </EntityType>
         <EntityType Name="PAGE">
           <Key>
@@ -6436,6 +6686,10 @@
           <NavigationProperty Name="ZAIDM_EX_PRODTYP" Relationship="EMSModel.FK__ZAIDM_EX___LASTA__3B95D2F1" FromRole="USER" ToRole="ZAIDM_EX_PRODTYP" />
           <NavigationProperty Name="FILE_UPLOAD" Relationship="EMSModel.FK__FILE_UPLO__CREAT__66EA454A" FromRole="USER" ToRole="FILE_UPLOAD" />
           <NavigationProperty Name="FILE_UPLOAD1" Relationship="EMSModel.FK__FILE_UPLO__LASTM__68D28DBC" FromRole="USER" ToRole="FILE_UPLOAD" />
+          <NavigationProperty Name="LACK10" Relationship="EMSModel.FK_LACK10_USER_APPROVED_BY" FromRole="USER" ToRole="LACK10" />
+          <NavigationProperty Name="LACK101" Relationship="EMSModel.FK_LACK10_USER_CREATED_BY" FromRole="USER" ToRole="LACK10" />
+          <NavigationProperty Name="LACK102" Relationship="EMSModel.FK_LACK10_USER_MODIFIED_BY" FromRole="USER" ToRole="LACK10" />
+          <NavigationProperty Name="LACK10_DECREE_DOC" Relationship="EMSModel.FK_LACK10_DECREE_DOC_USER" FromRole="USER" ToRole="LACK10_DECREE_DOC" />
           </EntityType>
         <EntityType Name="USER_BROLE">
           <Key>
@@ -7632,6 +7886,7 @@
           <NavigationProperty Name="CK4C_ITEM" Relationship="EMSModel.FK_CK4C_ITEM_UOM" FromRole="UOM" ToRole="CK4C_ITEM" />
           <NavigationProperty Name="LACK1_PRODUCTION_DETAIL" Relationship="EMSModel.FK_LACK1_PRODUCTION_DETAIL_UOM" FromRole="UOM" ToRole="LACK1_PRODUCTION_DETAIL" />
           <NavigationProperty Name="PBCK1_PROD_CONVERTER" Relationship="EMSModel.FK_PBCK1_PROD_CONVERTER_UOM" FromRole="UOM" ToRole="PBCK1_PROD_CONVERTER" />
+          <NavigationProperty Name="LACK10_ITEM" Relationship="EMSModel.FK_LACK10_ITEM_UOM" FromRole="UOM" ToRole="LACK10_ITEM" />
         </EntityType>
         <Association Name="FK_CK5_UOM">
           <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
@@ -7750,6 +8005,8 @@
           <Property Name="USAGE_TISTOTIS" Type="Decimal" Precision="18" Scale="5" />
           <NavigationProperty Name="LACK1_TRACKING_ALCOHOL" Relationship="EMSModel.FK_LACK1_TRACKING_ALCOHOL_LACK1" FromRole="LACK1" ToRole="LACK1_TRACKING_ALCOHOL" />
           <Property Name="IS_SUPPLIER_IMPORT" Type="Boolean" />
+          <NavigationProperty Name="LACK1_PERIOD_SUMMARY" Relationship="EMSModel.FK_LACK1_PERIOD_SUMMARY_LACK1" FromRole="LACK1" ToRole="LACK1_PERIOD_SUMMARY" />
+          <Property Name="LABORATORIUM" Type="Decimal" Precision="18" Scale="2" />
           <NavigationProperty Name="LACK1_CALCULATION_DETAIL" Relationship="EMSModel.FK_LACK1_CALCULATION_DETAIL_LACK1" FromRole="LACK1" ToRole="LACK1_CALCULATION_DETAIL" />
         </EntityType>
         <Association Name="FK_LACK1_MONTH">
@@ -9290,6 +9547,7 @@
           <Property Name="CREATED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="STAMP_WASTE_QTY" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="USE_FOR_LACK10" Type="Boolean" />
         </EntityType>
         <EntityType Name="GOOD_PROD_TYPE">
           <Key>
@@ -9798,6 +10056,10 @@
           <Property Name="PROPORTIONAL" Type="Decimal" Precision="18" Scale="8" />
           <Property Name="TYPE" Type="Int32" />
           <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_CALCULATION_DETAIL_LACK1" FromRole="LACK1_CALCULATION_DETAIL" ToRole="LACK1" />
+          <Property Name="UOM_USAGE" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="BRAND_CE" Type="String" MaxLength="65" FixedLength="false" Unicode="true" />
+          <Property Name="UOM_PRODUCTION" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="CONVERTION" Type="Decimal" Precision="18" Scale="5" />
         </EntityType>
         <Association Name="FK_LACK1_CALCULATION_DETAIL_LACK1">
           <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="1" />
@@ -9842,21 +10104,6 @@
           <Property Name="FILE_NAME" Type="String" MaxLength="400" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="USER" Relationship="EMSModel.FK__FILE_UPLO__CREAT__66EA454A" FromRole="FILE_UPLOAD" ToRole="USER" />
           <NavigationProperty Name="USER1" Relationship="EMSModel.FK__FILE_UPLO__LASTM__68D28DBC" FromRole="FILE_UPLOAD" ToRole="USER" />
-        </EntityType>
-        <EntityType Name="NlogLogs">
-          <Key>
-            <PropertyRef Name="Nlog_Id" />
-          </Key>
-          <Property Name="Nlog_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Timestamp" Type="DateTime" Precision="3" />
-          <Property Name="Level" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Logger" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Stacktrace" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Source" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="Data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="FileName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK__FILE_UPLO__CREAT__66EA454A">
           <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
@@ -9904,6 +10151,215 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="LACK10">
+          <Key>
+            <PropertyRef Name="LACK10_ID" />
+          </Key>
+          <Property Name="LACK10_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LACK10_NUMBER" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="COMPANY_ID" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="COMPANY_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="COMPANY_NPWP" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PERIOD_MONTH" Type="Int32" Nullable="false" />
+          <Property Name="PERIOD_YEAR" Type="Int32" Nullable="false" />
+          <Property Name="NPPBKC_ID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_ID" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="SUBMISSION_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="REPORT_TYPE" Type="EMSModel.Lack10ReportType" Nullable="false" />
+          <Property Name="STATUS" Type="EMSModel.DocumentStatus" Nullable="false" />
+          <Property Name="GOV_STATUS" Type="EMSModel.DocumentStatusGovType2" />
+          <Property Name="DECREE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="REASON" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="REMARK" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="APPROVED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="APPROVED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="APPROVED_BY_MANAGER" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="APPROVED_BY_MANAGER_DATE" Type="DateTime" Precision="3" />
+          <Property Name="REJECTED_BY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="REJECTED_DATE" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="LACK10_DECREE_DOC" Relationship="EMSModel.FK_LACK10_DECREE_DOC_LACK10" FromRole="LACK10" ToRole="LACK10_DECREE_DOC" />
+          <NavigationProperty Name="LACK10_ITEM" Relationship="EMSModel.FK_LACK10_ITEM_LACK10" FromRole="LACK10" ToRole="LACK10_ITEM" />
+          <NavigationProperty Name="MONTH" Relationship="EMSModel.FK_LACK10_MONTH" FromRole="LACK10" ToRole="MONTH" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_LACK10_USER_APPROVED_BY" FromRole="LACK10" ToRole="USER" />
+          <NavigationProperty Name="USER1" Relationship="EMSModel.FK_LACK10_USER_CREATED_BY" FromRole="LACK10" ToRole="USER" />
+          <NavigationProperty Name="USER2" Relationship="EMSModel.FK_LACK10_USER_MODIFIED_BY" FromRole="LACK10" ToRole="USER" />
+        </EntityType>
+        <EntityType Name="LACK10_DECREE_DOC">
+          <Key>
+            <PropertyRef Name="LACK10_DECREE_DOC_ID" />
+          </Key>
+          <Property Name="LACK10_DECREE_DOC_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LACK10_ID" Type="Int32" Nullable="false" />
+          <Property Name="FILE_NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FILE_PATH" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="CREATED_DATE" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CREATED_BY" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="LACK10" Relationship="EMSModel.FK_LACK10_DECREE_DOC_LACK10" FromRole="LACK10_DECREE_DOC" ToRole="LACK10" />
+          <NavigationProperty Name="USER" Relationship="EMSModel.FK_LACK10_DECREE_DOC_USER" FromRole="LACK10_DECREE_DOC" ToRole="USER" />
+        </EntityType>
+        <EntityType Name="LACK10_ITEM">
+          <Key>
+            <PropertyRef Name="LACK10_ITEM_ID" />
+          </Key>
+          <Property Name="LACK10_ITEM_ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LACK10_ID" Type="Int32" Nullable="false" />
+          <Property Name="FA_CODE" Type="String" Nullable="false" MaxLength="18" FixedLength="false" Unicode="true" />
+          <Property Name="WERKS" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="TYPE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="WASTE_VALUE" Type="Decimal" Precision="18" Scale="3" />
+          <Property Name="UOM" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="LACK10" Relationship="EMSModel.FK_LACK10_ITEM_LACK10" FromRole="LACK10_ITEM" ToRole="LACK10" />
+          <NavigationProperty Name="UOM1" Relationship="EMSModel.FK_LACK10_ITEM_UOM" FromRole="LACK10_ITEM" ToRole="UOM" />
+          <Property Name="BRAND_DESCRIPTION" Type="String" MaxLength="65" FixedLength="false" Unicode="true" />
+          <Property Name="PLANT_NAME" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_LACK10_DECREE_DOC_LACK10">
+          <End Type="EMSModel.LACK10" Role="LACK10" Multiplicity="1" />
+          <End Type="EMSModel.LACK10_DECREE_DOC" Role="LACK10_DECREE_DOC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LACK10">
+              <PropertyRef Name="LACK10_ID" />
+            </Principal>
+            <Dependent Role="LACK10_DECREE_DOC">
+              <PropertyRef Name="LACK10_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK10_ITEM_LACK10">
+          <End Type="EMSModel.LACK10" Role="LACK10" Multiplicity="1" />
+          <End Type="EMSModel.LACK10_ITEM" Role="LACK10_ITEM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LACK10">
+              <PropertyRef Name="LACK10_ID" />
+            </Principal>
+            <Dependent Role="LACK10_ITEM">
+              <PropertyRef Name="LACK10_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK10_MONTH">
+          <End Type="EMSModel.MONTH" Role="MONTH" Multiplicity="1" />
+          <End Type="EMSModel.LACK10" Role="LACK10" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MONTH">
+              <PropertyRef Name="MONTH_ID" />
+            </Principal>
+            <Dependent Role="LACK10">
+              <PropertyRef Name="PERIOD_MONTH" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK10_USER_APPROVED_BY">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.LACK10" Role="LACK10" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="LACK10">
+              <PropertyRef Name="APPROVED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK10_USER_CREATED_BY">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.LACK10" Role="LACK10" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="LACK10">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK10_USER_MODIFIED_BY">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="0..1" />
+          <End Type="EMSModel.LACK10" Role="LACK10" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="LACK10">
+              <PropertyRef Name="MODIFIED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK10_DECREE_DOC_USER">
+          <End Type="EMSModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="EMSModel.LACK10_DECREE_DOC" Role="LACK10_DECREE_DOC" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="USER_ID" />
+            </Principal>
+            <Dependent Role="LACK10_DECREE_DOC">
+              <PropertyRef Name="CREATED_BY" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LACK10_ITEM_UOM">
+          <End Type="EMSModel.UOM" Role="UOM" Multiplicity="0..1" />
+          <End Type="EMSModel.LACK10_ITEM" Role="LACK10_ITEM" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UOM">
+              <PropertyRef Name="UOM_ID" />
+            </Principal>
+            <Dependent Role="LACK10_ITEM">
+              <PropertyRef Name="UOM" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="NlogLogs">
+          <Key>
+            <PropertyRef Name="Nlog_Id" />
+          </Key>
+          <Property Name="Nlog_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Timestamp" Type="DateTime" Precision="3" />
+          <Property Name="Level" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Logger" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Stacktrace" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Source" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FileName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EnumType Name="Lack10ReportType" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.Lack10ReportType" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <EnumType Name="Lack1Calculation" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.Lack1Calculation" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        <EntityType Name="LACK1_PERIOD_SUMMARY">
+          <Key>
+            <PropertyRef Name="LACK1_SUMMARY_ID" />
+          </Key>
+          <Property Name="LACK1_SUMMARY_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LACK1_ID" Type="Int32" />
+          <Property Name="INCOME" Type="Decimal" Precision="18" Scale="3" />
+          <Property Name="USAGE" Type="Decimal" Precision="18" Scale="3" />
+          <Property Name="LABORATORIUM" Type="Decimal" Precision="18" Scale="3" />
+          <Property Name="CK5_RETURN" Type="Decimal" Precision="18" Scale="3" />
+          <Property Name="SALDO" Type="Decimal" Precision="18" Scale="3" />
+          <Property Name="TYPE" Type="EMSModel.Lack1SummaryPeriod" />
+          <NavigationProperty Name="LACK1" Relationship="EMSModel.FK_LACK1_PERIOD_SUMMARY_LACK1" FromRole="LACK1_PERIOD_SUMMARY" ToRole="LACK1" />
+        </EntityType>
+        <Association Name="FK_LACK1_PERIOD_SUMMARY_LACK1">
+          <End Type="EMSModel.LACK1" Role="LACK1" Multiplicity="0..1" />
+          <End Type="EMSModel.LACK1_PERIOD_SUMMARY" Role="LACK1_PERIOD_SUMMARY" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LACK1">
+              <PropertyRef Name="LACK1_ID" />
+            </Principal>
+            <Dependent Role="LACK1_PERIOD_SUMMARY">
+              <PropertyRef Name="LACK1_ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EnumType Name="Lack1SummaryPeriod" a:ExternalTypeName="Sampoerna.EMS.Core.Enums.Lack1SummaryPeriod" xmlns:a="http://schemas.microsoft.com/ado/2006/04/codegeneration" />
+        
+        
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -10763,6 +11219,7 @@
           <EntitySetMapping Name="LACK1">
             <EntityTypeMapping TypeName="EMSModel.LACK1">
               <MappingFragment StoreEntitySet="LACK1">
+                <ScalarProperty Name="LABORATORIUM" ColumnName="LABORATORIUM" />
                 <ScalarProperty Name="IS_SUPPLIER_IMPORT" ColumnName="IS_SUPPLIER_IMPORT" />
                 <ScalarProperty Name="USAGE_TISTOTIS" ColumnName="USAGE_TISTOTIS" />
                 <ScalarProperty Name="DOCUMENT_NOTED" ColumnName="DOCUMENT_NOTED" />
@@ -11343,6 +11800,7 @@
           <EntitySetMapping Name="WASTE">
             <EntityTypeMapping TypeName="EMSModel.WASTE">
               <MappingFragment StoreEntitySet="WASTE">
+                <ScalarProperty Name="USE_FOR_LACK10" ColumnName="USE_FOR_LACK10" />
                 <ScalarProperty Name="STAMP_WASTE_QTY" ColumnName="STAMP_WASTE_QTY" />
                 <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
                 <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
@@ -11627,22 +12085,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="LACK1_CALCULATION_DETAIL">
-            <EntityTypeMapping TypeName="EMSModel.LACK1_CALCULATION_DETAIL">
-              <MappingFragment StoreEntitySet="LACK1_CALCULATION_DETAIL">
-                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
-                <ScalarProperty Name="PROPORTIONAL" ColumnName="PROPORTIONAL" />
-                <ScalarProperty Name="AMOUNT_PRODUCTION" ColumnName="AMOUNT_PRODUCTION" />
-                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
-                <ScalarProperty Name="ORDR" ColumnName="ORDR" />
-                <ScalarProperty Name="AMOUNT_USAGE" ColumnName="AMOUNT_USAGE" />
-                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
-                <ScalarProperty Name="MATERIAL_ID" ColumnName="MATERIAL_ID" />
-                <ScalarProperty Name="LACK1_ID" ColumnName="LACK1_ID" />
-                <ScalarProperty Name="LACK1_CALCULATION_DETAIL_ID" ColumnName="LACK1_CALCULATION_DETAIL_ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="FILE_UPLOAD">
             <EntityTypeMapping TypeName="EMSModel.FILE_UPLOAD">
               <MappingFragment StoreEntitySet="FILE_UPLOAD">
@@ -11662,6 +12104,109 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="POA_EXCISER">
+            <EntityTypeMapping TypeName="EMSModel.POA_EXCISER">
+              <MappingFragment StoreEntitySet="POA_EXCISER">
+                <ScalarProperty Name="IS_ACTIVE_EXCISER" ColumnName="IS_ACTIVE_EXCISER" />
+                <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
+                <ScalarProperty Name="EXCISER_ID" ColumnName="EXCISER_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LACK1_PERIOD_SUMMARY">
+            <EntityTypeMapping TypeName="EMSModel.LACK1_PERIOD_SUMMARY">
+              <MappingFragment StoreEntitySet="LACK1_PERIOD_SUMMARY">
+                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
+                <ScalarProperty Name="SALDO" ColumnName="SALDO" />
+                <ScalarProperty Name="CK5_RETURN" ColumnName="CK5_RETURN" />
+                <ScalarProperty Name="LABORATORIUM" ColumnName="LABORATORIUM" />
+                <ScalarProperty Name="USAGE" ColumnName="USAGE" />
+                <ScalarProperty Name="INCOME" ColumnName="INCOME" />
+                <ScalarProperty Name="LACK1_ID" ColumnName="LACK1_ID" />
+                <ScalarProperty Name="LACK1_SUMMARY_ID" ColumnName="LACK1_SUMMARY_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LACK1_CALCULATION_DETAIL">
+            <EntityTypeMapping TypeName="EMSModel.LACK1_CALCULATION_DETAIL">
+              <MappingFragment StoreEntitySet="LACK1_CALCULATION_DETAIL">
+                <ScalarProperty Name="CONVERTION" ColumnName="CONVERTION" />
+                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
+                <ScalarProperty Name="PROPORTIONAL" ColumnName="PROPORTIONAL" />
+                <ScalarProperty Name="UOM_PRODUCTION" ColumnName="UOM_PRODUCTION" />
+                <ScalarProperty Name="AMOUNT_PRODUCTION" ColumnName="AMOUNT_PRODUCTION" />
+                <ScalarProperty Name="BRAND_CE" ColumnName="BRAND_CE" />
+                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
+                <ScalarProperty Name="ORDR" ColumnName="ORDR" />
+                <ScalarProperty Name="UOM_USAGE" ColumnName="UOM_USAGE" />
+                <ScalarProperty Name="AMOUNT_USAGE" ColumnName="AMOUNT_USAGE" />
+                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
+                <ScalarProperty Name="MATERIAL_ID" ColumnName="MATERIAL_ID" />
+                <ScalarProperty Name="LACK1_ID" ColumnName="LACK1_ID" />
+                <ScalarProperty Name="LACK1_CALCULATION_DETAIL_ID" ColumnName="LACK1_CALCULATION_DETAIL_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LACK10">
+            <EntityTypeMapping TypeName="EMSModel.LACK10">
+              <MappingFragment StoreEntitySet="LACK10">
+                <ScalarProperty Name="REJECTED_DATE" ColumnName="REJECTED_DATE" />
+                <ScalarProperty Name="REJECTED_BY" ColumnName="REJECTED_BY" />
+                <ScalarProperty Name="APPROVED_BY_MANAGER_DATE" ColumnName="APPROVED_BY_MANAGER_DATE" />
+                <ScalarProperty Name="APPROVED_BY_MANAGER" ColumnName="APPROVED_BY_MANAGER" />
+                <ScalarProperty Name="APPROVED_DATE" ColumnName="APPROVED_DATE" />
+                <ScalarProperty Name="APPROVED_BY" ColumnName="APPROVED_BY" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+                <ScalarProperty Name="REASON" ColumnName="REASON" />
+                <ScalarProperty Name="DECREE_DATE" ColumnName="DECREE_DATE" />
+                <ScalarProperty Name="GOV_STATUS" ColumnName="GOV_STATUS" />
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+                <ScalarProperty Name="REPORT_TYPE" ColumnName="REPORT_TYPE" />
+                <ScalarProperty Name="SUBMISSION_DATE" ColumnName="SUBMISSION_DATE" />
+                <ScalarProperty Name="PLANT_NAME" ColumnName="PLANT_NAME" />
+                <ScalarProperty Name="PLANT_ID" ColumnName="PLANT_ID" />
+                <ScalarProperty Name="NPPBKC_ID" ColumnName="NPPBKC_ID" />
+                <ScalarProperty Name="PERIOD_YEAR" ColumnName="PERIOD_YEAR" />
+                <ScalarProperty Name="PERIOD_MONTH" ColumnName="PERIOD_MONTH" />
+                <ScalarProperty Name="COMPANY_NPWP" ColumnName="COMPANY_NPWP" />
+                <ScalarProperty Name="COMPANY_NAME" ColumnName="COMPANY_NAME" />
+                <ScalarProperty Name="COMPANY_ID" ColumnName="COMPANY_ID" />
+                <ScalarProperty Name="LACK10_NUMBER" ColumnName="LACK10_NUMBER" />
+                <ScalarProperty Name="LACK10_ID" ColumnName="LACK10_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LACK10_DECREE_DOC">
+            <EntityTypeMapping TypeName="EMSModel.LACK10_DECREE_DOC">
+              <MappingFragment StoreEntitySet="LACK10_DECREE_DOC">
+                <ScalarProperty Name="CREATED_BY" ColumnName="CREATED_BY" />
+                <ScalarProperty Name="CREATED_DATE" ColumnName="CREATED_DATE" />
+                <ScalarProperty Name="FILE_PATH" ColumnName="FILE_PATH" />
+                <ScalarProperty Name="FILE_NAME" ColumnName="FILE_NAME" />
+                <ScalarProperty Name="LACK10_ID" ColumnName="LACK10_ID" />
+                <ScalarProperty Name="LACK10_DECREE_DOC_ID" ColumnName="LACK10_DECREE_DOC_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LACK10_ITEM">
+            <EntityTypeMapping TypeName="EMSModel.LACK10_ITEM">
+              <MappingFragment StoreEntitySet="LACK10_ITEM">
+                <ScalarProperty Name="PLANT_NAME" ColumnName="PLANT_NAME" />
+                <ScalarProperty Name="BRAND_DESCRIPTION" ColumnName="BRAND_DESCRIPTION" />
+                <ScalarProperty Name="UOM" ColumnName="UOM" />
+                <ScalarProperty Name="WASTE_VALUE" ColumnName="WASTE_VALUE" />
+                <ScalarProperty Name="TYPE" ColumnName="TYPE" />
+                <ScalarProperty Name="WERKS" ColumnName="WERKS" />
+                <ScalarProperty Name="FA_CODE" ColumnName="FA_CODE" />
+                <ScalarProperty Name="LACK10_ID" ColumnName="LACK10_ID" />
+                <ScalarProperty Name="LACK10_ITEM_ID" ColumnName="LACK10_ITEM_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="NlogLogs">
             <EntityTypeMapping TypeName="EMSModel.NlogLogs">
               <MappingFragment StoreEntitySet="NlogLogs">
@@ -11675,15 +12220,6 @@
                 <ScalarProperty Name="Level" ColumnName="Level" />
                 <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
                 <ScalarProperty Name="Nlog_Id" ColumnName="Nlog_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="POA_EXCISER">
-            <EntityTypeMapping TypeName="EMSModel.POA_EXCISER">
-              <MappingFragment StoreEntitySet="POA_EXCISER">
-                <ScalarProperty Name="IS_ACTIVE_EXCISER" ColumnName="IS_ACTIVE_EXCISER" />
-                <ScalarProperty Name="POA_ID" ColumnName="POA_ID" />
-                <ScalarProperty Name="EXCISER_ID" ColumnName="EXCISER_ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

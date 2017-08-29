@@ -19,6 +19,7 @@ using SpreadsheetLight;
 using Sampoerna.EMS.Website.Models.POAExciser;
 using Sampoerna.EMS.CustomService.Services.MasterData;
 using Sampoerna.EMS.CustomService.Data;
+using POA_EXCISER = Sampoerna.EMS.CustomService.Data.POA_EXCISER;
 
 namespace Sampoerna.EMS.Website.Controllers
 {
@@ -408,7 +409,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                           
                 // Added: Set Exciser Flag: True or False
                 var modelExciser = new PoaExciserViewModel();
-                var data = new POA_EXCISER();
+                var data = new Sampoerna.EMS.CustomService.Data.POA_EXCISER();
                 modelExciser.POA_ID = poa.POA_ID;
 
                 var ExciserData = _poaExciserService.GetByPoaID(poa.POA_ID);
