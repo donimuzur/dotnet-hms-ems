@@ -82,6 +82,8 @@ namespace Sampoerna.EMS.BLL
                 .ForMember(dest => dest.PBCK1_NUMBER, opt => opt.MapFrom(src => src.PBCK1.NUMBER))
                 .ForMember(dest => dest.DECREE_DATE, opt => opt.MapFrom(src => src.PBCK1.DECREE_DATE))
                 .ForMember(dest => dest.SUPPLIER_COMPANY, opt => opt.MapFrom(src => src.PBCK1.SUPPLIER_COMPANY))
+                .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.PBCK1.REQUEST_QTY_UOM))
+                .ForMember(dest => dest.ApprovedQty, opt => opt.MapFrom(src => src.PBCK1.QTY_APPROVED.HasValue ? src.PBCK1.QTY_APPROVED.Value : 0))
                 ;
 
             Mapper.CreateMap<LACK1_PLANT, Lack1PlantDto>().IgnoreAllNonExisting();
@@ -228,6 +230,8 @@ namespace Sampoerna.EMS.BLL
 
             Mapper.CreateMap<PBCK1, Lack1GeneratedPbck1DataDto>().IgnoreAllNonExisting()
                 .ForMember(dest => dest.Pbck1Id, opt => opt.MapFrom(src => src.PBCK1_ID))
+                .ForMember(dest => dest.QtyApproved, opt => opt.MapFrom(src => src.QTY_APPROVED))
+                .ForMember(dest => dest.Uom, opt => opt.MapFrom(src => src.REQUEST_QTY_UOM))
                 .ForMember(dest => dest.Pbck1Convertion, opt => opt.MapFrom(src => Mapper.Map<List<Pbck1ProdConverterDto>>(src.PBCK1_PROD_CONVERTER)));
 
             Mapper.CreateMap<LACK1_PBCK1_MAPPING, Lack1GeneratedPbck1DataDto>().IgnoreAllNonExisting()
