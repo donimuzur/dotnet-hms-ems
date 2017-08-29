@@ -2199,7 +2199,7 @@ namespace Sampoerna.EMS.Website.Controllers
             int countRow = 0;
             var isData = "Data";
             var subTotal = Convert.ToDecimal(0);
-            foreach (var item in lack2.Items.OrderBy(x => x.CompanyNppbkc))
+            foreach (var item in lack2.Items.OrderBy(x => x.CompanyAddress))
             {
                 //for first data
                 if (nomorUrut == 1)
@@ -2220,13 +2220,13 @@ namespace Sampoerna.EMS.Website.Controllers
                     nomorUrut++;
                     countRow++;
 
-                    isData = item.CompanyNppbkc;
+                    isData = item.CompanyAddress;
                     subTotal = subTotal + item.Ck5ItemQty;
                 }
                 else
                 {
-                    //same nppbkc
-                    if (isData == item.CompanyNppbkc)
+                    //same address plant
+                    if (isData == item.CompanyAddress)
                     {
                         DataRow drowDetail;
                         drowDetail = dtDetail.NewRow();
@@ -2264,9 +2264,9 @@ namespace Sampoerna.EMS.Website.Controllers
                         countRow++;
                         nomorUrut++;
 
-                        isData = item.CompanyNppbkc;
+                        isData = item.CompanyAddress;
                     }
-                    //different nppbkc
+                    //different address plant
                     else
                     {
                         //subtotal
@@ -2306,7 +2306,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         countNppbkc++;
                         countRow++;
 
-                        isData = item.CompanyNppbkc;
+                        isData = item.CompanyAddress;
                         subTotal = subTotal + item.Ck5ItemQty;
                     }
                 }
