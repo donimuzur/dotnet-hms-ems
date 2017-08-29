@@ -317,6 +317,10 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnTypeTable;
             
+            private global::System.Data.DataColumn columnTisCase;
+            
+            private global::System.Data.DataColumn columnTisCaseTotal;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public Lack10DataTable() {
@@ -504,6 +508,22 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn TisCaseColumn {
+                get {
+                    return this.columnTisCase;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn TisCaseTotalColumn {
+                get {
+                    return this.columnTisCaseTotal;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -558,7 +578,9 @@ namespace Sampoerna.EMS.ReportingData {
                         string TypeTitle, 
                         string Reason, 
                         string Remark, 
-                        string TypeTable) {
+                        string TypeTable, 
+                        string TisCase, 
+                        string TisCaseTotal) {
                 Lack10Row rowLack10Row = ((Lack10Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         CompanyName,
@@ -579,7 +601,9 @@ namespace Sampoerna.EMS.ReportingData {
                         TypeTitle,
                         Reason,
                         Remark,
-                        TypeTable};
+                        TypeTable,
+                        TisCase,
+                        TisCaseTotal};
                 rowLack10Row.ItemArray = columnValuesArray;
                 this.Rows.Add(rowLack10Row);
                 return rowLack10Row;
@@ -621,6 +645,8 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnReason = base.Columns["Reason"];
                 this.columnRemark = base.Columns["Remark"];
                 this.columnTypeTable = base.Columns["TypeTable"];
+                this.columnTisCase = base.Columns["TisCase"];
+                this.columnTisCaseTotal = base.Columns["TisCaseTotal"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -664,6 +690,10 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnRemark);
                 this.columnTypeTable = new global::System.Data.DataColumn("TypeTable", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnTypeTable);
+                this.columnTisCase = new global::System.Data.DataColumn("TisCase", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTisCase);
+                this.columnTisCaseTotal = new global::System.Data.DataColumn("TisCaseTotal", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTisCaseTotal);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1110,6 +1140,38 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string TisCase {
+                get {
+                    try {
+                        return ((string)(this[this.tableLack10.TisCaseColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'TisCase\' in table \'Lack10\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableLack10.TisCaseColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string TisCaseTotal {
+                get {
+                    try {
+                        return ((string)(this[this.tableLack10.TisCaseTotalColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'TisCaseTotal\' in table \'Lack10\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableLack10.TisCaseTotalColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsCompanyNameNull() {
                 return this.IsNull(this.tableLack10.CompanyNameColumn);
             }
@@ -1334,6 +1396,30 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetTypeTableNull() {
                 this[this.tableLack10.TypeTableColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsTisCaseNull() {
+                return this.IsNull(this.tableLack10.TisCaseColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetTisCaseNull() {
+                this[this.tableLack10.TisCaseColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsTisCaseTotalNull() {
+                return this.IsNull(this.tableLack10.TisCaseTotalColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetTisCaseTotalNull() {
+                this[this.tableLack10.TisCaseTotalColumn] = global::System.Convert.DBNull;
             }
         }
         
