@@ -2845,8 +2845,8 @@ namespace Sampoerna.EMS.BLL
             {
                 Income = startPeriodData.Income + currentPeriodData.Income,
                 Usage = startPeriodData.Usage + currentPeriodData.Usage,
-                Laboratorium = startPeriodData.Income + currentPeriodData.Laboratorium,
-                Return = startPeriodData.Income + currentPeriodData.Return,
+                Laboratorium = startPeriodData.Laboratorium + currentPeriodData.Laboratorium,
+                Return = startPeriodData.Return + currentPeriodData.Return,
                 Saldo = 0,
                 Type = Enums.Lack1SummaryPeriod.End
             };
