@@ -220,37 +220,7 @@ namespace Sampoerna.EMS.BLL
                             };
             }
 
-            var distinctDbData = dbData
-                .GroupBy(x => new { x.Lack10ItemId, x.Lack10Id, x.FaCode, x.BrandDescription, x.Werks, x.PlantName, x.Type, x.Uom, x.WasteValue })
-                .Select(p => new Lack10Item()
-                {
-                    Lack10ItemId = p.FirstOrDefault().Lack10ItemId,
-                    Lack10Id = p.FirstOrDefault().Lack10Id,
-                    FaCode = p.FirstOrDefault().FaCode,
-                    BrandDescription = p.FirstOrDefault().BrandDescription,
-                    Werks = p.FirstOrDefault().Werks,
-                    PlantName = p.FirstOrDefault().PlantName,
-                    Type = p.FirstOrDefault().Type,
-                    Uom = p.FirstOrDefault().Uom,
-                    WasteValue = p.FirstOrDefault().WasteValue
-                });
-
-            var distinctDbDataTis = dbDataTis
-                .GroupBy(x => new { x.Lack10ItemId, x.Lack10Id, x.FaCode, x.BrandDescription, x.Werks, x.PlantName, x.Type, x.Uom, x.WasteValue })
-                .Select(p => new Lack10Item()
-                {
-                    Lack10ItemId = p.FirstOrDefault().Lack10ItemId,
-                    Lack10Id = p.FirstOrDefault().Lack10Id,
-                    FaCode = p.FirstOrDefault().FaCode,
-                    BrandDescription = p.FirstOrDefault().BrandDescription,
-                    Werks = p.FirstOrDefault().Werks,
-                    PlantName = p.FirstOrDefault().PlantName,
-                    Type = p.FirstOrDefault().Type,
-                    Uom = p.FirstOrDefault().Uom,
-                    WasteValue = p.FirstOrDefault().WasteValue
-                });
-
-            var groupList = distinctDbData
+            var groupList = dbData
                 .GroupBy(x => new { x.Werks, x.FaCode })
                 .Select(p => new Lack10Item()
                 {
@@ -263,7 +233,7 @@ namespace Sampoerna.EMS.BLL
                     WasteValue = p.Sum(c => c.WasteValue)
                 });
 
-            var groupListTis = distinctDbDataTis
+            var groupListTis = dbDataTis
                 .GroupBy(x => new { x.Werks, x.FaCode })
                 .Select(p => new Lack10Item()
                 {
