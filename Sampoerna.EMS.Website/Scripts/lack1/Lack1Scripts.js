@@ -108,11 +108,12 @@ function generateDataClick(lackLevel, url) {
         success: function (response) {
             $('.loading').hide();
             if (response.Success) {
-                debugger;
+                
                 $('#generated-data-container').html("");
                 $('#generated-details-container').html('');
                 $('#generated-detailsconvertion-container').html('');
                 $("#generated-ck5-container").html("");
+                $('#generated-data-container-old').html("");
                 
                 var data = response.Data;
                 //console.log(response.IsWithTisToTisReport);

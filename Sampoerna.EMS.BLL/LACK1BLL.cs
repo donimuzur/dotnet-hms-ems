@@ -2790,7 +2790,7 @@ namespace Sampoerna.EMS.BLL
                 ExcludeLack1Id = input.Lack1Id
             });
 
-            var lastPeriodSummary = lastLack1.LACK1_PERIOD_SUMMARY.FirstOrDefault(x => x.TYPE == Enums.Lack1SummaryPeriod.Current);
+            var lastPeriodSummary = lastLack1.LACK1_PERIOD_SUMMARY.FirstOrDefault(x => x.TYPE == Enums.Lack1SummaryPeriod.End);
             PeriodSummary startPeriodData = Mapper.Map<PeriodSummary>(lastPeriodSummary);
             if (startPeriodData != null)
             {
