@@ -2199,7 +2199,7 @@ namespace Sampoerna.EMS.Website.Controllers
             int countRow = 0;
             var isData = "Data";
             var subTotal = Convert.ToDecimal(0);
-            foreach (var item in lack2.Items.OrderBy(x => x.CompanyAddress))
+            foreach (var item in lack2.Items.OrderBy(x => x.CompanyAddress).OrderBy(x => x.CompanyNppbkc))
             {
                 //for first data
                 if (nomorUrut == 1)
