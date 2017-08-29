@@ -212,7 +212,7 @@ namespace Sampoerna.EMS.BLL.Services
             }
 
             var selected = getData.Where(c => c.PERIODE <= input.PeriodTo).OrderByDescending(o => o.PERIODE).FirstOrDefault();
-            if (selected != null) return _repository.GetByID(selected.LACK1_ID);
+            if (selected != null) return _repository.Get(x=> x.LACK1_ID == selected.LACK1_ID,null,"LACK1_PERIOD_SUMMARY, LACK1_CALCULATION_DETAIL").FirstOrDefault();
             return null;
         }
 
