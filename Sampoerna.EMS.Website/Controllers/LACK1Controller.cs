@@ -841,19 +841,32 @@ namespace Sampoerna.EMS.Website.Controllers
                     row++;
                     var detailRow = dsReport.Lack1Items.NewLack1ItemsRow();
                     detailRow.BeginningBalance = data.BeginingBalance.ToString("N2");
-                    detailRow.Ck5RegNumber = item.REGISTRATION_NUMBER;
-                    detailRow.Ck5RegDate = item.REGISTRATION_DATE.HasValue
-                        ? item.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy")
-                        : string.Empty;
+
 
                     var amount = item.AMOUNT;
                     if (data.Lack1UomId != "L")
-                    
                     {
-                        
+
                         amount = item.AMOUNT / 1000;
-                        
+
                     }
+
+                    if (item.CK5_ID != -99) // new logic for januari
+                    {
+                        detailRow.Ck5RegNumber = item.REGISTRATION_NUMBER;
+                        detailRow.Ck5RegDate = item.REGISTRATION_DATE.HasValue
+                            ? item.REGISTRATION_DATE.Value.ToString("dd.MM.yyyy")
+                            : string.Empty;
+                    }
+                    else
+                    {
+                        detailRow.Ck5RegNumber = item.REGISTRATION_NUMBER;
+                        detailRow.Ck5RegDate = "-";
+                        totalAmount += item.AMOUNT;
+                    }
+                    
+
+                    
                     detailRow.Ck5Amount = amount.ToString("N3");
                     detailRow.Usage = usage.ToString("N3");
                     detailRow.ListJenisBKC = summaryProductionJenis;
@@ -885,7 +898,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //    //detailRow.NoUrut = Row;
             //    dsReport.Lack1Items.AddLack1ItemsRow(detailRow);
             //}
-            var dataCalculations = data.CalculationDetails.Where(x => x.Type == Enums.Lack1Calculation.WithConvertion).ToList();
+            var dataCalculations = data.CalculationDetails;
             if (dataCalculations.Count > 0)
             {
                 var row = 0;
@@ -894,19 +907,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     row++;
                     var detailRow = dsReport.Lack1Calculations.NewLack1CalculationsRow();
                     detailRow.NoUrut = row.ToString();
-                    detailRow.JenisMaterial = data.ExGoodsTypeDesc;
+                    detailRow.JenisMaterial = item.MaterialId;// data.ExGoodsTypeDesc;
 
                     var amountUsage = item.AmountUsage;
                     var amountProd = item.AmountProduction;
-                    if (data.Lack1UomId != "L")
-                    {
-                        amountUsage = item.AmountUsage / 1000;
-                    }
-
-                    if (item.UomProduction == "G")
-                    {
-                        amountProd = item.AmountProduction / 1000;
-                    }
+                    
 
                     detailRow.AmountMaterial = amountUsage.ToString("N3");
                     detailRow.JenisProduksi = item.BrandCe;
