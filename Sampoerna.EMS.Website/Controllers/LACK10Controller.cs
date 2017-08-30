@@ -2011,7 +2011,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 typeUom = "3";
             }
 
-            foreach (var item in listItem)
+            foreach (var item in listItem.OrderBy(x => x.Type))
             {
                 DataRow drowDetail;
                 drowDetail = dtDetail.NewRow();
