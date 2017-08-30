@@ -1979,13 +1979,21 @@ namespace Sampoerna.EMS.Website.Controllers
             //add lack10 item
             var dtDetail = dsLack10.Tables[1];
             int nomorUrut = 1;
-            foreach (var item in lack10.Lack10Item.Where(x => x.WasteValue > 0))
+
+            var listItem = lack10.Lack10Item.Where(x => x.WasteValue > 0).GroupBy(x => new { x.Type })
+                .Select(p => new ListItemForPrint()
+                {
+                    Type = p.FirstOrDefault().Type,
+                    Value = p.Sum(c => c.WasteValue)
+                });
+
+            foreach (var item in listItem)
             {
                 DataRow drowDetail;
                 drowDetail = dtDetail.NewRow();
                 drowDetail[0] = nomorUrut;
                 drowDetail[1] = item.Type;
-                drowDetail[2] = item.WasteValue.ToString("N3");
+                drowDetail[2] = item.Value.ToString("N3");
                 drowDetail[3] = lack10.Reason;
                 drowDetail[4] = lack10.Remark;
                 drowDetail[5] = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(EnumHelper.GetDescription(lack10.ReportType));
@@ -1996,7 +2004,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             var listValue = lack10.Lack10Item.Where(x => x.WasteValue > 0).GroupBy(x => new { x.Uom })
-                .Select(p => new ItemForPrint()
+                .Select(p => new TotalItemForPrint()
                 {
                     Uom = p.FirstOrDefault().Uom,
                     Value = p.Sum(c => c.WasteValue).ToString("N3")
