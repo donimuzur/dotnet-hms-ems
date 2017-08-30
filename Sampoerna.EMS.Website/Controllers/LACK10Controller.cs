@@ -1979,6 +1979,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //add lack10 item
             var dtDetail = dsLack10.Tables[1];
             int nomorUrut = 1;
+            var typeUom = "1";
 
             var listItem = lack10.Lack10Item.Where(x => x.WasteValue > 0).GroupBy(x => new { x.Type })
                 .Select(p => new ListItemForPrint()
@@ -1987,22 +1988,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     Value = p.Sum(c => c.WasteValue)
                 });
 
-            foreach (var item in listItem)
-            {
-                DataRow drowDetail;
-                drowDetail = dtDetail.NewRow();
-                drowDetail[0] = nomorUrut;
-                drowDetail[1] = item.Type;
-                drowDetail[2] = item.Value.ToString("N3");
-                drowDetail[3] = lack10.Reason;
-                drowDetail[4] = lack10.Remark;
-                drowDetail[5] = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(EnumHelper.GetDescription(lack10.ReportType));
-
-                dtDetail.Rows.Add(drowDetail);
-
-                nomorUrut++;
-            }
-
+            //for total
             var listValue = lack10.Lack10Item.Where(x => x.WasteValue > 0).GroupBy(x => new { x.Uom })
                 .Select(p => new TotalItemForPrint()
                 {
@@ -2016,6 +2002,31 @@ namespace Sampoerna.EMS.Website.Controllers
                 totalData += " " + item.Value + " " + item.Uom + ",";
             }
 
+            if (totalData.Contains("Btg") && (!totalData.Contains("Kg")))
+            {
+                typeUom = "2";
+            }
+            if (totalData.Contains("Kg") && (!totalData.Contains("Btg")))
+            {
+                typeUom = "3";
+            }
+
+            foreach (var item in listItem)
+            {
+                DataRow drowDetail;
+                drowDetail = dtDetail.NewRow();
+                drowDetail[0] = nomorUrut;
+                drowDetail[1] = item.Type;
+                drowDetail[2] = item.Value.ToString("N3");
+                drowDetail[3] = lack10.Reason;
+                drowDetail[4] = lack10.Remark;
+                drowDetail[5] = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(EnumHelper.GetDescription(lack10.ReportType));
+                drowDetail[6] = typeUom;
+
+                dtDetail.Rows.Add(drowDetail);
+
+                nomorUrut++;
+            }
 
             //add total item
             DataRow drowDetailTotal;
@@ -2026,6 +2037,7 @@ namespace Sampoerna.EMS.Website.Controllers
             drowDetailTotal[3] = lack10.Reason;
             drowDetailTotal[4] = lack10.Remark;
             drowDetailTotal[5] = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(EnumHelper.GetDescription(lack10.ReportType));
+            drowDetailTotal[6] = typeUom;
 
             dtDetail.Rows.Add(drowDetailTotal);
 
@@ -2067,6 +2079,7 @@ namespace Sampoerna.EMS.Website.Controllers
             dtDetail.Columns.Add("Reason", System.Type.GetType("System.String"));
             dtDetail.Columns.Add("Remark", System.Type.GetType("System.String"));
             dtDetail.Columns.Add("TypeTable", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("TypeUom", System.Type.GetType("System.String"));
 
             ds.Tables.Add(dt);
             ds.Tables.Add(dtDetail);
