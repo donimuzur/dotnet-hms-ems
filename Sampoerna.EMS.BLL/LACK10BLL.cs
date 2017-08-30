@@ -40,6 +40,7 @@ namespace Sampoerna.EMS.BLL
         private IGenericRepository<ZAIDM_EX_BRAND> _repositoryBrand;
         private IGenericRepository<WASTE> _repositoryWaste;
         private IGenericRepository<T001W> _repositoryPlant;
+        private IGenericRepository<ZAIDM_EX_PRODTYP> _repositoryProd;
         private ILACK10ItemBLL _lack10ItemBll;
         private ILACK10DecreeDocBLL _lack10DecreeDocBll;
         private IZaidmExNPPBKCBLL _nppbkcbll;
@@ -55,6 +56,7 @@ namespace Sampoerna.EMS.BLL
             _repositoryBrand = _uow.GetGenericRepository<ZAIDM_EX_BRAND>();
             _repositoryWaste = _uow.GetGenericRepository<WASTE>();
             _repositoryPlant = _uow.GetGenericRepository<T001W>();
+            _repositoryProd = _uow.GetGenericRepository<ZAIDM_EX_PRODTYP>();
 
             _workflowHistoryBll = new WorkflowHistoryBLL(_uow, _logger);
             _changesHistoryBll = new ChangesHistoryBLL(_uow, _logger);
@@ -159,25 +161,27 @@ namespace Sampoerna.EMS.BLL
 
         public List<Lack10Item> GenerateWasteData(Lack10GetWasteDataInput input)
         {
-            //get Hasil Tembakau
+            //get data hasil tembakau
             var dbData = from w in _repositoryWaste.Get(w => w.COMPANY_CODE == input.CompanyId && w.WERKS == input.PlantId && w.WASTE_PROD_DATE.Month == input.Month && w.WASTE_PROD_DATE.Year == input.Year && w.USE_FOR_LACK10 == true)
                          join b in _repositoryBrand.Get(b => b.STATUS == true && (b.IS_DELETED == null || b.IS_DELETED == false)) on new { w.FA_CODE, w.WERKS } equals new { b.FA_CODE, b.WERKS }
                          join t in _repositoryPlant.GetQuery() on w.WERKS equals t.WERKS
+                         join g in _repositoryProd.Get(g => g.PRODUCT_ALIAS != "TIS") on b.PROD_CODE equals g.PROD_CODE
                          select new Lack10Item()
                          {
                              FaCode = w.FA_CODE,
                              BrandDescription = w.BRAND_DESC,
                              Werks = w.WERKS,
                              PlantName = t.NAME1,
-                             Type = "Hasil Tembakau",
+                             Type = g.PRODUCT_ALIAS,
                              Uom = "Btg",
-                             WasteValue = w.MARKER_REJECT_STICK_QTY.Value + w.PACKER_REJECT_STICK_QTY.Value
+                             WasteValue = (w.MARKER_REJECT_STICK_QTY.Value + w.PACKER_REJECT_STICK_QTY.Value)
                          };
 
-            //get TIS
-            var dbDataTis = from w in _repositoryWaste.Get(w => w.COMPANY_CODE == input.CompanyId && w.WERKS == input.PlantId && w.WASTE_PROD_DATE.Month == input.Month && w.WASTE_PROD_DATE.Year == input.Year && w.USE_FOR_LACK10 == true)
+            //get data hasil tembakau has TIS
+            var dbDataHtTis = from w in _repositoryWaste.Get(w => w.COMPANY_CODE == input.CompanyId && w.WERKS == input.PlantId && w.WASTE_PROD_DATE.Month == input.Month && w.WASTE_PROD_DATE.Year == input.Year && w.USE_FOR_LACK10 == true)
                          join b in _repositoryBrand.Get(b => b.STATUS == true && (b.IS_DELETED == null || b.IS_DELETED == false)) on new { w.FA_CODE, w.WERKS } equals new { b.FA_CODE, b.WERKS }
                          join t in _repositoryPlant.GetQuery() on w.WERKS equals t.WERKS
+                         join g in _repositoryProd.Get(g => g.PRODUCT_ALIAS != "TIS") on b.PROD_CODE equals g.PROD_CODE
                          select new Lack10Item()
                          {
                              FaCode = w.FA_CODE,
@@ -186,7 +190,23 @@ namespace Sampoerna.EMS.BLL
                              PlantName = t.NAME1,
                              Type = "TIS",
                              Uom = "Kg",
-                             WasteValue = w.FLOOR_WASTE_GRAM_QTY.Value + w.DUST_WASTE_GRAM_QTY.Value + +w.STAMP_WASTE_QTY.Value
+                             WasteValue = ((w.FLOOR_WASTE_GRAM_QTY.Value + w.DUST_WASTE_GRAM_QTY.Value + +w.STAMP_WASTE_QTY.Value) / 1000)
+                         };
+
+            //get data TIS
+            var dbDataTis = from w in _repositoryWaste.Get(w => w.COMPANY_CODE == input.CompanyId && w.WERKS == input.PlantId && w.WASTE_PROD_DATE.Month == input.Month && w.WASTE_PROD_DATE.Year == input.Year && w.USE_FOR_LACK10 == true)
+                         join b in _repositoryBrand.Get(b => b.STATUS == true && (b.IS_DELETED == null || b.IS_DELETED == false)) on new { w.FA_CODE, w.WERKS } equals new { b.FA_CODE, b.WERKS }
+                         join t in _repositoryPlant.GetQuery() on w.WERKS equals t.WERKS
+                         join g in _repositoryProd.Get(g => g.PRODUCT_ALIAS == "TIS") on b.PROD_CODE equals g.PROD_CODE
+                         select new Lack10Item()
+                         {
+                             FaCode = w.FA_CODE,
+                             BrandDescription = w.BRAND_DESC,
+                             Werks = w.WERKS,
+                             PlantName = t.NAME1,
+                             Type = g.PRODUCT_ALIAS,
+                             Uom = "Kg",
+                             WasteValue = ((w.FLOOR_WASTE_GRAM_QTY.Value + w.DUST_WASTE_GRAM_QTY.Value + +w.STAMP_WASTE_QTY.Value) / 1000)
                          };
 
             if (input.NppbkcId != string.Empty && input.IsNppbkc)
@@ -194,34 +214,54 @@ namespace Sampoerna.EMS.BLL
                 dbData = from w in _repositoryWaste.Get(w => w.COMPANY_CODE == input.CompanyId && w.WASTE_PROD_DATE.Month == input.Month && w.WASTE_PROD_DATE.Year == input.Year && w.USE_FOR_LACK10 == true)
                          join b in _repositoryBrand.Get(b => b.STATUS == true && (b.IS_DELETED == null || b.IS_DELETED == false)) on new { w.FA_CODE, w.WERKS } equals new { b.FA_CODE, b.WERKS }
                          join n in _repositoryPlant.Get(n => n.NPPBKC_ID == input.NppbkcId) on w.WERKS equals n.WERKS
+                         join g in _repositoryProd.Get(g => g.PRODUCT_ALIAS != "TIS") on b.PROD_CODE equals g.PROD_CODE
                          select new Lack10Item()
                          {
                              FaCode = w.FA_CODE,
                              BrandDescription = w.BRAND_DESC,
                              Werks = w.WERKS,
                              PlantName = n.NAME1,
-                             Type = "Hasil Tembakau",
+                             Type = g.PRODUCT_ALIAS,
                              Uom = "Btg",
-                             WasteValue = w.MARKER_REJECT_STICK_QTY.Value + w.PACKER_REJECT_STICK_QTY.Value
+                             WasteValue = (w.MARKER_REJECT_STICK_QTY.Value + w.PACKER_REJECT_STICK_QTY.Value)
+                         };
+
+                dbDataHtTis = from w in _repositoryWaste.Get(w => w.COMPANY_CODE == input.CompanyId && w.WASTE_PROD_DATE.Month == input.Month && w.WASTE_PROD_DATE.Year == input.Year && w.USE_FOR_LACK10 == true)
+                         join b in _repositoryBrand.Get(b => b.STATUS == true && (b.IS_DELETED == null || b.IS_DELETED == false)) on new { w.FA_CODE, w.WERKS } equals new { b.FA_CODE, b.WERKS }
+                         join n in _repositoryPlant.Get(n => n.NPPBKC_ID == input.NppbkcId) on w.WERKS equals n.WERKS
+                         join g in _repositoryProd.Get(g => g.PRODUCT_ALIAS != "TIS") on b.PROD_CODE equals g.PROD_CODE
+                         select new Lack10Item()
+                         {
+                             FaCode = w.FA_CODE,
+                             BrandDescription = w.BRAND_DESC,
+                             Werks = w.WERKS,
+                             PlantName = n.NAME1,
+                             Type = "TIS",
+                             Uom = "Kg",
+                             WasteValue = ((w.FLOOR_WASTE_GRAM_QTY.Value + w.DUST_WASTE_GRAM_QTY.Value + +w.STAMP_WASTE_QTY.Value) / 1000)
                          };
 
                 dbDataTis = from w in _repositoryWaste.Get(w => w.COMPANY_CODE == input.CompanyId && w.WASTE_PROD_DATE.Month == input.Month && w.WASTE_PROD_DATE.Year == input.Year && w.USE_FOR_LACK10 == true)
-                            join b in _repositoryBrand.Get(b => b.STATUS == true && (b.IS_DELETED == null || b.IS_DELETED == false)) on new { w.FA_CODE, w.WERKS } equals new { b.FA_CODE, b.WERKS }
-                            join n in _repositoryPlant.Get(n => n.NPPBKC_ID == input.NppbkcId) on w.WERKS equals n.WERKS
-                            select new Lack10Item()
-                            {
-                                FaCode = w.FA_CODE,
-                                BrandDescription = w.BRAND_DESC,
-                                Werks = w.WERKS,
-                                PlantName = n.NAME1,
-                                Type = "TIS",
-                                Uom = "Kg",
-                                WasteValue = w.FLOOR_WASTE_GRAM_QTY.Value + w.DUST_WASTE_GRAM_QTY.Value + +w.STAMP_WASTE_QTY.Value
-                            };
+                         join b in _repositoryBrand.Get(b => b.STATUS == true && (b.IS_DELETED == null || b.IS_DELETED == false)) on new { w.FA_CODE, w.WERKS } equals new { b.FA_CODE, b.WERKS }
+                         join n in _repositoryPlant.Get(n => n.NPPBKC_ID == input.NppbkcId) on w.WERKS equals n.WERKS
+                         join g in _repositoryProd.Get(g => g.PRODUCT_ALIAS == "TIS") on b.PROD_CODE equals g.PROD_CODE
+                         select new Lack10Item()
+                         {
+                             FaCode = w.FA_CODE,
+                             BrandDescription = w.BRAND_DESC,
+                             Werks = w.WERKS,
+                             PlantName = n.NAME1,
+                             Type = g.PRODUCT_ALIAS,
+                             Uom = "Kg",
+                             WasteValue = ((w.FLOOR_WASTE_GRAM_QTY.Value + w.DUST_WASTE_GRAM_QTY.Value + +w.STAMP_WASTE_QTY.Value) / 1000)
+                         };
             }
 
+            var tisData = dbDataHtTis.ToList();
+            tisData.AddRange(dbDataTis);
+
             var groupList = dbData
-                .GroupBy(x => new { x.Werks, x.FaCode })
+                .GroupBy(x => new { x.Werks, x.FaCode, x.Type })
                 .Select(p => new Lack10Item()
                 {
                     FaCode = p.FirstOrDefault().FaCode,
@@ -233,8 +273,8 @@ namespace Sampoerna.EMS.BLL
                     WasteValue = p.Sum(c => c.WasteValue)
                 });
 
-            var groupListTis = dbDataTis
-                .GroupBy(x => new { x.Werks, x.FaCode })
+            var groupListTis = tisData
+                .GroupBy(x => new { x.Werks, x.FaCode, x.Type })
                 .Select(p => new Lack10Item()
                 {
                     FaCode = p.FirstOrDefault().FaCode,
@@ -243,7 +283,7 @@ namespace Sampoerna.EMS.BLL
                     PlantName = p.FirstOrDefault().PlantName,
                     Type = p.FirstOrDefault().Type,
                     Uom = p.FirstOrDefault().Uom,
-                    WasteValue = p.Sum(c => c.WasteValue) / 1000
+                    WasteValue = p.Sum(c => c.WasteValue)
                 });
 
             var allData = groupList.ToList();
