@@ -1969,37 +1969,57 @@ namespace Sampoerna.EMS.Website.Controllers
 
             }
 
-            var totalTembakau = lack10.Lack10Item.Where(x => x.Type == "Hasil Tembakau").Sum(x => x.WasteValue);
-            var totalTis = lack10.Lack10Item.Where(x => x.Type == "TIS").Sum(x => x.WasteValue);
-            var totalTisCase = lack10.Lack10Item.Where(x => x.Type != "TIS" && x.Type != "Hasil Tembakau").Sum(x => x.WasteValue);
-            var total = totalTembakau.ToString("N3") + " Batang , " + totalTis.ToString("N3") + " Kg";
-            if (totalTis == 0) total = totalTembakau.ToString("N3") + " Batang";
-            if (totalTembakau == 0) total = totalTis.ToString("N3") + " Kg";
-
             drow[11] = lack10.CompanyNpwp;
-            drow[12] = total;
-            drow[13] = totalTembakau.ToString("N3");
-            drow[14] = totalTis.ToString("N3");
-            drow[15] = EnumHelper.GetDescription(lack10.ReportType).ToUpper();
-            drow[16] = lack10.Reason;
-            drow[17] = lack10.Remark;
-            drow[18] = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(EnumHelper.GetDescription(lack10.ReportType));
+            drow[12] = EnumHelper.GetDescription(lack10.ReportType).ToUpper();
 
-            var typeRpt = "Preview.rpt";
-            if (totalTembakau == 0) typeRpt = "PreviewTis.rpt";
-            if (totalTis == 0) typeRpt = "PreviewHt.rpt";
-            if (lack10.Lack10Item.Count == 0) typeRpt = "PreviewNoData.rpt";
-            if (totalTisCase > 0)
-            {
-                typeRpt = "PreviewTisCase.rpt";
-                total = lack10.Lack10Item.Where(x => x.Type != "Hasil Tembakau").Sum(x => x.WasteValue).ToString("N3") + " Kg";
-
-                drow[12] = total;
-                drow[19] = lack10.Lack10Item.Where(x => x.Type != "TIS" && x.Type != "Hasil Tembakau").FirstOrDefault().Type;
-                drow[20] = totalTisCase.ToString("N3");
-            }
+            var typeRpt = "PreviewNew.rpt";
 
             dt.Rows.Add(drow);
+
+            //add lack10 item
+            var dtDetail = dsLack10.Tables[1];
+            int nomorUrut = 1;
+            foreach (var item in lack10.Lack10Item.Where(x => x.WasteValue > 0))
+            {
+                DataRow drowDetail;
+                drowDetail = dtDetail.NewRow();
+                drowDetail[0] = nomorUrut;
+                drowDetail[1] = item.Type;
+                drowDetail[2] = item.WasteValue.ToString("N3");
+                drowDetail[3] = lack10.Reason;
+                drowDetail[4] = lack10.Remark;
+                drowDetail[5] = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(EnumHelper.GetDescription(lack10.ReportType));
+
+                dtDetail.Rows.Add(drowDetail);
+
+                nomorUrut++;
+            }
+
+            var listValue = lack10.Lack10Item.Where(x => x.WasteValue > 0).GroupBy(x => new { x.Uom })
+                .Select(p => new ItemForPrint()
+                {
+                    Uom = p.FirstOrDefault().Uom,
+                    Value = p.Sum(c => c.WasteValue).ToString("N3")
+                });
+
+            var totalData = string.Empty;
+            foreach (var item in listValue)
+            {
+                totalData += " " + item.Value + " " + item.Uom + ",";
+            }
+
+
+            //add total item
+            DataRow drowDetailTotal;
+            drowDetailTotal = dtDetail.NewRow();
+            drowDetailTotal[0] = string.Empty;
+            drowDetailTotal[1] = "Total";
+            drowDetailTotal[2] = totalData.Trim(',');
+            drowDetailTotal[3] = lack10.Reason;
+            drowDetailTotal[4] = lack10.Remark;
+            drowDetailTotal[5] = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(EnumHelper.GetDescription(lack10.ReportType));
+
+            dtDetail.Rows.Add(drowDetailTotal);
 
             ReportClass rpt = new ReportClass();
             string report_path = ConfigurationManager.AppSettings["Report_Path"];
@@ -2029,17 +2049,19 @@ namespace Sampoerna.EMS.Website.Controllers
             dt.Columns.Add("Preview", System.Type.GetType("System.String"));
             dt.Columns.Add("DecreeDate", System.Type.GetType("System.String"));
             dt.Columns.Add("Npwp", System.Type.GetType("System.String"));
-            dt.Columns.Add("Total", System.Type.GetType("System.String"));
-            dt.Columns.Add("TotalTembakau", System.Type.GetType("System.String"));
-            dt.Columns.Add("TotalTis", System.Type.GetType("System.String"));
             dt.Columns.Add("TypeTitle", System.Type.GetType("System.String"));
-            dt.Columns.Add("Reason", System.Type.GetType("System.String"));
-            dt.Columns.Add("Remark", System.Type.GetType("System.String"));
-            dt.Columns.Add("TypeTable", System.Type.GetType("System.String"));
-            dt.Columns.Add("TisCase", System.Type.GetType("System.String"));
-            dt.Columns.Add("TisCaseTotal", System.Type.GetType("System.String"));
+
+            //detail
+            DataTable dtDetail = new DataTable("Lack10Item");
+            dtDetail.Columns.Add("No", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Jenis", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Jumlah", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Reason", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("Remark", System.Type.GetType("System.String"));
+            dtDetail.Columns.Add("TypeTable", System.Type.GetType("System.String"));
 
             ds.Tables.Add(dt);
+            ds.Tables.Add(dtDetail);
             return ds;
         }
 

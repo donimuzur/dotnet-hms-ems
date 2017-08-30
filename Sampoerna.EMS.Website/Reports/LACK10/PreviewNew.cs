@@ -16,14 +16,14 @@ namespace Sampoerna.EMS.Website.Reports.LACK10 {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class PreviewTisCase : ReportClass {
+    public class PreviewNew : ReportClass {
         
-        public PreviewTisCase() {
+        public PreviewNew() {
         }
         
         public override string ResourceName {
             get {
-                return "PreviewTisCase.rpt";
+                return "PreviewNew.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace Sampoerna.EMS.Website.Reports.LACK10 {
         
         public override string FullResourceName {
             get {
-                return "Sampoerna.EMS.Website.Reports.LACK10.PreviewTisCase.rpt";
+                return "Sampoerna.EMS.Website.Reports.LACK10.PreviewNew.rpt";
             }
             set {
                 // Do nothing
@@ -74,7 +74,7 @@ namespace Sampoerna.EMS.Website.Reports.LACK10 {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
+        public CrystalDecisions.CrystalReports.Engine.Section DetailSection2 {
             get {
                 return this.ReportDefinition.Sections[3];
             }
@@ -82,17 +82,25 @@ namespace Sampoerna.EMS.Website.Reports.LACK10 {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section5 {
+        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
             get {
                 return this.ReportDefinition.Sections[4];
+            }
+        }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.CrystalReports.Engine.Section Section5 {
+            get {
+                return this.ReportDefinition.Sections[5];
             }
         }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedPreviewTisCase : Component, ICachedReport {
+    public class CachedPreviewNew : Component, ICachedReport {
         
-        public CachedPreviewTisCase() {
+        public CachedPreviewNew() {
         }
         
         [Browsable(false)]
@@ -129,7 +137,7 @@ namespace Sampoerna.EMS.Website.Reports.LACK10 {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            PreviewTisCase rpt = new PreviewTisCase();
+            PreviewNew rpt = new PreviewNew();
             rpt.Site = this.Site;
             return rpt;
         }
