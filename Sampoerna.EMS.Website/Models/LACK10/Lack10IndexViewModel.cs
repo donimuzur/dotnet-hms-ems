@@ -97,4 +97,16 @@ namespace Sampoerna.EMS.Website.Models.LACK10
         public string Uom { get; set; }
         public Decimal WasteValue { get; set; }
     }
+
+    public class ListItemForPrint
+    {
+        public decimal Value { get; set; }
+        public string Type { get; set; }
+    }
+
+    public class TotalItemForPrint
+    {
+        public string Value { get; set; }
+        public string Uom { get; set; }
+    }
 }

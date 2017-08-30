@@ -16,14 +16,14 @@ namespace Sampoerna.EMS.Website.Reports.LACK10 {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class PreviewHt : ReportClass {
+    public class Lack10Item : ReportClass {
         
-        public PreviewHt() {
+        public Lack10Item() {
         }
         
         public override string ResourceName {
             get {
-                return "PreviewHt.rpt";
+                return "Lack10Item.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace Sampoerna.EMS.Website.Reports.LACK10 {
         
         public override string FullResourceName {
             get {
-                return "Sampoerna.EMS.Website.Reports.LACK10.PreviewHt.rpt";
+                return "Sampoerna.EMS.Website.Reports.LACK10.Lack10Item.rpt";
             }
             set {
                 // Do nothing
@@ -90,9 +90,9 @@ namespace Sampoerna.EMS.Website.Reports.LACK10 {
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedPreviewHt : Component, ICachedReport {
+    public class CachedLack10Item : Component, ICachedReport {
         
-        public CachedPreviewHt() {
+        public CachedLack10Item() {
         }
         
         [Browsable(false)]
@@ -129,7 +129,7 @@ namespace Sampoerna.EMS.Website.Reports.LACK10 {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            PreviewHt rpt = new PreviewHt();
+            Lack10Item rpt = new Lack10Item();
             rpt.Site = this.Site;
             return rpt;
         }
