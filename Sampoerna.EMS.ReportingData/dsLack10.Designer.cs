@@ -741,6 +741,8 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnTypeTable;
             
+            private global::System.Data.DataColumn columnTypeUom;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public Lack10ItemDataTable() {
@@ -824,6 +826,14 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn TypeUomColumn {
+                get {
+                    return this.columnTypeUom;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -859,7 +869,7 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public Lack10ItemRow AddLack10ItemRow(string No, string Jenis, string Jumlah, string Reason, string Remark, string TypeTable) {
+            public Lack10ItemRow AddLack10ItemRow(string No, string Jenis, string Jumlah, string Reason, string Remark, string TypeTable, string TypeUom) {
                 Lack10ItemRow rowLack10ItemRow = ((Lack10ItemRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         No,
@@ -867,7 +877,8 @@ namespace Sampoerna.EMS.ReportingData {
                         Jumlah,
                         Reason,
                         Remark,
-                        TypeTable};
+                        TypeTable,
+                        TypeUom};
                 rowLack10ItemRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowLack10ItemRow);
                 return rowLack10ItemRow;
@@ -896,6 +907,7 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnReason = base.Columns["Reason"];
                 this.columnRemark = base.Columns["Remark"];
                 this.columnTypeTable = base.Columns["TypeTable"];
+                this.columnTypeUom = base.Columns["TypeUom"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -913,6 +925,8 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnRemark);
                 this.columnTypeTable = new global::System.Data.DataColumn("TypeTable", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnTypeTable);
+                this.columnTypeUom = new global::System.Data.DataColumn("TypeUom", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnTypeUom);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1530,6 +1544,22 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string TypeUom {
+                get {
+                    try {
+                        return ((string)(this[this.tableLack10Item.TypeUomColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'TypeUom\' in table \'Lack10Item\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableLack10Item.TypeUomColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsNoNull() {
                 return this.IsNull(this.tableLack10Item.NoColumn);
             }
@@ -1598,6 +1628,18 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetTypeTableNull() {
                 this[this.tableLack10Item.TypeTableColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsTypeUomNull() {
+                return this.IsNull(this.tableLack10Item.TypeUomColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetTypeUomNull() {
+                this[this.tableLack10Item.TypeUomColumn] = global::System.Convert.DBNull;
             }
         }
         
