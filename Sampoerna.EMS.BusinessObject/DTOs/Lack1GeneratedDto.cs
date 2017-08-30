@@ -80,6 +80,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
 
         public Lack1GeneratedRemarkDto Ck5RemarkData { get; set; }
 
+        public decimal Pbck1Qty { get; set; }
+
     }
 
     public class Lack1GeneratedRemarkDto
@@ -141,6 +143,10 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
     {
         public int Pbck1Id { get; set; }
 
+        public decimal QtyApproved { get; set; }
+
+        public string Uom { get; set; }
+
         public List<Pbck1ProdConverterDto> Pbck1Convertion { get; set; }
     }
 
@@ -164,6 +170,8 @@ namespace Sampoerna.EMS.BusinessObject.DTOs
         public DateTime? GrDate { get; set; }
 
         public decimal GrandTotalEx { get; set; }
+
+        public bool IsForLab { get; set; }
     }
 
     public class Lack1GeneratedProductionDataDto

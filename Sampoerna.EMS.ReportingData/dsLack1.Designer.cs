@@ -430,6 +430,8 @@ namespace Sampoerna.EMS.ReportingData {
             
             private global::System.Data.DataColumn columnProdUom;
             
+            private global::System.Data.DataColumn columnPbck1ApprovedQty;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public Lack1DataTable() {
@@ -649,6 +651,14 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn Pbck1ApprovedQtyColumn {
+                get {
+                    return this.columnPbck1ApprovedQty;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -707,7 +717,8 @@ namespace Sampoerna.EMS.ReportingData {
                         string BKCUom, 
                         string TotalCk5, 
                         string TotalUsage, 
-                        string ProdUom) {
+                        string ProdUom, 
+                        string Pbck1ApprovedQty) {
                 Lack1Row rowLack1Row = ((Lack1Row)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Lack1Id,
@@ -732,7 +743,8 @@ namespace Sampoerna.EMS.ReportingData {
                         BKCUom,
                         TotalCk5,
                         TotalUsage,
-                        ProdUom};
+                        ProdUom,
+                        Pbck1ApprovedQty};
                 rowLack1Row.ItemArray = columnValuesArray;
                 this.Rows.Add(rowLack1Row);
                 return rowLack1Row;
@@ -778,6 +790,7 @@ namespace Sampoerna.EMS.ReportingData {
                 this.columnTotalCk5 = base.Columns["TotalCk5"];
                 this.columnTotalUsage = base.Columns["TotalUsage"];
                 this.columnProdUom = base.Columns["ProdUom"];
+                this.columnPbck1ApprovedQty = base.Columns["Pbck1ApprovedQty"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -829,6 +842,8 @@ namespace Sampoerna.EMS.ReportingData {
                 base.Columns.Add(this.columnTotalUsage);
                 this.columnProdUom = new global::System.Data.DataColumn("ProdUom", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnProdUom);
+                this.columnPbck1ApprovedQty = new global::System.Data.DataColumn("Pbck1ApprovedQty", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnPbck1ApprovedQty);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2402,6 +2417,22 @@ namespace Sampoerna.EMS.ReportingData {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Pbck1ApprovedQty {
+                get {
+                    try {
+                        return ((string)(this[this.tableLack1.Pbck1ApprovedQtyColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Pbck1ApprovedQty\' in table \'Lack1\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableLack1.Pbck1ApprovedQtyColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsLack1IdNull() {
                 return this.IsNull(this.tableLack1.Lack1IdColumn);
             }
@@ -2674,6 +2705,18 @@ namespace Sampoerna.EMS.ReportingData {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetProdUomNull() {
                 this[this.tableLack1.ProdUomColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsPbck1ApprovedQtyNull() {
+                return this.IsNull(this.tableLack1.Pbck1ApprovedQtyColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetPbck1ApprovedQtyNull() {
+                this[this.tableLack1.Pbck1ApprovedQtyColumn] = global::System.Convert.DBNull;
             }
         }
         

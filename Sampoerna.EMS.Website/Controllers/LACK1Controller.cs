@@ -709,6 +709,12 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 dMasterRow.NoTglPbck1 = string.Join(Environment.NewLine,
                     data.Lack1Pbck1Mapping.Select(d => (d.PBCK1_NUMBER + " - " + d.DisplayDecreeDate)).ToList());
+                var qtyApprovedTemp = data.Lack1Pbck1Mapping.Sum(x=> x.ApprovedQty);
+                var uom = data.Lack1Pbck1Mapping.Select(x=> x.Uom).FirstOrDefault();
+                if(uom == "G") {
+                    qtyApprovedTemp = qtyApprovedTemp / 1000;
+                }
+                dMasterRow.Pbck1ApprovedQty = qtyApprovedTemp.ToString("N3");
             }
             else
             {
