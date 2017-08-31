@@ -800,8 +800,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 usage = usage / 1000;
                 totalAmount = totalAmount / 1000;
             }
-            dMasterRow.TotalUsage = usage.ToString("N2"); ;
-            dMasterRow.TotalCk5 = totalAmount.ToString("N2");
+            dMasterRow.TotalUsage = usage.ToString("N3"); ;
+            dMasterRow.TotalCk5 = totalAmount.ToString("N3");
             
             
             //for total
