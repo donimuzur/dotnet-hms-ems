@@ -1,0 +1,202 @@
+﻿
+@using Sampoerna.EMS.Website.Helpers
+@using Sampoerna.EMS.Core;
+@model Sampoerna.EMS.Website.Models.ManufacturingLicense.InterviewRequestViewModel
+
+@{
+    ViewBag.Title = "Interview Request";
+}
+
+@Html.HiddenFor(model => model.IsCompleted, new { @id = "txt_hd_iscompleted" })
+@Html.HiddenFor(model => model.FromMenu, new { @id = "txt_hd_frommenu" })
+
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3>@ViewBag.Title</h3>
+            @if (Model.IsNotViewer)
+            {
+            <div class="action-button new">
+                <a href="@Url.Action("Create", "MLInterviewRequest")">                    
+                    @if (Model.IsNotViewer)
+                    {
+                        <input type="button" class="btn btn-blue" value="NEW" />
+                    }                    
+                </a>
+            </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="white-wrapper">
+                @using (Ajax.BeginForm("FilterOpenDocument", "MLInterviewRequest",
+            new AjaxOptions
+            {
+                HttpMethod = "POST",
+                InsertionMode = InsertionMode.Replace,
+                UpdateTargetId = "contenttable",
+                OnComplete = "ReloadDataTables"
+            }, new { @class = "form-excise", role = "form" }))
+                {
+                    @Html.HiddenFor(model => model.IsCompleted)
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">KPPBC ID</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.Filter.KPPBC, Model.KppbcList, "All", new { @class = "form-control selectpicker", @id = "opt_kppbc" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">Company Type</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.Filter.CompanyType, Model.CompanyType, "All", new { @class = "form-control selectpicker", @id = "opt_companytype" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-4">Year</label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.Filter.Year, Model.YearList, "All", new { @class = "form-control selectpicker", @id = "opt_year" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="last-form">
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">POA</label>
+                                    <div id="divPoaList" class="col-md-8 ui-widget">
+                                        @Html.DropDownListFor(model => model.Filter.POA, Model.PoaList, "All", new { @class = "form-control selectpicker", @id = "opt_poa" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-4">Creator</label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.Filter.Creator, Model.CreatorList, "All", new { @class = "form-control selectpicker", @id = "opt_creator" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input id="btn-filter" type="submit" class="btn btn-blue full" value="FILTER" />
+                                    </div>
+                                    <div class="col-md-6">                                        
+                                        <a href="~/MLInterviewRequest" class="btn btn-blue full" id="btn-reset-filter">RESET</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div id="contenttable" class="table-container">
+                @Html.Partial("_InterviewRequestListTable")
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="loading"></div>
+
+@section scripts {
+
+    <script src="~/Scripts/js/custom.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" language="javascript">        
+
+       function setupDataTables() {
+           $('#btn-reset-filter').click(function () {
+               $('.loading').show();
+            });
+
+            $('#btn-filter').click(function () {
+                $('.loading').show();
+            });
+
+            // DataTable
+            var table = null;
+            if ($.fn.dataTable.isDataTable('#exciseTable')) {
+                table = $('#exciseTable').DataTable();
+                table.destroy();
+            }
+
+            table = $('#exciseTable').DataTable(
+                {
+                    "sDom": "Rlfrtip",
+                    "language": {
+                        "zeroRecords": "No records found",
+                        "infoFiltered": "(filtered from _MAX_ total records)"
+                    },
+                    "order": [[4, "desc"]]
+                });
+
+            //table.fnSort([[4, 'desc']]);
+
+
+            // Setup - add a text input to each footer cell
+            $('#exciseTable .filters th').each(function () {
+                var idx = $(this).index();
+                if (idx != 0) {
+                    $(this).html('<input type="text" placeholder="Search" style="width:100%" />');
+                }
+            });
+
+            // Apply the search
+            table.columns().eq(0).each(function (colIdx) {
+                $('input', $('.filters th')[colIdx]).on('keyup change', function () {
+                    table
+                        .column(colIdx)
+                        .search(this.value)
+                        .draw();
+                });
+            });
+       }
+
+       function getUrl(ActionName) {
+           var BaseUrl = '@Url.Action("", "MLInterviewRequest")';
+           var URL = BaseUrl + "/" + ActionName;
+           return URL;
+       }
+
+        function ReloadDataTables() {
+            $('.toggle-row').click(function () {
+
+                var filter = $(".filters");
+                filter.slideToggle(100).promise().done(function () {
+
+                });
+            });
+            $('.loading').hide();
+            setupDataTables();
+        }
+
+        $(document).on("click", ".btn_action", function () {
+            $("#customloader").show();
+        });
+
+        $(document).ready(function () {
+            var currmenu = $("#txt_hd_frommenu").val();
+            if (currmenu == "Index") {
+                $('#MenuMLInterviewRequest').addClass('active');
+            }
+            else if (currmenu == "Completed") {
+                $('#MenuMLInterviewRequestCompleted').addClass('active');
+            }
+            else {
+                $('#MenuMLInterviewRequestSummaryReport').addClass('active');
+            }
+            setupDataTables();
+        });
+
+    </script>
+}

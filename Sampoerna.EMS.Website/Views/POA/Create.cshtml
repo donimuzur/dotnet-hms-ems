@@ -103,6 +103,8 @@
                                                 @Html.TextBoxFor(model => model.Detail.Title, new { @class = "form-control", @maxlength = "50" })
                                             </div>
                                         </div>
+                                        <div class="col-md-3"></div>                                     
+                                        <div class="col-md-3">@Html.CheckBoxFor(model => model.Detail.IsExciser) <label>Exciser</label></div>
                                     </div>
 
                                     <div class="col-md-6">
@@ -114,7 +116,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+                                                               
                                 <div class="col-md-6">
                                     <div class="row">
                                         <label class="col-md-4">SK Doc</label>
@@ -154,12 +156,13 @@
     <script src="~/Scripts/poa/form.js"></script>
     <script type="text/javascript">
         
+       
+
         $(function () {
             OnChangeUser($('#Detail_UserId option:selected').val());
         });
 
         function OnChangeUser(id) {
-
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetUser", "POA")',

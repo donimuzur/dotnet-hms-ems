@@ -141,5 +141,66 @@ namespace Sampoerna.EMS.Utils
             }
         }
 
+        public static string GetNumeralFromRomanValue(string roman)
+        {
+            if (roman == null)
+                return null;
+            if (roman == "/")
+                return null;
+            string romanValue = null;
+
+            switch (roman)
+            {
+                case "0":
+                    romanValue = "00";
+                    break;
+
+                case "I":
+                    romanValue = "01";
+                    break;
+
+                case "II":
+                    romanValue = "02";
+                    break;
+
+                case "III":
+                    romanValue = "03";
+                    break;
+
+                case "IV":
+                    romanValue = "04";
+                    break;
+                case "V":
+                    romanValue = "05";
+                    break;
+                case "VI":
+                    romanValue = "06";
+                    break;
+
+
+                case "VII":
+                    romanValue = "07";
+                    break;
+
+                case "VIII":
+                    romanValue = "08";
+                    break;
+
+                case "IX":
+                    romanValue = "09";
+                    break;
+
+                case "X":
+                    romanValue = "10";
+                    break;
+
+
+
+            }
+            return romanValue;
+
+
+        }
+
     }
 }

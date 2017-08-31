@@ -1,0 +1,155 @@
+﻿@model Sampoerna.EMS.Website.Models.ExciseCredit.ExciseCreditFormModel
+@{
+    ViewBag.Title = "Create";
+}
+<div id="errModal" class="modal ems-modal fade bs-example-modal-sm danger" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                @*<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>*@
+                <h4 class="modal-title" id="errModalTitle"></h4>
+            </div>
+            <div class="modal-body">
+                <p id="errModalContent"></p>
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-grey" data-dismiss="modal" value="Ok" />
+            </div>
+        </div>
+    </div>
+</div>
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "ExciseCreateForm" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="container-wrap title-page">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Excise Credit Form</h3>
+                <label class="status">DRAFT</label>
+                <label class="status" id="docNumber" style="display: none"></label>
+                <div class="action-button">
+                    <input type="button" class="btn btn-blue" value="Save" id="SaveButton" />
+                    @*<input type="button" class="btn btn-grey" value="Print Preview" />*@
+                    <a href="@Url.Action("Index", "ExciseCredit")" class="btn btn-grey">Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-wrap">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="alert alert-danger" style="padding-left: 30px" id="ExciseDataError">
+                </div>
+                <div class="alert alert-danger" style="padding-left: 30px" id="FinancialRatioError">
+                </div>
+                <div class="alert alert-danger" style="padding-left: 30px" id="CK1Error">
+                </div>
+                <div class="alert alert-danger" style="padding-left: 30px" id="SupportingError">
+                </div>
+                <!-- Form Data Container -->
+                <div style="display: none">
+                    @Html.HiddenFor(model => model.ViewModel.FinancialRatioIds)
+                    @Html.HiddenFor(model => model.ViewModel.Amount)
+                    @Html.HiddenFor(model => model.ViewModel.POA)
+
+                </div>
+                <div role="tabpanel">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" id="home-tab" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Information</a></li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.Partial("_NewExciseForm", Model)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<div id="ck1List" style="display:none;"></div>
+
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.form.min.js"></script>
+    <script src="~/Scripts/UploadExcel.js"></script>
+    @*<script src="~/Scripts/autoNumeric.min.js"></script>*@
+    <script src="~/Scripts/excise-credit/terbilang.js"></script>
+    <script src="~/Scripts/excise-credit/terbilang.min.js"></script>
+    <script src="~/Scripts/excise-credit/main.js"></script>
+    <script type="text/javascript">
+        //$(document).on('click', '.browse', function () {
+        //    var file = $(this).parent().parent().parent().parent().find('.file');
+        //    file.trigger('click');
+        //});
+        //$(document).on('change', '.file', function () {
+        //    $(this).parent().find('.form-control').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+        //});
+        //$("#browseOtherDoc").on('click', function () {
+        //    var file = $('.file');
+        //    file.trigger('click');
+        //});
+        //$("#browseOtherDocFile").on('change', function () {
+        //    $("#browseOtherDocText").val($(this).val().replace(/C:\\fakepath\\/i, ''));
+        //});
+
+
+        $(document)
+            .on("ready", ready)
+            .on("unload", detach);
+
+        function ready() {
+            attach();
+            assignStyle();
+        }
+        var ckUrl = '@Url.Action("GetCalculationDetail", "ExciseCredit")';
+        var adjUrl = '@Url.Action("GetCalculationAdjustment", "ExciseCredit")';
+        var adjItemUrl = '@Url.Action("GetItemAdjustment", "ExciseCredit")';
+        var countUrl = '@Url.Action("GetCurrentDocumentId", "ExciseCredit")';
+        var uploadUrl = '@Url.Action("UploadFiles", "ExciseCredit")';
+        var sdUrl = '@Url.Action("GetSupportingDocuments", "ExciseCredit")';
+        var createUrl = '@Url.Action("Create", "ExciseCredit")';
+        var ck1DetaiUrl = '@Url.Action("GetCk1List", "ExciseCredit")';
+        var ck1DetailAdjustmentUrl = '@Url.Action("GetCk1AdjustmentList", "ExciseCredit")';
+        var ceklatestskepurl = '@Url.Action("GetLastSkepCreditAmount", "ExciseCredit")';
+        var homeUrl = '@Url.Action("Index", "ExciseCredit")';
+
+        // action handlers
+        function nppbkcSelectionChanges() {
+            var _url = '@Url.Action("GetNppbkc", "ExciseCredit")';
+            var _id = nppbkc.val();
+            var _fsUrl = '@Url.Action("GetFinancialStatements", "ExciseCredit")';
+            var _company = companyId.val();
+            var _year = new Date(submitDate.val()).getYear() + 1900;
+            var _sdUrl = '@Url.Action("GetSupportingDocuments", "ExciseCredit")';
+            var _ckUrl = '@Url.Action("GetCalculationDetail", "ExciseCredit")';
+            loadNppbkc(_url, _id, _fsUrl);
+            //loadFinancialStatement(_fsUrl, _company, _year);
+            //loadSupportingDocuments(_sdUrl, _company);
+            //loadCk1Calculation(_ckUrl);
+        }
+
+        function submitDateSelectionChanges() {
+            var _url = '@Url.Action("GetFinancialStatements", "ExciseCredit")';
+            var _company = companyId.val();
+            var _year = new Date(submitDate.val()).getYear() + 1900;
+            exciseFormData.SubmissionDate = new Date(submitDate.val());
+            loadFinancialStatement(_url, _company, _year);
+            updateDocumentNumbering(new Date(submitDate.val()));
+            //loadCk1Calculation(_ckUrl);
+        }
+
+        function exciseTypeSelectionChanges() {
+            exciseFormData.RequestTypeId = parseInt(requestType.val());
+            var _url = '@Url.Action("GetFinancialStatements", "ExciseCredit")';
+            var _company = companyId.val();
+            var _year = new Date(submitDate.val()).getYear() + 1900;
+            loadFinancialStatement(_url, _company, _year);
+        }
+        
+        
+
+    </script>
+}

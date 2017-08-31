@@ -42,6 +42,8 @@ namespace Sampoerna.EMS.Website.Models.LACK2
         public string PoaList { get; set; }
         public string PoaListHidden { get; set; }
 
+        public string Npwp { get; set; }
+
         public string ControllerAction { get; set; }
         public bool AllowApproveAndReject { get; set; }
         public bool AllowGovApproveAndReject { get; set; }

@@ -23,7 +23,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult Index()
         {   
-           return View();
+           return View("Index2");
         }
         
     }

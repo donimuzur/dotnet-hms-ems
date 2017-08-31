@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="7796da30c3284c95a5e6117316f554d7" Name="Diagram1" ZoomLevel="68">
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.USER" Width="2.625" PointX="0.75" PointY="50" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.SYS_REFFERENCES" Width="2.5" PointX="7.125" PointY="49.875" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.SYS_REFFERENCES_TYPE" Width="2.5" PointX="3.875" PointY="41.875" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__SYS_REFFE__CREAT__5BCD9859" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__SYS_REFFE__LASTM__6DEC4894" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__SYS_REFFE__REFF___46D27B73" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.T001" Width="2" PointX="7.625" PointY="44.5" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.MASTER_FINANCIAL_RATIO" Width="2.75" PointX="13.375" PointY="59.75" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__FINANCIAL__BUKRS__035179CE" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__FINANCIAL__CREAT__04459E071" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__FINANCIAL__LASTA__062DE6791" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__FINANCIAL__LASTM__07220AB21" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__FINANCIAL__STATU__542C7691" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.WORKFLOW_HISTORY" Width="1.5" PointX="4.125" PointY="44.75" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_WORKFLOW_HISTORY_USER" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.CONTENTEMAIL" Width="2.5" PointX="0.75" PointY="0.875" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.EMAILVARIABEL" Width="2.5" PointX="4" PointY="0.875" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__EMAILVARI__CONTE__2818EA29" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.MASTER_SUPPORTING_DOCUMENT" Width="2.125" PointX="10.375" PointY="47.375" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__MASTER_SU__BUKRS__7775B2CE" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_MASTER_SUPPORTING_DOCUMENT_CREAT_BY" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_MASTER_SUPPORTING_DOCUMENT_LASTA_BY" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_MASTER_SUPPORTING_DOCUMENT_LASTM_BY" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_MASTER_SUPPPORTING_DOCUMENT_LASTA_STAT" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.TARIFF" Width="2" PointX="20.625" PointY="54.25" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.MASTER_PRODUCT_TYPE" Width="2.5" PointX="13.375" PointY="52.875" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__TARIFF__STATUS_A__758D6A5C" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__ZAIDM_EX___APPRO__0E591826" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__TARIFF__CREATED___72B0FDB1" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__TARIFF__LASTAPPR__74994623" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__TARIFF__LASTMODI__73A521EA" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__TARIFF__PROD_COD__71BCD978" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__ZAIDM_EX___CREAT__10416098" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__ZAIDM_EX___LASTA__0F4D3C5F" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__ZAIDM_EX___MODIF__113584D1" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.MASTER_NPPBKC" Width="2.75" PointX="5.125" PointY="80" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_ZAIDM_EX_NPPBKC_T001" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.MASTER_PLANT" Width="1.5" PointX="8.625" PointY="66.875" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_T001W_ZAIDM_EX_NPPBKC" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.LFA1" Width="1.5" PointX="2.875" PointY="80" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_ZAIDM_EX_NPPBKC_LFA1" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.MASTER_KPPBC" Width="1.5" PointX="2.875" PointY="83.875" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_ZAIDM_EX_NPPBKC_ZAIDM_EX_KPPBC" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.CK1" Width="1.5" PointX="21.25" PointY="45.625" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.EXCISE_CREDIT_ADJUST_CALDETAIL" Width="2.5" PointX="20.5" PointY="60" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.MASTER_CITY" Width="1.5" PointX="6.375" PointY="60.625" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.POA" Width="1.5" PointX="4.125" PointY="54.75" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.COMPANY_PLANT_MAPPING" Width="1.5" PointX="10.375" PointY="43.375" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.EXCISE_ADJUSTMENT_CALCULATE" Width="2.125" PointX="0.75" PointY="3.75" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__APPRO__6BCEF5F8" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__CREAT__6ADAD1BF" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__EXCIS__670A40DB" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__LAST___68F2894D" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__LAST___6CC31A31" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__NPPBK__740F363E" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__POA_I__049AA3C2" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__PRODU__69E6AD86" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__T001W__CITY_ID__61516785" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_MASTER_CITY_CREAT_BY" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_MASTER_CITY_LASTM" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_POA_CREATED_BY_USER" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_POA_LOGIN_AS_USER" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_POA_MODIFIED_BY_USER" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_POA_USER" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_T001K_T001" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.CK1_ITEM" Width="1.5" PointX="23.5" PointY="46.375" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_CK1_ITEM_CK1" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.POA_MAP" Width="1.5" PointX="17.875" PointY="67.375" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_POA_MAP_POA" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_POA_MAP_CREATED_BY_USER" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_POA_MAP_MODIFIED_BY_USER" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_POA_MAP_T001W" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_POA_MAP_ZAIDM_EX_NPPBKC" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.POA_EXCISER" Width="1.5" PointX="6.375" PointY="56.375" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.ZAIDM_EX_BRAND" Width="1.5" PointX="20.625" PointY="64.625" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.ZAIDM_EX_MARKET" Width="1.5" PointX="15.375" PointY="72.375" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.ZAIDM_EX_MATERIAL" Width="1.5" PointX="10.875" PointY="71.5" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__POA_EXCIS__POA_I__2DD1C37F" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_ZAIDM_EX_BRAND_T001W" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_ZAIDM_EX_MATERIAL_T001W" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_ZAIDM_EX_BRAND_ZAIDM_EX_MARKET" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_ZAIDM_EX_BRAND_ZAIDM_EX_PRODTYP" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.FILE_UPLOAD" Width="1.5" PointX="16.25" PointY="47.375" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__FILE_UPLO__CREAT__4B622666" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__FILE_UPLO__DOCUM__3B2BBE9D" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__FILE_UPLO__LASTM__4C564A9F" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.CHANGES_HISTORY" Width="1.5" PointX="4.125" PointY="64.875" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_CHANGES_HISTORY_MODIFIED_BY_USER" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.ADMIN_APPROVAL_VIEW" Width="1.5" PointX="3.75" PointY="3.75" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.BROLE_MAP" Width="1.5" PointX="4.125" PointY="68.375" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_BROLE_MAP_USER" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.EXCISE_CREDIT_DETAILCK1" Width="1.5" PointX="23.5" PointY="54.875" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__EXCIS__66161CA2" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__PRODU__7BB05806" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__CK1_I__4D1564AE" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.INTERVIEW_REQUEST" Width="1.5" PointX="10.375" PointY="53.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.INTERVIEW_REQUEST_DETAIL" Width="1.5" PointX="15.625" PointY="67.25" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.MANUFACTURING_BOUND_CONDITION" Width="1.5" PointX="23.875" PointY="59.625" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.MANUFACTURING_LISENCE_REQUEST" Width="1.5" PointX="18.625" PointY="43.75" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.MANUFACTURING_PRODUCT_TYPE" Width="1.5" PointX="20.625" PointY="50.375" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__INTERVIEW__BUKRS__4E3E9311" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__INTERVIEW__NPPBK__642DD430" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__INTERVIEW__POA_I__058EC7FB" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__INTERVIEW__VR_FO__45A94D10" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__MANUFACTU__VR_FO__0EE3280B" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_MASTER_VISIT_REQUEST_CREAT_BY" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_MASTER_VISIT_REQUEST_LASTA_BY" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_MASTER_VISIT_REQUEST_LASTA_STAT" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_MASTER_VISIT_REQUEST_LASTM_BY" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__INTERVIEW__CITY___3572E547" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__MANUFACTU__VR_FO__1F198FD4" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__MANUFACTU__MNF_R__168449D3" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__MANUFACTU__MNF_R__1D314762" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__MANUFACTU__MNF_R__2101D846" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__MANUFACTU__NPPBK__0DEF03D2" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_MASTER_MNF_REQUEST_CREAT_BY" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_MASTER_MNF_REQUEST_LASTA_BY" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_MASTER_MNF_REQUEST_LASTA_STAT" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_MASTER_MNF_REQUEST_LASTM_BY" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__MANUFACTU__PROD___1E256B9B" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.REPLACEMENT_DOCUMENTS" Width="2.125" PointX="10.375" PointY="61.125" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.REPLACEMENT_DOCUMENTS_DETAIL" Width="1.5" PointX="12.625" PointY="66.75" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__AMENDMENT__CREAT__5C8CB268" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__AMENDMENT__LASTA__5E74FADA" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__AMENDMENT__LASTA__5F691F13" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__AMENDMENT__LASTM__5D80D6A1" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__AMENDMENT__NPPBK__5B988E2F" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__REPLACEME__FORM___605D434C" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.MASTER_STATE" Width="1.5" PointX="4.125" PointY="71.5" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__INTERVIEW__PROVI__3A379A64" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__MASTER_CI__STATE__3943762B" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__T001W__STATE_ID__62458BBE" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_MASTER_STATE_LASTM_BY" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_MASTER_STATE_CREAT_BY" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.POA_DELEGATION" Width="1.5" PointX="4.125" PointY="75.375" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_POA_DELEGATION_POAUSER" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_POA_DELEGATION_POAUSER11" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_POA_DELEGATION_USER" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_POA_DELEGATION_USER1" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.EXCISE_CREDIT" Width="2.375" PointX="17.375" PointY="52.375" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.CK1_EXCISE_CALCULATE" Width="1.5" PointX="5.75" PointY="3.75" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.ROLE_ADMIN_APPROVER_VIEW" Width="1.5" PointX="0.75" PointY="6.75" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.PRODUCT_DEVELOPMENT_DETAIL" Width="1.5" PointX="17.625" PointY="61.625" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__PRODUCT_D__BUKRS__26EFBBC6" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__PRODUCT_D__MARKE__086B34A6" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__PRODUCT_D__WERKS__316D4A39" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__PRODUCT_D__LASTA__3D9E16F4" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__PRODUCT_D__LASTA__3E923B2D" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.PRODUCT_DEVELOPMENT" Width="1.5" PointX="4.125" PointY="50" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__PRODUCT_D__PD_ID__0E240DFC" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_PRODUCT_DEV_FORM_CREAT_BY" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_PRODUCT_DEV_FORM_LASTM_BY" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.vwMLLicenseRequest" Width="1.5" PointX="3.375" PointY="7.75" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.vwMLInterviewRequest" Width="1.5" PointX="5.375" PointY="7.75" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.PRINT_HISTORY" Width="1.5" PointX="4.125" PointY="61.625" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.PRINTOUT_LAYOUT" Width="1.5" PointX="7.375" PointY="8" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.PRINTOUT_VARIABLE" Width="1.5" PointX="9.625" PointY="7.875" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_PRINT_HISTORY_USER" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_PRINTOUT_VARIABLE_PRINTOUT_LAYOUT" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.BRAND_REGISTRATION_REQ_DETAIL" Width="2.75" PointX="25.875" PointY="64.375" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.RECEIVED_DECREE_DETAIL" Width="2.25" PointX="22.875" PointY="64.375" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_PRODUCT_DEVELOPMENT_DETAIL" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_ZAIDM_EX_MARKET" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_ZAIDM_EX_PRODTYP" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__PRODUCT_DEVELOPMENT_DETAIL" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__ZAIDM_EX_PRODTYP" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.RECEIVED_DECREE" Width="2.5" PointX="18.375" PointY="72.25" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__RECEIVED_DECREE" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_APPROVAL_STATUS" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_APPROVER" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_CREATOR" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_LASTEDITOR" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_ZAIDM_EX_NPPBKC" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.vwPenetapanSKEP" Width="1.5" PointX="8.75" PointY="0.75" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.USER_PRINTOUT_LAYOUT" Width="1.5" PointX="9.625" PointY="34.625" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_USER_PRINTOUT_LAYOUT_PRINTOUT_LAYOUT" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_USER_PRINTOUT_LAYOUT_USER" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.vwProductDevDetail" Width="1.5" PointX="9.375" PointY="10.75" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.PRODUCT_DETAIL_VIEW" Width="1.5" PointX="11.375" PointY="10.75" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.PRODUCT_DEVELOPMENT_UPLOAD" Width="1.5" PointX="25.875" PointY="55" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__FILE_UPLO__DOCUM__688874F9" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_PRODUCT_DEVELOPMENT_UPLOAD_PRODUCT_DEVELOPMENT_DETAIL" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__T001W__CITY_ID__615167851" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__T001W__STATE_ID__62458BBE1" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.vwBrandRegistration" Width="1.5" PointX="0.75" PointY="9.75" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.EXCISE_CREDIT_APPROVED_DETAIL" Width="1.5" PointX="23.5" PointY="51.75" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_EXCISE_CREDIT_APPROVED_DETAIL_EXCISE_CREDIT" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__EXCISE_CR__PROD___61BB7BD9" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.CK1_EXCISE_CALCULATE_ADJUST" Width="1.5" PointX="11.375" PointY="0.75" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.DOC_NUMBER_SEQ" Width="1.5" PointX="12.375" PointY="5.75" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.COUNTRY" Width="1.5" PointX="13.375" PointY="0.875" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_PRODUCT_DEVELOPMENT_DETAIL_COUNTRY" />
+        <EntityTypeShape EntityType="Sampoerna.EMS.CustomService.Data.BRAND_REGISTRATION_REQ" Width="1.5" PointX="13.375" PointY="77" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__BRAND_REG__CREAT__76B698BF" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__BRAND_REG__LASTA__77AABCF8" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__BRAND_REG__LASTA__789EE131" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__BRAND_REG__LASTM__7993056A" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK__BRAND_REG__NPPBK__7A8729A3" />
+        <AssociationConnector Association="Sampoerna.EMS.CustomService.Data.FK_BRAND_REGISTRATION" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

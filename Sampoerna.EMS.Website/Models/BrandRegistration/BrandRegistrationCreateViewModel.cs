@@ -129,11 +129,8 @@ namespace Sampoerna.EMS.Website.Models.BrandRegistration
         public string BahanKemasan { get; set; }
         public SelectList BahanKemasanList { get; set; }
         public bool IsPackedAdjusted { get; set; }
-
         public bool IsFromSAP { get; set; }
-
         public string SAPBrandDescription { get; set; }
-
         public SelectList FaCodeList { get; set; }
     }
 }

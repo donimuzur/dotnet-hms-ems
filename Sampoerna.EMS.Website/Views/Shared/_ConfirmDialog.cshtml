@@ -1,0 +1,19 @@
+﻿@model Sampoerna.EMS.Website.Models.Shared.ConfirmDialogModel
+
+<div class="modal ems-modal fade @(Model.CssClass)" tabindex="-1" role="dialog" aria-labelledby="@(Model.ModalLabel)">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">@Model.Title</h4>
+            </div>
+            <div class="modal-body">
+                @Model.Message
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="@(Model.Action.CssClass)" id="@(Model.Action.Id)">@(Model.Action.Label)</button>
+                <button type="button" class="btn btn-grey" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

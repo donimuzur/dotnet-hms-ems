@@ -1,0 +1,96 @@
+﻿@using Microsoft.Ajax.Utilities
+@model Sampoerna.EMS.Website.Models.SupportDoc.SupportDocViewModel
+@section scripts {
+
+    <script src="~/Scripts/js/scripts.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(entryPoint);
+
+        function entryPoint() {
+            $('#MenuSupportingDocument').addClass('active');
+            $('#ApproveButtonConfirm').on('click', function () {
+                $("#ApproveForm").submit();
+            });
+        }
+
+
+    </script>
+}
+@{
+    ViewBag.Title = "Detail Supporting Document";
+}
+@Html.Partial("_ActionButton", Model);
+<div class="container-wrap">
+    <div class="row">
+        <div class="col-sm-12">
+            <div role="tabpanel">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#information" aria-controls="information" role="tab" data-toggle="tab">Information</a></li>
+                    <li role="presentation"><a href="#changes" aria-controls="changes" role="tab" data-toggle="tab">Changes Log</a></li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="information">
+                        <div class="tab-wrapper">
+                            <div class="white-wrapper">
+                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingOne">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                    Detail Supporting Document
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                            <form class="form-excise">
+                                                <div class="panel-body">
+                                                    @Html.Partial("_FormSupport", Model)
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-group" id="accordion-7" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="heading7">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion-7" href="#collapse7" aria-expanded="true" aria-controls="collapse7">
+                                                    Workflow History
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading7">
+                                            <div class="panel-body">
+                                                <div class="table-container">
+                                                    @Html.Partial("_WorkflowHistoryNewModule", Model.WorkflowHistory)
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="changes">
+                        <div class="table-container">
+                            @Html.Partial("_ChangesHistoryTable", Model)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Forms -->
+            @using (Html.BeginForm("Approve", "SupportDoc", null, FormMethod.Post, new { @class = "form-excise", role = "form", enctype = "multipart/form-data", @id = "ApproveForm" }))
+            {
+                @Html.AntiForgeryToken()                
+                @Html.HiddenFor(model => model.ViewModel.DocumentID)
+            }
+            <!-- Modals -->
+            @Html.Partial("_ConfirmDialog", Model.ApproveConfirm)
+            @Html.Partial("_ReviseModal", Model);
+        </div>
+    </div>
+</div>

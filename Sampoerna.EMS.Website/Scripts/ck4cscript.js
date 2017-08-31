@@ -251,7 +251,7 @@ function getProductionData(urlFunction) {
                             '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_HjeIdr" name="Details.Ck4cItemData[' + i + '].HjeIdr" value=' + data[i].Hje + '></input>' + ThausandSeperator(data[i].Hje, 2) + '</td>' +
                             '<td class="number" class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_Tarif" name="Details.Ck4cItemData[' + i + '].Tarif" value=' + data[i].Tarif + '></input>' + ThausandSeperator(data[i].Tarif, 2) + '</td>' +
                             '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_ContentPerPack" name="Details.Ck4cItemData[' + i + '].ContentPerPack" value=' + data[i].ContentPerPack + '></input>' + ThausandSeperator(data[i].ContentPerPack, 2) + '</td>' +
-                            '<td class="number"><input type="hidden" id="Details_Ck4cItemData[' + i + ']_PackedQty" name="Details.Ck4cItemData[' + i + '].PackedQty" value=' + data[i].QtyPacked + '></input>' + ThausandSeperator(data[i].QtyPacked, 2) + '</td>' +
+                            '<td class="number">' + ThausandSeperator(data[i].QtyPacked, 2) + '</td>' +
 
                             zbData +
 

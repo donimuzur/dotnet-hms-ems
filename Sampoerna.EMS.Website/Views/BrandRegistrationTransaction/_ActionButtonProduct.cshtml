@@ -1,0 +1,48 @@
+﻿@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.ProductDevelopment.ProductDevelopmentViewModel
+<div class="container-wrap title-page">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="desc">Product Development</h3>
+         
+            @if (!Model.EnableFormInput)
+            {
+                @*<label class="status">@Model.ViewModel.ApprovalStatusDescription.Value</label>*@
+            }
+
+            <label class="status">@Model.ViewModel.PD_NO</label>
+           
+            <div class="action-button">                
+               
+                @if (Model.ShowActionOptions && Model.EnableFormInput)
+                {
+                    if (Model.EditMode)
+                    {                  
+                        if (Model.IsCreated)
+                        {
+                            <button type="button" class="btn btn-blue" title="Cancel this Submission" id="CancelButton">Cancel</button>
+                        }
+                        <button type="button" class="btn btn-blue" id="EditButton">Save</button>
+                        <a href="@Url.Action("IndexProductDevelopment", "BrandRegistrationTransaction")" class="btn btn-grey">Back</a>
+
+                    }
+                    if (ViewContext.Controller.ValueProvider.GetValue("action").RawValue.ToString() == "CreateProductDevelopment")
+                    {
+                        <button type="button" class="btn btn-blue"  id="SaveButton">Save</button>
+                        <a href="@Url.Action("IndexProductDevelopment", "BrandRegistrationTransaction")" class="btn btn-grey">Back</a>
+                    }
+               
+                }
+                else
+                {
+                    <a href="@Url.Action("IndexProductDevelopment", "BrandRegistrationTransaction")" class="btn btn-grey">Back</a>
+                }
+            </div>
+        </div>       
+    </div>
+    <div class="row">
+        <div class="col-md-12">            
+            @*@Html.LabelFor(model=>model.ViewModel.PD_NO, new { @class="status" })*@            
+        </div>
+    </div>
+</div>
+

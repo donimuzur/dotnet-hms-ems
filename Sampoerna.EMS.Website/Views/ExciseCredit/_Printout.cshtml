@@ -1,0 +1,156 @@
+﻿@model Sampoerna.EMS.Website.Models.ExciseCredit.ExciseCreditFormModel
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript" src="~/Scripts/jquery-2.1.4.js"></script>
+<script type="text/javascript">
+    $(function () {
+        function renderTemplate(id, text) {
+            $("#" + id).html(text);
+        }
+
+        function mapResetAction() {
+            console.log("Reset action mapped!");
+            @foreach (var item in Model.Printouts)
+            {
+                <text>
+            $('@String.Format("#RestoreButton{0}", item.Layout.LayoutId)').click(function () {
+                var param = '@item.Layout.Name';
+                var id = parseInt('@item.Layout.LayoutId');
+                resetLayout(param);
+                //console.log("resetting layout " + id + "with name: " + param);
+            });
+
+            $('@String.Format("#SaveLayout{0}Button", item.Layout.LayoutId)').click(function () {
+                var param = '@item.Layout.Name';
+                var id = parseInt('@item.Layout.LayoutId');
+                save(param, id);
+                //console.log("resetting layout " + id + "with name: " + param);
+            });
+
+            $('@String.Format("#DownloadLayoutButton", item.Layout.LayoutId)').click(function () {
+                var param = '@item.PrintoutName';
+                download(param);
+                //console.log("resetting layout " + id + "with name: " + param);
+            });
+                </text>
+            }
+        }
+
+        mapResetAction();
+
+        function resetLayout(key, id) {
+            var url = '@Url.Action("GetDefaultPrintoutLayout", "ExciseCredit")';
+            var param = {
+                key: key
+            };
+            console.log("reset");
+            $("#customloader").show();
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: JSON.stringify(param),
+                contentType: 'application/json; charset=utf-8',
+            })
+            .success(function (partialResult) {
+                $("#customloader").hide();
+                //$("#Printout" + id + "Layout").val(partialResult);
+                tinyMCE.activeEditor.setContent(partialResult);
+                $(".restore-modal").modal("hide");
+            })
+            .error(function (error) {
+                $("#customloader").hide();
+                showErrorDialog("Cannot load default template!");
+            });
+        }
+
+        function save(key, id) {
+            var url = '@Url.Action("SaveTemplate", "ExciseCredit")';
+            var param = {
+                name: key,
+                content: tinyMCE.get("Printout" + id + "Layout").getContent()
+            };
+            $("#customloader").show();
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: JSON.stringify(param),
+                contentType: 'application/json; charset=utf-8',
+            })
+            .success(function (partialResult) {
+                if (partialResult)
+                {
+                    $("#customloader").hide();
+                    //$("#LayoutContainer" + id).html(partialResult);
+                    $(".ems-modal").modal("hide");
+                    window.location.reload(true);
+                }
+
+            })
+            .error(function (error) {
+                $("#customloader").hide();
+                showErrorDialog("Cannot save personalized template!");
+            });
+        }
+
+        function download(key) {
+
+            $("#PrintoutTypeDescription").val(key);
+            $("#DownloadPrintoutForm").submit();
+        }
+
+
+    });
+
+</script>
+
+
+<style>
+    .watermark {
+        opacity: 0.1;
+        color: BLACK;
+        position: fixed;
+        top: auto;
+        left: 40%;
+        top: 60%;
+        font-size: 50pt;
+        z-index: 1;
+        /* Safari */
+        -webkit-transform: rotate(-45deg);
+        /* Firefox */
+        -moz-transform: rotate(-45deg);
+        /* IE */
+        -ms-transform: rotate(-45deg);
+        /* Opera */
+        -o-transform: rotate(-45deg);
+        /* Internet Explorer */
+        filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+    }
+</style>
+@using (Html.BeginForm("DownloadPrintout", "ExciseCredit", null, FormMethod.Post, new { id = "DownloadPrintoutForm", @class = "form-excise", role = "form", enctype = "multipart/form-data" }))
+{
+    @Html.HiddenFor(model => Model.ViewModel.Id)
+    <input type="hidden" id="PrintoutTypeDescription" name="PrintoutTypeDescription" />
+}
+<div role="tabpanel" class="tab-pane" id="profile">
+    <div class="row">
+        <div class="col-md-12 pull-right" style="margin-bottom: 20px!important;">
+            <button type="button" class="btn btn-blue pull-right" id="DownloadLayoutButton">Download Printout</button>
+        </div>
+        <div class="clearfix" ></div>
+            <div class="panel-group" id="accordionPrintout" role="tablist" aria-multiselectable="true">
+                @foreach (var item in Model.Printouts)
+            {
+                Html.RenderPartial("_PrintoutItem", item);
+                    <div class="col-lg-12" style="min-height: 25px "></div>
+                    <div class="clearfix"></div>
+                }
+            </div>
+        </div>
+</div>
+
+
+
+

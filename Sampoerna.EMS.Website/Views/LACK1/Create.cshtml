@@ -110,8 +110,21 @@
             $('#ExGoodsTypeId').on('change', function () {
                 ExGoodsTypeOnChange();
             });
+
+            $('#generated-data-container-old').html('');
+            $('#generated-data-container-old').append(generateEmptyTable());
+
             $('#generated-data-container').html('');
             $('#generated-data-container').append(generateEmptyTable());
+            $('#generated-details-container').html('');
+            $('#generated-details-container').append(generateEmptyDetailsTable());
+            
+            $('#generated-detailsconvertion-container').html('');
+            $('#generated-detailsconvertion-container').append(generateEmptyDetailsTable());
+            
+
+            $("#generated-ck5-container").html("");
+            $("#generated-ck5-container").append(generateEmptyck5Table());
         });
 
         function BukrsOnChange() {

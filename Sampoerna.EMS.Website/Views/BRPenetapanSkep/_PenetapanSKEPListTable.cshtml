@@ -1,0 +1,54 @@
+﻿@model Sampoerna.EMS.Website.Models.BrandRegistrationTransaction.MapSKEP.ReceivedDecreeViewModel
+@using Sampoerna.EMS.CustomService.Core
+
+<table id="penSKEPTable" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> Filter </th>
+            <th>Document No.</th>
+            <th>Requestor</th>
+            <th>NPPBKC</th>
+            <th>SKEP Date</th>
+            <th>Company</th>
+            <th>Start Date SKEP</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <thead class="filters">
+        <tr>
+            <th> Action</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ListReceivedDecree)
+        {
+            <tr>
+                <td class="action">
+                    <a href="@Url.Action("Detail", "BRPenetapanSkep", new { id = item.Received_ID })" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye btn_action"></i></a>
+                    @if ((item.ApprovalStatusDescription.Key == ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.Draft) || item.ApprovalStatusDescription.Key == ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.Edited)) && item.LastApproved_By != Model.CurrentUser)
+                    {
+                        <a href="@Url.Action("Edit", "BRPenetapanSkep", new { id = item.Received_ID })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o btn_action"></i></a>
+                    }
+                    @if (item.ApprovalStatusDescription.Key == ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.AwaitingPoaApproval) && item.LastModified_By != Model.CurrentUser && item.Created_By != Model.CurrentUser)
+                    {
+                        <a href="@Url.Action("Approve", "BRPenetapanSkep", new { id = item.Received_ID })" data-toggle="tooltip" data-placement="top" title="Approval"><i class="fa fa-check"></i></a>
+                    }
+                </td>
+                <td>@item.Received_No</td>
+                <td>@item.CreatorName</td>
+                <td>@item.Nppbkc_ID</td>
+                <td>@item.strDecree_Date</td>
+                <td>@item.CompanyName</td>
+                <td>@item.strDecree_StartDate</td>
+                <td>@item.StrLastApproved_Status</td>
+            </tr>
+        }
+    </tbody>
+</table>

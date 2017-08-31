@@ -217,11 +217,53 @@
             });
 
             $('#generated-data-container').html('');
+            $('#generated-data-container-old').html('');
+
+            var jsonData = @(Html.Raw(@Model.JsonData));
+            //console.log(jsonData);
+            if (jsonData.IsEtilAlcohol) {
+                /*force to use tis to fa generate table*/
+                var tableGeneratedEtilAlcohol = generateTableNew(jsonData);
+                /*console.log(tableGenerated2);*/
+                $('#generated-data-container').append(tableGeneratedEtilAlcohol);
+
+                var tableGeneratedEtilAlcoholOld = generateTable(jsonData);
+                /*console.log(tableGenerated2);*/
+                $('#generated-data-container-old').append(tableGeneratedEtilAlcoholOld);
+            } else {
+                if (jsonData.IsWithTisToTisReport) {
+                    var tableGenerated1 = generateTableNew(jsonData);
+                    /*console.log(tableGenerated1);*/
+                    $('#generated-data-container').append(tableGenerated1);
+
+                    var tableOldGenerated1 = generateTableWithTisToTis(jsonData);
+                    /*console.log(tableGenerated1);*/
+                    $('#generated-data-container-old').append(tableOldGenerated1);
+                } else {
+                    var tableGenerated2 = generateTableNew(jsonData);
+                    /*console.log(tableGenerated2);*/
+                    $('#generated-data-container').append(tableGenerated2);
+
+                    var tableOldGenerated2 = generateTable(jsonData);
+                    /*console.log(tableGenerated2);*/
+                    $('#generated-data-container-old').append(tableOldGenerated2);
+                }
+            }
+            
+            var tableCalculationsDetail = generateTableDetails(jsonData);
+                
+            $('#generated-details-container').append(tableCalculationsDetail.noconvertion);
+
+            var tableck5 = generateTableCk5(jsonData);
+            $("#generated-ck5-container").append(tableck5);
+
+            $('#generated-detailsconvertion-container').append(tableCalculationsDetail.convertion);
 
             @*var jsonData = @(Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(@Model, Newtonsoft.Json.Formatting.Indented, new Newtonsoft.Json.JsonSerializerSettings { 
                            ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
                        })));*@
-            var jsonData = @(Html.Raw(@Model.JsonData));
+
+            @*var jsonData = @(Html.Raw(@Model.JsonData));
             //console.log(jsonData);
             if (jsonData.IsEtilAlcohol) {
                 /*Force to use generate table without tis to tis*/
@@ -235,7 +277,7 @@
                     var generateTableD = generateTable(jsonData);
                     $('#generated-data-container').append(generateTableD);
                 }
-            }
+            }*@
 
             ResetPrintHistoryDataTable();
 

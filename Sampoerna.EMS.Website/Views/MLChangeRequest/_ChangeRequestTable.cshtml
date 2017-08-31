@@ -1,0 +1,66 @@
+﻿@model Sampoerna.EMS.Website.Models.ChangeRequest.ChangeRequestViewModel
+@using Sampoerna.EMS.Core
+<table id="changeRequestTable" class="display" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th class="toggle-row"> Filter </th>
+            <th>Type</th>
+            <th>Request Date</th>
+            <th>NPPBKC ID</th>
+            <th>Document Number</th>
+            <th>Created By</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <thead class="filters">
+        <tr>
+            <th>Action</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ChangeRequestDocuments)
+        {
+            if ((item.IsCreator) || (item.IsApprover) || (item.IsViewer)) 
+            {
+
+            <tr>
+                <td class="action">
+                    <a href="@Url.Action("Details", "MLChangeRequest", new { id = item.Id})" data-toggle="tooltip" data-placement="top" title="Detail"><i class="fa fa-eye"></i></a>
+                    @if (Model.CurrentRole != Enums.UserRole.Viewer)
+                    {
+                        if ((item.LastApprovedStatus.ToLower().Contains("draft")) || (item.LastApprovedStatus.ToLower().Contains("government")))
+                        {
+                            if (item.IsCreator)
+                            {
+                                <a href="@Url.Action("Edit", "MLChangeRequest", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-pencil-square-o"></i></a>
+                            }
+                        }
+                        if (!item.IsCreator)
+                        {
+                            if ((item.LastApprovedStatus.ToLower().Contains("poa")) && (item.IsApprover))
+                            {
+                                <a href="@Url.Action("Approve", "MLChangeRequest", new { id = item.Id })" data-toggle="tooltip" data-placement="top" title="Approval"><i class="fa fa-check"></i></a>
+                            }
+                        }
+                    }
+
+                </td>
+                <td>@Html.DisplayFor(model => item.DocumentType)</td>
+                <td>@Html.DisplayFor(model => item.strRequestDate)
+                <td>@Html.DisplayFor(model => item.NppbkcId)</td>
+                <td>@Html.DisplayFor(model => item.DocumentNumber)</td>
+                <td>@Html.DisplayFor(model => item.CreatedBy)</td>
+                <td>@Html.DisplayFor(model => item.LastApprovedStatus)</td>
+@*                <td class="last">@Html.DisplayFor(model => item.ApprovalStatus.Value)</td>*@
+            </tr>
+            }
+        }
+    </tbody>
+</table>
+

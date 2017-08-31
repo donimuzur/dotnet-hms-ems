@@ -1,0 +1,245 @@
+﻿@model Sampoerna.EMS.Website.Models.ExciseCredit.ExciseGovApprovalModel
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger" style="padding-left: 30px">
+        @Html.ValidationSummary()
+    </div>
+}
+
+<div class="tab-wrapper">
+    <div class="col-md-12">
+        <div class="form-excise" role="form">
+            <div class="row">
+                @Html.HiddenFor(model => Model.Id)
+
+                <div class="col-md-6">
+                    <!-- Government Status Selector -->
+                    <div class="row">
+                        <label class="col-md-4">
+                            @Html.LabelFor(model => model.SkepStatusId, "Government Status")
+                            <span class="red">*</span>
+                        </label>
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.SkepStatusId, Model.GovernmentStatus, null, new { @class = "form-control", @required = true })
+                        </div>
+                        <div class="col-md-8 col-md-offset-4">
+                            @Html.ValidationMessageFor(model => model.SkepStatusId)
+                        </div>
+                    </div>
+                    <!-- End Government Status Type Selector -->
+                    <!-- Decree Number -->
+                    <div class="row">
+                        <label class="col-md-4">
+                            @Html.LabelFor(model => model.DecreeNumber, "Decree Number")
+                            <span class="red">*</span>
+                        </label>
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(model => model.DecreeNumber, new { @class = "form-control", @required = true })
+                        </div>
+                        <div class="col-md-8 col-md-offset-4">
+                            @Html.ValidationMessageFor(model => model.DecreeNumber)
+                        </div>
+
+                    </div>
+                    <!-- End Decree Number -->
+                    <!-- Decree Date -->
+                    <div class="row">
+                        <label class="col-md-4">
+                            @Html.LabelFor(model => model.DecreeDate, "Decree Date")
+                            <span class="red">*</span>
+                        </label>
+                        <div class="col-md-8">
+                            <div class="input-group date">
+                                @Html.TextBoxFor(model => model.DecreeDate, "{0:dd MMM yyyy}", new { @class = "form-control", required = true })
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-md-offset-4">
+                            @Html.ValidationMessageFor(model => model.DecreeDate)
+                        </div>
+                    </div>
+                    <!-- End Decree Date -->
+                    <!-- Approved Product Types -->
+                    <div class="row">
+                        <div class="col-md-3">
+                            @Html.DropDownList("productTypeSelect", Model.AvailableProductTypes, new { id = "productType", @class = "form-control" })
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control text-right" placeholder="Amount*" id="ProductAmountInput" />
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-blue" id="addButton" type="button">Add</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th width="30%">Product Type</th>
+                                    <th width="50%">Amount</th>
+                                    <th width="20%">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ProductTypeContainer">
+                                <tr>
+                                    <td colspan="3">
+                                        <div class="alert alert-info">
+                                            No Products Added
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- End Approve Product Types -->
+                    <!-- Credit Amount -->
+                    <div class="row">
+                        <label class="col-md-4">
+                            @Html.LabelFor(model => model.CreditAmount, "Credit Amount")
+                            <span class="red">*</span>
+                        </label>
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(model => model.CreditAmountDisplay, new { @class = "form-control text-right readonly", required = true, @readonly = true })
+                            @Html.HiddenFor(model => model.CreditAmount)
+                        </div>
+                        <div class="col-md-8 col-md-offset-4">
+                            @Html.ValidationMessageFor(model => model.CreditAmount)
+                        </div>
+                    </div>
+                    <!-- End Credit Amount -->
+                    <!-- SKEP Attachment -->
+                    <div class="row">
+                        @{
+                            var skepRequired = "";
+
+                            if (Model.IsNewEntry)
+                            {
+                                skepRequired = "required ";
+                            }
+
+
+                        }
+                        <div class="col-md-4">
+                            <label for="skepDocumentFile">SKEP Attachment</label>
+                            @if (Model.IsNewEntry)
+                            {
+                                <span class="red">*</span>
+                            }
+                        </div>
+                        <div class="col-md-5">
+                            <input type="text" class="form-control readonly" readonly placeholder="SKEP Attachment" id="skepDocumentText" @skepRequired />
+                        </div>
+                        <div class="col-md-2">
+                            <input type="file" accept="application/pdf" id="skepDocumentFile" class="file" name="skepDocumentFile" />
+                            <span class="input-group-btn">
+                                <button class="browse btn btn-blue" type="button" id="skepDocument" style="border-radius: 20px!important;">Browse</button>
+                            </span>
+                        </div>
+
+                    </div>
+                    <!-- End SKEP Attachment -->
+                </div>
+                <div class="col-md-6">
+                    <!-- Start Date -->
+                    <div class="row">
+                        <label class="col-md-4">
+                            @Html.LabelFor(model => model.StartDate, "Start Date")
+                            <span class="red">*</span>
+                        </label>
+                        <div class="col-md-8">
+                            <div class="input-group date">
+                                @Html.TextBoxFor(model => model.StartDate, "{0:dd MMM yyyy}", new { @class = "form-control", required = true })
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-md-offset-4">
+                            @Html.ValidationMessageFor(model => model.StartDate)
+                        </div>
+                    </div>
+                    <!-- End Start Date -->
+                    <!-- BPJ Number -->
+                    <div class="row">
+                        <label class="col-md-4">
+                            @Html.LabelFor(model => model.BpjNumber, "BPJ Number")
+                        </label>
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(model => model.BpjNumber, new { @class = "form-control" })
+                        </div>
+                        <div class="col-md-8 col-md-offset-4">
+                            @Html.ValidationMessageFor(model => model.BpjNumber)
+                        </div>
+
+                    </div>
+                    <!-- End BPJ Number -->
+                    <!-- Start BPJ Date -->
+                    <div class="row">
+                        <label class="col-md-4">
+                            @Html.LabelFor(model => model.BpjDate, "Bpj Date")
+                            @*<span class="red">*</span>*@
+                        </label>
+                        <div class="col-md-8">
+                            <div class="input-group date">
+                                @Html.TextBoxFor(model => model.BpjDate, "{0:dd MMM yyyy}", new { @class = "form-control" })
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-md-offset-4">
+                            @Html.ValidationMessageFor(model => model.BpjDate)
+                        </div>
+                    </div>
+                    <!-- End BPJ Date-->
+                    <!-- BPJ Attachment -->
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>BPJ Attachment</label>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="text" class="form-control" readonly placeholder="BPJ Attachment" id="bpjDocumentText" />
+                        </div>
+                        <div class="col-md-2">
+                            <span class="input-group-btn">
+                                <button class="browse btn btn-blue" type="button" id="bpjDocument" style="border-radius: 20px!important;">Browse</button>
+                                <input type="file" accept="application/pdf" id="bpjDocumentFile" class="file" name="bpjDocumentFile" />
+                            </span>
+                        </div>
+                    </div>
+                    <!-- End BPJ Attachment -->
+                    <!-- Notes -->
+                    <div class="row">
+                        <label class="col-md-4">
+                            @Html.LabelFor(model => model.Notes, "Notes")
+
+                            <span class="red" id="skepStatusLabel">*</span>
+
+                        </label>
+                        <div class="col-md-8">
+                            @Html.TextAreaFor(model => model.Notes, new { @class = "form-control", @rows = "7", @required = Model.SkepStatus })
+                        </div>
+                        <div class="col-md-8 col-md-offset-4">
+                            @Html.ValidationMessageFor(model => model.Notes)
+                        </div>
+
+                    </div>
+                    <!-- End Notes -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <span class="red">*</span> ) This Field Required
+    </div>
+</div>
+
+
+
+

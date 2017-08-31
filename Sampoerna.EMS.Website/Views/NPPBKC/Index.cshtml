@@ -75,7 +75,17 @@
     <div class="row">
         <div class="col-sm-12">
             <h3 class="desc">NPPBKC <span>(Nomor Pokok Pengusaha Barang Kena Cukai)</span></h3>
+            @if (Model.IsNotViewer)
+            {
+                <div class="action-button new">
+                    <a href="@Url.Action("Create", "NPPBKC")">
+                        <button class="btn btn-blue">NEW</button>
+                    </a>
+                    <a data-toggle="modal" data-target=".menu-maping-type">
 
+                    </a>
+                </div>
+            }
         </div>
     </div>
 </div>
