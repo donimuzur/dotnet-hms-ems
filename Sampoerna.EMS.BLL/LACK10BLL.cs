@@ -283,7 +283,7 @@ namespace Sampoerna.EMS.BLL
                     PlantName = p.FirstOrDefault().PlantName,
                     Type = p.FirstOrDefault().Type,
                     Uom = p.FirstOrDefault().Uom,
-                    WasteValue = p.Sum(c => c.WasteValue)
+                    WasteValue = Math.Round(p.Sum(c => c.WasteValue), 3)
                 });
 
             var allData = groupList.ToList();

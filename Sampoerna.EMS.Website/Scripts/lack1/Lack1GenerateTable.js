@@ -69,8 +69,8 @@ function generateHeaderDetailsTable() {
                 //'<th >Process Order</th>' +
                 '<th >Material</th>' +
                 '<th >Amount Usage</th>' +
-                
-                '<th >FA Code</th>' +
+                '<th >FaCode / Material Id</th>' +
+                '<th >Brand Name</th>' +
                 '<th >Amount Production</th>' +
                 '<th >Uom</th>' +
                 
@@ -329,6 +329,7 @@ function generateTableDetails(data) {
                     //'<td>' + data.CalculationDetails[i].Ordr + '</td>' +
                     '<td>' + data.CalculationDetails[i].MaterialId + '</td>' +
                     '<td>' + ThausandSeperator(data.CalculationDetails[i].AmountUsage) + '</td>'+
+                    '<td>' + data.CalculationDetails[i].FaCode + '</td>' +
                     '<td>' + data.CalculationDetails[i].BrandCe + '</td>' +
                     
                     '<td>' + ThausandSeperator(data.CalculationDetails[i].AmountProduction) + '</td>'+

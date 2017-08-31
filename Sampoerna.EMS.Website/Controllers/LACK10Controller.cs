@@ -185,7 +185,10 @@ namespace Sampoerna.EMS.Website.Controllers
 
         public ActionResult CreateInitial(Lack10IndexViewModel model)
         {
-            return View("Create", InitialModel(model));
+            model = InitialModel(model);
+            model.Details.ReportType = Enums.Lack10ReportType.Rusak;
+
+            return View("Create", model);
         }
 
         private Lack10IndexViewModel InitialModel(Lack10IndexViewModel model)

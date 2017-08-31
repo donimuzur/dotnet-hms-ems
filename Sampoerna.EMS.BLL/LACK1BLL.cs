@@ -1856,38 +1856,62 @@ namespace Sampoerna.EMS.BLL
 
             }
 
-
-
-            var dataCalculations =
-                dtToReturn.CalculationDetails.Where(x => x.Type == Enums.Lack1Calculation.WithConvertion)
-                .GroupBy(x => new { x.BrandCe, x.UomProduction })
-                .Select(x => new Lack1CalculationDetail()
-                {
-                    AmountUsage = x.Sum(y => y.AmountUsage),
-                    AmountProduction = x.Sum(y => y.AmountProduction),
-                    UomProduction = x.Key.UomProduction,
-                    BrandCe = x.Key.BrandCe,
-                    MaterialId = dtToReturn.ExGoodsTypeDesc
-                }).ToList();
-
-            foreach (var calc in dataCalculations)
+            if (!dtToReturn.IsEtilAlcohol)
             {
-                var amountUsage = calc.AmountUsage;
-                var amountProd = calc.AmountProduction;
-                if (dtToReturn.Lack1UomId != "L")
-                {
-                    amountUsage = calc.AmountUsage / 1000;
-                }
+                var dataCalculations =
+                    dtToReturn.CalculationDetails.Where(x => x.Type == Enums.Lack1Calculation.WithConvertion)
+                        .GroupBy(x => new {x.BrandCe, x.UomProduction})
+                        .Select(x => new Lack1CalculationDetail()
+                        {
+                            AmountUsage = x.Sum(y => y.AmountUsage),
+                            AmountProduction = x.Sum(y => y.AmountProduction),
+                            UomProduction = x.Key.UomProduction,
+                            BrandCe = x.Key.BrandCe,
+                            MaterialId = dtToReturn.ExGoodsTypeDesc
+                        }).ToList();
 
-                if (calc.UomProduction == "G")
+                foreach (var calc in dataCalculations)
                 {
-                    amountProd = calc.AmountProduction / 1000;
-                }
+                    var amountUsage = calc.AmountUsage;
+                    var amountProd = calc.AmountProduction;
+                    if (dtToReturn.Lack1UomId != "L")
+                    {
+                        amountUsage = calc.AmountUsage/1000;
+                    }
 
-                calc.AmountUsage = amountUsage;
-                calc.AmountProduction = amountProd;
+                    if (calc.UomProduction == "G")
+                    {
+                        amountProd = calc.AmountProduction/1000;
+                    }
+
+                    calc.AmountUsage = amountUsage;
+                    calc.AmountProduction = amountProd;
+                }
+                dtToReturn.CalculationDetails = dataCalculations;
             }
-            dtToReturn.CalculationDetails = dataCalculations;
+            else
+            {
+
+                foreach (var calc in dtToReturn.CalculationDetails)
+                {
+                    var amountUsage = calc.AmountUsage;
+                    var amountProd = calc.AmountProduction;
+                    if (dtToReturn.Lack1UomId != "L")
+                    {
+                        amountUsage = calc.AmountUsage / 1000;
+                    }
+
+                    if (calc.UomProduction == "G")
+                    {
+                        amountProd = calc.AmountProduction / 1000;
+                    }
+
+                    calc.AmountUsage = amountUsage;
+                    calc.AmountProduction = amountProd;
+                }
+            }
+
+            
 
             //old logic
             //if (dtToReturn.AllLack1IncomeDetail == null || dtToReturn.AllLack1IncomeDetail.Count <= 0)
@@ -2604,11 +2628,11 @@ namespace Sampoerna.EMS.BLL
             {
                 plantIdList = new List<string>() { input.ReceivedPlantId };
             }
-
+            List<Lack1CalculationDetail> usageNotHaveProd = new List<Lack1CalculationDetail>();
             var outProcess = !string.IsNullOrEmpty(input.ExcisableGoodsTypeDesc) && (input.ExcisableGoodsTypeDesc.ToLower().Contains("alkohol") ||
                                               input.ExcisableGoodsTypeDesc.ToLower().Contains("alcohol"))
                 ? ProcessGenerateLack1DomesticAlcohol(rc, input, plantIdList, rc.Lack1UomId)
-                : ProcessGenerateLack1NormalExcisableGoods(rc, input, plantIdList, rc.Lack1UomId);
+                : ProcessGenerateLack1NormalExcisableGoods(rc, input, plantIdList, rc.Lack1UomId, out usageNotHaveProd);
 
             if (!outProcess.Success) return outProcess;
             rc = outProcess.Data;
@@ -2876,8 +2900,11 @@ namespace Sampoerna.EMS.BLL
                         
                     }
             }
-            
 
+            if (usageNotHaveProd.Count > 0)
+            {
+                rc.CalculationDetails.AddRange(usageNotHaveProd);
+            }
             rc.EndingBalance = rc.BeginingBalance + rc.TotalIncome - (rc.TotalUsage + (rc.TotalUsageTisToTis.HasValue ? rc.TotalUsageTisToTis.Value : 0)) - (input.ReturnAmount.HasValue ? input.ReturnAmount.Value : 0);
             rc.WasteAmountUom = rc.Lack1UomId;
 
@@ -3416,12 +3443,14 @@ namespace Sampoerna.EMS.BLL
         }
 
         private Lack1GeneratedOutput ProcessGenerateLack1NormalExcisableGoods(Lack1GeneratedDto rc,
-            Lack1GenerateDataParamInput input, List<string> plantIdList, string bkcUomId)
+            Lack1GenerateDataParamInput input, List<string> plantIdList, string bkcUomId,out List<Lack1CalculationDetail> usageNotHaveProd)
         {
             //instantiate
             rc.InventoryProductionTisToFa = new Lack1GeneratedInventoryAndProductionDto();
             rc.InventoryProductionTisToTis = new Lack1GeneratedInventoryAndProductionDto();
 
+
+            usageNotHaveProd = new List<Lack1CalculationDetail>();
             //Get InventoryMovement for Tis To Fa
             InvMovementGetForLack1UsageMovementByParamOutput invMovementTisToFaOutput;
             var outGenerateLack1InventoryMovementTisToFa = SetGenerateLack1InventoryMovement(rc, input, plantIdList, false, out invMovementTisToFaOutput, bkcUomId);
@@ -3429,6 +3458,7 @@ namespace Sampoerna.EMS.BLL
 
             //rc.CalculationDetails = outGenerateLack1InventoryMovementTisToFa.Data.CalculationDetails;
 
+            usageNotHaveProd = new List<Lack1CalculationDetail>();
             //normal report, normal logic
             if (invMovementTisToFaOutput.IncludeInCk5List.Count == 0)
             {
@@ -3440,7 +3470,8 @@ namespace Sampoerna.EMS.BLL
             }
             else
             {
-                var prodDataOutTisToFa = SetProductionList(rc, input, plantIdList, invMovementTisToFaOutput, bkcUomId);
+                
+                var prodDataOutTisToFa = SetProductionList(rc, input, plantIdList, invMovementTisToFaOutput, bkcUomId,out usageNotHaveProd);
                 if (!prodDataOutTisToFa.Success) return prodDataOutTisToFa;
 
                 rc = prodDataOutTisToFa.Data;
@@ -3595,7 +3626,7 @@ namespace Sampoerna.EMS.BLL
         /// <param name="bkcUomId"></param>
         /// <returns></returns>
         private Lack1GeneratedOutput SetProductionList(Lack1GeneratedDto rc, Lack1GenerateDataParamInput input, List<string> plantIdList,
-            InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput, string bkcUomId)
+            InvMovementGetForLack1UsageMovementByParamOutput invMovementOutput, string bkcUomId, out List<Lack1CalculationDetail> usageNotHaveProd)
         {
             var groupUsageProporsional = invMovementOutput.UsageProportionalList
                     .GroupBy(x => new { x.Order })
@@ -3654,8 +3685,29 @@ namespace Sampoerna.EMS.BLL
 
             var completeZaapDataAllOrder = _zaapShiftRptService.GetCompleteData(zaapShiftReportInputForAllOrder).ToList();
 
+            //cari usage yang tida ada pasangan GR produksinya
+            List<Lack1CalculationDetail> calculationDontHaveProd = new List<Lack1CalculationDetail>();
+            var ordrProdList = completeZaapDataAllOrder.Select(x => x.ORDR).ToList();
+            
+            calculationDontHaveProd.AddRange(
+                invMovementOutput.UsageProportionalList
+                .Where(x => !ordrProdList.Contains(x.Order))
+                .GroupBy(x=> new{x.MaterialId, x.Uom})
+                .Select(x => new Lack1CalculationDetail()
+                {
+                    AmountProduction = 0,
+                    UomUsage = x.Key.Uom,
+                    AmountUsage = x.Key.Uom == "KG" ? x.Sum(y=> y.Qty) * -1000 : x.Sum(y=> y.Qty) * -1,
+                    MaterialId = x.Key.MaterialId,
+                    PlantId = input.ReceivedPlantId,
+                    Type = Enums.Lack1Calculation.WithoutConvertion,
+                    Convertion = 1,
+                    Proportional = 1
+                    
+                })
+            );
+            usageNotHaveProd = calculationDontHaveProd;
 
-            List<Lack1CalculationDetail> calculationDataProd;
             var usgProportionalBrand = CalculateInvMovementUsageProportionalBrand(invMovementOutput.IncludeInCk5List, invMovementOutput.AllUsageList,
                 invMovementOutput.Mvt201List, completeZaapDataAllOrder
                 //,out calculationDataProd
