@@ -700,6 +700,7 @@ namespace Sampoerna.EMS.Website.Controllers
             //master info
             var dMasterRow = dsReport.Lack1.NewLack1Row();
             // ReSharper disable once SpecifyACultureInStringConversionExplicitly
+           
             dMasterRow.Lack1Id = data.Lack1Id.ToString();
             dMasterRow.Lack1Number = data.Lack1Number;
             dMasterRow.CompanyCode = data.Bukrs;
@@ -936,6 +937,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     else dMasterRow.ProdUom = "batang";
                 }
             }
+
+            dMasterRow.IsImportir = data.IsSupplierNppbkcImport ? "y" : "n";
 
             dMasterRow.Npwp = data.Npwp;
 

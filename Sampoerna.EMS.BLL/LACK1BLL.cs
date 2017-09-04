@@ -1856,9 +1856,11 @@ namespace Sampoerna.EMS.BLL
 
             }
 
+
+            List<Lack1CalculationDetail> dataCalculations = new List<Lack1CalculationDetail>();
             if (!dtToReturn.IsEtilAlcohol)
             {
-                var dataCalculations =
+                dataCalculations =
                     dtToReturn.CalculationDetails.Where(x => x.Type == Enums.Lack1Calculation.WithConvertion)
                         .GroupBy(x => new {x.BrandCe, x.UomProduction})
                         .Select(x => new Lack1CalculationDetail()
@@ -1887,7 +1889,7 @@ namespace Sampoerna.EMS.BLL
                     calc.AmountUsage = amountUsage;
                     calc.AmountProduction = amountProd;
                 }
-                dtToReturn.CalculationDetails = dataCalculations;
+                
             }
             else
             {
@@ -1908,10 +1910,14 @@ namespace Sampoerna.EMS.BLL
 
                     calc.AmountUsage = amountUsage;
                     calc.AmountProduction = amountProd;
+                    calc.MaterialId = dtToReturn.ExGoodsTypeDesc;
+
+                    if(calc.Type == Sampoerna.EMS.Core.Enums.Lack1Calculation.WithConvertion) 
+                        dataCalculations.Add(calc);
                 }
             }
 
-            
+            dtToReturn.CalculationDetails = dataCalculations;
 
             //old logic
             //if (dtToReturn.AllLack1IncomeDetail == null || dtToReturn.AllLack1IncomeDetail.Count <= 0)
@@ -2745,20 +2751,42 @@ namespace Sampoerna.EMS.BLL
 
                                 }
 
-                                calculationFaConvertionTemp.Add(new Lack1CalculationDetail() {
-                                    AmountUsage = calc.AmountUsage,
-                                    AmountProduction = calc.AmountProduction,
-                                    BrandCe = calc.BrandCe,
-                                    Convertion = convertion,
-                                    FaCode = calc.FaCode,
-                                    MaterialId = calc.MaterialId,
-                                    Ordr = calc.Ordr,
-                                    PlantId = calc.PlantId,
-                                    //Proportional = prod.Proportional,
-                                    Type = Enums.Lack1Calculation.WithConvertion,
-                                    UomProduction = calc.UomProduction,
-                                    UomUsage = rc.InventoryProductionTisToFa.ProportionalUsageCalculations.Where(x=> x.MaterialId == calc.MaterialId).First().Uom,
-                                });
+
+                                string propUom = "";
+                                if (input.ExcisableGoodsTypeDesc.ToLower().Contains("alkohol") ||
+                                    input.ExcisableGoodsTypeDesc.ToLower().Contains("alcohol"))
+                                {
+                                    propUom = "L";
+                                }
+                                else
+                                {
+                                    var proportionalUsageCalculationNew = rc.InventoryProductionTisToFa.ProportionalUsageCalculations.Where(
+                                        x => x.MaterialId == calc.MaterialId).FirstOrDefault();
+                                    if (proportionalUsageCalculationNew != null)
+                                        propUom =
+                                            proportionalUsageCalculationNew.Uom;
+                                    else propUom = "";
+                                }
+
+
+                                if (propUom != null)
+                                {
+                                    calculationFaConvertionTemp.Add(new Lack1CalculationDetail() {
+                                        AmountUsage = calc.AmountUsage,
+                                        AmountProduction = calc.AmountProduction,
+                                        BrandCe = calc.BrandCe,
+                                        Convertion = convertion,
+                                        FaCode = calc.FaCode,
+                                        MaterialId = calc.MaterialId,
+                                        Ordr = calc.Ordr,
+                                        PlantId = calc.PlantId,
+                                        //Proportional = prod.Proportional,
+                                        Type = Enums.Lack1Calculation.WithConvertion,
+                                        UomProduction = calc.UomProduction,
+                                        UomUsage = propUom,
+                                    });
+                                }
+                                
                             }
 
                             var totalPerMaterialUsage = calculationFaConvertionTemp.GroupBy(x => x.MaterialId).Select(x => new
