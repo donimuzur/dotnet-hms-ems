@@ -3718,7 +3718,7 @@ namespace Sampoerna.EMS.BLL
             zaapShiftReportInputForAllOrder.AllowedOrder = null;
 
             var completeZaapDataAllOrder = _zaapShiftRptService.GetCompleteData(zaapShiftReportInputForAllOrder).ToList();
-
+            var nextMonthGR = completeZaapDataAllOrder.Where(x => x.PRODUCTION_DATE.Month > input.PeriodMonth).ToList();
             //cari usage yang tida ada pasangan GR produksinya
             List<Lack1CalculationDetail> calculationDontHaveProd = new List<Lack1CalculationDetail>();
             var ordrProdList = completeZaapDataAllOrder.Select(x => x.ORDR).ToList();
