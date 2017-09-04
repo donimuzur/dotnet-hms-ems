@@ -76,7 +76,6 @@ namespace Sampoerna.EMS.CustomService.Data
         public virtual DbSet<PRINT_HISTORY> PRINT_HISTORY { get; set; }
         public virtual DbSet<PRINTOUT_LAYOUT> PRINTOUT_LAYOUT { get; set; }
         public virtual DbSet<PRINTOUT_VARIABLE> PRINTOUT_VARIABLE { get; set; }
-        public virtual DbSet<BRAND_REGISTRATION_REQ> BRAND_REGISTRATION_REQ { get; set; }
         public virtual DbSet<BRAND_REGISTRATION_REQ_DETAIL> BRAND_REGISTRATION_REQ_DETAIL { get; set; }
         public virtual DbSet<RECEIVED_DECREE_DETAIL> RECEIVED_DECREE_DETAIL { get; set; }
         public virtual DbSet<RECEIVED_DECREE> RECEIVED_DECREE { get; set; }
@@ -90,5 +89,6 @@ namespace Sampoerna.EMS.CustomService.Data
         public virtual DbSet<CK1_EXCISE_CALCULATE_ADJUST> CK1_EXCISE_CALCULATE_ADJUST { get; set; }
         public virtual DbSet<DOC_NUMBER_SEQ> DOC_NUMBER_SEQ { get; set; }
         public virtual DbSet<COUNTRY> COUNTRY { get; set; }
+        public virtual DbSet<BRAND_REGISTRATION_REQ> BRAND_REGISTRATION_REQ { get; set; }
     }
 }

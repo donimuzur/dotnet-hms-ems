@@ -430,7 +430,7 @@ function uploads(id) {
                 if (xhr.responseText && xhr.responseText[0] == "{")
                     err = JSON.parse(xhr.responseText).Message;
                 console.log(err);
-                showErrorDialog(err);
+                //showErrorDialog(err);
             }
         });
     } else {
@@ -819,8 +819,8 @@ function placeResult() {
 function showErrorDialog(msg) {
     $("#errModalTitle").html("REQUEST FAILED");
     $("#errModalContent").html(msg);
-    //$("#errModal").modal("show");
-    alert(msg);
+    $("#errModal").modal("show");
+    //alert(msg);
 }
 
 

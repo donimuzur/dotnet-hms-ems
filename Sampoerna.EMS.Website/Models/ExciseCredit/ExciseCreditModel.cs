@@ -56,7 +56,7 @@ namespace Sampoerna.EMS.Website.Models.ExciseCredit
         public bool IsWaitingForGovernment { set; get; }
         public bool IsWaitingSkepApproval { set; get; }
         public bool IsCanceled { set; get; }
-
+        public string RegulationNumber { set; get; } // Added for Regulation Number
         public bool IsAdmin { set; get; }
     }
 }

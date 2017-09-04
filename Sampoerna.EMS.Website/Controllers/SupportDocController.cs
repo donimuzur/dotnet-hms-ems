@@ -17,6 +17,7 @@ using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using static Sampoerna.EMS.Core.Enums;
 using Sampoerna.EMS.Utils;
 using Sampoerna.EMS.BusinessObject.Inputs;
 using Sampoerna.EMS.CustomService.Data;
@@ -57,11 +58,11 @@ namespace Sampoerna.EMS.Website.Controllers
                 data = new SupportDocViewModel();
             }
 
-            IEnumerable<Enums.FormList> formTypes = Enum.GetValues(typeof(Enums.FormList)).Cast<Enums.FormList>();
+            IEnumerable<FormList> formTypes = Enum.GetValues(typeof(FormList)).Cast<FormList>();
             data.ListForm = from form in formTypes
                             select new SelectListItem
                             {
-                                Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Enums.FormList), form.ToString())),
+                                Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(FormList), form.ToString())),
                                 Value = ((int)form).ToString()
                             };
 
@@ -367,7 +368,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (updated != null)
             {
-                AddMessageInfo(Constans.SubmitMessage.Updated + " and sending email", Enums.MessageInfoType.Success);
+                //AddMessageInfo(Constans.SubmitMessage.Updated + " and sending email", Enums.MessageInfoType.Success);
                 List<string> mailAddresses = new List<string>();
                 if (statusApproval == ReferenceKeys.ApprovalStatus.AwaitingAdminApproval)
                 {

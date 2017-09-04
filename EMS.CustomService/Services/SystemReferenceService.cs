@@ -78,8 +78,9 @@ namespace Sampoerna.EMS.CustomService.Services
             try
             {
                 List<string> admins = this.uow.RoleMapRepository.GetMany(x => x.ROLEID.Value == (int)Enums.UserRole.Administrator).Select(y => y.MSACCT.Trim().ToUpper()).ToList();
+                
 
-                return this.uow.UserRepository.GetMany(x => admins.Contains(x.USER_ID.Trim().ToUpper()));
+                return this.uow.UserRepository.GetMany(x => x.IS_ACTIVE.HasValue && x.IS_ACTIVE.Value == 1 && admins.Contains(x.USER_ID.Trim().ToUpper()));
 
             }
             catch (Exception ex)
@@ -684,8 +685,15 @@ namespace Sampoerna.EMS.CustomService.Services
             }
             catch (Exception e)
             {
-                throw; this.HandleException("Exception occured on SystemReferenceService.GetCompanyById(). See Inner Exception property to see details", e);
+                throw this.HandleException("Exception occured on SystemReferenceService.GetCompanyById(). See Inner Exception property to see details", e);
             }
+        }
+
+        public String GetRegulationNumber(Enum type)
+        {
+            var reference = this.GetReferenceByKey(type);
+
+            return (reference != null) ? reference.REFF_VALUE : String.Empty;
         }
         #endregion
 

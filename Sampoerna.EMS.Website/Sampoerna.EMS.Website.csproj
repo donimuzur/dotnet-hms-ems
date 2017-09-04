@@ -1864,6 +1864,7 @@
     <Content Include="Views\CK5\_CK5UploadCreateMarketReturn.cshtml" />
     <Content Include="Views\CK5\_CK5UploadListMarketReturn.cshtml" />
     <Content Include="Views\ExciseCredit\_CalculateAdjustmentExciseDetail.cshtml" />
+    <Content Include="Views\ExciseCredit\_ReviseSkepModal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

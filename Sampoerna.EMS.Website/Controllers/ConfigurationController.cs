@@ -120,11 +120,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     var data = new SYS_REFFERENCES();
 
-                    if (model.ConfigText == "UPLOAD_FILE_LIMIT" || model.ConfigText == "APPROVAL_STATUS" || model.ConfigText== "HINT_COMPONENT")
+                    if (model.ConfigText == "UPLOAD_FILE_LIMIT" || model.ConfigText == "APPROVAL_STATUS" || model.ConfigText== "HINT_COMPONENT" || model.ConfigText == "REGULATION_BRAND_REGISTRATION" || model.ConfigText == "REGULATION_EXCISE_CREDIT")
                     {
                         var config= configService.FindDataByType(model.ConfigText);
-                      
-                       
+                                             
                         if (model.ConfigText == "APPROVAL_STATUS" || model.ConfigText == "HINT_COMPONENT")
                         {
                             var tempConfig = configService.FindDataByName(model.ConfigName);
@@ -134,7 +133,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             data.REFF_KEYS = tempConfig.REFF_KEYS;
                         }
 
-                        if (model.ConfigText == "UPLOAD_FILE_LIMIT")
+                        if (model.ConfigText == "UPLOAD_FILE_LIMIT" || model.ConfigText == "REGULATION_BRAND_REGISTRATION" || model.ConfigText == "REGULATION_EXCISE_CREDIT")
                         {
                             data.REFF_ID = config.REFF_ID;
                             data.REFF_TYPE = config.REFF_TYPE;
@@ -349,6 +348,18 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 IsActive = tempValue.IS_ACTIVE,
                 ReffValue = tempValue.REFF_VALUE                
+            });
+        }
+
+        [HttpPost]
+        public JsonResult GetRegulationValue (string type)
+        {
+            var tempValue = configService.FindDataByKey(type);
+
+            return Json(new
+            {
+                IsActive = tempValue.IS_ACTIVE,
+                ReffValue= tempValue.REFF_VALUE    
             });
         }
         #endregion

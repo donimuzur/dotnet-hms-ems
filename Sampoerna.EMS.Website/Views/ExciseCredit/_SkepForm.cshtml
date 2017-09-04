@@ -17,14 +17,14 @@
                     <!-- Government Status Selector -->
                     <div class="row">
                         <label class="col-md-4">
-                            @Html.LabelFor(model => model.SkepStatus, "Government Status")
+                            @Html.LabelFor(model => model.SkepStatusId, "Government Status")
                             <span class="red">*</span>
                         </label>
                         <div class="col-md-8">
-                            @Html.DropDownListFor(model => model.SkepStatus, Model.GovernmentStatus, null, new { @class = "form-control", @required = true })
+                            @Html.DropDownListFor(model => model.SkepStatusId, Model.GovernmentStatus, null, new { @class = "form-control", @required = true })
                         </div>
                         <div class="col-md-8 col-md-offset-4">
-                            @Html.ValidationMessageFor(model => model.SkepStatus)
+                            @Html.ValidationMessageFor(model => model.SkepStatusId)
                         </div>
                     </div>
                     <!-- End Government Status Type Selector -->
@@ -114,10 +114,12 @@
                     <div class="row">
                         @{
                             var skepRequired = "";
+
                             if (Model.IsNewEntry)
                             {
                                 skepRequired = "required ";
                             }
+
 
                         }
                         <div class="col-md-4">
@@ -213,9 +215,12 @@
                     <div class="row">
                         <label class="col-md-4">
                             @Html.LabelFor(model => model.Notes, "Notes")
+
+                            <span class="red" id="skepStatusLabel">*</span>
+
                         </label>
                         <div class="col-md-8">
-                            @Html.TextAreaFor(model => model.Notes, new { @class = "form-control", @rows = "7" })
+                            @Html.TextAreaFor(model => model.Notes, new { @class = "form-control", @rows = "7", @required = Model.SkepStatus })
                         </div>
                         <div class="col-md-8 col-md-offset-4">
                             @Html.ValidationMessageFor(model => model.Notes)

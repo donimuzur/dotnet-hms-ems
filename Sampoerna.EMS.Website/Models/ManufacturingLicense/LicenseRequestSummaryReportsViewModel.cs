@@ -35,7 +35,7 @@ namespace Sampoerna.EMS.Website.Models.ManufacturingLicense
 
     public class LicenseRequestSearchSummaryReportsViewModel
     {
-        public int FormNumberSource { set; get; }
+        public string FormNumberSource { set; get; }
         public string CompanyTypeSource { set; get; }
         public string KPPBCSource { set; get; }
         public string LastApprovedStatusSource { set; get; }
@@ -49,6 +49,8 @@ namespace Sampoerna.EMS.Website.Models.ManufacturingLicense
 
     public class LicenseRequestExportSummaryReportsViewModel : LicenseRequestSearchSummaryReportsViewModel
     {
+        public bool BaNum { get; set; }
+        public bool InterviewNum { get; set; }
         public bool FormNumber { get; set; }
         public bool RequestDate { get; set; }
         public bool CompanyName { get; set; }

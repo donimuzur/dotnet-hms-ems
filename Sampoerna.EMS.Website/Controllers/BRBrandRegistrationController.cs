@@ -29,6 +29,7 @@ using System.Web;
 using Sampoerna.EMS.Website.Utility;
 using System.Globalization;
 using Sampoerna.EMS.Utils;
+using static Sampoerna.EMS.Core.Enums;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Models.FileUpload;
@@ -102,11 +103,11 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 switch (CurrentUser.UserRole)
                 {
-                    case Enums.UserRole.Administrator:
+                    case UserRole.Administrator:
                         result.CanCreate = true;
                         break;
 
-                    case Enums.UserRole.POA:
+                    case UserRole.POA:
                         result.CanCreate = true;
                         break;
 
@@ -116,7 +117,7 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var LastApprovedStatus = brandRegistrationService.GetReffById(intLastApprovedStatus).REFF_KEYS;
 
-                if (CurrentUser.UserRole == Enums.UserRole.Viewer)
+                if (CurrentUser.UserRole == UserRole.Viewer)
                 {
                     result.CanView = true;
                 }
@@ -127,7 +128,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         case "Index":
                             switch (CurrentUser.UserRole)
                             {
-                                case Enums.UserRole.Administrator:
+                                case UserRole.Administrator:
                                     switch (LastApprovedStatus)
                                     {
                                         //DRAFT
@@ -147,7 +148,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                     }
                                     break;
 
-                                case Enums.UserRole.POA:
+                                case UserRole.POA:
                                     switch (LastApprovedStatus)
                                     {
                                         //DRAFT
@@ -283,7 +284,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             result.CanView = true;
                             switch (CurrentUser.UserRole)
                             {
-                                case Enums.UserRole.Administrator:
+                                case UserRole.Administrator:
                                     switch (LastApprovedStatus)
                                     {
                                         //WAITING FOR APPROVAL
@@ -295,7 +296,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                     }
                                     break;
 
-                                case Enums.UserRole.POA:
+                                case UserRole.POA:
                                     switch (LastApprovedStatus)
                                     {
                                         case "WAITING_POA_SKEP_APPROVAL":
@@ -315,7 +316,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         case "EditSKEP":
                             switch (CurrentUser.UserRole)
                             {
-                                case Enums.UserRole.Administrator:
+                                case UserRole.Administrator:
                                     switch (LastApprovedStatus)
                                     {
                                         //DRAFT NEW
@@ -339,7 +340,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                     }
                                     break;
 
-                                case Enums.UserRole.POA:
+                                case UserRole.POA:
                                     switch (LastApprovedStatus)
                                     {
                                         case "DRAFT_NEW_STATUS":
@@ -403,7 +404,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         case "Approval":
                             switch (CurrentUser.UserRole)
                             {
-                                case Enums.UserRole.Administrator:
+                                case UserRole.Administrator:
                                     result.CanCreate = false;
                                     result.CanEdit = false;
                                     result.CanSubmit = false;
@@ -411,7 +412,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                     result.CanApprove = false;
                                     break;
 
-                                case Enums.UserRole.POA:
+                                case UserRole.POA:
                                     result.CanCreate = false;
                                     result.CanEdit = false;
                                     result.CanSubmit = false;
@@ -582,11 +583,11 @@ namespace Sampoerna.EMS.Website.Controllers
             data.ViewModel.Decree_Date = DateTime.Now;
 
 
-            IEnumerable<Enums.DocumentStatusGovType2> statusTypes = Enum.GetValues(typeof(Enums.DocumentStatusGovType2)).Cast<Enums.DocumentStatusGovType2>();
+            IEnumerable<DocumentStatusGovType2> statusTypes = Enum.GetValues(typeof(DocumentStatusGovType2)).Cast<DocumentStatusGovType2>();
             data.ListGovStatus = from form in statusTypes
                                  select new SelectListItem
                                  {
-                                     Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Enums.DocumentStatusGovType2), form.ToString())),
+                                     Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(DocumentStatusGovType2), form.ToString())),
                                      Value = ((int)form).ToString()
                                  };
 
@@ -729,11 +730,11 @@ namespace Sampoerna.EMS.Website.Controllers
                         nppbkc = new SelectList(filterNppbkc, "Value", "Text");
                     }
 
-                    IEnumerable<Enums.BrandRegistrationAction> actionTypes = Enum.GetValues(typeof(Enums.BrandRegistrationAction)).Cast<Enums.BrandRegistrationAction>();
+                    IEnumerable<BrandRegistrationAction> actionTypes = Enum.GetValues(typeof(BrandRegistrationAction)).Cast<BrandRegistrationAction>();
                     model.SearchInput.ListRegistrationType = from form in actionTypes
                                                              select new SelectListItem
                                                              {
-                                                                 Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Enums.BrandRegistrationAction), form.ToString())),
+                                                                 Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(BrandRegistrationAction), form.ToString())),
                                                                  Value = ((int)form).ToString()
                                                              };
                     model.SearchInput.CreatorList = GlobalFunctions.GetCreatorList();
@@ -1604,11 +1605,11 @@ namespace Sampoerna.EMS.Website.Controllers
                         nppbkc = new SelectList(filterNppbkc, "Value", "Text");
                     }
 
-                    IEnumerable<Enums.BrandRegistrationAction> actionTypes = Enum.GetValues(typeof(Enums.BrandRegistrationAction)).Cast<Enums.BrandRegistrationAction>();
+                    IEnumerable<BrandRegistrationAction> actionTypes = Enum.GetValues(typeof(BrandRegistrationAction)).Cast<BrandRegistrationAction>();
                     model.SearchInput.ListRegistrationType = from form in actionTypes
                                                              select new SelectListItem
                                                              {
-                                                                 Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Enums.BrandRegistrationAction), form.ToString())),
+                                                                 Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(BrandRegistrationAction), form.ToString())),
                                                                  Value = ((int)form).ToString()
                                                              };
                     model.SearchInput.CreatorList = GlobalFunctions.GetCreatorList();
@@ -1921,11 +1922,11 @@ namespace Sampoerna.EMS.Website.Controllers
             //model.SearchView.CompanyTypeList = GetCompTypeList(comptplist);
             //model.SearchView.KPPBCList = GetKPPBCList(nppbkcList);
 
-            IEnumerable<Enums.BrandRegistrationAction> actionTypes = Enum.GetValues(typeof(Enums.BrandRegistrationAction)).Cast<Enums.BrandRegistrationAction>();
+            IEnumerable<BrandRegistrationAction> actionTypes = Enum.GetValues(typeof(BrandRegistrationAction)).Cast<BrandRegistrationAction>();
             model.SearchView.ListRegistrationType = from form in actionTypes
                                                     select new SelectListItem
                                                     {
-                                                        Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(Enums.BrandRegistrationAction), form.ToString())),
+                                                        Text = EnumHelper.GetDescription((Enum)Enum.Parse(typeof(BrandRegistrationAction), form.ToString())),
                                                         Value = ((int)form).ToString()
                                                     };
             model.SearchView.CreatorList = GlobalFunctions.GetCreatorList();
@@ -3094,7 +3095,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     CurrentRole = CurrentUser.UserRole,
                     Text_To = s.ZAIDM_EX_NPPBKC.TEXT_TO,
                     Created_By_Name = s.CREATOR.FIRST_NAME + " " + s.CREATOR.LAST_NAME,
-                    Created_By_Email = s.CREATOR.EMAIL
+                    Created_By_Email = s.CREATOR.EMAIL,
+                    RegNum = s.REG_NUMBER
                     
                 }).FirstOrDefault();
 
@@ -3944,6 +3946,7 @@ namespace Sampoerna.EMS.Website.Controllers
             data.DECREE_STATUS = true;
             data.LASTAPPROVED_STATUS = model.NextStatus;
             data.REGISTRATION_TYPE = model.Registration_Type;
+            data.REG_NUMBER = refService.GetRefByKey("REGULATION_BRAND_REGISTRATION").REFF_VALUE; //DRAFT NEW
 
             return data;
         }
@@ -4446,6 +4449,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
             System.Globalization.CultureInfo cultureID = new System.Globalization.CultureInfo("id-ID");
 
+            var text_to_cut = "<table cellpadding='5' cellspacing='0' style='background:none;border-collapse:collapse;font-family: Arial;font-size:10pt;'><tr><td>" + _BRViewModel.ViewModel.Text_To.Substring(0,38) + "</td></tr><tr><td>" + _BRViewModel.ViewModel.Text_To.Substring(39) + "</td></tr></table>";
+
             var parameters = new Dictionary<string, string>();
             parameters.Add("REGISTRATION_NO", _BRViewModel.ViewModel.Registration_No);
             parameters.Add("COMPANY_NAME", _BRViewModel.ViewModel.Company.Name);
@@ -4454,6 +4459,7 @@ namespace Sampoerna.EMS.Website.Controllers
             parameters.Add("COMPANY_CITY", _BRViewModel.ViewModel.Company.City);
             parameters.Add("SUBMISSION_DATE", Convert.ToDateTime(_BRViewModel.ViewModel.Submission_Date).ToString("dd MMMM yyyy", cultureID));
             parameters.Add("TEXT_TO", _BRViewModel.ViewModel.Text_To);
+            parameters.Add("TEKS_CUT", text_to_cut);
             parameters.Add("LAMPIRAN_COUNT", Convert.ToString(_BRViewModel.Count_Lamp) + " (" + TerbilangLong2(_BRViewModel.Count_Lamp) + ")");
             parameters.Add("POA_NAME", POAData.PRINTED_NAME);
             parameters.Add("POA_POSITION", POAData.TITLE);
@@ -4463,6 +4469,7 @@ namespace Sampoerna.EMS.Website.Controllers
             parameters.Add("PKP", _BRViewModel.ViewModel.Company.PKP);
             parameters.Add("ATTACHMENTS", attachments);
             parameters.Add("PRODUCT_ALIAS", ProductAlias);
+            parameters.Add("REQNUM", _BRViewModel.ViewModel.RegNum);
 
             var layout_item_updates = "";
             var layout_registration_items = "";
@@ -4492,10 +4499,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 layout_item_updates += "<tr><td colspan='4' style='font-family:Arial;font-size:10pt'><b>" + no_item_update.ToString() + ". Tarif Cukai</b> Rp. " + item.Tariff.ToString("#,##") + " / " + item.Unit + "</td></tr>";
                 layout_item_updates += "<tr><td width='5%'></td><td width='40%' style='vertical-align:top; font-family:Arial;font-size:10pt'>Merk</td><td width='5%' align='center' style='vertical-align:top; font-family:Arial;font-size:10pt'>:</td><td width='50%' style='vertical-align:top; font-family:Arial;font-size:10pt'> " + item.Brand_Ce + "</td></tr>";
                 layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>Jenis HT</td><td align='center'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'> " + item.ProductType + "</td></tr>";
-                layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>Golongan Pengusaha Pabrik</td><td align='center'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'> " + refService.GetReferenceById(item.Company_Tier).REFF_VALUE + "</td></tr>";
-                layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>HJE (per kemasan)</td><td align='center'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'> " + item.HJEperPack.ToString("#,##") + "</td></tr>";
-                layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>HJE (per batang/gram)</td><td align='center'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'> " + item.HJEperBatang.ToString("#,##0.00") + "</td></tr>";
-                layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>Isi Kemasan</td><td align='center'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'> " + item.Brand_Content + "</td></tr>";
+                layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>Golongan Pengusaha Pabrik/ Importir</td><td align='center'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'> " + refService.GetReferenceById(item.Company_Tier).REFF_VALUE + "</td></tr>";
+                layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>HJE (per kemasan)</td><td align='center'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>Rp " + item.HJEperPack.ToString("#,##") + "</td></tr>";
+                layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>HJE (per batang/gram)</td><td align='center'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>Rp " + item.HJEperBatang.ToString("#,##0.00") + "</td></tr>";
+                layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>Isi Kemasan</td><td align='center'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'> " + item.Brand_Content + " " + item.Unit + "</td></tr>";
                 layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>Bahan Kemasan</td><td align='center'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'> " + item.Packaging_Material + "</td></tr>";
                 layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td style='vertical-align:top; font-family:Arial;font-size:10pt'>Tujuan Pemasaran</td><td align='center'>:</td><td style='vertical-align:top; font-family:Arial;font-size:10pt'> " +  MarketDescription + "</td></tr>";
                 layout_item_updates += "<tr><td style='vertical-align:top; font-family:Arial;font-size:10pt'></td><td colspan='3' style='vertical-align:top; font-family:Arial;font-size:10pt'><b>Tampilan kemasan :</b></td></tr>";
@@ -4659,7 +4666,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 else
                 {
-                    company_address_text += no_alamat + ". " + plant.ADDRESS + "<BR/>";
+                    company_address_text += "<tr><td style='font-family:Arial;font-size:10pt'>&nbsp;</td><td style='font-family:Arial;font-size:10pt'>&nbsp;</td><td style='font-family:Arial;font-size:10pt'>" + no_alamat + ". " + plant.ADDRESS + "</td></tr>";
                 }
                 no_alamat++;
             }
@@ -4683,6 +4690,7 @@ namespace Sampoerna.EMS.Website.Controllers
             parameters.Add("PKP", _BRViewModel.ViewModel.Company.PKP);
             parameters.Add("ATTACHMENTS", attachments);
             parameters.Add("PRODUCT_ALIAS", ProductAlias);
+            parameters.Add("REQNUM", _BRViewModel.ViewModel.RegNum);
 
             var layout_item_updates = "";
             var layout_registration_items = "";
@@ -5268,7 +5276,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]
-        public void DownloadPrintOut(BrandRegistrationReqViewModel _BRVModel)
+        public ActionResult DownloadPrintOut(BrandRegistrationReqViewModel _BRVModel)
         {
             try
             {
@@ -5428,10 +5436,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 //Response.AddHeader("content-disposition", "attachment;filename=PrintOut_InterviewRequest_" + FormNumber + "_" + now + ".pdf");
                 //Response.BinaryWrite(bytesInStream);
                 //Response.End();
+                return null;
             }
             catch (Exception ex)
             {
-                throw ex;
+                AddMessageInfo(String.Format("Cannot download printout!. Reason: {0}", ex.Message), Enums.MessageInfoType.Error);
+                return RedirectToAction("IndexBrandRegistration");
             }
         }
 
@@ -5461,7 +5471,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception("Missing supporting documents! ");
             }
         }
 

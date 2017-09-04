@@ -92,6 +92,7 @@
     <script src="~/Scripts/excise-credit/terbilang.min.js"></script>
     <script src="~/Scripts/excise-credit/date.js"></script>
     <script src="~/Scripts/excise-credit/main.js"></script>
+    
 <script src="~/Scripts/tinymce/tinymce.min.js"></script>
     <script type="text/javascript">
         var formID = '@Model.ViewModel.Id';
@@ -200,6 +201,25 @@
                 }
 
             });
+            var skepVal = $("#SkepStatusId").val();
+            if (Number(skepVal) == 1) {
+                $("#skepStatusLabel").hide();
+            } else {
+                $("#skepStatusLabel").show();
+            }
+
+            $("#SkepStatusId").on("change", function () {
+                var val = $(this).val();
+                console.log(val);
+                if (Number(val) == 1) {
+                    $("#skepStatusLabel").hide();
+                    $("Notes").prop("required", false);
+                }
+                else {
+                    $("#skepStatusLabel").show();
+                    $("Notes").prop("required", true);
+                }
+            });
             TinyMceInit("tinymce-editor");
 
         });
@@ -207,7 +227,7 @@
         function generateFormData() {
             var isNewSkep = '@Model.SkepInput.IsNewEntry';
             var id = $("#Id").val();
-            var govStatus = $("#SkepStatus").val();
+            var govStatus = $("#SkepStatusId").val();
             var decreeNumber = $("#DecreeNumber").val();
             var decreeDate = $("#DecreeDate").val();
             var creditAmount = $("#CreditAmount").val();
@@ -220,6 +240,13 @@
                 valid = id && govStatus && decreeNumber && decreeDate && creditAmount && startDate && registeredProducts && registeredProducts.length > 0 && skepAttachment;
             } else {
                 valid = id && govStatus && decreeNumber && decreeDate && creditAmount && startDate && registeredProducts && registeredProducts.length > 0;
+            }
+            console.log(govStatus);
+            if (Number(govStatus) == 0) {
+                if (!notes) {
+                    showErrorDialog("SKEP Input form not complete!");
+                    return;
+                }
             }
 
             if (!valid) {
@@ -257,7 +284,7 @@
 
                 if (notes) {
                     data.append("notes", notes);
-                }
+                } 
 
                 return data;
             }
@@ -268,7 +295,7 @@
         function submit() {
             var data = generateFormData();
             if (!data) {
-                showErrorDialog('Form data not available!');
+                //showErrorDialog('Form data not valid!');
                 return;
             }
             $.ajax({
@@ -303,7 +330,7 @@
                 $("#WithdrawButton").prop("disabled", true);
                 $("#withdrawModal").modal("toggle");
             } else
-                alert("Please add notes for approver!");
+                showErrorDialog("Please add notes for approver!");
             
         }
 

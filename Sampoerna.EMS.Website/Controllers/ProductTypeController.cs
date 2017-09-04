@@ -402,7 +402,7 @@ namespace Sampoerna.EMS.Website.Controllers
 
             if (updated != null)
             {
-                AddMessageInfo(Constans.SubmitMessage.Updated + " and sending email", Enums.MessageInfoType.Success);
+                //AddMessageInfo(Constans.SubmitMessage.Updated + " and sending email", Enums.MessageInfoType.Success);
                 List<string> mailAddresses = new List<string>();
                 if (statusApproval == ReferenceKeys.ApprovalStatus.AwaitingAdminApproval)
                 {

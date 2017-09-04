@@ -37,6 +37,7 @@ namespace Sampoerna.EMS.CustomService.Data
         public string DECREE_NO { get; set; }
         public Nullable<System.DateTime> DECREE_DATE { get; set; }
         public Nullable<System.DateTime> DECREE_STARTDATE { get; set; }
+        public string REG_NUMBER { get; set; }
     
         public virtual USER CREATOR { get; set; }
         public virtual USER APPROVER { get; set; }

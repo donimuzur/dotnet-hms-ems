@@ -1979,7 +1979,7 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost]        
-        public void DownloadPrintOut(InterviewRequestModel _IRModel)
+        public ActionResult DownloadPrintOut(InterviewRequestModel _IRModel)
         {
             try
             {
@@ -2045,10 +2045,12 @@ namespace Sampoerna.EMS.Website.Controllers
                 //Response.AddHeader("content-disposition", "attachment;filename=PrintOut_InterviewRequest_" + FormNumber + "_" + now + ".pdf");
                 //Response.BinaryWrite(bytesInStream);
                 //Response.End();
+                return null; 
             }
             catch (Exception ex)
             {
-                throw ex;
+                AddMessageInfo(String.Format("Cannot download printout!. Reason: {0}", ex.Message), Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
             }
         }
 
@@ -2106,7 +2108,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception("Missing supporting documents! ");
             }
         }
 
@@ -2528,6 +2530,41 @@ namespace Sampoerna.EMS.Website.Controllers
             {
                 var documents = new List<vwMLInterviewRequestModel>();
                 var data = IRservice.GetvwInterviewRequestAll();
+
+                if ((KPPBCId != null) && (KPPBCId != ""))
+                {
+                    data = data.Where(w => w.KPPBC.Equals(KPPBCId));
+                }
+                if ((Creator != null) && (Creator != ""))
+                {
+                    data = data.Where(w => w.CREATED_BY.Equals(Creator));
+                }
+                if ((CompanyType != null) && (CompanyType != ""))
+                {
+                    data = data.Where(w => w.COMPANY_TYPE.Equals(CompanyType));
+                }
+                if ((Year.ToString() != null) && (Year != 0))
+                {
+                    data = data.Where(w => w.REQUEST_DATE.Year.Equals(Year));
+                }
+                if ((POA != null) && (POA != ""))
+                {
+                    data = data.Where(w => w.CREATED_BY.Equals(POA));
+                }
+                //if (model.SearchView.CompanyTypeSource != null)
+                //{
+                //    documents = documents.Where(w => w.COMPANY_TYPE.Equals(model.SearchView.CompanyTypeSource));
+                //}
+                //if (model.SearchView.KPPBCSource != null)
+                //{
+                //    documents = documents.Where(w => w.KPPBC.Equals(model.SearchView.KPPBCSource));
+                //}
+                //if (model.SearchView.LastApprovedStatusSource != null)
+                //{
+                //    Int64 test = Convert.ToInt64(model.SearchView.LastApprovedStatusSource);
+                //    documents = documents.Where(w => w.LASTAPPROVED_STATUS.Equals(test));
+                //}
+
                 if (data.Any())
                 {
                     if ((modelExport != null) && (modelExport.DetailExportModel.Address || modelExport.DetailExportModel.City || modelExport.DetailExportModel.Province || modelExport.DetailExportModel.SubDistrict || modelExport.DetailExportModel.Village || modelExport.DetailExportModel.Phone || modelExport.DetailExportModel.Fax))

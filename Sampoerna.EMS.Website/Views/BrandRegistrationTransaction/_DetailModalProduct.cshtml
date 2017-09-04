@@ -69,9 +69,22 @@
                                                         @*<div class="col-md-8">@Html.DropDownListFor(model => model.DetailModel.Fa_Code_Old, Model.MaterialListOld,  new { @class = " form-control", @id = "OldSelector" })</div>*@
                                                         <div class="col-md-8">
                                                             @Html.HiddenFor(model => model.DetailModel.Fa_Code_Old)
-                                                            <select class="form-control" id="OldSelector" name="OldSelector">
+                                                            @*<select class="form-control" id="OldSelector" name="OldSelector">
                                                                 <option value="">@Model.DetailModel.Fa_Code_Old</option>
-                                                            </select>
+                                                            </select>*@
+                                                            @if (Model.DetailModel.Fa_Code_Old == "NULL" || Model.DetailModel.Fa_Code_Old == null)
+                                                            {
+                                                                <select class="form-control" id="OldSelector" name="OldSelector">
+                                                                    <option value=""></option>
+                                                                </select>                                                           
+                                                            }
+                                                            else
+                                                            {
+                                                                <select class="form-control" id="OldSelector" name="OldSelector">
+                                                                    <option value="">@Model.DetailModel.Fa_Code_Old</option>
+                                                                </select>                                                                
+                                                            }
+
                                                         </div>                                                  
                                                      </div>
                                                     &nbsp;

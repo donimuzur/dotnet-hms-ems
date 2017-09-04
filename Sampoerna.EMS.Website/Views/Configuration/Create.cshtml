@@ -162,16 +162,16 @@
     $(document).ready(function () {
         $('#MenuMasterConfiguration').addClass('active');
         var wrapper = $(".configName"); //Fields wrapper
-      
+
         $('#ConfigText').on("change", function () {
             var tempType = $('#ConfigText :selected').text();
             var dataType = $('#ConfigText :selected').val();
-            
-            if (tempType == "ADMIN APPROVER") {                
-                document.getElementById("buttonUser").innerHTML = '<button type="button" id="modalUser" class="btn btn-primary btn-sm" data-toggle="modal"  data-target="#myModalUser">Search User</button>';                            
+
+            if (tempType == "ADMIN APPROVER") {
+                document.getElementById("buttonUser").innerHTML = '<button type="button" id="modalUser" class="btn btn-primary btn-sm" data-toggle="modal"  data-target="#myModalUser">Search User</button>';
             }
             else {
-                document.getElementById("buttonUser").innerHTML = "";              
+                document.getElementById("buttonUser").innerHTML = "";
             }
 
             ajaxConfigName('@Url.Action("ConfigNameList", "Configuration")', dataType);
@@ -184,16 +184,16 @@
             }
 
             if (tempType == "HINT COMPONENT" || tempType == "APPROVAL STATUS") {
-                if (tempType == "HINT COMPONENT") {                 
-                    document.getElementById("configName").innerHTML = '<div class="row"><div class="col-md-2"><label>Label Name</label><span class="red">*</span></div><div class="col-md-6">@Html.Raw(Ajax.JavaScriptStringEncode(Html.DropDownListFor(model => model.ConfigName, Model.HintList,"--Select--", new { @class = "form-control", @onchange = "CallChangeNameFunction(this.value)" }).ToHtmlString()))</div>';                                                      
+                if (tempType == "HINT COMPONENT") {
+                    document.getElementById("configName").innerHTML = '<div class="row"><div class="col-md-2"><label>Label Name</label><span class="red">*</span></div><div class="col-md-6">@Html.Raw(Ajax.JavaScriptStringEncode(Html.DropDownListFor(model => model.ConfigName, Model.HintList,"--Select--", new { @class = "form-control", @onchange = "CallChangeNameFunction(this.value)" }).ToHtmlString()))</div>';
                 }
-                if (tempType == "APPROVAL STATUS") {                 
-                    document.getElementById("configName").innerHTML = '<div class="row"><div class="col-md-2"><label>Configuration Name</label><span class="red">*</span></div><div class="col-md-6">@Html.Raw(Ajax.JavaScriptStringEncode(Html.DropDownListFor(model => model.ConfigName, Model.ApprovalList, "--Select--", new { @class = "form-control", @onchange = "CallChangeNameFunction(this.value)" }).ToHtmlString()))</div>';               
+                if (tempType == "APPROVAL STATUS") {
+                    document.getElementById("configName").innerHTML = '<div class="row"><div class="col-md-2"><label>Configuration Name</label><span class="red">*</span></div><div class="col-md-6">@Html.Raw(Ajax.JavaScriptStringEncode(Html.DropDownListFor(model => model.ConfigName, Model.ApprovalList, "--Select--", new { @class = "form-control", @onchange = "CallChangeNameFunction(this.value)" }).ToHtmlString()))</div>';
                 }
             }
             else {
                 document.getElementById("configName").innerHTML = "";
-            
+
             }
 
             if (tempType == "HINT COMPONENT") {
@@ -203,45 +203,50 @@
                 document.getElementById("labelValue").innerHTML = '<label>@Html.LabelFor(model => model.ConfigValue)</label><span class="red">*</span>';
             }
 
+
             if (tempType == "UPLOAD FILE LIMIT") {
                 ajaxUploadFileLimitValue('@Url.Action("GetUploadFileLimitValue", "Configuration")', dataType);
-                document.getElementById("fieldValue").innerHTML = '@Html.TextBoxFor(model => model.ConfigValue, new { @class = "form-control", @type = "number" }) '; 
+                document.getElementById("fieldValue").innerHTML = '@Html.TextBoxFor(model => model.ConfigValue, new { @class = "form-control", @type = "number" }) ';
                 document.getElementById("buttonUser").innerHTML = '@Html.Label("Mb")';
-          
+
             }
+            else if (tempType == "BRAND REGISTRATION REGULATION NO" || tempType == "EXCISE CREDIT REGULATION NO") {
+                ajaxGetRegulationValue('@Url.Action("GetRegulationValue", "Configuration")', dataType);
+                document.getElementById("fieldValue").innerHTML = '@Html.TextBoxFor(model => model.ConfigValue, new { @class = "form-control"})';
+            }           
             else if (tempType == "ADMIN APPROVER") {
                 document.getElementById("ConfigValue").value = "";
                 document.getElementById("fieldValue").innerHTML = '@Html.TextBoxFor(model => model.ConfigValue, "ConfigValue", new { @class = "form-control", @maxlength = "22", @readonly = "true" })';
-          
+
             }
             else {
                 document.getElementById("ConfigValue").value = "";
                 document.getElementById("fieldValue").innerHTML = '@Html.TextBoxFor(model => model.ConfigValue, new { @class = "form-control"})';
-             
+
             }
         });
-                  
+
         $('input:radio').change(function () {
-            var is_external = $("input[name='UserId']:checked").val();           
+            var is_external = $("input[name='UserId']:checked").val();
             document.getElementById("ConfigValue").value = is_external;
-        
+
         });
 
         document.getElementById("labelValue").innerHTML = '<label>@Html.LabelFor(model => model.ConfigValue)</label><span class="red">*</span>';
         document.getElementById("fieldValue").innerHTML = '@Html.TextBoxFor(model => model.ConfigValue, new { @class = "form-control", @maxlength = "22", @readonly = "true" })';
         document.getElementById("buttonUser").innerHTML = '<button type="button" id="modalUser" class="btn btn-primary btn-sm" data-toggle="modal"  data-target="#myModalUser">Search User</button>';
-              
+
         var init = $('#ConfigText').val();
-        ajaxConfigName('@Url.Action("ConfigNameList", "Configuration")', init);     
+        ajaxConfigName('@Url.Action("ConfigNameList", "Configuration")', init);
 
         setupDataTables();
     });
-   
+
     function CallChangeNameFunction(val) {
         if (val == "--Select--") {
             document.getElementById("ConfigValue").value = "";
         }
-        else {                                                      
+        else {
             ajaxNameValue('@Url.Action("GetNameValue", "Configuration")', val);
         }
     }
@@ -273,7 +278,7 @@
                 if (data != null) {
                     document.getElementById("ConfigValue").value = data.ReffValue;
                     document.getElementById("IsActive").checked = data.IsActive;
-                    document.getElementById("ConfigName").value = data.ReffName;                                        
+                    document.getElementById("ConfigName").value = data.ReffName;
                 }
                 else {
                     document.getElementById("ConfigValue").value = "";
@@ -290,14 +295,27 @@
             success: function (data) {
                 console.log(data);
                 document.getElementById("ConfigValue").value = data.ReffValue;
-                document.getElementById("IsActive").checked = data.IsActive;                
+                document.getElementById("IsActive").checked = data.IsActive;
+            }
+        });
+    }
+
+    function ajaxGetRegulationValue(url, type) {
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: { type: type },
+            success: function (data) {
+                console.log(data);
+                document.getElementById("ConfigValue").value = data.ReffValue;
+                document.getElementById("IsActive").checked = data.IsActive;
             }
         });
     }
 
     $("#submitSave").click(function () {
         $("#customloader").show();
-        document.getElementById("IsActive").disabled = false;        
+        document.getElementById("IsActive").disabled = false;
     });
 
     function setupDataTables() {

@@ -391,10 +391,11 @@
 {
     @Html.Partial("_CalculateAdjustmentExciseDetail", Model.AdjustmentModel)
 }
-<script type="text/javascript" src="~/Scripts/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery-2.1.4.js"></script>
 <script src="~/Scripts/excise-credit/main.js"></script>
 <script type="text/javascript">
     $("#calculationAction").hide();
+    $("#calculationActionDetail").show();
     $("#ckListButton").on("click", openCkListPopUp);
     var ck1DetaiUrl = '@Url.Action("GetCk1List", "ExciseCredit")';
     var ck1DetailAdjustmentUrl = '@Url.Action("GetCk1AdjustmentList", "ExciseCredit")';

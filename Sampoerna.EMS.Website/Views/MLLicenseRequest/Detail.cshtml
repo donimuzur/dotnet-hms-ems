@@ -29,10 +29,10 @@
     .watermark {
         opacity: 0.1;
         color: BLACK;
-        position: fixed;
+        position: absolute;
         top: auto;
-        left: 40%;
-        top:60%;
+        margin-left: 20%;
+        margin-top:35%;
         font-size:50pt;
         z-index:1;
 
@@ -88,6 +88,7 @@
     @Html.HiddenFor(model => model.Lampiran_Count, new { @id = "txt_lampirancount" })
     @Html.HiddenFor(model => model.CreatedBy, new { @id = "txt_hd_createdby" })
     <input type="hidden" id="txt_isformreadonly" value="true" />
+    <input type="hidden" id="txt_printout_temp" />
     //////////// INIT END /////////////
     
     <div class="container-wrap title-page">
@@ -499,7 +500,7 @@
                                                                         <tr>
                                                                             <td class="td_filename_number">@otherIndex</td>
                                                                             <td class="td_filename">
-                                                                                <i class="fa fa-file"></i>&nbsp;<a href="@_file.Path" target="_blank" download>@_file.Name</a>
+                                                                                <i class="fa fa-file"></i>&nbsp;<a href="@_file.Path" target="_blank">@_file.Name</a>
                                                                             </td>
                                                                             <td>
                                                                                 @_file.FileName
@@ -596,7 +597,7 @@
                                                                                 <tr>
                                                                                     <td class="td_filename_number">@baIndex</td>
                                                                                     <td class="td_filename">
-                                                                                        <i class="fa fa-file"></i>&nbsp;<a href="@_file.Path" target="_blank" download>@_file.Name</a>
+                                                                                        <i class="fa fa-file"></i>&nbsp;<a href="@_file.Path" target="_blank">@_file.Name</a>
                                                                                     </td>
                                                                                     <td>
                                                                                         @_file.FileName
@@ -641,33 +642,103 @@
                                 }
                             </div>
                             <div role="tabpanel" class="tab-pane" id="print">
-                                <button type="button" class="btn btn-blue pull-right" id="btn_download_printout">Download Printout</button>
-                                @if (!Model.IsNotViewer)
-                                {
-                                <button type="button" id="btn_show_printouteditor" class="btn btn-blue pull-right" data-toggle="modal" data-target=".modal_editprintout">Edit Layout</button>
-                                }
-                                <div class="col-lg-12 table-container">
-                                    <div class="white-wrapper">
-                                        <div class="row">
-                                            @if (Model.Status == "DRAFT_EDIT_STATUS" || Model.Status == "DRAFT_NEW_STATUS" || Model.Status == "WAITING_POA_APPROVAL")
-                                            {
-                                                <div class="watermark">DRAFTED</div>
-                                            }
-                                            <div class="table-container tablekoe" id="div-print-layout" style="padding:50px;"></div>
+                                <div>
+                                    <button type="button" class="btn btn-blue pull-right" id="btn_download_printout">Download Printout</button>
+                                    
+                                </div>
+                                <div class="panel-body">
+                                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="headingPrintOne">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapsePrintOne" aria-expanded="true" aria-controls="collapsePrintOne">
+                                                        Print Out PMCK-6
+                                                        <i class="fa fa-caret-down"></i>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapsePrintOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingPrintOne">
+                                                <div class="white-wrapper">
+                                                    @if (!Model.IsNotViewer)
+                                                    {
+                                                        <button type="button" class="btn btn-blue pull-right btn_show_printouteditor" data-action="license1" data-toggle="modal" data-target=".modal_editprintout">Edit Layout</button>
+                                                    }
+                                                    <div class="row">
+                                                        @*@if (Model.Status == "DRAFT_EDIT_STATUS" || Model.Status == "DRAFT_NEW_STATUS" || Model.Status == "WAITING_POA_APPROVAL")
+                                                        {*@
+                                                            <div class="watermark">DRAFTED</div>
+                                                        @*}*@
+                                                        <div class="table-container tablekoe" id="div-print-layout_1" style="padding:50px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="headingPrintSec">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapsePrintSec" aria-expanded="true" aria-controls="collapsePrintSec">
+                                                        Print Out Surat Pernyataan Pembukuan 10 tahun terakhir
+                                                        <i class="fa fa-caret-down"></i>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapsePrintSec" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingPrintSec">
+                                                <div class="white-wrapper">
+                                                    @if (!Model.IsNotViewer)
+                                                    {
+                                                        <button type="button" class="btn btn-blue pull-right btn_show_printouteditor" data-action="license2" data-toggle="modal" data-target=".modal_editprintout">Edit Layout</button>
+                                                    }
+                                                    <div class="row">
+                                                        @*@if (Model.Status == "DRAFT_EDIT_STATUS" || Model.Status == "DRAFT_NEW_STATUS" || Model.Status == "WAITING_POA_APPROVAL")
+                                                        {*@
+                                                            <div class="watermark">DRAFTED</div>
+                                                        @*}*@
+                                                        <div class="table-container tablekoe" id="div-print-layout_2" style="padding:50px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="headingPrintThird">
+                                                <h4 class="panel-title">
+                                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapsePrintThird" aria-expanded="true" aria-controls="collapsePrintThird">
+                                                        Print Out Surat Pernyataan Tidak Terdapat Kesamaan Nama
+                                                        <i class="fa fa-caret-down"></i>
+                                                    </a>
+                                                </h4>
+                                            </div>
+                                            <div id="collapsePrintThird" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingPrintThird">
+                                                <div class="white-wrapper">
+                                                    @if (!Model.IsNotViewer)
+                                                    {
+                                                        <button type="button" class="btn btn-blue pull-right btn_show_printouteditor" data-action="license3" data-toggle="modal" data-target=".modal_editprintout">Edit Layout</button>
+                                                    }
+                                                    <div class="row">
+                                                        
+                                                        <div class="watermark">DRAFTED</div>
+                                                        <div class="table-container tablekoe" id="div-print-layout_3" style="padding:50px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div role="tabpanel" class="tab-pane" id="changes">
-                                <input type="hidden" id="txt_ischangelog_loaded" value="0" />
-                                <div class="table-container contenttable changelog" id="divChangeLog">
-                                    @*@Html.Partial("_ChangesHistoryTable", Model)*@
-                                </div>
-                            </div>
-                        </div>
 
-                    
-                    </div>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="changes">
+                                        <input type="hidden" id="txt_ischangelog_loaded" value="0" />
+                                        <div class="table-container contenttable changelog" id="divChangeLog">
+                                            @*@Html.Partial("_ChangesHistoryTable", Model)*@
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
                 </div>
             </div>
     </div>
@@ -715,12 +786,13 @@
             </div>
         </div>
     </div>
-}
+                                                                                }
     @using (Html.BeginForm("DownloadPrintOut", "MLLicenseRequest", FormMethod.Post, new { @id = "form_DownloadPrintout" }))
     {
         @Html.HiddenFor(model => model.MnfRequestID, new { @id = "txt_hd_id_forprint" })
         @Html.HiddenFor(model => model.MnfFormNum, new { @id = "txt_hd_formnumber_forprint" })
         @Html.HiddenFor(model => model.StatusKey, new { @id = "txt_hd_statuskey" })
+        
     }
 
 @foreach (var confirmation in Model.Confirmation)
@@ -731,7 +803,7 @@
                 @section scripts {
             <script src="~/Scripts/js/custom.js"></script>
             <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-            <script src="~/Scripts/manufacture-license/licenserequest-beranda.js?v=0.7.30"></script>
+            <script src="~/Scripts/manufacture-license/licenserequest-beranda.js?v=0.7.32"></script>
             <script src="~/scripts/tinymce/tinymce.min.js"></script>
             <script type="text/javascript" language="javascript">
                 

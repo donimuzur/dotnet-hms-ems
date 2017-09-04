@@ -646,7 +646,7 @@
 </div>
 
 @{
-    var baseurl = Request.Url.GetLeftPart(UriPartial.Authority);
+    var baseurl = Request.Url.GetLeftPart(UriPartial.Authority) + Request.ApplicationPath;
     var templateurl = baseurl + "/files_upload/BrandRegistration/ImportTemplate/Brand Registration Import Items Template.xlsx";
 }
 <div class="modal ems-modal fade modal_import" tabindex="-1" role="dialog" aria-labelledby="ImportModal">

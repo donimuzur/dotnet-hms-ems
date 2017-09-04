@@ -484,6 +484,44 @@ namespace Sampoerna.EMS.CustomService.Services.BrandRegistrationTransaction
             }
         }
 
+        public IEnumerable<string> GetAdminExciserByNPPBKC(string nppbkcId)
+        {
+            try
+            {               
+                var result = new List<string>();
+                // var user = this.uow.PoaMapRepository.GetManyQueryable(pm => pm.WERKS == plantName).ToList();    // if parameter = plant/werks          
+                var poaList = this.uow.PoaMapRepository.GetManyQueryable(pm => pm.NPPBKC_ID == nppbkcId).Select(x => x.POA_ID).Distinct().ToList();
+                foreach(var data in poaList)
+                {
+                   var status = this.uow.PoaExciserRepository.GetFirst(ex => ex.POA_ID == data && ex.IS_ACTIVE_EXCISER == true);
+
+                   if(status != null)
+                   {
+                      result.Add(data);
+                   }
+                }
+                return result;                                
+            }
+            catch (Exception ex)
+            {
+                throw this.HandleException("Exception occured on Product Development Service. See Inner Exception property to see details", ex);
+            }
+        }
+
+        public IEnumerable<string> GetPlantByNppbkc (string nppbkcID)
+        {
+            try
+            {                
+                var data = this.uow.PoaMapRepository.GetManyQueryable(pm => pm.NPPBKC_ID == nppbkcID).Select(x => x.WERKS).Distinct().ToList();
+                return data;
+            }
+            catch (Exception ex)
+            {
+                throw this.HandleException("Exception occured on Product Development Service. See Inner Exception property to see details", ex);
+            }
+        }
+
+
         public T001 GetCompany(string id)
         {
             try

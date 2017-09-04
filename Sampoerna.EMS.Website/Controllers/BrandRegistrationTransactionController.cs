@@ -26,6 +26,7 @@ using System.Web;
 using Sampoerna.EMS.Website.Utility;
 using System.Globalization;
 using Sampoerna.EMS.Utils;
+using static Sampoerna.EMS.Core.Enums;
 using Sampoerna.EMS.Website.Models.ChangesHistory;
 using Sampoerna.EMS.Website.Models.WorkflowHistory;
 using Sampoerna.EMS.Website.Models.FileUpload;
@@ -159,9 +160,12 @@ namespace Sampoerna.EMS.Website.Controllers
             var nameMaterialListNew = new SelectList(selectMaterialListNew.GroupBy(p => p.Value).Select(g => g.FirstOrDefault()), "Value", "Text");
             data.MaterialListNew = nameMaterialListNew;
 
-            var limit = refService.GetUploadFileSizeLimit();
-            data.FileUploadLimit = (limit != null) ? Convert.ToDecimal(limit.REFF_VALUE) : 0;         
+          //  var exciser = productDevelopmentService.GetAdminExciserByNPPBKC("IDAG").ToList();
+          //  var listexcise = productDevelopmentService.GetAdminExciserByNPPBKC("0507.1.3.0234").ToList();
 
+            var limit = refService.GetUploadFileSizeLimit();
+            data.FileUploadLimit = (limit != null) ? Convert.ToDecimal(limit.REFF_VALUE) : 0;
+                      
             return data;
         }
 
@@ -584,80 +588,127 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             var formData = Request;
             JArray itemArray = JArray.Parse(formData["model"]);
+            var listNppbkc = new List<string>();
+            var resNppbkc = new List<string>();
 
             try
-            {         
-                var data = productDevelopmentService.FindProductDevelopment(PD_ID);
-                var parameters = new Dictionary<string, string>();
-                var sender = refService.GetUserEmail(CurrentUser.USER_ID);
-                var display = String.Format("{0} [{1} {2}]", ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.EmailSender.CreatorPRD), data.CREATOR.FIRST_NAME, data.CREATOR.LAST_NAME);                                          
-           
-                var index = 0;
-                var maildetail = "";
+            {                       
+                /// ----- Change Approval Status to "Waiting Excise Approval" and Get Nppbkc List from Plant/Werks in Item
                 foreach (var item in itemArray)
-                {
-                    index++;
+                {                    
                     long PD_DetailID= Convert.ToInt64(((JObject)item).GetValue("ProductDetailID"));
                     ProductDevDetailModel modelDetail = new ProductDevDetailModel();
                     modelDetail.PD_DETAIL_ID = PD_DetailID;
 
                     var detail = productDevelopmentService.FindProductDevDetail(PD_DetailID);
-
-                    maildetail += "<tr>";
-                    maildetail += "<td colspan='3'>&nbsp;<b>Detail Product " + index + "</b></td>";
-                    maildetail += "</tr>";
-                    maildetail += "<tr>";
-                    maildetail += "<td style='padding-left:2em;'>Request No</td>";
-                    maildetail += "<td>:</td>";
-                    maildetail += "<td>&nbsp;" + detail.REQUEST_NO + "</td>";
-                    maildetail += "</tr>";
-                    maildetail += "<tr>";
-                    maildetail += "<td style='padding-left:2em;'>Fa Code Old & Description</td>";
-                    maildetail += "<td>:</td>";
-                    maildetail += "<td>&nbsp;" + detail.FA_CODE_OLD + " - " + detail.FA_CODE_OLD_DESCR + "</td>";
-                    maildetail += "</tr>";
-                    maildetail += "<tr>";
-                    maildetail += "<td style='padding-left:2em;'>Fa Code New & Description</td>";
-                    maildetail += "<td>:</td>";
-                    maildetail += "<td>&nbsp;" + detail.FA_CODE_NEW + " - " + detail.FA_CODE_NEW_DESCR + "</td>";
-                    maildetail += "</tr>";
-                    maildetail += "<tr>";
-                    maildetail += "<td style='padding-left:2em;'>Hl Code</td>";
-                    maildetail += "<td>:</td>";
-                    maildetail += "<td>&nbsp;" + detail.HL_CODE + "</td>";
-                    maildetail += "</tr>";
-                    maildetail += "<tr>";
-                    maildetail += "<td style='padding-left:2em;'>Market</td>";
-                    maildetail += "<td>:</td>";
-                    maildetail += "<td>&nbsp;" + detail.ZAIDM_EX_MARKET.MARKET_DESC + "</td>";
-                    maildetail += "</tr>";
+                    var result = productDevelopmentService.FindPlantDescription(detail.WERKS);
+                    
+                    listNppbkc.Add(result.NPPBKC_ID);
 
                     ExecuteApprovalActionProduct(modelDetail, ReferenceKeys.ApprovalStatus.AwaitingExciseApproval, Enums.ActionType.Submit);                                       
                 }
-
-                parameters.Add("pd_no", data.PD_NO );
-                parameters.Add("date", DateTime.Now.ToString("dddd, MMM dd yyyy"));
-                parameters.Add("submitter", String.Format("{0} {1}", CurrentUser.FIRST_NAME, CurrentUser.LAST_NAME));
-                parameters.Add("creator", String.Format("{0} {1}", data.CREATOR.FIRST_NAME, data.CREATOR.LAST_NAME));
-                parameters.Add("detail", maildetail);
-                parameters.Add("approval_status", refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingExciseApproval).REFF_VALUE);
-                parameters.Add("url_detail_product", Url.Action("DetailProduct", "BrandRegistrationTransaction", new { id = data.PD_ID }, this.Request.Url.Scheme));
-                parameters.Add("url_approve_product", Url.Action("ApproveProduct", "BrandRegistrationTransaction", new { id = data.PD_ID }, this.Request.Url.Scheme));
-
-                long mailcontentId = 0;
-                mailcontentId = (int)ReferenceKeys.EmailContent.ProductDevelopmentApprovalRequest;
                 
-                var mailContent = refService.GetMailContent(mailcontentId, parameters);
-                var reff = refService.GetReferenceByKey(ReferenceKeys.Approver.AdminApprover);
-                var sendToId = reff.REFF_VALUE;
-                var sendTo = refService.GetUserEmail(sendToId);
-                   
-                SendMailApprovalActionProduct(ReferenceKeys.ApprovalStatus.AwaitingExciseApproval, mailContent.EMAILCONTENT, mailContent.EMAILSUBJECT, sender, display, sendTo);
+                /// ----- Prevent same Nppbkc ID in list
+                resNppbkc = listNppbkc.Distinct().ToList();                      
+
+                /// ----- Get Item Detail and Poa Exciser then Send Email for each Nppbkc ID
+                foreach (var nppbkc in resNppbkc)
+                {
+                    var data = productDevelopmentService.FindProductDevelopment(PD_ID);
+                    var parameters = new Dictionary<string, string>();
+                    var sender = refService.GetUserEmail(CurrentUser.USER_ID);
+                    var display = String.Format("{0} [{1} {2}]", ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.EmailSender.CreatorPRD), data.CREATOR.FIRST_NAME, data.CREATOR.LAST_NAME);
+                    var listPoaExcise = new List<string>();
+
+                    var index = 0;
+                    var maildetail = "";
+                    var plantList = productDevelopmentService.GetPlantByNppbkc(nppbkc).ToList();                
+
+                    foreach (var plant in plantList )
+                    {
+                        foreach(var item in itemArray)
+                        {                           
+                            long PD_DetailID = Convert.ToInt64(((JObject)item).GetValue("ProductDetailID"));                       
+
+                            var detail = productDevelopmentService.FindProductDevDetail(PD_DetailID);
+
+                            if (plant == detail.WERKS)
+                            {
+                                index++;
+                                maildetail += "<tr>";
+                                maildetail += "<td colspan='3'>&nbsp;<b>Detail Product " + index + "</b></td>";
+                                maildetail += "</tr>";
+                                maildetail += "<tr>";
+                                maildetail += "<td style='padding-left:2em;'>Request No</td>";
+                                maildetail += "<td>:</td>";
+                                maildetail += "<td>&nbsp;" + detail.REQUEST_NO + "</td>";
+                                maildetail += "</tr>";
+                                maildetail += "<tr>";
+                                maildetail += "<td style='padding-left:2em;'>Fa Code Old & Description</td>";
+                                maildetail += "<td>:</td>";
+                                maildetail += "<td>&nbsp;" + detail.FA_CODE_OLD + " - " + detail.FA_CODE_OLD_DESCR + "</td>";
+                                maildetail += "</tr>";
+                                maildetail += "<tr>";
+                                maildetail += "<td style='padding-left:2em;'>Fa Code New & Description</td>";
+                                maildetail += "<td>:</td>";
+                                maildetail += "<td>&nbsp;" + detail.FA_CODE_NEW + " - " + detail.FA_CODE_NEW_DESCR + "</td>";
+                                maildetail += "</tr>";
+                                maildetail += "<tr>";
+                                maildetail += "<td style='padding-left:2em;'>Hl Code</td>";
+                                maildetail += "<td>:</td>";
+                                maildetail += "<td>&nbsp;" + detail.HL_CODE + "</td>";
+                                maildetail += "</tr>";
+                                maildetail += "<tr>";
+                                maildetail += "<td style='padding-left:2em;'>Market</td>";
+                                maildetail += "<td>:</td>";
+                                maildetail += "<td>&nbsp;" + detail.ZAIDM_EX_MARKET.MARKET_DESC + "</td>";
+                                maildetail += "</tr>";
+                            }
+                        }
+                    }
                
-                AddMessageInfo("Submitted Successfully.", Enums.MessageInfoType.Success);
-                return Json("Item Product Submitted.");
+                    parameters.Add("pd_no", data.PD_NO);
+                    parameters.Add("date", DateTime.Now.ToString("dddd, MMM dd yyyy"));
+                    parameters.Add("submitter", String.Format("{0} {1}", CurrentUser.FIRST_NAME, CurrentUser.LAST_NAME));
+                    parameters.Add("creator", String.Format("{0} {1}", data.CREATOR.FIRST_NAME, data.CREATOR.LAST_NAME));
+                    parameters.Add("detail", maildetail);
+                    parameters.Add("approval_status", refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingExciseApproval).REFF_VALUE);
+                    parameters.Add("url_detail_product", Url.Action("DetailProduct", "BrandRegistrationTransaction", new { id = data.PD_ID }, this.Request.Url.Scheme));
+                    parameters.Add("url_approve_product", Url.Action("ApproveProduct", "BrandRegistrationTransaction", new { id = data.PD_ID }, this.Request.Url.Scheme));
 
-                
+                    long mailcontentId = 0;
+                    mailcontentId = (int)ReferenceKeys.EmailContent.ProductDevelopmentApprovalRequest;
+
+                    var mailContent = refService.GetMailContent(mailcontentId, parameters);
+                    var reff = refService.GetReferenceByKey(ReferenceKeys.Approver.AdminApprover);
+                    var sendToId = reff.REFF_VALUE;
+                    var sendTo = refService.GetUserEmail(sendToId);
+                    
+                    /// ----- Get POA Exciser List for each Nppbkc
+                    List<string> mailAddresses = new List<string>();
+                    listPoaExcise = productDevelopmentService.GetAdminExciserByNPPBKC(nppbkc).ToList();
+                    foreach (var exc in listPoaExcise)
+                    {
+                        var _email = refService.GetUserEmail(exc);
+                        if (!string.IsNullOrEmpty(_email) && _email != sender)
+                        {
+                            mailAddresses.Add(_email);
+                        }
+                    }
+
+                    bool mailStatus = ItpiMailer.Instance.SendEmail(mailAddresses.ToArray(), null, null, null, mailContent.EMAILSUBJECT, mailContent.EMAILCONTENT, true, sender, display);
+                    if (!mailStatus)
+                    {
+                        AddMessageInfo("Send email failed!", Enums.MessageInfoType.Warning);
+                    }
+                    else
+                    {
+                        AddMessageInfo(Constans.SubmitMessage.Updated, Enums.MessageInfoType.Success);
+                    }
+                }
+        
+                AddMessageInfo("Submitted Successfully.", Enums.MessageInfoType.Success);
+                return Json("Item Product Submitted.");                
             }
             catch (Exception ex)
             {
@@ -1624,18 +1675,19 @@ namespace Sampoerna.EMS.Website.Controllers
             var workflowHistory = Mapper.Map<List<WorkflowHistoryViewModel>>(workflow);                      
         
             if (itemDetail.STATUS_APPROVAL == submittedStatus.REFF_ID)
-            {             
-                var poaExciser = productDevelopmentService.GetAdminExciser().ToList();
+            {
+                var data = productDevelopmentService.FindPlantDescription(itemDetail.WERKS);
+                List<string> poaExciser = productDevelopmentService.GetAdminExciserByNPPBKC(data.NPPBKC_ID).ToList();
                 var accounts = "";
                 foreach (var exciser in poaExciser)
                 {
                     if (accounts == "")
                     {
-                        accounts += exciser.USER_ID;
+                        accounts += exciser;
                     }
                     else
                     {
-                        accounts += ", " + exciser.USER_ID;
+                        accounts += ", " + exciser;
                     }
                 }
             

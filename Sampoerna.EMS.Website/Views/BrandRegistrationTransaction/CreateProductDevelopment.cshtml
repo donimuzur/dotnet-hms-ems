@@ -357,46 +357,6 @@
                                 </div>
                                 <hr width="100%" />
                                 <div class="row"></div>
-                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="overflow-x: scroll;">
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading" role="tab" id="headingOne">
-                                            <h4 class="panel-title">
-                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                    List Product
-                                                    <i class="fa fa-caret-down"></i>
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-
-                                            <div class="panel-body">
-                                                <div class="alert alert-danger" style="display:none" id="CheckListLabel"> </div>                                               
-                                                <div class="alert alert-danger" style="display:none" id="div_error_importitem"></div>
-
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        @*<input name="ProdExcelfile" class="form-control" id="ProdExcelfile" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />*@
-                                                        <button id="btn_showimport_dialog" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".modal_import" data-backdrop="static" data-keyboard="false">Import</button>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        @*<input id="UploadProductGenerateBtn" type="button" class="btn btn-primary btn-sm" value="Generate" />*@
-                                                    </div>
-                                                    <div class="col-md-2"></div>
-                                                    
-                                                    <div class="col-md-4 text-right">
-                                                        <button type="button" id="modalItem" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModalItem" data-backdrop="static" data-keyboard="false">Add Item</button>
-                                                        <button type="button" id="delItem" onclick="DeleteItem()" class="btn btn-primary btn-sm">Delete</button>
-                                                        <button type="button" onclick="CheckAllItem()" class="btn btn-primary btn-sm">Check All</button>
-                                                    </div>
-                                                </div>
-                                                <div class="table-container" id="contenttableproduct">
-                                                    @Html.Partial("_ProductListItem")
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <div class="panel-group" id="accordion-2" role="tablist" aria-multiselectable="true">
                                     <div class="panel panel-default">
                                         <div class="panel-heading" role="tab" id="heading2">
@@ -424,6 +384,47 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="overflow-x: scroll;">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="headingOne">
+                                            <h4 class="panel-title">
+                                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                    List Product
+                                                    <i class="fa fa-caret-down"></i>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+
+                                            <div class="panel-body">
+                                                <div class="alert alert-danger" style="display:none" id="CheckListLabel"> </div>                                               
+                                                <div class="alert alert-danger" style="display:none" id="div_error_importitem"></div>
+
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        @*<input name="ProdExcelfile" class="form-control" id="ProdExcelfile" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />*@
+                                                        <button id="btn_showimport_dialog" type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target=".modal_import" data-backdrop="static" data-keyboard="false">Import</button>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        @*<input id="UploadProductGenerateBtn" type="button" class="btn btn-primary btn-sm" value="Generate" />*@
+                                                    </div>
+                                                    @*<div class="col-md-2"></div>*@
+                                                    
+                                                    <div class="col-md-4 text-right">
+                                                        <button type="button" id="modalItem" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModalItem" data-backdrop="static" data-keyboard="false">Add Item</button>
+                                                        <button type="button" id="delItem" onclick="DeleteItem()" class="btn btn-primary btn-sm">Delete</button>
+                                                        <button type="button" onclick="CheckAllItem()" class="btn btn-primary btn-sm">Check All</button>
+                                                    </div>
+                                                </div>
+                                                <div class="table-container" id="contenttableproduct">
+                                                    @Html.Partial("_ProductListItem")
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                
                                 <div class="panel-group" id="accordion-3" role="tablist" aria-multiselectable="true">
                                     <div class="panel panel-default">
                                         <div class="panel-heading" role="tab" id="heading3">

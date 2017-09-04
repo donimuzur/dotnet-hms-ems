@@ -46,13 +46,15 @@ namespace Sampoerna.EMS.Website.Controllers
         private ExciseCreditService service;
         private IChangesHistoryBLL chBLL;
         private IWorkflowHistoryBLL whBLL;
-        public ExciseCreditController(IPageBLL pageBLL, IChangesHistoryBLL changeHistoryBLL, IWorkflowHistoryBLL workflowHistoryBLL) : base(pageBLL, Enums.MenuList.ExciseCredit)
+        private IPOABLL _poabll;
+        public ExciseCreditController(IPageBLL pageBLL, IChangesHistoryBLL changeHistoryBLL, IWorkflowHistoryBLL workflowHistoryBLL, IPOABLL poaBll) : base(pageBLL, Enums.MenuList.ExciseCredit)
         {
             this.mainMenu = Enums.MenuList.ExciseCredit;
             this.service = new ExciseCreditService();
             this.refService = new SystemReferenceService();
             this.chBLL = changeHistoryBLL;
             this.whBLL = workflowHistoryBLL;
+            this._poabll = poaBll;
         }
 
         List<WorkflowHistoryViewModel> GetWorkflowHistory(long id)
@@ -120,7 +122,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     if (CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
                     {
-                        documents = service.GetAll().Select(x => this.MapExciseCreditModel(x)).ToList();
+                        documents = service.GetOpenDocuments().Select(x => this.MapExciseCreditModel(x)).ToList();
                     }
                     else
                     {
@@ -164,7 +166,7 @@ namespace Sampoerna.EMS.Website.Controllers
             var documents = new List<ExciseCreditModel>();
             if (CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
             {
-                documents = service.GetAll().Select(x => this.MapExciseCreditModel(x)).ToList();
+                documents = service.GetCompletedDocuments().Select(x => this.MapExciseCreditModel(x)).ToList();
             }
             else
             {
@@ -545,7 +547,7 @@ namespace Sampoerna.EMS.Website.Controllers
             }
             catch (Exception ex)
             {
-                AddMessageInfo("Failed to submit Excise Request Document", Enums.MessageInfoType.Error);
+                AddMessageInfo("Failed to Reject Request Document", Enums.MessageInfoType.Error);
                 Console.WriteLine(ex.StackTrace);
                 return RedirectToAction("Index");
             }
@@ -609,6 +611,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 skepModel.StartDate = (result.DECREE_STARTDATE.HasValue) ? result.DECREE_STARTDATE.Value : DateTime.Today;
                 skepModel.SkepDocument = result.SKEP_ATTACHMENT;
                 skepModel.SkepStatus = (result.SKEP_STATUS.HasValue) ? result.SKEP_STATUS.Value : false;
+                skepModel.SkepStatusId = (skepModel.SkepStatus) ? 1 : 0;
                 skepModel.Notes = result.NOTES;
                 skepModel.IsNewEntry = String.IsNullOrEmpty(result.SKEP_ATTACHMENT);
                 if (!skepModel.IsNewEntry)
@@ -657,6 +660,10 @@ namespace Sampoerna.EMS.Website.Controllers
                 entity.DECREE_NO = forms["decree_number"];
                 entity.DECREE_DATE = DateTime.Parse(forms["decree_date"]);
                 entity.DECREE_STARTDATE = DateTime.Parse(forms["start_date"]);
+                if (forms.AllKeys.Contains("notes") && !String.IsNullOrEmpty(forms["notes"]))
+                {
+                    entity.NOTES = forms["notes"];
+                }
                 if (forms.AllKeys.Contains("bpj_number") && !String.IsNullOrEmpty(forms["bpj_number"]))
                 {
                     entity.BPJ_NO = forms["bpj_number"];
@@ -759,6 +766,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 skepModel.StartDate = (result.DECREE_STARTDATE.HasValue) ? result.DECREE_STARTDATE.Value : DateTime.Today;
                 skepModel.SkepDocument = result.SKEP_ATTACHMENT;
                 skepModel.SkepStatus = (result.SKEP_STATUS.HasValue) ? result.SKEP_STATUS.Value : false;
+                skepModel.SkepStatusId = (skepModel.SkepStatus) ? 1 : 0;
                 skepModel.Notes = result.NOTES;
                 skepModel.IsNewEntry = String.IsNullOrEmpty(result.SKEP_ATTACHMENT);
                 if (!skepModel.IsNewEntry)
@@ -780,7 +788,7 @@ namespace Sampoerna.EMS.Website.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex.StackTrace);
-                AddMessageInfo("Failed to load Excise Request Document", Enums.MessageInfoType.Error);
+                AddMessageInfo("Failed to load Excise Request Document. Reason: " + ex.Message, Enums.MessageInfoType.Error);
                 return RedirectToAction("Index");
             }
         }
@@ -827,6 +835,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 skepModel.StartDate = (result.DECREE_STARTDATE.HasValue) ? result.DECREE_STARTDATE.Value : DateTime.Today;
                 skepModel.SkepDocument = result.SKEP_ATTACHMENT;
                 skepModel.SkepStatus = (result.SKEP_STATUS.HasValue) ? result.SKEP_STATUS.Value : false;
+                skepModel.SkepStatusId = (skepModel.SkepStatus) ? 1 : 0;
                 skepModel.Notes = result.NOTES;
                 skepModel.IsNewEntry = String.IsNullOrEmpty(result.SKEP_ATTACHMENT);
                 if (!skepModel.IsNewEntry)
@@ -840,6 +849,8 @@ namespace Sampoerna.EMS.Website.Controllers
                         skepModel.BpjFileUpload = Mapper.Map<FileUploadModel>(bpjAttachment);
                 }
                 skepModel.IsDetail = true;
+                skepModel.IsApprover = model.ViewModel.IsApprover;
+                skepModel.IsWaitingSkepApproval = model.ViewModel.IsWaitingSkepApproval;
                 model.SkepInput = skepModel;
                 if (model.ViewModel.RequestTypeID == 2)
                 {
@@ -859,6 +870,15 @@ namespace Sampoerna.EMS.Website.Controllers
                     Title = "Approve Confirmation",
                     ModalLabel = "ApproveModalLabel"
 
+                };
+
+                model.ViewModel.RevisionData = new WorkflowHistory()
+                {
+                    FormID = Convert.ToInt64(id),
+                    FormTypeID = (int)Enums.MenuList.ExciseCredit,
+                    Action = (int)Enums.ActionType.Revise,
+                    ActionBy = CurrentUser.USER_ID,
+                    Role = (int)CurrentUser.UserRole
                 };
 
                 return View("SkepApprove", model);
@@ -902,20 +922,23 @@ namespace Sampoerna.EMS.Website.Controllers
         }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public String RejectSkep()
+        public ActionResult RejectSkep(ExciseCreditFormModel model)
         {
             try
             {
-                var forms = Request.Form;
-                var id = Convert.ToInt64(forms["id"]);
-                var notes = forms["notes"];
+                var id = model.ViewModel.Id;
                 var entity = service.Find(id);
                 if (entity == null)
                 {
                     throw new Exception("Excise Credit Data not found for id " + id);
                 }
+                if (model.ViewModel.RevisionData.Comment == null)
+                {
+                    AddMessageInfo("Please add notes to creator!", Enums.MessageInfoType.Error);
+                    return RedirectToAction("ApproveSkep", new { id = id });
+                }
                 var status = refService.GetReferenceByKey(ReferenceKeys.ApprovalStatus.AwaitingGovernmentApproval);
-                var result = service.RejectExciseSkep(entity.EXSICE_CREDIT_ID, status, CurrentUser.USER_ID, (int)CurrentUser.UserRole, notes);
+                var result = service.RejectExciseSkep(entity.EXSICE_CREDIT_ID, status, CurrentUser.USER_ID, (int)CurrentUser.UserRole, model.ViewModel.RevisionData.Comment);
                 if (result)
                     AddMessageInfo("Successfully reject SKEP data and send email notification", Enums.MessageInfoType.Success);
                 else
@@ -923,13 +946,13 @@ namespace Sampoerna.EMS.Website.Controllers
 
 
 
-                return Url.Action("Index", "ExciseCredit");
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.StackTrace);
                 AddMessageInfo("Failed to load Excise Request Document", Enums.MessageInfoType.Error);
-                return "";
+                return RedirectToAction("Index");
             }
         }
 
@@ -1231,6 +1254,9 @@ namespace Sampoerna.EMS.Website.Controllers
                 foreach (string file in Request.Files)
                 {
                     var fileContent = Request.Files[file];
+                    var exciseId = Request.Form.Get("excise_id");
+                    var id = Convert.ToInt32(exciseId);
+                    var excise = service.Find(id);
                     if (fileContent != null && fileContent.ContentLength > 0)
                     {
                         // get a stream
@@ -1238,8 +1264,8 @@ namespace Sampoerna.EMS.Website.Controllers
                         // and optionally write the file to disk
                         var fileName = fileContent.FileName;
                         var type = System.IO.Path.GetFileName(file);
-                        var docNumber = Request.Form.Get("doc_number").Replace("/", "_");
-                        var exciseId = Request.Form.Get("excise_id");
+                        var docNumber = excise.EXCISE_CREDIT_NO.Replace("/", "_");
+                        
                         var docId = (!type.Contains("other")) ? Convert.ToInt64(type) : new long?();
                         var docFileName = "";
                         if (!type.Contains("other"))
@@ -1384,7 +1410,7 @@ namespace Sampoerna.EMS.Website.Controllers
         {
             try
             {
-                var data = refService.GetUploadedFiles(type, id).Where(x => x.DOCUMENT_ID == null && !x.IS_GOVERNMENT_DOC).ToList();
+                var data = refService.GetUploadedFiles(type, id).Where(x => x.DOCUMENT_ID == null && !x.IS_GOVERNMENT_DOC && x.IS_ACTIVE).ToList();
                 var result = data.Select(x => new FileUploadModel()
                 {
                     FileID = x.FILE_ID,
@@ -1697,10 +1723,10 @@ namespace Sampoerna.EMS.Website.Controllers
                         var docFileName = "";
                         if (!type.Contains("skep"))
                         {
-                            docFileName = String.Format("SKEP {0}", documentNumber);
+                            docFileName = String.Format("BPJ {0}", documentNumber);
                         }
                         else
-                            docFileName = String.Format("BPJ {0}", documentNumber);
+                            docFileName = String.Format("SKEP {0}", documentNumber);
 
                         var isGovDoc = true;
                         var urlPath = "~/" + System.Configuration.ConfigurationManager.AppSettings["ExciseCreditDocPath"] + docNumber;
@@ -1964,6 +1990,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     CreatedDate = entity.CREATED_DATE,
                     ModifiedBy = entity.LAST_MODIFIED_BY,
                     ModifiedDate = entity.LAST_MODIFIED_DATE,
+                    RegulationNumber = entity.REGULATION_NUMBER, // Added for Regulation Number Field
                     IsCreator = service.IsAllowedToModify(CurrentUser.USER_ID, entity.EXSICE_CREDIT_ID),
                     IsApprover = service.IsAllowedToApprove(CurrentUser.USER_ID, entity.EXSICE_CREDIT_ID),
                     POA = entity.POA_ID,
@@ -2293,6 +2320,8 @@ namespace Sampoerna.EMS.Website.Controllers
 
         private String Ucwords(String word)
         {
+            if (String.IsNullOrEmpty(word))
+                return word;
             return Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(word.ToLower());
         }
         private Dictionary<string, string> GetPrintoutParameters(ReferenceKeys.PrintoutLayout templateId, EXCISE_CREDIT excise)
@@ -2304,41 +2333,105 @@ namespace Sampoerna.EMS.Website.Controllers
             System.Globalization.CultureInfo cultureID = new System.Globalization.CultureInfo("id-ID");
             var plantAddress = String.Empty;
             var plantAddresses = nppbkc.PLANTS;
+            const decimal AMOUNTLIMIT = 5E+10M;
+            var idx = nppbkc.TEXT_TO.IndexOf("Kantor Pelayanan dan Pengawasan");
+            var length = "Kantor Pelayanan dan Pengawasan".Length;
+            var textto1 = String.Empty;
+            var textto2 = String.Empty;
+            var poaDetail = this._poabll.GetDetailsById(excise.APPROVED_BY);
+            var poaTitle = "";
+            var poaPrinted = "";
+            var poaAddress = "";
+
+            if (excise.APPROVED_BY == null)
+            {
+                poaTitle = "";
+                poaPrinted = "";
+                poaAddress = "";
+            }
+            else
+            {
+                poaTitle = poaDetail.TITLE;
+                poaPrinted = poaDetail.PRINTED_NAME;
+                poaAddress = poaDetail.POA_ADDRESS;
+            }
+         
+
+            if (idx < 0)
+            {
+                idx = nppbkc.TEXT_TO.IndexOf("Kantor Pengawasan dan Pelayanan");
+                length = "Kantor Pengawasan dan Pelayanan".Length;
+            }
+
+            if (idx >= 0)
+            {
+                textto1 = nppbkc.TEXT_TO.Substring(0, idx + length).Trim();
+                textto2 = nppbkc.TEXT_TO.Substring(idx + length + 1).Trim();
+            }
+
+            
             switch (templateId)
             {
                 case ReferenceKeys.PrintoutLayout.ExciseCreditNewRequestMain:
-                    var lampiran = service.GetFileCount(excise.EXSICE_CREDIT_ID);
-                    var index11 = excise.EXCISE_CREDIT_AMOUNT >= 50000000000 ? "Kepala Kantor Wilayah" : "Kepada Yth.";
+                    
+                    var index11 = String.Empty;
+                    var tembusan = String.Empty;
                     var amount = Math.Ceiling(excise.EXCISE_CREDIT_AMOUNT);
                     var amountterbilang = service.Terbilang(amount);
                     var documentpendukung = service.GetFile(excise.EXSICE_CREDIT_ID);
-                    var documentpendukungstring = "";
+                    var lampiran = (documentpendukung.Any()) ? documentpendukung.Count() : 0;
+                    var documentpendukungstring = "<ol>";
+                    var fixedlist = new string[]
+                        {
+                            String.Format("Laporan Keuangan Perusahaan tahun {0} dan {1}", excise.SUBMISSION_DATE.Year - 2, excise.SUBMISSION_DATE.Year - 1),
+                            "Daftar Pemesanan pita cukai selama 6 (enam) bulan terakhir",
+                            "Perhitungan besarnya nilai cukai yang dapat diberikan penundaan pembayaran dan perhitungan rasio keuangan perusahaan",
+                            "Surat Pengukuhan Pengusaha Kena Pajak",
+                            "Pemberitahuan Jenis Jaminan yang akan dipergunakan"
+                        };
+                    foreach (var fileUpload in fixedlist)
+                    {
+                        documentpendukungstring += string.Format("<li>{0}</li>", fileUpload);
+                    }
                     foreach (var fileUpload in documentpendukung.ToList())
                     {
                         documentpendukungstring += string.Format("<li>{0}</li>", fileUpload.FILE_NAME);
                     }
-                    var regionDgce = "";
-                    if (excise.EXCISE_CREDIT_AMOUNT >= 50000000000)
+                    documentpendukungstring += "</ol>";
+                   
+
+
+                    if (excise.EXCISE_CREDIT_AMOUNT >= AMOUNTLIMIT)
                     {
-                        regionDgce = "Melalui<br />" + excise.ZAIDM_EX_NPPBKC.REGION_DGCE;
+                        index11 += "Kepala Kantor Wilayah" + "<br />";
+                        index11 += nppbkc.REGION_DGCE + "<br />";
+                        index11 += nppbkc.DGCE_ADDRESS + "<br /><br />";
+                        index11 += "Melalui<br />";
+                        if(idx >= 0)
+                            index11 += String.Format("{0}<br />{1}", textto1, textto2);
+                        tembusan += "Kepala Kantor Wilayah " + nppbkc.REGION_DGCE;
                     }
-                    parameters.Add("autonumber", excise.EXCISE_CREDIT_NO);
-                    parameters.Add("KPPBCAddress", Ucwords(excise.ZAIDM_EX_NPPBKC.CITY));
-                    parameters.Add("SubmissionDate", excise.SUBMISSION_DATE.ToString("dd MMMM yyyy", cultureID));
-                    parameters.Add("jumlahLampiran", string.Format("{0} ({1}) Lampiran", lampiran, service.Terbilang(lampiran, false)));
-                    parameters.Add("index11", index11);
-                    parameters.Add("namaalamatkantor", excise.ZAIDM_EX_NPPBKC.TEXT_TO);
-                    parameters.Add("REGION_DGCE", regionDgce);
-                    parameters.Add("LOCATION", excise.ZAIDM_EX_NPPBKC.LOCATION);
-                    parameters.Add("POAPRINTED_NAME", excise.POA.PRINTED_NAME);
-                    parameters.Add("POATITLE", excise.POA.TITLE);
-                    parameters.Add("POA_ADDRESS", excise.POA.POA_ADDRESS);
+                    else
+                    {
+                        if (idx >= 0)
+                            index11 += String.Format("{0}<br />{1}", textto1, textto2);
+                        tembusan = nppbkc.TEXT_TO;
+                    }
+                    parameters.Add("EXCISE_NO", excise.EXCISE_CREDIT_NO);
+                    parameters.Add("LOCATION", Ucwords(nppbkc.LOCATION));
+                    parameters.Add("SUBMISSION_DATE", excise.SUBMISSION_DATE.ToString("dd MMMM yyyy", cultureID));
+                    parameters.Add("ATTACHMENTS", string.Format("{0} ({1}) Lampiran", lampiran, service.Terbilang(lampiran, false)));
+                    parameters.Add("INDEX11", index11);
+                    parameters.Add("POAPRINTED_NAME", poaPrinted);  //origin: parameters.Add("POAPRINTED_NAME", excise.POA.PRINTED_NAME);
+                    parameters.Add("POATITLE", poaTitle);    //origin: parameters.Add("POATITLE", excise.POA.TITLE);
+                    parameters.Add("POA_ADDRESS", poaAddress);   //parameters.Add("POA_ADDRESS", excise.POA.POA_ADDRESS);
                     parameters.Add("COMPANY", nppbkc.COMPANY.BUTXT);
                     parameters.Add("NPPBKC", nppbkc.NPPBKC_ID);
-                    parameters.Add("LOKASI_NPPBKC", nppbkc.KPPBC_ADDRESS);
+                    parameters.Add("LOKASI_NPPBKC", Ucwords(nppbkc.CITY));
                     parameters.Add("EXCISE_CREDIT_AMOUNT", string.Format("{0:N0}", amount));
                     parameters.Add("TERBILANG", amountterbilang);
-                    parameters.Add("documentpendukung", documentpendukungstring);
+                    parameters.Add("SUPPORTING_DOCUMENTS", documentpendukungstring);
+                    parameters.Add("TEMBUSAN", tembusan);
                     break;
                 case ReferenceKeys.PrintoutLayout.ExciseCreditNewRequest:
                     // Load Sub Template CK-1 Excise Summary
@@ -2374,7 +2467,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         }
                         
                     }
-                    parameters.Add("POA", excise.POA.PRINTED_NAME);
+                    parameters.Add("POA", poaPrinted);  //origin: parameters.Add("POA", excise.POA.PRINTED_NAME);
                     parameters.Add("COMPANY_NAME", nppbkc.COMPANY.BUTXT);
                     parameters.Add("COMPANY_ADDRESS", plantAddress);
                     parameters.Add("NPPBKC_ID", excise.NPPBKC_ID);
@@ -2422,7 +2515,7 @@ namespace Sampoerna.EMS.Website.Controllers
                             plantAddress += "</ol>";
                         }
                     }
-                    parameters.Add("POA", excise.POA.PRINTED_NAME);
+                    parameters.Add("POA", poaPrinted)  ; //origin: parameters.Add("POA", excise.POA.PRINTED_NAME);
                     parameters.Add("COMPANY_NAME", nppbkc.COMPANY.BUTXT);
                     parameters.Add("COMPANY_ADDRESS", plantAddress);
                     parameters.Add("NPPBKC", excise.NPPBKC_ID);
@@ -2436,72 +2529,95 @@ namespace Sampoerna.EMS.Website.Controllers
                     guaranteeTranslation.Add("Excise Bond", "Excise Bond");
                     parameters.Add("nomor", excise.EXCISE_CREDIT_NO);
                     parameters.Add("tanggal", excise.SUBMISSION_DATE.ToString("dd MMMM yyyy", cultureID));
-                    parameters.Add("textto", excise.ZAIDM_EX_NPPBKC.TEXT_TO);
-                    parameters.Add("alamat", excise.ZAIDM_EX_NPPBKC.KPPBC_ADDRESS);
-                    parameters.Add("poanama", excise.POA.PRINTED_NAME);
-                    parameters.Add("poajabatan", excise.POA.TITLE);
-                    parameters.Add("poaalamat", excise.POA.POA_ADDRESS);
+                    parameters.Add("textto", String.Format("{0}<br />{1}", textto1, textto2));
+                    parameters.Add("alamat", Ucwords(nppbkc.CITY));
+                    parameters.Add("poanama", poaPrinted);  //origin: parameters.Add("poanama", excise.POA.PRINTED_NAME);
+                    parameters.Add("poajabatan", poaTitle);  //origin: parameters.Add("poajabatan", excise.POA.TITLE);
+                    parameters.Add("poaalamat", poaAddress); //origin: parameters.Add("poaalamat", excise.POA.POA_ADDRESS);
                     parameters.Add("company", nppbkc.COMPANY.BUTXT);
                     parameters.Add("nppbkc", nppbkc.NPPBKC_ID);
                     parameters.Add("jaminan", guaranteeTranslation[excise.GUARANTEE]);
-                    parameters.Add("kota", nppbkc.CITY);
-                    parameters.Add("poa", excise.POA.PRINTED_NAME);
+                    parameters.Add("kota", Ucwords(nppbkc.CITY));
+                    parameters.Add("poa", poaPrinted);  //origin: parameters.Add("poa", excise.POA.PRINTED_NAME);
                     break;
                 case ReferenceKeys.PrintoutLayout.ExciseCreditAdjustmentRequest:
+                    
                     var model2 = GetNewExciseRequestData(excise);
+                    var lastSkep = service.GetLastApprovedSkep(excise.SUBMISSION_DATE);
+                    if (lastSkep == null)
+                    {
+                        throw new Exception("Latest Approved SKEP Completed document not available");
+                    }
                     var ck1Tablesa = GetNewExciseAdjustmentCK1Avg(model2, excise, 12);
                     var ck1Calculation = GetCalculationExciseAdjustmentCK1Avg(model2, excise);
                     var adjustment = GetAdjustmentExcise(model2, excise);
                     var delayAdjustment = GetDelayAdjustmentExcise(model2, excise);
                     var nppbkc2 = refService.GetNppbkc(excise.NPPBKC_ID);
+                  
                     parameters.Add("POA", excise.POA_ID);
                     parameters.Add("COMPANY_NAME", nppbkc2.COMPANY.BUTXT);
                     parameters.Add("COMPANY_ADDRESS", nppbkc2.DGCE_ADDRESS);
-                    parameters.Add("SKEPNO", excise.DECREE_NO);
-                    parameters.Add("SKEPDATE", string.Format("{0}", excise.DECREE_DATE));
+                    parameters.Add("SKEP_NO", excise.REGULATION_NUMBER);    //origin: parameters.Add("SKEP_NO", lastSkep.DECREE_NO);
+                    //origin: parameters.Add("SKEPDATE", string.Format(cultureID, "{0:dd MMMM yyyy}", lastSkep.DECREE_DATE));
                     parameters.Add("HASIL", "Hasil Tembakau");
                     parameters.Add("CITY", nppbkc2.CITY);
-                    parameters.Add("PEMOHON", excise.POA.PRINTED_NAME);
+                    parameters.Add("PEMOHON", poaPrinted); //origin: parameters.Add("PEMOHON", excise.POA.PRINTED_NAME);
                     parameters.Add("NPPBKC_ID", excise.NPPBKC_ID);
-                    parameters.Add("TOTAL_AMOUNT", String.Format("Rp. {0:N0}", excise.EXCISE_CREDIT_AMOUNT));
+                    parameters.Add("TOTAL_AMOUNT", String.Format("Rp. {0:N}", excise.EXCISE_CREDIT_AMOUNT));
                     parameters.Add("CK1_DETAIL_TABLE", ck1Tablesa);
                     parameters.Add("CK1_CALCULATION", ck1Calculation);
                     parameters.Add("CK1_ADJUSTMENT", adjustment);
                     parameters.Add("CK1_DELAY_ADJUSTMENT", delayAdjustment);
                     break;
                 case ReferenceKeys.PrintoutLayout.ExciseCreditAdjustmentRequestMain:
-                    var lampiranAdjustment = service.GetFileCount(excise.EXSICE_CREDIT_ID);
-                    var index11Adjustment = excise.EXCISE_CREDIT_AMOUNT >= 50000000000 ? "Kepala Kantor Wilayah" : "Kepada Yth.";
-                    regionDgce = "";
-                    if (excise.EXCISE_CREDIT_AMOUNT >= 50000000000)
-                    {
-                        regionDgce = "Melalui<br />" + excise.ZAIDM_EX_NPPBKC.REGION_DGCE;
-                    }
-                    var amountAdjustment = Math.Ceiling(excise.EXCISE_CREDIT_AMOUNT);
-                    var amountterbilangAdjustment = service.Terbilang(amountAdjustment);
+                    var index11Adjustment = String.Empty;
+                    var tembusanAdjustment = String.Empty;
                     var documentpendukungAdjustment = service.GetFile(excise.EXSICE_CREDIT_ID);
+                    var lampiranAdjustment = (documentpendukungAdjustment.Any()) ? documentpendukungAdjustment.Count() : 0;
                     var documentpendukungstringAdjustment = "";
                     foreach (var fileUpload in documentpendukungAdjustment.ToList())
                     {
-                        documentpendukungstringAdjustment += string.Format("<span style='font-family: Arial; font-size: 10pt;'>{0}</span>", fileUpload.FILE_NAME);
+                        documentpendukungstringAdjustment += string.Format("<li style='font-family: Arial; font-size: 10pt;'>{0}</li>", fileUpload.FILE_NAME);
                     }
-                    parameters.Add("autonumber", excise.EXCISE_CREDIT_NO);
-                    parameters.Add("kccpaddress", Ucwords(excise.ZAIDM_EX_NPPBKC.CITY));
-                    parameters.Add("SubmissionDate", excise.SUBMISSION_DATE.ToString("dd MMMM yyyy", cultureID));
-                    parameters.Add("lampiran", string.Format("{0} ({1}) Lampiran", lampiranAdjustment, service.Terbilang(lampiranAdjustment, false)));
-                    parameters.Add("index11", string.Format("{0}", nppbkc.TEXT_TO));
-                    parameters.Add("namaalamatkantor", excise.ZAIDM_EX_NPPBKC.TEXT_TO);
-                    parameters.Add("regiondgce", regionDgce);
-                    parameters.Add("location", excise.ZAIDM_EX_NPPBKC.LOCATION);
-                    parameters.Add("poanama", excise.POA.PRINTED_NAME);
-                    parameters.Add("poajabatan", excise.POA.TITLE);
-                    parameters.Add("poaalamat", excise.POA.POA_ADDRESS);
-                    parameters.Add("company", nppbkc.COMPANY.BUTXT);
-                    parameters.Add("nppbkc", nppbkc.NPPBKC_ID);
-                    parameters.Add("kota", nppbkc.LOCATION);
-                    parameters.Add("nominal", string.Format("{0:N0}", amountAdjustment));
-                    parameters.Add("terbilang", amountterbilangAdjustment);
-                    parameters.Add("lastskep", excise.DECREE_NO);
+                    documentpendukungstringAdjustment += "</ol>";
+                    if (excise.EXCISE_CREDIT_AMOUNT >= AMOUNTLIMIT)
+                    {
+                        //var textto = npp 
+                        index11Adjustment += "Kepala Kantor Wilayah" + "<br />";
+                        index11Adjustment += nppbkc.REGION_DGCE + "<br />";
+                        index11Adjustment += nppbkc.DGCE_ADDRESS + "<br /><br />";
+                        index11Adjustment += "Melalui<br />";
+                        index11Adjustment += String.Format("{0}<br />{1}", textto1, textto2);
+                        tembusanAdjustment += "Kepala Kantor Wilayah " + nppbkc.REGION_DGCE;
+                    }
+                    else
+                    {
+                        index11Adjustment = String.Format("{0}<br />{1}", textto1, textto2);
+                        tembusanAdjustment = nppbkc.TEXT_TO;
+                    }
+                    var amountAdjustment = Math.Ceiling(excise.EXCISE_CREDIT_AMOUNT);
+                    var amountterbilangAdjustment = service.Terbilang(amountAdjustment);
+                    lastSkep = service.GetLastApprovedSkep(excise.SUBMISSION_DATE);
+                    if (lastSkep == null)
+                    {
+                        throw new Exception("Latest Approved SKEP Completed document not available");
+                    }
+                    parameters.Add("EXCISE_NO", excise.EXCISE_CREDIT_NO);
+                    parameters.Add("LOCATION", Ucwords(excise.ZAIDM_EX_NPPBKC.CITY));
+                    parameters.Add("SUBMISSION_DATE", excise.SUBMISSION_DATE.ToString("dd MMMM yyyy", cultureID));
+                    parameters.Add("ATTACHMENTS", string.Format("{0} ({1}) Lampiran", lampiranAdjustment, service.Terbilang(lampiranAdjustment, false)));
+                    parameters.Add("INDEX11", index11Adjustment);
+                    parameters.Add("POAPRINTED_NAME", poaPrinted);  //origin: parameters.Add("POAPRINTED_NAME", excise.POA.PRINTED_NAME);
+                    parameters.Add("POATITLE", poaTitle);    //origin: parameters.Add("POATITLE", excise.POA.TITLE);
+                    parameters.Add("POA_ADDRESS", poaAddress);   //origin: parameters.Add("POA_ADDRESS", excise.POA.POA_ADDRESS);
+                    parameters.Add("COMPANY", nppbkc.COMPANY.BUTXT);
+                    parameters.Add("NPPBKC", nppbkc.NPPBKC_ID);
+                    parameters.Add("LOKASI_NPPBKC", Ucwords(nppbkc.CITY));
+                    parameters.Add("EXCISE_CREDIT_AMOUNT", string.Format("{0:N}", amountAdjustment));
+                    parameters.Add("TERBILANG", amountterbilangAdjustment);
+                    parameters.Add("LAST_SKEP", lastSkep.DECREE_NO);
+                    parameters.Add("TEMBUSAN", tembusanAdjustment);
+                    parameters.Add("SUPPORTING_DOCUMENTS", documentpendukungstringAdjustment);
                     break;
                 case ReferenceKeys.PrintoutLayout.FinanceRatio:
                     parameters.Clear();
@@ -2532,7 +2648,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     parameters.Add("TOTAL_CAPITAL_2", financialRatios[0].TOTAL_CAPITAL.ToString("N"));
                     parameters.Add("RENTABILITY_1", financialRatios[1].RENTABLE_RATIO.ToString("N"));
                     parameters.Add("RENTABILITY_2", financialRatios[0].RENTABLE_RATIO.ToString("N"));
-                    parameters.Add("POA", excise.POA.PRINTED_NAME);
+                    parameters.Add("POA", poaPrinted);  //origin: parameters.Add("POA", excise.POA.PRINTED_NAME);
                     break;
             }
             return parameters;
@@ -2793,15 +2909,15 @@ namespace Sampoerna.EMS.Website.Controllers
                     builder.Append("<table style='width: 100%; padding: 10px; border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;' cellspacing='10' >");
                     builder.Append("<thead>");
                     builder.Append("<tr>");
-                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>No</th>");
-                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>MEREK</th>");
-                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>ISI</th>");
-                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>HJE</th>");
-                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>Tarif Cukai(Lama)</th>");
-                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>Tarif Cukai(Baru)</th>");
-                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>Perubahan</th>");
-                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>Produksi 12 Bulan Terakhir</th>");
-                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;'>Kenaikan Tertimbang</th>");
+                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt; width: 40px;text-align: center;'>No</th>");
+                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt; width: 15%;text-align: center;'>MEREK</th>");
+                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt; width: 7%;text-align: center;'>ISI</th>");
+                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt; width: 10%;text-align: center;'>HJE</th>");
+                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt; width: 10%;text-align: center;'>Tarif Cukai (Lama)</th>");
+                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt; width: 10%;text-align: center;'>Tarif Cukai (Baru)</th>");
+                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt; width: 13%;text-align: center;'>Perubahan</th>");
+                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt; width: 15%;text-align: center;'>Produksi (12 Bulan Terakhir)</th>");
+                    builder.Append("<th style='border: black solid 1px; border-collapse: collapse;font-family: Arial; font-size: 10pt;width: 15%;text-align: center;'>Kenaikan Tertimbang</th>");
                     builder.Append("</tr>");
                     builder.Append("</thead>");
                     builder.Append("<tbody>");
@@ -2830,7 +2946,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     builder.Append("</tr>");
 
                     builder.Append("<tr>");
-                    builder.AppendFormat("<td colspan='9' style='font-family: Arial; font-size: 10pt;'> Sub total kenaikan cukai yang di berikan penundaan: ({0:N0} / {1:N0}) x 100% : {2:N} %</td>", exciseResult.Sum(m => m.INCREASE_TARIFF * m.CK1_AMOUNT), exciseResult.Sum(m => m.CK1_AMOUNT), (exciseResult.Sum(m => m.CK1_AMOUNT) != 0 ? exciseResult.Sum(m => m.INCREASE_TARIFF * m.CK1_AMOUNT) / exciseResult.Sum(m => m.CK1_AMOUNT) * 100 : 0));
+                    builder.AppendFormat("<td colspan='9' style='font-family: Arial; font-size: 10pt; border: black solid 1px;'> Sub total kenaikan cukai yang di berikan penundaan: ({0:N0} / {1:N0}) x 100% : {2:N} %</td>", exciseResult.Sum(m => m.INCREASE_TARIFF * m.CK1_AMOUNT), exciseResult.Sum(m => m.CK1_AMOUNT), (exciseResult.Sum(m => m.CK1_AMOUNT) != 0 ? exciseResult.Sum(m => m.INCREASE_TARIFF * m.CK1_AMOUNT) / exciseResult.Sum(m => m.CK1_AMOUNT) * 100 : 0));
                     builder.Append("</tr>");
                     //                    builder.Append("<td style='width: 25px'>&nbsp;</td>");
                     //                    builder.AppendFormat("<td style='width: 30%'>= Rp. {0:N}</td>", Math.Ceiling(calculationData[ptype].AdditionalValue));
@@ -2948,7 +3064,6 @@ namespace Sampoerna.EMS.Website.Controllers
                     else
                     {
                         builder.AppendFormat("<td style='width: 40%;font-family: Arial; font-size: 10pt;'> : {0:N}% x Rp. {1:N0}&nbsp;</td>", calculationData[ptype].Adjustment * 100, calculationMax[ptype] * 2);
-                        builder.Append("<td style='width: 25px;font-family: Arial; font-size: 10pt;'>&nbsp;</td>");
                         builder.Append("<td style='width: 25px;text-align: right;'>=</td>");
                         builder.AppendFormat("<td style='width: 40%;font-family: Arial; font-size: 10pt;text-align: right;'>Rp. {0:N0}</td>", Math.Ceiling((double)calculationMax[ptype] * 2 * calculationData[ptype].Adjustment));
                         Math.Ceiling(calculationData[ptype].AdditionalValue);
@@ -2962,8 +3077,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     builder.Append("<tr>");
                     builder.Append("<td>&nbsp;</td>");
                     builder.Append("<td>&nbsp;</td>");
-                    builder.Append("<td>&nbsp;</td>");
-                    builder.Append("<td>=</td>");
+                    builder.Append("<td style='text-align: right;'>=</td>");
                     builder.AppendFormat("<td style='border-top: solid black 2 px; font-family: Arial; font-size: 10pt;text-align: right;'>Rp. {0:N0}</td>", total);
                     builder.Append("</tr>");
                 }
@@ -3100,15 +3214,17 @@ namespace Sampoerna.EMS.Website.Controllers
                 StringBuilder builder = new StringBuilder();
                 System.Globalization.CultureInfo cultureID = new System.Globalization.CultureInfo("id-ID");
                 var submitDate = excise.SUBMISSION_DATE;
-                var end = DateTime.Parse(String.Format("{0}-{1}-{2}", submitDate.Year, submitDate.Month, 1)).AddDays(-1);
-                var start = end.AddMonths(-1 * (period)).AddDays(1);
+                var end = submitDate.AddMonths(-1); 
+                end = DateTime.Parse(String.Format("{0}-{1}-{2}", end.Year, end.Month, DateTime.DaysInMonth(end.Year, end.Month)));
+                var start = end.AddMonths(-1 * (period));
+                start = DateTime.Parse(String.Format("{0}-{1}-{2}", start.Year, start.Month, DateTime.DaysInMonth(start.Year, start.Month)));
                 var headers = new string[]
                     {
                         "No Urut", "Bulan", "Tanggal CK-1", "Nomor CK-1", "Jumlah Pesanan (lembar)", "Jumlah Cukai (Rp)", "Keterangan"
                     };
                 var headerWidth = new string[]
                     {
-                        "50px", "20%", "15%", "10%", "15%", "25%", "15%"
+                        "50px", "20%", "20%", "10%", "12%", "23%", "15%"
                     };
                 #endregion
 
@@ -3150,37 +3266,50 @@ namespace Sampoerna.EMS.Website.Controllers
                     bool first = true;
                     var middle = monthlyCk1.Count / 2;
                     var position = 0;
-                    foreach (var item in monthlyCk1)
-                    {
-                        builder.Append(Environment.NewLine);
-                        builder.Append("<tr>");
-                        builder.AppendFormat("<td style=\"text-align: center;  border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0}</td>", number++);
-                        if (first)
-                        {
-                            //builder.Append("<td style='border-top: black solid 1px'>&nbsp;</td>");
-                            builder.AppendFormat("<td style=\"text-align: center; font-family: Arial; font-size: 10pt; border-top: 1px solid black; border-left: 1px solid black; border-right: 1px solid black;\">{0}</td>", nextMonth.ToString("MMMM yyyy", cultureID));
-                            first = false;
-                        }
-                        else if (position++ == monthlyCk1.Count)
-                        {
-                            builder.AppendFormat("<td style=\"text-align: left; border-bottom: 1px solid black; border-left: 1px solid black; border-right: 1px solid black; \">&nbsp;</td>");
-                        }
-                        else
-                        {
-                            builder.Append("<td style='border-left: 1px solid black; border-right: 1px solid black;'>&nbsp;</td>");
-                        }
-                        builder.AppendFormat("<td style=\"text-align: left;border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0}</td>", item.CK1_DATE.ToString("dd MMMM yyyy", cultureID));
-                        builder.AppendFormat("<td style=\"text-align: right;border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0}</td>", item.CK1_NUMBER);
-                        builder.AppendFormat("<td style=\"text-align: right;border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0}</td>", item.ORDERQTY);
-                        builder.AppendFormat("<td style=\"text-align: right;border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0:N0}</td>", item.NOMINAL);
-                        builder.Append("<td style=\"text-align: left;border: black solid 1px; font-family: Arial; font-size: 10pt;\">&nbsp;</td>");
-                        builder.Append("</tr>");
-                        builder.Append(Environment.NewLine);
-                    }
-
-                    #region Subtotal
                     if (monthlyCk1.Count > 0)
                     {
+                        foreach (var item in monthlyCk1)
+                        {
+                            builder.Append(Environment.NewLine);
+                            builder.Append("<tr>");
+                            builder.AppendFormat("<td style=\"text-align: center;  border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0}</td>", number++);
+                            if (first)
+                            {
+                                //builder.Append("<td style='border-top: black solid 1px'>&nbsp;</td>");
+                                builder.AppendFormat("<td style=\"text-align: center; font-family: Arial; font-size: 10pt; border-top: 1px solid black; border-left: 1px solid black; border-right: 1px solid black;\">{0}</td>", nextMonth.ToString("MMMM yyyy", cultureID));
+                                first = false;
+                            }
+                            else if (position++ == monthlyCk1.Count)
+                            {
+                                builder.AppendFormat("<td style=\"text-align: left; border-bottom: 1px solid black; border-left: 1px solid black; border-right: 1px solid black; \">&nbsp;</td>");
+                            }
+                            else
+                            {
+                                builder.Append("<td style='border-left: 1px solid black; border-right: 1px solid black;'>&nbsp;</td>");
+                            }
+                            builder.AppendFormat("<td style=\"text-align: left;border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0}</td>", item.CK1_DATE.ToString("dd MMMM yyyy", cultureID));
+                            builder.AppendFormat("<td style=\"text-align: right;border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0}</td>", item.CK1_NUMBER);
+                            builder.AppendFormat("<td style=\"text-align: right;border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0}</td>", item.ORDERQTY);
+                            builder.AppendFormat("<td style=\"text-align: right;border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0:N0}</td>", item.NOMINAL);
+                            builder.Append("<td style=\"text-align: left;border: black solid 1px; font-family: Arial; font-size: 10pt;\">&nbsp;</td>");
+                            builder.Append("</tr>");
+                            builder.Append(Environment.NewLine);
+                        }
+                    }
+                    else
+                    {
+                        builder.Append("<tr>");
+                        builder.AppendFormat("<td style=\"text-align: center;  border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0}</td>", number++);
+                        builder.AppendFormat("<td style=\"text-align: center; font-family: Arial; font-size: 10pt; border: 1px solid black; \">{0}</td>", nextMonth.ToString("MMMM yyyy", cultureID));
+                        builder.AppendFormat("<td style=\"text-align: left;border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0}</td>", "-");
+                        builder.AppendFormat("<td style=\"text-align: right;border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0}</td>", "-");
+                        builder.AppendFormat("<td style=\"text-align: right;border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0}</td>", 0);
+                        builder.AppendFormat("<td style=\"text-align: right;border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0:N0}</td>", 0);
+                        builder.Append("<td style=\"text-align: left;border: black solid 1px; font-family: Arial; font-size: 10pt;\">&nbsp;</td>");
+                        builder.Append("</tr>");
+                    }
+                    #region Subtotal
+                  
                         builder.Append("<tr>");
                         builder.AppendFormat("<td colspan=\"4\" style='font-family: Arial; font-size: 10pt; border-top: solid black 1px;'><b>Jumlah</b></td>");
                         builder.AppendFormat("<td style=\"text-align: right;border: black solid 1px; font-family: Arial; font-size: 10pt;\">{0}</td>", qty);
@@ -3190,7 +3319,7 @@ namespace Sampoerna.EMS.Website.Controllers
                         builder.Append(Environment.NewLine);
                         totalQty += qty.Value;
                         totalAmount += amount.Value;
-                    }
+                    
                     #endregion
                     current = current.AddMonths(1);
                     current = DateTime.Parse(String.Format("{0}-{1}-{2}", current.Year, current.Month, DateTime.DaysInMonth(current.Year, current.Month)));

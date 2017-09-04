@@ -3,7 +3,8 @@
 @{
     Layout = null;
 }
-<script type="text/javascript" src="~/Scripts/jquery-2.1.4.min.js"></script>
+
+<script type="text/javascript" src="~/Scripts/jquery-2.1.4.js"></script>
 <script type="text/javascript">
     $(function () {
         function renderTemplate(id, text) {
@@ -29,7 +30,7 @@
                 //console.log("resetting layout " + id + "with name: " + param);
             });
 
-            $('@String.Format("#DownloadLayout{0}Button", item.Layout.LayoutId)').click(function () {
+            $('@String.Format("#DownloadLayoutButton", item.Layout.LayoutId)').click(function () {
                 var param = '@item.PrintoutName';
                 download(param);
                 //console.log("resetting layout " + id + "with name: " + param);
@@ -135,15 +136,19 @@
 }
 <div role="tabpanel" class="tab-pane" id="profile">
     <div class="row">
-        <div class="panel-group" id="accordionPrintout" role="tablist" aria-multiselectable="true">
-            @foreach (var item in Model.Printouts)
+        <div class="col-md-12 pull-right" style="margin-bottom: 20px!important;">
+            <button type="button" class="btn btn-blue pull-right" id="DownloadLayoutButton">Download Printout</button>
+        </div>
+        <div class="clearfix" ></div>
+            <div class="panel-group" id="accordionPrintout" role="tablist" aria-multiselectable="true">
+                @foreach (var item in Model.Printouts)
             {
                 Html.RenderPartial("_PrintoutItem", item);
-                <div class="col-lg-12" style="min-height: 25px "></div>
-                <div class="clearfix"></div>
-            }
+                    <div class="col-lg-12" style="min-height: 25px "></div>
+                    <div class="clearfix"></div>
+                }
+            </div>
         </div>
-    </div>
 </div>
 
 

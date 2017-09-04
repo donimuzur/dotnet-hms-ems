@@ -219,6 +219,7 @@ namespace Sampoerna.EMS.Website.Models.ManufacturingLicense
     public class vwMLLicenseRequestModel
     {
         public string FormNumber { get; set; }
+        public string BANo { get; set; }
         public DateTime RequestDate { get; set; }
         public string CompanyName { get; set; }
         public string CompanyType { get; set; }

@@ -63,200 +63,226 @@ namespace Sampoerna.EMS.Website.Controllers
             this.chBLL = changeHistoryBLL;
             this.whBLL = workflowHistoryBLL;
             _docbll = docbll;
-
-
         }
 
 
 
         public ActionResult Index()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.POA || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
+            try
             {
-                //AddMessageInfo(CurrentUser.UserRole.ToString(), Enums.MessageInfoType.Warning);
-
-                var users = refService.GetAllUser();
-                var poaList = refService.GetAllPOA();
-
-                /* format date dd MMMM yyyy HH:mm:ss */
-
-                var documents = service.GetAll().Where(w => w.SYS_REFFERENCES.REFF_KEYS != "COMPLETED" && w.SYS_REFFERENCES.REFF_KEYS != "CANCELED").Select(s => new LicenseRequestModel
+                if (CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.POA || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
                 {
-                    MnfFormNum = s.MNF_FORM_NUMBER,
-                    RequestDate = s.REQUEST_DATE,
-                    CompType = s.INTERVIEW_REQUEST.COMPANY_TYPE,
-                    KPPBC = s.INTERVIEW_REQUEST.KPPBC == null ? "" : s.INTERVIEW_REQUEST.KPPBC,
-                    Company = s.INTERVIEW_REQUEST.T001.BUTXT,
-                    //List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_TYPE).ToList(),
-                    List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS).ToList(),
-                    Count_List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_TYPE).Count(),
-                    Status = s.SYS_REFFERENCES.REFF_KEYS,
-                    Status_Value = s.SYS_REFFERENCES.REFF_VALUE,
-                    LastApprovedStatus = s.LASTAPPROVED_STATUS,
-                    MnfRequestID = s.MNF_REQUEST_ID,
-                    CreatedDate = s.CREATED_DATE,
-                    CreatedBy = s.CREATED_BY,
-                    LastApprovedBy = s.LASTAPPROVED_BY,
-                    InterviewId = s.VR_FORM_ID,
-                    IsCanApprove = CurrentUser.USER_ID
-                }).OrderByDescending(o => o.CreatedDate).ToList();
-                
-                if (CurrentUser.UserRole == Enums.UserRole.POA)
-                {
-                    var delegation = service.GetPOADelegatedUser(CurrentUser.USER_ID);
-                    List<string> delegatorname = new List<string>();
-                    if (delegation.Any())
+                    //AddMessageInfo(CurrentUser.UserRole.ToString(), Enums.MessageInfoType.Warning);
+
+                    var users = refService.GetAllUser();
+                    var poaList = refService.GetAllPOA();
+
+                    /* format date dd MMMM yyyy HH:mm:ss */
+
+                    var documents = service.GetAll().Where(w => w.SYS_REFFERENCES.REFF_KEYS != "COMPLETED" && w.SYS_REFFERENCES.REFF_KEYS != "CANCELED").Select(s => new LicenseRequestModel
                     {
-                        delegatorname = delegation.Select(s => s.POA_FROM).ToList();
+                        MnfFormNum = s.MNF_FORM_NUMBER,
+                        RequestDate = s.REQUEST_DATE,
+                        CompType = s.INTERVIEW_REQUEST.COMPANY_TYPE,
+                        KPPBC = s.INTERVIEW_REQUEST.KPPBC == null ? "" : s.INTERVIEW_REQUEST.KPPBC,
+                        Company = s.INTERVIEW_REQUEST.T001.BUTXT,
+                        //List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_TYPE).ToList(),
+                        List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS).ToList(),
+                        Count_List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_TYPE).Count(),
+                        Status = s.SYS_REFFERENCES.REFF_KEYS,
+                        Status_Value = s.SYS_REFFERENCES.REFF_VALUE,
+                        LastApprovedStatus = s.LASTAPPROVED_STATUS,
+                        MnfRequestID = s.MNF_REQUEST_ID,
+                        CreatedDate = s.CREATED_DATE,
+                        CreatedBy = s.CREATED_BY,
+                        LastApprovedBy = s.LASTAPPROVED_BY,
+                        InterviewId = s.VR_FORM_ID,
+                        IsCanApprove = CurrentUser.USER_ID
+                    }).OrderByDescending(o => o.CreatedDate).ToList();
+
+                    if (CurrentUser.UserRole == Enums.UserRole.POA)
+                    {
+                        var delegation = service.GetPOADelegatedUser(CurrentUser.USER_ID);
+                        List<string> delegatorname = new List<string>();
+                        if (delegation.Any())
+                        {
+                            delegatorname = delegation.Select(s => s.POA_FROM).ToList();
+                        }
+                        //var IRWhithSameNPPBKC = service.GetLicenseNeedApproveWithSameNPPBKC(CurrentUser.USER_ID);
+                        var IRWhithoutNPPBKC = service.GetLicenseNeedApproveWithoutNPPBKC(CurrentUser.USER_ID);
+                        var IRWithNPPBKCButNoExcise = service.GetInterviewNeedApproveWithNPPBKCButNoExcise(CurrentUser.USER_ID);
+                        // new
+                        var LastApprover = service.GetLicenseLastApproveAfterSubmit(CurrentUser.USER_ID);
+                        documents = documents.Where(w => w.CreatedBy.Equals(CurrentUser.USER_ID)
+                            || delegatorname.Contains(w.CreatedBy)
+                            || LastApprover.Contains(w.MnfRequestID)
+                            || w.LastApprovedBy == CurrentUser.USER_ID
+                            //|| IRWhithSameNPPBKC.Contains(w.MnfRequestID) 
+                            || IRWhithoutNPPBKC.Contains(w.MnfRequestID)
+                            || IRWithNPPBKCButNoExcise.Contains(w.MnfRequestID)).ToList();
                     }
-                    //var IRWhithSameNPPBKC = service.GetLicenseNeedApproveWithSameNPPBKC(CurrentUser.USER_ID);
-                    var IRWhithoutNPPBKC = service.GetLicenseNeedApproveWithoutNPPBKC(CurrentUser.USER_ID);
-                    var IRWithNPPBKCButNoExcise = service.GetInterviewNeedApproveWithNPPBKCButNoExcise(CurrentUser.USER_ID);
-                    // new
-                    var LastApprover = service.GetLicenseLastApproveAfterSubmit(CurrentUser.USER_ID); 
-                    documents = documents.Where(w => w.CreatedBy.Equals(CurrentUser.USER_ID) 
-                        || delegatorname.Contains(w.CreatedBy)
-                        || LastApprover.Contains(w.MnfRequestID)
-                        //|| w.LastApprovedBy == CurrentUser.USER_ID 
-                        //|| IRWhithSameNPPBKC.Contains(w.MnfRequestID) 
-                        || IRWhithoutNPPBKC.Contains(w.MnfRequestID)
-                        || IRWithNPPBKCButNoExcise.Contains(w.MnfRequestID)).ToList();
-                }
-                
-                var iridlist = service.GetIRIDAll();
-                var statusidlist = service.GetStatusIDAll();
-                //var nppbkcList = service.GetAllNPPBKCId();
-                var nppbkclist = service.GetAllNPPBKCForFilter();
-                var comptplist = interService.GetInterviewReqCompanyTypeList();
-                var model = new LicenseRequestViewModel()
-                {
-                    MainMenu = mainMenu,
-                    CurrentMenu = PageInfo,
-                    Filter = new LicenseRequestFilterModel(),
-                    LastApprovedStatusList = GetLastApprovedStatus(service.GetReffValueAll().Where(w => statusidlist.Contains(w.REFF_ID) && w.REFF_KEYS != "COMPLETED" && w.REFF_KEYS != "CANCELED")),
-                    //FormNumList = GetFormNumListFilter(service.GetAll().Where(w => iridlist.Contains(w.VR_FORM_ID))),
-                    //FormNumList = GetFormNumListFilter(service.GetAll().Where(w => w.CREATED_BY.Equals(CurrentUser.USER_ID))),
-                    //FormNumList = GetFormNumListFilter(service.GetAll().Where(w => w.SYS_REFFERENCES.REFF_KEYS != "COMPLETED" && w.SYS_REFFERENCES.REFF_KEYS != "CANCELED")),
-                    FormNumList = GetListFormNumFilter(documents),
-                    CompTypeList = GetCompTypeList(comptplist),
-                    ProdTypeList = GetProdTypeList(service.GetAllProductTypeFromLR()),
-                    //KPPBCList = GetKPPBCList(nppbkcList),
-                    KPPBCList = GetKPPBCListForFilter(nppbkclist),
-                    LicenseRequestDocuments = documents,
-                    IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator)
-                    
-                };
 
-                foreach (var doc in documents)
-                {
-                    doc.StrRequestDate = doc.RequestDate.ToString("dd MMM yyyy"); //dd MMMM yyyy HH:mm:ss
-                    doc.IsApprover = IsPOACanApprove(doc.MnfRequestID, CurrentUser.USER_ID);
-                    doc.IsAdministrator = (CurrentUser.UserRole == Enums.UserRole.Administrator);
-                    doc.IsViewer = (CurrentUser.UserRole == Enums.UserRole.Viewer);
-                }
+                    var iridlist = service.GetIRIDAll();
+                    var statusidlist = service.GetStatusIDAll();
+                    //var nppbkcList = service.GetAllNPPBKCId();
+                    var nppbkclist = service.GetAllNPPBKCForFilter();
+                    var comptplist = interService.GetInterviewReqCompanyTypeList();
+                    var model = new LicenseRequestViewModel()
+                    {
+                        MainMenu = mainMenu,
+                        CurrentMenu = PageInfo,
+                        Filter = new LicenseRequestFilterModel(),
+                        LastApprovedStatusList = GetLastApprovedStatus(service.GetReffValueAll().Where(w => statusidlist.Contains(w.REFF_ID) && w.REFF_KEYS != "COMPLETED" && w.REFF_KEYS != "CANCELED")),
+                        //FormNumList = GetFormNumListFilter(service.GetAll().Where(w => iridlist.Contains(w.VR_FORM_ID))),
+                        //FormNumList = GetFormNumListFilter(service.GetAll().Where(w => w.CREATED_BY.Equals(CurrentUser.USER_ID))),
+                        //FormNumList = GetFormNumListFilter(service.GetAll().Where(w => w.SYS_REFFERENCES.REFF_KEYS != "COMPLETED" && w.SYS_REFFERENCES.REFF_KEYS != "CANCELED")),
+                        FormNumList = GetListFormNumFilter(documents),
+                        CompTypeList = GetCompTypeList(comptplist),
+                        ProdTypeList = GetProdTypeList(service.GetAllProductTypeFromLR()),
+                        //KPPBCList = GetKPPBCList(nppbkcList),
+                        KPPBCList = GetKPPBCListForFilter(nppbkclist),
+                        LicenseRequestDocuments = documents,
+                        IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator)
 
-                model.Filter.LastApprovedStatus = 0;
-                
-                return View("Index", model);
+                    };
+
+                    foreach (var doc in documents)
+                    {
+                        doc.StrRequestDate = doc.RequestDate.ToString("dd MMM yyyy"); //dd MMMM yyyy HH:mm:ss
+                        doc.IsApprover = IsPOACanApprove(doc.MnfRequestID, CurrentUser.USER_ID);
+                        doc.IsAdministrator = (CurrentUser.UserRole == Enums.UserRole.Administrator);
+                        doc.IsViewer = (CurrentUser.UserRole == Enums.UserRole.Viewer);
+                    }
+
+                    model.Filter.LastApprovedStatus = 0;
+                    return View("Index", model);
+
+                }
+                else
+                {
+                    AddMessageInfo("You dont have access to Manufacturing License Request page.", Enums.MessageInfoType.Warning);
+                    return RedirectToAction("Unauthorized", "Error");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                AddMessageInfo("You dont have access to Manufacturing License Request page.", Enums.MessageInfoType.Warning);
-                return RedirectToAction("Unauthorized","Error");
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                return null;
+            }
+            finally
+            {
+                //refService.Dispose();
+                //interService.Dispose();
+                //service.Dispose();
             }
         }
 
 
         public ActionResult CompletedDocument()
         {
-            if (CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.POA || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
+            try
             {
-                var users = refService.GetAllUser();
-                var poaList = refService.GetAllPOA();
+                if (CurrentUser.UserRole == Enums.UserRole.Administrator || CurrentUser.UserRole == Enums.UserRole.POA || CurrentUser.UserRole == Enums.UserRole.Viewer || CurrentUser.UserRole == Enums.UserRole.Controller)
+                {
+                    var users = refService.GetAllUser();
+                    var poaList = refService.GetAllPOA();
 
-                var documents = service.GetAll().Where(w => w.SYS_REFFERENCES.REFF_KEYS == "COMPLETED" || w.SYS_REFFERENCES.REFF_KEYS == "CANCELED").Select(s => new LicenseRequestModel
-                {
-                    MnfFormNum = s.MNF_FORM_NUMBER,
-                    RequestDate = s.REQUEST_DATE,
-                    CompType = s.INTERVIEW_REQUEST.COMPANY_TYPE,
-                    KPPBC = s.INTERVIEW_REQUEST.KPPBC == null ? "" : s.INTERVIEW_REQUEST.KPPBC,
-                    KPBCName = s.NPPBKC_ID == null ? "" : s.ZAIDM_EX_NPPBKC.TEXT_TO,
-                    Company = s.INTERVIEW_REQUEST.T001.BUTXT,
-                    //List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_TYPE).ToList(),
-                    List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS).ToList(),
-                    Count_List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_TYPE).Count(),
-                    Status = s.SYS_REFFERENCES.REFF_KEYS,
-                    Status_Value = s.SYS_REFFERENCES.REFF_VALUE,
-                    LastApprovedStatus = s.LASTAPPROVED_STATUS,
-                    MnfRequestID = s.MNF_REQUEST_ID,
-                    CreatedBy = s.CREATED_BY,
-                    CreatedDate = s.CREATED_DATE,
-                    LastApprovedBy = s.LASTAPPROVED_BY,
-                    InterviewId = s.VR_FORM_ID,
-                    IsCanApprove = CurrentUser.USER_ID
-                }).OrderByDescending(o => o.CreatedDate).ToList();
-                
-                if (CurrentUser.UserRole == Enums.UserRole.POA)
-                {
-                    var delegation = service.GetPOADelegatedUser(CurrentUser.USER_ID);
-                    List<string> delegatorname = new List<string>();
-                    if (delegation.Any())
+                    var documents = service.GetAll().Where(w => w.SYS_REFFERENCES.REFF_KEYS == "COMPLETED" || w.SYS_REFFERENCES.REFF_KEYS == "CANCELED").Select(s => new LicenseRequestModel
                     {
-                        delegatorname = delegation.Select(s => s.POA_FROM).ToList();
+                        MnfFormNum = s.MNF_FORM_NUMBER,
+                        RequestDate = s.REQUEST_DATE,
+                        CompType = s.INTERVIEW_REQUEST.COMPANY_TYPE,
+                        KPPBC = s.INTERVIEW_REQUEST.KPPBC == null ? "" : s.INTERVIEW_REQUEST.KPPBC,
+                        KPBCName = s.NPPBKC_ID == null ? "" : s.ZAIDM_EX_NPPBKC.TEXT_TO,
+                        Company = s.INTERVIEW_REQUEST.T001.BUTXT,
+                        //List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_TYPE).ToList(),
+                        List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_ALIAS).ToList(),
+                        Count_List_ProdType = (from v in s.MANUFACTURING_PRODUCT_TYPE where (v.MNF_REQUEST_ID == s.MNF_REQUEST_ID && v.PROD_CODE != null) select v.ZAIDM_EX_PRODTYP.PRODUCT_TYPE).Count(),
+                        Status = s.SYS_REFFERENCES.REFF_KEYS,
+                        Status_Value = s.SYS_REFFERENCES.REFF_VALUE,
+                        LastApprovedStatus = s.LASTAPPROVED_STATUS,
+                        MnfRequestID = s.MNF_REQUEST_ID,
+                        CreatedBy = s.CREATED_BY,
+                        CreatedDate = s.CREATED_DATE,
+                        LastApprovedBy = s.LASTAPPROVED_BY,
+                        InterviewId = s.VR_FORM_ID,
+                        IsCanApprove = CurrentUser.USER_ID
+                    }).OrderByDescending(o => o.CreatedDate).ToList();
+                
+                    if (CurrentUser.UserRole == Enums.UserRole.POA)
+                    {
+                        var delegation = service.GetPOADelegatedUser(CurrentUser.USER_ID);
+                        List<string> delegatorname = new List<string>();
+                        if (delegation.Any())
+                        {
+                            delegatorname = delegation.Select(s => s.POA_FROM).ToList();
+                        }
+                        //var IRWhithSameNPPBKC = service.GetLicenseNeedApproveWithSameNPPBKC(CurrentUser.USER_ID);
+                        var IRWhithoutNPPBKC = service.GetLicenseNeedApproveWithoutNPPBKC(CurrentUser.USER_ID);
+                        var IRWithNPPBKCButNoExcise = service.GetInterviewNeedApproveWithNPPBKCButNoExcise(CurrentUser.USER_ID);
+                        // new
+                        var LastApprover = service.GetLicenseLastApproveAfterSubmit(CurrentUser.USER_ID);
+                        documents = documents.Where(w => w.CreatedBy.Equals(CurrentUser.USER_ID) 
+                            || delegatorname.Contains(w.CreatedBy)
+                            || LastApprover.Contains(w.MnfRequestID)
+                            || w.LastApprovedBy == CurrentUser.USER_ID
+                            //|| IRWhithSameNPPBKC.Contains(w.MnfRequestID) 
+                            || IRWhithoutNPPBKC.Contains(w.MnfRequestID)
+                            || IRWithNPPBKCButNoExcise.Contains(w.MnfRequestID)).ToList();
                     }
-                    //var IRWhithSameNPPBKC = service.GetLicenseNeedApproveWithSameNPPBKC(CurrentUser.USER_ID);
-                    var IRWhithoutNPPBKC = service.GetLicenseNeedApproveWithoutNPPBKC(CurrentUser.USER_ID);
-                    var IRWithNPPBKCButNoExcise = service.GetInterviewNeedApproveWithNPPBKCButNoExcise(CurrentUser.USER_ID);
-                    // new
-                    var LastApprover = service.GetLicenseLastApproveAfterSubmit(CurrentUser.USER_ID);
-                    documents = documents.Where(w => w.CreatedBy.Equals(CurrentUser.USER_ID) 
-                        || delegatorname.Contains(w.CreatedBy)
-                        || LastApprover.Contains(w.MnfRequestID)
-                        //|| w.LastApprovedBy == CurrentUser.USER_ID
-                        //|| IRWhithSameNPPBKC.Contains(w.MnfRequestID) 
-                        || IRWhithoutNPPBKC.Contains(w.MnfRequestID)
-                        || IRWithNPPBKCButNoExcise.Contains(w.MnfRequestID)).ToList();
-                }
 
-                var iridlist = service.GetIRIDAll();
-                var statusidlist = service.GetStatusIDAll();
-                //var nppbkcList = service.GetAllNPPBKCId();
-                var nppbkclist = service.GetAllNPPBKCForFilter();
-                var comptplist = interService.GetInterviewReqCompanyTypeList();
-                var model = new LicenseRequestViewModel()
-                {
-                    MainMenu = mainMenu,
-                    CurrentMenu = PageInfo,
-                    Filter = new LicenseRequestFilterModel(),
-                    LastApprovedStatusList = GetLastApprovedStatus(service.GetReffValueAll().Where(w => statusidlist.Contains(w.REFF_ID) && w.REFF_KEYS == "COMPLETED" || w.REFF_KEYS == "CANCELED")),
-                    //FormNumList = GetFormNumList(interService.GetAll().Where(w => iridlist.Contains(w.VR_FORM_ID))),
-                    //FormNumList = GetFormNumListFilter(service.GetAll().Where(w => w.SYS_REFFERENCES.REFF_KEYS == "COMPLETED" || w.SYS_REFFERENCES.REFF_KEYS == "CANCELED")),
-                    //CompTypeList = GetCompTypeList(interService.GetInterviewReqCompanyTypeList()),
-                    FormNumList = GetListFormNumFilter(documents),
-                    CompTypeList = GetCompTypeList(comptplist),
-                    ProdTypeList = GetProdTypeList(service.GetAllProductTypeFromLR()),
-                    KPPBCList = GetKPPBCListForFilter(nppbkclist),
-                    LicenseRequestDocuments = documents,
-                    IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator)
+                    var iridlist = service.GetIRIDAll();
+                    var statusidlist = service.GetStatusIDAll();
+                    //var nppbkcList = service.GetAllNPPBKCId();
+                    var nppbkclist = service.GetAllNPPBKCForFilter();
+                    var comptplist = interService.GetInterviewReqCompanyTypeList();
+                    var model = new LicenseRequestViewModel()
+                    {
+                        MainMenu = mainMenu,
+                        CurrentMenu = PageInfo,
+                        Filter = new LicenseRequestFilterModel(),
+                        LastApprovedStatusList = GetLastApprovedStatus(service.GetReffValueAll().Where(w => statusidlist.Contains(w.REFF_ID) && w.REFF_KEYS == "COMPLETED" || w.REFF_KEYS == "CANCELED")),
+                        //FormNumList = GetFormNumList(interService.GetAll().Where(w => iridlist.Contains(w.VR_FORM_ID))),
+                        //FormNumList = GetFormNumListFilter(service.GetAll().Where(w => w.SYS_REFFERENCES.REFF_KEYS == "COMPLETED" || w.SYS_REFFERENCES.REFF_KEYS == "CANCELED")),
+                        //CompTypeList = GetCompTypeList(interService.GetInterviewReqCompanyTypeList()),
+                        FormNumList = GetListFormNumFilter(documents),
+                        CompTypeList = GetCompTypeList(comptplist),
+                        ProdTypeList = GetProdTypeList(service.GetAllProductTypeFromLR()),
+                        KPPBCList = GetKPPBCListForFilter(nppbkclist),
+                        LicenseRequestDocuments = documents,
+                        IsNotViewer = (CurrentUser.UserRole != Enums.UserRole.Controller && CurrentUser.UserRole != Enums.UserRole.Viewer && CurrentUser.UserRole != Enums.UserRole.Administrator)
                     
-                };
+                    };
 
-                foreach (var doc in documents)
-                {
-                    doc.StrRequestDate = doc.RequestDate.ToString("dd MMM yyyy"); //dd MMMM yyyy HH:mm:ss
-                    doc.IsApprover = IsPOACanApprove(doc.MnfRequestID, CurrentUser.USER_ID);
-                    doc.IsAdministrator = (CurrentUser.UserRole == Enums.UserRole.Administrator);
-                    doc.IsViewer = (CurrentUser.UserRole == Enums.UserRole.Viewer);
+                    foreach (var doc in documents)
+                    {
+                        doc.StrRequestDate = doc.RequestDate.ToString("dd MMM yyyy"); //dd MMMM yyyy HH:mm:ss
+                        doc.IsApprover = IsPOACanApprove(doc.MnfRequestID, CurrentUser.USER_ID);
+                        doc.IsAdministrator = (CurrentUser.UserRole == Enums.UserRole.Administrator);
+                        doc.IsViewer = (CurrentUser.UserRole == Enums.UserRole.Viewer);
+                    }
+
+                    model.Filter.LastApprovedStatus = Convert.ToInt32(refService.GetRefByKey("COMPLETED").REFF_ID);
+
+                    return View("Index", model);
                 }
-
-                model.Filter.LastApprovedStatus = Convert.ToInt32(refService.GetRefByKey("COMPLETED").REFF_ID);
-
-                return View("Index", model);
+                else
+                {
+                    AddMessageInfo("You dont have access to Manufacturing License Request page.", Enums.MessageInfoType.Warning);
+                    return RedirectToAction("Unauthorized","Error");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                AddMessageInfo("You dont have access to Manufacturing License Request page.", Enums.MessageInfoType.Warning);
-                return RedirectToAction("Unauthorized","Error");
+                AddMessageInfo(ex.Message, Enums.MessageInfoType.Error);
+                return null;
+            }
+            finally
+            {
+                refService.Dispose();
+                interService.Dispose();
+                service.Dispose();
             }
         }
 
@@ -343,7 +369,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 var LastApprover = service.GetLicenseLastApproveAfterSubmit(CurrentUser.USER_ID);
                 documents = documents.Where(w => w.CREATED_BY.Equals(CurrentUser.USER_ID) || delegatorname.Contains(w.CREATED_BY)
                     || LastApprover.Contains(w.MNF_REQUEST_ID)
-                    //|| w.LASTAPPROVED_BY == CurrentUser.USER_ID
+                    || w.LASTAPPROVED_BY == CurrentUser.USER_ID
                     //|| IRWhithSameNPPBKC.Contains(w.MNF_REQUEST_ID) 
                     || IRWhithoutNPPBKC.Contains(w.MNF_REQUEST_ID)
                     || IRWithNPPBKCButNoExcise.Contains(w.MNF_REQUEST_ID));
@@ -355,6 +381,9 @@ namespace Sampoerna.EMS.Website.Controllers
             }
 
             model.LicenseRequestDocuments = listofDoc;
+
+            
+            service.Dispose();
 
             return PartialView("_LicenseRequestTable", model);
         }
@@ -380,6 +409,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 Console.WriteLine(ex.StackTrace);
                 return View("Index");
             }
+           
         }
 
         /// <summary>
@@ -400,6 +430,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     model = SetIRDetail(model);
                     model = SetOtherProductType(model);
                     model.Confirmation = GenerateConfirmDialogForm(true,false,false);
+
                     return View("Edit", model);
                 }
                 else
@@ -436,6 +467,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     case 2: model.IsPage = "approve";
                         break;
                 }
+
+                
                 return View("Detail", model);
             }
             else
@@ -492,6 +525,9 @@ namespace Sampoerna.EMS.Website.Controllers
                         break;
                 }
 
+                //refService.Dispose();
+                //service.Dispose();
+
                 return View("Detail", model);
             }
             else
@@ -516,6 +552,8 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                 }
             }
+
+            service.Dispose();
             return isOk;
         }
 
@@ -791,6 +829,8 @@ namespace Sampoerna.EMS.Website.Controllers
                         USERNAME = approvername
                     });
                 }
+                service.Dispose();
+
                 return model;
             }
             catch (Exception e)
@@ -798,6 +838,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(e.Message, Enums.MessageInfoType.Error);
                 return new LicenseRequestModel();
             }
+            
         }
 
         public List<InterviewRequestDetails> GetLicenseRequestBoundCondition(long LRId = 0)
@@ -1153,7 +1194,8 @@ namespace Sampoerna.EMS.Website.Controllers
                                     model_mail.Mail_BANo = license_item.INTERVIEW_REQUEST.BA_NUMBER;
                                     model_mail.Mail_Form = "";
 
-                                    var License_detail_item = service.GetBoundCondAll().Where(w => w.MNF_REQUEST_ID.Equals(model.MnfRequestID)).ToList();
+                                    var dbx = new EMSDataModel();
+                                    var License_detail_item = service.GetBoundCondAll(dbx).Where(w => w.MNF_REQUEST_ID.Equals(model.MnfRequestID)).ToList();
 
                                     var content_body = "";
                                     int no = 1;
@@ -1169,6 +1211,7 @@ namespace Sampoerna.EMS.Website.Controllers
                                             no++;
                                         }
                                     }
+                                dbx.Dispose();
                                     model_mail.Mail_Company_Detail = content_body;
 
                                     var content_footer_body = "";
@@ -1187,19 +1230,30 @@ namespace Sampoerna.EMS.Website.Controllers
                                     {
                                         msgSuccess += " , but failed send mail to POA Approver";
                                     }
-                        }
+
+                            }   
                             AddMessageInfo(msgSuccess, Enums.MessageInfoType.Success);
+                            
+                            refService.Dispose();
+                            service.Dispose();
+
                             return RedirectToAction("index");
                         }
                         else
                         {
                             AddMessageInfo("Maximum file size is " + maxFileSize.ToString() + " Mb", Enums.MessageInfoType.Warning);
+                            refService.Dispose();
+                            service.Dispose();
+
                             return RedirectToAction("index");
                         }
                     }
                     else
                     {
                         AddMessageInfo("Wrong File Extension", Enums.MessageInfoType.Warning);
+                        refService.Dispose();
+                        service.Dispose();
+
                         return RedirectToAction("index");
                     }
 
@@ -1210,6 +1264,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 AddMessageInfo(ex.Message, Enums.MessageInfoType.Warning);
                 return RedirectToAction("index");
             }
+            
         }
 
         [HttpPost]
@@ -1252,7 +1307,8 @@ namespace Sampoerna.EMS.Website.Controllers
                 }
                 string ErrMsg = "";
                 long ApproveStats = GetSysreffApprovalStatus(Status);
-                var update = service.UpdateStatus(LRId, ApproveStats, CurrentUser.USER_ID, ActionType, (int)CurrentUser.UserRole, Comment);
+                var dbx = new EMSDataModel();
+                var update = service.UpdateStatus(dbx, LRId, ApproveStats, CurrentUser.USER_ID, ActionType, (int)CurrentUser.UserRole, Comment);
                 if (update != null)
                 {
                     var msgSuccess = "";
@@ -1290,7 +1346,7 @@ namespace Sampoerna.EMS.Website.Controllers
                     model_mail.Mail_LastStatus = update.SYS_REFFERENCES.REFF_VALUE;
                     /* end update */
 
-                    var License_detail_item = service.GetBoundCondAll().Where(w => w.MNF_REQUEST_ID.Equals(LRId)).ToList();
+                    var License_detail_item = service.GetBoundCondAll(dbx).Where(w => w.MNF_REQUEST_ID.Equals(LRId)).ToList();
 
                     var content_body = "";
                     int no = 1;
@@ -1444,6 +1500,11 @@ namespace Sampoerna.EMS.Website.Controllers
                     }
                     AddMessageInfo(msgSuccess, Enums.MessageInfoType.Success);
                 }
+                dbx.Dispose();
+                refService.Dispose();
+                interService.Dispose();
+                service.Dispose();
+
                 return Json(ErrMsg);
             }
             catch (Exception ex)
@@ -1486,7 +1547,7 @@ namespace Sampoerna.EMS.Website.Controllers
                 {
                     InterviewDet = LRModel.IRDetails;
                 }
-
+                interService.Dispose();
                 var dataAttr = new { Interview = Interview, InterviewDet = InterviewDet };
                 return Json(dataAttr, JsonRequestBehavior.AllowGet);
             }
@@ -1547,6 +1608,17 @@ namespace Sampoerna.EMS.Website.Controllers
                         {
                             ValueField = x.VR_FORM_ID.ToString(),
                             TextField = x.FORM_NUMBER
+                        };
+            return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
+        }
+
+        private SelectList GetFormNumListSummaryFilter(IQueryable<CustomService.Data.MANUFACTURING_LISENCE_REQUEST> FormNumList)
+        {
+            var query = from x in FormNumList
+                        select new SelectItemModel()
+                        {
+                            ValueField = x.MNF_FORM_NUMBER,
+                            TextField = x.MNF_FORM_NUMBER
                         };
             return new SelectList(query.DistinctBy(c => c.ValueField), "ValueField", "TextField");
         }
@@ -1688,6 +1760,9 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
             }
 
             pcmodel.PCDetails = listDetailsProdType;
+
+            //prodtypeService.Dispose();
+            //service.Dispose();
             return pcmodel;
         }
 
@@ -1709,6 +1784,8 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
             }
 
             otherpt.OtherPCDetails = listOtherProdType;
+
+            service.Dispose();
             return otherpt;
         }
 
@@ -1742,6 +1819,9 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
             //model.Confirmation = GenerateConfirmDialog();
             model.Confirmation = GenerateConfirmDialogForm(true, false, false);
             //model.ChangesHistoryList = new List<ChangesHistoryItemModel>() ;
+
+            //service.Dispose();
+
             return model;
         }
 
@@ -1749,6 +1829,7 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
         {
             try
             {
+                var dbx = new EMSDataModel();
                 var listIRDetails = new List<InterviewRequestDetails>();
                 var index = 0;
                 foreach (var val in service.GetDetailAll().Where(s => s.VR_FORM_ID.Equals(irmodel.InterviewId)))
@@ -1763,7 +1844,7 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
                     IRdetails.MnfFax = val.FAX;
                     IRdetails.MnfSubDist = val.SUB_DISTRICT;
 
-                    var BCdetails = service.GetBoundCondAll().Where(x => x.VR_FORM_DETAIL_ID.Equals(val.VR_FORM_DETAIL_ID) && x.MNF_REQUEST_ID.Equals(irmodel.MnfRequestID)).FirstOrDefault();
+                    var BCdetails = service.GetBoundCondAll(dbx).Where(x => x.VR_FORM_DETAIL_ID.Equals(val.VR_FORM_DETAIL_ID) && x.MNF_REQUEST_ID.Equals(irmodel.MnfRequestID)).FirstOrDefault();
                     if (BCdetails != null)
                     {
                         IRdetails.North = BCdetails.NORTH;
@@ -1789,6 +1870,8 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
                 }
 
                 irmodel.IRDetails = listIRDetails;
+                dbx.Dispose();
+                service.Dispose();
                 return irmodel;
             }
             catch (Exception e)
@@ -2105,6 +2188,10 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
                 AddMessageInfo(e.Message, Enums.MessageInfoType.Error);
                 throw;
             }
+            finally
+            {
+                service.Dispose();
+            }
         }
 
         //public void InsertUploadCommonFile(List<string> FilePath, long IRId, bool IsGov)
@@ -2184,6 +2271,10 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
                 AddMessageInfo(e.Message, Enums.MessageInfoType.Error);
                 throw;
             }
+            finally
+            {
+                service.Dispose();
+            }
         }
 
         //public bool SendMail(string formnumber, string perihal, string company_type, string request_date, string creator, string approval_status, string approver, string approvedDate, string remark, long irid, List<string> sendto, string MailFor)
@@ -2246,6 +2337,7 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
                 AddMessageInfo(e.Message, Enums.MessageInfoType.Error);
                 return false;
             }
+            
         }
 
         public long GetSysreffApprovalStatus(string currStatus)
@@ -2288,6 +2380,8 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
                     ApproveStats = Reff.Where(w => w.REFF_KEYS.Equals("CANCELED")).Select(s => s.REFF_ID).FirstOrDefault();
                 }
             }
+            //refService.Dispose();
+
             return ApproveStats;
         }
 
@@ -2403,8 +2497,8 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
                                         model_mail.Mail_BANo = updateSKEP.INTERVIEW_REQUEST.BA_NUMBER;
                                         model_mail.Mail_DecreeDate = Convert.ToDateTime(updateSKEP.DECREE_DATE).ToString("dd MMMM yyyy");
                                         model_mail.Mail_DecreeNo = updateSKEP.DECREE_NO;
-
-                                        var License_detail_item = service.GetBoundCondAll().Where(w => w.MNF_REQUEST_ID.Equals(model.MnfRequestID)).ToList();
+                                        var dbx = new EMSDataModel();
+                                        var License_detail_item = service.GetBoundCondAll(dbx).Where(w => w.MNF_REQUEST_ID.Equals(model.MnfRequestID)).ToList();
 
                                         var content_body = "";
                                         int no = 1;
@@ -2422,6 +2516,7 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
                                                 no++;
                                             }
                                         }
+                                        dbx.Dispose();
                                         model_mail.Mail_Company_Detail = content_body;
 
                                         var content_footer_body = "";
@@ -2447,6 +2542,11 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
                     }
                 }
                 AddMessageInfo(msgSuccess, Enums.MessageInfoType.Success);
+
+                refService.Dispose();
+                interService.Dispose();
+                service.Dispose();
+
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -2580,6 +2680,8 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
                     Title = "Restore Printout Confirmation",
                     ModalLabel = "RestoreModalLabel"
                 });
+
+                
                 //////////////////////////////////////////////////
 
                 return listconfirmation;
@@ -2591,11 +2693,25 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
             }
         }
 
-        public ActionResult GetPrintOutLayout(string Creator)
+        public ActionResult GetPrintOutLayout(string Creator, string Report)
         {
             /*var result = new FilePathResult("~/Views/MLLicenseRequest/PrintLayout.html", "text/html");
             return result;*/
-            var result = refService.GetPrintoutLayout("MANUFACTURING_LICENSE_REQUEST_PRINTOUT", Creator);
+            var tipe_report = "";
+            switch(Report)
+            {
+                case "license1": tipe_report = "LICENSE_REQUEST_PMCK6";
+                    break;
+                case "license2":
+                    tipe_report = "LICENSE_REQUEST_PEMBUKUAN";
+                    break;
+                case "license3":
+                    tipe_report = "LICENSE_REQUEST_NAMASAMA";
+                    break;
+
+            }
+
+            var result = refService.GetPrintoutLayout(tipe_report, Creator);
             var layout = "No Layout Found.";
             if (result.Any())
             {
@@ -2604,7 +2720,9 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
             return Json(layout);
         }
 
-        private string GetPrintout(LicenseRequestModel _LRModel)
+        
+
+        private string GetPrintout_License1(LicenseRequestModel _LRModel)
         {
             _LRModel = GetLicenseRequestMasterForm(_LRModel);
             _LRModel.LicenseRequestBoundCondition       = GetLicenseRequestBoundCondition(_LRModel.MnfRequestID);
@@ -2629,7 +2747,21 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
             parameters.Add("POA_ROLE", _LRModel.POAPosition);
             parameters.Add("POA_ADDRESS", _LRModel.POAAddress);
             //parameters.Add("PERIHAL", _LRModel.Perihal);
-            parameters.Add("COMPANY_TYPE", _LRModel.Company_Type);
+
+            string txt_Company_Type = ""; 
+
+            switch(_LRModel.Company_Type)
+            {
+                case "Pabrik Hasil Tembakau":
+                    txt_Company_Type = "Pabrik Hasil Tembakau / <span style='text-decoration:line-through;'>Importir Hasil Tembakau</span>";
+                    break;
+
+                case "Importir Hasil Tembakau":
+                    txt_Company_Type = "<span style='text-decoration:line-through;'>Pabrik Hasil Tembakau</span> / Importir Hasil Tembakau";
+                    break;
+            }
+            
+            parameters.Add("COMPANY_TYPE", txt_Company_Type);
 
             var mnfcity_list = "";
             var mnfaddr_list = "";
@@ -2637,14 +2769,14 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
             int idx_bc = 1;
             foreach (var detlocation in _LRModel.LicenseRequestBoundCondition)
             {
-                location_list += "<table bgcolor='#ffffff' style='font-family:Arial,Calibri,sans-serif;font-size:10pt;'><tr><td width='10pt'></td><td><b>Detil Pabrik " + idx_bc.ToString()  + "</b></td></tr></table><table bgcolor='#ffffff' style='font-family:Arial,Calibri,sans-serif;font-size:10pt;'><tr>";
+                location_list += "<table bgcolor='#ffffff' style='font-family:Arial,Calibri,sans-serif;font-size:10pt;border-collapse:collapse;'><tr><td width='10pt'></td><td><b>Detil Pabrik " + idx_bc.ToString()  + "</b></td></tr></table><table bgcolor='#ffffff' style='font-family:Arial,Calibri,sans-serif;font-size:10pt;border-collapse:collapse;'><tr>";
                 location_list += "<td width='40pt'></td><td>1. Lokasi Pabrik</td></tr></table>";
-                location_list += "<table bgcolor='#ffffff'><tr><td width='50pt'></td><td><table bgcolor='#ffffff' style='font-family:Arial,Calibri,sans-serif;font-size:10pt;'><tr><td>a.</td><td style='width:100pt'>Alamat Jalan</td><td>:</td><td>" + detlocation.MnfAddr + "</td></tr>";
+                location_list += "<table bgcolor='#ffffff' style='border-collapse:collapse;'><tr><td width='50pt'></td><td><table bgcolor='#ffffff' style='font-family:Arial,Calibri,sans-serif;font-size:10pt;border-collapse:collapse;'><tr><td>a.</td><td style='width:100pt'>Alamat Jalan</td><td>:</td><td>" + detlocation.MnfAddr + "</td></tr>";
                 location_list += "<tr><td>b.</td><td>Kelurahan/Desa</td><td>:</td><td>" + detlocation.MnfVillage + "</td></tr><tr><td>c.</td><td>Kecamatan</td><td>:</td><td>" + detlocation.MnfSubDist + "</td></tr><tr><td>d.</td><td>Kabupaten/Kota</td><td>:</td><td>" + detlocation.MnfCity + "</td></tr><tr><td>e.</td><td>Provinsi</td><td>:</td><td>" + detlocation.MnfProvince + "</td></tr><tr><td>f.</td><td>Telepon/Faksimili</td><td>:</td><td>" + detlocation.MnfPhone + "/" + detlocation.MnfFax + "</td></tr></table>";
-                location_list += "</td></tr></table><br/><table bgcolor='#ffffff'style='font-family:Arial,Calibri,sans-serif;font-size:10pt;'><tr><td width='40pt'></td><td>2. Batas-batas</td></tr></table><table bgcolor='#ffffff'style='font-family:Arial,Calibri,sans-serif;font-size:10pt;'><tr><td width='50pt'></td>";
-                location_list += "<td><table bgcolor='#ffffff'style='font-family:Arial,Calibri,sans-serif;font-size:10pt;'><tr><td>a.</td><td style='width:100pt'>Utara</td><td>:</td><td>" + detlocation.North+"</td></tr><tr><td>b.</td><td>Timur</td><td>:</td><td>"+detlocation.East+"</td></tr><tr><td>c.</td><td>Selatan</td><td>:</td><td>"+detlocation.South+"</td></tr><tr><td>d.</td><td>Barat</td><td>:</td><td>"+detlocation.West+"</td></tr></table></td></tr></table>";
-                location_list += "<br/><table bgcolor='#ffffff'style='font-family:Arial,Calibri,sans-serif;font-size:10pt;'><tr><td width='40pt'></td><td>3. Kondisi&nbsp;" + _LRModel.Company_Type + " :</td></tr></table><table bgcolor='#ffffff'><tr><td width='50pt'></td>";
-                location_list += "<td><table bgcolor='#ffffff'style='font-family:Arial,Calibri,sans-serif;font-size:10pt;'><tr><td>a.</td><td style='width:100pt'>Luas Tanah</td><td>:</td><td>" + detlocation.LandArea+"&nbsp;m<sup>2</sup></td></tr><tr><td>b.</td><td>Luas Bangunan</td><td>:</td><td>"+detlocation.BuildingArea+"&nbsp;m<sup>2</sup></td></tr><tr><td>c.</td><td>Status kepemilikan</td><td>:</td><td>"+detlocation.OwnershipStatus+"</td></tr></table></td></tr></table><br/>";
+                location_list += "</td></tr></table><br/><table bgcolor='#ffffff'style='font-family:Arial,Calibri,sans-serif;font-size:10pt;border-collapse:collapse;'><tr><td width='40pt'></td><td>2. Batas-batas</td></tr></table><table bgcolor='#ffffff'style='font-family:Arial,Calibri,sans-serif;font-size:10pt;border-collapse:collapse;'><tr><td width='50pt'></td>";
+                location_list += "<td><table bgcolor='#ffffff' style='font-family:Arial,Calibri,sans-serif;font-size:10pt;border-collapse:collapse;'><tr><td>a.</td><td style='width:100pt'>Utara</td><td>:</td><td>" + detlocation.North+"</td></tr><tr><td>b.</td><td>Timur</td><td>:</td><td>"+detlocation.East+"</td></tr><tr><td>c.</td><td>Selatan</td><td>:</td><td>"+detlocation.South+"</td></tr><tr><td>d.</td><td>Barat</td><td>:</td><td>"+detlocation.West+"</td></tr></table></td></tr></table>";
+                location_list += "<br/><table bgcolor='#ffffff' style='font-family:Arial,Calibri,sans-serif;font-size:10pt;border-collapse:collapse;'><tr><td width='40pt'></td><td>3. Kondisi&nbsp;" + _LRModel.Company_Type + " :</td></tr></table><table bgcolor='#ffffff'><tr><td width='50pt'></td>";
+                location_list += "<td><table bgcolor='#ffffff' style='font-family:Arial,Calibri,sans-serif;font-size:10pt;border-collapse:collapse;'><tr><td>a.</td><td style='width:100pt'>Luas Tanah</td><td>:</td><td>" + detlocation.LandArea+"&nbsp;m<sup>2</sup></td></tr><tr><td>b.</td><td>Luas Bangunan</td><td>:</td><td>"+detlocation.BuildingArea+"&nbsp;m<sup>2</sup></td></tr><tr><td>c.</td><td>Status kepemilikan</td><td>:</td><td>"+detlocation.OwnershipStatus+"</td></tr></table></td></tr></table><br/>";
                 
 
                 mnfcity_list += detlocation.MnfCity;
@@ -2662,7 +2794,7 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
 
             string prodtype_info = "";
 
-            prodtype_info += "<table bgcolor='#ffffff'><tr><td width='10pt'></td><td><table bgcolor='#ffffff' style='font-family:Arial,Calibri,sans-serif;font-size:10pt;'><tr><td></td><td></td></tr>";
+            prodtype_info += "<table bgcolor='#ffffff' style='border-collapse:collapse;'><tr><td width='10pt'></td><td><table bgcolor='#ffffff' style='font-family:Arial,Calibri,sans-serif;font-size:10pt;border-collapse:collapse;'><tr><td></td><td></td></tr>";
             int ptidx = 0;
             string[] ptnumerator = new string[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j" };
             
@@ -2676,7 +2808,7 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
             parameters.Add("PROD_TYPE_LIST", prodtype_info);
 
             string otherprodtype_info = "";
-            otherprodtype_info += "<table bgcolor='#ffffff'><tr><td width='10pt'></td><td><table bgcolor='#ffffff' style='font-family:Arial,Calibri,sans-serif;font-size:10pt;'><tr><td></td><td></td></tr>";
+            otherprodtype_info += "<table bgcolor='#ffffff' style='border-collapse:collapse;'><tr><td width='10pt'></td><td><table bgcolor='#ffffff' style='font-family:Arial,Calibri,sans-serif;font-size:10pt;border-collapse:collapse;'><tr><td></td><td></td></tr>";
             int otheridx = 0;
 
             foreach (var otherprodtype in _LRModel.LicenseRequestOtherProductType)
@@ -2693,7 +2825,7 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
 
             string supportdoc_info = "";
 
-            supportdoc_info += "<table bgcolor='#ffffff'><tr><td width='10pt'></td><td><table bgcolor='#ffffff' style='font-family:Arial,Calibri,sans-serif;font-size:10pt;'><tr><td></td><td></td></tr>";
+            supportdoc_info += "<table bgcolor='#ffffff' style='border-collapse:collapse;'><tr><td width='10pt'></td><td><table bgcolor='#ffffff' style='font-family:Arial,Calibri,sans-serif;font-size:10pt;border-collapse:collapse;'><tr><td></td><td></td></tr>";
             int sdidx = 0;
 
             foreach(var supportdoc in _LRModel.LicenseSupportingDocumentMaster )
@@ -2718,34 +2850,156 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
             var LampiranCount = filesupload.Where(w => w.IS_GOVERNMENT_DOC == false).Count();
             var lampirancount_info = LampiranCount.ToString() == null ? "0" : LampiranCount.ToString();
 
-            parameters.Add("LAMPIRAN_COUNT", lampirancount_info);
+            parameters.Add("LAMPIRAN_COUNT", lampirancount_info + " (" + TerbilangLong2(LampiranCount) + ") ");
 
 
-            layout = refService.GeneratePrintout("MANUFACTURING_LICENSE_REQUEST_PRINTOUT", parameters, _LRModel.CreatedBy).LAYOUT;
+            layout = refService.GeneratePrintout("LICENSE_REQUEST_PMCK6", parameters, _LRModel.CreatedBy).LAYOUT;
+
+            return layout;
+        }
+
+        private string GetPrintout_License2(LicenseRequestModel _LRModel)
+        {
+            _LRModel = GetLicenseRequestMasterForm(_LRModel);
+            _LRModel.LicenseRequestBoundCondition = GetLicenseRequestBoundCondition(_LRModel.MnfRequestID);
+            
+            var layout = "";
+
+            System.Globalization.CultureInfo CIndo = new System.Globalization.CultureInfo("id-ID");
+
+            var parameters = new Dictionary<string, string>();
+            parameters.Add("COMPANY_NAME", _LRModel.Company);
+            parameters.Add("COMPANY_ADDRESS", _LRModel.Company_Address);
+            parameters.Add("CITY", _LRModel.Company_City);
+            parameters.Add("REQUEST_DATE", _LRModel.RequestDate.ToString("dd MMMM yyyy", CIndo));
+            parameters.Add("POA_NAME", _LRModel.POAName);
+            parameters.Add("POA_ROLE", _LRModel.POAPosition);
+            parameters.Add("POA_ADDRESS", _LRModel.POAAddress);
+            
+            
+            var mnfcity_list = "";
+            var mnfaddr_list = "";
+
+            int idx_bc = 1;
+            foreach (var detlocation in _LRModel.LicenseRequestBoundCondition)
+            {
+            
+                mnfcity_list += detlocation.MnfCity;
+                mnfaddr_list += detlocation.MnfAddr + " " + detlocation.MnfCity;
+                if (idx_bc < _LRModel.LicenseRequestBoundCondition.Count)
+                {
+                    mnfcity_list += ", ";
+                    mnfaddr_list += ", ";
+                }
+
+                idx_bc++;
+            }
+            
+            parameters.Add("MNFCITY_LIST", mnfcity_list);
+            parameters.Add("MNFADDR_LIST", mnfaddr_list);
+            
+            layout = refService.GeneratePrintout("LICENSE_REQUEST_PEMBUKUAN", parameters, _LRModel.CreatedBy).LAYOUT;
+
+            return layout;
+        }
+
+        private string GetPrintout_License3(LicenseRequestModel _LRModel)
+        {
+            _LRModel = GetLicenseRequestMasterForm(_LRModel);
+            _LRModel.LicenseRequestBoundCondition = GetLicenseRequestBoundCondition(_LRModel.MnfRequestID);
+            
+            var layout = "";
+
+            System.Globalization.CultureInfo CIndo = new System.Globalization.CultureInfo("id-ID");
+
+            var parameters = new Dictionary<string, string>();
+            parameters.Add("COMPANY_NAME", _LRModel.Company);
+            parameters.Add("COMPANY_ADDRESS", _LRModel.Company_Address);
+            parameters.Add("CITY", _LRModel.Company_City);
+            parameters.Add("REQUEST_DATE", _LRModel.RequestDate.ToString("dd MMMM yyyy", CIndo));
+            parameters.Add("POA_NAME", _LRModel.POAName);
+            parameters.Add("POA_ROLE", _LRModel.POAPosition);
+            parameters.Add("POA_ADDRESS", _LRModel.POAAddress);
+            
+            var mnfcity_list = "";
+            var mnfaddr_list = "";
+            int idx_bc = 1;
+            foreach (var detlocation in _LRModel.LicenseRequestBoundCondition)
+            {
+                mnfcity_list += detlocation.MnfCity;
+                mnfaddr_list += detlocation.MnfAddr + " " + detlocation.MnfCity;
+                if (idx_bc < _LRModel.LicenseRequestBoundCondition.Count)
+                {
+                    mnfcity_list += ", ";
+                    mnfaddr_list += ", ";
+                }
+
+                idx_bc++;
+            }
+            parameters.Add("MNFCITY_LIST", mnfcity_list);
+            parameters.Add("MNFADDR_LIST", mnfaddr_list);
+
+            layout = refService.GeneratePrintout("LICENSE_REQUEST_NAMASAMA", parameters, _LRModel.CreatedBy).LAYOUT;
 
             return layout;
         }
 
         [HttpPost]
-        public ActionResult GeneratePrintout(long MnfRequestID)
+        public ActionResult GeneratePrintout_License1(long MnfRequestID)
         {
             var _LRModel = new LicenseRequestModel();
             _LRModel.MnfRequestID = MnfRequestID;
-            var layout = GetPrintout(_LRModel);
+            var layout = GetPrintout_License1(_LRModel);
+            return Json(layout);
+        }
+
+        [HttpPost]
+        public ActionResult GeneratePrintout_License2(long MnfRequestID)
+        {
+            var _LRModel = new LicenseRequestModel();
+            _LRModel.MnfRequestID = MnfRequestID;
+            var layout = GetPrintout_License2(_LRModel);
+            return Json(layout);
+        }
+
+        [HttpPost]
+        public ActionResult GeneratePrintout_License3(long MnfRequestID)
+        {
+            var _LRModel = new LicenseRequestModel();
+            _LRModel.MnfRequestID = MnfRequestID;
+            var layout = GetPrintout_License3(_LRModel);
             return Json(layout);
         }
 
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult UpdatePrintOutLayout(string NewPrintout, string CreatedBy)
+        public ActionResult UpdatePrintOutLayout(string NewPrintout, string CreatedBy, string ReportPage, long Id)
         {
-            var ErrMessage = refService.UpdatePrintoutLayout("MANUFACTURING_LICENSE_REQUEST_PRINTOUT", NewPrintout, CreatedBy);
+            string reportname = "";
+            switch(ReportPage)
+            {
+                case "license1": reportname = "LICENSE_REQUEST_PMCK6";
+                    break;
+                case "license2":
+                    reportname = "LICENSE_REQUEST_PEMBUKUAN";
+                    break;
+                case "license3":
+                    reportname = "LICENSE_REQUEST_NAMASAMA";
+                    break;
+            }
+
+            var ErrMessage = refService.UpdatePrintoutLayout(reportname, NewPrintout, CreatedBy);
+            if (ErrMessage == "")
+            {
+                PrintoutChangelog(Id);
+            }
             return Json(ErrMessage);
         }
+        
 
         [HttpPost]
         [ValidateInput(false)]
-        public void DownloadPrintOut(LicenseRequestModel _LRModel)
+        public ActionResult DownloadPrintOut(LicenseRequestModel _LRModel)
         {
             try
             {
@@ -2754,35 +3008,61 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
                 FormNumber = FormNumber.Replace('/', '-');
                 var now = DateTime.Now.ToString("ddMMyyyy");
                 _LRModel.MnfRequestID = InterviewID;
-                var htmlText = GetPrintout(_LRModel);
+                var htmlText = GetPrintout_License1(_LRModel);
+                var htmlText2 = GetPrintout_License2(_LRModel);
+                var htmlText3 = GetPrintout_License3(_LRModel);
                 //MemoryStream ms = new MemoryStream();
                 var baseFolder = "/files_upload/Manufacture/LicenseRequest/PrintOut/";
                 var uploadToFolder = Server.MapPath("~" + baseFolder);
                 Directory.CreateDirectory(uploadToFolder);
-                uploadToFolder += "PrintOut_LicenseRequest_" + FormNumber + "_" + now + ".pdf";
+                var upload1 = uploadToFolder + "PrintOut_LicenseRequest_" + FormNumber + "_" + now + ".pdf";
+                var upload2 = uploadToFolder + "PrintOut_LicenseRequest_2_" + FormNumber + "_" + now + ".pdf";
+                var upload3 = uploadToFolder + "PrintOut_LicenseRequest_3_" + FormNumber + "_" + now + ".pdf";
                 var leftMargin = iTextSharp.text.Utilities.MillimetersToPoints(25.4f);
                 var rightMargin = iTextSharp.text.Utilities.MillimetersToPoints(25.4f);
                 var topMargin = iTextSharp.text.Utilities.MillimetersToPoints(25.4f);
                 var bottomtMargin = iTextSharp.text.Utilities.MillimetersToPoints(25.4f);
-                var document = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, leftMargin, rightMargin, topMargin, bottomtMargin);
-                FileStream stream = new FileStream(uploadToFolder, FileMode.Create);
-                var writer = PdfWriter.GetInstance(document, stream);
+                var document1 = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, leftMargin, rightMargin, topMargin, bottomtMargin);
+                var document2 = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, leftMargin, rightMargin, topMargin, bottomtMargin);
+                var document3 = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, leftMargin, rightMargin, topMargin, bottomtMargin);
+                FileStream stream1 = new FileStream(upload1, FileMode.Create);
+                FileStream stream2 = new FileStream(upload2, FileMode.Create);
+                FileStream stream3 = new FileStream(upload3, FileMode.Create);
+                var writer1 = PdfWriter.GetInstance(document1, stream1);
+                var writer2 = PdfWriter.GetInstance(document2, stream2);
+                var writer3 = PdfWriter.GetInstance(document3, stream3);
                 if (_LRModel.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.Draft)) || _LRModel.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.Edited)) || _LRModel.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.Canceled)) || _LRModel.StatusKey.Equals(ReferenceLookup.Instance.GetReferenceKey(ReferenceKeys.ApprovalStatus.AwaitingPoaApproval)))
                 //if ((_LRModel.Status != "COMPLETED") && (_LRModel.Status != "CANCELED") && (_LRModel.Status != "WAITING FOR GOVERNMENT APPROVAL" ) && (_LRModel.Status != "WAITING FOR POA SKEP APPROVAL"))
                 {
                     PdfWriterEvents writerEvent = new PdfWriterEvents("D R A F T E D");
-                    writer.PageEvent = writerEvent;
+                    writer1.PageEvent = writerEvent;
+                    writer2.PageEvent = writerEvent;
+                    writer3.PageEvent = writerEvent;
                 }
-                writer.CloseStream = false;
-                document.Open();
-                var srHtml = new StringReader(htmlText);
-                XMLWorkerHelper.GetInstance().ParseXHtml(writer, document, srHtml);
-                document.Close();
-                stream.Close();
+                writer1.CloseStream = false;
+                writer2.CloseStream = false;
+                writer3.CloseStream = false;
+                document1.Open();
+                var srHtml1 = new StringReader(htmlText);
+                XMLWorkerHelper.GetInstance().ParseXHtml(writer1, document1, srHtml1);
+                document1.Close();
+                document2.Open();
+                var srHtml2 = new StringReader(htmlText2);
+                XMLWorkerHelper.GetInstance().ParseXHtml(writer2, document2, srHtml2);
+                document2.Close();
+                document3.Open();
+                var srHtml3 = new StringReader(htmlText3);
+                XMLWorkerHelper.GetInstance().ParseXHtml(writer3, document3, srHtml3);
+                document3.Close();
+                stream1.Close();
+                stream2.Close();
+                stream3.Close();
                 //var newFile = new FileInfo(uploadToFolder);
                 //var fileName = Path.GetFileName(uploadToFolder);
-                var mergeFile = MergePrintout(uploadToFolder, InterviewID);
+                var mergeFile = MergePrintout(upload1,upload2,upload3, InterviewID);
                 var newFile = new FileInfo(mergeFile);
+                var upload2file = new FileInfo(upload2);
+                var upload3file = new FileInfo(upload3);
                 var fileName = Path.GetFileName(mergeFile);
                 string attachment = string.Format("attachment; filename={0}", fileName);
                 Response.Clear();
@@ -2791,11 +3071,19 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
                 Response.WriteFile(newFile.FullName);
                 Response.Flush();
                 newFile.Delete();
+                upload2file.Delete();
+                upload3file.Delete();
                 Response.End();
+                return null;
             }
             catch (Exception ex)
             {
-                throw ex;
+                AddMessageInfo(String.Format("Cannot download printout!. Reason: {0}", ex.Message), Enums.MessageInfoType.Error);
+                return RedirectToAction("Index");
+            }
+            finally
+            {
+                service.Dispose();
             }
         }
 
@@ -2823,6 +3111,8 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
                 model.CurrentMenu = PageInfo;
             }
 
+            service.Dispose();
+
             return View("SummaryReport", model);
         }
 
@@ -2831,6 +3121,7 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
             model.MainMenu = mainMenu;
             model.CurrentMenu = PageInfo;
             var users = refService.GetAllUser();
+            //var documents = service.GetvwLicenseRequestAll().Where(w => (w.LASTAPPROVED_BY != null ? (w.CREATED_BY.Equals(CurrentUser.USER_ID) || w.LASTAPPROVED_BY.Equals(CurrentUser.USER_ID)) : w.CREATED_BY.Equals(CurrentUser.USER_ID))).Select(s => new vwMLLicenseRequestModel
             var documents = service.GetvwLicenseRequestAll().Select(s => new vwMLLicenseRequestModel
             {
                 FormNumber = s.MNF_FORM_NUMBER,
@@ -2842,17 +3133,41 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
                 KPPBC = s.KPPBC
             }).ToList();
 
+            //if (CurrentUser.UserRole == Enums.UserRole.POA)
+            //{
+            //    var delegation = service.GetPOADelegatedUser(CurrentUser.USER_ID);
+            //    List<string> delegatorname = new List<string>();
+            //    if (delegation.Any())
+            //    {
+            //        delegatorname = delegation.Select(s => s.POA_FROM).ToList();
+            //    }
+            //    //var IRWithSameNPPBKC = service.GetLicenseNeedApproveWithSameNPPBKC(CurrentUser.USER_ID);
+            //    var IRWhithoutNPPBKC = service.GetLicenseNeedApproveWithoutNPPBKC(CurrentUser.USER_ID);
+            //    var IRWithNPPBKCButNoExcise = service.GetInterviewNeedApproveWithNPPBKCButNoExcise(CurrentUser.USER_ID);
+            //    // new
+            //    var LastApprover = service.GetLicenseLastApproveAfterSubmit(CurrentUser.USER_ID);
+            //    documents = documents.Where(w => w.CreatedBy.Equals(CurrentUser.USER_ID)
+            //        || delegatorname.Contains(w.CreatedBy)
+            //        || LastApprover.Contains(w.MnfRequestId)
+            //        || w.LastApprovedBy == CurrentUser.USER_ID 
+            //        //|| IRWhithSameNPPBKC.Contains(w.MnfRequestID) 
+            //        || IRWhithoutNPPBKC.Contains(w.MnfRequestId)
+            //        || IRWithNPPBKCButNoExcise.Contains(w.MnfRequestId)).ToList();
+            //}
+
             var iridlist = service.GetIRIDAll();
             var statusidlist = service.GetStatusIDAll();
-            var nppbkcList = service.GetAllNPPBKCId();
+            //var nppbkcList = service.GetAllNPPBKCId();
+            var nppbkclist = service.GetAllNPPBKCForFilter();
             var comptplist = interService.GetInterviewReqCompanyTypeList();
 
             var filter = new LicenseRequestSearchSummaryReportsViewModel();
-            model.SearchView.FormNumberList = GetFormNumList(interService.GetAll().Where(w => iridlist.Contains(w.VR_FORM_ID)));
+            model.SearchView.FormNumberList = GetFormNumListSummaryFilter(service.GetAll().Where(w => iridlist.Contains(w.VR_FORM_ID)));
             model.SearchView.LastApprovedStatusList = GetLastApprovedStatus(service.GetReffValueAll().Where(w => statusidlist.Contains(w.REFF_ID) && w.REFF_KEYS != "COMPLETED" && w.REFF_KEYS != "CANCELED"));
-            model.SearchView.FormNumberList = GetFormNumList(interService.GetAll().Where(w => iridlist.Contains(w.VR_FORM_ID)));
+            //model.SearchView.FormNumberList = GetFormNumList(interService.GetAll().Where(w => iridlist.Contains(w.VR_FORM_ID)));
             model.SearchView.CompanyTypeList = GetCompTypeList(comptplist);
-            model.SearchView.KPPBCList = GetKPPBCList(nppbkcList);
+            //model.SearchView.KPPBCList = GetKPPBCList(nppbkclist);
+            model.SearchView.KPPBCList = GetKPPBCListForFilter(nppbkclist);
             model.LicenseRequestDocuments = documents;
 
             //model.DetailsList = new List<LicenseRequestSummaryReportsItem>(); //SearchDataSummaryReports(filter);
@@ -2865,12 +3180,12 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
         {
             //var nppbkclist = service.GetNPPBKCByUser(CurrentUser.USER_ID);
 
-            var documents = service.GetvwLicenseRequestAll().Where(w => (w.LASTAPPROVED_BY != null ? (w.CREATED_BY.Equals(CurrentUser.USER_ID) || w.LASTAPPROVED_BY.Equals(CurrentUser.USER_ID)) : w.CREATED_BY.Equals(CurrentUser.USER_ID)));
-
-            //if (model.SearchView.FormNumberSource != 0)
-            //{
-            //    documents = documents.Where(w => w.MNF_FORM_NUMBER.Equals(model.SearchView.FormNumberSource));
-            //}
+            //var documents = service.GetvwLicenseRequestAll().Where(w => (w.LASTAPPROVED_BY != null ? (w.CREATED_BY.Equals(CurrentUser.USER_ID) || w.LASTAPPROVED_BY.Equals(CurrentUser.USER_ID)) : w.CREATED_BY.Equals(CurrentUser.USER_ID)));
+            var documents = service.GetvwLicenseRequestAll();
+            if (model.SearchView.FormNumberSource != null)
+            {
+                documents = documents.Where(w => w.MNF_FORM_NUMBER.Equals(model.SearchView.FormNumberSource));
+            }
             if (model.SearchView.CompanyTypeSource != null)
             {
                 documents = documents.Where(w => w.COMPANY_TYPE.Equals(model.SearchView.CompanyTypeSource));
@@ -2879,11 +3194,33 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
             {
                 documents = documents.Where(w => w.KPPBC.Equals(model.SearchView.KPPBCSource));
             }
-            //if (model.SearchView.LastApprovedStatusSource != null)
-            //{
-            //    documents = documents.Where(w => w.LASTAPPROVED_STATUS.Equals(model.SearchView.LastApprovedStatusSource));
-            //}
+            if (model.SearchView.LastApprovedStatusSource != null)
+            {
+                Int64 test = Convert.ToInt64(model.SearchView.LastApprovedStatusSource);
+                documents = documents.Where(w => w.LASTAPPROVED_STATUS.Equals(test));
+            }
 
+            //if (CurrentUser.UserRole == Enums.UserRole.POA)
+            //{
+            //    var delegation = service.GetPOADelegatedUser(CurrentUser.USER_ID);
+            //    List<string> delegatorname = new List<string>();
+            //    if (delegation.Any())
+            //    {
+            //        delegatorname = delegation.Select(s => s.POA_FROM).ToList();
+            //    }
+            //    //var IRWithSameNPPBKC = service.GetLicenseNeedApproveWithSameNPPBKC(CurrentUser.USER_ID);
+            //    var IRWhithoutNPPBKC = service.GetLicenseNeedApproveWithoutNPPBKC(CurrentUser.USER_ID);
+            //    var IRWithNPPBKCButNoExcise = service.GetInterviewNeedApproveWithNPPBKCButNoExcise(CurrentUser.USER_ID);
+            //    // new
+            //    var LastApprover = service.GetLicenseLastApproveAfterSubmit(CurrentUser.USER_ID);
+            //    documents = documents.Where(w => w.CREATED_BY.Equals(CurrentUser.USER_ID)
+            //        || delegatorname.Contains(w.CREATED_BY)
+            //        || LastApprover.Contains(w.MNF_REQUEST_ID)
+            //        || w.LASTAPPROVED_BY == CurrentUser.USER_ID
+            //        //|| IRWhithSameNPPBKC.Contains(w.MnfRequestID) 
+            //        || IRWhithoutNPPBKC.Contains(w.MNF_REQUEST_ID)
+            //        || IRWithNPPBKCButNoExcise.Contains(w.MNF_REQUEST_ID));
+            //}
 
             var listofDoc = new List<vwMLLicenseRequestModel>();
 
@@ -2900,6 +3237,9 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
 
             
             model.LicenseRequestDocuments = listofDoc;
+
+            refService.Dispose();
+            service.Dispose();
 
             return PartialView("_LicenseRequestTableSummaryReport", model);
         }
@@ -2955,6 +3295,18 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
                     iColumn = iColumn + 1;
                 }
 
+                if (modelExport.BaNum)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, service.GetBaNumberFromInterview(data.FormNumber));
+                    iColumn = iColumn + 1;
+                }
+
+                if (modelExport.InterviewNum)
+                {
+                    slDocument.SetCellValue(iRow, iColumn, service.GetInterviewNumFromInterview(data.FormNumber));
+                    iColumn = iColumn + 1;
+                }
+
                 if (modelExport.CompanyName)
                 {
                     slDocument.SetCellValue(iRow, iColumn, data.CompanyName);
@@ -2987,7 +3339,7 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
 
                 if (modelExport.ModifyDate)
                 {
-                    slDocument.SetCellValue(iRow, iColumn, data.ModifyDate.Value.ToString("dd MMMM yyyy HH:mm:ss"));
+                    slDocument.SetCellValue(iRow, iColumn, data.ModifyDate == null ? "" : data.ModifyDate.Value.ToString("dd MMMM yyyy HH:mm:ss"));
                     iColumn = iColumn + 1;
                 }
 
@@ -3133,6 +3485,18 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
             if (modelExport.RequestDate)
             {
                 slDocument.SetCellValue(iRow, iColumn, "Request Date");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.BaNum)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "BA Number");
+                iColumn = iColumn + 1;
+            }
+
+            if (modelExport.InterviewNum)
+            {
+                slDocument.SetCellValue(iRow, iColumn, "Interview Number");
                 iColumn = iColumn + 1;
             }
 
@@ -3327,8 +3691,8 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
         {
             //var nppbkclist = service.GetNPPBKCByUser(CurrentUser.USER_ID);
 
-            var documents = service.GetvwLicenseRequestAll().Where(w => (w.LASTAPPROVED_BY != null ? (w.CREATED_BY.Equals(CurrentUser.USER_ID) || w.LASTAPPROVED_BY.Equals(CurrentUser.USER_ID)) : w.CREATED_BY.Equals(CurrentUser.USER_ID)));
-
+            //var documents = service.GetvwLicenseRequestAll().Where(w => (w.LASTAPPROVED_BY != null ? (w.CREATED_BY.Equals(CurrentUser.USER_ID) || w.LASTAPPROVED_BY.Equals(CurrentUser.USER_ID)) : w.CREATED_BY.Equals(CurrentUser.USER_ID)));
+            var documents = service.GetvwLicenseRequestAll();
             //if (model.SearchView.FormNumberSource != 0)
             //{
             //    documents = documents.Where(w => w.MNF_FORM_NUMBER.Equals(model.SearchView.FormNumberSource));
@@ -3435,12 +3799,30 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
         #endregion
 
         [HttpPost]
-        public ActionResult RestorePrintoutToDefault()
+        public ActionResult RestorePrintoutToDefault(string ReportPage, long Id)
         {
-            var ErrMessage = refService.RestorePrintoutToDefault("MANUFACTURING_LICENSE_REQUEST_PRINTOUT", CurrentUser.USER_ID);
+            string reportname = "";
+            switch(ReportPage)
+            {
+                case "license1": reportname = "LICENSE_REQUEST_PMCK6";
+                    break;
+                case "license2":
+                    reportname = "LICENSE_REQUEST_PEMBUKUAN";
+                    break;
+                case "license3":
+                    reportname = "LICENSE_REQUEST_NAMASAMA";
+                    break;
+
+            }
+
+            var ErrMessage = refService.RestorePrintoutToDefault(reportname, CurrentUser.USER_ID);
+            if (ErrMessage == "")
+            {
+                PrintoutChangelog(Id);
+            }
             return Json(ErrMessage);
         }
-
+        
         private List<ConfirmDialogModel> GenerateConfirmDialog()
         {
             try
@@ -3508,7 +3890,7 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
             return filename;
         }
 
-        public String MergePrintout(string path, long MnfRegID)
+        public String MergePrintout(string path, string path2, string path3, long MnfRegID)
         {
             try
             {
@@ -3516,6 +3898,8 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
                 var ext = "";
                 List<String> sourcePaths = new List<string>();
                 sourcePaths.Add(path);
+                sourcePaths.Add(path2);
+                sourcePaths.Add(path3);
                 foreach (var doc in supportingDocs)
                 {
                     ext = doc.PATH_URL.Substring((doc.PATH_URL.Length - 3), 3);
@@ -3542,7 +3926,7 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception("Missing supporting documents! ");
             }
         }
 
@@ -3564,5 +3948,98 @@ private SelectList GetCompTypeList(Dictionary<int, string> types)
             }
         }
 
+        public string TerbilangLong2(double amount)
+        {
+            string word = "";
+            double divisor = 1000000000000.00; double large_amount = 0;
+            double tiny_amount = 0;
+            double dividen = 0; double dummy = 0;
+            string weight1 = ""; string unit = ""; string follower = "";
+            string[] prefix = { "SE", "DUA ", "TIGA ", "EMPAT ", "LIMA ",
+ "ENAM ", "TUJUH ", "DELAPAN ", "SEMBILAN " };
+            string[] sufix = { "SATU ", "DUA ", "TIGA ", "EMPAT ", "LIMA ",
+ "ENAM ", "TUJUH ", "DELAPAN ", "SEMBILAN " };
+            large_amount = Math.Abs(Math.Truncate(amount));
+            tiny_amount = Math.Round((Math.Abs(amount) - large_amount) * 100);
+            if (large_amount > divisor)
+                return "OUT OF RANGE";
+            while (divisor >= 1)
+            {
+                dividen = Math.Truncate(large_amount / divisor);
+                large_amount = large_amount % divisor;
+                unit = "";
+                if (dividen > 0)
+                {
+                    if (divisor == 1000000000000.00)
+                        unit = "TRILYUN ";
+                    else
+                    if (divisor == 1000000000.00)
+                        unit = "MILYAR ";
+                    else
+                    if (divisor == 1000000.00)
+                        unit = "JUTA ";
+                    else
+                    if (divisor == 1000.00)
+                        unit = "RIBU ";
+                }
+                weight1 = "";
+                dummy = dividen;
+                if (dummy >= 100)
+                    weight1 = prefix[(int)Math.Truncate(dummy / 100) - 1] + "RATUS ";
+                dummy = dividen % 100;
+                if (dummy < 10)
+                {
+                    if (dummy == 1 && unit == "RIBU ")
+                        weight1 += "SE";
+                    else
+                    if (dummy > 0)
+                        weight1 += sufix[(int)dummy - 1];
+                }
+                else
+                if (dummy >= 11 && dummy <= 19)
+                {
+                    weight1 += prefix[(int)(dummy % 10) - 1] + "BELAS ";
+                }
+                else
+                {
+                    weight1 += prefix[(int)Math.Truncate(dummy / 10) - 1] + "PULUH ";
+                    if (dummy % 10 > 0)
+                        weight1 += sufix[(int)(dummy % 10) - 1];
+                }
+                word += weight1 + unit;
+                divisor /= 1000.00;
+            }
+            if (Math.Truncate(amount) == 0)
+                word = "NOL ";
+            follower = "";
+            if (tiny_amount < 10)
+            {
+                if (tiny_amount > 0)
+                    follower = "KOMA NOL " + sufix[(int)tiny_amount - 1];
+            }
+            else
+            {
+                follower = "KOMA " + sufix[(int)Math.Truncate(tiny_amount / 10) - 1];
+                if (tiny_amount % 10 > 0)
+                    follower += sufix[(int)(tiny_amount % 10) - 1];
+            }
+            word += follower;
+            //if (amount < 0)
+            //{
+            //    word = "MINUS " + word + " RUPIAH";
+            //}
+            //else
+            //{
+            //    word = word + " RUPIAH";
+            //}
+            return word.Trim();
+        }
+
+        private void PrintoutChangelog(long IRID)
+        {
+            Dictionary<string, string[]> changes = new Dictionary<string, string[]>();
+            changes.Add("PRINTOUT LAYOUT", new string[] { "Layout Changes", "Layout Changes" });
+            service.LogsChages(IRID, changes, (int)Enums.MenuList.LicenseRequest, CurrentUser.USER_ID);
+        }
     }
 }

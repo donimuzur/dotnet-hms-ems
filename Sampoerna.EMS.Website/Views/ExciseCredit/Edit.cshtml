@@ -153,6 +153,7 @@
             $("#ckListButton").on("click", openCkListPopUp);
 
             $("#calculationAction").hide();
+            $("#calculationActionDetail").show();
             TinyMceInit("tinymce-editor");
 
         });
@@ -307,6 +308,10 @@
         var newOtherDocIdx = 0;
 
         function _addToList(file, name) {
+            if (!name) {
+                showErrorDialog("Document name is required!");
+                return;
+            }
             var idx = otherDocs.indexOf(file);
             var updated = true;
             for (var i = 0; i < otherDocs.length; i++) {
@@ -352,7 +357,7 @@
                     '<td>' + (i + 1) + '</td>' +
                     '<td>' + linkOpen + otherDocs[i].name + linkClose + '</td>' +
                     '<td>' + otherDocsName[i] + '</td>' +
-                    '<td><button class="btn btn-danger" onclick="_removeFromList(' + i + ')">Remove</button></td>' +
+                    '<td><button class="btn btn-blue" onclick="_removeFromList(' + i + ')">Remove</button></td>' +
                     '</tr>';
             }
             container.html(content);
