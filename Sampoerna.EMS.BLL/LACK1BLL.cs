@@ -1857,10 +1857,10 @@ namespace Sampoerna.EMS.BLL
             }
 
 
-            List<Lack1CalculationDetail> dataCalculations = new List<Lack1CalculationDetail>();
-            if (!dtToReturn.IsEtilAlcohol)
-            {
-                dataCalculations =
+            //List<Lack1CalculationDetail> dataCalculations = new List<Lack1CalculationDetail>();
+            //if (!dtToReturn.IsEtilAlcohol)
+            //{
+              var dataCalculations =
                     dtToReturn.CalculationDetails.Where(x => x.Type == Enums.Lack1Calculation.WithConvertion)
                         .GroupBy(x => new {x.BrandCe, x.UomProduction})
                         .Select(x => new Lack1CalculationDetail()
@@ -1890,32 +1890,32 @@ namespace Sampoerna.EMS.BLL
                     calc.AmountProduction = amountProd;
                 }
                 
-            }
-            else
-            {
+            //}
+            //else
+            //{
 
-                foreach (var calc in dtToReturn.CalculationDetails)
-                {
-                    var amountUsage = calc.AmountUsage;
-                    var amountProd = calc.AmountProduction;
-                    if (dtToReturn.Lack1UomId != "L")
-                    {
-                        amountUsage = calc.AmountUsage / 1000;
-                    }
+            //    foreach (var calc in dtToReturn.CalculationDetails)
+            //    {
+            //        var amountUsage = calc.AmountUsage;
+            //        var amountProd = calc.AmountProduction;
+            //        if (dtToReturn.Lack1UomId != "L")
+            //        {
+            //            amountUsage = calc.AmountUsage / 1000;
+            //        }
 
-                    if (calc.UomProduction == "G")
-                    {
-                        amountProd = calc.AmountProduction / 1000;
-                    }
+            //        if (calc.UomProduction == "G")
+            //        {
+            //            amountProd = calc.AmountProduction / 1000;
+            //        }
 
-                    calc.AmountUsage = amountUsage;
-                    calc.AmountProduction = amountProd;
-                    calc.MaterialId = dtToReturn.ExGoodsTypeDesc;
+            //        calc.AmountUsage = amountUsage;
+            //        calc.AmountProduction = amountProd;
+            //        calc.MaterialId = dtToReturn.ExGoodsTypeDesc;
 
-                    if(calc.Type == Sampoerna.EMS.Core.Enums.Lack1Calculation.WithConvertion) 
-                        dataCalculations.Add(calc);
-                }
-            }
+            //        if(calc.Type == Sampoerna.EMS.Core.Enums.Lack1Calculation.WithConvertion) 
+            //            dataCalculations.Add(calc);
+            //    }
+            //}
 
             dtToReturn.CalculationDetails = dataCalculations;
 
