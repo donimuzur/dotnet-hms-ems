@@ -912,7 +912,14 @@ namespace Sampoerna.EMS.Website.Controllers
 
                     var amountUsage = item.AmountUsage;
                     var amountProd = item.AmountProduction;
-                    
+
+                    if (data.IsEtilAlcohol)
+                    {
+                        var dataCurrent =
+                            data.PeriodSummaries.Where(x => x.Type == Enums.Lack1SummaryPeriod.Current).FirstOrDefault();
+                        if (dataCurrent != null) amountUsage = dataCurrent.Usage;
+                        
+                    }
 
                     detailRow.AmountMaterial = amountUsage.ToString("N3");
                     detailRow.JenisProduksi = item.BrandCe;
